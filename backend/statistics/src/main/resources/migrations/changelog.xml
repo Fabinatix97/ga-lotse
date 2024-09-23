@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <include file="migrations/0001_initial.xml"/>
+    <include file="migrations/0002_add_diagram_with_filters.xml"/>
+    <include file="migrations/0003_add_bar_chart_diagram_data.xml"/>
+    <include file="migrations/0004_add_geo_shapes.xml"/>
+    <include file="migrations/0005_add_pie_chart_diagram_data.xml"/>
+    <include file="migrations/0006_add_histogram_bins.xml"/>
+    <include file="migrations/0007_add_histogram_chart_diagram_data.xml"/>
+    <include file="migrations/0008_introduce_pgenums.xml"/>
+    <include file="migrations/0009_add_choropleth_map_configuration.xml"/>
+    <include file="migrations/0010_add_choropleth_map_diagram_data.xml"/>
+    <include file="migrations/0011_adjust_entity_relations.xml"/>
+    <include file="migrations/0012_add_filter_templates.xml"/>
+    <include file="migrations/0013_add_search_key.xml"/>
+    <include file="migrations/0014_indices_for_many_to_one_relations.xml"/>
+    <include file="migrations/0015_add_line_or_scatter_chart_data.xml"/>
+    <include file="migrations/0016_add_aggregation_result_state.xml"/>
+    <include file="migrations/0017_add_aggregation_result_pending_state.xml"/>
+    <include file="migrations/0018_introduce_abstract_aggregation_result.xml"/>
+    <include file="migrations/0019_add_copy_statistic_enums.xml"/>
+    <include file="migrations/0020_introduce_reports.xml"/>
+    <include file="migrations/0021_cell_entry_indexes.xml"/>
+    <include file="migrations/0022_auto_report_series.xml"/>
+
+</databaseChangeLog>

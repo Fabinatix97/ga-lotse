@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
+<#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="child" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="examination" type="de.eshg.schoolentry.pdf.invitation.InvitationExamination" -->
+<#-- @ftlvariable name="invitationInfo" type="de.eshg.schoolentry.pdf.invitation.InvitationInfo" -->
+<#-- @ftlvariable name="accentColorHex" type="java.lang.String" -->
+<#-- @ftlvariable name="qrBoxBackgroundColorHex" type="java.lang.String" -->
+
+<html xml:lang="de" lang="de">
+<head>
+  <title>Einladung zur Einschulungsuntersuchung am ${examination.executionDate}</title>
+  <style type="text/css">
+    @page {
+      size: A4 portrait;
+      margin: 15mm 0 15mm 0;
+
+      @bottom-left {
+        content: element(--var-footerRunning);
+        font-family: sans-serif;
+        font-size: 7pt;
+        vertical-align: top;
+        padding-left: 15mm
+      }
+
+      @bottom-right {
+        content: "Seite " counter(page) " von " counter(pages);
+        font-family: sans-serif;
+        font-size: 7pt;
+        padding-right: 1cm;
+        vertical-align: top;
+      }
+    }
+
+    html {
+      font-size: 8.5pt;
+    }
+
+    body {
+      font-family: sans-serif;
+      font-weight: 400;
+      line-height: 1.5rem;
+      height: 100%;
+      box-sizing: border-box;
+      margin: 0 1cm 0 15mm;
+    }
+
+    .sender .sender-label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.5em;
+    }
+
+    .sender .sender-address {
+      margin-bottom: 5mm;
+    }
+
+    .sender .sender-data {
+      margin-bottom: 2mm;
+    }
+
+    /* the footer is a running element, which is used in the @bottom-center margin box */
+    /* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+    footer {
+      position: running(--var-footerRunning);
+    }
+
+    .header {
+      padding-top: 13mm;
+      width: 100%;
+    }
+
+    .header .letterhead td {
+      padding-top: 20px;
+    }
+
+    .header .receiver .officeAddress {
+      font-size: 0.75rem;
+      margin-bottom: 2mm;
+    }
+
+    .header .receiver .addressee {
+      font-size: 0.75rem;
+    }
+
+    .access-code {
+      font-weight: 600;
+      text-align: center;
+      vertical-align: middle;
+      font-family: Monospaced, sans-serif;
+      border: 0.5mm solid black;
+      width: 4.2cm;
+      padding: 1mm;
+    }
+
+    .access-code-hint {
+      font-size: 6px;
+    }
+
+    div.data {
+      margin-top: 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    div.qr-box {
+      border-left: 1mm solid ${accentColorHex};
+      background-color: ${qrBoxBackgroundColorHex};
+      padding: 3mm 3mm 2mm 0;
+      page-break-after: always;
+      margin-top: 10mm;
+    }
+
+    div.qr-box table {
+      width: 100%;
+    }
+
+    div.qr-box table td {
+      padding: 1mm;
+      vertical-align: top;
+    }
+
+    div.qr-box td.qr-code {
+      text-align: center;
+      vertical-align: middle;
+      padding-left: 5mm;
+    }
+
+    td.qr-code img {
+      width: 28mm;
+      height: 28mm;
+    }
+
+    div.label {
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<footer>
+  <div>
+  ${office.name} &nbsp; • &nbsp;
+  ${office.street} &nbsp; • &nbsp;
+  ${office.zipCode} ${office.city}
+  </div>
+  <div>
+    ${office.phoneNumber} &nbsp; • &nbsp;
+    ${office.url}
+  </div>
+</footer>
+
+<table class="header">
+  <colgroup>
+    <col style="width: 70%;"/>
+    <col style="width: 30%;"/>
+  </colgroup>
+  <tr>
+    <td valign="top">
+    </td>
+    <td valign="top">
+      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" alt="logo" style="width: 130px"/>
+    </td>
+  </tr>
+  <tr class="letterhead">
+    <td valign="top" class="receiver">
+      <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
+      <span>An die Personensorgeberechtigten des Kindes</span>
+      <div class="address">
+        <div>${child.name}</div>
+        <div>${child.street}</div>
+        <#if child.addressAddition??>
+          <div>${child.addressAddition}</div>
+        </#if>
+        <div>${child.zipCode} ${child.city}</div>
+      </div>
+    </td>
+    <td valign="top" class="sender">
+      <div class="sender-address">
+        <div>${office.name}</div>
+        <div>${office.street}</div>
+        <div class="sender-data">${office.zipCode} ${office.city}</div>
+      </div>
+      <div class="sender-label">Telefon</div>
+      <div class="sender-data">${office.phoneNumber}</div>
+      <#if office.email??>
+        <div class="sender-label">E-Mail</div>
+        <div class="sender-data">${office.email}</div>
+      </#if>
+      <div class="sender-label">Aktenzeichen</div>
+      <div>-</div>
+      <div style="font-size: 0.75rem; font-weight: 400; line-height: 1.5em;">(bitte bei Antwort angeben)</div>
+    </td>
+  </tr>
+</table>
+
+<p>
+    <span style="font-weight: 500;">Sehr geehrte Eltern/Personensorgeberechtigte,</span>
+</p>
+  <div>Die Einschulungsuntersuchung für ihr Kind <span style="font-weight: 500;">${child.name}</span></div>
+  <div>findet am: <span style="font-weight: 500;">${examination.executionDate}</span> um <span style="font-weight: 500;">${examination.executionTime} Uhr</span> im ${office.name} statt.</div>
+<p>
+  Vor der Aufnahme eines Kindes in die Schule ist eine schulärztliche Untersuchung als verbindlicher Bestandteil des Schulaufnahmeverfahrens vorgeschrieben.
+  Diese Untersuchung dient der Vorsorge und ist auf die spezifischen Anforderungen in der Schule ausgerichtet.
+</p>
+<p>
+  Diese Untersuchung wird bei allen Kindern, die zu einem Schulbesuch an einer allgemeinbildenden Schule in Hessen angemeldet sind,
+  gemäß §§ 71, 149 Hessisches Schulgesetz (HSchG), § 2 der Verordnung über die Zulassung und die Ausgestaltung von Untersuchungen und Maßnahmen der Schulgesundheitspflege,
+  § 10 des Hessischen Gesetzes über den öffentlichen Gesundheitsdienst (HGöGD) und § 34 des Infektionsschutzgesetzes (IfSG) unter Beachtung des Hessischen Datenschutzgesetzes sowie der Datenschutz-Grundverordnung (DSGVO), durchgeführt.
+</p>
+<p>
+  Um die Beurteilung des Entwicklungs- und Gesundheitszustandes Ihres Kindes und die individuelle Beratung, z. B. zu gesundheitsfördernden Maßnahmen, zu erleichtern, bitten wir Sie, einen Fragebogen auszufüllen.
+  Diesen erreichen Sie über den beigefügten QR-Code bzw. Link im Internet. Bitte scannen Sie den QR-Code oder geben Sie den Link in einen aktuellen Browser ein.
+  Mithilfe des Anmeldecodes und des Geburtsdatums Ihres Kindes gelangen Sie zu Ihrem persönlichen Bereich.
+</p>
+<p>
+  Die vorab erfolgte Beantwortung der Fragen ist freiwillig, trägt jedoch erheblich zu einem effizienten Ablauf der Untersuchung bei.
+  Während der schulärztlichen Untersuchung werden diese Fragen noch einmal persönlich besprochen.
+  Hierbei besteht eine Mitwirkungspflicht.
+</p>
+<p>
+  Die erbetenen Angaben sind vertraulich und werden entsprechend der ärztlichen Schweigepflicht und dem Datenschutz behandelt.
+</p>
+<div class="qr-box">
+  <table>
+    <colgroup>
+      <col style="width: 22%;"/>
+      <col style="width: 22%;"/>
+      <col style="width: 26%;"/>
+      <col style="width: 30%;"/>
+    </colgroup>
+    <tr>
+      <td rowspan="3" class="qr-code">
+        <img src="data:image/svg+xml;base64,${examination.qrCode}" alt=""/>
+      </td>
+      <td>
+        <div class="label">Datum</div>
+        <div class="data">${examination.executionDate}</div>
+      </td>
+      <td rowspan="2">
+        <div class="label">Adresse</div>
+        <div class="data">
+          <div>${office.name}</div>
+          <div>${office.street}</div>
+          <div>${office.zipCode} ${office.city}</div>
+        </div>
+      </td>
+      <td rowspan="2">
+        <div class="label">Anmeldecode</div>
+        <div class="access-code">${examination.accessCode}</div>
+        <div class="access-code-hint">
+          <img style="vertical-align: -2px;" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgOSA5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfMjI4NjlfNTc0KSI+CjxwYXRoIGQ9Ik00LjEyNSAyLjYyNUg0Ljg3NVYzLjM3NUg0LjEyNVYyLjYyNVpNNC4xMjUgNC4xMjVINC44NzVWNi4zNzVINC4xMjVWNC4xMjVaTTQuNSAwLjc1QzIuNDMgMC43NSAwLjc1IDIuNDMgMC43NSA0LjVDMC43NSA2LjU3IDIuNDMgOC4yNSA0LjUgOC4yNUM2LjU3IDguMjUgOC4yNSA2LjU3IDguMjUgNC41QzguMjUgMi40MyA2LjU3IDAuNzUgNC41IDAuNzVaTTQuNSA3LjVDMi44NDYyNSA3LjUgMS41IDYuMTUzNzUgMS41IDQuNUMxLjUgMi44NDYyNSAyLjg0NjI1IDEuNSA0LjUgMS41QzYuMTUzNzUgMS41IDcuNSAyLjg0NjI1IDcuNSA0LjVDNy41IDYuMTUzNzUgNi4xNTM3NSA3LjUgNC41IDcuNVoiIGZpbGw9IiMxNzFBMUMiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8yMjg2OV81NzQiPgo8cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSI5IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=" alt=""/>
+          Bitte Groß-/Kleinschreibung beachten
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="label">Uhrzeit</div>
+        <div class="data">${examination.executionTime}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <div class="label">URL</div>
+        <div class="data">${invitationInfo.landingUrl}</div>
+      </td>
+    </tr>
+  </table>
+</div>
+<p>
+  Für die Untersuchung sollten Sie 60 - 90 Minuten sowie eventuelle Wartezeiten einplanen.
+</p>
+<p>
+  Bitte verschieben Sie den Untersuchungstermin nur in dringenden Fällen oder im Krankheitsfall. Den Termin können Sie online verschieben.
+  Scannen Sie hierzu den QR-Code oder geben Sie den Link in einen aktuellen Browser ein.
+  Mithilfe des Anmeldecodes und des Geburtsdatums Ihres Kindes gelangen Sie zu Ihrem persönlichen Bereich.
+</p>
+<div class="to-bring">
+  <table>
+   <colgroup>
+     <col style="width: 30%"/>
+     <col style="width: 70%"/>
+   </colgroup>
+    <tr>
+      <td>
+        <img style="width: 3cm;" alt="" src="invitation/vaccinationPass.png"/>
+      </td>
+      <td style="">
+        <span style="font-weight: 600;">Bitte bringen Sie zum Untersuchungstermin folgende Unterlagen mit:</span>
+        <ul style="padding-left: 4mm;">
+          <li>das gelbe Vorsorgeheft</li>
+          <li>das Impfbuch</li>
+          <li>weitere ärztliche Berichte zur schulärztlichen Beratung (falls vorhanden)</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
+<p style="font-weight: 500;">
+  <div>Mit freundlichen Grüßen</div>
+  <div>Im Auftrag</div>
+</p>
+<p style="font-weight: 500;">
+  Ihr Kinder- und Jugendgesundheitsdienst
+</p>
+  <p>(Dieses Schreiben wurde maschinell ohne Unterschrift erstellt)</p>
+</body>
+</html>

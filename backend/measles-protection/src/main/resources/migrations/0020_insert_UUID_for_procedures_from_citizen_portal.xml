@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1725537211337">
+    <update tableName="measles_protection_task">
+      <column name="assignee_id" value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
+      <column name="assigned_by_id" value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
+      <where>assignee_id IS NULL AND assigned_by_id IS NULL</where>
+    </update>
+
+    <update tableName="system_progress_entry">
+      <column name="triggered_by" value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"/>
+      <where>triggered_by IS NULL</where>
+    </update>
+  </changeSet>
+</databaseChangeLog>

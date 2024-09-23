@@ -1,0 +1,25 @@
+= Forms
+:source-highlighter: rouge
+
+
+We use link:https://formik.org[Formik] as a library for forms. Instead of using
+Formiks `Form` wrapper for `<form>`, we use our own custom wrapper `FormPlus`.
+
+Example usage:
+
+[,react]
+----
+import { Formik } from "formik";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+
+<Formik
+  initialValues={...}
+  onSubmit={...}
+>
+  {({...}) => (
+    <FormPlus>
+      ...
+    </FormPlus>
+  )}
+</Formik>
+----

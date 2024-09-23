@@ -1,0 +1,38 @@
+plugins {
+    id("eshg.service")
+}
+
+dependencies {
+    implementation project(':business-module-persistence-commons')
+    implementation project(':lib-aggregation')
+    implementation project(':lib-auditlog')
+    implementation project(':lib-base-client')
+    implementation project(':lib-statistics-api')
+    implementation project(':rest-oauth-client-commons')
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation 'org.apache.poi:poi:latest.release'
+    implementation 'org.apache.poi:poi-ooxml:latest.release'
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+}
+
+dockerCompose {
+    startedServices = [
+        "statistics",
+        "statistics-db"
+    ]
+}
+
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-statistics') ?: "unspecified"
+}

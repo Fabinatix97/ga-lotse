@@ -1,0 +1,119 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.appointmentblock.persistence.entity;
+
+import de.eshg.domain.model.BaseEntityWithExternalId;
+import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.common.DataSensitivity;
+import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.OrderColumn;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
+@Entity
+@DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+public class AppointmentBlockGroup extends BaseEntityWithExternalId {
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private AppointmentType type;
+
+  private int parallelExaminations;
+
+  private int slotDurationInMinutes;
+
+  @ElementCollection @OrderColumn private List<UUID> physicians;
+
+  @ElementCollection @OrderColumn private List<UUID> mfas;
+
+  @ElementCollection @OrderColumn private List<UUID> consultants;
+
+  private UUID locationId;
+
+  @OneToMany(
+      mappedBy = AppointmentBlock_.APPOINTMENT_BLOCK_GROUP,
+      cascade = {CascadeType.PERSIST},
+      orphanRemoval = true)
+  @OrderBy
+  @BatchSize(size = 100)
+  private final Set<AppointmentBlock> appointmentBlocks = new LinkedHashSet<>();
+
+  public AppointmentType getType() {
+    return type;
+  }
+
+  public void setType(AppointmentType type) {
+    this.type = type;
+  }
+
+  public int getParallelExaminations() {
+    return parallelExaminations;
+  }
+
+  public void setParallelExaminations(int parallelExaminations) {
+    this.parallelExaminations = parallelExaminations;
+  }
+
+  public int getSlotDurationInMinutes() {
+    return slotDurationInMinutes;
+  }
+
+  public void setSlotDurationInMinutes(int slotDurationInMinutes) {
+    this.slotDurationInMinutes = slotDurationInMinutes;
+  }
+
+  public List<UUID> getPhysicians() {
+    return physicians;
+  }
+
+  public void setPhysicians(List<UUID> physicians) {
+    this.physicians = physicians;
+  }
+
+  public List<UUID> getMfas() {
+    return mfas;
+  }
+
+  public void setMfas(List<UUID> mfas) {
+    this.mfas = mfas;
+  }
+
+  public List<UUID> getConsultants() {
+    return consultants;
+  }
+
+  public void setConsultants(List<UUID> consultants) {
+    this.consultants = consultants;
+  }
+
+  public UUID getLocationId() {
+    return locationId;
+  }
+
+  public void setLocationId(UUID locationId) {
+    this.locationId = locationId;
+  }
+
+  public Set<AppointmentBlock> getAppointmentBlocks() {
+    return appointmentBlocks;
+  }
+
+  public void addAppointmentBlock(AppointmentBlock appointmentBlock) {
+    getAppointmentBlocks().add(appointmentBlock);
+    appointmentBlock.setAppointmentBlockGroup(this);
+  }
+}

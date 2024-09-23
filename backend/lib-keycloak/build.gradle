@@ -1,0 +1,7 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    implementation project(":util-commons")
+}

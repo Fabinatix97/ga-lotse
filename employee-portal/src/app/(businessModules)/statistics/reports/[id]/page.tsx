@@ -1,0 +1,35 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { isNonNullish } from "remeda";
+
+import { useGetReportDetails } from "@/lib/businessModules/statistics/api/queries/useGetReportDetails";
+import { ReportDetails } from "@/lib/businessModules/statistics/components/reports/ReportDetails";
+import { routes } from "@/lib/businessModules/statistics/shared/routes";
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
+
+export default function ReportDetailsPage(
+  props: Readonly<{ params: { id: string } }>,
+) {
+  const reportDetails = useGetReportDetails(props.params.id);
+
+  const pageTitle = isNonNullish(reportDetails.series)
+    ? `${reportDetails.title} - Ausgabe #${reportDetails.series.index}`
+    : reportDetails.title;
+
+  return (
+    <StickyToolbarLayout
+      toolbar={<Toolbar title={pageTitle} backHref={routes.reports.index} />}
+    >
+      <MainContentLayout>
+        <ReportDetails {...reportDetails} />
+      </MainContentLayout>
+    </StickyToolbarLayout>
+  );
+}

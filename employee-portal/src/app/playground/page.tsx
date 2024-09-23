@@ -1,0 +1,111 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
+
+export default function PlaygroundIndexPage() {
+  return (
+    <StickyToolbarLayout toolbar={<Toolbar title="Playground" />}>
+      <MainContentLayout>
+        <ul>
+          <li>
+            <InternalLink href={"/playground/error"}>Test Error</InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/loading"}>
+              Loading indicator
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/layout/regular"}>
+              Regular layout with title
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/layout/toolbar"}>
+              Layout with sticky toolbar
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/facilityForm"}>
+              Legacy Facility Sidebar & Form
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/personSidebar">
+              Person Sidebar
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/facilitySidebar">
+              Facility Sidebar
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/centralFile">
+              Central File Flows
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/addressForm"}>
+              Address Form Sidebars
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/formPlus"}>FormPlus</InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/searchable-groups"}>
+              SearchableGroups
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/filter-settings"}>
+              FilterSettings
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href={"/playground/filter-settings/unmanaged"}>
+              FilterSettings (unmanaged)
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/boundaries">
+              Boundaries
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/charts">Charts</InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/designShowcase">
+              Design Showcase
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/image-compressor">
+              Image Compression
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/offline-password">
+              Offline Password Dialogs
+            </InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/snackbar">Snackbar</InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/chat">Chat</InternalLink>
+          </li>
+        </ul>
+      </MainContentLayout>
+    </StickyToolbarLayout>
+  );
+}

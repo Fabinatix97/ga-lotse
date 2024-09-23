@@ -1,0 +1,86 @@
+{
+  "affectedPerson": {
+    "title": "Affected Person",
+    "info": "Please complete the data for the person who works or is supervised in your institution.",
+    "contactInfo": "Contact info",
+    "personalDetails": "Personal details",
+    "fields": {
+      "commentReportingReason": "Reporting reason comment",
+      "commentReportingReason_required": "Please enter a reporting reason comment",
+      "reportingReason": "Reporting reason",
+      "reportingReason_required": "Please enter a reporting reason",
+      "roleStatus": "Role status",
+      "roleStatus_required": "Please enter a role status"
+    }
+  },
+  "custodian": {
+    "title": "Custodian",
+    "info": "Die zu meldende Person ist minderjährig. Bitte tragen Sie mindestens eine Sorgeberechtigte Person ein.",
+    "addressMatch": "The address is the same as the affected person"
+  },
+  "facility": {
+    "title": "Your Facility",
+    "info": "Please complete the details of the facility and the contact person of the company who can be contacted in case of queries.",
+    "contactPerson": "Contact Person",
+    "fields": {
+      "facilityName": "Facility name",
+      "facilityName_required": "Please enter a facility name",
+      "facilityType": "Facility type",
+      "facilityType_required": "Please enter a facility type",
+      "facilityTypeOther": "Other facility type",
+      "facilityTypeOther_required": "Please enter an other facility type",
+      "role": "Role"
+    }
+  },
+  "overview": {
+    "title": "Persons to be registered",
+    "submit_one": "Report case",
+    "submit_other": "Report cases",
+    "reportAdditionalPerson": "Report additional person"
+  },
+  "success": {
+    "returnToMeaslesProtectionHome": "Back to homepage",
+    "message": "{{ casesReported }} $t(common.case, {\"count\": {{ casesReported }} }) successfully reported",
+    "reportAdditionalPerson": "Report additional person",
+    "viewOpenCases": "View open cases"
+  },
+  "common": {
+    "addressForm": {
+      "addressAddition": "Address addition",
+      "addressType": "Address type",
+      "addressType_required": "Please select an address type",
+      "city": "City",
+      "city_required": "Please enter a city",
+      "country": "Country",
+      "country_required": "Please enter a country",
+      "houseNumber": "House number",
+      "houseNumber_required": "Please enter a house number",
+      "label": "Address details",
+      "postalCode": "Postal code",
+      "postalCode_required": "Please enter a postal code",
+      "street": "Street",
+      "street_required": "Please enter a street"
+    },
+    "personalDetails": {
+      "dateOfBirth": "Date of birth",
+      "dateOfBirth_required": "Please enter a date of birth",
+      "gender": "Gender",
+      "firstName": "First name",
+      "firstName_required": "Please enter a first name",
+      "label": "Personal details",
+      "lastName": "Last name",
+      "lastName_required": "Please enter a last name",
+      "emailAddress": "Email",
+      "emailAddress_required": "Please enter a valid email address",
+      "nameAtBirth": "Name at birth",
+      "nameAtBirth_required": "Please enter name at birth",
+      "placeOfBirth": "Place of birth",
+      "placeOfBirth_required": "Please enter place of birth",
+      "phoneNumber": "Phone number",
+      "phoneNumber_required": "Please enter a valid phone number",
+      "salutation": "Salutation",
+      "title": "Title"
+    },
+    "requiredField": "Required field"
+  }
+}

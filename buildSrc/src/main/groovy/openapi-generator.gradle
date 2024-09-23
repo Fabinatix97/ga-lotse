@@ -1,0 +1,116 @@
+import org.apache.commons.io.FilenameUtils
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+import de.eshg.frontend.OpenapiGeneratorPluginConfiguration
+
+import java.nio.file.Files
+
+plugins {
+  id 'workspace-package'
+}
+
+def groupName = 'generated api';
+def generateTaskName = 'generateApi'
+def srcDir = layout.projectDirectory.dir('src')
+
+def openapiGeneratorExtension = project.extensions.create('openapiGenerator', OpenapiGeneratorPluginConfiguration)
+
+def generateMetaTaskProvider = tasks.register(generateTaskName) {
+  group = groupName
+}
+
+tasks.named('compile') {
+  dependsOn generateMetaTaskProvider
+  inputs.files("${rootDir}/config/tsconfig.lib.json")
+}
+
+static String emulateSymlinkIfNecessary(java.nio.file.Path path) {
+  if (Files.isSymbolicLink(path)) {
+    return path.toString()
+  } else if (Files.isRegularFile(path)) {
+    // Try to emulate git symlinks on Windows
+    def lines = Files.readAllLines(path)
+    if (lines.size() == 1) {
+      String symlink = lines.get(0)
+      return path.getParent().resolve(symlink)
+    } else {
+      // Required for the opencode pipeline
+      return path.toString();
+    }
+  } else {
+    throw new IllegalArgumentException("${path} is neither a symlink nor a regular file")
+  }
+}
+
+project.afterEvaluate {
+  // We have multiple spec files in the project and create dynamic generate tasks for each.
+  // They are added as dependency to the meta generate task.
+  openapiGeneratorExtension.inputSpecs.get().each { apiName, specFile ->
+    {
+      def generatedApiDir = srcDir.file(apiName).asFile.path
+      def generateTaskProvider = tasks.register("${generateTaskName}_${apiName}", GenerateTask) {
+        group = groupName
+        dependsOn rootProject.tasks.installDependencies
+        generatorName = 'typescript-fetch'
+        inputSpec = emulateSymlinkIfNecessary(specFile.asFile.toPath())
+        outputDir = generatedApiDir
+        modelNamePrefix = 'Api'
+        additionalProperties = [
+          'supportsES6'                : 'true',
+          'withInterfaces'             : 'true',
+          'useSingleRequestParameter'  : 'false',
+          // We need the "modern" discriminator behavior for the discriminator columns.
+          // See https://blog.cronn.de/en/java/rest/2024/01/02/grand-cronn-pet-hotel.html
+          // However, it seems to be not as battle tested and thus it generates duplicated imports that we fix via fixDuplicateImports()
+          'legacyDiscriminatorBehavior': 'false',
+          // Override default enum suffix 'Enum'
+          'enumNameSuffix'             : ''
+        ]
+
+        doFirst {
+          delete generatedApiDir
+        }
+
+        doLast {
+          // See the comment at the "legacyDiscriminatorBehavior" property
+          fixDuplicateImports(generatedApiDir)
+        }
+      }
+
+      generateMetaTaskProvider.configure {
+        dependsOn generateTaskProvider
+      }
+    }
+  }
+}
+
+// Fix/workaround for https://github.com/OpenAPITools/openapi-generator/issues/15637
+private void fixDuplicateImports(openApiOutputDir) {
+  fileTree("${openApiOutputDir}/models").matching {
+    include "**/*.ts"
+  }.visit { FileVisitDetails details ->
+    details.file.text = details.file.text.replaceAll(/(?m)import \{(\s*.*?FromJSONTyped,?)+\s*\} from '\.\/index';/, "// removed duplicate import here")
+
+    // Self imports, needed when discriminator for self exists
+    def importName = FilenameUtils.removeExtension(details.file.name)
+    details.file.text = details.file.text.replaceAll(/(?m)import type \{\s+$importName\s+} from '\.\/$importName';/, "// removed self import here")
+    details.file.text = details.file.text.replaceAll(/(?m)import \{\s+(?:\w+(?:FromJSON|FromJSONTyped|ToJSON),\s+){3}} from '\.\/$importName';/, "// removed self import here")
+  }
+}
+
+tasks.register('assemble') {
+  dependsOn 'compile'
+}
+
+tasks.register('build') {
+  dependsOn 'check'
+  dependsOn 'assemble'
+}
+
+def cleanGeneratedApiProvider = tasks.register('cleanGeneratedApi', Delete) {
+  group = groupName
+  delete srcDir
+}
+
+tasks.named('clean').configure {
+  dependsOn cleanGeneratedApiProvider
+}

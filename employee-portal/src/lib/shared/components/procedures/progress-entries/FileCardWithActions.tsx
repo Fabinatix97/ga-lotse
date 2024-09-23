@@ -1,0 +1,134 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+"use client";
+
+import { ApiAbstractFile } from "@eshg/employee-portal-api/businessProcedures";
+import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useSearchParams } from "next/navigation";
+import { useContext, useRef } from "react";
+import { isDefined } from "remeda";
+
+import {
+  FileCard,
+  FileCardActionProps,
+} from "@/lib/shared/components/FileCard";
+import { buildRouteWithParams } from "@/lib/shared/components/procedures/helper";
+import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
+
+import {
+  ProgressEntriesContext,
+  useIsReadOnly,
+  useProgressEntriesConfig,
+} from "./ProgressEntriesContext";
+import { mapToFileCardProps } from "./mapper";
+
+export interface FileCardWithActionsProps {
+  /** if set, includes an additional 'Details' link in actions menu */
+  detailsProgressEntryId?: string;
+  /** the file to display */
+  file: ApiAbstractFile;
+}
+
+export interface FileCardWithDownloadProps {
+  file: ApiAbstractFile;
+}
+
+export function FileCardWithActions(props: FileCardWithActionsProps) {
+  const isReadOnly = useIsReadOnly();
+  const isDeletable = props.file.deletable;
+
+  return isReadOnly || !isDeletable ? (
+    <FileCardWithOptionalDetailsLinkAndDownload {...props} />
+  ) : (
+    <FileCardWithOptionalDetailsLinkAndDeleteAndDownload {...props} />
+  );
+}
+
+export function FileCardWithDownload({ file }: FileCardWithDownloadProps) {
+  return <FileCardWithOptionalDetailsLinkAndDownload file={file} />;
+}
+
+function FileCardWithOptionalDetailsLinkAndDownload({
+  detailsProgressEntryId,
+  file,
+  additionalAction,
+}: FileCardWithActionsProps & {
+  additionalAction?: FileCardActionProps;
+}) {
+  const searchParams = useSearchParams();
+  const { routes, procedureId, useDownloadFile } = useProgressEntriesConfig();
+  const downloadFile = useDownloadFile();
+  const hiddenLinkContainer = useRef<HTMLDivElement>(null);
+
+  async function downloadFileOnClick() {
+    const downloadedFile = await downloadFile(file.fileId);
+    if (hiddenLinkContainer.current !== null)
+      downloadFileAndOpen(downloadedFile, hiddenLinkContainer.current);
+  }
+
+  const actions: FileCardActionProps[] = [];
+
+  const hasDetailsAction = isDefined(detailsProgressEntryId);
+  if (hasDetailsAction) {
+    actions.push({
+      onClick: buildRouteWithParams(
+        routes.entryDetails(procedureId, detailsProgressEntryId),
+        searchParams,
+      ),
+      indicator: <InfoOutlinedIcon />,
+      name: "Details",
+      color: "neutral",
+    });
+  }
+
+  const hasAdditionalAction = isDefined(additionalAction);
+  if (hasAdditionalAction) {
+    actions.push(additionalAction);
+  }
+
+  actions.push({
+    onClick: downloadFileOnClick,
+    indicator: <FileDownloadOutlinedIcon />,
+    name: "Download",
+    color: "neutral",
+  });
+
+  return (
+    <>
+      <FileCard {...mapToFileCardProps(file)} actions={actions} />
+      <div ref={hiddenLinkContainer} style={{ display: "hidden" }}></div>
+    </>
+  );
+}
+
+function FileCardWithOptionalDetailsLinkAndDeleteAndDownload({
+  detailsProgressEntryId,
+  file,
+}: FileCardWithActionsProps) {
+  const { name } = useDeletionProps();
+  const { openFileDeletionModal } = useContext(ProgressEntriesContext).action;
+
+  const deleteActionProps: FileCardActionProps = {
+    onClick: () => {
+      openFileDeletionModal(file.fileId);
+    },
+    indicator: <DeleteIcon />,
+    name,
+    color: "danger",
+    disabled: file.locked,
+  };
+
+  return (
+    <FileCardWithOptionalDetailsLinkAndDownload
+      detailsProgressEntryId={detailsProgressEntryId}
+      file={file}
+      additionalAction={deleteActionProps}
+    />
+  );
+}

@@ -1,0 +1,51 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiCLSectionContextElementsInner } from "@eshg/employee-portal-api/inspection";
+import type { FC } from "react";
+
+import { ChecklistDefinitionElementCheckboxInner } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/inner/ChecklistDefinitionElementCheckboxInner";
+import { ChecklistDefinitionElementMultiInner } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/inner/ChecklistDefinitionElementMultiInner";
+
+export interface ChecklistDefinitionElementInnerProps<
+  TElement = ApiCLSectionContextElementsInner,
+> {
+  readOnlyMode?: boolean;
+  element: { type: ApiCLSectionContextElementsInner["type"] } & TElement;
+  setElement: (
+    element: { type: ApiCLSectionContextElementsInner["type"] } & TElement,
+  ) => void;
+}
+
+const typeComponentMap: Partial<
+  Record<
+    ApiCLSectionContextElementsInner["type"],
+    FC<ChecklistDefinitionElementInnerProps>
+  >
+> = {
+  CHECKBOX: ChecklistDefinitionElementCheckboxInner,
+  MULTI_SELECT: ChecklistDefinitionElementMultiInner,
+  SINGLE_SELECT: ChecklistDefinitionElementMultiInner,
+  TEXT: () => null,
+  IMAGE: () => null,
+  AUDIO: () => null,
+};
+
+export function ChecklistDefinitionElementInner(
+  props: ChecklistDefinitionElementInnerProps,
+) {
+  const type = props.element.type;
+  const Component = typeComponentMap[type];
+
+  if (!Component) {
+    throw new Error(`Unknown element type ${type}`);
+  }
+
+  return (
+    <div data-testid="function-form">
+      <Component {...props} />
+    </div>
+  );
+}

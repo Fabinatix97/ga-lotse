@@ -1,0 +1,293 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.schoolentry.mapper;
+
+import de.eshg.schoolentry.api.*;
+import de.eshg.schoolentry.api.anamnesis.*;
+import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
+import de.eshg.schoolentry.api.citizen.CitizenMigrationBackgroundDto;
+import de.eshg.schoolentry.domain.model.Anamnesis;
+import de.eshg.schoolentry.domain.model.CountryCode;
+import jakarta.annotation.Nullable;
+
+public class AnamnesisMapper {
+
+  private AnamnesisMapper() {}
+
+  public static AnamnesisDto mapToDto(Anamnesis anamnesis) {
+    if (anamnesis == null) {
+      return null;
+    }
+
+    return new AnamnesisDto(
+        anamnesis.getVersion(),
+        anamnesis.getChildLanguageScreening(),
+        anamnesis.getPreliminaryCourse(),
+        new CheckUpsDto(
+            anamnesis.getU2(),
+            anamnesis.getU3(),
+            anamnesis.getU4(),
+            anamnesis.getU5(),
+            anamnesis.getU6(),
+            anamnesis.getU7(),
+            anamnesis.getU7a(),
+            anamnesis.getU8(),
+            anamnesis.getU9()),
+        new PromotionBeforeSchoolEntryDto(
+            anamnesis.getEarlySupport(),
+            anamnesis.getIntegrationPlace(),
+            anamnesis.getErgotherapy(),
+            anamnesis.getSpeechTherapy(),
+            anamnesis.getPhysiotherapy()),
+        new MigrationBackgroundDto(
+            mapToDto(anamnesis.getNationalityChild()),
+            mapToDto(anamnesis.getCountryOfBirthChild()),
+            mapToDto(anamnesis.getNationalityFirstParent()),
+            mapToDto(anamnesis.getCountryOfBirthFirstParent()),
+            mapToDto(anamnesis.getNationalitySecondParent()),
+            mapToDto(anamnesis.getCountryOfBirthSecondParent()),
+            anamnesis.getHasMigrationBackground(),
+            anamnesis.getInGermanySince()),
+        new AdditionalChildInfoDto(
+            anamnesis.getResponsiblePhysician(),
+            anamnesis.getNumberOfSiblings(),
+            anamnesis.getSiblingsBirthYears()),
+        new DaycareAndSchoolInfoDto(
+            anamnesis.getInDaycareSince(), anamnesis.getDaycareName(), anamnesis.getSchoolName()),
+        new FamilyHistoryInfoDto(
+            anamnesis.getSpectaclesInFamily(), anamnesis.getChronicIllnessOrDisabilityInFamily()),
+        new DevelopmentInfoDto(
+            anamnesis.getDevelopmentConspicuities(),
+            anamnesis.getInfancyConspicuities(),
+            anamnesis.getGestationalAge(),
+            anamnesis.getBirthWeight()),
+        new IllnessAndAccidentInfoDto(
+            anamnesis.getSevereIllnesses(),
+            anamnesis.getAllergies(),
+            anamnesis.getHospitalizationsOrOperations(),
+            anamnesis.getUnderMedicalTreatmentFor(),
+            anamnesis.getRegularMedication()),
+        new PromotionTherapyAndAidInfoDto(
+            anamnesis.getVisionImpairment(),
+            anamnesis.getHearingImpairment(),
+            anamnesis.getSpeechImpairment(),
+            anamnesis.getSpectaclesSince(),
+            anamnesis.getVisionSchoolSince(),
+            anamnesis.getHearingAid(),
+            anamnesis.getSpeechTherapyStart(),
+            anamnesis.getSpeechTherapyEnd(),
+            anamnesis.getErgoTherapyStart(),
+            anamnesis.getErgoTherapyEnd(),
+            anamnesis.getPhysioTherapyStart(),
+            anamnesis.getPhysioTherapyEnd(),
+            anamnesis.getAdditionalTherapies()),
+        new InterestsAndSportsInfoDto(
+            anamnesis.getClubSport(),
+            anamnesis.getOtherInterests(),
+            anamnesis.getCanSwim(),
+            anamnesis.getHasSeahorseBadge()),
+        anamnesis.getPersonalConspicuities());
+  }
+
+  private static CountryCodeDto mapToDto(CountryCode nationalityChild) {
+    if (nationalityChild == null) {
+      return null;
+    }
+    return CountryCodeDto.valueOf(nationalityChild.name());
+  }
+
+  public static Anamnesis mapToDomain(AnamnesisDto dto) {
+    if (dto == null) {
+      return null;
+    }
+
+    Anamnesis anamnesis = new Anamnesis();
+    anamnesis.setChildLanguageScreening(dto.childLanguageScreening());
+    anamnesis.setPreliminaryCourse(dto.preliminaryCourse());
+    anamnesis.setBirthWeight(dto.developmentInfo().birthWeight());
+    anamnesis.setGestationalAge(dto.developmentInfo().gestationalAge());
+    anamnesis.setDevelopmentConspicuities(dto.developmentInfo().developmentConspicuities());
+    anamnesis.setInfancyConspicuities(dto.developmentInfo().infancyConspicuities());
+    anamnesis.setInDaycareSince(dto.daycareAndSchoolInfo().inDaycareSince());
+    anamnesis.setDaycareName(dto.daycareAndSchoolInfo().daycareName());
+    anamnesis.setSchoolName(dto.daycareAndSchoolInfo().schoolName());
+    anamnesis.setResponsiblePhysician(dto.additionalChildInfo().responsiblePhysician());
+    anamnesis.setNumberOfSiblings(dto.additionalChildInfo().numberOfSiblings());
+    anamnesis.setSiblingsBirthYears(dto.additionalChildInfo().siblingsBirthYears());
+    anamnesis.setSpectaclesInFamily(dto.familyHistoryInfo().spectaclesInFamily());
+    anamnesis.setChronicIllnessOrDisabilityInFamily(
+        dto.familyHistoryInfo().chronicIllnessOrDisabilityInFamily());
+    anamnesis.setSevereIllnesses(dto.illnessAndAccidentInfo().severeIllnesses());
+    anamnesis.setAllergies(dto.illnessAndAccidentInfo().allergies());
+    anamnesis.setHospitalizationsOrOperations(
+        dto.illnessAndAccidentInfo().hospitalizationsOrOperations());
+    anamnesis.setUnderMedicalTreatmentFor(dto.illnessAndAccidentInfo().underMedicalTreatmentFor());
+    anamnesis.setRegularMedication(dto.illnessAndAccidentInfo().regularMedication());
+    anamnesis.setClubSport(dto.interestsAndSportsInfo().clubSport());
+    anamnesis.setOtherInterests(dto.interestsAndSportsInfo().otherInterests());
+    anamnesis.setCanSwim(dto.interestsAndSportsInfo().canSwim());
+    anamnesis.setHasSeahorseBadge(dto.interestsAndSportsInfo().hasSeahorseBadge());
+    anamnesis.setU2(dto.checkUps().u2());
+    anamnesis.setU3(dto.checkUps().u3());
+    anamnesis.setU4(dto.checkUps().u4());
+    anamnesis.setU5(dto.checkUps().u5());
+    anamnesis.setU6(dto.checkUps().u6());
+    anamnesis.setU7(dto.checkUps().u7());
+    anamnesis.setU7a(dto.checkUps().u7a());
+    anamnesis.setU8(dto.checkUps().u8());
+    anamnesis.setU9(dto.checkUps().u9());
+    anamnesis.setEarlySupport(dto.promotionBeforeSchoolEntry().earlySupport());
+    anamnesis.setIntegrationPlace(dto.promotionBeforeSchoolEntry().integrationPlace());
+    anamnesis.setErgotherapy(dto.promotionBeforeSchoolEntry().ergotherapy());
+    anamnesis.setSpeechTherapy(dto.promotionBeforeSchoolEntry().speechTherapy());
+    anamnesis.setPhysiotherapy(dto.promotionBeforeSchoolEntry().physiotherapy());
+    anamnesis.setVisionImpairment(dto.promotionTherapyAndAidInfo().visionImpairment());
+    anamnesis.setHearingImpairment(dto.promotionTherapyAndAidInfo().hearingImpairment());
+    anamnesis.setSpeechImpairment(dto.promotionTherapyAndAidInfo().speechImpairment());
+    anamnesis.setSpectaclesSince(dto.promotionTherapyAndAidInfo().spectaclesSince());
+    anamnesis.setVisionSchoolSince(dto.promotionTherapyAndAidInfo().visionSchoolSince());
+    anamnesis.setHearingAid(dto.promotionTherapyAndAidInfo().hearingAid());
+    anamnesis.setSpeechTherapyStart(dto.promotionTherapyAndAidInfo().speechTherapyStart());
+    anamnesis.setSpeechTherapyEnd(dto.promotionTherapyAndAidInfo().speechTherapyEnd());
+    anamnesis.setErgoTherapyStart(dto.promotionTherapyAndAidInfo().ergoTherapyStart());
+    anamnesis.setErgoTherapyEnd(dto.promotionTherapyAndAidInfo().ergoTherapyEnd());
+    anamnesis.setPhysioTherapyStart(dto.promotionTherapyAndAidInfo().physioTherapyStart());
+    anamnesis.setPhysioTherapyEnd(dto.promotionTherapyAndAidInfo().physioTherapyEnd());
+    anamnesis.setAdditionalTherapies(dto.promotionTherapyAndAidInfo().additionalTherapies());
+    anamnesis.setNationalityChild(mapToDomain(dto.migrationBackground().nationalityChild()));
+    anamnesis.setCountryOfBirthChild(mapToDomain(dto.migrationBackground().countryOfBirthChild()));
+    anamnesis.setNationalityFirstParent(
+        mapToDomain(dto.migrationBackground().nationalityFirstParent()));
+    anamnesis.setCountryOfBirthFirstParent(
+        mapToDomain(dto.migrationBackground().countryOfBirthFirstParent()));
+    anamnesis.setNationalitySecondParent(
+        mapToDomain(dto.migrationBackground().nationalitySecondParent()));
+    anamnesis.setCountryOfBirthSecondParent(
+        mapToDomain(dto.migrationBackground().countryOfBirthSecondParent()));
+    anamnesis.setHasMigrationBackground(dto.migrationBackground().hasMigrationBackground());
+    anamnesis.setInGermanySince(dto.migrationBackground().inGermanySince());
+    anamnesis.setPersonalConspicuities(dto.personalConspicuities());
+
+    return anamnesis;
+  }
+
+  public static Anamnesis mapCitizenAnamnesisToDomain(CitizenAnamnesisDto citizenAnamnesisDto) {
+    Anamnesis anamnesis = new Anamnesis();
+    anamnesis.setNationalityChild(
+        mapToDomain(citizenAnamnesisDto.migrationBackground().nationalityChild()));
+    anamnesis.setCountryOfBirthChild(
+        mapToDomain(citizenAnamnesisDto.migrationBackground().countryOfBirthChild()));
+    anamnesis.setNationalityFirstParent(
+        mapToDomain(citizenAnamnesisDto.migrationBackground().nationalityFirstParent()));
+    anamnesis.setCountryOfBirthFirstParent(
+        mapToDomain(citizenAnamnesisDto.migrationBackground().countryOfBirthFirstParent()));
+    anamnesis.setNationalitySecondParent(
+        mapToDomain(citizenAnamnesisDto.migrationBackground().nationalitySecondParent()));
+    anamnesis.setCountryOfBirthSecondParent(
+        mapToDomain(citizenAnamnesisDto.migrationBackground().countryOfBirthSecondParent()));
+    anamnesis.setHasMigrationBackground(
+        getMigrationBackground(citizenAnamnesisDto.migrationBackground()));
+    anamnesis.setInGermanySince(citizenAnamnesisDto.migrationBackground().inGermanySince());
+    anamnesis.setPreliminaryCourse(citizenAnamnesisDto.preliminaryCourse());
+    anamnesis.setChildLanguageScreening(citizenAnamnesisDto.childLanguageScreening());
+    anamnesis.setEarlySupport(citizenAnamnesisDto.promotionBeforeSchoolEntry().earlySupport());
+    anamnesis.setIntegrationPlace(
+        citizenAnamnesisDto.promotionBeforeSchoolEntry().integrationPlace());
+    anamnesis.setErgotherapy(citizenAnamnesisDto.promotionBeforeSchoolEntry().ergotherapy());
+    anamnesis.setSpeechTherapy(citizenAnamnesisDto.promotionBeforeSchoolEntry().speechTherapy());
+    anamnesis.setPhysiotherapy(citizenAnamnesisDto.promotionBeforeSchoolEntry().physiotherapy());
+
+    anamnesis.setResponsiblePhysician(
+        citizenAnamnesisDto.additionalChildInfo().responsiblePhysician());
+    anamnesis.setNumberOfSiblings(
+        citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().isEmpty()
+            ? null
+            : citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().size());
+    anamnesis.setSiblingsBirthYears(
+        citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().isEmpty()
+            ? null
+            : citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears());
+
+    anamnesis.setInDaycareSince(citizenAnamnesisDto.daycareAndSchoolInfo().inDaycareSince());
+    anamnesis.setDaycareName(citizenAnamnesisDto.daycareAndSchoolInfo().daycareName());
+    anamnesis.setSchoolName(citizenAnamnesisDto.daycareAndSchoolInfo().schoolName());
+
+    anamnesis.setSpectaclesInFamily(citizenAnamnesisDto.familyHistoryInfo().spectaclesInFamily());
+    anamnesis.setChronicIllnessOrDisabilityInFamily(
+        citizenAnamnesisDto.familyHistoryInfo().chronicIllnessOrDisabilityInFamily());
+
+    anamnesis.setDevelopmentConspicuities(
+        citizenAnamnesisDto.developmentInfo().developmentConspicuities());
+    anamnesis.setInfancyConspicuities(citizenAnamnesisDto.developmentInfo().infancyConspicuities());
+    anamnesis.setGestationalAge(citizenAnamnesisDto.developmentInfo().gestationalAge());
+    anamnesis.setBirthWeight(citizenAnamnesisDto.developmentInfo().birthWeight());
+
+    anamnesis.setSevereIllnesses(citizenAnamnesisDto.illnessAndAccidentInfo().severeIllnesses());
+    anamnesis.setAllergies(
+        citizenAnamnesisDto.illnessAndAccidentInfo().allergies().isEmpty()
+            ? null
+            : citizenAnamnesisDto.illnessAndAccidentInfo().allergies());
+    anamnesis.setHospitalizationsOrOperations(
+        citizenAnamnesisDto.illnessAndAccidentInfo().hospitalizationsOrOperations());
+    anamnesis.setUnderMedicalTreatmentFor(
+        citizenAnamnesisDto.illnessAndAccidentInfo().underMedicalTreatmentFor());
+    anamnesis.setRegularMedication(
+        citizenAnamnesisDto.illnessAndAccidentInfo().regularMedication());
+
+    anamnesis.setVisionImpairment(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().visionImpairment());
+    anamnesis.setHearingImpairment(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().hearingImpairment());
+    anamnesis.setSpeechImpairment(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().speechImpairment());
+    anamnesis.setSpectaclesSince(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().spectaclesSince());
+    anamnesis.setVisionSchoolSince(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().visionSchoolSince());
+    anamnesis.setHearingAid(citizenAnamnesisDto.promotionTherapyAndAidInfo().hearingAid());
+    anamnesis.setSpeechTherapyStart(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().speechTherapyStart());
+    anamnesis.setSpeechTherapyEnd(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().speechTherapyEnd());
+    anamnesis.setErgoTherapyStart(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().ergoTherapyStart());
+    anamnesis.setErgoTherapyEnd(citizenAnamnesisDto.promotionTherapyAndAidInfo().ergoTherapyEnd());
+    anamnesis.setPhysioTherapyStart(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().physioTherapyStart());
+    anamnesis.setPhysioTherapyEnd(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().physioTherapyEnd());
+    anamnesis.setAdditionalTherapies(
+        citizenAnamnesisDto.promotionTherapyAndAidInfo().additionalTherapies());
+
+    anamnesis.setClubSport(citizenAnamnesisDto.interestsAndSportsInfo().clubSport());
+    anamnesis.setOtherInterests(citizenAnamnesisDto.interestsAndSportsInfo().otherInterests());
+    anamnesis.setCanSwim(citizenAnamnesisDto.interestsAndSportsInfo().canSwim());
+    anamnesis.setHasSeahorseBadge(citizenAnamnesisDto.interestsAndSportsInfo().hasSeahorseBadge());
+
+    anamnesis.setPersonalConspicuities(citizenAnamnesisDto.personalConspicuities());
+    return anamnesis;
+  }
+
+  private static @Nullable Boolean getMigrationBackground(
+      CitizenMigrationBackgroundDto migrationBackground) {
+    if (migrationBackground.nationalityChild() == null
+        && migrationBackground.nationalityFirstParent() == null
+        && migrationBackground.nationalitySecondParent() == null) {
+      return null;
+    }
+
+    return migrationBackground.nationalityChild() != CountryCodeDto.DEU
+        || migrationBackground.nationalityFirstParent() != CountryCodeDto.DEU
+        || migrationBackground.nationalitySecondParent() != CountryCodeDto.DEU;
+  }
+
+  private static CountryCode mapToDomain(CountryCodeDto dto) {
+    if (dto == null) {
+      return null;
+    }
+    return CountryCode.valueOf(dto.name());
+  }
+}

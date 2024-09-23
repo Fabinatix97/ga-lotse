@@ -1,0 +1,108 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.rest.service.security.config;
+
+import static org.springframework.http.HttpMethod.*;
+
+import de.eshg.lib.keycloak.EmployeePermissionRole;
+import org.springframework.stereotype.Component;
+
+@Component
+public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurityConfiguration {
+  StatisticsPublicSecurityConfig() {
+    super("statistics");
+
+    requestMatchers(BaseUrls.Statistics.FEATURE_TOGGLES_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(GET, BaseUrls.Statistics.EVALUATION_URL + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(PATCH, BaseUrls.Statistics.EVALUATION_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.EVALUATION_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(POST, BaseUrls.Statistics.STATISTIC_CONTROLLER)
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(POST, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/clone")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(GET, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(
+            POST,
+            BaseUrls.Statistics.STATISTIC_CONTROLLER
+                + BaseUrls.Statistics.RETRIEVE_DATA_URL
+                + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(POST, BaseUrls.Statistics.REPORT_SERIES_URL + "/overview/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(POST, BaseUrls.Statistics.REPORT_SERIES_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(PATCH, BaseUrls.Statistics.REPORT_SERIES_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.REPORT_SERIES_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(GET, BaseUrls.Statistics.REPORT_URL + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(BaseUrls.Statistics.DATA_SOURCE_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(BaseUrls.Statistics.DATA_EXPORT_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(POST, BaseUrls.Statistics.GEO_SHAPE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_ADMIN);
+    requestMatchers(GET, BaseUrls.Statistics.GEO_SHAPE_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(PATCH, BaseUrls.Statistics.GEO_SHAPE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_ADMIN);
+    requestMatchers(DELETE, BaseUrls.Statistics.GEO_SHAPE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_ADMIN);
+
+    requestMatchers(POST, BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(GET, BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(PATCH, BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(POST, BaseUrls.Statistics.STATISTICS_SCHEME_CONTROLLER)
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.STATISTICS_SCHEME_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(GET, BaseUrls.Statistics.STATISTICS_SCHEME_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+  }
+}

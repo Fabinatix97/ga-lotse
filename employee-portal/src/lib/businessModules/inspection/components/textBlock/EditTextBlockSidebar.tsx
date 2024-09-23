@@ -1,0 +1,154 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { Grid } from "@mui/joy";
+import { Formik } from "formik";
+import { useMemo, useRef } from "react";
+
+import {
+  useCreateTextBlock,
+  useUpdateTextBlock,
+} from "@/lib/businessModules/inspection/api/mutations/textblocks";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
+import {
+  SidebarForm,
+  SidebarFormHandle,
+} from "@/lib/shared/components/form/SidebarForm";
+import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
+import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
+import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+
+export interface TextBlockSidebarProps {
+  open: boolean;
+  onClose: () => void;
+  id?: string;
+  name: string;
+  content: string;
+}
+
+interface TextBlockFormType {
+  name: string;
+  content: string;
+}
+
+export function EditTextBlockSidebar(props: TextBlockSidebarProps) {
+  return (
+    <OverlayBoundary>
+      <EditTextBlockSidebarWithQueriesAndMutations {...props} />
+    </OverlayBoundary>
+  );
+}
+
+function EditTextBlockSidebarWithQueriesAndMutations({
+  open,
+  onClose,
+  id,
+  name,
+  content,
+}: Readonly<TextBlockSidebarProps>) {
+  const snackbar = useSnackbar();
+  const sidebarFormRef = useRef<SidebarFormHandle>(null);
+
+  const { mutateAsync: createTextBlock } = useCreateTextBlock();
+
+  const { mutateAsync: updateTextBlock } = useUpdateTextBlock();
+
+  function handleClose() {
+    sidebarFormRef.current?.resetForm();
+    onClose();
+  }
+
+  async function handleSubmit(formValues: TextBlockFormType) {
+    const payload = {
+      id: id ?? "",
+      name: formValues.name,
+      content: formValues.content,
+    };
+    if (!id) {
+      await createTextBlock(payload, {
+        onSuccess: () => {
+          snackbar.confirmation("Textbaustein wurde erzeugt.");
+          handleClose();
+        },
+      }).catch();
+    } else {
+      await updateTextBlock(
+        {
+          textBlockId: id,
+          apiTextBlockRequest: payload,
+        },
+        {
+          onSuccess: () => {
+            snackbar.confirmation("Textbaustein wurde gespeichert.");
+            handleClose();
+          },
+        },
+      ).catch();
+    }
+  }
+
+  const initialValues: TextBlockFormType = useMemo(() => {
+    return {
+      id,
+      name,
+      content,
+    };
+  }, [id, name, content]);
+
+  return (
+    <Sidebar open={open} onClose={handleClose}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        enableReinitialize
+      >
+        {({ isSubmitting, handleSubmit }) => (
+          <SidebarForm onSubmit={handleSubmit} ref={sidebarFormRef}>
+            <SidebarContent
+              title={id ? "Textbaustein bearbeiten" : "Textbaustein erstellen"}
+            >
+              <Grid
+                container
+                component={FormPlus}
+                spacing={1}
+                sx={{ flexGrow: 1 }}
+              >
+                <Grid xxs={12}>
+                  <InputField
+                    name="name"
+                    type="text"
+                    label="Name"
+                    required="Bitte einen Namen eingeben"
+                  />
+                </Grid>
+                <Grid xxs={12}>
+                  <TextareaField
+                    name="content"
+                    label="Inhalt"
+                    required="Bitte einen Inhalt definieren"
+                  />
+                </Grid>
+              </Grid>
+            </SidebarContent>
+            <SidebarActions>
+              <FormButtonBar
+                submitting={isSubmitting}
+                onCancel={handleClose}
+                submitLabel="Speichern"
+              />
+            </SidebarActions>
+          </SidebarForm>
+        )}
+      </Formik>
+    </Sidebar>
+  );
+}

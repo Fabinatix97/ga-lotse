@@ -1,0 +1,7 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    runtimeOnly 'net.logstash.logback:logstash-logback-encoder:latest.release'
+}

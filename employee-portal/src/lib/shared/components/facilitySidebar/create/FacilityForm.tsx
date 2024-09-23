@@ -1,0 +1,191 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { validateLength } from "@eshg/lib-portal/helpers/validators";
+import { Box, Divider, Grid, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+import { isDefined } from "remeda";
+
+import { FacilityContactPersonArrayForm } from "@/lib/shared/components/facilitySidebar/create/FacilityContactPersonArrayForm";
+import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
+import { BaseFacilityContactPerson } from "@/lib/shared/components/facilitySidebar/types";
+import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import {
+  SidebarForm,
+  SidebarFormHandle,
+} from "@/lib/shared/components/form/SidebarForm";
+import {
+  ContactAddressForm,
+  OptionalBillingAddressForm,
+} from "@/lib/shared/components/form/address/BaseAddressForm";
+import {
+  BaseAddressFormInputs,
+  createEmptyAddress,
+} from "@/lib/shared/components/form/address/helpers";
+import { EmailField } from "@/lib/shared/components/formFields/EmailField";
+import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
+import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
+import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { createEmptyContactPerson } from "@/lib/shared/helpers/facilityUtils";
+
+export interface DefaultFacilityFormValues {
+  name: string;
+  emailAddresses: string[];
+  phoneNumbers: string[];
+  contactAddress: BaseAddressFormInputs;
+  differentBillingAddress?: BaseAddressFormInputs;
+  contactPersons: BaseFacilityContactPerson[];
+}
+
+// TODO: Make this accept an object instead
+export function getInitialFacilityFormValues(
+  searchInputs?: FacilitySearchFormValues,
+  requiresContactPerson?: boolean,
+  defaultValues?: Partial<DefaultFacilityFormValues>,
+): DefaultFacilityFormValues {
+  return {
+    name: defaultValues?.name ?? searchInputs?.name ?? "",
+    emailAddresses: defaultValues?.emailAddresses ?? [""],
+    phoneNumbers: defaultValues?.phoneNumbers ?? [""],
+    contactAddress: defaultValues?.contactAddress ?? createEmptyAddress(),
+    contactPersons:
+      defaultValues?.contactPersons ??
+      (requiresContactPerson ? [createEmptyContactPerson()] : []),
+  };
+}
+
+export interface FacilityFormProps {
+  title: string;
+  submitLabel?: string;
+  searchInputs?: FacilitySearchFormValues;
+  initialValues?: DefaultFacilityFormValues;
+  requiresContactPerson?: boolean;
+  mode?: "create" | "edit";
+
+  sidebarFormRef?: Ref<SidebarFormHandle>;
+  onSubmit: (values: DefaultFacilityFormValues) => Promise<void>;
+  onCancel: () => void;
+  onBack?: (values: DefaultFacilityFormValues) => void;
+}
+
+export function FacilityForm(props: FacilityFormProps) {
+  const initialValues: DefaultFacilityFormValues =
+    props.initialValues ?? getInitialFacilityFormValues(props.searchInputs);
+
+  const fieldName = createFieldNameMapper<DefaultFacilityFormValues>();
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={props.onSubmit}
+      enableReinitialize
+    >
+      {({ isSubmitting, values }) => (
+        <SidebarForm ref={props.sidebarFormRef}>
+          <SidebarContent
+            title={props.title}
+            subtitle={"Neue Einrichtung anlegen"}
+          >
+            <Stack gap={2}>
+              <InputField
+                name={fieldName("name")}
+                label={"Name"}
+                validate={validateLength(1, 300)}
+                required={
+                  props.mode === "edit"
+                    ? "Bitte einen Namen angeben"
+                    : undefined
+                }
+                readOnly={props.mode !== "edit"}
+              />
+
+              <Divider />
+
+              <Box
+                component={"section"}
+                aria-labelledby={"contact-address-section-title"}
+                sx={{ display: "contents" }}
+              >
+                <Typography
+                  level={"title-md"}
+                  id={"contact-address-section-title"}
+                >
+                  Kontaktadresse
+                </Typography>
+                <Grid container spacing={2}>
+                  <ContactAddressForm
+                    type={values.contactAddress.type}
+                    name={fieldName("contactAddress")}
+                  />
+                </Grid>
+              </Box>
+
+              <Grid container spacing={2}>
+                <OptionalBillingAddressForm
+                  name={fieldName("differentBillingAddress")}
+                  values={values.differentBillingAddress}
+                />
+              </Grid>
+
+              <Divider />
+
+              <Box
+                component={"section"}
+                aria-label={"E-Mail-Adressen"}
+                sx={{ display: "contents" }}
+              >
+                <InputArrayField
+                  name={fieldName("emailAddresses")}
+                  addMoreLabel={"E-Mail-Adresse hinzufügen"}
+                  fieldComponent={EmailField}
+                  label={"E-Mail-Adresse"}
+                  validateEach={validateLength(6, 254)}
+                  required={"Bitte eine E-Mail-Adresse angeben"}
+                />
+              </Box>
+
+              <Box
+                component={"section"}
+                aria-label={"Telefonnummern"}
+                sx={{ display: "contents" }}
+              >
+                <InputArrayField
+                  name={fieldName("phoneNumbers")}
+                  addMoreLabel={"Telefonnummer hinzufügen"}
+                  fieldComponent={PhoneNumberField}
+                  label={"Telefonnummer"}
+                  validateEach={validateLength(1, 23)}
+                  required={"Bitte eine Telefonnummer angeben"}
+                />
+              </Box>
+
+              <FacilityContactPersonArrayForm
+                name={fieldName("contactPersons")}
+                values={values.contactPersons}
+                contactPersonRequired={props.requiresContactPerson === true}
+              />
+            </Stack>
+          </SidebarContent>
+          <SidebarActions>
+            <MultiFormButtonBar
+              submitLabel={props.submitLabel ?? "Anlegen"}
+              submitting={isSubmitting}
+              onBack={
+                isDefined(props.onBack)
+                  ? () => props.onBack!(values)
+                  : undefined
+              }
+              onCancel={props.onCancel}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
+  );
+}

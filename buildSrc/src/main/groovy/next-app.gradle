@@ -1,0 +1,211 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.github.gradle.node.pnpm.task.PnpmTask
+import com.github.gradle.node.task.NodeTask
+
+plugins {
+  id 'source-checks'
+  id 'vitest'
+  id 'com.bmuschko.docker-remote-api'
+  id 'org.sonarqube'
+  id "eshg.image-push-sign"
+}
+
+interface NextPluginConfiguration {
+  Property<String> getPort()
+  Property<String> getSonarProjectKey()
+  Property<String> getApiProject()
+}
+
+def srcDir = "${projectDir}/src"
+def nextDir = "${projectDir}/.next"
+
+def nextExtension = project.extensions.create('next', NextPluginConfiguration)
+def dockerBuildDir = layout.buildDirectory.dir('docker')
+
+prettier {
+  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.cjs', '**/*.json']
+  additionalExcludes = ['next-env.d.ts', '.next']
+}
+
+eslint {
+  include = ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.js']
+}
+
+typescript {
+  // ⚠⚠⚠ Note ⚠⚠⚠: Please adjust the tsconfig.json when changing includes/excludes here
+  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.cjs']
+  additionalExcludes = ['next-env.d.ts', '.next']
+}
+
+tasks.named('prepareEnvironment').configure {
+  dependsOn project(nextExtension.apiProject.get()).tasks.named('assemble')
+  dependsOn project(":lib-portal").tasks.named('assemble')
+}
+
+tasks.named('lint').configure {
+  inputs.files "${rootDir}/config/eslint.next.cjs"
+}
+
+tasks.named('lintFix').configure {
+  inputs.files "${rootDir}/config/eslint.next.cjs"
+}
+
+tasks.named('test').configure {
+  inputs.file "${rootDir}/config/tsconfig.next.json"
+}
+
+tasks.register('copyStaticBuildAssets', Copy) {
+  from("${nextDir}/static")
+  into "${nextDir}/standalone/${project.name}/.next/static"
+}
+
+tasks.register('copyPublicBuildAssets', Copy) {
+  from("${projectDir}/public")
+  into "${nextDir}/standalone/${project.name}/public"
+}
+
+tasks.register('assemble', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  finalizedBy 'copyStaticBuildAssets'
+  finalizedBy 'copyPublicBuildAssets'
+  inputs.file "${rootDir}/config/tsconfig.base.json"
+  inputs.file "${projectDir}/tsconfig.json"
+  inputs.file "${rootDir}/config/next.base.js"
+  inputs.file "${projectDir}/next.config.js"
+  inputs.files fileTree(srcDir)
+
+  outputs.file "${projectDir}/next-env.d.ts"
+  outputs.files fileTree(nextDir) {
+    include 'server'
+    include 'standalone'
+    include 'static'
+    exclude 'cache'
+  }
+  args = ['next', 'build']
+}
+
+tasks.register('build') {
+  dependsOn 'check'
+  dependsOn 'assemble'
+}
+
+tasks.register('testCoverage', PnpmTask) {
+  environment = ['TZ': 'UTC']
+  inputs.file "${rootDir}/config/tsconfig.base.json"
+  inputs.file "${rootDir}/config/vitest.base.ts"
+  inputs.file "${rootDir}/vitest.config.ts"
+  if (file("${projectDir}/vitest.config.ts").exists()) {
+    dependsOn project.tasks.named('prepareEnvironment')
+    inputs.file "${projectDir}/tsconfig.json"
+    inputs.file "${projectDir}/vitest.config.ts"
+    inputs.dir "${projectDir}/src"
+  }
+
+  outputs.dir layout.buildDirectory.dir('vitest')
+  args = ['vitest', 'run', '--coverage', '--passWithNoTests', '--silent']
+}
+
+
+tasks.register('analyzeBundle', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  inputs.files fileTree(srcDir)
+
+  outputs.files fileTree(nextDir) {
+    include 'analyze'
+  }
+  environment = ['ANALYZE_BUNDLE': 'true']
+  args = ['next', 'build']
+}
+
+tasks.register('createDockerfile', Dockerfile) {
+  dependsOn 'assemble'
+
+  def groupName = 'nodejs'
+  def userName = 'nextjs'
+
+  from((System.getenv('CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX') ?: 'docker.io') + '/' + nodeDockerImage)
+
+  workingDir('/app')
+
+  environmentVariable('NODE_ENV', 'production')
+  environmentVariable('NEXT_TELEMETRY_DISABLED', '1')
+
+  runCommand("addgroup --system --gid 1001 ${groupName}")
+  runCommand("adduser --system --shell /usr/sbin/nologin --home /app --ingroup ${groupName} --uid 1001 ${userName}")
+
+  user("${userName}:${groupName}")
+
+  environmentVariable('PORT', nextExtension.port.get())
+  exposePort(nextExtension.port.get() as int)
+
+  copyFile(new Dockerfile.CopyFile('standalone', './').withChown("${userName}:${groupName}"))
+
+  defaultCommand(
+    'node',
+    "${project.name}/server.js"
+  )
+}
+
+tasks.register('copyAssetsToDockerBuildDir', Copy) {
+  dependsOn 'assemble'
+  mustRunAfter 'copyStaticBuildAssets'
+  mustRunAfter 'copyPublicBuildAssets'
+
+  from(file('.next')) {
+    include 'standalone/**'
+  }
+
+  into dockerBuildDir
+}
+
+def buildDockerImage = tasks.register('buildDockerImage', DockerBuildImage) {
+  dependsOn 'createDockerfile'
+  inputs.files(tasks.named('copyAssetsToDockerBuildDir'))
+
+  if (getTagName() != null) {
+    images.add(getImageNameWithTag())
+  } else {
+    images.add(getImageNameWithLatestTag())
+  }
+}
+
+rootProject.tasks.named('composeUp').configure {
+  dependsOn buildDockerImage
+}
+
+tasks.register('run', NodeTask) {
+  dependsOn 'assemble'
+  environment = ['HOSTNAME': '0.0.0.0', 'PORT': nextExtension.port.get()]
+  script = file(".next/standalone/${project.name}/server.js")
+}
+
+tasks.register('runDev', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  args = ['next', 'dev', '--turbo', '--port', nextExtension.port.get()]
+}
+
+tasks.named('clean').configure {
+  delete nextDir
+}
+
+tasks.named('sonar').configure {
+  dependsOn rootProject.tasks.named('nodeSetup')
+}
+
+sonar {
+  properties {
+    property 'sonar.sources', './src/'
+    property 'sonar.tests', './src/'
+    property 'sonar.test.inclusions', [
+      '**/*.test.tsx',
+      '**/*.test.ts'
+    ]
+    property 'sonar.javascript.lcov.reportPaths', 'build/vitest/coverage/lcov.info'
+    property 'sonar.projectKey', nextExtension.sonarProjectKey.get()
+    property 'sonar.qualitygate.wait', true
+    property 'sonar.gradle.skipCompile', true
+    property 'sonar.nodejs.executable', node.getResolvedNodeDir().get().file('bin/node')
+  }
+}
+

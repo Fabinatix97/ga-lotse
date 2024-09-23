@@ -1,0 +1,685 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.procedure.procedures;
+
+import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
+import static de.eshg.lib.procedure.domain.model.AssignmentHistoryItem_.assignment;
+import static de.eshg.lib.procedure.domain.model.Assignment_.assigneeId;
+import static de.eshg.lib.procedure.domain.model.Procedure_.CREATED_AT;
+import static de.eshg.lib.procedure.domain.model.Procedure_.ID;
+import static de.eshg.lib.procedure.domain.model.Procedure_.MODIFIED_AT;
+import static de.eshg.lib.procedure.domain.model.Procedure_.createdAt;
+import static de.eshg.lib.procedure.domain.model.Procedure_.procedureStatus;
+import static de.eshg.lib.procedure.domain.model.Procedure_.procedureType;
+import static de.eshg.lib.procedure.domain.model.Procedure_.tasks;
+import static de.eshg.lib.procedure.domain.model.Task_.assignmentHistory;
+import static de.eshg.lib.procedure.domain.model.Task_.currentAssignment;
+import static de.eshg.lib.procedure.domain.model.Task_.procedure;
+import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.domain.PageRequest.ofSize;
+import static org.springframework.data.jpa.domain.Specification.allOf;
+import static org.springframework.data.jpa.domain.Specification.where;
+
+import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
+import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
+import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.feature.BaseFeature;
+import de.eshg.base.feature.BaseFeatureTogglesApi;
+import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.foureyes.domain.model.ApprovalRequest;
+import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
+import de.eshg.lib.foureyes.mapping.ApprovalRequestMapper;
+import de.eshg.lib.foureyes.model.ApprovalRequestDto;
+import de.eshg.lib.procedure.api.ProcedureApi;
+import de.eshg.lib.procedure.domain.model.FacilityType;
+import de.eshg.lib.procedure.domain.model.File;
+import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
+import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest_;
+import de.eshg.lib.procedure.domain.model.Mail;
+import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
+import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest_;
+import de.eshg.lib.procedure.domain.model.PersonType;
+import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.ProgressEntry_;
+import de.eshg.lib.procedure.domain.model.RelatedFacility;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.Task;
+import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
+import de.eshg.lib.procedure.domain.repository.ProcedureRepository.StatusAndCount;
+import de.eshg.lib.procedure.domain.repository.ProgressEntryRepository;
+import de.eshg.lib.procedure.helper.UserHelper;
+import de.eshg.lib.procedure.helper.UserHelper.UserFirstAndLastName;
+import de.eshg.lib.procedure.mapping.FacilityTypeMapper;
+import de.eshg.lib.procedure.mapping.FileMapper;
+import de.eshg.lib.procedure.mapping.PersonTypeMapper;
+import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
+import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.lib.procedure.model.DetailedFacilityDto;
+import de.eshg.lib.procedure.model.DetailedPersonDto;
+import de.eshg.lib.procedure.model.DetailedTaskDto;
+import de.eshg.lib.procedure.model.FacilityTypeDto;
+import de.eshg.lib.procedure.model.GetDetailedProcedureResponse;
+import de.eshg.lib.procedure.model.GetProcedureApprovalRequestsResponse;
+import de.eshg.lib.procedure.model.GetProcedureFileDetailsResponse;
+import de.eshg.lib.procedure.model.GetProcedureMetricsResponse;
+import de.eshg.lib.procedure.model.GetProceduresFilterOptions;
+import de.eshg.lib.procedure.model.GetProceduresPaginationOptions;
+import de.eshg.lib.procedure.model.GetProceduresResponse;
+import de.eshg.lib.procedure.model.GetProceduresSortByDto;
+import de.eshg.lib.procedure.model.GetProceduresSortOptionsDto;
+import de.eshg.lib.procedure.model.GetProceduresSortOrderDto;
+import de.eshg.lib.procedure.model.GetRecentProceduresResponse;
+import de.eshg.lib.procedure.model.PersonTypeDto;
+import de.eshg.lib.procedure.model.ProcedureDto;
+import de.eshg.lib.procedure.model.ProcedureMetric;
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.lib.procedure.model.ProcedureTypeDto;
+import de.eshg.lib.procedure.model.ProgressEntryReferenceFilePairDto;
+import de.eshg.lib.procedure.util.MetricTimeRangeValidator;
+import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.security.CurrentUserHelper;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@ConditionalOnBean(ProcedureRepository.class)
+@Tag(name = "Procedure")
+public class ProcedureController<
+        ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>, TaskT extends Task<ProcedureT>>
+    implements ProcedureApi {
+
+  private final Clock clock;
+  private final BusinessModule businessModule;
+  private final ProcedureRepository<ProcedureT> procedureRepository;
+  private final GenericApprovalRequestRepository approvalRequestRepository;
+  private final ProgressEntryRepository progressEntryRepository;
+  private final ApprovalRequestMapper approvalRequestMapper;
+  private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
+  private final FacilityApi facilityApi;
+  private final PersonApi personApi;
+  private final UserHelper userHelper;
+  private final ProcedureSearchService<ProcedureT> procedureSearchService;
+  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+
+  public ProcedureController(
+      Clock clock,
+      BusinessModule businessModule,
+      ProcedureRepository<ProcedureT> procedureRepository,
+      GenericApprovalRequestRepository approvalRequestRepository,
+      ProgressEntryRepository progressEntryRepository,
+      ApprovalRequestMapper approvalRequestMapper,
+      ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper,
+      FacilityApi facilityApi,
+      PersonApi personApi,
+      UserHelper userHelper,
+      ProcedureSearchService<ProcedureT> procedureSearchService,
+      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+    this.clock = clock;
+    this.businessModule = businessModule;
+    this.procedureRepository = procedureRepository;
+    this.approvalRequestRepository = approvalRequestRepository;
+    this.approvalRequestMapper = approvalRequestMapper;
+    this.enrichingMapper = enrichingMapper;
+    this.facilityApi = facilityApi;
+    this.personApi = personApi;
+    this.userHelper = userHelper;
+    this.progressEntryRepository = progressEntryRepository;
+    this.procedureSearchService = procedureSearchService;
+    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetRecentProceduresResponse getSelfRecentProcedures(
+      Set<ProcedureTypeDto> procedureTypes,
+      Set<ProcedureStatusDto> procedureStatus,
+      Integer limit) {
+    return getRecentProcedures(
+        CurrentUserHelper.getCurrentUserId(), procedureTypes, procedureStatus, limit);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetRecentProceduresResponse getRecentProcedures(
+      UUID userId,
+      Set<ProcedureTypeDto> procedureTypes,
+      Set<ProcedureStatusDto> procedureStatus,
+      Integer limit) {
+
+    Set<ProcedureStatus> status = mapEnumSet(procedureStatus, ProcedureMapper::toDomainType);
+    Set<ProcedureType> types = mapEnumSet(procedureTypes, ProcedureMapper::toDomainType);
+
+    List<ProcedureDto> recentProcedures =
+        procedureRepository
+            .findAll(
+                where(anyTaskIsAssignedToUser(userId)).and(statusIsIn(status)).and(typeIsIn(types)),
+                ofSize(limit).withSort(Direction.DESC, MODIFIED_AT, ID))
+            .stream()
+            .map(enrichingMapper::enrichAndMap)
+            .toList();
+
+    return new GetRecentProceduresResponse(recentProcedures);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetProceduresResponse getProcedures(
+      GetProceduresFilterOptions filterOptions,
+      GetProceduresSortOptionsDto sortOptions,
+      GetProceduresPaginationOptions paginationOptions) {
+
+    List<Specification<ProcedureT>> specifications = new ArrayList<>();
+
+    if (filterOptions.assignedToId() != null) {
+      specifications.add(anyTaskIsAssignedToUser(filterOptions.assignedToId()));
+    }
+
+    if (filterOptions.notAssignedToId() != null) {
+      specifications.add(noneAttachedTaskIsAssignedToUser(filterOptions.notAssignedToId()));
+    }
+
+    if (filterOptions.onceAssignedToId() != null) {
+      specifications.add(
+          anyAttachedTaskWasOnceOrIsAssignedToUser(filterOptions.onceAssignedToId()));
+    }
+
+    Boolean filterUnassigned = filterOptions.unassigned();
+    if (filterUnassigned != null) {
+      if (filterUnassigned) {
+        specifications.add(allAttachedTasksAreUnassigned());
+      } else {
+        specifications.add(anyAttachedTaskIsAssigned());
+      }
+    }
+
+    if (filterOptions.createdInYear() != null) {
+      specifications.add(createdAtIsInYear(filterOptions.createdInYear()));
+    }
+
+    if (filterOptions.procedureType() != null) {
+      Set<ProcedureType> domainProcedureTypes =
+          mapEnumSet(filterOptions.procedureType(), ProcedureMapper::toDomainType);
+
+      specifications.add(typeIsIn(domainProcedureTypes));
+    }
+
+    if (filterOptions.procedureStatus() != null) {
+      Set<ProcedureStatus> domainProcedureStatus =
+          mapEnumSet(filterOptions.procedureStatus(), ProcedureMapper::toDomainType);
+
+      specifications.add(statusIsIn(domainProcedureStatus));
+    }
+
+    Page<ProcedureT> page =
+        procedureRepository.findAll(
+            where(allOf(specifications)),
+            ofSize(paginationOptions.pageSize())
+                .withPage(paginationOptions.pageNumber())
+                .withSort(mapToSort(sortOptions)));
+
+    List<ProcedureDto> procedures = page.stream().map(enrichingMapper::enrichAndMap).toList();
+
+    return new GetProceduresResponse(page.getTotalPages(), page.getTotalElements(), procedures);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetProceduresResponse searchProcedures(String query) {
+    if (!baseFeatureTogglesApi
+        .getFeatureToggles()
+        .enabledNewFeatures()
+        .contains(BaseFeature.SEARCH_PROCEDURES)) {
+      throw new IllegalStateException(
+          "New feature %s is not enabled".formatted(BaseFeature.SEARCH_PROCEDURES));
+    }
+    List<ProcedureDto> searchResult =
+        procedureSearchService.searchProcedures(query).stream()
+            .map(enrichingMapper::enrichAndMap)
+            .toList();
+
+    return new GetProceduresResponse(1, searchResult.size(), searchResult);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetProcedureApprovalRequestsResponse getApprovalRequests(UUID procedureId) {
+    ProcedureT procedure = resolveProcedureByExternalIdOrThrow(procedureId);
+    List<ApprovalRequest<?>> approvalRequests =
+        approvalRequestRepository.findAllByStatusIsOpenAndUserIsNotCurrent(
+            where(isAttachedToProcedure(procedure)));
+
+    List<ApprovalRequestDto> approvalRequestDtos =
+        approvalRequests.stream().map(approvalRequestMapper::toInterfaceType).toList();
+    Map<UUID, UserDto> resolvedUsers = userHelper.resolveUsers(approvalRequestDtos);
+
+    return new GetProcedureApprovalRequestsResponse(approvalRequestDtos, resolvedUsers);
+  }
+
+  private Specification<ApprovalRequest<?>> isAttachedToProcedure(ProcedureT procedure) {
+    return (root, query, cb) ->
+        cb.or(
+            isManualProgressEntryAttachedToProcedure(procedure, root, cb),
+            isFileDeletionApprovalRequestAttachedToProcedure(procedure, root, query, cb));
+  }
+
+  private Predicate isFileDeletionApprovalRequestAttachedToProcedure(
+      ProcedureT procedure,
+      Root<ApprovalRequest<?>> root,
+      CriteriaQuery<?> query,
+      CriteriaBuilder cb) {
+
+    Root<FileDeletionApprovalRequest> fileDeletionApprovalRequestRoot =
+        cb.treat(root, FileDeletionApprovalRequest.class);
+    Path<File> approvalRequestFile =
+        fileDeletionApprovalRequestRoot.get(FileDeletionApprovalRequest_.file);
+
+    Root<ProgressEntry> progressEntryRoot = query.from(ProgressEntry.class);
+    Join<ProgressEntry, File> progressEntryFile = progressEntryRoot.join(ProgressEntry_.file);
+
+    return cb.and(
+        cb.equal(progressEntryFile, approvalRequestFile),
+        cb.equal(progressEntryRoot.get(ProgressEntry_.procedureId), procedure.getId()));
+  }
+
+  private Predicate isManualProgressEntryAttachedToProcedure(
+      ProcedureT procedure, Root<ApprovalRequest<?>> root, CriteriaBuilder cb) {
+    return cb.equal(
+        cb.treat(root, ManualProgressEntryDeletionApprovalRequest.class)
+            .join(ManualProgressEntryDeletionApprovalRequest_.manualProgressEntry, JoinType.LEFT)
+            .get(ProgressEntry_.procedureId),
+        procedure.getId());
+  }
+
+  private Sort mapToSort(GetProceduresSortOptionsDto sortOptions) {
+    return Sort.by(
+        Order.by(mapToDomainProperty(sortOptions.sortBy()))
+            .with(mapToSortOrder(sortOptions.sortOrder())),
+        Order.by(ID));
+  }
+
+  private Direction mapToSortOrder(GetProceduresSortOrderDto sortOrder) {
+    return switch (sortOrder) {
+      case ASC -> Direction.ASC;
+      case DESC -> Direction.DESC;
+    };
+  }
+
+  private String mapToDomainProperty(GetProceduresSortByDto sortBy) {
+    return switch (sortBy) {
+      case CREATED_AT -> CREATED_AT;
+      case MODIFIED_AT -> MODIFIED_AT;
+    };
+  }
+
+  private Specification<ProcedureT> createdAtIsInYear(Year year) {
+    Instant firstDayOfThisYear = getInstantOfFirstDayOfYear(year);
+    Instant firstDayOfNextYear = getInstantOfFirstDayOfYear(year.plusYears(1));
+
+    return (procedure, query, cb) ->
+        cb.and(
+            cb.greaterThanOrEqualTo(procedure.get(createdAt), firstDayOfThisYear),
+            cb.lessThan(procedure.get(createdAt), firstDayOfNextYear));
+  }
+
+  private Instant getInstantOfFirstDayOfYear(Year year) {
+    return year.atDay(1).atStartOfDay(clock.getZone()).toInstant();
+  }
+
+  private Specification<ProcedureT> anyAttachedTaskIsAssigned() {
+    return (root, query, cb) -> {
+      Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
+      Root<? extends Task<?>> taskRoot = subquery.from(tasks.getBindableJavaType());
+
+      return cb.exists(
+          subquery.where(
+              cb.and(
+                  taskRoot.get(currentAssignment).get(assigneeId).isNotNull(),
+                  cb.equal(taskRoot.get(procedure), root))));
+    };
+  }
+
+  private Specification<ProcedureT> anyAttachedTaskWasOnceOrIsAssignedToUser(UUID userId) {
+    return (root, query, cb) -> {
+      Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
+      Root<? extends Task<?>> taskRoot = subquery.from(tasks.getBindableJavaType());
+
+      return cb.exists(
+          subquery.where(
+              cb.and(
+                  cb.equal(taskRoot.get(procedure), root),
+                  cb.or(
+                      taskIsAssignedToUser(cb, taskRoot, userId),
+                      taskWasOnceAssignedToUser(cb, taskRoot, userId)))));
+    };
+  }
+
+  private Predicate taskWasOnceAssignedToUser(
+      CriteriaBuilder cb, Root<? extends Task<?>> taskRoot, UUID userId) {
+    return cb.equal(
+        taskRoot.join(assignmentHistory, JoinType.LEFT).get(assignment).get(assigneeId), userId);
+  }
+
+  private Specification<ProcedureT> noneAttachedTaskIsAssignedToUser(UUID userId) {
+    return (procedureRoot, query, cb) ->
+        cb.not(
+            cb.exists(
+                queryTasksThatAreAttachedToProcedureAndAssignedToUser(
+                    procedureRoot, query, cb, userId)));
+  }
+
+  private Subquery<?> queryTasksThatAreAttachedToProcedureAndAssignedToUser(
+      Root<ProcedureT> procedureRoot, CriteriaQuery<?> query, CriteriaBuilder cb, UUID userId) {
+    Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
+    Root<? extends Task<?>> taskRoot = subquery.from(tasks.getBindableJavaType());
+
+    return subquery.where(
+        taskIsAttachedToProcedure(cb, taskRoot, procedureRoot),
+        taskIsAssignedToUser(cb, taskRoot, userId));
+  }
+
+  private Specification<ProcedureT> allAttachedTasksAreUnassigned() {
+    return (procedure, query, cb) ->
+        cb.not(
+            cb.exists(
+                queryTasksThatAreAttachedToProcedureAndAssignedToSomeone(procedure, query, cb)));
+  }
+
+  private Subquery<? extends Task<?>> queryTasksThatAreAttachedToProcedureAndAssignedToSomeone(
+      Root<ProcedureT> procedure, CriteriaQuery<?> query, CriteriaBuilder cb) {
+    Subquery<? extends Task<?>> subquery = query.subquery(tasks.getBindableJavaType());
+    Root<? extends Task<?>> task = subquery.from(tasks.getBindableJavaType());
+
+    return subquery.where(
+        cb.and(task.get(currentAssignment).get(assigneeId).isNotNull()),
+        taskIsAttachedToProcedure(cb, task, procedure));
+  }
+
+  private Predicate taskIsAssignedToUser(
+      CriteriaBuilder cb, Path<? extends Task<?>> taskRoot, UUID userId) {
+    return cb.equal(taskRoot.get(currentAssignment).get(assigneeId), userId);
+  }
+
+  private Predicate taskIsAttachedToProcedure(
+      CriteriaBuilder cb, Root<? extends Task<?>> taskRoot, Root<ProcedureT> procedureRoot) {
+    return cb.equal(taskRoot.get(procedure), procedureRoot);
+  }
+
+  private Specification<ProcedureT> anyTaskIsAssignedToUser(UUID userId) {
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.exists(
+            queryTasksThatAreAttachedToProcedureAndAssignedToUser(
+                root, query, criteriaBuilder, userId));
+  }
+
+  private Specification<ProcedureT> statusIsIn(Set<ProcedureStatus> statuses) {
+    if (statuses == null) {
+      return null;
+    }
+    return (root, query, criteriaBuilder) -> root.get(procedureStatus).in(statuses);
+  }
+
+  private Specification<ProcedureT> typeIsIn(Set<ProcedureType> types) {
+    if (types == null) {
+      return null;
+    }
+
+    return (root, query, criteriaBuilder) -> root.get(procedureType).in(types);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetProcedureMetricsResponse getProcedureMetrics(
+      Instant timeRangeStart, Instant timeRangeEnd) {
+    MetricTimeRangeValidator.validateTimeRange(timeRangeStart, timeRangeEnd);
+
+    return new GetProcedureMetricsResponse(
+        getAggregatedProcedureMetrics(timeRangeStart, timeRangeEnd));
+  }
+
+  private List<ProcedureMetric> getAggregatedProcedureMetrics(
+      Instant timeRangeStart, Instant timeRangeEnd) {
+    Set<ProcedureType> procedureTypes = procedureRepository.findDistinctProcedureTypes();
+    List<ProcedureMetric> procedureMetrics = new ArrayList<>(procedureTypes.size());
+
+    procedureTypes.forEach(
+        procedureType -> {
+          Map<ProcedureStatus, Long> statusCountsPerType =
+              getStatusCounts(procedureType, timeRangeStart, timeRangeEnd);
+          procedureMetrics.add(
+              new ProcedureMetric(
+                  businessModule,
+                  ProcedureMapper.toInterfaceType(procedureType),
+                  statusCountsPerType.values().stream().mapToLong(Long::longValue).sum(),
+                  Stream.of(ProcedureStatus.OPEN, ProcedureStatus.DRAFT)
+                      .mapToLong(status -> statusCountsPerType.getOrDefault(status, 0L))
+                      .sum(),
+                  statusCountsPerType.getOrDefault(ProcedureStatus.IN_PROGRESS, 0L),
+                  statusCountsPerType.getOrDefault(ProcedureStatus.ABORTED, 0L),
+                  statusCountsPerType.getOrDefault(ProcedureStatus.CLOSED, 0L),
+                  getAverageDuration(procedureType, timeRangeStart, timeRangeEnd)));
+        });
+    return procedureMetrics.stream()
+        .sorted(Comparator.comparing(procedureMetric -> procedureMetric.procedureType().name()))
+        .toList();
+  }
+
+  private Map<ProcedureStatus, Long> getStatusCounts(
+      ProcedureType type, Instant timeRangeStart, Instant timeRangeEnd) {
+
+    return procedureRepository
+        .findStatusCountsForTypeWithinTimeRange(type, timeRangeStart, timeRangeEnd)
+        .collect(StreamUtil.toLinkedHashMap(StatusAndCount::getStatus, StatusAndCount::getCount));
+  }
+
+  private String getAverageDuration(
+      ProcedureType procedureType, Instant timeRangeStart, Instant timeRangeEnd) {
+    List<Duration> durations =
+        procedureRepository.findProcedureDurations(
+            procedureType, ProcedureStatus.CLOSED, timeRangeStart, timeRangeEnd);
+
+    if (durations.isEmpty()) {
+      return null;
+    }
+
+    return Duration.ofMinutes(
+            Math.round(durations.stream().mapToLong(Duration::toMinutes).average().orElseThrow()))
+        .toString();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetDetailedProcedureResponse getDetailedProcedure(UUID id) {
+    ProcedureT domainProcedure = resolveProcedureByExternalIdOrThrow(id);
+
+    ProcedureDto procedure = enrichingMapper.enrichAndMap(domainProcedure);
+
+    List<DetailedPersonDto> persons = createDetailedPersonDtos(domainProcedure.getRelatedPersons());
+
+    List<DetailedFacilityDto> facilities =
+        createDetailedFacilityDtos(domainProcedure.getRelatedFacilities());
+
+    List<DetailedTaskDto> tasks = createDetailedTaskDtos(domainProcedure.getTasks());
+
+    return new GetDetailedProcedureResponse(procedure, persons, facilities, tasks);
+  }
+
+  private List<DetailedTaskDto> createDetailedTaskDtos(List<TaskT> tasks) {
+    if (tasks.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    Set<UUID> userUuids = collectUserUuidsFromTasks(tasks);
+
+    Map<UUID, UserFirstAndLastName> firstNameAndLastNameByUserId =
+        userHelper.resolveUsersFirstNamesAndLastNamesByUserUuids(userUuids);
+
+    return tasks.stream()
+        .map(task -> toDetailedTaskDto(task, firstNameAndLastNameByUserId))
+        .toList();
+  }
+
+  private DetailedTaskDto toDetailedTaskDto(
+      TaskT task, Map<UUID, UserFirstAndLastName> firstNameAndLastNameByUserId) {
+    return new DetailedTaskDto(
+        enrichingMapper.enrichAndMap(task),
+        getFullNameIfPresent(firstNameAndLastNameByUserId, task.getAssigneeId()),
+        getFullNameIfPresent(firstNameAndLastNameByUserId, task.getAssignedById()));
+  }
+
+  private String getFullNameIfPresent(
+      Map<UUID, UserFirstAndLastName> firstNameAndLastNameByUserId, UUID key) {
+    if (firstNameAndLastNameByUserId.containsKey(key)) {
+      return firstNameAndLastNameByUserId.get(key).asFullName();
+    }
+
+    return null;
+  }
+
+  private Set<UUID> collectUserUuidsFromTasks(List<TaskT> tasks) {
+    Stream<UUID> assigneeIds = tasks.stream().map(TaskT::getAssigneeId);
+    Stream<UUID> assignedByIds = tasks.stream().map(TaskT::getAssignedById);
+
+    return Stream.concat(assigneeIds, assignedByIds).collect(StreamUtil.toLinkedHashSet());
+  }
+
+  private List<DetailedPersonDto> createDetailedPersonDtos(
+      List<? extends RelatedPerson<ProcedureT>> relatedPersons) {
+    if (relatedPersons.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    GetPersonFileStatesResponse personFileStatesResponse = getPersonFileStates(relatedPersons);
+
+    Map<UUID, PersonType> personTypeByCentralFileStateId =
+        relatedPersons.stream()
+            .collect(toMap(RelatedPerson::getCentralFileStateId, RelatedPerson::getPersonType));
+
+    List<DetailedPersonDto> result = new ArrayList<>();
+
+    for (AddPersonFileStateResponse personDto : personFileStatesResponse.personFileStates()) {
+      PersonType personType = personTypeByCentralFileStateId.get(personDto.id());
+      PersonTypeDto personTypeDto = PersonTypeMapper.toInterfaceType(personType);
+      result.add(new DetailedPersonDto(personDto, personTypeDto));
+    }
+
+    return result;
+  }
+
+  private GetPersonFileStatesResponse getPersonFileStates(
+      List<? extends RelatedPerson<ProcedureT>> relatedPersons) {
+
+    List<UUID> centralFileStateIds =
+        relatedPersons.stream().map(RelatedPerson::getCentralFileStateId).toList();
+
+    return personApi.getPersonFileStates(new GetPersonFileStatesRequest(centralFileStateIds));
+  }
+
+  private List<DetailedFacilityDto> createDetailedFacilityDtos(
+      List<? extends RelatedFacility<ProcedureT>> relatedFacilities) {
+    if (relatedFacilities.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    List<UUID> centralFileStateIds =
+        relatedFacilities.stream().map(RelatedFacility::getCentralFileStateId).toList();
+
+    GetFacilityFileStatesResponse facilityFileStatesResponse =
+        facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(centralFileStateIds));
+
+    Map<UUID, FacilityType> facilityTypeByCentralFileStateId =
+        relatedFacilities.stream()
+            .collect(
+                toMap(RelatedFacility::getCentralFileStateId, RelatedFacility::getFacilityType));
+
+    List<DetailedFacilityDto> result = new ArrayList<>();
+
+    for (AddFacilityFileStateResponse addFacilityFileStateResponse :
+        facilityFileStatesResponse.facilityFileStates()) {
+      FacilityType facilityType =
+          facilityTypeByCentralFileStateId.get(addFacilityFileStateResponse.id());
+      FacilityTypeDto facilityTypeDto = FacilityTypeMapper.toInterfaceType(facilityType);
+      result.add(new DetailedFacilityDto(addFacilityFileStateResponse, facilityTypeDto));
+    }
+
+    return result;
+  }
+
+  private ProcedureT resolveProcedureByExternalIdOrThrow(UUID id) {
+    return procedureRepository
+        .findByExternalId(id)
+        .orElseThrow(() -> new NotFoundException("Procedure not found"));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public GetProcedureFileDetailsResponse getProcedureFileDetails(UUID id) {
+    ProcedureT procedureT = resolveProcedureByExternalIdOrThrow(id);
+
+    List<ProgressEntry> fileDetailsWithEntryIdList =
+        progressEntryRepository.findAllByProcedureIdAndFetchFileAndAttachments(procedureT.getId());
+
+    List<ProgressEntryReferenceFilePairDto> progressEntryReferenceFilePairDtos =
+        fileDetailsWithEntryIdList.stream()
+            .mapMulti(this::collectFilesAndAttachments)
+            .map(FileMapper::toInterfaceType)
+            .sorted(Comparator.comparing(result -> result.file().getCreatedAt()))
+            .toList();
+
+    return new GetProcedureFileDetailsResponse(id, progressEntryReferenceFilePairDtos);
+  }
+
+  private void collectFilesAndAttachments(
+      ProgressEntry progressEntry, Consumer<ProgressEntryReferenceFilePair> filePairCollector) {
+    UUID externalId = progressEntry.getExternalId();
+    File file = progressEntry.getFile();
+
+    filePairCollector.accept(new ProgressEntryReferenceFilePair(externalId, file));
+
+    if (file instanceof Mail mail) {
+      mail.getAttachments().stream()
+          .map(attachment -> new ProgressEntryReferenceFilePair(externalId, attachment))
+          .forEach(filePairCollector);
+    }
+  }
+}

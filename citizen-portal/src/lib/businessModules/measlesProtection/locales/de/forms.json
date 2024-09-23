@@ -1,0 +1,86 @@
+{
+  "affectedPerson": {
+    "title": "Zu meldende Person",
+    "info": "Bitte vervollständigen Sie die Daten zur Person, welche in Ihrer Einrichtung tätig ist oder betreut wird.",
+    "contactInfo": "Kontaktdaten",
+    "personalDetails": "Persönliche Daten zur Person",
+    "fields": {
+      "commentReportingReason": "Kommentar zum Meldegrund",
+      "commentReportingReason_required": "Bitte einen Kommentar angeben.",
+      "reportingReason": "Meldegrund",
+      "reportingReason_required": "Bitte einen Meldegrund wählen.",
+      "roleStatus": "Personenstatus",
+      "roleStatus_required": "Bitte einen Personenstatus wählen."
+    }
+  },
+  "custodian": {
+    "title": "Sorgeberechtigte Person",
+    "info": "Die zu meldende Person ist minderjährig. Bitte tragen Sie mindestens eine sorgeberechtigte Person ein.",
+    "addressMatch": "Die Adresse entspricht der der zu meldenden Person."
+  },
+  "facility": {
+    "title": "Ihre Einrichtung",
+    "info": "Bitte vervollständigen Sie die Angaben zur Einrichtung und der Kontaktperson des Unternehmens, welche für Rückfragen kontaktiert werden kann.",
+    "contactPerson": "Kontaktperson",
+    "fields": {
+      "facilityName": "Name der Einrichtung",
+      "facilityName_required": "Bitte einen Namen der Einrichtung angeben.",
+      "facilityType": "Typ der Einrichtung",
+      "facilityType_required": "Bitte einen Typ der Einrichtung auswählen.",
+      "facilityTypeOther": "Anderer Einrichtungstyp",
+      "facilityTypeOther_required": "Bitte einen spezifischen anderen Typ angeben.",
+      "role": "Rolle"
+    }
+  },
+  "overview": {
+    "title": "Zu meldenden Personen",
+    "submit_one": "Fall melden",
+    "submit_other": "Fälle melden",
+    "reportAdditionalPerson": "Weitere Person melden"
+  },
+  "success": {
+    "returnToMeaslesProtectionHome": "Zurück zur Startseite",
+    "message": "{{ casesReported }} $t(common.case, {\"count\": {{ casesReported }} }) erfolgreich gemeldet",
+    "reportAdditionalPerson": "Weitere Person melden",
+    "viewOpenCases": "Offenen Fälle ansehen"
+  },
+  "common": {
+    "addressForm": {
+      "addressAddition": "Adresszusatz",
+      "addressType": "Art der Adresse",
+      "addressType_required": "Bitte eine Art der Adresse auswählen.",
+      "city": "Ort",
+      "city_required": "Bitte einen Ort angeben.",
+      "country": "Land",
+      "country_required": "Bitte ein Land angeben.",
+      "houseNumber": "Hausnummer",
+      "houseNumber_required": "Bitte eine Hausnummer angeben.",
+      "label": "Adressdaten",
+      "postalCode": "Postleitzahl",
+      "postalCode_required": "Bitte eine Postleitzahl angeben.",
+      "street": "Straße",
+      "street_required": "Bitte eine Straße angeben."
+    },
+    "personalDetails": {
+      "dateOfBirth": "Geburtsdatum",
+      "dateOfBirth_required": "Bitte ein Geburtsdatum angeben.",
+      "gender": "Geschlecht",
+      "firstName": "Vorname",
+      "firstName_required": "Bitte einen Vornamen angeben.",
+      "label": "Persönliche Daten",
+      "lastName": "Nachname",
+      "lastName_required": "Bitte einen Nachnamen angeben.",
+      "emailAddress": "E-Mail-Adresse",
+      "emailAddress_required": "Bitte eine gültige E-Mail-Adresse angeben.",
+      "nameAtBirth": "Geburtsname",
+      "nameAtBirth_required": "Bitte einen Geburtsnamen angeben.",
+      "placeOfBirth": "Geburtsort",
+      "placeOfBirth_required": "Bitte einen Geburtsort angeben.",
+      "phoneNumber": "Telefonnummer",
+      "phoneNumber_required": "Bitte eine gültige Telefonnummer angeben.",
+      "salutation": "Anrede",
+      "title": "Titel"
+    },
+    "requiredField": "Pflichtfeld"
+  }
+}

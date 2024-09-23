@@ -1,0 +1,34 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiExaminationResultValue } from "@eshg/employee-portal-api/schoolEntry";
+import {
+  SoftRequiredSelectField,
+  SoftRequiredSelectFieldProps,
+} from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+
+import { RESPONSE_DOCTOR_LETTER_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
+
+export interface ResponseDoctorLetterFieldProps
+  extends Omit<SoftRequiredSelectFieldProps<false>, "options" | "disabled"> {
+  examinationResultValue: OptionalFieldValue<ApiExaminationResultValue>;
+}
+
+export function ResponseDoctorLetterField(
+  props: ResponseDoctorLetterFieldProps,
+) {
+  const { examinationResultValue, ...selectFieldProps } = props;
+  return (
+    <SoftRequiredSelectField
+      {...selectFieldProps}
+      options={RESPONSE_DOCTOR_LETTER_OPTIONS}
+      disabled={
+        examinationResultValue !== ApiExaminationResultValue.DoctorLetter
+      }
+      softRequired
+    />
+  );
+}

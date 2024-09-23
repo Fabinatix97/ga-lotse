@@ -1,0 +1,49 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.keycloak.api.user;
+
+import de.eshg.keycloak.api.user.model.BulkGetUsersRequest;
+import de.eshg.keycloak.api.user.model.GetActiveSessionResponse;
+import de.eshg.keycloak.api.user.model.GetGroupMembersRequest;
+import de.eshg.keycloak.api.user.model.GetGroupMembersResponse;
+import de.eshg.keycloak.api.user.model.GetRoleMembersRequest;
+import de.eshg.keycloak.api.user.model.GetRoleMembersResponse;
+import de.eshg.keycloak.api.user.model.GetUsersResponse;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+
+public interface KeycloakUserApi {
+  String PROVIDER_ID = "extended-user-resource";
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/bulk-get")
+  GetUsersResponse getUsersBulk(
+      @PathParam("realm") String realmName, @Valid @RequestBody BulkGetUsersRequest request);
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/search-users")
+  GetGroupMembersResponse getGroupMembers(
+      @PathParam("realm") String realmName, @Valid @RequestBody GetGroupMembersRequest request);
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/role-members")
+  GetRoleMembersResponse getRoleMembers(
+      @PathParam("realm") String realmName, @Valid @RequestBody GetRoleMembersRequest request);
+
+  @GET
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/users/{id}/active-sessions")
+  @Produces(MediaType.APPLICATION_JSON)
+  GetActiveSessionResponse getActiveUserSessions(
+      @PathParam("realm") String realmName, @PathParam("id") String id);
+}

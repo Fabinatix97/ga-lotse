@@ -1,0 +1,38 @@
+{
+  "organization": {
+    "landing_page": {
+      "header": "Willkommen im Gesundheitsamt. 🏢",
+      "subheader": "Wir freuen uns, Sie hier begrüßen zu dürfen. Unser Team steht Ihnen zur Verfügung, um Ihnen bei allen Fragen und Anliegen im Bereich der öffentlichen Gesundheit behilflich zu sein. Ihre Gesundheit liegt uns am Herzen, und wir setzen uns mit Fachkompetenz und Engagement für Ihr Wohlbefinden ein.",
+      "contact_us": "Bitte zögern Sie nicht, sich an uns zu wenden, wenn Sie Unterstützung benötigen oder Informationen zu gesundheitsbezogenen Themen suchen. Wir helfen und beraten Sie gerne."
+    }
+  },
+  "private_person": {
+    "landing_page": {
+      "header": "Willkommen im Gesundheitsamt.",
+      "subheader": "Wir freuen uns, Sie hier begrüßen zu dürfen. Unser Team steht Ihnen zur Verfügung, um Ihnen bei allen Fragen und Anliegen im Bereich der öffentlichen Gesundheit behilflich zu sein. Ihre Gesundheit liegt uns am Herzen, und wir setzen uns mit Fachkompetenz und Engagement für Ihr Wohlbefinden ein.",
+      "contact_us": "Bitte zögern Sie nicht, sich an uns zu wenden, wenn Sie Unterstützung benötigen oder Informationen zu gesundheitsbezogenen Themen suchen. Wir helfen und beraten Sie gerne."
+    }
+  },
+  "site_title": "Online-Portal",
+  "site_description": "Von Bürgern für Bürger",
+  "health_department_title": "Gesundheitsamt",
+  "health_officers_link": "Amtsärztin / Amtsarzt",
+  "most_searched_services_title": "Meistgesuchte Services",
+  "common": {
+    "address": "Adresse",
+    "affectedPerson_one": "Betroffene Person",
+    "affectedPerson_other": "Betroffene Personen",
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "case_one": "Fall",
+    "case_other": "Fälle",
+    "continue": "Weiter",
+    "custodian_one": "Sorgeberechtigte Person",
+    "custodian_other": "Sorgeberechtigte Personen",
+    "facility": "Einrichtung",
+    "name": "Name",
+    "overview": "Übersicht",
+    "person_one": "Person",
+    "person_other": "Personen"
+  }
+}

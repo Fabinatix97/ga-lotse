@@ -1,0 +1,20 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    maven {
+        url = uri("https://plugins.gradle.org/m2/")
+    }
+}
+
+dependencyLocking {
+    lockAllConfigurations()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation 'com.bmuschko.docker-remote-api:com.bmuschko.docker-remote-api.gradle.plugin:latest.release'
+}

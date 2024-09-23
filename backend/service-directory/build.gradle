@@ -1,0 +1,35 @@
+plugins {
+    id 'eshg.service'
+}
+
+dependencies {
+    implementation project(':lib-service-directory-api')
+    implementation project(':lib-service-directory-admin-api')
+    implementation project(':business-module-persistence-commons')
+    implementation project(':lib-commons')
+    implementation 'org.apache.commons:commons-collections4:latest.release'
+    implementation project(':test-commons')
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation testFixtures(project(':lib-service-directory-admin-api'))
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+}
+
+dockerCompose {
+    startedServices = [
+        'service-directory',
+        'service-directory-db'
+    ]
+}
+
+// This is required otherwise `./gradlew --parallel service-directory:build local-service-directory:build` doesn't run in parallel
+tasks.named('test').configure {
+    mustRunAfter tasks.named('buildDockerImage')
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-service-directory') ?: "unspecified"
+}

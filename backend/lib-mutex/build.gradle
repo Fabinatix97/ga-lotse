@@ -1,0 +1,15 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    implementation project(':business-module-persistence-commons')
+
+    testImplementation project(':test-commons')
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation 'org.testcontainers:postgresql'
+
+    testRuntimeOnly 'org.postgresql:postgresql'
+}
+

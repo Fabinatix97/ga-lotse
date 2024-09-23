@@ -1,0 +1,41 @@
+plugins {
+    id "eshg.java-lib"
+    id "java-test-fixtures"
+}
+
+dependencies {
+    api project(':util-commons')
+    api project(':rest-client-commons')
+    api project(':rest-service-errors')
+    api project(':lib-keycloak')
+    api project(':test-helper-commons')
+    api project(':lib-commons')
+    api project(':lib-security-config')
+    implementation project(':rest-service-commons')
+
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-actuator'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+    api 'org.springframework.boot:spring-boot-starter-security'
+    api 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    api 'org.apache.commons:commons-lang3'
+
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.springframework:spring-tx'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'io.swagger.core.v3:swagger-core-jakarta:latest.release'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    compileOnly 'org.jetbrains:annotations:latest.release'
+
+    testImplementation project(':test-commons')
+    testImplementation testFixtures(project(':rest-service-commons'))
+
+    testFixturesApi project(':test-commons')
+    testFixturesApi 'org.springframework.boot:spring-boot-testcontainers'
+    testFixturesApi 'org.springframework.security:spring-security-test'
+    testFixturesImplementation 'org.springframework.data:spring-data-commons'
+
+    testFixturesApi 'org.springdoc:springdoc-openapi-starter-webmvc-ui:latest.release'
+    testFixturesImplementation 'org.openapitools:jackson-databind-nullable:latest.release'
+}

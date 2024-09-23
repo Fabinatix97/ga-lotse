@@ -1,0 +1,23 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+variables:
+  GRADLE_BASE_IMAGE: gradle@sha256:0c13b320f227a67179fca5d5746ab889c011ed143023c80c5fc8520609fe427f
+
+stages:
+  - build
+
+🏗 build:frontend:
+  stage: build
+  needs: [ ]
+  image: ${GRADLE_BASE_IMAGE}
+  script:
+    - gradle --no-daemon build -x test -x lint -x formatCheck
+
+🏗 build:backend:
+  image: ${GRADLE_BASE_IMAGE}
+  stage: build
+  needs: [ ]
+  script:
+    - cd backend
+    - gradle --continue build -x test -x findUnusedValidationFiles -x composeUp -x buildDockerImage -PuseDependencyProxy

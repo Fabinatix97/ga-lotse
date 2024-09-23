@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720779338042-2">
+    <addColumn tableName="attribute_selection">
+      <column name="search_key" type="text"/>
+    </addColumn>
+    <sql>
+      UPDATE attribute_selection
+      SET search_key = (
+        CASE
+          WHEN base_module_attribute_code IS NULL
+            THEN CONCAT(business_module_attribute_code, '~', data_source_id, '~', business_module_name)
+          ELSE CONCAT(business_module_attribute_code, '~', data_source_id, '~', business_module_name, '~', base_module_attribute_code)
+          END
+        );
+    </sql>
+    <addNotNullConstraint columnDataType="clob" columnName="search_key" tableName="attribute_selection" validate="true"/>
+
+    <addColumn tableName="table_column">
+      <column name="search_key" type="text"/>
+    </addColumn>
+    <sql>
+      UPDATE table_column
+      SET search_key = (
+        CASE
+          WHEN base_module_attribute_code IS NULL
+            THEN CONCAT(business_module_attribute_code, '~', data_source_id, '~', business_module_name)
+          ELSE CONCAT(business_module_attribute_code, '~', data_source_id, '~', business_module_name, '~', base_module_attribute_code)
+          END
+        );
+    </sql>
+    <addNotNullConstraint columnDataType="clob" columnName="search_key" tableName="table_column" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

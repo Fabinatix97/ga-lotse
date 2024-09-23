@@ -1,0 +1,67 @@
+= Dependency Management
+:sectnums:
+
+== Adding new dependencies
+
+Adding new dependencies can both impact the bundle size and security of our frontend applications. In order to avoid adding unnecessary dependencies, we follow a two-step process before adding new dependencies.
+
+==== Check if the dependency is necessary and reasonable
+
+1. Is the required functionality available through a native Browser API or an existing dependency?
+2. Is the functionality trivial enough to be implemented by yourself?
+3. Is the dependency considered to be an established solution?
+4. Do you/your company use this dependency in other projects?
+5. Is the dependency well maintained?
+6. Is the dependency published under a permitted license?
+7. Does the package bring many dependencies on its on?
+
+==== Obtain approval from a tech lead
+
+If after going through above questions you think it's necessary and reasonable to add the new dependency, please approach one of the frontend tech leads.
+The MR introducing the new dependency needs to be approved by a tech lead.
+
+
+== Updating dependencies
+
+=== Add a new dependency
+
+==== Frontend
+
+Add the new dependency to the `package.json` of the subproject, then in the top-level directory run:
+
+`./gradlew installDependency`
+
+==== Backend
+
+See link:../backend/README.md#introducing-new-dependencies[Backend README], chapter "Introducing new dependencies".
+
+=== Updating all dependencies at once
+
+To manually update *all* dependencies in the project, use the following commands:
+
+[cols="1,1"]
+|===
+| *Command*                                                | *Description*
+| `./gradlew updateDependencies`                           | Update all pnpm dependencies
+| `+++./gradlew resolveAndLockAll --update-locks '*:*'+++` | Update all Gradle lockfiles
+|===
+
+
+== Updating gradle ==
+
+The backend should be upgraded first. Depending on whether there were any problems, the backend reference commit needs to updated as well.
+If there were no adjustments necessary, this is optional.
+
+Adjust the version in the `wrapper` task configuration in link:../build.gradle[build.gradle] and run `./gradlew wrapper` *twice*.
+This should result in an updated `gradle/wrapper/gradle-wrapper.properties` and
+potentially in changed wrapper scripts (`gradlew`, `gradlew.bat`) in the project root.
+
+The gitlab pipeline does not use the gradle wrapper but the gradle version installed in the stage image.
+The `GRADLE_BASE_IMAGE_HASH` variable needs to be updated with a hash corresponding to the new version.
+The hash can be obtained by "inspecting" the desired image.
+For example: `docker inspect --format='{{.RepoDigests}}' gradle:8.8.0-jdk21-jammy`
+(only the part after `sha256:` is needed - take care to run it on the appropriate version!)
+
+You will also need to push an extended base image based on the gradle image to the gitlab container repository,
+see  link:../resources/gradle-docker-stage-image/README.md[resources/gradle-docker-stage-image/README.md]
+This image is used during the e2e test as it needs both gradle and docker.

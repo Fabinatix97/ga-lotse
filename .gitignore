@@ -1,0 +1,47 @@
+# dependencies
+**/node_modules
+
+# misc
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# IntelliJ
+*.iws
+*.iml
+*.ipr
+out/
+
+# Gradle
+.gradle
+.gradleHome
+**/build
+
+HELP.md
+build/
+**/src/main/generated**
+*.hprof
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+**/data/test/output
+**/data/test/tmp
+
+.local

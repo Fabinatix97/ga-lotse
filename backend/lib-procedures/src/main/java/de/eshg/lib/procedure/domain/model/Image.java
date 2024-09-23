@@ -1,0 +1,37 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.procedure.domain.model;
+
+import static jakarta.persistence.CascadeType.PERSIST;
+
+import de.eshg.lib.common.DataSensitivity;
+import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
+
+@Entity
+public class Image extends File {
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @OneToOne(
+      cascade = PERSIST,
+      orphanRemoval = true,
+      mappedBy = ImageMetaData_.IMAGE,
+      fetch = FetchType.LAZY,
+      optional = false)
+  private ImageMetaData metaData;
+
+  @Override
+  public ImageMetaData getMetaData() {
+    return metaData;
+  }
+
+  public void addMetaData(ImageMetaData metaData) {
+    this.metaData = metaData;
+    metaData.setImage(this);
+  }
+}

@@ -1,0 +1,14 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiInformationStatementTemplateState } from "@eshg/employee-portal-api/travelMedicine";
+import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
+
+import { INFORMATION_STATEMENT_TEMPLATE_STATES } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/translations";
+
+export const INFORMATION_STATEMENT_TEMPLATE_TYPE_OPTIONS =
+  buildEnumOptions<ApiInformationStatementTemplateState>(
+    INFORMATION_STATEMENT_TEMPLATE_STATES,
+  ).filter((option) => option.value);

@@ -1,0 +1,16 @@
+plugins {
+    id 'eshg.java-lib'
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api project(':lib-commons')
+    api project(':test-helper-commons-api')
+    api 'org.springframework.security:spring-security-core'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    testFixturesImplementation project(':test-commons')
+    testFixturesImplementation 'org.testcontainers:postgresql'
+    testFixturesApi 'org.testcontainers:testcontainers'
+    testFixturesApi 'org.springframework:spring-test'
+}

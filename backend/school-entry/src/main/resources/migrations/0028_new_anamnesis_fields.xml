@@ -1,0 +1,123 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1723538779436-1">
+    <addColumn tableName="anamnesis">
+      <column name="additional_therapies" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="allergies" type="text[]"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="can_swim" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="chronic_illness_or_disability_in_family" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="club_sport" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="daycare_name" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="development_conspicuities" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="ergo_therapy_end" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="ergo_therapy_start" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="has_seahorse_badge" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="hearing_aid" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="hearing_impairment" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="under_medical_treatment_for" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="hospitalizations_or_operations" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="in_daycare_since" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="infancy_conspicuities" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="other_interests" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="responsible_physician" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="personal_conspicuities" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="physio_therapy_end" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="physio_therapy_start" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="regular_medication" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="school_name" type="text"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="severe_illnesses" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="siblings_birth_years" type="int4[]"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="spectacles_in_family" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="spectacles_since" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="speech_impairment" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="speech_therapy_end" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="speech_therapy_start" type="date"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="vision_impairment" type="bool"/>
+    </addColumn>
+    <addColumn tableName="anamnesis">
+      <column name="vision_school_since" type="date"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724756199104-2">
+    <dropColumn columnName="daycare" tableName="anamnesis"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724756199104-1">
+    <ext:dropPostgresEnumType name="daycarevalue"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724756199104-3">
+    <dropColumn columnName="siblings" tableName="anamnesis"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724925362891-1">
+    <addColumn tableName="anamnesis">
+      <column name="number_of_siblings" type="int4"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

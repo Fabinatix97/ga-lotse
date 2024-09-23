@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720699133854-30">
+    <ext:createPostgresEnumType name="websearchstatus" values="ERRONEOUS, IDLE, NEW, PAUSED, RUNNING"/>
+    <ext:createPostgresEnumType name="websearchentrystatus" values="CHANGED, DELETED, NEW, SAVED"/>
+    <ext:createPostgresEnumType name="archivingrelevance" values="DEFAULT, IRRELEVANT, RELEVANT"/>
+    <ext:createPostgresEnumType name="procedureresult" values="RESULT_1, RESULT_2"/>
+    <ext:createPostgresEnumType name="procedurestatus" values="ABORTED, CLOSED, DRAFT, IN_PROGRESS, OPEN"/>
+    <ext:createPostgresEnumType name="proceduretype" values="CAN_CHILD, DRAFT_CITIZEN_OFFICE_IMPORT, DRAFT_SCHOOL_IMPORT, ENTRY_LEVEL, INSPECTION, MEASLES_PROTECTION, REGULAR_EXAMINATION, TM_VACCINATION_CONSULTATION, TYPE_2"/>
+    <ext:createPostgresEnumType name="followuptype" values="DOCUMENT_INSPECTION, INSPECTION"/>
+    <ext:createPostgresEnumType name="inspectionphase" values="CLOSED, CREATING_REPORT_AND_INVOICE, EXECUTED, EXECUTING, NEW, PLANNING, READY_FOR_EXECUTION"/>
+    <ext:createPostgresEnumType name="inspectionresult" values="FAILED, OPEN, SUCCESSFUL, SUCCESSFUL_WITH_INCIDENTS"/>
+    <ext:createPostgresEnumType name="inspectiontype" values="COMPLAINT, DOCUMENT_INSPECTION, INITIAL, REGULAR, REGULAR_AFTER_INCIDENTS, REVIEW"/>
+    <ext:createPostgresEnumType name="inspectionannouncementtype" values="EMAIL, PHONE"/>
+    <ext:createPostgresEnumType name="persontype" values="PARENT, PATIENT"/>
+    <ext:createPostgresEnumType name="facilitytype" values="DAYCARE, HOSPITAL, INSPECTION, MEDICAL_PRACTICE, OTHER, REFUGEE_ACCOMMODATION, SCHOOL"/>
+    <ext:createPostgresEnumType name="taskstatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="tasktype" values="BOOK_APPOINTMENT, INSPECTION_EXECUTION, INSPECTION_PLANNING, INSPECTION_REPORT, MEASLES_PROTECTION, PERFORM_SCHOOL_ENTRY_EXAMINATION, TRAVEL_MEDICINE, TYPE_2"/>
+    <ext:createPostgresEnumType name="contacttype" values="FACILITY, PRIVATE_PERSON"/>
+    <ext:createPostgresEnumType name="title" values="DR, PROF, PROF_DR"/>
+    <ext:createPostgresEnumType name="filetype" values="EML, JPEG, PDF, PNG"/>
+    <ext:createPostgresEnumType name="decision" values="DENIED, GRANTED"/>
+    <ext:createPostgresEnumType name="inboxprocedurestatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="inboxprogressentrytype" values="EMAIL, LETTER, PHONE_CALL"/>
+    <ext:createPostgresEnumType name="keydocumenttype" values="INVOICE, REPORT"/>
+    <ext:createPostgresEnumType name="manualprogressentrytype" values="DOCUMENT, EMAIL, IMAGE, LETTER, NOTE, PHONE_CALL"/>
+    <ext:createPostgresEnumType name="triggertype" values="SYSTEM_AUTOMATIC, USER"/>
+    <ext:createPostgresEnumType name="taskdueatremindernotificationtype" values="ONE_DAY_BEFORE_DUE_AT, THREE_DAYS_BEFORE_DUE_AT"/>
+
+    <modifyDataType columnName="archiving_relevance" newDataType="archivingrelevance" tableName="inspection"/>
+    <modifyDataType columnName="contact_type" newDataType="contacttype" tableName="contact_details"/>
+    <modifyDataType columnName="decision" newDataType="decision" tableName="approval_request"/>
+    <modifyDataType columnName="facility_type" newDataType="facilitytype" tableName="inspection_related_facility"/>
+    <modifyDataType columnName="file_type" newDataType="filetype" tableName="file"/>
+    <modifyDataType columnName="followup_type" newDataType="followuptype" tableName="inspection"/>
+    <modifyDataType columnName="inbox_procedure_status" newDataType="inboxprocedurestatus" tableName="inbox_procedure"/>
+    <modifyDataType columnName="inbox_progress_entry_type" newDataType="inboxprogressentrytype" tableName="inbox_progress_entry"/>
+    <modifyDataType columnName="inbox_progress_entry_type" newDataType="inboxprogressentrytype" tableName="processed_inbox_progress_entry"/>
+    <modifyDataType columnName="key_document_type" newDataType="keydocumenttype" tableName="manual_progress_entry"/>
+    <modifyDataType columnName="key_document_type" newDataType="keydocumenttype" tableName="manual_progress_entry_aud"/>
+    <modifyDataType columnName="manual_progress_entry_type" newDataType="manualprogressentrytype" tableName="manual_progress_entry"/>
+    <modifyDataType columnName="manual_progress_entry_type" newDataType="manualprogressentrytype" tableName="manual_progress_entry_aud"/>
+    <modifyDataType columnName="person_type" newDataType="persontype" tableName="inspection_person"/>
+    <modifyDataType columnName="phase" newDataType="inspectionphase" tableName="inspection"/>
+    <modifyDataType columnName="procedure_result" newDataType="procedureresult" tableName="inspection"/>
+    <modifyDataType columnName="procedure_status" newDataType="procedurestatus" tableName="inspection"/>
+    <modifyDataType columnName="procedure_type" newDataType="proceduretype" tableName="inbox_procedure"/>
+    <modifyDataType columnName="procedure_type" newDataType="proceduretype" tableName="inspection"/>
+    <modifyDataType columnName="reminder_type" newDataType="taskdueatremindernotificationtype" tableName="task_due_at_reminder_notification"/>
+    <modifyDataType columnName="result" newDataType="inspectionresult" tableName="inspection"/>
+    <modifyDataType columnName="status" newDataType="websearchstatus" tableName="websearch"/>
+    <modifyDataType columnName="status" newDataType="websearchentrystatus" tableName="websearch_entry"/>
+    <modifyDataType columnName="task_status" newDataType="taskstatus" tableName="inspection_task"/>
+    <modifyDataType columnName="task_type" newDataType="tasktype" tableName="inspection_task"/>
+    <modifyDataType columnName="title" newDataType="title" tableName="contact_details"/>
+    <modifyDataType columnName="trigger_type" newDataType="triggertype" tableName="system_progress_entry"/>
+    <modifyDataType columnName="type" newDataType="inspectiontype" tableName="inspection"/>
+    <modifyDataType columnName="type" newDataType="inspectionannouncementtype" tableName="inspection_announcement"/>
+  </changeSet>
+</databaseChangeLog>

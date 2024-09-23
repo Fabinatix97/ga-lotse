@@ -1,0 +1,16 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':lib-central-repository-api')
+
+    implementation project(':rest-client-commons')
+    implementation project(':test-helper-commons')
+
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework:spring-context'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+}

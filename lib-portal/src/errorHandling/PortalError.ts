@@ -1,0 +1,27 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { ApiErrorCode } from "@eshg/employee-portal-api/base";
+
+import { PortalErrorCode } from "./PortalErrorCode";
+
+interface PortalErrorParams {
+  errorCode: PortalErrorCode;
+  message: string;
+  originalErrorCode?: ApiErrorCode;
+  cause?: unknown;
+}
+
+export class PortalError extends Error {
+  readonly errorCode: PortalErrorCode;
+  readonly originalErrorCode?: ApiErrorCode;
+
+  constructor(params: PortalErrorParams) {
+    super(params.message);
+    this.errorCode = params.errorCode;
+    this.originalErrorCode = params.originalErrorCode;
+    this.cause = params.cause;
+  }
+}

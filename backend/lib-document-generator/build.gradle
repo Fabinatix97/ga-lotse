@@ -1,0 +1,23 @@
+plugins {
+    id 'eshg.java-lib'
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    implementation project(':lib-base-client')
+    implementation 'org.freemarker:freemarker'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'io.github.openhtmltopdf:openhtmltopdf-core:latest.release'
+    implementation 'io.github.openhtmltopdf:openhtmltopdf-pdfbox:latest.release'
+    implementation 'io.github.openhtmltopdf:openhtmltopdf-svg-support:latest.release'
+    implementation 'io.github.openhtmltopdf:openhtmltopdf-slf4j:latest.release'
+
+    testFixturesApi 'org.apache.pdfbox:pdfbox:latest.release'
+    testFixturesImplementation project(':util-commons')
+    testFixturesImplementation 'org.slf4j:slf4j-api'
+    testFixturesImplementation 'org.springframework:spring-context'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testFixturesImplementation 'org.verapdf:validation-model-jakarta:latest.release'
+}

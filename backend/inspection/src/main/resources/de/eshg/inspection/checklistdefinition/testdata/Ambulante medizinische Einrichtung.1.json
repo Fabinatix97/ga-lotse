@@ -1,0 +1,346 @@
+{
+  "name": "Arztpraxen und Praxen für ambulantes Operieren",
+  "description": "",
+  "isExpandable": true,
+  "objectTypeId": "6b6a4c76-1e9d-4a83-8311-52c646a8f356",
+  "sections": [
+    {
+      "title": "Allgemeine Angaben",
+      "id": "b483215e-6a9b-4943-8f1f-eeffc1b87b83",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "47b6c671-9762-4184-890a-5a10837f5f20",
+          "text": "Ermächtigung zum AO",
+          "mandatory": true,
+          "note": null,
+          "help": null,
+          "textModuleTrue": "Textbaustein Antwortmöglichkeit Ja",
+          "textModuleFalse": "Textbaustein Antwortmöglichkeit Nein"
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "46c82765-df87-4c57-8ff7-69d247fa69ba",
+          "text": "Existiert in der Einrichtung ein angepasster Hygieneplan?",
+          "mandatory": true,
+          "note": "Bemerkung des Feldes",
+          "help": "Der Hygieneplan sollte verhanden sein",
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "cd325c5f-3bd3-4b4d-a562-5c57fe25edbb",
+          "text": "Existiert in der Einrichtung ein angepasster Reinigungs- und Desinfektionsplan?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "0ba629f2-71d7-43cc-b0a7-8989b4e23a13",
+          "text": "Jährliche Schulungen über Hygiene und Hygieneplan",
+          "mandatory": true,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "7f0886d4-fea5-4d05-b868-f41ed6c2a43f",
+          "text": "Ist eine hygieneverantwortliche Person benannt?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Invasive Eingriffe",
+      "id": "8faf2b6a-4dfc-4afb-b96f-dde28eeba77f",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "1c663933-3bfc-4100-9d55-cbfc94dc28ae",
+          "text": "Ambulante Eingriffe bzw. Operationen",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "89bb3ca8-2999-4a2c-a821-289f9911ddba",
+          "text": "Punktion steriler Körperhöhlen",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "fa934147-3e65-4588-9592-85d452c0c230",
+          "text": "Endoskopische Untersuchungen",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "d79b2cf8-fea5-4040-aef9-bb96281c5321",
+          "text": "Welche Operationen?",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        }
+      ]
+    },
+    {
+      "title": "Medizinische Untersuchungs-/Behandlungsmethoden",
+      "id": "e8b0ee36-124d-470f-be09-4f3ac138783b",
+      "elements": [
+        {
+          "@type": "MULTI_SELECT",
+          "id": "83062cf8-9f19-4feb-aac2-b810e103bbd2",
+          "text": "Medizinische Untersuchungs-/Behandlungsmethoden",
+          "mandatory": true,
+          "note": "mehrere Antworten möglich",
+          "help": null,
+          "items": [
+            {
+              "id": "16001998-929e-4397-95ba-60046d404334",
+              "text": "EKG",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "a2c11e57-e8e3-4992-9be8-0c4cac6c6792",
+              "text": "Lungenfunktion",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "64a3b79b-f005-4d6a-a2df-761818d84418",
+              "text": "CTG",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "b8dd7a49-450e-468f-89d3-b22ba9f8bcdc",
+              "text": "Inhalation",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "6cffdada-8109-48eb-b17e-3f328b631505",
+              "text": "Ultraschall",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            }
+          ]
+        },
+        {
+          "@type": "TEXT",
+          "id": "1ab96ebe-be3a-4216-a076-33aad4b21ebc",
+          "text": "Sonstiges",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        }
+      ]
+    },
+    {
+      "title": "Räumliche Bedingungen",
+      "id": "484e9694-c3fb-4703-9a08-ce675c75d9c6",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "687934a8-ca49-4a34-9b63-08732465651a",
+          "text": "Umkleideraum mit Schwarz-Weiß-Trennung",
+          "mandatory": true,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "a5708fcd-5b46-4cd2-b8ff-76792ae6bd5f",
+          "text": "Getrennte Sanitäranlagen (Personal/Patient)",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "0c971b49-f9f3-45e9-ae2a-9368fd3451cf",
+          "text": "Lager/Schrank",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "2ace49ba-af4e-41c5-a68f-364999821b27",
+          "text": "Anzahl Eingriffsräume/OPs",
+          "mandatory": true,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "e8d5fe45-1a3b-4b42-b651-b24930a45546",
+          "text": "Anzahl Untersuchungsräume",
+          "mandatory": true,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "0f0da9c9-4b7b-4932-99e3-51f109cebc7f",
+          "text": "Separater Eingang für infektiöse Patienten",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "843fab42-11bb-42f6-bff4-314c96755abc",
+          "text": "Separater Raum für infektiöse Patienten",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "214e0a44-0fca-4020-9531-1ead8af4a07e",
+          "text": "Vorgehen im Hygieneplan festgelegt (Wegeführung)",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "ba659090-ab7e-4c27-899d-c136e1f2c568",
+          "text": "Raum zur Instrumentenaufbereitung/Sterilisation",
+          "mandatory": true,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "9c665b6c-62e0-407e-9b95-38a79c21a7ab",
+          "text": "Platz zur Instrumentenaufbereitung/Sterilisation Reine und unreine Zone erkennbar getrennt",
+          "mandatory": true,
+          "note": null,
+          "help": null
+        }
+      ]
+    },
+    {
+      "title": "Händedesinfektion",
+      "id": "f3a3e90e-62c9-49cd-a6f2-2a89681042d8",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "bfd3f725-682a-4424-b49e-f46bc9e82ab8",
+          "text": "Gibt es Waschbecken in den Behandlungsräumen",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "18b338a2-5b1a-4cdd-b0bc-9ab653acb6d4",
+          "text": "Gibt es Waschbecken im Labor",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "IMAGE",
+          "id": "bdb7970a-02f9-4b5b-8b8b-ebb1f5afc86b",
+          "text": "Gibt es Waschbecken im WC",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "AUDIO",
+          "id": "85452ff7-dade-401b-8ad0-0c60f818f085",
+          "text": "Werden für Patienten mit speziellen Infektionen geeignete Desinfektionsmittel vorgehalten?",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "fb216b51-86c8-4fb7-8da0-719b6f37ee71",
+          "text": "Ist das verwendete Händedesinfektionsmittel VAH-gelistet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "217e857b-6b8f-443a-b419-db63ff692c26",
+          "text": "Werden Originalgebinde verwendet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Sonstiges",
+      "id": "4dc95949-8f91-4a19-a4f6-4d0ae3cc9346",
+      "elements": [
+        {
+          "@type": "IMAGE",
+          "id": "217e857b-6b8f-443a-b419-db63ff692c26",
+          "text": "Bilder von der Einrichtung",
+          "mandatory": false,
+          "note": "Fotografieren Sie den Hygeniebereich.",
+          "help": null
+        },
+        {
+          "@type": "AUDIO",
+          "id": "217e857b-6b8f-443a-b419-db63ff692c26",
+          "text": "Audionotizen",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        }
+      ]
+    }
+  ]
+}

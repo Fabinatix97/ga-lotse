@@ -1,0 +1,143 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import {
+  ApiAppointmentType,
+  ApiDayOfWeek,
+} from "@eshg/employee-portal-api/measlesProtection";
+import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { Chip, Stack, Typography } from "@mui/joy";
+import { eachDayOfInterval, intervalToDuration } from "date-fns";
+
+import { AppointmentBlockGroupValues } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/AppointmentBlockGroupForm";
+import { getAppointmentDurationInMinutes } from "@/lib/businessModules/measlesProtection/shared/helper";
+import {
+  AppointmentBlockGroupValuesWithDays,
+  WEEKDAY_CHECKBOX_OPTIONS,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
+import { isTimeString, toLocalDateTime } from "@/lib/shared/helpers/dateTime";
+
+function isValidAppointmentBlock(
+  appointmentBlock: AppointmentBlockGroupValuesWithDays,
+) {
+  return (
+    isDateString(appointmentBlock.startDate) &&
+    isDateString(appointmentBlock.endDate) &&
+    isTimeString(appointmentBlock.startTime) &&
+    isTimeString(appointmentBlock.endTime)
+  );
+}
+
+function getBlockDurationInMinutes(start: Date, end: Date) {
+  const { hours = 0, minutes = 0 } = intervalToDuration({
+    start,
+    end,
+  });
+
+  return hours * 60 + minutes;
+}
+
+export function calculateAppointmentsPerBlock(
+  type: OptionalFieldValue<ApiAppointmentType>,
+  start: Date,
+  end: Date,
+  appointmentDurations: Record<string, number>,
+) {
+  const blockDurationInMinutes = getBlockDurationInMinutes(start, end);
+  const appointmentDurationInMinutes = getAppointmentDurationInMinutes(
+    type,
+    appointmentDurations,
+  );
+  const appointmentCount =
+    blockDurationInMinutes / appointmentDurationInMinutes;
+
+  return Number.isInteger(appointmentCount) && appointmentCount > 0
+    ? appointmentCount
+    : 0;
+}
+
+export function calculateAppointmentCount({
+  type: appointmentType,
+  appointmentBlocks,
+  appointmentDurations,
+  parallelExaminations,
+  skipCalculatingOfBlocks,
+}: AppointmentBlockGroupValues & {
+  appointmentDurations: Record<string, number>;
+  parallelExaminations: number;
+  skipCalculatingOfBlocks: boolean | undefined;
+}) {
+  if (
+    isEmptyString(appointmentType) ||
+    !appointmentBlocks.length ||
+    skipCalculatingOfBlocks
+  ) {
+    return 0;
+  }
+
+  let totalCount = 0;
+
+  for (const appointmentBlock of appointmentBlocks) {
+    if (isValidAppointmentBlock(appointmentBlock)) {
+      const { startDate, startTime, endDate, endTime, daysOfWeek } =
+        appointmentBlock;
+      const start = toLocalDateTime(startDate, startTime);
+      const end = toLocalDateTime(endDate, endTime);
+      const daysInDateRange = eachDayOfInterval({
+        start,
+        end,
+      });
+      const includedDaysInDateRange = daysInDateRange.filter((day) => {
+        return daysOfWeek.includes(
+          WEEKDAY_CHECKBOX_OPTIONS[day.getDay()]?.id as ApiDayOfWeek,
+        );
+      });
+      let appointmentsInBlockGroup = 0;
+
+      includedDaysInDateRange.forEach((_day) => {
+        appointmentsInBlockGroup += calculateAppointmentsPerBlock(
+          appointmentType,
+          start,
+          end,
+          appointmentDurations,
+        );
+      });
+
+      totalCount += appointmentsInBlockGroup;
+    }
+  }
+
+  return totalCount * parallelExaminations;
+}
+
+interface AppointmentCountWithDaysProps {
+  appointments: AppointmentBlockGroupValues;
+  appointmentDurations: Record<string, number>;
+  parallelExaminations: number;
+  skipCalculatingOfBlocks?: boolean;
+}
+
+export function AppointmentCountWithDays({
+  appointmentDurations,
+  appointments,
+  parallelExaminations,
+  skipCalculatingOfBlocks,
+}: Readonly<AppointmentCountWithDaysProps>) {
+  return (
+    <Stack direction="row" gap={1}>
+      <Typography level="title-sm">Termine</Typography>
+      <Chip color="primary" data-testid="appointmentCount">
+        {calculateAppointmentCount({
+          ...appointments,
+          appointmentDurations,
+          parallelExaminations,
+          skipCalculatingOfBlocks,
+        })}
+      </Chip>
+    </Stack>
+  );
+}

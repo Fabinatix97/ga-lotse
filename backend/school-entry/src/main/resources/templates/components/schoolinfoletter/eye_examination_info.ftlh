@@ -1,0 +1,36 @@
+<#import "../common/forms.ftlh" as forms />
+
+<#macro content eyeExaminationInfo >
+<#-- @ftlvariable name="eyeExaminationInfo" type="de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterEyeExaminationInfo" -->
+  <table style="width: 100%;">
+    <colgroup>
+      <col style="width: 17%" />
+      <col style="width: 17%" />
+      <col style="width: 33%" />
+      <col style="width: 33%" />
+    </colgroup>
+    <tr>
+      <td>
+        <@forms.checkbox checked=!eyeExaminationInfo.conspicuous title="Nein"/>
+      </td>
+      <td>
+        <@forms.checkbox checked=eyeExaminationInfo.conspicuous title="Ja"/>
+      </td>
+      <td>
+        <@forms.checkbox checked=eyeExaminationInfo.clarificationArranged title="Abklärung veranlasst"/>
+      </td>
+      <td>
+        <@forms.checkbox checked=eyeExaminationInfo.underTreatment title="in Kontrolle / Behandlung"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td>
+        <@forms.checkbox checked=eyeExaminationInfo.spectacleWearer title="Brillenträger"/>
+      </td>
+      <td>
+        <@forms.checkbox checked=eyeExaminationInfo.colorSenseDisorder title="Farbsinnstörung"/>
+      </td>
+    </tr>
+  </table>
+</#macro>

@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1723018792229-1">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_person_name_idx;
+      CREATE INDEX trgm_person_name_idx
+      ON person
+      USING gin (normalize_text(first_name) gin_trgm_ops, normalize_text(last_name) gin_trgm_ops)
+      WHERE reference_person_id IS NULL AND data_origin != 'EXTERNAL';
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1723018792229-2">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_facility_name_idx;
+      CREATE INDEX trgm_facility_name_idx
+      ON facility
+      USING gin (normalize_text(name) gin_trgm_ops)
+      WHERE reference_facility_id IS NULL AND data_origin != 'EXTERNAL';
+    </sql>
+  </changeSet>
+</databaseChangeLog>

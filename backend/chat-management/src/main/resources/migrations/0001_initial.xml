@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720699504318-1">
+    <createTable tableName="default_revision_entity">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1720699504318-2">
+    <createTable tableName="user_settings">
+      <column name="user_id" type="TEXT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user_settings"/>
+      </column>
+      <column name="chat_consent_asked" type="BOOLEAN"/>
+      <column name="chat_usage_enabled" type="BOOLEAN"/>
+      <column name="share_presence" type="BOOLEAN"/>
+      <column name="show_read_confirmation" type="BOOLEAN"/>
+      <column name="show_typing_notification" type="BOOLEAN"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

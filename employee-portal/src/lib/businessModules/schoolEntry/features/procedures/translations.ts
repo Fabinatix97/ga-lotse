@@ -1,0 +1,452 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  ApiAppointmentType,
+  ApiArticulationValue,
+  ApiDisabilityType,
+  ApiDoctorLetterValue,
+  ApiEvaluationArticulationValue,
+  ApiEvaluationExaminationValue,
+  ApiExaminationResultValue,
+  ApiEyeExaminationType,
+  ApiFamilyLanguageValue,
+  ApiGender,
+  ApiGermanKnowledgeValue,
+  ApiHandednessValue,
+  ApiLanguageKnowledgeValue,
+  ApiPercentageValue,
+  ApiPrimaryLanguageValue,
+  ApiRequiredProcedureData,
+  ApiSchoolEntryCountryCode,
+  ApiSchoolEntryProcedureType,
+  ApiSchoolEntryStatusType,
+  ApiSchoolFeedback,
+  ApiSchoolRecommendation,
+  ApiSopessExaminationResultValue,
+  ApiVaccinationSchemeValue,
+  ApiWaitingStatus,
+} from "@eshg/employee-portal-api/schoolEntry";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
+
+export const PROCEDURE_TYPES: EnumMap<ApiSchoolEntryProcedureType> = {
+  [ApiSchoolEntryProcedureType.DraftCitizenOfficeImport]:
+    "Entwurf Bürgeramtsliste",
+  [ApiSchoolEntryProcedureType.DraftSchoolImport]: "Entwurf Schulliste",
+  [ApiSchoolEntryProcedureType.RegularExamination]: "Regeluntersuchung",
+  [ApiSchoolEntryProcedureType.CanChild]: "Kann-Kinder",
+  [ApiSchoolEntryProcedureType.EntryLevel]: "Eingangsstufe",
+};
+
+export const PROCEDURE_STATUS: EnumMap<ApiSchoolEntryStatusType> = {
+  [ApiSchoolEntryStatusType.Draft]: "Entwurf",
+  [ApiSchoolEntryStatusType.Open]: "Offen",
+  [ApiSchoolEntryStatusType.InProgress]: "In Arbeit",
+  [ApiSchoolEntryStatusType.Closed]: "Geschlossen",
+  [ApiSchoolEntryStatusType.Aborted]: "Beendet",
+};
+
+export const GENDER_VALUES = {
+  [ApiGender.NotSpecified]: "Keine Angabe",
+  [ApiGender.Male]: "Männlich",
+  [ApiGender.Female]: "Weiblich",
+  [ApiGender.Diverse]: "Divers",
+};
+
+export const EXAMINATION_RESULT_VALUES: EnumMap<ApiExaminationResultValue> = {
+  [ApiExaminationResultValue.Ok]: "I  In Ordnung",
+  [ApiExaminationResultValue.Known]: "B  Bekannt/Behandelt",
+  [ApiExaminationResultValue.Unknown]: "U  Unbekannt",
+  [ApiExaminationResultValue.DoctorLetter]: "A  Arztbrief",
+};
+
+export const DOCTOR_LETTER_VALUES: EnumMap<ApiDoctorLetterValue> = {
+  [ApiDoctorLetterValue.Confirmed]: "B  Bestätigt",
+  [ApiDoctorLetterValue.NoReply]: "K  Keine Rückmeldung",
+  [ApiDoctorLetterValue.PartiallyConfirmed]: "T  Teilbestätigt",
+  [ApiDoctorLetterValue.NotConfirmed]: "N  Nicht bestätigt",
+};
+
+export const PERCENTAGE_VALUES: EnumMap<ApiPercentageValue> = {
+  [ApiPercentageValue.Lt15]: "<0,15",
+  [ApiPercentageValue._15]: "0,15",
+  [ApiPercentageValue._30]: "0,3",
+  [ApiPercentageValue._50]: "0,5",
+  [ApiPercentageValue._70]: "0,7",
+  [ApiPercentageValue._100]: "1,0",
+};
+
+export const EYE_EXAMINATION_TYPES: EnumMap<ApiEyeExaminationType> = {
+  [ApiEyeExaminationType.Distance]: "Ferne",
+  [ApiEyeExaminationType.DistancePlus15Dpt]: "F + 1,5dpt",
+  [ApiEyeExaminationType.DistanceWithGlasses]: "F mit Brille",
+};
+
+export const EVALUATION_EXAMINATION_TYPES: EnumMap<ApiEvaluationExaminationValue> =
+  {
+    [ApiEvaluationExaminationValue.Conspicuous]: "A",
+    [ApiEvaluationExaminationValue.Borderline]: "G",
+    [ApiEvaluationExaminationValue.Inconspicuous]: "U",
+    [ApiEvaluationExaminationValue.Unknown]: "99",
+  };
+
+export const SOPESS_EXAMINATION_VALUES: EnumMap<ApiSopessExaminationResultValue> =
+  {
+    [ApiSopessExaminationResultValue.Ok]: "I In Ordnung",
+    [ApiSopessExaminationResultValue.DoctorLetter]: "A Arztbrief",
+    [ApiSopessExaminationResultValue.Borderline]: "G Grenzwertig",
+    [ApiSopessExaminationResultValue.Known]: "B Bekannt/Behandelt",
+    [ApiSopessExaminationResultValue.Unknown]: "U Unbekannt",
+  };
+
+export const HANDEDNESS_VALUES: EnumMap<ApiHandednessValue> = {
+  [ApiHandednessValue.Right]: "R rechts",
+  [ApiHandednessValue.Left]: "L links",
+  [ApiHandednessValue.Uncertain]: "X unsicher",
+  [ApiHandednessValue.Unknown]: "U unbekannt",
+};
+
+export const ARTICULATION_VALUES: EnumMap<ApiArticulationValue> = {
+  [ApiArticulationValue.Inconspicuous]: "0 unauffällig",
+  [ApiArticulationValue.Conspicuous]: "1 auffällig",
+  [ApiArticulationValue.Unknown]: "9 unbekannt",
+};
+
+export const ARTICULATION_EVALUATION_TYPES: EnumMap<ApiEvaluationArticulationValue> =
+  {
+    [ApiEvaluationArticulationValue.Inconspicuous]: "U",
+    [ApiEvaluationArticulationValue.Conspicuous]: "A",
+  };
+
+export const PRIMARY_LANGUAGE_VALUES: EnumMap<ApiPrimaryLanguageValue> = {
+  [ApiPrimaryLanguageValue.German]: "1 deutsch",
+  [ApiPrimaryLanguageValue.Other]: "2 andere",
+  [ApiPrimaryLanguageValue.Unknown]: "9 unbekannt",
+};
+
+export const LANGUAGE_KNOWLEDGE_VALUES: EnumMap<ApiLanguageKnowledgeValue> = {
+  [ApiLanguageKnowledgeValue.Rudimentary]: "1 rudimentär",
+  [ApiLanguageKnowledgeValue.Faulty]: "2 fehlerhaft",
+  [ApiLanguageKnowledgeValue.Faultless]: "3 fehlerfrei",
+  [ApiLanguageKnowledgeValue.Unknown]: "9 unbekannt",
+};
+
+export const FAMILY_LANGUAGE_VALUES: EnumMap<ApiFamilyLanguageValue> = {
+  [ApiFamilyLanguageValue.German]: "0 deutsch",
+  [ApiFamilyLanguageValue.Turkish]: "1 türkisch",
+  [ApiFamilyLanguageValue.Kurdish]: "2 kurdisch",
+  [ApiFamilyLanguageValue.Russian]: "3 russisch",
+  [ApiFamilyLanguageValue.Polish]: "4 polnisch",
+  [ApiFamilyLanguageValue.Arabic]: "5 arabisch",
+  [ApiFamilyLanguageValue.FarsiDari]: "6 farsi/dari",
+  [ApiFamilyLanguageValue.SerboCroatian]: "7 serbokroatisch",
+  [ApiFamilyLanguageValue.Roman]: "8 rumänisch",
+  [ApiFamilyLanguageValue.Bulgarian]: "9 bulgarisch",
+  [ApiFamilyLanguageValue.Pashtu]: "10 pashtu",
+  [ApiFamilyLanguageValue.Tigrinia]: "11 tigrinia",
+  [ApiFamilyLanguageValue.Berberian]: "12 berberisch",
+  [ApiFamilyLanguageValue.Amharian]: "13 amharisch",
+  [ApiFamilyLanguageValue.Aramean]: "14 aramäisch",
+  [ApiFamilyLanguageValue.Italian]: "15 italienisch",
+  [ApiFamilyLanguageValue.Spanish]: "16 spanisch",
+  [ApiFamilyLanguageValue.Greek]: "17 griechisch",
+  [ApiFamilyLanguageValue.Portuguese]: "18 portugiesisch",
+  [ApiFamilyLanguageValue.English]: "19 englisch",
+  [ApiFamilyLanguageValue.French]: "20 französisch",
+  [ApiFamilyLanguageValue.Urdu]: "21 urdu",
+  [ApiFamilyLanguageValue.OtherEuropeanLanguages]: "22 weitere europ. Sprachen",
+  [ApiFamilyLanguageValue.OtherAsianLanguages]:
+    "23 weitere asiatische Sprachen",
+  [ApiFamilyLanguageValue.OtherAfricanLanguages]:
+    "24 weitere afrikanische Sprachen",
+  [ApiFamilyLanguageValue.OtherLanguages]: "25 sonstige Sprachen",
+  [ApiFamilyLanguageValue.Unknown]: "99 unbekannt",
+};
+
+export const GERMAN_KNOWLEDGE_VALUES: EnumMap<ApiGermanKnowledgeValue> = {
+  [ApiGermanKnowledgeValue.NoGerman]: "1 kein Deutsch",
+  [ApiGermanKnowledgeValue.Bad]: "2 schlecht",
+  [ApiGermanKnowledgeValue.FluidWithMajorErrors]:
+    "3 flüssig mit erheblichen Fehlern",
+  [ApiGermanKnowledgeValue.FluidWithMinorErrors]:
+    "4 flüssig mit leichten Fehlern",
+  [ApiGermanKnowledgeValue.Faultless]: "5 fehlerfrei",
+  [ApiGermanKnowledgeValue.Unknown]: "9 unbekannt",
+};
+
+export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
+  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
+  [ApiAppointmentType.CanChild]: "Kann-Kinder",
+  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
+  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
+  [ApiAppointmentType.Consultation]: "Beratung",
+  [ApiAppointmentType.Vaccination]: "Impfung",
+  [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
+  [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
+  [ApiAppointmentType.SexWork]: "Sexarbeit",
+  [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
+};
+
+export const DISABILITY_TYPE_VALUES: EnumMap<ApiDisabilityType> = {
+  [ApiDisabilityType.Physical]: "körperlich",
+  [ApiDisabilityType.Mental]: "geistig",
+  [ApiDisabilityType.Emotional]: "seelisch",
+  [ApiDisabilityType.Multiple]: "mehrfach",
+};
+
+export const SCHOOL_RECOMMENDATION_VALUES: EnumMap<ApiSchoolRecommendation> = {
+  [ApiSchoolRecommendation.No]: "Nein",
+  [ApiSchoolRecommendation.BackRegular]: "ZURK Zurückstellung Regelkind",
+  [ApiSchoolRecommendation.BackEntryLevel]:
+    "ZUEK Zurückstellung Eingangsstufenkind",
+  [ApiSchoolRecommendation.ConcernsEarlyEnrolment]:
+    "BEKK Bedenken gegen vorzeitige Einschulung",
+  [ApiSchoolRecommendation.AdviceCenter]: "BFZ Beratungs- und Förderzentrum",
+};
+
+export const SCHOOL_FEEDBACK_VALUES: EnumMap<ApiSchoolFeedback> = {
+  [ApiSchoolFeedback.Positive]: "P positiv (eingeschult)",
+  [ApiSchoolFeedback.Negative]: "N negativ (nicht eingeschult)",
+  [ApiSchoolFeedback.Unknown]: "U unbekannt",
+};
+
+export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
+  [ApiSchoolEntryCountryCode.Afg]: "Afghanistan",
+  [ApiSchoolEntryCountryCode.Egy]: "Ägypten",
+  [ApiSchoolEntryCountryCode.Alb]: "Albanien",
+  [ApiSchoolEntryCountryCode.Alg]: "Algerien",
+  [ApiSchoolEntryCountryCode.And]: "Andorra",
+  [ApiSchoolEntryCountryCode.Ang]: "Angola",
+  [ApiSchoolEntryCountryCode.Aub]: "Antigua und Barbuda",
+  [ApiSchoolEntryCountryCode.Gnq]: "Äquatorialguinea",
+  [ApiSchoolEntryCountryCode.Ara]: "Arabien",
+  [ApiSchoolEntryCountryCode.Arg]: "Argentinien",
+  [ApiSchoolEntryCountryCode.Arm]: "Armenien",
+  [ApiSchoolEntryCountryCode.Ase]: "Aserbaidschan",
+  [ApiSchoolEntryCountryCode.Asn]: "Asien",
+  [ApiSchoolEntryCountryCode.Eth]: "Äthiopien",
+  [ApiSchoolEntryCountryCode.Aus]: "Australien",
+  [ApiSchoolEntryCountryCode.Bam]: "Bahamas",
+  [ApiSchoolEntryCountryCode.Bah]: "Bahrain",
+  [ApiSchoolEntryCountryCode.Bal]: "Baltikum",
+  [ApiSchoolEntryCountryCode.Bad]: "Bangladesch",
+  [ApiSchoolEntryCountryCode.Bar]: "Barbados",
+  [ApiSchoolEntryCountryCode.Bel]: "Belgien",
+  [ApiSchoolEntryCountryCode.Bez]: "Belize",
+  [ApiSchoolEntryCountryCode.Ben]: "Benin",
+  [ApiSchoolEntryCountryCode.Bhu]: "Bhutan",
+  [ApiSchoolEntryCountryCode.Bol]: "Bolivien",
+  [ApiSchoolEntryCountryCode.Bos]: "Bosnien-Herzegowina",
+  [ApiSchoolEntryCountryCode.Bot]: "Botswana",
+  [ApiSchoolEntryCountryCode.Bra]: "Brasilien",
+  [ApiSchoolEntryCountryCode.Bru]: "Brunei",
+  [ApiSchoolEntryCountryCode.Bul]: "Bulgarien",
+  [ApiSchoolEntryCountryCode.Buf]: "Burkina Faso",
+  [ApiSchoolEntryCountryCode.Bur]: "Burundi",
+  [ApiSchoolEntryCountryCode.Chi]: "Chile",
+  [ApiSchoolEntryCountryCode.Chv]: "China",
+  [ApiSchoolEntryCountryCode.Coo]: "Cookinseln",
+  [ApiSchoolEntryCountryCode.Cor]: "Costa Rica",
+  [ApiSchoolEntryCountryCode.Civ]: "Côte d'Ivoire",
+  [ApiSchoolEntryCountryCode.Dan]: "Dänemark",
+  [ApiSchoolEntryCountryCode.Deu]: "Deutschland",
+  [ApiSchoolEntryCountryCode.Doa]: "Dominica",
+  [ApiSchoolEntryCountryCode.Dom]: "Dominikanische Republik",
+  [ApiSchoolEntryCountryCode.Dsc]: "Dschibuti",
+  [ApiSchoolEntryCountryCode.Ecu]: "Ecuador",
+  [ApiSchoolEntryCountryCode.Els]: "El Salvador",
+  [ApiSchoolEntryCountryCode.Bri]: "England",
+  [ApiSchoolEntryCountryCode.Ery]: "Eritrea",
+  [ApiSchoolEntryCountryCode.Est]: "Estland",
+  [ApiSchoolEntryCountryCode.Fid]: "Fidschi",
+  [ApiSchoolEntryCountryCode.Fin]: "Finnland",
+  [ApiSchoolEntryCountryCode.Fra]: "Frankreich",
+  [ApiSchoolEntryCountryCode.Gab]: "Gabun",
+  [ApiSchoolEntryCountryCode.Gam]: "Gambia",
+  [ApiSchoolEntryCountryCode.Geo]: "Georgien",
+  [ApiSchoolEntryCountryCode.Gha]: "Ghana",
+  [ApiSchoolEntryCountryCode.Gol]: "Golfstaaten",
+  [ApiSchoolEntryCountryCode.Gre]: "Grenada",
+  [ApiSchoolEntryCountryCode.Gri]: "Griechenland",
+  [ApiSchoolEntryCountryCode.Gua]: "Guatemala",
+  [ApiSchoolEntryCountryCode.Gui]: "Guinea",
+  [ApiSchoolEntryCountryCode.Gus]: "GUS-Rest",
+  [ApiSchoolEntryCountryCode.Guy]: "Guyana",
+  [ApiSchoolEntryCountryCode.Hai]: "Haiti",
+  [ApiSchoolEntryCountryCode.Hnd]: "Honduras",
+  [ApiSchoolEntryCountryCode.Ind]: "Indien",
+  [ApiSchoolEntryCountryCode.Ins]: "Indonesien",
+  [ApiSchoolEntryCountryCode.Irq]: "Irak",
+  [ApiSchoolEntryCountryCode.Ira]: "Iran",
+  [ApiSchoolEntryCountryCode.Irl]: "Irland",
+  [ApiSchoolEntryCountryCode.Isl]: "Island",
+  [ApiSchoolEntryCountryCode.Isr]: "Israel",
+  [ApiSchoolEntryCountryCode.Ita]: "Italien",
+  [ApiSchoolEntryCountryCode.Jam]: "Jamaika",
+  [ApiSchoolEntryCountryCode.Jap]: "Japan",
+  [ApiSchoolEntryCountryCode.Jem]: "Jemen",
+  [ApiSchoolEntryCountryCode.Jor]: "Jordanien",
+  [ApiSchoolEntryCountryCode.Jug]: "Jug-Rest",
+  [ApiSchoolEntryCountryCode.Kam]: "Kambodscha",
+  [ApiSchoolEntryCountryCode.Kan]: "Kamerun",
+  [ApiSchoolEntryCountryCode.Can]: "Kanada",
+  [ApiSchoolEntryCountryCode.Kap]: "Kap Verde",
+  [ApiSchoolEntryCountryCode.Kas]: "Kasachstan",
+  [ApiSchoolEntryCountryCode.Kat]: "Katar",
+  [ApiSchoolEntryCountryCode.Ken]: "Kenia",
+  [ApiSchoolEntryCountryCode.Kir]: "Kirgistan",
+  [ApiSchoolEntryCountryCode.Kib]: "Kiribati",
+  [ApiSchoolEntryCountryCode.Kol]: "Kolumbien",
+  [ApiSchoolEntryCountryCode.Kom]: "Komoren",
+  [ApiSchoolEntryCountryCode.Kon]: "Kongo",
+  [ApiSchoolEntryCountryCode.Kor]: "Korea",
+  [ApiSchoolEntryCountryCode.Kos]: "Kosovo",
+  [ApiSchoolEntryCountryCode.Kro]: "Kroatien",
+  [ApiSchoolEntryCountryCode.Kub]: "Kuba",
+  [ApiSchoolEntryCountryCode.Kuw]: "Kuwait",
+  [ApiSchoolEntryCountryCode.Lao]: "Laos",
+  [ApiSchoolEntryCountryCode.Lso]: "Lesotho",
+  [ApiSchoolEntryCountryCode.Let]: "Lettland",
+  [ApiSchoolEntryCountryCode.Leb]: "Libanon",
+  [ApiSchoolEntryCountryCode.Lib]: "Liberia",
+  [ApiSchoolEntryCountryCode.Lyb]: "Libyen",
+  [ApiSchoolEntryCountryCode.Lie]: "Liechtenstein",
+  [ApiSchoolEntryCountryCode.Lit]: "Litauen",
+  [ApiSchoolEntryCountryCode.Lux]: "Luxemburg",
+  [ApiSchoolEntryCountryCode.Mad]: "Madagaskar",
+  [ApiSchoolEntryCountryCode.Maw]: "Malawi",
+  [ApiSchoolEntryCountryCode.May]: "Malaysia",
+  [ApiSchoolEntryCountryCode.Mal]: "Malediven",
+  [ApiSchoolEntryCountryCode.Mai]: "Mali",
+  [ApiSchoolEntryCountryCode.Mlt]: "Malta",
+  [ApiSchoolEntryCountryCode.Mar]: "Marokko",
+  [ApiSchoolEntryCountryCode.Mhl]: "Marshallinseln",
+  [ApiSchoolEntryCountryCode.Mau]: "Mauretanien",
+  [ApiSchoolEntryCountryCode.Mas]: "Mauritius",
+  [ApiSchoolEntryCountryCode.Maz]: "Nordmazedonien",
+  [ApiSchoolEntryCountryCode.Mex]: "Mexiko",
+  [ApiSchoolEntryCountryCode.Mik]: "Mikronesien",
+  [ApiSchoolEntryCountryCode.Mam]: "Mittelamerika",
+  [ApiSchoolEntryCountryCode.Mol]: "Moldau",
+  [ApiSchoolEntryCountryCode.Mon]: "Monaco",
+  [ApiSchoolEntryCountryCode.Mog]: "Mongolei",
+  [ApiSchoolEntryCountryCode.Mne]: "Montenegro",
+  [ApiSchoolEntryCountryCode.Mos]: "Mosambik",
+  [ApiSchoolEntryCountryCode.Mya]: "Myanmar",
+  [ApiSchoolEntryCountryCode.Nam]: "Namibia",
+  [ApiSchoolEntryCountryCode.Chn]: "Nation China",
+  [ApiSchoolEntryCountryCode.Nau]: "Nauru",
+  [ApiSchoolEntryCountryCode.Nep]: "Nepal",
+  [ApiSchoolEntryCountryCode.Neu]: "Neuseeland",
+  [ApiSchoolEntryCountryCode.Nic]: "Nicaragua",
+  [ApiSchoolEntryCountryCode.Ned]: "Niederlande",
+  [ApiSchoolEntryCountryCode.Nig]: "Niger",
+  [ApiSchoolEntryCountryCode.Nia]: "Nigeria",
+  [ApiSchoolEntryCountryCode.Nok]: "Nordkorea",
+  [ApiSchoolEntryCountryCode.Nor]: "Norwegen",
+  [ApiSchoolEntryCountryCode.Oma]: "Oman",
+  [ApiSchoolEntryCountryCode.Ost]: "Österreich",
+  [ApiSchoolEntryCountryCode.Pak]: "Pakistan",
+  [ApiSchoolEntryCountryCode.Pal]: "Palästina",
+  [ApiSchoolEntryCountryCode.Pau]: "Palau",
+  [ApiSchoolEntryCountryCode.Pan]: "Panama",
+  [ApiSchoolEntryCountryCode.Pap]: "Papua Neuguinea",
+  [ApiSchoolEntryCountryCode.Par]: "Paraguay",
+  [ApiSchoolEntryCountryCode.Per]: "Peru",
+  [ApiSchoolEntryCountryCode.Phi]: "Philippinen",
+  [ApiSchoolEntryCountryCode.Pol]: "Polen",
+  [ApiSchoolEntryCountryCode.Por]: "Portugal",
+  [ApiSchoolEntryCountryCode.Rua]: "Ruanda",
+  [ApiSchoolEntryCountryCode.Rum]: "Rumänien",
+  [ApiSchoolEntryCountryCode.Rus]: "Russische Föderation",
+  [ApiSchoolEntryCountryCode.Sal]: "Salomonen",
+  [ApiSchoolEntryCountryCode.Sab]: "Sambia",
+  [ApiSchoolEntryCountryCode.Saa]: "Samoa",
+  [ApiSchoolEntryCountryCode.San]: "San Marino",
+  [ApiSchoolEntryCountryCode.Stl]: "Santa-Lucia",
+  [ApiSchoolEntryCountryCode.Stp]: "Sao Tome und Principe",
+  [ApiSchoolEntryCountryCode.Sau]: "Saudi-Arabien",
+  [ApiSchoolEntryCountryCode.Sco]: "Schottland",
+  [ApiSchoolEntryCountryCode.Sve]: "Schweden",
+  [ApiSchoolEntryCountryCode.Hel]: "Schweiz",
+  [ApiSchoolEntryCountryCode.Sen]: "Senegal",
+  [ApiSchoolEntryCountryCode.Ser]: "Serbien",
+  [ApiSchoolEntryCountryCode.Sey]: "Seychellen",
+  [ApiSchoolEntryCountryCode.Sil]: "Sierra Leone",
+  [ApiSchoolEntryCountryCode.Sim]: "Simbabwe",
+  [ApiSchoolEntryCountryCode.Sin]: "Singapur",
+  [ApiSchoolEntryCountryCode.Skn]: "Slowakei",
+  [ApiSchoolEntryCountryCode.Slo]: "Slowenien",
+  [ApiSchoolEntryCountryCode.Som]: "Somalia",
+  [ApiSchoolEntryCountryCode.Son]: "sonstige Staaten",
+  [ApiSchoolEntryCountryCode.Spa]: "Spanien",
+  [ApiSchoolEntryCountryCode.Cey]: "Sri Lanka",
+  [ApiSchoolEntryCountryCode.Stk]: "St. Kitts und Nevis",
+  [ApiSchoolEntryCountryCode.Vct]: "St. Vincent und die Grenadinen",
+  [ApiSchoolEntryCountryCode.Sta]: "staatenlos",
+  [ApiSchoolEntryCountryCode.Sar]: "Südafrika",
+  [ApiSchoolEntryCountryCode.Sam]: "Südamerika",
+  [ApiSchoolEntryCountryCode.Sud]: "Sudan",
+  [ApiSchoolEntryCountryCode.Suk]: "Südkorea",
+  [ApiSchoolEntryCountryCode.Sur]: "Suriname",
+  [ApiSchoolEntryCountryCode.Swa]: "Eswatini",
+  [ApiSchoolEntryCountryCode.Syr]: "Syrien",
+  [ApiSchoolEntryCountryCode.Tad]: "Tadschikistan",
+  [ApiSchoolEntryCountryCode.Tai]: "Taiwan",
+  [ApiSchoolEntryCountryCode.Tan]: "Tansania",
+  [ApiSchoolEntryCountryCode.Tha]: "Thailand",
+  [ApiSchoolEntryCountryCode.Tib]: "Tibet",
+  [ApiSchoolEntryCountryCode.Tim]: "Timor",
+  [ApiSchoolEntryCountryCode.Tog]: "Togo",
+  [ApiSchoolEntryCountryCode.Trt]: "Trinidad und Tobago",
+  [ApiSchoolEntryCountryCode.Cha]: "Tschad",
+  [ApiSchoolEntryCountryCode.Czn]: "Tschechische Republik",
+  [ApiSchoolEntryCountryCode.Tun]: "Tunesien",
+  [ApiSchoolEntryCountryCode.Tur]: "Türkei",
+  [ApiSchoolEntryCountryCode.Tkm]: "Turkmenistan",
+  [ApiSchoolEntryCountryCode.Tuv]: "Tuvalu",
+  [ApiSchoolEntryCountryCode.Uga]: "Uganda",
+  [ApiSchoolEntryCountryCode.Ukr]: "Ukraine",
+  [ApiSchoolEntryCountryCode.Uuu]: "Unbekannt",
+  [ApiSchoolEntryCountryCode.Ung]: "Ungarn",
+  [ApiSchoolEntryCountryCode.Uru]: "Uruguay",
+  [ApiSchoolEntryCountryCode.Usa]: "USA",
+  [ApiSchoolEntryCountryCode.Usb]: "Usbekistan",
+  [ApiSchoolEntryCountryCode.Van]: "Vanuatu",
+  [ApiSchoolEntryCountryCode.Vat]: "Vatikanstadt",
+  [ApiSchoolEntryCountryCode.Ven]: "Venezuela",
+  [ApiSchoolEntryCountryCode.Vae]: "Vereinigte Arabische Emirate",
+  [ApiSchoolEntryCountryCode.Vie]: "Vietnam",
+  [ApiSchoolEntryCountryCode.Wru]: "Belarus",
+  [ApiSchoolEntryCountryCode.Sca]: "Zentralafrikanische Republik",
+  [ApiSchoolEntryCountryCode.Zyp]: "Zypern",
+};
+
+export const VACCINATION_SCHEME_VALUES: EnumMap<ApiVaccinationSchemeValue> = {
+  [ApiVaccinationSchemeValue.Scheme2Plus1]: "2 + 1",
+  [ApiVaccinationSchemeValue.Scheme3Plus1]: "3 + 1",
+  [ApiVaccinationSchemeValue.Unknown]: "Unbekannt",
+};
+
+export const WAITING_STATUS_VALUES: EnumMap<ApiWaitingStatus> = {
+  [ApiWaitingStatus.Waiting]: "Wartet",
+  [ApiWaitingStatus.WaitingForDoctor]: "Wartet auf Arzt:in",
+  [ApiWaitingStatus.WaitingForMfa]: "Wartet auf MFA",
+  [ApiWaitingStatus.InExamination]: "In Behandlung",
+  [ApiWaitingStatus.InExaminationDoctor]: "In Behandlung bei Arzt:in",
+  [ApiWaitingStatus.InExaminationMfa]: "In Behandlung bei MFA",
+  [ApiWaitingStatus.Done]: "Fertig",
+  [ApiWaitingStatus.Cancelled]: "Abgesagt",
+};
+
+export const REQUIRED_PROCEDURE_DATA: EnumMap<ApiRequiredProcedureData> = {
+  [ApiRequiredProcedureData.Details]: "Details",
+  [ApiRequiredProcedureData.HearingTest]: "Hörscreening",
+  [ApiRequiredProcedureData.EyeExamination]: "Sehscreening",
+  [ApiRequiredProcedureData.Anamnesis]: "Anamnese",
+  [ApiRequiredProcedureData.SopessExamination]: "S1 - SOPESS 2019",
+  [ApiRequiredProcedureData.DevelopmentScreening]: "S1 - Befund",
+  [ApiRequiredProcedureData.VaccinationStatus]: "Impfstatus",
+};

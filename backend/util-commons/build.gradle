@@ -1,0 +1,10 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api 'de.cronn:commons-lang:latest.release'
+    implementation 'com.google.guava:guava:latest.release'
+    implementation 'org.springframework.data:spring-data-commons'
+    testImplementation project(':test-commons')
+}

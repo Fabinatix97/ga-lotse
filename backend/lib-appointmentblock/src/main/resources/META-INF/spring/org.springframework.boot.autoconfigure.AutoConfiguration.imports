@@ -1,0 +1,2 @@
+de.eshg.lib.appointmentblock.spring.AppointmentBlockLibraryAutoConfiguration
+de.eshg.lib.appointmentblock.spring.AppointmentBlockDomainModelAutoConfiguration

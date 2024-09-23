@@ -1,0 +1,54 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.session:spring-session-data-redis'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'com.google.guava:guava:latest.release'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:latest.release'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation project(':lib-security-config')
+    implementation project(':lib-commons')
+    implementation project(':lib-keycloak')
+    implementation project(':util-commons')
+    implementation project(':rest-client-commons')
+    runtimeOnly project(':rest-service-commons')
+
+    testImplementation project(':test-commons')
+    testImplementation project(':lib-base-client')
+    testImplementation project(':test-helper-commons')
+
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.jsoup:jsoup:latest.release'
+}
+
+dockerCompose {
+    startedServices = [
+        'auth-employee-portal',
+        'auth-citizen-portal',
+        'auth-cache'
+    ]
+}
+
+tasks.named('test').configure {
+    dependsOn ':base:composeUp'
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+// auth should only start when Keycloak is up and provisioned by base
+tasks.named("composeUp").configure {
+    def baseUp = project(":base").tasks.named("composeUp")
+    dependsOn baseUp
+    mustRunAfter baseUp
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-auth') ?: "unspecified"
+}

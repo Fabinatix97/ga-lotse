@@ -1,0 +1,107 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiInstitutionContact } from "@eshg/employee-portal-api/base";
+import { Ref, useState } from "react";
+
+import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";
+import { InstitutionContactImportForm } from "@/lib/baseModule/components/contacts/forms/import/InstitutionContactImportForm";
+import { MergeInstitutionContactForm } from "@/lib/baseModule/components/contacts/forms/merge/MergeInstitutionContactForm";
+import { InstitutionContactSearchForm } from "@/lib/baseModule/components/contacts/forms/search/InstitutionContactSearchForm";
+import {
+  AddContactSidebarState,
+  InstitutionContactFormValues,
+} from "@/lib/baseModule/components/contacts/types";
+import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
+
+type AddInstitutionContactSidebarState = AddContactSidebarState<
+  InstitutionContactFormValues,
+  ApiInstitutionContact
+>;
+
+type CreateContactSidebarProps = AddInstitutionContactSidebarState & {
+  onClose: () => void;
+  onSuccess: () => void;
+  sidebarFormRef: Ref<SidebarFormHandle>;
+};
+
+const initialCreateContactFormValues = {
+  type: "AddInstitutionContactRequest",
+  name: "",
+  category: "",
+  emailAddresses: [""],
+  phoneNumbers: [""],
+  contactAddress: createEmptyAddress(),
+  differentBillingAddress: undefined,
+} as const satisfies InstitutionContactFormValues;
+
+export function AddInstitutionContactSidebar({
+  onClose,
+  onSuccess,
+  sidebarFormRef,
+  ...initialState
+}: CreateContactSidebarProps) {
+  const [formState, setFormState] =
+    useState<AddInstitutionContactSidebarState>(initialState);
+
+  return (
+    <>
+      {formState.flowStep === "IMPORT" && (
+        <InstitutionContactImportForm
+          onImported={(values) =>
+            setFormState({
+              initialValues: values,
+              flowStep: "CREATE",
+            })
+          }
+          onMerge={(into, from) =>
+            setFormState({
+              flowStep: "MERGE",
+              from: { type: "Import", data: from },
+              into: into,
+            })
+          }
+          onClose={onClose}
+          sidebarFormRef={sidebarFormRef}
+        />
+      )}
+      {formState.flowStep === "CREATE" && (
+        <ContactEntityForm
+          type={"INSTITUTION"}
+          initialValues={formState.initialValues}
+          onClose={onClose}
+          sidebarFormRef={sidebarFormRef}
+        />
+      )}
+      {formState.flowStep === "SEARCH" && (
+        <InstitutionContactSearchForm
+          onCreate={(name, street) =>
+            setFormState({
+              flowStep: "CREATE",
+              initialValues: {
+                ...initialCreateContactFormValues,
+                name,
+                contactAddress: {
+                  ...createEmptyAddress(),
+                  street,
+                },
+              },
+            })
+          }
+        />
+      )}
+      {formState.flowStep === "MERGE" && (
+        <MergeInstitutionContactForm
+          into={formState.into}
+          from={formState.from}
+          onCancel={onClose}
+          onSuccess={onSuccess}
+          sidebarFormRef={sidebarFormRef}
+        />
+      )}
+    </>
+  );
+}

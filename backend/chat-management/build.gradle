@@ -1,0 +1,38 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':lib-base-client')
+    implementation project(':business-module-persistence-commons')
+    implementation 'commons-codec:commons-codec:1.16.1'
+
+    implementation "org.zalando:logbook-api:latest.release"
+    implementation "org.zalando:logbook-spring:latest.release"
+    runtimeOnly project(':rest-service-commons')
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+}
+
+dockerCompose {
+    startedServices = [
+        'chat-management',
+        'chat-management-db',
+        'synapse',
+        'synapse-db',
+    ]
+}
+
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-chat-management') ?: "unspecified"
+}

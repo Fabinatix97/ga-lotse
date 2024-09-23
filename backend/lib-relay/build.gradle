@@ -1,0 +1,14 @@
+plugins {
+    id 'eshg.java-lib'
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api'
+
+    testImplementation project(':test-commons')
+
+    testFixturesImplementation project(':test-commons')
+    testFixturesApi testFixtures(project(':lib-service-directory-admin-api'))
+    testFixturesApi 'org.testcontainers:testcontainers'
+}

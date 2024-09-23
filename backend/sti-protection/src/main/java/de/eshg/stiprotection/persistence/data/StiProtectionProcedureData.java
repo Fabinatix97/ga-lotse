@@ -1,0 +1,15 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.stiprotection.persistence.data;
+
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.stiprotection.persistence.db.Concern;
+import de.eshg.stiprotection.persistence.db.Person;
+import java.time.Instant;
+import java.util.UUID;
+
+public record StiProtectionProcedureData(
+    UUID id, Instant createdAt, ProcedureStatus status, Concern concern, Person person) {}

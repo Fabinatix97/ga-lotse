@@ -1,0 +1,13 @@
+{
+  "extends": "../config/tsconfig.lib.json",
+  "references": [
+    {
+      "path": "../employee-portal-api"
+    }
+  ],
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

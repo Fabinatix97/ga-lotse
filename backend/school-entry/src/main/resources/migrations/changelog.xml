@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+  <include file="migrations/0001_initial.xml"/>
+  <include file="migrations/0002_add_column_readonly_label.xml"/>
+  <include
+    file="migrations/0003_create_table_school_entry_procedure_label.xml"/>
+  <include
+    file="migrations/0004_remove_notNull_constraint_from_changeDescription.xml"/>
+  <include file="migrations/0005_add_citizen_user_id.xml"/>
+  <include file="migrations/0006_add_column_invitation_sent.xml"/>
+  <include file="migrations/0007_add_due_at_notification_reminder.xml"/>
+  <include file="migrations/0008_rename_pdf_tables.xml"/>
+  <include file="migrations/0009_add_percentiles_columns.xml"/>
+  <include file="migrations/0010_add_isDeceased_and_deceased.xml"/>
+  <include file="migrations/0011_introduce_pgenums.xml"/>
+  <include file="migrations/0012_add_mailSent_fields.xml"/>
+  <include file="migrations/0013_create_trigram_extension.xml"/>
+  <include file="migrations/0014_rename_tables.xml"/>
+  <include file="migrations/0015_indices_for_many_to_one_relations.xml"/>
+  <include file="migrations/0016_inbox_procedure_add_closed_at.xml"/>
+  <include file="migrations/0017_add_appointment_changes_by_citizen.xml"/>
+  <include file="migrations/0018_rename_mother_and_father.xml"/>
+  <include file="migrations/0019_rename_meningococcus.xml"/>
+  <include file="migrations/0020_modify_types.xml"/>
+  <include file="migrations/0021_remove_allCheckUps_chickenPox_careChild.xml"/>
+  <include file="migrations/0022_change_vaccinationStatus_values.xml"/>
+  <include file="migrations/0023_add_deletable_boolean_to_files.xml"/>
+  <include file="migrations/0024_remove_procedure_result.xml"/>
+  <include file="migrations/0025_remove_procedure_type_2.xml"/>
+  <include file="migrations/0026_remove_task_type_2.xml"/>
+  <include file="migrations/0027_update_trigger_type.xml"/>
+  <include file="migrations/0028_new_anamnesis_fields.xml"/>
+  <include file="migrations/0029_add_sti_protection_procedure_lib_enum_values.xml"/>
+  <include file="migrations/0030_school_year.xml"/>
+  <include file="migrations/0031_central_file_state_id_unique_index.xml"/>
+  <include file="migrations/0032_add_cemetery.xml"/>
+  <include file="migrations/0033_remove_progress_entry_deleted.xml"/>
+  <include file="migrations/0034_appointment_block_location.xml"/>
+  <include file="migrations/0035_add_procedure_location.xml"/>
+  <include file="migrations/0036_waiting_room.xml"/>
+  <include file="migrations/0037_add_procedure_exported_at.xml"/>
+  <include file="migrations/0038_waiting_room_for_existing_procedures.xml"/>
+  <include file="migrations/0039_add_consultant_to_appointment_blocks.xml"/>
+  <include file="migrations/0040_procedure_sequences.xml"/>
+
+</databaseChangeLog>

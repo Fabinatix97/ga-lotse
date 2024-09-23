@@ -1,0 +1,70 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiDraftMeaslesProcedure } from "@eshg/employee-portal-api/measlesProtection";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormikErrors } from "formik";
+
+import { useAddCustodianMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import { LegacyPersonSidebar } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
+import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
+import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
+
+import {
+  MEASLES_PROTECTION_CUSTODIAN_CONFIG,
+  mapToAddCustodianRequest,
+} from "./NewCustodianButton";
+
+export function AddCustodianSidebar({
+  procedure,
+}: {
+  procedure: ApiDraftMeaslesProcedure;
+}) {
+  const [open, setOpen] = useSearchParam("add-custodian", "boolean");
+  const snackbar = useSnackbar();
+  function handleClose() {
+    setOpen(false);
+  }
+
+  function isAdult(dateOfBirth: Date) {
+    const eighteenYearsAgo = new Date();
+    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+    return dateOfBirth <= eighteenYearsAgo;
+  }
+
+  function validateCustodianAge(person: LegacyPerson) {
+    const errors: FormikErrors<LegacyPerson> = {};
+    if (!isAdult(new Date(person.dateOfBirth))) {
+      errors.dateOfBirth = "Personensorgeberechtigte müssen volljährig sein.";
+    }
+    return errors;
+  }
+
+  const addCustodian = useAddCustodianMutation({
+    onSuccess: () => {
+      setOpen(false);
+      snackbar.confirmation("Personensorgeberechtigte:r erfolgreich angelegt.");
+    },
+  });
+
+  return (
+    <LegacyPersonSidebar
+      searchFormTitle={"PSB hinzufügen"}
+      personFormTitle={"PSB anlegen"}
+      config={MEASLES_PROTECTION_CUSTODIAN_CONFIG}
+      open={open}
+      validate={validateCustodianAge}
+      onSubmit={(data) =>
+        addCustodian
+          .mutateAsync({
+            procedureId: procedure.id,
+            data: mapToAddCustodianRequest(data),
+          })
+          .catch()
+      }
+      onClose={handleClose}
+    />
+  );
+}

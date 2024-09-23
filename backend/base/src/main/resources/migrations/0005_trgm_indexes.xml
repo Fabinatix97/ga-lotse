@@ -1,0 +1,99 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721218049857-1">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      CREATE EXTENSION IF NOT EXISTS unaccent;
+      CREATE EXTENSION IF NOT EXISTS pg_trgm;
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721218049857-2">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      -- The unaccent function is not immutable, since the dictionary is dynamically loaded and can be changed between deployments.
+      -- To properly use this for indexing in postgres, we have to create an immutable wrapper function.
+      -- If the dictionary *is* changed, the index should be recreated to avoid unexpected issues.
+      CREATE OR REPLACE FUNCTION normalize_text(input text)
+        RETURNS text AS
+      $body$
+      select public.unaccent(regdictionary 'public.unaccent', $1)
+      $body$
+        LANGUAGE SQL IMMUTABLE;
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721218049857-3">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_person_name_idx;
+      CREATE INDEX trgm_person_name_idx
+      ON person
+      USING gin (normalize_text(first_name) gin_trgm_ops, normalize_text(last_name) gin_trgm_ops)
+      WHERE reference_person_id IS NULL;
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721218049857-4">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_facility_name_idx;
+      CREATE INDEX trgm_facility_name_idx
+      ON facility
+      USING gin (normalize_text(name) gin_trgm_ops)
+      WHERE reference_facility_id IS NULL;
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721218049857-5">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_contact_name_idx;
+      CREATE INDEX trgm_contact_name_idx
+      ON contact
+      USING gin (normalize_text(name) gin_trgm_ops, normalize_text(first_name) gin_trgm_ops);
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721218049857-6">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_inventory_item_name_idx;
+      CREATE INDEX trgm_inventory_item_name_idx
+      ON inventory_item
+      USING gin (normalize_text(name) gin_trgm_ops);
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721218049857-7">
+    <sql
+      dbms="postgresql"
+      splitStatements="true"
+      stripComments="true"
+    >
+      DROP INDEX IF EXISTS trgm_resource_name_idx;
+      CREATE INDEX trgm_resource_name_idx
+      ON resource
+      USING gin (normalize_text(name) gin_trgm_ops);
+    </sql>
+  </changeSet>
+</databaseChangeLog>

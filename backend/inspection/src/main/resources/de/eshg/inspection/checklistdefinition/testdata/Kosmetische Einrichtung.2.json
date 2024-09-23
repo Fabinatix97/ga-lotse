@@ -1,0 +1,212 @@
+{
+  "name": "Checkliste Flächendesinfektion",
+  "description": "Checkliste für 2024/2025",
+  "isExpandable": true,
+  "objectTypeId": "34cdc93a-a256-43e6-b423-a1f435714c63",
+  "sections": [
+    {
+      "title": "Lagerraum Reinigungs-/Desinfektionsmittel",
+      "id": "9bbac905-813b-4fbe-8df9-f3f16c035e6e",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "b881130e-6ae5-4f8a-bcee-a5e40e9b94d0",
+          "text": "Existieren ausreichend dimensionierte Putzmittelräume?",
+          "mandatory": true,
+          "note": "mindestens 10 Quadratmeter",
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "fecb60e0-f3fd-45e5-857a-dee72f69c78d",
+          "text": "Existiert ein Lagerraum für Reinigungswagen?",
+          "mandatory": true,
+          "note": "Reinigungswagen sollte komplett hineinpassen",
+          "help": "Reinigungswagen",
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "199b58a8-baad-491f-b343-d811d323b3ef",
+          "text": "Werden separate Räumlichkeiten zum Auf- und Abrüsten der Reinigungswagen vorgehalten?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "5b2d25cd-fda5-4c9c-b6c4-9616b12b95eb",
+          "text": "Sind diese ausreichend dimensioniert?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": "Separate Räumlichkeiten zum Auf- und Abrüsten der Reinigungswagen werden vorgehalten",
+          "textModuleFalse": "Separate Räumlichkeiten zum Auf- und Abrüsten der Reinigungswagen werden nicht vorgehalten"
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "b032df15-0823-4d61-964e-f46be4941de3",
+          "text": "Erfolgt eine Trennung in unreine und reine Bereiche?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Wäscherei",
+      "id": "6b36adeb-21a0-41ff-b1ac-f62a1227353e",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "d1b7075c-dcbc-4470-b4f0-d82a5fdf44f1",
+          "text": "Erfolgt die Aufbereitung der gebrauchten Hilfsmittel (z.B. Wischtextilien) intern?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "7eb31e77-5ddc-4f4d-8ed2-2f4e45cdf0d9",
+          "text": "Sind die dafür vorgehaltenen Räume ausreichend dimensioniert?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "e581b6fd-e85d-42d6-a102-673f9b31ea4b",
+          "text": "Erfolgt eine Trennung in reine und unreine Bereiche?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "1c2bbc9f-eb87-40e2-a9de-cc0428176abf",
+          "text": "Ist der Workflow zur Verhinderung einer Rekontamination entsprechend angepasst?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "b5587f3b-8053-43c9-84ac-4d587e37318c",
+          "text": "Sind die Räume ausreichend belüftet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "40121727-707b-4d98-bf53-077550faca7e",
+          "text": "Werden Wischtextilien nach dem Waschverfahren maschinell getrocknet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "6eade889-a792-42b0-a7a3-9e093aef94b2",
+          "text": "Erfolgt eine kontaminationsgeschützte (trockene) Lagerung?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Lagerraum Reinigungswagen",
+      "id": "b1300b6d-3749-4bf4-95f9-4ba930a81e9b",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "41fa0440-8852-461a-9227-646260fdb188",
+          "text": "Sind die Räume zum Aufbereiten der Reinigungshilfsmittel gut belüftbar?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "ee6a1982-39bf-44ea-87a7-d46644fc07f2",
+          "text": "Sind die Räume zum Aufbereiten der Reinigungshilfsmittel gut in reine und unreine Bereiche zu unterteilen?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "9180afd5-3b12-40b4-bb47-38f2d42b4ae8",
+          "text": "Ist die materielle Ausstattung ausreichend?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Durchführung",
+      "id": "6d63e820-d02c-4f79-ab84-1948b4e84fa8",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "201b3403-eeca-4212-8934-0fa4bc870fdd",
+          "text": "Werden die zu desinfizierenden Flächen ausreichend benetzt?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "90c5a2a7-cc09-4bb3-a7ab-0e5d5988946f",
+          "text": "Wird auf ein Nachwischen mit Wasser oder Trockenwischen vor Ablauf der EWZ verzichtet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "05288bec-2a96-43e0-b4c9-64fcdbcbe3ba",
+          "text": "Erfolgt ein kontaminationsgeschützter Umgang mit Desinfektionsmittellösung?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    }
+  ]
+}

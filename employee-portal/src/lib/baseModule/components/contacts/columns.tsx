@@ -1,0 +1,152 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import EditIcon from "@mui/icons-material/EditOutlined";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import PersonIcon from "@mui/icons-material/PersonOutlineOutlined";
+import InstitutionIcon from "@mui/icons-material/VillaOutlined";
+import { Stack } from "@mui/joy";
+import { createColumnHelper } from "@tanstack/react-table";
+import { isDefined } from "remeda";
+
+import { fullContactName } from "@/lib/baseModule/components/contacts/helpers";
+import { routes } from "@/lib/baseModule/shared/routes";
+import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
+import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import { BaseAddress } from "@/lib/shared/helpers/address";
+
+import { Contact, isInstitutionContact } from "./types";
+
+const columnHelper = createColumnHelper<Contact>();
+
+export function contactTableColumns({
+  hasWritePerms,
+  onEdit,
+}: {
+  hasWritePerms: boolean;
+  onEdit: (contact: Contact) => void;
+}) {
+  return [
+    columnHelper.accessor("type", {
+      header: "",
+      enableSorting: false,
+      cell: (props) => <ContactType type={props.getValue()} />,
+      meta: {
+        width: 40,
+        canNavigate: {
+          parentRow: true,
+        },
+        headerLabel: "Typ",
+        cellStyle: "icon",
+      },
+    }),
+    columnHelper.accessor("name", {
+      header: "Name",
+      cell: (props) => fullContactName(props.row.original),
+      meta: {
+        width: 250,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("category", {
+      header: "Objekttyp",
+      cell: (props) =>
+        isInstitutionContact(props.row.original) &&
+        isDefined(props.row.original.category)
+          ? contactCategoryNames[props.row.original.category]
+          : undefined,
+      meta: {
+        width: 250,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("phoneNumbers", {
+      header: "Telefonnr.",
+      enableSorting: false,
+      cell: (props) => props.getValue()?.at(0),
+      meta: {
+        width: 250,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.accessor("contactAddress", {
+      header: "Adresse",
+      enableSorting: false,
+      cell: (props) => <AddressColumn address={props.getValue()} />,
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
+    }),
+    columnHelper.display({
+      header: "Aktionen",
+      id: "navigationControl",
+      cell: (props) => (
+        <ActionsMenu
+          disablePortal
+          actionItems={[
+            {
+              label: "Anzeigen",
+              startDecorator: <FullscreenIcon />,
+              onClick: routes.contacts.details(props.row.original.id),
+            },
+            ...(hasWritePerms
+              ? [
+                  {
+                    label: "Bearbeiten",
+                    startDecorator: <EditIcon />,
+                    onClick: () => onEdit(props.row.original),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      ),
+      meta: {
+        width: 96,
+        cellStyle: "button",
+      },
+    }),
+  ];
+}
+
+function AddressColumn({ address }: { address: BaseAddress | undefined }) {
+  if (address === undefined) {
+    return undefined;
+  }
+
+  return address.type === "DomesticAddress"
+    ? `${[address.street, address.houseNumber].join(" ")}, ${address.postalCode} ${address.city}`
+    : `${address.postbox}, ${address.postalCode} ${address.city}`;
+}
+
+function ContactType({ type }: { type: string }) {
+  return (
+    <Stack justifyContent={"center"}>
+      {type === "PersonContact" ? (
+        <PersonIcon
+          size={"sm"}
+          aria-hidden={false}
+          titleAccess={"Person"}
+          aria-label={"Person"}
+        />
+      ) : (
+        <InstitutionIcon
+          size={"sm"}
+          aria-hidden={false}
+          titleAccess={"Institution"}
+          aria-label={"Institution"}
+        />
+      )}
+    </Stack>
+  );
+}

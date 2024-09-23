@@ -1,0 +1,83 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1726125238445-1">
+    <createTable tableName="packlist">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_packlist"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="position" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="inspection_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="packlist_revision_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-2">
+    <createTable tableName="packlist_element">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_packlist_element"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="is_checked" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="position" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="packlist_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="packlist_definition_element_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-3">
+    <createIndex indexName="idx_packlist_element_packlist_definition_element_id" tableName="packlist_element">
+      <column name="packlist_definition_element_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-4">
+    <createIndex indexName="idx_packlist_element_packlist_id" tableName="packlist_element">
+      <column name="packlist_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-5">
+    <createIndex indexName="idx_packlist_inspection_id" tableName="packlist">
+      <column name="inspection_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-6">
+    <createIndex indexName="idx_packlist_packlist_revision_id" tableName="packlist">
+      <column name="packlist_revision_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-7">
+    <addForeignKeyConstraint baseColumnNames="packlist_id" baseTableName="packlist_element" constraintName="fk_packlist_element_packlist" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="packlist" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-8">
+    <addForeignKeyConstraint baseColumnNames="packlist_definition_element_id" baseTableName="packlist_element" constraintName="fk_packlist_element_packlist_definition_element" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="packlist_definition_element" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-9">
+    <addForeignKeyConstraint baseColumnNames="inspection_id" baseTableName="packlist" constraintName="fk_packlist_inspection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726125238445-10">
+    <addForeignKeyConstraint baseColumnNames="packlist_revision_id" baseTableName="packlist" constraintName="fk_packlist_packlist_definition_revision" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="packlist_definition_revision" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

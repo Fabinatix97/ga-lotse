@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
+<#-- @ftlvariable name="office" type="de.eshg.schoolentry.pdf.Address" -->
+<#-- @ftlvariable name="child" type="de.eshg.schoolentry.pdf.medicalreport.MedicalReportChild" -->
+<#-- @ftlvariable name="remark" type="java.lang.String" -->
+<#-- @ftlvariable name="isVisio" type="java.lang.Boolean" -->
+
+<html xml:lang="de" lang="de">
+<head>
+  <title>Arztbrief</title>
+  <style type="text/css">
+      @page {
+          size: A4 portrait;
+          margin: 0 0 15mm 0;
+
+          @bottom-left {
+              content: element(--var-footerRunning);
+              font-family: sans-serif;
+              font-size: 7pt;
+              vertical-align: top;
+              padding-left: 15mm
+          }
+
+          @bottom-right {
+              content: "Seite " counter(page) " von " counter(pages);
+              font-family: sans-serif;
+              font-size: 7pt;
+              padding-right: 1cm;
+              vertical-align: top;
+          }
+      }
+
+      html {
+          font-size: 8pt;
+      }
+
+      body {
+          font-family: sans-serif;
+          font-weight: 400;
+          line-height: 1.5rem;
+          height: 100%;
+          box-sizing: border-box;
+          margin: 0 1cm 0 15mm;
+      }
+
+      .sender .sender-label {
+          font-size: 0.75rem;
+          font-weight: 400;
+          line-height: 1.5em;
+      }
+
+      .sender .sender-address {
+          margin-bottom: 5mm;
+      }
+
+      .sender .sender-data {
+          margin-bottom: 2mm;
+      }
+
+      /* the footer is a running element, which is used in the @bottom-center margin box */
+      /* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+      footer {
+          position: running(--var-footerRunning);
+          font-size: 0.75rem;
+          font-weight: 400;
+          line-height: 1.5em;
+      }
+
+      .header {
+          padding-top: 50px;
+          margin-bottom: 40px;
+          width: 100%;
+      }
+
+      .header .letterhead td {
+          padding-top: 20px;
+      }
+
+      .header .receiver .officeAddress {
+          font-size: 0.75rem;
+          margin-bottom: 2mm;
+      }
+
+      .header .receiver .addressee {
+          font-size: 0.875rem;
+          font-weight: 600;
+      }
+
+      div.data {
+          margin-top: 0;
+          font-size: 1.1rem;
+          font-weight: bold;
+      }
+
+      div.label {
+          font-size: 0.8rem;
+      }
+
+      .box {
+          border-radius: 1mm;
+          border: 0.2mm solid;
+          height: 70mm;
+          padding: 3mm;
+      }
+
+      .box-header {
+          font-size: 0.75rem;
+          max-width: 70mm;
+          font-weight: bold;
+          position: relative;
+          top: -5.4mm;
+          left: 3mm;
+          padding-left: 2mm;
+          padding-right: 2mm;
+          background: white;
+      }
+
+      .box-content {
+          position: relative;
+          top: -4.5mm;
+      }
+
+      td {
+          padding: 1mm 1mm 1mm 0 ;
+      }
+
+  </style>
+</head>
+
+<body>
+
+<footer>
+  <div>
+  ${office.name} &nbsp; • &nbsp;
+  ${office.street} &nbsp;
+  ${office.zipCode} ${office.city}
+  </div>
+  <div>
+    Website: ${office.url} &nbsp; • &nbsp;
+    E-Mail: ${office.email}
+  </div>
+</footer>
+
+<table class="header">
+  <colgroup>
+    <col style="width: 70%;"/>
+    <col style="width: 30%;"/>
+  </colgroup>
+  <tr>
+    <td valign="top">
+    </td>
+    <td valign="top">
+      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" alt="logo" style="width: 130px"/>
+    </td>
+  </tr>
+  <tr class="letterhead">
+    <td valign="top" class="receiver">
+      <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
+      <div class="addressee">
+        An den/die Arzt:in des Kindes
+      </div>
+    </td>
+    <td valign="top" class="sender">
+      <div class="sender-address">
+        <div>${office.name}</div>
+        <div>${office.street}</div>
+        <div class="sender-data">${office.zipCode} ${office.city}</div>
+      </div>
+      <div class="sender-label">Telefon</div>
+      <div class="sender-data">${office.phoneNumber}</div>
+      <#if office.email??>
+        <div class="sender-label">E-Mail</div>
+        <div class="sender-data">${office.email}</div>
+      </#if>
+      <div class="sender-label">Aktenzeichen</div>
+      <div>-</div>
+      <div style="font-size: 0.75rem; font-weight: 400; line-height: 1.5em;">(bitte bei Antwort angeben)</div>
+    </td>
+  </tr>
+</table>
+
+  <p>
+    Sehr geehrte:r Kolleg:in,<br/>
+    wir haben heute das Kind <strong>${child.name}</strong> geb. am <strong>${child.dateOfBirth}</strong> untersucht und dabei festgestellt, dass:
+  </p>
+
+  <p style="font-weight: 600;">
+   ${remark}
+  </p>
+
+  <p>vorliegt.</p>
+
+  <p>Bitte übernehmen Sie die weitere Abklärung, Beobachtung oder Behandlung und informieren Sie uns auf dem unteren Abschnitt dieses Schreibens
+    über Ihre Maßnahmen. Ein Freiumschlag zur Rücksendung ist beigefügt.<br/>
+    Bei Rückfragen dürfen Sie sich gerne unter der o.a. Telefonnummer an uns wenden.
+    Wir bedanken uns für die Zusammenarbeit.
+  </p>
+
+  <p style="margin-bottom: 1cm;">
+    Mit freundlichen kollegialen Grüßen<br/>
+    im Auftrag
+  </p>
+
+  <div class="box">
+    <div class="box-header">RÜCKMELDEABSCHNITT - bitte nur von der/dem Arzt:in ausfüllen lassen -</div>
+    <div class="box-content">
+      <p> An Kinder- und Jugendmedizin, Beratungsbezirk <br/>
+    Das Kind <strong>${child.name}</strong> geb. am <strong>${child.dateOfBirth}</strong> wurde mir vorgestellt.
+    <#if isVisio>Die Untersuchung ergab das folgende Ergebnis:</#if></p>
+
+     <table style="width: 100%;">
+       <colgroup>
+        <col style="width: 20%"/>
+        <col style="width: 20%"/>
+        <col style="width: 20%"/>
+        <col style="width: 20%"/>
+        <col style="width: 20%"/>
+       </colgroup>
+     <#if isVisio>
+      <tr>
+        <td> ☐ Myopie </td>
+        <td> ☐ Hyperopie </td>
+        <td> ☐ Amblyopie </td>
+        <td> ☐ Astigmatismus </td>
+        <td> ☐ Strabismus </td>
+      </tr>
+      <tr>
+        <td> ☐ Farbsinnstörung </td>
+        <td colspan="4"> ☐ Andere Diagnose: ____________________________________________________________________________________ </td>
+      </tr>
+       </#if>
+      <tr>
+        <td colspan="2">Ich kann somit ihren Untersuchungsbefund <br/> und habe folgendes veranlasst:</td>
+        <td style="vertical-align: top"> ☐ bestätigen </td>
+        <td style="vertical-align: top"> ☐ teilbestätigen </td>
+        <td style="vertical-align: top"> ☐ nicht bestätigen </td>
+      </tr>
+   </table>
+   </div>
+   </div>
+   <p>
+    Mit freundlichen Grüßen
+   </p>
+  <br/>
+  <br/>
+  <table style="width: 100%;">
+    <colgroup>
+      <col style="width:50%"/>
+      <col style="width:50%"/>
+    </colgroup>
+    <tr>
+      <td>Frankfurt am Main, den</td>
+      <td>(Stempel)</td>
+    </tr>
+  </table>
+</body>
+</html>

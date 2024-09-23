@@ -1,0 +1,196 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.rest.service.security.config;
+
+public final class BaseUrls {
+
+  public static final String STATISTICS = "/statistics";
+  public static final String EVENT_METADATA_API = "/events/metadata";
+
+  private BaseUrls() {}
+
+  public static final class LibAppointmentBlock {
+    public static final String APPOINTMENT_BLOCK_API = "/appointment-blocks";
+    public static final String APPOINTMENT_TYPE_API = "/appointment-types";
+
+    private LibAppointmentBlock() {}
+  }
+
+  public static final class Base {
+    public static final String BULK_GET_URL_END = "/bulk-get";
+
+    public static final String USER_API = "/users";
+    public static final String USER_KEYS_URL = "/keys";
+    public static final String USER_PUBLIC_KEYS_URL = "/public";
+
+    public static final String FEATURE_TOGGLES_API = "/feature-toggles";
+
+    public static final String USER_SELF_URL = "/self";
+    public static final String CITIZEN_USER_API = "/citizen-users";
+    public static final String CITIZEN_ACCESS_CODE_USER_API = "/citizen-access-code-users";
+    public static final String CALENDAR_API = "/calendars";
+    public static final String CALENDAR_API_GLOBAL_CALENDAR_URL = "/global";
+    public static final String CALENDAR_API_USER_CALENDAR_URL = "/user";
+    public static final String CALENDAR_API_RESOURCE_CALENDAR_URL = "/resource";
+
+    public static final String CALENDAR_EVENT_API_EVENT_URL = "/events";
+    public static final String CALENDAR_EVENT_API_BUSINESS_MODULE_EVENT_URL =
+        CALENDAR_EVENT_API_EVENT_URL + "/business_module";
+    public static final String CALENDAR_EVENT_API_BASE_EVENT_URL =
+        CALENDAR_EVENT_API_EVENT_URL + "/base_event";
+    public static final String NOTIFICATION_API_BASE_URL = "/notification-aggregation";
+    public static final String LABEL_API = "/labels";
+    public static final String STREET_API = "/streets";
+    public static final String PERSON_API = "/persons";
+    public static final String PERSON_FILE_STATE_URL = "/centralfilestates";
+    public static final String PERSON_EXTERNAL_DATA_SOURCE_URL = "/external-source";
+    public static final String INVENTORY_API = "/inventoryItems";
+    public static final String INVENTORY_BOOKING_URL = "/booking";
+    public static final String INVENTORY_RESTOCKING_URL = "/restocking";
+    public static final String INVENTORY_CORRECTION_URL = "/correction";
+    public static final String RESOURCES_API = "/resources";
+    public static final String CONTACT_API = "/contacts";
+    public static final String DEPARTMENT_API = "/department";
+    public static final String DEPARTMENT_API_INFO = "/info";
+    public static final String DEPARTMENT_API_LOGO = "/logo";
+    public static final String DEPARTMENT_API_SECURITY_TXT = "/security-txt";
+    public static final String CONTACT_PARSE_VCARD_URL = "/parse-vcard";
+    public static final String GDPR_PROCEDURE_API = "/gdpr-procedures";
+    public static final String FACILITY_API = "/facilities";
+    public static final String FACILITY_FILE_STATE_URL = "/centralfilestates";
+    public static final String FACILITY_EXTERNAL_DATA_SOURCE_URL = "/external-source";
+    public static final String STREET_AUTOCOMPLETE_URL = "/autocomplete";
+    public static final String RECENT_PROCEDURE_API = "/recent-procedures";
+    public static final String PROCEDURE_METRICS_API = "/procedure-metrics";
+    public static final String TASK_METRICS_API = "/task-metrics";
+    public static final String TASK_API = "/tasks";
+    public static final String PROCEDURE_CONFIG_API = "/procedure-config";
+    public static final String CONFIG_API = "/config";
+
+    private Base() {}
+  }
+
+  public static final class Inspection {
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+    public static final String OBJECT_TYPE_CONTROLLER = "/objecttypes";
+    public static final String INSPECTION_TEST_DATA_CONTROLLER = "/test-data";
+    public static final String INSPECTION_CONTROLLER = "/inspections";
+    public static final String INSPECTION_GEO_CONTROLLER = INSPECTION_CONTROLLER + "/geo";
+    public static final String FACILITY_CONTROLLER = "/facilities";
+    public static final String CHECKLIST_CONTROLLER = "/checklists";
+    public static final String CHECKLIST_DEFINITION_CONTROLLER =
+        CHECKLIST_CONTROLLER + "/definitions";
+    public static final String CHECKLIST_CONTROLLER_BASE_URL_CENTRAL_REPOSITORY =
+        CHECKLIST_DEFINITION_CONTROLLER + "/central-repository";
+    public static final String PACKLIST_CONTROLLER = "/packlists";
+    public static final String PACKLIST_DEFINITION_CONTROLLER =
+        PACKLIST_CONTROLLER + "/definitions";
+
+    private Inspection() {}
+  }
+
+  public static final class SchoolEntry {
+    public static final String SCHOOL_ENTRY_CONTROLLER = "/school-entries";
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+    public static final String CONFIG_CONTROLLER = "/config";
+    public static final String SCHOOL_ENTRY_CITIZEN_CONTROLLER = "/citizen/school-entries";
+    public static final String VALUE_EVALUATOR_CONTROLLER = "/value-evaluation";
+    public static final String LABEL_CONTROLLER = "/school-entry-labels";
+    public static final String COUNTRY_CODES_CONTROLLER = "/country-codes";
+
+    private SchoolEntry() {}
+  }
+
+  public static final class TravelMedicine {
+    public static final String INFORMATION_STATEMENT_TEMPLATE_CONTROLLER =
+        "/information-statement-templates";
+    public static final String MEDICAL_HISTORY_TEMPLATE_CONTROLLER = "/medical-history-templates";
+    public static final String MEDICAL_HISTORY_CONTROLLER = "/medical-histories";
+    public static final String VACCINE_CONTROLLER = "/vaccines";
+    public static final String DISEASE_CONTROLLER = "/diseases";
+    public static final String OTHER_SERVICE_TEMPLATE_CONTROLLER = "/other-service-templates";
+    public static final String VACCINATION_CONSULTATION_CONTROLLER = "/vaccination-consultations";
+    public static final String PROCEDURE_STEP_CONTROLLER = "/procedure-steps";
+    public static final String UNUSED_BASE_INVENTORY_VACCINE_CONTROLLER =
+        "/unused-inventory-vaccines";
+    public static final String CITIZEN_PUBLIC_CONTROLLER = "/citizen/public";
+    public static final String CITIZEN_AUTH_CONTROLLER = "/citizen/auth";
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+
+    private TravelMedicine() {}
+  }
+
+  public static final class MeaslesProtection {
+    public static final String PROCEDURE_CONTROLLER = "/protection-procedures";
+    public static final String ORGANISATION_CONTROLLER = "/organisations";
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+
+    private MeaslesProtection() {}
+  }
+
+  public static final class StiProtection {
+    public static final String PROCEDURE_CONTROLLER = "/sti-procedures";
+  }
+
+  public static final class Statistics {
+    public static final String STATISTIC_CONTROLLER = "/statistic";
+    public static final String RETRIEVE_DATA_URL = "/retrieve-data";
+    public static final String EVALUATION_URL = STATISTIC_CONTROLLER + "/evaluation";
+    public static final String REPORT_URL = STATISTIC_CONTROLLER + "/report";
+    public static final String REPORT_SERIES_URL = STATISTIC_CONTROLLER + "/report-series";
+
+    public static final String DATA_EXPORT_CONTROLLER = "/data-export";
+    public static final String DATA_SOURCE_CONTROLLER = "/data-source";
+    public static final String FILTER_TEMPLATE_CONTROLLER = "/filter-template";
+    public static final String GEO_SHAPE_CONTROLLER = "/geo-shape";
+    public static final String STATISTICS_SCHEME_CONTROLLER = "/scheme";
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+
+    private Statistics() {}
+  }
+
+  public static final class AuditLog {
+    public static final String AUDIT_LOG_CONTROLLER = "/auditlog";
+
+    private AuditLog() {}
+  }
+
+  public static final class ChatManagement {
+    public static final String USER_SETTINGS_CONTROLLER = "/user-settings";
+
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+
+    private ChatManagement() {}
+  }
+
+  public static final class ProcedureLibrary {
+    public static final String PROCEDURES_API = "/procedures";
+    public static final String PROGRESS_ENTRIES_API =
+        PROCEDURES_API + "/{procedureId}/progress-entries";
+    public static final String PROCEDURE_METRICS_API = "/procedure-metrics";
+    public static final String FILES_API = "/files";
+    public static final String INBOX_PROCEDURES_API = "/inbox-procedures";
+    public static final String TASKS_API = "/tasks";
+    public static final String TASK_METRICS_API = "/task-metrics";
+    public static final String ARCHIVING_API = "/archiving";
+    public static final String TASKS_TEAM_VIEW = TASKS_API + "/team-view";
+
+    private ProcedureLibrary() {}
+  }
+
+  public static final class FourEyesLibrary {
+    public static final String APPROVAL_REQUESTS_API = "/approval-requests";
+
+    private FourEyesLibrary() {}
+  }
+
+  public static final class EditorLibrary {
+    public static final String EDITOR_API = "/editor";
+    public static final String TEXTBLOCK_API = "/textblocks";
+
+    private EditorLibrary() {}
+  }
+}

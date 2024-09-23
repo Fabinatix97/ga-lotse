@@ -1,0 +1,98 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="initial">
+    <createTable tableName="versioned_entry_metadata">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_versioned_entry_metadata"/>
+      </column>
+      <column name="version" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_versioned_entry_metadata"/>
+      </column>
+
+      <column name="module_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="object_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="category" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tags" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+
+      <column name="change_log" type="TEXT"/>
+      <column name="contact" type="TEXT"/>
+
+      <column name="created_by" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="deleted" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="deleted_by" type="TEXT"/>
+      <column name="deleted_at" type="TIMESTAMP WITH TIME ZONE"/>
+
+      <column name="content_type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="versioned_entry_content">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_versioned_entry_content"/>
+      </column>
+
+      <column name="metadata_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="metadata_version" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="content_json" type="JSONB"/>
+      <column name="content_binary" type="OID"/>
+    </createTable>
+
+    <addUniqueConstraint columnNames="metadata_id, metadata_version" constraintName="versioned_entry_content_metadata_id_metadata_version_key" tableName="versioned_entry_content"/>
+
+    <createTable tableName="default_revision_entity">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createIndex indexName="idx_versioned_entry_metadata_deleted_module_name_object_name" tableName="versioned_entry_metadata">
+      <column name="deleted"/>
+      <column name="module_name"/>
+      <column name="object_name"/>
+    </createIndex>
+
+    <addForeignKeyConstraint baseColumnNames="metadata_id,metadata_version" baseTableName="versioned_entry_content" constraintName="fk_versioned_entry_content_versioned_entry_metadata" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id,version" referencedTableName="versioned_entry_metadata" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

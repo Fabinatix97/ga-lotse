@@ -1,0 +1,19 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.stiprotection.config;
+
+import de.eshg.auditlog.AuditLogSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration(proxyBeanMethods = false)
+public class StiProtectionAuditLogConfiguration {
+
+  @Bean
+  public AuditLogSource auditLogSource() {
+    return AuditLogSource.STI_PROTECTION;
+  }
+}

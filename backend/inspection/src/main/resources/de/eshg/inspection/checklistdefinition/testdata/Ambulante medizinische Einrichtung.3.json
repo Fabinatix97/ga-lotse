@@ -1,0 +1,124 @@
+{
+  "name": "Test aller Elemente",
+  "description": "Alle Elementtypen einmal exemplarisch mit allen Attributen",
+  "isExpandable": true,
+  "objectTypeId": "af60e4fb-a814-4153-8877-b42aa6fbb897",
+  "sections": [
+    {
+      "id": "54b1f3c0-0926-4e8f-8e18-df0a70b29edd",
+      "title": "Text-Elemente",
+      "elements": [
+        {
+          "@type": "TEXT",
+          "id": "45d756fe-8ed0-4fb8-a2b4-ac2a1efa49e1",
+          "text": "Text-Element",
+          "mandatory": true,
+          "note": "Mehrzeiliges Bemerkungsfeld\nfür Text-Element",
+          "help": "Mehrzeiliger Hilfetext\nfür Text-Element"
+        },
+        {
+          "@type": "SEPARATOR",
+          "id": "c3552f81-fb17-4a35-b2eb-ce7da8f90aa4"
+        }
+      ]
+    },
+    {
+      "id": "bb83a7b1-b74d-4bce-aa31-7447e0de18e3",
+      "title": "Auswahl-Elemente",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "a80453f8-df39-4b30-9aed-d08263651f2c",
+          "text": "Ja/Nein-Element",
+          "mandatory": true,
+          "note": "Mehrzeiliges Bemerkungsfeld\nfür Ja/Nein-Element",
+          "help": "Mehrzeiliger Hilfetext\nfür Ja/Nein-Element",
+          "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" eines Ja/Nein-Elements",
+          "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Nein\" eines Ja/Nein-Elements"
+        },
+        {
+          "@type": "SINGLE_SELECT",
+          "id": "32471674-a0ab-4506-b4f3-6cd63023d93b",
+          "text": "Optionsauswahl",
+          "mandatory": true,
+          "note": "Mehrzeiliges Bemerkungsfeld\nfür Optionsauswahl",
+          "help": "Mehrzeiliger Hilfetext\nfür Optionsauswahl",
+          "items": [
+            {
+              "id": "a28940ef-60eb-48e0-b146-bbbc21fd3cbc",
+              "text": "Option 1",
+              "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Option 1",
+              "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Nein\" für Option 1"
+            },
+            {
+              "id": "49cd48eb-2a41-4c86-86d1-069d685f52a8",
+              "text": "Option 2",
+              "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Option 2",
+              "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Option 2"
+            },
+            {
+              "id": "a4d95913-b637-47ef-a1fd-e91e8f9d80a7",
+              "text": "Option 3 mit sehr langem Optionstext lorem ipsum dolor sit amet plus",
+              "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Option 3",
+              "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Option 3"
+            }
+          ]
+        },
+        {
+          "@type": "MULTI_SELECT",
+          "id": "2d785710-40ae-4855-b7bb-4ef0ec606b1e",
+          "text": "Mehrfachauswahl",
+          "mandatory": false,
+          "note": "Mehrzeiliges Bemerkungsfeld\nfür Mehrfachauswahl",
+          "help": "Mehrzeiliger Hilfetext\nfür Mehrfachauswahl",
+          "items": [
+            {
+              "id": "fa15a8cd-35c2-4ae6-b6b0-f40b7fb45474",
+              "text": "Auswahl 1",
+              "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Auswahl 1",
+              "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Nein\" für Auswahl 1"
+            },
+            {
+              "id": "ca295909-77ce-4a15-90b7-886f015ee72d",
+              "text": "Auswahl 2",
+              "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Auswahl 2",
+              "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Nein\" für Auswahl 2"
+            },
+            {
+              "id": "a725fe60-630d-4b89-9e03-4890da0fe31f",
+              "text": "Auswahl 3 mit sehr langem Auswahltext lorem ipsum dolor sit amet plus",
+              "textModuleTrue": "Mehrzeiliger Textbaustein\nfür Antwort \"Ja\" für Auswahl 3",
+              "textModuleFalse": "Mehrzeiliger Textbaustein\nfür Antwort \"Nein\" für Auswahl 3"
+            }
+          ]
+        },
+        {
+          "@type": "SEPARATOR",
+          "id": "760b7469-9737-4130-abf5-8d8c170bae3e"
+        }
+      ]
+    },
+    {
+      "id": "75e6aef6-ce30-4649-91e8-82730469263a",
+      "title": "Bilder und Audio",
+      "elements": [
+        {
+          "@type": "IMAGE",
+          "id": "7a401b4f-d1f4-4258-b083-a093921fa9e8",
+          "text": "Bild-Element",
+          "mandatory": false,
+          "note": "Mehrzeiliges Bemerkungsfeld\nfür Bild-Element",
+          "help": "Mehrzeiliger Hilfetext\nfür Bild-Element"
+        },
+        {
+          "@type": "AUDIO",
+          "id": "a72a1209-96fd-4159-b2c8-802c2d48e148",
+          "text": "Audio-Element",
+          "mandatory": false,
+          "note": "Mehrzeiliges Bemerkungsfeld\nfür Audio-Element",
+          "help": "Mehrzeiliger Hilfetext\nfür Audio-Element"
+        }
+      ]
+    }
+  ]
+}

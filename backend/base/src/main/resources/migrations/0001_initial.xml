@@ -1,0 +1,1005 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="GA-Lotse" id="initial">
+        <createTable tableName="calendar_event">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_calendar_event"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="availability" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="TEXT"/>
+            <column name="event_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_start" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_end" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="whole_day" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="calendar_event_external_id_key" tableName="calendar_event"/>
+
+        <createTable tableName="calendar">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_calendar"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="global_calendar_name" type="TEXT"/>
+            <column name="user_id" type="UUID"/>
+            <column name="resource_id" type="UUID"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="calendar_external_id_key" tableName="calendar"/>
+        <addUniqueConstraint columnNames="global_calendar_name" constraintName="calendar_global_calendar_name_key" tableName="calendar"/>
+        <addUniqueConstraint columnNames="resource_id" constraintName="calendar_resource_id_key" tableName="calendar"/>
+        <addUniqueConstraint columnNames="user_id" constraintName="calendar_user_id_key" tableName="calendar"/>
+
+        <createTable tableName="calendar_to_event">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_calendar_to_event"/>
+            </column>
+            <column name="calendar_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_calendar_to_event"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="calendar_to_event" baseColumnNames="calendar_id" constraintName="fk_calendar_to_event_calendar" referencedColumnNames="id" referencedTableName="calendar"/>
+        <addForeignKeyConstraint baseTableName="calendar_to_event" baseColumnNames="event_id" constraintName="fk_calendar_to_event_calendar_event" referencedColumnNames="id" referencedTableName="calendar_event"/>
+
+        <createTable tableName="contact">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="merged_into_id" type="UUID"/>
+            <column name="merged_from_id" type="UUID"/>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="TEXT"/>
+            <column name="title" type="TEXT"/>
+            <column name="first_name" type="TEXT"/>
+            <column name="salutation" type="TEXT"/>
+            <column name="gender" type="TEXT"/>
+            <column name="external_chat_username" type="TEXT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="merged_from_id" constraintName="contact_merged_from_id_key" tableName="contact"/>
+
+        <addForeignKeyConstraint baseTableName="contact" baseColumnNames="merged_from_id" constraintName="fk_contact_merged_from" referencedColumnNames="id" referencedTableName="contact"/>
+        <addForeignKeyConstraint baseTableName="contact" baseColumnNames="merged_into_id" constraintName="fk_contact_merged_into" referencedColumnNames="id" referencedTableName="contact"/>
+
+        <createTable tableName="contact_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_of_contact_address_id" type="UUID"/>
+            <column name="contact_of_different_billing_address_id" type="UUID"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="contact_of_contact_address_id" constraintName="contact_address_contact_of_contact_address_id_key" tableName="contact_address"/>
+        <addUniqueConstraint columnNames="contact_of_different_billing_address_id" constraintName="contact_address_contact_of_different_billing_address_id_key" tableName="contact_address"/>
+
+        <addForeignKeyConstraint baseTableName="contact_address" baseColumnNames="contact_of_contact_address_id" constraintName="fk_contact_address_contact" referencedColumnNames="id" referencedTableName="contact"/>
+        <addForeignKeyConstraint baseTableName="contact_address" baseColumnNames="contact_of_different_billing_address_id" constraintName="fk_contact_address_billing_contact" referencedColumnNames="id" referencedTableName="contact"/>
+
+        <createTable tableName="postbox_contact_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postbox_contact_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="postbox" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="postbox_contact_address" baseColumnNames="id" constraintName="fk_postbox_contact_address_contact_address" referencedColumnNames="id" referencedTableName="contact_address"/>
+
+        <createTable tableName="domestic_contact_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_domestic_contact_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="street" type="TEXT"/>
+            <column name="house_number" type="TEXT"/>
+            <column name="address_addition" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="domestic_contact_address" baseColumnNames="id" constraintName="fk_domestic_contact_address_contact_address" referencedColumnNames="id" referencedTableName="contact_address"/>
+
+        <createTable tableName="contact_email_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_email_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_email_address" baseColumnNames="contact_id" constraintName="fk_contact_email_address_contact" referencedColumnNames="id" referencedTableName="contact"/>
+
+        <createTable tableName="contact_phone_number">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_phone_number"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_phone_number" baseColumnNames="contact_id" constraintName="fk_contact_phone_number_contact" referencedColumnNames="id" referencedTableName="contact"/>
+
+        <createTable tableName="facility_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="postbox_facility_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postbox_facility_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="postbox" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="postbox_facility_address" baseColumnNames="id" constraintName="fk_postbox_facility_address_facility_address" referencedColumnNames="id" referencedTableName="facility_address"/>
+
+        <createTable tableName="domestic_facility_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_domestic_facility_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="street" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="TEXT"/>
+            <column name="address_addition" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="domestic_facility_address" baseColumnNames="id" constraintName="fk_domestic_facility_address_facility_address" referencedColumnNames="id" referencedTableName="facility_address"/>
+
+        <createTable tableName="facility">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="delete_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="reference_version" type="BIGINT"/>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_address_id" type="BIGINT"/>
+            <column name="different_billing_address_id" type="BIGINT"/>
+            <column name="data_origin" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reference_facility_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="contact_address_id" constraintName="facility_contact_address_id_key" tableName="facility"/>
+        <addUniqueConstraint columnNames="different_billing_address_id" constraintName="facility_different_billing_address_id_key" tableName="facility"/>
+        <addUniqueConstraint columnNames="external_id" constraintName="facility_external_id_key" tableName="facility"/>
+
+        <addForeignKeyConstraint baseTableName="facility" baseColumnNames="reference_facility_id" constraintName="fk_facility_facility" referencedColumnNames="id" referencedTableName="facility"/>
+        <addForeignKeyConstraint baseTableName="facility" baseColumnNames="contact_address_id" constraintName="fk_facility_contact_address" referencedColumnNames="id" referencedTableName="facility_address"/>
+        <addForeignKeyConstraint baseTableName="facility" baseColumnNames="different_billing_address_id" constraintName="fk_facility_billing_address" referencedColumnNames="id" referencedTableName="facility_address"/>
+
+        <createTable tableName="facility_phone_number">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility_phone_number"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="facility_phone_number" baseColumnNames="facility_id" constraintName="fk_facility_phone_number_facility" referencedColumnNames="id" referencedTableName="facility"/>
+
+        <createTable tableName="facility_email_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility_email_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="facility_email_address" baseColumnNames="facility_id" constraintName="fk_facility_email_address_facility" referencedColumnNames="id" referencedTableName="facility"/>
+
+        <createTable tableName="facility_contact_person">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility_contact_person"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_address" type="TEXT"/>
+            <column name="phone_number" type="TEXT"/>
+            <column name="role" type="TEXT"/>
+            <column name="first_name" type="TEXT"/>
+            <column name="last_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT"/>
+            <column name="salutation" type="TEXT"/>
+            <column name="gender" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="facility_contact_person" baseColumnNames="facility_id" constraintName="fk_facility_contact_person_facility" referencedColumnNames="id" referencedTableName="facility"/>
+
+        <createTable tableName="label">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_label"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="name" constraintName="label_name_key" tableName="label"/>
+
+        <createTable tableName="resource">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_resource"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="article_number" type="TEXT"/>
+            <column name="description" type="TEXT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="name" constraintName="resource_name_key" tableName="resource"/>
+
+        <createTable tableName="resource_label">
+            <column name="resource_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_resource_label"/>
+            </column>
+            <column name="label_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_resource_label"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="resource_label" baseColumnNames="label_id" constraintName="fk_resource_label_label" referencedColumnNames="id" referencedTableName="label"/>
+        <addForeignKeyConstraint baseTableName="resource_label" baseColumnNames="resource_id" constraintName="fk_resource_label_resource" referencedColumnNames="id" referencedTableName="resource"/>
+
+        <createTable tableName="inventory_item">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inventory_item"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="article_number" type="TEXT"/>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="name" constraintName="inventory_item_name_key" tableName="inventory_item"/>
+
+        <createTable tableName="inventory_item_label">
+            <column name="inventory_item_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inventory_item_label"/>
+            </column>
+            <column name="label_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inventory_item_label"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="inventory_item_label" baseColumnNames="inventory_item_id" constraintName="fk_inventory_item_label_inventory_item" referencedColumnNames="id" referencedTableName="inventory_item"/>
+        <addForeignKeyConstraint baseTableName="inventory_item_label" baseColumnNames="label_id" constraintName="fk_inventory_item_label_label" referencedColumnNames="id" referencedTableName="label"/>
+
+        <createTable tableName="inventory_item_booking">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inventory_item_booking"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inventory_item_id" type="UUID"/>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="booked_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="booked_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_key" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="inventory_item_booking" baseColumnNames="inventory_item_id" constraintName="fk_inventory_item_booking_inventory_item" referencedColumnNames="id" referencedTableName="inventory_item"/>
+
+        <createTable tableName="absence_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_absence_notification"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="event_start" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_end" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="absent_user" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="absence_notification_external_id_key" tableName="absence_notification"/>
+
+        <createTable tableName="calendar_event_mutex">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_calendar_event_mutex"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calendar_external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_time" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="calendar_external_id" constraintName="calendar_event_mutex_calendar_external_id_key" tableName="calendar_event_mutex"/>
+
+        <createTable tableName="simple_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_simple_notification"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="simple_notification_external_id_key" tableName="simple_notification"/>
+
+        <createTable tableName="default_revision_entity">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="contact_phone_number_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_phone_number_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_phone_number_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="value" type="TEXT"/>
+            <column name="contact_id" type="UUID"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_phone_number_aud" baseColumnNames="rev" constraintName="fk_contact_phone_number_aud_default_revision_entity" referencedColumnNames="id" referencedTableName="default_revision_entity"/>
+
+        <createTable tableName="contact_email_address_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_email_address_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_email_address_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="value" type="TEXT"/>
+            <column name="contact_id" type="UUID"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_email_address_aud" baseColumnNames="rev" constraintName="fk_contact_email_address_aud_default_revision_entity" referencedColumnNames="id" referencedTableName="default_revision_entity"/>
+
+        <createTable tableName="contact_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_aud"/>
+            </column>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_aud"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="merged_into_id" type="UUID"/>
+            <column name="merged_into_mod" type="BOOLEAN"/>
+            <column name="merged_from_id" type="UUID"/>
+            <column name="merged_from_mod" type="BOOLEAN"/>
+            <column name="name" type="TEXT"/>
+            <column name="name_mod" type="BOOLEAN"/>
+            <column name="category" type="TEXT"/>
+            <column name="category_mod" type="BOOLEAN"/>
+            <column name="title" type="TEXT"/>
+            <column name="title_mod" type="BOOLEAN"/>
+            <column name="first_name" type="TEXT"/>
+            <column name="first_name_mod" type="BOOLEAN"/>
+            <column name="salutation" type="TEXT"/>
+            <column name="salutation_mod" type="BOOLEAN"/>
+            <column name="gender" type="TEXT"/>
+            <column name="gender_mod" type="BOOLEAN"/>
+            <column name="external_chat_username" type="TEXT"/>
+            <column name="external_chat_username_mod" type="BOOLEAN"/>
+            <column name="phone_numbers_mod" type="BOOLEAN"/>
+            <column name="email_addresses_mod" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_aud" baseColumnNames="rev" constraintName="fk_contact_aud_default_revision_entity" referencedColumnNames="id" referencedTableName="default_revision_entity"/>
+
+        <createTable tableName="contact_address_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_address_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_address_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="contact_of_contact_address_id" type="UUID"/>
+            <column name="contact_of_contact_address_mod" type="BOOLEAN"/>
+            <column name="contact_of_different_billing_address_id" type="UUID"/>
+            <column name="contact_of_different_billing_address_mod" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_address_aud" baseColumnNames="rev" constraintName="fk_contact_address_aud_default_revision_entity" referencedColumnNames="id" referencedTableName="default_revision_entity"/>
+
+        <createTable tableName="postbox_contact_address_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postbox_contact_address_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postbox_contact_address_aud"/>
+            </column>
+            <column name="postal_code" type="TEXT"/>
+            <column name="postal_code_mod" type="BOOLEAN"/>
+            <column name="city" type="TEXT"/>
+            <column name="city_mod" type="BOOLEAN"/>
+            <column name="country" type="TEXT"/>
+            <column name="country_mod" type="BOOLEAN"/>
+            <column name="different_name" type="TEXT"/>
+            <column name="different_name_mod" type="BOOLEAN"/>
+            <column name="postbox" type="TEXT"/>
+            <column name="postbox_mod" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="postbox_contact_address_aud" baseColumnNames="rev,id" constraintName="fk_postbox_contact_address_aud_contact_address_aud" referencedColumnNames="rev,id" referencedTableName="contact_address_aud"/>
+
+        <createTable tableName="domestic_contact_address_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_domestic_contact_address_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_domestic_contact_address_aud"/>
+            </column>
+            <column name="postal_code" type="TEXT"/>
+            <column name="postal_code_mod" type="BOOLEAN"/>
+            <column name="city" type="TEXT"/>
+            <column name="city_mod" type="BOOLEAN"/>
+            <column name="country" type="TEXT"/>
+            <column name="country_mod" type="BOOLEAN"/>
+            <column name="different_name" type="TEXT"/>
+            <column name="different_name_mod" type="BOOLEAN"/>
+            <column name="street" type="TEXT"/>
+            <column name="street_mod" type="BOOLEAN"/>
+            <column name="house_number" type="TEXT"/>
+            <column name="house_number_mod" type="BOOLEAN"/>
+            <column name="address_addition" type="TEXT"/>
+            <column name="address_addition_mod" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="domestic_contact_address_aud" baseColumnNames="rev,id" constraintName="fk_domestic_contact_address_aud_contact_address_aud" referencedColumnNames="rev,id" referencedTableName="contact_address_aud"/>
+
+        <createTable tableName="identification_data">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_identification_data"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="gdpr_procedure">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_procedure"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="central_file_id" type="UUID"/>
+            <column name="result" type="TEXT"/>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closed_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="identification_data_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="gdpr_procedure_external_id_key" tableName="gdpr_procedure"/>
+        <addUniqueConstraint columnNames="identification_data_id" constraintName="gdpr_procedure_identification_data_id_key" tableName="gdpr_procedure"/>
+
+        <addForeignKeyConstraint baseTableName="gdpr_procedure" baseColumnNames="identification_data_id" constraintName="fk_gdpr_procedure_identification_data" referencedColumnNames="id" referencedTableName="identification_data"/>
+
+        <createTable tableName="gdpr_facility_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_facility_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="gdpr_postbox_facility_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_postbox_facility_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="postbox" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="gdpr_postbox_facility_address" baseColumnNames="id" constraintName="fk_gdpr_postbox_facility_address_gdpr_facility_address" referencedColumnNames="id" referencedTableName="gdpr_facility_address"/>
+
+        <createTable tableName="gdpr_facility">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_facility"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_address_id" type="BIGINT"/>
+            <column name="email_address" type="TEXT"/>
+            <column name="phone_number" type="TEXT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="contact_address_id" constraintName="gdpr_facility_contact_address_id_key" tableName="gdpr_facility"/>
+
+        <addForeignKeyConstraint baseTableName="gdpr_facility" baseColumnNames="contact_address_id" constraintName="fk_gdpr_facility_gdpr_facility_address" referencedColumnNames="id" referencedTableName="gdpr_facility_address"/>
+        <addForeignKeyConstraint baseTableName="gdpr_facility" baseColumnNames="id" constraintName="fk_gdpr_facility_identification_data" referencedColumnNames="id" referencedTableName="identification_data"/>
+
+        <createTable tableName="gdpr_domestic_facility_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_domestic_facility_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="street" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="TEXT"/>
+            <column name="address_addition" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="gdpr_domestic_facility_address" baseColumnNames="id" constraintName="fk_gdpr_domestic_facility_address_gdpr_facility_address" referencedColumnNames="id" referencedTableName="gdpr_facility_address"/>
+
+        <createTable tableName="gdpr_person_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_person_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="gdpr_postbox_person_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_postbox_person_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="postbox" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="gdpr_postbox_person_address" baseColumnNames="id" constraintName="fk_gdpr_postbox_person_address_gdpr_person_address" referencedColumnNames="id" referencedTableName="gdpr_person_address"/>
+
+        <createTable tableName="gdpr_person">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_person"/>
+            </column>
+            <column name="first_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_at_birth" type="TEXT"/>
+            <column name="place_of_birth" type="TEXT"/>
+            <column name="country_of_birth" type="TEXT"/>
+            <column name="email_address" type="TEXT"/>
+            <column name="phone_number" type="TEXT"/>
+            <column name="title" type="TEXT"/>
+            <column name="salutation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_address_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="contact_address_id" constraintName="gdpr_person_contact_address_id_key" tableName="gdpr_person"/>
+
+        <addForeignKeyConstraint baseTableName="gdpr_person" baseColumnNames="contact_address_id" constraintName="fk_gdpr_person_gdpr_person_address" referencedColumnNames="id" referencedTableName="gdpr_person_address"/>
+        <addForeignKeyConstraint baseTableName="gdpr_person" baseColumnNames="id" constraintName="fk_gdpr_person_identification_data" referencedColumnNames="id" referencedTableName="identification_data"/>
+
+        <createTable tableName="gdpr_domestic_person_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_domestic_person_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="street" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="TEXT"/>
+            <column name="address_addition" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="gdpr_domestic_person_address" baseColumnNames="id" constraintName="fk_gdpr_domestic_person_address_gdpr_person_address" referencedColumnNames="id" referencedTableName="gdpr_person_address"/>
+
+        <createTable tableName="person_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="postbox_person_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_postbox_person_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="postbox" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="postbox_person_address" baseColumnNames="id" constraintName="fk_postbox_person_address_person_address" referencedColumnNames="id" referencedTableName="person_address"/>
+
+        <createTable tableName="domestic_person_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_domestic_person_address"/>
+            </column>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="different_name" type="TEXT"/>
+            <column name="street" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="TEXT"/>
+            <column name="address_addition" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="domestic_person_address" baseColumnNames="id" constraintName="fk_domestic_person_address_person_address" referencedColumnNames="id" referencedTableName="person_address"/>
+
+        <createTable tableName="person">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="delete_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="reference_version" type="BIGINT"/>
+            <column name="first_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_at_birth" type="TEXT"/>
+            <column name="place_of_birth" type="TEXT"/>
+            <column name="country_of_birth" type="TEXT"/>
+            <column name="title" type="TEXT"/>
+            <column name="salutation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_origin" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reference_person_id" type="BIGINT"/>
+            <column name="contact_address_id" type="BIGINT"/>
+            <column name="different_billing_address_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="contact_address_id" constraintName="person_contact_address_id_key" tableName="person"/>
+        <addUniqueConstraint columnNames="different_billing_address_id" constraintName="person_different_billing_address_id_key" tableName="person"/>
+        <addUniqueConstraint columnNames="external_id" constraintName="person_external_id_key" tableName="person"/>
+
+        <addForeignKeyConstraint baseTableName="person" baseColumnNames="reference_person_id" constraintName="fk_person_person" referencedColumnNames="id" referencedTableName="person"/>
+        <addForeignKeyConstraint baseTableName="person" baseColumnNames="contact_address_id" constraintName="fk_person_person_contact_address" referencedColumnNames="id" referencedTableName="person_address"/>
+        <addForeignKeyConstraint baseTableName="person" baseColumnNames="different_billing_address_id" constraintName="fk_person_person_different_billing_address" referencedColumnNames="id" referencedTableName="person_address"/>
+
+        <createTable tableName="person_email_address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_email_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="person_email_address" baseColumnNames="person_id" constraintName="fk_person_email_address_person" referencedColumnNames="id" referencedTableName="person"/>
+
+        <createTable tableName="person_phone_number">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person_phone_number"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="person_phone_number" baseColumnNames="person_id" constraintName="fk_person_phone_number_person" referencedColumnNames="id" referencedTableName="person"/>
+
+    </changeSet>
+</databaseChangeLog>

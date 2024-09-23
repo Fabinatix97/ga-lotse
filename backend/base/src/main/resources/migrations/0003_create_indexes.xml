@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1719824487384-1">
+    <createIndex indexName="idx_facility_contact_person_facility_id"
+      tableName="facility_contact_person">
+      <column name="facility_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1719824487384-2">
+    <createIndex indexName="idx_facility_email_address_facility_id"
+      tableName="facility_email_address">
+      <column name="facility_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1719824487384-3">
+    <createIndex indexName="idx_facility_phone_number_facility_id"
+      tableName="facility_phone_number">
+      <column name="facility_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1719824487384-4">
+    <createIndex indexName="idx_person_email_address_person_id"
+      tableName="person_email_address">
+      <column name="person_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1719824487384-5">
+    <createIndex indexName="idx_person_phone_number_person_id"
+      tableName="person_phone_number">
+      <column name="person_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

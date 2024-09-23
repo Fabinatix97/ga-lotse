@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720430092371-1">
+    <createTable tableName="histogram_chart_configuration_bins">
+      <column name="histogram_chart_configuration_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_histogram_chart_configuration_bins"/>
+      </column>
+      <column name="bins_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bins_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_histogram_chart_configuration_bins"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="bins_id" constraintName="histogram_chart_configuration_bins_bins_id_key" tableName="histogram_chart_configuration_bins"/>
+
+    <createTable tableName="histogram_bin">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_histogram_bin"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="lower_bound" type="numeric(10, 4)"/>
+      <column name="upper_bound" type="numeric(10, 4)"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="bins_id" baseTableName="histogram_chart_configuration_bins" constraintName="fk_histogram_chart_configuration_bins_histogram_bin" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="histogram_bin" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="histogram_chart_configuration_id" baseTableName="histogram_chart_configuration_bins" constraintName="fk_histogram_chart_configuration_bins_histogram_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="histogram_chart_configuration" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

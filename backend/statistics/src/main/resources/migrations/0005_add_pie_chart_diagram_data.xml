@@ -1,0 +1,38 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720012461279-1">
+    <addColumn tableName="diagram_data">
+      <column name="evaluated_data_amount" type="int4">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <dropColumn columnName="evaluated_data_amount" tableName="bar_chart_data"/>
+
+    <createTable tableName="pie_chart_data">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pie_chart_data"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="pie_chart_data" constraintName="fk_pie_chart_data_diagram_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram_data" validate="true"/>
+
+    <createTable tableName="pie_chart_data_key_to_counts">
+      <column name="pie_chart_data_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pie_chart_data_key_to_counts"/>
+      </column>
+      <column name="key_to_counts_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="key_to_counts_order" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pie_chart_data_key_to_counts"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="key_to_counts_id" constraintName="pie_chart_data_key_to_counts_key_to_counts_id_key" tableName="pie_chart_data_key_to_counts"/>
+    <addForeignKeyConstraint baseColumnNames="key_to_counts_id" baseTableName="pie_chart_data_key_to_counts" constraintName="fk_pie_chart_data_key_to_counts_key_to_count" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="key_to_count" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="pie_chart_data_id" baseTableName="pie_chart_data_key_to_counts" constraintName="fk_pie_chart_data_key_to_counts_pie_chart_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="pie_chart_data" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721290600979-1">
+    <createIndex indexName="idx_contact_email_address_contact_id" tableName="contact_email_address">
+      <column name="contact_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_contact_merged_into_id" tableName="contact">
+      <column name="merged_into_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_contact_phone_number_contact_id" tableName="contact_phone_number">
+      <column name="contact_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_facility_reference_facility_id" tableName="facility">
+      <column name="reference_facility_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_inventory_item_booking_inventory_item_id" tableName="inventory_item_booking">
+      <column name="inventory_item_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_person_reference_person_id" tableName="person">
+      <column name="reference_person_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

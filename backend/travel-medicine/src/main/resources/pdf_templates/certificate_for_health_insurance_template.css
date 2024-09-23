@@ -1,0 +1,130 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+@page {
+  size: A4 portrait;
+  margin: 25mm;
+
+  @bottom-left {
+    content: element(--var-footerRunning);
+    border-top: darkgray solid 1px;
+    vertical-align: top;
+  }
+
+  @bottom-right {
+    content: "Seite " counter(page) " von " counter(pages);
+    font-family: Poppins, serif;
+    font-size: 9px;
+    border-top: darkgray solid 1px;
+    vertical-align: top;
+  }
+}
+
+/* the footer is a running element, which is used in the @bottom-center margin box */
+/* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+footer {
+  position: running(--var-footerRunning);
+  font-size: 9px;
+  font-family: Poppins, serif;
+}
+
+img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: auto;
+}
+
+.addressTitle {
+  width: 500px;
+  position: absolute;
+  top: 100px;
+  font-size: 10px;
+}
+
+.addressRight {
+  position: absolute;
+  right: 0;
+  top: 70px;
+  font-size: 9px;
+  width: 120px;
+  height: 50px;
+}
+
+.title {
+  font-weight: bold;
+  position: absolute;
+  top: 140px;
+  font-size: 11px;
+  width: 150px;
+  height: 40px;
+}
+
+.contact {
+  font-size: 10px;
+  position: absolute;
+  right: 0;
+  top: 140px;
+  width: 120px;
+}
+
+.subtitle {
+  position: absolute;
+  top: 300px;
+  font-size: 11px;
+  width: 360px;
+  height: 40px;
+}
+
+table {
+  position: absolute;
+  font-size: 11px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding-bottom: 10px;
+  overflow: hidden;
+}
+
+.info td {
+  vertical-align: top;
+}
+
+.info .key {
+  width: 25%;
+}
+
+.value {
+  font-weight: bold;
+  width: 75%;
+}
+
+.services tbody td {
+  vertical-align: center;
+  border-top: 1px solid darkgray;
+  padding-top: 10px;
+}
+
+.service {
+  width: 80%;
+}
+
+.price {
+  width: 20%;
+}
+
+.services tfoot td {
+  font-weight: bold;
+  border-top: 1px solid black;
+  padding-top: 10px;
+}
+
+tr {
+  page-break-inside: avoid;
+  page-break-after: auto
+}

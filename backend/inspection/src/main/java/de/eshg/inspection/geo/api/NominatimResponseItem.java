@@ -1,0 +1,8 @@
+/*
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.inspection.geo.api;
+
+public record NominatimResponseItem(String lat, String lon) {}

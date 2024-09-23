@@ -1,0 +1,10 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    implementation project(':lib-commons')
+    api project(':base-api')
+
+    api('org.springframework:spring-context')
+}

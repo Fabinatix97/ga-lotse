@@ -1,0 +1,13 @@
+= Setting up VS Code
+:sectnums:
+
+The following steps are optional, but recommended if you are using vscode:
+
+1. Install the recommended VS Code link:../.vscode/extensions.json[extensions].
+2. Use the workspace version of TypeScript by running the TypeScript version command:
+[source, shell]
+----
+typescript.selectTypeScriptVersion
+----
+and selecting "Use Workspace Version".
+This setting enables the https://nextjs.org/docs/app/building-your-application/configuring/typescript#typescript-plugin[Next.js TypeScript plugin] for advanced type-checking and auto-completion.

@@ -1,0 +1,2985 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+openapi: 3.0.1
+info:
+  description: This is the API for the statistics module
+  title: Statistics Module API
+  version: "0.1"
+servers:
+- url: http://localhost:8087
+paths:
+  /data-export/diagram/{diagramId}:
+    get:
+      operationId: exportData
+      parameters:
+      - in: path
+        name: diagramId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Exported diagram data
+      summary: Export diagram data
+      tags:
+      - DataExport
+  /data-source:
+    get:
+      operationId: getAvailableDataSources
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAvailableDataSourcesResponse"
+          description: The aggregated available data sources
+      summary: Get statistics data sources
+      tags:
+      - DataSource
+  /feature-toggles:
+    get:
+      operationId: getFeatureToggles
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetStatisticsFeatureTogglesResponse"
+          description: OK
+      tags:
+      - StatisticsFeatureToggles
+  /filter-template:
+    post:
+      operationId: addFilterTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddFilterTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The UUID of the filter template
+      summary: Add filter template
+      tags:
+      - FilterTemplate
+  /filter-template/statistic/{statisticId}:
+    get:
+      operationId: findFilterTemplatesForStatistic
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFilterTemplatesForStatisticResponse"
+          description: Fitting filter templates for a statistic
+      summary: Get filter templates that can be used on the statistic
+      tags:
+      - FilterTemplate
+  /filter-template/{filterTemplateId}:
+    delete:
+      operationId: deleteFilterTemplate
+      parameters:
+      - in: path
+        name: filterTemplateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the filter template is deleted
+      summary: Delete a filter template
+      tags:
+      - FilterTemplate
+    get:
+      operationId: getFilterTemplate
+      parameters:
+      - in: path
+        name: filterTemplateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FilterTemplate"
+          description: The information for the detail page
+      summary: Get the information for the detail page
+      tags:
+      - FilterTemplate
+  /geo-shape:
+    get:
+      operationId: getGeoShapes
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/GeoShapeSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+      - in: query
+        name: onlyActive
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGeoShapesResponse"
+          description: All geo shapes
+      summary: Get meta data of all geo shapes
+      tags:
+      - GeoShape
+    post:
+      operationId: addGeoShape
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+              required:
+              - file
+              - title
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+          description: The id of the geo shape
+      summary: Upload and save a geo json file
+      tags:
+      - GeoShape
+  /geo-shape/{geoShapeId}:
+    delete:
+      operationId: deleteGeoShape
+      parameters:
+      - in: path
+        name: geoShapeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the geo shape is deleted
+      summary: Delete a geo shape
+      tags:
+      - GeoShape
+    get:
+      operationId: getGeoShape
+      parameters:
+      - in: path
+        name: geoShapeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeoShape"
+          description: The geo shape of the requested id
+      summary: Get the geo shape for the id
+      tags:
+      - GeoShape
+    patch:
+      operationId: updateGeoShape
+      parameters:
+      - in: path
+        name: geoShapeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/GeoShapeChangeStatusRequest"
+              - $ref: "#/components/schemas/GeoShapeChangeTitleRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeoShapeMetaInfo"
+          description: The changed geo shape of the requested id
+      summary: Change the geo shape with the id
+      tags:
+      - GeoShape
+  /scheme:
+    get:
+      operationId: getStatisticsSchemes
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStatisticsSchemesResponse"
+          description: All statistics schemes
+      summary: Get all statistics schemes
+      tags:
+      - StatisticsScheme
+    post:
+      operationId: addStatisticsScheme
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddStatisticsSchemeRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatisticsScheme"
+          description: The added statistics scheme
+      summary: Add a statistics scheme
+      tags:
+      - StatisticsScheme
+  /scheme/{schemeId}:
+    delete:
+      operationId: deleteStatisticsScheme
+      parameters:
+      - in: path
+        name: schemeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the statistics scheme is deleted
+      summary: Delete a statistics scheme
+      tags:
+      - StatisticsScheme
+    get:
+      operationId: getStatisticsScheme
+      parameters:
+      - in: path
+        name: schemeId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatisticsScheme"
+          description: The statistics scheme
+      summary: Get a statistics scheme
+      tags:
+      - StatisticsScheme
+  /statistic:
+    get:
+      operationId: getStatistics
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/StatisticSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStatisticsResponse"
+          description: All statistics
+      summary: Get all statistics
+      tags:
+      - Statistic
+    post:
+      operationId: addStatistic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/AddStatisticWithDataSourcesRequest"
+              - $ref: "#/components/schemas/AddStatisticWithSchemeRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The UUID of the statistic
+      summary: Add statistic
+      tags:
+      - Statistic
+  /statistic/clone:
+    post:
+      operationId: cloneStatistic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloneStatisticRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The UUID of the cloned statistic
+      summary: Clone a statistic
+      tags:
+      - Statistic
+  /statistic/completeness/{statisticId}:
+    get:
+      operationId: getCompletenessInformation
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCompletenessDataResponse"
+          description: Completeness of a statistic
+      summary: Get information about the completeness of the statistic data
+      tags:
+      - Statistic
+  /statistic/evaluation:
+    post:
+      operationId: addEvaluation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddEvaluationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evaluation"
+          description: The added evaluation
+      summary: Add an evaluation
+      tags:
+      - Evaluation
+  /statistic/evaluation/diagram/{diagramId}:
+    delete:
+      operationId: deleteDiagram
+      parameters:
+      - in: path
+        name: diagramId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the diagram is deleted
+      summary: Delete a diagram
+      tags:
+      - Evaluation
+    patch:
+      operationId: updateDiagram
+      parameters:
+      - in: path
+        name: diagramId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDiagramRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diagram"
+          description: The patched diagram
+      summary: Change title and description of a diagram
+      tags:
+      - Evaluation
+  /statistic/evaluation/{evaluationId}:
+    delete:
+      operationId: deleteEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the evaluation is deleted
+      summary: Delete an evaluation
+      tags:
+      - Evaluation
+    get:
+      operationId: getEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationWithDiagrams"
+          description: The requested evaluation
+      summary: Get an evaluation by id
+      tags:
+      - Evaluation
+    patch:
+      operationId: updateEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEvaluationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Evaluation"
+          description: The patched evaluation
+      summary: Change the name of an evaluation
+      tags:
+      - Evaluation
+    post:
+      operationId: addDiagram
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddDiagramRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The id of the diagram
+      summary: Add a diagram to the evaluation
+      tags:
+      - Evaluation
+  /statistic/report-series:
+    post:
+      operationId: addReportSeries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/AddAutoReportSeriesRequest"
+              - $ref: "#/components/schemas/AddManualReportSeriesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportSeries"
+          description: The added report series
+      summary: Add a report series
+      tags:
+      - ReportSeries
+  /statistic/report-series/overview:
+    post:
+      operationId: getReportOverview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetReportsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReportsResponse"
+          description: Report overview page
+      summary: Get report series entries for the overview page
+      tags:
+      - ReportSeries
+  /statistic/report-series/{reportSeriesId}:
+    delete:
+      operationId: deleteReportSeries
+      parameters:
+      - in: path
+        name: reportSeriesId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the report series is deleted
+      summary: Delete a report series with the reports
+      tags:
+      - ReportSeries
+    patch:
+      operationId: updateReportSeries
+      parameters:
+      - in: path
+        name: reportSeriesId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReportSeriesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportSeries"
+          description: The patched report series
+      summary: Change title and description of a report series
+      tags:
+      - ReportSeries
+  /statistic/report/{reportId}:
+    get:
+      operationId: getReportDetailPage
+      parameters:
+      - in: path
+        name: reportId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReportDetailPageResponse"
+          description: The information for the detail page
+      summary: Get the information for the detail page
+      tags:
+      - Report
+  /statistic/retrieve-data/{statisticId}:
+    post:
+      operationId: getStatistic
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetStatisticRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStatisticResponse"
+          description: Statistic with data
+      summary: Get data from one statistic
+      tags:
+      - Statistic
+  /statistic/{statisticId}:
+    delete:
+      operationId: deleteStatistic
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the statistic is deleted
+      summary: Delete a statistic
+      tags:
+      - Statistic
+    get:
+      operationId: getDetailPageInformation
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDetailPageInformationResponse"
+          description: The information for the detail page
+      summary: Get the information for the detail page
+      tags:
+      - Statistic
+  /statistic/{statisticId}/report-series:
+    get:
+      operationId: getReportSeriesEntriesOfStatistic
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReportSeriesEntriesOfStatisticResponse"
+          description: Report series entries for the statistic
+      summary: Get report series entries for the statistic
+      tags:
+      - Statistic
+  /test-helper/archiving-job:
+    post:
+      operationId: runArchivingJob
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/audit-log-storage:
+    delete:
+      operationId: clearAuditLogStorageDirectory
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/enabled-new-features/{featureToEnable}:
+    post:
+      operationId: enableNewFeature
+      parameters:
+      - in: path
+        name: featureToEnable
+        required: true
+        schema:
+          $ref: "#/components/schemas/StatisticsFeature"
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/population:
+    post:
+      operationId: populateDefaults
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DefaultPopulationResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor:
+    post:
+      operationId: interceptNextRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/barriers:
+    post:
+      operationId: addBarrier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperInterceptionRequestFilter"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AddBarrierTestHelperResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/barriers/{barrierId}/await:
+    post:
+      operationId: awaitBarrier
+      parameters:
+      - in: path
+        name: barrierId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: timeoutInMillis
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 0
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/reset:
+    post:
+      operationId: resetInterceptionsAndBarriers
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/reset:
+    post:
+      operationId: reset
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/set-clock:
+    patch:
+      operationId: setClock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperClockSetRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/wind-clock:
+    patch:
+      operationId: windClockForward
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperClockWindForwardRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+components:
+  schemas:
+    AbstractAddChartConfiguration:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    AbstractAddReportSeriesRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    AbstractAddStatisticRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    AbstractChartConfiguration:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    AbstractGeoShapeChangeRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    AbstractTableColumnHeaderAttribute:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    AddAutoReportSeriesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddReportSeriesRequest"
+      - type: object
+        properties:
+          description:
+            type: string
+          frequency:
+            $ref: "#/components/schemas/Frequency"
+          name:
+            type: string
+          reportingPeriod:
+            $ref: "#/components/schemas/ReportingPeriod"
+          startMonth:
+            type: integer
+            format: int32
+            maximum: 12
+            minimum: 1
+          statisticId:
+            type: string
+            format: uuid
+      required:
+      - frequency
+      - name
+      - reportingPeriod
+      - startMonth
+      - statisticId
+    AddBarrierTestHelperResponse:
+      type: object
+      properties:
+        barrierId:
+          type: integer
+          format: int64
+          minimum: 1
+      required:
+      - barrierId
+    AddChoroplethMapConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddChartConfiguration"
+      - type: object
+        properties:
+          calculation:
+            $ref: "#/components/schemas/Calculation"
+          colorScheme:
+            type: string
+          geoShapeId:
+            type: string
+            format: uuid
+          primaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          secondaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      required:
+      - colorScheme
+      - geoShapeId
+      - primaryAttribute
+    AddDiagramRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        filters:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanFilterParameter"
+            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
+            - $ref: "#/components/schemas/DecimalValueFilterParameter"
+            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
+            - $ref: "#/components/schemas/IntegerValueFilterParameter"
+            - $ref: "#/components/schemas/NullFilterParameter"
+            - $ref: "#/components/schemas/TextFilterParameter"
+            - $ref: "#/components/schemas/ValueOptionFilterParameter"
+        title:
+          type: string
+      required:
+      - title
+    AddEvaluationRequest:
+      type: object
+      properties:
+        chartConfiguration:
+          oneOf:
+          - $ref: "#/components/schemas/AddChoroplethMapConfiguration"
+          - $ref: "#/components/schemas/BarChartConfiguration"
+          - $ref: "#/components/schemas/HistogramChartConfiguration"
+          - $ref: "#/components/schemas/LineChartConfiguration"
+          - $ref: "#/components/schemas/PieChartConfiguration"
+          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        name:
+          type: string
+        statisticId:
+          type: string
+          format: uuid
+      required:
+      - chartConfiguration
+      - name
+      - statisticId
+    AddFilterTemplateRequest:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanFilterParameter"
+            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
+            - $ref: "#/components/schemas/DecimalValueFilterParameter"
+            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
+            - $ref: "#/components/schemas/IntegerValueFilterParameter"
+            - $ref: "#/components/schemas/NullFilterParameter"
+            - $ref: "#/components/schemas/TextFilterParameter"
+            - $ref: "#/components/schemas/ValueOptionFilterParameter"
+          maxItems: 2147483647
+          minItems: 1
+        name:
+          type: string
+      required:
+      - filters
+      - name
+    AddManualReportSeriesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddReportSeriesRequest"
+      - type: object
+        properties:
+          description:
+            type: string
+          name:
+            type: string
+          statisticId:
+            type: string
+            format: uuid
+          timeRangeEnd:
+            type: string
+            format: date-time
+          timeRangeStart:
+            type: string
+            format: date-time
+      required:
+      - name
+      - statisticId
+      - timeRangeEnd
+      - timeRangeStart
+    AddStatisticWithDataSourcesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddStatisticRequest"
+      - type: object
+        properties:
+          dataSources:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataSource"
+            maxItems: 1
+            minItems: 1
+          name:
+            type: string
+          schemeName:
+            type: string
+          timeRangeEnd:
+            type: string
+            format: date-time
+          timeRangeStart:
+            type: string
+            format: date-time
+      required:
+      - dataSources
+      - name
+      - timeRangeEnd
+      - timeRangeStart
+    AddStatisticWithSchemeRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddStatisticRequest"
+      - type: object
+        properties:
+          name:
+            type: string
+          schemeId:
+            type: string
+            format: uuid
+          timeRangeEnd:
+            type: string
+            format: date-time
+          timeRangeStart:
+            type: string
+            format: date-time
+      required:
+      - name
+      - schemeId
+      - timeRangeEnd
+      - timeRangeStart
+    AddStatisticsSchemeRequest:
+      type: object
+      properties:
+        dataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataSource"
+          maxItems: 1
+          minItems: 1
+        name:
+          type: string
+      required:
+      - dataSources
+      - name
+    AttributeSelection:
+      type: object
+      properties:
+        baseModuleAttributeCode:
+          type: string
+        businessModuleAttributeCode:
+          type: string
+        businessModuleName:
+          type: string
+        dataSourceId:
+          type: string
+          format: uuid
+      required:
+      - businessModuleAttributeCode
+      - businessModuleName
+      - dataSourceId
+    AvailableDataSource:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessDataSourceAttribute"
+        businessModule:
+          type: string
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - attributes
+      - businessModule
+      - id
+      - name
+    BarChartConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddChartConfiguration"
+      - type: object
+        properties:
+          grouping:
+            $ref: "#/components/schemas/Grouping"
+          orientation:
+            $ref: "#/components/schemas/Orientation"
+          primaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          scaling:
+            $ref: "#/components/schemas/Scaling"
+          secondaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      - $ref: "#/components/schemas/AbstractChartConfiguration"
+      required:
+      - orientation
+      - primaryAttribute
+    BarChartData:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          barChartGroupDatas:
+            type: array
+            items:
+              $ref: "#/components/schemas/BarGroupData"
+      required:
+      - barChartGroupDatas
+    BarGroupData:
+      type: object
+      properties:
+        key:
+          type: string
+        keyToCounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyToCount"
+      required:
+      - key
+      - keyToCounts
+    BaseDataAttributeWithName:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    BaseDataSourceAttribute:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - code
+      - name
+    BinningMode:
+      type: string
+      enum:
+      - AUTO
+      - MANUAL
+    BooleanAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+      required:
+      - code
+      - name
+    BooleanFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          searchForFalse:
+            type: boolean
+          searchForNull:
+            type: boolean
+          searchForTrue:
+            type: boolean
+      required:
+      - attribute
+      - searchForFalse
+      - searchForNull
+      - searchForTrue
+    BusinessDataAttribute:
+      type: object
+      properties:
+        baseAttributeCodes:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      required:
+      - code
+    BusinessDataAttributeWithName:
+      type: object
+      properties:
+        baseDataAttributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/BaseDataAttributeWithName"
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - baseDataAttributes
+      - code
+      - name
+    BusinessDataSourceAttribute:
+      type: object
+      properties:
+        baseAttributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/BaseDataSourceAttribute"
+        category:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+      required:
+      - category
+      - code
+      - name
+    Calculation:
+      type: string
+      enum:
+      - MEAN
+      - SUM
+    CentralFileIdAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          baseAttribute:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanAttribute"
+            - $ref: "#/components/schemas/CentralFileIdAttribute"
+            - $ref: "#/components/schemas/DateAttribute"
+            - $ref: "#/components/schemas/DecimalAttribute"
+            - $ref: "#/components/schemas/IntegerAttribute"
+            - $ref: "#/components/schemas/ProcedureIdAttribute"
+            - $ref: "#/components/schemas/TextAttribute"
+            - $ref: "#/components/schemas/ValueWithOptionsAttribute"
+          code:
+            type: string
+          name:
+            type: string
+      required:
+      - baseAttribute
+      - code
+      - name
+    ChoroplethMapConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractChartConfiguration"
+      - type: object
+        properties:
+          calculation:
+            $ref: "#/components/schemas/Calculation"
+          colorScheme:
+            type: string
+          geoJson:
+            type: string
+          primaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          secondaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      required:
+      - colorScheme
+      - primaryAttribute
+    ChoroplethMapData:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          keyToValues:
+            type: array
+            items:
+              $ref: "#/components/schemas/KeyToValue"
+      required:
+      - keyToValues
+    CloneStatisticRequest:
+      type: object
+      properties:
+        clonedStatisticName:
+          type: string
+        originalStatisticId:
+          type: string
+          format: uuid
+      required:
+      - clonedStatisticName
+      - originalStatisticId
+    CompletenessOfAttribute:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    CompletenessOfBaseAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CompletenessOfAttribute"
+      - type: object
+        properties:
+          baseAttributeCode:
+            type: string
+          baseAttributeName:
+            type: string
+          businessAttributeCode:
+            type: string
+          businessAttributeName:
+            type: string
+          businessModuleName:
+            type: string
+          dataSourceId:
+            type: string
+            format: uuid
+          mandatory:
+            type: boolean
+          percentNull:
+            type: number
+          percentSum:
+            type: number
+          percentUnknown:
+            type: number
+          unknownValue:
+            type: string
+      required:
+      - baseAttributeCode
+      - baseAttributeName
+      - businessAttributeCode
+      - businessAttributeName
+      - businessModuleName
+      - dataSourceId
+      - mandatory
+      - percentNull
+      - percentSum
+    CompletenessOfBusinessAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CompletenessOfAttribute"
+      - type: object
+        properties:
+          businessModuleName:
+            type: string
+          code:
+            type: string
+          dataSourceId:
+            type: string
+            format: uuid
+          mandatory:
+            type: boolean
+          name:
+            type: string
+          percentNull:
+            type: number
+          percentSum:
+            type: number
+          percentUnknown:
+            type: number
+          unknownValue:
+            type: string
+      required:
+      - businessModuleName
+      - code
+      - dataSourceId
+      - mandatory
+      - name
+      - percentNull
+      - percentSum
+    DataPoint:
+      type: object
+      properties:
+        x:
+          type: number
+        "y":
+          type: number
+      required:
+      - x
+      - "y"
+    DataPointGroup:
+      type: object
+      properties:
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataPoint"
+        key:
+          type: string
+        trendLine:
+          $ref: "#/components/schemas/TrendLine"
+      required:
+      - dataPoints
+      - key
+    DataRow:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: object
+      required:
+      - values
+    DataSource:
+      type: object
+      properties:
+        attributeCodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessDataAttribute"
+          maxItems: 2147483647
+          minItems: 1
+        businessModuleName:
+          type: string
+        id:
+          type: string
+          format: uuid
+      required:
+      - attributeCodes
+      - businessModuleName
+      - id
+    DataSourceWithAttributeNames:
+      type: object
+      properties:
+        businessModuleName:
+          type: string
+        dataAttributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessDataAttributeWithName"
+          maxItems: 2147483647
+          minItems: 1
+        id:
+          type: string
+          format: uuid
+      required:
+      - businessModuleName
+      - dataAttributes
+      - id
+    DateAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+          valueOptions:
+            type: array
+            items:
+              $ref: "#/components/schemas/ValueOption"
+      required:
+      - code
+      - name
+    DecimalAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          maxValue:
+            type: number
+          minValue:
+            type: number
+          name:
+            type: string
+          unit:
+            type: string
+          valueOptions:
+            type: array
+            items:
+              $ref: "#/components/schemas/ValueOption"
+      required:
+      - code
+      - name
+    DecimalRangeFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          maxValueInclusive:
+            type: number
+          minValueInclusive:
+            type: number
+          withNullValues:
+            type: boolean
+      required:
+      - attribute
+      - maxValueInclusive
+      - minValueInclusive
+      - withNullValues
+    DecimalValueFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          numericComparison:
+            $ref: "#/components/schemas/NumericComparison"
+          value:
+            type: number
+          withNullValues:
+            type: boolean
+      required:
+      - attribute
+      - numericComparison
+      - value
+      - withNullValues
+    DefaultPopulationResponse:
+      type: object
+      properties:
+        populations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Population"
+    Diagram:
+      type: object
+      properties:
+        description:
+          type: string
+        diagramData:
+          oneOf:
+          - $ref: "#/components/schemas/BarChartData"
+          - $ref: "#/components/schemas/ChoroplethMapData"
+          - $ref: "#/components/schemas/HistogramChartDataCategorized"
+          - $ref: "#/components/schemas/HistogramChartDataSimple"
+          - $ref: "#/components/schemas/LineChartDataCategorized"
+          - $ref: "#/components/schemas/LineChartDataSimple"
+          - $ref: "#/components/schemas/PieChartData"
+          - $ref: "#/components/schemas/ScatterChartDataCategorized"
+          - $ref: "#/components/schemas/ScatterChartDataSimple"
+        evaluatedDataAmount:
+          type: integer
+          format: int32
+        filters:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanFilterParameter"
+            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
+            - $ref: "#/components/schemas/DecimalValueFilterParameter"
+            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
+            - $ref: "#/components/schemas/IntegerValueFilterParameter"
+            - $ref: "#/components/schemas/NullFilterParameter"
+            - $ref: "#/components/schemas/TextFilterParameter"
+            - $ref: "#/components/schemas/ValueOptionFilterParameter"
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+      required:
+      - diagramData
+      - evaluatedDataAmount
+      - id
+      - title
+    DiagramData:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    ErrorCode:
+      type: string
+      enum:
+      - UNEXPECTED_ERROR
+      - BAD_REQUEST
+      - UNAUTHORIZED
+      - INSUFFICIENT_USER_RIGHTS
+      - NOT_FOUND
+      - CONFLICT
+      - CONSTRAINT_VIOLATION
+      - TIMEOUT
+      - DATA_INTEGRITY_VIOLATION
+      - ALREADY_EXISTS
+      - AGGREGATION_EXCEPTION
+      - INVALID_FILE
+      - NONCONFORM_PDF
+      - CORRUPT
+      - LOCKED
+    ErrorResponseWithLocation:
+      type: object
+      properties:
+        errorCode:
+          $ref: "#/components/schemas/ErrorCode"
+        errorLocation:
+          type: string
+        message:
+          type: string
+      required:
+      - errorCode
+      - errorLocation
+    Evaluation:
+      type: object
+      properties:
+        chartConfiguration:
+          oneOf:
+          - $ref: "#/components/schemas/BarChartConfiguration"
+          - $ref: "#/components/schemas/ChoroplethMapConfiguration"
+          - $ref: "#/components/schemas/HistogramChartConfiguration"
+          - $ref: "#/components/schemas/LineChartConfiguration"
+          - $ref: "#/components/schemas/PieChartConfiguration"
+          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        numberOfDiagrams:
+          type: integer
+          format: int32
+      required:
+      - chartConfiguration
+      - createdAt
+      - id
+      - name
+      - numberOfDiagrams
+    EvaluationWithDiagrams:
+      type: object
+      properties:
+        chartConfiguration:
+          oneOf:
+          - $ref: "#/components/schemas/BarChartConfiguration"
+          - $ref: "#/components/schemas/ChoroplethMapConfiguration"
+          - $ref: "#/components/schemas/HistogramChartConfiguration"
+          - $ref: "#/components/schemas/LineChartConfiguration"
+          - $ref: "#/components/schemas/PieChartConfiguration"
+          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        createdAt:
+          type: string
+          format: date-time
+        diagrams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Diagram"
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - chartConfiguration
+      - createdAt
+      - diagrams
+      - id
+      - name
+    FilterTemplate:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanFilterParameter"
+            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
+            - $ref: "#/components/schemas/DecimalValueFilterParameter"
+            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
+            - $ref: "#/components/schemas/IntegerValueFilterParameter"
+            - $ref: "#/components/schemas/NullFilterParameter"
+            - $ref: "#/components/schemas/TextFilterParameter"
+            - $ref: "#/components/schemas/ValueOptionFilterParameter"
+          maxItems: 2147483647
+          minItems: 1
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - filters
+      - id
+      - name
+    FilterTemplateIdAndName:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Frequency:
+      type: string
+      enum:
+      - PER_MONTH
+      - PER_THREE_MONTHS
+      - PER_HALF_YEAR
+      - PER_YEAR
+    GeoShape:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        geoJson:
+          type: string
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/GeoShapeStatus"
+        title:
+          type: string
+      required:
+      - createdAt
+      - geoJson
+      - id
+      - status
+      - title
+    GeoShapeChangeStatusRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractGeoShapeChangeRequest"
+      - type: object
+        properties:
+          status:
+            $ref: "#/components/schemas/GeoShapeStatus"
+      required:
+      - status
+    GeoShapeChangeTitleRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractGeoShapeChangeRequest"
+      - type: object
+        properties:
+          title:
+            type: string
+      required:
+      - title
+    GeoShapeMetaInfo:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/GeoShapeStatus"
+        title:
+          type: string
+      required:
+      - createdAt
+      - id
+      - status
+      - title
+    GeoShapeSortKey:
+      type: string
+      enum:
+      - TITLE
+      - CREATED_AT
+    GeoShapeStatus:
+      type: string
+      enum:
+      - ACTIVE
+      - ARCHIVED
+    GetAvailableDataSourcesResponse:
+      type: object
+      properties:
+        availableDataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailableDataSource"
+        errorResponses:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorResponseWithLocation"
+      required:
+      - availableDataSources
+      - errorResponses
+    GetCompletenessDataResponse:
+      type: object
+      properties:
+        completenessOfAttributes:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/CompletenessOfBaseAttribute"
+            - $ref: "#/components/schemas/CompletenessOfBusinessAttribute"
+        statisticInfo:
+          $ref: "#/components/schemas/StatisticInfo"
+      required:
+      - completenessOfAttributes
+      - statisticInfo
+    GetDetailPageInformationResponse:
+      type: object
+      properties:
+        evaluations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Evaluation"
+        statisticInfo:
+          $ref: "#/components/schemas/StatisticInfo"
+        tableColumnHeaders:
+          type: array
+          items:
+            $ref: "#/components/schemas/TableColumnHeader"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+        userDto:
+          $ref: "#/components/schemas/User"
+      required:
+      - evaluations
+      - statisticInfo
+      - tableColumnHeaders
+      - totalNumberOfElements
+    GetFilterTemplatesForStatisticResponse:
+      type: object
+      properties:
+        filterTemplateIdAndNames:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilterTemplateIdAndName"
+      required:
+      - filterTemplateIdAndNames
+    GetGeoShapesResponse:
+      type: object
+      properties:
+        geoShapeMetaInfos:
+          type: array
+          items:
+            $ref: "#/components/schemas/GeoShapeMetaInfo"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - geoShapeMetaInfos
+      - totalNumberOfElements
+    GetReportDetailPageResponse:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        description:
+          type: string
+        evaluation:
+          type: array
+          items:
+            $ref: "#/components/schemas/Evaluation"
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        numberOfReportsInSeries:
+          type: integer
+          format: int32
+          minimum: 1
+        reportSeriesId:
+          type: string
+          format: uuid
+        tableColumnHeaders:
+          type: array
+          items:
+            $ref: "#/components/schemas/TableColumnHeader"
+        timeRangeEnd:
+          type: string
+          format: date-time
+        timeRangeStart:
+          type: string
+          format: date-time
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+        userDto:
+          $ref: "#/components/schemas/User"
+      required:
+      - createdAt
+      - evaluation
+      - id
+      - name
+      - numberOfReportsInSeries
+      - reportSeriesId
+      - tableColumnHeaders
+      - timeRangeEnd
+      - timeRangeStart
+      - totalNumberOfElements
+    GetReportSeriesEntriesOfStatisticResponse:
+      type: object
+      properties:
+        reportSeriesEntries:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportSeries"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+        statisticId:
+          type: string
+          format: uuid
+        statisticName:
+          type: string
+      required:
+      - reportSeriesEntries
+      - resolvedUsers
+      - statisticId
+      - statisticName
+    GetReportsRequest:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          default: 25
+          minimum: 1
+        reportTypeFilter:
+          $ref: "#/components/schemas/ReportType"
+        sortDirection:
+          $ref: "#/components/schemas/SortDirection"
+    GetReportsResponse:
+      type: object
+      properties:
+        reportSeriesList:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportSeries"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - reportSeriesList
+      - resolvedUsers
+      - totalNumberOfElements
+    GetStatisticRequest:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanFilterParameter"
+            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
+            - $ref: "#/components/schemas/DecimalValueFilterParameter"
+            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
+            - $ref: "#/components/schemas/IntegerValueFilterParameter"
+            - $ref: "#/components/schemas/NullFilterParameter"
+            - $ref: "#/components/schemas/TextFilterParameter"
+            - $ref: "#/components/schemas/ValueOptionFilterParameter"
+        page:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          default: 25
+          minimum: 1
+        sortAttribute:
+          $ref: "#/components/schemas/AttributeSelection"
+        sortDirection:
+          $ref: "#/components/schemas/SortDirection"
+    GetStatisticResponse:
+      type: object
+      properties:
+        dataRows:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataRow"
+        statisticInfo:
+          $ref: "#/components/schemas/StatisticInfo"
+        tableColumnHeaders:
+          type: array
+          items:
+            $ref: "#/components/schemas/TableColumnHeader"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - dataRows
+      - statisticInfo
+      - tableColumnHeaders
+      - totalNumberOfElements
+    GetStatisticsFeatureTogglesResponse:
+      type: object
+      properties:
+        disabledOldFeatures:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatisticsFeature"
+          uniqueItems: true
+        enabledNewFeatures:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatisticsFeature"
+          uniqueItems: true
+      required:
+      - disabledOldFeatures
+      - enabledNewFeatures
+    GetStatisticsResponse:
+      type: object
+      properties:
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+        statistics:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatisticInfo"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - resolvedUsers
+      - statistics
+      - totalNumberOfElements
+    GetStatisticsSchemesResponse:
+      type: object
+      properties:
+        statisticsSchemes:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatisticsScheme"
+      required:
+      - statisticsSchemes
+    Grouping:
+      type: string
+      enum:
+      - GROUPED
+      - STACKED
+    HistogramBin:
+      type: object
+      properties:
+        lowerBound:
+          type: number
+        upperBound:
+          type: number
+      required:
+      - lowerBound
+      - upperBound
+    HistogramChartConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddChartConfiguration"
+      - type: object
+        properties:
+          binningMode:
+            $ref: "#/components/schemas/BinningMode"
+          grouping:
+            $ref: "#/components/schemas/Grouping"
+          numberOfBins:
+            type: integer
+            format: int32
+            maximum: 50
+            minimum: 2
+          primaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          scaling:
+            $ref: "#/components/schemas/Scaling"
+          secondaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      - $ref: "#/components/schemas/AbstractChartConfiguration"
+      required:
+      - binningMode
+      - primaryAttribute
+    HistogramChartDataCategorized:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          histogramGroupDatas:
+            type: array
+            items:
+              $ref: "#/components/schemas/HistogramGroupDataCategorized"
+      required:
+      - histogramGroupDatas
+    HistogramChartDataSimple:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          histogramGroupDatas:
+            type: array
+            items:
+              $ref: "#/components/schemas/HistogramGroupDataSimple"
+      required:
+      - histogramGroupDatas
+    HistogramGroupDataCategorized:
+      type: object
+      properties:
+        histogramBin:
+          $ref: "#/components/schemas/HistogramBin"
+        keyToCounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyToCount"
+      required:
+      - histogramBin
+      - keyToCounts
+    HistogramGroupDataSimple:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        histogramBin:
+          $ref: "#/components/schemas/HistogramBin"
+      required:
+      - count
+      - histogramBin
+    HttpMethod:
+      type: string
+      enum:
+      - GET
+      - HEAD
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      - TRACE
+    InsertRequestInterceptionTestHelperRequest:
+      type: object
+      properties:
+        filter:
+          $ref: "#/components/schemas/TestHelperInterceptionRequestFilter"
+        type:
+          $ref: "#/components/schemas/InterceptionType"
+      required:
+      - type
+    IntegerAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          maxValue:
+            type: integer
+            format: int32
+          minValue:
+            type: integer
+            format: int32
+          name:
+            type: string
+          unit:
+            type: string
+          valueOptions:
+            type: array
+            items:
+              $ref: "#/components/schemas/ValueOption"
+      required:
+      - code
+      - name
+    IntegerRangeFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          maxValueInclusive:
+            type: integer
+            format: int32
+          minValueInclusive:
+            type: integer
+            format: int32
+          withNullValues:
+            type: boolean
+      required:
+      - attribute
+      - maxValueInclusive
+      - minValueInclusive
+      - withNullValues
+    IntegerValueFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          numericComparison:
+            $ref: "#/components/schemas/NumericComparison"
+          value:
+            type: integer
+            format: int32
+          withNullValues:
+            type: boolean
+      required:
+      - attribute
+      - numericComparison
+      - value
+      - withNullValues
+    InterceptionType:
+      type: string
+      enum:
+      - BAD_REQUEST
+      - UNAUTHORIZED
+      - FORBIDDEN
+      - NOT_FOUND
+      - INTERNAL_SERVER_ERROR
+    KeyToCount:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        key:
+          type: string
+      required:
+      - count
+      - key
+    KeyToValue:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: number
+      required:
+      - key
+    LineChartConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddChartConfiguration"
+      - type: object
+        properties:
+          range:
+            $ref: "#/components/schemas/Range"
+          secondaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          xAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          yAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      - $ref: "#/components/schemas/AbstractChartConfiguration"
+      required:
+      - range
+      - xAttribute
+      - yAttribute
+    LineChartDataCategorized:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          dataPointGroups:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataPointGroup"
+      required:
+      - dataPointGroups
+    LineChartDataSimple:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          dataPoints:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataPoint"
+      required:
+      - dataPoints
+    NullFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      required:
+      - attribute
+    NumericComparison:
+      type: string
+      enum:
+      - EQUAL
+      - GREATER_EQUAL
+      - GREATER_THAN
+      - LESS_EQUAL
+      - LESS_THAN
+    Orientation:
+      type: string
+      enum:
+      - HORIZONTAL
+      - VERTICAL
+    PieChartConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddChartConfiguration"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      - $ref: "#/components/schemas/AbstractChartConfiguration"
+      required:
+      - attribute
+    PieChartData:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          keyToCounts:
+            type: array
+            items:
+              $ref: "#/components/schemas/KeyToCount"
+      required:
+      - keyToCounts
+    Population:
+      type: object
+      properties:
+        numberOfPopulatedEntities:
+          type: integer
+          format: int32
+        populatorName:
+          type: string
+        totalNumberOfEntities:
+          type: integer
+          format: int64
+      required:
+      - numberOfPopulatedEntities
+      - totalNumberOfEntities
+    ProcedureIdAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+      required:
+      - code
+      - name
+    Range:
+      type: string
+      enum:
+      - ADAPTED
+      - ORIGIN
+    ReportInfo:
+      type: object
+      properties:
+        executionDate:
+          type: string
+          format: date
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        state:
+          $ref: "#/components/schemas/ReportState"
+        timeRangeEnd:
+          type: string
+          format: date-time
+        timeRangeStart:
+          type: string
+          format: date-time
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - id
+      - name
+      - state
+      - timeRangeEnd
+      - timeRangeStart
+    ReportSeries:
+      type: object
+      properties:
+        active:
+          type: boolean
+        description:
+          type: string
+        frequency:
+          $ref: "#/components/schemas/Frequency"
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        reportInfos:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReportInfo"
+        reportType:
+          $ref: "#/components/schemas/ReportType"
+        reportingPeriod:
+          $ref: "#/components/schemas/ReportingPeriod"
+        startMonth:
+          type: integer
+          format: int32
+        statisticId:
+          type: string
+          format: uuid
+        timeRangeEnd:
+          type: string
+          format: date-time
+        timeRangeStart:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+      required:
+      - id
+      - name
+      - reportInfos
+      - reportType
+      - statisticId
+      - userId
+    ReportState:
+      type: string
+      enum:
+      - PLANNED
+      - COMPLETED
+      - FAILED
+      - PENDING
+    ReportType:
+      type: string
+      enum:
+      - MANUAL
+      - AUTO
+    ReportingPeriod:
+      type: string
+      enum:
+      - MONTH
+      - THREE_MONTHS
+      - HALF_YEAR
+      - YEAR
+    Scaling:
+      type: string
+      enum:
+      - ABSOLUTE
+      - RELATIVE
+    ScatterChartConfiguration:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddChartConfiguration"
+      - type: object
+        properties:
+          range:
+            $ref: "#/components/schemas/Range"
+          secondaryAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          trendLine:
+            type: boolean
+          xAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          yAttribute:
+            $ref: "#/components/schemas/AttributeSelection"
+      - $ref: "#/components/schemas/AbstractChartConfiguration"
+      required:
+      - range
+      - trendLine
+      - xAttribute
+      - yAttribute
+    ScatterChartDataCategorized:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          dataPointGroups:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataPointGroup"
+      required:
+      - dataPointGroups
+    ScatterChartDataSimple:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/DiagramData"
+      - type: object
+        properties:
+          dataPoints:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataPoint"
+          trendLine:
+            $ref: "#/components/schemas/TrendLine"
+      required:
+      - dataPoints
+    SortDirection:
+      type: string
+      default: DESC
+      enum:
+      - ASC
+      - DESC
+    StatisticInfo:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        state:
+          $ref: "#/components/schemas/StatisticState"
+        timeRangeEnd:
+          type: string
+          format: date-time
+        timeRangeStart:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
+      required:
+      - createdAt
+      - id
+      - name
+      - state
+      - timeRangeEnd
+      - timeRangeStart
+      - userId
+    StatisticSortKey:
+      type: string
+      enum:
+      - NAME
+      - CREATED_AT
+      - TIME_RANGE_START
+      - TIME_RANGE_END
+    StatisticState:
+      type: string
+      enum:
+      - COMPLETED
+      - FAILED
+      - PENDING
+      - COPY_ONGOING
+    StatisticsFeature:
+      type: string
+      enum:
+      - REPORTS
+      - CLONE_STATISTIC
+    StatisticsScheme:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        dataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataSourceWithAttributeNames"
+        id:
+          type: string
+          format: uuid
+        lastUsageAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+      required:
+      - createdAt
+      - dataSources
+      - id
+      - name
+    TableColumnFilterParameter:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    TableColumnHeader:
+      type: object
+      properties:
+        attribute:
+          oneOf:
+          - $ref: "#/components/schemas/BooleanAttribute"
+          - $ref: "#/components/schemas/CentralFileIdAttribute"
+          - $ref: "#/components/schemas/DateAttribute"
+          - $ref: "#/components/schemas/DecimalAttribute"
+          - $ref: "#/components/schemas/IntegerAttribute"
+          - $ref: "#/components/schemas/ProcedureIdAttribute"
+          - $ref: "#/components/schemas/TextAttribute"
+          - $ref: "#/components/schemas/ValueWithOptionsAttribute"
+        businessModule:
+          type: string
+        dataSourceId:
+          type: string
+          format: uuid
+        dataSourceName:
+          type: string
+      required:
+      - attribute
+      - businessModule
+      - dataSourceId
+      - dataSourceName
+    TestHelperClockSetRequest:
+      type: object
+      properties:
+        newInstant:
+          type: string
+          format: date-time
+      required:
+      - newInstant
+    TestHelperClockUpdateResponse:
+      type: object
+      properties:
+        instant:
+          type: string
+          format: date-time
+      required:
+      - instant
+    TestHelperClockWindForwardRequest:
+      type: object
+      properties:
+        days:
+          type: integer
+          format: int32
+          minimum: 0
+        hours:
+          type: integer
+          format: int32
+          minimum: 0
+        minutes:
+          type: integer
+          format: int32
+          minimum: 0
+        months:
+          type: integer
+          format: int32
+          minimum: 0
+        seconds:
+          type: integer
+          format: int32
+          minimum: 0
+        weeks:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - days
+      - hours
+      - minutes
+      - months
+      - seconds
+      - weeks
+    TestHelperInterceptionRequestFilter:
+      type: object
+      properties:
+        httpMethodFilter:
+          $ref: "#/components/schemas/HttpMethod"
+        queryPatternFilter:
+          type: string
+        urlPatternFilter:
+          type: string
+    TextAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+          valueOptions:
+            type: array
+            items:
+              $ref: "#/components/schemas/ValueOption"
+      required:
+      - code
+      - name
+    TextFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          text:
+            type: string
+      required:
+      - attribute
+      - text
+    TrendLine:
+      type: object
+      properties:
+        offset:
+          type: number
+        slope:
+          type: number
+      required:
+      - offset
+      - slope
+    UpdateDiagramRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        title:
+          type: string
+      required:
+      - title
+    UpdateEvaluationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+      - name
+    UpdateReportSeriesRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+      required:
+      - name
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address of a user.
+          example: example@mail.de
+        enabled:
+          type: boolean
+          description: "True, if the user can login"
+          example: false
+        externalChatUsername:
+          type: string
+          description: The chat username of the gematik TI-Messenger (matrix chat).
+          example: '@username:server'
+        firstName:
+          type: string
+          description: The given name(s) of a user.
+          example: John
+        lastName:
+          type: string
+          description: The last name of a user.
+          example: Doe
+        phoneNumber:
+          type: string
+          description: The phone number of a user.
+          example: "+491234567890"
+        userId:
+          type: string
+          format: uuid
+          description: The Id of the user.
+          example: fe9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        username:
+          type: string
+          description: The username which is displayed in the application and can
+            be used for the login.
+          example: testuser
+      required:
+      - enabled
+      - firstName
+      - lastName
+      - userId
+      - username
+    ValueOption:
+      type: object
+      properties:
+        meaning:
+          type: string
+        value:
+          type: string
+      required:
+      - meaning
+      - value
+    ValueOptionFilterParameter:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/TableColumnFilterParameter"
+      - type: object
+        properties:
+          attribute:
+            $ref: "#/components/schemas/AttributeSelection"
+          searchForNull:
+            type: boolean
+          searchValues:
+            type: array
+            items:
+              type: string
+      required:
+      - attribute
+      - searchForNull
+      - searchValues
+    ValueWithOptionsAttribute:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractTableColumnHeaderAttribute"
+      - type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+          valueOptions:
+            type: array
+            items:
+              $ref: "#/components/schemas/ValueOption"
+      required:
+      - code
+      - name
+      - valueOptions

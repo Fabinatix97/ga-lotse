@@ -1,0 +1,37 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
+import { Divider, Sheet, Stack, Typography } from "@mui/joy";
+
+import { headerHeightMobile } from "@/lib/baseModule/components/layout/sizes";
+
+export function SubPageHeader({
+  routeBack,
+  header,
+}: Readonly<{ routeBack: string; header: string }>) {
+  const iconSize = headerHeightMobile;
+  return (
+    <Sheet sx={{ padding: 0, borderRadius: 0 }} data-testid="subPageHeader">
+      <Stack direction="row" divider={<Divider orientation="vertical" />}>
+        <InternalLinkIconButton
+          href={routeBack}
+          aria-label="Zurück"
+          sx={{ width: iconSize, height: iconSize }}
+        >
+          <ChevronLeft sx={{ width: "40px", height: "40px" }} />
+        </InternalLinkIconButton>
+        <Typography
+          level="h2"
+          component="h1"
+          sx={{ paddingInline: 3, alignSelf: "center" }}
+        >
+          {header}
+        </Typography>
+      </Stack>
+    </Sheet>
+  );
+}

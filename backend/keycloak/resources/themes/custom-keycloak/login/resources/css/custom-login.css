@@ -1,0 +1,203 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+body {
+    --global--color-primary: #0B6BCB;
+    --global--color-primary-dark: #12467B;
+    --global--color-background-surface: #FBFCFE;
+    --global--color-background-level1: #F0F4F8;
+    --global--color-neutral: #555E68;
+    --global--color-neutral-outlined-border: #CDD7E1;
+    --global--color-danger: #C41C1C;
+    --global--color-danger-outlined-border: #F09898;
+    --global--border-radius-md: 8px;
+    --global--border-radius-sm: 6px;
+    --global--spacing-content-width: 408px;
+    --global--font-poppins: Poppins;
+
+    --pf-global--primary-color--100: var(--global--color-primary);
+    --pf-global--primary-color--200: var(--global--color-primary-dark);
+    --pf-global--BorderColor--300: var(--global--color-neutral-outlined-border);
+    --pf-global--danger-color--100: var(--global--color-danger-outlined-border);
+    --pf-global--danger-color--200: var(--global--color-danger);
+
+    font-family: var(--global--font-poppins);
+}
+
+.login-pf {
+    & body {
+        /* Patternfly CSS places a "bg-login.jpg" as the background on this ".login-pf" class.
+        This clashes with the "keycloak-bg.png' background defined on the body below.
+        Therefore the Patternfly background must be set to none. */
+        background: none;
+    }
+}
+
+.login-pf-page {
+    display: flex;
+    padding-top: 0;
+    height: inherit;
+
+    @media(max-width: 1000px) {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.login-pf-page-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--global--color-background-level1);
+    height: 100vh;
+    width: 55%;
+    margin-bottom: 0px !important;
+
+    @media(max-width: 1000px) {
+        height: auto;
+        width: -webkit-fill-available;
+        max-width: var(--global--spacing-content-width);
+        background: unset;
+        align-items: start;
+        padding: 0px !important;
+        margin-inline: 20px;
+    }
+}
+
+.card-pf {
+    border-color: var(--pf-global--Color--light-100);
+    box-shadow: none;
+    max-width: unset;
+    width: 45%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    @media(max-width: 1000px) {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.login-pf-header {
+    display: flex;
+    align-content: center;
+    width: -webkit-fill-available;
+    max-width: var(--global--spacing-content-width);
+}
+
+.pf-c-alert {
+    border-radius: var(--global--border-radius-sm);
+    border-color: transparent;
+
+    & .pf-c-alert__title {
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 24px;
+    }
+}
+
+.pf-c-input-group {
+    position: relative;
+}
+
+.pf-c-button {
+    border-radius: var(--global--border-radius-sm);
+    height: 36px;
+    padding: 4px 16px 4px 16px;
+    font-size: 16px;
+    font-weight: bold;
+
+    &::after {
+        border: 0;
+    }
+
+    &.pf-m-control {
+        position: absolute;
+        right: 1px;
+        background: transparent;
+        z-index: 1000;
+    }
+}
+
+.pf-c-form-control {
+    background-color: var(--global--color-background-surface);
+    border-radius: var(--global--border-radius-md);
+    border-bottom-color: var(--pf-global--BorderColor--300);
+    padding: 6px 12px 6px 12px;
+
+    &[name=password] {
+        padding: 6px 36px 6px 12px;
+    }
+
+    &:hover {
+        --pf-c-form-control--BorderBottomColor: var(--pf-global--BorderColor--300);
+        border-color: var(--pf-global--primary-color--100);
+    }
+
+    &[aria-invalid=true] {
+        background-image: none;
+        border-color: var(--pf-global--danger-color--100);
+        border-width: 1px;
+    }
+}
+
+a {
+    text-decoration: underline;
+    color: var(--global--color-primary);
+}
+
+#kc-header-wrapper {
+    background-image: url("../img/logo.png");
+    background-size:     contain;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;
+    height: 200px;
+    width: 200px;
+    font-size: 0;
+    padding: 0;
+
+    @media(max-width: 1000px) {
+        height: 48px;
+        width: 48px;
+    }
+}
+
+#kc-page-title {
+    text-align: left;
+    align-self: self-start;
+    font-size: 48px;
+    line-height: 60px;
+    font-weight: bold;
+
+    @media(max-width: 1000px) {
+        font-size: 32px;
+        line-height: 40px;
+    }
+}
+
+#kc-content {
+    max-width: var(--global--spacing-content-width);
+}
+
+#kc-info-wrapper {
+    background-color: transparent;
+}
+
+#social-muk {
+    position: initial;
+    color: var(--global--color-primary);
+}

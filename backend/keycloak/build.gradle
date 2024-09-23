@@ -1,0 +1,82 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+plugins {
+    id "eshg.java-lib"
+    id "com.bmuschko.docker-remote-api"
+    id "docker-compose"
+    id "eshg.image-push-sign"
+    id 'reverse-proxy'
+}
+
+def dockerBuildContext = file(layout.buildDirectory.dir('docker'))
+
+jar {
+    archiveBaseName.set('eshg-keycloak-plugin')
+    archiveClassifier.set('')
+}
+
+dependencies {
+    compileOnly libs.bundles.keycloak.server
+    compileOnly 'jakarta.validation:jakarta.validation-api'
+    compileOnly 'io.quarkus.resteasy.reactive:resteasy-reactive-common:latest.release'
+    implementation(project(':keycloak-api')) {
+        transitive = false
+    }
+}
+
+tasks.register('copyResourcesToBuildContext', Copy) {
+    from layout.projectDirectory
+    include('Dockerfile')
+    include('resources/**')
+    into dockerBuildContext
+}
+
+tasks.register('copyJarsToBuildContext', Copy) {
+    def apiJar = project(':keycloak-api').tasks.named('jar', Jar).get()
+    def jars = jar.outputs.files
+    dependsOn apiJar
+    dependsOn jar
+    from jars
+    from apiJar.outputs.files
+    into dockerBuildContext
+}
+
+tasks.register('copyFilesToBuildContext') {
+    dependsOn 'copyResourcesToBuildContext', 'copyJarsToBuildContext'
+}
+
+tasks.register('buildDockerImage', DockerBuildImage) {
+    dependsOn 'copyFilesToBuildContext'
+    inputDir.set(dockerBuildContext)
+    dockerFile.set(inputDir.file("Dockerfile"))
+    buildArgs["keycloakVersion"] = libs.versions.keycloak.get()
+
+    if (project.hasProperty("tagName")) {
+        images.add(getImageNameWithTag())
+    } else {
+        images.add(getImageNameWithLatestTag())
+    }
+}
+
+tasks.named('composeBuild') {
+    dependsOn 'buildDockerImage'
+}
+
+reverseProxy {
+    serviceName = "keycloak-reverse-proxy"
+    mainConfigFile = "keycloak.conf"
+}
+
+tasks.named('composeUp').configure {
+    dependsOn tasks.named('reverseProxyComposeUp')
+}
+
+dockerCompose {
+    projectName = rootProject.name
+    // maildev ist started here, because it is used by keycloak
+    startedServices = ['keycloak', 'maildev']
+    useComposeFiles = [
+        "${rootDir}/docker-compose.yaml"
+    ]
+}

@@ -1,0 +1,311 @@
+/*
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.inspection.testhelper;
+
+import de.eshg.base.calendar.CalendarEventApi;
+import de.eshg.base.calendar.api.BlockingEventsOfResource;
+import de.eshg.base.calendar.api.GetBlockingEventsOfResourcesRequest;
+import de.eshg.base.calendar.api.GetBlockingEventsOfResourcesResponse;
+import de.eshg.base.inventory.InventoryApi;
+import de.eshg.base.inventory.api.AddInventoryItemRequest;
+import de.eshg.base.inventory.api.InventoryItemDto;
+import de.eshg.base.inventory.api.InventoryItemFilterParameters;
+import de.eshg.base.inventory.api.InventoryItemTypeDto;
+import de.eshg.base.resource.ResourceApi;
+import de.eshg.base.resource.api.AddResourceRequest;
+import de.eshg.base.resource.api.ResourceDto;
+import de.eshg.base.resource.api.ResourceFilterParameters;
+import de.eshg.base.resource.api.ResourceTypeDto;
+import de.eshg.inspection.checklist.api.ChecklistDto;
+import de.eshg.inspection.checklist.api.ChecklistSectionDto;
+import de.eshg.inspection.checklist.api.GetChecklistsResponse;
+import de.eshg.inspection.checklist.api.element.ChecklistElementDto;
+import de.eshg.inspection.checklist.api.element.field.ChecklistCheckboxFieldDto;
+import de.eshg.inspection.checklist.api.element.field.ChecklistMultiSelectFieldDto;
+import de.eshg.inspection.checklist.api.element.field.ChecklistSingleSelectFieldDto;
+import de.eshg.inspection.checklist.api.element.field.ChecklistTextFieldDto;
+import de.eshg.inspection.checklist.api.update.UpdateChecklistDto;
+import de.eshg.inspection.checklist.api.update.element.UpdateChecklistCheckboxDto;
+import de.eshg.inspection.checklist.api.update.element.UpdateChecklistElementDto;
+import de.eshg.inspection.checklist.api.update.element.UpdateChecklistMultiSelectDto;
+import de.eshg.inspection.checklist.api.update.element.UpdateChecklistSingleSelectDto;
+import de.eshg.inspection.checklist.api.update.element.UpdateChecklistTextDto;
+import de.eshg.inspection.incident.InspectionIncidentService;
+import de.eshg.inspection.incident.api.CreateInspectionIncidentRequest;
+import de.eshg.inspection.inspection.InspectionService;
+import de.eshg.inspection.inspection.api.FinalizeInspectionRequest;
+import de.eshg.inspection.inspection.api.InspectionAvailableCLDVersionsResponse;
+import de.eshg.inspection.inspection.api.InspectionCLDVersionDto;
+import de.eshg.inspection.inspection.api.UpdateInspectionAddResourceRequest;
+import de.eshg.inspection.inspection.api.UpdateInspectionAppointmentDto;
+import de.eshg.inspection.inspection.api.UpdateInspectionModifyInventoryRequest;
+import de.eshg.inspection.inspection.api.UpdateInspectionRequest;
+import jakarta.validation.constraints.NotNull;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import net.datafaker.Faker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+@Component
+public class InspectionTestDataProvider {
+
+  private static final Logger log = LoggerFactory.getLogger(InspectionTestDataProvider.class);
+
+  private final InspectionService inspectionService;
+  private final ResourceApi resourceApi;
+  private final InventoryApi inventoryApi;
+  private final CalendarEventApi calendarEventApi;
+  private final InspectionIncidentService inspectionIncidentService;
+
+  private static final List<String> resourceNames =
+      List.of("Bulls Wildtail", "Seat Leon", "Hilbertraum", "Nikon Z8", "Lineal", "Linealset");
+  private static final List<ResourceTypeDto> resourceTypes =
+      List.of(
+          ResourceTypeDto.BICYCLE,
+          ResourceTypeDto.CAR,
+          ResourceTypeDto.ROOM,
+          ResourceTypeDto.CAMERA,
+          ResourceTypeDto.MEASURING_DEVICE,
+          ResourceTypeDto.MEASURING_KIT);
+
+  private static final String inventoryName = "FFP2-Maske";
+  private static final InventoryItemTypeDto inventoryType =
+      InventoryItemTypeDto.PROTECTIVE_EQUIPMENT;
+
+  public InspectionTestDataProvider(
+      InspectionService inspectionService,
+      ResourceApi resourceApi,
+      InventoryApi inventoryApi,
+      CalendarEventApi calendarEventApi,
+      InspectionIncidentService inspectionIncidentService) {
+    this.inspectionService = inspectionService;
+    this.resourceApi = resourceApi;
+    this.inventoryApi = inventoryApi;
+    this.calendarEventApi = calendarEventApi;
+    this.inspectionIncidentService = inspectionIncidentService;
+  }
+
+  public void prepareTestInspection(@NotNull UUID inspectionId, Faker faker, int index) {
+    /*
+    The inspections that should be created with the respective indices are:
+    0: Facility with inspection in DRAFT status (inspection wasn't started yet)
+    1: Inspection in phase NEW (nothing will be done here)
+    2: Inspection in phase PLANNING
+    3: Inspection in phase EXECUTING
+    4: Inspection in phase CREATING_REPORT_AND_INVOICE
+    5: Inspection in phase CLOSED (thereby also creating followup inspection)
+    */
+
+    if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 1) {
+      addPlannedAppointment(inspectionId, index);
+      addResource(inspectionId, index);
+      addInventory(inspectionId);
+    }
+    if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 2) {
+      addChecklists(inspectionId);
+      fillOutAllChecklists(inspectionId, faker);
+      createManualIncident(inspectionId, faker);
+    }
+    if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 3) {
+      inspectionService.finalizeInspection(inspectionId, new FinalizeInspectionRequest(null), null);
+    }
+    if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 4) {
+      inspectionService.approveInspection(inspectionId);
+    }
+  }
+
+  private static UpdateChecklistElementDto getUpdateElementDto(
+      ChecklistElementDto elementDto, Faker faker) {
+    if (elementDto instanceof ChecklistCheckboxFieldDto checklistFieldDto) {
+      return new UpdateChecklistCheckboxDto(checklistFieldDto.getId(), true);
+    }
+    if (elementDto instanceof ChecklistTextFieldDto checklistTextFieldDto) {
+      return new UpdateChecklistTextDto(checklistTextFieldDto.getId(), faker.lorem().sentence());
+    }
+    if (elementDto instanceof ChecklistMultiSelectFieldDto checklistMultiSelectFieldDto) {
+      return new UpdateChecklistMultiSelectDto(
+          checklistMultiSelectFieldDto.getId(),
+          List.of(checklistMultiSelectFieldDto.getContext().getItems().getFirst().getText()),
+          true);
+    }
+    if (elementDto instanceof ChecklistSingleSelectFieldDto checklistSingleSelectFieldDto) {
+      return new UpdateChecklistSingleSelectDto(
+          checklistSingleSelectFieldDto.getId(),
+          checklistSingleSelectFieldDto.getContext().getItems().getFirst().getText(),
+          true);
+    }
+    return null;
+  }
+
+  private void fillOutChecklist(UUID inspectionId, ChecklistDto checklistDto, Faker faker) {
+    for (ChecklistSectionDto sectionDto : checklistDto.getSections()) {
+      for (ChecklistElementDto elementDto : sectionDto.getElements()) {
+
+        if (elementDto instanceof ChecklistCheckboxFieldDto
+            || elementDto instanceof ChecklistTextFieldDto
+            || elementDto instanceof ChecklistMultiSelectFieldDto
+            || elementDto instanceof ChecklistSingleSelectFieldDto) {
+          UpdateChecklistDto updateChecklistDto =
+              new UpdateChecklistDto(
+                  Collections.singletonList(getUpdateElementDto(elementDto, faker)));
+
+          inspectionService.updateChecklist(inspectionId, checklistDto.getId(), updateChecklistDto);
+        }
+      }
+    }
+  }
+
+  private void fillOutAllChecklists(UUID inspectionId, Faker faker) {
+    GetChecklistsResponse getChecklistsResponse = inspectionService.getChecklists(inspectionId);
+
+    for (ChecklistDto checklistDto : getChecklistsResponse.checklists()) {
+      fillOutChecklist(inspectionId, checklistDto, faker);
+    }
+  }
+
+  private String getNameForResource(int index) {
+    return resourceNames.get(index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES)
+        + FacilityTestDataProvider.getNameSuffix(index);
+  }
+
+  private ResourceTypeDto getTypeForResource(int index) {
+    return resourceTypes.get(index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES);
+  }
+
+  private ResourceDto createResource(int index) {
+    return resourceApi.addResource(
+        new AddResourceRequest(
+            getNameForResource(index),
+            "Resource für " + FacilityTestDataProvider.getNameOfFacility(index),
+            "12345" + index,
+            getTypeForResource(index),
+            Collections.singletonList("Begehung")));
+  }
+
+  private ResourceDto findOrCreateResource(int index) {
+    String resourceName = getNameForResource(index);
+    ResourceTypeDto resourceType = getTypeForResource(index);
+    return resourceApi
+        .getResources(
+            new ResourceFilterParameters(
+                resourceName, resourceType, "Begehung", null, null, 0, 100))
+        .elements()
+        .stream()
+        .filter(resourceDto -> resourceDto.name().equals(resourceName))
+        .findFirst()
+        .orElseGet(() -> createResource(index));
+  }
+
+  private void addResource(UUID inspectionId, int index) {
+    ResourceDto resource = findOrCreateResource(index);
+
+    Instant startTime = getAppointmentTime(index).start();
+    Instant endTime = startTime.plus(Duration.ofMinutes(1));
+
+    GetBlockingEventsOfResourcesResponse calendarResponse =
+        calendarEventApi.getBlockingEventsOfResourceCalendars(
+            new GetBlockingEventsOfResourcesRequest(
+                Collections.singletonList(resource.id()), startTime, endTime));
+
+    Optional<UUID> resourceId =
+        calendarResponse.resourcesWithBlockingEvents().stream()
+            .filter(entry -> entry.events().isEmpty())
+            .findFirst()
+            .map(BlockingEventsOfResource::resourceId);
+
+    if (resourceId.isPresent()) {
+      inspectionService.addResource(
+          inspectionId,
+          new UpdateInspectionAddResourceRequest(resourceId.get(), startTime, endTime));
+    } else {
+      log.error("No available resources found. Not adding any.");
+    }
+  }
+
+  private InventoryItemDto createInventory() {
+    return inventoryApi.addInventoryItem(
+        new AddInventoryItemRequest(
+            inventoryName,
+            inventoryType,
+            "Inventargegenstände für Begehungen",
+            "123456",
+            Collections.singletonList("Begehung"),
+            Integer.MAX_VALUE,
+            100));
+  }
+
+  private InventoryItemDto findOrCreateInventory() {
+    return inventoryApi
+        .getInventoryItems(
+            new InventoryItemFilterParameters(
+                inventoryName, inventoryType, "Begehung", null, null, 0, 100))
+        .elements()
+        .stream()
+        .filter(inventoryItemDto -> inventoryItemDto.name().equals(inventoryName))
+        .findFirst()
+        .orElseGet(this::createInventory);
+  }
+
+  private void addInventory(UUID inspectionId) {
+    InventoryItemDto inventoryItem = findOrCreateInventory();
+
+    inspectionService.modifyInventory(
+        inspectionId, new UpdateInspectionModifyInventoryRequest(inventoryItem.id(), null, 1));
+  }
+
+  private static UpdateInspectionAppointmentDto getAppointmentTime(int index) {
+    OffsetDateTime startTime =
+        OffsetDateTime.of(
+            2030 + index,
+            index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES,
+            index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES,
+            12 + (index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES),
+            0,
+            0,
+            0,
+            ZoneOffset.ofHours(1));
+    OffsetDateTime endTime = startTime.plusHours(3);
+    return new UpdateInspectionAppointmentDto(startTime.toInstant(), endTime.toInstant());
+  }
+
+  private void addPlannedAppointment(UUID inspectionId, int index) {
+    inspectionService.updateInspection(
+        inspectionId, UpdateInspectionRequest.forPlannedAppointment(getAppointmentTime(index)));
+  }
+
+  private void addChecklists(UUID inspectionId) {
+    InspectionAvailableCLDVersionsResponse availableCLDVersionsResponse =
+        inspectionService.getAvailableCLDs(inspectionId);
+
+    List<UUID> checklistIds =
+        availableCLDVersionsResponse
+            .versions()
+            .subList(0, Math.min(2, availableCLDVersionsResponse.versions().size()))
+            .stream()
+            .map(InspectionCLDVersionDto::versionId)
+            .toList();
+
+    inspectionService.updateInspection(
+        inspectionId, UpdateInspectionRequest.forChecklistDefinitionVersionIds(checklistIds));
+  }
+
+  private void createManualIncident(UUID inspectionId, Faker faker) {
+    inspectionIncidentService.createIncident(
+        inspectionId,
+        new CreateInspectionIncidentRequest(
+            faker.lorem().sentence(5),
+            faker.lorem().paragraph(),
+            UUID.fromString(faker.internet().uuid())));
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "employee-portal: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "${workspaceFolder}/gradlew runDev",
+      "cwd": "${workspaceFolder}/employee-portal"
+    },
+    {
+      "name": "employee-portal: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/employee-portal"
+    },
+    {
+      "name": "employee-portal: debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "${workspaceFolder}/gradlew runDev",
+      "cwd": "${workspaceFolder}/employee-portal",
+      "serverReadyAction": {
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ]
+}

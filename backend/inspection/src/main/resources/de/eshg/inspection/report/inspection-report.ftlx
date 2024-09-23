@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
+<#-- @ftlvariable name="office" type="de.eshg.inspection.report.pdf.RepAddress" -->
+<#-- @ftlvariable name="facility" type="de.eshg.inspection.report.pdf.RepFacility" -->
+<#-- @ftlvariable name="inspection" type="de.eshg.inspection.report.pdf.RepInspection" -->
+<#-- @ftlvariable name="reportInfo" type="de.eshg.inspection.report.pdf.RepInfo" -->
+
+<html xml:lang="de" lang="de">
+  <head>
+    <link rel="stylesheet" type="text/css" href="inspection-report.css"/>
+  </head>
+
+  <body>
+    <header>
+      <div class="officeName">${office.name}</div>
+      <div class="title">${inspection.title}</div>
+      <hr/>
+    </header>
+
+    <!-- note: footer (and header) must be specified *before* all other content, not after! -->
+    <footer>
+      <div>
+      ${office.name} &nbsp; • &nbsp;
+      ${office.street} &nbsp; • &nbsp;
+      ${office.zipCode} ${office.city}
+      </div>
+      <div>
+        ☎ ${office.phoneNumber} &nbsp; • &nbsp;
+        <a href="${office.url}">${office.url}</a>
+      </div>
+    </footer>
+
+    <table class="header">
+      <colgroup>
+        <col style="width: 65%;"/>
+        <col style="width: 35%;"/>
+      </colgroup>
+      <tr>
+        <td valign="top">
+          <div class="officeName">${office.name}</div>
+          <p class="objectType">${inspection.objectType}</p>
+        </td>
+        <td valign="top">
+          <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" width="250px" alt="logo"/>
+        </td>
+      </tr>
+      <tr class="letterhead">
+        <td valign="top" class="receiver">
+          <div class="officeAddress">${office.name}, ${office.street}, ${office.zipCode} ${office.city}</div>
+          <#if facility.contactPerson??>
+            <div>${facility.contactPerson}</div>
+          </#if>
+          <div>${facility.address.name}</div>
+          <div>${facility.address.street}</div>
+          <#if facility.address.addressAddition??>
+            <div>${facility.address.addressAddition}</div>
+          </#if>
+          <div>${facility.address.zipCode} ${facility.address.city}</div>
+        </td>
+        <td valign="top" class="sender">
+          <div>${office.name}</div>
+          <div>${office.street}</div>
+          <div>${office.zipCode} ${office.city}</div>
+          <div class="reportLocation">${reportInfo.location},</div>
+          <div>den ${reportInfo.date}</div>
+        </td>
+      </tr>
+    </table>
+
+    <#list inspection.content.elements as elem>
+      <!-- note: we use #if/elseif instead of #switch because #switch is not recommended -->
+      <!-- see https://freemarker.apache.org/docs/ref_directive_switch.html#autoid_125 -->
+      <!-- and #if/elseif is more compact -->
+      <#if elem.type == 'TOP_LEVEL_TITLE'>
+        <h1>${elem.title}</h1>
+      <#elseif elem.type == 'CHAPTER'>
+        <h2>${elem.title}</h2>
+      <#elseif elem.type == 'SECTION'>
+        <h3>${elem.title}</h3>
+      <#elseif elem.type == 'SEPARATOR'>
+        <hr/>
+      <#elseif elem.type == 'TEXT'>
+        <p class="elementText">${(elem.value)!""}</p>
+      <#elseif elem.type == 'TEXT_BLOCK' || elem.type == 'FULL_TEXT_BLOCK'>
+        <div class="no-page-break">
+          <p class="elementTitle">${(elem.title)!""}</p>
+          <p class="elementValue textBlock">${(elem.value)!""}</p>
+        </div>
+
+      <#elseif  elem.type == 'CHOICE'>
+        <#macro checkbox selected text>
+          <#assign box = (selected)?string("☑", "☐")>
+          <span class="choice">${box} ${text}</span>
+        </#macro>
+
+        <div class="no-page-break">
+          <#if elem.simpleYesNo>
+            <table class="simpleYesNo">
+              <tr valign="top">
+                <td class="elementTitle">${elem.title}</td>
+                <td class="elementValue">
+                  <#list elem.choices as choice>
+                    <@checkbox selected=choice.selected text=choice.text/>
+                  </#list>
+                </td>
+              </tr>
+            </table>
+          <#else>
+            <p class="elementTitle">${elem.title}</p>
+            <p class="elementValue">
+              <#list elem.choices as choice>
+                <@checkbox selected=choice.selected text=choice.text/>
+                <!-- if any choice has an extraText we stack all choices vertically using <br> -->
+                <#if elem.choiceWithExtraText>
+                  <br/>
+                  <#if (choice.extraText)?has_content>
+                    <div class="choice extraText">${choice.extraText}</div>
+                  </#if>
+                </#if>
+              </#list>
+            </p>
+          </#if>
+        </div>
+      </#if>
+    </#list>
+
+    <div class="no-page-break">
+      <p class="greetingEnd">Im Auftrag</p>
+      <p class="greetingPerson">${inspection.executingPerson}</p>
+    </div>
+
+  </body>
+</html>

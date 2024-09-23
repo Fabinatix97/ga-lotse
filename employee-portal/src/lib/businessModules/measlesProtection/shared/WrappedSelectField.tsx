@@ -1,0 +1,20 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { styled } from "@mui/joy";
+
+export const WrappedSelectField = styled(SelectField)(({ theme }) => ({
+  ".MuiSelect-root": {
+    borderRadius: theme.radius.md,
+  },
+  ".MuiSelect-listbox": {
+    minWidth: theme.spacing(10),
+    borderRadius: theme.radius.md,
+  },
+  ".MuiOption-root": {
+    padding: `${theme.spacing(0.75)} ${theme.spacing(1.5)}`,
+  },
+})) as typeof SelectField;

@@ -1,0 +1,6 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+com.bmuschko.docker-remote-api:com.bmuschko.docker-remote-api.gradle.plugin:9.4.0=buildScriptClasspath,compileClasspath
+com.bmuschko:gradle-docker-plugin:9.4.0=buildScriptClasspath,compileClasspath
+empty=annotationProcessor

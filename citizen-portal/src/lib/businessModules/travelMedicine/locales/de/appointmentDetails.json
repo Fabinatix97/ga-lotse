@@ -1,0 +1,32 @@
+{
+  "header": {
+    "title": "Mein Termin",
+    "logout": "Mein Bereich verlassen"
+  },
+  "title": "Informationen",
+  "sidePanel": {
+    "title": "Sie können den Termin nicht wahrnehmen?",
+    "postponeAppointment": "Termin verschieben",
+    "cancelAppointment": "Termin absagen",
+    "back": "Zurück"
+  },
+  "appointmentType": {
+    "consultation": "Reiseberatung",
+    "vaccination": "Impfung"
+  },
+  "start": "{{ time }} Uhr",
+  "duration": "Dauer: {{ appointmentDuration }} Minuten",
+  "medicalHistoryPanel": {
+    "title": "Vorbereitung zum Termin",
+    "medicalHistorySheet": "Anamnesebogen",
+    "notAnswered": "noch nicht vorgelegt",
+    "answered": "erfolgreich übermittelt",
+    "answerNow": "Jetzt ausfüllen",
+    "neededDocuments": "Benötigte Unterlagen",
+    "filledMedicalHistory": "ausgefüllter Anamnesebogen",
+    "vaccinationCertificate": "Impfausweis",
+    "uBooklet": "das gelbe Vorsorgeheft (U-Heft)",
+    "medicalDocuments": "gegebenenfalls weitere medizinische Unterlagen, evtl. aktuelle Medikation",
+    "otherTools": "gegebenenfalls vorhandene Hilfsmittel (Brille, Hörgerät)"
+  }
+}

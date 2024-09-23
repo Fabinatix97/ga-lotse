@@ -1,0 +1,78 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
+import { PropsWithChildren } from "react";
+
+import {
+  headerHeightDesktop,
+  headerHeightMobile,
+} from "@/lib/baseModule/components/layout/sizes";
+
+export const sidebarPadding = 3;
+
+export type SidebarProps = PropsWithChildren<
+  Pick<DrawerProps, "open" | "onClose" | "aria-label">
+> & { zIndex?: keyof ZIndex };
+
+export function Sidebar({
+  open,
+  onClose,
+  "aria-label": ariaLabel,
+  zIndex,
+  children,
+}: SidebarProps) {
+  const alertContext = useAlertContext();
+
+  function handleClose(
+    ...args: Parameters<NonNullable<DrawerProps["onClose"]>>
+  ) {
+    if (onClose !== undefined) {
+      onClose(...args);
+    }
+    if (alertContext !== null) {
+      alertContext.setAlert(null);
+    }
+  }
+
+  return (
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={handleClose}
+      sx={{ zIndex: zIndex ?? "sideNavigation" }}
+      slotProps={{
+        content: {
+          "aria-label": ariaLabel,
+          sx: {
+            width: { xxs: "100vw", xs: "30.5rem" /*488px*/ },
+            top: { xxs: `${headerHeightMobile}`, sm: `${headerHeightDesktop}` },
+            height: {
+              xxs: `calc(100dvh - ${headerHeightMobile})`,
+              sm: `calc(100dvh - ${headerHeightDesktop})`,
+            },
+          },
+        },
+      }}
+    >
+      <Stack
+        sx={{
+          padding: sidebarPadding,
+          flex: "1",
+          overflow: "hidden",
+        }}
+      >
+        <ModalClose
+          aria-label="Schließen"
+          color="primary"
+          variant="outlined"
+          sx={{ position: "static", alignSelf: "flex-end" }}
+        />
+        {children}
+      </Stack>
+    </Drawer>
+  );
+}

@@ -1,0 +1,10 @@
+# Next.js
+.next
+src/app/(baseModule)/**/loading.tsx
+src/app/(businessModules)/**/loading.tsx
+
+# Usually, this file is ignored. But we need to make sure it exists in CI when running tsc. See https://github.com/vercel/next.js/discussions/47010.
+# next-env.d.ts
+
+# next-pwa
+public/*.js

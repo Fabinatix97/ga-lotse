@@ -1,0 +1,118 @@
+/*
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.servicedirectory.testhelper;
+
+import de.eshg.libservicedirectoryadminapi.api.orgunit.GetOrgUnitsResponse;
+import de.eshg.libservicedirectoryadminapi.api.orgunit.OrgUnitDto;
+import de.eshg.libservicedirectoryadminapi.api.rule.GetRulesResponse;
+import de.eshg.libservicedirectoryadminapi.api.staging.CommitResponseDto;
+import de.eshg.libservicedirectoryadminapi.api.staging.StagedEntityDto;
+import de.eshg.libservicedirectoryadminapi.api.testhelper.OrgUnitPopulationResponse;
+import de.eshg.servicedirectory.ServiceDirectoryCommitService;
+import de.eshg.servicedirectory.ServiceDirectoryReadService;
+import de.eshg.servicedirectory.common.AdminNameHolder;
+import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.DatabaseResetHelper;
+import de.eshg.testhelper.DefaultTestHelperService;
+import de.eshg.testhelper.ResettableProperties;
+import de.eshg.testhelper.interception.TestRequestInterceptor;
+import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.ListWithTotalNumber;
+import java.time.Clock;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.stereotype.Service;
+
+@Service
+@ConditionalOnTestHelperEnabled
+public class ServiceDirectoryTestHelperService extends DefaultTestHelperService {
+
+  private final OrgUnitPopulator orgUnitPopulator;
+  private final ServiceDirectoryCommitService serviceDirectoryCommitService;
+  private final ServiceDirectoryReadService serviceDirectoryReadService;
+
+  protected ServiceDirectoryTestHelperService(
+      DatabaseResetHelper databaseResetHelper,
+      TestRequestInterceptor testRequestInterceptor,
+      Clock clock,
+      List<BasePopulator<?>> populators,
+      List<ResettableProperties> resettableProperties,
+      OrgUnitPopulator orgUnitPopulator,
+      ServiceDirectoryCommitService serviceDirectoryCommitService,
+      ServiceDirectoryReadService serviceDirectoryReadService) {
+    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
+    this.orgUnitPopulator = orgUnitPopulator;
+    this.serviceDirectoryCommitService = serviceDirectoryCommitService;
+    this.serviceDirectoryReadService = serviceDirectoryReadService;
+  }
+
+  public OrgUnitPopulationResponse populateOrgUnits(
+      int numberOfEntitiesToPopulate, boolean generateCertificates) {
+    ListWithTotalNumber<OrgUnitDto> result =
+        orgUnitPopulator.populate(numberOfEntitiesToPopulate, generateCertificates);
+
+    return new OrgUnitPopulationResponse(result.entities());
+  }
+
+  public CommitResponseDto commitStaged() {
+    String backup = AdminNameHolder.getAdminName();
+    AdminNameHolder.setAdminName("test-helper");
+
+    CommitResponseDto result;
+    try {
+      result = serviceDirectoryCommitService.commitStaged(backup, null);
+    } finally {
+      AdminNameHolder.setAdminName(backup);
+    }
+
+    return result;
+  }
+
+  public CommitResponseDto commitAllStaged() {
+    Set<String> authors = getAuthorsOfStagedEntities();
+
+    return authors.stream()
+        .map(user -> serviceDirectoryCommitService.commitStaged(user, null))
+        .reduce(combineCommitResponses())
+        .orElseThrow();
+  }
+
+  private Set<String> getAuthorsOfStagedEntities() {
+    GetOrgUnitsResponse orgUnits = serviceDirectoryReadService.getAllOrgUnits();
+    GetRulesResponse rules = serviceDirectoryReadService.getAllRules();
+    return Stream.of(
+            orgUnits.stagedOrgUnits().stream().map(StagedEntityDto::author),
+            orgUnits.stagedActors().stream().map(StagedEntityDto::author),
+            rules.stagedRules().stream().map(StagedEntityDto::author))
+        .flatMap(Function.identity())
+        .collect(Collectors.toSet());
+  }
+
+  private BinaryOperator<CommitResponseDto> combineCommitResponses() {
+    return (a, b) ->
+        new CommitResponseDto(
+            merge(a.actors(), b.actors()),
+            merge(a.deletedActors(), b.deletedActors()),
+            merge(a.orgUnits(), b.orgUnits()),
+            merge(a.deletedOrgUnits(), b.deletedOrgUnits()),
+            merge(a.rules(), b.rules()),
+            merge(a.deletedRules(), b.deletedRules()));
+  }
+
+  private <K, V> Map<K, V> merge(Map<K, V> a, Map<K, V> b) {
+    return Stream.concat(a.entrySet().stream(), b.entrySet().stream())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  private <T> List<T> merge(List<T> a, List<T> b) {
+    return Stream.concat(a.stream(), b.stream()).toList();
+  }
+}

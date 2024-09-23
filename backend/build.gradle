@@ -1,0 +1,314 @@
+import de.eshg.FindUnusedValidationFiles
+import de.eshg.TaskExecutionLimitService
+
+buildscript {
+    dependencies {
+        components.all { ComponentMetadataDetails details ->
+            if (details.id.version =~ /(?i).+([-.])(CANDIDATE|RC|BETA|ALPHA|CR\d+|M\d+).*/) {
+                details.status = 'milestone'
+                // Explicit return to avoid an IntelliJ IDEA warning
+                return
+            }
+        }
+    }
+
+    dependencyLocking {
+        lockAllConfigurations()
+    }
+}
+
+plugins {
+    id 'io.spring.dependency-management' version 'latest.release' apply false
+    id 'com.avast.gradle.docker-compose' version 'latest.release' apply false
+    id 'org.springframework.boot' version 'latest.release' apply false
+    id 'org.cyclonedx.bom' version 'latest.release' apply false
+    id 'com.trileuco.dependency-track-gradle' version 'latest.release' apply false
+    id 'jacoco-report-aggregation'
+    id 'com.diffplug.spotless' version 'latest.release'
+    id 'org.sonarqube' version 'latest.release'
+    id 'rpost.grantt' version 'latest.release'
+}
+
+dependencyLocking {
+    lockAllConfigurations()
+}
+
+dependencies {
+    jacocoAggregation project.subprojects
+}
+
+configurations {
+    aggregateCodeCoverageReportResults {
+        transitive = false
+    }
+}
+
+reporting {
+    reports {
+        testCodeCoverageReport(JacocoCoverageReport) {
+            testType = TestSuiteType.UNIT_TEST
+        }
+    }
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", project.property("sonar-project-key-backend")
+        property "sonar.coverage.jacoco.xmlReportPaths", "${rootProject.projectDir}/build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
+        property "sonar.qualitygate.wait", true
+    }
+}
+
+//CAUTION: run ./gradlew wrapper (twice) after changes to this task!
+//See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
+wrapper {
+    gradleVersion = "8.9"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+allprojects {
+    buildscript {
+        dependencyLocking {
+            lockAllConfigurations()
+        }
+    }
+
+    dependencies {
+        components.all { ComponentMetadataDetails details ->
+            // Explicitly allow Milestone versions for commons-fileupload2 artifacts until the final version is released
+            if (details.id.name.startsWith('commons-fileupload2')) {
+                // Explicit return to avoid an IntelliJ IDEA warning
+                return
+            } else if (details.id.version =~ /(?i).+([-.])(CANDIDATE|RC|BETA|ALPHA|CR\d+|M\d+).*/) {
+                details.status = 'milestone'
+                // Explicit return to avoid an IntelliJ IDEA warning
+                return
+            }
+        }
+    }
+
+    dependencyLocking {
+        lockAllConfigurations()
+    }
+
+    tasks.withType(JacocoReport).configureEach {
+        reports {
+            xml.required = true
+            csv.required = true
+            html.required = true
+        }
+
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                "**/generated/**",
+                "**/persistence/entity/*_.class",
+                "**/org/matrix/**"
+            ])
+        }))
+    }
+
+    tasks.withType(JavaCompile) {
+        // Note: We need to disable the 'processing' linter because of the Hibernate Static-Metamodel Generator:
+        // "warning: No processor claimed any of these annotations"
+        options.compilerArgs.addAll([
+            '-Xlint:all,-processing',
+            '-Werror'
+        ])
+    }
+}
+
+allprojects {
+    apply plugin: 'com.diffplug.spotless'
+
+    spotless {
+        groovyGradle {
+            target '*.gradle'
+            greclipse()
+            trimTrailingWhitespace()
+            indentWithSpaces()
+        }
+        enforceCheck = true
+    }
+
+    def checkDependencyLockFileTask = tasks.register('checkDependencyLockFile') {
+        doLast {
+            def gradleLockfile = file('gradle.lockfile')
+            assert gradleLockfile.exists(): "${rootDir.toPath().relativize(gradleLockfile.toPath())} is missing." +
+            " Please see the \"Dependency\" section in the README.md for instructions how to generate it"
+        }
+    }
+
+    tasks.named("check").configure {
+        dependsOn checkDependencyLockFileTask
+    }
+
+    // see https://docs.gradle.org/current/userguide/dependency_locking.html#lock_all_configurations_in_one_build_execution
+    tasks.register('resolveAndLockAll') {
+        notCompatibleWithConfigurationCache("Filters configurations at execution time")
+        doFirst {
+            assert gradle.startParameter.writeDependencyLocks: "$path must be run from the command line with the `--write-locks` flag"
+        }
+        doLast {
+            configurations.findAll {
+                // Add any custom filtering on the configurations to be resolved
+                it.canBeResolved
+            }.each { it.resolve() }
+            buildscript.configurations.classpath.resolve()
+        }
+    }
+
+    if (project.hasProperty('projectVersion')) {
+        version = "${projectVersion}"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'jacoco'
+
+    group = 'de.eshg'
+
+    spotless {
+        java {
+            targetExclude '**/generated/**'
+            importOrder 'java', 'jakarta', 'org', 'com', ''
+            removeUnusedImports()
+            googleJavaFormat()
+        }
+        enforceCheck = true
+    }
+
+    java {
+        sourceCompatibility = '21'
+        targetCompatibility = '21'
+
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+
+        consistentResolution {
+            useCompileClasspathVersions()
+        }
+    }
+
+    configurations {
+        productionRuntimeClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
+
+        testFixturesCompileClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
+        testFixturesRuntimeClasspath.shouldResolveConsistentlyWith(testFixturesCompileClasspath)
+
+        testCompileClasspath.shouldResolveConsistentlyWith(testFixturesRuntimeClasspath)
+        testCompileClasspath.shouldResolveConsistentlyWith(runtimeClasspath)
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+
+    tasks.named('test') {
+        useJUnitPlatform {
+            if (project.hasProperty("schemaOnly")) {
+                String schemaOnly = project.property("schemaOnly")
+                if (!schemaOnly.isEmpty()) {
+                    String[] tags = schemaOnly.split(",")
+                    includeTags tags
+                } else {
+                    includeTags "Authorization", "OpenApi", "Schema", "Liquibase"
+                }
+            }
+        }
+
+        if (project == project(":compliance-test")) {
+            maxHeapSize = '1024m'
+        } else {
+            maxHeapSize = '512m'
+        }
+
+        // We need to ensure deterministic behavior in code that utilizes locale-specific formatting or messages,
+        // it's crucial to define and enforce a consistent language setting.
+        jvmArgs += '-Duser.country=de'
+        jvmArgs += '-Duser.language=en'
+        jvmArgs += '-Duser.timezone=Europe/Berlin'
+
+        // For caching: Cache should be reusable when project has a different root path
+        inputs.files('data/test/validation').withPathSensitivity(PathSensitivity.RELATIVE)
+        outputs.dir('data/test/output')
+        outputs.dir('data/test/tmp')
+
+        systemProperty 'eshg.testcontainers.enabled', System.getProperty('eshg.testcontainers.enabled')
+    }
+
+    // For caching: cycloneDxBom generates a uncacheable file (with a timestamp) that is picked up by the spring boot plugin and inserted into the runtime classpath.
+    // Ignore this file to make all runtime classpath dependent tasks cacheable
+    normalization {
+        runtimeClasspath {
+            ignore "META-INF/sbom/bom.xml"
+        }
+    }
+
+    def findUnusedValidationFilesTask = tasks.register('findUnusedValidationFiles', FindUnusedValidationFiles) {
+        dependsOn tasks.named("test")
+    }
+
+    tasks.named("check").configure {
+        dependsOn findUnusedValidationFilesTask
+    }
+
+    clean {
+        delete test.outputs
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    // Workaround for bug in gradle
+    // https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/376
+    // https://github.com/gradle/gradle/issues/27947
+    dependencyManagement {
+        applyMavenExclusions(false)
+        dependencies {
+            libs.bundles.keycloak.client.get().each {
+                dependency it.toString()
+            }
+        }
+    }
+}
+
+tasks.register("composeUp") {
+    group 'docker'
+}
+
+// Temporary workaround to solve the race condition between tests in different modules
+// that both use the same 'base' module instance and reset the database in between.
+// We currently work on to get rid of this shared dependency.
+// Please see [internal gitlab link]
+
+def testLimitService = project.gradle.sharedServices
+        .registerIfAbsent("testLimitService", TaskExecutionLimitService.class, {spec -> spec.maxParallelUsages = 1})
+
+def projectsToSequentialize = [
+    project(':inspection'),
+    project(':measles-protection'),
+    project(':school-entry'),
+    project(':travel-medicine'),
+    project(':lib-procedures'),
+    project(':lib-appointmentblock'),
+    project(':auditlog'),
+    project(':chat-management'),
+    project(':sti-protection')
+]
+
+// We do not need to sequentialize when we only execute schema tests
+if (!project.hasProperty("schemaOnly")) {
+    projectsToSequentialize.each { Project project ->
+        project.tasks.named("test").configure {
+            usesService testLimitService
+        }
+    }
+}

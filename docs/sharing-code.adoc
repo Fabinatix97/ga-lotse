@@ -1,0 +1,33 @@
+= Sharing Code
+:sectnums:
+
+Since a lot of teams are working on this project, code sharing is important to avoid redundant work and achieve consistency regarding the user experience.
+
+The goal of this article is to provide some guidance on when to share code, where to locate it and how to approach changes to shared code.
+
+== What is shared code?
+
+We consider code to be shared when it's located outside of the base module and any business module to enable using it in multiple modules.
+
+== When to share code?
+
+We locate new code as close to it's usage as possible. In most cases, this will either be the base module or one of the business modules.
+
+The recommendation is not to share new code prematurely as long as it's only used within a single module. A good time to share code is whenever a second module is about to use it.
+
+Exceptions from this advice are functionalities where it's known beforehand that they will be used by multiple modules, e.g. basic building blocks of the design system or reusable functions for localizing outputs.
+
+== Where to share code?
+
+There are two locations for shared code: the `/lib/shared` folder within each portal project and the `lib-portal` project.
+
+In `/lib/shared`, we locate code to be shared within the respective portal project. In general, this should be the primary location for shared code as there are distinctive differences regarding the requirements of each portal project. Sharing code in `/lib/shared` allows us to be specific about the portal without the need to overgeneralize. This applies to most React components used within the portals.
+
+However, there are also features which multiple portals have in common, like basic helper functions and error handling. We locate these in `lib-portal`.
+
+== How to extend shared code?
+
+When extending existing shared code, we try to avoid causing breaking changes. This can be achieved in multiple ways. For example, new parameters can be introduced with a default value which represents the behavior before introduction the extension.
+When working with React components, using composition can also help to avoid breaking changes.
+
+As a rule of thumb, we try to avoid adding features to shared code which are needed for a rather specific use case. We can achieve this by either finding an abstraction of the concrete problem which does not affect existing usages, or by deriving the feature from existing building blocks, e.g. using composition.

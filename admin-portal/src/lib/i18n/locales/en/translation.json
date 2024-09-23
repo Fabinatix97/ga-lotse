@@ -1,0 +1,204 @@
+{
+  "activate": "Activate",
+  "activate-confirm": "Do you really want to activate {{entity}}?",
+  "actorColumnHeader": {
+    "_matchingClientRules": "Client Rules",
+    "_matchingServerRules": "Server Rules",
+    "_orgUnit": "Organization Unit",
+    "active": "Active",
+    "author": "Author",
+    "commonName": "CN",
+    "currentCertificate": "Current Certificate",
+    "id": "ID / Author",
+    "metadata": "Metadata",
+    "naturalId": "Natural ID",
+    "networkId": "Network Segment",
+    "previousCertificate": "Previous Certificate",
+    "readableName": "Name",
+    "type": "Type"
+  },
+  "actorHeader": "Actors",
+  "actorMetadata": "Actor Metadata",
+  "actorMetadataColumnHeader": {
+    "changedAt": "Timestamp",
+    "content": "Content",
+    "id": "ID / Author"
+  },
+  "actorMetadataHeader": "Actor Metadata",
+  "actors_one": "{{count}} actor",
+  "actors_other": "{{count}} actors",
+  "allFilteredTableHint": "All data filtered",
+  "apply": "Apply",
+  "auditHistory": {
+    "added": "added",
+    "deleted": "deleted",
+    "modified": "modified"
+  },
+  "auditLogEmptyLabel": "Check your selected dates!",
+  "auditLogEmptyTitle": "No entries found in the specified date range",
+  "auditLogHeader": "Audit Log",
+  "auditRevisionColumnFilter": {
+    "committer": "Reviewer",
+    "id": "ID",
+    "ip": "IP"
+  },
+  "certificate": {
+    "title": "Certificate",
+    "value": "Value",
+    "signature": "Signature",
+    "signatory": "Signatory"
+  },
+  "close": "Close",
+  "collapseMenu": "Collapse menu",
+  "collapseRow": "Collapse row",
+  "columnHeader": {
+    "_matchingClientActors": "Clients",
+    "_matchingClientRules": "Client Rules",
+    "_matchingServerActors": "Server",
+    "_matchingServerRules": "Server Rules",
+    "_orgUnit": "Organization Unit",
+    "active": "Active",
+    "actors": "Actors",
+    "author": "Author",
+    "client": "Client Pattern",
+    "commonName": "CN",
+    "currentCertificate": "Current Certificate",
+    "description": "Description",
+    "empty": "empty",
+    "federalState": "Federal state",
+    "id": "ID",
+    "metadata": "Metadata",
+    "naturalId": "Natural ID",
+    "networkId": "Network Segment",
+    "previousCertificate": "Previous Certificate",
+    "readableName": "Name",
+    "server": "Server Pattern",
+    "type": "Type"
+  },
+  "committer": "Reviewer",
+  "commonNameMismatch": "CN mismatch",
+  "confirmationDialog": {
+    "no": "Whoopsie-daisy",
+    "title": "Are you sure?",
+    "yes": "Do as I say!"
+  },
+  "create": "Create",
+  "deactivate": "Deactivate",
+  "deactivate-confirm": "Do you really want to deactivate {{entity}}?",
+  "delete": "Delete",
+  "deleteHint": "--- User '{{author}}' wants to delete this ---",
+  "discard": "Discard",
+  "downloadAuditLog": "Download Log",
+  "edit": "Edit",
+  "elements_one": "{{count}} element",
+  "elements_other": "{{count}} elements",
+  "empty": "empty",
+  "emptyTableHint": "No data",
+  "enterSearchterm": "Enter search term",
+  "entities_one": "{{count}} entity",
+  "entities_other": "{{count}} entities",
+  "entityCart": "Approve entities",
+  "error": "Error",
+  "errorReason": {
+    "502": "Could not reach Backend Server."
+  },
+  "expandRow": "Expand row",
+  "expensiveQuery": "This is a potentially expensive query",
+  "exportConfig": "Export configuration",
+  "exportHeader": "Current configuration",
+  "fileRequired": "Please choose a file.",
+  "fromInclusive": "From",
+  "fullTextSearch": "Full-text Search",
+  "gaLotseAdminPortal": "GA-Lotse Admin Portal",
+  "hint_fileType": "Please choose a file from type {{fileType}}",
+  "importConfigLabel": "Choose a JSON file",
+  "importHeader": "Configuration Import",
+  "legal": {
+    "accessibility": {
+      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "title": "Accessibility"
+    },
+    "acknowledgements": {
+      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "title": "Acknowledgements"
+    },
+    "contact": {
+      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "title": "Contact"
+    },
+    "imprint": {
+      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "title": "Imprint"
+    },
+    "privacy": {
+      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "title": "Privacy policy"
+    },
+    "releaseNotes": {
+      "content": [
+        "<h2>GA-Lotse 1.0</h2>",
+        "<h3>2024-10-01</h3>",
+        "<ul>",
+        "  <li>Establishing a service mesh infrastructure between different healthcare departments, actors and organizational units</li>",
+        "  <li>Rules for checking permitted connections</li>",
+        "  <li>Administration of OrgUnits, Actors and Rules</li>",
+        "  <li>Export of the Service Directory configuration</li>",
+        "  <li>Display and export of AuditLog</li>",
+        "</ul>"
+      ],
+      "title": "Release Notes"
+    },
+    "termsOfUse": {
+      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "title": "Terms of use"
+    }
+  },
+  "navigation": {
+    "actors": "Actors",
+    "auditLog": "Audit Log",
+    "legal": "Legal Matters",
+    "orgUnits": "OrgUnits",
+    "rules": "Rules",
+    "serviceDirectory": "Service Directory"
+  },
+  "negativeDateRangeHint": "Bad timespan",
+  "orgUnitColumnHeader": {
+    "active": "Active",
+    "actors": "Actors",
+    "author": "Author",
+    "federalState": "Federal state",
+    "id": "ID / Author",
+    "naturalId": "Natural ID",
+    "readableName": "Name",
+    "type": "Type"
+  },
+  "orgUnitHeader": "Organization Units",
+  "orgUnits_one": "{{count}} orgUnit",
+  "orgUnits_other": "{{count}} orgUnits",
+  "progress": "Progress Indicator",
+  "readyForReview": "Ready for review",
+  "reset": "Reset",
+  "rule": "Rule",
+  "ruleColumnHeader": {
+    "_matchingClientActors": "Clients",
+    "_matchingServerActors": "Server",
+    "active": "Active",
+    "client": "Client Pattern",
+    "description": "Description",
+    "id": "ID / Author",
+    "server": "Server Pattern"
+  },
+  "ruleHeader": "Permission Rules",
+  "rules_one": "{{count}} Rule",
+  "rules_other": "{{count}} Rules",
+  "save": "Save",
+  "selectImportConfig": "select Configuration",
+  "serviceDirectoryHeader": "Service Directory",
+  "show": "Show",
+  "submit": "Submit",
+  "toInclusive": "To",
+  "toggleLanguage": "Change language",
+  "toggleMenu": "expand/collapse Navigation",
+  "upload": "Import",
+  "username": "User"
+}

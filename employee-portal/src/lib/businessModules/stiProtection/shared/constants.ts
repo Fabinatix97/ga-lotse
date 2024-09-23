@@ -1,0 +1,55 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  ApiAppointmentType,
+  ApiConcern,
+  ApiGender,
+  ApiProcedureStatus,
+  ApiProcedureType,
+  ApiTaskType,
+} from "@eshg/employee-portal-api/stiProtection";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
+
+export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
+  [ApiProcedureStatus.Aborted]: "Abgebrochen",
+  [ApiProcedureStatus.Closed]: "Geschlossen",
+  [ApiProcedureStatus.Draft]: "Entwurf",
+  [ApiProcedureStatus.InProgress]: "In Arbeit",
+  [ApiProcedureStatus.Open]: "Offen",
+};
+
+export const PROCEDURE_TYPES = [ApiProcedureType.StiProtection];
+
+export const TASK_TYPES = [ApiTaskType.StiProtection];
+
+export const systemProgressEntryTypeTitles: Record<string, string> = {
+  // Todo: fill with translations
+};
+
+export const CONCERN_VALUES: EnumMap<ApiConcern> = {
+  [ApiConcern.HivStiConsultation]: "HIV-STI Beratung",
+  [ApiConcern.SexWork]: "Sexarbeit",
+};
+
+export const GENDER_VALUES: EnumMap<ApiGender> = {
+  [ApiGender.Diverse]: "Divers",
+  [ApiGender.Female]: "Weiblich",
+  [ApiGender.Male]: "Männlich",
+  [ApiGender.NotSpecified]: "Keine Angabe",
+};
+
+export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
+  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
+  [ApiAppointmentType.CanChild]: "Kann-Kinder",
+  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
+  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
+  [ApiAppointmentType.Consultation]: "Beratung",
+  [ApiAppointmentType.Vaccination]: "Impfung",
+  [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
+  [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
+  [ApiAppointmentType.SexWork]: "Sexarbeit",
+  [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
+};

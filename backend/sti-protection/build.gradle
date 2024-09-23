@@ -1,0 +1,37 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':lib-base-client')
+    implementation project(':lib-procedures')
+    implementation project(':lib-appointmentblock')
+    implementation project(':lib-calendar')
+    implementation project(':business-module-persistence-commons')
+
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+}
+
+dockerCompose {
+    startedServices = [
+        'sti-protection',
+        'sti-protection-db'
+    ]
+}
+
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-sti-protection') ?: "unspecified"
+}
+

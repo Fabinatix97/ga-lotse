@@ -1,0 +1,16 @@
+plugins {
+    id("eshg.java-lib")
+    id("java-test-fixtures")
+}
+
+dependencies {
+    implementation project(':business-module-commons')
+
+    api project(':lib-statistics-api')
+    api project(':lib-procedures-api')
+    api project(':lib-calendar-api')
+    api project(':lib-notification-api')
+
+    testFixturesApi(project(":test-commons"))
+    testFixturesImplementation("org.mockito:mockito-junit-jupiter")
+}

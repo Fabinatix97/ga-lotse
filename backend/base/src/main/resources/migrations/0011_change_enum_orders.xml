@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1725609722950-1">
+    <ext:modifyPostgresEnumType name="inventoryitemtype" newValues="VACCINE, PROTECTIVE_EQUIPMENT, MISC, TEST_KIT"/>
+    <ext:modifyPostgresEnumType name="resourcetype" newValues="CAR, BICYCLE, CAMERA, LAPTOP, MEASURING_DEVICE, MEASURING_KIT, ROOM, MISC, TABLET"/>
+    <ext:modifyPostgresEnumType name="institutioncontactcategory" newValues="DOCTORS_OFFICE, HEALTH_DEPARTMENT, LABORATORY, SCHOOL, MISC"/>
+  </changeSet>
+</databaseChangeLog>

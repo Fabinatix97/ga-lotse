@@ -1,0 +1,2 @@
+de.eshg.lib.notification.spring.config.NotificationLibraryAutoConfiguration
+de.eshg.lib.notification.spring.config.NotificationDomainModelAutoConfiguration

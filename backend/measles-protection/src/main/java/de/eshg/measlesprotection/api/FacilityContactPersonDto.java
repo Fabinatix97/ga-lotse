@@ -1,0 +1,21 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.measlesprotection.api;
+
+import de.eshg.base.SalutationDto;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+@Schema(name = "FacilityContactPerson")
+public record FacilityContactPersonDto(
+    @NotBlank String firstName,
+    @NotBlank String lastName,
+    @NotBlank String phoneNumber,
+    @NotBlank @Email String emailAddress,
+    String role,
+    SalutationDto salutation,
+    String title) {}

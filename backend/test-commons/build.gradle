@@ -1,0 +1,32 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api 'de.cronn:validation-file-assertions:latest.release'
+    api 'de.cronn:test-utils:latest.release'
+
+    api project(':util-commons')
+    api project(':lib-keycloak')
+    api project(':test-helper-commons-api')
+
+    implementation 'de.cronn:postgres-snapshot-util:latest.release'
+    implementation 'org.springframework:spring-webmvc'
+    implementation 'org.springframework:spring-test'
+    implementation 'org.springframework.boot:spring-boot-test'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.testcontainers:testcontainers'
+    implementation 'org.springframework.data:spring-data-commons'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'com.tngtech.archunit:archunit-junit5:latest.release'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'
+
+    implementation 'org.assertj:assertj-core'
+    implementation 'ch.qos.logback:logback-classic'
+    implementation('com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:latest.release') {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-jdbc"
+    }
+    implementation 'org.hibernate.orm:hibernate-core'
+    implementation 'org.jetbrains:annotations:latest.release'
+    implementation 'commons-io:commons-io:latest.release'
+}

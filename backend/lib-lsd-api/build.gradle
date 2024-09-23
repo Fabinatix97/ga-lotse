@@ -1,0 +1,24 @@
+plugins {
+    id "eshg.java-lib"
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api project(':api-commons')
+    api project(':lib-commons')
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation libs.bundles.keycloak.client
+
+    testImplementation('com.squareup.okhttp3:mockwebserver') {
+        exclude group: "junit", module: "junit"
+    }
+    // mockwebserver depends on Junit 4 interfaces that we don't want.
+    // Replace those interfaces with dummy ones.
+    // Remove when upgrading to mockwebserver 5
+    testImplementation 'io.quarkus:quarkus-junit4-mock:latest.release'
+
+    testFixturesImplementation project(':test-commons')
+    testFixturesApi testFixtures(project(':lib-service-directory-admin-api'))
+    testFixturesApi 'org.testcontainers:testcontainers'
+    testFixturesApi 'org.springframework:spring-test'
+}

@@ -1,0 +1,14 @@
+{
+  "page_title": "Measles Protection",
+  "information": {
+    "title": "Information about the reporting procedure",
+    "welcome": "Welcome to the reporting platform of the public health department. This page supports you in fulfilling your legal obligation to report unvaccinated or insufficiently protected persons against measles to the public health department.",
+    "legal_basis": "According to § 20 of the Infection Protection Act (IfSG), all affected institutions are obliged to ensure that persons who are cared for or employed there provide proof of valid measles protection. If such proof is missing or if there is any doubt as to its authenticity or accuracy, these persons must be reported via this platform.",
+    "questions": "Our team will be happy to answer any questions or provide support. Thank you for your cooperation and your commitment to protecting public health!"
+  },
+  "report_a_case": {
+    "title": "Would you like to report a case?",
+    "explanation": "Use the following steps to make the necessary notifications safely and quickly.",
+    "to_report_button": "Go To Reporting Form"
+  }
+}

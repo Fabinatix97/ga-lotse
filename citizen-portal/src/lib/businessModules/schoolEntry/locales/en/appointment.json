@@ -1,0 +1,41 @@
+{
+  "pageTitle": "My Appointment",
+  "procedureClosed": {
+    "title": "Process Closed",
+    "message": "The appointment can no longer be changed as the process has been closed."
+  },
+  "leave": "Leave My Area",
+  "details": {
+    "title": "Information",
+    "name": "Name",
+    "birthday": "Date of Birth",
+    "medicalService": "Type of Service",
+    "schoolEntryExamination": "School Enrollment Examination",
+    "date": "Date",
+    "time": "Time",
+    "clock": "o'clock",
+    "duration": "Duration",
+    "place": "Location"
+  },
+  "preparations": "Preparation for the Appointment",
+  "required": {
+    "title": "Required Documents",
+    "anamnesis": "Completed Parent Questionnaire",
+    "vaccinationCard": "Vaccination Card",
+    "medicalRecords": "The yellow medical record booklet (U-Heft)",
+    "additionalDocuments": "If applicable, additional medical documents, possibly current medication",
+    "additionalAids": "If applicable, available aids (glasses, hearing aid)"
+  },
+  "anamnesis": {
+    "title": "Parent Questionnaire",
+    "notSubmitted": "Not yet submitted",
+    "submitted": "Submitted",
+    "fillIn": "Fill in Now"
+  },
+  "update": {
+    "title": "Can't make the appointment?",
+    "appointment": "Reschedule Appointment",
+    "alert": "Rescheduling no longer possible",
+    "alertMessage": "You have already rescheduled your appointment twice. Please contact our support at {{phoneNumber}}."
+  }
+}

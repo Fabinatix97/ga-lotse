@@ -1,0 +1,513 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- ViewVC :: http://www.viewvc.org/ -->
+<head>
+<title>[Apache-SVN] Contents of /pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/sRGB.icc.COPYING</title>
+<meta name="generator" content="ViewVC 1.1.26" />
+<link rel="shortcut icon" href="/vc-static/images/favicon.ico" />
+<link rel="stylesheet" href="/vc-static/styles.css" type="text/css" />
+
+</head>
+<body>
+<div class="vc_navheader">
+<table><tr>
+<td><strong><a href="/viewvc?view=roots"><span class="pathdiv">/</span></a><a href="/viewvc/">[Apache-SVN]</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/">pdfbox</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/">trunk</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/">examples</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/">src</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/">main</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/">resources</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/">org</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/">apache</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/">pdfbox</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/">resources</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/">pdfa</a><span class="pathdiv">/</span><a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/sRGB.icc.COPYING?view=log">sRGB.icc.COPYING</a></strong></td>
+<td style="text-align: right;"></td>
+</tr></table>
+</div>
+<div style="float: right; padding: 5px;"><a href="http://www.viewvc.org/" title="ViewVC Home"><img src="/vc-static/images/viewvc-logo.png" alt="ViewVC logotype" width="240" height="70" /></a></div>
+<h1>Contents of /pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/sRGB.icc.COPYING</h1>
+
+<p style="margin:0;">
+
+<a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/"><img src="/vc-static/images/back_small.png" class="vc_icon" alt="Parent Directory" /> Parent Directory</a>
+
+| <a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/sRGB.icc.COPYING?view=log"><img src="/vc-static/images/log.png" class="vc_icon" alt="Revision Log" /> Revision Log</a>
+
+
+
+
+</p>
+
+<hr />
+<div class="vc_summary">
+Revision <a href="/viewvc?view=revision&amp;revision=1770985"><strong>1770985</strong></a> -
+(<a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/sRGB.icc.COPYING?annotate=1770985"><strong>show annotations</strong></a>)
+(<a href="/viewvc/pdfbox/trunk/examples/src/main/resources/org/apache/pdfbox/resources/pdfa/sRGB.icc.COPYING?revision=1770985&amp;view=co"><strong>download</strong></a>)
+
+
+<br /><em>Wed Nov 23 15:37:39 2016 UTC</em>
+(7 years, 6 months ago)
+by <em>lehmi</em>
+
+
+
+
+
+
+
+<br />File size: 1860 byte(s)
+
+
+
+
+
+
+<pre class="vc_log">PDFBOX-3571: replaced sRGB color profile due to a license issue
+</pre>
+
+</div>
+
+
+
+
+
+
+<div id="vc_file">
+<table cellspacing="0" cellpadding="0">
+
+
+
+
+
+
+
+
+<tr class="vc_row_odd" id="l1">
+<td class="vc_file_line_number"><a href="#l1">1</a></td>
+
+<td class="vc_file_line_text">The profiles in the base directory are provided according to different licenses.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l2">
+<td class="vc_file_line_number"><a href="#l2">2</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l3">
+<td class="vc_file_line_number"><a href="#l3">3</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l4">
+<td class="vc_file_line_number"><a href="#l4">4</a></td>
+
+<td class="vc_file_line_text">Group A</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l5">
+<td class="vc_file_line_number"><a href="#l5">5</a></td>
+
+<td class="vc_file_line_text">sRGB, LCMSLAB.ICM, LCMSXYZ.ICM, the compatibleWithAdobeRGB.icc and the </td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l6">
+<td class="vc_file_line_number"><a href="#l6">6</a></td>
+
+<td class="vc_file_line_text">Gray.icc, CineonLog_M*.icc, CineLogCurve.icc profiles are all zlib licensed.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l7">
+<td class="vc_file_line_number"><a href="#l7">7</a></td>
+
+<td class="vc_file_line_text">Even though it is highly recommended to rename them before editing.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l8">
+<td class="vc_file_line_number"><a href="#l8">8</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l9">
+<td class="vc_file_line_number"><a href="#l9">9</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l10">
+<td class="vc_file_line_number"><a href="#l10">10</a></td>
+
+<td class="vc_file_line_text">Group B</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l11">
+<td class="vc_file_line_number"><a href="#l11">11</a></td>
+
+<td class="vc_file_line_text">The eciRGB*.icc profiles come with their license in license.rtf.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l12">
+<td class="vc_file_line_number"><a href="#l12">12</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l13">
+<td class="vc_file_line_number"><a href="#l13">13</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l14">
+<td class="vc_file_line_number"><a href="#l14">14</a></td>
+
+<td class="vc_file_line_text">Group C</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l15">
+<td class="vc_file_line_number"><a href="#l15">15</a></td>
+
+<td class="vc_file_line_text">PhotoGamutRGB_avg6c.icc is licensed to be distributed freely. Modifications </td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l16">
+<td class="vc_file_line_number"><a href="#l16">16</a></td>
+
+<td class="vc_file_line_text">are not allowed.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l17">
+<td class="vc_file_line_number"><a href="#l17">17</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l18">
+<td class="vc_file_line_number"><a href="#l18">18</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l19">
+<td class="vc_file_line_number"><a href="#l19">19</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l20">
+<td class="vc_file_line_number"><a href="#l20">20</a></td>
+
+<td class="vc_file_line_text">Additionally all profiles come with the following disclaimer. The provided </td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l21">
+<td class="vc_file_line_number"><a href="#l21">21</a></td>
+
+<td class="vc_file_line_text">ICC Profiles in the package are called DATA in the folling statement.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l22">
+<td class="vc_file_line_number"><a href="#l22">22</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l23">
+<td class="vc_file_line_number"><a href="#l23">23</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l24">
+<td class="vc_file_line_number"><a href="#l24">24</a></td>
+
+<td class="vc_file_line_text">                NO WARRANTY</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l25">
+<td class="vc_file_line_number"><a href="#l25">25</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l26">
+<td class="vc_file_line_number"><a href="#l26">26</a></td>
+
+<td class="vc_file_line_text">  BECAUSE THE DATA IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l27">
+<td class="vc_file_line_number"><a href="#l27">27</a></td>
+
+<td class="vc_file_line_text">FOR THE DATA, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l28">
+<td class="vc_file_line_number"><a href="#l28">28</a></td>
+
+<td class="vc_file_line_text">OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l29">
+<td class="vc_file_line_number"><a href="#l29">29</a></td>
+
+<td class="vc_file_line_text">PROVIDE THE DATA &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l30">
+<td class="vc_file_line_number"><a href="#l30">30</a></td>
+
+<td class="vc_file_line_text">OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l31">
+<td class="vc_file_line_number"><a href="#l31">31</a></td>
+
+<td class="vc_file_line_text">MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l32">
+<td class="vc_file_line_number"><a href="#l32">32</a></td>
+
+<td class="vc_file_line_text">TO THE QUALITY AND PERFORMANCE OF THE DATA IS WITH YOU.  SHOULD THE</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l33">
+<td class="vc_file_line_number"><a href="#l33">33</a></td>
+
+<td class="vc_file_line_text">DATA PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l34">
+<td class="vc_file_line_number"><a href="#l34">34</a></td>
+
+<td class="vc_file_line_text">REPAIR OR CORRECTION.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l35">
+<td class="vc_file_line_number"><a href="#l35">35</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l36">
+<td class="vc_file_line_number"><a href="#l36">36</a></td>
+
+<td class="vc_file_line_text">  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l37">
+<td class="vc_file_line_number"><a href="#l37">37</a></td>
+
+<td class="vc_file_line_text">WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l38">
+<td class="vc_file_line_number"><a href="#l38">38</a></td>
+
+<td class="vc_file_line_text">REDISTRIBUTE THE DATA AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l39">
+<td class="vc_file_line_number"><a href="#l39">39</a></td>
+
+<td class="vc_file_line_text">INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l40">
+<td class="vc_file_line_number"><a href="#l40">40</a></td>
+
+<td class="vc_file_line_text">OUT OF THE USE OR INABILITY TO USE THE DATA (INCLUDING BUT NOT LIMITED</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l41">
+<td class="vc_file_line_number"><a href="#l41">41</a></td>
+
+<td class="vc_file_line_text">TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l42">
+<td class="vc_file_line_number"><a href="#l42">42</a></td>
+
+<td class="vc_file_line_text">YOU OR THIRD PARTIES OR A FAILURE OF THE DATA TO OPERATE WITH ANY OTHER</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l43">
+<td class="vc_file_line_number"><a href="#l43">43</a></td>
+
+<td class="vc_file_line_text">PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l44">
+<td class="vc_file_line_number"><a href="#l44">44</a></td>
+
+<td class="vc_file_line_text">POSSIBILITY OF SUCH DAMAGES.</td>
+</tr>
+
+
+
+
+<tr class="vc_row_odd" id="l45">
+<td class="vc_file_line_number"><a href="#l45">45</a></td>
+
+<td class="vc_file_line_text"></td>
+</tr>
+
+
+</table>
+</div>
+
+
+
+
+
+<hr />
+<table>
+<tr>
+<td><address><a href="mailto:infrastructure at apache.org">infrastructure at apache.org</a></address></td>
+<td style="text-align: right;"><strong><a href="/vc-static/help_rootview.html">ViewVC Help</a></strong></td>
+</tr>
+<tr>
+<td>Powered by <a href="http://viewvc.tigris.org/">ViewVC 1.1.26</a></td>
+<td style="text-align: right;">&nbsp;</td>
+</tr>
+</table>
+</body>
+</html>
+

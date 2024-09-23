@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1726562796563-1">
+    <renameColumn tableName="contact_email_address" oldColumnName="value" newColumnName="email_address"/>
+    <renameColumn tableName="contact_email_address_aud" oldColumnName="value" newColumnName="email_address"/>
+
+    <renameColumn tableName="contact_phone_number" oldColumnName="value" newColumnName="phone_number"/>
+    <renameColumn tableName="contact_phone_number_aud" oldColumnName="value" newColumnName="phone_number"/>
+
+    <renameColumn tableName="facility_email_address" oldColumnName="value" newColumnName="email_address"/>
+    <renameColumn tableName="facility_phone_number" oldColumnName="value" newColumnName="phone_number"/>
+
+    <renameColumn tableName="person_email_address" oldColumnName="value" newColumnName="email_address"/>
+    <renameColumn tableName="person_phone_number" oldColumnName="value" newColumnName="phone_number"/>
+  </changeSet>
+</databaseChangeLog>

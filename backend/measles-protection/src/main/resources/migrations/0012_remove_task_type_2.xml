@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1723113799128-1">
+        <ext:modifyPostgresEnumType name="tasktype" newValues="BOOK_APPOINTMENT, INSPECTION_EXECUTION, INSPECTION_PLANNING, INSPECTION_REPORT, MEASLES_PROTECTION, PERFORM_SCHOOL_ENTRY_EXAMINATION, TRAVEL_MEDICINE"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,32 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    implementation project(':lib-commons')
+    implementation project(':business-module-persistence-commons')
+    implementation project(':business-module-commons')
+    implementation project(":lib-four-eyes-principle-api")
+    implementation project(':lib-auditlog')
+
+    implementation 'jakarta.persistence:jakarta.persistence-api'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework.data:spring-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.hibernate.orm:hibernate-core'
+    implementation 'org.hibernate.orm:hibernate-envers'
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    testImplementation project(':test-commons')
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testRuntimeOnly 'org.postgresql:postgresql'
+    testRuntimeOnly 'com.h2database:h2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-AaddSuppressWarningsAnnotation=true")
+}

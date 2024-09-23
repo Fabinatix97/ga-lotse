@@ -1,0 +1,10 @@
+plugins {
+    id("eshg.java-lib")
+}
+
+dependencies {
+    api 'jakarta.validation:jakarta.validation-api'
+    api 'com.fasterxml.jackson.core:jackson-annotations'
+    api 'io.swagger.core.v3:swagger-annotations-jakarta:latest.release'
+    api 'org.springframework:spring-web'
+}

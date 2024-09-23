@@ -1,0 +1,31 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
+
+import { FinalizeInspectionModalContent } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModalContent";
+import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
+
+export type FinalizeInspectionModalProps = {
+  inspectionId: string;
+} & Omit<BaseModalProps, "children">;
+
+export function FinalizeInspectionModal({
+  sx,
+  ...props
+}: Readonly<FinalizeInspectionModalProps>) {
+  return (
+    <QueryBoundary>
+      <BaseModal
+        modalTitle="Signatur"
+        key="finalize-inspection-modal"
+        sx={{ width: 820, ...sx }}
+        {...props}
+      >
+        <FinalizeInspectionModalContent {...props} />
+      </BaseModal>
+    </QueryBoundary>
+  );
+}

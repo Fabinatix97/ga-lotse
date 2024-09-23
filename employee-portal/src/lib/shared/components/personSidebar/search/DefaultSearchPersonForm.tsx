@@ -1,0 +1,46 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Stack } from "@mui/joy";
+import { PropsWithChildren } from "react";
+
+import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import { DefaultSearchPersonFormFields } from "@/lib/shared/components/personSidebar/search/DefaultSearchPersonFormFields";
+import {
+  SearchPersonFormProps,
+  SearchPersonFormValues,
+} from "@/lib/shared/components/personSidebar/search/SearchPersonSidebar";
+import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
+import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+
+export function defaultSearchPersonValues(): SearchPersonFormValues {
+  return {
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+  };
+}
+
+export function DefaultSearchPersonForm<
+  TValues extends SearchPersonFormValues = SearchPersonFormValues,
+>(props: PropsWithChildren<SearchPersonFormProps<TValues>>) {
+  return (
+    <>
+      <SidebarContent title={props.title}>
+        <Stack gap={2}>
+          {props.children ?? <DefaultSearchPersonFormFields />}
+        </Stack>
+      </SidebarContent>
+      <SidebarActions>
+        <MultiFormButtonBar
+          submitting={props.isSubmitting}
+          submitLabel={"Weiter"}
+          onBack={props.onBack}
+          onCancel={props.onCancel}
+        />
+      </SidebarActions>
+    </>
+  );
+}

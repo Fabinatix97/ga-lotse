@@ -1,0 +1,184 @@
+= Frontend
+:sectnums:
+
+== Prerequisites
+- Java (e.g. https://adoptium.net/temurin/[Eclipse Temurin]) - For running tasks with Gradle
+- link:./vscode.adoc[Optional VS Code setup]
+
+== Getting started
+We use https://gradle.org[Gradle] as build system to define dependencies between tasks and enable incremental builds, which avoids rerunning tasks when their inputs did not change.
+Find common gradle tasks link:./gradle.adoc[here].
+They include starting the application in production or development mode, running checks and tests.
+
+=== Running Backend Services
+
+Each portal application and use case requires specific backend services to run.
+Not all backend services are required at all times for local testing.
+
+For example, the `employee-portal` requires at least a running `auth` and `base` module.
+In addition, one or more business modules (e.g. `school-entry` or `inspection`) should be running.
+
+[source,shell]
+----
+cd backend
+./gradlew --parallel auth:composeUp base:composeUp [school-entry:composeUp, …]
+----
+
+See link:../backend/README.md#starting-the-backend-application[Starting the backend application] for more details and alternatives.
+
+=== Starting Portal Application
+
+There are three startable projects: the `employee-portal`, the `citizen-portal` and the `admin-portal`.
+
+Start the application in production mode
+
+[source,shell]
+----
+./gradlew [project-name]:run
+----
+
+Start the application in development mode (hot-code reloading)
+
+[source,shell]
+----
+./gradlew [project-name]:runDev
+----
+
+=== Login
+
+The application requires a login through our keycloak service.
+When opening the application, you are redirected to keycloak and asked to login with an existing user.
+
+You can find the current test user credentials in the link:../backend/README.md#login-information[Backend README].
+
+== Project Organization
+=== Lib Portal
+
+The Lib Portal serves as shared library for components that can be used in all subprojects. For further information refer to the link:../lib-portal/README.adoc[Lib Portal README]
+
+=== Api Clients
+
+The portal applications depend on generated api clients for fetching data from the backend services.
+For example, the `employee-portal-api` folder contains a module that generates all needed api clients for the `employee-portal` from OpenApi specifications. The api clients are automatically generated when starting the application.
+
+=== Naming Convention
+
+- Regular files: `apiClient.ts` (camelCase)
+- Folders: `baseModule` (camelCase)
+- React components: `MyAwesomeComponent.tsx` (UpperCamelCase)
+- React hooks: `useMyAwesomeHook.ts` (useCamelCase)
+- See https://nextjs.org/docs/getting-started/project-structure#app-routing-conventions[app Routing Conventions] on how to name Next.js files (e.g. `page.tsx`, `error.tsx`).
+- URL paths should be written in kebab-case.
+For example, `my-procedures/[id]` should be preferred (instead of `myProcedures/[id]`).
+This means that folders inside the `app` folder may deviate from the convention for normal folder names.
+Depending on the application, the URL paths are written either in English or German.
+
+=== File Structure
+
+Both the employee portal and the citizen portal are developed as a single application, while a strict project organization allows for modularization at any time.
+There are three groups of application parts: The base module, the various business modules, and the shared code.
+
+Simplified, the employee portal is organized in the file system as follows:
+
+[source]
+----
+src
+├── app
+│   ├── (baseModule)
+│   └── (businessModules)
+│       ├── inspection
+│       ├── measles-protection
+│       ├── school-entry
+│       └── travel-medicine
+└── lib
+    ├── baseModule
+    │   ├── api
+    │   ├── components
+    │   ├── moduleRegister
+    │   └── shared
+    ├── businessModules
+    │   ├── inspection
+    │   │   ├── api
+    │   │   ├── components
+    │   │   └── shared
+    │   ├── measlesProtection
+    │   │   ├── api
+    │   │   ├── components
+    │   │   ├── hooks
+    │   │   ├── layout
+    │   │   └── shared
+    │   ├── schoolEntry
+    │   │   ├── api
+    │   │   ├── features
+    │   │   └── shared
+    │   └── travelMedicine
+    │       ├── api
+    │       ├── components
+    │       └── shared
+    └── shared
+        ├── api
+        ├── components
+        ├── helpers
+        └── hooks
+----
+
+The following rules apply between the individual application parts:
+
+- The base module and the business modules may use components and functions from the shared library (`lib/shared`).
+- The shared code itself must not import any code from the base module and the business modules.
+- The base module and the business modules cannot import code from each other.
+- As an exception, the base module may import specially marked code from business modules (e.g. `lib/businessModules/schoolEntry/shared`).
+
+See link:./sharing-code.adoc[Sharing Code] for more information about what and how to share between application parts.
+
+== Testing Strategy
+
+=== Unit Tests
+
+Unit Tests perform tests for isolated application units which have no complex dependencies, e.g. helper functions. By using boundary-condition testing, they verify the expected output for all valid input parameters, including corner cases.
+
+Unit Tests are written using https://vitest.dev/[Vitest] and colocated with the tested code:
+
+[source]
+----
+someFolder
+├── myUnit.ts
+└── myUnit.test.ts
+----
+
+=== Component Tests
+
+The behavior of shared components should not be tested separately in each module.
+Instead, e2e tests that focus on individual components are preferred.
+For example, the Table component is extensively tested in a component test and does not need to be tested in every business module.
+
+== Environment Variables
+
+We use https://env.t3.gg/[@t3-oss/env-nextjs] to validate all environment variables at build-time. This ensures that no variables are missing at runtime and enables type-safe access to all defined variables.
+
+Environment variables a separated by their scope:
+[cols="1,1,1"]
+|===
+| *Scope* | *Schema Location*   | *Description*
+| Server  | `src/env/server.js` | Accessible to the Node.js server only. Secrets can be safely used in this scope.
+| Client  | `src/env/client.js` | Accessible to the Browser only. Variables are inlined at build-time and must not contain any secrets.
+|===
+
+=== Adding an environment variable
+
+1. Add the new variable to the server or client schema
+2. Add a default value for local development to `.env`
+
+== Learn More
+
+This is a https://nextjs.org/[Next.js] project bootstrapped with https://github.com/vercel/next.js/tree/canary/packages/create-next-app[`create-next-app`].
+
+== Advanced Topics
+
+- link:queries-and-mutations.adoc[Queries and Mutations]
+- link:sharing-code.adoc[Sharing Code]
+- link:e2e-tests.adoc[E2E Tests]
+- link:dependency-management.adoc[Dependency Management]
+- link:../reverse-proxy/README.md[Reverse Proxy]
+- link:content-security-policy-header.adoc[Content Security Policy (CSP) Header]
+- link:forms.adoc[Forms]

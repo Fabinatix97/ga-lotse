@@ -1,0 +1,14 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+packages:
+  - "employee-portal"
+  - "employee-portal-api"
+  - "citizen-portal"
+  - "citizen-portal-api"
+  - "admin-portal"
+  - "admin-portal-api"
+  - "e2e"
+  - "e2e-api"
+  - "lib-portal"
+  - "performance-test"

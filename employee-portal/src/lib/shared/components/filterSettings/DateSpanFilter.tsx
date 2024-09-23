@@ -1,0 +1,109 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { FormControl, FormLabel, Input, Stack } from "@mui/joy";
+import { format, parse, startOfDay, subDays } from "date-fns";
+import { isEmpty } from "remeda";
+
+import {
+  DateSpanFilterDefinition,
+  DateSpanFilterValue,
+} from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
+
+export interface DateSpanFilterProps {
+  definition: DateSpanFilterDefinition;
+  value: DateSpanFilterValue | null;
+  onChange: (value: DateSpanFilterValue | null) => void;
+}
+
+export function DateSpanFilter(props: DateSpanFilterProps) {
+  function handleStartDateChange(optionValue: string) {
+    props.onChange(
+      !isEmpty(optionValue) || !isEmpty(props.value?.endDate)
+        ? {
+            type: "DateSpan",
+            key: props.definition.key,
+            startDate: isEmpty(optionValue) ? undefined : optionValue,
+            endDate: props.value?.endDate,
+          }
+        : null,
+    );
+  }
+
+  function handleEndDateChange(optionValue: string) {
+    props.onChange(
+      !isEmpty(optionValue) || !isEmpty(props.value?.startDate)
+        ? {
+            type: "DateSpan",
+            key: props.definition.key,
+            startDate: props.value?.startDate,
+            endDate: isEmpty(optionValue) ? undefined : optionValue,
+          }
+        : null,
+    );
+  }
+
+  return (
+    <Stack gap={2} sx={{ width: "100%" }}>
+      <FormControl>
+        <FormLabel>Start</FormLabel>
+        <Input
+          type="date"
+          value={props.value?.startDate ?? ""}
+          onChange={(event) => handleStartDateChange(event.target.value)}
+          slotProps={{
+            input: { max: props.value?.endDate ?? maxInput(props.definition) },
+          }}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Ende</FormLabel>
+        <Input
+          type="date"
+          value={props.value?.endDate ?? ""}
+          onChange={(event) => handleEndDateChange(event.target.value)}
+          slotProps={{
+            input: {
+              min: props.value?.startDate,
+              max: maxInput(props.definition),
+            },
+          }}
+        />
+      </FormControl>
+    </Stack>
+  );
+}
+
+function maxInput(definition: DateSpanFilterDefinition) {
+  return definition.maxInputPast
+    ? format(subDays(new Date(), 1), "yyyy-MM-dd")
+    : undefined;
+}
+
+export function validateDateSpan(
+  { maxInputPast }: DateSpanFilterDefinition,
+  { startDate, endDate }: DateSpanFilterValue,
+) {
+  if (startDate === undefined && endDate === undefined) {
+    return undefined;
+  }
+
+  if (startDate === undefined || endDate === undefined) {
+    return "Die Zeitspanne wurde unvollständig angegeben.";
+  }
+
+  const parsedStartDate = parse(startDate, "yyyy-MM-dd", new Date());
+  const parsedEndDate = parse(endDate, "yyyy-MM-dd", new Date());
+
+  if (parsedEndDate < parsedStartDate) {
+    return "Das Enddatum darf nicht vor dem Startdatum liegen.";
+  }
+
+  if (maxInputPast && parsedEndDate >= startOfDay(new Date())) {
+    return "Die Zeitspanne muss in der Vergangenheit liegen.";
+  }
+
+  return undefined;
+}

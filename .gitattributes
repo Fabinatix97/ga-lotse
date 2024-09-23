@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# disable autocrlf for generated .bat files
+*.bat binary

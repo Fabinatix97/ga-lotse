@@ -1,0 +1,62 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720696258995-38">
+    <ext:createPostgresEnumType name="countrycode" values="AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW"/>
+    <ext:createPostgresEnumType name="calendartype" values="GLOBAL, RESOURCE, USER"/>
+    <ext:createPostgresEnumType name="availabilitytype" values="BUSY, FREE"/>
+    <ext:createPostgresEnumType name="eventtype" values="BUSINESS_CASE, HOLIDAY, SERVICE, UNKNOWN, VACATION"/>
+    <ext:createPostgresEnumType name="dataorigin" values="EDIT, EXTERNAL, IMPORT, MANUAL"/>
+    <ext:createPostgresEnumType name="gender" values="DIVERSE, FEMALE, MALE, NOT_SPECIFIED"/>
+    <ext:createPostgresEnumType name="salutation" values="FEMALE, MALE, NEUTRAL, NOT_SPECIFIED"/>
+    <ext:createPostgresEnumType name="institutioncontactcategory" values="DOCTORS_OFFICE, HEALTH_DEPARTMENT, LABORATORY, MISC, SCHOOL"/>
+    <ext:createPostgresEnumType name="gdprprocedureresult" values="SUCCESS"/>
+    <ext:createPostgresEnumType name="gdprprocedurestatus" values="ABORTED, CLOSED, DRAFT, IN_PROGRESS, OPEN"/>
+    <ext:createPostgresEnumType name="gdprproceduretype" values="RIGHT_OF_ACCESS, RIGHT_TO_ERASURE, RIGHT_TO_OBJECT"/>
+    <ext:createPostgresEnumType name="inventoryitemtype" values="MISC, PROTECTIVE_EQUIPMENT, TEST_KIT, VACCINE"/>
+    <ext:createPostgresEnumType name="inventorybookingstatus" values="ACTIVE, CANCELLED"/>
+    <ext:createPostgresEnumType name="inventorybookingtype" values="BOOKING, CORRECTION, DELIVERY"/>
+    <ext:createPostgresEnumType name="resourcetype" values="BICYCLE, CAMERA, CAR, LAPTOP, MEASURING_DEVICE, MEASURING_KIT, MISC, ROOM, TABLET"/>
+    <modifyDataType columnName="availability" newDataType="availabilitytype" tableName="calendar_event"/>
+    <modifyDataType columnName="category" newDataType="institutioncontactcategory" tableName="contact"/>
+    <modifyDataType columnName="category" newDataType="institutioncontactcategory" tableName="contact_aud"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="domestic_contact_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="domestic_contact_address_aud"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="domestic_facility_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="domestic_person_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="gdpr_domestic_facility_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="gdpr_domestic_person_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="gdpr_postbox_facility_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="gdpr_postbox_person_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="postbox_contact_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="postbox_contact_address_aud"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="postbox_facility_address"/>
+    <modifyDataType columnName="country" newDataType="countrycode" tableName="postbox_person_address"/>
+    <modifyDataType columnName="country_of_birth" newDataType="countrycode" tableName="gdpr_person"/>
+    <modifyDataType columnName="country_of_birth" newDataType="countrycode" tableName="person"/>
+    <modifyDataType columnName="data_origin" newDataType="dataorigin" tableName="facility"/>
+    <modifyDataType columnName="data_origin" newDataType="dataorigin" tableName="person"/>
+    <modifyDataType columnName="event_type" newDataType="eventtype" tableName="calendar_event"/>
+    <modifyDataType columnName="gender" newDataType="gender" tableName="contact"/>
+    <modifyDataType columnName="gender" newDataType="gender" tableName="contact_aud"/>
+    <modifyDataType columnName="gender" newDataType="gender" tableName="facility_contact_person"/>
+    <modifyDataType columnName="gender" newDataType="gender" tableName="person"/>
+    <modifyDataType columnName="result" newDataType="gdprprocedureresult" tableName="gdpr_procedure"/>
+    <modifyDataType columnName="salutation" newDataType="salutation" tableName="contact"/>
+    <modifyDataType columnName="salutation" newDataType="salutation" tableName="contact_aud"/>
+    <modifyDataType columnName="salutation" newDataType="salutation" tableName="facility_contact_person"/>
+    <modifyDataType columnName="salutation" newDataType="salutation" tableName="gdpr_person"/>
+    <modifyDataType columnName="salutation" newDataType="salutation" tableName="person"/>
+    <modifyDataType columnName="status" newDataType="gdprprocedurestatus" tableName="gdpr_procedure"/>
+    <modifyDataType columnName="status" newDataType="inventorybookingstatus" tableName="inventory_item_booking"/>
+    <modifyDataType columnName="type" newDataType="calendartype" tableName="calendar"/>
+    <modifyDataType columnName="type" newDataType="gdprproceduretype" tableName="gdpr_procedure"/>
+    <modifyDataType columnName="type" newDataType="inventoryitemtype" tableName="inventory_item"/>
+    <modifyDataType columnName="type" newDataType="inventorybookingtype" tableName="inventory_item_booking"/>
+    <modifyDataType columnName="type" newDataType="resourcetype" tableName="resource"/>
+  </changeSet>
+</databaseChangeLog>

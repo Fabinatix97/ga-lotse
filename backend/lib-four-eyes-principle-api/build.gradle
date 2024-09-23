@@ -1,0 +1,13 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':lib-commons')
+    api project(':api-commons')
+    api project(':lib-security-config-urls')
+
+
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+}

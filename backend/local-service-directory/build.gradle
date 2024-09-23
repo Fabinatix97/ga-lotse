@@ -1,0 +1,38 @@
+plugins {
+    id 'eshg.service'
+}
+
+dependencies {
+    implementation project(':business-module-commons')
+    implementation project(':lib-lsd-api')
+    implementation project(':lib-service-directory-api')
+    implementation project(':lib-service-directory-admin-api')
+
+    implementation 'org.springframework.retry:spring-retry'
+
+    implementation libs.bundles.keycloak.client
+    compileOnly libs.bundles.keycloak.server
+    implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'
+
+    testImplementation project(':lib-service-directory-admin-api')
+    testImplementation testFixtures(project(':lib-lsd-api'))
+    testImplementation testFixtures(project(':lib-service-directory-admin-api'))
+    testImplementation testFixtures(project(':business-module-commons'))
+}
+
+dockerCompose {
+    startedServices = ['local-service-directory']
+}
+
+tasks.named("test").configure {
+    dependsOn ':service-directory:buildDockerImage'
+    dependsOn ':keycloak:composeBuild'
+}
+
+test {
+    dependsOn ':keycloak:composeBuild'
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-local-service-directory') ?: "unspecified"
+}

@@ -1,0 +1,18 @@
+# Copyright 2024 SCOOP Software GmbH, cronn GmbH
+# SPDX-License-Identifier: Apache-2.0
+
+services:
+  postgres:
+    container_name: servicedirectory_db
+    image: 'postgres:16.3@sha256:d0f363f8366fbc3f52d172c6e76bc27151c3d643b870e1062b4e8bfe65baf609'
+    ports:
+      - 5437:5432
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: servicedirectory
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+volumes:
+  pgdata:

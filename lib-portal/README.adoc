@@ -1,0 +1,5 @@
+= Lib Portal
+:sectnums:
+:project-name: Lib Portal
+
+The {project-name} serves as shared library for components that can be used in all frontend portal projects. If a component from one sub-module is found to be needed in another sub-module, it can be transferred into the {project-name}. Changes to components in here should be done with much caution since they can cause regression issues.

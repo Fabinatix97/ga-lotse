@@ -1,0 +1,154 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720700861320-109">
+    <ext:createPostgresEnumType name="doctorlettervalue" values="CONFIRMED, NOT_CONFIRMED, NO_REPLY, PARTIALLY_CONFIRMED"/>
+    <ext:createPostgresEnumType name="examinationresultvalue" values="DOCTOR_LETTER, KNOWN, OK, UNKNOWN"/>
+    <ext:createPostgresEnumType name="percentagevalue" values="PERCENTAGE_100, PERCENTAGE_15, PERCENTAGE_30, PERCENTAGE_50, PERCENTAGE_70, PERCENTAGE_LT_15"/>
+    <ext:createPostgresEnumType name="decibelvalue" values="DB_20, DB_30, DB_40, DB_50, DB_60"/>
+    <ext:createPostgresEnumType name="checkupsvalue" values="COMPLETE, INCOMPLETE, UNKNOWN"/>
+    <ext:createPostgresEnumType name="countrycode" values="AFG, ALB, ALG, AND, ANG, ARA, ARG, ARM, ASE, ASN, AUB, AUS, BAD, BAH, BAL, BAM, BAR, BEL, BEN, BEZ, BHU, BOL, BOS, BOT, BRA, BRI, BRU, BUF, BUL, BUR, CAN, CEY, CHA, CHI, CHN, CHV, CIV, COO, COR, CZN, DAN, DEU, DOA, DOM, DSC, ECU, EGY, ELS, ERY, EST, ETH, FID, FIN, FRA, GAB, GAM, GEO, GHA, GNQ, GOL, GRE, GRI, GUA, GUI, GUS, GUY, HAI, HEL, HND, IND, INS, IRA, IRL, IRQ, ISL, ISR, ITA, JAM, JAP, JEM, JOR, JUG, KAM, KAN, KAP, KAS, KAT, KEN, KIB, KIR, KOL, KOM, KON, KOR, KOS, KRO, KUB, KUW, LAO, LEB, LET, LIB, LIE, LIT, LSO, LUX, LYB, MAD, MAI, MAL, MAM, MAR, MAS, MAU, MAW, MAY, MAZ, MEX, MHL, MIK, MLT, MNE, MOG, MOL, MON, MOS, MYA, NAM, NAU, NED, NEP, NEU, NIA, NIC, NIG, NOK, NOR, OMA, OST, PAK, PAL, PAN, PAP, PAR, PAU, PER, PHI, POL, POR, RUA, RUM, RUS, SAA, SAB, SAL, SAM, SAN, SAR, SAU, SCA, SCO, SEN, SER, SEY, SIL, SIM, SIN, SKN, SLO, SOM, SON, SPA, STA, STK, STL, STP, SUD, SUK, SUR, SVE, SWA, SYR, TAD, TAI, TAN, THA, TIB, TIM, TKM, TOG, TRT, TUN, TUR, TUV, UGA, UKR, UNG, URU, USA, USB, UUU, VAE, VAN, VAT, VCT, VEN, VIE, WRU, ZYP"/>
+    <ext:createPostgresEnumType name="daycarevalue" values="MONTH_18, MONTH_18_TO_YEARS_3, NO, YEARS_3"/>
+    <ext:createPostgresEnumType name="disabilitytype" values="EMOTIONAL, MENTAL, MULTIPLE, PHYSICAL"/>
+    <ext:createPostgresEnumType name="schoolfeedback" values="NEGATIVE, POSITIVE, UNKNOWN"/>
+    <ext:createPostgresEnumType name="schoolrecommendation" values="ADVICE_CENTER, BACK_ENTRY_LEVEL, BACK_REGULAR, CONCERNS_EARLY_ENROLMENT, NO"/>
+    <ext:createPostgresEnumType name="facilitytype" values="DAYCARE, HOSPITAL, INSPECTION, MEDICAL_PRACTICE, OTHER, REFUGEE_ACCOMMODATION, SCHOOL"/>
+    <ext:createPostgresEnumType name="persontype" values="PARENT, PATIENT"/>
+    <ext:createPostgresEnumType name="archivingrelevance" values="DEFAULT, IRRELEVANT, RELEVANT"/>
+    <ext:createPostgresEnumType name="procedureresult" values="RESULT_1, RESULT_2"/>
+    <ext:createPostgresEnumType name="procedurestatus" values="ABORTED, CLOSED, DRAFT, IN_PROGRESS, OPEN"/>
+    <ext:createPostgresEnumType name="proceduretype" values="CAN_CHILD, DRAFT_CITIZEN_OFFICE_IMPORT, DRAFT_SCHOOL_IMPORT, ENTRY_LEVEL, INSPECTION, MEASLES_PROTECTION, REGULAR_EXAMINATION, TM_VACCINATION_CONSULTATION, TYPE_2"/>
+    <ext:createPostgresEnumType name="taskstatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="tasktype" values="BOOK_APPOINTMENT, INSPECTION_EXECUTION, INSPECTION_PLANNING, INSPECTION_REPORT, MEASLES_PROTECTION, PERFORM_SCHOOL_ENTRY_EXAMINATION, TRAVEL_MEDICINE, TYPE_2"/>
+    <ext:createPostgresEnumType name="sopessexaminationresultvalue" values="BORDERLINE, DOCTOR_LETTER, KNOWN, OK, UNKNOWN"/>
+    <ext:createPostgresEnumType name="familylanguagevalue" values="AMHARIAN, ARABIC, ARAMEAN, BERBERIAN, BULGARIAN, ENGLISH, FARSI_DARI, FRENCH, GERMAN, GREEK, ITALIAN, KURDISH, OTHER_AFRICAN_LANGUAGES, OTHER_ASIAN_LANGUAGES, OTHER_EUROPEAN_LANGUAGES, OTHER_LANGUAGES, PASHTU, POLISH, PORTUGUESE, ROMAN, RUSSIAN, SERBO_CROATIAN, SPANISH, TIGRINIA, TURKISH, UNKNOWN, URDU"/>
+    <ext:createPostgresEnumType name="articulationvalue" values="CONSPICUOUS, INCONSPICUOUS, UNKNOWN"/>
+    <ext:createPostgresEnumType name="germanknowledgevalue" values="BAD, FAULTLESS, FLUID_WITH_MAJOR_ERRORS, FLUID_WITH_MINOR_ERRORS, NO_GERMAN, UNKNOWN"/>
+    <ext:createPostgresEnumType name="languageknowledgevalue" values="FAULTLESS, FAULTY, RUDIMENTARY, UNKNOWN"/>
+    <ext:createPostgresEnumType name="handednessvalue" values="LEFT, RIGHT, UNCERTAIN, UNKNOWN"/>
+    <ext:createPostgresEnumType name="primarylanguagevalue" values="GERMAN, OTHER, UNKNOWN"/>
+    <ext:createPostgresEnumType name="contacttype" values="FACILITY, PRIVATE_PERSON"/>
+    <ext:createPostgresEnumType name="title" values="DR, PROF, PROF_DR"/>
+    <ext:createPostgresEnumType name="filetype" values="EML, JPEG, PDF, PNG"/>
+    <ext:createPostgresEnumType name="decision" values="DENIED, GRANTED"/>
+    <ext:createPostgresEnumType name="inboxprocedurestatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="inboxprogressentrytype" values="EMAIL, LETTER, PHONE_CALL"/>
+    <ext:createPostgresEnumType name="keydocumenttype" values="INVOICE, REPORT"/>
+    <ext:createPostgresEnumType name="manualprogressentrytype" values="DOCUMENT, EMAIL, IMAGE, LETTER, NOTE, PHONE_CALL"/>
+    <ext:createPostgresEnumType name="triggertype" values="SYSTEM_AUTOMATIC, USER"/>
+    <ext:createPostgresEnumType name="taskdueatremindernotificationtype" values="ONE_DAY_BEFORE_DUE_AT, THREE_DAYS_BEFORE_DUE_AT"/>
+    <ext:createPostgresEnumType name="appointmenttype" values="CAN_CHILD, CONSULTATION, ENTRY_LEVEL, PROOF_SUBMISSION, REGULAR_EXAMINATION, SPECIAL_NEEDS, VACCINATION"/>
+    <modifyDataType columnName="abdomen_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="abdomen_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="all_check_ups" newDataType="checkupsvalue" tableName="anamnesis"/>
+    <modifyDataType columnName="appointment_type" newDataType="appointmenttype" tableName="appointment_type_configs"/>
+    <modifyDataType columnName="archiving_relevance" newDataType="archivingrelevance" tableName="school_entry_procedure"/>
+    <modifyDataType columnName="auditive_processing_result" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="contact_type" newDataType="contacttype" tableName="contact_details"/>
+    <modifyDataType columnName="country_of_birth_child" newDataType="countrycode" tableName="anamnesis"/>
+    <modifyDataType columnName="country_of_birth_father" newDataType="countrycode" tableName="anamnesis"/>
+    <modifyDataType columnName="country_of_birth_mother" newDataType="countrycode" tableName="anamnesis"/>
+    <modifyDataType columnName="daycare" newDataType="daycarevalue" tableName="anamnesis"/>
+    <modifyDataType columnName="decision" newDataType="decision" tableName="approval_request"/>
+    <modifyDataType columnName="disability_type" newDataType="disabilitytype" tableName="development_screening"/>
+    <modifyDataType columnName="doctor_letter_auditive_processing" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="doctor_letter_fine_motor_skills" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="doctor_letter_gross_motor_skills" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="doctor_letter_knowledge_thinking" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="doctor_letter_psychological_behavior" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="doctor_letter_speech" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="doctor_letter_visual_perception" newDataType="doctorlettervalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="ear_nose_throat_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="ear_nose_throat_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="examination_result_doctor_letter" newDataType="doctorlettervalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="examination_result_value" newDataType="examinationresultvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="eye_examination_doctor_letter" newDataType="doctorlettervalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="eye_examination_value" newDataType="examinationresultvalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="facility_type" newDataType="facilitytype" tableName="facility"/>
+    <modifyDataType columnName="family_language" newDataType="familylanguagevalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="file_type" newDataType="filetype" tableName="file"/>
+    <modifyDataType columnName="fine_motor_skills" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="formation_ch_points" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="formation_sch_points" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="formations_tr_dr_kr_gr_points" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="german_knowledge_child" newDataType="germanknowledgevalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="german_knowledge_primary_carer" newDataType="languageknowledgevalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="gross_motor_skills" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="handedness_value" newDataType="handednessvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="inbox_procedure_status" newDataType="inboxprocedurestatus" tableName="inbox_procedure"/>
+    <modifyDataType columnName="inbox_progress_entry_type" newDataType="inboxprogressentrytype" tableName="inbox_progress_entry"/>
+    <modifyDataType columnName="inbox_progress_entry_type" newDataType="inboxprogressentrytype" tableName="processed_inbox_progress_entry"/>
+    <modifyDataType columnName="ishihara_examination_doctor_letter" newDataType="doctorlettervalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="ishihara_examination_value" newDataType="examinationresultvalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="key_document_type" newDataType="keydocumenttype" tableName="manual_progress_entry"/>
+    <modifyDataType columnName="key_document_type" newDataType="keydocumenttype" tableName="manual_progress_entry_aud"/>
+    <modifyDataType columnName="knowledge_thinking_result" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="lang_examination_doctor_letter" newDataType="doctorlettervalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="lang_examination_value" newDataType="examinationresultvalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="left_ear_hz1000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_ear_hz2000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_ear_hz250" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_ear_hz4000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_ear_hz500" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_ear_hz6000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_ear_hz8000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="left_eye_distance" newDataType="percentagevalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="left_eye_distance_plus150dpt" newDataType="percentagevalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="left_eye_distance_with_glasses" newDataType="percentagevalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="letterbpoints" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="letterfand_formation_pf_points" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="letterrpoints" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="lettersgandkpoints" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="letterslandnpoints" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="letterssandzpoints" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="letterstanddpoints" newDataType="articulationvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="manual_progress_entry_type" newDataType="manualprogressentrytype" tableName="manual_progress_entry"/>
+    <modifyDataType columnName="manual_progress_entry_type" newDataType="manualprogressentrytype" tableName="manual_progress_entry_aud"/>
+    <modifyDataType columnName="metabolism_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="metabolism_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="musculature_skeleton_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="musculature_skeleton_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="nationality_child" newDataType="countrycode" tableName="anamnesis"/>
+    <modifyDataType columnName="nationality_father" newDataType="countrycode" tableName="anamnesis"/>
+    <modifyDataType columnName="nationality_mother" newDataType="countrycode" tableName="anamnesis"/>
+    <modifyDataType columnName="neurology_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="neurology_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="nutritional_condition_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="nutritional_condition_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="person_type" newDataType="persontype" tableName="person"/>
+    <modifyDataType columnName="primary_language" newDataType="primarylanguagevalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="procedure_result" newDataType="procedureresult" tableName="school_entry_procedure"/>
+    <modifyDataType columnName="procedure_status" newDataType="procedurestatus" tableName="school_entry_procedure"/>
+    <modifyDataType columnName="procedure_type" newDataType="proceduretype" tableName="inbox_procedure"/>
+    <modifyDataType columnName="procedure_type" newDataType="proceduretype" tableName="school_entry_procedure"/>
+    <modifyDataType columnName="psychological_behavior_result" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="reminder_type" newDataType="taskdueatremindernotificationtype" tableName="task_due_at_reminder_notification"/>
+    <modifyDataType columnName="respiratory_cardiovascular_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="respiratory_cardiovascular_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="right_ear_hz1000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_ear_hz2000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_ear_hz250" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_ear_hz4000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_ear_hz500" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_ear_hz6000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_ear_hz8000" newDataType="decibelvalue" tableName="hearing_test_result"/>
+    <modifyDataType columnName="right_eye_distance" newDataType="percentagevalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="right_eye_distance_plus150dpt" newDataType="percentagevalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="right_eye_distance_with_glasses" newDataType="percentagevalue" tableName="eye_examination_result"/>
+    <modifyDataType columnName="school_feedback" newDataType="schoolfeedback" tableName="development_screening"/>
+    <modifyDataType columnName="school_recommendation" newDataType="schoolrecommendation" tableName="development_screening"/>
+    <modifyDataType columnName="skin_result_doctor_letter" newDataType="doctorlettervalue" tableName="development_screening"/>
+    <modifyDataType columnName="skin_result_value" newDataType="examinationresultvalue" tableName="development_screening"/>
+    <modifyDataType columnName="speech_result" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+    <modifyDataType columnName="task_status" newDataType="taskstatus" tableName="school_entry_task"/>
+    <modifyDataType columnName="task_type" newDataType="tasktype" tableName="school_entry_task"/>
+    <modifyDataType columnName="title" newDataType="title" tableName="contact_details"/>
+    <modifyDataType columnName="trigger_type" newDataType="triggertype" tableName="system_progress_entry"/>
+    <modifyDataType columnName="type" newDataType="appointmenttype" tableName="appointment_block_group"/>
+    <modifyDataType columnName="visual_perception_result" newDataType="sopessexaminationresultvalue" tableName="sopess_examination_result"/>
+  </changeSet>
+</databaseChangeLog>

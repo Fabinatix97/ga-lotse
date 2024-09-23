@@ -1,0 +1,147 @@
+= E2E Tests
+:sectnums:
+
+e2e tests depend on docker containers of the required backend modules. At least the containers necessary for the actions performed in the test must be running.
+A full local setup / run of the test suite can be achieved like this:
+
+[source,shell]
+----
+./gradlew startLocal
+# on different console
+./gradlew :e2e:test
+----
+
+If you have problems during the `composeUp` tasks of the `backend`, you can try this workaround instead:
+
+[source,shell]
+----
+cd backend
+./gradlew buildDockerImage
+docker compose up -d --wait
+cd ..
+./gradlew run
+# on different console
+./gradlew :e2e:test
+----
+
+The `startLocal` task will start the backend modules based on the currently checkout submodule in `backend` and start the frontend based on your current code.
+The task will keep running as it starts the `:frontend:run` tasks which starts the next-server application to serve the frontend.
+
+If you like to have the fronted dockerized as well you can instead use the `startLocalDocker` task which will call `composeUp` to build a docker container
+also based on your local code. Please note: This only works on Linux as this uses the docker host network feature.
+
+Refer to the link:./gradle.adoc#e2e-tasks[e2e tasks] for an overview of the common tasks.
+
+== Multi-instance e2e test
+=== Start setup
+
+[source,shell]
+----
+cd e2e
+./gradlew multiInstanceUp
+----
+
+This starts the central services (maildev, service-directory and central-repository) together with some GA-Lotse instances.
+
+The exact start setup can be configured via a link:../e2e/multi-instance/config.json[JSON file]. The default will start 2 "Gesundheitsamt"-like instances with all business modules and one "Landesamt"-like instance with selected modules.
+
+You can pass a different config file as `multiInstanceConfig` project parameter.
+
+To reach the instances from your browser you either need a browser running as docker container inside the docker network or configure your browser to use the proxy server listening at localhost:3128.
+
+You must explicitly type http://employee-portal... otherwise (at least firefox) will present you a web search because it does not know the .docker TLD
+
+=== Access test instances method 1: Dockerized Firefox
+
+[source,shell]
+----
+docker run -d \
+--name=firefox \
+--network eshg-default \
+-p 5800:5800 \
+jlesage/firefox
+----
+
+Mount a `/config` volume to persist history etc between runs (`-v $HOME/dockerized-firefox:/config:rw`)
+
+=== Access test instances method 2: Proxy
+
+Together with the central service an HTTP proxy server (3proxy) is started. It listens on localhost:3128. If you configure your browser to route `*.docker` domains through this proxy you can access all these docker containers directly.
+
+One way is to configure a \*.pac file for your browser (or extend it if you already use one). Below is a snippet how it might look. Another possibility is to use a browser extension like FoxyProxy and configure a corresponding rule.
+
+[source,js]
+----
+function FindProxyForURL(url, host) {
+  var useDockerProxy = "PROXY localhost:3128";
+
+  if (shExpMatch(host, "*.docker")) {
+    return useDockerProxy;
+  }
+
+  return "DIRECT";
+}
+----
+
+=== URLs
+
+[cols="1,1,1"]
+|===
+| *instance*       | *service*            | *URL*                                   
+.9+| central    .2+| service-directory    | http://service-directory.docker:8080        
+                                          | or http://localhost:8083                    
+                .2+| admin-portal         | http://admin-portal.docker:4002             
+                                          | or http://localhost:4002                    
+                .2+| central-repository   | http://central-repository.docker:8080       
+                                          | or http://localhost:8091                    
+                .2+| maildev              | http://maildev.docker:1080                  
+                                          | or http://localhost:1080                    
+                   | proxy                | http://localhost:3128                       
+.8+| eshg1         | keycloak             | http://keycloak.eshg1.docker:8080           
+                   | base                 | http://base.eshg1.docker:8080               
+                   | employee-portal      | http://employee-portal.eshg1.docker:3000    
+                   | citizen-portal       | http://citizen-portal.eshg1.docker:3001     
+                .4+| business module      | http://<module>.eshg1.docker:8080          
+                                          | http://inspection.eshg1.docker:8080         
+                                          | http://school-entry.eshg1.docker:8080       
+                                          | ...                                         
+.8+| eshg2         | keycloak             | http://keycloak.eshg2.docker:8080           
+                   | base                 | http://base.eshg2.docker:8080               
+                   | employee-portal      | http://employee-portal.eshg2.docker:3000    
+                   | citizen-portal       | http://citizen-portal.eshg2.docker:3001     
+                .4+| business module      | http://<module>.eshg2.docker:8080          
+                                          | http://inspection.eshg2.docker:8080         
+                                          | http://school-entry.eshg2.docker:8080       
+                                          | ...                                         
+.3+| eshg3-la      | keycloak             | http://keycloak.eshg3-la.docker:8080        
+                   | base                 | http://base.eshg3-la.docker:8080            
+                   | employee-portal      | http://employee-portal.eshg3-la.docker:3000 
+|===
+
+
+== Run tests
+
+=== Dockerized playwright
+
+[cols="1,1"]
+|===
+| *task*                                                                            *description*                   |
+| `./gradlew :e2e:runDockerizedPlaywright -PmultiInstance=true`                   | run all tests                 
+| `./gradlew :e2e:runDockerizedPlaywright -PmultiInstance=true -Pselector=@multi` | runs only the "multi" project 
+|===
+
+Reports can be viewed "normally" via `./gradlew :e2e:testReport` as usual.
+
+
+=== Through proxy
+
+The normal `e2e:test` or `e2e:testUi` tasks can be used to some extent as well
+if you supply the `-Pproxy` gradle project property to the task. \
+Please note: Currently, not all existing tests work with this setup.
+
+== Stop instances
+
+[source,shell]
+----
+ ./gradlew multiInstanceDown
+----

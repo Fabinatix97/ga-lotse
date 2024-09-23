@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720525881950-1">
+    <ext:createPostgresEnumType name="calculation" values="MEAN, SUM"/>
+    <createTable tableName="choropleth_map_configuration">
+      <column name="calculation" type="calculation"/>
+      <column name="color_scheme" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_choropleth_map_configuration"/>
+      </column>
+      <column name="geo_json" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="primary_attribute_selection_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="secondary_attribute_selection_id" type="BIGINT"/>
+    </createTable>
+    <addUniqueConstraint columnNames="primary_attribute_selection_id" constraintName="choropleth_map_configuration_primary_attribute_selection_id_key" tableName="choropleth_map_configuration"/>
+    <addUniqueConstraint columnNames="secondary_attribute_selection_id" constraintName="choropleth_map_configuration_secondary_attribute_selection__key" tableName="choropleth_map_configuration"/>
+
+    <addForeignKeyConstraint baseColumnNames="primary_attribute_selection_id" baseTableName="choropleth_map_configuration" constraintName="fk_choropleth_map_configuration_primary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="secondary_attribute_selection_id" baseTableName="choropleth_map_configuration" constraintName="fk_choropleth_map_configuration_secondary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="choropleth_map_configuration" constraintName="fk_choropleth_map_configuration_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

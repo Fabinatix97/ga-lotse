@@ -1,0 +1,45 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { HistoryChange } from "@/lib/baseModule/components/contacts/history/HistoryChange";
+import { HistoryDetailsSheet } from "@/lib/baseModule/components/contacts/history/HistoryDetailsSheet";
+import { Contact } from "@/lib/baseModule/components/contacts/types";
+
+export function ContactChangeDetails({ contact }: { contact: Contact }) {
+  return (
+    <HistoryDetailsSheet>
+      {contact.type === "PersonContact" && (
+        <>
+          <HistoryChange label="Vorname" value={contact.firstName} />
+          <HistoryChange label="Name" value={contact.name} />
+          <HistoryChange
+            label="Chat Benutzername"
+            value={contact.externalChatUsername}
+          />
+        </>
+      )}
+      {contact.type === "InstitutionContact" && (
+        <>
+          <HistoryChange label="Name" value={contact.name} />
+          <HistoryChange label="Objekttyp" value={contact.category} />
+        </>
+      )}
+      {contact.emailAddresses?.map((emailAddress, index) => (
+        <HistoryChange
+          key={`${emailAddress}-${index}`}
+          label="E-Mail-Adresse"
+          value={emailAddress}
+        />
+      ))}
+      {contact.phoneNumbers?.map((phoneNumber, index) => (
+        <HistoryChange
+          key={`${phoneNumber}-${index}`}
+          label="Telefonnummer"
+          value={phoneNumber}
+        />
+      ))}
+    </HistoryDetailsSheet>
+  );
+}

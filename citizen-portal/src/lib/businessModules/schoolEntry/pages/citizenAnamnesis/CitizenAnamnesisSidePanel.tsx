@@ -1,0 +1,70 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiCitizenChild } from "@eshg/citizen-portal-api/schoolEntry";
+import { useMultiStepForm } from "@eshg/lib-portal/components/form/MultiStepForm";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { CakeOutlined, PersonOutlined } from "@mui/icons-material";
+import { Button, Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
+
+import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
+import {
+  InfoSection,
+  InfoSectionTitle,
+} from "@/lib/shared/components/infoSection";
+import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+
+export interface CitizenAnamnesisSidePanelProps {
+  child: ApiCitizenChild;
+}
+
+export function CitizenAnamnesisSidePanel({
+  child,
+}: CitizenAnamnesisSidePanelProps) {
+  const { t } = useTranslation(["schoolEntry/anamnesis"]);
+  const name = formatPersonName(child);
+  const dateOfBirth = formatDate(child.dateOfBirth);
+  const { handleSubmit } = useFormikContext();
+  const { currentStep, totalSteps, goForward, goBack } = useMultiStepForm();
+  const citizenRoutes = useCitizenRoutes();
+  return (
+    <ContentSheet>
+      <InfoSection icon={<PersonOutlined />}>
+        <InfoSectionTitle>{t("result.name")}</InfoSectionTitle>
+        <Typography>{name}</Typography>
+      </InfoSection>
+      <InfoSection icon={<CakeOutlined />}>
+        <InfoSectionTitle>{t("result.birthday")}</InfoSectionTitle>
+        <Typography>{dateOfBirth}</Typography>
+      </InfoSection>
+      {currentStep < totalSteps && (
+        <Button onClick={goForward}>{t("result.continue")}</Button>
+      )}
+      {currentStep === 1 && (
+        <InternalLinkButton
+          variant="soft"
+          color="neutral"
+          href={citizenRoutes.appointment.index(undefined)}
+        >
+          {t("result.abort")}
+        </InternalLinkButton>
+      )}
+      {currentStep === totalSteps && (
+        <>
+          <Button onClick={() => handleSubmit()}>{t("result.submit")}</Button>
+        </>
+      )}
+      {currentStep > 1 && (
+        <Button variant="soft" color="neutral" onClick={goBack}>
+          {t("result.back")}
+        </Button>
+      )}
+    </ContentSheet>
+  );
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Benachrichtigung</title>
+</head>
+<body
+  style="font-family: Verdana, sans-serif; max-width:944px; color: #171A1C; font-size: 16px; line-height: 24px; font-weight: 400; box-sizing: border-box; background: white; padding: 24px; outline: 2px solid rgba(0,0,0,0.1); border-radius: 12px;">
+<div style="margin-bottom: 80px;">
+  <div style="margin-bottom: 40px;">
+    <h1
+      style="margin-bottom: 32px; color: #0B6BCB; font-size: 40px; font-weight:
+      600; line-height: 50px;">
+      GA-Lotse
+    </h1>
+    <p
+      style="font-size: 24px; font-weight: 600; line-height: 30px;">
+      Sie haben eine neue Benachrichtigung.
+    </p>
+  </div>
+  <div role="main">
+    <p style="margin-bottom: 16px; font-weight: 600">Hallo <span
+      th:text="${firstName} + ' ' + ${lastName}"></span>,
+    </p>
+    <p style="margin-bottom: 16px;">Sie haben eine neue ungelesene
+      Benachrichtigung:
+    </p>
+    <ul
+      style="font-weight: 600; padding-top: 0; padding-bottom: 0; margin-bottom:16px">
+      <li th:text="${notificationMessage}">[notification message]</li>
+    </ul>
+  </div>
+</div>
+<div role="contentinfo"
+     style="font-size: 16px; line-height: 24px; font-weight: 400; color: #636B74;">
+  <p style="margin-bottom: 32px">Bitte antworten Sie nicht auf diese E-Mail,
+    da diese automatisiert
+    versendet wurde.
+  </p>
+  <p style="padding: 0; margin: 0">Diese E-Mail wurde von GA-Lotse gesendet.</p>
+  <p style="padding: 0; margin: 0"
+     th:text="${departmentName} + ', ' + ${departmentStreet} + ' ' + ${departmentHouseNumber} + ', ' + ${departmentPostalCode} + ' ' + ${departmentCity}"></p>
+</div>
+</body>
+</html>

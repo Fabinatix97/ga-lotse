@@ -1,0 +1,11 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { useInboxProcedureApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { useCreateInboxProcedureTemplate } from "@/lib/shared/api/mutations/inboxProcedures";
+
+export function useCreateInboxProcedure() {
+  return useCreateInboxProcedureTemplate(useInboxProcedureApi);
+}

@@ -1,0 +1,27 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
+
+import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
+
+export interface AssigneeAutocompleteFieldProps {
+  name: string;
+  options: AutocompleteSelectOption[];
+}
+
+export function AssigneeAutocompleteField(
+  props: Readonly<AssigneeAutocompleteFieldProps>,
+) {
+  return (
+    <SingleAutocompleteField
+      name={props.name}
+      label="Bearbeiter:in zuweisen"
+      placeholder="auswählen"
+      options={props.options}
+      required="Bitte einen Bearbeiter auswählen"
+    />
+  );
+}

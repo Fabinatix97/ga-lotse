@@ -1,0 +1,88 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721291449919-1">
+    <createIndex indexName="idx_bar_group_data_bar_chart_data_id" tableName="bar_group_data">
+      <column name="bar_chart_data_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_cell_entry_table_column_id" tableName="cell_entry">
+      <column name="table_column_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_cell_entry_table_row_id" tableName="cell_entry">
+      <column name="table_row_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_data_attribute_data_source_id" tableName="data_attribute">
+      <column name="data_source_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_data_source_scheme_id" tableName="data_source">
+      <column name="scheme_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_diagram_evaluation_id" tableName="diagram">
+      <column name="evaluation_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_evaluation_aggregation_result_id" tableName="evaluation">
+      <column name="aggregation_result_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_histogram_group_data_histogram_chart_data_id" tableName="histogram_group_data">
+      <column name="histogram_chart_data_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_table_column_aggregation_result_id" tableName="table_column">
+      <column name="aggregation_result_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_table_row_aggregation_result_id" tableName="table_row">
+      <column name="aggregation_result_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_value_to_meaning_table_column_id" tableName="value_to_meaning">
+      <column name="table_column_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_key_to_value_choropleth_map_data_id" tableName="key_to_value">
+      <column name="choropleth_map_data_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_abstract_filter_parameter_diagram_id" tableName="abstract_filter_parameter">
+      <column name="diagram_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_histogram_bin_histogram_chart_configuration_id" tableName="histogram_bin">
+      <column name="histogram_chart_configuration_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_histogram_group_data_histogram_bin_id" tableName="histogram_group_data">
+      <column name="histogram_bin_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_key_to_count_bar_group_data_id" tableName="key_to_count">
+      <column name="bar_group_data_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_key_to_count_histogram_group_data_id" tableName="key_to_count">
+      <column name="histogram_group_data_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_key_to_count_pie_chart_data_id" tableName="key_to_count">
+      <column name="pie_chart_data_id"/>
+    </createIndex>
+
+    <createIndex indexName="idx_abstract_filter_parameter_filter_template_id" tableName="abstract_filter_parameter">
+      <column name="filter_template_id"/>
+    </createIndex>
+  </changeSet>
+
+</databaseChangeLog>

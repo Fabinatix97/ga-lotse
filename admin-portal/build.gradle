@@ -1,0 +1,15 @@
+plugins {
+  id 'next-app'
+  id 'reverse-proxy'
+}
+
+next {
+  port = '3002'
+  sonarProjectKey = project.findProperty("sonar-project-key-admin-portal")
+  apiProject = ':admin-portal-api'
+}
+
+reverseProxy {
+  serviceName = "admin-portal-reverse-proxy"
+  mainConfigFile = "admin-portal.conf"
+}

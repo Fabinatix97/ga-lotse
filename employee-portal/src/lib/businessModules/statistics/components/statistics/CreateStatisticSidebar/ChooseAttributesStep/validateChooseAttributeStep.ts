@@ -1,0 +1,23 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { FormikErrors } from "formik";
+
+import { ChooseAttributesStepFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseAttributesStep/chooseAttributesStepFormModel";
+
+export function validateChooseAttributeStep(
+  model: ChooseAttributesStepFormModel,
+):
+  | FormikErrors<{
+      selectedAttributes: string;
+    }>
+  | undefined {
+  if ((model.selectedAttributes?.length ?? 0) === 0) {
+    return {
+      selectedAttributes: "Bitte Attribut wählen.",
+    };
+  }
+  return undefined;
+}

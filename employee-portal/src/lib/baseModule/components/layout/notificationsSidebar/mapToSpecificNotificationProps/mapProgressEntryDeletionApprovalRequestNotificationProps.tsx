@@ -1,0 +1,42 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  ApiManualProgressEntryType,
+  ApiProgressEntryDeletionApprovalRequestNotification,
+  ApiUser,
+} from "@eshg/employee-portal-api/base";
+import { Typography } from "@mui/joy";
+
+import { ProgressEntryInternalLink } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/ProgressEntryInternalLink";
+import { SpecificNotificationProps } from "@/lib/baseModule/components/layout/notificationsSidebar/mapToSpecificNotificationProps/specificNotificationProps";
+import { manualProgressEntryTypeNames } from "@/lib/shared/components/procedures/progress-entries/constants";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
+
+export function mapProgressEntryDeletionApprovalRequestNotificationProps(
+  notification: ApiProgressEntryDeletionApprovalRequestNotification,
+  resolvedUsers: Record<string, ApiUser>,
+): SpecificNotificationProps {
+  const createdByUser = resolvedUsers[notification.createdBy]!;
+
+  const title = "Löschungsanfrage";
+  const content = (
+    <>
+      <Typography level="body-md">
+        {`${fullName(createdByUser)} beantragt die Löschung eines Verlaufsantrags: ${manualProgressEntryTypeNames[notification.manualProgressEntryType as ApiManualProgressEntryType]}`}
+      </Typography>
+      <ProgressEntryInternalLink
+        businessModule={notification.businessModule!}
+        procedureId={notification.procedureId}
+      />
+    </>
+  );
+
+  return {
+    title,
+    content,
+    severity: "warning",
+  };
+}

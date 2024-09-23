@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1726063178803-1">
+    <ext:createPostgresEnumType name="frequency" values="PER_HALF_YEAR, PER_MONTH, PER_THREE_MONTHS, PER_YEAR"/>
+    <ext:createPostgresEnumType name="reportingperiod" values="HALF_YEAR, MONTH, THREE_MONTHS, YEAR"/>
+    <ext:addPostgresEnumValues enumTypeName="aggregationresultstate" valuesToAdd="PLANNED"/>
+
+    <addColumn tableName="report_series">
+      <column name="start_month" type="int4"/>
+      <column name="frequency" type="frequency"/>
+      <column name="period" type="reportingperiod"/>
+    </addColumn>
+
+    <addColumn tableName="report">
+      <column name="execution_date" type="date"/>
+    </addColumn>
+
+    <addColumn tableName="report_series">
+      <column name="active" type="bool"/>
+    </addColumn>
+    <dropColumn columnName="state" tableName="report_series"/>
+  </changeSet>
+</databaseChangeLog>

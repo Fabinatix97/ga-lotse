@@ -1,0 +1,21 @@
+plugins {
+  id 'openapi-generator'
+}
+
+def backendDir = rootProject.layout.projectDirectory.dir('backend')
+
+openapiGenerator {
+  inputSpecs = [
+    'auditlog'          : backendDir.file('auditlog/openApi.yaml'),
+    'base'              : backendDir.file('base/openApi.yaml'),
+    'businessProcedures': backendDir.file('lib-procedures/openApi.yaml'),
+    'libEditor'         : backendDir.file('lib-editor/openApi.yaml'),
+    'inspection'        : backendDir.file('inspection/openApi.yaml'),
+    'measlesProtection' : backendDir.file('measles-protection/openApi.yaml'),
+    'schoolEntry'       : backendDir.file('school-entry/openApi.yaml'),
+    'travelMedicine'    : backendDir.file('travel-medicine/openApi.yaml'),
+    'statistics'        : backendDir.file('statistics/openApi.yaml'),
+    'chatManagement'    : backendDir.file('chat-management/openApi.yaml'),
+    'stiProtection'     : backendDir.file('sti-protection/openApi.yaml')
+  ]
+}

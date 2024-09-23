@@ -1,0 +1,82 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+  <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721372197887-1">
+    <createTable tableName="line_or_scatter_chart_data">
+      <column name="is_line_chart" type="bool">
+        <constraints nullable="false"/>
+      </column>
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_line_or_scatter_chart_data"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="line_or_scatter_chart_data" constraintName="fk_line_or_scatter_chart_data_diagram_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram_data" validate="true"/>
+
+    <createTable tableName="data_point_group">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_data_point_group"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="data_point_groups_order" type="INTEGER"/>
+      <column name="line_or_scatter_chart_data_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="key" type="text"/>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="line_or_scatter_chart_data_id" baseTableName="data_point_group" constraintName="fk_data_point_group_line_or_scatter_chart_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="line_or_scatter_chart_data" validate="true"/>
+    <createIndex indexName="idx_data_point_group_line_or_scatter_chart_data_id" tableName="data_point_group">
+      <column name="line_or_scatter_chart_data_id"/>
+    </createIndex>
+
+    <createTable tableName="data_point">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_data_point"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="x_coordinate" type="numeric(10, 4)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="y_coordinate" type="numeric(10, 4)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="data_point_group_id" type="BIGINT"/>
+      <column name="data_points_order" type="INTEGER"/>
+    </createTable>
+    <addNotNullConstraint columnDataType="bigint" columnName="data_point_group_id" tableName="data_point" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="data_point_group_id" baseTableName="data_point" constraintName="fk_data_point_data_point_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="data_point_group" validate="true"/>
+    <createIndex indexName="idx_data_point_data_point_group_id" tableName="data_point">
+      <column name="data_point_group_id"/>
+    </createIndex>
+
+    <createTable tableName="trend_line">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_trend_line"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="line_slope" type="numeric(10, 4)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="line_offset" type="numeric(10, 4)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="data_point_group_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint columnNames="data_point_group_id" constraintName="trend_line_data_point_group_id_key" tableName="trend_line"/>
+    <addForeignKeyConstraint baseColumnNames="data_point_group_id" baseTableName="trend_line" constraintName="fk_trend_line_data_point_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="data_point_group" validate="true"/>
+
+    <addNotNullConstraint columnDataType="bigint" columnName="choropleth_map_data_id" tableName="key_to_value" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

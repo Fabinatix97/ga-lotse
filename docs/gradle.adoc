@@ -1,0 +1,73 @@
+= Gradle
+:sectnums:
+
+The https://github.com/node-gradle/gradle-node-plugin[gradle-node-plugin] automatically downloads the required https://nodejs.org/[Node.js] and https://pnpm.io/[pnpm] versions, which makes their manual installation obsolete.
+
+== Gradle Wrapper usage examples
+
+[cols="1,1"]
+|===
+| *Command*                          | *Description*
+| `./gradlew check`                  | Run task for all projects
+| `./gradlew employee-portal:test`   | Run task for a subproject
+| `./gradlew format lint`            | Run multiple tasks
+| `./gradlew --parallel format lint` | Run multiple tasks in parallel
+|===
+
+*Notice*: The subproject name is obsolete if you run gradle from within the subproject's root directory (`cd subproject`).
+
+== Common Tasks
+These are also available within the subprojects.
+[cols="1,1"]
+|===
+| *Command*               | *Description*
+| `./gradlew check`       | Run checks on all subprojects (includes `formatCheck`, `lint` and `compile`)
+| `./gradlew fix`         | Run fixes on all subprojects (includes `format` and `lintFix`)
+| `./gradlew format`      | Format all subprojects
+| `./gradlew formatCheck` | Run format checks on all subprojects
+| `./gradlew lint`        | Lint all subprojects
+| `./gradlew lintFix`     | Run linter fixes on all subprojects
+| `./gradlew compile`     | Run compiler checks on all subprojects
+| `./gradlew clean`       | Deletes all build outputs
+|===
+
+== Tasks for the subprojects
+[cols="1,1"]
+|===
+| *Command*                                       | *Description*
+| `./gradlew [project-name]:run`           | Start the application in production mode
+| `./gradlew [project-name]:runDev`        | Start the application in development mode (hot-code reloading)
+| `./gradlew [project-name]:build`         | Run all checks and builds the {project-name}
+| `./gradlew [project-name]:test`          | Run all tests in a single run
+| `./gradlew [project-name]:testWatch`     | Run all tests in watch mode (reruns tests when they change)
+| `./gradlew [project-name]:analyzeBundle` | Generates a visual report of the size of each module and their dependencies
+|===
+*Notice:* The `run` task is recommended over the `runDev` task for demos and reviews, because in development mode, pages will be built ad-hoc. This can significantly reduce the runtime performance, especially when using screen sharing.
+
+*Notice:* Please replace `[project-name]` with the corresponding name of the subproject, e.g., `employee-portal`.
+
+*Development mode:* Use the development mode if you are actively developing and want to use hot-code reloading. The development mode has short startup times, but is slower when initially rendering a page. In development mode, each page is built ad-hoc upon navigation.
+
+*Production mode:* Use the production mode if you are not actively developing or want to run a lot of e2e tests. The production mode builds everything upfront which takes a while. Once the server is started, all pages are available immediately. However, when new changes are added the production server to be stopped and rebuilt.
+
+== E2E Tasks
+The e2e tasks run in the e2e project.
+All common tasks are also available within the e2e project.
+
+[cols="1,1"]
+|===
+| *Command*                                  | *Description*
+| `./gradlew e2e:startLocalEmployeePortal`   | Start all backend containers and serve the employee portal locally in "production mode"
+| `./gradlew e2e:startLocalCitizenPortal`    | Start all backend containers and serve the citizen portal locally in "production mode"
+| `./gradlew e2e:startLocalAdminPortal`      | Start **only** a service-directory container and serve the admin portal locally in "production mode"
+| `./gradlew e2e:startLocalDocker`           | Start all backend containers and dockerized employee, citizen and admin portals (Linux only due to docker host network)
+| `./gradlew e2e:test`                       | Run all tests in headless mode
+| `./gradlew e2e:testUi`                     | Open Playwright in UI mode (enables running and debugging individual tests)
+| `./gradlew e2e:testReport`                 | Open HTML test report
+| `./gradlew e2e:cleanValidationFilesOutput` | Delete e2e/data/validation/output to have a clean folder for finding unused files
+| `./gradlew e2e:findUnusedValidationFiles`  | Compare e2e/data/validation with e2e/data/output to find unused validation files
+|===
+
+*Notice:* `testUi` is recommended for local development, because tests can be run individually with a time travel experience. This simplifies the verification of the test runs and the analysis of errors.
+
+There is a separate section in the link:./e2e-tests.adoc[e2e-tests README] concerning the multi instance e2e test setup.

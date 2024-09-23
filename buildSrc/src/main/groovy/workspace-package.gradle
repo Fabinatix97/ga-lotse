@@ -1,0 +1,42 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.IncludesAndExcludes
+import de.eshg.frontend.TypescriptDefaults
+
+def typescriptExtension = project.extensions.create('typescript', IncludesAndExcludes)
+
+def getTypescriptInputFiles = {
+  return fileTree(projectDir) {
+    include typescriptExtension.include.get()
+    exclude TypescriptDefaults.getAllExcludes(typescriptExtension.additionalExcludes)
+  }
+}
+
+tasks.register('prepareEnvironment') {
+  dependsOn rootProject.tasks.installDependencies
+}
+
+tasks.register('compile', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  inputs.files("${rootDir}/config/tsconfig.base.json")
+  inputs.files("${projectDir}/tsconfig.json")
+  inputs.files getTypescriptInputFiles()
+
+  def distDirectory = layout.buildDirectory.dir("dist")
+  outputs.dir distDirectory
+
+  args = ['tsc', '--build']
+
+  doFirst {
+    delete distDirectory.get()
+  }
+}
+
+tasks.register('check') {
+  group = 'verification'
+  dependsOn 'compile'
+}
+
+tasks.register('clean', Delete) {
+  dependsOn 'cleanDependencies'
+  delete layout.buildDirectory
+}

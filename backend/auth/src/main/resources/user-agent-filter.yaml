@@ -1,0 +1,46 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: Apache-2.0
+
+eshg:
+  auth:
+    user-agent-filter:
+      allowed:
+        Chrome:
+          userAgentPattern: ^(?!.*(?:Mobi|Chromium|Edg.*/|OPR|SamsungBrowser)).+Chrome/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '120'
+
+        Chrome for Android:
+          userAgentPattern: ^(?!.*(?:Chromium|Edg.*/|OPR|SamsungBrowser)).+Chrome/((?:[0-9]+)(?:\.[0-9]+)?).+Mobi.*$
+          minimumVersion: '124'
+
+        Firefox:
+          userAgentPattern: ^(?!.*(?:Mobi|Seamonkey/[.0-9]+)).+Firefox/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '123'
+
+        Firefox on Android:
+          userAgentPattern: ^(?!.*Seamonkey/[.0-9]+).+Mobi.+Firefox/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '125'
+
+        Safari:
+          userAgentPattern: ^(?!.*(?:(?:Chromium|Chrome)/[.0-9]+|iPhone)).+Version/((?:[0-9]+)(?:\.[0-9]+)).+Safari/.+$
+          minimumVersion: '16.6'
+
+        Safari on iOS:
+          userAgentPattern: ^(?!.*(?:Chromium|Chrome)/[.0-9]+).+iPhone.+Version/((?:[0-9]+)(?:\.[0-9]+)).+Safari/.+$
+          minimumVersion: '17.1'
+
+        Edge:
+          userAgentPattern: ^.*EdgA?/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '121'
+
+        Samsung Internet:
+          userAgentPattern: ^.*SamsungBrowser/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '23'
+
+        Opera:
+          userAgentPattern: ^(?!.*Mobi).+OPR/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '107'
+
+        Opera Mobile:
+          userAgentPattern: ^(?=.*Mobi).+OPR/((?:[0-9]+)(?:\.[0-9]+)?).*$
+          minimumVersion: '80'

@@ -1,0 +1,21 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.foureyes.domain.model;
+
+import de.eshg.domain.model.EntityWithExternalId;
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
+public abstract class DeletionApprovalRequest<E extends LockableEntity & EntityWithExternalId>
+    extends ApprovalRequest<E> {
+
+  public abstract void setEntity(E entity);
+
+  @Override
+  public Operation getOperation() {
+    return Operation.DELETE;
+  }
+}

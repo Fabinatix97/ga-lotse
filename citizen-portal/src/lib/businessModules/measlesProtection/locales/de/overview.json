@@ -1,0 +1,14 @@
+{
+  "page_title": "Masernschutz",
+  "information": {
+    "title": "Informationen zum Meldeverfahren",
+    "welcome": "Willkommen auf der Meldeplattform des Gesundheitsamts. Diese Seite unterstützt Sie dabei, Ihrer gesetzlichen Verpflichtung nachzukommen und ungeimpfte oder unzureichend geschützte Personen gegen Masern dem Gesundheitsamt zu melden.",
+    "legal_basis": "Gemäß § 20 des Infektionsschutzgesetzes (IfSG) sind alle betroffenen Einrichtungen verpflichtet, sicherzustellen, dass Personen, die dort betreut oder beschäftigt sind, einen gültigen Masernschutz nachweisen. Sollte ein entsprechender Nachweis fehlen oder Zweifel an der Echtheit oder inhaltlichen Richtigkeit bestehen, sind diese Personen über diese Plattform zu melden.",
+    "questions": "Für Fragen oder Unterstützung steht Ihnen unser Team gerne zur Verfügung. Wir danken Ihnen für Ihre Zusammenarbeit und Ihr Engagement für den Schutz der öffentlichen Gesundheit!"
+  },
+  "report_a_case": {
+    "title": "Möchten Sie einen Fall melden?",
+    "explanation": "Nutzen Sie die folgenden Schritte, um die erforderlichen Meldungen sicher und schnell vorzunehmen.",
+    "to_report_button": "Zum Meldeformular"
+  }
+}

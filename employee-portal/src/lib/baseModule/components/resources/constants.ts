@@ -1,0 +1,21 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiResourceType } from "@eshg/employee-portal-api/base";
+import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+
+export const resourceTypeNames = {
+  [ApiResourceType.Bicycle]: "Fahrrad",
+  [ApiResourceType.Car]: "Auto",
+  [ApiResourceType.Room]: "Raum",
+  [ApiResourceType.Camera]: "Kamera",
+  [ApiResourceType.MeasuringDevice]: "Messgerät",
+  [ApiResourceType.Tablet]: "Tablet",
+  [ApiResourceType.Laptop]: "Laptop",
+  [ApiResourceType.MeasuringKit]: "Messkoffer",
+  [ApiResourceType.Misc]: "Sonstiges",
+} satisfies Record<ApiResourceType, string>;
+
+export const resourceTypeOptions = optionsFromRecord(resourceTypeNames);

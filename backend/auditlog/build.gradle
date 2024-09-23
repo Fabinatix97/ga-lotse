@@ -1,0 +1,41 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':auditlog-api')
+    implementation project(':rest-oauth-client-commons')
+    implementation project(':business-module-commons')
+    implementation project(':business-module-persistence-commons')
+    implementation project(':lib-base-client')
+    implementation project(':lib-auditlog')
+
+    implementation 'commons-io:commons-io:latest.release'
+    implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation project(':test-commons')
+    testImplementation testFixtures(project(':business-module-commons'))
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+}
+
+evaluationDependsOn(':base')
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+dockerCompose {
+    startedServices = ['auditlog', 'auditlog-db']
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-auditlog') ?: "unspecified"
+}
+

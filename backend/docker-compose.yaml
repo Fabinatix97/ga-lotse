@@ -1,0 +1,492 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: Apache-2.0
+
+services:
+  auth-base:
+    image: ga-lotse/auth
+    environment:
+      - spring.data.redis.host=auth-cache
+      - eshg.keycloak.internal.url=http://keycloak:8080
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      auth-cache:
+        condition: service_healthy
+    restart: unless-stopped
+
+  auth-employee-portal:
+    extends:
+      service: auth-base
+    ports:
+      - 8092:8080
+
+  auth-citizen-portal:
+    extends:
+      service: auth-base
+    environment:
+      - spring.profiles.active=citizen-portal
+      - spring.data.redis.database=1
+      # use a different SESSION cookie such that browsers don’t confuse the session
+      # when opening http://localhost:4000 and http://localhost:4001 in parallel
+      - server.servlet.session.cookie.name=CITIZEN_SESSION
+    ports:
+      - 8093:8080
+
+  auth-cache:
+    image: redis:7.2.4
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass redis_secret
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-h", "localhost", "-p", "6379", "-a", "redis_secret", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  base:
+    image: ga-lotse/base
+    environment:
+      - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://base-db/eshgbase
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - eshg.keycloak.admin-client.client-secret=admin
+      - spring.mail.host=maildev
+      - eshg.synapse.url=http://localhost:8008
+      - eshg.synapse.client.secret=very-secrety-synapse-client-secret
+      - de.eshg.business-modules.clients[0].type=INSPECTION
+      - de.eshg.business-modules.clients[0].url=http://inspection:8080
+      - de.eshg.business-modules.clients[1].type=SCHOOL_ENTRY
+      - de.eshg.business-modules.clients[1].url=http://school-entry:8080
+      - de.eshg.business-modules.clients[2].type=TRAVEL_MEDICINE
+      - de.eshg.business-modules.clients[2].url=http://travel-medicine:8080
+      - de.eshg.business-modules.clients[3].type=MEASLES_PROTECTION
+      - de.eshg.business-modules.clients[3].url=http://measles-protection:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      base-db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+
+  base-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5433:5432
+    volumes:
+      - ./resources/base/postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_DB: eshgbase
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  keycloak-reverse-proxy:
+    image: nginx:1.27.1
+    ports:
+      - 4003:4003
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - ../reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../reverse-proxy/keycloak.conf:/etc/nginx/conf.d/default.conf:ro
+
+  keycloak:
+    image: ga-lotse/keycloak
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: dev-file
+      KC_HOSTNAME: http://localhost:4003
+    depends_on:
+      - maildev
+      - keycloak-reverse-proxy
+    ports:
+      - 9090:8080
+    command:
+      - "start"
+      - "--http-enabled=true"
+    logging:
+      driver: "local"
+
+  maildev:
+    image: maildev/maildev@sha256:f7429227b8f471b3fe761767d86a8794a2fc7488bccdcda46ea6d5ba5c2c7bf5
+    restart: unless-stopped
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    environment:
+      # Hotfix for https://github.com/maildev/maildev/issues/484 to enable healthcheck via IPv6
+      MAILDEV_IP: "::"
+      MAILDEV_INCOMING_USER: testuser
+      MAILDEV_INCOMING_PASS: testpassword
+
+  inspection:
+    image: ga-lotse/inspection
+    env_file:
+      - 'lib-procedures/src/test/resources/archiving-test.env'
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://inspection-db/inspection
+      - de.eshg.base.service-url=http://base:8080
+      - de.eshg.centralrepository.service-url=http://central-repository:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.centralrepository.mock-cert-subject-cn=inspection.frankfurt.ga-lotse
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      inspection-db:
+        condition: service_healthy
+    ports:
+      - 8081:8080
+
+  inspection-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_DB: inspection
+      POSTGRES_USER: inspection
+      POSTGRES_PASSWORD: inspection
+
+  school-entry:
+    image: ga-lotse/school-entry
+    env_file:
+      - 'lib-procedures/src/test/resources/archiving-test.env'
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://school-entry-db/schoolentry
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      school-entry-db:
+        condition: service_healthy
+    ports:
+      - 8082:8080
+
+  school-entry-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5435:5432
+    volumes:
+      - ./resources/school-entry/postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_DB: schoolentry
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  service-directory:
+    image: ga-lotse/service-directory
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://service-directory-db/servicedirectory
+    restart: unless-stopped
+    depends_on:
+      service-directory-db:
+        condition: service_healthy
+    ports:
+      - 8083:8080
+
+  service-directory-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5437:5432
+    environment:
+      POSTGRES_DB: servicedirectory
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  travel-medicine:
+    image: ga-lotse/travel-medicine
+    env_file:
+      - 'lib-procedures/src/test/resources/archiving-test.env'
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://travel-medicine-db/travelmedicine
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+      - de.eshg.travel-medicine.department-info.name=Travel Medicine Department
+      - de.eshg.travel-medicine.department-info.abbreviation=TMD
+      - de.eshg.travel-medicine.department-info.street=Wanderluststraße
+      - de.eshg.travel-medicine.department-info.houseNumber=202
+      - de.eshg.travel-medicine.department-info.postalCode=12345
+      - de.eshg.travel-medicine.department-info.city=Wandern Stadt
+      - de.eshg.travel-medicine.department-info.country=DE
+      - de.eshg.travel-medicine.department-info.phoneNumber=+49 123 12345678
+      - de.eshg.travel-medicine.department-info.homepage=www.travel-medicine.de
+      - de.eshg.travel-medicine.department-info.email=travel@medicine.de
+    restart: unless-stopped
+    depends_on:
+      travel-medicine-db:
+        condition: service_healthy
+    ports:
+      - 8085:8080
+
+  travel-medicine-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5438:5432
+    environment:
+      POSTGRES_DB: travelmedicine
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  local-service-directory:
+    image: ga-lotse/local-service-directory
+    environment:
+      - eshg.keycloak.url=http://keycloak-reverse-proxy:4003
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - eshg.servicedirectory.baseUrl=http://service-directory:8080
+      - de.eshg.servicedirectory.mock-cert-subject-cn=dummy
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      service-directory:
+        condition: service_healthy
+    ports:
+      - "8089:8080"
+
+  measles-protection:
+    image: ga-lotse/measles-protection
+    env_file:
+      - 'lib-procedures/src/test/resources/archiving-test.env'
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://measles-protection-db/measles_protection
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      measles-protection-db:
+        condition: service_healthy
+    ports:
+      - 8086:8080
+
+  measles-protection-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5439:5432
+    environment:
+      POSTGRES_DB: measles_protection
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  statistics:
+    image: ga-lotse/statistics
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://statistics-db/statistics
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.base.service-url=http://base:8080
+      - de.eshg.business-modules.clients[0].type=SCHOOL_ENTRY
+      - de.eshg.business-modules.clients[0].url=http://school-entry:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      statistics-db:
+        condition: service_healthy
+    ports:
+      - 8087:8080
+
+  statistics-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5440:5432
+    environment:
+      POSTGRES_DB: statistics
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  central-repository:
+    image: ga-lotse/central-repository
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://central-repository-db/centralrepository
+      - eshg.servicedirectory.baseUrl=http://service-directory:8080
+      - de.eshg.servicedirectory.mock-cert-subject-cn=dummy
+    restart: unless-stopped
+    depends_on:
+      central-repository-db:
+        condition: service_healthy
+      service-directory:
+        condition: service_healthy
+    ports:
+      - 8091:8080
+
+  central-repository-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5443:5432
+    environment:
+      POSTGRES_DB: centralrepository
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  chat-management:
+    image: ga-lotse/chat-management
+    environment:
+      - synapse.url=http://synapse:8008
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://chat-management-db/chat_management
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - DE_ESHG_CHAT_FEATURE_TOGGLE_ENABLED_NEW_FEATURES
+    restart: unless-stopped
+    depends_on:
+      chat-management-db:
+        condition: service_healthy
+    ports:
+      - 8088:8080
+
+  chat-management-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5441:5432
+    environment:
+      POSTGRES_DB: chat_management
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  synapse-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    volumes:
+      - ./resources/matrix/synapse-db/pg_dump.synapse.local.dev.sql:/docker-entrypoint-initdb.d/synapse_db.sql
+    ports:
+      - 5442:5432
+    environment:
+      - POSTGRES_DB=synapse
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=synapse
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+
+  synapse:
+    image: matrixdotorg/synapse:v1.114.0@sha256:0983d976eaaed08af558b8ce720caa89340124146e0c6e49042c9072acff7919
+    environment:
+      - SYNAPSE_SERVER_NAME=synapse.local.dev
+      - UID=1000
+      - GID=1000
+    volumes:
+      - ./resources/matrix/synapse:/data
+    ports:
+      - "${SYNAPSE_HTTP_PORT:-8008}:8008"
+    healthcheck:
+      test: [ "CMD", "curl", "-fSs", "http://localhost:8008/health" ]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    depends_on:
+      synapse-db:
+        condition: service_healthy
+
+  auditlog:
+    image: ga-lotse/auditlog
+    ports:
+      - 8094:8080
+    environment:
+      - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
+      - spring.datasource.url=jdbc:postgresql://auditlog-db/auditlog
+      - de.eshg.base.service-url=http://base:8080
+      - de.eshg.auditlog.log-storage-dir=/tmp/auditlog-storage
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - eshg.keycloak.internal.url=http://keycloak:8080
+
+  auditlog-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5444:5432
+    environment:
+      POSTGRES_DB: auditlog
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  sti-protection:
+    image: ga-lotse/sti-protection
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.datasource.url=jdbc:postgresql://sti-protection-db/sti_protection
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      sti-protection-db:
+        condition: service_healthy
+    ports:
+      - 8095:8080
+
+  sti-protection-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5445:5432
+    environment:
+      POSTGRES_DB: sti_protection
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  opendata:
+    image: ga-lotse/opendata
+    ports:
+      - 8096:8080
+    environment:
+      DOCKER_HOSTNAME: ${DOCKER_HOSTNAME:-localhost}
+      spring.datasource.url: jdbc:postgresql://opendata-db/opendata
+      de.eshg.base.service-url: http://base:8080
+      de.eshg.auditlog.log-storage-dir: /tmp/opendata-storage
+      spring.profiles.active: test-helper
+      eshg.testclock.enabled: true
+      eshg.keycloak.internal.url: http://keycloak:8080
+
+  opendata-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5446:5432
+    environment:
+      POSTGRES_DB: opendata
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword

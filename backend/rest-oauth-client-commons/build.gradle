@@ -1,0 +1,9 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api 'de.cronn:commons-lang:latest.release'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+}

@@ -1,0 +1,21 @@
+plugins {
+    id "eshg.java-lib"
+    id "java-test-fixtures"
+}
+
+dependencies {
+    api 'org.springframework:spring-context'
+
+    api project(':api-commons')
+    api project(':lib-statistics-api')
+    api project(':rest-service-errors')
+    api project(':test-helper-commons-api')
+
+    api project(':lib-security-config-urls')
+
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+
+    testFixturesImplementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testFixturesImplementation 'org.assertj:assertj-core'
+    testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
+}

@@ -1,0 +1,2 @@
+de.eshg.rest.service.commons.ClockAutoConfiguration
+de.eshg.rest.service.commons.logging.RestServiceLoggingAutoConfiguration

@@ -1,0 +1,34 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.base.centralfile.api.facility;
+
+import de.eshg.base.address.AddressDto;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.util.List;
+
+@Schema(description = "Request used for adding facilities from external sources")
+public record ExternalAddFacilityFileStateRequest(
+    @NotNull @Size(min = 1, max = 300) String name,
+    List<@NotNull @Size(min = 6, max = 254) String> emailAddresses,
+    List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
+    @Valid List<FacilityContactPersonDto> contactPersons,
+    @Valid AddressDto contactAddress,
+    @Valid AddressDto differentBillingAddress)
+    implements FacilityDetails {
+
+  public ExternalAddFacilityFileStateRequest(FacilityDetailsDto facilityDetails) {
+    this(
+        facilityDetails.name(),
+        facilityDetails.emailAddresses(),
+        facilityDetails.phoneNumbers(),
+        facilityDetails.contactPersons(),
+        facilityDetails.contactAddress(),
+        facilityDetails.differentBillingAddress());
+  }
+}

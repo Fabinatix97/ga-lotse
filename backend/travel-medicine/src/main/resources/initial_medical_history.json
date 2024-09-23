@@ -1,0 +1,187 @@
+{
+  "sections": [
+    {
+      "sectionElements": [
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Fühlen Sie sich heute krank?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": null
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Hatten Sie in den letzten Wochen Fieber, eine Operation oder einen Unfall?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": {
+              "questionText": "Wenn ja, bitte erläutern:",
+              "answer": null
+            }
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Haben Sie in den letzten 4 Wochen Impfungen erhalten?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": {
+              "questionText": "Wenn ja, welche und wann:",
+              "answer": null
+            }
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Haben Sie Allergien (Unverträglichkeiten) wie z.B gegen Hühnereiweiß, Impfstoffe oder Medikamente?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": {
+              "questionText": "Wenn ja, welche:",
+              "answer": null
+            }
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Hatten Sie schon einmal starke Impfreaktionen oder -komplikationen?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": null
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Haben oder hatten Sie chronische Erkrankungen?",
+            "answer": null,
+            "subElementMultiSelect": [
+              {
+                "questionText": "Herzerkrankung",
+                "answer": null
+              },
+              {
+                "questionText": "Lebererkrankung",
+                "answer": null
+              },
+              {
+                "questionText": "Nierenerkrankung",
+                "answer": null
+              },
+              {
+                "questionText": "Krebsleiden",
+                "answer": null
+              },
+              {
+                "questionText": "seelische Erkrankung",
+                "answer": null
+              },
+              {
+                "questionText": "Bluthochdruck",
+                "answer": null
+              },
+              {
+                "questionText": "Diabetes",
+                "answer": null
+              },
+              {
+                "questionText": "Anfallsleiden (Epilepsie)",
+                "answer": null
+              }
+            ],
+            "subElementText": {
+              "questionText": "Folgende Erkrankungen:",
+              "answer": null
+            }
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Nehmen Sie regelmäßig Medikamente ein?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": {
+              "questionText": "Wenn ja, welche:",
+              "answer": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sectionElements": [
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Haben Sie eine HIV-lnfektion?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": null
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Erhalten Sie oder Erhielten Sie in den letzten Monaten Strahlentherapie oder Chemotherapie (Krebsbehandlung)?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": null
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Erhalten Sie oder erhielten Sie in den letzten Monaten immunsupprimierende Medikamente (Medikamente, die die Abwehr gegen Infektionskrankheiten schwächen), wie z. B. Cortison, Antikörper o. a.?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": {
+              "questionText": "Wenn ja, welche:",
+              "answer": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sectionElements": [
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Sind Sie schwanger?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": {
+              "questionText": "Wenn ja, in der Woche:",
+              "answer": null
+            }
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Ist eine eine Schwangerschaft geplant?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": null
+          }
+        },
+        {
+          "elementType": "option",
+          "elementData": {
+            "questionText": "Stillen Sie?",
+            "answer": null,
+            "subElementMultiSelect": [],
+            "subElementText": null
+          }
+        }
+      ]
+    }
+  ]
+}

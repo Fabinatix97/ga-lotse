@@ -1,0 +1,442 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="initial">
+        <!-- default_revision_entity -->
+        <createTable tableName="default_revision_entity">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- statistics_scheme -->
+        <createTable tableName="statistics_scheme">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_statistics_scheme"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_usage_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="statistics_scheme_external_id_key" tableName="statistics_scheme"/>
+
+        <!-- data_source -->
+        <createTable tableName="data_source">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_data_source"/>
+            </column>
+            <column name="data_sources_order" type="INTEGER"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scheme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_module_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_data_source_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="scheme_id" baseTableName="data_source" constraintName="fk_data_source_statistics_scheme" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="statistics_scheme" validate="true"/>
+
+        <!-- data_attribute -->
+        <createTable tableName="data_attribute">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_data_attribute"/>
+            </column>
+            <column name="attributes_order" type="INTEGER"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_source_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="data_source_id" baseTableName="data_attribute" constraintName="fk_data_attribute_data_source" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="data_source" validate="true"/>
+
+        <!-- attribute_to_base_attributes -->
+        <createTable tableName="attribute_to_base_attributes">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_attribute_to_base_attributes"/>
+            </column>
+            <column name="base_attribute_codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_attribute_to_base_attributes"/>
+            </column>
+            <column name="base_attribute_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="attribute_to_base_attributes" constraintName="fk_attribute_to_base_attributes_data_attribute" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="data_attribute" validate="true"/>
+
+        <!-- aggregation_result -->
+        <createTable tableName="aggregation_result">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_aggregation_result"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_range_start" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_range_end" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_table_rows" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="aggregation_result_external_id_key" tableName="aggregation_result"/>
+
+        <!-- min_max_null_unknown_values -->
+        <createTable tableName="min_max_null_unknown_values">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_min_max_null_unknown_values"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_decimal" type="numeric(10, 4)"/>
+            <column name="max_decimal" type="numeric(10, 4)"/>
+            <column name="min_integer" type="INTEGER"/>
+            <column name="max_integer" type="INTEGER"/>
+            <column name="number_of_null_entries" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_unknown_entries" type="BIGINT"/>
+            <column name="unknown_value" type="TEXT"/>
+        </createTable>
+
+        <!-- table_column -->
+        <createTable tableName="table_column">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_table_column"/>
+            </column>
+            <column name="table_columns_order" type="INTEGER"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="aggregation_result_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_module_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_module_attribute_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_module_attribute_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="base_module_attribute_code" type="TEXT"/>
+            <column name="base_module_attribute_name" type="TEXT"/>
+            <column name="value_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject_type" type="TEXT"/>
+            <column name="unit" type="TEXT"/>
+            <column name="data_source_name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_source_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mandatory" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_max_null_unknown_values_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="min_max_null_unknown_values_id" constraintName="table_column_min_max_null_unknown_values_id_key" tableName="table_column"/>
+
+        <addForeignKeyConstraint baseColumnNames="aggregation_result_id" baseTableName="table_column" constraintName="fk_table_column_aggregation_result" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="aggregation_result" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="min_max_null_unknown_values_id" baseTableName="table_column" constraintName="fk_table_column_min_max_null_unknown_values" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="min_max_null_unknown_values" validate="true"/>
+
+        <!-- value_to_meaning -->
+        <createTable tableName="value_to_meaning">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_value_to_meaning"/>
+            </column>
+            <column name="value_to_meanings_order" type="INTEGER"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="table_column_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT"/>
+            <column name="meaning" type="TEXT"/>
+            <column name="unknown_value" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="table_column_id" baseTableName="value_to_meaning" constraintName="fk_value_to_meaning_table_column" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="table_column" validate="true"/>
+
+        <!-- table_row -->
+        <createTable tableName="table_row">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_table_row"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="aggregation_result_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="aggregation_result_id" baseTableName="table_row" constraintName="fk_table_row_aggregation_result" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="aggregation_result" validate="true"/>
+
+        <!-- cell_entry -->
+        <createTable tableName="cell_entry">
+            <column name="entry_type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_cell_entry"/>
+            </column>
+            <column name="cell_entries_order" type="INTEGER"/>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bool_value" type="BOOLEAN"/>
+            <column name="date_value" type="date"/>
+            <column name="big_decimal_value" type="numeric(10, 4)"/>
+            <column name="integer_value" type="INTEGER"/>
+            <column name="text_value" type="TEXT"/>
+            <column name="uuid_value" type="UUID"/>
+            <column name="table_row_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="table_column_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="table_column_id" baseTableName="cell_entry" constraintName="fk_cell_entry_table_column" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="table_column" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="table_row_id" baseTableName="cell_entry" constraintName="fk_cell_entry_table_row" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="table_row" validate="true"/>
+
+        <!-- attribute_selection -->
+        <createTable tableName="attribute_selection">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_attribute_selection"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_module_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_source_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_module_attribute_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="base_module_attribute_code" type="TEXT"/>
+        </createTable>
+
+        <!-- chart_configuration -->
+        <createTable tableName="chart_configuration">
+            <column name="type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_chart_configuration"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- bar_chart_configuration -->
+        <createTable tableName="bar_chart_configuration">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bar_chart_configuration"/>
+            </column>
+            <column name="primary_attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_attribute_selection_id" type="BIGINT"/>
+            <column name="scaling" type="TEXT"/>
+            <column name="grouping" type="TEXT"/>
+            <column name="orientation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="primary_attribute_selection_id" constraintName="bar_chart_configuration_primary_attribute_selection_id_key" tableName="bar_chart_configuration"/>
+        <addUniqueConstraint columnNames="secondary_attribute_selection_id" constraintName="bar_chart_configuration_secondary_attribute_selection_id_key" tableName="bar_chart_configuration"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="bar_chart_configuration" constraintName="fk_bar_chart_configuration_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="primary_attribute_selection_id" baseTableName="bar_chart_configuration" constraintName="fk_bar_chart_configuration_primary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="secondary_attribute_selection_id" baseTableName="bar_chart_configuration" constraintName="fk_bar_chart_configuration_secondary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+
+        <!-- histogram_chart_configuration -->
+        <createTable tableName="histogram_chart_configuration">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_histogram_chart_configuration"/>
+            </column>
+            <column name="primary_attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_attribute_selection_id" type="BIGINT"/>
+            <column name="scaling" type="TEXT"/>
+            <column name="grouping" type="TEXT"/>
+            <column name="binning_mode" type="TEXT"/>
+            <column name="number_of_bins" type="INTEGER"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="primary_attribute_selection_id" constraintName="histogram_chart_configuration_primary_attribute_selection_i_key" tableName="histogram_chart_configuration"/>
+        <addUniqueConstraint columnNames="secondary_attribute_selection_id" constraintName="histogram_chart_configuration_secondary_attribute_selection_key" tableName="histogram_chart_configuration"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="histogram_chart_configuration" constraintName="fk_histogram_chart_configuration_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="primary_attribute_selection_id" baseTableName="histogram_chart_configuration" constraintName="fk_histogram_chart_configuration_primary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="secondary_attribute_selection_id" baseTableName="histogram_chart_configuration" constraintName="fk_histogram_chart_configuration_secondary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+
+        <!-- line_chart_configuration -->
+        <createTable tableName="line_chart_configuration">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_line_chart_configuration"/>
+            </column>
+            <column name="x_attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="y_attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_attribute_selection_id" type="BIGINT"/>
+            <column name="range" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="x_attribute_selection_id" constraintName="line_chart_configuration_x_attribute_selection_id_key" tableName="line_chart_configuration"/>
+        <addUniqueConstraint columnNames="y_attribute_selection_id" constraintName="line_chart_configuration_y_attribute_selection_id_key" tableName="line_chart_configuration"/>
+        <addUniqueConstraint columnNames="secondary_attribute_selection_id" constraintName="line_chart_configuration_secondary_attribute_selection_id_key" tableName="line_chart_configuration"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="line_chart_configuration" constraintName="fk_line_chart_configuration_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="x_attribute_selection_id" baseTableName="line_chart_configuration" constraintName="fk_line_chart_configuration_x_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="y_attribute_selection_id" baseTableName="line_chart_configuration" constraintName="fk_line_chart_configuration_y_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="secondary_attribute_selection_id" baseTableName="line_chart_configuration" constraintName="fk_line_chart_configuration_secondary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+
+        <!-- scatter_chart_configuration -->
+        <createTable tableName="scatter_chart_configuration">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_scatter_chart_configuration"/>
+            </column>
+            <column name="x_attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="y_attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_attribute_selection_id" type="BIGINT"/>
+            <column name="range" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trend_line" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="x_attribute_selection_id" constraintName="scatter_chart_configuration_x_attribute_selection_id_key" tableName="scatter_chart_configuration"/>
+        <addUniqueConstraint columnNames="y_attribute_selection_id" constraintName="scatter_chart_configuration_y_attribute_selection_id_key" tableName="scatter_chart_configuration"/>
+        <addUniqueConstraint columnNames="secondary_attribute_selection_id" constraintName="scatter_chart_configuration_secondary_attribute_selection_i_key" tableName="scatter_chart_configuration"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="scatter_chart_configuration" constraintName="fk_scatter_chart_configuration_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="x_attribute_selection_id" baseTableName="scatter_chart_configuration" constraintName="fk_scatter_chart_configuration_x_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="y_attribute_selection_id" baseTableName="scatter_chart_configuration" constraintName="fk_scatter_chart_configuration_y_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="secondary_attribute_selection_id" baseTableName="scatter_chart_configuration" constraintName="fk_scatter_chart_configuration_secondary_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+
+        <!-- pie_chart_configuration -->
+        <createTable tableName="pie_chart_configuration">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pie_chart_configuration"/>
+            </column>
+            <column name="attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="attribute_selection_id" constraintName="pie_chart_configuration_attribute_selection_id_key" tableName="pie_chart_configuration"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="pie_chart_configuration" constraintName="fk_pie_chart_configuration_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="attribute_selection_id" baseTableName="pie_chart_configuration" constraintName="fk_pie_chart_configuration_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+
+        <!-- evaluation -->
+        <createTable tableName="evaluation">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_evaluation"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="aggregation_result_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="chart_configuration_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="external_id" constraintName="evaluation_external_id_key" tableName="evaluation"/>
+        <addUniqueConstraint columnNames="chart_configuration_id" constraintName="evaluation_chart_configuration_id_key" tableName="evaluation"/>
+
+        <addForeignKeyConstraint baseColumnNames="aggregation_result_id" baseTableName="evaluation" constraintName="fk_evaluation_aggregation_result" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="aggregation_result" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="chart_configuration_id" baseTableName="evaluation" constraintName="fk_evaluation_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

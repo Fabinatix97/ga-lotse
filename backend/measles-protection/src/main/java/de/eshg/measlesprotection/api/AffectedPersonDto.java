@@ -1,0 +1,43 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.measlesprotection.api;
+
+import de.eshg.base.CountryCodeDto;
+import de.eshg.base.GenderDto;
+import de.eshg.base.SalutationDto;
+import de.eshg.base.address.AddressDto;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@Schema(
+    name = "AffectedPerson",
+    description =
+        "Represents the individual the facility reports on and is the integral part of the procedure.")
+public record AffectedPersonDto(
+    UUID id,
+    @NotBlank @Schema(description = "First name of the affected person.", example = "Susanne")
+        String firstName,
+    @NotBlank @Schema(description = "Last name of the affected person.", example = "Gerber")
+        String lastName,
+    @NotNull @Schema(description = "Date of birth of the affected person.", example = "2018-07-26")
+        LocalDate dateOfBirth,
+    List<@NotBlank String> phoneNumbers,
+    List<@Email String> emailAddresses,
+    CountryCodeDto countryOfBirth,
+    GenderDto gender,
+    String nameAtBirth,
+    String placeOfBirth,
+    SalutationDto salutation,
+    String title,
+    RoleStatusDto roleStatus,
+    @NotNull @Valid AddressDto address)
+    implements PersonBaseDto {}

@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="GA-Lotse" id="1722339730361-1">
+        <update tableName="object_type">
+            <column name="standard_buffer_time" type="INTEGER" valueComputed="standard_buffer_time * 60"/>
+        </update>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1722339730361-2">
+        <createTable tableName="inspection_travel_time">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inspection_travel_time"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_buffer_in_minutes" type="INTEGER"/>
+            <column name="end_time" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="start_buffer_in_minutes" type="INTEGER"/>
+            <column name="start_time" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="GA-Lotse" id="1722339730361-3">
+        <addColumn tableName="inspection">
+            <column name="travel_time_id" type="BIGINT"/>
+        </addColumn>
+        <addUniqueConstraint columnNames="travel_time_id" constraintName="inspection_travel_time_id_key"
+                             tableName="inspection"/>
+        <addForeignKeyConstraint baseColumnNames="travel_time_id" baseTableName="inspection"
+                                 constraintName="fk_inspection_inspection_travel_time" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="inspection_travel_time"
+                                 validate="true"/>
+    </changeSet>
+</databaseChangeLog>

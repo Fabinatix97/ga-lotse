@@ -1,0 +1,68 @@
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+import java.time.Duration
+
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(":util-commons")
+    implementation project(":lib-relay")
+    implementation project(':lib-lsd-api')
+    implementation project(':lib-service-directory-api')
+
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'
+    implementation 'io.projectreactor.netty:reactor-netty-core'
+    implementation 'io.projectreactor.netty:reactor-netty-http'
+    implementation 'io.github.hakky54:sslcontext-kickstart:latest.release'
+    implementation 'io.github.hakky54:sslcontext-kickstart-for-netty:latest.release'
+    implementation 'dnsjava:dnsjava:latest.release'
+    implementation 'org.java-websocket:Java-WebSocket:latest.release'
+
+    compileOnly 'com.fasterxml.jackson.core:jackson-annotations'
+
+    testImplementation project(':test-commons')
+    testImplementation(project(':local-service-directory')) {
+        transitive = false // prevent spring from kicking in here
+    }
+    testImplementation testFixtures(project(':lib-service-directory-admin-api'))
+    testImplementation testFixtures(project(':lib-relay'))
+    testImplementation libs.bundles.keycloak.client
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'io.fabric8:kubernetes-client:6.10.0'
+}
+
+
+dockerCompose {
+    startedServices = []
+}
+
+tasks.named('test').configure {
+    dependsOn ':service-directory:buildDockerImage'
+    dependsOn ':relay-server:buildDockerImage'
+    dependsOn ':local-service-directory:buildDockerImage'
+    dependsOn ':keycloak:buildDockerImage'
+    dependsOn ':spatz-dns:buildDockerImage'
+    dependsOn ':spatz:buildDockerImage'
+
+    inputs.files(project(':service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':relay-server').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':local-service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+ext.listenPort=80
+ext.additionalAptPackages = "netcat node-ws nmap dnsutils"
+ext.xmx = "256m"
+createDockerfile {
+    healthcheck(new Dockerfile.Healthcheck("nc -z 127.0.0.1 ${listenPort}").withStartPeriod(Duration.ofSeconds(60)).withInterval(Duration.ofSeconds(5)))
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-spatz') ?: "unspecified"
+}

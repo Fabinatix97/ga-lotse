@@ -1,0 +1,26 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.procedure.model;
+
+import de.eshg.api.commons.CanBeLogged;
+import de.eshg.lib.procedure.api.TaskListApi.QueryParameter;
+import jakarta.validation.constraints.NotNull;
+import java.util.Objects;
+import org.springframework.web.bind.annotation.BindParam;
+
+public record GetTasksSortOptions(
+    @CanBeLogged @BindParam(QueryParameter.SORT_KEY) @NotNull GetTasksSortByDto sortKey,
+    @CanBeLogged @BindParam(QueryParameter.SORT_ORDER) GetTasksSortOrderDto sortOrder) {
+
+  public GetTasksSortOptions(GetTasksSortByDto sortKey, GetTasksSortOrderDto sortOrder) {
+    this.sortKey = sortKey;
+    this.sortOrder = Objects.requireNonNullElse(sortOrder, GetTasksSortOrderDto.ASC);
+  }
+
+  public static GetTasksSortOptions fromSortBy(GetTasksSortByDto sortBy) {
+    return new GetTasksSortOptions(sortBy, null);
+  }
+}

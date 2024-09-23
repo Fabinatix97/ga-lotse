@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom sso_auth_confirm.html page</title>
+
+</head>
+<body>
+<h1>Custom SSO confirm page</h1>
+Reference:  <a href="https://element-hq.github.io/synapse/latest/templates.html#html-page-templates-for-single-sign-on-sso">https://element-hq.github.io/synapse/latest/templates.html#html-page-templates-for-single-sign-on-sso</a><br/><br/>
+redirect_url: <a href="{{redirect_url}}">{{redirect_url}} <br/><br/>
+description: {{description}}<br/>
+  idp_id: {{idp.idp_id}}<br/>
+  idp_name: {{idp.idp_name}}<br/>
+  idp_icon: {{idp.idp_icon}}<br/>
+  idp_brand: {{idp.idp_brand}}<br/>
+</body>
+</html>

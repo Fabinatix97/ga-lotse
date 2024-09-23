@@ -1,0 +1,14 @@
+{
+  "title": "Verfügbare Termine",
+  "notAvailable": "Aktuell keine Termine verfügbar",
+  "notAvailableMessage": "Unsere Mitarbeiter:innen des Gesundheitsamtes wurden bereits in Kenntnis gesetzt. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut.",
+  "available": "Terminverschiebung",
+  "availableMessage": "Sie können Ihren Termin noch {{changesLeft}} Mal verschieben.",
+  "result": {
+    "title": "Übersicht",
+    "name": "Name",
+    "birthday": "Geburtstag",
+    "confirm": "Termin verbindlich buchen",
+    "back": "Zurück"
+  }
+}

@@ -1,0 +1,25 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':business-module-commons')
+    implementation project(':business-module-persistence-commons')
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation project(':test-commons')
+    testImplementation testFixtures(project(':business-module-commons'))
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+}
+
+dockerCompose {
+    startedServices = ['opendata', 'opendata-db']
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-opendata') ?: "unspecified"
+}
+

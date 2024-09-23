@@ -1,0 +1,37 @@
+plugins {
+  id 'com.github.node-gradle.node'
+}
+
+node {
+  version = '20.17.0'
+  pnpmVersion = '9.10.0'
+  download = true
+  workDir = file("${rootProject.projectDir}/.gradle/nodejs")
+  pnpmWorkDir = file("${rootProject.projectDir}/.gradle/pnpm")
+}
+
+ext {
+  nodeDockerImage = "node:${node.version.get()}-alpine@sha256:1a526b97cace6b4006256570efa1a29cd1fe4b96a5301f8d48e87c5139438a45"
+}
+
+tasks.register('cleanDependencies', Delete) {
+  delete "${projectDir}/node_modules"
+}
+
+def isRootProject() {
+  project.name == rootProject.name
+}
+
+// prevent duplicate node installation in subprojects
+tasks.named('nodeSetup').configure {
+  onlyIf('run only in root project') {
+    isRootProject()
+  }
+}
+
+// prevent duplicate pnpm installation in subprojects
+tasks.named('pnpmSetup').configure {
+  onlyIf('run only in root project') {
+    isRootProject()
+  }
+}

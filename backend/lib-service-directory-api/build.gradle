@@ -1,0 +1,12 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':api-commons')
+    api project(':lib-commons')
+    api 'org.springframework.security:spring-security-core'
+    implementation project(':util-commons')
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.slf4j:slf4j-api'
+}

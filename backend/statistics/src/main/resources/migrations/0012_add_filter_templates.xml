@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720779338042-1">
+    <createTable tableName="filter_template">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_filter_template"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="external_id" constraintName="filter_template_external_id_key" tableName="filter_template"/>
+    <addUniqueConstraint columnNames="name" constraintName="filter_template_name_key" tableName="filter_template"/>
+
+    <addColumn tableName="abstract_filter_parameter">
+      <column name="filter_template_id" type="int8"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="filter_template_id" baseTableName="abstract_filter_parameter" constraintName="fk_abstract_filter_parameter_filter_template" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filter_template" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,72 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { Stack } from "@mui/joy";
+import { Formik } from "formik";
+import { Ref } from "react";
+
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import {
+  SidebarForm,
+  SidebarFormHandle,
+} from "@/lib/shared/components/form/SidebarForm";
+import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
+import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { validatePositiveInteger } from "@/lib/shared/helpers/validators";
+
+export interface InventoryManagementValues {
+  count: OptionalFieldValue<number>;
+}
+
+const emptyValues: InventoryManagementValues = {
+  count: "",
+};
+
+interface InventoryRestockFormProps {
+  onSubmit: (values: InventoryManagementValues) => Promise<void>;
+  onClose: () => void;
+  formRef: Ref<SidebarFormHandle>;
+  minCount: number;
+}
+
+export function InventoryRestockForm(props: InventoryRestockFormProps) {
+  return (
+    <Formik
+      initialValues={emptyValues}
+      onSubmit={props.onSubmit}
+      enableReinitialize
+    >
+      {({ isSubmitting }) => (
+        <SidebarForm ref={props.formRef}>
+          <SidebarContent title={"Inventar auffüllen"}>
+            <Stack gap={2}>
+              <DetailsCell
+                name={"minCount"}
+                label={"Mindestbestand"}
+                value={props.minCount}
+              />
+              <NumberField
+                name={"count"}
+                label={"Menge"}
+                required="Bitte eine Menge angeben"
+                validate={validatePositiveInteger}
+              />
+            </Stack>
+          </SidebarContent>
+          <SidebarActions>
+            <MultiFormButtonBar
+              submitLabel={"Auffüllen"}
+              submitting={isSubmitting}
+              onCancel={props.onClose}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
+  );
+}

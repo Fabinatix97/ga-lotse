@@ -1,0 +1,82 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721747600732-9">
+    <dropForeignKeyConstraint baseTableName="access_restriction" constraintName="fk_access_restrictions_measles_protections"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-10">
+    <dropForeignKeyConstraint baseTableName="letter" constraintName="fk_letters_access_restrictions"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-11">
+    <dropForeignKeyConstraint baseTableName="letter" constraintName="fk_letters_progress_entry"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-1">
+    <createTable tableName="access_restriction_letter">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_access_restriction_letter"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="letter_status" type="LETTERSTATUS"/>
+      <column name="recipient_id" type="UUID"/>
+      <column name="sent_at" type="date"/>
+      <column name="access_restriction_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="progress_entry_id" type="BIGINT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-2">
+    <addUniqueConstraint columnNames="external_id" constraintName="access_restriction_letter_external_id_key" tableName="access_restriction_letter"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-3">
+    <addUniqueConstraint columnNames="progress_entry_id" constraintName="access_restriction_letter_progress_entry_id_key" tableName="access_restriction_letter"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-4">
+    <addColumn tableName="access_restriction">
+      <column name="restriction_termination_date" type="date"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-5">
+    <createIndex indexName="idx_access_restriction_letter_access_restriction_id" tableName="access_restriction_letter">
+      <column name="access_restriction_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-6">
+    <addForeignKeyConstraint baseColumnNames="access_restriction_id" baseTableName="access_restriction_letter" constraintName="fk_access_restriction_letter_access_restriction" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="access_restriction" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-7">
+    <addForeignKeyConstraint baseColumnNames="progress_entry_id" baseTableName="access_restriction_letter" constraintName="fk_access_restriction_letter_progress_entry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="progress_entry" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-8">
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="access_restriction" constraintName="fk_access_restriction_measles_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="measles_protection_procedure" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-12">
+    <dropUniqueConstraint constraintName="access_restrictions_external_id_key" tableName="access_restriction"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-13">
+    <dropUniqueConstraint constraintName="letters_external_id_key" tableName="letter"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-14">
+    <dropUniqueConstraint constraintName="letters_progress_entry_id_key" tableName="letter"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-15">
+    <dropTable tableName="letter"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-16">
+    <dropColumn columnName="external_id" tableName="access_restriction"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721747600732-17">
+    <dropColumn columnName="procedure_id" tableName="access_restriction"/>
+  </changeSet>
+</databaseChangeLog>

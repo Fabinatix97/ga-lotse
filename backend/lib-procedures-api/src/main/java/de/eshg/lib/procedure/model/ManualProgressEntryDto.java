@@ -1,0 +1,135 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.procedure.model;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import de.eshg.api.commons.CanBeLogged;
+import de.eshg.lib.foureyes.model.ApprovalRequestEntityDto;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+@Schema(name = ManualProgressEntryDto.SCHEMA_NAME, allOf = ProgressEntryDto.class)
+@JsonTypeName(ManualProgressEntryDto.SCHEMA_NAME)
+public final class ManualProgressEntryDto extends ProgressEntryDto
+    implements ApprovalRequestEntityDto {
+  public static final String SCHEMA_NAME = "ManualProgressEntry";
+
+  @CanBeLogged @NotNull private ManualProgressEntryTypeDto manualProgressEntryType;
+  private String subject;
+  private String messageText;
+  private String note;
+  @CanBeLogged private KeyDocumentTypeDto keyDocumentType;
+  @CanBeLogged private Integer keyDocumentVersion;
+  @CanBeLogged @NotNull private boolean locked;
+
+  @NotNull private UUID createdBy;
+  private String createdByUserFirstName;
+  private String createdByUserLastName;
+
+  public ManualProgressEntryTypeDto getManualProgressEntryType() {
+    return manualProgressEntryType;
+  }
+
+  public void setManualProgressEntryType(ManualProgressEntryTypeDto manualProgressEntryType) {
+    this.manualProgressEntryType = manualProgressEntryType;
+  }
+
+  public String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
+
+  public String getMessageText() {
+    return messageText;
+  }
+
+  public void setMessageText(String messageText) {
+    this.messageText = messageText;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  public UUID getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(UUID createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public KeyDocumentTypeDto getKeyDocumentType() {
+    return keyDocumentType;
+  }
+
+  public void setKeyDocumentType(KeyDocumentTypeDto keyDocumentType) {
+    this.keyDocumentType = keyDocumentType;
+  }
+
+  public Integer getKeyDocumentVersion() {
+    return keyDocumentVersion;
+  }
+
+  public void setKeyDocumentVersion(Integer keyDocumentVersion) {
+    this.keyDocumentVersion = keyDocumentVersion;
+  }
+
+  public boolean isLocked() {
+    return locked;
+  }
+
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+
+  @Override
+  public UUID getRelatedUserId() {
+    return getCreatedBy();
+  }
+
+  @Override
+  public void setRelatedUserFirstName(String relatedUserFirstName) {
+    setCreatedByUserFirstName(relatedUserFirstName);
+  }
+
+  @Override
+  public void setRelatedUserLastName(String relatedUserLastName) {
+    setCreatedByUserLastName(relatedUserLastName);
+  }
+
+  public String getCreatedByUserFirstName() {
+    return createdByUserFirstName;
+  }
+
+  public void setCreatedByUserFirstName(String createdByUserFirstName) {
+    this.createdByUserFirstName = createdByUserFirstName;
+  }
+
+  public String getCreatedByUserLastName() {
+    return createdByUserLastName;
+  }
+
+  public void setCreatedByUserLastName(String createdByUserLastName) {
+    this.createdByUserLastName = createdByUserLastName;
+  }
+
+  @Override
+  public Set<UUID> getResolvableUserIds() {
+    return new LinkedHashSet<>(List.of(getRelatedUserId()));
+  }
+}

@@ -1,0 +1,15 @@
+plugins {
+  id 'next-app'
+  id 'reverse-proxy'
+}
+
+next {
+  port = '3001'
+  sonarProjectKey = project.findProperty("sonar-project-key-citizen-portal")
+  apiProject = ':citizen-portal-api'
+}
+
+reverseProxy {
+  serviceName = "citizen-portal-reverse-proxy"
+  mainConfigFile = "citizen-portal.conf"
+}

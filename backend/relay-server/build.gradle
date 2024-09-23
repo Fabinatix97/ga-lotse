@@ -1,0 +1,33 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':lib-relay')
+    implementation project(':lib-service-directory-api')
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'net.logstash.logback:logstash-logback-encoder:latest.release'
+
+    runtimeOnly project(':rest-service-commons')
+
+    testImplementation project(':test-commons')
+    testImplementation project(':lib-service-directory-admin-api')
+    testImplementation testFixtures(project(':lib-service-directory-admin-api'))
+    testImplementation 'io.projectreactor.netty:reactor-netty-core'
+    testImplementation 'io.projectreactor.netty:reactor-netty-http'
+}
+
+dockerCompose {
+    startedServices = []
+}
+
+tasks.named('test').configure {
+    dependsOn ':service-directory:buildDockerImage'
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-relay-server') ?: "unspecified"
+}

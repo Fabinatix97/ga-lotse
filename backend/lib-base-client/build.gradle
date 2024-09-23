@@ -1,0 +1,15 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':base-api')
+    api project(':lib-statistics-api')
+
+    implementation project(':rest-client-commons')
+    implementation project(':test-helper-commons')
+
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework:spring-context'
+}

@@ -1,0 +1,203 @@
+{
+  "activate": "Aktivieren",
+  "activate-confirm": "Wollen Sie wirklich {{entity}} aktivieren?",
+  "actorColumnHeader": {
+    "_matchingClientRules": "Client Regeln",
+    "_matchingServerRules": "Server Regeln",
+    "_orgUnit": "Organisationseinheit",
+    "active": "Aktiv",
+    "author": "Autor",
+    "commonName": "CN",
+    "currentCertificate": "Aktuelles Zertifikat",
+    "id": "ID / Autor",
+    "metadata": "Metadaten",
+    "naturalId": "Sprechende ID",
+    "networkId": "Netzwerkssegment",
+    "previousCertificate": "Vorheriges Zertifikat",
+    "readableName": "Name",
+    "type": "Typ"
+  },
+  "actorHeader": "Aktoren",
+  "actorMetadata": "Aktor-Metadaten",
+  "actorMetadataColumnHeader": {
+    "changedAt": "Zeitstempel",
+    "content": "Inhalt",
+    "id": "ID / Autor"
+  },
+  "actorMetadataHeader": "Aktor-Metadaten",
+  "actors_one": "{{count}} Aktor",
+  "actors_other": "{{count}} Aktoren",
+  "allFilteredTableHint": "Alle Daten gefiltert",
+  "apply": "Anwenden",
+  "auditHistory": {
+    "added": "hinzugefügt",
+    "deleted": "gelöscht",
+    "modified": "geändert"
+  },
+  "auditLogEmptyLabel": "Überprüfen Sie Ihre ausgewählten Datumsangaben!",
+  "auditLogEmptyTitle": "Keine Einträge im angegebenen Datumsbereich gefunden",
+  "auditLogHeader": "Auditprotokoll",
+  "auditRevisionColumnFilter": {
+    "committer": "Prüfer",
+    "id": "ID",
+    "ip": "IP"
+  },
+  "certificate": {
+    "title": "Zertifikat",
+    "value": "Wert",
+    "signature": "Signatur",
+    "signatory": "Unterzeichner"
+  },
+  "close": "Schließen",
+  "collapseMenu": "Menü einklappen",
+  "collapseRow": "Zeile einklappen",
+  "columnHeader": {
+    "_matchingClientActors": "Clients",
+    "_matchingClientRules": "Client Regeln",
+    "_matchingServerActors": "Server",
+    "_matchingServerRules": "Server Regeln",
+    "_orgUnit": "Organisationseinheit",
+    "active": "Aktiv",
+    "actors": "Aktoren",
+    "author": "Autor",
+    "client": "Client Pattern",
+    "commonName": "CN",
+    "currentCertificate": "Aktuelles Zertifikat",
+    "description": "Beschreibung",
+    "empty": "leer",
+    "federalState": "Bundesland",
+    "id": "ID",
+    "metadata": "Metadaten",
+    "naturalId": "Sprechende ID",
+    "networkId": "Netzwerkssegment",
+    "previousCertificate": "Vorheriges Zertifikat",
+    "readableName": "Name",
+    "server": "Server Pattern",
+    "type": "Typ"
+  },
+  "committer": "Prüfer",
+  "commonNameMismatch": "CN stimmen nicht überein",
+  "confirmationDialog": {
+    "no": "Abbrechen",
+    "title": "Sind Sie sicher?",
+    "yes": "Fortfahren"
+  },
+  "create": "Erstellen",
+  "deactivate": "Deaktivieren",
+  "deactivate-confirm": "Wollen Sie wirklich {{entity}} deaktivieren?",
+  "delete": "Löschen",
+  "deleteHint": "--- Benutzer '{{author}}' will dies löschen ---",
+  "discard": "Verwerfen",
+  "downloadAuditLog": "Protokoll herunterladen",
+  "edit": "Bearbeiten",
+  "elements_one": "{{count}} Element",
+  "elements_other": "{{count}} Elemente",
+  "empty": "leer",
+  "emptyTableHint": "Keine Daten",
+  "enterSearchterm": "Suchbegriff eingeben",
+  "entities_one": "{{count}} Entität",
+  "entities_other": "{{count}} Entitäten",
+  "entityCart": "Entitäten genehmigen",
+  "error": "Fehler",
+  "errorReason": {
+    "502": "Es konnte keine Verbindung zum Backend-Server hergestellt werden."
+  },
+  "expandRow": "Zeile ausklappen",
+  "expensiveQuery": "Dies ist eine potenziell aufwendige Abfrage",
+  "exportConfig": "Konfiguration exportieren",
+  "exportHeader": "Aktuelle Konfiguration",
+  "fileRequired": "Bitte eine Datei auswählen.",
+  "fromInclusive": "Von",
+  "fullTextSearch": "Volltextsuche",
+  "gaLotseAdminPortal": "GA-Lotse Admin-Portal",
+  "hint_fileType": "Bitte eine Datei vom Typ {{fileType}} auswählen.",
+  "importConfigLabel": "Wählen Sie eine JSON-Datei aus",
+  "importHeader": "Konfiguration importieren",
+  "legal": {
+    "accessibility": {
+      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "title": "Erklärung zur Barrierefreiheit"
+    },
+    "acknowledgements": {
+      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "title": "Danksagung"
+    },
+    "contact": {
+      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "title": "Kontakt"
+    },
+    "imprint": {
+      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "title": "Impressum"
+    },
+    "privacy": {
+      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "title": "Datenschutzerklärung"
+    },
+    "releaseNotes": {
+      "content": [
+        "<h2>GA-Lotse 1.0</h2>",
+        "<h3>01.10.2024</h3>",
+        "<ul>",
+        "  <li>Einrichtung einer Service-Mesh-Infrastruktur zwischen verschiedenen Gesundheitsämtern, Aktoren und Organisationseinheiten</li>",
+        "  <li>Regelwerk zur Überprüfung zulässiger Verbindungen</li>",
+        "  <li>Administration von Org-Units, Aktoren und Regeln</li>",
+        "  <li>Export der Service-Directory-Konfiguration</li>",
+        "  <li>Ansicht und Export des Auditprotokolls</li>",
+        "</ul>"
+      ],
+      "title": "Release Notes"
+    },
+    "termsOfUse": {
+      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "title": "Nutzungsbedingungen"
+    }
+  },
+  "navigation": {
+    "actors": "Aktoren",
+    "auditLog": "Auditprotokoll",
+    "legal": "Rechtliches",
+    "orgUnits": "OrgUnits",
+    "rules": "Regeln",
+    "serviceDirectory": "Service Directory"
+  },
+  "negativeDateRangeHint": "Ungültiger Zeitraum",
+  "orgUnitColumnHeader": {
+    "active": "Aktiv",
+    "actors": "Aktoren",
+    "author": "Autor",
+    "federalState": "Bundesland",
+    "id": "ID / Autor",
+    "naturalId": "Sprechende ID",
+    "readableName": "Name",
+    "type": "Typ"
+  },
+  "orgUnitHeader": "Organisationseinheiten",
+  "orgUnits_one": "{{count}} OrgUnit",
+  "orgUnits_other": "{{count}} OrgUnits",
+  "progress": "Fortschritts-Anzeige",
+  "readyForReview": "Bereit zur Überprüfung",
+  "reset": "Zurücksetzen",
+  "rule": "Regel",
+  "ruleColumnHeader": {
+    "_matchingClientActors": "Clients",
+    "_matchingServerActors": "Server",
+    "active": "Aktiv",
+    "client": "Client Pattern",
+    "description": "Beschreibung",
+    "id": "ID / Autor",
+    "server": "Server Pattern"
+  },
+  "ruleHeader": "Erlaubnisregeln",
+  "rules_one": "{{count}} Regel",
+  "rules_other": "{{count}} Regeln",
+  "save": "Speichern",
+  "selectImportConfig": "Konfiguration auswählen",
+  "show": "Anzeigen",
+  "submit": "Absenden",
+  "toInclusive": "Bis",
+  "toggleLanguage": "Sprache wechseln",
+  "toggleMenu": "Navigation ein-/ausklappen",
+  "upload": "Importieren",
+  "username": "Nutzer"
+}

@@ -1,0 +1,15 @@
+rootProject.name = 'eshg-frontend'
+
+includeBuild 'backend'
+
+include 'employee-portal'
+include 'employee-portal-api'
+include 'citizen-portal'
+include 'citizen-portal-api'
+include 'admin-portal'
+include 'admin-portal-api'
+include 'e2e'
+include 'e2e-api'
+include 'lib-portal'
+include 'performance-test'
+include 'k8s'

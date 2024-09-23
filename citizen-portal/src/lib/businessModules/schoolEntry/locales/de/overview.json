@@ -1,0 +1,42 @@
+{
+  "pageTitle": "Einschulungsuntersuchung",
+  "information": {
+    "title": "Informationen zum Termin",
+    "invitation": "Den Termin zur Einschulungsuntersuchung verschickt das Gesundheitsamt per Post mit einem Einladungsschreiben und den aktuell geltenden Datenschutzrichtlinien etwa 3 bis 4 Wochen vor dem Termin.",
+    "cancellation": "Falls dieser Termin nicht wahrgenommen werden kann, sollte er rechtzeitig abgesagt werden. Die Kontaktdaten stehen auf dem Einladungsschreiben.",
+    "location": "Die Einschulungsuntersuchung findet im Gesundheitsamt in der {{address}} statt. Bitte im Eingangsbereich am Empfang melden und das Einladungsschreiben vorzeigen."
+  },
+  "place": {
+    "title": "Wo findet die Einschulungsuntersuchung statt?",
+    "school": "In der Schule ihres Kindes",
+    "or": "oder",
+    "healthDepartment": "in folgendem Gesundheitsamt"
+  },
+  "address": {
+    "title": "Adresse"
+  },
+  "openingHours": {
+    "title": "Öffnungs- und Sprechzeiten",
+    "days": "Mo, Di, Do",
+    "daysHoliday": "Di, Do",
+    "hours": "13:30 - 15:00 Uhr",
+    "remark": "Nur nach Terminabsprache.",
+    "remarkHoliday": "In den hessischen Schulferien – Nur nach Terminabsprache."
+  },
+  "telefon": {
+    "title": "Telefon",
+    "number": "Telefon: {{phoneNumber}}"
+  },
+  "email": {
+    "title": "E-Mail-Adresse"
+  },
+  "personalArea": {
+    "title": "Sie haben eine Einladung erhalten?",
+    "information": "Um Ihren Termin einsehen zu können, müssen Sie erst folgenden Datenschutzverordnungen zustimmen.",
+    "confirmPrivacyNotice": "Ich akzeptiere den Datenschutzhinweis.",
+    "privacyNotice": "Zum Datenschutzhinweis",
+    "confirmPrivacyPolicy": "Ich akzeptiere die Datenschutzerklärung.",
+    "privacyPolicy": "Zur Datenschutzerklärung",
+    "goToPersonalArea": "Einladung einsehen"
+  }
+}

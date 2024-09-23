@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720722821765-14">
+    <ext:createPostgresEnumType name="geoshapestatus" values="ACTIVE, ARCHIVED"/>
+    <ext:createPostgresEnumType name="subjecttype" values="FACILITY, PERSON"/>
+    <ext:createPostgresEnumType name="valuetype" values="BOOLEAN, CENTRAL_FILE_ID, DATE, DECIMAL, INTEGER, PROCEDURE_ID, TEXT, VALUE_WITH_OPTIONS"/>
+    <ext:createPostgresEnumType name="groupingtype" values="GROUPED, STACKED"/>
+    <ext:createPostgresEnumType name="orientation" values="HORIZONTAL, VERTICAL"/>
+    <ext:createPostgresEnumType name="scaling" values="ABSOLUTE, RELATIVE"/>
+    <ext:createPostgresEnumType name="binningmode" values="AUTO, MANUAL"/>
+    <ext:createPostgresEnumType name="range" values="ADAPTED, ORIGIN"/>
+    <ext:createPostgresEnumType name="numericcomparison" values="EQUAL, GREATER_EQUAL, GREATER_THAN, LESS_EQUAL, LESS_THAN"/>
+
+    <modifyDataType columnName="binning_mode" newDataType="binningmode" tableName="histogram_chart_configuration"/>
+    <modifyDataType columnName="grouping" newDataType="groupingtype" tableName="bar_chart_configuration"/>
+    <modifyDataType columnName="grouping" newDataType="groupingtype" tableName="histogram_chart_configuration"/>
+    <modifyDataType columnName="numeric_comparison" newDataType="numericcomparison" tableName="decimal_value_filter_parameter"/>
+    <modifyDataType columnName="numeric_comparison" newDataType="numericcomparison" tableName="integer_value_filter_parameter"/>
+    <modifyDataType columnName="orientation" newDataType="orientation" tableName="bar_chart_configuration"/>
+    <modifyDataType columnName="range" newDataType="range" tableName="line_chart_configuration"/>
+    <modifyDataType columnName="range" newDataType="range" tableName="scatter_chart_configuration"/>
+    <modifyDataType columnName="scaling" newDataType="scaling" tableName="bar_chart_configuration"/>
+    <modifyDataType columnName="scaling" newDataType="scaling" tableName="histogram_chart_configuration"/>
+    <modifyDataType columnName="status" newDataType="geoshapestatus" tableName="geo_shape"/>
+    <modifyDataType columnName="subject_type" newDataType="subjecttype" tableName="table_column"/>
+    <modifyDataType columnName="value_type" newDataType="valuetype" tableName="table_column"/>
+  </changeSet>
+</databaseChangeLog>

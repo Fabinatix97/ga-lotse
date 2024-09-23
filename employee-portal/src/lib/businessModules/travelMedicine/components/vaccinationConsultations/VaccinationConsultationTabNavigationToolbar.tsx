@@ -1,0 +1,69 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import {
+  FormatListBulletedOutlined,
+  ReceiptOutlined,
+  TextSnippetOutlined,
+  TimelineOutlined,
+} from "@mui/icons-material";
+import { Chip } from "@mui/joy";
+
+import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
+import { useGetStatus } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { VaccinationConsultationTabHeader } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabHeader";
+import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { statusColors } from "@/lib/shared/components/procedures/constants";
+import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
+import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+
+export function VaccinationConsultationTabNavigationToolbar({
+  id,
+}: Readonly<{
+  id: string;
+}>) {
+  const tabItems = createTabItems(id);
+  const status = useGetStatus(id).data;
+
+  return (
+    <TabNavigationToolbar
+      routeBack={businessRoutes.procedures.index}
+      header={<VaccinationConsultationTabHeader id={id} />}
+      afterTabs={
+        <Chip data-testid="tab-procedure-state" color={statusColors[status]}>
+          {procedureStatusNames[status]}
+        </Chip>
+      }
+      items={tabItems}
+    />
+  );
+}
+
+function createTabItems(procedureId: string): TabNavigationItem[] {
+  return [
+    {
+      tabButtonName: "Vorgangsdaten",
+      href: `${businessRoutes.procedures.baseData(procedureId)}`,
+      decorator: <TextSnippetOutlined />,
+    },
+    {
+      tabButtonName: "Anamnese",
+      href: `${businessRoutes.procedures.medicalHistories(procedureId)}`,
+      decorator: <FormatListBulletedOutlined />,
+    },
+    {
+      tabButtonName: "Bescheinigungen",
+      href: `${businessRoutes.procedures.certificates(procedureId)}`,
+      decorator: <ReceiptOutlined />,
+    },
+    {
+      tabButtonName: "Verlaufseinträge",
+      href: `${businessRoutes.procedures.progressEntries(procedureId).index}`,
+      decorator: <TimelineOutlined />,
+    },
+  ];
+}

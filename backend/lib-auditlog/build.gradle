@@ -1,0 +1,33 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':auditlog-api')
+    implementation project(':rest-client-commons')
+    implementation project(':rest-oauth-client-commons')
+    implementation project(':test-helper-commons')
+    implementation project(':lib-security-config-urls')
+
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.security:spring-security-web'
+    implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'commons-io:commons-io:latest.release'
+
+    testImplementation project(':base-api')
+    testImplementation project(':lib-base-client')
+    testImplementation testFixtures(project(':business-module-commons'))
+    testImplementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    testRuntimeOnly 'org.springframework.boot:spring-boot-starter-web'
+}
+
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    dependsOn project(':auditlog').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':auditlog').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}

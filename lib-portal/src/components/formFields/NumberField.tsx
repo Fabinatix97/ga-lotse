@@ -1,0 +1,71 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { Input, InputProps } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { ChangeEvent, ReactNode } from "react";
+import { isDefined } from "remeda";
+
+import { FieldProps, OptionalFieldValue } from "../../types/form";
+import { useIsFormDisabled } from "../form/DisabledFormContext";
+
+import { BaseField, FieldComponentProps, useBaseField } from "./BaseField";
+import { StyledInputProps } from "./types";
+
+export interface NumberFieldProps
+  extends FieldProps<OptionalFieldValue<number>>,
+    FieldComponentProps,
+    StyledInputProps {
+  input?: (props: InputProps) => ReactNode;
+  sx?: SxProps;
+  onChange?: (newValue: OptionalFieldValue<number>) => void;
+  min?: number;
+  max?: number;
+  endDecorator?: ReactNode;
+}
+
+export function NumberField(props: NumberFieldProps) {
+  const FieldComponent = props.component ?? BaseField;
+  const InputComponent = props.input ?? Input;
+  const field = useBaseField<OptionalFieldValue<number>>(props);
+  const disabled = useIsFormDisabled();
+
+  async function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const rawValue = event.target.valueAsNumber;
+    const newValue = Number.isNaN(rawValue) ? "" : rawValue;
+
+    await field.helpers.setValue(newValue);
+    if (isDefined(props.onChange)) {
+      props.onChange(newValue);
+    }
+  }
+
+  return (
+    <FieldComponent
+      label={props.label}
+      helperText={field.helperText}
+      required={field.required}
+      error={field.error}
+    >
+      <InputComponent
+        type="number"
+        name={props.name}
+        value={field.input.value}
+        onChange={handleChange}
+        onBlur={field.input.onBlur}
+        slotProps={{
+          input: {
+            min: props.min,
+            max: props.max,
+          },
+        }}
+        color={props.primary ? "primary" : undefined}
+        sx={props.sx}
+        disabled={disabled}
+        endDecorator={props.endDecorator}
+      />
+    </FieldComponent>
+  );
+}

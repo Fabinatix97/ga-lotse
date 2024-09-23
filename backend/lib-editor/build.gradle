@@ -1,0 +1,19 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':lib-commons')
+    api project(":lib-editor-api")
+
+    implementation project(':business-module-commons')
+
+    implementation 'jakarta.persistence:jakarta.persistence-api'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework.data:spring-data-jpa'
+    implementation 'org.springframework:spring-aspects'
+    implementation 'org.springframework:spring-webmvc'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    testImplementation testFixtures(project(':business-module-commons'))
+}

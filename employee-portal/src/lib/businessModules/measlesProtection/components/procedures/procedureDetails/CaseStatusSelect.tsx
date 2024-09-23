@@ -1,0 +1,66 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import {
+  ApiCaseStatus,
+  ApiGetProcedure200Response,
+} from "@eshg/employee-portal-api/measlesProtection";
+import {
+  SelectOptions,
+  optionsFromRecord,
+} from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { FormControl, Select } from "@mui/joy";
+
+import { useUpdateCaseStatusMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
+import { caseStatusNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
+
+export function CaseStatusSelect({
+  procedure,
+}: {
+  readonly procedure: ApiGetProcedure200Response;
+}) {
+  const updateCaseStatus = useUpdateCaseStatusMutation({
+    onSuccess() {
+      snackbar.confirmation("Bearbeitungszustand aktualisiert");
+    },
+  });
+  const snackbar = useSnackbar();
+  const procedureClosed = !procedure.isOpen;
+
+  async function onChange(_event: unknown, value: string | null) {
+    const newValue = value as ApiCaseStatus;
+    if (newValue !== null) {
+      await updateCaseStatus.mutateAsync({
+        procedureId: procedure.id,
+        data: newValue,
+      });
+    }
+  }
+
+  return (
+    <FormControl disabled={procedureClosed}>
+      <Select
+        aria-label="Bearbeitungszustand"
+        defaultValue={procedure.caseStatus}
+        onChange={onChange}
+        variant="soft"
+        color="warning"
+        sx={{
+          width: "200px",
+        }}
+        slotProps={{
+          listbox: {
+            placement: "bottom-start",
+          },
+        }}
+      >
+        <SelectOptions options={optionsFromRecord(caseStatusNames)} />
+      </Select>
+    </FormControl>
+  );
+}

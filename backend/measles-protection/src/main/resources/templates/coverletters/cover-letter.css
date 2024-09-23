@@ -1,0 +1,98 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+@page {
+  size: A4 portrait;
+  margin-bottom: 25mm;
+
+  @bottom-left {
+    content: element(--var-footerRunning);
+    font-family: sans-serif;
+    font-size: 9pt;
+    border-top: black solid 1px;
+    vertical-align: top;
+  }
+
+  @bottom-right {
+    content: "Seite " counter(page) " von " counter(pages);
+    font-family: sans-serif;
+    font-size: 9pt;
+    border-top: black solid 1px;
+    vertical-align: top;
+  }
+}
+
+html {
+  font-family: sans-serif;
+  font-size: 10pt;
+}
+
+/* the footer is a running element, which is used in the @bottom-center margin box */
+/* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+footer {
+  position: running(--var-footerRunning);
+}
+
+.header .officeName {
+  font-size: 16pt;
+}
+
+.header .objectType {
+  font-size: 12pt;
+}
+
+.header .letterhead td {
+  padding: 0;
+  border-spacing: 0;
+}
+
+.header .receiver {
+  padding-right: 20px;
+}
+
+.header .receiver .officeAddress {
+  font-size: 7pt;
+  margin-bottom: 10px;
+}
+
+.header .sender .reportLocation {
+  font-size: 8pt;
+  margin-top: 10px;
+}
+
+.subject p {
+  padding-top: 20px;
+  font-weight: bold;
+}
+
+.participants ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+.access-code {
+  padding-right: 40px;
+}
+
+.important {
+  font-weight: bold;
+}
+
+.box {
+  border: 1px solid black;
+  padding: 6px;
+}
+
+.officeInfoHeader {
+  font-size: 7pt;
+}
+
+.officeInfoContent {
+  font-size: 10pt;
+}
+
+.footerContent {
+  font-size: 7pt;
+}

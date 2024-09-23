@@ -1,0 +1,310 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import {
+  ApiChecklist,
+  ApiInspectionPhase,
+  ApiUpdateInspectionRequest,
+} from "@eshg/employee-portal-api/inspection";
+import {
+  AutorenewOutlined,
+  Checklist as ChecklistIcon,
+} from "@mui/icons-material";
+import { Grid } from "@mui/joy";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+
+import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { useGetChecklists } from "@/lib/businessModules/inspection/api/queries/checklist";
+import { useGetIncidents } from "@/lib/businessModules/inspection/api/queries/incidents";
+import {
+  inspectionGettersQueryKey,
+  useGetInspection,
+} from "@/lib/businessModules/inspection/api/queries/inspection";
+import { useGetSelfUser } from "@/lib/businessModules/inspection/api/queries/users";
+import { ExecutionSidePanel } from "@/lib/businessModules/inspection/components/inspection/execution/ExecutionSidePanel";
+import {
+  SidePanelEvent,
+  SidePanelNavigationTab,
+} from "@/lib/businessModules/inspection/components/inspection/execution/SidePanelNavigation";
+import { Checklist } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/Checklist";
+import { ChecklistValidationProvider } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
+import { IncidentsPanel } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentsPanel";
+import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
+import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
+import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+
+export enum InspectionExecutionTabType {
+  CHECKLIST,
+  INCIDENTS,
+}
+
+type ActiveTabState = (
+  | { tab: InspectionExecutionTabType.CHECKLIST }
+  | { tab: InspectionExecutionTabType.INCIDENTS }
+) & {
+  tabId: string;
+  fallbackTabId: string; // in case tabId can not be found when tabs change, try a fallback to this id
+};
+
+type Tab = (
+  | {
+      checklist: ApiChecklist;
+      type: InspectionExecutionTabType.CHECKLIST;
+      SidePanelProps: { type: InspectionExecutionTabType.CHECKLIST };
+    }
+  | {
+      type: InspectionExecutionTabType.INCIDENTS;
+      SidePanelProps: { type: InspectionExecutionTabType.INCIDENTS };
+    }
+) & {
+  fallbackTabId: string;
+  SidePanelProps: SidePanelNavigationTab;
+};
+
+type Tabs = Record<string, Tab>;
+
+type TabsList = Tab[];
+
+export function InspectionTabExecution({
+  inspectionId,
+}: Readonly<{ inspectionId: string }>) {
+  const queryClient = useQueryClient();
+
+  const { data: checklists } = useGetChecklists(inspectionId);
+  const { data: inspection } = useGetInspection(inspectionId);
+  const { data: incidents } = useGetIncidents(inspectionId);
+  const { data: selfUser } = useGetSelfUser();
+  const { mutateAsync: updateInspection } = useUpdateInspection();
+  const { openCancelDialog } = useConfirmationDialog();
+  const currentSelectedNonCoreVersions =
+    getCurrentSelectedNonCoreVersions(checklists);
+  const { tabs, tabsList } = createTabs(checklists);
+
+  const lockedByDifferentUser =
+    inspection.lockedByUser !== undefined &&
+    selfUser.userId !== inspection.lockedByUser.userId;
+
+  const readOnly =
+    lockedByDifferentUser ||
+    !inspectionIsBeforePhase(inspection.phase, ApiInspectionPhase.Executed);
+
+  const [tabState, setTabState] = useState<ActiveTabState>(() => ({
+    tab: InspectionExecutionTabType.CHECKLIST,
+    tabId: tabsList[0]!.SidePanelProps.tabId,
+    fallbackTabId: tabsList[0]!.fallbackTabId,
+  }));
+
+  const [checklistSidebar, setChecklistSidebar] = useState(false);
+
+  async function handleChecklistDelete(checklistVersionId: string) {
+    const request: ApiUpdateInspectionRequest = {
+      checklistDefinitionVersionIds: currentSelectedNonCoreVersions
+        .filter((v) => v.versionId !== checklistVersionId)
+        .map((v) => v.versionId),
+    };
+
+    if (tabState.fallbackTabId === checklistVersionId) {
+      const currentIndex = tabsList.findIndex(
+        (tab) => tab.SidePanelProps.tabId === tabState.tabId,
+      );
+      if (currentIndex === 0) {
+        handleActiveTabChange(tabsList[1]!.SidePanelProps);
+      } else {
+        handleActiveTabChange(tabsList[currentIndex - 1]!.SidePanelProps);
+      }
+    }
+
+    await updateInspection({
+      id: inspectionId,
+      apiUpdateInspectionRequest: request,
+    });
+  }
+
+  async function handleAddClick() {
+    // before opening the sidebar we must clear the query cache for inspection
+    // and available CLDVs, because they could have changed from the outside.
+    await queryClient.invalidateQueries({
+      queryKey: inspectionGettersQueryKey(inspectionId),
+    });
+    setChecklistSidebar(true);
+  }
+
+  function handleDeleteClick(tab: SidePanelEvent) {
+    if (tab.type === InspectionExecutionTabType.CHECKLIST) {
+      openCancelDialog({
+        onConfirm: async () => {
+          const clTab = tabs[tab.tabId];
+          if (clTab && clTab.type === InspectionExecutionTabType.CHECKLIST) {
+            await handleChecklistDelete(clTab.checklist.context.id);
+          }
+        },
+        title: "Checkliste löschen",
+        description:
+          "Möchten Sie diese Checkliste wirklich löschen? Ihre Änderungen in dieser Checkliste sowie alle assoziierten Vorkommnisse gehen hierbei verloren.",
+      });
+    }
+  }
+
+  const handleActiveTabChange = useCallback(
+    (tab: SidePanelEvent) => {
+      if (tab.tabId === tabState.tabId) {
+        return;
+      }
+      if (tab.type === InspectionExecutionTabType.CHECKLIST) {
+        const clTab = tabs[tab.tabId];
+        if (clTab && clTab.type === InspectionExecutionTabType.CHECKLIST) {
+          setTabState({
+            tab: InspectionExecutionTabType.CHECKLIST,
+            tabId: clTab.checklist.id,
+            fallbackTabId: clTab.checklist.context.id,
+          });
+        }
+      } else if (tab.type === InspectionExecutionTabType.INCIDENTS) {
+        setTabState({
+          tab: InspectionExecutionTabType.INCIDENTS,
+          fallbackTabId: "incidents",
+          tabId: tab.tabId,
+        });
+      }
+    },
+    [tabState.tabId, tabs],
+  );
+
+  // when checklists/tabs are reloaded, we need to reset the active tab
+  useEffect(() => {
+    if (tabs[tabState.tabId] === undefined) {
+      const fallbackTab = tabsList.find(
+        (tab) => tab.fallbackTabId === tabState.fallbackTabId,
+      );
+      if (fallbackTab !== undefined) {
+        handleActiveTabChange(fallbackTab.SidePanelProps);
+      } else {
+        handleActiveTabChange(tabsList[0]!.SidePanelProps);
+      }
+    }
+  }, [
+    handleActiveTabChange,
+    tabState.fallbackTabId,
+    tabState.tabId,
+    tabs,
+    tabsList,
+  ]);
+
+  return (
+    <ChecklistValidationProvider>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          overflow: { xxs: "auto", lg: "hidden" },
+          flexDirection: { xxs: undefined, lg: "row" },
+        }}
+      >
+        <Grid
+          xxs={12}
+          lg={8}
+          sx={{
+            overflow: { xxs: undefined, lg: "hidden" },
+            display: { xxs: undefined, lg: "flex" },
+            flexGrow: { xxs: undefined, lg: 1 },
+            order: { xxs: 1, lg: 0 },
+            maxHeight: "100%",
+          }}
+        >
+          {tabState.tab === InspectionExecutionTabType.CHECKLIST && (
+            <Checklist
+              checklist={checklists.find((c) => c.id === tabState.tabId)}
+              inspectionExternalId={inspectionId}
+              readOnly={readOnly}
+            />
+          )}
+          {tabState.tab === InspectionExecutionTabType.INCIDENTS && (
+            <IncidentsPanel
+              procedureId={inspectionId}
+              incidents={incidents}
+              readOnly={readOnly}
+            />
+          )}
+        </Grid>
+        <Grid xxs={12} lg={4} sx={{ order: { xxs: 0, lg: 1 } }}>
+          <ExecutionSidePanel
+            tabs={tabsList.map((tab) => tab.SidePanelProps)}
+            activeTabId={tabState.tabId}
+            inspectionId={inspectionId}
+            checklists={checklists}
+            onActiveTabChange={handleActiveTabChange}
+            onAddButtonClick={handleAddClick}
+            onDeleteClick={handleDeleteClick}
+            readOnly={readOnly}
+          />
+        </Grid>
+
+        {checklistSidebar && (
+          <ChecklistSelectSidebar
+            open
+            withCoreVersions={false}
+            inspectionExternalId={inspectionId}
+            currentSelectedNonCoreVersions={currentSelectedNonCoreVersions}
+            onClose={() => setChecklistSidebar(false)}
+          />
+        )}
+      </Grid>
+    </ChecklistValidationProvider>
+  );
+}
+
+function createTabs(checklists: ApiChecklist[]): {
+  tabs: Tabs;
+  tabsList: TabsList;
+} {
+  let tabsList: TabsList = checklists.map((checklist, index) => ({
+    type: InspectionExecutionTabType.CHECKLIST,
+    checklist: checklist,
+    fallbackTabId: checklist.context.id,
+    SidePanelProps: {
+      tabId: checklist.id,
+      label: `${index + 1}. ${checklist.context.name}`,
+      ariaLabel: `${checklist.context.name}`,
+      startDecorator: <ChecklistIcon />,
+      type: InspectionExecutionTabType.CHECKLIST,
+      isCoreChecklist: checklist.coreChecklist,
+    },
+  }));
+  tabsList = tabsList.concat([
+    {
+      fallbackTabId: "incidents",
+      type: InspectionExecutionTabType.INCIDENTS,
+      SidePanelProps: {
+        type: InspectionExecutionTabType.INCIDENTS,
+        tabId: "incidents",
+        label: "Vorkommnisse",
+        startDecorator: <AutorenewOutlined />,
+      },
+    },
+  ]);
+  const tabs: Tabs = tabsList.reduce((acc: Tabs, curr: Tab) => {
+    acc[curr.SidePanelProps.tabId] = curr;
+    return acc;
+  }, {});
+  return {
+    tabsList,
+    tabs,
+  };
+}
+
+function getCurrentSelectedNonCoreVersions(checklists: ApiChecklist[]) {
+  return checklists
+    .filter((cl) => !cl.coreChecklist)
+    .map(({ context }) => ({
+      ...context,
+      definitionId: context.defId,
+      isCoreChecklist: false,
+      isExpandable: true,
+      versionId: context.id,
+    }));
+}

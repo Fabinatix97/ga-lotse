@@ -1,0 +1,117 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { type ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { useProtectionProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
+import { ProcedureFilters } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ProceduresTableFilters";
+
+import { measlesProtectionApiQueryKey } from "./apiQueryKeys";
+
+function mapTableFieldToSortField(sortBy?: string) {
+  if (!sortBy) {
+    return;
+  }
+  switch (sortBy) {
+    case "id":
+      throw Error("Not implemented");
+    case "affectedPerson_firstName":
+      return "FIRST_NAME";
+    case "affectedPerson_lastName":
+      return "LAST_NAME";
+    case "affectedPerson_dateOfBirth":
+      return "DATE_OF_BIRTH";
+    case "createdAt":
+      return "CREATED_AT";
+    case "facility_name":
+      return "FACILITY_NAME";
+    case "facility_type":
+      return "FACILITY_TYPE";
+    case "procedureStatus":
+      return "PROCEDURE_STATUS";
+    case "caseStatus":
+      return "CASE_STATUS";
+  }
+  throw Error(`Unexpected sort field: ${sortBy}`);
+}
+
+interface PageRequest {
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: string;
+}
+export function useProceduresQuery(
+  page: PageRequest,
+  filters: ProcedureFilters,
+) {
+  const measlesProtectionApi = useProtectionProcedureApi();
+  return useSuspenseQuery({
+    queryFn: ({ signal }) =>
+      measlesProtectionApi.getProcedures(
+        page.pageNumber,
+        page.pageSize,
+        mapTableFieldToSortField(page.sortBy),
+        page.sortOrder?.toUpperCase(),
+        filters.creationDate,
+        filters.birthday,
+        filters.facilityType,
+        filters.caseStatus,
+        filters.procedureStatus,
+        filters.roleStatus,
+        filters.hasAppointment,
+        filters.measure,
+        filters.proofRequestSent,
+        filters.proofSubmissionResult,
+        { signal },
+      ),
+
+    queryKey: measlesProtectionApiQueryKey([
+      "procedures",
+      "list",
+      page,
+      makeFiltersQueryKeyPart(filters),
+    ]),
+  });
+}
+
+// Apparently nested sets don't go down so well with Tanstack Query
+function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
+  return Object.fromEntries(
+    Object.entries(filters).map(([key, value]) => {
+      if (value instanceof Set) {
+        return [key, Array.from(value).join(",")];
+      }
+      return [key, value];
+    }),
+  );
+}
+
+export function useProcedureQuery(procedureId: string) {
+  const measlesProtectionApi = useProtectionProcedureApi();
+  return useSuspenseQuery({
+    queryFn: ({ signal }) =>
+      measlesProtectionApi.getProcedure(procedureId, { signal }),
+    queryKey: measlesProtectionApiQueryKey(["procedures", procedureId]),
+  });
+}
+
+export function useProceduresForPersonQuery(
+  person: ApiGetReferencePersonResponse,
+) {
+  const measlesProtectionApi = useProtectionProcedureApi();
+  return useSuspenseQuery({
+    queryFn: async ({ signal }) =>
+      measlesProtectionApi.getProceduresForPerson({ person }, { signal }),
+    queryKey: measlesProtectionApiQueryKey([
+      "procedures",
+      "for-person",
+      person,
+    ]),
+  });
+}

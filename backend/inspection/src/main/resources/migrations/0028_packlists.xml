@@ -1,0 +1,95 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1724855393286-1">
+    <createTable tableName="packlist_definition">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_packlist_definition"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="most_recent_revision_number" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="object_type_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-2">
+    <createTable tableName="packlist_definition_element">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_packlist_definition_element"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="position" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="text" type="TEXT"/>
+      <column name="packlist_definition_revision_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-3">
+    <createTable tableName="packlist_definition_revision">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_packlist_definition_revision"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+      <column name="modified_by" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revision" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="valid_from" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="valid_to" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="packlist_definition_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-4">
+    <addUniqueConstraint columnNames="packlist_definition_id, revision" constraintName="uk_packlist_definition_revision" tableName="packlist_definition_revision"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-5">
+    <createIndex indexName="idx_packlist_definition_element_packlist_definition_revision_id" tableName="packlist_definition_element">
+      <column name="packlist_definition_revision_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-6">
+    <createIndex indexName="idx_packlist_definition_object_type_id" tableName="packlist_definition">
+      <column name="object_type_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-7">
+    <addForeignKeyConstraint baseColumnNames="packlist_definition_revision_id" baseTableName="packlist_definition_element" constraintName="fk_packlist_definition_element_packlist_definition_revision" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="packlist_definition_revision" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-8">
+    <addForeignKeyConstraint baseColumnNames="object_type_id" baseTableName="packlist_definition" constraintName="fk_packlist_definition_object_type" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="object_type" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1724855393286-9">
+    <addForeignKeyConstraint baseColumnNames="packlist_definition_id" baseTableName="packlist_definition_revision" constraintName="fk_packlist_definition_revision_packlist_definition" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="packlist_definition" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,73 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - communications
+  - data-analytics
+  - data-collection
+  - data-visualization
+  - digital-asset-management
+  - identity-management
+  - instant-messaging
+  - it-security
+  - task-management
+  - workflow-management
+description:
+  en:
+    apiDocumentation: |-
+      https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation/-/tree/main/open-api
+    documentation: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-documentation'
+    features:
+      - base module
+      - identity access management
+      - central file for persons and facilities
+      - calendar
+      - inventory
+      - resource management
+      - contact management
+      - procedure metrics
+      - school-entry module
+      - inspection module
+      - measles-protection module
+      - travel-medicine module
+      - statistics module
+      - citizen portal
+      - service mesh
+      - relay server
+    genericName: Software for Health Departments
+    longDescription: |
+      GA-Lotse is an application platform for public health departments in
+      Germany.
+      It consists of various components. At its core it is based on a service
+      mesh with central services.
+      Every health department is built around a core module with various
+      business modules.
+    shortDescription: |-
+      GA-Lotse is an application platform for public health departments
+      in Germany. It contains mutiple business modules and can be extended.
+developmentStatus: development
+legal:
+  license: AGPL-3.0-only
+localisation:
+  availableLanguages:
+    - de
+  localisationReady: true
+maintenance:
+  type: internal
+  contacts:
+    - name: Gesundheitsamt Stadt Frankfurt am Main
+      email: 'info.gesundheitsamt@stadt-frankfurt.de'
+      phone: '+49 69 21233970'
+name: GA-Lotse
+platforms:
+  - web
+releaseDate: '2024-10-01'
+softwareType: standalone/web
+softwareVersion: '1.0'
+url: 'https://gitlab.opencode.de/ga-lotse/ga-lotse.git'
+landingUrl: 'https://gitlab.opencode.de/ga-lotse'

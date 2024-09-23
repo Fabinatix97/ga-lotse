@@ -1,0 +1,179 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1718889960029-6">
+        <createTable tableName="diagram">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_diagram"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="evaluation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="external_id" constraintName="diagram_external_id_key" tableName="diagram"/>
+        <addForeignKeyConstraint baseColumnNames="evaluation_id" baseTableName="diagram" constraintName="fk_diagram_evaluation" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="evaluation" validate="true"/>
+
+        <createTable tableName="abstract_filter_parameter">
+            <column name="type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_abstract_filter_parameter"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_selection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="attribute_selection_id" constraintName="abstract_filter_parameter_attribute_selection_id_key" tableName="abstract_filter_parameter"/>
+
+        <createTable tableName="diagram_filters">
+            <column name="diagram_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filters_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="filters_id" constraintName="diagram_filters_filters_id_key" tableName="diagram_filters"/>
+        <addForeignKeyConstraint baseColumnNames="diagram_id" baseTableName="diagram_filters" constraintName="fk_diagram_filters_diagram" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="attribute_selection_id" baseTableName="abstract_filter_parameter" constraintName="fk_abstract_filter_parameter_attribute_selection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="attribute_selection" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="filters_id" baseTableName="diagram_filters" constraintName="fk_diagram_filters_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="boolean_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_boolean_filter_parameter"/>
+            </column>
+            <column name="search_for_true" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="search_for_false" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="search_for_null" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="boolean_filter_parameter" constraintName="fk_boolean_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="decimal_range_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_decimal_range_filter_parameter"/>
+            </column>
+            <column name="min_value_inclusive" type="numeric(10, 4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_value_inclusive" type="numeric(10, 4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_null_values" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="decimal_range_filter_parameter" constraintName="fk_decimal_range_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="decimal_value_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_decimal_value_filter_parameter"/>
+            </column>
+            <column name="value" type="numeric(10, 4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="numeric_comparison" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_null_values" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="decimal_value_filter_parameter" constraintName="fk_decimal_value_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="integer_range_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_integer_range_filter_parameter"/>
+            </column>
+            <column name="min_value_inclusive" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_value_inclusive" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_null_values" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="integer_range_filter_parameter" constraintName="fk_integer_range_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="integer_value_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_integer_value_filter_parameter"/>
+            </column>
+            <column name="value" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="numeric_comparison" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_null_values" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="integer_value_filter_parameter" constraintName="fk_integer_value_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="null_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_null_filter_parameter"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="null_filter_parameter" constraintName="fk_null_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="text_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_text_filter_parameter"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="text_filter_parameter" constraintName="fk_text_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="value_option_filter_parameter">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_value_option_filter_parameter"/>
+            </column>
+            <column name="search_for_null" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="value_option_filter_parameter" constraintName="fk_value_option_filter_parameter_abstract_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_filter_parameter" validate="true"/>
+
+        <createTable tableName="value_option_filter_to_search_values">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="search_value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="value_option_filter_to_search_values" constraintName="fk_value_option_filter_to_search_values_value_option_filter_parameter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="value_option_filter_parameter" validate="true"/>
+
+        <addNotNullConstraint columnDataType="clob" columnName="meaning" tableName="value_to_meaning" validate="true"/>
+        <addNotNullConstraint columnDataType="clob" columnName="value" tableName="value_to_meaning" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

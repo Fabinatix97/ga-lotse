@@ -1,0 +1,99 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+plugins {
+    id "com.bmuschko.docker-remote-api"
+}
+
+def getImageBaseName() {
+    if (project.hasProperty("dockerImageBaseName")) {
+        return project.property("dockerImageBaseName")
+    }
+    return "ga-lotse"
+}
+
+def getImageName() {
+    return "${getImageBaseName()}/${project.name}"
+}
+
+def getRepoDigest(String imageNameWithTag) {
+    def repoDigest = new ByteArrayOutputStream()
+    exec {
+        standardOutput = repoDigest
+        commandLine 'docker', 'inspect', '--format={{index .RepoDigests 0}}', imageNameWithTag
+    }
+
+    return repoDigest.toString().trim()
+}
+
+def assertTagNameIsGiven() {
+    assert project.hasProperty("tagName"): "tagName is necessary"
+}
+
+def getTagName() {
+    return project.findProperty("tagName")
+}
+
+def getImageNameWithTag() {
+    return "${getImageName()}:${getTagName()}"
+}
+
+def getImageNameWithLatestTag() {
+    return "${getImageName()}:latest"
+}
+
+// Export methods by turning them into closures
+ext {
+    getImageBaseName = this.&getImageBaseName
+    getImageName = this.&getImageName
+    getRepoDigest = this.&getRepoDigest
+    assertTagNameIsGiven = this.&assertTagNameIsGiven
+    getTagName = this.&getTagName
+    getImageNameWithTag = this.&getImageNameWithTag
+    getImageNameWithLatestTag = this.&getImageNameWithLatestTag
+}
+
+tasks.register('pushDockerImage', DockerPushImage) {
+    dependsOn 'buildDockerImage'
+
+    if (getTagName() != null) {
+        images.add(getImageNameWithTag())
+    }
+
+    doFirst {
+        assertTagNameIsGiven()
+    }
+}
+
+tasks.register("signDockerImage", Exec) {
+    def digest = ""
+
+    commandLine 'cosign', 'sign', digest,
+            '--annotations', "com.gitlab.ci.pipeline.id=${System.getenv("CI_PIPELINE_ID")}",
+            '--annotations', "com.gitlab.ci.pipeline.url=${System.getenv("CI_PIPELINE_URL")}",
+            '--annotations', "com.gitlab.ci.job.id=${System.getenv("CI_JOB_ID")}",
+            '--annotations', "com.gitlab.ci.job.url=${System.getenv("CI_JOB_URL")}",
+            '--annotations', "com.gitlab.ci.commit.sha=${System.getenv("CI_COMMIT_SHA")}",
+            '--annotations', "com.gitlab.ci.commit.ref.name=${System.getenv("CI_COMMIT_REF_NAME")}",
+            '--annotations', "com.gitlab.ci.project.path=${System.getenv("CI_PROJECT_PATH")}",
+            '--annotations', "org.opencontainers.image.source=${System.getenv("CI_PROJECT_URL")}",
+            '--annotations', "org.opencontainers.image.revision=${System.getenv("CI_COMMIT_SHA")}"
+    doFirst {
+        assertTagNameIsGiven()
+        digest = getRepoDigest(getImageNameWithTag())
+    }
+}
+
+tasks.register("verifyImageSignature", Exec) {
+    def certificateIdentity = project.findProperty("certificateIdentity")
+    def certificateOidcIssuer = project.findProperty("certificateOidcIssuer")
+
+    commandLine 'cosign', 'verify', getImageNameWithTag(),
+            '--certificate-identity', certificateIdentity ?: "",
+            '--certificate-oidc-issuer', certificateOidcIssuer ?: ""
+
+    doFirst {
+        assertTagNameIsGiven()
+        assert project.hasProperty("certificateIdentity"): "certificateIdentity is necessary"
+        assert project.hasProperty("certificateOidcIssuer"): "certificateOidcIssuer is necessary"
+    }
+}

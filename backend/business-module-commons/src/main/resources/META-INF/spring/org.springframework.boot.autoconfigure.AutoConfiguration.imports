@@ -1,0 +1,8 @@
+de.eshg.rest.service.ExceptionHandlingAutoConfiguration
+de.eshg.rest.service.ResponseValidationAutoConfiguration
+de.eshg.rest.service.UnknowQueryParameterValidationAutoConfiguration
+de.eshg.rest.service.EshgSpringMvcAutoConfiguration
+de.eshg.rest.service.ServerAutoConfiguration
+de.eshg.rest.service.JacksonAutoConfiguration
+de.eshg.rest.service.security.KeycloakAuthAutoConfiguration
+de.eshg.management.config.ManagementEndpointAutoConfiguration

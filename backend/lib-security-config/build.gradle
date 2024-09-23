@@ -1,0 +1,17 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    implementation project(':lib-security-config-urls')
+    implementation project(':lib-commons')
+    implementation project(':lib-keycloak')
+    implementation project(':util-commons')
+
+    implementation 'org.springframework.security:spring-security-config'
+    implementation 'org.springframework.security:spring-security-web'
+
+    compileOnly 'org.jetbrains:annotations:latest.release'
+
+    testImplementation project(':test-commons')
+}

@@ -1,0 +1,11 @@
+plugins {
+  id 'openapi-generator'
+}
+
+def backendDir = rootProject.layout.projectDirectory.dir('backend')
+
+openapiGenerator {
+  inputSpecs = [
+    'serviceDirectory'  : backendDir.file('service-directory/openApi.yaml')
+  ]
+}

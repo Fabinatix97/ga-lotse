@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721626687627-1">
+    <!-- Implementation Note: do not use addUniqueConstraint as we need NULLS NOT DISTINCT -->
+    <sql>
+      ALTER TABLE audited_rule
+        ADD CONSTRAINT uq_columns_audited_rule
+        UNIQUE NULLS NOT DISTINCT
+        (client_federal_state,client_org_unit_type,client_org_unit_name,client_actor_type,client_actor_name,server_federal_state,server_org_unit_type,server_org_unit_name,server_actor_type,server_actor_name)
+    </sql>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1721626687627-2">
+    <!-- Implementation Note: do not use addUniqueConstraint as we need NULLS NOT DISTINCT -->
+    <sql>
+      ALTER TABLE staged_rule
+        ADD CONSTRAINT uq_columns_staged_rule
+          UNIQUE NULLS NOT DISTINCT
+        (client_federal_state,client_org_unit_type,client_org_unit_name,client_actor_type,client_actor_name,server_federal_state,server_org_unit_type,server_org_unit_name,server_actor_type,server_actor_name)
+    </sql>
+  </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,24 @@
+plugins {
+    id "eshg.java-lib"
+    id "java-test-fixtures"
+}
+
+dependencies {
+    implementation project(':api-commons')
+    implementation "org.springframework:spring-web"
+    implementation "org.springframework:spring-webmvc"
+    implementation "org.springframework:spring-context"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "jakarta.servlet:jakarta.servlet-api"
+    implementation "org.zalando:logbook-api:latest.release"
+    runtimeOnly "org.zalando:logbook-spring-boot-starter:latest.release"
+
+    testFixturesImplementation project(":test-commons")
+    testFixturesImplementation "org.zalando:logbook-api:latest.release"
+    testFixturesImplementation "ch.qos.logback:logback-classic"
+
+    testImplementation project(':test-commons')
+    testImplementation "org.springframework.boot:spring-boot-starter-web"
+    testImplementation 'org.springframework.boot:spring-boot-starter-security'
+}

@@ -1,0 +1,145 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Button, Stack, Typography } from "@mui/joy";
+import { AuthType, InteractiveAuth } from "matrix-js-sdk";
+import { useEffect, useMemo, useRef } from "react";
+
+import { SSOAuthModalValues } from "@/lib/businessModules/chat/components/secureBackup/CreateBackupSidebar";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
+import { BaseModal } from "@/lib/shared/components/BaseModal";
+
+type RequestEmailType = (
+  email: string,
+  secret: string,
+  attempt: number,
+  session: string,
+) => Promise<{ sid: string }>;
+
+interface SSOAuthModalProps {
+  values?: SSOAuthModalValues;
+}
+
+export function SSOAuthModal({ values }: SSOAuthModalProps) {
+  const { matrixClient } = useChatClientContext();
+  const popup = useRef<Window | null>(null);
+
+  const authLogic = useMemo(
+    () =>
+      values
+        ? new InteractiveAuth({
+            matrixClient: matrixClient,
+            doRequest: values.makeRequest,
+            sessionId: values.session,
+            busyChanged(busy) {
+              logger.debug({ busy });
+            },
+            stateUpdated(nextStage, status) {
+              logger.debug({ nextStage, status });
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            requestEmailToken: (() => {}) as unknown as RequestEmailType,
+          })
+        : undefined,
+    [matrixClient, values],
+  );
+
+  function handleSSOClick() {
+    if (!values) return;
+
+    const ssoUrl = matrixClient.getFallbackAuthUrl(
+      AuthType.Sso,
+      values.session,
+    );
+
+    popup.current = window.open(ssoUrl);
+    logger.debug(popup.current);
+  }
+
+  function handleCancel() {
+    values?.onFinished?.(false);
+  }
+
+  useEffect(() => {
+    if (authLogic) {
+      logger.debug("AttemptAuth Start");
+      void authLogic
+        .attemptAuth()
+        .then((res) => {
+          logger.debug("AttemptAuth Done", res);
+          values?.onFinished?.(true);
+        })
+        .catch((e) => {
+          logger.error("AttemptAuth Error", e);
+        });
+      // .finally(() => {
+      //   void authLogic.submitAuthDict({}).then((response) => {
+      //     logger.debug("submitAuthDict", response);
+      //   });
+      // });
+    }
+  }, [authLogic, values]);
+
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      void authLogic?.poll();
+    }, 2000);
+
+    return () => {
+      clearInterval(pollInterval);
+    };
+  }, [authLogic]);
+
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      logger.debug("On Window Message", e.data);
+    }
+
+    window.addEventListener("message", onMessage);
+    return () => {
+      window.removeEventListener("message", onMessage);
+    };
+  }, []);
+
+  return (
+    <BaseModal
+      modalTitle="Use Single Sign On to continue"
+      key="sso-auth-modal"
+      onClose={handleCancel}
+      open={!!values}
+    >
+      <>
+        <Typography textColor="text.secondary">
+          To continue, use Single Sign On to prove your identity.
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ marginLeft: "auto", paddingTop: 2 }}
+        >
+          <Button
+            size="sm"
+            variant="outlined"
+            color="neutral"
+            onClick={handleCancel}
+            data-testid="ssoAuthDialogCancel"
+          >
+            Cancel
+          </Button>
+          <Button
+            size="sm"
+            color={"primary"}
+            loadingPosition={"start"}
+            onClick={handleSSOClick}
+            data-testid="ssoAuthDialogStart"
+          >
+            Single Sign On
+          </Button>
+        </Stack>
+      </>
+    </BaseModal>
+  );
+}

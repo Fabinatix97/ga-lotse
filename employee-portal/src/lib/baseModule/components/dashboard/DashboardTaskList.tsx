@@ -1,0 +1,57 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Sheet, Stack, Typography } from "@mui/joy";
+
+import { useFetchTasksForDashboardQuery } from "@/lib/baseModule/api/queries/tasks";
+import { NoEntries } from "@/lib/baseModule/components/NoEntries";
+import { TaskBox } from "@/lib/baseModule/components/task/TaskBox";
+import { routes } from "@/lib/baseModule/shared/routes";
+
+export function DashboardTaskList() {
+  const tasks = useFetchTasksForDashboardQuery().data;
+  return (
+    <Sheet
+      variant="outlined"
+      sx={{
+        padding: 2,
+        px: 3,
+        borderRadius: "lg",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+      }}
+    >
+      <Stack spacing={3}>
+        <Stack
+          direction="row"
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <Typography level="h3">Aufgaben</Typography>
+          <Stack justifyContent={"flex-end"}>
+            <InternalLinkButton
+              variant="plain"
+              href={routes.tasks.index}
+              endDecorator={<ArrowForwardIcon />}
+            >
+              Zur Aufgabenübersicht
+            </InternalLinkButton>
+          </Stack>
+        </Stack>
+        <Stack spacing={2}>
+          {tasks.map((task) => (
+            <TaskBox key={task.taskId} task={task} />
+          ))}
+          {tasks.length === 0 && <NoEntries />}
+        </Stack>
+      </Stack>
+    </Sheet>
+  );
+}

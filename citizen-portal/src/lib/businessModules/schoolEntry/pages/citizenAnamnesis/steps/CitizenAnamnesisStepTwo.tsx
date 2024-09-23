@@ -1,0 +1,205 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { YearField } from "@eshg/lib-portal/components/formFields/YearField";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import { FormLabel, Grid, IconButton, Typography } from "@mui/joy";
+import { FieldArray } from "formik";
+import { Fragment } from "react";
+
+import { CitizenAnamnesisFormValues } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
+import { LocalBooleanRadioField } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalBooleanRadioField";
+import { LocalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalMonthAndYearFields";
+import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/QuarterWidthGrid";
+import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
+import { useTranslation } from "@/lib/i18n/client";
+import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
+import { createFieldNameMapper } from "@/lib/shared/helpers/form";
+
+export function CitizenAnamnesisStepTwo({
+  values,
+}: {
+  values: CitizenAnamnesisFormValues;
+}) {
+  const { t } = useTranslation(["schoolEntry/anamnesis"]);
+  const promotionBeforeSchoolEntry = createFieldNameMapper(
+    "promotionBeforeSchoolEntry",
+  );
+  const additionalChildInfo = createFieldNameMapper("additionalChildInfo");
+  const daycareAndSchoolInfo = createFieldNameMapper("daycareAndSchoolInfo");
+  const interestsAndSportsInfo = createFieldNameMapper(
+    "interestsAndSportsInfo",
+  );
+
+  return (
+    <ContentSheet>
+      <Typography level="h3">{t("additionalInfo.title")}</Typography>
+      <InputField
+        name={additionalChildInfo("responsiblePhysician")}
+        label={
+          <Typography level="body-sm" component={FormLabel}>
+            {t("additionalInfo.pediatrician")}
+          </Typography>
+        }
+      />
+      <ToggleableSection
+        title={t("additionalInfo.siblings")}
+        name={additionalChildInfo("siblings.show")}
+      >
+        <FieldArray name={additionalChildInfo("siblings.birthYears")}>
+          {({ push, remove }) => (
+            <Grid
+              container
+              sx={{ flexGrow: 1 }}
+              spacing={2}
+              alignItems="flex-end"
+            >
+              {values.additionalChildInfo.siblings.birthYears.map(
+                (_value, index, array) => {
+                  const canRemove = array.length > 1;
+                  return (
+                    <Fragment key={index}>
+                      <Grid xxs={canRemove ? 11 : 12} lg={7}>
+                        <YearField
+                          min={1900}
+                          max={new Date().getFullYear()}
+                          name={additionalChildInfo(
+                            `siblings.birthYears.${index}`,
+                          )}
+                          label={t("additionalInfo.siblingBirthYear", {
+                            index: index + 1,
+                          })}
+                          fieldDecorator={
+                            canRemove && (
+                              <IconButton
+                                color="danger"
+                                aria-label={t("additionalInfo.removeSibling")}
+                                onClick={() => {
+                                  return remove(index);
+                                }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            )
+                          }
+                        />
+                      </Grid>
+                    </Fragment>
+                  );
+                },
+              )}
+              <Grid xxs={10}>
+                <FormAddMoreButton onClick={() => push("")}>
+                  {t("additionalInfo.addSibling")}
+                </FormAddMoreButton>
+              </Grid>
+            </Grid>
+          )}
+        </FieldArray>
+      </ToggleableSection>
+      <Typography level="h4">{t("additionalInfo.dayCareAndSchool")}</Typography>
+      <Grid container sx={{ flexGrow: 1 }}>
+        <Grid xxs={12} lg={6}>
+          <Typography level="body-sm">
+            {t("additionalInfo.dayCareSince")}
+          </Typography>
+          <LocalMonthAndYearFields
+            fieldName={daycareAndSchoolInfo("inDaycareSince")}
+            date={values.daycareAndSchoolInfo.inDaycareSince}
+          />
+        </Grid>
+        <Grid xxs={12} lg={6}>
+          <InputField
+            name={daycareAndSchoolInfo("daycareName")}
+            label={
+              <Typography level="body-sm" component={FormLabel}>
+                {t("additionalInfo.dayCareName")}
+              </Typography>
+            }
+          />
+        </Grid>
+      </Grid>
+      <LocalBooleanRadioField
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.integrationPlace")}
+          </Typography>
+        }
+        name={promotionBeforeSchoolEntry("integrationPlace")}
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.earlySupport")}
+          </Typography>
+        }
+        name={promotionBeforeSchoolEntry("earlySupport")}
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.languageScreening")}
+          </Typography>
+        }
+        name="childLanguageScreening"
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.preliminaryCourse")}
+          </Typography>
+        }
+        name="preliminaryCourse"
+        allowDeselection
+      />
+      <QuarterWidthGrid>
+        <InputField
+          name={daycareAndSchoolInfo("schoolName")}
+          label={t("additionalInfo.schoolName")}
+        />
+      </QuarterWidthGrid>
+      <Typography level="h4" component="h3">
+        {t("additionalInfo.interests")}
+      </Typography>
+      <LocalBooleanRadioField
+        name={interestsAndSportsInfo("canSwim")}
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.canSwim")}
+          </Typography>
+        }
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        name={interestsAndSportsInfo("hasSeahorseBadge")}
+        label={
+          <Typography level="title-md">
+            {t("additionalInfo.seahorseBadge")}
+          </Typography>
+        }
+        allowDeselection
+      />
+      <LocalBooleanRadioField
+        name="personalConspicuities"
+        label={
+          <>
+            <Typography level="title-md">
+              {t("additionalInfo.personalCharacteristics")}
+            </Typography>
+            <Typography level="body-md">
+              {t("additionalInfo.personalCharacteristicsDescription")}
+            </Typography>
+          </>
+        }
+        allowDeselection
+      />
+    </ContentSheet>
+  );
+}

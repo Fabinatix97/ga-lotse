@@ -1,0 +1,174 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+@page {
+  size: A4 portrait;
+  margin-top: 25mm;
+  margin-bottom: 25mm;
+
+  @top-center {
+    content: element(--var-header);
+    vertical-align: bottom;
+  }
+
+  @bottom-left {
+    content: element(--var-footer);
+    font-size: 9pt;
+    border-top: 0.1mm solid grey;
+    vertical-align: top;
+  }
+
+  @bottom-right {
+    content: "Seite " counter(page) " von " counter(pages);
+    font-family: sans-serif;
+    font-size: 9pt;
+    border-top: 0.1mm solid grey;
+    vertical-align: top;
+  }
+}
+
+/* no page header on first page */
+@page :first {
+  margin-top: 10mm;
+  @top-center {
+    content: "";
+  }
+}
+
+html {
+  font-family: sans-serif;
+  font-size: 10pt;
+}
+
+body {
+  margin: 0;
+}
+
+/* the header is a running element, which is used in the @top-center margin box */
+/* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+header {
+  position: running(--var-header);
+}
+
+header .officeName {
+  font-size: 12pt;
+}
+
+header .title {
+  font-size: 10pt;
+}
+
+header hr {
+  margin: 0 0 10px 0;
+}
+
+/* the footer is a running element, which is used in the @bottom-center margin box */
+/* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+footer {
+  position: running(--var-footer);
+}
+
+.header .officeName {
+  font-size: 16pt;
+}
+
+.header .objectType {
+  font-size: 12pt;
+}
+
+.header .letterhead td {
+  padding-top: 20px;
+}
+
+.header .receiver {
+  padding-right: 20px;
+}
+
+.header .receiver .officeAddress {
+  font-size: 9pt;
+  margin-bottom: 10px;
+}
+
+.header .sender .reportLocation {
+  margin-top: 10px;
+}
+
+.no-page-break {
+  page-break-inside: avoid;
+}
+
+h1 {
+  font-size: 14pt;
+  font-weight: bold;
+  padding-top: 20px;
+}
+
+h2 {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  border-top: 0.1mm solid grey;
+}
+
+.elementText {
+  margin: 10px 0;
+  white-space: pre-line;
+}
+
+.elementTitle {
+  margin: 0;
+}
+
+.elementValue {
+  margin: 0 0 0 30px;
+  padding: 0;
+}
+
+.elementValue.textBlock {
+  white-space: pre-line;
+}
+
+table.simpleYesNo {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.simpleYesNo .elementTitle {
+  margin: 0;
+  padding: 0;
+}
+
+.simpleYesNo .elementValue {
+  min-width: 90px;
+  text-align: right;
+}
+
+.simpleYesNo .elementValue .choice {
+  margin-right: 0;
+}
+
+.elementValue .choice {
+  margin-right: 20px;
+  white-space: nowrap;
+}
+
+.elementValue .choice.extraText {
+  font-size: 9pt;
+  font-style: italic;
+  margin-left: 15px;
+  white-space: pre-line;
+}
+
+.greetingEnd, .greetingPerson {
+  margin-top: 30px;
+}

@@ -1,0 +1,31 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api 'de.cronn:commons-lang:latest.release'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-tx'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    implementation 'jakarta.annotation:jakarta.annotation-api'
+    implementation 'jakarta.persistence:jakarta.persistence-api'
+    implementation 'org.hibernate.orm:hibernate-core'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'de.cronn:reflection-util:latest.release'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'net.bytebuddy:byte-buddy'
+
+    implementation project(':rest-service-errors')
+    implementation project(':lib-keycloak')
+    implementation project(':base-api')
+    api project(':test-helper-commons-api')
+
+    api 'net.datafaker:datafaker:latest.release'
+
+    testImplementation project(':business-module-commons')
+    testImplementation testFixtures(project(':business-module-commons'))
+}

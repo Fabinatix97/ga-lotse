@@ -1,0 +1,27 @@
+/*
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.servicedirectory.api;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "ActorType")
+public enum ActorTypeDto {
+  GM("base module", "Grundmodul"),
+  FM("business module", "Fachmodul"),
+  LSD("local service directory", "lokales Dienstverzeichnis"),
+  WEB("webserver", "Webserver"),
+  ZA("central application", "zentrale Anwendung"),
+  ZR("central repository", "zentrale Ablage"),
+  ;
+
+  public final String descriptionEn;
+  public final String descriptionDe;
+
+  ActorTypeDto(String descriptionEn, String descriptionDe) {
+    this.descriptionEn = descriptionEn;
+    this.descriptionDe = descriptionDe;
+  }
+}

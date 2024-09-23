@@ -1,0 +1,159 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/* eslint-disable no-restricted-imports */
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { Link, Stack, Typography } from "@mui/joy";
+import { Formik } from "formik";
+import { useRef, useState } from "react";
+
+import { SecureBackupContent } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
+import { ResetBackupModal } from "@/lib/businessModules/chat/components/secureBackup/ResetBackupModal";
+import { fetchBackupInfo } from "@/lib/businessModules/chat/matrix/crypto";
+import {
+  restoreKeyBackupWithSecretStorage,
+  validateAccessSecretStorage,
+} from "@/lib/businessModules/chat/matrix/secretStorage";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
+import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
+import {
+  SidebarForm,
+  SidebarFormHandle,
+} from "@/lib/shared/components/form/SidebarForm";
+import { PasswordField } from "@/lib/shared/components/formFields/PasswordField";
+import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
+import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+
+const initialValues = {
+  passphrase: "",
+};
+
+type InitialValues = typeof initialValues;
+
+interface RestoreBackupSidebarProps {
+  open: boolean;
+  onClose: () => void;
+  content: SecureBackupContent;
+}
+
+export function RestoreBackupSidebar({
+  open,
+  onClose,
+  content,
+}: RestoreBackupSidebarProps) {
+  const fieldName = createFieldNameMapper<InitialValues>();
+  const formRef = useRef<SidebarFormHandle>(null);
+  const { matrixClient, setClientState } = useChatClientContext();
+  const snackbar = useSnackbar();
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function handleClose() {
+    onClose();
+    formRef.current?.resetForm();
+  }
+
+  async function validateSecretPhrase(values: InitialValues) {
+    try {
+      await validateAccessSecretStorage(matrixClient, values.passphrase);
+      return undefined;
+    } catch {
+      return {
+        passphrase: "Error while verifying the device. Is the phrase correct?",
+      };
+    }
+  }
+
+  async function handleSubmit(values: InitialValues) {
+    try {
+      const { backupInfo, backupKeyStored } =
+        await fetchBackupInfo(matrixClient);
+
+      if (!backupInfo) {
+        throw new Error("No backup Info");
+      }
+
+      await restoreKeyBackupWithSecretStorage(
+        matrixClient,
+        backupInfo,
+        backupKeyStored,
+        values.passphrase,
+      );
+      setClientState(ClientState.Prepared);
+      snackbar.confirmation("Your device is now verified");
+    } catch (e) {
+      handleClose();
+      snackbar.error("Cannot access chat");
+      setClientState(ClientState.Error);
+      logger.error(e);
+    }
+  }
+
+  return (
+    <>
+      <Sidebar open={open} onClose={handleClose}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={async (values) => {
+            await handleSubmit(values);
+          }}
+          validateOnBlur={false}
+          validateOnChange={false}
+          validate={validateSecretPhrase}
+        >
+          {({ isSubmitting }) => (
+            <SidebarForm ref={formRef}>
+              <SidebarContent title={content.header}>
+                <Stack gap={2}>
+                  {content.description.map((i) => (
+                    <Typography key={i} level="body-md">
+                      {i}
+                    </Typography>
+                  ))}
+                  <PasswordField
+                    data-testid={"passphrase"}
+                    label={"Enter a Security Phrase"}
+                    name={fieldName("passphrase")}
+                    visibilityLabel={"visiblePassphrase"}
+                  />
+                  <Stack direction="row" spacing={0.5}>
+                    <Typography level="body-sm" color="neutral">
+                      Forgotten or lost recovery phrase?
+                    </Typography>
+                    <Link
+                      component="button"
+                      type="button"
+                      level="body-sm"
+                      color="danger"
+                      onClick={() => setModalOpen(true)}
+                    >
+                      Reset all
+                    </Link>
+                  </Stack>
+                </Stack>
+              </SidebarContent>
+              <SidebarActions>
+                <FormButtonBar
+                  submitLabel="Fortfahren"
+                  submitting={isSubmitting}
+                  onCancel={handleClose}
+                />
+              </SidebarActions>
+            </SidebarForm>
+          )}
+        </Formik>
+      </Sidebar>
+      <ResetBackupModal
+        color="danger"
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
+    </>
+  );
+}

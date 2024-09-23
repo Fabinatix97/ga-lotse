@@ -1,0 +1,248 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.procedure.file;
+
+import static de.eshg.lib.procedure.domain.model.FileType.EML;
+import static de.eshg.lib.procedure.domain.model.FileType.JPEG;
+import static de.eshg.lib.procedure.domain.model.FileType.PDF;
+import static de.eshg.lib.procedure.domain.model.FileType.PNG;
+import static jakarta.mail.Part.ATTACHMENT;
+import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+
+import de.eshg.lib.procedure.domain.model.File;
+import de.eshg.lib.procedure.domain.model.FileType;
+import de.eshg.lib.procedure.domain.model.ImageMetaData;
+import de.eshg.lib.procedure.domain.model.MailMetaData;
+import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.rest.service.error.BadRequestException;
+import jakarta.mail.Address;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMultipart;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.io.IOUtils;
+
+class EmlParser {
+
+  private static final Set<FileType> VALID_ATTACHMENT_FILE_TYPES = EnumSet.of(JPEG, PNG, PDF);
+
+  private EmlParser() {}
+
+  static ParsedMail parse(byte[] file, boolean deletable) {
+    try (InputStream inputStream = new ByteArrayInputStream(file)) {
+      Session session = Session.getDefaultInstance(new Properties());
+      Message message = new FixedMessageIdMimeMessage(session, inputStream);
+
+      ParsedMail parsedMail = new ParsedMail();
+      parsedMail.setFileType(EML);
+      parsedMail.setSubject(message.getSubject());
+      parsedMail.setMessageText(extractMessageText(message));
+      parsedMail.setMetaData(extractMetaData(message));
+      parsedMail.setDeletable(deletable);
+
+      int removedInvalidAttachments = removeAndCountInvalidAttachments(message);
+      parsedMail.setRemovedInvalidAttachments(removedInvalidAttachments);
+      parsedMail.getAttachments().addAll(extractAttachments(message, deletable));
+      parsedMail.setContent(extractContent(message));
+
+      return parsedMail;
+    } catch (MessagingException | IOException e) {
+      throw createMailParsingException("Could not extract meta data");
+    }
+  }
+
+  private static String extractMessageText(Message message) throws MessagingException, IOException {
+    if (message.isMimeType(TEXT_PLAIN_VALUE)) {
+      return getStrippedContent(message);
+    }
+    if (message.getContent() instanceof MimeMultipart mimeMultipart) {
+      return extractMessageText(mimeMultipart);
+    }
+
+    throw createMailParsingException("Could not extract message text");
+  }
+
+  private static String extractMessageText(MimeMultipart mimeMultipart)
+      throws MessagingException, IOException {
+    for (int i = 0; i < mimeMultipart.getCount(); i++) {
+      BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+      if (bodyPart.isMimeType(TEXT_PLAIN_VALUE)) {
+        return getStrippedContent(bodyPart);
+      } else if (bodyPart.getContent() instanceof MimeMultipart content) {
+        return extractMessageText(content);
+      }
+    }
+
+    throw createMailParsingException("Could not extract message text");
+  }
+
+  private static String getStrippedContent(Part part) throws IOException, MessagingException {
+    return part.getContent().toString().strip();
+  }
+
+  private static MailMetaData extractMetaData(Message message) throws MessagingException {
+    Address[] mailFrom = message.getFrom();
+    Address[] mailTo = message.getAllRecipients();
+    Date sentDate = message.getSentDate();
+
+    if (Objects.isNull(mailFrom) || Objects.isNull(mailTo) || Objects.isNull(sentDate)) {
+      throw createMailParsingException("Could not extract MetaData");
+    }
+
+    MailMetaData mailMetaData = new MailMetaData();
+    mailMetaData.setMailFrom(convertAddressesToString(mailFrom));
+    mailMetaData.setMailTo(convertAddressesToString(mailTo));
+    mailMetaData.setSentDate(sentDate.toInstant());
+
+    return mailMetaData;
+  }
+
+  private static String convertAddressesToString(Address[] addresses) {
+    return Arrays.stream(addresses)
+        .filter(InternetAddress.class::isInstance)
+        .map(InternetAddress.class::cast)
+        .map(InternetAddress::getAddress)
+        .collect(Collectors.joining(","));
+  }
+
+  private static int removeAndCountInvalidAttachments(Message message)
+      throws MessagingException, IOException {
+    if (!(message.getContent() instanceof MimeMultipart content)) {
+      return 0;
+    }
+
+    int removedInvalidAttachments = 0;
+    for (BodyPart bodyPart : getAttachmentBodyParts(content)) {
+      if (!isValidAttachment(parseFileType(bodyPart))) {
+        content.removeBodyPart(bodyPart);
+        removedInvalidAttachments++;
+      }
+    }
+
+    message.saveChanges();
+
+    return removedInvalidAttachments;
+  }
+
+  private static FileType parseFileType(Part part) throws IOException, MessagingException {
+    byte[] fileContent = parseFileContent(part);
+    String contentType = FileTypeDetector.detect(fileContent);
+    return FileType.fromContentType(contentType);
+  }
+
+  private static byte[] parseFileContent(Part part) throws IOException, MessagingException {
+    return IOUtils.toByteArray(part.getInputStream());
+  }
+
+  private static List<File> extractAttachments(Message message, boolean deletable)
+      throws MessagingException, IOException {
+    if (!(message.getContent() instanceof MimeMultipart content)) {
+      return Collections.emptyList();
+    }
+
+    List<File> files = new ArrayList<>();
+    for (BodyPart bodyPart : getAttachmentBodyParts(content)) {
+      File file =
+          createFile(
+              bodyPart.getFileName(),
+              parseFileType(bodyPart),
+              parseFileContent(bodyPart),
+              deletable);
+      files.add(file);
+    }
+    return files;
+  }
+
+  private static List<BodyPart> getAttachmentBodyParts(MimeMultipart content)
+      throws MessagingException, IOException {
+    List<BodyPart> bodyParts = new ArrayList<>();
+    for (int i = 0; i < content.getCount(); i++) {
+      BodyPart bodyPart = content.getBodyPart(i);
+      byte[] fileContent = parseFileContent(bodyPart);
+      String contentType = FileTypeDetector.detect(fileContent);
+
+      if (!isContentTypeText(contentType) || isAttachment(bodyPart)) {
+        bodyParts.add(bodyPart);
+      }
+    }
+    return bodyParts;
+  }
+
+  private static boolean isAttachment(Part part) throws MessagingException {
+    return ATTACHMENT.equals(part.getDisposition());
+  }
+
+  private static boolean isContentTypeText(String contentType) {
+    return TEXT_PLAIN_VALUE.equals(contentType) || TEXT_HTML_VALUE.equals(contentType);
+  }
+
+  private static boolean isValidAttachment(FileType fileType) {
+    return fileType != null && VALID_ATTACHMENT_FILE_TYPES.contains(fileType);
+  }
+
+  private static File createFile(
+      String fileName, FileType fileType, byte[] fileContent, boolean deletable)
+      throws IOException {
+    return switch (fileType) {
+      case JPEG, PNG -> {
+        ImageMetaData imageMetaData = new ImageMetaData();
+        ImageMetaDataExtractor.extract(fileContent, imageMetaData);
+
+        yield FileFactory.createImageWithMetaData(
+            fileName, fileType, fileContent, imageMetaData, deletable);
+      }
+      case PDF -> {
+        PdfMetaData pdfMetaData = new PdfMetaData();
+        PdfMetaDataExtractor.extract(fileContent, pdfMetaData);
+
+        yield FileFactory.createPdfWithMetaData(
+            fileName, fileType, fileContent, pdfMetaData, deletable);
+      }
+      default -> throw new IllegalStateException("Unexpected value: " + fileType);
+    };
+  }
+
+  private static byte[] extractContent(Message message) throws MessagingException, IOException {
+    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+      message.writeTo(os);
+      return os.toByteArray();
+    }
+  }
+
+  private static BadRequestException createMailParsingException(String errorMessage) {
+    return new BadRequestException(errorMessage);
+  }
+
+  static class FixedMessageIdMimeMessage extends jakarta.mail.internet.MimeMessage {
+
+    public FixedMessageIdMimeMessage(Session session, InputStream is) throws MessagingException {
+      super(session, is);
+    }
+
+    @Override
+    protected void updateMessageID() {
+      // do not update message id on saveChanges()
+    }
+  }
+}

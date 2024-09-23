@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="addressee" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterPerson" -->
+<#-- @ftlvariable name="affectedPerson" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterPerson" -->
+<#-- @ftlvariable name="body" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterBody" -->
+
+<html xml:lang="de" lang="de">
+  <head>
+    <title>Immunitätsnachweis im Sinne des Masernschutzgesetzes
+      für ${affectedPerson.firstName} ${affectedPerson.lastName}, Aktenzeichen: ${body.ourReference}
+    </title>
+    <link rel="stylesheet" type="text/css" href="cover-letter.css"/>
+  </head>
+
+  <body>
+    <#include "footer.ftlx">
+    <#include "header-table.ftlx">
+
+    <p class="important">
+      Betreff: Immunitätsnachweis im Sinne des Masernschutzgesetzes
+      für ${affectedPerson.firstName} ${affectedPerson.lastName}, Aktenzeichen: ${body.ourReference}
+    </p>
+    <p>
+    ${addressee.salutation},
+    </p>
+    <p>
+      in Deutschland gilt seit dem 01.03.2020 das Masernschutzgesetz (§20 Infektionsschutzgesetz
+      (IfSG)).
+      Demzufolge mussten alle betroffenen Beschäftigten der Einrichtungsleitung bis zum 31. Juli
+      2022 einen der folgenden Nachweise* vorlegen:
+    </p>
+    <p>
+      <ol>
+        <li>
+          Einen Impfausweis mit der Dokumentation von <span class="important">zwei Impfungen gegen Masern</span>.
+          Gleichwertig ist ein ärztliches Zeugnis über einen vollständigen Impfschutz in dem beschriebenen Umfang.
+        </li>
+        <li>
+          Ein ärztliches Zeugnis über eine Immunität gegen Masern (Antikörpertest).
+        </li>
+        <li>
+          Eine ärztliche Bescheinigung, dass die Person aufgrund einer medizinischen
+          Kontraindikation
+          nicht geimpft werden kann.
+        </li>
+      </ol>
+    </p>
+    <p>
+      Die Einrichtung, in der Sie arbeiten, hat uns mitgeteilt, dass Sie bisher keinen der oben
+      genannten Nachweise geführt haben bzw. dass die Einrichtung Ihren Nachweis nicht bewerten
+      konnte, wie es bei einem ausländischen Impfpass oder einem Attest über eine vorliegende
+      Kontraindikation vorkommen kann.
+    <br/>
+      Möglicherweise haben Sie es auch einfach versäumt, einen der unter 1.- 3. genannten Nachweise vorzulegen.
+    </p>
+    <p class="important">
+    Das Gesundheitsamt Frankfurt fordert Sie gemäß § 20 Abs. 12 IfSG dazu auf, bis zum ${body.deadlineString} einen der oben
+      genannten Nachweise im Original unserer Behörde vorzulegen.
+    </p>
+    <p>
+      Falls eine der seltenen medizinischen Kontraindikationen vorliegt, muss diese durch ein Attest ausführlich
+      begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie mehr als 20 mg Prednisolonäquivalent,
+      Rituximab oder MTX in hoher Dosierung).
+    </p>
+    <p>
+      Wird der erforderliche Nachweis nicht innerhalb der Frist erbracht, besteht gemäß § 73 Abs. 1a Nr. 7d (IfSG) die
+      Möglichkeit ein Bußgeldverfahren einzuleiten und, sofern weiterhin kein Nachweis erbracht wird, nach § 20 Abs. 12
+      (IfSG), die Möglichkeit ein Betretungsverbot für die Einrichtung, ohne Anspruch auf Lohnfortzahlung,
+      auszusprechen.
+    </p>
+    <p>
+      Termine zur Vorlage im Gesundheitsamt Frankfurt am Main, vereinbaren Sie bitte unter folgendem Link:
+    </p>
+
+    <#include "appointment.ftlx">
+
+    <p>
+    Das Gesundheitsamt Frankfurt berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur Masernschutzimpfung.
+    </p>
+
+    <div class="box">
+      * Bezüglich der Nachweise ist zu beachten:
+      <p>
+        Im Falle eines Attestes über eine medizinische Kontraindikation, muss diese unter Angabe der Diagnose
+        ausführlich begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie mehr als 20 mg
+        Prednisolonäquivalent, Rituximab oder MTX in hoher Dosierung bei zugrundeliegender Grunderkrankung). Die
+        medizinischen Angaben sind durch Befunde/ medizinische Unterlagen zu belegen.
+      </p>
+      <p>
+        Im Falle eines ärztlichen Zeugnisses über eine Immunität gegen Masern ist diese durch einen entsprechenden
+        Laborbefund zu belegen.
+      </p>
+
+      <p>
+        Der Nachweis kann ausschließlich im Original vorgelegt werden. Bei einem postalischen Versand können wir die
+        Originale nicht zurücksenden. Der Versand eines Scans per Mail ist nicht zulässig.
+      </p>
+
+      <p>
+        Sollten Sie nicht mehr in der Einrichtung tätig sein, bitten wir um eine entsprechende Mitteilung und
+        Bestätigung Ihres ehemaligen Arbeitgebers.
+      </p>
+    </div>
+    <#include "end-of-letter.ftlx">
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+  <include file="migrations/0001_initial.xml"/>
+  <include file="migrations/0002_introduce_pgenums.xml"/>
+  <include file="migrations/0003_add_mail_sent_fields.xml"/>
+  <include file="migrations/0004_rename_tables.xml"/>
+  <include file="migrations/0005_indices_for_many_to_one_relations.xml"/>
+  <include file="migrations/0006_inbox_procedure_add_closed_at.xml"/>
+  <include file="migrations/0007_procedure_id_not_optional.xml"/>
+  <include file="migrations/0008_vaccines_add_current_batch_id.xml"/>
+  <include file="migrations/0009_add_deletable_boolean_to_files.xml"/>
+  <include file="migrations/0010_remove_procedure_result.xml"/>
+  <include file="migrations/0011_remove_procedure_type_2.xml"/>
+  <include file="migrations/0012_remove_task_type_2.xml"/>
+  <include file="migrations/0013_update_trigger_type.xml"/>
+  <include file="migrations/0014_add_physician_mfa_to_service.xml"/>
+  <include file="migrations/0015_add_citizen_user_id_to_procedure.xml"/>
+  <include file="migrations/0016_add_sti_protection_procedure_lib_enum_values.xml"/>
+  <include file="migrations/0017_add_information_statement_editor.xml"/>
+  <include file="migrations/0018_central_file_state_id_unique_index.xml"/>
+  <include file="migrations/0019_add_cemetery.xml"/>
+  <include file="migrations/0020_remove_progress_entry_delete.xml"/>
+  <include file="migrations/0021_appointment_block_location.xml"/>
+  <include file="migrations/0022_disease_add_visible_to_citizen_portal.xml"/>
+  <include file="migrations/0023_add_procedure_exported_at.xml"/>
+  <include file="migrations/0024_add_consultant_to_appointment_blocks.xml"/>
+  <include file="migrations/0025_procedure_sequences.xml"/>
+
+</databaseChangeLog>

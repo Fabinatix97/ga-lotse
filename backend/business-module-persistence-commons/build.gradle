@@ -1,0 +1,26 @@
+plugins {
+    id "eshg.java-lib"
+    id "java-test-fixtures"
+}
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.hibernate.orm:hibernate-envers'
+
+    api project(':business-module-commons')
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    implementation 'org.liquibase:liquibase-core'
+
+    runtimeOnly 'de.cronn:liquibase-postgres-enum-extension:latest.release'
+
+    testFixturesApi testFixtures(project(':business-module-commons'))
+    testFixturesImplementation project(':test-commons')
+    testFixturesImplementation 'org.springframework.boot:spring-boot-test'
+    testFixturesApi 'de.cronn:liquibase-changelog-generator-postgresql:latest.release'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-AaddSuppressWarningsAnnotation=true")
+}

@@ -1,0 +1,103 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+import de.eshg.frontend.IncludesAndExcludes
+import de.eshg.frontend.TypescriptDefaults
+
+plugins {
+  id 'workspace-package'
+}
+
+def prettierExtension = project.extensions.create('prettier', IncludesAndExcludes)
+def eslintExtension = project.extensions.create('eslint', IncludesAndExcludes)
+
+def getPrettierInputs = {
+  return fileTree(projectDir) {
+    include prettierExtension.include.get()
+    exclude TypescriptDefaults.getAllExcludes(prettierExtension.additionalExcludes)
+  }
+}
+
+def getPrettierInputArgs = (ConfigurableFileTree formattedFiles) -> {
+  def includes = formattedFiles.patterns.includes
+  def excludes = formattedFiles.patterns.excludes.collect { exclude -> "!$exclude" }
+  return excludes + includes
+}
+
+def getEslintInputs = {
+  return fileTree(projectDir) {
+    include eslintExtension.include.get()
+    exclude TypescriptDefaults.getAllExcludes(eslintExtension.additionalExcludes)
+  }
+}
+
+def getEslintInputArgs = (ConfigurableFileTree lintedFiles) -> {
+  def includes = lintedFiles.patterns.includes
+  def excludes = lintedFiles.patterns.excludes.collect { exclude ->
+    {
+      return ['--ignore-pattern', exclude]
+    }
+  }.flatten()
+  return excludes + includes
+}
+
+tasks.register('format', PnpmTask) {
+  dependsOn rootProject.tasks.installDependencies
+  mustRunAfter 'lintFix'
+  inputs.file "${rootDir}/.editorconfig"
+  inputs.file "${rootDir}/.prettierrc"
+  if (file("${projectDir}/.prettierignore").exists()) {
+    inputs.file "${projectDir}/.prettierignore"
+  }
+  def formattedFiles = getPrettierInputs()
+  inputs.files formattedFiles
+  outputs.files formattedFiles
+  args = ['prettier', '--write'] + getPrettierInputArgs(formattedFiles)
+}
+
+tasks.register('formatCheck', PnpmTask) {
+  dependsOn rootProject.tasks.installDependencies
+  inputs.file "${rootDir}/.editorconfig"
+  inputs.file "${rootDir}/.prettierrc"
+  if (file("${projectDir}/.prettierignore").exists()) {
+    inputs.file "${projectDir}/.prettierignore"
+  }
+  def formattedFiles = getPrettierInputs()
+  inputs.files formattedFiles
+  outputs.upToDateWhen { true }
+  args = ['prettier', '--check'] + getPrettierInputArgs(formattedFiles)
+}
+
+def eslintConfigFiles = [
+  "${rootDir}/config/eslint.base.cjs",
+  "${projectDir}/.eslintrc.cjs"
+]
+
+tasks.register('lint', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  dependsOn 'compile'
+  inputs.files eslintConfigFiles
+  def inputFiles = getEslintInputs()
+  inputs.files inputFiles
+  outputs.upToDateWhen { true }
+  args = ['eslint', '--max-warnings=0'] + getEslintInputArgs(inputFiles)
+}
+
+tasks.register('lintFix', PnpmTask) {
+  dependsOn 'prepareEnvironment'
+  dependsOn 'compile'
+  inputs.files eslintConfigFiles
+  def inputFiles = getEslintInputs()
+  inputs.files inputFiles
+  outputs.upToDateWhen { true }
+  args = ['eslint', '--fix', '--max-warnings=0'] + getEslintInputArgs(inputFiles)
+}
+
+tasks.register('fix') {
+  group = 'verification'
+  dependsOn 'format'
+  dependsOn 'lintFix'
+}
+
+tasks.named('check').configure {
+  dependsOn 'formatCheck'
+  dependsOn 'lint'
+}

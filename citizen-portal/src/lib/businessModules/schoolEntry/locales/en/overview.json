@@ -1,0 +1,42 @@
+{
+  "pageTitle": "School Entry Examination",
+  "information": {
+    "title": "Information about the Appointment",
+    "invitation": "The Health Department will send the appointment for the school enrollment examination by mail with an invitation letter and the currently applicable data protection regulations approximately 3 to 4 weeks before the appointment.",
+    "cancellation": "If this appointment cannot be kept, it should be canceled in good time. The contact details are provided in the invitation letter.",
+    "location": "The school enrollment examination takes place at the Health Department at {{address}}. Please report to the reception area at the entrance and present the invitation letter."
+  },
+  "place": {
+    "title": "Where does the school enrollment examination take place?",
+    "school": "At your child's school",
+    "or": "or",
+    "healthDepartment": "at the following Health Department"
+  },
+  "address": {
+    "title": "Address"
+  },
+  "openingHours": {
+    "title": "Opening and Consultation Hours",
+    "days": "Mon, Tue, Thu",
+    "daysHoliday": "Tue, Thu",
+    "hours": "1:30 PM - 3:00 PM",
+    "remark": "By appointment only",
+    "remarkHoliday": "During Hessian school holidays – By appointment only."
+  },
+  "telefon": {
+    "title": "Phone",
+    "number": "Phone: {{phoneNumber}}"
+  },
+  "email": {
+    "title": "Email Address"
+  },
+  "personalArea": {
+    "title": "Did you receive an invitation?",
+    "information": "To view your appointment, you must first agree to the following data protection regulations.",
+    "confirmPrivacyNotice": "I accept the privacy notice.",
+    "privacyNotice": "View Privacy Notice",
+    "confirmPrivacyPolicy": "I accept the privacy policy.",
+    "privacyPolicy": "View Privacy Policy",
+    "goToPersonalArea": "View Invitation"
+  }
+}

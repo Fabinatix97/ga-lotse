@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1719478875286-1">
+    <addColumn tableName="development_screening">
+      <column name="height_percentile" type="float8"/>
+      <column name="weight_percentile" type="float8"/>
+      <column name="bmi" type="float8"/>
+      <column name="bmi_percentile" type="float8"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

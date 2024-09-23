@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet id="1723806712055-1" author="GA-Lotse">
+    <createTable tableName="checklist_audio">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_checklist_audio"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="checklist_audio_element_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="audio_file_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="audio_file_id"
+                         constraintName="checklist_audio_audio_file_id_key"
+                         tableName="checklist_audio"/>
+
+    <addForeignKeyConstraint baseColumnNames="checklist_audio_element_id"
+                             baseTableName="checklist_audio"
+                             constraintName="fk_checklist_audio_checklist_element"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="checklist_element"
+                             validate="true"/>
+
+    <addForeignKeyConstraint baseColumnNames="audio_file_id"
+                             baseTableName="checklist_audio"
+                             constraintName="fk_checklist_audio_media_file"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="media_file" validate="true"/>
+
+    <createTable tableName="report_element_audio">
+      <column name="report_element_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="audio_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="report_element_id"
+                             baseTableName="report_element_audio"
+                             constraintName="fk_report_element_audio_report_element"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="report_element"
+                             validate="true"/>
+      <createIndex indexName="idx_checklist_audio_checklist_audio_element_id" tableName="checklist_audio">
+        <column name="checklist_audio_element_id"/>
+      </createIndex>
+  </changeSet>
+</databaseChangeLog>

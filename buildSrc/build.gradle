@@ -1,0 +1,46 @@
+import java.nio.file.Files
+import java.nio.file.Path
+import java.security.MessageDigest
+
+plugins {
+  id 'groovy-gradle-plugin'
+}
+
+apply from: '../gradle/repository.gradle'
+
+dependencies {
+  implementation gradleApi()
+  implementation localGroovy()
+
+  implementation 'org.openapitools:openapi-generator-gradle-plugin:7.3.0' //ISSUE-3979: pin version because 7.6.0 has a bug
+  implementation 'com.github.node-gradle:gradle-node-plugin:latest.release'
+  implementation 'com.bmuschko.docker-remote-api:com.bmuschko.docker-remote-api.gradle.plugin:latest.release'
+  implementation 'com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:latest.release'
+
+  dependencyLocking {
+    lockAllConfigurations()
+  }
+}
+
+static def calculateMd5(Path file) {
+  return MessageDigest.getInstance("MD5").digest(Files.readAllBytes(file)).encodeHex().toString()
+}
+
+// unfortunately using symlinks is not an option for buildSrc files when dealing with both windows and linux
+// we go with duplicates but at least keep them in sync
+tasks.register('checkFilesInSync') {
+  def path = 'src/main/groovy/eshg.image-push-sign.gradle'
+  def frontendFile = file(path)
+  def backendFile = file("../backend/buildSrc/${path}")
+
+  inputs.files frontendFile
+  inputs.files backendFile
+
+  doLast {
+    assert calculateMd5(frontendFile.toPath()).equals(calculateMd5(backendFile.toPath())): "${frontendFile.getPath()} and ${backendFile.getPath()} must be in sync!"
+  }
+}
+
+tasks.named("classes").configure {
+  dependsOn 'checkFilesInSync'
+}

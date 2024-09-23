@@ -1,0 +1,123 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721218870508-1">
+    <addColumn tableName="abstract_filter_parameter">
+      <column name="filters_order" type="int4"/>
+      <column name="diagram_id" type="int8"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="diagram_id" baseTableName="abstract_filter_parameter" constraintName="fk_abstract_filter_parameter_diagram" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram" validate="true"/>
+    <sql>
+      UPDATE abstract_filter_parameter afp
+      SET diagram_id = (SELECT df.diagram_id FROM diagram_filters df WHERE df.filters_id = afp.id)
+    </sql>
+    <sql>
+      UPDATE abstract_filter_parameter afp
+      SET filters_order = (SELECT df.filters_order FROM diagram_filters df WHERE df.filters_id = afp.id)
+    </sql>
+
+    <addColumn tableName="chart_configuration">
+      <column name="evaluation_id" type="int8"/>
+    </addColumn>
+    <addUniqueConstraint columnNames="evaluation_id" constraintName="chart_configuration_evaluation_id_key" tableName="chart_configuration"/>
+    <addForeignKeyConstraint baseColumnNames="evaluation_id" baseTableName="chart_configuration" constraintName="fk_chart_configuration_evaluation" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="evaluation" validate="true"/>
+    <sql>
+      UPDATE chart_configuration cc
+      SET evaluation_id = (SELECT e.id FROM evaluation e WHERE e.chart_configuration_id = cc.id)
+    </sql>
+    <addNotNullConstraint columnDataType="bigint" columnName="evaluation_id" tableName="chart_configuration" validate="true"/>
+
+    <addColumn tableName="diagram_data">
+      <column name="diagram_id" type="int8"/>
+    </addColumn>
+    <addUniqueConstraint columnNames="diagram_id" constraintName="diagram_data_diagram_id_key" tableName="diagram_data"/>
+    <addForeignKeyConstraint baseColumnNames="diagram_id" baseTableName="diagram_data" constraintName="fk_diagram_data_diagram" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram" validate="true"/>
+    <sql>
+      UPDATE diagram_data dd
+      SET diagram_id = (SELECT d.id FROM diagram d WHERE d.diagram_data_id = dd.id)
+    </sql>
+    <addNotNullConstraint columnDataType="bigint" columnName="diagram_id" tableName="diagram_data" validate="true"/>
+
+    <addColumn tableName="key_to_count">
+      <column name="key_to_counts_order" type="int4"/>
+      <column name="bar_group_data_id" type="int8"/>
+      <column name="histogram_group_data_id" type="int8"/>
+      <column name="pie_chart_data_id" type="int8"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="bar_group_data_id" baseTableName="key_to_count" constraintName="fk_key_to_count_bar_group_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="bar_group_data" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="histogram_group_data_id" baseTableName="key_to_count" constraintName="fk_key_to_count_histogram_group_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="histogram_group_data" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="pie_chart_data_id" baseTableName="key_to_count" constraintName="fk_key_to_count_pie_chart_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="pie_chart_data" validate="true"/>
+    <sql>
+      UPDATE key_to_count
+      SET key_to_counts_order = CASE
+            WHEN key_to_count.id IN (SELECT key_to_counts_id FROM bar_group_data_key_to_counts) THEN (SELECT key_to_counts_order from bar_group_data_key_to_counts WHERE key_to_counts_id = key_to_count.id)
+            WHEN key_to_count.id IN (SELECT key_to_counts_id FROM histogram_group_data_key_to_counts) THEN (SELECT key_to_counts_order from histogram_group_data_key_to_counts WHERE key_to_counts_id = key_to_count.id)
+            WHEN key_to_count.id IN (SELECT key_to_counts_id FROM pie_chart_data_key_to_counts) THEN (SELECT key_to_counts_order from pie_chart_data_key_to_counts WHERE key_to_counts_id = key_to_count.id)
+        END;
+    </sql>
+    <sql>
+      UPDATE key_to_count
+      SET bar_group_data_id = CASE
+            WHEN key_to_count.id IN (SELECT key_to_counts_id FROM bar_group_data_key_to_counts) THEN (SELECT bar_group_data_key_to_counts.bar_group_data_id from bar_group_data_key_to_counts WHERE key_to_counts_id = key_to_count.id)
+        END;
+    </sql>
+    <sql>
+      UPDATE key_to_count
+      SET histogram_group_data_id = CASE
+            WHEN key_to_count.id IN (SELECT key_to_counts_id FROM histogram_group_data_key_to_counts) THEN (SELECT histogram_group_data_id from histogram_group_data_key_to_counts WHERE key_to_counts_id = key_to_count.id)
+        END;
+    </sql>
+    <sql>
+      UPDATE key_to_count
+      SET pie_chart_data_id = CASE
+            WHEN key_to_count.id IN (SELECT key_to_counts_id FROM pie_chart_data_key_to_counts) THEN (SELECT pie_chart_data_key_to_counts.pie_chart_data_id from pie_chart_data_key_to_counts WHERE key_to_counts_id = key_to_count.id)
+        END;
+    </sql>
+
+    <addColumn tableName="histogram_bin">
+      <column name="bins_order" type="int4"/>
+      <column name="histogram_chart_configuration_id" type="int8"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="histogram_chart_configuration_id" baseTableName="histogram_bin" constraintName="fk_histogram_bin_histogram_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="histogram_chart_configuration" validate="true"/>
+    <sql>
+      UPDATE histogram_bin hb
+      SET bins_order = (SELECT hccb.bins_order FROM histogram_chart_configuration_bins hccb WHERE hccb.bins_id = hb.id)
+    </sql>
+    <sql>
+      UPDATE histogram_bin hb
+      SET histogram_chart_configuration_id = (SELECT hccb.histogram_chart_configuration_id FROM histogram_chart_configuration_bins hccb WHERE hccb.bins_id = hb.id)
+    </sql>
+    <addNotNullConstraint columnDataType="bigint" columnName="histogram_chart_configuration_id" tableName="histogram_bin" validate="true"/>
+
+    <addColumn tableName="min_max_null_unknown_values">
+      <column name="table_column_id" type="int8"/>
+    </addColumn>
+    <addUniqueConstraint columnNames="table_column_id" constraintName="min_max_null_unknown_values_table_column_id_key" tableName="min_max_null_unknown_values"/>
+    <addForeignKeyConstraint baseColumnNames="table_column_id" baseTableName="min_max_null_unknown_values" constraintName="fk_min_max_null_unknown_values_table_column" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="table_column" validate="true"/>
+    <sql>
+      UPDATE min_max_null_unknown_values mm
+      SET table_column_id = (SELECT tc.id FROM table_column tc WHERE tc.min_max_null_unknown_values_id = mm.id)
+    </sql>
+
+    <dropUniqueConstraint constraintName="diagram_diagram_data_id_key" tableName="diagram"/>
+    <dropColumn columnName="diagram_data_id" tableName="diagram"/>
+
+    <dropUniqueConstraint constraintName="evaluation_chart_configuration_id_key" tableName="evaluation"/>
+    <dropColumn columnName="chart_configuration_id" tableName="evaluation"/>
+
+    <dropUniqueConstraint constraintName="table_column_min_max_null_unknown_values_id_key" tableName="table_column"/>
+    <dropColumn columnName="min_max_null_unknown_values_id" tableName="table_column"/>
+
+    <dropUniqueConstraint constraintName="histogram_group_data_histogram_bin_id_key" tableName="histogram_group_data"/>
+
+    <dropTable tableName="bar_group_data_key_to_counts"/>
+    <dropTable tableName="diagram_filters"/>
+    <dropTable tableName="histogram_chart_configuration_bins"/>
+    <dropTable tableName="histogram_group_data_key_to_counts"/>
+    <dropTable tableName="pie_chart_data_key_to_counts"/>
+  </changeSet>
+</databaseChangeLog>

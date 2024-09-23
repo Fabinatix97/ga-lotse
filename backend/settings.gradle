@@ -1,0 +1,103 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+rootProject.name = 'backend'
+
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://mvn.topobyte.de'
+        }
+        maven {
+            url 'https://mvn.slimjars.com'
+        }
+    }
+
+    versionCatalogs {
+        libs {
+            version('keycloak', '25.0.4')
+            library('keycloak-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak')
+            library('keycloak-common', 'org.keycloak', 'keycloak-common').versionRef('keycloak')
+            library('keycloak-core', 'org.keycloak', 'keycloak-core').versionRef('keycloak')
+            library('keycloak-server-spi', 'org.keycloak', 'keycloak-server-spi').versionRef('keycloak')
+            library('keycloak-server-spi-private', 'org.keycloak', 'keycloak-server-spi-private').versionRef('keycloak')
+            library('keycloak-services', 'org.keycloak', 'keycloak-services').versionRef('keycloak')
+            bundle('keycloak-client', [
+                'keycloak-admin-client',
+                'keycloak-core',
+                'keycloak-common'
+            ])
+            bundle('keycloak-server', [
+                'keycloak-core',
+                'keycloak-common',
+                'keycloak-server-spi',
+                'keycloak-server-spi-private',
+                'keycloak-services',
+            ])
+        }
+    }
+}
+
+include 'api-commons'
+include 'auditlog'
+include 'auditlog-api'
+include 'auth'
+include 'base'
+include 'base-api'
+include 'business-module-commons'
+include 'business-module-persistence-commons'
+include 'central-repository'
+include 'chat-management'
+include 'compliance-test'
+include 'inspection'
+include 'keycloak'
+include 'keycloak-api'
+include 'lib-aggregation'
+include 'lib-appointmentblock'
+include 'lib-auditlog'
+include 'lib-base-client'
+include 'lib-calendar'
+include 'lib-calendar-api'
+include 'lib-central-repository-api'
+include 'lib-central-repository-client'
+include 'lib-commons'
+include 'lib-document-generator'
+include 'lib-editor'
+include 'lib-editor-api'
+include 'lib-four-eyes-principle'
+include 'lib-four-eyes-principle-api'
+include 'lib-keycloak'
+include 'lib-lsd-api'
+include 'lib-mutex'
+include 'lib-notification'
+include 'lib-notification-api'
+include 'lib-procedures'
+include 'lib-procedures-api'
+include 'lib-relay'
+include 'lib-security-config'
+include 'lib-security-config-urls'
+include 'lib-service-directory-admin-api'
+include 'lib-service-directory-api'
+include 'lib-statistics'
+include 'lib-statistics-api'
+include 'local-service-directory'
+include 'measles-protection'
+include 'opendata'
+include 'relay-server'
+include 'rest-client-commons'
+include 'rest-oauth-client-commons'
+include 'rest-service-commons'
+include 'rest-service-errors'
+include 'school-entry'
+include 'service-commons'
+include 'service-directory'
+include 'spatz'
+include 'spatz-dns'
+include 'statistics'
+include 'sti-protection'
+include 'test-commons'
+include 'test-helper-commons'
+include 'test-helper-commons-api'
+include 'travel-medicine'
+include 'util-commons'

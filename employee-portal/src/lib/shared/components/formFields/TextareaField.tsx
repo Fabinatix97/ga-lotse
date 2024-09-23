@@ -1,0 +1,67 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import {
+  BaseField,
+  useBaseField,
+} from "@eshg/lib-portal/components/formFields/BaseField";
+import { ValidationRules } from "@eshg/lib-portal/types/form";
+import { Textarea } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { FocusEvent, ReactNode } from "react";
+
+interface TextareaFieldProps extends ValidationRules<string> {
+  name: string;
+  label?: string | ReactNode;
+  placeholder?: string;
+  sx?: SxProps;
+  sxTextarea?: SxProps;
+  readOnly?: boolean;
+  "label-id"?: string;
+  minRows?: number;
+  untrimmedInput?: boolean;
+}
+
+export function TextareaField(props: TextareaFieldProps) {
+  const field = useBaseField<string>(props);
+  const disabled = useIsFormDisabled();
+
+  async function handleBlur(event: FocusEvent<HTMLTextAreaElement>) {
+    if (!props.untrimmedInput) {
+      const value = field.input.value;
+      const trimmedValue = value.trim();
+      if (value !== trimmedValue) {
+        await field.helpers.setValue(trimmedValue);
+        event.target.value = trimmedValue;
+      }
+    }
+    field.input.onBlur?.(event);
+  }
+
+  return (
+    <BaseField
+      label={props.label}
+      helperText={field.helperText}
+      required={field.required}
+      error={field.error}
+      sx={props.sx}
+    >
+      <Textarea
+        aria-labelledby={props["label-id"]}
+        sx={props.sxTextarea}
+        name={props.name}
+        value={field.input.value}
+        onChange={field.input.onChange}
+        onBlur={handleBlur}
+        minRows={props.minRows ?? 2}
+        placeholder={props.placeholder}
+        readOnly={props.readOnly}
+        disabled={disabled}
+        slotProps={{ textarea: { disabled } }}
+      />
+    </BaseField>
+  );
+}

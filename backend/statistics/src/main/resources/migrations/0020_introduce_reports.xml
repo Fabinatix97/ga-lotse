@@ -1,0 +1,68 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1724310801437-1">
+    <ext:createPostgresEnumType name="reporttype" values="AUTO, MANUAL"/>
+
+    <createTable tableName="report_series">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_report_series"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by_user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="report_type" type="REPORTTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="state" type="AGGREGATIONRESULTSTATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="time_range_end" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="time_range_start" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="statistic_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="external_id" constraintName="report_series_external_id_key" tableName="report_series"/>
+    <createIndex indexName="idx_report_series_statistic_id" tableName="report_series">
+      <column name="statistic_id"/>
+    </createIndex>
+    <addForeignKeyConstraint baseColumnNames="statistic_id" baseTableName="report_series" constraintName="fk_report_series_statistic" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="statistic" validate="true"/>
+
+    <createTable tableName="report">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_report"/>
+      </column>
+      <column name="report_series_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createIndex indexName="idx_report_report_series_id" tableName="report">
+      <column name="report_series_id"/>
+    </createIndex>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="report" constraintName="fk_report_abstract_aggregation_result" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_aggregation_result" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="report_series_id" baseTableName="report" constraintName="fk_report_report_series" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="report_series" validate="true"/>
+
+    <ext:addPostgresEnumValues enumTypeName="AggregationResultPendingState" valuesToAdd="DIAGRAM_CREATION"/>
+    <addColumn tableName="evaluation">
+      <column name="original_evaluation_id" type="uuid"/>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

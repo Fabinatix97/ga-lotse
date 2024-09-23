@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet id="waiting-room-for-existing-procedures" author="GA-Lotse">
+    <sql>
+      INSERT INTO waiting_room (procedure_id, version, description, status)
+      SELECT p.id, 0, null, null
+      FROM school_entry_procedure p
+             LEFT JOIN waiting_room w ON p.id = w.procedure_id
+      WHERE w.procedure_id IS NULL;
+    </sql>
+  </changeSet>
+</databaseChangeLog>

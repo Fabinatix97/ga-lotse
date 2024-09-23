@@ -1,0 +1,128 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { endOfDay, isFuture, isThisMonth, isToday } from "date-fns";
+import { isDefined, isEmpty, isNullish } from "remeda";
+
+import { OptionalFieldValue, Validator } from "../types/form";
+
+import { isDateString, isMonthString } from "./dateTime";
+import { isDict, isEmptyString, isInteger } from "./guards";
+
+export function validatePipe<TValue>(
+  ...validators: (Validator<TValue> | undefined)[]
+) {
+  const definedValidators = validators.filter(isDefined);
+  return (value: TValue) => {
+    for (const validator of definedValidators) {
+      const result = validator(value);
+      if (isDefined(result)) {
+        return result;
+      }
+    }
+
+    return undefined;
+  };
+}
+
+export function validateRequired<TValue = string>(message: string) {
+  return (value: TValue) => {
+    if (Array.isArray(value)) {
+      return isEmpty(value) ? message : undefined;
+    }
+
+    if (typeof value === "string") {
+      return isEmpty(value) ? message : undefined;
+    }
+
+    if (isDict(value)) {
+      return isEmpty(value as Record<string, unknown>) ? message : undefined;
+    }
+
+    return isNullish(value) ? message : undefined;
+  };
+}
+
+export function validateDate(value: string) {
+  if (value === undefined || isEmptyString(value) || isDateString(value)) {
+    return undefined;
+  }
+
+  return "Bitte ein gültiges Datum angeben.";
+}
+
+export function validateMonth(value: string) {
+  if (value === undefined || isEmptyString(value) || isMonthString(value)) {
+    return undefined;
+  }
+
+  return "Bitte einen gültigen Monat angeben.";
+}
+
+export function validateLength(
+  startInclusive: number,
+  endInclusive: number,
+): Validator<OptionalFieldValue<string>> {
+  return (value: OptionalFieldValue<string>) => {
+    if (isNullish(value) || isEmpty(value)) {
+      return undefined;
+    }
+    if (
+      value.trim().length >= startInclusive &&
+      value.trim().length <= endInclusive
+    ) {
+      return undefined;
+    }
+
+    return `Bitte eine Textlänge zwischen ${startInclusive} und ${endInclusive} Zeichen angeben.`;
+  };
+}
+
+export function validatePastOrTodayDate(value: string) {
+  if (isDateString(value) && !isToday(value) && isFuture(endOfDay(value))) {
+    return "Das Datum liegt in der Zukunft.";
+  }
+
+  return undefined;
+}
+
+export function validatePastMonthAndYear(year: number, month: number) {
+  const date = new Date(year, month);
+  if (!isThisMonth(date) && isFuture(date)) {
+    return "Das Datum liegt in der Zukunft.";
+  }
+
+  return undefined;
+}
+
+export function validateInteger(value: OptionalFieldValue<number>) {
+  if (isEmptyString(value) || isInteger(value)) {
+    return undefined;
+  }
+
+  return "Bitte eine ganze Zahl angeben.";
+}
+
+export function validateIntegerAnd(
+  validator: Validator<OptionalFieldValue<number>>,
+) {
+  return validatePipe(validateInteger, validator);
+}
+
+export function validateRange(
+  startInclusive: number,
+  endInclusive: number,
+): Validator<OptionalFieldValue<number>> {
+  return (value: OptionalFieldValue<number>) => {
+    if (isEmptyString(value)) {
+      return undefined;
+    }
+    if (value >= startInclusive && value <= endInclusive) {
+      return undefined;
+    }
+
+    return `Bitte eine Zahl zwischen ${startInclusive} und ${endInclusive} angeben.`;
+  };
+}

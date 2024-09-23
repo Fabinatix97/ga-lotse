@@ -1,0 +1,159 @@
+import com.github.gradle.node.pnpm.task.PnpmTask
+import org.jetbrains.gradle.ext.JUnit
+
+buildscript {
+  apply from: "${rootDir}/gradle/buildscriptRepository.gradle"
+
+  dependencies {
+    classpath 'com.github.node-gradle:gradle-node-plugin:latest.release'
+  }
+}
+
+plugins {
+  id 'com.avast.gradle.docker-compose'
+  id 'org.jetbrains.gradle.plugin.idea-ext' version 'latest.release'
+  id 'org.sonarqube' version 'latest.release' apply false
+}
+
+if (project.hasProperty('projectVersion')) {
+  version = "${projectVersion}"
+}
+
+dockerCompose {
+  projectName = "eshg-frontend"
+}
+
+//CAUTION: run ./gradlew wrapper (twice) after changes to this task!
+//See https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
+wrapper {
+  gradleVersion = '8.9'
+  distributionType = Wrapper.DistributionType.ALL
+}
+
+idea {
+  module {
+    downloadJavadoc = true
+    downloadSources = true
+  }
+  project {
+    settings {
+      compiler {
+        javac {
+          javacAdditionalOptions "-parameters"
+        }
+      }
+      runConfigurations {
+        defaults(JUnit) {
+          vmParameters = "-ea -Xmx512m -Duser.country=de -Duser.language=en -Duser.timezone=Europe/Berlin -Deshg.testcontainers.enabled=false"
+        }
+      }
+    }
+  }
+}
+
+allprojects {
+  group = 'de.eshg.frontend'
+
+  apply from: "${rootDir}/gradle/repository.gradle"
+  apply plugin: 'node'
+
+  // see https://docs.gradle.org/current/userguide/dependency_locking.html#lock_all_configurations_in_one_build_execution
+  tasks.register('resolveAndLockAll') {
+    notCompatibleWithConfigurationCache('Filters configurations at execution time')
+    doFirst {
+      assert gradle.startParameter.writeDependencyLocks: "$path must be run from the command line with the `--write-locks` flag"
+    }
+    doLast {
+      configurations.findAll {
+        // Add any custom filtering on the configurations to be resolved
+        it.canBeResolved
+      }.each { it.resolve() }
+    }
+  }
+}
+
+subprojects {
+  // Note: Unfortunately we cannot define the buildscript repository in the allprojects block
+  // Gradle requires to define the buildscript of the root project pretty much at the beginning of this file.
+  // We also must not redefine the buildscript, thus we end up defining it just for the subprojects
+  buildscript {
+    apply from: "${rootDir}/gradle/buildscriptRepository.gradle"
+  }
+}
+
+def depsInputs = [
+  "${rootDir}/pnpm-workspace.yaml",
+  "${rootDir}/pnpm-lock.yaml",
+  "${rootDir}/.npmrc"
+]
+def nodeModulesDir = "node_modules"
+
+def installDependencies = tasks.register('installDependencies', PnpmTask) {
+  description = "Install missing dependencies based on the pnpm-lock.yaml file"
+  inputs.files depsInputs
+  outputs.dir nodeModulesDir
+  subprojects {
+    outputs.dir "${projectDir}/${nodeModulesDir}"
+  }
+  args = ['install', '--frozen-lockfile']
+}
+
+tasks.register('installDependency', PnpmTask) {
+  description = "Install missing dependencies and update the lock file. Use this to add new dependencies."
+  inputs.files depsInputs
+  outputs.dir nodeModulesDir
+  subprojects {
+    outputs.dir "${projectDir}/${nodeModulesDir}"
+  }
+  args = ['install']
+}
+
+tasks.register('updateDependencies', PnpmTask) {
+  description = "Update ALL npm dependencies to the latest release"
+  inputs.files depsInputs
+  outputs.dir nodeModulesDir
+  subprojects {
+    outputs.dir "${projectDir}/${nodeModulesDir}"
+  }
+  args = ['update', '--recursive', '--latest']
+}
+
+tasks.register('testCoverage', PnpmTask) {
+  environment = ['TZ': 'UTC']
+  inputs.file "${rootDir}/config/tsconfig.base.json"
+  inputs.file "${rootDir}/config/vitest.base.ts"
+  inputs.file "${rootDir}/vitest.config.ts"
+  subprojects {
+    if (file("${projectDir}/vitest.config.ts").exists()) {
+      dependsOn project.tasks.named('prepareEnvironment')
+      inputs.file "${projectDir}/tsconfig.json"
+      inputs.file "${projectDir}/vitest.config.ts"
+      inputs.dir "${projectDir}/src"
+    }
+  }
+  outputs.dir rootProject.layout.buildDirectory.dir('vitest')
+  args = ['vitest', 'run', '--coverage', '--silent']
+}
+
+tasks.register('clean') {
+  dependsOn 'cleanDependencies'
+  delete layout.buildDirectory
+}
+
+tasks.register('generateSbom', PnpmTask) {
+  dependsOn installDependencies
+
+  def sbomFile = layout.buildDirectory.file("sbom.json").get().asFile
+  sbomFile.parentFile.mkdirs()
+  def arguments = ['cdxgen', '.', '--type', 'javascript', '--no-recurse', '--output', sbomFile.path]
+
+  if (project.hasProperty("submitToDependencyTrack")) {
+    def host = project.property('dependency-track-api-url') as String
+    def apiKey = project.property('dependency-track-api-key') as String
+    def projectId = project.property('dependency-project-id') as String
+
+    arguments += ['--server-url', host, '--api-key', apiKey, '--project-id', projectId]
+  }
+
+  args = arguments
+}

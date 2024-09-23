@@ -1,0 +1,18 @@
+= Content Security Policy (CSP) Header
+:sectnums:
+
+[quote]
+`Content-Security-Policy` provides an added layer to mitigate XSS attacks by restricting which scripts can be executed by the page.
+
+We use the strictest possible CSP header for the portal applications.
+This header and in particular the `script-src` and `style-src-*` directives only show their full effect in production mode.
+In dev mode, the header is used in a weaker form, as the mechanisms of dev mode conflict with a strict CSP header.
+This means that new features and the use of new dependencies must be tested extensively in production mode and with the help of end-to-end tests.
+Changes and weakening of the CSP header should only be made in consultation with the security team.
+
+The CSP header is added to the response via Next.js middleware. It is possible to access the generated nonce in server components to enable the loading of script elements.
+
+- link:https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html[Content Security Policy Cheat Sheet]
+- link:https://web.dev/articles/strict-csp[Mitigate cross-site scripting (XSS) with a strict Content Security Policy (CSP)]
+- link:https://csp-evaluator.withgoogle.com/[CSP Evaluator]
+- link:https://nextjs.org/docs/pages/building-your-application/configuring/content-security-policy[Next.js: Content Security Policy]

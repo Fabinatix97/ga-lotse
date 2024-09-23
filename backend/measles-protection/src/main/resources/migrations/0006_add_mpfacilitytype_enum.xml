@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1721991937355-1">
+    <ext:createPostgresEnumType name="mpfacilitytype" values="CHILDRENS_HOME, CIVIL_PROTECTION, DAYCARE, DAY_CLINIC, DAY_NURSERY, DIALYSIS_CENTRE, EMERGENCY_SERVICE, HOSPITAL, MATERNITY_CENTRE, MEDICAL_PRACTICE, OTHER, OTHER_MEDICAL_PRACTICE, OUTPATIENT_SURGERY, PUBLIC_HEALTH_SERVICE, REFUGEE_ACCOMMODATION, REHABILITATION_CENTRE, SCHOOL"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1721991937355-2">
+    <addColumn tableName="facility">
+      <column name="mp_facility_type" type="mpfacilitytype">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

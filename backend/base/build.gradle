@@ -1,0 +1,77 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':base-api')
+    implementation project(':keycloak-api')
+    implementation project(':business-module-commons')
+    implementation project(':lib-aggregation')
+    implementation project(':lib-auditlog')
+    implementation project(':lib-calendar-api')
+    implementation project(':lib-procedures-api')
+    implementation project(':lib-notification')
+    implementation project(':business-module-persistence-commons')
+    implementation project(':util-commons')
+    implementation project(':lib-service-directory-api')
+    implementation project(':lib-mutex')
+
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.apache.commons:commons-collections4:latest.release'
+    implementation libs.bundles.keycloak.client
+    implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'
+    implementation 'com.google.guava:guava:latest.release'
+    implementation('org.mnode.ical4j:ical4j:latest.release') {
+        exclude group: "com.github.erosb", module: "json-sKema"
+        exclude group: "commons-codec", module: "commons-codec"
+        exclude group: "org.codehaus.groovy", module: "*"
+        exclude group: "javax.cache", module: "cache-api"
+    }
+
+    implementation 'com.googlecode.ez-vcard:ez-vcard:latest.release'
+
+    implementation 'com.opencsv:opencsv:latest.release'
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation project(':lib-service-directory-admin-api')
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-service-directory-admin-api'))
+    testImplementation testFixtures(project(":base-api"))
+
+    testImplementation 'com.tngtech.archunit:archunit-junit5:latest.release'
+    testImplementation('com.squareup.okhttp3:mockwebserver') {
+        exclude group: "junit", module: "junit"
+    }
+    // mockwebserver depends on Junit 4 interfaces that we don't want.
+    // Replace those interfaces with dummy ones.
+    // Remove when upgrading to mockwebserver 5
+    testImplementation 'io.quarkus:quarkus-junit4-mock:latest.release'
+}
+
+dockerCompose {
+    startedServices = ['base', 'base-db']
+}
+
+// base should only start when keycloak is up
+tasks.named("composeUp") {
+    def keycloakUp = project(":keycloak").tasks.named("composeUp")
+    dependsOn keycloakUp
+    mustRunAfter keycloakUp
+}
+
+tasks.named('test').configure {
+    dependsOn ':service-directory:buildDockerImage'
+    inputs.files(project(':service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+test {
+    dependsOn ':keycloak:composeBuild'
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-base') ?: "unspecified"
+}

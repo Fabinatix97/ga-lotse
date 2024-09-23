@@ -1,0 +1,17 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.lib.procedure.domain.model;
+
+public enum TaskType {
+  BOOK_APPOINTMENT,
+  PERFORM_SCHOOL_ENTRY_EXAMINATION,
+  INSPECTION_PLANNING,
+  INSPECTION_EXECUTION,
+  INSPECTION_REPORT,
+  TRAVEL_MEDICINE,
+  MEASLES_PROTECTION,
+  STI_PROTECTION,
+}

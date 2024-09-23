@@ -1,0 +1,10 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(":lib-calendar-api")
+    implementation project(":util-commons")
+
+    implementation 'org.springframework:spring-tx'
+}

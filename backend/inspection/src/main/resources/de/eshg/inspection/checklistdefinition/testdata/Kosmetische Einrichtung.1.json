@@ -1,0 +1,126 @@
+{
+  "name": "Testcheckliste für Fußpflegestudio mit allen Attributen",
+  "description": "",
+  "isExpandable": true,
+  "objectTypeId": "6b6a4c76-1e9d-4a83-8311-52c646a8f356",
+  "sections": [
+    {
+      "id": "6999b304-ac87-45a7-aad9-3708ee7aef0d",
+      "title": "Sektion 1",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "9b7f1467-1847-42c2-a4d3-275ebb55434a",
+          "text": "Frage 1 - Einfachauswahl Ja/Nein",
+          "mandatory": true,
+          "note": "Bemerkung Frage 1 Einfachauswahl - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "help": "Hilfetext Frage 1 - Lorem ipsum dolor sit amet,\nconsetetur sadipscing elitr,\n sed diam nonumy eirmod tempor",
+          "textModuleTrue": "Textbaustein Frage 1 - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "textModuleFalse": "Textbaustein Frage 1 - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+        },
+        {
+          "@type": "SEPARATOR",
+          "id": "70f76f65-1da8-412d-aec8-29c16b52c27d"
+        },
+        {
+          "@type": "MULTI_SELECT",
+          "id": "162f5b36-3af3-41cd-b4e4-8b68c95f14e8",
+          "text": "Frage 2 - Mehrfachauswahl",
+          "mandatory": true,
+          "note": "Bemerkung Frage 2 Mehrfachauswahl - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "help": "Hilfetext Frage 2 - Lorem ipsum dolor sit amet,\nconsetetur sadipscing elitr,\n sed diam nonumy eirmod tempor",
+          "items": [
+            {
+              "id": "1add1f17-75d4-424d-9cf3-67740d09ac72",
+              "text": "Option A",
+              "textModuleTrue": "Textbaustein Frage 2 Option A - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+              "textModuleFalse": "Textbaustein Frage 2 Option A - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            },
+            {
+              "id": "0a6322bd-09a1-4417-b1de-6d5a5d815dfb",
+              "text": "Option B",
+              "textModuleTrue": "Textbaustein Frage 2 Option B - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+              "textModuleFalse": "Textbaustein Frage 2 Option B - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            },
+            {
+              "id": "84c302a2-3e45-4acd-b686-b58d365cc9f5",
+              "text": "Längere Option C - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+              "textModuleTrue": "Textbaustein Frage 2 Option C - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+              "textModuleFalse": "Textbaustein Frage 2 Option C - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            }
+          ]
+        },
+        {
+          "@type": "SEPARATOR",
+          "id": "c67b33f7-03df-4ee0-9df6-07a85669e864"
+        },
+        {
+          "@type": "SINGLE_SELECT",
+          "id": "25dddd6a-713c-4895-bae1-e5bba5148832",
+          "text": "Frage 3 - Optionsauswahl",
+          "mandatory": true,
+          "note": "Bemerkung Frage 3 Optionsauswahl - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "help": "Hilfetext Frage 3 - Lorem ipsum dolor sit amet,\nconsetetur sadipscing elitr,\n sed diam nonumy eirmod tempor",
+          "items": [
+            {
+              "id": "38e99529-e39b-4a50-9003-806930c200dc",
+              "text": "Option A",
+              "textModuleTrue": "Textbaustein Frage 3 Option A - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+              "textModuleFalse": "Textbaustein Frage 3 Option A - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            },
+            {
+              "id": "d6945719-5f7b-4460-a586-75934985f5bc",
+              "text": "Option B",
+              "textModuleTrue": "Textbaustein Frage 3 Option B - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+              "textModuleFalse": "Textbaustein Frage 3 Option B - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            },
+            {
+              "id": "f0f7dd2a-ff82-43f8-a3fd-6000f543c4f3",
+              "text": "Längere Option C - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+              "textModuleTrue": "Textbaustein Frage 3 Option C - ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+              "textModuleFalse": "Textbaustein Frage 3 Option C - nicht ausgewählt - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            }
+          ]
+        },
+        {
+          "@type": "SEPARATOR",
+          "id": "d3996ea8-f17b-4a49-a578-cde79bb78d9a"
+        },
+        {
+          "@type": "TEXT",
+          "id": "09e08100-226f-413d-ad59-ef26910de9c6",
+          "text": "Frage 4 - Textfeld",
+          "mandatory": true,
+          "note": "Bemerkung Frage 4 Text - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "help": "Hilfetext Frage 4 - Lorem ipsum dolor sit amet,\nconsetetur sadipscing elitr,\n sed diam nonumy eirmod tempor"
+        }
+      ]
+    },
+    {
+      "id": "be724a40-ed2e-421d-84dc-8836a29b795d",
+      "title": "Sektion 2",
+      "elements": [
+        {
+          "@type": "IMAGE",
+          "id": "f6b669f1-4450-413d-aea2-e70fc4a9a335",
+          "text": "Frage 1 - Bild(er)",
+          "mandatory": false,
+          "note": "Bemerkung Frage 1 Bild(er) - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\nAt vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "help": "Hilfetext Frage 1 - Lorem ipsum dolor sit amet,\nconsetetur sadipscing elitr,\n sed diam nonumy eirmod tempor"
+        },
+        {
+          "@type": "SEPARATOR",
+          "id": "e72cdb59-0a04-48fd-8b6e-2ccf9f78a9ab"
+        },
+        {
+          "@type": "AUDIO",
+          "id": "1895e975-d265-4c45-b42b-84250676f435",
+          "text": "Frage 2 - Audio",
+          "mandatory": false,
+          "note": "Bemerkung Frage 2 Audio - Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          "help": "Hilfetext Frage 2 - Lorem ipsum dolor sit amet,\nconsetetur sadipscing elitr,\n sed diam nonumy eirmod tempor"
+        }
+      ]
+    }
+  ]
+}

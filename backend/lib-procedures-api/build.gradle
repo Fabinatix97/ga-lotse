@@ -1,0 +1,18 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':lib-commons')
+    api project(':lib-four-eyes-principle-api')
+    api project(':lib-notification-api')
+    api project(':api-commons')
+    api project(':lib-security-config-urls')
+    implementation project(':base-api')
+
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    api 'org.openapitools:jackson-databind-nullable:latest.release'
+
+    testImplementation 'com.tngtech.archunit:archunit:latest.release'
+}

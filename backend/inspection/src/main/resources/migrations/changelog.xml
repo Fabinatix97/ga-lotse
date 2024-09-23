@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+  <include file="migrations/0001_initial.xml"/>
+  <include file="migrations/0002_add_due_at_notification_reminder.xml"/>
+  <include file="migrations/0003_rename_pdf_tables.xml"/>
+  <include file="migrations/0004_add_last_inspection_add_report_task_table.xml"/>
+  <include file="migrations/0005_inspection_incidents.xml"/>
+  <include file="migrations/0006_change_phase_enum_values.xml"/>
+  <include file="migrations/0007_refactor_task_tables.xml"/>
+  <include file="migrations/0008_introduce_pgenums.xml"/>
+  <include file="migrations/0009_add_mailSent_fields.xml"/>
+  <include file="migrations/0010_rename_tables.xml"/>
+  <include file="migrations/0011_indices_for_many_to_one_relations.xml"/>
+  <include file="migrations/0012_update_followup_inspection_enum.xml"/>
+  <include file="migrations/0013_inbox_procedure_add_closed_at.xml"/>
+  <include file="migrations/0014_drop_redundant_checklist_numbers_in_incidents.xml"/>
+  <include file="migrations/0015_checklist_and_signature_hashes.xml"/>
+  <include file="migrations/0016_inspection_travel_time.xml"/>
+  <include file="migrations/0017_move_media_file_external_id.xml"/>
+  <include file="migrations/0018_add_deletable_boolean_to_files.xml"/>
+  <include file="migrations/0019_remove_procedure_result.xml"/>
+  <include file="migrations/0020_remove_procedure_type_2.xml"/>
+  <include file="migrations/0021_remove_task_type_2.xml"/>
+  <include file="migrations/0022_update_trigger_type.xml"/>
+  <include file="migrations/0023_add_sti_protection_procedure_lib_enum_values.xml"/>
+  <include file="migrations/0024_delete_facilities_without_procedures.xml"/>
+  <include file="migrations/0025_central_file_state_id_unique_index.xml"/>
+  <include file="migrations/0026_add_cemetery.xml"/>
+  <include file="migrations/0027_remove_progress_entry_deleted.xml"/>
+  <include file="migrations/0028_packlists.xml"/>
+  <include file="migrations/0029_cld_deleted.xml"/>
+  <include file="migrations/0030_add_procedure_exported_at.xml"/>
+  <include file="migrations/0031_packlists_inspections.xml"/>
+  <include file="migrations/0032_add_audio_tables.xml"/>
+  <include file="migrations/0033_inspection_offline_lock.xml"/>
+  <include file="migrations/0034_procedure_sequences.xml"/>
+  <include file="migrations/0035_refactor_web_search_entry_tags.xml"/>
+  <include file="migrations/0036_inspection_notes.xml"/>
+
+</databaseChangeLog>

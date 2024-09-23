@@ -1,0 +1,610 @@
+= Queries and Mutations
+:toc:
+:sectnums:
+:source-highlighter: rouge
+
+== Introduction
+
+Due to security requirements, the browser must communicate with backend services through a reverse proxy, which is distinct from the Next.js server. For this reason, we cannot use React Server Components for loading data and Server Actions for mutating data.
+
+We use link:https://tanstack.com/query/latest[TanStack Query] as library for client-side fetching, which brings simple abstractions for asynchronous state management, automatic refetching and error handling.
+
+TanStack Query is integrated such that
+
+- Errors and loading states are automatically handled for common scenarios
+- Query data is not cached by default
+- Active queries are refetched after mutations
+
+== API clients
+
+We use OpenAPI specifications from the backend services to generate type-safe `fetch` clients for accessing the backend APIs.
+
+Since the backend services may have different URLs depending on the environment, we use environment variables to configure them independently of the compiled code. They are defined in `$PATH_TO_PROJECT/src/lib/shared/api/config`, and passed from the Next.js server to the browser using the main layout server component. The URLs can be easily accessed in client components through a React context.
+
+To properly configure the API clients for usage with TanStack Query, we define reusable hooks for each API:
+
+.$PATH_TO_MODULE/api/clients.ts
+[,ts]
+----
+import { AppointmentBlockApi, Configuration, SchoolEntryApi } from "@eshg/employee-portal-api/schoolEntry";
+import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
+
+function useConfiguration() {
+  const configurationParameters = useApiConfiguration("PUBLIC_SCHOOL_ENTRY_BACKEND_URL");
+  return new Configuration(configurationParameters);
+}
+
+export function useSchoolEntryApi() {
+  const configuration = useConfiguration();
+  return new SchoolEntryApi(configuration);
+}
+
+export function useAppointmentBlockApi() {
+  const configuration = useConfiguration();
+  return new AppointmentBlockApi(configuration);
+}
+----
+
+== Queries
+
+A query is a request which receives data from a backend in order to read it. Queries do not modify the persisted state and are used to load data to be displayed in the frontend.
+
+=== Query keys
+
+Each query needs to define a unique query key. Query keys have two purposes:
+
+1. Defining query dependencies for triggering refetches (similar to React's `useEffect`)
+2. Defining a cache key
+
+To avoid duplicate query keys across business modules, each business module defines query key factories, based on the name of the business module and the corresponding backend API:
+
+.$PATH_TO_MODULE/api/queries/apiQueryKeys.ts
+[,ts]
+----
+import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+
+const apiQueryKey = queryKeyFactory(["schoolEntry"]);
+
+export const schoolEntryApiQueryKey = queryKeyFactory(
+  apiQueryKey(["schoolEntryApi"]),
+);
+
+export const appointmentBlockApiQueryKey = queryKeyFactory(
+  apiQueryKey(["appointmentBlockApi"]),
+);
+----
+
+When defining queries, we use these factories to create unique query keys:
+
+.$PATH_TO_MODULE/api/queries/schoolEntryApi.ts
+[,ts]
+----
+export function useGetProcedure(procedureId: string) {
+  const schoolEntryApi = useSchoolEntryApi();
+  return useSuspenseQuery({
+    queryKey: schoolEntryApiQueryKey(["getProcedure", procedureId]),
+    queryFn: () => schoolEntryApi.getProcedure(procedureId),
+  });
+}
+----
+
+The recommendation is to use the name of the API endpoint method as base query key (e.g. `getProcedure`).
+
+In general, it is not necessary to define hierarchical query keys like `["procedures", "getProcedures"]` and `["procedures", "getProcedure", procedureId]`, since caching is disabled by default and active queries are automatically invalidated after each mutation. Partial invalidation is prone to errors, as related queries might be forgotten during invalidation, resulting in inconsistent UI states.
+
+Query keys should include any variables used in the query function that change.
+This ensures that queries are automatically refetched if, for example, a filter or sort direction changes.
+For instance, it's possible to just include the `request` object in the query key.
+This is shown in several code examples on this page.
+
+NOTE: The query key inputs must be *serializable* (that is `JSON.stringify` must work).
+This is the case for plain objects and arrays but not for objects like `Set` and `Map`.
+
+=== Query hooks
+
+We locate queries in `$PATH_TO_MODULE/api/queries` and group them into TypeScript modules based on their API, e.g. `schoolEntryApi.ts` and `appointmentBlockApi.ts`.
+
+Queries can be defined using either the `useSuspenseQuery` or `useQuery` hook.
+
+==== useSuspenseQuery hook
+
+The `useSuspenseQuery` hook should be used for queries which
+
+- must run before rendering the calling component
+- need no custom handling of loading states and errors
+
+Examples are overview pages for entities or the details page of an entity.
+
+.$PATH_TO_MODULE/api/queries/schoolEntryApi.ts
+[,ts]
+----
+export function useGetProcedures(request: GetProceduresRequest) {
+  const schoolEntryApi = useSchoolEntryApi();
+  return useSuspenseQuery({
+    queryKey: schoolEntryApiQueryKey(["getProcedures", request]),
+    queryFn: () => schoolEntryApi.getProcedures(request),
+  });
+}
+----
+
+Queries defined with `useSuspenseQuery` suspend the rendering of the component until the data could be successfully be fetched. Until then a fallback UI is displayed by the nearest `Suspense` boundary, and errors are catched by the nearest `ErrorBoundary`, which is either already included in the nearest `template.tsx` or manually added, e.g. using `OverlayBoundary`.
+
+This simplifies using the query result, as no manual checks need to be performed before accessing the data.
+
+.ProceduresTable.tsx
+[,tsx]
+----
+export function ProceduresTable(props: ProceduresTableProps) {
+  const procedures = useGetProcedures();
+  return (
+    <Table
+      data={procedures.data.elements}
+      columns={COLUMNS}
+    />
+  );
+}
+----
+
+==== useHandledBackgroundQuery hook
+
+`useHandledBackgroundQuery` is based on `useQuery` and does not trigger any error and suspense boundary. Instead, errors are reported using snackbars, while loading animations need to be implemented manually.
+
+The `useHandledBackgroundQuery` hook should be used for queries which
+
+- run conditionally on user interaction
+- should not disrupt user interaction with the page on error
+- can be re-executed by repeating the user interaction
+- should display a custom loading animation
+
+An example is retrieving search results while typing in an autocomplete field.
+
+.$PATH_TO_MODULE/api/queries/procedureApi.ts
+[,ts]
+----
+import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+
+export function useSearchPersonUnsuspended(
+  request: SearchPersonRequest,
+) {
+  const personApi = usePersonApi();
+  return useHandledBackgroundQuery({
+    queryKey: personApiQueryKey(["searchPerson", request]),
+    queryFn: () => schoolEntryApi.getPersonRaw(request).then(unwrapRawResponse),
+  });
+}
+----
+
+.$PATH_TO_MODULE/SearchPersonAutocomplete.tsx
+[,tsx]
+----
+export function SearchPersonAutocomplete( {
+  const searchPerson = useSearchPersonUnsuspended({
+    searchQuery,
+  });
+
+  return (
+    <Autocomplete
+      options={searchPerson.data ?? []}
+      loading={searchPerson.isFetching}
+    />
+  );
+}
+----
+
+===== Using multiple queries for one page
+
+When multiple suspense queries are used for one page, they are executed sequentially by default.
+This can cause problems when the total time of all queries exceeds our configured `staleTime`, since the first query might already be stale by the time all other queries are done.
+Issues with multiple queries can be debugged by enabling the network throttling in the "Network" tab of your browser's developer tools.
+
+To avoid potential re-fetches of those queries and to reduce load time, it is recommended to consider one of the following options:
+
+- Combine all queries into a single API endpoint in the backend, to make a single roundtrip
+
+.queries/users.ts
+[,tsx]
+----
+// Combines getSelfGroups and getGroupMembers into one request
+export function useGetUserOverviewPageQuery() {
+  const userApi = useUserApi();
+  return useSuspenseQuery({
+    queryKey: userApiQueryKey(["getUserManagementPage"]),
+    queryFn: () => userApi.getUserManagementPage(),
+    select: (response) => ({
+      selfGroups: response.selfGroups.map((group) => group.name),
+      users: response.groupMembers,
+    }),
+  });
+}
+----
+
+- Use the `useSuspenseQueries` hook to run all queries in parallel
+
+.queries/inventory.ts
+[,tsx]
+----
+function getInventoryItemQuery(
+  inventoryApi: InventoryApi,
+  labelApi: LabelApi,
+  id: string,
+) {
+  return queryOptions({
+    queryKey: inventoryApiQueryKey(["getInventoryItem", id]),
+    queryFn: async () => {
+      const labels = await labelApi.getLabels();
+      const item = await inventoryApi.getInventoryItem(id);
+      return { item, labels };
+    },
+  });
+}
+
+function getInventoryBookingHistoryQuery(
+  inventoryApi: InventoryApi,
+  id: string,
+  page: number,
+) {
+  return queryOptions({
+    queryKey: inventoryApiQueryKey(["getInventoryBookingHistory", id, page]),
+    queryFn: () =>
+      inventoryApi
+        .getInventoryBookingHistoryRaw({
+          id,
+          pageNumber: page,
+        })
+        .then(unwrapRawResponse),
+  });
+}
+
+// Runs a paginated query in parallel with the item details query
+export function useGetInventoryItem(id: string, bookingHistoryPage: number) {
+  const inventoryApi = useInventoryApi();
+  const labelApi = useLabelApi();
+
+  return useSuspenseQueries({
+    queries: [
+      getInventoryItemQuery(inventoryApi, labelApi, id),
+      getInventoryBookingHistoryQuery(inventoryApi, id, bookingHistoryPage),
+    ],
+  });
+}
+----
+
+- Surround each component that renders a query with an independent suspense boundary
+
+.Dashboard.tsx
+[,tsx]
+----
+<PageGrid>
+  <Grid lg={7}>
+    <Suspense fallback={<LoadingSheet title="Vorgänge werden geladen." />}>
+      <DashboardProceduresTable data-testid="dashboard-procedures-table" />
+    </Suspense>
+  </Grid>
+  <Grid lg={5}>
+    <Suspense fallback={<LoadingSheet title="Aufgaben werden geladen." />}>
+      <DashboardTaskList data-testid="dashboard-task-list" />
+    </Suspense>
+  </Grid>
+</PageGrid>
+----
+
+==== useQuery hook
+
+The `useQuery` hook should be used for queries which
+
+- require custom handling of loading states
+- require custom handling of errors
+- run conditionally (e.g. after user input)
+
+An example is a search query which is triggered once the user starts typing.
+
+.$PATH_TO_MODULE/api/queries/procedureApi.ts
+[,ts]
+----
+export function useSearchProcedures(request: SearchProceduresRequest) {
+  const procedureApi = useProcedureApi();
+  const debouncedRequest = useDebounce(request, 250);
+  return useQuery({
+    queryKey: procedureApi(["searchProcedures", request]),
+    queryFn: () => procedureApi.searchProcedures(request),
+    placeholderData: keepPreviousData,
+    enabled: request.searchString.length >= 3,
+  });
+}
+----
+
+Queries defined with `useQuery` do not suspend the rendering of the component. Before accessing the data, it must be checked if the query was successful, e.g. using the `isSuccess` flag on the return value. An alternative is to first check for errors and optionally the loading state. Then TypeScript is able to infer that the data is available if the previous conditions aren't fulfilled.
+
+.SearchProceduresSidebar.tsx
+[,tsx]
+----
+export function SearchProceduresSidebar(props: SearchProceduresSidebarProps) {
+  const [searchString, setSearchString] = useState("");
+  const searchProcedures = useSearchProcedures({ searchString });
+
+  const result = searchProcedures.isSuccess ? searchProcedures.data : [];
+
+  // render search results
+}
+----
+
+Note that errors do not need to be handled by default, because errors propagate to the nearest error boundary. If this is not intended, set `throwOnError: false` for the query, and add manual error handling to the component.
+
+== Mutations
+
+A mutation is a request which sends data to a backend in order to change the persisted state, optionally returning the new state. Mutations are used to perform actions triggered by user interactions in the frontend.
+
+=== Mutation hooks
+
+We locate mutations in `$PATH_TO_MODULE/api/mutations` and group them into TypeScript modules based on their API, e.g. `schoolEntryApi.ts` and `appointmentBlockApi.ts`.
+
+Mutations can be defined using either the `useHandledMutation` or `useMutation` hook.
+
+==== useHandledMutation hook
+
+The `useHandledMutation` hook should be used for mutations which
+
+- need no custom handling of errors
+
+An example is the submission of a form page.
+
+.$PATH_TO_MODULE/api/mutations/procedureApi.ts
+[,ts]
+----
+export function useCreateProcedure() {
+  const procedureApi = useProcedureApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (request: ApiCreateProcedureRequest) =>
+      procedureApi.createProcedure(request),
+    onSuccess: () => {
+      snackbar.confirmation("Der Vorgang wurde erfolgreich angelegt.");
+    },
+  });
+}
+----
+
+Mutations defined with `useHandledMutation` automatically handle errors by notifying the nearest `AlertContext`.
+
+This simplifies using the mutation, as no manual error handling needs to be implemented.
+
+.CreateProcedureForm.tsx
+[,tsx]
+----
+export function CreateProcedureForm(props: CreateProcedureFormProps) {
+  const router = useRouter();
+  const createProcedure = useCreateProcedure();
+
+  async function handleSubmit(values: CreateProcedureFormValues) {
+    await createProcedure
+      .mutateAsync(mapFormValues(values), {
+        onSuccess: () => router.push(routes.procedures.overview),
+      })
+      .catch();
+  }
+
+  return <ProcedureForm onSubmit={handleSubmit} />;
+}
+----
+
+==== useMutation hook
+
+The `useMutation` hook should be used for mutations which
+
+- require custom handling of errors
+
+This should only be necessary in rare cases, so only resort to this hook if the user must not be notified about errors using an alert. But keep in mind that when using `useMutation`, it is mandatory to manually implement an error notification for the user.
+
+=== Using mutations with Formik
+
+Each mutation provides two functions for triggering the mutation: `mutate` and `mutateAsync`.
+
+In general, `mutate` should be preferred over `mutateAsync`, because it internally discards errors caused by the mutation, which avoids triggering the nearest error boundary. `onError` handlers are still executed, of course.
+
+However, we need the promise returned by `mutateAsync` to enable Formik to correctly update the submission state of a form.
+In this case it's important to catch promise rejections to avoid propagating the error to the nearest error boundary. We can do this by using the following pattern:
+
+[,ts]
+----
+async function handleSubmit(values: FormValues) {
+  await sendFormData
+    .mutateAsync(values)
+    .catch();
+}
+----
+
+Alternatively, a `try-catch` block can be used with an empty `catch` block, which is a little bit more verbose.
+
+For more details about the difference between both functions refer to link:https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync[Mutate or MutateAsync].
+
+=== Using callbacks on useMutation or mutate
+
+Callbacks like `onSuccess` and `onError` can be defined both as option when defining the mutation using `useMutation` (or `useHandledMutation`), or when triggering it using `mutate` or `mutateAsync`.
+
+The difference is the following:
+
+> * Do things that are absolutely necessary and logic related (like query invalidation) in the useMutation callbacks.
+> * Do UI related things like redirects or showing toast notifications in mutate callbacks. If the user navigated away from the current screen before the mutation finished, those will purposefully not fire.
+> -- https://tkdodo.eu/blog/mastering-mutations-in-react-query#some-callbacks-might-not-fire
+
+== Suspense and error boundaries
+
+To avoid manually integrating loading indicators and error alerts for the majority of queries and mutations, we use the following concepts:
+
+- `Suspense` for handling `useSuspenseQuery`
+- Error Boundaries for handling query errors
+- `AlertContext` for handling mutation errors
+
+We call a combination of these concepts **boundary**, because it defines a scope for handling queries and mutations while preventing suspends and errors from propagating outside.
+
+There are predefined boundaries at different levels of the application:
+
+* at page level (`template.tsx`, `error.tsx`, `loading.tsx`)
+* at layout slot level (`template.tsx`, `error.tsx`, `loading.tsx`)
+
+This means that when using queries on a page, modal or sidebar implemented based on the App Router, no additional steps need to be taken.
+
+=== Modals and sidebars inside components
+
+For modals and sidebars implemented outside of the App Router, we need to manually add an `OverlayBoundary` around the component using queries or mutations:
+
+[,tsx]
+----
+function SidebarButton() {
+  const [open, setOpen] = useState(false);
+
+  if (open) {
+    return (
+      <OverlayBoundary>
+        <SidebarWithQueryAndMutation />
+      </OverlayBoundary>
+    );
+  }
+
+  return <Button onClick={() => setOpen(true)} />;
+}
+
+function SidebarWithQueryAndMutation() {
+  const query = useSuspenseQuery({ … });
+  const mutation = useHandledMutation({ … });
+
+  return <Sidebar open>…</Sidebar>;
+}
+----
+
+**Important note**: Boundaries will not work as expected when used within the component calling queries or mutations. So this example will not handle suspends and errors within the sidebar:
+
+[,tsx]
+----
+function SidebarWithQueryAndMutation() {
+  const query = useSuspenseQuery({ … });
+  const mutation = useHandledMutation({ … });
+
+  return (
+    // ❌ wrong
+    <OverlayBoundary>
+      <Sidebar open>…</Sidebar>
+    </OverlayBoundary>
+  );
+}
+----
+
+=== Nested layouts
+
+To enable loading states and error handling for nested layouts, we need to add the following files at the same level of the nested `layout.tsx`:
+
+- `loading.tsx` - for handling suspense queries
+- `error.tsx` - for handling query errors with `ErrorAlert`
+- `template.tsx` - for handling mutation errors with `QueryBoundary`
+
+It's essential to use `template.tsx` rather than `layout.tsx` to define the `QueryBoundary`. Unlike layouts, templates are recreated upon navigation. This ensures that an active mutation error is not displayed after navigation to an unrelated page.
+
+In order to display mutation errors, `ScopedAlert` must be used in the component tree below `QueryBoundary`. This can either be done within `template.tsx` or on page level, e.g. by using a reusable layout component like `MainContentLayout`.
+
+Here are examples for implementing boundaries in nested layouts:
+
+.loading.tsx
+[,tsx]
+----
+export default function Loading() {
+  return <LoadingIndicator fullHeight />;
+}
+----
+
+.error.tsx
+[,tsx]
+----
+"use client";
+
+import { NextErrorBoundary } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+
+export default NextErrorBoundary;
+----
+
+.template.tsx
+[,tsx]
+----
+export default function Template(props: RequiresChildren) {
+  return (
+    <QueryBoundary>
+      <ScopedAlert />
+      {props.children}
+    </QueryBoundary>
+  );
+}
+----
+
+== Migration notes
+
+When migrating from server-side requests to client-side requests, please note:
+
+- Server Actions and the Server Queries affected by them need to be migrated in one step. Otherwise the UI state can become inconsistent, because the Server Queries will not be invalidated after the mutation succeeds.
+- `useHandledMutation` uses alerts to notify the user about errors. This can require changes to e2e tests, because previously, `useServerAction` was using snackbars.
+- `useHandledMutation` and `useMutation` only support a single parameter on the mutation function. Server Actions using multiple parameters need to be migrated to a single parameter, e.g. using an object structure.
+- Don't forget to remove the `async` keyword when migrating a server component to a client component by adding `"use client"`.
+
+== Examples
+
+=== Paginated query
+
+[,ts]
+----
+export function useGetProcedures(request: GetProceduresRequest) {
+  const procedureApi = useProcedureApi();
+  return useSuspenseQuery({
+    queryKey: procedureApiQueryKey(["getProcedures", request]),
+    queryFn: () => procedureApi.getProceduresRaw(request).then(unwrapRawResponse),
+    placeholderData: keepPreviousData,
+  });
+}
+----
+
+- Use the `raw` variant of the request method for queries using multiple query parameters to avoid errors caused by query parameters passed in the wrong order
+- Map the raw response with `unwrapRawResponse` to extract the data
+- Use `keepPreviousData` to display old data while new data is loading
+
+=== Search query (conditional query)
+
+[,ts]
+----
+export function useSearchProcedure(request: SearchProceduresRequest) {
+  const procedureApi = useSchoolEntryApi();
+  const [debouncedRequest] = useDebounce(request, 250);
+  const enabled = debouncedRequest.searchString.length > 0;
+  return useQuery({
+    queryKey: procedureApiQueryKey(["searchProcedure", debouncedRequest]),
+    queryFn: () => personApi.searchProcedure(debouncedRequest).then(unwrapRawResponse),
+    placeholderData: enabled ? keepPreviousData : undefined,
+    enabled,
+  });
+}
+----
+
+- Use `useDebounce` to debounce user inputs to avoid sending one request for each keystroke
+- Use `enabled` to disable the query while no valid user input is available
+- Conditionally use `keepPreviousData` to display old data while new data is loading, but only when the query is enabled
+
+=== Mapped query
+
+[,ts]
+----
+export function useGetProcedure(procedureId: string) {
+  const procedureApi = useProcedureApi();
+  return useSuspenseQuery({
+    queryKey: procedureApiQueryKey(["getProcedure", procedureId]),
+    queryFn: () => procedureApi.getProcedure(procedureId),
+    select: mapProcedure,
+  });
+}
+
+function mapProcedure(procedure: Procedure) {
+  // map response, e.g. adding derived properties
+}
+----
+
+- Use `select` to map the response in a reusable way
+
+== Further reading
+
+- link:https://tanstack.com/query/latest/docs/framework/react/overview[TanStack Query documentation]
+- link:https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync[Mastering Mutations in React Query]

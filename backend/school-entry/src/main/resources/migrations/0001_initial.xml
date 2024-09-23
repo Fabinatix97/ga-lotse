@@ -1,0 +1,1451 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="GA-Lotse" id="initial">
+        <!-- default_revision_entity -->
+        <createTable tableName="default_revision_entity">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_default_revision_entity"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- appointment_block_group -->
+        <createTable tableName="appointment_block_group">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parallel_examinations" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slot_duration_in_minutes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="appointment_block_group_external_id_key" tableName="appointment_block_group" columnNames="external_id"/>
+
+        <!-- appointment_block -->
+        <createTable tableName="appointment_block">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calendar_event_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_block_start" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_block_end" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_block_group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="appointment_block_calendar_event_id_key" tableName="appointment_block" columnNames="calendar_event_id"/>
+        <addUniqueConstraint constraintName="appointment_block_external_id_key" tableName="appointment_block" columnNames="external_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_appointment_block_appointment_block_group"
+                                 baseTableName="appointment_block" baseColumnNames="appointment_block_group_id"
+                                 referencedTableName="appointment_block_group" referencedColumnNames="id"/>
+
+        <!-- appointment -->
+        <createTable tableName="appointment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_block_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_start" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_end" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_appointment_appointment_block"
+                                 baseTableName="appointment" baseColumnNames="appointment_block_id"
+                                 referencedTableName="appointment_block" referencedColumnNames="id"/>
+
+        <!-- school_entry_procedure -->
+        <createTable tableName="school_entry_procedure">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_entry_procedure"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_result" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closed_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="archiving_relevance" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="UUID"/>
+            <column name="appointment_id" type="BIGINT"/>
+            <column name="is_entry_level" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="school_entry_procedure_external_id_key" tableName="school_entry_procedure" columnNames="external_id"/>
+        <addUniqueConstraint constraintName="school_entry_procedure_appointment_id_key" tableName="school_entry_procedure" columnNames="appointment_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_school_entry_procedure_appointment"
+                                 baseTableName="school_entry_procedure" baseColumnNames="appointment_id"
+                                 referencedTableName="appointment" referencedColumnNames="id"/>
+
+        <!-- anamnesis -->
+        <createTable tableName="anamnesis">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_anamnesis"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="daycare" type="TEXT"/>
+            <column name="child_language_screening" type="BOOLEAN"/>
+            <column name="preliminary_course" type="BOOLEAN"/>
+            <column name="birth_weight" type="INTEGER"/>
+            <column name="gestational_age" type="INTEGER"/>
+            <column name="siblings" type="INTEGER"/>
+            <column name="all_check_ups" type="TEXT"/>
+            <column name="u2" type="BOOLEAN"/>
+            <column name="u3" type="BOOLEAN"/>
+            <column name="u4" type="BOOLEAN"/>
+            <column name="u5" type="BOOLEAN"/>
+            <column name="u6" type="BOOLEAN"/>
+            <column name="u7" type="BOOLEAN"/>
+            <column name="u7a" type="BOOLEAN"/>
+            <column name="u8" type="BOOLEAN"/>
+            <column name="u9" type="BOOLEAN"/>
+            <column name="chicken_pox" type="BOOLEAN"/>
+            <column name="early_support" type="BOOLEAN"/>
+            <column name="integration_place" type="BOOLEAN"/>
+            <column name="ergotherapy" type="BOOLEAN"/>
+            <column name="speech_therapy" type="BOOLEAN"/>
+            <column name="physiotherapy" type="BOOLEAN"/>
+            <column name="nationality_child" type="TEXT"/>
+            <column name="country_of_birth_child" type="TEXT"/>
+            <column name="nationality_mother" type="TEXT"/>
+            <column name="country_of_birth_mother" type="TEXT"/>
+            <column name="nationality_father" type="TEXT"/>
+            <column name="country_of_birth_father" type="TEXT"/>
+            <column name="has_migration_background" type="BOOLEAN"/>
+            <column name="in_germany_since" type="date"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_anamnesis_school_entry_procedure"
+                                 baseTableName="anamnesis" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- appointment_type_configs -->
+        <createTable tableName="appointment_type_configs">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_type_configs"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_duration_in_minutes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="appointment_type_configs_appointment_type_key" tableName="appointment_type_configs" columnNames="appointment_type"/>
+
+        <!-- approval_request -->
+        <createTable tableName="approval_request">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_approval_request"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="decided_by" type="UUID"/>
+            <column name="decided_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="decision" type="TEXT"/>
+        </createTable>
+
+        <addUniqueConstraint constraintName="approval_request_external_id_key" tableName="approval_request" columnNames="external_id"/>
+
+        <!-- inbox_procedure -->
+        <createTable tableName="inbox_procedure">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inbox_procedure"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_procedure_status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_type" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="inbox_procedure_external_id_key" tableName="inbox_procedure" columnNames="external_id"/>
+
+        <!-- contact_details -->
+        <createTable tableName="contact_details">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contact_details"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_name" type="TEXT"/>
+            <column name="first_name" type="TEXT"/>
+            <column name="last_name" type="TEXT"/>
+            <column name="title" type="TEXT"/>
+            <column name="date_of_birth" type="date"/>
+            <column name="email_address" type="TEXT"/>
+            <column name="phone_number" type="TEXT"/>
+            <column name="inbox_procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="contact_details_inbox_procedure_id_key" tableName="contact_details" columnNames="inbox_procedure_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_contact_details_inbox_procedure"
+                                 baseTableName="contact_details" baseColumnNames="inbox_procedure_id"
+                                 referencedTableName="inbox_procedure" referencedColumnNames="id"/>
+
+        <!-- development_screening -->
+        <createTable tableName="development_screening">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="height" type="INTEGER"/>
+            <column name="weight" type="FLOAT8"/>
+            <column name="systole" type="INTEGER"/>
+            <column name="diastole" type="INTEGER"/>
+            <column name="nutritional_condition_result_value" type="TEXT"/>
+            <column name="nutritional_condition_result_doctor_letter" type="TEXT"/>
+            <column name="neurology_result_value" type="TEXT"/>
+            <column name="neurology_result_doctor_letter" type="TEXT"/>
+            <column name="respiratory_cardiovascular_result_value" type="TEXT"/>
+            <column name="respiratory_cardiovascular_result_doctor_letter" type="TEXT"/>
+            <column name="skin_result_value" type="TEXT"/>
+            <column name="skin_result_doctor_letter" type="TEXT"/>
+            <column name="musculature_skeleton_result_value" type="TEXT"/>
+            <column name="musculature_skeleton_result_doctor_letter" type="TEXT"/>
+            <column name="metabolism_result_value" type="TEXT"/>
+            <column name="metabolism_result_doctor_letter" type="TEXT"/>
+            <column name="abdomen_result_value" type="TEXT"/>
+            <column name="abdomen_result_doctor_letter" type="TEXT"/>
+            <column name="ear_nose_throat_result_value" type="TEXT"/>
+            <column name="ear_nose_throat_result_doctor_letter" type="TEXT"/>
+            <column name="physical_examination_note" type="TEXT"/>
+            <column name="chronic_disease_result" type="BOOLEAN"/>
+            <column name="disability_result" type="BOOLEAN"/>
+            <column name="disability_type" type="TEXT"/>
+            <column name="handicap_note" type="TEXT"/>
+            <column name="family" type="BOOLEAN"/>
+            <column name="non_compliance" type="BOOLEAN"/>
+            <column name="social" type="BOOLEAN"/>
+            <column name="migration" type="BOOLEAN"/>
+            <column name="other_risk" type="BOOLEAN"/>
+            <column name="re_introduction" type="BOOLEAN"/>
+            <column name="school_counselling" type="BOOLEAN"/>
+            <column name="motor_promotion" type="BOOLEAN"/>
+            <column name="educational_advice" type="BOOLEAN"/>
+            <column name="language_advice" type="BOOLEAN"/>
+            <column name="nutritional_advice" type="BOOLEAN"/>
+            <column name="vaccination_advice" type="BOOLEAN"/>
+            <column name="care_child" type="BOOLEAN"/>
+            <column name="social_service" type="BOOLEAN"/>
+            <column name="other_support" type="BOOLEAN"/>
+            <column name="info_letter" type="BOOLEAN"/>
+            <column name="extra_effort" type="BOOLEAN"/>
+            <column name="school_recommendation" type="TEXT"/>
+            <column name="school_feedback" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_school_entry_procedure"
+                                 baseTableName="development_screening" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- eye_examination_result -->
+        <createTable tableName="eye_examination_result">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_eye_examination_result"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="left_eye_distance" type="TEXT"/>
+            <column name="left_eye_distance_plus150dpt" type="TEXT"/>
+            <column name="left_eye_distance_with_glasses" type="TEXT"/>
+            <column name="right_eye_distance" type="TEXT"/>
+            <column name="right_eye_distance_plus150dpt" type="TEXT"/>
+            <column name="right_eye_distance_with_glasses" type="TEXT"/>
+            <column name="eye_examination_value" type="TEXT"/>
+            <column name="eye_examination_doctor_letter" type="TEXT"/>
+            <column name="lang_examination_value" type="TEXT"/>
+            <column name="lang_examination_doctor_letter" type="TEXT"/>
+            <column name="ishihara_examination_value" type="TEXT"/>
+            <column name="ishihara_examination_doctor_letter" type="TEXT"/>
+
+            <column name="amblyopia" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="astigmatism" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color_vision_disorder" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hyperopia" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="myopia" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="strabismus" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="other_diagnosis" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_eye_examination_result_school_entry_procedure"
+                                 baseTableName="eye_examination_result" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- facility -->
+        <createTable tableName="facility">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="central_file_state_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="facility_external_id_key" tableName="facility" columnNames="external_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_facility_school_entry_procedure"
+                                 baseTableName="facility" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- file_content -->
+        <createTable tableName="file_content">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_content"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="BYTEA"/>
+        </createTable>
+
+        <!-- file -->
+        <createTable tableName="file">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_content_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size_bytes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attached_to_mail_id" type="BIGINT"/>
+            <column name="deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by_self" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by_progress_entry" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by_mail" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="file_external_id_key" tableName="file" columnNames="external_id"/>
+        <addUniqueConstraint constraintName="file_file_content_id_key" tableName="file" columnNames="file_content_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_file_file_content"
+                                 baseTableName="file" baseColumnNames="file_content_id"
+                                 referencedTableName="file_content" referencedColumnNames="id"/>
+
+        <!-- mail -->
+        <createTable tableName="mail">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mail"/>
+            </column>
+            <column name="removed_invalid_attachments" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_mail_file"
+                                 baseTableName="mail" baseColumnNames="id"
+                                 referencedTableName="file" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_file_mail"
+                                 baseTableName="file" baseColumnNames="attached_to_mail_id"
+                                 referencedTableName="mail" referencedColumnNames="id"/>
+
+        <!-- mail_meta_data -->
+        <createTable tableName="mail_meta_data">
+            <column name="mail_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mail_meta_data"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="mail_from" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mail_to" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_mail_meta_data_mail"
+                                 baseTableName="mail_meta_data" baseColumnNames="mail_id"
+                                 referencedTableName="mail" referencedColumnNames="id"/>
+
+        <!-- mail_meta_data_aud -->
+        <createTable tableName="mail_meta_data_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mail_meta_data_aud"/>
+            </column>
+            <column name="mail_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_mail_meta_data_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="description" type="TEXT"/>
+            <column name="mail_from" type="TEXT"/>
+            <column name="mail_to" type="TEXT"/>
+            <column name="sent_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_mail_meta_data_aud_default_revision_entity"
+                                 baseTableName="mail_meta_data_aud" baseColumnNames="rev"
+                                 referencedTableName="default_revision_entity" referencedColumnNames="id"/>
+
+        <!-- hearing_test_result -->
+        <createTable tableName="hearing_test_result">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_hearing_test_result"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="left_ear_hz250" type="TEXT"/>
+            <column name="left_ear_hz500" type="TEXT"/>
+            <column name="left_ear_hz1000" type="TEXT"/>
+            <column name="left_ear_hz2000" type="TEXT"/>
+            <column name="left_ear_hz4000" type="TEXT"/>
+            <column name="left_ear_hz6000" type="TEXT"/>
+            <column name="left_ear_hz8000" type="TEXT"/>
+            <column name="right_ear_hz250" type="TEXT"/>
+            <column name="right_ear_hz500" type="TEXT"/>
+            <column name="right_ear_hz1000" type="TEXT"/>
+            <column name="right_ear_hz2000" type="TEXT"/>
+            <column name="right_ear_hz4000" type="TEXT"/>
+            <column name="right_ear_hz6000" type="TEXT"/>
+            <column name="right_ear_hz8000" type="TEXT"/>
+            <column name="examination_result_value" type="TEXT"/>
+            <column name="examination_result_doctor_letter" type="TEXT"/>
+            <column name="note" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_hearing_test_result_school_entry_procedure"
+                                 baseTableName="hearing_test_result" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- inbox_progress_entry -->
+        <createTable tableName="inbox_progress_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_inbox_progress_entry"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="TEXT"/>
+            <column name="message_text" type="TEXT"/>
+            <column name="file_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint constraintName="inbox_progress_entry_external_id_key" tableName="inbox_progress_entry" columnNames="external_id"/>
+        <addUniqueConstraint constraintName="inbox_progress_entry_file_id_key" tableName="inbox_progress_entry" columnNames="file_id"/>
+        <addUniqueConstraint constraintName="inbox_progress_entry_inbox_procedure_id_key" tableName="inbox_progress_entry" columnNames="inbox_procedure_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_inbox_progress_entry_file"
+                                 baseTableName="inbox_progress_entry" baseColumnNames="file_id"
+                                 referencedTableName="file" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_inbox_progress_entry_inbox_procedure"
+                                 baseTableName="inbox_progress_entry" baseColumnNames="inbox_procedure_id"
+                                 referencedTableName="inbox_procedure" referencedColumnNames="id"/>
+
+        <!-- progress_entry -->
+        <createTable tableName="progress_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_progress_entry"/>
+            </column>
+            <column name="deleted" remarks="Soft-delete indicator" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_id" type="BIGINT"/>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="progress_entry_external_id_key" tableName="progress_entry" columnNames="external_id"/>
+        <addUniqueConstraint constraintName="progress_entry_file_id_key" tableName="progress_entry" columnNames="file_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_progress_entry_file"
+                                 baseTableName="progress_entry" baseColumnNames="file_id"
+                                 referencedTableName="file" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_progress_entry_school_entry_procedure"
+                                 baseTableName="progress_entry" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- progress_entry_aud -->
+        <createTable tableName="progress_entry_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_progress_entry_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_progress_entry_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="external_id" type="UUID"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="procedure_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_progress_entry_aud_default_revision_entity"
+                                 baseTableName="progress_entry_aud" baseColumnNames="rev"
+                                 referencedTableName="default_revision_entity" referencedColumnNames="id"/>
+
+        <!-- manual_progress_entry -->
+        <createTable tableName="manual_progress_entry">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry"/>
+            </column>
+            <column name="manual_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="TEXT"/>
+            <column name="message_text" type="TEXT"/>
+            <column name="note" type="TEXT"/>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_document_type" type="TEXT"/>
+            <column name="key_document_version" type="INTEGER"/>
+            <column name="locked" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_manual_progress_entry_progress_entry"
+                                 baseTableName="manual_progress_entry" baseColumnNames="id"
+                                 referencedTableName="progress_entry" referencedColumnNames="id"/>
+
+        <!-- manual_progress_entry_aud -->
+        <createTable tableName="manual_progress_entry_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry_aud"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry_aud"/>
+            </column>
+            <column name="manual_progress_entry_type" type="TEXT"/>
+            <column name="subject" type="TEXT"/>
+            <column name="message_text" type="TEXT"/>
+            <column name="note" type="TEXT"/>
+            <column name="created_by" type="UUID"/>
+            <column name="key_document_type" type="TEXT"/>
+            <column name="key_document_version" type="INTEGER"/>
+            <column name="locked" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_manual_progress_entry_aud_progress_entry_aud"
+                                 baseTableName="manual_progress_entry_aud" baseColumnNames="rev,id"
+                                 referencedTableName="progress_entry_aud" referencedColumnNames="rev,id"/>
+
+        <!-- person -->
+        <createTable tableName="person">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="central_file_state_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="person_external_id_key" tableName="person" columnNames="external_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_person_school_entry_procedure"
+                                 baseTableName="person" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- processed_inbox_progress_entry -->
+        <createTable tableName="processed_inbox_progress_entry">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_processed_inbox_progress_entry"/>
+            </column>
+            <column name="inbox_procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="TEXT"/>
+            <column name="message_text" type="TEXT"/>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="processed_inbox_progress_entry_inbox_procedure_id_key" tableName="processed_inbox_progress_entry" columnNames="inbox_procedure_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_processed_inbox_progress_entry_inbox_procedure"
+                                 baseTableName="processed_inbox_progress_entry" baseColumnNames="inbox_procedure_id"
+                                 referencedTableName="inbox_procedure" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_processed_inbox_progress_entry_progress_entry"
+                                 baseTableName="processed_inbox_progress_entry" baseColumnNames="id"
+                                 referencedTableName="progress_entry" referencedColumnNames="id"/>
+
+        <!-- school_entry_task -->
+        <createTable tableName="school_entry_task">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_school_entry_task"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="due_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="current_assignment_assignee_id" type="UUID"/>
+            <column name="current_assignment_assigned_by_id" type="UUID"/>
+            <column name="current_assignment_assignment_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addUniqueConstraint constraintName="school_entry_task_external_id_key" tableName="school_entry_task" columnNames="external_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_school_entry_task_school_entry_procedure"
+                                 baseTableName="school_entry_task" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- sopess_examination_result -->
+        <createTable tableName="sopess_examination_result">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sopess_examination_result"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="jump_count" type="INTEGER"/>
+            <column name="gross_motor_skills" type="TEXT"/>
+            <column name="doctor_letter_gross_motor_skills" type="TEXT"/>
+            <column name="visuo_motor" type="INTEGER"/>
+            <column name="fine_motor_skills" type="TEXT"/>
+            <column name="doctor_letter_fine_motor_skills" type="TEXT"/>
+            <column name="handedness_value" type="TEXT"/>
+            <column name="visual_perception_points" type="INTEGER"/>
+            <column name="visual_perception_result" type="TEXT"/>
+            <column name="doctor_letter_visual_perception" type="TEXT"/>
+            <column name="primary_language" type="TEXT"/>
+            <column name="german_knowledge_primary_carer" type="TEXT"/>
+            <column name="family_language" type="TEXT"/>
+            <column name="german_knowledge_child" type="TEXT"/>
+            <column name="letterssandzpoints" type="TEXT"/>
+            <column name="formation_sch_points" type="TEXT"/>
+            <column name="letterstanddpoints" type="TEXT"/>
+            <column name="formation_ch_points" type="TEXT"/>
+            <column name="lettersgandkpoints" type="TEXT"/>
+            <column name="letterslandnpoints" type="TEXT"/>
+            <column name="letterrpoints" type="TEXT"/>
+            <column name="letterfand_formation_pf_points" type="TEXT"/>
+            <column name="letterbpoints" type="TEXT"/>
+            <column name="formations_tr_dr_kr_gr_points" type="TEXT"/>
+            <column name="preposition_points" type="INTEGER"/>
+            <column name="plural_points" type="INTEGER"/>
+            <column name="speech_result" type="TEXT"/>
+            <column name="doctor_letter_speech" type="TEXT"/>
+            <column name="pseudoword_points" type="INTEGER"/>
+            <column name="auditive_processing_result" type="TEXT"/>
+            <column name="doctor_letter_auditive_processing" type="TEXT"/>
+            <column name="counting_points" type="INTEGER"/>
+            <column name="quantity_knowledge_points" type="INTEGER"/>
+            <column name="knowledge_thinking_result" type="TEXT"/>
+            <column name="doctor_letter_knowledge_thinking" type="TEXT"/>
+            <column name="selective_attention_points" type="INTEGER"/>
+            <column name="psychological_behavior_result" type="TEXT"/>
+            <column name="doctor_letter_psychological_behavior" type="TEXT"/>
+            <column name="note" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_sopess_examination_result_school_entry_procedure"
+                                 baseTableName="sopess_examination_result" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- system_progress_entry -->
+        <createTable tableName="system_progress_entry">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_system_progress_entry"/>
+            </column>
+            <column name="system_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trigger_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="triggered_by" type="UUID"/>
+            <column name="change_description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_system_progress_entry_progress_entry"
+                                 baseTableName="system_progress_entry" baseColumnNames="id"
+                                 referencedTableName="progress_entry" referencedColumnNames="id"/>
+
+        <!-- address -->
+        <createTable tableName="address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postbox_number" type="INTEGER"/>
+            <column name="street" type="TEXT"/>
+            <column name="house_number" type="TEXT"/>
+            <column name="address_addition" type="TEXT"/>
+            <column name="postal_code" type="TEXT"/>
+            <column name="city" type="TEXT"/>
+            <column name="country" type="TEXT"/>
+            <column name="contact_details_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="address_contact_details_id_key" tableName="address" columnNames="contact_details_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_address_contact_details"
+                                 baseTableName="address" baseColumnNames="contact_details_id"
+                                 referencedTableName="contact_details" referencedColumnNames="id"/>
+
+        <!-- file_deletion_approval_request -->
+        <createTable tableName="file_deletion_approval_request">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_deletion_approval_request"/>
+            </column>
+            <column name="file_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint constraintName="file_deletion_approval_request_file_id_key" tableName="file_deletion_approval_request" columnNames="file_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_file_deletion_approval_request_approval_request"
+                                 baseTableName="file_deletion_approval_request" baseColumnNames="id"
+                                 referencedTableName="approval_request" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_file_deletion_approval_request_file"
+                                 baseTableName="file_deletion_approval_request" baseColumnNames="file_id"
+                                 referencedTableName="file" referencedColumnNames="id"/>
+
+        <!-- file_deletion_approval_request_notification -->
+        <createTable tableName="file_deletion_approval_request_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_file_deletion_approval_request_notification"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="approval_request_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="file_deletion_approval_request_notification_external_id_key" tableName="file_deletion_approval_request_notification" columnNames="external_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_file_deletion_approval_request_notification_file_deletion_approval_request"
+                                 baseTableName="file_deletion_approval_request_notification" baseColumnNames="approval_request_id"
+                                 referencedTableName="file_deletion_approval_request" referencedColumnNames="id"/>
+
+        <!-- icd10group -->
+        <createTable tableName="icd10group">
+            <column name="group_start" type="TEXT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_icd10group"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_end" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="icd10group_group_end_key" tableName="icd10group" columnNames="group_end"/>
+        <addUniqueConstraint constraintName="icd10group_title_key" tableName="icd10group" columnNames="title"/>
+
+        <!-- icd10code -->
+        <createTable tableName="icd10code">
+            <column name="code" type="TEXT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_icd10code"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code_without_dot" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="icd10code_code_without_dot_key" tableName="icd10code" columnNames="code_without_dot"/>
+
+        <addForeignKeyConstraint constraintName="fk_icd10code_icd10group"
+                                 baseTableName="icd10code" baseColumnNames="group_id"
+                                 referencedTableName="icd10group" referencedColumnNames="group_start"/>
+
+        <!-- label -->
+        <createTable tableName="label">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_label"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="hex_color" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="label_external_id_key" tableName="label" columnNames="external_id"/>
+        <addUniqueConstraint constraintName="label_name_key" tableName="label" columnNames="name"/>
+
+        <!-- manual_progress_entry_deletion_approval_request -->
+        <createTable tableName="manual_progress_entry_deletion_approval_request">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry_deletion_approval_request"/>
+            </column>
+            <column name="manual_progress_entry_id" type="BIGINT"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="manual_progress_entry_deletion_approval_request"
+                             constraintName="manual_progress_entry_deletion_app_manual_progress_entry_id_key"
+                             columnNames="manual_progress_entry_id"/>
+
+        <addForeignKeyConstraint constraintName="fk_manual_progress_entry_deletion_approval_request_approval_request"
+                                 baseTableName="manual_progress_entry_deletion_approval_request" baseColumnNames="id"
+                                 referencedTableName="approval_request" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_manual_progress_entry_deletion_approval_request_manual_progress_entry"
+                                 baseTableName="manual_progress_entry_deletion_approval_request" baseColumnNames="manual_progress_entry_id"
+                                 referencedTableName="manual_progress_entry" referencedColumnNames="id"/>
+
+        <!-- manual_progress_entry_deletion_approval_request_notification -->
+        <createTable tableName="manual_progress_entry_deletion_approval_request_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_manual_progress_entry_deletion_approval_request_notification"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="approval_request_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="manual_progress_entry_deletion_approval_request_notification"
+                             columnNames="external_id"
+                             constraintName="manual_progress_entry_deletion_approval_request_external_id_key"/>
+
+        <addForeignKeyConstraint constraintName="fk_manual_progress_entry_deletion_approval_request_notification_manual_progress_entry_deletion_approval_request"
+                                 baseTableName="manual_progress_entry_deletion_approval_request_notification" baseColumnNames="approval_request_id"
+                                 referencedTableName="manual_progress_entry_deletion_approval_request" referencedColumnNames="id"/>
+
+        <!-- simple_notification -->
+        <createTable tableName="simple_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_simple_notification"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint constraintName="simple_notification_external_id_key" tableName="simple_notification" columnNames="external_id"/>
+
+        <!-- appointment_block_group_mfas -->
+        <createTable tableName="appointment_block_group_mfas">
+            <column name="appointment_block_group_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_mfas"/>
+            </column>
+            <column name="mfas_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_mfas"/>
+            </column>
+            <column name="mfas" type="UUID"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_appointment_block_group_mfas_appointment_block_group"
+                                 baseTableName="appointment_block_group_mfas" baseColumnNames="appointment_block_group_id"
+                                 referencedTableName="appointment_block_group" referencedColumnNames="id"/>
+
+        <!-- appointment_block_group_physicians -->
+        <createTable tableName="appointment_block_group_physicians">
+            <column name="appointment_block_group_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_physicians"/>
+            </column>
+            <column name="physicians_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_appointment_block_group_physicians"/>
+            </column>
+            <column name="physicians" type="UUID"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_appointment_block_group_physicians_appointment_block_group"
+                                 baseTableName="appointment_block_group_physicians" baseColumnNames="appointment_block_group_id"
+                                 referencedTableName="appointment_block_group" referencedColumnNames="id"/>
+
+        <!-- assignment_history_item -->
+        <createTable tableName="assignment_history_item">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_assignment_history_item"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_assignee_id" type="UUID"/>
+            <column name="assignment_assigned_by_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_assignment_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_assignment_history_item_school_entry_task"
+                                 baseTableName="assignment_history_item" baseColumnNames="task_id"
+                                 referencedTableName="school_entry_task" referencedColumnNames="id"/>
+
+        <!-- development_screening_abdomen_icd10codes -->
+        <createTable tableName="development_screening_abdomen_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_abdomen_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_abdomen_icd10codes"/>
+            </column>
+            <column name="abdomen_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_abdomen_icd10codes_development_screening"
+                                 baseTableName="development_screening_abdomen_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_chronic_disease_icd10codes -->
+        <createTable tableName="development_screening_chronic_disease_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_chronic_disease_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_chronic_disease_icd10codes"/>
+            </column>
+            <column name="chronic_disease_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_chronic_disease_icd10codes_development_screening"
+                                 baseTableName="development_screening_chronic_disease_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_disability_icd10codes -->
+        <createTable tableName="development_screening_disability_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_disability_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_disability_icd10codes"/>
+            </column>
+            <column name="disability_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_disability_icd10codes_development_screening"
+                                 baseTableName="development_screening_disability_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_ear_nose_throat_icd10codes -->
+        <createTable tableName="development_screening_ear_nose_throat_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_ear_nose_throat_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_ear_nose_throat_icd10codes"/>
+            </column>
+            <column name="ear_nose_throat_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_ear_nose_throat_icd10codes_development_screening"
+                                 baseTableName="development_screening_ear_nose_throat_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_metabolism_icd10codes -->
+        <createTable tableName="development_screening_metabolism_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_metabolism_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_metabolism_icd10codes"/>
+            </column>
+            <column name="metabolism_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_metabolism_icd10codes_development_screening"
+                                 baseTableName="development_screening_metabolism_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_musculature_skeleton_icd10codes -->
+        <createTable tableName="development_screening_musculature_skeleton_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_musculature_skeleton_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_musculature_skeleton_icd10codes"/>
+            </column>
+            <column name="musculature_skeleton_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_musculature_skeleton_icd10codes_development_screening"
+                                 baseTableName="development_screening_musculature_skeleton_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_neurology_icd10codes -->
+        <createTable tableName="development_screening_neurology_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_neurology_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_neurology_icd10codes"/>
+            </column>
+            <column name="neurology_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_neurology_icd10codes_development_screening"
+                                 baseTableName="development_screening_neurology_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_nutritional_condition_icd10codes -->
+        <createTable tableName="development_screening_nutritional_condition_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_nutritional_condition_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_nutritional_condition_icd10codes"/>
+            </column>
+            <column name="nutritional_condition_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_nutritional_condition_icd10codes_development_screening"
+                                 baseTableName="development_screening_nutritional_condition_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_respiratory_cardiovascular_icd10codes -->
+        <createTable tableName="development_screening_respiratory_cardiovascular_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_respiratory_cardiovascular_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_respiratory_cardiovascular_icd10codes"/>
+            </column>
+            <column name="respiratory_cardiovascular_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_respiratory_cardiovascular_icd10codes_development_screening"
+                                 baseTableName="development_screening_respiratory_cardiovascular_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- development_screening_skin_icd10codes -->
+        <createTable tableName="development_screening_skin_icd10codes">
+            <column name="development_screening_procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_skin_icd10codes"/>
+            </column>
+            <column name="icd10codes_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_development_screening_skin_icd10codes"/>
+            </column>
+            <column name="skin_icd10codes" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_development_screening_skin_icd10codes_development_screening"
+                                 baseTableName="development_screening_skin_icd10codes" baseColumnNames="development_screening_procedure_id"
+                                 referencedTableName="development_screening" referencedColumnNames="procedure_id"/>
+
+        <!-- image -->
+        <createTable tableName="image">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_image_file"
+                                 baseTableName="image" baseColumnNames="id"
+                                 referencedTableName="file" referencedColumnNames="id"/>
+
+        <!-- image_meta_data -->
+        <createTable tableName="image_meta_data">
+            <column name="image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image_meta_data"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_image_meta_data_image"
+                                 baseTableName="image_meta_data" baseColumnNames="image_id"
+                                 referencedTableName="image" referencedColumnNames="id"/>
+
+        <!-- image_meta_data_aud -->
+        <createTable tableName="image_meta_data_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image_meta_data_aud"/>
+            </column>
+            <column name="image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_image_meta_data_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_image_meta_data_aud_default_revision_entity"
+                                 baseTableName="image_meta_data_aud" baseColumnNames="rev"
+                                 referencedTableName="default_revision_entity" referencedColumnNames="id"/>
+
+        <!-- pdf -->
+        <createTable tableName="pdf">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pdf"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_pdf_file"
+                                 baseTableName="pdf" baseColumnNames="id"
+                                 referencedTableName="file" referencedColumnNames="id"/>
+
+        <!-- pdfmeta_data -->
+        <createTable tableName="pdfmeta_data">
+            <column name="pdf_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pdfmeta_data"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_pdfmeta_data_pdf"
+                                 baseTableName="pdfmeta_data" baseColumnNames="pdf_id"
+                                 referencedTableName="pdf" referencedColumnNames="id"/>
+
+        <!-- pdfmeta_data_aud -->
+        <createTable tableName="pdfmeta_data_aud">
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pdfmeta_data_aud"/>
+            </column>
+            <column name="pdf_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_pdfmeta_data_aud"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_pdfmeta_data_aud_default_revision_entity"
+                                 baseTableName="pdfmeta_data_aud" baseColumnNames="rev"
+                                 referencedTableName="default_revision_entity" referencedColumnNames="id"/>
+
+        <!-- vaccination_status -->
+        <createTable tableName="vaccination_status">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_vaccination_status"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="diphtheria" type="INTEGER"/>
+            <column name="tetanus" type="INTEGER"/>
+            <column name="pertussis" type="INTEGER"/>
+            <column name="hib" type="INTEGER"/>
+            <column name="polio" type="INTEGER"/>
+            <column name="hepatitisb" type="INTEGER"/>
+            <column name="pneumococcus" type="INTEGER"/>
+            <column name="mmr" type="INTEGER"/>
+            <column name="varicella" type="INTEGER"/>
+            <column name="meningococcus" type="INTEGER"/>
+            <column name="rota" type="INTEGER"/>
+            <column name="tbe" type="INTEGER"/>
+            <column name="hepatitisa" type="INTEGER"/>
+            <column name="vaccination_pass_presented" type="BOOLEAN"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_vaccination_status_school_entry_procedure"
+                                 baseTableName="vaccination_status" baseColumnNames="procedure_id"
+                                 referencedTableName="school_entry_procedure" referencedColumnNames="id"/>
+
+        <!-- other_vaccinations -->
+        <createTable tableName="other_vaccinations">
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_other_vaccinations"/>
+            </column>
+            <column name="other_vaccinations_order" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_other_vaccinations"/>
+            </column>
+            <column name="other_vaccinations_description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="other_vaccinations_count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_other_vaccinations_vaccination_status"
+                                 baseTableName="other_vaccinations" baseColumnNames="procedure_id"
+                                 referencedTableName="vaccination_status" referencedColumnNames="procedure_id"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,115 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  ApiMedicalHistorySectionElement,
+  ApiMedicalHistorySubElementMultiSelect,
+} from "@eshg/employee-portal-api/travelMedicine";
+import {
+  BaseFieldProps,
+  useBaseField,
+} from "@eshg/lib-portal/components/formFields/BaseField";
+import { Checkbox, List, ListItem, Stack } from "@mui/joy";
+import { ChangeEvent } from "react";
+
+interface MedicalHistoryMultiSelectElementProps
+  extends Omit<BaseFieldProps, "required" | "children"> {
+  element: ApiMedicalHistorySectionElement;
+  sectionIndex: number;
+  elementIndex: number;
+  name: string;
+  readOnly?: boolean;
+}
+
+export function MedicalHistoryMultiSelectElement({
+  element,
+  sectionIndex,
+  elementIndex,
+  readOnly = false,
+  ...restProps
+}: Readonly<MedicalHistoryMultiSelectElementProps>) {
+  const { input, helpers } = useBaseField<
+    ApiMedicalHistorySubElementMultiSelect[]
+  >({ ...restProps });
+
+  async function handleCheckboxChange(
+    event: ChangeEvent<HTMLInputElement>,
+    questionText: string,
+  ) {
+    const checked = event.target?.checked;
+    if (checked) {
+      input.value.map((option) => {
+        if (option.questionText === questionText) {
+          option.answer = true;
+        }
+      });
+      const newArray = [...input.value];
+      await helpers.setValue(newArray);
+    } else if (!checked) {
+      input.value.map((option) => {
+        if (option.questionText === questionText) {
+          option.answer = false;
+        }
+      });
+      const newArray = [...input.value];
+      await helpers.setValue(newArray);
+    }
+    input.onChange(event);
+  }
+
+  return (
+    <Stack
+      style={{
+        marginLeft: 16,
+      }}
+    >
+      <List
+        size="sm"
+        role="group"
+        aria-labelledby="checkbox-group"
+        sx={{ rowGap: 1, marginBlock: "0.5rem" }}
+      >
+        {(readOnly
+          ? element.elementData.subElementMultiSelect.filter(
+              (element) => element.answer,
+            )
+          : element.elementData.subElementMultiSelect
+        ).map(({ questionText }, index) => (
+          <ListItem
+            key={"multiselect" + elementIndex + "-" + index}
+            sx={{
+              "--ListItem-paddingY": 0,
+              "--ListItem-minHeight": "1rem",
+              "--ListItem-paddingLeft": 0,
+            }}
+          >
+            <Checkbox
+              size={"sm"}
+              name={
+                "medicalHistoryContent.sections[" +
+                sectionIndex +
+                "].sectionElements[" +
+                elementIndex +
+                "].elementData.subElementMultiSelect[" +
+                index +
+                "].answer"
+              }
+              checked={
+                input.value.find(
+                  (option) => option.questionText === questionText,
+                )?.answer ?? false
+              }
+              onChange={async (value) => {
+                await handleCheckboxChange(value, questionText);
+              }}
+              label={questionText}
+              disabled={readOnly}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Stack>
+  );
+}

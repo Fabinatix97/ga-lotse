@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="de" lang="de">
+  <head>
+    <link rel="stylesheet" type="text/css"
+          href="certificate_for_health_insurance_template.css"/>
+    <link href='https://fonts.googleapis.com/css?family=Poppins'
+          rel='stylesheet'/>
+  </head>
+  <body style=" font-family: Poppins, serif;">
+    <img
+      src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}"/>
+
+    <footer>
+      <div>
+      ${departmentInfo.name} &#8226;
+      ${departmentInfo.street} ${departmentInfo.houseNumber} ${departmentInfo.postalCode} ${departmentInfo.city}
+
+      </div>
+      <div>
+        Webseite:
+      ${departmentInfo.homepage}
+        E-Mail:
+      ${departmentInfo.email}
+      </div>
+    </footer>
+
+    <div class="addressTitle">
+    ${departmentInfo.name},
+    ${departmentInfo.street} ${departmentInfo.houseNumber},
+    ${departmentInfo.postalCode} ${departmentInfo.city}
+    </div>
+
+    <div class="addressRight">
+    ${departmentInfo.name}
+      <br> ${departmentInfo.street}  ${departmentInfo.houseNumber}</br>
+      <br> ${departmentInfo.postalCode}  ${departmentInfo.city}</br>
+    </div>
+
+    <div class="title">
+    ${title}
+    </div>
+
+    <div class="contact">
+      Telefon
+      <br style="font-weight:bold">${departmentInfo.phoneNumber}</br>
+      <br>E-Mail</br>
+      <br style="font-weight:bold">${departmentInfo.email}</br>
+    </div>
+
+    <div class="subtitle">
+    ${subTitle}
+    </div>
+
+    <table class="info" style=" top: 370px;">
+      <tr>
+        <td>
+          Name:
+        </td>
+        <td class="value">
+        ${firstName} ${lastName}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Adresse:
+        </td>
+        <td class="value">
+        ${street} ${ houseNumber}
+          <br/>
+        ${postalCode} ${city}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Geburtstag:
+        </td>
+        <td class="value">
+        ${dateOfBirth}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top:10px">
+          Reisedatum:
+        </td>
+        <td class="value" style="padding-top:10px">
+        ${travelDate}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Art der Reise:
+        </td>
+        <td class="value">
+        ${travelType}
+        </td>
+      </tr>
+      <tr>
+        <td class="key">
+          Reiseziele:
+        </td>
+        <td class="value">
+          <#list travelDestinations as destination>
+            ${destination}<#sep>, </#sep>
+          </#list>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Reisedauer:
+        </td>
+        <td class="value">
+        ${travelDuration}
+        </td>
+      </tr>
+    </table>
+
+    <table class="services" style=" top: 630px;">
+      <thead style="font-weight:bold">
+        <tr>
+          <td>
+            Leistung
+          </td>
+          <td align="right" style="width:20%">
+            Preis
+          </td>
+        </tr>
+      </thead>
+
+      <tbody>
+          <#list pdfServiceParameters as service>
+            <tr>
+              <td class="service" style="">
+                ${service.serviceDescriptor}
+              </td>
+              <td align="right" class="price">
+                ${service.stringFee}
+              </td>
+            </tr>
+          </#list>
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td align="right" class="service">
+            Gesamt:
+          </td>
+          <td align="right" class="price">
+          ${serviceTotalCost}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+</html>

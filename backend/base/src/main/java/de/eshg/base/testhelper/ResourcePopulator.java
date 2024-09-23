@@ -1,0 +1,60 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.base.testhelper;
+
+import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
+
+import de.eshg.base.resource.ResourceController;
+import de.eshg.base.resource.api.AddResourceRequest;
+import de.eshg.base.resource.api.ResourceDto;
+import de.eshg.base.resource.api.ResourceTypeDto;
+import de.eshg.base.resource.persistence.entity.Resource;
+import de.eshg.base.resource.persistence.entity.Resource_;
+import de.eshg.base.resource.persistence.repository.ResourceRepository;
+import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.population.BasePopulator;
+import java.time.Clock;
+import java.util.List;
+import net.datafaker.Faker;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConditionalOnTestHelperEnabled
+public class ResourcePopulator extends BasePopulator<ResourceDto> {
+
+  private final ResourceController resourceController;
+  private final ResourceRepository resourceRepository;
+  private static final List<String> labelNames =
+      List.of("Begehung", "Masernschutz", "Einschulung", "Impfberatung");
+
+  public ResourcePopulator(
+      ResourceRepository resourceRepository,
+      Clock clock,
+      Environment environment,
+      ResourceController resourceController) {
+    super(clock, environment, getClassNameAsPropertyKey(Resource.class));
+    this.resourceRepository = resourceRepository;
+    this.resourceController = resourceController;
+  }
+
+  @Override
+  protected ResourceDto populate(int index, Faker faker, UniqueValueProvider uniqueValueProvider) {
+    String makeAndModel =
+        uniqueValueProvider.getUniqueFakerValue(faker.vehicle()::makeAndModel, Resource_.NAME);
+    ResourceTypeDto type = BasePopulator.randomElement(faker, ResourceTypeDto.values());
+    String description = optional(faker, faker.starWars().quotes());
+    String articleNumber = optional(faker, faker.idNumber().valid());
+    List<String> labels = BasePopulator.randomElements(faker, labelNames);
+    return resourceController.addResource(
+        new AddResourceRequest(makeAndModel, description, articleNumber, type, labels));
+  }
+
+  @Override
+  protected long countExistingEntities() {
+    return this.resourceRepository.count();
+  }
+}

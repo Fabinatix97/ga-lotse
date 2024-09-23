@@ -1,0 +1,14 @@
+plugins {
+  id 'openapi-generator'
+}
+
+def backendDir = rootProject.layout.projectDirectory.dir('backend')
+
+openapiGenerator {
+  inputSpecs = [
+    'base'             : backendDir.file('base/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
+    'measlesProtection' : backendDir.file('measles-protection/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
+    'schoolEntry' : backendDir.file('school-entry/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
+    'travelMedicine' : backendDir.file('travel-medicine/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
+  ]
+}

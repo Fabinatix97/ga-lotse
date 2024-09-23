@@ -1,0 +1,23 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { DateSpanFilterDefinition } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
+import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
+import { NumberFilterDefinition } from "@/lib/shared/components/filterSettings/models/NumberFilter";
+
+import { DateFilterDefinition } from "./DateFilter";
+import { EnumSingleFilterDefinition } from "./EnumSingleFilter";
+
+export interface FilterDefinitionBase {
+  name: string;
+  key: string;
+}
+
+export type FilterDefinition =
+  | EnumFilterDefinition
+  | EnumSingleFilterDefinition
+  | DateFilterDefinition
+  | DateSpanFilterDefinition
+  | NumberFilterDefinition;

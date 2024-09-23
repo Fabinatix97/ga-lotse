@@ -1,0 +1,398 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="initial">
+    <createTable tableName="audited_actor_aud">
+      <column name="id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="revend" type="BIGINT"/>
+      <column name="readable_name" type="TEXT"/>
+      <column name="type" type="TEXT"/>
+      <column name="host_name" type="TEXT"/>
+      <column name="common_name" type="TEXT"/>
+      <column name="network_id" type="TEXT"/>
+      <column name="current_certificate_value" type="TEXT"/>
+      <column name="current_certificate_signature" type="TEXT"/>
+      <column name="current_certificate_signatory" type="TEXT"/>
+      <column name="previous_certificate_value" type="TEXT"/>
+      <column name="previous_certificate_signature" type="TEXT"/>
+      <column name="previous_certificate_signatory" type="TEXT"/>
+      <column name="active" type="BOOLEAN"/>
+      <column name="org_unit_id" type="UUID"/>
+      <column name="actor_metadata_id" type="UUID"/>
+    </createTable>
+    <addPrimaryKey columnNames="rev, id" constraintName="audited_actor_aud_pkey"
+                   tableName="audited_actor_aud"/>
+    <createTable tableName="audited_actor">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="audited_actor_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="readable_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="host_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="common_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="network_id" type="TEXT"/>
+      <column name="current_certificate_value" type="TEXT"/>
+      <column name="current_certificate_signature" type="TEXT"/>
+      <column name="current_certificate_signatory" type="TEXT"/>
+      <column name="previous_certificate_value" type="TEXT"/>
+      <column name="previous_certificate_signature" type="TEXT"/>
+      <column name="previous_certificate_signatory" type="TEXT"/>
+      <column name="active" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="org_unit_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="actor_metadata_id" type="UUID"/>
+    </createTable>
+    <createTable tableName="audited_org_unit_aud">
+      <column name="id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="revend" type="BIGINT"/>
+      <column name="readable_name" type="TEXT"/>
+      <column name="type" type="TEXT"/>
+      <column name="active" type="BOOLEAN"/>
+      <column name="federal_state" type="TEXT"/>
+    </createTable>
+    <addPrimaryKey columnNames="rev, id"
+                   constraintName="audited_org_unit_aud_pkey"
+                   tableName="audited_org_unit_aud"/>
+    <createTable tableName="audited_org_unit">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="audited_org_unit_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="readable_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="active" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="federal_state" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="staged_actor">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="staged_actor_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="staged_entity_type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="audited_entity_id" type="UUID"/>
+      <column name="created_by" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="readable_name" type="TEXT"/>
+      <column name="type" type="TEXT"/>
+      <column name="host_name" type="TEXT"/>
+      <column name="common_name" type="TEXT"/>
+      <column name="network_id" type="TEXT"/>
+      <column name="current_certificate_value" type="TEXT"/>
+      <column name="current_certificate_signature" type="TEXT"/>
+      <column name="current_certificate_signatory" type="TEXT"/>
+      <column name="previous_certificate_value" type="TEXT"/>
+      <column name="previous_certificate_signature" type="TEXT"/>
+      <column name="previous_certificate_signatory" type="TEXT"/>
+      <column name="active" type="BOOLEAN"/>
+      <column name="org_unit_id" type="UUID"/>
+    </createTable>
+    <createTable tableName="staged_org_unit">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="staged_org_unit_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="readable_name" type="TEXT"/>
+      <column name="type" type="TEXT"/>
+      <column name="active" type="BOOLEAN"/>
+      <column name="federal_state" type="TEXT"/>
+      <column name="staged_entity_type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="audited_entity_id" type="UUID"/>
+    </createTable>
+    <createTable tableName="staged_rule">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="staged_rule_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="staged_entity_type" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_by" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="audited_entity_id" type="UUID"/>
+      <column name="description" type="TEXT"/>
+      <column name="client_federal_state" type="TEXT"/>
+      <column name="client_org_unit_type" type="TEXT"/>
+      <column name="client_org_unit_name" type="TEXT"/>
+      <column name="client_actor_type" type="TEXT"/>
+      <column name="client_actor_name" type="TEXT"/>
+      <column name="server_federal_state" type="TEXT"/>
+      <column name="server_org_unit_type" type="TEXT"/>
+      <column name="server_org_unit_name" type="TEXT"/>
+      <column name="server_actor_type" type="TEXT"/>
+      <column name="server_actor_name" type="TEXT"/>
+      <column name="active" type="BOOLEAN"/>
+    </createTable>
+    <createTable tableName="actor_metadata">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="actor_metadata_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="content" type="JSONB"/>
+      <column name="changed_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="actor_metadata_aud">
+      <column name="id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="revend" type="BIGINT"/>
+      <column name="content" type="JSONB"/>
+      <column name="changed_at" type="TIMESTAMP WITH TIME ZONE"/>
+    </createTable>
+    <addPrimaryKey columnNames="rev, id"
+                   constraintName="actor_metadata_aud_pkey"
+                   tableName="actor_metadata_aud"/>
+    <createTable tableName="audited_rule">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="audited_rule_pkey"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+      <column name="client_federal_state" type="TEXT"/>
+      <column name="client_org_unit_type" type="TEXT"/>
+      <column name="client_org_unit_name" type="TEXT"/>
+      <column name="client_actor_type" type="TEXT"/>
+      <column name="client_actor_name" type="TEXT"/>
+      <column name="server_federal_state" type="TEXT"/>
+      <column name="server_org_unit_type" type="TEXT"/>
+      <column name="server_org_unit_name" type="TEXT"/>
+      <column name="server_actor_type" type="TEXT"/>
+      <column name="server_actor_name" type="TEXT"/>
+      <column name="active" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="audited_rule_aud">
+      <column name="id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="rev" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="revtype" type="SMALLINT"/>
+      <column name="revend" type="BIGINT"/>
+      <column name="description" type="TEXT"/>
+      <column name="client_federal_state" type="TEXT"/>
+      <column name="client_org_unit_type" type="TEXT"/>
+      <column name="client_org_unit_name" type="TEXT"/>
+      <column name="client_actor_type" type="TEXT"/>
+      <column name="client_actor_name" type="TEXT"/>
+      <column name="server_federal_state" type="TEXT"/>
+      <column name="server_org_unit_type" type="TEXT"/>
+      <column name="server_org_unit_name" type="TEXT"/>
+      <column name="server_actor_type" type="TEXT"/>
+      <column name="server_actor_name" type="TEXT"/>
+      <column name="active" type="BOOLEAN"/>
+    </createTable>
+    <addPrimaryKey columnNames="rev, id" constraintName="audited_rule_aud_pkey"
+                   tableName="audited_rule_aud"/>
+    <createTable tableName="revinfo">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="author" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="committer" type="TEXT"/>
+      <column name="ip" type="TEXT"/>
+      <column name="resource" type="TEXT"/>
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="revinfo_pkey"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="org_unit_id, readable_name"
+                         constraintName="UQ_AUDITED_ACTOR_ORG_UNIT_ID_READABLE_NAME"
+                         tableName="audited_actor"/>
+    <addUniqueConstraint columnNames="common_name"
+                         constraintName="UQ_AUDITED_ACTOR_COMMON_NAME"
+                         tableName="audited_actor"/>
+    <addUniqueConstraint columnNames="actor_metadata_id"
+                         constraintName="UQ_AUDITED_ACTOR_METADATA_ID"
+                         tableName="audited_actor"/>
+    <addUniqueConstraint columnNames="readable_name, federal_state, type"
+                         constraintName="UQ_AUDITED_ORG_UNIT_READABLE_NAME_FEDERAL_STATE_TYPE"
+                         tableName="audited_org_unit"/>
+    <addUniqueConstraint columnNames="audited_entity_id"
+                         constraintName="UQ_STAGED_ACTOR_AUDITED_ENTITY_ID"
+                         tableName="staged_actor"/>
+    <addUniqueConstraint columnNames="audited_entity_id"
+                         constraintName="UQ_STAGED_ORG_UNIT_AUDITED_ENTITY_ID"
+                         tableName="staged_org_unit"/>
+    <addUniqueConstraint columnNames="audited_entity_id"
+                         constraintName="UQ_STAGED_RULE_AUDITED_ENTITY_ID"
+                         tableName="staged_rule"/>
+    <addForeignKeyConstraint baseColumnNames="rev"
+                             baseTableName="audited_actor_aud"
+                             constraintName="fk_audited_actor_aud_rev"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="revend"
+                             baseTableName="audited_actor_aud"
+                             constraintName="fk_audited_actor_aud_revend"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="actor_metadata_id"
+                             baseTableName="audited_actor"
+                             constraintName="fk_audited_actor_metadata_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="actor_metadata"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="org_unit_id"
+                             baseTableName="audited_actor"
+                             constraintName="fk_audited_actor_org_unit_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="audited_org_unit"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="revend"
+                             baseTableName="audited_org_unit_aud"
+                             constraintName="fk_audited_org_unit_aud_revend"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="rev"
+                             baseTableName="audited_org_unit_aud"
+                             constraintName="fk_audited_org_unit_aud_rev"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="audited_entity_id"
+                             baseTableName="staged_actor"
+                             constraintName="fk_staged_actor_audited_entity_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="audited_actor"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="audited_entity_id"
+                             baseTableName="staged_org_unit"
+                             constraintName="fk_staged_org_unit_audited_entity_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="audited_org_unit"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="audited_entity_id"
+                             baseTableName="staged_rule"
+                             constraintName="fk_staged_rule_audited_entity_id"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="audited_rule"
+                             validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="rev"
+                             baseTableName="actor_metadata_aud"
+                             constraintName="fk_actor_metadata_aud_rev"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="revend"
+                             baseTableName="actor_metadata_aud"
+                             constraintName="fk_actor_metadata_aud_revend"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="rev"
+                             baseTableName="audited_rule_aud"
+                             constraintName="fk_audited_rule_aud_rev"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="revend"
+                             baseTableName="audited_rule_aud"
+                             constraintName="fk_audited_rule_aud_revend"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="revinfo" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

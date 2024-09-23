@@ -1,0 +1,52 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':lib-appointmentblock')
+    implementation project(':lib-base-client')
+    implementation project(':lib-procedures')
+    implementation project(':lib-calendar')
+    implementation project(":lib-statistics")
+    implementation project(":lib-document-generator")
+    implementation project(':business-module-persistence-commons')
+
+    implementation 'org.apache.commons:commons-math3:latest.release'
+    implementation 'org.apache.poi:poi:latest.release'
+    implementation 'org.apache.poi:poi-ooxml:latest.release'
+    implementation 'de.cronn:reflection-util:latest.release'
+    implementation 'com.google.zxing:core:latest.release'
+    implementation 'org.apache.xmlgraphics:batik-svggen:latest.release'
+    implementation 'org.apache.xmlgraphics:batik-dom:latest.release'
+
+    implementation 'org.apache.commons:commons-csv:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    compileOnly 'org.jetbrains:annotations:latest.release'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation 'jakarta.mail:jakarta.mail-api'
+    testImplementation 'com.google.guava:guava:latest.release'
+    testImplementation 'com.google.zxing:javase:latest.release'
+    testImplementation testFixtures(project(':lib-document-generator'))
+}
+
+dockerCompose {
+    startedServices = [
+        'school-entry',
+        'school-entry-db'
+    ]
+}
+
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-school-entry') ?: "unspecified"
+}

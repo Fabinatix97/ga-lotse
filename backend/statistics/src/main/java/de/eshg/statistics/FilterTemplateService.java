@@ -1,0 +1,93 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.statistics;
+
+import de.eshg.rest.service.error.AlreadyExistsException;
+import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.statistics.aggregation.StatisticService;
+import de.eshg.statistics.api.filtertemplate.AddFilterTemplateRequest;
+import de.eshg.statistics.api.filtertemplate.FilterTemplateDto;
+import de.eshg.statistics.api.filtertemplate.FilterTemplateIdAndName;
+import de.eshg.statistics.api.filtertemplate.GetFilterTemplatesForStatisticResponse;
+import de.eshg.statistics.mapper.FilterParameterMapper;
+import de.eshg.statistics.persistence.entity.FilterTemplate;
+import de.eshg.statistics.persistence.entity.Statistic;
+import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.repository.FilterTemplateRepository;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class FilterTemplateService {
+  private final FilterTemplateRepository filterTemplateRepository;
+  private final StatisticService statisticService;
+
+  public FilterTemplateService(
+      FilterTemplateRepository filterTemplateRepository, StatisticService statisticService) {
+    this.filterTemplateRepository = filterTemplateRepository;
+    this.statisticService = statisticService;
+  }
+
+  @Transactional
+  public UUID addFilterTemplate(AddFilterTemplateRequest addFilterTemplateRequest) {
+    if (filterTemplateRepository.findByName(addFilterTemplateRequest.name()).isPresent()) {
+      throw new AlreadyExistsException(
+          "A filter template with name '%s' already exists"
+              .formatted(addFilterTemplateRequest.name()));
+    }
+    FilterTemplate filterTemplate = new FilterTemplate();
+    filterTemplate.setName(addFilterTemplateRequest.name());
+    filterTemplate.addFilters(
+        addFilterTemplateRequest.filters().stream()
+            .map(FilterParameterMapper::mapToPersistence)
+            .toList());
+    return filterTemplateRepository.save(filterTemplate).getExternalId();
+  }
+
+  @Transactional(readOnly = true)
+  public FilterTemplateDto getFilterTemplate(UUID filterTemplateId) {
+    FilterTemplate filterTemplate = getFilterTemplateInternal(filterTemplateId);
+    return new FilterTemplateDto(
+        filterTemplate.getExternalId(),
+        filterTemplate.getName(),
+        FilterParameterMapper.mapToApi(filterTemplate.getFilters()));
+  }
+
+  private FilterTemplate getFilterTemplateInternal(UUID filterTemplateId) {
+    return filterTemplateRepository
+        .findByExternalId(filterTemplateId)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "FilterTemplate with id '%s' not found".formatted(filterTemplateId)));
+  }
+
+  @Transactional(readOnly = true)
+  public GetFilterTemplatesForStatisticResponse findFilterTemplatesForStatistic(UUID statisticId) {
+    Statistic statistic = statisticService.getStatistic(statisticId);
+    List<String> allSearchKeys =
+        statistic.getTableColumns().stream().map(TableColumn::getSearchKey).toList();
+
+    List<FilterTemplate> filterTemplates =
+        filterTemplateRepository.findFilterTemplatesWithAllSearchKeysIn(allSearchKeys);
+
+    return new GetFilterTemplatesForStatisticResponse(
+        filterTemplates.stream()
+            .map(
+                filterTemplate ->
+                    new FilterTemplateIdAndName(
+                        filterTemplate.getExternalId(), filterTemplate.getName()))
+            .toList());
+  }
+
+  @Transactional
+  public void deleteFilterTemplate(UUID filterTemplateId) {
+    FilterTemplate filterTemplate = getFilterTemplateInternal(filterTemplateId);
+    filterTemplateRepository.delete(filterTemplate);
+  }
+}

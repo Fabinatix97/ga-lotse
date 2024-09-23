@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "outDir": "${configDir}/build/dist"
+  },
+  "include": ["${configDir}/src/**/*.ts"]
+}

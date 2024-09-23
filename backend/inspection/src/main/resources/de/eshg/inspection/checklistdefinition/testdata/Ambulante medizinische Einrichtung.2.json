@@ -1,0 +1,530 @@
+{
+  "name": "infektionshygienische Begehungen Kinderärzte",
+  "description": "",
+  "isExpandable": true,
+  "objectTypeId": "6b6a4c76-1e9d-4a83-8311-52c646a8f356",
+  "sections": [
+    {
+      "title": "Strukturqualität",
+      "id": "e46928f5-3519-4680-a4f7-46c83491e86a",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "9024b541-df15-465b-9de7-d6274837e99a",
+          "text": "Existiert ein aktueller und spezifizierter Hygieneplan?",
+          "mandatory": true,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "12ca5cf8-0b2e-46c4-ab5e-1d2e80c1542f",
+          "text": "Umfasst dieser den Umgang mit MRE?",
+          "mandatory": true,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "aaef17c6-3d73-4c82-8e9e-f6b3f5a14202",
+          "text": "Existiert ein aktueller und spezifizierter Reinigungs- und Desinfektionsplan?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "fce7626d-dd80-4396-87c0-938d2f64cc13",
+          "text": "Ist der Reinigungs- und Desinfektionsplan ausgehängt?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "MULTI_SELECT",
+          "id": "60983e3a-70b5-450b-bbf1-55e512e39a16",
+          "text": "Welches Leistungsspektrum wird angeboten?",
+          "mandatory": false,
+          "note": null,
+          "help": "mehrere Antworten möglich",
+          "items": [
+            {
+              "id": "f6da8359-e000-4331-95fb-467f0978e2a4",
+              "text": "Impfungen",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "0ace0dc6-3dc4-4492-8882-6a60323ac665",
+              "text": "Allergietest",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "1eb52f53-23bb-4278-94f8-a0dc965b6c75",
+              "text": "EKG",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "924a4cbd-38c5-4bec-9c53-757ed1e3e9de",
+              "text": "Ultraschall",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "d99ea41b-2a5b-4907-9ca3-1e673128a5ef",
+              "text": "LuFu/ FeNO",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "2f2afbb7-62ff-4524-a5ce-f50dc5d88fa3",
+              "text": "Hörtest/ Tympanometrie/ OAE",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "b9624476-bd97-405e-83ec-70f6c4c1c698",
+              "text": "Wundversorgung",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "ed904e23-0904-4541-8d46-ffc92ef68ac5",
+              "text": "Labordiagnostik",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            }
+          ]
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "3dbd32a5-9800-4fb2-a763-ff99ba5135d1",
+          "text": "Einsatz von Originalgebinden für Ultraschallgel?",
+          "mandatory": false,
+          "note": "Bitte ganz genau prüfen",
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "6f8f1163-f753-4af0-b749-98e11b7de1c2",
+          "text": "Wird Ultraschallgel vorgewärmt?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Räumliche Bedingungen",
+      "id": "b44b2f0b-3b32-4cbc-ae26-57d4ed196b0f",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "88241c09-5a4b-44e3-bb58-54be0d0c4aaa",
+          "text": "Sozialraum",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "31c4903e-3eb3-41da-a07c-c8fcf8a17875",
+          "text": "Umkleideraum mit Schwarz-Weiß-Trennung",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "a918844e-a7c9-4e03-ad2d-534ff1434172",
+          "text": "Raum bzw. Platz zur Instrumentenaufbereitung",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "bc22c121-2b78-4b8b-a4a7-a198994611d1",
+          "text": "Putzmittelraum/-schrank",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "0402772f-c140-4fd0-949b-3adb7a7e13dd",
+          "text": "Lagerraum",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "08c107c9-93e4-4e5c-97bd-fc500bdfb0d2",
+          "text": "Raum für die Behandlung von infektiösen Kindern",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "6edbd727-5b45-4764-89b6-71b93b7ec022",
+          "text": "Anzahl der Behandlungsräume",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "98aa8e16-7a68-427c-ab5e-4daf18f1c10b",
+          "text": "getrennte Sanitäranlagen (Personal/ Patienten)",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Händehygiene",
+      "id": "81f61534-7e41-404a-8738-700c0a986e01",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "a3cc4805-f627-4692-a001-db16153f8060",
+          "text": "Desinfektionsmittelspender",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "5f4d2c38-3453-4195-9277-924b165aa81d",
+          "text": "Seifenspender für Flüssigseife",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "63504a2c-0c44-4d0a-942a-8d192108cdf0",
+          "text": "Handtuchspender",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "71a4d3f0-2396-4139-ba9f-906ad514b0ff",
+          "text": "berührungsfreie Armaturen",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "7008d0e5-73be-4412-86ad-7dbfdd785602",
+          "text": "kein Schmuck an Händen/ Unterarmen",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "3c6a1d0b-f948-4fa1-b12d-dd859ac4ce69",
+          "text": "keine lackierten bzw. künstlichen/ langen Fingernägel",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "313be781-b287-41bc-9805-c9b69528b7c0",
+          "text": "Ist das Händedesinfektionsmittel f. d. med. Bereich zulässig?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Haut-/ Schleimhautdesinfektion",
+      "id": "0ed0544d-22aa-4bf0-baac-2e762d8fc22a",
+      "elements": [
+        {
+          "@type": "CHECKBOX",
+          "id": "2401cce0-a3fc-4849-9730-ab16c77569df",
+          "text": "Sind die verwendeten Desinfektionsmittel f. d. med. Bereich zulässig?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "a43d0ce4-aabf-444e-a4aa-039bbeb72f18",
+          "text": "Name Hautdesinfektionsmittel",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "73570618-9fa0-449a-9e03-698e792b0b9b",
+          "text": "Name Schleimhautdesinfektionsmittel",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "e32ae9e7-db93-4bd2-a9f9-8a8efcda939a",
+          "text": "Werden Originalgebinde verwendet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        }
+      ]
+    },
+    {
+      "title": "Medizinprodukte-/ Instrumentenaufbereitung",
+      "id": "c4a80aab-5e8c-46e1-bd8c-99407c8d1ba5",
+      "elements": [
+        {
+          "@type": "MULTI_SELECT",
+          "id": "db2a5c82-8163-4a3d-8c8c-b3ea2806f7d6",
+          "text": "Welche Medizinprodukte/ Instrumente werden desinfizierend aufbereitet",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "items": [
+            {
+              "id": "08438073-3a66-4734-aa8b-993ebe3338ac",
+              "text": "Otoskop",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "0d8daa34-8289-44a9-8f72-d67e63751eb3",
+              "text": "Ohrtrichter",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "82c67ddc-8e00-4b39-89eb-cc8e6aff1a20",
+              "text": "Stethoskop",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "dca16a95-4b7a-4045-aa79-d90f7bbdbca2",
+              "text": "Ultraschallkopf",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "503e52ad-228e-4b08-a117-4b065995ce55",
+              "text": "Zubehör LuFu/FeNO",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "172cadc5-91cf-4b1b-abc2-e465eb95d3ef",
+              "text": "Inhalationszubehör",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "5b981b2d-7ae6-4c26-b3af-8c289b1d47cf",
+              "text": "EKG-Elektoden",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "87c8250b-35e2-4c7f-8677-a357e2307c5d",
+              "text": "Pinzette",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "8a93885b-8161-4643-844e-bb7ff0ffb729",
+              "text": "Schere",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "cc9ddb46-3752-498c-b84c-746a23d44738",
+              "text": "Blutdruckmanchette",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "f4abd007-9c62-42f8-b84f-11e0e79c826a",
+              "text": "Thermometer",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "14a6512a-9e73-496e-9519-b625eaef65a1",
+              "text": "Zubehör Hörtest/Tympa./OAE",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            }
+          ]
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "e54dfcbd-5b9f-43ba-bd07-d48144b9c390",
+          "text": "Erfolgt eine desinfizierende Aufbereitung nach jedem Patient?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "2ef62922-f918-409d-9fc7-88d853cdc4bb",
+          "text": "Erfolgt eine Einteilung der Medizinprodukte in Risikogruppen?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "024b9a3d-f5cf-4300-bceb-4929bef3df4e",
+          "text": "Ist die Risikogruppeneinteilung vollständig erfasst?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "2bd4c3d5-dd72-4704-b023-9d9301fe6f68",
+          "text": "Werden ausschließlich Einmalinstrumente verwendet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "TEXT",
+          "id": "c05f9d1d-d02a-47ef-b7d2-f12a7c12cd36",
+          "text": "Welche Medizinprodukte (semikritisch/ kritisch) werden aufbereitet",
+          "mandatory": false,
+          "note": null,
+          "help": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "0b072c47-2f2f-4824-a669-7c61f20f49af",
+          "text": "Standardarbeitsanweisungen vorhanden oder im Hygieneplan beschrieben?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "CHECKBOX",
+          "id": "62233d75-ecf3-4875-a6d6-3d9ae2340e15",
+          "text": "Qualifikation des mit der Aufbereitung Betrauten?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "textModuleTrue": null,
+          "textModuleFalse": null
+        },
+        {
+          "@type": "MULTI_SELECT",
+          "id": "361aa59a-bbc4-480a-8422-58f0b1ec3f07",
+          "text": "Wie werden benutzte Medizinprodukte aufbereitet?",
+          "mandatory": false,
+          "note": null,
+          "help": null,
+          "items": [
+            {
+              "id": "e3cf7b69-ed9a-4856-ab6a-69680524d3c1",
+              "text": "Wischdesinfektion",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "5f8f1944-eaf5-431d-8a6e-0cd325d327ba",
+              "text": "manuell (Tauchbad)",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "cc4eb15b-098e-4faf-a7da-1e4601bd07bf",
+              "text": "Ultraschallbad",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "37db0f00-0295-46e4-b0f5-facabeecebfb",
+              "text": "maschinell",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            },
+            {
+              "id": "dd379b05-90bd-44e9-a640-a1d40a02c043",
+              "text": "Sterilisation",
+              "textModuleTrue": null,
+              "textModuleFalse": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

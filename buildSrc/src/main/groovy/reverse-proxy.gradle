@@ -1,0 +1,51 @@
+plugins {
+  id 'next-app'
+  id 'com.avast.gradle.docker-compose'
+}
+
+interface ReverseProxyConfiguration {
+  Property<String> getServiceName()
+  Property<String> getMainConfigFile()
+}
+
+def reverseProxyExtension = project.extensions.create('reverseProxy', ReverseProxyConfiguration)
+
+// We need to delay the configuration, otherwise reverseProxyExtension.serviceName is not available yet.
+project.afterEvaluate {
+  dockerCompose {
+    reverseProxy {
+      projectName = rootDir.name
+      startedServices = [reverseProxyExtension.serviceName.get()]
+    }
+  }
+
+  tasks.named('run').configure {
+    dependsOn tasks.named('reverseProxyComposeUp')
+  }
+
+  tasks.named('runDev').configure {
+    dependsOn tasks.named('reverseProxyComposeUp')
+  }
+
+  def triggerReverseProxyRecreationIfConfigFilesChangedTask = tasks.register('triggerReverseProxyRecreationIfConfigFilesChanged') {
+    List<String> files = [
+      reverseProxyExtension.mainConfigFile.get(),
+      "auth_request.conf",
+      "auth_api_request.conf",
+      "forward_headers.conf",
+      "nginx.conf"
+    ]
+
+    inputs.files(files.collect { file -> "${rootDir}/reverse-proxy/${file}" })
+
+    outputs.upToDateWhen { true }
+
+    doFirst {
+      tasks.named('reverseProxyComposeUp').get().forceRecreate = true
+    }
+  }
+
+  tasks.named('reverseProxyComposeUp').configure {
+    dependsOn triggerReverseProxyRecreationIfConfigFilesChangedTask
+  }
+}

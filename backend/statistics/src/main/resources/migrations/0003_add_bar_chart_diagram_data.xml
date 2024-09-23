@@ -1,0 +1,92 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1719234759449-1">
+    <addColumn tableName="diagram">
+      <column name="diagram_data_id" type="int8">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addUniqueConstraint columnNames="diagram_data_id" constraintName="diagram_diagram_data_id_key" tableName="diagram"/>
+
+    <addColumn tableName="diagram_filters">
+      <column name="filters_order" type="int4">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addPrimaryKey columnNames="diagram_id, filters_order" constraintName="pk_diagram_filters" tableName="diagram_filters"/>
+
+    <createTable tableName="diagram_data">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_diagram_data"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="diagram_data_id" baseTableName="diagram" constraintName="fk_diagram_diagram_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram_data" validate="true"/>
+
+    <createTable tableName="bar_chart_data">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bar_chart_data"/>
+      </column>
+      <column name="evaluated_data_amount" type="int4">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="id" baseTableName="bar_chart_data" constraintName="fk_bar_chart_data_diagram_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram_data" validate="true"/>
+
+    <createTable tableName="bar_group_data">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_bar_group_data"/>
+    </column>
+        <column name="bar_group_datas_order" type="int4"/>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bar_chart_data_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="key" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="bar_chart_data_id" baseTableName="bar_group_data" constraintName="fk_bar_group_data_bar_chart_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="bar_chart_data" validate="true"/>
+
+    <createTable tableName="bar_group_data_key_to_counts">
+      <column name="key_to_counts_order" type="int4">
+        <constraints nullable="false"/>
+      </column>
+      <column name="bar_group_data_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="key_to_counts_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="key_to_counts_id" constraintName="bar_group_data_key_to_counts_key_to_counts_id_key" tableName="bar_group_data_key_to_counts"/>
+    <addForeignKeyConstraint baseColumnNames="bar_group_data_id" baseTableName="bar_group_data_key_to_counts" constraintName="fk_bar_group_data_key_to_counts_bar_group_data" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="bar_group_data" validate="true"/>
+    <addPrimaryKey columnNames="bar_group_data_id, key_to_counts_order" constraintName="pk_bar_group_data_key_to_counts" tableName="bar_group_data_key_to_counts"/>
+
+    <createTable tableName="key_to_count">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_key_to_count"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="key" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="count" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="key_to_counts_id" baseTableName="bar_group_data_key_to_counts" constraintName="fk_bar_group_data_key_to_counts_key_to_count" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="key_to_count" validate="true"/>
+
+  </changeSet>
+</databaseChangeLog>

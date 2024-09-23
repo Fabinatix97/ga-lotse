@@ -1,0 +1,30 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
+import { FieldProps } from "@eshg/lib-portal/types/form";
+import { Slider } from "@mui/joy";
+
+export interface SliderFieldProps extends Omit<FieldProps<number>, "label"> {
+  min: number;
+  max: number;
+}
+
+export function SliderField(props: SliderFieldProps) {
+  const field = useBaseField<number>(props);
+
+  return (
+    <Slider
+      min={props.min}
+      max={props.max}
+      marks
+      value={field.input.value}
+      onChange={(_, value) => field.helpers.setValue(value as number)}
+      valueLabelDisplay="auto"
+      size="lg"
+      sx={{ zIndex: 2 }}
+    />
+  );
+}

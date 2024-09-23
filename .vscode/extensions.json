@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "vscjava.vscode-gradle",
+    "ms-playwright.playwright",
+    "asciidoctor.asciidoctor-vscode"
+  ]
+}

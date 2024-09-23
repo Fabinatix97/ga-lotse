@@ -1,0 +1,9 @@
+# pnpm
+pnpm-lock.yaml
+/.pnpm-store/
+
+# IntelliJ
+.idea*/
+
+# next-pwa
+employee-portal/public/

@@ -1,0 +1,217 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+import java.time.Duration
+
+plugins {
+    id "com.bmuschko.docker-remote-api"
+    id "docker-compose"
+    id "org.cyclonedx.bom"
+    id "com.trileuco.dependency-track-gradle"
+    id "eshg.image-push-sign"
+}
+
+bootRun {
+    systemProperty 'spring.profiles.active', 'test-helper'
+}
+
+def dockerBuildDir = layout.buildDirectory.dir('docker')
+def dockerResourcesSrcDir = file('src/main/docker-resources')
+
+tasks.register('copyBootJarToDockerBuildContext', Copy) {
+    from bootJar.archiveFile
+    into dockerBuildDir
+}
+
+tasks.register('copyResourcesToDockerBuildContext', Sync) {
+    onlyIf { dockerResourcesSrcDir.exists() }
+    from dockerResourcesSrcDir
+    into file(layout.buildDirectory.dir('docker/resources'))
+}
+
+bootJar {
+    layered {
+        application {
+            intoLayer("spring-boot-loader") {
+                include "org/springframework/boot/loader/**"
+            }
+            intoLayer("application")
+        }
+        dependencies {
+            intoLayer("application") {
+                includeProjectDependencies()
+            }
+            intoLayer("common-deps") {
+                include "org.springframework.boot:spring-boot*:*"
+                include "org.springframework:spring*:*"
+                include "org.springframework.data:spring-data*:*"
+                include "org.springframework.security:spring-security*:*"
+                include "org.postgresql:postgresql:*"
+                include "org.hibernate.orm:hibernate-core*:*"
+                include "org.hibernate.common:*:*"
+                include "net.bytebuddy:byte-buddy*:*"
+                include "org.apache.tomcat.embed:tomcat-*:*"
+                include "org.zalando:logbook*:*"
+                include "io.micrometer:micrometer*:*"
+                include "org.aspectj:aspectjweaver:*"
+                include "io.swagger.core.v3:swagger-*:*"
+                include "org.webjars:swagger-ui:*"
+            }
+            intoLayer("dependencies")
+        }
+        layerOrder = ["spring-boot-loader", "common-deps", "dependencies", "application"]
+    }
+}
+
+ext {
+    listenPort = 8080
+    additionalAptPackages = null
+    xmx = "512m"
+    jreDockerImage = 'eclipse-temurin:21.0.4_7-jre-jammy@sha256:ea878d7ef79653c16f6bfdfbd3bf20ae80f4f645f66339e9153ae0d481385225'
+}
+
+tasks.register('createDockerfile', Dockerfile) {
+    dependsOn 'copyBootJarToDockerBuildContext', 'copyResourcesToDockerBuildContext'
+
+    if (project.hasProperty("useDependencyProxy")) {
+        from(new Dockerfile.From("${System.getenv("CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX")}/${jreDockerImage}").withStage("build"))
+    } else {
+        from(new Dockerfile.From(jreDockerImage).withStage("build"))
+    }
+
+    copyFile(new Dockerfile.CopyFile(bootJar.archiveFileName.get(), "application.jar"))
+    runCommand("java -Djarmode=tools -jar application.jar extract --layers --launcher")
+
+    from(jreDockerImage)
+
+    def groupName = 'eshg'
+    def userName = 'eshg'
+
+    runCommand("addgroup --system ${groupName}")
+    runCommand("adduser --shell /usr/sbin/nologin --system --home /app --ingroup ${groupName} --uid 1000 ${userName}")
+    if (additionalAptPackages != null) {
+        runCommand("DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ${additionalAptPackages} && rm -rf /var/lib/apt/lists/*")
+    }
+    user("${userName}:${groupName}")
+
+    exposePort(listenPort)
+
+    healthcheck(new Dockerfile.Healthcheck("curl --silent --fail http://localhost:${listenPort}/actuator/health || exit 1").withStartPeriod(Duration.ofSeconds(60)))
+
+    if (dockerResourcesSrcDir.isDirectory()) {
+        copyFile(new Dockerfile.CopyFile('resources/', '/').withChown("${userName}:${groupName}"))
+    }
+
+    environmentVariable('TZ', 'Europe/Berlin')
+
+    copyFile(new Dockerfile.CopyFile("application/spring-boot-loader/", "./").withChown("${userName}:${groupName}").withStage("build"))
+    copyFile(new Dockerfile.CopyFile("application/common-deps/", "./").withChown("${userName}:${groupName}").withStage("build"))
+    copyFile(new Dockerfile.CopyFile("application/dependencies/", "./").withChown("${userName}:${groupName}").withStage("build"))
+    copyFile(new Dockerfile.CopyFile("application/application/", "./").withChown("${userName}:${groupName}").withStage("build"))
+
+    entryPoint('java')
+
+    defaultCommand(
+        "-Dserver.port=${listenPort}",
+        '-Djava.security.egd=file:/dev/urandom',
+        "-Xmx${xmx}",
+        "-XX:+ExitOnOutOfMemoryError",
+        'org.springframework.boot.loader.launch.JarLauncher')
+}
+
+tasks.register('buildDockerImage', DockerBuildImage) {
+    dependsOn 'createDockerfile'
+    inputs.files(tasks.named('copyBootJarToDockerBuildContext'))
+
+    if (getTagName() != null) {
+        images.add(getImageNameWithTag())
+    } else {
+        images.add(getImageNameWithLatestTag())
+    }
+}
+
+tasks.named("composeBuild").configure {
+    // change default behavior of dockerCompose plugin:
+    // instead of starting ALL compose services
+    // start NONE, when startedServices list is empty
+    enabled = dockerCompose.startedServices.get().size() > 0
+}
+
+tasks.named("composeUp").configure {
+    // change default behavior of dockerCompose plugin:
+    // instead of starting ALL compose services
+    // start NONE, when startedServices list is empty
+    enabled = dockerCompose.startedServices.get().size() > 0
+
+    dependsOn tasks.named("buildDockerImage")
+
+    // This is necessary to prevent a race condition when multiple instances of the 'composeUp' tasks run in parallel,
+    // potentially leading to multiple creations of the 'eshg-backend_default' network.
+    // By enforcing a sequential execution order where 'keycloak:composeUp' and 'base:composeUp' run first, we avoid those conflicts.
+    if (project.name != "base") {
+        mustRunAfter project(":base").tasks.named("composeUp")
+    }
+    // This prevents another race condition due to the dependency of other services on the service-directory
+    if (project.name == "local-service-directory" || project.name == "central-repository") {
+        mustRunAfter project(":service-directory").tasks.named("composeUp")
+    }
+}
+
+tasks.named("composePull").configure {
+    dependsOn tasks.named("buildDockerImage")
+}
+
+rootProject.tasks.named("composeUp").configure {
+    dependsOn tasks.named("composeUp")
+}
+
+dockerCompose {
+    projectName = rootProject.name
+    useComposeFiles = ["${rootDir}/docker-compose.yaml"]
+
+    if (project.hasProperty("preview-features") || project.hasProperty("previewFeatures")) {
+        environment.put "ACTIVE_SPRING_PROFILES", "test-helper, preview-features"
+    }
+}
+
+cyclonedxBom {
+    includeConfigs = ["runtimeClasspath"]
+    projectType = "application"
+    schemaVersion = "1.5"
+    destination = file("build/reports")
+    outputName = "bom"
+    outputFormat = "xml"
+    includeBomSerialNumber = false
+}
+
+dependencyTrack {
+    host = project.findProperty('dependency-track-api-url')
+    apiKey = project.findProperty('dependency-track-api-key') ?: 'unspecified'
+    // NOTE: projectId must be set in child projects
+}
+
+project.afterEvaluate {
+    try {
+        if (dependencyTrack.projectId.get().isEmpty()) {
+            throw new GradleException()
+        }
+    } catch (ignored) {
+        throw new GradleException("DependencyTrack projectId is missing! " +
+                "Ask an admin to create a DependencyTrack project for you. " +
+                "Use the project UUID set it in your module's build.gradle.")
+    }
+}
+
+
+tasks.named('dependencyTrack').configure {
+    dependsOn cyclonedxBom
+
+    doFirst {
+        assert project.hasProperty('dependency-track-api-key')
+    }
+}
+
+dependencies {
+    runtimeOnly project(':service-commons')
+    implementation project(':lib-security-config-urls')
+}

@@ -1,0 +1,36 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.schoolentry.domain.model;
+
+public enum FamilyLanguageValue {
+  GERMAN,
+  TURKISH,
+  KURDISH,
+  RUSSIAN,
+  POLISH,
+  ARABIC,
+  FARSI_DARI,
+  SERBO_CROATIAN,
+  ROMAN,
+  BULGARIAN,
+  PASHTU,
+  TIGRINIA,
+  BERBERIAN,
+  AMHARIAN,
+  ARAMEAN,
+  ITALIAN,
+  SPANISH,
+  GREEK,
+  PORTUGUESE,
+  ENGLISH,
+  FRENCH,
+  URDU,
+  OTHER_EUROPEAN_LANGUAGES,
+  OTHER_ASIAN_LANGUAGES,
+  OTHER_AFRICAN_LANGUAGES,
+  OTHER_LANGUAGES,
+  UNKNOWN
+}

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="addressee" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterPerson" -->
+<#-- @ftlvariable name="affectedPerson" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterPerson" -->
+<#-- @ftlvariable name="body" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterBody" -->
+
+<html xml:lang="de" lang="de">
+  <head>
+    <title>Maßnahmen nach dem Infektionsschutzgesetz (IfSG) - Vorgangsnummer ${body.ourReference}.</title>
+    <link rel="stylesheet" type="text/css" href="cover-letter.css"/>
+  </head>
+
+  <body>
+    <#include "footer.ftlx">
+    <#include "header-table.ftlx">
+
+    <p class="important">
+      Betreff: Immunitätsnachweis im Sinne des Masernschutzgesetzes
+      für ${affectedPerson.firstName} ${affectedPerson.lastName}, Aktenzeichen: ${body.ourReference}
+    </p>
+    <p>
+    ${addressee.salutation},
+    </p>
+    <p>
+      in unserem Anschreiben vom ${body.previousLetterDateString} haben wir Sie aufgefordert, uns den fehlenden Nachweis im Sinne
+      des Masernschutzgesetzes (§20 Abs. 9 IfSG) für den/die
+      Minderjährige/n ${affectedPerson.firstName} ${affectedPerson.lastName} vorzulegen.
+    </p>
+    <p>
+      Dieser Aufforderung sind Sie in der gesetzten Frist nicht nachgekommen.
+    </p>
+    <p class="important">
+      Gemäß §20 Abs. 12 IfSG fordern wir Sie hiermit erneut dazu auf, uns bis spätestens ${body.deadlineString}
+      für ${affectedPerson.firstName} ${affectedPerson.lastName} einen gültigen Nachweis nach §20 Abs. 9 IfSG
+      im Original vorzulegen.
+    </p>
+    <p>
+      Als Nachweis gelten:
+    </p>
+    <p>
+      <ol>
+        <li>
+          Ein Impfausweis mit der Dokumentation von <span class="important">zwei Impfungen gegen Masern</span>.
+          Gleichwertig ist ein ärztliches Zeugnis über einen vollständigen Impfschutz in dem beschriebenen Umfang.
+        </li>
+        <li>
+          Ein ärztliches Zeugnis über eine Immunität gegen Masern (Antikörpertest)*
+        </li>
+        <li>
+          Eine ärztliche Bescheinigung, dass die betroffene Person aufgrund einer medizinischen Kontraindikation
+          nicht geimpft werden kann*
+        </li>
+      </ol>
+    </p>
+    <p class="important">
+      Wird der erforderliche Nachweis nicht innerhalb der Frist erbracht, besteht gemäß § 20 Abs. 12 IfSG die
+      Möglichkeit, gegen ${affectedPerson.firstName} ${affectedPerson.lastName} ein Betretungsverbot für die
+      Einrichtung auszusprechen. Zudem be-steht gemäß § 73 Abs. 1a Nr. 7d IfSG die Möglichkeit ein
+      Ordnungswidrigkeitsverfahren einzuleiten. Die Ordnungswidrigkeit kann mit einer Geldbuße von bis zu 2.500 €
+      geahndet werden. Sie erhalten hiermit nach § 28 Abs. 1 Hessisches Verwaltungsverfahrensgesetz (HVwVfG)
+      Gelegenheit, sich innerhalb der oben genannten Frist zur Anordnung eines Betretungsverbotes zu äußern und alle
+      für die Entscheidung maßgeblichen Tatsachen vorzutragen.
+    </p>
+    <p>
+      Bitte nutzen Sie zur Nachweisvorlage unsere Terminsprechstunde im Gesundheitsamt Frankfurt am Main. Termine
+      können unter dem folgenden Link vereinbart werden:
+    </p>
+
+    <#include "appointment.ftlx">
+
+    <div class="box">
+      * Bezüglich der Nachweise ist zu beachten:
+      <p>
+        Im Falle eines Attestes über eine medizinische Kontraindikation, muss diese unter Angabe der Diagnose
+        ausführlich begründet werden (z.B. Therapie mit schwerer immunsuppressiver Wirkung wie mehr als 20 mg
+        Prednisolonäquivalent, Rituximab oder MTX in hoher Dosierung bei zugrundeliegender Grunderkrankung). Die
+        medizinischen Angaben sind durch Befunde/ medizinische Unterlagen zu belegen.
+      </p>
+      <p>
+        Im Falle eines ärztlichen Zeugnisses über eine Immunität gegen Masern ist diese durch einen entsprechenden
+        Laborbefund zu belegen.
+      </p>
+      <p>
+        Der Nachweis kann ausschließlich im Original vorgelegt werden. Bei einem postalischen Versand können wir die
+        Originale nicht zurücksenden. Der Versand eines Scans per Mail ist nicht zulässig.
+      </p>
+      <p>
+        Sollte Ihr Kind die Einrichtung nicht mehr besuchen, bitten wir um eine entsprechende Mitteilung und
+        Bestätigung der ehemaligen Einrichtungsleitung.
+      </p>
+    </div>
+    <#include "end-of-letter.ftlx">
+  </body>
+</html>

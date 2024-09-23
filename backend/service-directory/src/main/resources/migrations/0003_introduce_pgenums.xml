@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1720723285566-13">
+    <ext:createPostgresEnumType name="stagedentitytype" values="ADD, DEL, MOD"/>
+    <ext:createPostgresEnumType name="actortype" values="FM, GM, LM, LSD, WEB, ZA, ZR"/>
+    <ext:createPostgresEnumType name="federalstate" values="BB, BE, BW, BY, DE, HB, HE, HH, MV, NI, NW, RP, SH, SL, SN, ST, TH"/>
+    <ext:createPostgresEnumType name="orgunittype" values="GA, LA, ZD"/>
+    <modifyDataType columnName="federal_state" newDataType="federalstate" tableName="audited_org_unit"/>
+    <modifyDataType columnName="federal_state" newDataType="federalstate" tableName="audited_org_unit_aud"/>
+    <modifyDataType columnName="federal_state" newDataType="federalstate" tableName="staged_org_unit"/>
+    <modifyDataType columnName="staged_entity_type" newDataType="stagedentitytype" tableName="staged_actor"/>
+    <modifyDataType columnName="staged_entity_type" newDataType="stagedentitytype" tableName="staged_org_unit"/>
+    <modifyDataType columnName="staged_entity_type" newDataType="stagedentitytype" tableName="staged_rule"/>
+    <modifyDataType columnName="type" newDataType="actortype" tableName="audited_actor"/>
+    <modifyDataType columnName="type" newDataType="actortype" tableName="audited_actor_aud"/>
+    <modifyDataType columnName="type" newDataType="orgunittype" tableName="audited_org_unit"/>
+    <modifyDataType columnName="type" newDataType="orgunittype" tableName="audited_org_unit_aud"/>
+    <modifyDataType columnName="type" newDataType="actortype" tableName="staged_actor"/>
+    <modifyDataType columnName="type" newDataType="orgunittype" tableName="staged_org_unit"/>
+  </changeSet>
+</databaseChangeLog>

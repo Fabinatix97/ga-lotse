@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="migrate_procedures_to_sequence_based_ids">
+    <renameSequence oldSequenceName="facilities_id_seq" newSequenceName="facility_id_seq"/>
+    <renameSequence oldSequenceName="persons_id_seq" newSequenceName="person_id_seq"/>
+    <renameSequence oldSequenceName="vaccination_consultation_tasks_id_seq" newSequenceName="vaccination_consultation_task_id_seq"/>
+    <renameSequence oldSequenceName="vaccination_consultations_id_seq" newSequenceName="vaccination_consultation_id_seq"/>
+
+    <ext:migrateAutoIncrementToSequence tableName="facility"/>
+    <ext:migrateAutoIncrementToSequence tableName="person"/>
+    <ext:migrateAutoIncrementToSequence tableName="progress_entry"/>
+    <ext:migrateAutoIncrementToSequence tableName="vaccination_consultation_task"/>
+    <ext:migrateAutoIncrementToSequence tableName="vaccination_consultation"/>
+  </changeSet>
+</databaseChangeLog>

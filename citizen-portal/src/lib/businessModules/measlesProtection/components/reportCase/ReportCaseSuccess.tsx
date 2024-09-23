@@ -1,0 +1,177 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Alert } from "@eshg/lib-portal/components/Alert";
+import { Business, PeopleAltOutlined, TurnLeft } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { useFormikContext } from "formik";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+
+import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
+import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
+
+import {
+  FormHeader,
+  reportCaseFormPages,
+  reportMeaslesCaseFormInitialValues,
+} from "./ReportCaseForm";
+import { reportCaseOverviewCardStyles } from "./ReportCaseOverviewCard";
+import { formatName } from "./helpers";
+import { createEmptyContactPerson } from "./subforms/ContactPersonForm";
+import { ReportMeaslesCase } from "./types";
+
+const reportCaseSuccessStyles: SxProps = {
+  backgroundColor: "white",
+  borderRadius: "xl",
+  p: 3,
+  flex: 1,
+  mr: {
+    xxs: 0,
+    md: 2,
+  },
+};
+
+const textPrimaryColor = "var(--joy-palette-text-primary)";
+
+export function ReportCaseSuccess() {
+  const { t } = useTranslation(["measlesProtection/forms"]);
+  const {
+    values: { affectedPersons, facility },
+  } = useFormikContext<ReportMeaslesCase>();
+  const { name: facilityName, contactPersons } = facility;
+  const facilityContactPersonName = formatName(
+    contactPersons[0] ?? createEmptyContactPerson(),
+  );
+  const casesReported = affectedPersons.length;
+
+  return (
+    <>
+      <Stack component="div" gap={2} rowGap={2} sx={reportCaseSuccessStyles}>
+        <Grid xxs={12}>
+          <Alert
+            title={t("success.message", {
+              casesReported: affectedPersons.length,
+            })}
+            color="success"
+          />
+        </Grid>
+        <FormHeader>{t("common.overview")}</FormHeader>
+        <Grid container xxs={12}>
+          <Typography level="body-md">
+            Ihre Daten wurden erfolgreich an uns übermittelt. Wir werden uns
+            schnellstmöglich um Ihr Anliegen kümmern.
+          </Typography>
+        </Grid>
+        <Grid container xxs={12}>
+          <Box sx={{ display: "flex", mt: 1 }}>
+            <Business sx={{ color: textPrimaryColor }} />
+            <Box
+              sx={{ display: "flex", ml: 2, mb: 2, flexDirection: "column" }}
+            >
+              <Typography>{facilityName}</Typography>
+              <Box sx={{ display: "flex", mt: 1 }}>
+                <TurnLeft
+                  sx={{
+                    color: textPrimaryColor,
+                    transform: "rotate(180deg)",
+                  }}
+                />
+                <Typography sx={{ ml: 2 }}>
+                  {facilityContactPersonName}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid container xxs={12}>
+          <Box sx={{ display: "flex", mt: 1 }}>
+            <PeopleAltOutlined sx={{ color: textPrimaryColor }} />
+            <Typography sx={{ ml: 2 }}>
+              {`${casesReported} ${t("common.person", { count: casesReported })}`}
+            </Typography>
+          </Box>
+        </Grid>
+      </Stack>
+      <ReportCaseSuccessActionsCard />
+    </>
+  );
+}
+
+export function ReportCaseSuccessActionsCard() {
+  const { t } = useTranslation(["measlesProtection/forms"]);
+  const replaceSearchParams = useReplaceSearchParams();
+  const router = useRouter();
+  const {
+    values: { facility, otherFacilityTypeInformation = "" },
+    resetForm,
+  } = useFormikContext<ReportMeaslesCase>();
+  const routes = useRoutes();
+
+  const goToPage = useCallback(
+    (page: number) => {
+      replaceSearchParams([
+        {
+          name: "page",
+          value: page,
+        },
+        {
+          name: "person",
+          value: 0,
+        },
+      ]);
+    },
+    [replaceSearchParams],
+  );
+
+  return (
+    <Card sx={reportCaseOverviewCardStyles} variant="plain">
+      <CardContent orientation="vertical">
+        <Typography
+          level="h4"
+          sx={{ fontSize: { xxs: "1.125rem", sm: "1.5rem" }, mb: 2 }}
+        >
+          Was möchten Sie als nächstes tun?
+        </Typography>
+        <Stack gap={2}>
+          <Button disabled variant="outlined">
+            {t("success.viewOpenCases")}
+          </Button>
+          <Button
+            onClick={() => {
+              resetForm({
+                values: {
+                  ...reportMeaslesCaseFormInitialValues,
+                  facility,
+                  otherFacilityTypeInformation,
+                },
+              });
+              goToPage(reportCaseFormPages.facilityInfo.pageNumber);
+            }}
+            variant="outlined"
+          >
+            {t("success.reportAdditionalPerson")}
+          </Button>
+          <Button
+            onClick={() => router.push(routes.organizationPath.overview)}
+            variant="outlined"
+          >
+            {t("success.returnToMeaslesProtectionHome")}
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}

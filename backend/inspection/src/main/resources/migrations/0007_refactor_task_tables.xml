@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet author="GA-Lotse" id="1720191042096-1">
+    <addColumn tableName="inspection">
+      <column name="planned_appointment_id" type="BIGINT"/>
+    </addColumn>
+
+    <addColumn tableName="inspection">
+      <column name="execution_appointment_id" type="BIGINT"/>
+    </addColumn>
+
+    <sql>
+        update inspection i
+        set planned_appointment_id = (select appointment_id
+                                      from inspection_planning_task ipt
+                                               join inspection_task it on ipt.id = it.id
+                                      where it.procedure_id = i.id);
+    </sql>
+
+    <sql>
+        update inspection i
+        set execution_appointment_id = (select appointment_id
+                                        from inspection_execution_task ipt
+                                                 join inspection_task it on ipt.id = it.id
+                                        where it.procedure_id = i.id);
+    </sql>
+
+    <addUniqueConstraint tableName="inspection" columnNames="planned_appointment_id" constraintName="inspection_planned_appointment_id_key"/>
+    <addForeignKeyConstraint baseTableName="inspection"  baseColumnNames="planned_appointment_id" constraintName="fk_inspection_inspection_planned_appointment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection_appointment" validate="true"/>
+
+    <addUniqueConstraint tableName="inspection" columnNames="execution_appointment_id" constraintName="inspection_execution_appointment_id_key"/>
+    <addForeignKeyConstraint baseTableName="inspection"  baseColumnNames="execution_appointment_id" constraintName="fk_inspection_inspection_execution_appointment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection_appointment" validate="true"/>
+
+    <dropForeignKeyConstraint baseTableName="inspection_planning_task" constraintName="fk_inspection_planning_task_inspection_appointment"/>
+    <dropForeignKeyConstraint baseTableName="inspection_planning_task" constraintName="fk_inspection_planning_task_inspection_task"/>
+    <dropForeignKeyConstraint baseTableName="inspection_execution_task" constraintName="fk_inspection_execution_task_inspection_appointment"/>
+    <dropForeignKeyConstraint baseTableName="inspection_execution_task" constraintName="fk_inspection_execution_task_inspection_task"/>
+    <dropForeignKeyConstraint baseTableName="inspection_report_task" constraintName="fk_inspection_report_task_inspection_task"/>
+
+    <dropUniqueConstraint tableName="inspection_execution_task" constraintName="inspection_execution_task_appointment_id_key"/>
+    <dropUniqueConstraint tableName="inspection_planning_task" constraintName="inspection_planning_task_appointment_id_key"/>
+
+    <dropTable tableName="inspection_planning_task"/>
+    <dropTable tableName="inspection_execution_task"/>
+    <dropTable tableName="inspection_report_task"/>
+  </changeSet>
+
+</databaseChangeLog>

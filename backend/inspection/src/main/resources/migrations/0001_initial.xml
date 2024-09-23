@@ -1,0 +1,2084 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="initial">
+        <createTable tableName="inspection">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="archiving_relevance" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closed_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_result" type="TEXT"/>
+            <column name="procedure_status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calendar_event_id" type="UUID"/>
+            <column defaultValueBoolean="false" name="challenging" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="UUID"/>
+            <column name="phase" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="result" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="announcement_id" type="BIGINT"/>
+            <column name="followup_inspection_id" type="BIGINT"/>
+            <column name="report_id" type="UUID"/>
+        </createTable>
+
+        <createTable tableName="approval_request">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_approval_request"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="decided_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="decided_by" type="UUID"/>
+            <column name="decision" type="TEXT"/>
+            <column name="reason" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_definition_element">
+            <column name="element_type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_definition_element"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="help" type="TEXT"/>
+            <column name="mandatory" type="BOOLEAN"/>
+            <column name="note" type="TEXT"/>
+            <column name="text" type="TEXT"/>
+            <column name="text_module_false" type="TEXT"/>
+            <column name="text_module_true" type="TEXT"/>
+            <column name="checklist_definition_section_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_definition_field_option">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_definition_field_option"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text_module_false" type="TEXT"/>
+            <column name="text_module_true" type="TEXT"/>
+            <column name="checklist_definition_element_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_definition">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_definition"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_core_checklist" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="most_recent_repository_version" type="INTEGER"/>
+            <column name="most_recent_version_based_on_repo" type="INTEGER"/>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repository_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="checklist_definition_section">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_definition_section"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT"/>
+            <column name="checklist_definition_version_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_definition_version">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_definition_version"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="is_expandable" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repository_version" type="INTEGER"/>
+            <column name="valid_from" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_to" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="version" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checklist_definition_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_element">
+            <column name="element_type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_element"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_incident" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_checked" type="BOOLEAN"/>
+            <column name="checked_button_name" type="TEXT"/>
+            <column name="input" type="TEXT"/>
+            <column name="checklist_definition_element_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checklist_section_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checklist_version_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inspection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_section">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_section"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checklist_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checklist_definition_section_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="contact_details">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_contact_details"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date"/>
+            <column name="email_address" type="TEXT"/>
+            <column name="facility_name" type="TEXT"/>
+            <column name="first_name" type="TEXT"/>
+            <column name="last_name" type="TEXT"/>
+            <column name="phone_number" type="TEXT"/>
+            <column name="title" type="TEXT"/>
+            <column name="inbox_procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="file">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_file"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size_bytes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by_mail" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by_progress_entry" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by_self" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attached_to_mail_id" type="BIGINT"/>
+            <column name="file_content_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inbox_procedure">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inbox_procedure"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_procedure_status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_type" type="TEXT"/>
+        </createTable>
+
+        <createTable tableName="inbox_progress_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inbox_progress_entry"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_text" type="TEXT"/>
+            <column name="subject" type="TEXT"/>
+            <column name="file_id" type="BIGINT"/>
+            <column name="inbox_procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_announcement">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_announcement"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_execution_task">
+            <column name="followup_date" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="followup_type" type="TEXT"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_execution_task"/>
+            </column>
+            <column name="appointment_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="inspection_person">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_person"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="central_file_state_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_related_facility">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_related_facility"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="central_file_state_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_task">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_task"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_id" type="UUID"/>
+            <column name="assigned_by_id" type="UUID"/>
+            <column name="assignment_date" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="due_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="manual_progress_entry_aud">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"/>
+            <column name="key_document_type" type="TEXT"/>
+            <column name="key_document_version" type="INTEGER"/>
+            <column name="locked" type="BOOLEAN"/>
+            <column name="manual_progress_entry_type" type="TEXT"/>
+            <column name="message_text" type="TEXT"/>
+            <column name="note" type="TEXT"/>
+            <column name="subject" type="TEXT"/>
+        </createTable>
+
+        <createTable tableName="manual_progress_entry">
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_document_type" type="TEXT"/>
+            <column name="key_document_version" type="INTEGER"/>
+            <column name="locked" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manual_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_text" type="TEXT"/>
+            <column name="note" type="TEXT"/>
+            <column name="subject" type="TEXT"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_manual_progress_entry"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="processed_inbox_progress_entry">
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inbox_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_text" type="TEXT"/>
+            <column name="subject" type="TEXT"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_processed_inbox_progress_entry"/>
+            </column>
+            <column name="inbox_procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="report_element">
+            <column name="report_element_type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_report_element"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deletable" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="editable" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="incident" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="moveable" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT"/>
+            <column name="text" type="TEXT"/>
+            <column name="report_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="system_progress_entry">
+            <column name="change_description" type="TEXT"/>
+            <column name="system_progress_entry_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trigger_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="triggered_by" type="UUID"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_system_progress_entry"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="websearch_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_websearch_entry"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address_addition" type="TEXT"/>
+            <column name="central_file_state_id" type="UUID"/>
+            <column name="city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="TEXT"/>
+            <column name="house_number" type="TEXT"/>
+            <column name="ignored" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="osm_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="TEXT"/>
+            <column name="postal_code" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="TEXT"/>
+            <column name="website" type="TEXT"/>
+            <column name="websearch_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="websearch">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_websearch"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="basicurl" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entry_count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_error" type="TEXT"/>
+            <column name="last_execution" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="last_successful_execution" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="running_since" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="search_city" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_address"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address_addition" type="TEXT"/>
+            <column name="city" type="TEXT"/>
+            <column name="country" type="TEXT"/>
+            <column name="house_number" type="TEXT"/>
+            <column name="postal_code" type="TEXT"/>
+            <column name="postbox_number" type="INTEGER"/>
+            <column name="street" type="TEXT"/>
+            <column name="contact_details_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_image">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_image"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checklist_image_element_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_file_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="facility">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_facility"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="banned" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="central_file_state_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="suspicious" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_type_id" type="UUID"/>
+        </createTable>
+
+        <createTable tableName="file_deletion_approval_request">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_file_deletion_approval_request"/>
+            </column>
+            <column name="file_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="file_deletion_approval_request_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_file_deletion_approval_request_notification"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approval_request_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_planning_task">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_planning_task"/>
+            </column>
+            <column name="appointment_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="inspection_resource">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_resource"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="base_resource_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calendar_event_id" type="UUID"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inspection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_signature">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_signature"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hash_value" type="TEXT"/>
+            <column name="signer" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="signature_image_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="manual_progress_entry_deletion_approval_request">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_manual_progress_entry_deletion_approval_request"/>
+            </column>
+            <column name="manual_progress_entry_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable
+                tableName="manual_progress_entry_deletion_approval_request_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_manual_progress_entry_deletion_approval_request_notification"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approval_request_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="media_file">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_media_file"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_type" type="TEXT"/>
+            <column name="file_content_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="objecttype">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_objecttype"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complaint_interval" type="INTEGER"/>
+            <column name="email_announcement" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="routine_interval" type="INTEGER"/>
+            <column name="standard_buffer_time" type="INTEGER"/>
+            <column name="standard_duration" type="INTEGER"/>
+        </createTable>
+
+        <createTable tableName="progress_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_progress_entry"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="procedure_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" remarks="Soft-delete indicator" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="report_element_answer">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_report_element_answer"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="extra_text" type="TEXT"/>
+            <column name="selected" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="answer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="answers_order" type="INTEGER"/>
+        </createTable>
+
+        <createTable tableName="report">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_report"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inspection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_file_id" type="BIGINT"/>
+            <column name="signature_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="simple_notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_simple_notification"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="recipient_user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="text_block">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_text_block"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="announcement_id"
+                             constraintName="inspection_announcement_id_key"
+                             tableName="inspection"/>
+
+        <addUniqueConstraint columnNames="calendar_event_id"
+                             constraintName="inspection_calendar_event_id_key"
+                             tableName="inspection"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="inspection_external_id_key"
+                             tableName="inspection"/>
+
+        <addUniqueConstraint columnNames="followup_inspection_id"
+                             constraintName="inspection_followup_inspection_id_key"
+                             tableName="inspection"/>
+
+        <addUniqueConstraint columnNames="report_id"
+                             constraintName="inspection_report_id_key"
+                             tableName="inspection"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="approval_request_external_id_key"
+                             tableName="approval_request"/>
+
+        <addUniqueConstraint columnNames="version, checklist_definition_id"
+                             constraintName="uq_version_version"
+                             tableName="checklist_definition_version"/>
+
+        <addUniqueConstraint columnNames="inbox_procedure_id"
+                             constraintName="contact_details_inbox_procedure_id_key"
+                             tableName="contact_details"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="file_external_id_key"
+                             tableName="file"/>
+
+        <addUniqueConstraint columnNames="file_content_id"
+                             constraintName="file_file_content_id_key"
+                             tableName="file"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="inbox_procedure_external_id_key"
+                             tableName="inbox_procedure"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="inbox_progress_entry_external_id_key"
+                             tableName="inbox_progress_entry"/>
+
+        <addUniqueConstraint columnNames="file_id"
+                             constraintName="inbox_progress_entry_file_id_key"
+                             tableName="inbox_progress_entry"/>
+
+        <addUniqueConstraint columnNames="inbox_procedure_id"
+                             constraintName="inbox_progress_entry_inbox_procedure_id_key"
+                             tableName="inbox_progress_entry"/>
+
+        <addUniqueConstraint columnNames="appointment_id"
+                             constraintName="inspection_execution_task_appointment_id_key"
+                             tableName="inspection_execution_task"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="inspection_person_external_id_key"
+                             tableName="inspection_person"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="inspection_related_facility_external_id_key"
+                             tableName="inspection_related_facility"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="inspection_task_external_id_key"
+                             tableName="inspection_task"/>
+
+        <addUniqueConstraint columnNames="inbox_procedure_id"
+                             constraintName="processed_inbox_progress_entry_inbox_procedure_id_key"
+                             tableName="processed_inbox_progress_entry"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="websearch_entry_external_id_key"
+                             tableName="websearch_entry"/>
+
+        <addUniqueConstraint columnNames="contact_details_id"
+                             constraintName="address_contact_details_id_key"
+                             tableName="address"/>
+
+        <addUniqueConstraint columnNames="image_file_id"
+                             constraintName="checklist_image_image_file_id_key"
+                             tableName="checklist_image"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="facility_external_id_key"
+                             tableName="facility"/>
+
+        <addUniqueConstraint columnNames="file_id"
+                             constraintName="file_deletion_approval_request_file_id_key"
+                             tableName="file_deletion_approval_request"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="file_deletion_approval_request_notification_external_id_key"
+                             tableName="file_deletion_approval_request_notification"/>
+
+        <addUniqueConstraint columnNames="appointment_id"
+                             constraintName="inspection_planning_task_appointment_id_key"
+                             tableName="inspection_planning_task"/>
+
+        <addUniqueConstraint columnNames="calendar_event_id"
+                             constraintName="inspection_resource_calendar_event_id_key"
+                             tableName="inspection_resource"/>
+
+        <addUniqueConstraint columnNames="signature_image_id"
+                             constraintName="inspection_signature_signature_image_id_key"
+                             tableName="inspection_signature"/>
+
+        <addUniqueConstraint columnNames="manual_progress_entry_id"
+                             constraintName="manual_progress_entry_deletion_app_manual_progress_entry_id_key"
+                             tableName="manual_progress_entry_deletion_approval_request"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="manual_progress_entry_deletion_approval_request_external_id_key"
+                             tableName="manual_progress_entry_deletion_approval_request_notification"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="media_file_external_id_key"
+                             tableName="media_file"/>
+
+        <addUniqueConstraint columnNames="name" constraintName="objecttype_name_key"
+                             tableName="objecttype"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="progress_entry_external_id_key"
+                             tableName="progress_entry"/>
+
+        <addUniqueConstraint columnNames="file_id"
+                             constraintName="progress_entry_file_id_key"
+                             tableName="progress_entry"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="report_element_answer_external_id_key"
+                             tableName="report_element_answer"/>
+
+        <addUniqueConstraint columnNames="inspection_id"
+                             constraintName="report_inspection_id_key"
+                             tableName="report"/>
+
+        <addUniqueConstraint columnNames="report_file_id"
+                             constraintName="report_report_file_id_key"
+                             tableName="report"/>
+
+        <addUniqueConstraint columnNames="signature_id"
+                             constraintName="report_signature_id_key"
+                             tableName="report"/>
+
+        <addUniqueConstraint columnNames="external_id"
+                             constraintName="simple_notification_external_id_key"
+                             tableName="simple_notification"/>
+
+        <addUniqueConstraint columnNames="name" constraintName="uq_text_block_name"
+                             tableName="text_block"/>
+
+        <createTable tableName="assignment_history_item">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_assignment_history_item"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_id" type="UUID"/>
+            <column name="assigned_by_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignment_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklist_element_checked_option">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_element_checked_option"/>
+            </column>
+            <column name="checked_button_names" type="TEXT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklist_element_checked_option"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="checklistdefinition_objecttype">
+            <column name="checklistdefinition_id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklistdefinition_objecttype"/>
+            </column>
+            <column name="objecttype_id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_checklistdefinition_objecttype"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="default_revision_entity">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_default_revision_entity"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="file_content">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_file_content"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="BYTEA"/>
+        </createTable>
+
+        <createTable tableName="image">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_image"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="image_meta_data">
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_image_meta_data"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="image_meta_data_aud">
+            <column name="image_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <createTable tableName="inspection_appointment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_appointment"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_end" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="appointment_start" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="inspection_inventory">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_inspection_inventory"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="base_inventory_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="booking_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_key" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inspection_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="mail">
+            <column name="removed_invalid_attachments" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_mail"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="mail_meta_data">
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="mail_from" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mail_to" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mail_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_mail_meta_data"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="mail_meta_data_aud">
+            <column name="mail_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="description" type="TEXT"/>
+            <column name="mail_from" type="TEXT"/>
+            <column name="mail_to" type="TEXT"/>
+            <column name="sent_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <createTable tableName="media_file_content">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_media_file_content"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="pdf">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_pdf"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="pdfmeta_data">
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="pdf_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_pdfmeta_data"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="pdfmeta_data_aud">
+            <column name="pdf_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="description" type="TEXT"/>
+            <column name="created_date" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+
+        <createTable tableName="progress_entry_aud">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revtype" type="SMALLINT"/>
+            <column name="external_id" type="UUID"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="modified_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="procedure_id" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="report_element_image">
+            <column name="report_element_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="websearch_entry_tag">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_websearch_entry_tag"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="websearch_entry_tag" type="BIGINT"/>
+        </createTable>
+
+        <createTable tableName="websearch_query">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pk_websearch_query"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="facility_address" type="TEXT"/>
+            <column name="facility_name" type="TEXT"/>
+            <column name="keywords" type="TEXT"/>
+            <column name="query_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="websearch_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="rev, image_id"
+                       constraintName="pk_image_meta_data_aud"
+                       tableName="image_meta_data_aud"/>
+
+        <addPrimaryKey columnNames="rev, mail_id"
+                       constraintName="pk_mail_meta_data_aud"
+                       tableName="mail_meta_data_aud"/>
+
+        <addPrimaryKey columnNames="rev, id"
+                       constraintName="pk_manual_progress_entry_aud"
+                       tableName="manual_progress_entry_aud"/>
+
+        <addPrimaryKey columnNames="rev, pdf_id"
+                       constraintName="pk_pdfmeta_data_aud"
+                       tableName="pdfmeta_data_aud"/>
+
+        <addPrimaryKey columnNames="rev, id" constraintName="pk_progress_entry_aud"
+                       tableName="progress_entry_aud"/>
+
+        <addForeignKeyConstraint baseColumnNames="contact_details_id"
+                                 baseTableName="address"
+                                 constraintName="fk_address_contact_details"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="contact_details"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="task_id"
+                                 baseTableName="assignment_history_item"
+                                 constraintName="fk_assignment_history_item_inspection_task"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_task"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_version_id"
+                                 baseTableName="checklist"
+                                 constraintName="fk_checklist_checklist_definition_version"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition_version"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_definition_section_id"
+                                 baseTableName="checklist_definition_element"
+                                 constraintName="fk_checklist_definition_element_checklist_definition_section"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition_section"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_definition_element_id"
+                                 baseTableName="checklist_definition_field_option"
+                                 constraintName="fk_checklist_definition_field_option_checklist_definition_element"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition_element"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_definition_version_id"
+                                 baseTableName="checklist_definition_section"
+                                 constraintName="fk_checklist_definition_section_checklist_definition_version"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition_version"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_definition_id"
+                                 baseTableName="checklist_definition_version"
+                                 constraintName="fk_checklist_definition_version_checklist_definition"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="checklist_element_checked_option"
+                                 constraintName="fk_checklist_element_checked_option_checklist_element"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_element"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_definition_element_id"
+                                 baseTableName="checklist_element"
+                                 constraintName="fk_checklist_element_checklist_definition_element"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition_element"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_section_id"
+                                 baseTableName="checklist_element"
+                                 constraintName="fk_checklist_element_checklist_section"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_section"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_image_element_id"
+                                 baseTableName="checklist_image"
+                                 constraintName="fk_checklist_image_checklist_element"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_element"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="image_file_id"
+                                 baseTableName="checklist_image"
+                                 constraintName="fk_checklist_image_media_file"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="media_file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inspection_id"
+                                 baseTableName="checklist"
+                                 constraintName="fk_checklist_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_id"
+                                 baseTableName="checklist_section"
+                                 constraintName="fk_checklist_section_checklist"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklist_definition_section_id"
+                                 baseTableName="checklist_section"
+                                 constraintName="fk_checklist_section_checklist_definition_section"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition_section"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="checklistdefinition_id"
+                                 baseTableName="checklistdefinition_objecttype"
+                                 constraintName="fk_checklistdefinition_objecttype_checklist_definition"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="checklist_definition"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="objecttype_id"
+                                 baseTableName="checklistdefinition_objecttype"
+                                 constraintName="fk_checklistdefinition_objecttype_objecttype"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="objecttype" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inbox_procedure_id"
+                                 baseTableName="contact_details"
+                                 constraintName="fk_contact_details_inbox_procedure"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inbox_procedure"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="object_type_id"
+                                 baseTableName="facility"
+                                 constraintName="fk_facility_objecttype"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="objecttype" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="file_deletion_approval_request"
+                                 constraintName="fk_file_deletion_approval_request_approval_request"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="approval_request"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="file_id"
+                                 baseTableName="file_deletion_approval_request"
+                                 constraintName="fk_file_deletion_approval_request_file"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="approval_request_id"
+                                 baseTableName="file_deletion_approval_request_notification"
+                                 constraintName="fk_file_deletion_approval_request_notification_file_deletion_approval_request"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="file_deletion_approval_request"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="file_content_id"
+                                 baseTableName="file"
+                                 constraintName="fk_file_file_content"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="file_content"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="attached_to_mail_id"
+                                 baseTableName="file" constraintName="fk_file_mail"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="mail" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="image"
+                                 constraintName="fk_image_file" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="rev"
+                                 baseTableName="image_meta_data_aud"
+                                 constraintName="fk_image_meta_data_aud_default_revision_entity"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="default_revision_entity"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="image_id"
+                                 baseTableName="image_meta_data"
+                                 constraintName="fk_image_meta_data_image"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="file_id"
+                                 baseTableName="inbox_progress_entry"
+                                 constraintName="fk_inbox_progress_entry_file"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inbox_procedure_id"
+                                 baseTableName="inbox_progress_entry"
+                                 constraintName="fk_inbox_progress_entry_inbox_procedure"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inbox_procedure"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="appointment_id"
+                                 baseTableName="inspection_execution_task"
+                                 constraintName="fk_inspection_execution_task_inspection_appointment"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_appointment"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="inspection_execution_task"
+                                 constraintName="fk_inspection_execution_task_inspection_task"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_task"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="followup_inspection_id"
+                                 baseTableName="inspection"
+                                 constraintName="fk_inspection_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="announcement_id"
+                                 baseTableName="inspection"
+                                 constraintName="fk_inspection_inspection_announcement"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_announcement"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inspection_id"
+                                 baseTableName="inspection_inventory"
+                                 constraintName="fk_inspection_inventory_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="procedure_id"
+                                 baseTableName="inspection_person"
+                                 constraintName="fk_inspection_person_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="appointment_id"
+                                 baseTableName="inspection_planning_task"
+                                 constraintName="fk_inspection_planning_task_inspection_appointment"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_appointment"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="inspection_planning_task"
+                                 constraintName="fk_inspection_planning_task_inspection_task"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_task"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="facility_id"
+                                 baseTableName="inspection_related_facility"
+                                 constraintName="fk_inspection_related_facility_facility"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="facility" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="procedure_id"
+                                 baseTableName="inspection_related_facility"
+                                 constraintName="fk_inspection_related_facility_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="report_id"
+                                 baseTableName="inspection"
+                                 constraintName="fk_inspection_report"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="report" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inspection_id"
+                                 baseTableName="inspection_resource"
+                                 constraintName="fk_inspection_resource_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="signature_image_id"
+                                 baseTableName="inspection_signature"
+                                 constraintName="fk_inspection_signature_media_file"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="media_file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="procedure_id"
+                                 baseTableName="inspection_task"
+                                 constraintName="fk_inspection_task_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="mail"
+                                 constraintName="fk_mail_file" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="rev"
+                                 baseTableName="mail_meta_data_aud"
+                                 constraintName="fk_mail_meta_data_aud_default_revision_entity"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="default_revision_entity"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="mail_id"
+                                 baseTableName="mail_meta_data"
+                                 constraintName="fk_mail_meta_data_mail"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="mail" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="rev,id"
+                                 baseTableName="manual_progress_entry_aud"
+                                 constraintName="fk_manual_progress_entry_aud_progress_entry_aud"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="rev,id"
+                                 referencedTableName="progress_entry_aud"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="manual_progress_entry_deletion_approval_request"
+                                 constraintName="fk_manual_progress_entry_deletion_approval_request_approval_request"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="approval_request"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="manual_progress_entry_id"
+                                 baseTableName="manual_progress_entry_deletion_approval_request"
+                                 constraintName="fk_manual_progress_entry_deletion_approval_request_manual_progress_entry"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="manual_progress_entry"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="approval_request_id"
+                                 baseTableName="manual_progress_entry_deletion_approval_request_notification"
+                                 constraintName="fk_manual_progress_entry_deletion_approval_request_notification_manual_progress_entry_deletion_approval_request"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="manual_progress_entry_deletion_approval_request"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="manual_progress_entry"
+                                 constraintName="fk_manual_progress_entry_progress_entry"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="progress_entry"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="file_content_id"
+                                 baseTableName="media_file"
+                                 constraintName="fk_media_file_media_file_content"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="media_file_content"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="pdf"
+                                 constraintName="fk_pdf_file" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="rev"
+                                 baseTableName="pdfmeta_data_aud"
+                                 constraintName="fk_pdfmeta_data_aud_default_revision_entity"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="default_revision_entity"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="pdf_id"
+                                 baseTableName="pdfmeta_data"
+                                 constraintName="fk_pdfmeta_data_pdf"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="pdf" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inbox_procedure_id"
+                                 baseTableName="processed_inbox_progress_entry"
+                                 constraintName="fk_processed_inbox_progress_entry_inbox_procedure"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inbox_procedure"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="processed_inbox_progress_entry"
+                                 constraintName="fk_processed_inbox_progress_entry_progress_entry"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="progress_entry"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="rev"
+                                 baseTableName="progress_entry_aud"
+                                 constraintName="fk_progress_entry_aud_default_revision_entity"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="default_revision_entity"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="file_id"
+                                 baseTableName="progress_entry"
+                                 constraintName="fk_progress_entry_file"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="file" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="procedure_id"
+                                 baseTableName="progress_entry"
+                                 constraintName="fk_progress_entry_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="answer_id"
+                                 baseTableName="report_element_answer"
+                                 constraintName="fk_report_element_answer_report_element"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="report_element"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="report_element_id"
+                                 baseTableName="report_element_image"
+                                 constraintName="fk_report_element_image_report_element"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="report_element"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="report_id"
+                                 baseTableName="report_element"
+                                 constraintName="fk_report_element_report"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="report" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="inspection_id"
+                                 baseTableName="report"
+                                 constraintName="fk_report_inspection"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="signature_id"
+                                 baseTableName="report"
+                                 constraintName="fk_report_inspection_signature"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="inspection_signature"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="report_file_id"
+                                 baseTableName="report"
+                                 constraintName="fk_report_pdf" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="pdf" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="system_progress_entry"
+                                 constraintName="fk_system_progress_entry_progress_entry"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="progress_entry"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="websearch_entry_tag"
+                                 baseTableName="websearch_entry_tag"
+                                 constraintName="fk_websearch_entry_tag_websearch_entry"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="websearch_entry"
+                                 validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="websearch_id"
+                                 baseTableName="websearch_entry"
+                                 constraintName="fk_websearch_entry_websearch"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="websearch" validate="true"/>
+
+        <addForeignKeyConstraint baseColumnNames="websearch_id"
+                                 baseTableName="websearch_query"
+                                 constraintName="fk_websearch_query_websearch"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="websearch" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
