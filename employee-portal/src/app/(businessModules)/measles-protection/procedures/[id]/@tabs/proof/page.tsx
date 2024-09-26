@@ -13,7 +13,7 @@ export default function MeaslesProtectionProcedureDataProofTab({
 }>) {
   return (
     <ProceduresProvider>
-      <ProofTab id={params.id} />
+      <ProofTab procedureId={params.id} />
     </ProceduresProvider>
   );
 }

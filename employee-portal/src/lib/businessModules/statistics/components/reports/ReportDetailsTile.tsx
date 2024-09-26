@@ -49,11 +49,7 @@ function getActionItems(
   seriesId: string,
   description: string | undefined,
   updateReport: (report: UpdateReportSidebarReportInfo) => void,
-  deleteReportWithConfirmation: (
-    reportId: string,
-    name: string,
-    redirectRoute: string,
-  ) => void,
+  deleteReportWithConfirmation: (reportId: string, name: string) => void,
 ) {
   // Uncomment in https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
   // const rememberReport = {
@@ -85,8 +81,7 @@ function getActionItems(
     },
     {
       label: "Report löschen",
-      onClick: () =>
-        deleteReportWithConfirmation(seriesId, name, routes.reports.index),
+      onClick: () => deleteReportWithConfirmation(seriesId, name),
       startDecorator: <Delete />,
       color: "danger",
     },
@@ -103,7 +98,9 @@ function getActionItems(
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
   const [openUpdateReportSidebar, setOpenUpdateReportSidebar] =
     useState<UpdateReportSidebarReportInfo | null>(null);
-  const deleteReportWithConfirmation = useDeleteReportWithConfirmation();
+  const deleteReportWithConfirmation = useDeleteReportWithConfirmation({
+    redirectRoute: routes.reports.index,
+  });
 
   function updateReport(report: UpdateReportSidebarReportInfo) {
     setOpenUpdateReportSidebar({ ...report });

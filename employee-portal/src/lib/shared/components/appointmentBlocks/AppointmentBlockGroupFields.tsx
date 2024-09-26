@@ -28,7 +28,7 @@ export interface AppointmentBlockGroupFieldsProps {
   appointmentBlocks?: AppointmentBlockValues[];
   appointmentBlocksWithDays?: AppointmentBlockGroupValuesWithDays[];
   options: SelectOption[];
-  showParallelExaminations: boolean;
+  showParallelExaminations?: boolean;
   showAppointmentBlockFieldArrayWithDays: boolean;
 }
 

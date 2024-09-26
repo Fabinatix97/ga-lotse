@@ -146,6 +146,30 @@ paths:
       tags:
       - AuditLog
   /auditlog/grant-access:
+    get:
+      operationId: getAuditLogGrantedAccesses
+      parameters:
+      - in: query
+        name: source
+        required: true
+        schema:
+          $ref: "#/components/schemas/AuditLogSource"
+      - in: query
+        name: date
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAuditLogGrantedAccessesResponse"
+          description: OK
+      summary: List all granted accesses of audit log.
+      tags:
+      - AuditLog
     post:
       operationId: grantAuditLogAccess
       requestBody:
@@ -161,9 +185,9 @@ paths:
         a certain user.
       tags:
       - AuditLog
-  /auditlog/grantees:
+  /auditlog/grantees-candidates:
     get:
-      operationId: getValidAuditLogGrantees
+      operationId: getAuditLogGranteesCandidates
       parameters:
       - in: query
         name: source
@@ -211,6 +235,18 @@ paths:
       summary: Get user specific asymmetrically encrypted symmetric key.
       tags:
       - AuditLog
+  /feature-toggles:
+    get:
+      operationId: getFeatureToggles
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAuditLogFeatureTogglesResponse"
+          description: OK
+      tags:
+      - AuditLogFeatureToggles
   /test-helper/archiving-job:
     post:
       operationId: runArchivingJob
@@ -218,7 +254,7 @@ paths:
         "200":
           description: OK
       tags:
-      - AuditLogTestHelper
+      - TestHelper
   /test-helper/audit-log-storage:
     delete:
       operationId: clearAuditLogStorageDirectory
@@ -226,7 +262,21 @@ paths:
         "200":
           description: OK
       tags:
-      - AuditLogTestHelper
+      - TestHelper
+  /test-helper/enabled-new-features/{featureToEnable}:
+    post:
+      operationId: enableNewFeature
+      parameters:
+      - in: path
+        name: featureToEnable
+        required: true
+        schema:
+          $ref: "#/components/schemas/AuditLogFeature"
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -393,7 +443,11 @@ components:
       required:
       - date
       - source
-    AuditLogGrantedAccessDto:
+    AuditLogFeature:
+      type: string
+      enum:
+      - AUDIT_LOG_ACCESSIBLE_TABLE
+    AuditLogGrantedAccessCount:
       type: object
       properties:
         auditLog:
@@ -432,13 +486,43 @@ components:
             $ref: "#/components/schemas/AccessibleAuditLog"
       required:
       - accessibleAuditLogs
+    GetAuditLogFeatureTogglesResponse:
+      type: object
+      properties:
+        disabledOldFeatures:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditLogFeature"
+          uniqueItems: true
+        enabledNewFeatures:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditLogFeature"
+          uniqueItems: true
+      required:
+      - disabledOldFeatures
+      - enabledNewFeatures
+    GetAuditLogGrantedAccessesResponse:
+      type: object
+      properties:
+        grantedAccesses:
+          type: array
+          items:
+            $ref: "#/components/schemas/GrantedAccess"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+      required:
+      - grantedAccesses
+      - resolvedUsers
     GetAvailableAuditLogsResponse:
       type: object
       properties:
         logs:
           type: array
           items:
-            $ref: "#/components/schemas/AuditLogGrantedAccessDto"
+            $ref: "#/components/schemas/AuditLogGrantedAccessCount"
         totalElements:
           type: integer
           format: int64
@@ -492,6 +576,18 @@ components:
       - date
       - idsOfGrantedUser
       - source
+    GrantedAccess:
+      type: object
+      properties:
+        expiresAt:
+          type: string
+          format: date-time
+        idOfGrantedUser:
+          type: string
+          format: uuid
+      required:
+      - expiresAt
+      - idOfGrantedUser
     HttpMethod:
       type: string
       enum:

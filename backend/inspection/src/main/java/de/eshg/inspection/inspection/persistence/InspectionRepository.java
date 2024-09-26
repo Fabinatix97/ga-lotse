@@ -32,6 +32,21 @@ public interface InspectionRepository extends ProcedureRepository<Inspection> {
               """)
   Inspection findNewestOpenInspectionForFacility(Facility facility);
 
+  @Query(
+      """
+              select i
+              from Inspection i
+              join InspectionRelatedFacility irf on irf.procedure = i
+              join Facility f on f = irf.facility
+              where f = :facility
+              and i.procedureStatus in (
+                de.eshg.lib.procedure.domain.model.ProcedureStatus.CLOSED
+              )
+              order by i.modifiedAt desc
+              limit 1
+              """)
+  Inspection findNewestClosedInspectionForFacility(Facility facility);
+
   @Query("select i from Inspection i where i.report.id = :reportId")
   Optional<Inspection> findByReportId(UUID reportId);
 

@@ -4,10 +4,10 @@
  */
 
 import { useAddReport } from "@/lib/businessModules/statistics/api/mutations/useAddReport";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
 import { SaveReportStep } from "@/lib/businessModules/statistics/components/statistics/details/reports/AddReportSidebar/SaveReportStep";
 import { AddReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/AddReportSidebar/addReportFormModel";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/statistics/timeRangeHelper";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 
 export function AddReportSidebar({
   onClose,

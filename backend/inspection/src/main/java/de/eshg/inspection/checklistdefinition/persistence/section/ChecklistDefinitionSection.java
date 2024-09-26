@@ -38,7 +38,7 @@ public class ChecklistDefinitionSection extends GloballyUniqueEntityBase {
   @OneToMany(
       fetch = FetchType.LAZY,
       mappedBy = ChecklistDefinitionElement_.CHECKLIST_DEFINITION_SECTION,
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy(ChecklistDefinitionElement_.POSITION)
   @DataSensitivity(SensitivityLevel.PUBLIC)

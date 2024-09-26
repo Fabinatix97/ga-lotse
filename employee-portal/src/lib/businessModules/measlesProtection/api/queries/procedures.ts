@@ -5,8 +5,8 @@
 
 "use client";
 
-import { type ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { ProtectionProcedureApi } from "@eshg/employee-portal-api/measlesProtection";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useProtectionProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ProceduresTableFilters";
@@ -14,9 +14,8 @@ import { ProcedureFilters } from "@/lib/businessModules/measlesProtection/compon
 import { measlesProtectionApiQueryKey } from "./apiQueryKeys";
 
 function mapTableFieldToSortField(sortBy?: string) {
-  if (!sortBy) {
-    return;
-  }
+  if (!sortBy) return;
+
   switch (sortBy) {
     case "id":
       throw Error("Not implemented");
@@ -36,8 +35,9 @@ function mapTableFieldToSortField(sortBy?: string) {
       return "PROCEDURE_STATUS";
     case "caseStatus":
       return "CASE_STATUS";
+    default:
+      throw Error(`Unexpected sort field: ${sortBy}`);
   }
-  throw Error(`Unexpected sort field: ${sortBy}`);
 }
 
 interface PageRequest {
@@ -46,14 +46,35 @@ interface PageRequest {
   sortBy?: string;
   sortOrder?: string;
 }
+
+export function getProcedureQuery(
+  protectionProcedureApi: ProtectionProcedureApi,
+  procedureId: string,
+) {
+  return queryOptions({
+    queryFn: ({ signal }) =>
+      protectionProcedureApi.getProcedure(procedureId, { signal }),
+    queryKey: measlesProtectionApiQueryKey(["procedures", procedureId]),
+  });
+}
+
+export function useProcedureQuery(procedureId: string) {
+  const protectionProcedureApi = useProtectionProcedureApi();
+
+  return useSuspenseQuery(
+    getProcedureQuery(protectionProcedureApi, procedureId),
+  );
+}
+
 export function useProceduresQuery(
   page: PageRequest,
   filters: ProcedureFilters,
 ) {
-  const measlesProtectionApi = useProtectionProcedureApi();
+  const protectionProcedureApi = useProtectionProcedureApi();
+
   return useSuspenseQuery({
     queryFn: ({ signal }) =>
-      measlesProtectionApi.getProcedures(
+      protectionProcedureApi.getProcedures(
         page.pageNumber,
         page.pageSize,
         mapTableFieldToSortField(page.sortBy),
@@ -87,31 +108,8 @@ function makeFiltersQueryKeyPart(filters: ProcedureFilters) {
       if (value instanceof Set) {
         return [key, Array.from(value).join(",")];
       }
+
       return [key, value];
     }),
   );
-}
-
-export function useProcedureQuery(procedureId: string) {
-  const measlesProtectionApi = useProtectionProcedureApi();
-  return useSuspenseQuery({
-    queryFn: ({ signal }) =>
-      measlesProtectionApi.getProcedure(procedureId, { signal }),
-    queryKey: measlesProtectionApiQueryKey(["procedures", procedureId]),
-  });
-}
-
-export function useProceduresForPersonQuery(
-  person: ApiGetReferencePersonResponse,
-) {
-  const measlesProtectionApi = useProtectionProcedureApi();
-  return useSuspenseQuery({
-    queryFn: async ({ signal }) =>
-      measlesProtectionApi.getProceduresForPerson({ person }, { signal }),
-    queryKey: measlesProtectionApiQueryKey([
-      "procedures",
-      "for-person",
-      person,
-    ]),
-  });
 }

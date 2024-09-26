@@ -8,7 +8,9 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 
 import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
 
-export function useDeleteReport() {
+export function useDeleteReport({
+  onSuccess,
+}: { onSuccess?: () => void } = {}) {
   const snackbar = useSnackbar();
   const api = useReportSeriesApi();
   const mutation = useHandledMutation({
@@ -17,6 +19,6 @@ export function useDeleteReport() {
   });
 
   return (reportId: string) => {
-    return mutation.mutate(reportId);
+    return mutation.mutate(reportId, { onSuccess });
   };
 }

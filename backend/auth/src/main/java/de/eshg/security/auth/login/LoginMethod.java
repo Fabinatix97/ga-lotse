@@ -37,7 +37,21 @@ public abstract class LoginMethod {
       return false;
     }
     String urlPath = UriComponentsBuilder.fromUriString(url).build().getPath();
-    return urlPath != null
-        && patterns.stream().anyMatch(pattern -> antPathMatcher.match(pattern, urlPath));
+    String normalizedUrlPath = replaceLanguagePathPrefix(urlPath);
+    return normalizedUrlPath != null
+        && patterns.stream().anyMatch(pattern -> antPathMatcher.match(pattern, normalizedUrlPath));
+  }
+
+  private String replaceLanguagePathPrefix(String url) {
+    List<String> languagePathPrefixes = authProperties.getLanguagePathPrefixes();
+    if (languagePathPrefixes == null) {
+      return url;
+    }
+    for (String languagePathPrefix : languagePathPrefixes) {
+      if (url.startsWith(languagePathPrefix + "/")) {
+        return url.substring(languagePathPrefix.length());
+      }
+    }
+    return url;
   }
 }

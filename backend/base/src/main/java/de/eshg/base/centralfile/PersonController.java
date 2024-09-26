@@ -69,15 +69,13 @@ public class PersonController implements PersonApi {
 
   @Override
   @Transactional
-  public GetPersonFileStatesResponse addPersonFileStates(AddPersonFileStatesRequest request) {
+  public AddPersonFileStatesResponse addPersonFileStates(AddPersonFileStatesRequest request) {
     List<Person> personsToAdd =
         request.persons().stream().map(PersonMapper::mapPersonToDm).toList();
 
-    List<Person> savedPersonFileStates = personService.addPersonFileStates(personsToAdd);
+    List<UUID> personFileStateIds = personService.addPersonFileStates(personsToAdd);
 
-    return new GetPersonFileStatesResponse(
-        savedPersonFileStates.stream().map(PersonMapper::mapPersonFileStateToApi).toList(),
-        List.of());
+    return new AddPersonFileStatesResponse(personFileStateIds);
   }
 
   @Override

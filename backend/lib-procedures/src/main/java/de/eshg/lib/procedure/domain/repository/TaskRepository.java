@@ -10,6 +10,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.model.TaskDueAtReminderNotification;
 import de.eshg.lib.procedure.domain.model.TaskType;
+import jakarta.persistence.LockModeType;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +30,10 @@ public interface TaskRepository<TaskT extends Task<? extends Procedure<?, TaskT,
     extends JpaRepository<TaskT, Long>, JpaSpecificationExecutor<TaskT> {
 
   Optional<TaskT> findByExternalId(UUID externalId);
+
+  @Query("SELECT task FROM #{#entityName} task WHERE task.externalId = :externalId")
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  Optional<TaskT> findByExternalIdForUpdate(@Param("externalId") UUID externalId);
 
   @Query(
       """

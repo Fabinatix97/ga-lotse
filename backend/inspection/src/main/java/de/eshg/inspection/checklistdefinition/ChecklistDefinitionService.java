@@ -5,17 +5,17 @@
 
 package de.eshg.inspection.checklistdefinition;
 
+import static de.eshg.inspection.checklistdefinition.mapper.ChecklistDefinitionEntityMapper.getLatestVersion;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.INSPECTION_CORECHECKLISTDEFINITIONS_EDIT;
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 import static de.eshg.rest.service.security.CurrentUserHelper.currentUserHasNoRole;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 import de.eshg.base.user.api.UserDto;
-import de.eshg.inspection.checklistdefinition.api.AddChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionDto;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionDto;
+import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionsResponse;
 import de.eshg.inspection.checklistdefinition.api.CreateNewChecklistDefinitionRequest;
 import de.eshg.inspection.checklistdefinition.mapper.ChecklistDefinitionDtoMapper;
@@ -28,9 +28,9 @@ import de.eshg.inspection.client.UserClient;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Clock;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -65,7 +65,9 @@ public class ChecklistDefinitionService {
         checklistDefinitionRepository.findAll().stream()
             .sorted(
                 (cld1, cld2) -> {
-                  int deletedComparison = Boolean.compare(cld1.isDeleted(), cld2.isDeleted());
+                  int deletedComparison =
+                      Boolean.compare(
+                          getLatestVersion(cld1).isDeleted(), getLatestVersion(cld2).isDeleted());
                   if (deletedComparison != 0) {
                     return deletedComparison;
                   }
@@ -129,7 +131,7 @@ public class ChecklistDefinitionService {
   }
 
   ChecklistDefinitionDto saveNewChecklistDefinition(CreateNewChecklistDefinitionRequest request) {
-    ChecklistDefinition entity = mapper.entityFrom(request);
+    ChecklistDefinition entity = mapper.newEntityFrom(request);
     ChecklistDefinition saved = checklistDefinitionRepository.saveAndFlush(entity);
     Map<UUID, UserDto> users;
     try {
@@ -143,12 +145,68 @@ public class ChecklistDefinitionService {
   }
 
   public ChecklistDefinitionVersionDto addChecklistDefinitionVersion(
-      UUID id, AddChecklistDefinitionVersionRequest request) {
+      UUID defId, ChecklistDefinitionVersionRequest request) {
     ChecklistDefinition dbDefinition =
         checklistDefinitionRepository
-            .findById(id)
+            .findById(defId)
             .orElseThrow(() -> new NotFoundException("ChecklistDefinition"));
 
+    checkUserRightsForCldVersionRequest(dbDefinition, request);
+    if (!getLatestVersion(dbDefinition).isPublished()) {
+      throw new BadRequestException(
+          "Can not create a new version if an existing unpublished version exists.");
+    }
+
+    return saveNewChecklistDefinitionVersion(request, dbDefinition);
+  }
+
+  public ChecklistDefinitionVersionDto editDraftChecklistDefinitionVersion(
+      UUID versionId, ChecklistDefinitionVersionRequest request) {
+    ChecklistDefinitionVersion dbVersion =
+        checklistDefinitionVersionRepository
+            .findById(versionId)
+            .orElseThrow(() -> new NotFoundException("ChecklistDefinitionVersion"));
+    ChecklistDefinition dbDefinition = dbVersion.getChecklistDefinition();
+
+    if (dbVersion.isPublished()) {
+      throw new BadRequestException(
+          "This version can not be edited, because it is already published.");
+    } else if (dbVersion.getId() != getLatestVersion(dbDefinition).getId()) {
+      throw new IllegalStateException(
+          "This version can not be edited, because it is not the newest draft version.");
+    }
+
+    checkUserRightsForCldVersionRequest(dbDefinition, request);
+
+    ChecklistDefinitionVersion editedVersionEntity = mapper.editEntityFrom(request, dbVersion);
+
+    ChecklistDefinitionVersion savedVersion =
+        checklistDefinitionVersionRepository.save(editedVersionEntity);
+
+    return ChecklistDefinitionDtoMapper.dtoFrom(
+        savedVersion, userClient.getUserById(savedVersion.getModifiedBy()));
+  }
+
+  ChecklistDefinitionVersionDto saveNewChecklistDefinitionVersion(
+      ChecklistDefinitionVersionRequest request, ChecklistDefinition dbDefinition) {
+    ChecklistDefinitionVersion latestVersion = getLatestVersion(dbDefinition);
+
+    if (Optional.ofNullable(request.published()).orElse(true)) {
+      latestVersion.setValidTo(clock.instant());
+    }
+
+    ChecklistDefinitionVersion newVersionEntity =
+        mapper.newEntityFrom(request, dbDefinition, latestVersion.getVersion() + 1);
+
+    ChecklistDefinitionVersion savedVersion =
+        checklistDefinitionVersionRepository.save(newVersionEntity);
+
+    return ChecklistDefinitionDtoMapper.dtoFrom(
+        savedVersion, userClient.getUserById(savedVersion.getModifiedBy()));
+  }
+
+  private static void checkUserRightsForCldVersionRequest(
+      ChecklistDefinition dbDefinition, ChecklistDefinitionVersionRequest request) {
     // check if user tried to modify a core checklist but has no rights for that
     if (dbDefinition.isCoreChecklist() && mayNotEditCoreChecklists()) {
       throw new BadRequestException(INSUFFICIENT_USER_RIGHTS, "no rights to edit core checklists");
@@ -165,25 +223,6 @@ public class ChecklistDefinitionService {
             "setting a version to non-expandable is only allowed for core checklists");
       }
     }
-
-    return saveNewChecklistDefinitionVersion(request, dbDefinition);
-  }
-
-  ChecklistDefinitionVersionDto saveNewChecklistDefinitionVersion(
-      AddChecklistDefinitionVersionRequest request, ChecklistDefinition dbDefinition) {
-    // versions are sorted by ascending version number, so the last element has the highest version
-    ChecklistDefinitionVersion latestVersion = dbDefinition.getVersions().getLast();
-
-    latestVersion.setValidTo(Instant.now(clock).truncatedTo(SECONDS));
-
-    ChecklistDefinitionVersion newVersionEntity =
-        mapper.entityFrom(request, dbDefinition, latestVersion.getVersion() + 1);
-
-    ChecklistDefinitionVersion savedVersion =
-        checklistDefinitionVersionRepository.save(newVersionEntity);
-
-    return ChecklistDefinitionDtoMapper.dtoFrom(
-        savedVersion, userClient.getUserById(savedVersion.getModifiedBy()));
   }
 
   private static boolean mayNotEditCoreChecklists() {

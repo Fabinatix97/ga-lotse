@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { GetSelfEventsRequest } from "@eshg/employee-portal-api/base";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
@@ -24,8 +26,17 @@ export function useGetUsersByGroupQuery(
   groupName: string,
   getInitOverrides?: (inspectionId?: string) => RequestInit,
 ) {
+  return useSuspenseQuery(
+    useGetUsersByGroupQueryOptions(groupName, getInitOverrides),
+  );
+}
+
+export function useGetUsersByGroupQueryOptions(
+  groupName: string,
+  getInitOverrides?: (inspectionId?: string) => RequestInit,
+) {
   const usersApi = useUserApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: userApiQueryKey(["getUsersByGroup", groupName]),
     queryFn: () => usersApi.getUsersByGroup(groupName, getInitOverrides?.()),
   });
@@ -110,5 +121,13 @@ export function useGetSelfActiveSessions() {
   return useSuspenseQuery({
     queryKey: userApiQueryKey(["getSelfActiveSessions"]),
     queryFn: () => userApi.getSelfActiveSessions(),
+  });
+}
+
+export function useGetSelfUserEvents(request: GetSelfEventsRequest) {
+  const userApi = useUserApi();
+  return useSuspenseQuery({
+    queryKey: userApiQueryKey(["getSelfUserEvents", request]),
+    queryFn: () => userApi.getSelfEventsRaw(request).then(unwrapRawResponse),
   });
 }

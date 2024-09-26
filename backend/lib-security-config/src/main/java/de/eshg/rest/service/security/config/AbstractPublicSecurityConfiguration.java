@@ -76,12 +76,18 @@ public abstract class AbstractPublicSecurityConfiguration {
     }
   }
 
-  protected void grantAccessToLibAppointmentBlockUrls(PermissionRole permissionRole) {
+  protected void grantAccessToLibAppointmentBlockUrls(
+      PermissionRole permissionRole, boolean allowUpdateAppointmentType) {
     requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
         .hasRole(permissionRole);
 
-    requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-        .hasRole(permissionRole);
+    if (allowUpdateAppointmentType) {
+      requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
+          .hasRole(permissionRole);
+    } else {
+      requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
+          .hasRole(permissionRole);
+    }
   }
 
   protected void grantAccessToLibProceduresUrls(

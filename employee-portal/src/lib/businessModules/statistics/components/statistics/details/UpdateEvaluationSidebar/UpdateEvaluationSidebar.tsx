@@ -4,10 +4,10 @@
  */
 
 import { useUpdateEvaluation } from "@/lib/businessModules/statistics/api/mutations/useUpdateEvaluation";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/sidebarStep";
 import { SaveEvaluationStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/SaveEvaluationStep/SaveEvaluationStep";
 import { UpdateEvaluationFormModel } from "@/lib/businessModules/statistics/components/statistics/details/UpdateEvaluationSidebar/updateEvaluationFormModel";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
 export function UpdateEvaluationSidebar(props: {
   open: boolean;

@@ -9,16 +9,22 @@ import {
   ApiMeaslesProtectionFeature,
   ApiMeaslesProtectionProcedure,
   ApiMonetaryFine,
+  ApiProofRequestLetter,
   ApiProofSubmission,
   ApiSubmissionResult,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import { Button, Grid, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
+import {
+  useProofRequestLetterApi,
+  useProtectionProcedureApi,
+} from "@/lib/businessModules/measlesProtection/api/clients";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/measlesProtection/api/queries/featureTogglesApi";
-import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
-import { useProofRequestLettersQuery } from "@/lib/businessModules/measlesProtection/api/queries/proofRequestLetters";
+import { getProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
+import { getProofRequestLettersQuery } from "@/lib/businessModules/measlesProtection/api/queries/proofRequestLetters";
 import { submissionResultLabels } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { AccessRestrictionLetterSidebar } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/AccessRestrictionLetterSidebar";
 import {
@@ -45,7 +51,7 @@ import { AppointmentCard } from "./proof/AppointmentCard";
 import { ProofTabEntry } from "./proof/ProofTabEntry";
 import { ProofTabFileCard } from "./proof/ProofTabFileCard";
 
-export function ProofTab({ id }: Readonly<{ id: string }>) {
+export function ProofTab({ procedureId }: Readonly<{ procedureId: string }>) {
   const [_openProof, setOpenProof] = useSearchParam("add-proof", "boolean");
   const [_openFine, setOpenFine] = useSearchParam("add-fine", "boolean");
   const [_openAccessRestriction, setOpenAccessRestriction] = useSearchParam(
@@ -58,7 +64,19 @@ export function ProofTab({ id }: Readonly<{ id: string }>) {
     "add-proof-request-letter",
     "boolean",
   );
-  const procedure = useProcedureQuery(id).data;
+  const protectionProcedureApi = useProtectionProcedureApi();
+  const proofRequestLetterApi = useProofRequestLetterApi();
+  const [
+    { data: procedure },
+    {
+      data: { letters },
+    },
+  ] = useSuspenseQueries({
+    queries: [
+      getProcedureQuery(protectionProcedureApi, procedureId),
+      getProofRequestLettersQuery(proofRequestLetterApi, procedureId),
+    ],
+  });
   const isEditAccessRestrictionEnabled = useIsNewFeatureEnabled(
     ApiMeaslesProtectionFeature.EditAccessRestriction,
   );
@@ -78,7 +96,7 @@ export function ProofTab({ id }: Readonly<{ id: string }>) {
           <AppointmentCard
             appointment={appointment}
             procedureClosed={procedureClosed}
-            procedureId={id}
+            procedureId={procedureId}
           />
         </Grid>
 
@@ -110,8 +128,9 @@ export function ProofTab({ id }: Readonly<{ id: string }>) {
         <Grid xxs={12} lg={6}>
           <ProofRequestLetterCard
             procedure={procedure}
-            onClick={() => setOpenProofRequestLetter(true)}
             procedureClosed={procedureClosed}
+            proofSubmissionLetters={letters}
+            onClick={() => setOpenProofRequestLetter(true)}
           />
         </Grid>
       </Grid>
@@ -119,16 +138,16 @@ export function ProofTab({ id }: Readonly<{ id: string }>) {
       <Grid xxs={12} lg={6} xxl={3}>
         <AdditionalInfoSection procedure={procedure} />
       </Grid>
-      <AddAppointmentSidebar id={id} />
-      <EditAppointmentSidebar id={id} />
-      <ProofSidebar id={id} />
-      <FineSidebar id={id} />
-      <AccessRestrictionSidebar id={id} />
-      <AccessRestrictionLetterSidebar id={id} />
+      <AddAppointmentSidebar id={procedureId} />
+      <EditAppointmentSidebar id={procedureId} />
+      <ProofSidebar id={procedureId} />
+      <FineSidebar id={procedureId} />
+      <AccessRestrictionSidebar id={procedureId} />
+      <AccessRestrictionLetterSidebar id={procedureId} />
       {isEditAccessRestrictionEnabled && (
         <EditAccessRestrictionSidebar procedure={procedure} />
       )}
-      <ProofRequestLetterSidebar id={id} />
+      <ProofRequestLetterSidebar id={procedureId} />
     </Grid>
   );
 }
@@ -225,19 +244,18 @@ function FineCard({
 }
 
 interface ProofRequestLetterCardProps {
-  procedure: ApiMeaslesProtectionProcedure;
   onClick: () => void;
+  procedure: ApiMeaslesProtectionProcedure;
   procedureClosed: boolean;
+  proofSubmissionLetters: ApiProofRequestLetter[];
 }
 
 function ProofRequestLetterCard({
-  procedure,
   onClick,
+  procedure,
   procedureClosed,
+  proofSubmissionLetters,
 }: Readonly<ProofRequestLetterCardProps>) {
-  const proofSubmissionLetters =
-    useProofRequestLettersQuery(procedure.id).data.letters ?? [];
-
   return (
     <DetailCard
       title={"Anschreiben Nachweisvorlage"}

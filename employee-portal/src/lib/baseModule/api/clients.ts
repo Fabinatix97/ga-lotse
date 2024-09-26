@@ -21,6 +21,7 @@ import {
   ResourceApi,
   StreetApi,
   TaskAggregationApi,
+  TaskMetricsApi,
   UserApi,
 } from "@eshg/employee-portal-api/base";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
@@ -100,6 +101,11 @@ export function useUserApi() {
 export function useProcedureAggregationApi() {
   const configuration = useConfiguration();
   return new ProcedureAggregationApi(configuration);
+}
+
+export function useTaskMetricsApi() {
+  const configuration = useConfiguration();
+  return new TaskMetricsApi(configuration);
 }
 
 export function useNotificationAggregationApi() {

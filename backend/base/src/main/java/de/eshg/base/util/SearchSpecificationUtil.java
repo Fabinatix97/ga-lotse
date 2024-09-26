@@ -7,7 +7,6 @@ package de.eshg.base.util;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -57,11 +56,11 @@ public class SearchSpecificationUtil {
   }
 
   public static Expression<Double> similarity(
-      CriteriaBuilder builder, String queryWord, Path<String> pathToAttribute) {
+      CriteriaBuilder builder, String queryWord, Expression<String> expression) {
     return builder.function(
         "similarity",
         Double.class,
-        normalizeText(builder, pathToAttribute),
+        normalizeText(builder, expression),
         normalizeText(builder, builder.literal(queryWord)));
   }
 
@@ -69,6 +68,13 @@ public class SearchSpecificationUtil {
       CriteriaBuilder cb, Expression<String> lhs, Expression<String> rhs) {
     return cb.function(
         "sql", Boolean.class, cb.literal("? % ?"), normalizeText(cb, lhs), normalizeText(cb, rhs));
+  }
+
+  @SafeVarargs
+  @SuppressWarnings("varargs")
+  public static Expression<String> concatWithSeparator(
+      CriteriaBuilder cb, Expression<String>... expressions) {
+    return cb.function("immutable_concat_strings_ws", String.class, expressions);
   }
 
   /**

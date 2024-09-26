@@ -5,15 +5,7 @@
 
 "use client";
 
-import {
-  Accessibility,
-  Email,
-  Handshake,
-  History,
-  Info,
-  Lock,
-  ThumbUp,
-} from "@mui/icons-material";
+import { Email, History, ThumbUp } from "@mui/icons-material";
 import {
   List,
   ListItem,
@@ -55,10 +47,6 @@ function LegalLink({
 export function LegalLinkList() {
   return (
     <List sx={{ width: "max-content", flexGrow: 0 }}>
-      <LegalLink category="imprint" startDecorator={<Info />} />
-      <LegalLink category="termsOfUse" startDecorator={<Handshake />} />
-      <LegalLink category="accessibility" startDecorator={<Accessibility />} />
-      <LegalLink category="privacy" startDecorator={<Lock />} />
       <LegalLink category="acknowledgements" startDecorator={<ThumbUp />} />
       <LegalLink category="contact" startDecorator={<Email />} />
       <LegalLink category="releaseNotes" startDecorator={<History />} />

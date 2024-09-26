@@ -20,3 +20,7 @@ export const BOLD_LABEL_STYLE = {
     fontWeight: "bold",
   },
 };
+
+export const BOOLEAN_WITH_UNKNOWN_STYLE: SxProps = {
+  ".MuiSelect-root": { width: "145px" },
+};

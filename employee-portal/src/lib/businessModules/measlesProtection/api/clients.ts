@@ -9,6 +9,7 @@ import {
   AppointmentBookingApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
+  ArchivingApi,
   Configuration,
   DraftProtectionProcedureApi,
   FileApi,
@@ -108,4 +109,9 @@ export function useStatusTransitionApi() {
 export function useApprovalRequestApi() {
   const configuration = useConfiguration();
   return new ApprovalRequestApi(configuration);
+}
+
+export function useArchivingApi() {
+  const configuration = useConfiguration();
+  return new ArchivingApi(configuration);
 }

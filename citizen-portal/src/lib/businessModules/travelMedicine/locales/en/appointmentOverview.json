@@ -1,0 +1,27 @@
+{
+  "header": {
+    "title": "Termine",
+    "logout": "Mein Bereich verlassen"
+  },
+  "typeSwitchButtons": {
+    "upcoming": "Anstehende",
+    "past": "Vergangene"
+  },
+  "appointmentCard": {
+    "start": "{{ time }} Uhr",
+    "duration": "Dauer: {{ appointmentDuration }} Minuten",
+    "appointmentType": {
+      "consultation": "Reiseberatung",
+      "vaccination": "Impfung"
+    }
+  },
+  "appointmentStatus": {
+    "booked": "Termin gebucht"
+  },
+  "noAppointments": {
+    "upcomingAppointments": "Anstehende Termine",
+    "pastAppointments": "Vergangene Termine",
+    "noUpcomingAppointments": "Keine anstehende Termine",
+    "noPastAppointments": "Keine vergangene Termine"
+  }
+}

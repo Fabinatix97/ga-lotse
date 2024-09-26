@@ -57,6 +57,7 @@ public final class BaseUrls {
     public static final String DEPARTMENT_API_INFO = "/info";
     public static final String DEPARTMENT_API_LOGO = "/logo";
     public static final String DEPARTMENT_API_SECURITY_TXT = "/security-txt";
+    public static final String DEPARTMENT_API_SECURITY_TXT_PGP_KEY = "/security-txt-public-key";
     public static final String CONTACT_PARSE_VCARD_URL = "/parse-vcard";
     public static final String GDPR_PROCEDURE_API = "/gdpr-procedures";
     public static final String FACILITY_API = "/facilities";
@@ -154,6 +155,8 @@ public final class BaseUrls {
 
   public static final class AuditLog {
     public static final String AUDIT_LOG_CONTROLLER = "/auditlog";
+
+    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 
     private AuditLog() {}
   }

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
-
 const basePath = "/travel-medicine";
 const informationStatementTemplatesPath = `${basePath}/information-statement-templates`;
 const medicalHistoryTemplatesPath = `${basePath}/medical-history-templates`;
@@ -33,8 +31,6 @@ export const routes = {
   },
   procedures: {
     index: `${proceduresPath}`,
-    new: `${proceduresPath}/new`,
-    details: (procedureId: string) => `${proceduresPath}/${procedureId}`,
     baseData: (procedureId: string) =>
       `${proceduresPath}/${procedureId}/base-data`,
     medicalHistories: (procedureId: string, procedureStepId?: string) =>
@@ -46,24 +42,10 @@ export const routes = {
     downloadFile: (fileId: string) =>
       `${proceduresPath}/download-file/${fileId}`,
     progressEntries: (procedureId: string) => ({
-      index: `${routes.procedures.details(procedureId)}/progress-entries`,
+      index: `${proceduresPath}/${procedureId}/progress-entries`,
       details: (entryId: string) =>
-        `${routes.procedures.progressEntries(procedureId).index}/${entryId}/details`,
+        `${proceduresPath}/${procedureId}/progress-entries/${entryId}/details`,
     }),
-    bookAppointment: (
-      procedureId: string,
-      stepId: string,
-      appointmentType: ApiAppointmentType,
-    ) =>
-      `${routes.procedures.details(procedureId)}/${stepId}/${appointmentType}/book-appointment`,
-    vaccinations: (id: string, stepId: string) =>
-      `${routes.procedures.details(id)}/procedure-step/${stepId}/vaccinations`,
-    otherServices: (id: string, stepId: string) =>
-      `${routes.procedures.details(id)}/procedure-step/${stepId}/other-services`,
-    medicalHistory: {
-      details: (medicalHistoryId: string) =>
-        `${proceduresPath}/medical-history/${medicalHistoryId}`,
-    },
   },
   proceduresSearch: { index: `${proceduresSearchPath}` },
   appointmentTypes: {
@@ -78,8 +60,6 @@ export const routes = {
   appointmentBlockGroups: {
     index: `${appointmentBlockPath}`,
     new: `${appointmentBlockPath}/new`,
-    details: (appointmentId: string) =>
-      `${appointmentBlockPath}/${appointmentId}`,
   },
   otherServiceTemplates: {
     index: `${otherServicesTemplatesPath}`,

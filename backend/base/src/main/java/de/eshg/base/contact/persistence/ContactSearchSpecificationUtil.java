@@ -14,6 +14,7 @@ import de.eshg.base.contact.ContactMapper;
 import de.eshg.base.contact.api.ContactSortKey;
 import de.eshg.base.contact.persistence.entity.*;
 import de.eshg.base.util.PaginationUtil;
+import de.eshg.base.util.SearchSpecificationUtil;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.SingularAttribute;
 import org.springframework.data.domain.Sort;
@@ -41,19 +42,10 @@ public class ContactSearchSpecificationUtil {
     };
   }
 
-  static Specification<Contact> orderBySimilarity(String name, String firstName, String street) {
+  static Specification<Contact> orderBySimilarity(String name, String street) {
 
     return (root, query, cb) -> {
-      Expression<Double> orderExpression = similarity(cb, name, root.get(Contact_.name));
-      if (firstName != null) {
-        orderExpression =
-            cb.sum(
-                orderExpression,
-                similarity(
-                    cb,
-                    firstName,
-                    cb.treat(root, PersonContact.class).get(PersonContact_.firstName)));
-      }
+      Expression<Double> orderExpression = similarity(cb, name, getFullNameExpression(root, cb));
       if (street != null) {
         orderExpression =
             cb.sum(
@@ -112,16 +104,17 @@ public class ContactSearchSpecificationUtil {
 
   static Specification<Contact> containsNameOrHasFuzzy(String name) {
     return (root, query, cb) -> {
-      Path<String> field = root.get(Contact_.name);
-      return containsStringFieldOrHasFuzzy(cb, name, field);
+      Expression<String> fullName = getFullNameExpression(root, cb);
+      return containsStringFieldOrHasFuzzy(cb, name, fullName);
     };
   }
 
-  static Specification<Contact> containsFirstNameOrHasFuzzy(String firstName) {
-    return (root, query, cb) -> {
-      Path<String> field = cb.treat(root, PersonContact.class).get(PersonContact_.firstName);
-      return containsStringFieldOrHasFuzzy(cb, firstName, field);
-    };
+  private static Expression<String> getFullNameExpression(Root<Contact> root, CriteriaBuilder cb) {
+    Path<String> namePath = root.get(Contact_.name);
+    Path<String> firstNamePath = cb.treat(root, PersonContact.class).get(PersonContact_.firstName);
+    Expression<String> fullName =
+        SearchSpecificationUtil.concatWithSeparator(cb, firstNamePath, namePath);
+    return fullName;
   }
 
   static Specification<Contact> containsStreetOrHasFuzzy(String street) {
@@ -132,7 +125,7 @@ public class ContactSearchSpecificationUtil {
   }
 
   private static Predicate containsStringFieldOrHasFuzzy(
-      CriteriaBuilder cb, String value, Path<String> field) {
+      CriteriaBuilder cb, String value, Expression<String> field) {
     if (value == null || value.isEmpty()) {
       return cb.and();
     }

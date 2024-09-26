@@ -1476,6 +1476,14 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: labelsFilter
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+      - in: query
         name: sortKey
         required: false
         schema:
@@ -1695,6 +1703,43 @@ paths:
                 format: binary
           description: OK
       summary: Get the XLSX school list template.
+      tags:
+      - SchoolEntry
+  /school-entries/waiting-room-procedures:
+    get:
+      operationId: getWaitingRoomProcedures
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/WaitingRoomSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetWaitingRoomProceduresResponse"
+          description: OK
       tags:
       - SchoolEntry
   /school-entries/{procedureId}:
@@ -3255,8 +3300,18 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
       required:
       - assignee
+      - taskVersion
+    BooleanWithUnknown:
+      type: string
+      enum:
+      - "TRUE"
+      - "FALSE"
+      - UNKNOWN
     BulkUpdateProceduresArchivingRelevanceRequest:
       type: object
       properties:
@@ -3306,32 +3361,23 @@ components:
       type: object
       properties:
         u2:
-          type: boolean
-          description: "Boolean that indicates, if the U2 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u3:
-          type: boolean
-          description: "Boolean that indicates, if the U3 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u4:
-          type: boolean
-          description: "Boolean that indicates, if the U4 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u5:
-          type: boolean
-          description: "Boolean that indicates, if the U5 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u6:
-          type: boolean
-          description: "Boolean that indicates, if the U6 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u7:
-          type: boolean
-          description: "Boolean that indicates, if the U7 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u7a:
-          type: boolean
-          description: "Boolean that indicates, if the U7A screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u8:
-          type: boolean
-          description: "Boolean that indicates, if the U8 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
         u9:
-          type: boolean
-          description: "Boolean that indicates, if the U9 screening was carried out"
+          $ref: "#/components/schemas/BooleanWithUnknown"
     Child:
       type: object
       description: "Child representation. In the context of the school entry examination,\
@@ -4801,7 +4847,7 @@ components:
       - totalPages
     GetArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - PROCEDURE_TYPE
@@ -5144,7 +5190,7 @@ components:
       - totalPages
     GetRelevantArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - EXPORTED_AT
@@ -5256,6 +5302,19 @@ components:
       enum:
       - ASC
       - DESC
+    GetWaitingRoomProceduresResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/WaitingRoomProcedure"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+      required:
+      - elements
+      - totalNumberOfElements
     HandednessValue:
       type: string
       enum:
@@ -6988,6 +7047,11 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
+      required:
+      - taskVersion
     SocioEducationalPerformance:
       type: object
       description: Assessment of the social and educational performance
@@ -7164,6 +7228,9 @@ components:
           $ref: "#/components/schemas/TaskStatus"
         taskType:
           $ref: "#/components/schemas/TaskType"
+        version:
+          type: integer
+          format: int64
       required:
       - businessModule
       - createdAt
@@ -7174,6 +7241,7 @@ components:
       - taskId
       - taskStatus
       - taskType
+      - version
     TaskMetric:
       type: object
       properties:
@@ -7535,7 +7603,7 @@ components:
           items:
             $ref: "#/components/schemas/OtherVaccination"
         perkombiHbv:
-          type: boolean
+          $ref: "#/components/schemas/BooleanWithUnknown"
         pertussis:
           type: integer
           format: int32
@@ -7633,6 +7701,36 @@ components:
             \ is incremented by one."
       required:
       - version
+    WaitingRoomProcedure:
+      type: object
+      properties:
+        child:
+          $ref: "#/components/schemas/Child"
+        id:
+          type: string
+          format: uuid
+          description: Id of the Procedure.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        modifiedAt:
+          type: string
+          format: date-time
+        waitingRoom:
+          $ref: "#/components/schemas/WaitingRoom"
+      required:
+      - child
+      - id
+      - modifiedAt
+      - waitingRoom
+    WaitingRoomSortKey:
+      type: string
+      enum:
+      - ID
+      - DATE_OF_BIRTH
+      - FIRSTNAME
+      - LASTNAME
+      - STATUS
+      - INFO
+      - MODIFIED_AT
     WaitingStatus:
       type: string
       enum:

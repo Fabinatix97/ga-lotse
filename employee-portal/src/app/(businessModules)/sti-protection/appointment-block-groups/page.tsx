@@ -25,7 +25,6 @@ export default function AppointmentBlockGroupsOverviewPage() {
                   href={routes.appointmentBlockGroups.new}
                   size="sm"
                   startDecorator={<Schedule />}
-                  disabled
                 >
                   Terminblock planen
                 </InternalLinkButton>

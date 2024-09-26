@@ -5,6 +5,20 @@
 
 "use client";
 
-import { NextErrorBoundary } from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
+import {
+  NextErrorBoundary,
+  NextErrorBoundaryProps,
+} from "@eshg/lib-portal/components/boundaries/NextErrorBoundary";
 
-export default NextErrorBoundary;
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout } from "@/lib/shared/components/layout/page";
+
+export default function RootError(props: NextErrorBoundaryProps) {
+  return (
+    <PageLayout>
+      <PageContent>
+        <NextErrorBoundary {...props} />
+      </PageContent>
+    </PageLayout>
+  );
+}

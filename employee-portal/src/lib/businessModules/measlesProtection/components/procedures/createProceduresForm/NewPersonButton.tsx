@@ -19,7 +19,7 @@ import {
   useProceduresForPersonSearch,
 } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { reportingReasonNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
-import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helper";
+import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { LegacyPersonSidebar } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
 import {

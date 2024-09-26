@@ -758,6 +758,34 @@ paths:
       summary: Update status of inbox procedure
       tags:
       - InboxProcedure
+  /organisations/documents/privacy-notice:
+    get:
+      operationId: getPrivacyNotice
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the privacy-notice document.
+      tags:
+      - OrganisationPortal
+  /organisations/documents/privacy-policy:
+    get:
+      operationId: getPrivacyPolicy
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the privacy-policy document.
+      tags:
+      - OrganisationPortal
   /organisations/report:
     post:
       operationId: report
@@ -3016,8 +3044,12 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
       required:
       - assignee
+      - taskVersion
     BookAppointmentRequest:
       type: object
       properties:
@@ -4289,7 +4321,7 @@ components:
       - totalPages
     GetArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - PROCEDURE_TYPE
@@ -4610,7 +4642,7 @@ components:
       - totalPages
     GetRelevantArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - EXPORTED_AT
@@ -5697,6 +5729,11 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
+      required:
+      - taskVersion
     SortDirection:
       type: string
       enum:
@@ -5774,6 +5811,9 @@ components:
           $ref: "#/components/schemas/TaskStatus"
         taskType:
           $ref: "#/components/schemas/TaskType"
+        version:
+          type: integer
+          format: int64
       required:
       - businessModule
       - createdAt
@@ -5784,6 +5824,7 @@ components:
       - taskId
       - taskStatus
       - taskType
+      - version
     TaskMetric:
       type: object
       properties:

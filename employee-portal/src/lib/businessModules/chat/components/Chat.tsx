@@ -6,28 +6,36 @@
 "use client";
 
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
-import { Box, Stack, useTheme } from "@mui/joy";
+import { Stack, useTheme } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { NewChatIllustration } from "@/lib/businessModules/chat/assets/NewChatIllustration";
-import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { ChatPanel } from "@/lib/businessModules/chat/components/chatPanel/ChatPanel";
 import { RoomsPanel } from "@/lib/businessModules/chat/components/roomsPanel/RoomsPanel";
 import { BackupSetupView } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
+import { SettingsPanel } from "@/lib/businessModules/chat/components/settingsPanel/SettingsPanel";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import {
+  ChatPanelView,
+  ClientState,
+} from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 
 export function Chat() {
   const searchParams = useSearchParams();
   const roomId = searchParams.get("roomId");
   const userIdForChatStart = searchParams.get("userId");
-
   const theme = useTheme();
   const { clientState } = useChatClientContext();
   const { createNewDirectMessage } = useCreateNewChat();
   const [openChatSettings, setOpenChatSettings] = useState(false);
+  const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
+    roomId ? ChatPanelView.ChatMessages : ChatPanelView.NoChatSelected,
+  );
+
+  function changeChatPanelView(newView: ChatPanelView) {
+    setChatPanelView(newView);
+  }
 
   function toggleChatSettingsView() {
     setOpenChatSettings((prev) => !prev);
@@ -61,54 +69,64 @@ export function Chat() {
   return (
     <Stack
       direction="row"
-      justifyContent="space-between"
       border={1}
       sx={{
         height: "100%",
-        backgroundColor: theme.palette.background.surface,
+        justifyContent: "space-between",
+        backgroundColor: theme.palette.background.body,
         borderColor: theme.palette.neutral.outlinedBorder,
         borderRadius: theme.radius.lg,
         overflow: "hidden",
       }}
     >
-      <Box
+      <Stack
         sx={{
+          flex: 1,
+          minWidth: "12.5rem",
           maxWidth: "27rem",
           height: "100%",
+          overflow: "auto",
         }}
       >
-        <RoomsPanel />
-      </Box>
-      <Box
+        <RoomsPanel
+          setChatPanelView={changeChatPanelView}
+          isOpenChatSettings={openChatSettings}
+          toggleChatSettingsView={toggleChatSettingsView}
+        />
+      </Stack>
+      <Stack
         sx={{
-          flex: 2,
+          flex: 1.5,
+          minWidth: 0,
           borderLeft: "1px solid",
           borderColor: theme.palette.neutral.outlinedBorder,
-          overflow: "hidden",
-          minWidth: "50%",
+          overflow: "auto",
         }}
       >
-        {roomId ? (
-          <ChatPanel
+        <ChatPanel
+          roomId={roomId}
+          isOpenChatSettings={openChatSettings}
+          toggleChatSettingsView={toggleChatSettingsView}
+          chatPanelView={chatPanelView}
+          setChatPanelView={changeChatPanelView}
+        />
+      </Stack>
+      {openChatSettings && roomId && (
+        <Stack
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            maxWidth: "22rem",
+            borderLeft: "1px solid",
+            borderColor: "neutral.outlinedBorder",
+          }}
+        >
+          <SettingsPanel
             roomId={roomId}
             isOpenChatSettings={openChatSettings}
             toggleChatSettingsView={toggleChatSettingsView}
           />
-        ) : (
-          <NewChatIllustration sx={{ width: "400px", height: "auto" }} />
-        )}
-      </Box>
-      {openChatSettings && (
-        <Box
-          sx={{
-            flex: 1,
-            maxWidth: "22rem",
-            borderLeft: "1px solid",
-            borderColor: theme.palette.neutral.outlinedBorder,
-          }}
-        >
-          <ChatColumnHeaderWrapper>Chat details</ChatColumnHeaderWrapper>
-        </Box>
+        </Stack>
       )}
     </Stack>
   );

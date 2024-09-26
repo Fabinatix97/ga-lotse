@@ -30,6 +30,7 @@ public record DepartmentConfiguration(
     @NotNull Double longitude,
     @NotNull Resource logo,
     @NotNull Resource securityTxt,
+    @NotNull Resource securityTxtPublicKey,
     @NotNull Resource streetDirectory,
     @NotNull Resource municipalityDirectory) {
 
@@ -48,6 +49,7 @@ public record DepartmentConfiguration(
       @NotNull Double longitude,
       @NotNull Resource logo,
       @NotNull Resource securityTxt,
+      @NotNull Resource securityTxtPublicKey,
       @NotNull Resource streetDirectory,
       @NotNull Resource municipalityDirectory) {
     this.name = name;
@@ -63,12 +65,14 @@ public record DepartmentConfiguration(
     this.latitude = latitude;
     this.longitude = longitude;
     this.securityTxt = securityTxt;
+    this.securityTxtPublicKey = securityTxtPublicKey;
     this.logo = logo;
     this.streetDirectory = streetDirectory;
     this.municipalityDirectory = municipalityDirectory;
 
     assertIsReadable(logo, "Department logo");
     assertIsReadable(securityTxt, "Department security txt");
+    assertIsReadable(securityTxtPublicKey, "Department security txt public key");
     assertIsReadable(streetDirectory, "Department street directory");
     assertIsReadable(municipalityDirectory, "Department municipality directory");
   }

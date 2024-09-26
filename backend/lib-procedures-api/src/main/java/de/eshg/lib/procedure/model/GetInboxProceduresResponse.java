@@ -5,7 +5,6 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -13,12 +12,8 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record GetInboxProceduresResponse(
-    @CanBeLogged
-        @NotNull
-        @Schema(description = "Total number of result pages for the given filter criteria")
+    @NotNull @Schema(description = "Total number of result pages for the given filter criteria")
         int totalPages,
-    @CanBeLogged
-        @NotNull
-        @Schema(description = "Total number of result elements for the given filter criteria")
+    @NotNull @Schema(description = "Total number of result elements for the given filter criteria")
         long totalElements,
     @Valid @NotNull @Size(max = 200) List<InboxProcedureDto> inboxProcedures) {}

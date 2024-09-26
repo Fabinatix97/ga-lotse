@@ -9,11 +9,11 @@ import { useAddFilterTemplate } from "@/lib/businessModules/statistics/api/mutat
 import { useDeleteFilterTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteFilterTemplate";
 import { useGetFilterTemplateFilters } from "@/lib/businessModules/statistics/api/mutations/useGetFilterTemplateFilters";
 import { useGetFilterTemplates } from "@/lib/businessModules/statistics/api/queries/useGetFilterTemplates";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/sidebarStep";
 import { SaveDiagramStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/SaveDiagramStep/SaveDiagramStep";
 import { SetFiltersStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/SetFiltersStep/SetFiltersStep";
 import { CreateDiagramFormModel } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/createDiagramFormModel";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
 

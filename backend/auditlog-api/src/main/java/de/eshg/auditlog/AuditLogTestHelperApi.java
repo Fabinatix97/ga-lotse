@@ -5,21 +5,18 @@
 
 package de.eshg.auditlog;
 
-import static de.eshg.auditlog.AuditLogTestHelperApi.BASE_URL;
+import static de.eshg.auditlog.SharedAuditLogTestHelperApi.BASE_URL;
 
-import java.io.IOException;
-import org.springframework.web.service.annotation.DeleteExchange;
+import de.eshg.auditlog.feature.AuditLogFeature;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 @HttpExchange(BASE_URL)
-public interface AuditLogTestHelperApi {
+public interface AuditLogTestHelperApi extends SharedAuditLogTestHelperApi {
 
   String BASE_URL = "/test-helper";
 
-  @DeleteExchange("audit-log-storage")
-  void clearAuditLogStorageDirectory() throws IOException;
-
-  @PostExchange("archiving-job")
-  void runArchivingJob();
+  @PostExchange("/enabled-new-features/{featureToEnable}")
+  void enableNewFeature(@PathVariable("featureToEnable") AuditLogFeature featureToEnable);
 }

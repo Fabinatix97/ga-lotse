@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ApiVaccinationSchemeValue } from "@eshg/employee-portal-api/schoolEntry";
+import {
+  ApiBooleanWithUnknown,
+  ApiVaccinationSchemeValue,
+} from "@eshg/employee-portal-api/schoolEntry";
 import {
   SoftRequiredBooleanSelectField,
   SoftRequiredSelectField,
@@ -27,8 +30,14 @@ import { FieldArray, Formik, FormikHelpers } from "formik";
 
 import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { SetAllNumberInput } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllNumberInput";
-import { VACCINATION_SCHEME_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
-import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import {
+  BOOLEAN_WITH_UNKNOWN_OPTIONS,
+  VACCINATION_SCHEME_OPTIONS,
+} from "@/lib/businessModules/schoolEntry/features/procedures/options";
+import {
+  BOOLEAN_SELECT_STYLE,
+  BOOLEAN_WITH_UNKNOWN_STYLE,
+} from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 import { OtherVaccinationForm } from "@/lib/businessModules/schoolEntry/features/procedures/vaccination/OtherVaccinationForm";
 import {
   VACCINATION_FIELD_STYLE,
@@ -62,7 +71,7 @@ export interface VaccinationFormValues {
   hepatitisA: OptionalFieldValue<number>;
   otherVaccinations: OtherVaccinationValues[];
   vaccinationPassPresented: OptionalFieldValue<boolean>;
-  perkombiHbv: OptionalFieldValue<boolean>;
+  perkombiHbv: OptionalFieldValue<ApiBooleanWithUnknown>;
 }
 
 export interface OtherVaccinationValues {
@@ -206,11 +215,12 @@ export function VaccinationForm(props: FormProps<VaccinationFormValues>) {
               )}
             </FieldArray>
           </Stack>
-          <SoftRequiredBooleanSelectField
+          <SoftRequiredSelectField
             name="perkombiHbv"
             label="PerkombiHBV"
-            allowDeselection
-            sx={BOOLEAN_SELECT_STYLE}
+            options={BOOLEAN_WITH_UNKNOWN_OPTIONS}
+            sx={BOOLEAN_WITH_UNKNOWN_STYLE}
+            softRequired
           />
           <Divider />
           <SoftRequiredBooleanSelectField

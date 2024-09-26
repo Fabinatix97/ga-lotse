@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -17,7 +16,7 @@ public final class ProcessedInboxProgressEntryDto extends ProgressEntryDto {
   public static final String SCHEMA_NAME = "ProcessedInboxProgressEntry";
 
   @NotNull private UUID inboxProcedureId;
-  @CanBeLogged @NotNull private InboxProgressEntryTypeDto inboxProgressEntryType;
+  @NotNull private InboxProgressEntryTypeDto inboxProgressEntryType;
   private String subject;
   private String messageText;
 

@@ -31,6 +31,7 @@ import de.eshg.inspection.facility.persistence.PendingFacilityView;
 import de.eshg.inspection.facility.websearch.WebSearchService;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntry;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntryStatus;
+import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
 import de.eshg.inspection.inspection.api.InspectionType;
@@ -60,6 +61,7 @@ import jakarta.persistence.criteria.Root;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +89,7 @@ public class FacilityService {
   private final WebSearchService webSearchService;
   private final Clock clock;
   private final EntityManager entityManager;
+  private final InspectionFinalizer inspectionFinalizer;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -94,13 +97,15 @@ public class FacilityService {
       InspectionService inspectionService,
       WebSearchService webSearchService,
       Clock clock,
-      EntityManager entityManager) {
+      EntityManager entityManager,
+      InspectionFinalizer inspectionFinalizer) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
     this.webSearchService = webSearchService;
     this.clock = clock;
     this.entityManager = entityManager;
+    this.inspectionFinalizer = inspectionFinalizer;
   }
 
   public InspFacilityDto getFacility(UUID externalId) {
@@ -186,6 +191,11 @@ public class FacilityService {
       Facility inspFacility = matchedInspFacility.get();
       centralFileStateId = inspFacility.getCentralFileStateId();
       newestInspection = inspectionService.findNewestOpenInspectionForFacility(inspFacility);
+      if (newestInspection == null) {
+        newestInspection =
+            inspectionFinalizer.createFollowupInspection(
+                inspectionService.findNewestClosedInspectionForFacility(inspFacility));
+      }
     }
 
     linkWebSearchFacility(request.webSearchEntryId(), centralFileStateId);
@@ -311,7 +321,13 @@ public class FacilityService {
                   cb.isNotNull(plannedAppointmentJoin),
                   cb.lessThanOrEqualTo(
                       plannedAppointmentJoin.get(InspectionAppointment_.appointmentStart),
-                      isBefore))));
+                      isBefore)),
+              cb.and(
+                  cb.isNull(executionAppointmentJoin),
+                  cb.isNull(plannedAppointmentJoin),
+                  cb.lessThanOrEqualTo(
+                      cb.literal(LocalDate.ofInstant(clock.instant(), ZoneOffset.UTC)),
+                      LocalDate.ofInstant(isBefore, ZoneOffset.UTC)))));
     }
     if (isAfter != null) {
       predicates.add(
@@ -325,8 +341,13 @@ public class FacilityService {
                   cb.isNull(executionAppointmentJoin),
                   cb.isNotNull(plannedAppointmentJoin),
                   cb.greaterThanOrEqualTo(
-                      plannedAppointmentJoin.get(InspectionAppointment_.appointmentEnd),
-                      isAfter))));
+                      plannedAppointmentJoin.get(InspectionAppointment_.appointmentEnd), isAfter)),
+              cb.and(
+                  cb.isNull(executionAppointmentJoin),
+                  cb.isNull(plannedAppointmentJoin),
+                  cb.greaterThanOrEqualTo(
+                      cb.literal(LocalDate.ofInstant(clock.instant(), ZoneOffset.UTC)),
+                      LocalDate.ofInstant(isAfter, ZoneOffset.UTC)))));
     }
 
     cq.select(cb.construct(PendingFacilityView.class, facilityJoin, irfJoin, inspectionRoot));

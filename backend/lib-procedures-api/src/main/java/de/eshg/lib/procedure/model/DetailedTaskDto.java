@@ -5,11 +5,10 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "DetailedTask")
 public record DetailedTaskDto(
-    @CanBeLogged @NotNull @Valid TaskDto task, String assigneeName, String assignedByName) {}
+    @NotNull @Valid TaskDto task, String assigneeName, String assignedByName) {}

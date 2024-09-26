@@ -66,4 +66,21 @@ public class ChecklistFieldOptionContextDto {
   public int hashCode() {
     return Objects.hash(id, text, textModuleTrue, textModuleFalse);
   }
+
+  @Override
+  public String toString() {
+    return "ChecklistFieldOptionContextDto{"
+        + "id="
+        + id
+        + ", text='"
+        + text
+        + '\''
+        + ", textModuleTrue='"
+        + textModuleTrue
+        + '\''
+        + ", textModuleFalse='"
+        + textModuleFalse
+        + '\''
+        + '}';
+  }
 }

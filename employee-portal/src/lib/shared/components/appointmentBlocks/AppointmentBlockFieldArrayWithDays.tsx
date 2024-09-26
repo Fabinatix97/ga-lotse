@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Add, DeleteOutlined } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import { Grid } from "@mui/joy";
 import { FieldArray } from "formik";
 
@@ -54,8 +54,9 @@ export function AppointmentBlockFieldArrayWithDays(
                   <FieldIconButton
                     title="Terminblock entfernen"
                     onClick={() => remove(index)}
+                    color="danger"
                   >
-                    <DeleteOutlined />
+                    <Delete color="danger" />
                   </FieldIconButton>
                 )}
               </FieldButtonBar>

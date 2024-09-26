@@ -27,6 +27,18 @@ export interface AppointmentBlockGroup extends AppointmentBlockMeasles {
 
 export type AppointmentDurationsMeasles = Record<ApiAppointmentType, number>;
 
+export function mapAppointmentBlock(
+  response: ApiGetAppointmentBlock,
+): AppointmentBlockMeasles {
+  return {
+    ...mapBaseEntity(response),
+    start: response.start,
+    end: response.end,
+    numberOfFreeAppointments: response.numberOfFreeAppointments,
+    numberOfBookedAppointments: response.numberOfBookedAppointments,
+  };
+}
+
 export function mapAppointmentBlockGroup(
   response: ApiGetAppointmentBlockGroup,
 ): AppointmentBlockGroup {
@@ -51,17 +63,5 @@ export function mapAppointmentBlockGroup(
     numberOfFreeAppointments: aggregatedNumberOfFreeAppointments,
     numberOfBookedAppointments: aggregatedNumberOfBookedAppointments,
     appointmentBlocks: response.appointmentBlocks.map(mapAppointmentBlock),
-  };
-}
-
-export function mapAppointmentBlock(
-  response: ApiGetAppointmentBlock,
-): AppointmentBlockMeasles {
-  return {
-    ...mapBaseEntity(response),
-    start: response.start,
-    end: response.end,
-    numberOfFreeAppointments: response.numberOfFreeAppointments,
-    numberOfBookedAppointments: response.numberOfBookedAppointments,
   };
 }

@@ -37,9 +37,6 @@ const columns = [
     header: "",
     enableGlobalFilter: false,
     cell: RevisionTypeCell,
-    meta: {
-      width: "48px",
-    },
   }),
   accessor("id", {
     enableGlobalFilter: false,

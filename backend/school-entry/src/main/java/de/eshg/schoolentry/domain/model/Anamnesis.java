@@ -39,15 +39,32 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
 
   private Boolean gestationalAge;
 
-  private Boolean u2;
-  private Boolean u3;
-  private Boolean u4;
-  private Boolean u5;
-  private Boolean u6;
-  private Boolean u7;
-  private Boolean u7a;
-  private Boolean u8;
-  private Boolean u9;
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u2;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u3;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u4;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u5;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u6;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u7;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u7a;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u8;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown u9;
 
   private Boolean earlySupport;
   private Boolean integrationPlace;
@@ -161,75 +178,75 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
     this.gestationalAge = gestationalAge;
   }
 
-  public Boolean getU2() {
+  public BooleanWithUnknown getU2() {
     return u2;
   }
 
-  public void setU2(Boolean u2) {
+  public void setU2(BooleanWithUnknown u2) {
     this.u2 = u2;
   }
 
-  public Boolean getU3() {
+  public BooleanWithUnknown getU3() {
     return u3;
   }
 
-  public void setU3(Boolean u3) {
+  public void setU3(BooleanWithUnknown u3) {
     this.u3 = u3;
   }
 
-  public Boolean getU4() {
+  public BooleanWithUnknown getU4() {
     return u4;
   }
 
-  public void setU4(Boolean u4) {
+  public void setU4(BooleanWithUnknown u4) {
     this.u4 = u4;
   }
 
-  public Boolean getU5() {
+  public BooleanWithUnknown getU5() {
     return u5;
   }
 
-  public void setU5(Boolean u5) {
+  public void setU5(BooleanWithUnknown u5) {
     this.u5 = u5;
   }
 
-  public Boolean getU6() {
+  public BooleanWithUnknown getU6() {
     return u6;
   }
 
-  public void setU6(Boolean u6) {
+  public void setU6(BooleanWithUnknown u6) {
     this.u6 = u6;
   }
 
-  public Boolean getU7() {
+  public BooleanWithUnknown getU7() {
     return u7;
   }
 
-  public void setU7(Boolean u7) {
+  public void setU7(BooleanWithUnknown u7) {
     this.u7 = u7;
   }
 
-  public Boolean getU7a() {
+  public BooleanWithUnknown getU7a() {
     return u7a;
   }
 
-  public void setU7a(Boolean u7a) {
+  public void setU7a(BooleanWithUnknown u7a) {
     this.u7a = u7a;
   }
 
-  public Boolean getU8() {
+  public BooleanWithUnknown getU8() {
     return u8;
   }
 
-  public void setU8(Boolean u8) {
+  public void setU8(BooleanWithUnknown u8) {
     this.u8 = u8;
   }
 
-  public Boolean getU9() {
+  public BooleanWithUnknown getU9() {
     return u9;
   }
 
-  public void setU9(Boolean u9) {
+  public void setU9(BooleanWithUnknown u9) {
     this.u9 = u9;
   }
 

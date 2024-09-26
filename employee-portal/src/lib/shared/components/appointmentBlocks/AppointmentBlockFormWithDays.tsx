@@ -104,7 +104,7 @@ export function AppointmentBlockFormWithDays(props: Readonly<NestedFormProps>) {
         <Grid direction={"column"}>
           <WeekdayCheckboxGroup
             name={fieldName("daysOfWeek")}
-            element={daysOfWeekOptions}
+            options={daysOfWeekOptions}
             label={"Wochentage"}
             sx={{ mt: 1 }}
           />

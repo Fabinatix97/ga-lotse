@@ -67,7 +67,6 @@ export function PsychoSocialRiskFields(props: PsychoSocialRiskFieldsProps) {
               label={field.label}
               sx={BOOLEAN_SELECT_STYLE}
               allowDeselection
-              softRequired
             />
           ))}
         </Stack>

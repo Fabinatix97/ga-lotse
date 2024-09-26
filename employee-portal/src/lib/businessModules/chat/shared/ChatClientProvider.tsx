@@ -32,8 +32,8 @@ import { useChatLifecycle } from "@/lib/businessModules/chat/shared/hooks/useCha
 import { usePresence } from "@/lib/businessModules/chat/shared/hooks/usePresence";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import {
-  Presence,
   RoomEventDetails,
+  UsersPresence,
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
 import { shouldShowMessageTeaser } from "@/lib/businessModules/chat/shared/utils";
@@ -44,7 +44,7 @@ export interface ChatClientContextType {
   clientState: ClientState;
   setClientState: Dispatch<SetStateAction<ClientState>>;
   unreadNotificationsPerRoom: Record<string, number>;
-  usersPresence: Record<string, Presence>;
+  usersPresence: UsersPresence;
 }
 
 export const ChatClientContext = createContext<ChatClientContextType | null>(

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { isDefined } from "remeda";
+
 import {
   SearchableGroup,
   SearchableGroupItem,
@@ -33,7 +35,9 @@ function mapDefinitionsToSearchableGroups(
 ): SearchableGroup<FilterGroupItem>[] {
   return definitions.map((definition) => ({
     name: definition.name,
-    inAccordion: !["EnumSingle", "Date"].includes(definition.type),
+    inAccordion: isDefined(definition.inAccordion)
+      ? definition.inAccordion
+      : !["EnumSingle", "Date"].includes(definition.type),
     items: [
       {
         key: definition.key,

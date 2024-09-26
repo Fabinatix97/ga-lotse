@@ -73,4 +73,6 @@ export interface ReportMeaslesCase
   facility: FacilityFormInputs;
   otherFacilityTypeInformation?: string;
   type: OptionalFieldValue<ApiMPFacilityType>;
+  confirmPrivacyNotice: boolean;
+  confirmPrivacyPolicy: boolean;
 }

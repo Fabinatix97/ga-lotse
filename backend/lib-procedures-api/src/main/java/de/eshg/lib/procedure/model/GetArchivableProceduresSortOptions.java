@@ -8,15 +8,13 @@ package de.eshg.lib.procedure.model;
 import static de.eshg.lib.procedure.api.ArchivingApi.QueryParameter.SORT_BY;
 import static de.eshg.lib.procedure.api.ArchivingApi.QueryParameter.SORT_ORDER;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetArchivableProceduresSortOptions(
-    @CanBeLogged
-        @Parameter(
+    @Parameter(
             description =
                 """
         The following sorting options are available:
@@ -24,12 +22,9 @@ public record GetArchivableProceduresSortOptions(
         - `PROCEDURE_TYPE`: Sorting by procedureType attribute
         """)
         @BindParam(SORT_BY)
-        @Schema(defaultValue = "CREATED_AT")
+        @Schema(defaultValue = "CLOSED_AT")
         GetArchivableProceduresSortByDto sortBy,
-    @CanBeLogged
-        @Parameter(description = "Sorting order.")
-        @BindParam(SORT_ORDER)
-        @Schema(defaultValue = "ASC")
+    @Parameter(description = "Sorting order.") @BindParam(SORT_ORDER) @Schema(defaultValue = "ASC")
         GetArchivableProceduresSortOrderDto sortOrder) {
 
   public GetArchivableProceduresSortOptions(

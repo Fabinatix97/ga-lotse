@@ -7,7 +7,6 @@
 
 import { ApiReportCaseRequest } from "@eshg/citizen-portal-api/measlesProtection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
-import { Box, Typography } from "@mui/joy";
 
 import { useOrganisationPortalApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { ReportCaseForm } from "@/lib/businessModules/measlesProtection/components/reportCase/ReportCaseForm";
@@ -19,6 +18,8 @@ import {
 import { setReportCaseForm } from "@/lib/businessModules/measlesProtection/helpers/reportCaseForm.storage";
 import { mapFacilityToApiAddFacilityFileStateRequest } from "@/lib/businessModules/measlesProtection/shared/facility/helpers";
 import { useTranslation } from "@/lib/i18n/client";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 function mapMeaslesCaseReport(report: ReportMeaslesCase): ApiReportCaseRequest {
   const apiReportCaseRequest: ApiReportCaseRequest = {
@@ -50,17 +51,11 @@ export default function CitizenMeaslesProtectionReportCasePage() {
   }
 
   return (
-    <div>
-      <Box sx={{ borderRadius: "xl", backgroundColor: "white", p: 2, my: 2 }}>
-        <Typography
-          component="h2"
-          level="h2"
-          sx={{ fontSize: { xxs: "1.25rem", sm: "2.25rem" } }}
-        >
-          {t("reportMeaslesCaseForm.pageTitle")}
-        </Typography>
-      </Box>
-      <ReportCaseForm onSubmit={handleSubmit} />
-    </div>
+    <PageLayout>
+      <PageContent>
+        <PageTitle>{t("reportMeaslesCaseForm.pageTitle")}</PageTitle>
+        <ReportCaseForm onSubmit={handleSubmit} />
+      </PageContent>
+    </PageLayout>
   );
 }

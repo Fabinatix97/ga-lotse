@@ -21,7 +21,7 @@ public abstract class ChecklistDefinitionOptionSelect extends ChecklistDefinitio
   @OneToMany(
       fetch = FetchType.LAZY,
       mappedBy = ChecklistDefinitionFieldOption_.CHECKLIST_DEFINITION_ELEMENT,
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy(ChecklistDefinitionFieldOption_.POSITION)
   @DataSensitivity(SensitivityLevel.PUBLIC)

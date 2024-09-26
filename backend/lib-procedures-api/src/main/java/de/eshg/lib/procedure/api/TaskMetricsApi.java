@@ -9,7 +9,6 @@ import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.PROCEDURE_TY
 import static de.eshg.lib.procedure.api.ProcedureMetricsApi.QueryParameter.TIME_RANGE_END;
 import static de.eshg.lib.procedure.api.ProcedureMetricsApi.QueryParameter.TIME_RANGE_START;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.lib.procedure.model.GetTaskMetricsResponse;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -27,7 +26,7 @@ public interface TaskMetricsApi {
       summary =
           "Get tasks metrics for a procedure type of a business module for procedures created in the given time range")
   GetTaskMetricsResponse getTaskMetrics(
-      @CanBeLogged @RequestParam(name = PROCEDURE_TYPE) ProcedureTypeDto procedureType,
-      @CanBeLogged @RequestParam(name = TIME_RANGE_START) Instant timeRangeStart,
-      @CanBeLogged @RequestParam(name = TIME_RANGE_END) Instant timeRangeEnd);
+      @RequestParam(name = PROCEDURE_TYPE) ProcedureTypeDto procedureType,
+      @RequestParam(name = TIME_RANGE_START) Instant timeRangeStart,
+      @RequestParam(name = TIME_RANGE_END) Instant timeRangeEnd);
 }

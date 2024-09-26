@@ -48,11 +48,17 @@ public final class ChecklistContextMapper {
     context.setValidTo(version.getValidTo());
     context.setExpandable(version.isExpandable());
     context.setDeleted(version.isDeleted());
-    context.setSections(
-        version.getSections().stream().map(ChecklistContextMapper::contextFrom).toList());
+    context.setPublished(version.isPublished());
+    context.setLastModified(version.getLastModified());
+    context.setSections(contextFrom(version.getSections()));
     context.setRepositoryVersion(version.getRepositoryVersion());
 
     return context;
+  }
+
+  public static List<ChecklistSectionContextDto> contextFrom(
+      List<ChecklistDefinitionSection> sections) {
+    return sections.stream().map(ChecklistContextMapper::contextFrom).toList();
   }
 
   public static ChecklistSectionContextDto contextFrom(ChecklistDefinitionSection section) {

@@ -5,7 +5,7 @@
 
 import { Divider, List, ListItem, Stack, Typography } from "@mui/joy";
 
-import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
+import { StaticTextDocumentPanel } from "@/lib/baseModule/components/StaticTextDocumentPanel";
 
 function BulletPointPlain(props: { text: string }) {
   return (
@@ -27,13 +27,21 @@ function Module(props: { moduleName: string }) {
 
 export function ReleaseNotes() {
   return (
-    <ContentPanel>
+    <StaticTextDocumentPanel>
       <Stack gap={2}>
-        <Typography level="h2">ESHG 1.0</Typography>
+        <Typography level="h2">GA-Lotse 1.0</Typography>
         <Divider />
-        <Typography level="title-md">15.08.2024</Typography>
+        <Typography level="title-md">26.09.2024</Typography>
         <Typography level="body-md">
-          Erster Release der neuen Anwendung für Gesundheitsämter.
+          Erster Release der neuen Anwendung GA-Lotse für Gesundheitsämter.
+          <br />
+          <br />
+          GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamt Frankfurt am
+          Main mit dem Hessisches Ministerium für Familie, Senioren, Sport,
+          Gesundheit und Pflege.
+          <br />
+          <br />
+          Finanziert von der Europäischen Union – NextGenerationEU
         </Typography>
       </Stack>
       <Stack>
@@ -250,6 +258,6 @@ export function ReleaseNotes() {
           </ListItem>
         </List>
       </Stack>
-    </ContentPanel>
+    </StaticTextDocumentPanel>
   );
 }

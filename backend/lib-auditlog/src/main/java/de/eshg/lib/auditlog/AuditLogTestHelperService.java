@@ -5,7 +5,7 @@
 
 package de.eshg.lib.auditlog;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.lib.auditlog.config.AuditLogConfig;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @ConditionalOnTestHelperEnabled
 @Service
-public class AuditLogTestHelperService implements AuditLogTestHelperApi {
+public class AuditLogTestHelperService implements SharedAuditLogTestHelperApi {
 
   private static final Logger log = LoggerFactory.getLogger(AuditLogTestHelperService.class);
 

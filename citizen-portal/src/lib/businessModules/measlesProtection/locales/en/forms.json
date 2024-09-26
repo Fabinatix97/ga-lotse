@@ -82,5 +82,14 @@
       "title": "Title"
     },
     "requiredField": "Required field"
+  },
+  "data_and_privacy": {
+    "information_one": "To report this case, you must first agree to the following data protection regulations.",
+    "information_other": "To report these cases, you must first agree to the following data protection regulations.",
+    "confirm_privacy_notice": "I accept the privacy notice.",
+    "privacy_notice": "View Privacy Notice",
+    "confirm_privacy_policy": "I accept the privacy policy.",
+    "privacy_policy": "View Privacy Policy",
+    "confirm_required": "Please give your consent to continue."
   }
 }

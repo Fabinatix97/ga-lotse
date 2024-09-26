@@ -10,6 +10,7 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { CloseProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/CloseProcedureModal";
 import { DeleteProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/DeleteProcedureModal";
+import { ReopenProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ReopenProcedureModal";
 import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
@@ -19,6 +20,9 @@ export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
   );
   const deleteProcedureEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.DeleteProcedure,
+  );
+  const reopenProcedureEnabled = useIsNewFeatureEnabled(
+    ApiSchoolEntryFeature.ReopenProcedure,
   );
 
   const buttons: ReactNode[] = [];
@@ -32,6 +36,20 @@ export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
         )}
       >
         Vorgang abschließen
+      </OpenModalButton>,
+    );
+  }
+
+  if (reopenProcedureEnabled && props.procedure.isClosed) {
+    buttons.push(
+      <OpenModalButton
+        key="reopenProcedure"
+        renderModal={(modalProps) => (
+          <ReopenProcedureModal procedure={props.procedure} {...modalProps} />
+        )}
+        color="danger"
+      >
+        Vorgang wiedereröffnen
       </OpenModalButton>,
     );
   }

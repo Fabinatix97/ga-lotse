@@ -28,11 +28,13 @@ public enum ErrorCode {
   TIMEOUT,
   /** Use when DataIntegrityViolationException is thrown */
   DATA_INTEGRITY_VIOLATION,
+  /** Use when a resource already exists */
   ALREADY_EXISTS,
   /** Use for Exceptions thrown during aggregation */
   AGGREGATION_EXCEPTION,
   /** Use when given file does not meet requirements */
   INVALID_FILE,
+  /** Use when given PDF file does not meet requirements */
   NONCONFORM_PDF,
   /** Use when data was illegally manipulated */
   CORRUPT,

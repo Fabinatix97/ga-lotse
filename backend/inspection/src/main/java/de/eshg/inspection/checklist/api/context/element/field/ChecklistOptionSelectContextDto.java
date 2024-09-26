@@ -36,4 +36,9 @@ public abstract class ChecklistOptionSelectContextDto extends ChecklistFieldCont
   public int hashCode() {
     return Objects.hash(super.hashCode(), items);
   }
+
+  @Override
+  public String toString() {
+    return "ChecklistOptionSelectContextDto{" + "items=" + items + "} " + super.toString();
+  }
 }

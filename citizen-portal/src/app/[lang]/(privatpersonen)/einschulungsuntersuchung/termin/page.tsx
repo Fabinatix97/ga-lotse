@@ -14,8 +14,9 @@ import { AppointmentPageTitle } from "@/lib/businessModules/schoolEntry/pages/ap
 import { AppointmentSidePanel } from "@/lib/businessModules/schoolEntry/pages/appointment/AppointmentSidePanel";
 import { useDepartmentApi } from "@/lib/shared/api/clients";
 import { getDepartmentInfoQuery } from "@/lib/shared/api/queries/department";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { Page } from "@/lib/shared/components/layout/page";
+import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function SchoolEntryAppointmentPage() {
   const departmentApi = useDepartmentApi();
@@ -28,25 +29,27 @@ export default function SchoolEntryAppointmentPage() {
   });
 
   return (
-    <Page>
-      <AppointmentPageTitle />
-      <TwoColumnGrid
-        content={
-          <AppointmentContent
-            procedure={procedure}
-            departmentInfo={departmentInfo}
-          />
-        }
-        sidePanel={
-          <AppointmentSidePanel
-            isClosed={procedure.isClosedProcedure}
-            appointmentChangesByCitizenLeft={
-              procedure.appointmentChangesByCitizenLeft
-            }
-            departmentPhoneNumber={departmentInfo.phoneNumber}
-          />
-        }
-      />
-    </Page>
+    <PageLayout>
+      <PageContent>
+        <AppointmentPageTitle />
+        <TwoColumnGrid
+          content={
+            <AppointmentContent
+              procedure={procedure}
+              departmentInfo={departmentInfo}
+            />
+          }
+          sidePanel={
+            <AppointmentSidePanel
+              isClosed={procedure.isClosedProcedure}
+              appointmentChangesByCitizenLeft={
+                procedure.appointmentChangesByCitizenLeft
+              }
+              departmentPhoneNumber={departmentInfo.phoneNumber}
+            />
+          }
+        />
+      </PageContent>
+    </PageLayout>
   );
 }

@@ -26,11 +26,11 @@ public record AuthProperties(
   private static final Logger log = LoggerFactory.getLogger(AuthProperties.class);
 
   public AuthProperties {
-    if (getAccessCodeUrlPatterns() != null) {
-      log.info("Access code URL patterns: {}", getAccessCodeUrlPatterns());
+    if (auth.accessCodeUrlPatterns() != null) {
+      log.info("Access code URL patterns: {}", auth.accessCodeUrlPatterns());
     }
-    if (getMukUrlPatterns() != null) {
-      log.info("MUK URL patterns: {}", getMukUrlPatterns());
+    if (auth.mukUrlPatterns() != null) {
+      log.info("MUK URL patterns: {}", auth.mukUrlPatterns());
     }
   }
 
@@ -48,7 +48,15 @@ public record AuthProperties(
     return auth().mukUrlPatterns();
   }
 
+  public List<String> getLanguagePathPrefixes() {
+    if (auth() == null) {
+      return null;
+    }
+    return auth().languagePathPrefixes();
+  }
+
   record Auth(
+      List<String> languagePathPrefixes,
       List<String> accessCodeUrlPatterns,
       List<String> mukUrlPatterns,
       @Valid UserAgentFilter userAgentFilter) {}

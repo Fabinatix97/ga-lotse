@@ -5,13 +5,15 @@
 
 "use client";
 
+import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { Stack } from "@mui/joy";
-import { useState } from "react";
+import { addDays, formatISO } from "date-fns";
+import { useMemo, useState } from "react";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { NewFacilityButton } from "@/lib/businessModules/inspection/components/facility/pending/NewFacilityButton";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
 import {
   inspectionPendingFacilityKindNames,
@@ -20,11 +22,21 @@ import {
 } from "@/lib/businessModules/inspection/shared/enums";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
+import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
+import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
+import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
+import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
+import {
+  FilterSettingsStateProvider,
+  useFilterSettings,
+} from "@/lib/shared/components/filterSettings/useFilterSettings";
+import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 import { TextInputFilter } from "@/lib/shared/components/tableFilters/TextInputFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
@@ -39,15 +51,89 @@ type UserActivityState =
 
 const initialUserActivity: UserActivityState = { type: "view-table" };
 
+function createFilterDefinitions(
+  objectTypes: ApiObjectType[],
+): FilterDefinition[] {
+  const objectTypeOptions = objectTypes.map((o) => ({
+    label: o.name,
+    value: o.id,
+  }));
+
+  return [
+    {
+      type: "EnumSingle",
+      key: "kind",
+      name: "Art",
+      options: optionsFromRecord(inspectionPendingFacilityKindNames),
+    },
+    {
+      type: "EnumSingle",
+      key: "objectTypeId",
+      name: "Objekttyp",
+      options: objectTypeOptions,
+    },
+    {
+      type: "Enum",
+      key: "status",
+      name: "Status",
+      options: optionsFromRecord(procedureStatusNames),
+    },
+    {
+      type: "Enum",
+      key: "type",
+      name: "Typ",
+      options: optionsFromRecord(inspectionTypeNames),
+    },
+    {
+      type: "Enum",
+      key: "phase",
+      name: "Phase",
+      options: optionsFromRecord(inspectionPhaseNames),
+    },
+    {
+      type: "Date",
+      key: "isBefore",
+      name: "Begehung vor",
+    },
+    {
+      type: "Date",
+      key: "isAfter",
+      name: "Begehung nach",
+    },
+  ];
+}
+
 export function PendingFacilitiesTable(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
   const isOfflineEnabled = useIsOfflineFeatureEnabled();
-
-  const { data: procedures, isFetching } = useGetPendingFacilities(
-    props.filter,
-  );
   const { data: objectTypes } = useGetObjectTypes();
+
+  const filterDefinitions = createFilterDefinitions(objectTypes);
+  const paramStateProvider = useSearchParamStateProvider(
+    filterDefinitions,
+    true,
+  );
+  const { stateProvider, filter } = usePendingFacilitiesFilterState({
+    stateProvider: paramStateProvider,
+    defaults: [
+      {
+        type: "Enum",
+        key: "phase",
+        selectedValues: ["NEW", "PLANNING", "READY_FOR_EXECUTION"],
+      },
+      {
+        type: "Date",
+        key: "isBefore",
+        selectedValue: formatISO(addDays(new Date(), 14), {
+          representation: "date",
+        }),
+      },
+    ],
+    filter: props.filter,
+  });
+
+  const { data: procedures, isFetching } = useGetPendingFacilities(filter);
 
   const tableControl = useTableControl({ serverSideSorting: true });
   const columns = createPendingFacilitiesColumns(
@@ -58,10 +144,13 @@ export function PendingFacilitiesTable(
   const [userActivity, setUserActivity] =
     useState<UserActivityState>(initialUserActivity);
 
-  const objectTypeOptions = objectTypes.map((o) => ({
-    label: o.name,
-    value: o.id,
-  }));
+  const filterSettings = useFilterSettings({
+    definitions: filterDefinitions,
+    stateProvider,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    onValuesSubmit: (_values) => {},
+    showSearch: false,
+  });
 
   function handleSidebarClosed() {
     setUserActivity(initialUserActivity);
@@ -82,62 +171,41 @@ export function PendingFacilitiesTable(
     <>
       <TablePage
         controls={
-          <Stack direction="row" flexWrap="wrap" gap={1}>
-            <SingleSelectFilter
-              searchParamName="kind"
-              placeholder="Art"
-              options={optionsFromRecord(inspectionPendingFacilityKindNames)}
-              tableControl={tableControl}
-            />
-            <SingleSelectFilter
-              searchParamName="objectTypeId"
-              placeholder="Objekt-Typ"
-              options={objectTypeOptions}
-              tableControl={tableControl}
-            />
-            <TextInputFilter
-              searchParamName="name"
-              placeholder="Name"
-              sx={{ flexGrow: 1 }}
-              tableControl={tableControl}
-            />
-            <TextInputFilter
-              searchParamName="postalCode"
-              placeholder="PLZ"
-              sx={{ maxWidth: "5rem" }}
-              tableControl={tableControl}
-            />
-            <TextInputFilter
-              searchParamName="city"
-              placeholder="Stadt"
-              sx={{ flexGrow: 1 }}
-              tableControl={tableControl}
-            />
-            <TextInputFilter
-              searchParamName="street"
-              placeholder="Straße"
-              sx={{ flexGrow: 1 }}
-              tableControl={tableControl}
-            />
-            <SingleSelectFilter
-              searchParamName="status"
-              placeholder="Status"
-              options={optionsFromRecord(procedureStatusNames)}
-              tableControl={tableControl}
-            />
-            <SingleSelectFilter
-              searchParamName="type"
-              placeholder="Typ"
-              options={optionsFromRecord(inspectionTypeNames)}
-              tableControl={tableControl}
-            />
-            <SingleSelectFilter
-              searchParamName="phase"
-              placeholder="Phase"
-              options={optionsFromRecord(inspectionPhaseNames)}
-              tableControl={tableControl}
-            />
-          </Stack>
+          <ButtonBar
+            left={
+              <>
+                <FilterButton {...filterSettings.filterButtonProps} />
+                <TextInputFilter
+                  searchParamName="name"
+                  placeholder="Name"
+                  tableControl={tableControl}
+                />
+                <TextInputFilter
+                  searchParamName="postalCode"
+                  placeholder="PLZ"
+                  tableControl={tableControl}
+                />
+                <TextInputFilter
+                  searchParamName="city"
+                  placeholder="Stadt"
+                  tableControl={tableControl}
+                />
+                <TextInputFilter
+                  searchParamName="street"
+                  placeholder="Straße"
+                  tableControl={tableControl}
+                />
+              </>
+            }
+            right={<NewFacilityButton />}
+          />
+        }
+        filterSettings={
+          filterSettings.filterSettingsVisible && (
+            <FilterSettingsSheet {...filterSettings.filterSettingsSheetProps}>
+              <FilterSettings {...filterSettings.filterSettingsProps} />
+            </FilterSettingsSheet>
+          )
         }
       >
         <TableSheet
@@ -169,4 +237,57 @@ export function PendingFacilitiesTable(
       )}
     </>
   );
+}
+
+function usePendingFacilitiesFilterState(options: {
+  stateProvider: FilterSettingsStateProvider;
+  filter: PendingFacilitiesFilters;
+  defaults: FilterValue[];
+}) {
+  const { activeValues, setActiveValues, ...rest } = options.stateProvider;
+  const [touched, setTouched] = useState(activeValues.length > 0);
+
+  const stateProvider: FilterSettingsStateProvider = {
+    activeValues: touched ? activeValues : options.defaults,
+    setActiveValues: (values) => {
+      setTouched(true);
+      setActiveValues(values);
+    },
+    ...rest,
+  };
+
+  const filter: PendingFacilitiesFilters = useMemo(
+    () => ({
+      ...options.filter,
+      ...(touched ? {} : activeValuesToFilters(options.defaults)),
+    }),
+    [options.filter, options.defaults, touched],
+  );
+
+  return {
+    stateProvider,
+    filter,
+  };
+}
+
+function activeValuesToFilters(
+  activeValues: FilterValue[],
+): PendingFacilitiesFilters {
+  const filters = new Map<string, unknown>();
+
+  for (const value of activeValues) {
+    switch (value.type) {
+      case "Date":
+      case "EnumSingle":
+        filters.set(value.key, value.selectedValue);
+        break;
+      case "Enum":
+        filters.set(value.key, value.selectedValues);
+        break;
+      case "Number":
+        break;
+    }
+  }
+
+  return Object.fromEntries(filters);
 }

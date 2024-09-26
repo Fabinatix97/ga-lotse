@@ -187,7 +187,6 @@ export function MigrationBackgroundForm(props: MigrationBackgroundFormProps) {
           testId="inGermanySince"
           fieldName={fieldName("inGermanySince")}
           date={props.values.inGermanySince}
-          softRequired
         />
       </Stack>
     </Stack>

@@ -8,7 +8,9 @@ package de.eshg.schoolentry.pdf.invitation;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
-import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.base.client.ContactClient;
+import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -17,6 +19,7 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.business.model.ChildData;
+import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.QrCodeGenerator;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
@@ -27,6 +30,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,27 +42,30 @@ import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
-public class InvitationGenerator {
+public class InvitationGenerator extends AbstractGenerator {
 
   static final String INVITATION_TEMPLATE = "/templates/invitation.ftlx";
 
   private static final String CITIZEN_PORTAL_LANDING_PAGE_PATH = "esu";
 
   private final ClassPathResource invitationTemplate;
-  private final DepartmentClient departmentClient;
   private final String citizenPortalUrl;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
+  private final AppointmentBlockProperties appointmentBlockProperties;
 
   public InvitationGenerator(
       @Value(INVITATION_TEMPLATE) ClassPathResource invitationTemplate,
       DepartmentClient departmentClient,
       @Value("${eshg.citizen-portal.reverse-proxy.url}") String citizenPortalUrl,
       DocumentGenerator documentGenerator,
-      Clock clock) {
+      Clock clock,
+      AppointmentBlockProperties appointmentBlockProperties,
+      ContactClient contactClient) {
+    super(departmentClient, contactClient);
+    this.appointmentBlockProperties = appointmentBlockProperties;
     Assert.isTrue(invitationTemplate.exists(), () -> invitationTemplate + " does not exist");
     this.invitationTemplate = invitationTemplate;
-    this.departmentClient = departmentClient;
     this.citizenPortalUrl = citizenPortalUrl;
     this.documentGenerator = documentGenerator;
     this.clock = clock;
@@ -72,14 +79,22 @@ public class InvitationGenerator {
   }
 
   @VisibleForTesting
-  InvitationData buildInvitationData(String accessCode, ChildData child, Instant appointmentStart) {
+  InvitationData buildInvitationData(
+      String accessCode, ChildData child, Instant appointmentStart, UUID locationId) {
     String url = buildQrCodeUrl(accessCode);
     String qrCode =
         Base64.getEncoder()
             .encodeToString(QrCodeGenerator.createQrCode(url).getBytes(StandardCharsets.UTF_8));
 
-    Address departmentAddress = fetchDepartmentAddress();
+    Address departmentAddress = getDepartmentAddress();
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    Address examinationExecutionLocation;
+    if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE
+        && locationId != null) {
+      examinationExecutionLocation = getAddressOfInstitution(locationId);
+    } else {
+      examinationExecutionLocation = departmentAddress;
+    }
 
     AddressDto address = child.address();
     Address childAddress =
@@ -115,7 +130,8 @@ public class InvitationGenerator {
             zonedAppointmentStart.format(ReportGeneratorConstants.DATE_FORMAT_DE),
             zonedAppointmentStart.format(ReportGeneratorConstants.TIME_FORMAT_DE),
             qrCode,
-            formatAccessCode(accessCode));
+            formatAccessCode(accessCode),
+            examinationExecutionLocation);
     InvitationInfo invitationInfo =
         new InvitationInfo(
             "Frankfurt am Main",
@@ -129,19 +145,6 @@ public class InvitationGenerator {
         invitationInfo,
         "#21BBEF",
         "#EBEBEB");
-  }
-
-  private Address fetchDepartmentAddress() {
-    GetDepartmentInfoResponse departmentInfo = departmentClient.getDepartmentInfo();
-    return new Address(
-        departmentInfo.name(),
-        departmentInfo.street() + " " + departmentInfo.houseNumber(),
-        departmentInfo.postalCode(),
-        departmentInfo.city(),
-        departmentInfo.phoneNumber(),
-        departmentInfo.homepage(),
-        null,
-        departmentInfo.email());
   }
 
   private static String concat(String... strings) {
@@ -166,8 +169,9 @@ public class InvitationGenerator {
     return StringUtils.substringAfter(landingPageUrlWithoutScheme, "//");
   }
 
-  public Pdf generateInvitation(String accessCode, ChildData childData, Instant start) {
-    InvitationData invitationData = buildInvitationData(accessCode, childData, start);
+  public Pdf generateInvitation(
+      String accessCode, ChildData childData, Instant start, UUID locationId) {
+    InvitationData invitationData = buildInvitationData(accessCode, childData, start, locationId);
     return generateInvitation(invitationData);
   }
 

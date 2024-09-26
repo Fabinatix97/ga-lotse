@@ -19,7 +19,9 @@ public final class AuditlogPublicSecurityConfig extends AbstractPublicSecurityCo
         .hasRole(EmployeePermissionRole.AUDITLOG_DECRYPT_AND_ACCESS);
     requestMatchers(HttpMethod.GET, AuditLog.AUDIT_LOG_CONTROLLER + "/key")
         .hasRole(EmployeePermissionRole.AUDITLOG_DECRYPT_AND_ACCESS);
-    requestMatchers(HttpMethod.GET, AuditLog.AUDIT_LOG_CONTROLLER + "/grantees")
+    requestMatchers(HttpMethod.GET, AuditLog.AUDIT_LOG_CONTROLLER + "/grantees-candidates")
+        .hasRole(EmployeePermissionRole.AUDITLOG_AUTHORIZE_ACCESS);
+    requestMatchers(HttpMethod.GET, AuditLog.AUDIT_LOG_CONTROLLER + "/grant-access")
         .hasRole(EmployeePermissionRole.AUDITLOG_AUTHORIZE_ACCESS);
     requestMatchers(HttpMethod.POST, AuditLog.AUDIT_LOG_CONTROLLER + "/grant-access")
         .hasRole(EmployeePermissionRole.AUDITLOG_AUTHORIZE_ACCESS);
@@ -27,5 +29,7 @@ public final class AuditlogPublicSecurityConfig extends AbstractPublicSecurityCo
         .hasRole(EmployeePermissionRole.AUDITLOG_AUTHORIZE_ACCESS);
     requestMatchers(HttpMethod.GET, AuditLog.AUDIT_LOG_CONTROLLER + "/accessible")
         .hasRole(EmployeePermissionRole.AUDITLOG_DECRYPT_AND_ACCESS);
+    requestMatchers(BaseUrls.AuditLog.FEATURE_TOGGLES_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
   }
 }

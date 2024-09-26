@@ -11,7 +11,8 @@ public enum Daycare implements ConvertibleToValueOptions {
   NO("0", "kein Besuch"),
   MONTH_18("1", "< 18 Monate"),
   MONTH_18_TO_YEARS_3("2", "18 Monate - 3 Jahre"),
-  YEARS_3("3", "> 3 Jahre");
+  YEARS_3("3", "> 3 Jahre"),
+  UNKNOWN("9", "unbekannt");
 
   private final String value;
   private final String meaning;
@@ -29,5 +30,10 @@ public enum Daycare implements ConvertibleToValueOptions {
   @Override
   public String getMeaning() {
     return meaning;
+  }
+
+  @Override
+  public boolean isUnknownValue() {
+    return this.equals(UNKNOWN);
   }
 }

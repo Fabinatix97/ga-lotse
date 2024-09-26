@@ -5,9 +5,9 @@
 
 package de.eshg.inspection.checklistdefinition;
 
-import de.eshg.inspection.checklistdefinition.api.AddChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionDto;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionDto;
+import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionsResponse;
 import de.eshg.inspection.checklistdefinition.api.CreateNewChecklistDefinitionRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -78,8 +78,16 @@ public class ChecklistDefinitionController {
   @Transactional()
   @NotNull
   public ChecklistDefinitionVersionDto addChecklistDefinitionVersion(
-      @PathVariable("id") UUID id,
-      @Valid @RequestBody AddChecklistDefinitionVersionRequest request) {
+      @PathVariable("id") UUID id, @Valid @RequestBody ChecklistDefinitionVersionRequest request) {
     return checklistDefinitionService.addChecklistDefinitionVersion(id, request);
+  }
+
+  @PutMapping(path = "/versions/{id}")
+  @Operation(summary = "Edits an existing checklist definition version in draft mode")
+  @Transactional()
+  @NotNull
+  public ChecklistDefinitionVersionDto editDraftChecklistDefinitionVersion(
+      @PathVariable("id") UUID id, @Valid @RequestBody ChecklistDefinitionVersionRequest request) {
+    return checklistDefinitionService.editDraftChecklistDefinitionVersion(id, request);
   }
 }

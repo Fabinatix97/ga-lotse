@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ApiSchoolEntryCountryCode } from "@eshg/employee-portal-api/schoolEntry";
+import {
+  ApiBooleanWithUnknown,
+  ApiSchoolEntryCountryCode,
+} from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
@@ -91,15 +94,15 @@ export interface DevelopmentInfoValues {
 }
 
 export interface CheckUpsValues {
-  u2: OptionalFieldValue<boolean>;
-  u3: OptionalFieldValue<boolean>;
-  u4: OptionalFieldValue<boolean>;
-  u5: OptionalFieldValue<boolean>;
-  u6: OptionalFieldValue<boolean>;
-  u7: OptionalFieldValue<boolean>;
-  u7a: OptionalFieldValue<boolean>;
-  u8: OptionalFieldValue<boolean>;
-  u9: OptionalFieldValue<boolean>;
+  u2: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u3: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u4: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u5: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u6: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u7: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u7a: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u8: OptionalFieldValue<ApiBooleanWithUnknown>;
+  u9: OptionalFieldValue<ApiBooleanWithUnknown>;
 }
 
 export interface PromotionBeforeSchoolEntryValues {

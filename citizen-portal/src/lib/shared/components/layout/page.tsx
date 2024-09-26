@@ -3,14 +3,46 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+"use client";
+
+import {
+  ScopedAlert,
+  useAlert,
+} from "@eshg/lib-portal/errorHandling/AlertContext";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Sheet, Stack, Typography } from "@mui/joy";
+import { Sheet, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
+import { isDefined } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 
-export function Page(props: RequiresChildren) {
-  return <Stack gap={3}>{props.children}</Stack>;
+import { BannerType, PageBanner } from "./PageBanner";
+import { PageContent } from "./PageContent";
+
+const MainContents = styled("main")({
+  display: "contents",
+});
+
+interface PageLayoutProps extends RequiresChildren {
+  banner?: BannerType;
+}
+
+export function PageLayout(props: PageLayoutProps) {
+  const alert = useAlert();
+
+  return (
+    <>
+      {isDefined(props.banner) && <PageBanner type={props.banner} />}
+      <MainContents>
+        {alert !== null && (
+          <PageContent>
+            <ScopedAlert />
+          </PageContent>
+        )}
+        {props.children}
+      </MainContents>
+    </>
+  );
 }
 
 interface PageTitleProps extends RequiresChildren {

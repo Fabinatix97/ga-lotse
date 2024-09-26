@@ -14,12 +14,8 @@ import jakarta.validation.constraints.Min;
 public record ContactFilterParameters(
     @Parameter(
             description =
-                "The last name of the Contact (or parts of it) which shall be searched for.")
+                "The full name of the Contact (or parts of it) which shall be searched for.")
         String name,
-    @Parameter(
-            description =
-                "The first name(s) of the Contact (or parts of it) which shall be searched for.")
-        String firstName,
     @Parameter(
             description =
                 "The street, as the main part of the address of a Contact, (or parts of it) which shall be searched for.")

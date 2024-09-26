@@ -7,19 +7,15 @@ package de.eshg.lib.procedure.model;
 
 import static de.eshg.lib.procedure.api.ProgressEntryApi.QueryParameter.*;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetProgressEntriesFilterOptions(
-    @CanBeLogged
-        @Parameter(description = "Filter on progressEntryType")
-        @BindParam(PROGRESS_ENTRY_TYPE)
+    @Parameter(description = "Filter on progressEntryType") @BindParam(PROGRESS_ENTRY_TYPE)
         Set<String> progressEntryType,
-    @CanBeLogged
-        @Parameter(description = "Filter on child class of progressEntry")
+    @Parameter(description = "Filter on child class of progressEntry")
         @BindParam(PROGRESS_ENTRY_CLASS)
         Set<ProgressEntryClassDto> progressEntryClass,
     @Parameter(
@@ -31,8 +27,7 @@ public record GetProgressEntriesFilterOptions(
                     """)
         @BindParam(INITIATED_BY)
         Set<UUID> initiatedBy,
-    @CanBeLogged
-        @Parameter(
+    @Parameter(
             description =
                 """
                 Filter on triggerType.

@@ -42,3 +42,7 @@ export const appointmentStaffApiQueryKey = queryKeyFactory(
 export const fileApiQueryKey = queryKeyFactory(apiQueryKey(["fileApi"]));
 
 export const configApiQueryKey = queryKeyFactory(apiQueryKey(["configApi"]));
+
+export const archivingApiQueryKey = queryKeyFactory(
+  apiQueryKey(["archivingApi"]),
+);

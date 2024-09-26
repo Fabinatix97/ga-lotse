@@ -7,7 +7,6 @@ package de.eshg.lib.procedure.api;
 
 import static de.eshg.lib.procedure.api.RecentProcedureApi.QueryParameter.*;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.lib.procedure.model.GetRecentProceduresResponse;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
@@ -39,14 +38,10 @@ public interface RecentProcedureApi {
   @ApiResponse(responseCode = "200", description = "the current users recent procedures")
   @Operation(summary = "Get recent procedures for the current user")
   GetRecentProceduresResponse getSelfRecentProcedures(
-      @CanBeLogged @RequestParam(name = PROCEDURE_TYPE, required = false)
-          Set<ProcedureTypeDto> procedureTypes,
-      @CanBeLogged @RequestParam(name = PROCEDURE_STATUS, required = false)
+      @RequestParam(name = PROCEDURE_TYPE, required = false) Set<ProcedureTypeDto> procedureTypes,
+      @RequestParam(name = PROCEDURE_STATUS, required = false)
           Set<ProcedureStatusDto> procedureStatus,
-      @CanBeLogged
-          @RequestParam(name = LIMIT, required = false, defaultValue = "50")
-          @Min(1)
-          @Max(200)
+      @RequestParam(name = LIMIT, required = false, defaultValue = "50") @Min(1) @Max(200)
           Integer limit);
 
   @GetExchange(RECENT_PROCEDURES_API_PATH)
@@ -54,13 +49,9 @@ public interface RecentProcedureApi {
   @Operation(summary = "Get recent procedures for user")
   GetRecentProceduresResponse getRecentProcedures(
       @RequestParam(name = USER_ID) UUID userId,
-      @CanBeLogged @RequestParam(name = PROCEDURE_TYPE, required = false)
-          Set<ProcedureTypeDto> procedureTypes,
-      @CanBeLogged @RequestParam(name = PROCEDURE_STATUS, required = false)
+      @RequestParam(name = PROCEDURE_TYPE, required = false) Set<ProcedureTypeDto> procedureTypes,
+      @RequestParam(name = PROCEDURE_STATUS, required = false)
           Set<ProcedureStatusDto> procedureStatus,
-      @CanBeLogged
-          @RequestParam(name = LIMIT, required = false, defaultValue = "50")
-          @Min(1)
-          @Max(200)
+      @RequestParam(name = LIMIT, required = false, defaultValue = "50") @Min(1) @Max(200)
           Integer limit);
 }

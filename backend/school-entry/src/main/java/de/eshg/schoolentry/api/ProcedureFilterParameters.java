@@ -7,6 +7,7 @@ package de.eshg.schoolentry.api;
 
 import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public record ProcedureFilterParameters(
@@ -14,4 +15,5 @@ public record ProcedureFilterParameters(
     UUID schoolIdFilter,
     @Min(1900) Integer schoolYearFilter,
     LocalDate dayOfAppointmentFilter,
-    Boolean hasAppointmentFilter) {}
+    Boolean hasAppointmentFilter,
+    List<UUID> labelsFilter) {}

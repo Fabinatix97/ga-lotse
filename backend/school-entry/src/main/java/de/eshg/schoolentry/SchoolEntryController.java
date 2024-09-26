@@ -482,6 +482,8 @@ public class SchoolEntryController {
       validateSheet(workbook);
 
       Sheet sheet = workbook.getSheetAt(0);
+
+      validator.validateNumberOfRows(sheet);
       validateHeaderExists(sheet);
       switch (importType) {
         case CITIZEN_LIST -> ImportDataUtil.validateCitizenListHeaderFormat(sheet);
@@ -644,6 +646,7 @@ public class SchoolEntryController {
   public WaitingRoomDto updateWaitingRoomDetails(
       @PathVariable("procedureId") UUID procedureId, @Valid @RequestBody WaitingRoomDto request) {
     featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.WAITING_ROOM);
+    assertLocationModeNotSet();
     WaitingRoom waitingRoom =
         schoolEntryService.findWaitingRoomForUpdate(procedureId, request.version());
     SchoolEntryProcedure procedure = waitingRoom.getProcedure();
@@ -673,5 +676,26 @@ public class SchoolEntryController {
             .toList();
 
     return ResponseEntity.ok(new ValidateRequiredProcedureDataResponse(incompleteAreas));
+  }
+
+  @GetMapping("/waiting-room-procedures")
+  @Transactional(readOnly = true)
+  public GetWaitingRoomProceduresResponse getWaitingRoomProcedures(
+      @InlineParameterObject @ParameterObject @Valid
+          WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
+    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.WAITING_ROOM);
+    assertLocationModeNotSet();
+
+    PagedWaitingRoomProcedures pagedProcedures =
+        schoolEntryService.getWaitingRoomProcedures(paginationAndSortParameters);
+    return new GetWaitingRoomProceduresResponse(
+        pagedProcedures.stream().map(WaitingRoomMapper::mapWaitingRoomProcedureToDto).toList(),
+        pagedProcedures.totalNumberOfProcedures());
+  }
+
+  private void assertLocationModeNotSet() {
+    if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE) {
+      throw ExceptionUtil.badRequestExceptionUnsupportedLocationMode();
+    }
   }
 }

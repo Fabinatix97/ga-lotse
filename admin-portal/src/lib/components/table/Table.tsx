@@ -72,6 +72,7 @@ export function Table<TData extends UniqueEntity>(
   const tableStyle: SxProps = {
     "--TableCell-paddingY": (theme) => theme.spacing(1),
     "--TableCell-paddingX": (theme) => theme.spacing(1.5),
+    tableLayout: "auto",
   };
 
   return (

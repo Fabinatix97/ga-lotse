@@ -5,9 +5,10 @@
 
 import {
   AddChecklistDefinitionToCentralRepoRequest,
-  ApiAddChecklistDefinitionVersionRequest,
   ApiCLContext,
   ApiChecklistDefinitionFromCentralRepoUpdateRequest,
+  ApiChecklistDefinitionVersion,
+  ApiChecklistDefinitionVersionRequest,
   ApiCreateNewChecklistDefinitionRequest,
   DeleteChecklistDefinitionFromCentralRepoRequest,
   UpdateChecklistDefinitionToCentralRepoRequest,
@@ -44,6 +45,7 @@ export function useCreateChecklistDefinition() {
         isCoreChecklist: cldVersion.isCoreChecklist,
         isExpandable: cldVersion.context.expandable,
         deleted: cldVersion.context.deleted,
+        published: cldVersion.context.published,
       };
 
       return await checklistDefinitionApi.createNewChecklistDefinition(
@@ -53,7 +55,7 @@ export function useCreateChecklistDefinition() {
   });
 }
 
-export function useUpdateChecklistDefinition() {
+export function useAddChecklistDefinitionVersion() {
   const checklistDefinitionApi = useChecklistDefinitionApi();
   return useHandledMutation({
     mutationFn: async ({
@@ -61,19 +63,51 @@ export function useUpdateChecklistDefinition() {
       cldVersion,
     }: {
       defId: string;
-      cldVersion: FormChecklistDefinitionVersion;
+      cldVersion:
+        | FormChecklistDefinitionVersion
+        | ApiChecklistDefinitionVersion;
     }) => {
-      const createdChecklist: ApiAddChecklistDefinitionVersionRequest = {
+      const createdChecklist: ApiChecklistDefinitionVersionRequest = {
         description: cldVersion.context.description,
         name: cldVersion.context.name,
         sections: cldVersion.context.sections,
         isExpandable: cldVersion.context.expandable,
         deleted: cldVersion.context.deleted,
+        published: cldVersion.context.published,
       };
 
       return await checklistDefinitionApi.addChecklistDefinitionVersion(
         defId,
         createdChecklist,
+      );
+    },
+  });
+}
+
+export function useEditDraftChecklistDefinitionVersion() {
+  const checklistDefinitionApi = useChecklistDefinitionApi();
+  return useHandledMutation({
+    mutationFn: async ({
+      versionId,
+      cldVersion,
+    }: {
+      versionId: string;
+      cldVersion:
+        | FormChecklistDefinitionVersion
+        | ApiChecklistDefinitionVersion;
+    }) => {
+      const request: ApiChecklistDefinitionVersionRequest = {
+        description: cldVersion.context.description,
+        name: cldVersion.context.name,
+        sections: cldVersion.context.sections,
+        isExpandable: cldVersion.context.expandable,
+        deleted: cldVersion.context.deleted,
+        published: cldVersion.context.published,
+      };
+
+      return await checklistDefinitionApi.editDraftChecklistDefinitionVersion(
+        versionId,
+        request,
       );
     },
   });

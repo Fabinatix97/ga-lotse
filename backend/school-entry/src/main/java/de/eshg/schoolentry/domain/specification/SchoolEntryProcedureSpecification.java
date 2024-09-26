@@ -8,17 +8,12 @@ package de.eshg.schoolentry.domain.specification;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.schoolentry.domain.model.Label;
+import de.eshg.schoolentry.domain.model.Label_;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.util.ProcedureSortKey;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import java.io.Serial;
 import java.time.Instant;
 import java.time.Year;
@@ -28,7 +23,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
@@ -43,6 +37,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
   private final Year schoolYearFilter;
   private final Instant dayOfAppointmentFilter;
   private final Boolean hasAppointmentFilter;
+  private final ArrayList<UUID> labelFilter;
   private final ProcedureSortKey sortKey;
   private final Sort.Direction sortDirection;
 
@@ -53,6 +48,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       Year schoolYearFilter,
       Instant dayOfAppointmentFilter,
       Boolean hasAppointmentFilter,
+      ArrayList<UUID> labelFilter,
       ProcedureSortKey sortKey,
       Sort.Direction sortDirection) {
     this.procedureStatusFilter = procedureStatusFilter;
@@ -61,6 +57,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
     this.schoolYearFilter = schoolYearFilter;
     this.dayOfAppointmentFilter = dayOfAppointmentFilter;
     this.hasAppointmentFilter = hasAppointmentFilter;
+    this.labelFilter = labelFilter;
     this.sortKey = sortKey;
     this.sortDirection = sortDirection;
   }
@@ -105,6 +102,17 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
         conjunctions.add(criteriaBuilder.isNotNull(root.get(SchoolEntryProcedure_.appointment)));
       } else {
         conjunctions.add(criteriaBuilder.isNull(root.get(SchoolEntryProcedure_.appointment)));
+      }
+    }
+
+    if (labelFilter != null) {
+      for (UUID labelId : labelFilter) {
+        Subquery<SchoolEntryProcedure> subquery = query.subquery(SchoolEntryProcedure.class);
+        Root<SchoolEntryProcedure> subqueryRoot = subquery.correlate(root);
+        ListJoin<SchoolEntryProcedure, Label> labelJoin =
+            subqueryRoot.join(SchoolEntryProcedure_.labels);
+        subquery.where(criteriaBuilder.equal(labelJoin.get(Label_.externalId), labelId));
+        conjunctions.add(criteriaBuilder.exists(subquery));
       }
     }
 

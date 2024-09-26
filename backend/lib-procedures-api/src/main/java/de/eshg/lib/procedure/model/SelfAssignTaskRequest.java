@@ -5,8 +5,8 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
-public record SelfAssignTaskRequest(@CanBeLogged @Future Instant dueAt) {}
+public record SelfAssignTaskRequest(@NotNull Long taskVersion, @Future Instant dueAt) {}

@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   AutocompleteOption,
-  Avatar,
   Box,
   Chip,
   ChipDelete,
   FormHelperText,
-  FormLabel,
   Typography,
 } from "@mui/joy";
 import { useField } from "formik";
@@ -19,31 +18,29 @@ import { HTMLAttributes } from "react";
 
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 
+import { ChatAvatar } from "./ChatAvatar";
+
 interface UsersAutocompleteProps {
   name: string;
-  label: string;
-  usersList: ApiUser[];
+  placeholder: string;
+  usersList: (ApiUser & { department?: string })[];
   multiple: boolean;
-  getImageUrl: (url?: string) => string | null;
 }
 
 export function UsersAutocomplete({
   name,
-  label,
+  placeholder,
   usersList,
   multiple,
-  getImageUrl,
 }: Readonly<UsersAutocompleteProps>) {
   const [field, meta, helpers] = useField<string | string[] | null>(name);
   return (
     <Box>
-      <FormLabel htmlFor={name} sx={{ mt: 2 }}>
-        {label}
-      </FormLabel>
       <Autocomplete
         name="invite"
         multiple={multiple}
         value={field.value}
+        size="lg"
         onChange={async (_, newValue) => {
           if (multiple) {
             const emptyValue: string[] = [];
@@ -52,11 +49,30 @@ export function UsersAutocomplete({
             await helpers.setValue(newValue);
           }
         }}
+        placeholder={placeholder}
         options={usersList.map((opt) => opt.user_id)}
         getOptionLabel={(value) =>
           usersList?.find((apiUser) => apiUser.user_id === value)
             ?.display_name ?? value
         }
+        startDecorator={<SearchIcon />}
+        slotProps={{
+          input: {
+            sx: {
+              "&::placeholder": {
+                color: "primary.300",
+              },
+            },
+          },
+        }}
+        sx={{
+          ".MuiAutocomplete-popupIndicator": {
+            display: "none",
+          },
+          backgroundColor: "background.surface",
+          borderColor: "primary.300",
+          height: "3.25rem",
+        }}
         renderOption={(props, option) => {
           const apiUser = usersList?.find((user) => user.user_id === option);
           if (!apiUser) return null;
@@ -70,9 +86,10 @@ export function UsersAutocomplete({
               key={option}
               {...componentProps}
               sx={{
-                display: "flex",
+                display: "grid",
                 alignItems: "center",
-                justifyContent: "space-between",
+                gridTemplateColumns: "repeat(2, auto 1fr)",
+                gap: 2,
               }}
             >
               <Box
@@ -82,15 +99,22 @@ export function UsersAutocomplete({
                   gap: 1,
                 }}
               >
-                <Avatar
-                  color="primary"
-                  variant="soft"
+                <ChatAvatar
+                  name={apiUser.display_name}
+                  userId={apiUser.user_id}
+                  avatarUrl={apiUser.avatar_url ?? null}
                   size="sm"
-                  src={getImageUrl(apiUser?.avatar_url) ?? undefined}
                 />
-                <Typography level="body-sm">{apiUser.display_name}</Typography>
+                <Typography level="title-md">{apiUser.display_name}</Typography>
               </Box>
-              <Typography level="body-xs">{apiUser.user_id}</Typography>
+              {apiUser.department && (
+                <Typography
+                  level="body-md"
+                  sx={{ color: "neutral.400", textTransform: "capitalize" }}
+                >
+                  {apiUser.department}
+                </Typography>
+              )}
             </AutocompleteOption>
           );
         }}
@@ -102,9 +126,10 @@ export function UsersAutocomplete({
             );
             return (
               <Chip
-                variant="outlined"
+                variant="soft"
                 key={key}
                 endDecorator={<ChipDelete {...tagProps} />}
+                color="primary"
               >
                 {apiUser?.display_name}
               </Chip>

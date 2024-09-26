@@ -78,13 +78,13 @@ function UploadChecklistToRepoSidebarWithMutations({
       if (create) {
         await addChecklistDefinitionToCentralRepo({
           cldId: checklistDefinition.id,
-          cldVersion: checklistDefinition.mostRecentVersionNr,
+          cldVersion: checklistDefinition.mostRecentVersion.context.version,
           apiChecklistDefinitionCentralRepoRequest: formValues,
         });
       } else {
         await updateChecklistDefinitionToCentralRepo({
           cldId: checklistDefinition.id,
-          cldVersion: checklistDefinition.mostRecentVersionNr,
+          cldVersion: checklistDefinition.mostRecentVersion.context.version,
           apiChecklistDefinitionCentralRepoUpdateRequest: formValues,
         });
       }

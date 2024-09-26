@@ -52,7 +52,8 @@ public record GetPendingFacilitiesPaginationOptionsDto(
         "objecttype_name",
         "inspection_status",
         "inspection_type",
-        "inspection_phase");
+        "inspection_phase",
+        "inspection_numberOfIncidents");
   }
 
   public static Comparator<InspPendingFacilityDto> createComparator(PageRequest pageRequest) {
@@ -86,6 +87,10 @@ public record GetPendingFacilitiesPaginationOptionsDto(
             case "inspection_phase" ->
                 comparing(
                     e -> e.inspection() == null ? null : e.inspection().phase(),
+                    nullsLast(naturalOrder()));
+            case "inspection_numberOfIncidents" ->
+                comparing(
+                    e -> e.inspection() == null ? null : e.inspection().numberOfIncidents(),
                     nullsLast(naturalOrder()));
             default -> throw new BadRequestException("invalid sort param: " + order.getProperty());
           };

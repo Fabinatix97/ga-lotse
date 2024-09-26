@@ -9,6 +9,7 @@ import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,24 +19,28 @@ public record ChecklistDefinitionDto(
     @NotNull UUID id,
     @NotNull String name,
     @NotNull boolean coreChecklist,
-    @NotNull UUID mostRecentVersionId,
-    @NotNull int mostRecentVersionNr,
+    @NotNull boolean expandable, // depends on coreChecklist
     Integer mostRecentRepositoryVersion,
     Integer mostRecentVersionBasedOnRepo,
     @Valid ObjectTypeRefDto objectType,
     @NotNull boolean deleted,
+    @NotNull boolean published,
+    @NotNull Instant lastModified,
+    @Valid @NotNull ChecklistDefinitionVersionDto mostRecentVersion,
     @Valid @NotNull List<ChecklistDefinitionVersionDto> versions) {
-  public ChecklistDefinitionDto withoutVersion() {
+  public ChecklistDefinitionDto withoutVersions() {
     return new ChecklistDefinitionDto(
         id,
         name,
         coreChecklist,
-        mostRecentVersionId,
-        mostRecentVersionNr,
+        expandable,
         null,
         null,
         objectType,
         deleted,
+        published,
+        lastModified,
+        null,
         new ArrayList<>());
   }
 }

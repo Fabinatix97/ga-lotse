@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Stack, Switch } from "@mui/joy";
+import { Switch } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
@@ -100,16 +100,6 @@ export function InteractiveActiveCell<TData extends OrgUnit | Actor | Rule>(
         {confirmationDialog}
       </div>
     </>
-  );
-}
-
-export function ActiveCell<TData extends OrgUnit | Actor | Rule>(
-  props: CellContext<TData, boolean>,
-): ReactNode {
-  return (
-    <Stack justifyContent="center" direction="row">
-      {getActiveLabel(props.getValue())}
-    </Stack>
   );
 }
 

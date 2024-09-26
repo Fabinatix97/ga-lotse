@@ -15,6 +15,7 @@ import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.entity.Person_;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
+import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.base.util.PersonDiffer;
 import de.eshg.mutex.MutexService;
 import de.eshg.rest.service.error.AlreadyExistsException;
@@ -22,7 +23,6 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import java.time.Clock;
@@ -40,7 +40,7 @@ public class PersonService {
 
   public static final String MUTEX_PERSON_WRITE = "PERSON_WRITE";
   private final PersonRepository personRepository;
-  private final EntityManager entityManager;
+  private final FuzzySearchHelper fuzzySearchHelper;
   private final MutexService mutexService;
   private final CentralFileAuditLogger logger;
   private final Clock clock;
@@ -48,21 +48,17 @@ public class PersonService {
   public PersonService(
       PersonRepository personRepository,
       MutexService mutexService,
-      EntityManager entityManager,
+      FuzzySearchHelper fuzzySearchHelper,
       CentralFileAuditLogger logger,
       Clock clock) {
     this.personRepository = personRepository;
     this.mutexService = mutexService;
-    this.entityManager = entityManager;
+    this.fuzzySearchHelper = fuzzySearchHelper;
     this.logger = logger;
     this.clock = clock;
   }
 
   public static boolean isPersonFileStateOutdated(Person personFileState, Person referencePerson) {
-    Long referenceVersion = personFileState.getReferenceVersion();
-    if (referenceVersion != null && referenceVersion >= referencePerson.getVersion()) {
-      return false;
-    }
     return !PersonDiffer.isPersonMatch(personFileState, referencePerson);
   }
 
@@ -104,13 +100,12 @@ public class PersonService {
     return savedPersonFileState;
   }
 
-  public List<Person> addPersonFileStates(List<Person> personsToAdd) {
+  public List<UUID> addPersonFileStates(List<Person> personsToAdd) {
     return mutexService.doWithLockedMutex(
         MUTEX_PERSON_WRITE, () -> addPersonFileStatesWhenLocked(personsToAdd));
   }
 
-  private List<Person> addPersonFileStatesWhenLocked(List<Person> fileStates) {
-
+  private List<UUID> addPersonFileStatesWhenLocked(List<Person> fileStates) {
     Set<PersonKeyAttributes> personKeyAttributes = collectPersonKeyAttributes(fileStates);
 
     List<Person> potentialMatches = findAllByKeyAttributes(personKeyAttributes);
@@ -125,7 +120,9 @@ public class PersonService {
       logger.logAddFileState(fileState);
     }
 
-    return personRepository.saveAll(fileStates);
+    personRepository.saveAll(fileStates);
+
+    return fileStates.stream().map(Person::getExternalId).toList();
   }
 
   private static void prepareFileStateToAddToDb(Person fileState, Person referencePerson) {
@@ -170,9 +167,7 @@ public class PersonService {
   private void configureSimilarityThreshold(String firstName, String lastName) {
     double threshold =
         Math.min(getSimilarityThreshold(firstName), getSimilarityThreshold(lastName));
-    entityManager
-        .createNativeQuery("set local pg_trgm.similarity_threshold=" + threshold)
-        .executeUpdate();
+    fuzzySearchHelper.setSimilarityThreshold(threshold);
   }
 
   public Optional<Person> findMatchingReferencePerson(Person person) {
@@ -242,8 +237,8 @@ public class PersonService {
             .findReferencePersonByFileStateId(personFileState.getExternalId())
             .orElseThrow(() -> new NotFoundException("Associated Reference Person not found"));
 
-    if (!Objects.equals(personFileState.getReferenceVersion(), referencePerson.getVersion())) {
-      throw new BadRequestException(ErrorCode.CONFLICT, "Version mismatch, file state is outdated");
+    if (isPersonFileStateOutdated(personFileState, referencePerson)) {
+      throw new BadRequestException(ErrorCode.CONFLICT, "Person file state is outdated");
     }
 
     if (findMatchingReferencePerson(fileStateUpdate).isPresent()) {
@@ -271,6 +266,11 @@ public class PersonService {
             .orElseThrow(() -> new NotFoundException("Associated Reference Person not found"));
 
     ValidationUtil.validateVersion(version, referencePerson);
+
+    if (!isPersonFileStateOutdated(personFileState, referencePerson)) {
+      throw new BadRequestException(
+          ErrorCode.CONFLICT, "File state and associated reference person already match");
+    }
 
     Person updatedFileState = referencePerson.cloneFromReferencePerson();
     updatedFileState.setDataOrigin(DataOrigin.EDIT);

@@ -7,7 +7,6 @@ import { parseISO } from "date-fns";
 import { groupBy, isDefined } from "remeda";
 
 import { useAddStatistic } from "@/lib/businessModules/statistics/api/mutations/useAddStatistic";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
 import {
   ChooseTemplateStep,
   Scheme,
@@ -17,6 +16,7 @@ import { SaveStatisticStep } from "@/lib/businessModules/statistics/components/s
 import { validateSaveStatisticStep } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/SaveStatisticStep/validateSaveStatisticStep";
 import { CreateStatisticFromTemplateFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/createStatisticFromTemplateFormModel";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/statistics/timeRangeHelper";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 
 export function CreateStatisticFromTemplateSidebar({
   open,

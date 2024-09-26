@@ -109,6 +109,7 @@ export function AppointmentStaffField(
                 endDecorator={<Close fontSize="sm" />}
                 sx={{ minWidth: 0 }}
                 {...getTagProps({ index })}
+                key={item.value}
               >
                 {item.label}
               </Chip>

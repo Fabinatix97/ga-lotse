@@ -17,7 +17,7 @@ const thisYear = new Date().getFullYear();
 const validateYear = createBoundedIntValidator(
   thisYear - 150,
   thisYear,
-  "Bitte eine Jahre angeben.",
+  "Bitte ein gültiges Jahr eingeben.",
 );
 
 export function PersonalDataForm() {
@@ -27,12 +27,12 @@ export function PersonalDataForm() {
         name="gender"
         label="Geschlecht"
         options={GENDER_OPTIONS}
-        required="Bitte ein Geschlecht auswählen"
+        required="Bitte ein Geschlecht auswählen."
       />
       <NumberField
         name="yearOfBirth"
         label="Geburtsjahr"
-        required="Bitte eingeben"
+        required="Bitte ein gültiges Jahr eingeben."
         validate={validateYear}
       />
       <SingleAutocompleteField

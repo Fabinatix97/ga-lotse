@@ -9,7 +9,6 @@ import static de.eshg.auditlog.AuditLogApi.QueryParameter.END_DATE;
 import static de.eshg.auditlog.AuditLogApi.QueryParameter.SOURCE;
 import static de.eshg.auditlog.AuditLogApi.QueryParameter.START_DATE;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
@@ -19,8 +18,7 @@ import org.springframework.web.bind.annotation.BindParam;
 
 @ParameterObject
 public record GetAvailableAuditLogsFilterOptions(
-    @CanBeLogged
-        @BindParam(SOURCE)
+    @BindParam(SOURCE)
         @Parameter(
             description =
                 """
@@ -29,8 +27,7 @@ public record GetAvailableAuditLogsFilterOptions(
             - If not submitted, no filtering takes place
         """)
         Set<AuditLogSource> source,
-    @CanBeLogged
-        @BindParam(START_DATE)
+    @BindParam(START_DATE)
         @Parameter(
             description =
                 """
@@ -42,8 +39,7 @@ public record GetAvailableAuditLogsFilterOptions(
             """)
         @Past
         LocalDate startDate,
-    @CanBeLogged
-        @BindParam(END_DATE)
+    @BindParam(END_DATE)
         @Parameter(
             description =
                 """

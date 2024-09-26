@@ -44,4 +44,9 @@ public class ChecklistSeparatorContextDto extends ChecklistElementContextDto {
   public int hashCode() {
     return Objects.hash(super.hashCode(), title);
   }
+
+  @Override
+  public String toString() {
+    return "ChecklistSeparatorContextDto{" + "title='" + title + '\'' + "} " + super.toString();
+  }
 }

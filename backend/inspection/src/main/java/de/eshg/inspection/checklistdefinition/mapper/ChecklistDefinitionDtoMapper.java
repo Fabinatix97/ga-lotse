@@ -6,6 +6,7 @@
 package de.eshg.inspection.checklistdefinition.mapper;
 
 import static de.eshg.inspection.checklist.mapper.ChecklistContextMapper.contextFrom;
+import static de.eshg.inspection.checklistdefinition.mapper.ChecklistDefinitionEntityMapper.getLatestVersion;
 import static java.util.Optional.ofNullable;
 
 import de.eshg.base.user.api.UserDto;
@@ -17,6 +18,7 @@ import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.UUID;
 
@@ -34,8 +36,8 @@ public final class ChecklistDefinitionDtoMapper {
     // it's dull to load all versions just to retrieve the ID of the last one -- maybe can be
     // optimized later
     List<ChecklistDefinitionVersion> versions = entity.getVersions();
-    UUID mostRecentVersionID = versions.getLast().getId();
-    int mostRecentVersionNr = versions.getLast().getVersion();
+    var latestVersion = getLatestVersion(entity);
+    boolean isExpandable = latestVersion.isExpandable();
 
     List<ChecklistDefinitionVersionDto> dtoVersions = new ArrayList<>();
 
@@ -54,12 +56,18 @@ public final class ChecklistDefinitionDtoMapper {
         entity.getId(),
         entity.getName(),
         entity.isCoreChecklist(),
-        mostRecentVersionID,
-        mostRecentVersionNr,
+        isExpandable,
         isCentralRepoDto ? null : entity.getMostRecentRepositoryVersion(),
         isCentralRepoDto ? null : entity.getMostRecentVersionBasedOnRepo(),
         dtoObjectTypeFrom(entity),
         entity.isDeleted(),
+        entity.isPublished(),
+        entity.getVersions().getLast().getLastModified(),
+        dtoFrom(
+            latestVersion,
+            Optional.ofNullable(users)
+                .map(usrs -> usrs.get(latestVersion.getModifiedBy()))
+                .orElse(null)),
         dtoVersions);
   }
 
@@ -79,6 +87,7 @@ public final class ChecklistDefinitionDtoMapper {
         contextFrom(version),
         modifiedByUser,
         dtoObjectTypeFrom(version.getChecklistDefinition()),
-        version.getChecklistDefinition().isCoreChecklist());
+        version.getChecklistDefinition().isCoreChecklist(),
+        !version.getChecklistDefinition().isPublished());
   }
 }

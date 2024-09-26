@@ -4,7 +4,6 @@
  */
 
 import { Autocomplete } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 import { useSearchParams } from "next/navigation";
 
 import { useReplaceSearchParams } from "@/lib/hooks/useReplaceSearchParams";
@@ -14,7 +13,6 @@ export function TextInputFilter(
     searchParamName: string;
     placeholder?: string;
     options: string[];
-    sx?: SxProps;
   }>,
 ) {
   const searchParams = useSearchParams();
@@ -34,9 +32,6 @@ export function TextInputFilter(
         ]);
       }}
       size="sm"
-      sx={{
-        ...props.sx,
-      }}
       placeholder={props.placeholder}
       aria-label={props.placeholder}
       options={props.options}

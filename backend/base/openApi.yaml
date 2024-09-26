@@ -498,17 +498,10 @@ paths:
     get:
       operationId: getContacts
       parameters:
-      - description: The last name of the Contact (or parts of it) which shall be
+      - description: The full name of the Contact (or parts of it) which shall be
           searched for.
         in: query
         name: name
-        required: false
-        schema:
-          type: string
-      - description: The first name(s) of the Contact (or parts of it) which shall
-          be searched for.
-        in: query
-        name: firstName
         required: false
         schema:
           type: string
@@ -864,6 +857,21 @@ paths:
                 format: byte
           description: OK
       summary: Get the security.txt file of the department running this application.
+      tags:
+      - Department
+  /department/security-txt-public-key:
+    get:
+      operationId: getSecurityTxtPublicKey
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: byte
+          description: OK
+      summary: Get the security.txt public PGP key file of the department running
+        this application.
       tags:
       - Department
   /facilities:
@@ -1891,7 +1899,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetPersonFileStatesResponse"
+                $ref: "#/components/schemas/AddPersonFileStatesResponse"
           description: OK
       summary: |
         Add multiple persons and associate each with a reference person.
@@ -3835,6 +3843,17 @@ components:
           minItems: 1
       required:
       - persons
+    AddPersonFileStatesResponse:
+      type: object
+      properties:
+        personFileStateIds:
+          type: array
+          description: A list containing the file state IDs of the added persons
+          items:
+            type: string
+            format: uuid
+      required:
+      - personFileStateIds
     AddResourceRequest:
       type: object
       properties:
@@ -7734,6 +7753,9 @@ components:
           $ref: "#/components/schemas/TaskStatus"
         taskType:
           $ref: "#/components/schemas/TaskType"
+        version:
+          type: integer
+          format: int64
       required:
       - businessModule
       - createdAt
@@ -7744,6 +7766,7 @@ components:
       - taskId
       - taskStatus
       - taskType
+      - version
     TaskDueAtReminderNotification:
       type: object
       allOf:

@@ -7,15 +7,9 @@ import { Switch } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ChangeEvent, ReactNode, useCallback } from "react";
 
-import {
-  ActiveCell,
-  InteractiveActiveCell,
-} from "@/lib/components/table/cell/ActiveCell";
+import { InteractiveActiveCell } from "@/lib/components/table/cell/ActiveCell";
 import { Actor } from "@/lib/components/view/actors/ActorTable";
-import {
-  isOneOfStagedEntity,
-  useEditableRow,
-} from "@/lib/helpers/entityFilter";
+import { isOneOfStagedEntity } from "@/lib/helpers/entityFilter";
 import { OrgUnit } from "@/lib/hooks/useOrgUnits";
 import { Rule } from "@/lib/hooks/useRules";
 
@@ -32,21 +26,13 @@ export function EditableActiveCell<TData extends OrgUnit | Actor | Rule>(
     [props.row, props.table.options.meta],
   );
 
-  const isEditableRow = useEditableRow(props.row);
-
   if (!isOneOfStagedEntity(props.row.original)) {
     return <InteractiveActiveCell {...props} />;
   }
 
-  if (isEditableRow) {
-    return <ActiveCell {...props} />;
-  }
-
-  const value = props.getValue();
-
   return (
     <Switch
-      checked={value}
+      checked={props.getValue()}
       onChange={handleChange}
       onClick={(event) => event.stopPropagation()}
     />

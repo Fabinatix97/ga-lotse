@@ -15,6 +15,8 @@ import {
 } from "@eshg/employee-portal-api/inspection";
 import { v4 as uuidv4 } from "uuid";
 
+import { ConfirmationDialogProps } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+
 function getId(
   partial: Partial<ApiCLSectionContextElementsInner>,
   keepId: boolean,
@@ -152,4 +154,22 @@ export function createChecklistElement(
   }
 
   return creator(partial, keepId);
+}
+
+export function showPublishChecklistDefinitionDialog(
+  openConfirmationDialog: (
+    confirmationDialog: Omit<ConfirmationDialogProps, "open" | "onClose"> & {
+      onClose?: ConfirmationDialogProps["onClose"];
+    },
+  ) => void,
+  cldName: string,
+  onConfirm: () => Promise<void> | void,
+) {
+  openConfirmationDialog({
+    title: "Checklisten-Definition veröffentlichen?",
+    description: `Möchten Sie den Entwurf “${cldName}” wirklich veröffentlichen? Danach sind keine Änderungen mehr möglich. Sie können jedoch weiterhin neue Versionen basierend auf diesem Entwurf erstellen.`,
+    confirmLabel: "Veröffentlichen",
+    cancelLabel: "Abbrechen",
+    onConfirm: onConfirm,
+  });
 }

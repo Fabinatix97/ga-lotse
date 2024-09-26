@@ -9,7 +9,6 @@ import static de.eshg.lib.procedure.api.InboxProcedureApi.QueryParameter.INBOX_P
 import static de.eshg.lib.procedure.api.InboxProcedureApi.QueryParameter.INBOX_PROCEDURE_TYPE;
 import static de.eshg.lib.procedure.api.InboxProcedureApi.QueryParameter.INCLUDE_UNTYPED;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Set;
 import org.springdoc.core.annotations.ParameterObject;
@@ -17,8 +16,7 @@ import org.springframework.web.bind.annotation.BindParam;
 
 @ParameterObject
 public record GetInboxProceduresFilterOptions(
-    @CanBeLogged
-        @BindParam(INBOX_PROCEDURE_TYPE)
+    @BindParam(INBOX_PROCEDURE_TYPE)
         @Parameter(
             description =
                 """
@@ -27,8 +25,7 @@ public record GetInboxProceduresFilterOptions(
         - If not submitted, no filtering takes place.
         """)
         Set<ProcedureTypeDto> inboxProcedureType,
-    @CanBeLogged
-        @Parameter(
+    @Parameter(
             description =
                 """
         Filter logic:
@@ -37,8 +34,7 @@ public record GetInboxProceduresFilterOptions(
         """)
         @BindParam(INCLUDE_UNTYPED)
         Boolean includeUntyped,
-    @CanBeLogged
-        @BindParam(INBOX_PROCEDURE_STATUS)
+    @BindParam(INBOX_PROCEDURE_STATUS)
         @Parameter(
             description =
                 """

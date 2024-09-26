@@ -2,37 +2,42 @@
 
 This project uses a gradle [multi project build](https://docs.gradle.org/current/userguide/multi_project_builds.html).
 
-After importing in intellij make sure to switch to adoptium temurin jdk 21. A good way to install and manage jdks
-is [sdkman](https://sdkman.io/)
+After importing in intellij make sure to switch to Eclipse Temurin JDK 21. A good way to install and manage jdks
+is [sdkman](https://sdkman.io/).
 
-By setting the system property `-Deshg.testcontainers.enabled=false` unit tests do not start testcontainers to speed up
+Docker (26 or newer) and docker compose (2.27 or newer) are needed to run the `composeUp` gradle tasks.
+
+By setting the system property `-Deshg.testcontainers.enabled=false`, unit tests do not start testcontainers to speed up
 test execution during development. Developers must provide alternatives to connect to like a local DB. A IntelliJ run
 configuration template for unit tests is provided.
 
 # Login Information
 
-During the initial setup, the [TestUser](lib-keycloak/src/main/java/de/eshg/lib/keycloak/TestUser.java) is used to
-configure
-test users with the specified credentials in our keycloak service.
-The current credentials used for development purposes are:
+During the initial setup, the [EmployeeTestUser](lib-keycloak/src/main/java/de/eshg/lib/keycloak/EmployeeTestUser.java) is used to
+configure test users with the specified credentials in our keycloak service.
+Some of the current credentials used for development purposes are:
 
-| Username               | Password | Scope                                                                   |
-| ---------------------- | -------- | ----------------------------------------------------------------------- |
-| admin                  | admin    | Keycloak admin                                                          |
-| dummy                  | password | all permissions                                                         |
-| tm_user                | password | travel medicine user                                                    |
-| inspection_ga_user     | password | inspection standard user of a "Gesundheitsamt"                          |
-| inspection_ga_config   | password | inspection user of a "Gesundheitsamt" able to edit inspection templates |
-| inspection_ga_teamlead | password | inspection team leader of a "Gesundheitsamt"                            |
-| inspection_la_user     | password | inspection user of a "Landesamt"                                        |
+| Username               | Password | Scope                                                                    |
+|----------------------- | -------- | ------------------------------------------------------------------------ |
+| admin                  | admin    | Keycloak admin                                                           |
+| dummy                  | password | all permissions                                                          |
+| tm_user                | password | travel medicine user                                                     |
+| inspection_ga_user     | password | inspection standard user of a "Gesundheitsamt"                           |
+| inspection_ga_config   | password | inspection user of a "Gesundheitsamt" able to edit inspection templates  |
+| inspection_ga_teamlead | password | inspection team leader of a "Gesundheitsamt"                             |
+| inspection_la_user     | password | inspection user of a "Landesamt"                                         |
+| ...                    | password | ...                                                                      |
+
+Note: The provisioning of these test users is controlled in the `base` module with the system property `eshg.keycloak.provision-test-users`.
+Passwords can only be used to login if `eshg.keycloak.allow-passwords-for-employees` is `true` (default with `:base:composeUp`).
 
 # Starting the backend application
 
 ## as a whole (dockerized)
 
-To start the backend application as a whole run `./gradlew composeUp`. Note that this will
-start the application built from source as-is in your checkout. To shut down the backend
-application run `./gradlew composedown`.
+To start the backend application for local testing, run `./gradlew composeUp`. Note that this will
+start the application built from source as-is in your checkout and enable the `test-helper` profile for local testing.
+To shut down the backend application run `./gradlew composeDown`.
 
 ## Preview Features
 
@@ -97,12 +102,12 @@ start the application - built from source as-is in your checkout.
 - `./gradlew service-directory:composeUp`
 - `./gradlew travel-medicine:composeUp`
 - `./gradlew measles-protection:composeUp`
+- ...
 
 Shutting down individual modules can be done using the
 respective counterpart `./gradlew <GRADLE_MODULE>:composeDown`.
 
-Keycloak is started as a dependency of the base module's `composeUp`.
-It will run on port 9090. It's db will run on port 5436.
+Keycloak and maildev are started as a dependency of the base module's `composeUp`.
 
 ## individual modules (bootRun)
 
@@ -116,17 +121,21 @@ We use gradle's [dependency locking mechanism](https://docs.gradle.org/current/u
 the [spring dependency-management plugin](https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/).
 
 Wherever possible we use dependencies versions that are given via the spring dependency-management plugin, if the
-desired dependency is not managed via the said plugin, we use strive to use `latest.release` as version and lock the
+desired dependency is not managed via the said plugin, we strive to use `latest.release` as version and lock the
 version as explained in the following sections.
+
+The version of keycloak is controlled using a version catalog in `settings.gradle`, to ensure all keycloak related dependencies use the same version.
 
 **When introducing / updating dependencies please avoid version conflicts! Review the lockfile changes thoroughly**
 
 ## Introducing new dependencies
 
-Introduce new dependencies as usual by adding them to the [build.gradle](build.gradle) file. Afterwards update the
+Before integrating a new dependency, please consider if the dependency is necessary. Follow the guidelines in the [Dependency Management Guide](../docs/dependency-management.adoc#check-if-the-dependency-is-necessary-and-reasonable).
+
+Introduce new dependencies as usual by adding them to the [build.gradle](build.gradle) file. Then update the
 dependency lock-files for the new dependency, and it's transitive dependencies:
 
-Example:
+**Example:**
 
 You added to `build.gradle`:
 
@@ -146,7 +155,7 @@ to update locks also of all dependent modules. To do this, run
 
 ## Selectively updating dependencies
 
-Updating a single dependency works just as adding it. Given the dependency is specified with `latest.release`, updating
+Updating a single dependency works the same as adding it. Given the dependency is specified with `latest.release`, updating
 the locks will update the dependency.
 For more hints / instructions on how to selectively update a single dependency (or multiple, but not all)
 see [Selectively updating lock state entries](https://docs.gradle.org/current/userguide/dependency_locking.html#selectively_updating_lock_state_entries)
@@ -213,36 +222,21 @@ you can use the versioned [`.git-blame-ignore-revs`](../.git-blame-ignore-revs) 
 
     git config blame.ignoreRevsFile .git-blame-ignore-revs
 
-### Merge request pipeline features
-
-Merge request pipelines currently support the following features:\
-Overall test coverage percentage is displayed on the MR page below the current pipeline status.
-Additionally, the coverage is visualized in the MR diff,
-see [GitLab Test coverage visualization](https://docs.gitlab.com/ee/ci/testing/test_coverage_visualization.html)
-for details.\
-The test and coverage reports are also available as artifacts in the build-job.
-Most reports can be viewed in the browser without downloading them.
-There is also a code quality check, whose reports can be viewed in three places:
-
-- As a widget in the MR page, just below the approval section
-- As a tab in each MR-Pipeline
-- As a html report artifact in the `code_quality_html_report`
-
 ## Reference Documentation
 
 For further reference, please consider the following sections:
 
 - [Official Gradle documentation](https://docs.gradle.org)
-- [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.1.5/gradle-plugin/reference/html/)
-- [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.1.5/gradle-plugin/reference/html/#build-image)
-- [Spring Boot Testcontainers support](https://docs.spring.io/spring-boot/docs/3.1.5/reference/html/features.html#features.testing.testcontainers)
+- [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/gradle-plugin/index.html)
+- [Create an OCI image](https://docs.spring.io/spring-boot/gradle-plugin/packaging-oci-image.html)
+- [Spring Boot Testcontainers support](https://docs.spring.io/spring-boot/reference/testing/testcontainers.html)
 - [Testcontainers Postgres Module Reference Guide](https://java.testcontainers.org/modules/databases/postgres/)
-- [Spring Security](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#web.security)
-- [Spring Web](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#web)
-- [OAuth2 Resource Server](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#web.security.oauth2.server)
-- [Spring Data JPA](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#data.sql.jpa-and-spring-data)
-- [Validation](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#io.validation)
-- [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/3.1.5/reference/htmlsingle/index.html#actuator)
+- [Spring Security](https://docs.spring.io/spring-boot/reference/web/spring-security.html)
+- [Spring Web](https://docs.spring.io/spring-boot/reference/web/index.html)
+- [OAuth2 Resource Server](https://docs.spring.io/spring-boot/reference/web/spring-security.html#web.security.oauth2.server)
+- [Spring Data JPA](https://docs.spring.io/spring-boot/reference/data/sql.html#data.sql.jpa-and-spring-data)
+- [Validation](https://docs.spring.io/spring-boot/reference/io/validation.html)
+- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/enabling.html)
 - [Testcontainers](https://java.testcontainers.org/)
 
 ## Guides

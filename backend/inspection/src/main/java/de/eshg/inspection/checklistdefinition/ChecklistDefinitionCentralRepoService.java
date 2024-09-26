@@ -20,13 +20,13 @@ import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.centralrepository.client.CentralRepositoryRestClient;
-import de.eshg.inspection.checklistdefinition.api.AddChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoResponse;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionCentralRepoUpdateRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionDto;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionFromCentralRepoUpdateRequest;
 import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionDto;
+import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.CreateNewChecklistDefinitionRequest;
 import de.eshg.inspection.checklistdefinition.api.DeleteChecklistDefinitionCentralRepoRequest;
 import de.eshg.inspection.checklistdefinition.api.GetChecklistDefinitionCentralRepoRequest;
@@ -100,7 +100,7 @@ public class ChecklistDefinitionCentralRepoService {
       UUID cldId, int cldVersionNr, ChecklistDefinitionCentralRepoRequest request) {
 
     ChecklistDefinition cld = retrieveCld(cldId);
-    verifyCoreChecklistAndPermission(cld.isCoreChecklist());
+    validateChecklist(cld);
 
     if (cld.getMostRecentRepositoryVersion() != null) {
       String message =
@@ -131,7 +131,7 @@ public class ChecklistDefinitionCentralRepoService {
   ChecklistDefinitionCentralRepoResponse updateChecklistDefinition(
       UUID cldId, int cldVersionNr, ChecklistDefinitionCentralRepoUpdateRequest request) {
     ChecklistDefinition cld = retrieveCld(cldId);
-    verifyCoreChecklistAndPermission(cld.isCoreChecklist());
+    validateChecklist(cld);
     ChecklistDefinitionDto checklistDefinitionDto = prepareCentralRepoCld(cld, cldVersionNr);
 
     MetadataResponseDto metadataResponseDto =
@@ -421,10 +421,11 @@ public class ChecklistDefinitionCentralRepoService {
                 centralRepoCld.versions().getFirst().context().isExpandable(),
                 centralRepoCld.versions().getFirst().context().isDeleted(),
                 centralRepoCld.coreChecklist(),
+                centralRepoCld.published(),
                 centralRepoCld.objectType().id(),
                 centralRepoCld.versions().getFirst().context().getSections()));
     UUID localCldId = newChecklistDefinition.id();
-    int localCldVersion = newChecklistDefinition.mostRecentVersionNr();
+    int localCldVersion = newChecklistDefinition.mostRecentVersion().context().getVersion();
     saveRepositoryVersion(
         localCldId, localCldVersion, request.centralRepoId(), request.centralRepoVersion());
     checklistDefinitionDto =
@@ -441,11 +442,12 @@ public class ChecklistDefinitionCentralRepoService {
     verifyCentralRepositoryVersion(localCld, request.centralRepoVersion());
     ChecklistDefinitionVersionDto newCldVersion =
         checklistDefinitionService.saveNewChecklistDefinitionVersion(
-            new AddChecklistDefinitionVersionRequest(
+            new ChecklistDefinitionVersionRequest(
                 centralRepoCld.name(),
                 centralRepoCld.versions().getFirst().context().getDescription(),
                 centralRepoCld.versions().getFirst().context().isExpandable(),
                 centralRepoCld.versions().getFirst().context().isDeleted(),
+                centralRepoCld.versions().getFirst().context().isPublished(),
                 centralRepoCld.versions().getFirst().context().getSections()),
             localCld);
     UUID localCldId = localCld.getExternalId();
@@ -536,8 +538,12 @@ public class ChecklistDefinitionCentralRepoService {
     localCld.setMostRecentVersionBasedOnRepo(null);
   }
 
-  private static void verifyCoreChecklistAndPermission(boolean isCoreChecklist) {
-    if (isCoreChecklist
+  private static void validateChecklist(ChecklistDefinition definition) {
+    if (!definition.isPublished()) {
+      throw new BadRequestException(
+          "Can not push an unpublished checklist definition to central repository");
+    }
+    if (definition.isCoreChecklist()
         && currentUserHasNoRole(INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS)) {
       throw new BadRequestException(
           INSUFFICIENT_USER_RIGHTS,

@@ -67,15 +67,10 @@ function DetailsField({
 
 interface ReportCaseOverviewProps {
   onCancel?: () => unknown;
-  onSubmit?: () => unknown;
   sx?: SxProps;
 }
 
-export function ReportCaseOverview({
-  onCancel,
-  onSubmit,
-  sx,
-}: ReportCaseOverviewProps) {
+export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
   const { values, setValues, isSubmitting } =
     useFormikContext<ReportMeaslesCase>();
@@ -286,7 +281,7 @@ export function ReportCaseOverview({
         showFacilityContactPerson
         showAffected={{ count: true }}
         submitLabel={t("overview.submit", { count: affectedPersons.length })}
-        onSubmit={onSubmit}
+        finalSubmit={true}
         onCancel={onCancel}
         actionButton={
           <Button variant="outlined" onClick={handleAddAffectedPerson}>

@@ -13,11 +13,12 @@ import { AppointmentDetailsSidePanel } from "@/lib/businessModules/travelMedicin
 import { AppointmentPageTitle } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentPageTitle";
 import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
-import { Page } from "@/lib/shared/components/layout/page";
+import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function AppointmentDetailsPage() {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
@@ -31,32 +32,38 @@ export default function AppointmentDetailsPage() {
   );
 
   return (
-    <Page>
-      <AppointmentPageTitle title={t("header.title")} />
-      {isMobile ? (
-        <OneColumnGrid
-          contentTop={
-            <AppointmentDetails appointmentDetails={appointmentDetails} />
-          }
-          contentCenter={
-            <AppointmentDetailsSidePanel
-              hasAccomplishedService={appointmentDetails.hasAccomplishedService}
-            />
-          }
-          contentBottom={null}
-        />
-      ) : (
-        <TwoColumnGrid
-          content={
-            <AppointmentDetails appointmentDetails={appointmentDetails} />
-          }
-          sidePanel={
-            <AppointmentDetailsSidePanel
-              hasAccomplishedService={appointmentDetails.hasAccomplishedService}
-            />
-          }
-        />
-      )}
-    </Page>
+    <PageLayout>
+      <PageContent>
+        <AppointmentPageTitle title={t("header.title")} />
+        {isMobile ? (
+          <OneColumnGrid
+            contentTop={
+              <AppointmentDetails appointmentDetails={appointmentDetails} />
+            }
+            contentCenter={
+              <AppointmentDetailsSidePanel
+                hasAccomplishedService={
+                  appointmentDetails.hasAccomplishedService
+                }
+              />
+            }
+            contentBottom={null}
+          />
+        ) : (
+          <TwoColumnGrid
+            content={
+              <AppointmentDetails appointmentDetails={appointmentDetails} />
+            }
+            sidePanel={
+              <AppointmentDetailsSidePanel
+                hasAccomplishedService={
+                  appointmentDetails.hasAccomplishedService
+                }
+              />
+            }
+          />
+        )}
+      </PageContent>
+    </PageLayout>
   );
 }

@@ -9,16 +9,22 @@ import { isDefined } from "remeda";
 import { useDeleteReport } from "@/lib/businessModules/statistics/api/mutations/useDeleteReport";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
-export function useDeleteReportWithConfirmation() {
+export function useDeleteReportWithConfirmation({
+  redirectRoute,
+}: {
+  redirectRoute?: string;
+} = {}) {
   const { openConfirmationDialog } = useConfirmationDialog();
-  const deleteReport = useDeleteReport();
   const router = useRouter();
+  const deleteReport = useDeleteReport({
+    onSuccess: () => {
+      if (isDefined(redirectRoute)) {
+        router.push(redirectRoute);
+      }
+    },
+  });
 
-  function deleteReportWithConfirmation(
-    seriesId: string,
-    reportName: string,
-    redirectRoute?: string,
-  ) {
+  function deleteReportWithConfirmation(seriesId: string, reportName: string) {
     openConfirmationDialog({
       title: "Report löschen?",
       description: `Der Report "${reportName}" wird dann unwiderruflich gelöscht.`,
@@ -26,9 +32,6 @@ export function useDeleteReportWithConfirmation() {
       color: "danger",
       onConfirm: () => {
         deleteReport(seriesId);
-        if (isDefined(redirectRoute)) {
-          router.push(redirectRoute);
-        }
       },
     });
   }

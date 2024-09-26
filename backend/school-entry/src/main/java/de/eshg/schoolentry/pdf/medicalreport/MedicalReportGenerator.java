@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.pdf.medicalreport;
 
-import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.base.client.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -15,6 +15,7 @@ import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.api.CreateMedicalReportRequest;
 import de.eshg.schoolentry.business.model.ChildDetailsData;
+import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
 import java.io.ByteArrayOutputStream;
@@ -27,12 +28,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 @Component
-public class MedicalReportGenerator {
+public class MedicalReportGenerator extends AbstractGenerator {
 
   static final String MEDICAL_REPORT_TEMPLATE = "/templates/medicalreport.ftlx";
 
   private final ClassPathResource medicalReportTemplate;
-  private final DepartmentClient departmentClient;
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
 
@@ -40,10 +40,11 @@ public class MedicalReportGenerator {
       @Value(MEDICAL_REPORT_TEMPLATE) ClassPathResource medicalReportTemplate,
       DepartmentClient departmentClient,
       DocumentGenerator documentGenerator,
-      Clock clock) {
+      Clock clock,
+      ContactClient contactClient) {
+    super(departmentClient, contactClient);
     Assert.isTrue(medicalReportTemplate.exists(), () -> medicalReportTemplate + " does not exist");
     this.medicalReportTemplate = medicalReportTemplate;
-    this.departmentClient = departmentClient;
     this.documentGenerator = documentGenerator;
     this.clock = clock;
   }
@@ -51,7 +52,7 @@ public class MedicalReportGenerator {
   @VisibleForTesting
   MedicalReportData buildMedicalReportData(
       ChildDetailsData child, CreateMedicalReportRequest request) {
-    Address departmentAddress = fetchDepartmentAddress();
+    Address departmentAddress = getDepartmentAddress();
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
 
     MedicalReportChild medicalReportChild =
@@ -60,19 +61,6 @@ public class MedicalReportGenerator {
             child.dateOfBirth().format(ReportGeneratorConstants.DATE_FORMAT_DE));
     return new MedicalReportData(
         departmentLogo, departmentAddress, medicalReportChild, request.remark(), request.isVisio());
-  }
-
-  private Address fetchDepartmentAddress() {
-    GetDepartmentInfoResponse departmentInfo = departmentClient.getDepartmentInfo();
-    return new Address(
-        departmentInfo.name(),
-        departmentInfo.street() + " " + departmentInfo.houseNumber(),
-        departmentInfo.postalCode(),
-        departmentInfo.city(),
-        departmentInfo.phoneNumber(),
-        departmentInfo.homepage(),
-        null,
-        departmentInfo.email());
   }
 
   private static String concat(String... strings) {

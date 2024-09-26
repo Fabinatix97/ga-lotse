@@ -7,7 +7,6 @@ package de.eshg.lib.procedure.model;
 
 import static de.eshg.lib.procedure.api.InboxProcedureApi.QueryParameter.*;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
@@ -17,14 +16,12 @@ import java.util.Objects;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetInboxProceduresPaginationOptions(
-    @CanBeLogged
-        @Parameter(description = "Number of the requested page")
+    @Parameter(description = "Number of the requested page")
         @BindParam(value = PAGE_NUMBER)
         @Schema(defaultValue = "0")
         @PositiveOrZero
         Integer pageNumber,
-    @CanBeLogged
-        @Parameter(description = "Amount of requested inbox procedures")
+    @Parameter(description = "Amount of requested inbox procedures")
         @BindParam(value = PAGE_SIZE)
         @Schema(defaultValue = DEFAULT_PAGE_SIZE)
         @Min(1)

@@ -6,6 +6,7 @@
 package de.eshg.schoolentry.mapper;
 
 import de.eshg.schoolentry.api.*;
+import de.eshg.schoolentry.domain.model.BooleanWithUnknown;
 import de.eshg.schoolentry.domain.model.OtherVaccination;
 import de.eshg.schoolentry.domain.model.VaccinationSchemeValue;
 import de.eshg.schoolentry.domain.model.VaccinationStatus;
@@ -39,7 +40,7 @@ public final class VaccinationStatusMapper {
         vaccinationStatus.getHepatitisA(),
         mapToDto(vaccinationStatus.getOtherVaccinations()),
         vaccinationStatus.getVaccinationPassPresented(),
-        vaccinationStatus.getPerkombiHbv());
+        mapToDto(vaccinationStatus.getPerkombiHbv()));
   }
 
   private static List<OtherVaccinationDto> mapToDto(List<OtherVaccination> otherVaccinations) {
@@ -75,7 +76,7 @@ public final class VaccinationStatusMapper {
     vaccinationStatus.setHepatitisA(dto.hepatitisA());
     vaccinationStatus.setOtherVaccinations(mapToDomain(dto.otherVaccinations()));
     vaccinationStatus.setVaccinationPassPresented(dto.vaccinationPassPresented());
-    vaccinationStatus.setPerkombiHbv(dto.perkombiHbv());
+    vaccinationStatus.setPerkombiHbv(mapToDomain(dto.perkombiHbv()));
     return vaccinationStatus;
   }
 
@@ -102,6 +103,24 @@ public final class VaccinationStatusMapper {
       case SCHEME_2_PLUS_1 -> VaccinationSchemeValue.SCHEME_2_PLUS_1;
       case SCHEME_3_PLUS_1 -> VaccinationSchemeValue.SCHEME_3_PLUS_1;
       case UNKNOWN -> VaccinationSchemeValue.UNKNOWN;
+    };
+  }
+
+  private static BooleanWithUnknownDto mapToDto(BooleanWithUnknown value) {
+    return switch (value) {
+      case null -> null;
+      case TRUE -> BooleanWithUnknownDto.TRUE;
+      case FALSE -> BooleanWithUnknownDto.FALSE;
+      case UNKNOWN -> BooleanWithUnknownDto.UNKNOWN;
+    };
+  }
+
+  private static BooleanWithUnknown mapToDomain(BooleanWithUnknownDto value) {
+    return switch (value) {
+      case null -> null;
+      case TRUE -> BooleanWithUnknown.TRUE;
+      case FALSE -> BooleanWithUnknown.FALSE;
+      case UNKNOWN -> BooleanWithUnknown.UNKNOWN;
     };
   }
 }

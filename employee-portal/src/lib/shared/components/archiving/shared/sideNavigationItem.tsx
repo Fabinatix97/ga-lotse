@@ -1,0 +1,77 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import InventoryIcon from "@mui/icons-material/Inventory";
+
+import { SideNavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/types";
+import { hasUserRole } from "@/lib/shared/helpers/accessControl";
+
+import { routes } from "./routes";
+
+export const sideNavigationItems: SideNavigationItem[] = [
+  {
+    name: "Archivierung",
+    decorator: <InventoryIcon />,
+    subItems: [
+      {
+        name: "Begehung",
+        href: routes.archive.module.inspection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+      },
+      {
+        name: "Einschulung",
+        href: routes.archive.module.schoolEntry,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+      },
+      {
+        name: "Impfberatung",
+        href: routes.archive.module.travelMedicine,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+      },
+      {
+        name: "Masernschutz",
+        href: routes.archive.module.measlesProtection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+      },
+      {
+        name: "HIV-STI",
+        href: routes.archive.module.stiProtection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+      },
+    ],
+  },
+  {
+    name: "Archiv-Admin",
+    decorator: <InventoryIcon />,
+    subItems: [
+      {
+        name: "Begehung",
+        href: routes.archiveAdmin.module.inspection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+      },
+      {
+        name: "Einschulung",
+        href: routes.archiveAdmin.module.schoolEntry,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+      },
+      {
+        name: "Impfberatung",
+        href: routes.archiveAdmin.module.travelMedicine,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+      },
+      {
+        name: "Masernschutz",
+        href: routes.archiveAdmin.module.measlesProtection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+      },
+      {
+        name: "HIV-STI",
+        href: routes.archiveAdmin.module.stiProtection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+      },
+    ],
+  },
+];

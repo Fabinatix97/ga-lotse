@@ -10,7 +10,7 @@ import {
   FmdGoodOutlined,
   MailOutlineOutlined,
 } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
+import { Typography } from "@mui/joy";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
@@ -55,13 +55,6 @@ export function LandingpageContent(props: LandingpageContentProps) {
       </ContentSheet>
       <ContentSheet>
         <ContentSheetTitle>{t("place.title")}</ContentSheetTitle>
-        <Stack component={Typography} gap={1}>
-          <Typography fontWeight="bold">{t("place.school")}</Typography>
-          <Typography>{t("place.or")}</Typography>
-          <Typography fontWeight="bold">
-            {t("place.healthDepartment")}
-          </Typography>
-        </Stack>
         <InfoSectionGrid>
           <AddressSection department={props.departmentInfo} />
           <OpeningHoursSection />
@@ -100,8 +93,10 @@ function OpeningHoursSection() {
           <br />
           {t("openingHours.remark")}
         </TableListingRow>
-        <TableListingRow label={t("openingHours.daysHoliday")}>
-          {t("openingHours.remarkHoliday")}
+        <TableListingRow label={t("openingHours.daysShort")}>
+          {t("openingHours.hoursShort")}
+          <br />
+          {t("openingHours.remarkShort")}
         </TableListingRow>
       </TableListing>
     </InfoSection>

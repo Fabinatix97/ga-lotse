@@ -5,12 +5,7 @@
 
 import { Box, styled } from "@mui/joy";
 import { Row, Table, flexRender } from "@tanstack/react-table";
-import {
-  PropsWithChildren,
-  createElement,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import { PropsWithChildren, createElement, useRef } from "react";
 import { isFunction } from "remeda";
 
 import { CellStyle } from "@/lib/components/table/Table";
@@ -19,8 +14,6 @@ import { OverridableEntity } from "@/lib/helpers/entities";
 const StyledRow = styled("tr")<{ $subRow: boolean }>(({ theme, $subRow }) => ({
   color: $subRow ? theme.palette.warning.plainColor + "!important" : undefined,
 }));
-
-const OVERFLOW_LEFT = "overflow-left";
 
 const StyledCell = styled("td")<{ $cellStyle?: CellStyle }>(({
   theme,
@@ -106,23 +99,5 @@ export function TableRow<TData>({
 
 function CellContainer({ children }: Readonly<PropsWithChildren>) {
   const ref = useRef<HTMLSpanElement>();
-
-  useLayoutEffect(() => {
-    const span = ref.current;
-    const td = span?.parentElement;
-    const tr = td?.parentElement;
-    if (!span || !td || !tr) {
-      return;
-    }
-    const overflow = span.scrollWidth - td.clientWidth;
-    const rightSpace =
-      tr.getBoundingClientRect().right - td.getBoundingClientRect().right;
-    if (overflow > 0 && rightSpace < overflow) {
-      span.classList.add(OVERFLOW_LEFT);
-    } else {
-      span.classList.remove(OVERFLOW_LEFT);
-    }
-  }, [children]);
-
   return <SBox ref={ref}>{children}</SBox>;
 }

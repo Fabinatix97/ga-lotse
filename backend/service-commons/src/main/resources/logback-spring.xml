@@ -1,0 +1,57 @@
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+  <springProfile name="!(dev | production)">
+    <root level="info">
+      <appender-ref ref="CONSOLE" />
+    </root>
+  </springProfile>
+
+  <springProfile name="dev">
+    <appender name="logstash-all-levels" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <root level="info">
+      <appender-ref ref="logstash-all-levels" />
+    </root>
+  </springProfile>
+
+  <springProfile name="production">
+<!--    <property name="DEBUG_LOG_DIRECTORY" value="${DEBUG_LOG_DIRECTORY:-/logs}"/>-->
+
+    <appender name="logstash-info" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>INFO</level>
+      </filter>
+    </appender>
+
+    <!-- TODO: clarify the volume path -->
+<!--    <appender name="debug-log" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--      <file>${DEBUG_LOG_DIRECTORY}/debug.log</file>-->
+
+<!--      <encoder>-->
+<!--        <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} [%-5p] [%t] %-40.40logger{39} : %m%n%wEx</pattern>-->
+<!--        <charset>UTF-8</charset>-->
+<!--      </encoder>-->
+
+<!--      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--        <fileNamePattern>${DEBUG_LOG_DIRECTORY}/debug.log.%d{yyyy-MM-dd}</fileNamePattern>-->
+<!--        <maxHistory>14</maxHistory>-->
+<!--      </rollingPolicy>-->
+<!--    </appender>-->
+
+    <root level="info">
+      <appender-ref ref="logstash-info" />
+<!--      <appender-ref ref="debug-log" />-->
+    </root>
+  </springProfile>
+
+</configuration>

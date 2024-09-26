@@ -46,9 +46,6 @@ const columns = [
     header: "",
     enableGlobalFilter: false,
     cell: RevisionTypeCell,
-    meta: {
-      width: "48px",
-    },
   }),
   accessor("readableName", {
     cell: AuditCell,
@@ -65,16 +62,10 @@ const columns = [
   accessor("type", {
     cell: AuditCell,
     enableGlobalFilter: false,
-    meta: {
-      width: "5%",
-    },
   }),
   accessor("active", {
     cell: AuditCell,
     enableGlobalFilter: false,
-    meta: {
-      width: "5%",
-    },
   }),
   accessor("currentCertificate", {
     cell: AuditCell,

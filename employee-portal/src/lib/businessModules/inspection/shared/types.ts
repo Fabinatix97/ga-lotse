@@ -14,5 +14,10 @@ export type FacilityWebSearchFilters = Partial<Omit<SearchRequest, "sort">> & {
 };
 
 export type PendingFacilitiesFilters = Partial<
-  Omit<GetPendingFacilitiesRequest, "sort">
-> & { sortField?: string; sortDirection?: string };
+  Omit<GetPendingFacilitiesRequest, "sort" | "isBefore" | "isAfter">
+> & {
+  sortField?: string;
+  sortDirection?: string;
+  isBefore?: string;
+  isAfter?: string;
+};

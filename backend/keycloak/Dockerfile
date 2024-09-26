@@ -20,6 +20,7 @@ WORKDIR /opt/keycloak
 
 COPY ./keycloak-api-plain.jar ./providers/
 COPY ./eshg-keycloak-plugin.jar ./providers/
+COPY ./resources/themes ./themes/
 
 RUN /opt/keycloak/bin/kc.sh build
 
@@ -31,8 +32,6 @@ COPY --from=keycloak-builder /opt/keycloak/ /opt/keycloak/
 # Instead, we use the brute force method here and copy curl and all libs from the ubi9 micro image
 COPY --from=ubi-micro-build /usr/lib64/ /usr/lib64/
 COPY --from=ubi-micro-build /usr/bin/curl /usr/bin/
-
-COPY ./resources/themes /opt/keycloak/themes/
 
 ENV KC_HEALTH_ENABLED true
 ENV KC_FEATURES_DISABLED impersonation

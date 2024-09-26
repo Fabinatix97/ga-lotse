@@ -18,6 +18,7 @@ import {
   DeleteProcedureRequest,
   ImportCitizenListRequest,
   ImportSchoolListRequest,
+  ReopenProcedureRequest,
   UpdateAnamnesisRequest,
   UpdateChildDataRequest,
   UpdateDevelopmentScreeningResultRequest,
@@ -303,6 +304,17 @@ export function useCloseProcedure() {
     mutationFn: (values: CloseProcedureRequest) =>
       schoolEntryApi.closeProcedureRaw(values).then(unwrapRawResponse),
     onSuccess: () => snackbar.confirmation("Vorgang erfolgreich geschlossen."),
+  });
+}
+
+export function useReopenProcedure() {
+  const schoolEntryApi = useSchoolEntryApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (values: ReopenProcedureRequest) =>
+      schoolEntryApi.reopenProcedureRaw(values).then(unwrapRawResponse),
+    onSuccess: () =>
+      snackbar.confirmation("Vorgang erfolgreich wiedereröffnet."),
   });
 }
 

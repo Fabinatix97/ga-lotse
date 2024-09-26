@@ -293,7 +293,6 @@ function NoAppointmentBlocksAvailable() {
         href={routes.appointmentBlockGroups.new}
         size="sm"
         startDecorator={<Schedule />}
-        disabled
       >
         Neuen Terminblock planen
       </InternalLinkButton>

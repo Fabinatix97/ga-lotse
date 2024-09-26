@@ -40,6 +40,10 @@ import {
   deleteIncidentFromCache,
   updateIncidentInCache,
 } from "@/serviceWorker/sw/inspection/controller/updateIncidents";
+import {
+  API_INSPECTION_INSPECTIONS_INSPECTION,
+  updateInspectionInCache,
+} from "@/serviceWorker/sw/inspection/controller/updateInspection";
 import { updatePacklistCache } from "@/serviceWorker/sw/inspection/controller/updatePacklists";
 import { getFacilities } from "@/serviceWorker/sw/inspection/service/getFacilities";
 import { finalizeInspection } from "@/serviceWorker/sw/inspection/service/updateInspection";
@@ -131,6 +135,13 @@ registerRoute(
   ({ url: { pathname } }) =>
     API_INSPECTION_PACKLISTS_PACKLIST_PATH_PATTERN.test(pathname),
   getApiPatchHandler(updatePacklistCache),
+  "PATCH",
+);
+
+registerRoute(
+  ({ url: { pathname } }) =>
+    API_INSPECTION_INSPECTIONS_INSPECTION.test(pathname),
+  getApiPostHandler(updateInspectionInCache),
   "PATCH",
 );
 

@@ -9,6 +9,8 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { configApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 
+const CACHE_DURATION_1DAY = 86_400_000;
+
 export function useGetLocationSelectionMode() {
   const configApi = useConfigApi();
   const { data: locationSelectionMode } = useSuspenseQuery(
@@ -22,5 +24,7 @@ export function getLocationSelectionModeQuery(configApi: SchoolEntryConfigApi) {
     queryKey: configApiQueryKey(["getConfig"]),
     queryFn: () => configApi.getConfig(),
     select: (response) => response.locationSelectionMode,
+    staleTime: CACHE_DURATION_1DAY,
+    gcTime: CACHE_DURATION_1DAY,
   });
 }

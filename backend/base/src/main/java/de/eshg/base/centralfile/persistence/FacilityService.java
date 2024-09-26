@@ -130,10 +130,6 @@ public class FacilityService {
 
   public static boolean isFacilityFileStateOutdated(
       Facility facilityFileState, Facility referenceFacility) {
-    Long referenceVersion = facilityFileState.getReferenceVersion();
-    if (referenceVersion != null && referenceVersion >= referenceFacility.getVersion()) {
-      return false;
-    }
     return !FacilityMatcher.isFacilityMatch(referenceFacility, facilityFileState);
   }
 
@@ -187,8 +183,8 @@ public class FacilityService {
             .findReferenceFacilityByFileStateExternalId(facilityFileState.getExternalId())
             .orElseThrow(() -> new NotFoundException("Associated Reference Facility not found"));
 
-    if (facilityFileState.getReferenceVersion() < referenceFacility.getVersion()) {
-      throw new BadRequestException(ErrorCode.CONFLICT, "Version mismatch, file state is outdated");
+    if (isFacilityFileStateOutdated(facilityFileState, referenceFacility)) {
+      throw new BadRequestException(ErrorCode.CONFLICT, "Facility file state is outdated");
     }
 
     if (findMatchingReferenceFacility(fileStateUpdate).isPresent()) {
@@ -215,6 +211,11 @@ public class FacilityService {
             .orElseThrow(() -> new NotFoundException("Associated Reference Facility not found"));
 
     ValidationUtil.validateVersion(version, referenceFacility);
+
+    if (!isFacilityFileStateOutdated(facilityFileState, referenceFacility)) {
+      throw new BadRequestException(
+          ErrorCode.CONFLICT, "File state and associated reference facility already match");
+    }
 
     Facility updatedFileState = referenceFacility.cloneFromReferenceFacility();
     updatedFileState.setDataOrigin(DataOrigin.EDIT);

@@ -9,6 +9,7 @@ dependencies {
     testImplementation project(':test-commons')
 
     testFixturesImplementation project(':test-commons')
+    testFixturesImplementation project(':test-helper-commons-spring')
     testFixturesApi testFixtures(project(':lib-service-directory-admin-api'))
     testFixturesApi 'org.testcontainers:testcontainers'
 }

@@ -2,26 +2,24 @@
   "pageTitle": "Einschulungsuntersuchung",
   "information": {
     "title": "Informationen zum Termin",
-    "invitation": "Den Termin zur Einschulungsuntersuchung verschickt das Gesundheitsamt per Post mit einem Einladungsschreiben und den aktuell geltenden Datenschutzrichtlinien etwa 3 bis 4 Wochen vor dem Termin.",
-    "cancellation": "Falls dieser Termin nicht wahrgenommen werden kann, sollte er rechtzeitig abgesagt werden. Die Kontaktdaten stehen auf dem Einladungsschreiben.",
+    "invitation": "Den Termin zur Einschulungsuntersuchung verschickt das Gesundheitsamt per Post mit einem Einladungsschreiben etwa 3 bis 4 Wochen vor dem Termin.",
+    "cancellation": "Falls dieser Termin nicht wahrgenommen werden kann, sollte er rechtzeitig verschoben werden. Dies können Sie hier über das Online-Portal bequem selbst erledigen. Mithilfe des Anmeldecodes auf der Einladung und dem Geburtstag Ihres Kindes erreichen Sie Ihren persönlichen Bereich.",
     "location": "Die Einschulungsuntersuchung findet im Gesundheitsamt in der {{address}} statt. Bitte im Eingangsbereich am Empfang melden und das Einladungsschreiben vorzeigen."
   },
   "place": {
-    "title": "Wo findet die Einschulungsuntersuchung statt?",
-    "school": "In der Schule ihres Kindes",
-    "or": "oder",
-    "healthDepartment": "in folgendem Gesundheitsamt"
+    "title": "Wo findet die Einschulungsuntersuchung statt?"
   },
   "address": {
     "title": "Adresse"
   },
   "openingHours": {
     "title": "Öffnungs- und Sprechzeiten",
-    "days": "Mo, Di, Do",
-    "daysHoliday": "Di, Do",
-    "hours": "13:30 - 15:00 Uhr",
+    "days": "Mo - Do",
+    "daysShort": "Fr",
+    "hours": "07:30 - 16:00 Uhr",
     "remark": "Nur nach Terminabsprache.",
-    "remarkHoliday": "In den hessischen Schulferien – Nur nach Terminabsprache."
+    "hoursShort": "07:30 - 14:00 Uhr",
+    "remarkShort": "Nur nach Terminabsprache."
   },
   "telefon": {
     "title": "Telefon",

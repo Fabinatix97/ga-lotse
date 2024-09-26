@@ -20,3 +20,10 @@ export enum CommunicationType {
   DirectMessage = "DIRECT_MESSAGE",
   PublicRoom = "PUBLIC_ROOM",
 }
+
+export enum ChatPanelView {
+  NoChatSelected = "NO_CHAT_SELECTED",
+  NewDirectChat = "NEW_DIRECT_CHAT",
+  NewGroupChat = "NEW_GROUP_CHAT",
+  ChatMessages = "CHAT_MESSAGES",
+}

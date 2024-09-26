@@ -15,8 +15,9 @@ import {
   TypeSwitchButtons,
 } from "@/lib/businessModules/travelMedicine/components/viewAppointment/TypeSwitchButtons";
 import { useTranslation } from "@/lib/i18n/client";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
-import { Page } from "@/lib/shared/components/layout/page";
+import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function AppointmentOverviewPage() {
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
@@ -28,27 +29,29 @@ export default function AppointmentOverviewPage() {
   );
 
   return (
-    <Page>
-      <AppointmentPageTitle title={t("header.title")} />
-      <TypeSwitchButtons
-        overviewAppointmentType={overviewAppointmentType}
-        setOverviewAppointmentType={setOverviewAppointmentType}
-      />
-      <GridColumnStack>
-        {overviewAppointmentType === OverviewAppointmentTypes.UPCOMING ? (
-          <AppointmentOverviewSheet
-            procedureId={procedureAppointmentData.procedureId}
-            overviewAppointmentType={OverviewAppointmentTypes.UPCOMING}
-            appointments={procedureAppointmentData.openAppointments}
-          />
-        ) : (
-          <AppointmentOverviewSheet
-            procedureId={procedureAppointmentData.procedureId}
-            overviewAppointmentType={OverviewAppointmentTypes.PAST}
-            appointments={procedureAppointmentData.closedAppointments}
-          />
-        )}
-      </GridColumnStack>
-    </Page>
+    <PageLayout>
+      <PageContent>
+        <AppointmentPageTitle title={t("header.title")} />
+        <TypeSwitchButtons
+          overviewAppointmentType={overviewAppointmentType}
+          setOverviewAppointmentType={setOverviewAppointmentType}
+        />
+        <GridColumnStack>
+          {overviewAppointmentType === OverviewAppointmentTypes.UPCOMING ? (
+            <AppointmentOverviewSheet
+              procedureId={procedureAppointmentData.procedureId}
+              overviewAppointmentType={OverviewAppointmentTypes.UPCOMING}
+              appointments={procedureAppointmentData.openAppointments}
+            />
+          ) : (
+            <AppointmentOverviewSheet
+              procedureId={procedureAppointmentData.procedureId}
+              overviewAppointmentType={OverviewAppointmentTypes.PAST}
+              appointments={procedureAppointmentData.closedAppointments}
+            />
+          )}
+        </GridColumnStack>
+      </PageContent>
+    </PageLayout>
   );
 }

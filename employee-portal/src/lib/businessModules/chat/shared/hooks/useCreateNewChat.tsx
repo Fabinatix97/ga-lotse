@@ -12,7 +12,7 @@ import {
 import { useCallback } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useSelectedRoomId } from "@/lib/businessModules/chat/shared/hooks/useSelectedRoomId";
+import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import {
   findDirectChat,
   getRoomNameAndCommunicationType,
@@ -39,7 +39,7 @@ const createRoomInitialState = [
 
 export function useCreateNewChat() {
   const { matrixClient } = useChatClientContext();
-  const { setSelectedRoomId } = useSelectedRoomId();
+  const { setRoomIdParam } = useChatSearchParams();
 
   const createNewDirectMessage = useCallback(
     async ({ invite }: ICreateRoomOpts) => {
@@ -55,7 +55,7 @@ export function useCreateNewChat() {
         const DMUser = invite?.[0];
         const DMRoom = findDirectChat({ chatRooms, userId: DMUser });
         if (DMRoom) {
-          setSelectedRoomId(DMRoom.room.roomId);
+          setRoomIdParam(DMRoom.room.roomId);
           return DMRoom.room.roomId;
         }
       }
@@ -83,10 +83,11 @@ export function useCreateNewChat() {
               : []) as ICreateRoomStateEvent[]),
           ],
         });
-        setSelectedRoomId(newRoom.room_id);
+        setRoomIdParam(newRoom.room_id);
+        return newRoom.room_id;
       } catch {}
     },
-    [matrixClient, setSelectedRoomId],
+    [matrixClient, setRoomIdParam],
   );
   const createNewChatRoom = useCallback(
     async ({ invite, name }: ICreateRoomOpts) => {
@@ -107,10 +108,24 @@ export function useCreateNewChat() {
             },
           ],
         });
-        setSelectedRoomId(newRoom.room_id);
+        setRoomIdParam(newRoom.room_id);
+        return newRoom.room_id;
       } catch {}
     },
-    [matrixClient, setSelectedRoomId],
+    [matrixClient, setRoomIdParam],
   );
-  return { createNewChatRoom, createNewDirectMessage };
+  const findExisingRoom = useCallback(
+    (userId: string) => {
+      const joinedRooms = matrixClient
+        .getRooms()
+        .filter((room) => room.getMyMembership() === "join");
+      const chatRooms = joinedRooms.map((room) =>
+        getRoomNameAndCommunicationType(room),
+      );
+
+      return findDirectChat({ chatRooms, userId });
+    },
+    [matrixClient],
+  );
+  return { createNewChatRoom, createNewDirectMessage, findExisingRoom };
 }

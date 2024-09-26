@@ -20,14 +20,6 @@ export function useGetFile(fileId: string) {
   });
 }
 
-export function useDownloadFile(fileId: string) {
-  const fileApi = useFileApi();
-  return useSuspenseQuery({
-    queryFn: () => fileApi.downloadFile(fileId),
-    queryKey: measlesProtectionApiQueryKey(["files", "download", fileId]),
-  });
-}
-
 export function useGetMetaDataHistory(fileId: string) {
   return useGetMetaDataHistoryTemplate(useFileApi, fileApiQueryKey, fileId);
 }

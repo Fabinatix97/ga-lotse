@@ -200,6 +200,7 @@ public record KeycloakProperties(
       @NotBlank String from,
       @NotBlank String host,
       @NotNull Integer port,
+      @NotNull Boolean sslEnabled,
       @NotBlank String username,
       @NotBlank String password) {}
 

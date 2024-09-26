@@ -100,7 +100,10 @@
   "entityCart": "Approve entities",
   "error": "Error",
   "errorReason": {
-    "502": "Could not reach Backend Server."
+    "404": "Could not find resource.",
+    "500": "An internal server error occurred.",
+    "502": "Could not reach Backend Server.",
+    "FetchFailed": "Could not fetch resource."
   },
   "expandRow": "Expand row",
   "expensiveQuery": "This is a potentially expensive query",
@@ -114,43 +117,47 @@
   "importConfigLabel": "Choose a JSON file",
   "importHeader": "Configuration Import",
   "legal": {
-    "accessibility": {
-      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
-      "title": "Accessibility"
-    },
     "acknowledgements": {
-      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "content": [
+        "<p>GA-Lotse uses the following external resources:</p>",
+        "<section>",
+        "  <h3>Libraries used</h3>",
+        "  <p>Open source libraries used can be found in the respective packages in the repository on <a href=\"https://gitlab.opencode.de/ga-lotse/ga-lotse-code\">OpenCoDE</a>.</p>",
+        "</section>"
+      ],
       "title": "Acknowledgements"
     },
     "contact": {
-      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
+      "content": [
+        "<table>",
+        "  <tr><th colspan=2 style=\"text-align: left\">Availability by telephone:</th></tr>",
+        "  <tr><td>Telefon:</td><td>+49 (0) 800-4256873</td></tr>",
+        "  <tr><td>&nbsp;</td><td></td></tr>",
+        "  <tr><td>Monday - Thursday:</td><td>07:30 h - 16:00 h</td></tr>",
+        "  <tr><td>Friday:</td><td>07:30 h - 14:00 h</td></tr>",
+        "  <tr><td>&nbsp;</td><td></td></tr>",
+        "  <tr><th colspan=2 style=\"text-align: left\">Availability via ticket system:</th></tr>",
+        "  <tr><td>e-mail:</td><td><a href=\"mailto:support@ga-lotse.de\">support@ga-lotse.de</a></td></tr>",
+        "  <tr><td>Open Source:</td><td><a href=\"https://gitlab.opencode.de/ga-lotse\">OpenCoDE</a></td></tr>",
+        "</table>"
+      ],
       "title": "Contact"
-    },
-    "imprint": {
-      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
-      "title": "Imprint"
-    },
-    "privacy": {
-      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
-      "title": "Privacy policy"
     },
     "releaseNotes": {
       "content": [
-        "<h2>GA-Lotse 1.0</h2>",
-        "<h3>2024-10-01</h3>",
-        "<ul>",
-        "  <li>Establishing a service mesh infrastructure between different healthcare departments, actors and organizational units</li>",
-        "  <li>Rules for checking permitted connections</li>",
-        "  <li>Administration of OrgUnits, Actors and Rules</li>",
-        "  <li>Export of the Service Directory configuration</li>",
-        "  <li>Display and export of AuditLog</li>",
-        "</ul>"
+        "<section>",
+        "  <h3>GA-Lotse 1.0</h3>",
+        "  <h4>2024-10-01</h4>",
+        "  <ul>",
+        "    <li>Establishing a service mesh infrastructure between different healthcare departments, actors and organizational units</li>",
+        "    <li>Rules for checking permitted connections</li>",
+        "    <li>Administration of OrgUnits, Actors and Rules</li>",
+        "    <li>Export of the Service Directory configuration</li>",
+        "    <li>Display and export of AuditLog</li>",
+        "  </ul>",
+        "</section>"
       ],
       "title": "Release Notes"
-    },
-    "termsOfUse": {
-      "content": "The page is still under construction. The content will be updated as soon as it is approved by the health department.",
-      "title": "Terms of use"
     }
   },
   "navigation": {

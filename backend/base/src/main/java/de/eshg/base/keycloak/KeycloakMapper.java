@@ -31,7 +31,6 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.util.CollectionUtils;
 
 public class KeycloakMapper {
-  public static final String KEYCLOAK_SYSTEM_PREFIX = "[System] ";
 
   private KeycloakMapper() {
     throw new UnsupportedOperationException("Util class");
@@ -153,6 +152,8 @@ public class KeycloakMapper {
         String.valueOf(smtp.port()),
         "auth",
         "true",
+        "ssl",
+        String.valueOf(smtp.sslEnabled()),
         "user",
         smtp.username(),
         "password",

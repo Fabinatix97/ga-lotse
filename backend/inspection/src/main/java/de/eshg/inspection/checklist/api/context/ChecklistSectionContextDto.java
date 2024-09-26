@@ -58,4 +58,17 @@ public class ChecklistSectionContextDto {
   public int hashCode() {
     return Objects.hash(id, title, elements);
   }
+
+  @Override
+  public String toString() {
+    return "ChecklistSectionContextDto{"
+        + "id="
+        + id
+        + ", title='"
+        + title
+        + '\''
+        + ", elements="
+        + elements
+        + '}';
+  }
 }

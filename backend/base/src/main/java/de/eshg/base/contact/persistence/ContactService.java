@@ -30,6 +30,7 @@ import de.eshg.base.contact.persistence.entity.InstitutionContactCategory;
 import de.eshg.base.contact.persistence.entity.PersonContact;
 import de.eshg.base.contact.persistence.entity.PostboxContactAddress;
 import de.eshg.base.contact.persistence.repository.ContactRepository;
+import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.base.util.MappingUtil;
 import de.eshg.base.util.PaginationUtil.PageSpec;
 import de.eshg.domain.model.BaseRevisionEntity_;
@@ -40,6 +41,7 @@ import de.eshg.mapper.RevisionEntryWithChange;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.metamodel.SingularAttribute;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -74,13 +76,16 @@ public class ContactService {
 
   private final ContactRepository contactRepository;
   private final AuditLogger auditLogger;
-  private final EntityManager entityManager;
+  private final FuzzySearchHelper fuzzySearchHelper;
+  @PersistenceContext private EntityManager entityManager;
 
   public ContactService(
-      ContactRepository contactRepository, AuditLogger auditLogger, EntityManager entityManager) {
+      ContactRepository contactRepository,
+      AuditLogger auditLogger,
+      FuzzySearchHelper fuzzySearchHelper) {
     this.contactRepository = contactRepository;
     this.auditLogger = auditLogger;
-    this.entityManager = entityManager;
+    this.fuzzySearchHelper = fuzzySearchHelper;
   }
 
   public Optional<Contact> findById(UUID id) {
@@ -350,37 +355,31 @@ public class ContactService {
 
   public <T extends Contact> Page<T> fuzzySearchContacts(
       String name,
-      String firstName,
       String street,
       Class<T> type,
       InstitutionContactCategory category,
       PageSpec pageSpec) {
+    fuzzySearchHelper.setSimilarityThreshold(0.2);
     Specification<Contact> specification =
         Specification.allOf(
             isNotMergedInto(),
             containsNameOrHasFuzzy(name),
-            containsFirstNameOrHasFuzzy(firstName),
             containsStreetOrHasFuzzy(street),
             hasCategory(category));
     if (!type.equals(Contact.class)) {
       specification = Specification.allOf(specification, hasType(type));
     }
-    return fuzzySortAndPage(name, firstName, street, pageSpec, specification).map(type::cast);
+    return fuzzySortAndPage(name, street, pageSpec, specification).map(type::cast);
   }
 
   private Page<Contact> fuzzySortAndPage(
-      String name,
-      String firstname,
-      String street,
-      PageSpec pageSpec,
-      Specification<Contact> specification) {
+      String name, String street, PageSpec pageSpec, Specification<Contact> specification) {
     String sortKey = pageSpec.order().getProperty();
     SingularAttribute<Contact, String> fallbackSortKey = Contact_.name;
 
     switch (sortKey) {
       case RELEVANCE_SORT_KEY -> {
-        specification =
-            Specification.allOf(specification, orderBySimilarity(name, firstname, street));
+        specification = Specification.allOf(specification, orderBySimilarity(name, street));
         return contactRepository.findAll(
             specification, PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize()));
       }
@@ -429,7 +428,6 @@ public class ContactService {
 
     return fuzzySearchContacts(
         vCardData.fullName(),
-        null,
         vCardData.addresses().getFirst().street(),
         InstitutionContact.class,
         null,
@@ -441,13 +439,12 @@ public class ContactService {
       return Page.empty();
     }
 
-    return fuzzySearchContacts(
-        vCardData.lastName(),
-        vCardData.firstName(),
-        null,
-        PersonContact.class,
-        null,
-        getPageSpec());
+    String fullName =
+        vCardData.firstName() != null
+            ? vCardData.firstName() + " " + vCardData.lastName()
+            : vCardData.lastName();
+
+    return fuzzySearchContacts(fullName, null, PersonContact.class, null, getPageSpec());
   }
 
   private void writeAuditLog(String operationName, Map<String, String> attributes) {

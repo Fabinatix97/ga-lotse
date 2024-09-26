@@ -30,6 +30,18 @@ export type AppointmentDurationsStiProtection = Record<
   number
 >;
 
+export function mapAppointmentBlock(
+  response: ApiGetAppointmentBlock,
+): AppointmentBlockStiProtection {
+  return {
+    ...mapBaseEntity(response),
+    start: response.start,
+    end: response.end,
+    numberOfFreeAppointments: response.numberOfFreeAppointments,
+    numberOfBookedAppointments: response.numberOfBookedAppointments,
+  };
+}
+
 export function mapAppointmentBlockGroup(
   response: ApiGetAppointmentBlockGroup,
 ): AppointmentBlockGroup {
@@ -54,17 +66,5 @@ export function mapAppointmentBlockGroup(
     numberOfFreeAppointments: aggregatedNumberOfFreeAppointments,
     numberOfBookedAppointments: aggregatedNumberOfBookedAppointments,
     appointmentBlocks: response.appointmentBlocks.map(mapAppointmentBlock),
-  };
-}
-
-export function mapAppointmentBlock(
-  response: ApiGetAppointmentBlock,
-): AppointmentBlockStiProtection {
-  return {
-    ...mapBaseEntity(response),
-    start: response.start,
-    end: response.end,
-    numberOfFreeAppointments: response.numberOfFreeAppointments,
-    numberOfBookedAppointments: response.numberOfBookedAppointments,
   };
 }

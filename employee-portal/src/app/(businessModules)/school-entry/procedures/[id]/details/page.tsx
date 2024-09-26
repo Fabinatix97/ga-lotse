@@ -5,14 +5,34 @@
 
 "use client";
 
+import { useSuspenseQueries } from "@tanstack/react-query";
+
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
-import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import {
+  useConfigApi,
+  useSchoolEntryApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
+import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
+import { getProcedureQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureDetails";
 
 export default function SchoolEntryProcedureDetailsPage(
   props: SchoolEntryProcedurePageProps,
 ) {
-  const procedureQuery = useGetProcedure(props.params.id);
+  const schoolEntryApi = useSchoolEntryApi();
+  const configApi = useConfigApi();
+  const [{ data: procedure }, { data: locationSelectionMode }] =
+    useSuspenseQueries({
+      queries: [
+        getProcedureQuery(schoolEntryApi, props.params.id),
+        getLocationSelectionModeQuery(configApi),
+      ],
+    });
 
-  return <ProcedureDetails procedure={procedureQuery.data} />;
+  return (
+    <ProcedureDetails
+      procedure={procedure}
+      locationSelectionMode={locationSelectionMode}
+    />
+  );
 }

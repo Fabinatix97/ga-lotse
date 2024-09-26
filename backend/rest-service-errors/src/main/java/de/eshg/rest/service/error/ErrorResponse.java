@@ -5,8 +5,6 @@
 
 package de.eshg.rest.service.error;
 
-import de.eshg.api.commons.CanBeLogged;
 import jakarta.validation.constraints.NotNull;
 
-public record ErrorResponse(
-    @CanBeLogged @NotNull ErrorCode errorCode, @CanBeLogged String message) {}
+public record ErrorResponse(@NotNull ErrorCode errorCode, String message) {}

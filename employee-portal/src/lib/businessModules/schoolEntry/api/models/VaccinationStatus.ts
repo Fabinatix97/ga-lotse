@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiBooleanWithUnknown,
   ApiOtherVaccination,
   ApiVaccinationSchemeValue,
   ApiVaccinationStatus,
@@ -32,7 +33,7 @@ export interface VaccinationStatus extends Versioned {
   tbe?: number;
   otherVaccinations: ApiOtherVaccination[];
   vaccinationPassPresented?: boolean;
-  perkombiHbv?: boolean;
+  perkombiHbv?: ApiBooleanWithUnknown;
 }
 
 export function mapVaccinationStatus(

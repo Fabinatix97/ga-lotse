@@ -7,6 +7,7 @@ import {
   ApiReportingReason,
   ApiRoleStatus,
 } from "@eshg/citizen-portal-api/measlesProtection";
+import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import {
   Business,
@@ -20,13 +21,18 @@ import {
 import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { useFormikContext } from "formik";
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 
+import {
+  usePrivacyNoticeFile,
+  usePrivacyPolicyFile,
+} from "@/lib/businessModules/measlesProtection/api/queries";
 import {
   reportingReasonNames,
   roleStatusNames,
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { useTranslation } from "@/lib/i18n/client";
+import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
 import { formatAddress } from "./helpers";
@@ -55,7 +61,6 @@ const iconColor = "var(--joy-palette-text-primary)";
 
 interface ReportCaseOverviewCardProps {
   onCancel?: () => unknown;
-  onSubmit?: () => unknown;
   actionButton?: ReactElement;
   cancelLabel?: string;
   facilityName: string;
@@ -67,11 +72,11 @@ interface ReportCaseOverviewCardProps {
   };
   submitDisabled?: boolean;
   submitLabel?: string;
+  finalSubmit?: boolean;
 }
 
 export function ReportCaseOverviewCard({
   onCancel,
-  onSubmit,
   actionButton,
   cancelLabel,
   facilityName,
@@ -81,6 +86,7 @@ export function ReportCaseOverviewCard({
     count: false,
     current: false,
   },
+  finalSubmit,
   submitDisabled = false,
   submitLabel,
 }: ReportCaseOverviewCardProps) {
@@ -172,20 +178,99 @@ export function ReportCaseOverviewCard({
             </Box>
           </>
         )}
-        <Stack gap={3}>
-          <SubmitButton
-            onClick={onSubmit}
-            submitting={isSubmitting}
-            disabled={submitDisabled}
-          >
-            {submitLabel ?? t("common.continue")}
-          </SubmitButton>
-          {actionButton}
-          <Button onClick={onCancel} variant="soft" color="neutral">
-            {cancelLabel ?? t("common.cancel")}
-          </Button>
-        </Stack>
+        <ReportCaseOverviewCardButtons
+          affectedPersonCount={affectedPersons.length}
+          isSubmitting={isSubmitting}
+          submitDisabled={submitDisabled}
+          submitLabel={submitLabel}
+          onCancel={onCancel}
+          cancelLabel={cancelLabel}
+          actionButton={actionButton}
+          finalSubmit={finalSubmit}
+        />
       </CardContent>
     </Card>
+  );
+}
+
+interface ReportCaseOverviewSubmitFormProps {
+  onSubmit?: () => unknown;
+  isSubmitting: boolean;
+  submitDisabled: boolean;
+  submitLabel?: string;
+  onCancel?: () => unknown;
+  cancelLabel?: string;
+  actionButton: ReactNode;
+  finalSubmit?: boolean;
+  affectedPersonCount: number;
+}
+function ReportCaseOverviewCardButtons({
+  isSubmitting,
+  submitDisabled,
+  submitLabel,
+  finalSubmit,
+  onCancel,
+  cancelLabel,
+  actionButton,
+  affectedPersonCount,
+}: ReportCaseOverviewSubmitFormProps) {
+  const { t } = useTranslation();
+
+  return (
+    <Stack gap={2}>
+      {finalSubmit && (
+        <DataAndPrivacySection affectedPersonCount={affectedPersonCount} />
+      )}
+      <SubmitButton submitting={isSubmitting} disabled={submitDisabled}>
+        {submitLabel ?? t("common.continue")}
+      </SubmitButton>
+      {actionButton}
+      <Button onClick={onCancel} variant="soft" color="neutral">
+        {cancelLabel ?? t("common.cancel")}
+      </Button>
+    </Stack>
+  );
+}
+
+function DataAndPrivacySection({
+  affectedPersonCount,
+}: {
+  affectedPersonCount: number;
+}) {
+  const { t } = useTranslation("measlesProtection/forms");
+  const privacyNoticeFile = usePrivacyNoticeFile();
+  const privacyPolicyFile = usePrivacyPolicyFile();
+  return (
+    <Stack gap={2} mb={1}>
+      <p>{t("data_and_privacy.information", { count: affectedPersonCount })}</p>
+      <ConfirmationCheckboxField
+        name="confirmPrivacyNotice"
+        label={t("data_and_privacy.confirm_privacy_notice")}
+        required={t("data_and_privacy.confirm_required")}
+        descriptionText={
+          <DownloadLink
+            downloadContainerRef={privacyNoticeFile.downloadContainerRef}
+            fontSize="sm"
+            onDownload={() => privacyNoticeFile.download()}
+          >
+            {t("data_and_privacy.privacy_notice")}
+          </DownloadLink>
+        }
+      />
+      <ConfirmationCheckboxField
+        name="confirmPrivacyPolicy"
+        label={t("data_and_privacy.confirm_privacy_policy")}
+        required={t("data_and_privacy.confirm_required")}
+        descriptionText={
+          <DownloadLink
+            downloadContainerRef={privacyPolicyFile.downloadContainerRef}
+            fontSize="sm"
+            onDownload={() => privacyPolicyFile.download()}
+          >
+            {t("data_and_privacy.privacy_policy")}
+          </DownloadLink>
+        }
+      />
+    </Stack>
   );
 }

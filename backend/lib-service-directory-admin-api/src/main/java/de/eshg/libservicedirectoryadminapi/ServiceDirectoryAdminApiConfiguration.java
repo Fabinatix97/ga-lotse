@@ -6,10 +6,7 @@
 package de.eshg.libservicedirectoryadminapi;
 
 import de.eshg.libservicedirectoryadminapi.api.testhelper.ServiceDirectoryTestHelperApi;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -18,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.Builder;
 import org.springframework.web.client.support.RestClientAdapter;
@@ -56,10 +52,4 @@ public class ServiceDirectoryAdminApiConfiguration {
 
     return httpServiceProxyFactory.createClient(api);
   }
-
-  // TODO: replace this with common import
-  @Target({ElementType.TYPE, ElementType.METHOD})
-  @Retention(RetentionPolicy.RUNTIME)
-  @Profile("test-helper")
-  public @interface ConditionalOnTestHelperEnabled {}
 }

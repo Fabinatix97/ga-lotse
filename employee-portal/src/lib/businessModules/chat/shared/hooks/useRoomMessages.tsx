@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
-import { useSelectedRoomId } from "@/lib/businessModules/chat/shared/hooks/useSelectedRoomId";
+import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import {
   Message,
   RoomEventDetails,
@@ -26,7 +26,7 @@ import {
 export function useRoomMessages() {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [canPaginate, setCanPaginate] = useState(true);
-  const { selectedRoomId } = useSelectedRoomId();
+  const { selectedRoomId } = useChatSearchParams();
   const { matrixClient, clientState } = useChatClientContext();
   const messagesLimit = 10;
   const [isLoading, setIsLoading] = useState(false);

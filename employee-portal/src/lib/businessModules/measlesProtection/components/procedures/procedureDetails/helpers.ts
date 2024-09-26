@@ -14,7 +14,7 @@ import {
 import { AlertProps as SharedAlertProps } from "@eshg/lib-portal/components/Alert";
 import { isObjectType } from "remeda";
 
-import { isAdult } from "@/lib/businessModules/measlesProtection/shared/helper";
+import { isAdult } from "@/lib/businessModules/measlesProtection/shared/helpers";
 
 export interface UpdateProcedureForm {
   reportData: {

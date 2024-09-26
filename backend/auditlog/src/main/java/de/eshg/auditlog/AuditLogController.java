@@ -5,20 +5,25 @@
 
 package de.eshg.auditlog;
 
+import static de.base.rest.CustomMediaTypes.TEXT_PLAIN_UTF_8;
 import static de.eshg.auditlog.AuditLogApi.QueryParameter.END_DATE;
 import static de.eshg.auditlog.AuditLogApi.QueryParameter.START_DATE;
 import static de.eshg.base.user.api.UserRoleDto.AUDITLOG_DECRYPT_AND_ACCESS;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.auditlog.crypto.AsymmetricEncryption;
 import de.eshg.auditlog.crypto.AsymmetricEncryption.EncryptedKey;
 import de.eshg.auditlog.crypto.AuditLogDecryptionException;
 import de.eshg.auditlog.crypto.AuditLogEncryptionException;
 import de.eshg.auditlog.crypto.SymmetricEncryption;
 import de.eshg.auditlog.crypto.SymmetricEncryption.EncryptedPayload;
+import de.eshg.auditlog.domain.model.AuditLogAccessibleProjection;
 import de.eshg.auditlog.domain.model.AuditLogGrantedAccessProjection;
+import de.eshg.auditlog.domain.model.AuditLogGranteesProjection;
 import de.eshg.auditlog.domain.model.GrantedAccess;
 import de.eshg.auditlog.domain.model.GrantedAccessRepository;
 import de.eshg.base.user.UserApi;
+import de.eshg.base.user.api.GetUsersRequest;
 import de.eshg.base.user.api.GetUsersResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.api.UserFilterParameters;
@@ -60,10 +65,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
@@ -128,7 +137,8 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   }
 
   @Override
-  public String readAuditLogFile(String key, ReadAuditLogFileRequest readAuditLogFileRequest) {
+  public ResponseEntity<String> readAuditLogFile(
+      String key, ReadAuditLogFileRequest readAuditLogFileRequest) {
     UserDto selfUser = userApi.getSelfUser();
 
     Map<String, String> additionalData =
@@ -152,8 +162,14 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
         readAuditLogFileRequest.source(), readAuditLogFileRequest.date(), selfUser);
 
     try {
-      return new String(
-          decryptAuditLogFile(key, auditLogFilePath, ivFilePath), StandardCharsets.UTF_8);
+      ContentDisposition contentDisposition = ContentDisposition.inline().build();
+
+      return ResponseEntity.ok()
+          .contentType(TEXT_PLAIN_UTF_8)
+          .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+          .body(
+              new String(
+                  decryptAuditLogFile(key, auditLogFilePath, ivFilePath), StandardCharsets.UTF_8));
     } catch (IOException e) {
       throw new UncheckedIOException("Unable to read audit log files", e);
     } catch (InvalidKeyException | javax.crypto.AEADBadTagException e) {
@@ -164,18 +180,57 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   }
 
   @Override
-  public GetUsersResponse getValidAuditLogGrantees(
-      GetValidAuditLogGranteesRequest getValidAuditLogGranteesRequest) {
-    AuditLogSource source = getValidAuditLogGranteesRequest.source();
-    LocalDate date = getValidAuditLogGranteesRequest.date();
+  public GetUsersResponse getAuditLogGranteesCandidates(
+      GetAuditLogDataRequest getAuditLogDataRequest) {
+    AuditLogSource source = getAuditLogDataRequest.source();
+    LocalDate date = getAuditLogDataRequest.date();
 
     List<UserDto> users =
         userApi.getUsers(new UserFilterParameters(AUDITLOG_DECRYPT_AND_ACCESS, null)).users();
 
-    List<UserDto> validGrantees =
+    List<UserDto> granteesCandidates =
         users.stream().filter(user -> existsUserSpecificDir(user.userId(), source, date)).toList();
 
-    return new GetUsersResponse(validGrantees);
+    return new GetUsersResponse(granteesCandidates);
+  }
+
+  @Override
+  public GetAuditLogGrantedAccessesResponse getAuditLogGrantedAccesses(
+      GetAuditLogDataRequest getAuditLogDataRequest) {
+    AuditLogSource source = getAuditLogDataRequest.source();
+    LocalDate date = getAuditLogDataRequest.date();
+
+    List<AuditLogGranteesProjection> grantees =
+        grantedAccessRepository.findByAuditLogAndExpiresAtIsAfter(date, source, Instant.now(clock));
+
+    Map<UUID, UserDto> resolvedUsers = resolveUsers(grantees);
+
+    List<GrantedAccessDto> grantedAccesses =
+        grantees.stream()
+            .sorted(Comparator.comparing(user -> resolveUserLastName(user, resolvedUsers)))
+            .map(
+                grantee ->
+                    new GrantedAccessDto(grantee.getIdOfGrantedUser(), grantee.getExpiresAt()))
+            .toList();
+
+    return new GetAuditLogGrantedAccessesResponse(grantedAccesses, resolvedUsers);
+  }
+
+  private Map<UUID, UserDto> resolveUsers(List<AuditLogGranteesProjection> grantees) {
+    return userApi.getUsersBulk(new GetUsersRequest(getUserIds(grantees), false)).users().stream()
+        .sorted(Comparator.comparing(UserDto::lastName))
+        .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+  }
+
+  private String resolveUserLastName(
+      AuditLogGranteesProjection user, Map<UUID, UserDto> resolvedUsers) {
+    return resolvedUsers.get(user.getIdOfGrantedUser()).lastName();
+  }
+
+  private Set<UUID> getUserIds(List<AuditLogGranteesProjection> grantedAccessProjection) {
+    return grantedAccessProjection.stream()
+        .map(AuditLogGranteesProjection::getIdOfGrantedUser)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   private Optional<String> getRequestRemoteAddress() {
@@ -311,7 +366,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
             .limit(paginationOptions.pageSize())
             .toList();
 
-    List<AuditLogGrantedAccessDto> enrichedAuditLogs = new ArrayList<>();
+    List<AuditLogGrantedAccessCountDto> enrichedAuditLogs = new ArrayList<>();
 
     List<AuditLogGrantedAccessProjection> grantedAccessProjection =
         grantedAccessRepository.findByAuditLogInAndExpiresAtIsAfter(
@@ -321,7 +376,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
     for (AuditLogDto auditLog : truncatedAuditLogs) {
       int validGrantedAccessCount = getValidGrantedAccessCount(auditLog, grantedAccessProjection);
-      enrichedAuditLogs.add(new AuditLogGrantedAccessDto(auditLog, validGrantedAccessCount));
+      enrichedAuditLogs.add(new AuditLogGrantedAccessCountDto(auditLog, validGrantedAccessCount));
     }
 
     return new GetAvailableAuditLogsResponse(
@@ -417,7 +472,8 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   @Override
   public GetAccessibleAuditLogsResponse getAccessibleAuditLogs() {
     UserDto selfUser = userApi.getSelfUser();
-    List<GrantedAccess> accesses =
+
+    List<AuditLogAccessibleProjection> accesses =
         grantedAccessRepository.findByIdOfGrantedUserAndExpiresAtIsAfter(
             selfUser.userId(), Instant.now(clock));
     return new GetAccessibleAuditLogsResponse(
@@ -697,7 +753,8 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
     return new AuditLogDto(date, source);
   }
 
-  private AccessibleAuditLogDto mapToAccessibleAuditLogDto(GrantedAccess grantedAccess) {
+  private AccessibleAuditLogDto mapToAccessibleAuditLogDto(
+      AuditLogAccessibleProjection grantedAccess) {
     return new AccessibleAuditLogDto(
         new AuditLogDto(grantedAccess.getDate(), grantedAccess.getAuditLogSource()),
         grantedAccess.getExpiresAt());

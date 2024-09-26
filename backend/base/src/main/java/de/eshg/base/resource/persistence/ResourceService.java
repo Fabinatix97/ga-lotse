@@ -18,12 +18,12 @@ import de.eshg.base.resource.persistence.entity.Resource;
 import de.eshg.base.resource.persistence.entity.ResourceType;
 import de.eshg.base.resource.persistence.entity.Resource_;
 import de.eshg.base.resource.persistence.repository.ResourceRepository;
+import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.base.util.PaginationUtil.PageSpec;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
-import jakarta.persistence.EntityManager;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,18 +44,18 @@ public class ResourceService {
   private final ResourceRepository resourceRepository;
   private final LabelService labelService;
   private final CalendarService calendarService;
-  private final EntityManager entityManager;
+  private final FuzzySearchHelper fuzzySearchHelper;
   private final AuditLogger auditLogger;
 
   public ResourceService(
       ResourceRepository resourceRepository,
       LabelService labelService,
       CalendarService calendarService,
-      EntityManager entityManager,
+      FuzzySearchHelper fuzzySearchHelper,
       AuditLogger auditLogger) {
     this.resourceRepository = resourceRepository;
     this.calendarService = calendarService;
-    this.entityManager = entityManager;
+    this.fuzzySearchHelper = fuzzySearchHelper;
     this.auditLogger = auditLogger;
     this.labelService = labelService;
   }
@@ -71,7 +71,7 @@ public class ResourceService {
     if (name == null || name.isEmpty()) {
       return (root, query, builder) -> builder.and();
     }
-    configureSimilarityThreshold(name);
+    fuzzySearchHelper.setSimilarityThreshold(getSimilarityThreshold(name));
     return (root, query, builder) ->
         builder.or(
             containsNormalized(builder, root.get(Resource_.name), splitToWords(name)),
@@ -84,13 +84,6 @@ public class ResourceService {
     }
     return (root, query, builder) ->
         builder.equal(root.join(Resource_.labels).get(Label_.name), label);
-  }
-
-  private void configureSimilarityThreshold(String name) {
-    double threshold = getSimilarityThreshold(name);
-    entityManager
-        .createNativeQuery("set local pg_trgm.similarity_threshold=" + threshold)
-        .executeUpdate();
   }
 
   public Page<Resource> findAll(

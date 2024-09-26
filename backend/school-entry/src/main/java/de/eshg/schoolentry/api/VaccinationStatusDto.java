@@ -41,4 +41,4 @@ public record VaccinationStatusDto(
         List<OtherVaccinationDto> otherVaccinations,
     @Schema(description = "Boolean that indicates, if the vaccination pass was shown or not.")
         Boolean vaccinationPassPresented,
-    Boolean perkombiHbv) {}
+    BooleanWithUnknownDto perkombiHbv) {}

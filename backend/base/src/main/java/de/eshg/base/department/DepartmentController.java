@@ -47,6 +47,16 @@ public class DepartmentController implements DepartmentApi {
     }
   }
 
+  @Override
+  public ResponseEntity<byte[]> getSecurityTxtPublicKey() {
+    try {
+      byte[] securityTxt = departmentConfiguration.securityTxtPublicKey().getContentAsByteArray();
+      return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(securityTxt);
+    } catch (IOException e) {
+      throw new RuntimeException("Could not read security txt public key file.", e);
+    }
+  }
+
   private GetDepartmentInfoResponse mapToResponse(DepartmentConfiguration departmentConfig) {
     return new GetDepartmentInfoResponse(
         departmentConfig.name(),

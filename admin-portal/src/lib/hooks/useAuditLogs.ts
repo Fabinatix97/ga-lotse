@@ -22,8 +22,11 @@ function fetchUsernames(
       (response) => {
         return response.usernames;
       },
-      (error: BackendError) => {
-        throw new Error(error.status.toString());
+      (error: BackendError | Error) => {
+        if (error.message.startsWith("Failed to fetch"))
+          throw new Error("FetchFailed");
+        if ("status" in error) throw new Error(error.status.toString());
+        else throw new Error(error.message);
       },
     );
   };
@@ -47,8 +50,11 @@ function fetchRevisions(
             ...r,
             id: r.id.toString(),
           })),
-        (error: BackendError) => {
-          throw new Error(error.status.toString());
+        (error: BackendError | Error) => {
+          if (error.message.startsWith("Failed to fetch"))
+            throw new Error("FetchFailed");
+          if ("status" in error) throw new Error(error.status.toString());
+          else throw new Error(error.message);
         },
       );
   };
@@ -62,8 +68,11 @@ function fetchExport(
       (response) => {
         return response;
       },
-      (error: BackendError) => {
-        throw new Error(error.status.toString());
+      (error: BackendError | Error) => {
+        if (error.message.startsWith("Failed to fetch"))
+          throw new Error("FetchFailed");
+        if ("status" in error) throw new Error(error.status.toString());
+        else throw new Error(error.message);
       },
     );
   };

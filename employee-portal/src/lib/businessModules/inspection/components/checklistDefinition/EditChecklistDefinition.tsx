@@ -15,8 +15,9 @@ import { isDefined } from "remeda";
 
 import {
   FormChecklistDefinitionVersion,
+  useAddChecklistDefinitionVersion,
   useCreateChecklistDefinition,
-  useUpdateChecklistDefinition,
+  useEditDraftChecklistDefinitionVersion,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { ChecklistDefinitionHeaderCard } from "@/lib/businessModules/inspection/components/checklistDefinition/header/ChecklistDefinitionHeaderCard";
 import { ChecklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/checklistDefinition/header/ChecklistDefinitionHeaderRow";
@@ -38,9 +39,15 @@ export function EditChecklistDefinition({
   const router = useRouter();
 
   const { mutateAsync: createChecklist } = useCreateChecklistDefinition();
-  const { mutateAsync: updateChecklist } = useUpdateChecklistDefinition();
+  const { mutateAsync: addCldVersion } = useAddChecklistDefinitionVersion();
+  const { mutateAsync: editDraftCldVersion } =
+    useEditDraftChecklistDefinitionVersion();
 
-  const isNewestVersion = cldVersion?.context.validTo === undefined;
+  const hasDraft = cldVersion?.hasDraft ?? false;
+  const isNewestVersion =
+    cldVersion === undefined ||
+    (cldVersion?.context.validTo === undefined &&
+      cldVersion?.context.published === true);
   const readOnlyMode = readonly ?? !isNewestVersion;
 
   const formData: FormChecklistDefinitionVersion = useMemo(
@@ -57,6 +64,7 @@ export function EditChecklistDefinition({
               sections: [],
               expandable: true,
               deleted: false,
+              published: true,
             },
             isCoreChecklist: false,
             objectTypeId: "",
@@ -64,16 +72,39 @@ export function EditChecklistDefinition({
     [cldVersion],
   );
 
+  let publish = true;
   async function sendToBackend(values: FormChecklistDefinitionVersion) {
     if (cldVersion) {
-      await updateChecklist(
-        { defId: cldVersion.context.defId, cldVersion: values },
-        { onSuccess: () => router.push(routes.checklists.definitions.index) },
-      );
+      if (!hasDraft) {
+        await addCldVersion(
+          {
+            defId: cldVersion.context.defId,
+            cldVersion: {
+              ...values,
+              context: { ...values.context, published: publish },
+            },
+          },
+          { onSuccess: () => router.push(routes.checklists.definitions.index) },
+        );
+      } else {
+        await editDraftCldVersion(
+          {
+            versionId: cldVersion.context.id,
+            cldVersion: {
+              ...values,
+              context: { ...values.context, published: publish },
+            },
+          },
+          { onSuccess: () => router.push(routes.checklists.definitions.index) },
+        );
+      }
     } else {
-      await createChecklist(values, {
-        onSuccess: () => router.push(routes.checklists.definitions.index),
-      });
+      await createChecklist(
+        { ...values, context: { ...values.context, published: publish } },
+        {
+          onSuccess: () => router.push(routes.checklists.definitions.index),
+        },
+      );
     }
   }
 
@@ -96,6 +127,8 @@ export function EditChecklistDefinition({
                 versionId={cldVersion?.context.id}
                 isCoreChecklist={cldVersion?.isCoreChecklist}
                 isSubmitting={isSubmitting}
+                hasDraft={hasDraft}
+                onPublish={(shouldPublish) => (publish = shouldPublish)}
               />
             )}
             <ChecklistDefinitionHeaderCard

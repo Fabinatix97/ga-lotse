@@ -6,49 +6,64 @@
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import { Avatar, Badge } from "@mui/joy";
 
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { Presence } from "@/lib/businessModules/chat/shared/types";
 import {
   getInitials,
   getStatusColor,
+  isGroupRoom,
   stringToColor,
 } from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatAvatarProps {
+  userId?: string;
   name?: string;
-  avatarUrl?: string;
-  presence?: Presence;
+  avatarUrl: string | null;
   communicationType?: CommunicationType;
   size?: "sm" | "md" | "lg";
+  disablePresence?: boolean;
 }
+
+type BadgeAvatarProps = {
+  presence?: Presence;
+} & Omit<ChatAvatarProps, "communicationType">;
 
 export function ChatAvatar({
   communicationType = CommunicationType.DirectMessage,
   size = "md",
+  userId,
   ...props
 }: ChatAvatarProps) {
-  return communicationType === CommunicationType.PublicRoom ? (
-    <Avatar variant="solid" color="warning" size={size}>
-      <GroupOutlinedIcon size="md" sx={{ color: "white" }} />
-    </Avatar>
-  ) : (
-    <BadgeAvatar size={size} {...props} />
-  );
-}
+  const { usersPresence } = useChatClientContext();
 
-function BadgeAvatar({
-  presence,
-  avatarUrl,
-  name,
-  size,
-}: Omit<ChatAvatarProps, "communicationType">) {
   const {
     userSettings: { sharePresence },
   } = useChat();
 
+  return isGroupRoom(communicationType) ? (
+    <Avatar variant="solid" color="warning" size={size}>
+      <GroupOutlinedIcon size="md" sx={{ color: "white" }} />
+    </Avatar>
+  ) : (
+    <BadgeAvatar
+      size={size}
+      presence={sharePresence ? usersPresence[userId ?? ""] : undefined}
+      {...props}
+    />
+  );
+}
+
+function BadgeAvatar({
+  avatarUrl,
+  name,
+  size,
+  disablePresence = false,
+  presence,
+}: BadgeAvatarProps) {
   const content = getInitials(name);
-  const invisiblePresence = !sharePresence || !presence;
+  const invisiblePresence = disablePresence || !presence;
 
   return (
     <Badge
@@ -66,7 +81,7 @@ function BadgeAvatar({
       <Avatar
         variant="solid"
         color={stringToColor(name)}
-        src={avatarUrl}
+        src={avatarUrl ?? ""}
         size={size}
         sx={{
           fontWeight: 500,

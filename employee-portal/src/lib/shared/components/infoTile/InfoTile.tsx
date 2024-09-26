@@ -15,6 +15,7 @@ export interface InfoTileProps extends RequiresChildren {
   title: string;
   onEdit?: () => void;
   footer?: ReactNode;
+  controls?: ReactNode;
 }
 
 export function InfoTile({
@@ -23,11 +24,17 @@ export function InfoTile({
   onEdit,
   children,
   footer,
+  controls,
 }: InfoTileProps) {
   return (
     <InformationSheet>
       <div style={{ flexGrow: 1 }}>
-        <DetailsSection name={name} title={title} onEdit={onEdit}>
+        <DetailsSection
+          name={name}
+          title={title}
+          onEdit={onEdit}
+          buttons={controls}
+        >
           <Grid container columns={1} spacing={2} style={{ flexGrow: 1 }}>
             <Grid xs sx={{ flex: 1 }}>
               <Stack spacing={2}>{children}</Stack>

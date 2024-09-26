@@ -13,6 +13,7 @@ import { appointmentTypeApiQueryKey } from "./apiQueryKeys";
 
 export function useGetAppointmentDurations() {
   const appointmentTypeApi = useAppointmentTypeApi();
+
   return useSuspenseQuery({
     queryKey: appointmentTypeApiQueryKey(["getAppointmentTypes"]),
     queryFn: () =>

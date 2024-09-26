@@ -4,10 +4,10 @@
  */
 
 import { useDuplicateStatistic } from "@/lib/businessModules/statistics/api/mutations/useDuplicateStatistic";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/sidebarStep";
 import { DuplicateStatisticFormModel } from "@/lib/businessModules/statistics/components/statistics/DuplicateStatisticSidebar/duplicateStatisticFormModel";
 import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/statistics/details/UpdateDiagramSidebar/updateDiagramFormModel";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
 import { DuplicateStatisticStep } from "./DuplicateStatisticStep";
 

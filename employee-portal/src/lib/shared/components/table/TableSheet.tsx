@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Box, Sheet, styled } from "@mui/joy";
+import { Box, Sheet, Theme, styled } from "@mui/joy";
 import { ReactElement, ReactNode } from "react";
-
-import { LoadingOverlay } from "@/lib/shared/components/LoadingOverlay";
 
 export const StyledSheet = styled(Sheet)(({ theme }) => ({
   flex: 1,
@@ -16,10 +15,6 @@ export const StyledSheet = styled(Sheet)(({ theme }) => ({
   flexDirection: "column",
   overflow: "auto",
   gap: theme.spacing(2),
-}));
-
-export const StyledLoadingOverlay = styled(LoadingOverlay)(({ theme }) => ({
-  zIndex: theme.zIndex.table,
 }));
 
 export interface TableSheetProps extends RequiresChildren {
@@ -35,7 +30,11 @@ export function TableSheet(props: TableSheetProps): ReactElement {
       {props.title}
       {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}
       {props.footer}
-      {props.loading && <StyledLoadingOverlay />}
+      {props.loading && <LoadingOverlay zIndex={zIndexTable} />}
     </StyledSheet>
   );
+}
+
+function zIndexTable(theme: Theme): number {
+  return theme.zIndex.table;
 }

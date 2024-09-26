@@ -11,8 +11,6 @@ import { Avatar, Card, IconButton, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { User } from "matrix-js-sdk/lib/matrix";
 
-import { BadgeAvatar } from "@/lib/businessModules/chat/components/BadgeAvatar";
-import { useGetUsersPresence } from "@/lib/businessModules/chat/shared/hooks/useGetUsersPresence";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { Message } from "@/lib/businessModules/chat/shared/types";
 import { formatDateTimeRangeToNow } from "@/lib/shared/helpers/dateTime";
@@ -25,15 +23,12 @@ export function MessageNotification({
   sender: User | null;
 }) {
   const { sendMessage } = useSendMessage();
-  const usersPresence = useGetUsersPresence();
 
   return (
     <Card variant="soft" data-testid="notification" size="sm">
       <Stack direction="row" spacing={1}>
         <Stack direction="row" alignItems="start">
-          <BadgeAvatar status={usersPresence[sender?.userId ?? ""]}>
-            <Avatar src={sender?.avatarUrl} />
-          </BadgeAvatar>
+          <Avatar src={sender?.avatarUrl} />
         </Stack>
         <Stack width="100%">
           <Stack

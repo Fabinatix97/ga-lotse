@@ -58,7 +58,7 @@ export function ChecklistDefinitionHeaderCard({
       <Stack direction="row" gap={4}>
         <CheckboxField
           name="context.deleted"
-          label="Als gelöscht markieren"
+          label="Als Inaktiv markieren"
           disabled={
             readOnlyMode || (values.isCoreChecklist && !canEditCoreChecklists)
           }

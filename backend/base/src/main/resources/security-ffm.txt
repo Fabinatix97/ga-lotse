@@ -1,1 +1,26 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
+# For Coordinated Vulnerability Disclosure
+Contact: mailto:security@ga-lotse.de
+Expires: 2034-12-31T23:00:00.000Z
+# Our PGP key for vulnerability disclosure
+Encryption: https://ga-lotse.de/pgp-key.txt
+Preferred-Languages: de, en
+Canonical: https://ga-lotse.de/.well-known/security.txt
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEMfoseh5fzKWjiVuI6ztgztlwzNEFAmbz5uwACgkQ6ztgztlw
+zNGkow//dQVQVLjt6sK1MxvQzLDWj4YH4DWsVgDfkE9DEAotJO2YJiLRvkiyBed4
+pIDt6zkUpKxzarNWIm87vH8qPKxxv2KDWEJMaEYAJpa0mDVq5haBCYcJBp8cxcQo
+pkLZNZ6Lp1/TVkQS29QsusykNI1yq7lF4oNlA5QON2AShvF+xOsbV24FLrbOg1Mx
+DUfUdGmgsg3OhNT3rfASPSzek1QsRmWUbFczN+CJo6F/6t9HHMz9BfZAT2vjdv7u
+6nAZ56SohRHoVIiGO/7nVvThZeH+guFaJP34q/ZYDkIlLsn8i8Ndp3FxRp42bMCb
+0PO+7mTOpBw5HxHKOIwN3Cdgp/jBYJh/CK14D04CGJioBJB7mFgvJ6CioFQT4e5K
+Ev54zuhM9cv6jzAQaw85MgAK3sdhq8TkDNpoB3SCnJ4lKn22bMgP74O5wK2vbIzb
+7+7ta5UCqks9FS8ixLudCEVJxgEWfVbojX6Au5LJppWjlgJcZHIJrtx/f33rjSeO
+XDHrrk8Y4LtehsMQQYiyRUlrDWiFtkspX19N7s4H+T8dxG103oreXWXaQOAqUYkK
+MIVQ9kbSap4mG4RNzOYsymbekpkQruwXuNUXV+BekfZOyYs+lmQgCaSPJlmUhvVV
+FsXZVGvHGf9HiFhTXWThKJHYigtetnc0QLNjjqv+wRcyLdm0Ls8=
+=9mrV
+-----END PGP SIGNATURE-----

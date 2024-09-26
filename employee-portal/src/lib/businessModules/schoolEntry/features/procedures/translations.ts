@@ -6,6 +6,7 @@
 import {
   ApiAppointmentType,
   ApiArticulationValue,
+  ApiBooleanWithUnknown,
   ApiDisabilityType,
   ApiDoctorLetterValue,
   ApiEvaluationArticulationValue,
@@ -449,4 +450,10 @@ export const REQUIRED_PROCEDURE_DATA: EnumMap<ApiRequiredProcedureData> = {
   [ApiRequiredProcedureData.SopessExamination]: "S1 - SOPESS 2019",
   [ApiRequiredProcedureData.DevelopmentScreening]: "S1 - Befund",
   [ApiRequiredProcedureData.VaccinationStatus]: "Impfstatus",
+};
+
+export const BOOLEAN_WITH_UNKNOWN_VALUES: EnumMap<ApiBooleanWithUnknown> = {
+  [ApiBooleanWithUnknown.True]: "Ja",
+  [ApiBooleanWithUnknown.False]: "Nein",
+  [ApiBooleanWithUnknown.Unknown]: "Unbekannt",
 };

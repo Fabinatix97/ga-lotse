@@ -5,9 +5,18 @@
 
 import {
   ApiWaitingRoom,
+  ApiWaitingRoomProcedure,
   ApiWaitingStatus,
 } from "@eshg/employee-portal-api/schoolEntry";
 
+import {
+  BaseEntity,
+  mapBaseEntity,
+} from "@/lib/businessModules/schoolEntry/api/models/BaseEntity";
+import {
+  Person,
+  mapPerson,
+} from "@/lib/businessModules/schoolEntry/api/models/Person";
 import {
   Versioned,
   mapVersioned,
@@ -16,6 +25,7 @@ import {
 export interface WaitingRoom extends Versioned {
   description?: string;
   status?: ApiWaitingStatus;
+  modifiedAt?: Date;
 }
 
 export function mapWaitingRoom(response: ApiWaitingRoom): WaitingRoom {
@@ -23,5 +33,22 @@ export function mapWaitingRoom(response: ApiWaitingRoom): WaitingRoom {
     ...mapVersioned(response),
     description: response.description,
     status: response.status,
+  };
+}
+
+export interface WaitingRoomProcedure extends BaseEntity {
+  readonly child: Person;
+  readonly waitingRoom: ApiWaitingRoom;
+  readonly modifiedAt: Date;
+}
+
+export function mapWaitingRoomProcedure(
+  response: ApiWaitingRoomProcedure,
+): WaitingRoomProcedure {
+  return {
+    ...mapBaseEntity(response),
+    child: mapPerson(response.child),
+    waitingRoom: response.waitingRoom,
+    modifiedAt: response.modifiedAt,
   };
 }

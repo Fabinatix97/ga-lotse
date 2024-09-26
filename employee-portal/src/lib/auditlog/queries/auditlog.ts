@@ -5,17 +5,16 @@
 
 import {
   ApiAuditLogSource,
+  GetAuditLogGrantedAccessesRequest,
+  GetAuditLogGranteesCandidatesRequest,
   GetAvailableLogsRequest,
-  GetValidAuditLogGranteesRequest,
 } from "@eshg/employee-portal-api/auditlog";
-import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useAuditlogApi } from "@/lib/auditlog/api/clients";
 import { mapResponse } from "@/lib/auditlog/api/models/auditlog";
-
-const auditlogQueryKey = queryKeyFactory(["auditlog"]);
+import { auditLogApiQueryKey } from "@/lib/auditlog/queries/queryKeys";
 
 export const SearchParamsKeys = {
   source: "source",
@@ -45,7 +44,7 @@ export function useGetAvailableAuditLogs(params: SearchParams) {
   };
 
   return useSuspenseQuery({
-    queryKey: auditlogQueryKey([
+    queryKey: auditLogApiQueryKey([
       "available",
       request,
       Array.from(request.source ?? new Set()),
@@ -56,20 +55,51 @@ export function useGetAvailableAuditLogs(params: SearchParams) {
   });
 }
 
-export function useGetGetValidAuditLogGrantees(
+export function useGetAuditLogGranteesCandidates(
   source: ApiAuditLogSource,
   date: Date,
 ) {
   const auditlogApi = useAuditlogApi();
 
-  const request: GetValidAuditLogGranteesRequest = {
+  const request: GetAuditLogGranteesCandidatesRequest = {
     source: source,
     date: date,
   };
 
   return useSuspenseQuery({
-    queryKey: auditlogQueryKey(["grantees", request]),
+    queryKey: auditLogApiQueryKey(["granteesCandidates", request]),
     queryFn: () =>
-      auditlogApi.getValidAuditLogGranteesRaw(request).then(unwrapRawResponse),
+      auditlogApi
+        .getAuditLogGranteesCandidatesRaw(request)
+        .then(unwrapRawResponse),
+  });
+}
+
+export function useGetAuditLogGrantedAccesses(
+  source: ApiAuditLogSource,
+  date: Date,
+) {
+  const auditlogApi = useAuditlogApi();
+
+  const request: GetAuditLogGrantedAccessesRequest = {
+    source: source,
+    date: date,
+  };
+
+  return useSuspenseQuery({
+    queryKey: auditLogApiQueryKey(["grantAccess", request]),
+    queryFn: () =>
+      auditlogApi
+        .getAuditLogGrantedAccessesRaw(request)
+        .then(unwrapRawResponse),
+  });
+}
+
+export function useGetAccessibleAuditLogs() {
+  const auditlogApi = useAuditlogApi();
+
+  return useSuspenseQuery({
+    queryKey: auditLogApiQueryKey(["accessible"]),
+    queryFn: () => auditlogApi.getAccessibleAuditLogs(),
   });
 }

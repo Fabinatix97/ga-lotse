@@ -23,25 +23,38 @@ export const columnName = {
 
 const columnHelper = createColumnHelper<ApiProcedureMetric>();
 
+const meta = {
+  canNavigate: {
+    parentRow: true,
+  },
+  width: "6rem",
+};
+
 export const procedureMetricsColumns = [
   columnHelper.accessor("procedureType", {
     header: columnName.procedureType,
     cell: (props) => procedureTypeNames[props.getValue()],
+    meta,
   }),
   columnHelper.accessor("totalCount", {
     header: columnName.totalCount,
+    meta,
   }),
   columnHelper.accessor("openOrDraftCount", {
     header: columnName.openOrDraftCount,
+    meta,
   }),
   columnHelper.accessor("inProgressCount", {
     header: columnName.inProgressCount,
+    meta,
   }),
   columnHelper.accessor("closedCount", {
     header: columnName.closedCount,
+    meta,
   }),
   columnHelper.accessor("abortedCount", {
     header: columnName.abortedCount,
+    meta,
   }),
   columnHelper.accessor("averageDuration", {
     header: columnName.averageDuration,
@@ -49,6 +62,7 @@ export const procedureMetricsColumns = [
       const value = props.getValue();
       return isDefined(value) ? formatDurationRounded(value) : "-";
     },
+    meta,
   }),
 ];
 

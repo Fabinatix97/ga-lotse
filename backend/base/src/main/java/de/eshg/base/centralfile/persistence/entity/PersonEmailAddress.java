@@ -5,7 +5,7 @@
 
 package de.eshg.base.centralfile.persistence.entity;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(indexes = @Index(columnList = PersonEmailAddress.PERSON_ID))
-public class PersonEmailAddress extends BaseEntity {
+public class PersonEmailAddress extends SequencedBaseEntity {
 
   static final String PERSON_ID = "person_id";
 

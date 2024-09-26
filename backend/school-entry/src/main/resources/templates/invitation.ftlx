@@ -245,9 +245,9 @@
       <td rowspan="2">
         <div class="label">Adresse</div>
         <div class="data">
-          <div>${office.name}</div>
-          <div>${office.street}</div>
-          <div>${office.zipCode} ${office.city}</div>
+          <div>${examination.executionLocation.name}</div>
+          <div>${examination.executionLocation.street}</div>
+          <div>${examination.executionLocation.zipCode} ${examination.executionLocation.city}</div>
         </div>
       </td>
       <td rowspan="2">

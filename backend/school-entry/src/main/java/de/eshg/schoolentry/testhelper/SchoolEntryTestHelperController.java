@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.testhelper;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
@@ -34,7 +34,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class SchoolEntryTestHelperController extends TestHelperController
-    implements AuditLogTestHelperApi {
+    implements SharedAuditLogTestHelperApi {
 
   private final SchoolEntryTestHelperService schoolEntryTestHelperService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;

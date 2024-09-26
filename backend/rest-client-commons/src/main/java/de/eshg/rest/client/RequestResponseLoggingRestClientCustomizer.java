@@ -10,7 +10,6 @@ import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestClientCustomizer;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.zalando.logbook.Logbook;
@@ -19,10 +18,9 @@ import org.zalando.logbook.httpclient5.LogbookHttpResponseInterceptor;
 
 @AutoConfiguration
 @ConditionalOnProperty(
-    name = "de.eshg.rest.client.request-response-logging-enabled",
+    name = "de.eshg.rest.client.logging-enabled",
     havingValue = "true",
     matchIfMissing = true)
-@PropertySource("classpath:/common-logbook-client.properties")
 public class RequestResponseLoggingRestClientCustomizer implements RestClientCustomizer {
 
   private final Logbook logbook;

@@ -32,6 +32,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +54,8 @@ public class StatisticController {
   private final StatisticCopyService statisticCopyService;
   private final StatisticsFeatureToggle featureToggle;
 
+  private static final Logger log = LoggerFactory.getLogger(StatisticController.class);
+
   public StatisticController(
       StatisticService statisticService,
       ModuleClientAuthenticator moduleClientAuthenticator,
@@ -70,11 +74,16 @@ public class StatisticController {
     UUID uuid = statisticService.addStatistic(addStatisticRequest);
     CompletableFuture.runAsync(
         () -> {
-          while (statisticService
-              .getAggregationResultState(uuid)
-              .equals(AggregationResultState.PENDING)) {
-            moduleClientAuthenticator.doWithModuleClientAuthentication(
-                () -> statisticService.workOnPendingStatistic(uuid));
+          try {
+            while (statisticService
+                .getAggregationResultState(uuid)
+                .equals(AggregationResultState.PENDING)) {
+              moduleClientAuthenticator.doWithModuleClientAuthentication(
+                  () -> statisticService.workOnPendingStatistic(uuid));
+            }
+          } catch (Exception e) {
+            log.error("Could not complete statistic", e);
+            setState(uuid, AggregationResultState.FAILED);
           }
         });
     return uuid;
@@ -90,15 +99,26 @@ public class StatisticController {
 
     CompletableFuture.runAsync(
         () -> {
-          while (statisticService
-              .getAggregationResultState(originalId)
-              .equals(AggregationResultState.COPY_ONGOING)) {
-            moduleClientAuthenticator.doWithModuleClientAuthentication(
-                () -> statisticCopyService.workOnCopy(originalId, copyId));
+          try {
+            while (statisticService
+                .getAggregationResultState(originalId)
+                .equals(AggregationResultState.COPY_ONGOING)) {
+              moduleClientAuthenticator.doWithModuleClientAuthentication(
+                  () -> statisticCopyService.workOnCopy(originalId, copyId));
+            }
+          } catch (Exception e) {
+            log.error("Could not complete cloning statistic", e);
+            setState(originalId, AggregationResultState.COMPLETED);
+            setState(copyId, AggregationResultState.FAILED);
           }
         });
 
     return copyId;
+  }
+
+  private void setState(UUID statisticId, AggregationResultState state) {
+    moduleClientAuthenticator.doWithModuleClientAuthentication(
+        () -> statisticService.setState(statisticId, state));
   }
 
   @GetExchange(accept = APPLICATION_JSON_VALUE)

@@ -11,7 +11,7 @@ import de.eshg.schoolentry.domain.model.VaccinationSchemeValue;
 public enum VaccinationScheme implements ConvertibleToValueOptions {
   SCHEME_2_PLUS_1("2", "2+1"),
   SCHEME_3_PLUS_1_3("3", "3+1"),
-  UNKNOWN("9", " unbekannt");
+  UNKNOWN("9", "unbekannt");
 
   private final String value;
 

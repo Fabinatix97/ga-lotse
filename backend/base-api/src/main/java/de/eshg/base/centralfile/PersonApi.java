@@ -114,7 +114,7 @@ public interface PersonApi {
     If no reference person matches the mandatory parameters of the new file state, a new reference person is created.
     Non-mandatory parameters are ignored when searching for matching reference persons.
     """)
-  GetPersonFileStatesResponse addPersonFileStates(
+  AddPersonFileStatesResponse addPersonFileStates(
       @Parameter(description = "A list of Persons that shall be added to the Central Files.")
           @RequestBody
           @Valid

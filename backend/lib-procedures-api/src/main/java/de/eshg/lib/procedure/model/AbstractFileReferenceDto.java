@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -19,8 +18,8 @@ public abstract sealed class AbstractFileReferenceDto
   public static final String SCHEMA_NAME = "AbstractFileReference";
 
   @NotNull private UUID fileId;
-  @CanBeLogged @NotNull private boolean deleted;
-  @CanBeLogged @NotNull private boolean deletable;
+  @NotNull private boolean deleted;
+  @NotNull private boolean deletable;
 
   public void setFileId(UUID fileId) {
     this.fileId = fileId;

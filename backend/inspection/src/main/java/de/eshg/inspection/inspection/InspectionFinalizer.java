@@ -205,7 +205,7 @@ public class InspectionFinalizer {
     report.setReportFile(pdf);
   }
 
-  private Inspection createFollowupInspection(Inspection precedingInspection) {
+  public Inspection createFollowupInspection(Inspection precedingInspection) {
     Inspection followupInspection = new Inspection();
     followupInspection.setModifiedBy(precedingInspection.getModifiedBy());
     followupInspection.setPhase(InspectionPhase.NEW);
@@ -227,10 +227,10 @@ public class InspectionFinalizer {
     if (followupType != null) {
       type = followupType.asInspectionType;
     } else {
-      if (precedingInspection.getType() == InspectionType.DOCUMENT_INSPECTION
-          || precedingInspection.getType() == InspectionType.COMPLAINT
-          || precedingInspection.getType() == InspectionType.REVIEW) {
+      if (precedingInspection.getType().isComplaint()) {
         type = InspectionType.REGULAR_AFTER_INCIDENTS;
+      } else if (InspectionResult.FAILED.equals(precedingInspection.getResult())) {
+        type = InspectionType.REVIEW;
       } else {
         type = InspectionType.REGULAR;
       }
@@ -238,17 +238,25 @@ public class InspectionFinalizer {
     followupInspection.setType(type);
 
     // determine followup appointment
-    InspectionAppointment followupAppointment = computeFollowupAppointment(precedingInspection);
+    InspectionAppointment followupAppointment =
+        computeFollowupAppointment(precedingInspection, type);
     followupInspection.setPlannedAppointment(followupAppointment);
 
-    // create calendar event for followup appointment
-    UUID calenderEventId =
-        calendarClient.createEventInUserCalendar(
-            followupAppointment.getAppointmentStart(), followupAppointment.getAppointmentEnd());
-    followupInspection.setCalendarEventId(calenderEventId);
+    // In case of new inspection after negative review
+    if (followupAppointment != null) {
+      // create calendar event for followup appointment
+      UUID calenderEventId =
+          calendarClient.createEventInUserCalendar(
+              followupAppointment.getAppointmentStart(), followupAppointment.getAppointmentEnd());
+      followupInspection.setCalendarEventId(calenderEventId);
+    }
 
     // copy checklists
-    if (precedingInspection.getFollowupType() != null) {
+    if (precedingInspection.getFollowupType() != null
+        ||
+        // Also copy checklist if last inspection failed and a new one is created
+        precedingInspection.getResult().equals(InspectionResult.FAILED)
+            && followupInspection.getType().equals(InspectionType.REVIEW)) {
       followupInspection.addChecklists(
           precedingInspection.getChecklists().stream().map(Checklist::getCopy).toList());
 
@@ -287,14 +295,18 @@ public class InspectionFinalizer {
     return followupInspection;
   }
 
-  private static InspectionAppointment computeFollowupAppointment(Inspection precedingInspection) {
+  private static InspectionAppointment computeFollowupAppointment(
+      Inspection precedingInspection, InspectionType followupInspectionType) {
+    if (precedingInspection.getResult().equals(InspectionResult.FAILED)) {
+      return null;
+    }
     ObjectType objectType = precedingInspection.getRelatedFacility().getFacility().getObjectType();
     Instant followupStartDate;
     if (precedingInspection.getFollowupDate() != null) {
       followupStartDate = precedingInspection.getFollowupDate();
     } else {
       int interval =
-          (precedingInspection.getType().isComplaint() || precedingInspection.isChallenging())
+          (followupInspectionType == InspectionType.REGULAR_AFTER_INCIDENTS)
               ? objectType.getComplaintInterval()
               : objectType.getRoutineInterval();
       Instant previousAppointmentStart =

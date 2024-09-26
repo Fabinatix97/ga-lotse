@@ -92,30 +92,47 @@ public interface CapturedLoggingTraits extends JUnit5ValidationFileAssertions {
       throws Exception {
     RenderingOptions renderingOptions = new RenderingOptions(true, 40, true);
 
-    // Spring’s DispatcherServlet logs some messages when it is lazily initialized upon receiving
-    // the first REST call.
-    // Unfortunately, this results in non-deterministic log outputs in our validation files.
-    // Therefore, we filter it out by default.
-    EventFilter defaultEventFilter =
-        event ->
-            !isDispatcherServletInitializationLogging(event)
-                && !event
-                    .getFormattedMessage()
-                    .contains(
-                        "Reached the maximum number of URI tags for 'http.client.requests'. Are you using 'uriVariables'?");
+    EventFilter defaultEventFilter = capturedLoggingDefaultEventFilter();
 
     EventFilter eventFilter = defaultEventFilter.and(additionalFilter);
+
+    beforeCapturedConsoleLogging();
 
     try (CapturingAppender appender =
         CapturingAppender.create(
             Logger.ROOT_LOGGER_NAME, renderingOptions, eventFilter, logLevel)) {
       try {
-        return callable.call();
+        return executeForCapturedConsoleLogging(callable);
       } finally {
         String events = appender.renderEvents().collect(Collectors.joining("\n"));
         assertWithFileWithSuffix(events, validationNormalizer, suffix);
       }
     }
+  }
+
+  default void beforeCapturedConsoleLogging() throws Exception {}
+
+  default <T> T executeForCapturedConsoleLogging(Callable<T> callable) throws Exception {
+    return callable.call();
+  }
+
+  /* Spring’s DispatcherServlet logs some messages when it is lazily initialized upon receiving
+   * the first REST call.
+   * Unfortunately, this results in non-deterministic log outputs in our validation files.
+   * Therefore, we filter it out by default.
+   */
+  default EventFilter capturedLoggingDefaultEventFilter() {
+    EventFilter excludeDispatcherServlet =
+        event -> !isDispatcherServletInitializationLogging(event);
+
+    EventFilter excludeMaxHttpClientRequestsWarning =
+        event ->
+            !event
+                .getFormattedMessage()
+                .contains(
+                    "Reached the maximum number of URI tags for 'http.client.requests'. Are you using 'uriVariables'?");
+
+    return excludeDispatcherServlet.and(excludeMaxHttpClientRequestsWarning);
   }
 
   private static boolean isDispatcherServletInitializationLogging(ILoggingEvent event) {

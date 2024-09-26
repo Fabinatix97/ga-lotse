@@ -16,6 +16,7 @@ import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.statistics.options.*;
+import de.eshg.schoolentry.statistics.options.BooleanWithUnknown;
 import de.eshg.schoolentry.statistics.options.DoctorLetterValue;
 import jakarta.annotation.Nullable;
 import java.time.*;
@@ -72,15 +73,15 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
       case GG -> getAnamnesisAttribute(procedure, Anamnesis::getBirthWeight);
       case SSW_DAUER -> getAnamnesisAttribute(procedure, Anamnesis::getGestationalAge);
       case KIH -> getAnamnesisAttribute(procedure, Anamnesis::getNumberOfSiblings);
-      case U2E -> getAnamnesisAttribute(procedure, Anamnesis::getU2);
-      case U3E -> getAnamnesisAttribute(procedure, Anamnesis::getU3);
-      case U4E -> getAnamnesisAttribute(procedure, Anamnesis::getU4);
-      case U5E -> getAnamnesisAttribute(procedure, Anamnesis::getU5);
-      case U6E -> getAnamnesisAttribute(procedure, Anamnesis::getU6);
-      case U7A -> getAnamnesisAttribute(procedure, Anamnesis::getU7a);
-      case U7E -> getAnamnesisAttribute(procedure, Anamnesis::getU7);
-      case U8E -> getAnamnesisAttribute(procedure, Anamnesis::getU8);
-      case U9E -> getAnamnesisAttribute(procedure, Anamnesis::getU9);
+      case U2E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU2);
+      case U3E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU3);
+      case U4E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU4);
+      case U5E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU5);
+      case U6E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU6);
+      case U7A -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU7a);
+      case U7E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU7);
+      case U8E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU8);
+      case U9E -> getAnamnesisCheckUpsAttribute(procedure, Anamnesis::getU9);
       case FF -> getAnamnesisAttribute(procedure, Anamnesis::getEarlySupport);
       case IP -> getAnamnesisAttribute(procedure, Anamnesis::getIntegrationPlace);
       case ERGO -> getAnamnesisAttribute(procedure, Anamnesis::getErgotherapy);
@@ -488,7 +489,7 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
     LocalDate inDaycareSince = procedure.getAnamnesis().getInDaycareSince();
 
     if (inDaycareSince == null) {
-      return Daycare.NO.getValue();
+      return Daycare.UNKNOWN.getValue();
     } else {
       return getDaycareValue(appointmentDate, inDaycareSince);
     }
@@ -587,12 +588,12 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
         vaccinationStatus.getVaccinationScheme());
   }
 
-  private @Nullable Boolean getPerkombiHbv(VaccinationStatus vaccinationStatus) {
+  private @Nullable String getPerkombiHbv(VaccinationStatus vaccinationStatus) {
     if (vaccinationStatus == null) {
       return null;
     }
 
-    return vaccinationStatus.getPerkombiHbv();
+    return BooleanWithUnknown.convertToValue(vaccinationStatus.getPerkombiHbv());
   }
 
   private <T> @Nullable T getAnamnesisAttribute(
@@ -602,6 +603,16 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
       return null;
     }
     return anamnesisGetter.apply(anamnesis);
+  }
+
+  private @Nullable String getAnamnesisCheckUpsAttribute(
+      SchoolEntryProcedure procedure,
+      Function<Anamnesis, de.eshg.schoolentry.domain.model.BooleanWithUnknown> anamnesisGetter) {
+    Anamnesis anamnesis = procedure.getAnamnesis();
+    if (anamnesis == null) {
+      return null;
+    }
+    return BooleanWithUnknown.convertToValue(anamnesisGetter.apply(anamnesis));
   }
 
   private @Nullable String getCountryCode(
@@ -628,8 +639,11 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
 
   private @Nullable String getInGermanySinceAttribute(SchoolEntryProcedure procedure) {
     Anamnesis anamnesis = procedure.getAnamnesis();
-    if (anamnesis == null || anamnesis.getInGermanySince() == null) {
+    if (anamnesis == null) {
       return null;
+    }
+    if (anamnesis.getInGermanySince() == null) {
+      return "";
     }
     return anamnesis.getInGermanySince().format(DATE_FORMAT);
   }

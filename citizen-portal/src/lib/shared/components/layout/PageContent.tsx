@@ -1,0 +1,82 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+"use client";
+
+import { styled } from "@mui/joy";
+import { SxProps, Theme } from "@mui/joy/styles/types";
+
+import {
+  contentMarginDesktop,
+  contentMarginMobile,
+  maxContentWidthDesktop,
+} from "@/lib/baseModule/components/layout/sizes";
+
+declare module "@mui/system" {
+  interface BreakpointOverrides {
+    xxs: true;
+    xxl: true;
+  }
+}
+
+interface PageContentProps {
+  spacing?: "md" | "lg";
+  fullHeight?: boolean;
+}
+
+export const PageContent = styled("div", {
+  shouldForwardProp: (prop) => prop !== "spacing" && prop !== "fullHeight",
+})<PageContentProps>(({ theme, spacing, fullHeight }) => ({
+  flex: fullHeight ? 1 : undefined,
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(spacing === "lg" ? 5 : contentMarginDesktop.topBottom),
+  paddingBlock: theme.spacing(
+    spacing === "lg" ? 5 : contentMarginDesktop.topBottom,
+    contentMarginDesktop.leftRight,
+  ),
+  ...responsiveContent(theme, {
+    sm: {
+      gap: theme.spacing(contentMarginMobile.topBottom),
+      paddingBlock: theme.spacing(
+        contentMarginMobile.topBottom,
+        contentMarginMobile.leftRight,
+      ),
+    },
+  }),
+}));
+
+const ContentBreakpoints = {
+  XL: "xl",
+  LG: "lg",
+  MD: "md",
+  SM: "sm",
+} as const;
+type ContentBreakpoints =
+  (typeof ContentBreakpoints)[keyof typeof ContentBreakpoints];
+
+export function responsiveContent(
+  theme: Theme,
+  additionalStyles: Partial<Record<ContentBreakpoints, SxProps>> = {},
+) {
+  return {
+    width: maxContentWidthDesktop,
+    [theme.breakpoints.down(ContentBreakpoints.XL)]: {
+      width: "1152px",
+      ...additionalStyles[ContentBreakpoints.XL],
+    },
+    [theme.breakpoints.down(ContentBreakpoints.LG)]: {
+      width: "960px",
+      ...additionalStyles[ContentBreakpoints.LG],
+    },
+    [theme.breakpoints.down(ContentBreakpoints.MD)]: {
+      width: "100%",
+      ...additionalStyles[ContentBreakpoints.MD],
+    },
+    [theme.breakpoints.down(ContentBreakpoints.SM)]: {
+      ...additionalStyles[ContentBreakpoints.SM],
+    },
+  } satisfies SxProps;
+}

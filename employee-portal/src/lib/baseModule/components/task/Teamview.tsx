@@ -11,11 +11,11 @@ import {
   ApiTask,
   ApiUser,
 } from "@eshg/employee-portal-api/businessProcedures";
-import { UseSuspenseQueryResult } from "@tanstack/react-query";
+import { UseQueryOptions, useSuspenseQueries } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
 import { useState } from "react";
 
-import { useGetUsersByGroupQuery } from "@/lib/baseModule/api/queries/users";
+import { useGetUsersByGroupQueryOptions } from "@/lib/baseModule/api/queries/users";
 import { teamviewColumns } from "@/lib/baseModule/components/task/teamviewColumns";
 import { useTeamviewFilterSettings } from "@/lib/baseModule/components/task/useTeamviewFilterSettings";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
@@ -53,17 +53,28 @@ function memberFilter({ assigneeId }: TeamviewFilters) {
 interface TeamviewPageProps {
   groupName: string;
   businessModule: ApiBusinessModule;
-  useFetchTasksForTeamView: (
+  useFetchTasksForTeamViewOptions: (
     teamviewFilters: TeamviewFilters,
-  ) => UseSuspenseQueryResult<ApiGetTaskByUserResponse, Error>;
+  ) => UseQueryOptions<
+    ApiGetTaskByUserResponse,
+    Error,
+    ApiGetTaskByUserResponse,
+    readonly (string | string[] | Record<string, string>)[]
+  >;
 }
 
 export function Teamview(props: Readonly<TeamviewPageProps>) {
-  const groupMembers = useGetUsersByGroupQuery(props.groupName).data.users;
-
   const [filters, setFilters] = useState<TeamviewFilters>({});
 
-  const { data: taskResponse } = props.useFetchTasksForTeamView(filters);
+  const [{ data: groupMemberResponse }, { data: taskResponse }] =
+    useSuspenseQueries({
+      queries: [
+        useGetUsersByGroupQueryOptions(props.groupName),
+        props.useFetchTasksForTeamViewOptions(filters),
+      ],
+    });
+
+  const groupMembers = groupMemberResponse.users;
 
   function toTaskRows(groupMember: ApiUser): TaskRow {
     const tasks = taskResponse.tasksByUser[groupMember.userId] ?? [];

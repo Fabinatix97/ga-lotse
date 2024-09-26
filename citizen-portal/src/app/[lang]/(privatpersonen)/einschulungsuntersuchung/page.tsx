@@ -7,14 +7,14 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { PageBanner } from "@/lib/baseModule/components/layout/PageBanner";
 import { LandingpageContent } from "@/lib/businessModules/schoolEntry/pages/landingpage/LandingpageContent";
 import { LandingpageSidePanel } from "@/lib/businessModules/schoolEntry/pages/landingpage/LandingpageSidePanel";
 import { useTranslation } from "@/lib/i18n/client";
 import { useDepartmentApi } from "@/lib/shared/api/clients";
 import { getDepartmentInfoQuery } from "@/lib/shared/api/queries/department";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { TwoColumnGrid } from "@/lib/shared/components/layout/grid";
-import { Page, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenSchoolEntryPage() {
   const { t } = useTranslation(["schoolEntry/overview"]);
@@ -24,13 +24,14 @@ export default function CitizenSchoolEntryPage() {
   );
 
   return (
-    <Page>
-      <PageBanner />
-      <PageTitle>{t("pageTitle")}</PageTitle>
-      <TwoColumnGrid
-        content={<LandingpageContent departmentInfo={departmentInfo} />}
-        sidePanel={<LandingpageSidePanel />}
-      />
-    </Page>
+    <PageLayout banner="private">
+      <PageContent>
+        <PageTitle>{t("pageTitle")}</PageTitle>
+        <TwoColumnGrid
+          content={<LandingpageContent departmentInfo={departmentInfo} />}
+          sidePanel={<LandingpageSidePanel />}
+        />
+      </PageContent>
+    </PageLayout>
   );
 }

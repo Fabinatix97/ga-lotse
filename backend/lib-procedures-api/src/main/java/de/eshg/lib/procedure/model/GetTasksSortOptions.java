@@ -5,15 +5,14 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.lib.procedure.api.TaskListApi.QueryParameter;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetTasksSortOptions(
-    @CanBeLogged @BindParam(QueryParameter.SORT_KEY) @NotNull GetTasksSortByDto sortKey,
-    @CanBeLogged @BindParam(QueryParameter.SORT_ORDER) GetTasksSortOrderDto sortOrder) {
+    @BindParam(QueryParameter.SORT_KEY) @NotNull GetTasksSortByDto sortKey,
+    @BindParam(QueryParameter.SORT_ORDER) GetTasksSortOrderDto sortOrder) {
 
   public GetTasksSortOptions(GetTasksSortByDto sortKey, GetTasksSortOrderDto sortOrder) {
     this.sortKey = sortKey;

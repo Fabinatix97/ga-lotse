@@ -205,10 +205,10 @@ public class ContactController implements ContactApi {
         };
     InstitutionContactCategory institutionContactCategory =
         ContactMapper.mapInstitutionContactCategoryToDm(parameters.category());
+
     Page<? extends Contact> contacts =
         contactService.fuzzySearchContacts(
             parameters.name(),
-            parameters.firstName(),
             parameters.street(),
             contactType,
             institutionContactCategory,

@@ -14,7 +14,7 @@ import { Chip, Stack, Typography } from "@mui/joy";
 import { eachDayOfInterval, intervalToDuration } from "date-fns";
 
 import { AppointmentBlockGroupValues } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/AppointmentBlockGroupForm";
-import { getAppointmentDurationInMinutes } from "@/lib/businessModules/measlesProtection/shared/helper";
+import { getAppointmentDurationInMinutes } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import {
   AppointmentBlockGroupValuesWithDays,
   WEEKDAY_CHECKBOX_OPTIONS,

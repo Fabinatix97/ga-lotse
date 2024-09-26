@@ -47,6 +47,7 @@ import de.eshg.schoolentry.importer.ImportType;
 import de.eshg.schoolentry.mapper.AppointmentMapper;
 import de.eshg.schoolentry.mapper.PersonMapper;
 import de.eshg.schoolentry.mapper.ProcedureMapper;
+import de.eshg.schoolentry.mapper.WaitingRoomMapper;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
 import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
 import de.eshg.schoolentry.percentiles.PercentileCalculationService;
@@ -421,7 +422,9 @@ public class SchoolEntryService {
 
     CitizenAccessCodeUserDto citizenAccessCodeUser = createOrGetCitizenAccessCodeUser(procedure);
     String accessCode = citizenAccessCodeUser.accessCode();
-    Pdf invitation = invitationGenerator.generateInvitation(accessCode, childData, start);
+    Pdf invitation =
+        invitationGenerator.generateInvitation(
+            accessCode, childData, start, getAppointmentLocation(procedure));
     ProgressEntryUtil.addProgressEntry(
         procedure,
         APPOINTMENT_MODIFIED,
@@ -463,7 +466,7 @@ public class SchoolEntryService {
         } else {
           Instant now = Instant.now(clock);
           Instant earliestStart =
-              now.plus(schoolEntryProperties.bulkCreateAppointmentsMinLeadTime());
+              now.plus(schoolEntryProperties.getBulkCreateAppointmentsMinLeadTime());
           AppointmentType appointmentType = computeAppointmentType(procedure, null, null);
 
           List<AppointmentDto> freeAppointments =
@@ -483,6 +486,22 @@ public class SchoolEntryService {
       }
     }
     return stats;
+  }
+
+  PagedWaitingRoomProcedures getWaitingRoomProcedures(
+      WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
+    WaitingRoomPageSpec pageSpec = createWaitingRoomPageSpec(paginationAndSortParameters);
+    return proceduresHelper.getWaitingRoomProcedures(pageSpec);
+  }
+
+  private WaitingRoomPageSpec createWaitingRoomPageSpec(
+      WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
+
+    return WaitingRoomMapper.mapToPageSpec(
+        paginationAndSortParameters.pageNumberOrFallback(0),
+        paginationAndSortParameters.pageSizeOrFallback(25),
+        paginationAndSortParameters.sortKeyOrFallback(WaitingRoomSortKey.ID),
+        paginationAndSortParameters.sortDirectionOrFallback(SortDirection.DESC));
   }
 
   PagedProcedures getProcedures(
@@ -1452,17 +1471,17 @@ public class SchoolEntryService {
   @VisibleForTesting
   boolean isRegularSchoolEntry(LocalDate dateOfBirth, Year schoolYear) {
     MonthDay maxDateOfBirthForRegularSchoolEntry =
-        schoolEntryProperties.maxDateOfBirthForRegularSchoolEntry();
+        schoolEntryProperties.getMaxDateOfBirthForRegularSchoolEntry();
     if (schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
       LocalDate maxDateOfBirthForRegularSchoolEntryWithYear =
           schoolYear.minusYears(6).atMonthDay(maxDateOfBirthForRegularSchoolEntry);
-      if (schoolEntryProperties.maxDateOfBirthForRegularSchoolEntryIsInclusive()) {
+      if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
         return !dateOfBirth.isAfter(maxDateOfBirthForRegularSchoolEntryWithYear);
       } else {
         return dateOfBirth.isBefore(maxDateOfBirthForRegularSchoolEntryWithYear);
       }
     } else {
-      if (schoolEntryProperties.maxDateOfBirthForRegularSchoolEntryIsInclusive()) {
+      if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
         return MonthDay.from(dateOfBirth).compareTo(maxDateOfBirthForRegularSchoolEntry) <= 0;
       } else {
         return MonthDay.from(dateOfBirth).compareTo(maxDateOfBirthForRegularSchoolEntry) < 0;

@@ -18,8 +18,9 @@ import {
 } from "@mui/joy";
 import { useState } from "react";
 
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
-import { Page, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 const DEFAULT_TYPE = "confirmation";
 const TYPES = ["confirmation", "error", "notification"] as const;
@@ -41,43 +42,45 @@ export default function SnackbarPlaygroundPage() {
   }
 
   return (
-    <Page>
-      <PageTitle>Snackbar</PageTitle>
-      <ContentSheet>
-        <FormControl>
-          <FormLabel>Type</FormLabel>
-          <Select
-            value={type}
-            onChange={(_, value) => setType(value ?? DEFAULT_TYPE)}
-          >
-            {TYPES.map((type) => (
-              <Option key={type} value={type}>
-                {type}
-              </Option>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Text</FormLabel>
-          <Input
-            value={text}
-            onChange={(event) => setText(event.target.value)}
+    <PageLayout>
+      <PageContent>
+        <PageTitle>Snackbar</PageTitle>
+        <ContentSheet>
+          <FormControl>
+            <FormLabel>Type</FormLabel>
+            <Select
+              value={type}
+              onChange={(_, value) => setType(value ?? DEFAULT_TYPE)}
+            >
+              {TYPES.map((type) => (
+                <Option key={type} value={type}>
+                  {type}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Text</FormLabel>
+            <Input
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+            />
+          </FormControl>
+          <Checkbox
+            label="Manual close"
+            checked={manualClose}
+            onChange={(event) => setManualClose(event.target.checked)}
           />
-        </FormControl>
-        <Checkbox
-          label="Manual close"
-          checked={manualClose}
-          onChange={(event) => setManualClose(event.target.checked)}
-        />
-        <FormControl>
-          <FormLabel>Action</FormLabel>
-          <Input
-            value={action}
-            onChange={(event) => setAction(event.target.value)}
-          />
-        </FormControl>
-        <Button onClick={openSnackbar}>Snackbar öffnen</Button>
-      </ContentSheet>
-    </Page>
+          <FormControl>
+            <FormLabel>Action</FormLabel>
+            <Input
+              value={action}
+              onChange={(event) => setAction(event.target.value)}
+            />
+          </FormControl>
+          <Button onClick={openSnackbar}>Snackbar öffnen</Button>
+        </ContentSheet>
+      </PageContent>
+    </PageLayout>
   );
 }

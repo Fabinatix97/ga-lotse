@@ -1654,8 +1654,12 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
       required:
       - assignee
+      - taskVersion
     BulkUpdateProceduresArchivingRelevanceRequest:
       type: object
       properties:
@@ -2411,7 +2415,7 @@ components:
       - totalPages
     GetArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - PROCEDURE_TYPE
@@ -2748,7 +2752,7 @@ components:
       - totalPages
     GetRelevantArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - EXPORTED_AT
@@ -3542,6 +3546,11 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
+      required:
+      - taskVersion
     SystemProgressEntry:
       type: object
       allOf:
@@ -3603,6 +3612,9 @@ components:
           $ref: "#/components/schemas/TaskStatus"
         taskType:
           $ref: "#/components/schemas/TaskType"
+        version:
+          type: integer
+          format: int64
       required:
       - businessModule
       - createdAt
@@ -3613,6 +3625,7 @@ components:
       - taskId
       - taskStatus
       - taskType
+      - version
     TaskMetric:
       type: object
       properties:

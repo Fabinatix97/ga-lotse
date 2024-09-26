@@ -14,6 +14,10 @@ import static de.eshg.lib.procedure.domain.model.Procedure_.archivingRelevance;
 import static de.eshg.lib.procedure.domain.model.Procedure_.closedAt;
 import static de.eshg.lib.procedure.domain.model.Procedure_.exportedAt;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureType;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static org.springframework.data.domain.PageRequest.ofSize;
 import static org.springframework.data.jpa.domain.Specification.where;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -29,6 +33,7 @@ import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
+import de.eshg.lib.procedure.domain.serialization.SerializationService;
 import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecification;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -51,20 +56,19 @@ import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortOptions;
 import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortOrderDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -81,13 +85,27 @@ public class ArchivingController<
         ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>, TaskT extends Task<ProcedureT>>
     implements ArchivingApi {
 
-  private static final String ARCHIVE_EXPORT_FILE_NAME_TEMPLATE = "Archiv-Vorgangsexport_%s";
-  private static final String CONTENT_DISPOSITION_NAME_JSON = "json";
+  private static final DateTimeFormatter ARCHIVE_EXPORT_DATE_TIME_FORMATTER =
+      new DateTimeFormatterBuilder()
+          .parseCaseInsensitive()
+          .append(ISO_LOCAL_DATE)
+          .appendLiteral('T')
+          .appendValue(HOUR_OF_DAY, 2)
+          .appendLiteral('-')
+          .appendValue(MINUTE_OF_HOUR, 2)
+          .optionalStart()
+          .appendLiteral('-')
+          .appendValue(SECOND_OF_MINUTE, 2)
+          .toFormatter();
+
+  private static final String ARCHIVE_EXPORT_FILE_NAME_TEMPLATE = "Archiv-Vorgangsexport_%s.zip";
+  private static final String ARCHIVE_EXPORT_ZIP_ENTRY_NAME_TEMPLATE = "Archiv-Vorgang_";
   private static final String CONTENT_DISPOSITION_NAME_ZIP = "zip";
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
   private final ArchivingProperties archivingProperties;
+  private final SerializationService serializationService;
   private final Clock clock;
 
   public ArchivingController(
@@ -95,11 +113,13 @@ public class ArchivingController<
       ProcedureRepository<ProcedureT> procedureRepository,
       ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification,
       ArchivingProperties archivingProperties,
+      SerializationService serializationService,
       Clock clock) {
     this.enrichingMapper = enrichingMapper;
     this.procedureRepository = procedureRepository;
     this.archivableProceduresSpecification = archivableProceduresSpecification;
     this.archivingProperties = archivingProperties;
+    this.serializationService = serializationService;
     this.clock = clock;
   }
 
@@ -290,10 +310,11 @@ public class ArchivingController<
   @Override
   @Transactional
   public ResponseEntity<byte[]> exportRelevantProcedures(
-      ExportArchivingRelevantProceduresRequest request) throws IOException {
+      ExportArchivingRelevantProceduresRequest request) {
     List<ProcedureT> procedures =
         procedureRepository.findAll(
-            where(archivingRelevanceRelevant()).and(externalIds(request.procedures())));
+            where(archivingRelevanceRelevant()).and(externalIds(request.procedures())),
+            Sort.by(Direction.ASC, CLOSED_AT, ID));
 
     Instant now = Instant.now(clock);
 
@@ -304,19 +325,14 @@ public class ArchivingController<
     return ResponseEntity.ok()
         .contentType(CustomMediaTypes.ZIP)
         .header(CONTENT_DISPOSITION, getContentDisposition(now).toString())
-        .body(getZipDummy());
-  }
-
-  private byte[] getZipDummy() throws IOException {
-    ClassPathResource classPathResource = new ClassPathResource("dummy.zip");
-    return classPathResource.getContentAsByteArray();
+        .body(serializationService.toNestedZip(ARCHIVE_EXPORT_ZIP_ENTRY_NAME_TEMPLATE, procedures));
   }
 
   private ContentDisposition getContentDisposition(Instant now) {
     String fileName =
         ARCHIVE_EXPORT_FILE_NAME_TEMPLATE.formatted(
             LocalDateTime.ofInstant(now, clock.getZone())
-                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                .format(ARCHIVE_EXPORT_DATE_TIME_FORMATTER));
 
     return ContentDisposition.attachment()
         .name(CONTENT_DISPOSITION_NAME_ZIP)
@@ -325,6 +341,7 @@ public class ArchivingController<
   }
 
   @Override
+  @Transactional(readOnly = true)
   public GetArchivingConfigurationResponse getArchivingConfiguration() {
     return new GetArchivingConfigurationResponse(
         archivingProperties.getGracePeriodMonths(), getArchivingProperties());

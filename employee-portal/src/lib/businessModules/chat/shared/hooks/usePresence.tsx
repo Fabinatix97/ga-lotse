@@ -14,7 +14,10 @@ import { useEffect, useState } from "react";
 
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
-import { Presence } from "@/lib/businessModules/chat/shared/types";
+import {
+  Presence,
+  UsersPresence,
+} from "@/lib/businessModules/chat/shared/types";
 
 export function usePresence(
   matrixClient: MatrixClient,
@@ -23,16 +26,14 @@ export function usePresence(
   const {
     userSettings: { sharePresence },
   } = useChat();
-  const [usersPresence, setUsersPresence] = useState<Record<string, Presence>>(
-    {},
-  );
+  const [usersPresence, setUsersPresence] = useState<UsersPresence>({});
   useEffect(() => {
     matrixClient.once(ClientEvent.Sync, function (state) {
       if (state === SyncState.Prepared) {
         const users = matrixClient.getUsers();
         const statuses = Object.fromEntries(
           users.map((user) => [user.userId, user.presence]),
-        ) as Record<string, Presence>;
+        ) as UsersPresence;
         setUsersPresence(statuses);
       }
     });

@@ -23,7 +23,15 @@ public interface GrantedAccessRepository extends JpaRepository<GrantedAccess, Lo
   Optional<GrantedAccess> findByAuditLogSourceAndDateAndIdOfGrantedUserAndExpiresAtIsAfter(
       AuditLogSource auditLogSource, LocalDate date, UUID idOfGrantedUser, Instant now);
 
-  List<GrantedAccess> findByIdOfGrantedUserAndExpiresAtIsAfter(UUID idOfGrantedUser, Instant now);
+  @Query(
+      """
+          SELECT date as date, auditLogSource as auditLogSource, idOfGrantedUser as idOfGrantedUser, max(expiresAt) as expiresAt
+          FROM GrantedAccess g
+          WHERE expiresAt > :now
+          AND idOfGrantedUser = :idOfGrantedUser
+          GROUP BY (date, auditLogSource, idOfGrantedUser)""")
+  List<AuditLogAccessibleProjection> findByIdOfGrantedUserAndExpiresAtIsAfter(
+      @Param("idOfGrantedUser") UUID idOfGrantedUser, @Param("now") Instant now);
 
   @Transactional(readOnly = true)
   boolean existsByAuditLogSourceAndDateAndExpiresAtIsAfter(
@@ -40,7 +48,20 @@ public interface GrantedAccessRepository extends JpaRepository<GrantedAccess, Lo
   List<AuditLogGrantedAccessProjection> findByAuditLogInAndExpiresAtIsAfter(
       @Param("dates") Set<LocalDate> dates,
       @Param("sources") Set<AuditLogSource> sources,
-      Instant now);
+      @Param("now") Instant now);
+
+  @Query(
+      """
+          SELECT idOfGrantedUser as idOfGrantedUser, max(expiresAt) as expiresAt
+          FROM GrantedAccess g
+          WHERE expiresAt > :now
+          AND date = :date
+          AND auditLogSource = :source
+          GROUP BY idOfGrantedUser""")
+  List<AuditLogGranteesProjection> findByAuditLogAndExpiresAtIsAfter(
+      @Param("date") LocalDate date,
+      @Param("source") AuditLogSource source,
+      @Param("now") Instant now);
 
   @Transactional
   @Modifying

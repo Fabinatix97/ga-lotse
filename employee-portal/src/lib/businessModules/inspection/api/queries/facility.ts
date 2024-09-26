@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { GetPendingFacilitiesRequest } from "@eshg/employee-portal-api/inspection";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -21,20 +22,38 @@ export function useGetFacility(facilityId: string) {
 export function useGetPendingFacilities(filters: PendingFacilitiesFilters) {
   const facilityApi = useFacilityApi();
 
-  // For historical reasons, getPendingFacilities() accepts a different sort parameter
-  // then is used in table filters. We must change the table params sortDirection/sortField
-  // to a sort string:
-  const sortDirection = filters.sortDirection?.toLowerCase() ?? "asc";
-  const sort = filters?.sortField
-    ? [`${filters?.sortField}|${sortDirection}`]
-    : undefined;
-  const req = { ...filters, sort };
-  delete req.sortField;
-  delete req.sortDirection;
+  const req = facilitiesFiltersToApi(filters);
 
   return useSuspenseQuery({
     queryKey: facilityApiQueryKey(["getPendingFacilities", { req }]),
     queryFn: () =>
       facilityApi.getPendingFacilitiesRaw(req).then(unwrapRawResponse),
   });
+}
+
+function facilitiesFiltersToApi(
+  filters: PendingFacilitiesFilters,
+): GetPendingFacilitiesRequest {
+  const {
+    sortField,
+    sortDirection: filterSortDirection,
+    isBefore,
+    isAfter,
+    ...rest
+  } = filters;
+
+  // For historical reasons, getPendingFacilities() accepts a different sort parameter
+  // then is used in table filters. We must change the table params sortDirection/sortField
+  // to a sort string:
+  const sortDirection = filterSortDirection?.toLowerCase() ?? "asc";
+  const sort = sortField ? [`${sortField}|${sortDirection}`] : undefined;
+
+  return {
+    ...rest,
+    sort,
+    // The API client expects Date objects...
+    //  which it then immediately converts back to strings :)
+    isBefore: isBefore ? new Date(isBefore) : undefined,
+    isAfter: isAfter ? new Date(isAfter) : undefined,
+  };
 }

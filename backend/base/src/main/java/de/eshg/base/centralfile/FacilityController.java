@@ -17,9 +17,9 @@ import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
 import de.eshg.base.centralfile.persistence.repository.FacilitySearchSpecification;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
+import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityManager;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -37,23 +37,20 @@ public class FacilityController implements FacilityApi {
 
   private final FacilityRepository facilityRepository;
   private final FacilityService facilityService;
-  private final FacilityMapper facilityMapper;
   private final BaseFeatureToggle featureToggle;
-  private final EntityManager entityManager;
+  private final FuzzySearchHelper fuzzySearchHelper;
   private final Clock clock;
 
   public FacilityController(
       FacilityRepository facilityRepository,
       FacilityService facilityService,
-      FacilityMapper facilityMapper,
       BaseFeatureToggle featureToggle,
-      EntityManager entityManager,
+      FuzzySearchHelper fuzzySearchHelper,
       Clock clock) {
     this.facilityRepository = facilityRepository;
     this.facilityService = facilityService;
-    this.facilityMapper = facilityMapper;
     this.featureToggle = featureToggle;
-    this.entityManager = entityManager;
+    this.fuzzySearchHelper = fuzzySearchHelper;
     this.clock = clock;
   }
 
@@ -90,7 +87,7 @@ public class FacilityController implements FacilityApi {
   @Override
   @Transactional(readOnly = true)
   public SearchReferenceFacilitiesResponse searchReferenceFacilities(String name) {
-    configureSimilarityThreshold(name);
+    fuzzySearchHelper.setSimilarityThreshold(getSimilarityThreshold(name));
     FacilitySearchSpecification spec = new FacilitySearchSpecification(name);
 
     List<GetReferenceFacilityResponse> facilities =
@@ -99,13 +96,6 @@ public class FacilityController implements FacilityApi {
             .toList();
 
     return new SearchReferenceFacilitiesResponse(facilities);
-  }
-
-  private void configureSimilarityThreshold(String name) {
-    double threshold = getSimilarityThreshold(name);
-    entityManager
-        .createNativeQuery("set local pg_trgm.similarity_threshold=" + threshold)
-        .executeUpdate();
   }
 
   @Override
@@ -120,6 +110,7 @@ public class FacilityController implements FacilityApi {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public GetFileStateIdsResponse getFacilityFileStateIdsAssociatedWithReferenceFacility(
       UUID referenceId) {
     Facility referenceFacility =

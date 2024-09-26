@@ -5,14 +5,13 @@
 
 package de.eshg.stiprotection.testhelper;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.StiProtectionProcedurePopulationRequest;
 import de.eshg.stiprotection.api.StiProtectionProcedurePopulationResponse;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
-import de.eshg.testhelper.TestHelperService;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -23,13 +22,13 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class StiProtectionTestHelperController extends TestHelperController
-    implements AuditLogTestHelperApi {
+    implements SharedAuditLogTestHelperApi {
 
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final StiProtectionPopulator populator;
 
   public StiProtectionTestHelperController(
-      TestHelperService testHelperService,
+      StiProtectionTestHelperService testHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
       StiProtectionPopulator populator) {
     super(testHelperService);

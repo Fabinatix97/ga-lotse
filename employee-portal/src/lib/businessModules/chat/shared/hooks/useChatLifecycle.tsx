@@ -33,7 +33,10 @@ import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { IStoredCredentials } from "@/lib/businessModules/chat/shared/types";
-import { validateChatUsername } from "@/lib/businessModules/chat/shared/utils";
+import {
+  delayed,
+  validateChatUsername,
+} from "@/lib/businessModules/chat/shared/utils";
 
 const MAX_ATTEMPTS = 3;
 
@@ -134,10 +137,15 @@ export function useChatLifecycle(
 
     logger.info("INIT RUST CRYPTO");
 
-    await matrixClient.current.initRustCrypto({
-      storageKey: rustCryptoStoreArgs.rustCryptoStoreKey,
-      storagePassword: rustCryptoStoreArgs.rustCryptoStorePassword,
-    });
+    try {
+      await matrixClient.current.initRustCrypto({
+        storageKey: rustCryptoStoreArgs.rustCryptoStoreKey,
+        storagePassword: rustCryptoStoreArgs.rustCryptoStorePassword,
+      });
+    } catch (error) {
+      logger.error("Init Rust crypto error", error);
+      await restartChat();
+    }
 
     setClientState(ClientState.ClientCreated);
 
@@ -146,7 +154,7 @@ export function useChatLifecycle(
     await matrixClient.current.startClient({
       initialSyncLimit: 10,
     });
-  }, [baseUrl, credentials, matrixClient, setClientState]);
+  }, [baseUrl, credentials, matrixClient, restartChat, setClientState]);
 
   /**
    * Handle matrix encryption
@@ -154,14 +162,18 @@ export function useChatLifecycle(
   const handleChatEncryption = useCallback(async () => {
     logger.info("HANDLE CHAT ENCRYPTION");
     try {
-      const { backupInfo, has4S } = await fetchBackupInfo(matrixClient.current);
+      let res = await fetchBackupInfo(matrixClient.current);
 
-      if (!has4S || !backupInfo) {
+      if (!res.has4S && res.backupInfo) {
+        res = await delayed(() => fetchBackupInfo(matrixClient.current), 300);
+      }
+
+      if (!res.has4S || !res.backupInfo) {
         setClientState(ClientState.CreateBackupKey);
       } else {
         const restored = await restoreKeyBackupWithCache(
           matrixClient.current,
-          backupInfo,
+          res.backupInfo,
         );
 
         if (!restored) {

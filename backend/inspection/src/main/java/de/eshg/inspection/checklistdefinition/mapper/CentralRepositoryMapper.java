@@ -149,12 +149,19 @@ public final class CentralRepositoryMapper {
         centralRepoCld.id(),
         centralRepoCld.name(),
         centralRepoCld.coreChecklist(),
-        centralRepoCld.mostRecentVersionId(),
-        centralRepoCld.mostRecentVersionNr(),
+        centralRepoCld.expandable(),
         centralRepoCld.mostRecentRepositoryVersion(),
         centralRepoCld.mostRecentVersionBasedOnRepo(),
         new ObjectTypeRefDto(localObjectType.getId(), localObjectType.getName()),
         centralRepoCld.deleted(),
+        centralRepoCld.published(),
+        centralRepoCld.lastModified(),
+        new ChecklistDefinitionVersionDto(
+            centralRepoCld.mostRecentVersion().context(),
+            centralRepoCld.mostRecentVersion().modifiedBy(),
+            new ObjectTypeRefDto(localObjectType.getId(), localObjectType.getName()),
+            centralRepoCld.mostRecentVersion().isCoreChecklist(),
+            false),
         centralRepoCld.versions().stream()
             .map(
                 v ->
@@ -162,7 +169,8 @@ public final class CentralRepositoryMapper {
                         v.context(),
                         v.modifiedBy(),
                         new ObjectTypeRefDto(localObjectType.getId(), localObjectType.getName()),
-                        v.isCoreChecklist()))
+                        v.isCoreChecklist(),
+                        false))
             .toList());
   }
 }

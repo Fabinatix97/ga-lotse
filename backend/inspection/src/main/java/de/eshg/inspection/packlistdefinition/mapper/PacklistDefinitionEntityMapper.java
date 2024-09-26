@@ -5,8 +5,6 @@
 
 package de.eshg.inspection.packlistdefinition.mapper;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeRepository;
 import de.eshg.inspection.packlistdefinition.api.AddPacklistDefinitionRevisionRequest;
@@ -41,7 +39,7 @@ public class PacklistDefinitionEntityMapper {
     definition.setObjectType(objectType);
 
     PacklistDefinitionRevision revision = new PacklistDefinitionRevision();
-    revision.setValidFrom(Instant.now(clock).truncatedTo(SECONDS));
+    revision.setValidFrom(Instant.now(clock));
     revision.setValidTo(null);
     revision.setRevision(1);
     revision.setName(request.name());
@@ -58,7 +56,7 @@ public class PacklistDefinitionEntityMapper {
       PacklistDefinition definition,
       int newRevision) {
     PacklistDefinitionRevision revision = new PacklistDefinitionRevision();
-    revision.setValidFrom(Instant.now(clock).truncatedTo(SECONDS));
+    revision.setValidFrom(Instant.now(clock));
     revision.setValidTo(null);
     revision.setRevision(newRevision);
     revision.setName(request.name());

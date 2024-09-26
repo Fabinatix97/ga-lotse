@@ -36,6 +36,7 @@ export type ProcedureFilters = Pick<
   | "dayOfAppointmentFilter"
   | "hasAppointmentFilter"
   | "schoolYearFilter"
+  | "labelsFilter"
 >;
 
 const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
@@ -44,6 +45,7 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   dayOfAppointmentFilter: "Untersuchung am",
   hasAppointmentFilter: "Termin",
   schoolYearFilter: "Schuljahr",
+  labelsFilter: "Kennungen",
 };
 
 function getFilterLabel(filterValue: ActiveFilter<keyof ProcedureFilters>) {

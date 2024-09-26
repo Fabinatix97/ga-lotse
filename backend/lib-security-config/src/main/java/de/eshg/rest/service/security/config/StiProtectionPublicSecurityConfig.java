@@ -14,7 +14,7 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
   StiProtectionPublicSecurityConfig() {
     super("sti-protection");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_USER);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.STI_PROTECTION_USER, true);
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.STI_PROTECTION_USER, ModuleLeaderRole.STI_PROTECTION_LEADER);
 

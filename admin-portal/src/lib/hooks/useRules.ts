@@ -56,8 +56,11 @@ export function fetchRules(adminApi: ServiceDirectoryAdminApi) {
           stagedRules: sortBy(response.stagedRules, id),
         };
       },
-      (error: BackendError) => {
-        throw new Error(error.status.toString());
+      (error: BackendError | Error) => {
+        if (error.message.startsWith("Failed to fetch"))
+          throw new Error("FetchFailed");
+        if ("status" in error) throw new Error(error.status.toString());
+        else throw new Error(error.message);
       },
     );
   };

@@ -99,23 +99,77 @@ public enum EsuAttributes implements AttributeInfo {
       ATTRIBUTE_CATEGORY_ANAMNESIS,
       false),
 
-  U2E("U2", "U2E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U2E(
+      "U2",
+      "U2E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U3E("U3", "U3E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U3E(
+      "U3",
+      "U3E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U4E("U4", "U4E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U4E(
+      "U4",
+      "U4E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U5E("U5", "U5E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U5E(
+      "U5",
+      "U5E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U6E("U6", "U6E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U6E(
+      "U6",
+      "U6E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U7E("U7", "U7E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U7E(
+      "U7",
+      "U7E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U7A("U7a", "U7A", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U7A(
+      "U7a",
+      "U7A",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U8E("U8", "U8E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U8E(
+      "U8",
+      "U8E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
-  U9E("U9", "U9E", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
+  U9E(
+      "U9",
+      "U9E",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_ANAMNESIS,
+      true),
 
   FF("Frühförderung", "FF", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_ANAMNESIS, true),
 
@@ -331,7 +385,12 @@ public enum EsuAttributes implements AttributeInfo {
       true),
 
   PERKOMBIHBV(
-      "PerkombiHBV", "PerkombiHBV", true, ValueType.BOOLEAN, ATTRIBUTE_CATEGORY_VACCINATION, true),
+      "PerkombiHBV",
+      "PerkombiHBV",
+      true,
+      convertToValueOptions(BooleanWithUnknown.values()),
+      ATTRIBUTE_CATEGORY_VACCINATION,
+      true),
 
   HBV(
       "Impfungen Hepatitis B Summe",

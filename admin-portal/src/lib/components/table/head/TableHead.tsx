@@ -37,7 +37,6 @@ export function TableHead<
                 <Fragment key={column.id}>
                   <Header
                     key={header.id}
-                    width={meta?.width}
                     canSort={column.getCanSort()}
                     isSorted={column.getIsSorted()}
                     onSort={column.getToggleSortingHandler()}
@@ -70,6 +69,7 @@ export function TableHead<
                       header.column.id != TOGGLE_EXPAND_ID ? undefined : "none"
                     }
                     key={header.column.id}
+                    style={{ maxWidth: "0" }}
                   >
                     <Filter table={props.reactTable} column={header.column} />
                   </th>

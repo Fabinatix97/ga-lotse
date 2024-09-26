@@ -66,3 +66,7 @@ export const travelMedicineFeatureTogglesPublicApiQueryKey = queryKeyFactory(
 );
 
 export const editorApiQueryKey = queryKeyFactory(apiQueryKey(["editorApi"]));
+
+export const archivingApiQueryKey = queryKeyFactory(
+  apiQueryKey(["archivingApi"]),
+);

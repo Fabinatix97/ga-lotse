@@ -32,7 +32,9 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
 
   public static final List<String> WEBAUTHN_SIGNATURE_ALGORITHMS =
       List.of("Ed25519", "ES256", "RS256");
-  public static final String LENIENT_PASSWORD_POLICY = "length(1)";
+  // Using weak hash algorithm for test users to speed up credential resets
+  public static final String TEST_USER_PASSWORD_POLICY =
+      "length(1) and hashAlgorithm(pbkdf2-sha256) and hashIterations(1)";
   public static final String DISABLE_PASSWORD_POLICY = "maxLength(0)";
 
   public static final String ESHG_AUTH_SERVICE_CLIENT_ID =
@@ -100,7 +102,7 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     realmRepresentation.setSupportedLocales(new LinkedHashSet<>(List.of("de", "en")));
     if (this.keycloakProperties.provisionTestUsers()) {
       log.warn("Using lenient password policy");
-      realmRepresentation.setPasswordPolicy(LENIENT_PASSWORD_POLICY);
+      realmRepresentation.setPasswordPolicy(TEST_USER_PASSWORD_POLICY);
     }
     realmRepresentation.setDefaultLocale("de");
     realmRepresentation.setLoginTheme("custom-keycloak");

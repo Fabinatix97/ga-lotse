@@ -80,15 +80,10 @@ export function createEmptyAffectedPerson(): AffectedPersonFormInputs {
 
 interface AffectedPersonFormProps {
   onCancel?: () => unknown;
-  onSubmit?: () => unknown;
   sx?: SxProps;
 }
 
-export function AffectedPersonForm({
-  onCancel,
-  onSubmit,
-  sx,
-}: AffectedPersonFormProps) {
+export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
   const { t } = useTranslation(["measlesProtection/forms"]);
   const {
     setFieldValue,
@@ -249,7 +244,6 @@ export function AffectedPersonForm({
         facilityName={facilityName}
         cancelLabel={t("common.back")}
         onCancel={onCancel}
-        onSubmit={onSubmit}
         showFacilityContactPerson
       />
     </>

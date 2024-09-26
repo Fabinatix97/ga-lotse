@@ -17,6 +17,7 @@ import de.eshg.base.inventory.persistence.repository.InventoryRepository;
 import de.eshg.base.label.persistence.LabelService;
 import de.eshg.base.label.persistence.entity.Label;
 import de.eshg.base.label.persistence.entity.Label_;
+import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.base.util.PaginationUtil.PageSpec;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -27,6 +28,7 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.validation.ValidationUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.NotFoundException;
 import java.util.*;
 import org.springframework.data.domain.Page;
@@ -45,19 +47,21 @@ public class InventoryService {
 
   private final InventoryRepository inventoryRepository;
   private final InventoryBookingRepository inventoryBookingRepository;
-  private final EntityManager entityManager;
+  private final FuzzySearchHelper fuzzySearchHelper;
   private final LabelService labelService;
   private final AuditLogger auditLogger;
+
+  @PersistenceContext private EntityManager entityManager;
 
   public InventoryService(
       InventoryRepository inventoryRepository,
       InventoryBookingRepository inventoryBookingRepository,
-      EntityManager entityManager,
+      FuzzySearchHelper fuzzySearchHelper,
       LabelService labelService,
       AuditLogger auditLogger) {
     this.inventoryRepository = inventoryRepository;
     this.inventoryBookingRepository = inventoryBookingRepository;
-    this.entityManager = entityManager;
+    this.fuzzySearchHelper = fuzzySearchHelper;
     this.labelService = labelService;
     this.auditLogger = auditLogger;
   }
@@ -66,19 +70,12 @@ public class InventoryService {
     if (name == null || name.isEmpty()) {
       return (root, query, builder) -> builder.and();
     }
-    configureSimilarityThreshold(name);
+    fuzzySearchHelper.setSimilarityThreshold(getSimilarityThreshold(name));
     return (root, query, builder) ->
         builder.or(
             containsNormalized(builder, root.get(InventoryItem_.name), splitToWords(name)),
             builder.isTrue(
                 isSimilar(builder, builder.literal(name), root.get(InventoryItem_.name))));
-  }
-
-  private void configureSimilarityThreshold(String name) {
-    double threshold = getSimilarityThreshold(name);
-    entityManager
-        .createNativeQuery("set local pg_trgm.similarity_threshold=" + threshold)
-        .executeUpdate();
   }
 
   private static Specification<InventoryItem> hasType(InventoryItemType type) {

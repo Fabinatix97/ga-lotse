@@ -7,18 +7,18 @@
 
 import { ApiTravelMedicineFeature } from "@eshg/citizen-portal-api/travelMedicine";
 
-import { PageBanner } from "@/lib/baseModule/components/layout/PageBanner";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureTogglesApi";
 import { AppointmentSection } from "@/lib/businessModules/travelMedicine/components/landing/AppointmentSection";
 import { LandingpageContent } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageContent";
 import { LandingpageSidePanel } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageSidePanel";
 import { VaccineOverviewSection } from "@/lib/businessModules/travelMedicine/components/landing/VaccineOverviewSection";
 import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
-import { Page, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenTravelMedicineEntryPage() {
   const citizenPortalProcedureEnabled = useIsNewFeatureEnabled(
@@ -27,25 +27,26 @@ export default function CitizenTravelMedicineEntryPage() {
 
   const isMobile = useIsMobile();
   return (
-    <Page>
-      <PageBanner />
-      <PageTitle>Reisemedizinische Impfberatung</PageTitle>
-      {isMobile ? (
-        <OneColumnGrid
-          contentTop={citizenPortalProcedureEnabled && <AppointmentSection />}
-          contentCenter={<LandingpageContent />}
-          contentBottom={<VaccineOverviewSection />}
-        />
-      ) : (
-        <TwoColumnGrid
-          content={<LandingpageContent />}
-          sidePanel={
-            <LandingpageSidePanel
-              citizenPortalProcedureEnabled={citizenPortalProcedureEnabled}
-            />
-          }
-        />
-      )}
-    </Page>
+    <PageLayout banner="private">
+      <PageContent>
+        <PageTitle>Reisemedizinische Impfberatung</PageTitle>
+        {isMobile ? (
+          <OneColumnGrid
+            contentTop={citizenPortalProcedureEnabled && <AppointmentSection />}
+            contentCenter={<LandingpageContent />}
+            contentBottom={<VaccineOverviewSection />}
+          />
+        ) : (
+          <TwoColumnGrid
+            content={<LandingpageContent />}
+            sidePanel={
+              <LandingpageSidePanel
+                citizenPortalProcedureEnabled={citizenPortalProcedureEnabled}
+              />
+            }
+          />
+        )}
+      </PageContent>
+    </PageLayout>
   );
 }

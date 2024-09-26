@@ -53,7 +53,7 @@ public class SchoolEntryCitizenService {
       SchoolEntryService schoolEntryService,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
     this.clock = clock;
-    this.citizensProperties = schoolEntryProperties.citizens();
+    this.citizensProperties = schoolEntryProperties.getCitizens();
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.schoolEntryService = schoolEntryService;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;

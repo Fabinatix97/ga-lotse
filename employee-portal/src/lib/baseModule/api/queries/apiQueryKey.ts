@@ -37,6 +37,10 @@ export const procedureApiQueryKey = queryKeyFactory(
   baseApiQueryKey(["procedure-aggregation-api"]),
 );
 
+export const taskMetricsApiQueryKey = queryKeyFactory(
+  baseApiQueryKey(["task-metrics-api"]),
+);
+
 export const notificationsApiQueryKey = queryKeyFactory(
   baseApiQueryKey(["notifications-api"]),
 );

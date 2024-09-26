@@ -50,5 +50,7 @@
   <include file="migrations/0038_waiting_room_for_existing_procedures.xml"/>
   <include file="migrations/0039_add_consultant_to_appointment_blocks.xml"/>
   <include file="migrations/0040_procedure_sequences.xml"/>
+  <include file="/migrations/0041_add_modified_at_waiting_room.xml"/>
+  <include file="migrations/0042_boolean_with_unknown.xml"/>
 
 </databaseChangeLog>

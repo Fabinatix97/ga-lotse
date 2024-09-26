@@ -4,9 +4,9 @@
  */
 
 import { useUpdateReport } from "@/lib/businessModules/statistics/api/mutations/useUpdateReport";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
 import { UpdateReportStep } from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/UpdateReportStep";
 import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/updateReportFormModel";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 
 export interface UpdateReportSidebarReportInfo {
   seriesId: string;

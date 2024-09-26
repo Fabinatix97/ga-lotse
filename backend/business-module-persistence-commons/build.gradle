@@ -12,11 +12,13 @@ dependencies {
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     implementation 'org.liquibase:liquibase-core'
+    implementation 'de.cronn:reflection-util:latest.release'
 
     runtimeOnly 'de.cronn:liquibase-postgres-enum-extension:latest.release'
 
     testFixturesApi testFixtures(project(':business-module-commons'))
     testFixturesImplementation project(':test-commons')
+    testFixturesImplementation project(':rest-service-commons')
     testFixturesImplementation 'org.springframework.boot:spring-boot-test'
     testFixturesApi 'de.cronn:liquibase-changelog-generator-postgresql:latest.release'
 }

@@ -5,7 +5,6 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -13,5 +12,4 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "DetailedPerson")
 public record DetailedPersonDto(
-    @Valid @NotNull AddPersonFileStateResponse person,
-    @CanBeLogged @NotNull PersonTypeDto personType) {}
+    @Valid @NotNull AddPersonFileStateResponse person, @NotNull PersonTypeDto personType) {}

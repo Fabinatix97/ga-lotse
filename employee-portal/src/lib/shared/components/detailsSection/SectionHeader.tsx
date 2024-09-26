@@ -35,6 +35,7 @@ export function SectionHeader({
       </Grid>
       <Grid container direction="row" gap={1} sx={{ marginLeft: "auto" }}>
         {buttons}
+        {/* TODO: ISSUE-5586: This is technical debt. These actions should be included via a wrapping component or by adding these controls in the component that uses it. */}
         {isDefined(onDelete) && (
           <IconButton
             aria-label={`${title} löschen`}

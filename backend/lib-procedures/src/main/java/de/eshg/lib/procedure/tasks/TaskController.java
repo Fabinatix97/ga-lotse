@@ -36,6 +36,7 @@ import de.eshg.lib.procedure.util.MetricTimeRangeValidator;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
+import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Clock;
 import java.time.Duration;
@@ -121,13 +122,18 @@ public class TaskController<
   public TaskDto assignTask(UUID taskId, AssignTaskRequest assignTaskRequest) {
     UUID assigneeId = assignTaskRequest.assignee();
     validateUserExists(assigneeId);
-    return assignTask(taskId, assigneeId, assignTaskRequest.dueAt());
+    return assignTask(
+        taskId, assignTaskRequest.taskVersion(), assigneeId, assignTaskRequest.dueAt());
   }
 
   @Transactional
   @Override
   public TaskDto selfAssignTask(UUID taskId, SelfAssignTaskRequest assignTaskRequest) {
-    return assignTask(taskId, CurrentUserHelper.getCurrentUserId(), assignTaskRequest.dueAt());
+    return assignTask(
+        taskId,
+        assignTaskRequest.taskVersion(),
+        CurrentUserHelper.getCurrentUserId(),
+        assignTaskRequest.dueAt());
   }
 
   @Override
@@ -136,18 +142,22 @@ public class TaskController<
     return taskTeamOverviewService.getTasksByAssignee(assignee);
   }
 
-  private TaskDto assignTask(UUID taskId, UUID assigneeId, Instant dueAt) {
-    TaskT task = getTaskOrThrow(taskId);
+  private TaskDto assignTask(UUID taskId, Long taskVersion, UUID assigneeId, Instant dueAt) {
+    TaskT task = getTaskForUpdateOrThrow(taskId, taskVersion);
     task.assign(assigneeId, CurrentUserHelper.getCurrentUserId(), Instant.now(clock));
     task.updateDueAt(dueAt);
     taskRepository.flush();
     return enrichingMapper.enrichAndMap(task);
   }
 
-  private TaskT getTaskOrThrow(UUID taskId) {
-    return taskRepository
-        .findByExternalId(taskId)
-        .orElseThrow(() -> new NotFoundException("Task not found"));
+  private TaskT getTaskForUpdateOrThrow(UUID taskId, Long taskVersion) {
+    TaskT task =
+        taskRepository
+            .findByExternalIdForUpdate(taskId)
+            .orElseThrow(() -> new NotFoundException("Task not found"));
+
+    ValidationUtil.validateVersion(taskVersion, task);
+    return task;
   }
 
   private void validateUserExists(UUID userId) {

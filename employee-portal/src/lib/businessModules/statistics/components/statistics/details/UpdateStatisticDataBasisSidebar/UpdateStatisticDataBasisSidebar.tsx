@@ -5,7 +5,7 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
 import { UpdateStatisticDataBasisStep } from "./UpdateStatisticDataBasisStep";

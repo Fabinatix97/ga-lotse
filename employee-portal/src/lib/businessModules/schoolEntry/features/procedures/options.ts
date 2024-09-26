@@ -13,6 +13,7 @@ import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/p
 import {
   APPOINTMENT_TYPES,
   ARTICULATION_VALUES,
+  BOOLEAN_WITH_UNKNOWN_VALUES,
   COUNTRY_CODE_VALUES,
   DISABILITY_TYPE_VALUES,
   DOCTOR_LETTER_VALUES,
@@ -116,3 +117,8 @@ export const VACCINATION_SCHEME_OPTIONS = buildEnumOptions(
 );
 
 export const WAITING_STATUS_OPTIONS = buildEnumOptions(WAITING_STATUS_VALUES);
+
+export const BOOLEAN_WITH_UNKNOWN_OPTIONS = buildEnumOptions(
+  BOOLEAN_WITH_UNKNOWN_VALUES,
+  true,
+);

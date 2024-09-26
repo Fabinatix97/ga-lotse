@@ -4,81 +4,59 @@
  */
 
 import NotificationsOffOutlinedIcon from "@mui/icons-material/NotificationsOffOutlined";
-import {
-  Box,
-  ListItem,
-  ListItemButton,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/joy";
-import { useCallback, useEffect, useState } from "react";
+import { Box, Stack, Typography, useTheme } from "@mui/joy";
+import { Room } from "matrix-js-sdk";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { ReceiptStatus } from "@/lib/businessModules/chat/components/roomList/ReceiptStatus";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
-import {
-  Presence,
-  RoomLastMessage,
-} from "@/lib/businessModules/chat/shared/types";
+import { RoomLastMessage } from "@/lib/businessModules/chat/shared/types";
 import {
   convertMessageTimestamp,
+  getMemberAvatarUrl,
+  getRoomAvatarUrl,
   getRoomLastMessage,
+  isDMRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
 export interface RoomListItemProps {
-  id: string;
-  roomName: string;
-  selectedRoomId: string | undefined;
-  handleSelectRoom: () => void;
+  room: Room;
   communicationType?: CommunicationType;
-  avatarUrl?: string;
-  presence?: Presence;
 }
 
-export function RoomListItem(props: RoomListItemProps) {
-  const theme = useTheme();
-  const selected = props.selectedRoomId === props.id;
-
-  return (
-    <ListItem>
-      <ListItemButton
-        onClick={props.handleSelectRoom}
-        selected={selected}
-        color="neutral"
-        sx={{
-          paddingX: theme.spacing(3),
-          paddingY: theme.spacing(2),
-        }}
-      >
-        <RoomItem {...props} />
-      </ListItemButton>
-    </ListItem>
-  );
-}
-
-export function RoomItem({
-  id,
-  roomName,
+export function RoomListItem({
+  room,
   communicationType = CommunicationType.DirectMessage,
-  avatarUrl,
-  presence,
 }: RoomListItemProps) {
   const theme = useTheme();
   const { matrixClient, unreadNotificationsPerRoom } = useChatClientContext();
   const [lastMessage, setLastMessage] = useState<RoomLastMessage>();
 
   const parsedDate = convertMessageTimestamp(lastMessage?.timestamp);
-  const unreadNotifications = unreadNotificationsPerRoom[id];
+  const unreadNotifications = unreadNotificationsPerRoom[room.roomId];
 
   // TO DO - finish notification feature
   const disableNotifications = false;
 
   const updateRoomLastMessage = useCallback(async () => {
-    const lastMessage = await getRoomLastMessage(matrixClient, id);
+    const lastMessage = await getRoomLastMessage(matrixClient, room.roomId);
     setLastMessage(lastMessage);
-  }, [id, matrixClient]);
+  }, [matrixClient, room.roomId]);
+
+  const dmMember = useMemo(
+    () => (isDMRoom(communicationType) ? room.getAvatarFallbackMember() : null),
+    [communicationType, room],
+  );
+
+  const avatarUrl = useMemo(
+    () =>
+      dmMember
+        ? getMemberAvatarUrl(matrixClient, dmMember)
+        : getRoomAvatarUrl(matrixClient, room),
+    [dmMember, matrixClient, room],
+  );
 
   useEffect(() => {
     void updateRoomLastMessage();
@@ -91,15 +69,15 @@ export function RoomItem({
       sx={{ alignItems: "center", width: "100%" }}
     >
       <ChatAvatar
-        name={roomName}
+        name={room.name}
+        userId={dmMember?.userId}
         communicationType={communicationType}
-        presence={presence}
         avatarUrl={avatarUrl}
       />
       <Stack sx={{ flex: 1, overflow: "hidden" }}>
         <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
-          <Typography noWrap level="title-md">
-            {roomName}
+          <Typography noWrap level="title-md" sx={{ minWidth: "4ch" }}>
+            {room.name}
           </Typography>
           {disableNotifications && (
             <NotificationsOffOutlinedIcon
@@ -116,7 +94,6 @@ export function RoomItem({
       <Stack
         sx={{
           alignItems: "flex-end",
-          maxWidth: "4rem",
         }}
       >
         <Typography
@@ -124,9 +101,7 @@ export function RoomItem({
           textColor="text.secondary"
           noWrap
           sx={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: "4rem",
+            maxWidth: "5ch",
           }}
         >
           {parsedDate}

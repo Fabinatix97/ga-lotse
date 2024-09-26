@@ -8,10 +8,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-jose'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.apache.httpcomponents.client5:httpclient5'
-    implementation "org.zalando:logbook-api:latest.release"
     implementation "org.zalando:logbook-httpclient5:latest.release"
-    implementation "jakarta.servlet:jakarta.servlet-api"
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation project(":api-commons")
 
     runtimeOnly "org.zalando:logbook-spring-boot-starter:latest.release"

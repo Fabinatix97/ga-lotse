@@ -8,6 +8,7 @@ package de.eshg.base.department;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_INFO;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_LOGO;
 import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT;
+import static de.eshg.rest.service.security.config.BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT_PGP_KEY;
 
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,4 +36,11 @@ public interface DepartmentApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get the security.txt file of the department running this application.")
   ResponseEntity<byte[]> getSecurityTxt();
+
+  @GetExchange(DEPARTMENT_API_SECURITY_TXT_PGP_KEY)
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          "Get the security.txt public PGP key file of the department running this application.")
+  ResponseEntity<byte[]> getSecurityTxtPublicKey();
 }

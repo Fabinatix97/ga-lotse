@@ -5,7 +5,7 @@
 
 package de.eshg.inspection.testhelper;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
@@ -20,7 +20,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class InspectionTestHelperController extends TestHelperController
-    implements AuditLogTestHelperApi {
+    implements SharedAuditLogTestHelperApi {
 
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final InspectionFeatureToggle inspectionFeatureToggle;

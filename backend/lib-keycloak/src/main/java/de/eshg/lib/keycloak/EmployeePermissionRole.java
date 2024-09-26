@@ -256,8 +256,8 @@ public enum EmployeePermissionRole implements PermissionRole {
   STI_PROTECTION_USER(
       "HIV-STI Benutzer",
       Module.STI_PROTECTION,
-      BASE_PERSONS_READ // required to access progress entries
-      ),
+      BASE_PERSONS_READ, // required to access progress entries
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
   STI_PROTECTION_MFA("HIV-STI MFA", Module.STI_PROTECTION, STI_PROTECTION_USER),
   STI_PROTECTION_CONSULTANT("HIV-STI Berater", Module.STI_PROTECTION, STI_PROTECTION_USER),
   STI_PROTECTION_PHYSICIAN("HIV-STI Arzt", Module.STI_PROTECTION, STI_PROTECTION_USER),

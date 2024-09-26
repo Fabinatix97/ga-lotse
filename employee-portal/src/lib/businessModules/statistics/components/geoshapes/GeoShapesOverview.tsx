@@ -7,7 +7,7 @@
 
 import { useState } from "react";
 
-import { ImportGeoShapeSidebar } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapesSidebar";
+import { ImportGeoShapeSidebar } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeSidebar";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 
 import { GeoShapesTable } from "./GeoShapesTable";

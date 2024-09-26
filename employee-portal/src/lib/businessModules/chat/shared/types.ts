@@ -9,6 +9,7 @@ import {
   IPresenceOpts,
   MatrixEvent,
   Room,
+  RoomMember,
   User,
 } from "matrix-js-sdk/lib/matrix";
 import { isEmpty, isObjectType, isString } from "remeda";
@@ -49,6 +50,7 @@ export interface CreateRoomOptions {
 }
 
 export type Presence = IPresenceOpts["presence"];
+export type UsersPresence = Record<string, Presence>;
 
 export type ReadConfirmationsPerUser = Record<
   string,
@@ -71,11 +73,7 @@ interface MessageType {
 export function isMessageType(
   messageContent: unknown,
 ): messageContent is MessageType {
-  return (
-    isObjectType(messageContent) &&
-    "body" in messageContent &&
-    "m.mentions" in messageContent
-  );
+  return isObjectType(messageContent) && "body" in messageContent;
 }
 
 export function isMessageTypeWithBody(
@@ -125,8 +123,7 @@ export interface RoomLastMessage {
   mentions: string[];
 }
 
-export interface RoomUserPresence {
-  userId: string;
-  name: string;
-  presence?: Presence;
+export interface AllRoomMembers {
+  member: RoomMember;
+  isRoomCreator: boolean;
 }

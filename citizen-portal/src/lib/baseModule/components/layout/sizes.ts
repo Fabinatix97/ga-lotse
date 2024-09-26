@@ -16,7 +16,7 @@ export const bannerHeightDesktop = "20rem"; // 320px
 
 export const maxContentWidthDesktop = "1232px";
 export const contentMarginDesktop: ContentMargin = {
-  topBottom: 5,
+  topBottom: 3,
   leftRight: 3.5,
 };
 export const contentMarginMobile: ContentMargin = {

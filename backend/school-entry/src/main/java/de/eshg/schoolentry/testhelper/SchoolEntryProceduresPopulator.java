@@ -535,15 +535,15 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
 
   private static CheckUpsDto randomCheckUpsDto(Faker faker) {
     return new CheckUpsDto(
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool(),
-        faker.bool().bool());
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker),
+        randomBooleanWithUnknownSchoolEntry(faker));
   }
 
   private static PromotionBeforeSchoolEntryDto randomPromotionBeforeSchoolEntryDto(Faker faker) {
@@ -595,11 +595,15 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         faker.random().nextInt(0, 9),
         List.of(),
         faker.bool().bool(),
-        faker.bool().bool());
+        randomBooleanWithUnknownSchoolEntry(faker));
   }
 
   private static VaccinationSchemeValueDto randomVaccinationSchemeSchoolEntry(Faker faker) {
     return randomElement(faker, VaccinationSchemeValueDto.values());
+  }
+
+  private static BooleanWithUnknownDto randomBooleanWithUnknownSchoolEntry(Faker faker) {
+    return randomElement(faker, BooleanWithUnknownDto.values());
   }
 
   @Override

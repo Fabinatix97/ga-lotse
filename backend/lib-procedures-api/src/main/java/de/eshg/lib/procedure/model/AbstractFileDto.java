@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -18,14 +17,14 @@ public abstract sealed class AbstractFileDto extends AbstractFileReferenceDto
     permits GenericFileDto, ConcreteFileDto {
 
   public static final String SCHEMA_NAME = "AbstractFile";
-  private @CanBeLogged @NotNull Instant createdAt;
-  private @CanBeLogged @NotNull Instant modifiedAt;
+  private @NotNull Instant createdAt;
+  private @NotNull Instant modifiedAt;
   private @NotNull UUID createdBy;
   private @NotNull String fileName;
-  private @CanBeLogged @NotNull FileTypeDto fileType;
-  private @CanBeLogged @NotNull int fileSizeBytes;
+  private @NotNull FileTypeDto fileType;
+  private @NotNull int fileSizeBytes;
   private UUID attachedToMail;
-  private @CanBeLogged @NotNull boolean locked;
+  private @NotNull boolean locked;
 
   public Instant getCreatedAt() {
     return createdAt;

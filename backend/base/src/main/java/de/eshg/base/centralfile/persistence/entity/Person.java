@@ -10,7 +10,7 @@ import de.eshg.base.address.persistence.entity.Address;
 import de.eshg.base.centralfile.CentralFileData;
 import de.eshg.base.util.Gender;
 import de.eshg.base.util.Salutation;
-import de.eshg.domain.model.BaseEntityWithExternalId;
+import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
@@ -29,7 +29,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
       @Index(columnList = "reference_person_id"),
       @Index(columnList = "first_name, last_name, date_of_birth"),
     })
-public class Person extends BaseEntityWithExternalId implements CentralFileData {
+public class Person extends SequencedBaseEntityWithExternalId implements CentralFileData {
 
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant modifiedAt;

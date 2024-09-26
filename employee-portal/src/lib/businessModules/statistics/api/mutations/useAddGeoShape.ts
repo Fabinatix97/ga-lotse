@@ -8,7 +8,7 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 
 import { useGeoShapeApi } from "@/lib/businessModules/statistics/api/clients";
-import { AddGeoShapeValues } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapesSidebar";
+import { AddGeoShapeValues } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeSidebar";
 
 export function useAddGeoShape() {
   const snackbar = useSnackbar();

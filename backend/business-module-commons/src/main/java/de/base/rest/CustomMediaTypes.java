@@ -20,6 +20,9 @@ public class CustomMediaTypes {
   public static final String ZIP_VALUE = "application/zip";
   public static final MediaType ZIP = MediaType.valueOf(ZIP_VALUE);
 
+  public static final String TEXT_PLAIN_UTF_8_VALUE = "text/plain;charset=utf-8";
+  public static final MediaType TEXT_PLAIN_UTF_8 = MediaType.valueOf(TEXT_PLAIN_UTF_8_VALUE);
+
   public static final String APPLICATION_XLSX_VALUE =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   public static final MediaType APPLICATION_XLSX = MediaType.valueOf(APPLICATION_XLSX_VALUE);

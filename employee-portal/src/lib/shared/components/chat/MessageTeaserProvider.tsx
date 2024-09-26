@@ -24,6 +24,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
+import { Presence } from "@/lib/businessModules/chat/shared/types";
+import { getStatusColor } from "@/lib/businessModules/chat/shared/utils";
 
 interface SnackbarValues {
   username: string;
@@ -100,7 +102,9 @@ function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
                       width: "0.625rem",
                       height: "0.625rem",
                       borderRadius: "100%",
-                      backgroundColor: getColor(snackbar.userPresence),
+                      backgroundColor: getStatusColor(
+                        snackbar.userPresence as Presence,
+                      ),
                       marginRight: 0.8,
                     }}
                   ></Box>
@@ -122,7 +126,7 @@ function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
               <IconButton
                 aria-label="Schließen"
                 onClick={onClose}
-                sx={{ color: "focusVisible" }}
+                color="primary"
               >
                 <CloseIcon />
               </IconButton>
@@ -197,21 +201,6 @@ const SnackbarContext = createContext<{
   snackbarValues: SnackbarValues | undefined;
   setSnackbar: Dispatch<SetStateAction<SnackbarValues | undefined>>;
 }>(null!);
-
-function getColor(status: string) {
-  if (status === undefined) {
-    return;
-  }
-  if (status === "online") {
-    return "success.500";
-  }
-  if (status === "offline") {
-    return "danger.500";
-  }
-  if (status === "unavailable") {
-    return "neutral.500";
-  }
-}
 
 export function MessageTeaserProvider({
   children,

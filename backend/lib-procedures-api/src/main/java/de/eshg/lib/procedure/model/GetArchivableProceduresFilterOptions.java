@@ -9,7 +9,6 @@ import static de.eshg.lib.procedure.api.ArchivingApi.QueryParameter.CLOSED_AT_DA
 import static de.eshg.lib.procedure.api.ArchivingApi.QueryParameter.DEFAULT_ARCHIVING_RELEVANCE;
 import static de.eshg.lib.procedure.api.ArchivingApi.QueryParameter.PROCEDURE_TYPE;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.time.LocalDate;
 import java.util.Set;
@@ -18,8 +17,7 @@ import org.springframework.web.bind.annotation.BindParam;
 
 @ParameterObject
 public record GetArchivableProceduresFilterOptions(
-    @CanBeLogged
-        @BindParam(PROCEDURE_TYPE)
+    @BindParam(PROCEDURE_TYPE)
         @Parameter(
             description =
                 """
@@ -28,8 +26,7 @@ public record GetArchivableProceduresFilterOptions(
         - If not submitted, no filtering takes place
         """)
         Set<ProcedureTypeDto> procedureType,
-    @CanBeLogged
-        @Parameter(
+    @Parameter(
             description =
                 """
             Filter logic:
@@ -38,8 +35,7 @@ public record GetArchivableProceduresFilterOptions(
             """)
         @BindParam(CLOSED_AT_DAY)
         LocalDate closedAtDay,
-    @CanBeLogged
-        @BindParam(DEFAULT_ARCHIVING_RELEVANCE)
+    @BindParam(DEFAULT_ARCHIVING_RELEVANCE)
         @Parameter(
             description =
                 """

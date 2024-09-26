@@ -100,7 +100,10 @@
   "entityCart": "Entitäten genehmigen",
   "error": "Fehler",
   "errorReason": {
-    "502": "Es konnte keine Verbindung zum Backend-Server hergestellt werden."
+    "404": "Die Ressource wurde nicht gefunden.",
+    "500": "Es ist ein interner Server-Fehler aufgetreten.",
+    "502": "Es konnte keine Verbindung zum Backend-Server hergestellt werden.",
+    "FetchFailed": "Die Ressource konnte nicht abgerufen werden."
   },
   "expandRow": "Zeile ausklappen",
   "expensiveQuery": "Dies ist eine potenziell aufwendige Abfrage",
@@ -114,43 +117,47 @@
   "importConfigLabel": "Wählen Sie eine JSON-Datei aus",
   "importHeader": "Konfiguration importieren",
   "legal": {
-    "accessibility": {
-      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
-      "title": "Erklärung zur Barrierefreiheit"
-    },
     "acknowledgements": {
-      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "content": [
+        "<p>GA-Lotse verwendet die folgenden externen Ressourcen:</p>",
+        "<section>",
+        "  <h3>Verwendete Libraries</h3>",
+        "  <p>Verwendete Open Source Bibliotheken finden sich in den jeweiligen Paketen im Repository auf <a href=\"https://gitlab.opencode.de/ga-lotse/ga-lotse-code\">OpenCoDE</a>.</p>",
+        "</section>"
+      ],
       "title": "Danksagung"
     },
     "contact": {
-      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
+      "content": [
+        "<table>",
+        "  <tr><th colspan=2 style=\"text-align: left\">Telefonische Erreichbarkeit:</th></tr>",
+        "  <tr><td>Telefon:</td><td>+49 (0) 800-4256873</td></tr>",
+        "  <tr><td>&nbsp;</td><td></td></tr>",
+        "  <tr><td>Montag - Donnerstag:</td><td>07:30 Uhr - 16:00 Uhr</td></tr>",
+        "  <tr><td>Freitag:</td><td>07:30 Uhr - 14:00 Uhr</td></tr>",
+        "  <tr><td>&nbsp;</td><td></td></tr>",
+        "  <tr><th colspan=2 style=\"text-align: left\">Erreichbarkeit via Ticketsystem:</th></tr>",
+        "  <tr><td>E-Mail:</td><td><a href=\"mailto:support@ga-lotse.de\">support@ga-lotse.de</a></td></tr>",
+        "  <tr><td>Open Source:</td><td><a href=\"https://gitlab.opencode.de/ga-lotse\">OpenCoDE</a></td></tr>",
+        "</table>"
+      ],
       "title": "Kontakt"
-    },
-    "imprint": {
-      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
-      "title": "Impressum"
-    },
-    "privacy": {
-      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
-      "title": "Datenschutzerklärung"
     },
     "releaseNotes": {
       "content": [
-        "<h2>GA-Lotse 1.0</h2>",
-        "<h3>01.10.2024</h3>",
-        "<ul>",
-        "  <li>Einrichtung einer Service-Mesh-Infrastruktur zwischen verschiedenen Gesundheitsämtern, Aktoren und Organisationseinheiten</li>",
-        "  <li>Regelwerk zur Überprüfung zulässiger Verbindungen</li>",
-        "  <li>Administration von Org-Units, Aktoren und Regeln</li>",
-        "  <li>Export der Service-Directory-Konfiguration</li>",
-        "  <li>Ansicht und Export des Auditprotokolls</li>",
-        "</ul>"
+        "<section>",
+        "  <h3>GA-Lotse 1.0</h3>",
+        "  <h4>01.10.2024</h4>",
+        "  <ul>",
+        "    <li>Einrichtung einer Service-Mesh-Infrastruktur zwischen verschiedenen Gesundheitsämtern, Aktoren und Organisationseinheiten</li>",
+        "    <li>Regelwerk zur Überprüfung zulässiger Verbindungen</li>",
+        "    <li>Administration von Org-Units, Aktoren und Regeln</li>",
+        "    <li>Export der Service-Directory-Konfiguration</li>",
+        "    <li>Ansicht und Export des Auditprotokolls</li>",
+        "  </ul>",
+        "</section>"
       ],
       "title": "Release Notes"
-    },
-    "termsOfUse": {
-      "content": "Die Seite ist noch im Aufbau. Die Inhalte werden aktualisiert, sobald sie vom Gesundheitsamt freigegeben sind.",
-      "title": "Nutzungsbedingungen"
     }
   },
   "navigation": {

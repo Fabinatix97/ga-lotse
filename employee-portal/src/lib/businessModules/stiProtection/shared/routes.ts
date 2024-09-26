@@ -8,6 +8,7 @@ const proceduresPath = `${basePath}/procedures`;
 const appointmentBlockPath = `${basePath}/appointment-block-groups`;
 
 export const routes = {
+  appointmentDefinition: `${basePath}/appointment-definition`,
   procedures: {
     index: `${proceduresPath}`,
     byId: (procedureId: string) => ({

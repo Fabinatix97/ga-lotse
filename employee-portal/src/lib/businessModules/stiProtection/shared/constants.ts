@@ -13,6 +13,10 @@ import {
 } from "@eshg/employee-portal-api/stiProtection";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
+export const procedureTypes = [ApiProcedureType.StiProtection];
+
+export const taskTypes = [ApiTaskType.StiProtection];
+
 export const PROCEDURE_STATUS_VALUES: EnumMap<ApiProcedureStatus> = {
   [ApiProcedureStatus.Aborted]: "Abgebrochen",
   [ApiProcedureStatus.Closed]: "Geschlossen",
@@ -42,14 +46,14 @@ export const GENDER_VALUES: EnumMap<ApiGender> = {
 };
 
 export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
-  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
   [ApiAppointmentType.CanChild]: "Kann-Kinder",
-  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
-  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
   [ApiAppointmentType.Consultation]: "Beratung",
-  [ApiAppointmentType.Vaccination]: "Impfung",
+  [ApiAppointmentType.EntryLevel]: "Eingangsstufe",
   [ApiAppointmentType.ProofSubmission]: "Nachweisvorlage",
   [ApiAppointmentType.HivStiConsultation]: "HIV-STI-Beratung",
   [ApiAppointmentType.SexWork]: "Sexarbeit",
   [ApiAppointmentType.ResultsReview]: "Ergebnisbesprechung",
+  [ApiAppointmentType.RegularExamination]: "Regeluntersuchung",
+  [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
+  [ApiAppointmentType.Vaccination]: "Impfung",
 };

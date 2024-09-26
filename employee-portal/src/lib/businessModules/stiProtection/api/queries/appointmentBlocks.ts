@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetAppointmentBlockGroupsRequest } from "@eshg/employee-portal-api/stiProtection";
+import {
+  ApiCreateAppointmentBlockGroupRequest,
+  GetAppointmentBlockGroupsRequest,
+} from "@eshg/employee-portal-api/stiProtection";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/stiProtection/api/models/AppointmentBlockGroup";
@@ -17,15 +20,30 @@ export function useGetAppointmentBlockGroups(
   request: GetAppointmentBlockGroupsRequest,
 ) {
   const appointmentBlockApi = useAppointmentBlockApi();
+
   return useSuspenseQuery({
-    queryKey: appointmentBlockApiQueryKey([
-      "getAppointmentBlockGroups",
-      request,
-    ]),
+    queryKey: appointmentBlockApiQueryKey(["appointmentBlockGroups", request]),
     queryFn: () =>
       appointmentBlockApi
         .getAppointmentBlockGroupsRaw(request)
         .then(unwrapRawResponse),
     select: mapPaginatedList(mapAppointmentBlockGroup),
+  });
+}
+
+export function useValidateAppointmentBlockGroup(
+  request: ApiCreateAppointmentBlockGroupRequest | null,
+) {
+  const appointmentBlockApi = useAppointmentBlockApi();
+
+  return useQuery({
+    queryKey: appointmentBlockApiQueryKey([
+      "validateAppointmentBlockGroup",
+      request,
+    ]),
+    queryFn: () =>
+      request != null
+        ? appointmentBlockApi.validateAppointmentBlockGroup(request)
+        : null,
   });
 }

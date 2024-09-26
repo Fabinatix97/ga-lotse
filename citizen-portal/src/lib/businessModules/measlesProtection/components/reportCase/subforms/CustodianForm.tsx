@@ -187,14 +187,12 @@ export function CustodianForm({
 
 interface CustodianFieldArrayProps extends NestedFormProps {
   onCancel?: () => unknown;
-  onSubmit?: () => unknown;
   custodianRequired?: boolean;
   sx?: SxProps;
 }
 
 export function CustodiansFieldArray({
   onCancel,
-  onSubmit,
   name,
   sx,
   custodianRequired = true,
@@ -350,7 +348,6 @@ export function CustodiansFieldArray({
         isSubmitting={isSubmitting}
         facilityName={facilityName}
         cancelLabel={t("common.back")}
-        onSubmit={onSubmit}
         onCancel={onCancel}
         showFacilityContactPerson
         showAffected={{ current: true }}

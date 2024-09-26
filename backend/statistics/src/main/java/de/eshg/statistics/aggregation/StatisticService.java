@@ -416,4 +416,16 @@ public class StatisticService {
     return new GetReportSeriesEntriesOfStatisticResponse(
         statistic.getExternalId(), statistic.getName(), reportSeriesDtos, resolvedUsers);
   }
+
+  static boolean hasNoDiagrams(Statistic statistic) {
+    return statistic.getEvaluations().isEmpty()
+        || statistic.getEvaluations().stream()
+            .allMatch(evaluation -> evaluation.getDiagrams().isEmpty());
+  }
+
+  @Transactional
+  public void setState(UUID statisticId, AggregationResultState state) {
+    Statistic statistic = getStatistic(statisticId);
+    statistic.setState(state);
+  }
 }

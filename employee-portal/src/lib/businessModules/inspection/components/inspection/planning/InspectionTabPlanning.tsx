@@ -254,7 +254,8 @@ function RightColumnElements({
       />
       {isPacklistsEnabled && (
         <PacklistTile
-          readonly={isOffline || lockedByDifferentUser}
+          readonly={lockedByDifferentUser && !isOffline}
+          isOffline={isOffline}
           inspection={inspection}
         />
       )}

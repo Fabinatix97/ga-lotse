@@ -5,28 +5,36 @@
 
 "use client";
 
-import { Box, Typography } from "@mui/joy";
+import { Typography } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { PageBanner } from "@/lib/baseModule/components/layout/PageBanner";
 import { useTranslation } from "@/lib/i18n/client";
+import { useDepartmentApi } from "@/lib/shared/api/clients";
+import { getDepartmentInfoQuery } from "@/lib/shared/api/queries/department";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function OrganizationHomePage() {
   const { t } = useTranslation();
+  const departmentApi = useDepartmentApi();
+  const { data: departmentInfo } = useSuspenseQuery(
+    getDepartmentInfoQuery(departmentApi),
+  );
 
   return (
-    <>
-      <PageBanner />
-      <Box p={4}>
-        <Typography component="h2" level="h2" mb={2}>
-          {t("organization.landing_page.header")}
-        </Typography>
-        <Typography mb={4}>
-          {t("organization.landing_page.subheader")}
-        </Typography>
-        <Typography mb={4}>
-          {t("organization.landing_page.contact_us")}
-        </Typography>
-      </Box>
-    </>
+    <PageLayout banner="business">
+      <PageContent spacing="lg">
+        <section>
+          <Typography component="h2" level="h2" mb={3}>
+            {t("organization.landing_page.header")}
+          </Typography>
+          <Typography>
+            {t("organization.landing_page.subheader", {
+              name: departmentInfo.name,
+            })}
+          </Typography>
+        </section>
+      </PageContent>
+    </PageLayout>
   );
 }

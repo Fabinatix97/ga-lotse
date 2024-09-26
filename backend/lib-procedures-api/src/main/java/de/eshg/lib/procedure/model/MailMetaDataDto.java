@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -19,7 +18,7 @@ public final class MailMetaDataDto extends MetaDataDto {
 
   private @NotNull String mailFrom;
   private @NotNull String mailTo;
-  private @CanBeLogged @NotNull Instant sentDate;
+  private @NotNull Instant sentDate;
 
   public String getMailFrom() {
     return mailFrom;

@@ -17,9 +17,16 @@ const Backdrop = styled(Box)(({ theme }) => ({
   left: 0,
 }));
 
-export function LoadingOverlay(props: Pick<BoxProps, "component" | "sx">) {
+export function LoadingOverlay(
+  props: Pick<BoxProps, "component" | "sx" | "zIndex">,
+) {
   return (
-    <Backdrop component={props.component} sx={props.sx} aria-hidden="true">
+    <Backdrop
+      component={props.component}
+      sx={props.sx}
+      zIndex={props.zIndex}
+      aria-hidden="true"
+    >
       <LoadingIndicator fullHeight />
     </Backdrop>
   );

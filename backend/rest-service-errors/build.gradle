@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     api project(':lib-commons')
-    implementation project(':api-commons')
 
     api 'jakarta.validation:jakarta.validation-api'
 }

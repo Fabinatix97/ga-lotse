@@ -13,7 +13,7 @@ import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolba
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function NewAppointmentBlockGroupsPage() {
-  const appointmentDurationsMeasles = useGetAppointmentDurations().data;
+  const { data: appointmentDurationsMeasles } = useGetAppointmentDurations();
 
   return (
     <StickyToolbarLayout

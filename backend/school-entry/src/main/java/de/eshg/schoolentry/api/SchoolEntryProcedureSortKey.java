@@ -5,7 +5,6 @@
 
 package de.eshg.schoolentry.api;
 
-// Unusual naming to match the corresponding field names in frontend.
 public enum SchoolEntryProcedureSortKey {
   ID,
   DATE_OF_BIRTH,

@@ -109,7 +109,7 @@ function InternetSection(props: DepartmentInfoProps) {
           justifyContent: "space-between",
           wordBreak: "break-all",
         }}
-        href={`${homepage}`}
+        href={`https://${homepage}`}
         endDecorator={<ArrowRightAltOutlined />}
       >
         {t("health_department")}

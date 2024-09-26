@@ -66,6 +66,8 @@ export const reportMeaslesCaseFormInitialValues: ReportMeaslesCase = {
   facility: facilityInitial,
   otherFacilityTypeInformation: "",
   type: "OTHER",
+  confirmPrivacyNotice: false,
+  confirmPrivacyPolicy: false,
 };
 
 export const reportCaseFormPages = {

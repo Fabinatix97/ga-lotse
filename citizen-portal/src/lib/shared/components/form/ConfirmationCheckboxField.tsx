@@ -33,7 +33,7 @@ export function ConfirmationCheckboxField(
   const { input, error, helperText } = useBaseField<boolean>({
     type: "checkbox",
     name: props.name,
-    validate: validateChecked,
+    validate: createValueCheckedValidation(props.required),
   });
   const isServer = useIsServer();
 
@@ -47,7 +47,7 @@ export function ConfirmationCheckboxField(
         variant="outlined"
         color="primary"
         disabled={isServer}
-        required
+        required={props.required != null}
         slots={{
           label: RequiredFormLabel, // Joy UI does not pass required flag to checkbox labels
         }}
@@ -66,10 +66,14 @@ function RequiredFormLabel(props: FormLabelProps) {
   return <FormLabel {...props} required />;
 }
 
-function validateChecked(value: boolean) {
-  if (value) {
-    return undefined;
-  }
+function createValueCheckedValidation(
+  requiredText = "Bitte Zustimmung erteilen um fortzufahren.",
+) {
+  return (value: boolean) => {
+    if (value) {
+      return undefined;
+    }
 
-  return "Bitte Zustimmung erteilen um fortzufahren.";
+    return requiredText;
+  };
 }

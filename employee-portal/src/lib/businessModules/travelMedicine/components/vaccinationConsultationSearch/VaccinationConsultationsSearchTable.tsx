@@ -62,17 +62,11 @@ export function VaccinationConsultationsSearchTable() {
       controls={
         <ButtonBar
           left={
-            <>
-              <FilterButton
-                isFilterVisible={filterVisible}
-                activeFilters={activeFilters.length}
-                onClick={toggleFilterVisible}
-              />
-              <Alert
-                title="Es werden maximal 50 Suchergebnisse angezeigt."
-                color="primary"
-              />
-            </>
+            <FilterButton
+              isFilterVisible={filterVisible}
+              activeFilters={activeFilters.length}
+              onClick={toggleFilterVisible}
+            />
           }
         />
       }
@@ -89,7 +83,15 @@ export function VaccinationConsultationsSearchTable() {
         )
       }
     >
-      <TableSheet loading={searchResults.isFetching}>
+      <TableSheet
+        loading={searchResults.isFetching}
+        title={
+          <Alert
+            title="Es werden maximal 50 Suchergebnisse angezeigt."
+            color="primary"
+          />
+        }
+      >
         <DataTable
           data={
             filterValuesNotEmpty()

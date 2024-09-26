@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     api 'de.cronn:commons-lang:latest.release'
-    implementation 'org.springframework:spring-context'
+    api project(':test-helper-commons-spring')
     implementation 'org.springframework:spring-tx'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation 'org.springframework.security:spring-security-oauth2-jose'
@@ -27,5 +27,6 @@ dependencies {
     api 'net.datafaker:datafaker:latest.release'
 
     testImplementation project(':business-module-commons')
+    testImplementation project(':rest-service-commons')
     testImplementation testFixtures(project(':business-module-commons'))
 }

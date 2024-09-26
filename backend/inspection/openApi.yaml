@@ -439,6 +439,32 @@ paths:
         definition in the central repository
       tags:
       - ChecklistDefinitionCentralRepo
+  /checklists/definitions/versions/{id}:
+    put:
+      operationId: editDraftChecklistDefinitionVersion
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChecklistDefinitionVersionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChecklistDefinitionVersion"
+          description: OK
+      summary: Edits an existing checklist definition version in draft mode
+      tags:
+      - ChecklistDefinition
   /checklists/definitions/versions/{versionId}:
     get:
       operationId: getChecklistDefinitionVersion
@@ -473,7 +499,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AddChecklistDefinitionVersionRequest"
+              $ref: "#/components/schemas/ChecklistDefinitionVersionRequest"
         required: true
       responses:
         "200":
@@ -3386,24 +3412,6 @@ components:
           minimum: 1
       required:
       - barrierId
-    AddChecklistDefinitionVersionRequest:
-      type: object
-      properties:
-        deleted:
-          type: boolean
-        description:
-          type: string
-        isExpandable:
-          type: boolean
-        name:
-          type: string
-        sections:
-          type: array
-          items:
-            $ref: "#/components/schemas/CLSectionContext"
-      required:
-      - name
-      - sections
     AddFacilityFileStateRequest:
       type: object
       description: Request used for adding facilities from non-external sources
@@ -3575,8 +3583,12 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
       required:
       - assignee
+      - taskVersion
     BulkUpdateProceduresArchivingRelevanceRequest:
       type: object
       properties:
@@ -3731,8 +3743,13 @@ components:
         id:
           type: string
           format: uuid
+        lastModified:
+          type: string
+          format: date-time
         name:
           type: string
+        published:
+          type: boolean
         repositoryVersion:
           type: integer
           format: int32
@@ -3755,8 +3772,8 @@ components:
       - expandable
       - id
       - name
+      - published
       - sections
-      - validFrom
       - version
     CLElement:
       type: object
@@ -4071,25 +4088,28 @@ components:
           type: boolean
         deleted:
           type: boolean
+        expandable:
+          type: boolean
         id:
           type: string
           format: uuid
+        lastModified:
+          type: string
+          format: date-time
         mostRecentRepositoryVersion:
           type: integer
           format: int32
+        mostRecentVersion:
+          $ref: "#/components/schemas/ChecklistDefinitionVersion"
         mostRecentVersionBasedOnRepo:
-          type: integer
-          format: int32
-        mostRecentVersionId:
-          type: string
-          format: uuid
-        mostRecentVersionNr:
           type: integer
           format: int32
         name:
           type: string
         objectType:
           $ref: "#/components/schemas/ObjectTypeRef"
+        published:
+          type: boolean
         versions:
           type: array
           items:
@@ -4097,10 +4117,12 @@ components:
       required:
       - coreChecklist
       - deleted
+      - expandable
       - id
-      - mostRecentVersionId
-      - mostRecentVersionNr
+      - lastModified
+      - mostRecentVersion
       - name
+      - published
       - versions
     ChecklistDefinitionCentralRepoMetadata:
       type: object
@@ -4206,6 +4228,8 @@ components:
       properties:
         context:
           $ref: "#/components/schemas/CLContext"
+        hasDraft:
+          type: boolean
         isCoreChecklist:
           type: boolean
         modifiedBy:
@@ -4214,6 +4238,26 @@ components:
           $ref: "#/components/schemas/ObjectTypeRef"
       required:
       - context
+    ChecklistDefinitionVersionRequest:
+      type: object
+      properties:
+        deleted:
+          type: boolean
+        description:
+          type: string
+        isExpandable:
+          type: boolean
+        name:
+          type: string
+        published:
+          type: boolean
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/CLSectionContext"
+      required:
+      - name
+      - sections
     ChecklistDefinitionsResponse:
       type: object
       properties:
@@ -4650,6 +4694,8 @@ components:
         objectTypeId:
           type: string
           format: uuid
+        published:
+          type: boolean
         sections:
           type: array
           items:
@@ -5328,7 +5374,7 @@ components:
       - totalPages
     GetArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - PROCEDURE_TYPE
@@ -5786,7 +5832,7 @@ components:
       - totalPages
     GetRelevantArchivableProceduresSortBy:
       type: string
-      default: CREATED_AT
+      default: CLOSED_AT
       enum:
       - CLOSED_AT
       - EXPORTED_AT
@@ -7358,6 +7404,11 @@ components:
         dueAt:
           type: string
           format: date-time
+        taskVersion:
+          type: integer
+          format: int64
+      required:
+      - taskVersion
     SingleObjectTypeResponse:
       type: object
       properties:
@@ -7447,6 +7498,9 @@ components:
           $ref: "#/components/schemas/TaskStatus"
         taskType:
           $ref: "#/components/schemas/TaskType"
+        version:
+          type: integer
+          format: int64
       required:
       - businessModule
       - createdAt
@@ -7457,6 +7511,7 @@ components:
       - taskId
       - taskStatus
       - taskType
+      - version
     TaskMetric:
       type: object
       properties:

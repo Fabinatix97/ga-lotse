@@ -13,7 +13,7 @@ import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { DetailCard } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DetailCard";
-import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helper";
+import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import {
   LegacyPerson,
   LegacyPersonFormConfig,

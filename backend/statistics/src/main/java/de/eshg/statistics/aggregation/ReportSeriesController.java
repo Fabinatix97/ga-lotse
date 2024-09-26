@@ -7,10 +7,7 @@ package de.eshg.statistics.aggregation;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.EvaluationDto;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
 import de.eshg.statistics.api.report.GetReportsRequest;
@@ -19,13 +16,10 @@ import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
-import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
-import de.eshg.statistics.persistence.entity.AggregationResultState;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,19 +35,16 @@ import org.springframework.web.service.annotation.PostExchange;
 @Tag(name = "ReportSeries")
 public class ReportSeriesController {
   private final ReportSeriesService reportSeriesService;
+  private final ReportExecution reportExecution;
   private final StatisticsFeatureToggle statisticsFeatureToggle;
-  private final ModuleClientAuthenticator moduleClientAuthenticator;
-  private final DiagramCreationService diagramCreationService;
 
   public ReportSeriesController(
       ReportSeriesService reportSeriesService,
-      StatisticsFeatureToggle statisticsFeatureToggle,
-      ModuleClientAuthenticator moduleClientAuthenticator,
-      DiagramCreationService diagramCreationService) {
+      ReportExecution reportExecution,
+      StatisticsFeatureToggle statisticsFeatureToggle) {
     this.reportSeriesService = reportSeriesService;
+    this.reportExecution = reportExecution;
     this.statisticsFeatureToggle = statisticsFeatureToggle;
-    this.moduleClientAuthenticator = moduleClientAuthenticator;
-    this.diagramCreationService = diagramCreationService;
   }
 
   @PostExchange(accept = APPLICATION_JSON_VALUE)
@@ -64,41 +55,9 @@ public class ReportSeriesController {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
 
     ReportSeriesDto reportSeriesDto = reportSeriesService.addReportSeries(addReportSeriesRequest);
-    UUID uuid = reportSeriesDto.id();
     if (addReportSeriesRequest instanceof AddManualReportSeriesRequest) {
       CompletableFuture.runAsync(
-          () -> {
-            ReportStateInformation stateInfo =
-                reportSeriesService.getReportStateInformationManualSeries(uuid);
-            while (stateInfo.state().equals(AggregationResultState.PENDING)) {
-              AggregationResultPendingState pendingState = stateInfo.pendingState();
-              moduleClientAuthenticator.doWithModuleClientAuthentication(
-                  () -> {
-                    switch (pendingState) {
-                      case DATA_AGGREGATION ->
-                          reportSeriesService.aggregateDataManualReportSeries(uuid);
-                      case MIN_MAX_DETERMINATION ->
-                          reportSeriesService.minMaxDeterminationManualReportSeries(uuid);
-                      case EVALUATION_CONDUCTION ->
-                          reportSeriesService.evaluationConductionManualReportSeries(uuid);
-                      case COPY_ONGOING ->
-                          throw new IllegalStateException(
-                              "Report of series %s in copy ongoing state".formatted(uuid));
-                      case DIAGRAM_CREATION -> {
-                        Map<EvaluationDto, AddDiagramRequest> map =
-                            reportSeriesService.findMissingDiagramOrCompleteManualReportSeries(
-                                uuid);
-                        if (!map.isEmpty()) {
-                          Map.Entry<EvaluationDto, AddDiagramRequest> entry =
-                              map.entrySet().iterator().next();
-                          diagramCreationService.createDiagram(entry.getKey(), entry.getValue());
-                        }
-                      }
-                    }
-                  });
-              stateInfo = reportSeriesService.getReportStateInformationManualSeries(uuid);
-            }
-          });
+          () -> reportExecution.completeReport(reportSeriesDto.reportInfos().getFirst().id()));
     }
     return reportSeriesDto;
   }

@@ -43,4 +43,17 @@ public class ChecklistCheckboxContextDto extends ChecklistFieldContextDto {
   public int hashCode() {
     return Objects.hash(super.hashCode(), textModuleTrue, textModuleFalse);
   }
+
+  @Override
+  public String toString() {
+    return "ChecklistCheckboxContextDto{"
+        + "textModuleTrue='"
+        + textModuleTrue
+        + '\''
+        + ", textModuleFalse='"
+        + textModuleFalse
+        + '\''
+        + "} "
+        + super.toString();
+  }
 }

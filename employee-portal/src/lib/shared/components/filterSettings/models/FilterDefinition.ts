@@ -13,6 +13,8 @@ import { EnumSingleFilterDefinition } from "./EnumSingleFilter";
 export interface FilterDefinitionBase {
   name: string;
   key: string;
+  /** allows overwriting render option of group */
+  inAccordion?: boolean;
 }
 
 export type FilterDefinition =

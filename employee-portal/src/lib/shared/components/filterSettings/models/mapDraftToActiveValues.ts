@@ -30,7 +30,10 @@ export function mapDraftToActiveValues(
           return draftValue;
       }
     })
-    .filter(isNonNull);
+    .filter(isNonNull)
+    .toSorted((draftValueA, draftValueB) =>
+      draftValueA.key.localeCompare(draftValueB.key),
+    );
 }
 
 function mapNumber(

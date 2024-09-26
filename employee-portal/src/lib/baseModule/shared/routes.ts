@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiProcedureType } from "@eshg/employee-portal-api/base";
 import { isDefined } from "remeda";
 
 const accountPath = "/account";
@@ -14,12 +15,14 @@ const contactsPath = "/contacts";
 const resourcesPath = "/resources";
 const inventoryPath = "/inventory";
 const usersPath = "/users";
-
+const metricsPath = "/metrics";
 const gdprPath = "/gdpr";
+
 export const routes = {
   index: "/",
   account: {
     sessions: `${accountPath}/sessions`,
+    loginProtocol: `${accountPath}/login-protocol`,
   },
   procedures: {
     index: proceduresPath,
@@ -50,7 +53,11 @@ export const routes = {
     index: usersPath,
     details: (userId: string) => `${usersPath}/${userId}`,
   },
-  metrics: "/metrics",
+  metrics: {
+    index: metricsPath,
+    details: (businessModuleName: string, procedureType: ApiProcedureType) =>
+      `${metricsPath}/${businessModuleName}/${procedureType}`,
+  },
   auditlog: {
     index: auditLogPath,
     authorize: {
@@ -67,4 +74,5 @@ export const routes = {
   privacy: "/privacy",
   accessibility: "/accessibility",
   contact: "/contact",
+  usageNotes: "/usage-notes",
 } as const;

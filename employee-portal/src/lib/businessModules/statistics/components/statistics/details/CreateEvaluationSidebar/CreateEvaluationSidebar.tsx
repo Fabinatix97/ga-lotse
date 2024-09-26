@@ -8,9 +8,8 @@ import { GeoShapeInfo } from "@/lib/businessModules/statistics/api/models/geoSha
 import { DiagramType } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
 import { useAddDiagram } from "@/lib/businessModules/statistics/api/mutations/useAddDiagram";
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/sidebarStep";
 import { ConfigureBarChartStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/ConfigureBarChartStep/ConfigureBarChartStep";
+import { validateConfigureBarChartStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/ConfigureBarChartStep/validateConfigureBarChartStep";
 import { ConfigureChoroplethChartStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/ConfigureChoroplethChartStep/ConfigureChoroplethChartStep";
 import { ConfigureHistogramChartStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/ConfigureHistogramChartStep/ConfigureHistogramChartStep";
 import { ConfigureLineChartStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/ConfigureLineChartStep/ConfigureLineChartStep";
@@ -19,6 +18,8 @@ import { ConfigureScatterChartStep } from "@/lib/businessModules/statistics/comp
 import { SaveEvaluationStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/SaveEvaluationStep/SaveEvaluationStep";
 import { SelectDiagramStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/SelectDiagramStep/SelectDiagramStep";
 import { CreateEvaluationFormModel } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/createEvaluationFormModel";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
 export function CreateEvaluationSidebar({
   open,
@@ -130,6 +131,7 @@ export function CreateEvaluationSidebar({
                   return {
                     title: "Balkendiagramm konfigurieren",
                     content: <ConfigureBarChartStep attributes={attributes} />,
+                    validator: validateConfigureBarChartStep,
                   };
                 case DiagramType.PIE_CHART:
                   return {

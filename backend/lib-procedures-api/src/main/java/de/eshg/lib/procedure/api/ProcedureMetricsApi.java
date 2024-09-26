@@ -8,7 +8,6 @@ package de.eshg.lib.procedure.api;
 import static de.eshg.lib.procedure.api.ProcedureMetricsApi.QueryParameter.TIME_RANGE_END;
 import static de.eshg.lib.procedure.api.ProcedureMetricsApi.QueryParameter.TIME_RANGE_START;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.lib.procedure.model.GetProcedureMetricsResponse;
 import de.eshg.rest.service.security.config.BaseUrls.ProcedureLibrary;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +32,6 @@ public interface ProcedureMetricsApi {
   @ApiResponse(responseCode = "200", description = "the metrics of procedures")
   @Operation(summary = "Get procedure metrics for procedures created in the given time range")
   GetProcedureMetricsResponse getProcedureMetrics(
-      @CanBeLogged @RequestParam(name = TIME_RANGE_START) Instant timeRangeStart,
-      @CanBeLogged @RequestParam(name = TIME_RANGE_END) Instant timeRangeEnd);
+      @RequestParam(name = TIME_RANGE_START) Instant timeRangeStart,
+      @RequestParam(name = TIME_RANGE_END) Instant timeRangeEnd);
 }

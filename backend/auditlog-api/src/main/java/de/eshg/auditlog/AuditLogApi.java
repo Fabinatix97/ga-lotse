@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.service.annotation.GetExchange;
@@ -40,17 +41,21 @@ public interface AuditLogApi {
 
   @GetExchange
   @Operation(summary = "Decrypt and read an auditlog file for a service of a certain date.")
-  String readAuditLogFile(
+  ResponseEntity<String> readAuditLogFile(
       @RequestHeader(name = DECRYPTION_KEY_HEADER_NAME) @NotNull @NotBlank String key,
       @InlineParameterObject @ParameterObject @Valid
           ReadAuditLogFileRequest readAuditLogFileRequest)
       throws IOException;
 
-  @GetExchange("/grantees")
+  @GetExchange("/grantees-candidates")
   @Operation(summary = "List all user candidates for audit log grant access.")
-  GetUsersResponse getValidAuditLogGrantees(
-      @InlineParameterObject @ParameterObject @Valid
-          GetValidAuditLogGranteesRequest getValidAuditLogGranteesRequest);
+  GetUsersResponse getAuditLogGranteesCandidates(
+      @InlineParameterObject @ParameterObject @Valid GetAuditLogDataRequest getAuditLogDataRequest);
+
+  @GetExchange("/grant-access")
+  @Operation(summary = "List all granted accesses of audit log.")
+  GetAuditLogGrantedAccessesResponse getAuditLogGrantedAccesses(
+      @InlineParameterObject @ParameterObject @Valid GetAuditLogDataRequest getAuditLogDataRequest);
 
   @PostExchange("/grant-access")
   @Operation(

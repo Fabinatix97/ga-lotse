@@ -16,7 +16,10 @@ import { Option, Select } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-import { EXAMINATION_RESULT_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
+import {
+  BOOLEAN_WITH_UNKNOWN_OPTIONS,
+  EXAMINATION_RESULT_OPTIONS,
+} from "@/lib/businessModules/schoolEntry/features/procedures/options";
 
 type SupportedTypes = string | boolean;
 
@@ -55,6 +58,21 @@ export function SetAllBooleanSelect(
       <Option value={true}>Ja</Option>
       <Option value={false}>Nein</Option>
       <Option value="">{NO_SELECTION_LABEL}</Option>
+    </SetAllSelect>
+  );
+}
+
+export function SetAllBooleanWithUnknownSelect(
+  props: Omit<SetAllProps<string>, "children">,
+) {
+  return (
+    <SetAllSelect<string>
+      label={props.label}
+      sx={props.sx}
+      onChange={props.onChange}
+      orientation={props.orientation}
+    >
+      <SelectOptions options={BOOLEAN_WITH_UNKNOWN_OPTIONS} />
     </SetAllSelect>
   );
 }

@@ -5,9 +5,11 @@
 
 package de.eshg.stiprotection.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.PastOrPresent;
@@ -23,4 +25,14 @@ public record CreateProcedureRequest(
             description = "The year since the person has been residing in Germany.",
             example = "2022")
         @PastOrPresent
-        Year inGermanySince) {}
+        Year inGermanySince) {
+  @AssertTrue(message = "The year of birth must be prior to the date of residence in Germany.")
+  @JsonIgnore
+  @SuppressWarnings("unused")
+  public boolean isInGermanySinceValid() {
+    if (inGermanySince == null) {
+      return true;
+    }
+    return yearOfBirth.isBefore(inGermanySince);
+  }
+}

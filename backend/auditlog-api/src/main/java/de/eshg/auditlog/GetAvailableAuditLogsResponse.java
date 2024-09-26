@@ -5,14 +5,12 @@
 
 package de.eshg.auditlog;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record GetAvailableAuditLogsResponse(
-    @CanBeLogged @NotNull @Schema(description = "Total number of result pages") int totalPages,
-    @CanBeLogged @NotNull @Schema(description = "Total number of result elements")
-        long totalElements,
-    @NotNull @Valid List<AuditLogGrantedAccessDto> logs) {}
+    @NotNull @Schema(description = "Total number of result pages") int totalPages,
+    @NotNull @Schema(description = "Total number of result elements") long totalElements,
+    @NotNull @Valid List<AuditLogGrantedAccessCountDto> logs) {}

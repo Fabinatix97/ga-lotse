@@ -5,7 +5,7 @@
 
 package de.eshg.travelmedicine.testhelper;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperApi;
@@ -27,7 +27,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class TravelMedicineTestHelperController extends TestHelperController
-    implements AuditLogTestHelperApi {
+    implements SharedAuditLogTestHelperApi {
 
   public static final String TEST_POPULATION_PATH = "/population";
   public static final String TEST_POPULATION_URL = TestHelperApi.BASE_URL + TEST_POPULATION_PATH;

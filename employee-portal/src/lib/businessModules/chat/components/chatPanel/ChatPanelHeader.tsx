@@ -3,109 +3,121 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
-import { IconButton, Stack, styled } from "@mui/joy";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import {
+  Dropdown,
+  IconButton,
+  ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
+  Stack,
+} from "@mui/joy";
+import { useState } from "react";
 
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
-import { ChatHeader } from "@/lib/businessModules/chat/components/chatPanel/ChatHeader";
-import { ChatPanelProps } from "@/lib/businessModules/chat/components/chatPanel/ChatPanel";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { useChatUtils } from "@/lib/businessModules/chat/shared/hooks/useChatUtils";
-import { RoomUserPresence } from "@/lib/businessModules/chat/shared/types";
-import { getRoomNameAndCommunicationType } from "@/lib/businessModules/chat/shared/utils";
+import { ChatHeader } from "@/lib/businessModules/chat/components/ChatHeader";
+import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
+import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
+import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { isDMRoom, leaveRoom } from "@/lib/businessModules/chat/shared/utils";
 
-const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  borderColor: theme.palette.primary.outlinedBorder,
-}));
+export interface ChatPanelHeaderProps {
+  roomId: string;
+  toggleChatSettingsView: () => void;
+}
 
 export function ChatPanelHeader({
   roomId,
   toggleChatSettingsView,
-}: ChatPanelProps) {
-  const { matrixClient, usersPresence } = useChatClientContext();
-  const { getRoomAvatar } = useChatUtils();
+}: Readonly<ChatPanelHeaderProps>) {
+  const roomInfo = useRoomInfo(roomId);
+  const { clearChatParams } = useChatSearchParams();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const room = matrixClient.getRoom(roomId);
-
-  if (!room) {
+  if (!roomInfo) {
     return <ChatColumnHeaderWrapper />;
-  }
-
-  const roomWithType = getRoomNameAndCommunicationType(room);
-  const avatarUrl = getRoomAvatar(roomWithType);
-
-  const roomUsersPresence: RoomUserPresence[] = room
-    .getMembers()
-    .filter((member) => member.userId !== matrixClient.getUserId())
-    .map((m) => ({
-      userId: m.userId,
-      name: m.name,
-      presence: usersPresence[m.userId],
-    }));
-
-  function handleNotificationClick() {
-    logger.debug("toggle notification");
-  }
-
-  function handleRoomPinClick() {
-    logger.debug("toggle pin");
   }
 
   function handleRoomSettingsClick() {
     toggleChatSettingsView();
   }
 
+  function handleLeaveRoomClick() {
+    setIsOpen(false);
+    clearChatParams();
+    void leaveRoom(roomInfo.matrixClient, roomId);
+  }
+
+  const roomSettingsItem = isDMRoom(roomInfo.communicationType) ? (
+    <>
+      <ListItemDecorator>
+        <PersonOutlinedIcon />
+      </ListItemDecorator>
+      Kontakt anzeigen
+    </>
+  ) : (
+    <>
+      <ListItemDecorator>
+        <GroupOutlinedIcon />
+      </ListItemDecorator>
+      Mitglieder anzeigen
+    </>
+  );
+
   return (
-    <ChatColumnHeaderWrapper>
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
-        <ChatHeader
-          id={roomWithType.room.roomId}
-          roomName={roomWithType.room.name}
-          communicationType={roomWithType.communicationType}
-          avatarUrl={avatarUrl}
-          usersPresence={roomUsersPresence}
-        />
+    <>
+      <ChatColumnHeaderWrapper>
         <Stack
           direction="row"
-          spacing={1}
+          spacing={2}
           sx={{
+            justifyContent: "space-between",
             alignItems: "center",
+            height: "100%",
           }}
         >
-          <StyledIconButton
-            variant="outlined"
-            aria-label="toggle notification"
-            onClick={handleNotificationClick}
+          <ChatHeader {...roomInfo} />
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+            }}
           >
-            <NotificationsNoneOutlinedIcon color="primary" />
-          </StyledIconButton>
-          <StyledIconButton
-            variant="outlined"
-            aria-label="toggle room pin"
-            onClick={handleRoomPinClick}
-          >
-            <PushPinOutlinedIcon color="primary" />
-          </StyledIconButton>
-          <StyledIconButton
-            variant="outlined"
-            aria-label="toggle notification"
-            onClick={handleRoomSettingsClick}
-          >
-            <MoreVertIcon color="primary" />
-          </StyledIconButton>
+            <Dropdown>
+              <MenuButton
+                slots={{ root: IconButton }}
+                slotProps={{ root: { variant: "outlined", color: "primary" } }}
+                aria-label="open room options"
+              >
+                <MoreVertIcon color="primary" />
+              </MenuButton>
+              <Menu placement="bottom-end">
+                <MenuItem onClick={handleRoomSettingsClick}>
+                  {roomSettingsItem}
+                </MenuItem>
+                <MenuItem onClick={() => setIsOpen(true)}>
+                  <ListItemDecorator>
+                    <LogoutOutlinedIcon />
+                  </ListItemDecorator>
+                  {isDMRoom(roomInfo.communicationType)
+                    ? "Verlassen"
+                    : "Gruppe verlassen"}
+                </MenuItem>
+              </Menu>
+            </Dropdown>
+          </Stack>
         </Stack>
-      </Stack>
-    </ChatColumnHeaderWrapper>
+      </ChatColumnHeaderWrapper>
+      <LeaveChatConfirmation
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleLeaveRoomClick}
+      />
+    </>
   );
 }

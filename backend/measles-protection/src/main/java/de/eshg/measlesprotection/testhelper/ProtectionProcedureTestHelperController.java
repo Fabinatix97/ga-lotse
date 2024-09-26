@@ -5,7 +5,7 @@
 
 package de.eshg.measlesprotection.testhelper;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.measlesprotection.api.MeaslesProtectionProcedurePopulationResult;
 import de.eshg.measlesprotection.api.draft.OpenProcedureResponse;
@@ -25,7 +25,7 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class ProtectionProcedureTestHelperController extends TestHelperController
-    implements AuditLogTestHelperApi {
+    implements SharedAuditLogTestHelperApi {
 
   private final ProtectionProcedurePopulator populator;
   private final AuditLogTestHelperService auditLogTestHelperService;

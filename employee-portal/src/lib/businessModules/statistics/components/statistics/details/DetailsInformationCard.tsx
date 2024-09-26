@@ -4,10 +4,11 @@
  */
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { AddchartOutlined } from "@mui/icons-material";
+import { AddchartOutlined, Edit } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
 
 import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
+import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import {
   LabelValuePair,
@@ -22,10 +23,13 @@ export interface DetailsInformationCardProps {
   createdBy: string;
   onEvaluationCreateClicked: () => void;
   onDataBasisUpdateClicked: () => void;
+  onNameChangeClicked: () => void;
 }
 
 export function DetailsInformationCard(props: DetailsInformationCardProps) {
   const canWrite = useStatisticRoleChecks().canWrite();
+  // TODO: ISSUE-5587: Add once it exists
+  const statisticNameChangeFeatureToggle = false;
 
   return (
     <InfoTile
@@ -56,6 +60,20 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
               Datenbasis aktualisieren
             </Button> */}
           </Stack>
+        )
+      }
+      controls={
+        canWrite &&
+        statisticNameChangeFeatureToggle && (
+          <ActionsMenu
+            actionItems={[
+              {
+                label: "Name ändern",
+                onClick: () => props.onNameChangeClicked(),
+                startDecorator: <Edit />,
+              },
+            ]}
+          />
         )
       }
     >

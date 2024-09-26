@@ -7,7 +7,6 @@ package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +18,8 @@ import java.util.UUID;
 public abstract sealed class ProgressEntryDto
     permits ManualProgressEntryDto, ProcessedInboxProgressEntryDto, SystemProgressEntryDto {
   @NotNull private UUID progressEntryId;
-  @CanBeLogged @NotNull private Instant createdAt;
-  @CanBeLogged @NotNull private Instant modifiedAt;
+  @NotNull private Instant createdAt;
+  @NotNull private Instant modifiedAt;
   private @Valid ConcreteFileOrFileReference fileReference;
 
   public UUID getProgressEntryId() {

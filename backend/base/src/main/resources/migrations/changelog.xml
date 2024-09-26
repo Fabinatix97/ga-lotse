@@ -20,5 +20,7 @@
     <include file="migrations/0010_remove_and_change_event_type.xml"/>
     <include file="migrations/0011_change_enum_orders.xml"/>
     <include file="migrations/0012_rename_single_string_entity_columns.xml"/>
+    <include file="migrations/0013_person_sequence.xml"/>
+    <include file="migrations/0014_contact_index_full_name.xml" />
 
 </databaseChangeLog>

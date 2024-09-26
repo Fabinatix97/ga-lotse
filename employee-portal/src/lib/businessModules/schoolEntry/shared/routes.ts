@@ -46,6 +46,7 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
         })),
     }),
   ),
+  waitingRoom: schoolEntryPath("/waiting-room"),
   appointmentBlockGroups: defineRoutes(
     schoolEntryPath("/appointment-block-groups"),
     (appointmentBlockGroupsPath) => ({

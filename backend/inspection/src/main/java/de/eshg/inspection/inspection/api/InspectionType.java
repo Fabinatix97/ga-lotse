@@ -17,9 +17,6 @@ public enum InspectionType {
   DOCUMENT_INSPECTION;
 
   public boolean isComplaint() {
-    return this == REGULAR_AFTER_INCIDENTS
-        || this == REVIEW
-        || this == COMPLAINT
-        || this == DOCUMENT_INSPECTION;
+    return this == REVIEW || this == COMPLAINT || this == DOCUMENT_INSPECTION;
   }
 }

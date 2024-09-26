@@ -792,6 +792,14 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/finish-auto-reports:
+    post:
+      operationId: finishAutoReports
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults

@@ -27,6 +27,7 @@ public interface ChecklistDefinitionVersionRepository
           select v
             from ChecklistDefinitionVersion v
             where v.validTo is null
+            and v.published = true
             and :objectType member of v.checklistDefinition.objectTypes
             and v.checklistDefinition.deleted = false
             order by v.name, v.validFrom desc
@@ -48,6 +49,7 @@ public interface ChecklistDefinitionVersionRepository
           select v
             from ChecklistDefinitionVersion v
             where v.validTo is null
+            and v.published = true
             and :objectType member of v.checklistDefinition.objectTypes
             and v.checklistDefinition.id not in :excludedChecklistDefinitionIds
             and v.checklistDefinition.deleted = false
@@ -67,6 +69,7 @@ public interface ChecklistDefinitionVersionRepository
           select v
             from ChecklistDefinitionVersion v
             where v.validTo is null
+            and v.published = true
             and v.checklistDefinition.isCoreChecklist = true
             and v.checklistDefinition.deleted = false
             and :objectType member of v.checklistDefinition.objectTypes

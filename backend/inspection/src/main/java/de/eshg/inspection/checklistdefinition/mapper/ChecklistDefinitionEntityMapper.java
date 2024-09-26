@@ -5,8 +5,6 @@
 
 package de.eshg.inspection.checklistdefinition.mapper;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 import de.eshg.inspection.checklist.api.context.ChecklistSectionContextDto;
 import de.eshg.inspection.checklist.api.context.element.ChecklistSeparatorContextDto;
 import de.eshg.inspection.checklist.api.context.element.field.ChecklistAudioContextDto;
@@ -17,7 +15,7 @@ import de.eshg.inspection.checklist.api.context.element.field.ChecklistImageCont
 import de.eshg.inspection.checklist.api.context.element.field.ChecklistMultiSelectContextDto;
 import de.eshg.inspection.checklist.api.context.element.field.ChecklistSingleSelectContextDto;
 import de.eshg.inspection.checklist.api.context.element.field.ChecklistTextElementContextDto;
-import de.eshg.inspection.checklistdefinition.api.AddChecklistDefinitionVersionRequest;
+import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionVersionRequest;
 import de.eshg.inspection.checklistdefinition.api.CreateNewChecklistDefinitionRequest;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinition;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
@@ -56,49 +54,110 @@ public class ChecklistDefinitionEntityMapper {
     this.clock = clock;
   }
 
-  public ChecklistDefinition entityFrom(CreateNewChecklistDefinitionRequest request) {
+  public ChecklistDefinition newEntityFrom(CreateNewChecklistDefinitionRequest request) {
+    boolean published = Optional.ofNullable(request.published()).orElse(true);
+    boolean deleted = Optional.ofNullable(request.deleted()).orElse(false);
+
     ChecklistDefinition definition = new ChecklistDefinition();
     definition.setCoreChecklist(Boolean.TRUE.equals(request.isCoreChecklist()));
     ObjectType objectType = findObjectType(request.objectTypeId());
     definition.getObjectTypes().add(objectType);
 
     ChecklistDefinitionVersion version = new ChecklistDefinitionVersion();
-    version.setValidFrom(Instant.now(clock).truncatedTo(SECONDS));
-    version.setValidTo(null);
     version.setVersion(1);
     version.setName(request.name());
     version.setDescription(request.description());
     version.setModifiedBy(CurrentUserHelper.getCurrentUserId());
-    version.setDeleted(Optional.ofNullable(request.deleted()).orElse(false));
+    version.setDeleted(deleted);
+    version.setPublished(published);
     request.sections().forEach((section -> version.addSection(entitySectionFrom(section))));
-    definition.addNewVersion(version); // also sets version.name to definition
+
+    registerNewVersion(published, deleted, definition, version);
 
     // to be able to call this, version needs to be registered to definition already
     version.setExpandable(Optional.ofNullable(request.isExpandable()).orElse(true));
+
+    version.setLastModified(clock.instant());
 
     return definition;
   }
 
-  public ChecklistDefinitionVersion entityFrom(
-      AddChecklistDefinitionVersionRequest request,
-      ChecklistDefinition definition,
-      int newVersion) {
+  public ChecklistDefinitionVersion newEntityFrom(
+      ChecklistDefinitionVersionRequest request, ChecklistDefinition definition, int newVersion) {
+    boolean published = Optional.ofNullable(request.published()).orElse(true);
+    boolean deleted = Optional.ofNullable(request.deleted()).orElse(false);
+
     ChecklistDefinitionVersion version = new ChecklistDefinitionVersion();
     version.setName(request.name());
     version.setDescription(request.description());
     version.setVersion(newVersion);
-    version.setValidFrom(Instant.now(clock).truncatedTo(SECONDS));
-    version.setValidTo(null);
     version.setModifiedBy(CurrentUserHelper.getCurrentUserId());
+    version.setPublished(published);
     version.setDeleted(Optional.ofNullable(request.deleted()).orElse(false));
     request.sections().forEach(section -> version.addSection(entitySectionFrom(section)));
 
-    definition.addNewVersion(version); // also sets version.name & version.deleted to definition
+    registerNewVersion(published, deleted, definition, version);
 
     // to be able to call this, version needs to be registered to definition already
     version.setExpandable(Optional.ofNullable(request.isExpandable()).orElse(true));
 
+    version.setLastModified(clock.instant());
+
     return version;
+  }
+
+  public ChecklistDefinitionVersion editEntityFrom(
+      ChecklistDefinitionVersionRequest request, ChecklistDefinitionVersion version) {
+    boolean published = Optional.ofNullable(request.published()).orElse(true);
+    boolean deleted = Optional.ofNullable(request.deleted()).orElse(false);
+    Instant now = clock.instant();
+
+    version.setName(request.name());
+    version.setDescription(request.description());
+    version.setModifiedBy(CurrentUserHelper.getCurrentUserId());
+    version.setPublished(published);
+    version.setDeleted(deleted);
+    version.getSections().clear();
+    request.sections().forEach(section -> version.addSection(entitySectionFrom(section)));
+
+    if (published) {
+      version.setValidTo(null);
+      version.setValidFrom(now);
+      ChecklistDefinition cld = version.getChecklistDefinition();
+      cld.setPublished(true);
+      cld.setDeleted(deleted);
+      if (cld.getVersions().size() >= 2) {
+        ChecklistDefinitionVersion prev = cld.getVersions().get(cld.getVersions().size() - 2);
+        prev.setValidTo(now);
+      }
+    }
+    // to be able to call this, version needs to be registered to definition already
+    version.setExpandable(Optional.ofNullable(request.isExpandable()).orElse(true));
+
+    version.setLastModified(now);
+
+    return version;
+  }
+
+  private void registerNewVersion(
+      boolean published,
+      boolean deleted,
+      ChecklistDefinition definition,
+      ChecklistDefinitionVersion version) {
+    Instant now = clock.instant();
+    if (published) {
+      version.setValidFrom(now);
+      version.setValidTo(null);
+      definition.setDeleted(deleted);
+      if (!definition.getVersions().isEmpty()) {
+        getLatestVersion(definition).setValidTo(now);
+      }
+    } else {
+      version.setValidFrom(null);
+      version.setValidTo(null);
+    }
+    definition.setPublished(published);
+    definition.addNewVersion(version); // also sets version.name to definition
   }
 
   private ChecklistDefinitionSection entitySectionFrom(ChecklistSectionContextDto section) {
@@ -197,5 +256,11 @@ public class ChecklistDefinitionEntityMapper {
           .orElseThrow(() -> new NotFoundException("Unknown objectTypeId"));
     }
     throw new BadRequestException("missing objectTypeId");
+  }
+
+  public static ChecklistDefinitionVersion getLatestVersion(
+      ChecklistDefinition checklistDefinition) {
+    // versions are sorted by ascending version number, so the last element has the highest version
+    return checklistDefinition.getVersions().getLast();
   }
 }

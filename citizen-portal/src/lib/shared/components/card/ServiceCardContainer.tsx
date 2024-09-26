@@ -7,13 +7,11 @@
 
 import {
   MedicalServicesOutlined,
-  PeopleOutlineOutlined,
   PhoneInTalkOutlined,
 } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 
 import { NavigationItem } from "@/lib/baseModule/components/layout/types";
-import { useRoutes as useBaseRoutes } from "@/lib/baseModule/shared/routes";
 import { useCitizenRoutes as useSchoolEntryCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useCitizenRoutes as useTravelMedicineRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -22,7 +20,6 @@ import { ServiceCard } from "@/lib/shared/components/card/ServiceCard";
 export function useMostSearchedCitizenServices(): NavigationItem {
   const schoolEntryCitizenRoutes = useSchoolEntryCitizenRoutes();
   const travelMedicineRoutes = useTravelMedicineRoutes();
-  const baseRoutes = useBaseRoutes();
   const { t } = useTranslation();
 
   return {
@@ -38,11 +35,6 @@ export function useMostSearchedCitizenServices(): NavigationItem {
         href: travelMedicineRoutes.overview,
         icon: PhoneInTalkOutlined,
       },
-      {
-        name: t("health_officers_link"),
-        href: baseRoutes.citizenPath.index,
-        icon: PeopleOutlineOutlined,
-      },
     ],
   };
 }
@@ -53,7 +45,7 @@ export function ServiceCardContainer({
   navigationItem: NavigationItem;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", margin: "56px 0px" }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <div style={{ width: "100%" }}>
         <Typography level="h2">{navigationItem.name}</Typography>
         <div

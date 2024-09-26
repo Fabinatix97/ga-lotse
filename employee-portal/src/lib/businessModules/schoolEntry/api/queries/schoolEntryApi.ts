@@ -6,6 +6,7 @@
 import {
   GetFreeAppointmentsForProcedureRequest,
   GetProceduresRequest,
+  GetWaitingRoomProceduresRequest,
   SchoolEntryApi,
   SearchIcd10CodesRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
@@ -24,6 +25,7 @@ import { mapAppointment } from "@/lib/businessModules/schoolEntry/api/models/App
 import { mapProcedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { mapProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { mapVaccinationStatus } from "@/lib/businessModules/schoolEntry/api/models/VaccinationStatus";
+import { mapWaitingRoomProcedure } from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";
 import { mapDevelopmentScreeningResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/DevelopmentScreeningResult";
 import { mapEyeExaminationResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/EyeExaminationResult";
 import { mapHearingTestResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/HearingTestResult";
@@ -157,5 +159,19 @@ export function getAnamnesisQuery(
     queryKey: schoolEntryApiQueryKey(["getAnamnesis", procedureId]),
     queryFn: () => schoolEntryApi.getAnamnesis(procedureId),
     select: mapAnamnesis,
+  });
+}
+
+export function useGetWaitingRoomProcedures(
+  request: GetWaitingRoomProceduresRequest,
+) {
+  const schoolEntryApi = useSchoolEntryApi();
+  return useSuspenseQuery({
+    queryKey: schoolEntryApiQueryKey(["getWaitingRoomProcedures", request]),
+    queryFn: () =>
+      schoolEntryApi
+        .getWaitingRoomProceduresRaw(request)
+        .then(unwrapRawResponse),
+    select: mapPaginatedList(mapWaitingRoomProcedure),
   });
 }

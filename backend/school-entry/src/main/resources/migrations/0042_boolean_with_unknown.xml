@@ -1,0 +1,95 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1727090520141-2">
+    <ext:createPostgresEnumType name="booleanwithunknown"
+                                values="FALSE, TRUE, UNKNOWN"/>
+    <addColumn tableName="vaccination_status">
+      <column name="perkombi_hbv_new" type="booleanwithunknown"/>
+    </addColumn>
+    <update tableName="vaccination_status">
+      <column name="perkombi_hbv_new"
+              valueComputed="CAST(CASE WHEN perkombi_hbv THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+    </update>
+    <dropColumn tableName="vaccination_status" columnName="perkombi_hbv"/>
+    <renameColumn tableName="vaccination_status"
+                  oldColumnName="perkombi_hbv_new"
+                  newColumnName="perkombi_hbv"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1727090520141-3">
+    <addColumn tableName="anamnesis">
+      <column name="u2_new" type="booleanwithunknown"/>
+      <column name="u3_new" type="booleanwithunknown"/>
+      <column name="u4_new" type="booleanwithunknown"/>
+      <column name="u5_new" type="booleanwithunknown"/>
+      <column name="u6_new" type="booleanwithunknown"/>
+      <column name="u7_new" type="booleanwithunknown"/>
+      <column name="u7a_new" type="booleanwithunknown"/>
+      <column name="u8_new" type="booleanwithunknown"/>
+      <column name="u9_new" type="booleanwithunknown"/>
+    </addColumn>
+    <update tableName="anamnesis">
+      <column name="u2_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u3_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u4_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u5_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u6_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u7_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u7a_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u8_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+      <column name="u9_new"
+              valueComputed="CAST(CASE WHEN u2 THEN 'TRUE' ELSE 'FALSE' END AS booleanwithunknown)"/>
+    </update>
+    <dropColumn tableName="anamnesis" columnName="u2"/>
+    <dropColumn tableName="anamnesis" columnName="u3"/>
+    <dropColumn tableName="anamnesis" columnName="u4"/>
+    <dropColumn tableName="anamnesis" columnName="u5"/>
+    <dropColumn tableName="anamnesis" columnName="u6"/>
+    <dropColumn tableName="anamnesis" columnName="u7"/>
+    <dropColumn tableName="anamnesis" columnName="u7a"/>
+    <dropColumn tableName="anamnesis" columnName="u8"/>
+    <dropColumn tableName="anamnesis" columnName="u9"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u2_new"
+                  newColumnName="u2"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u3_new"
+                  newColumnName="u3"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u4_new"
+                  newColumnName="u4"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u5_new"
+                  newColumnName="u5"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u6_new"
+                  newColumnName="u6"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u7_new"
+                  newColumnName="u7"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u7a_new"
+                  newColumnName="u7a"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u8_new"
+                  newColumnName="u8"/>
+    <renameColumn tableName="anamnesis"
+                  oldColumnName="u9_new"
+                  newColumnName="u9"/>
+  </changeSet>
+</databaseChangeLog>

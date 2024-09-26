@@ -5,6 +5,7 @@
 
 import {
   ApprovalRequestApi,
+  ArchivingApi,
   ChecklistApi,
   ChecklistDefinitionApi,
   ChecklistDefinitionCentralRepoApi,
@@ -139,4 +140,9 @@ export function usePacklistDefinitionApi() {
 export function useInspectionFeatureTogglesApi() {
   const configuration = useConfiguration();
   return new InspectionFeatureTogglesApi(configuration);
+}
+
+export function useArchivingApi() {
+  const configuration = useConfiguration();
+  return new ArchivingApi(configuration);
 }

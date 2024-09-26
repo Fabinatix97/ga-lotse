@@ -12,6 +12,7 @@ import { useSideNavigationItems as useSchoolEntrySideNavigationItems } from "@/l
 import { useSideNavigationItems as useStatisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
 import { useSideNavigationItems as useStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
 import { useSideNavigationItems as useTravelMedicineSideNavigationItems } from "@/lib/businessModules/travelMedicine/shared/sideNavigationItem";
+import { sideNavigationItems as archivingSideNavigationItems } from "@/lib/shared/components/archiving/shared/sideNavigationItem";
 
 export function useResolveSideNavigationItems(): SideNavigationItem[] {
   const inspectionSideNavigationItems = useInspectionSideNavigationItems();
@@ -33,6 +34,7 @@ export function useResolveSideNavigationItems(): SideNavigationItem[] {
     ...measlesProtectionSideNavigationItems,
     ...stiProtectionSideNavigationItems,
     ...statisticsSideNavigationItems,
+    ...archivingSideNavigationItems,
     ...chatSideNavigationItems,
   ];
   return [...baseSideNavigationItems, ...businessModuleSideNavigationItems];

@@ -5,14 +5,13 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record TaskMetric(
-    @CanBeLogged @NotNull TaskTypeDto taskType,
-    @CanBeLogged @NotNull int noOccurrencesCount,
-    @CanBeLogged @NotNull int oneOccurrenceCount,
-    @CanBeLogged @NotNull int twoOccurrencesCount,
-    @CanBeLogged @NotNull int moreThanTwoOccurrencesCount,
-    @CanBeLogged @Schema(description = "A duration in ISO 8601") String averageDuration) {}
+    @NotNull TaskTypeDto taskType,
+    @NotNull int noOccurrencesCount,
+    @NotNull int oneOccurrenceCount,
+    @NotNull int twoOccurrencesCount,
+    @NotNull int moreThanTwoOccurrencesCount,
+    @Schema(description = "A duration in ISO 8601") String averageDuration) {}

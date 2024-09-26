@@ -32,3 +32,7 @@ export const progressEntryApiQueryKey = queryKeyFactory(
 export const fileApiQueryKey = queryKeyFactory(
   measlesProtectionApiQueryKey(["fileApi"]),
 );
+
+export const archivingApiQueryKey = queryKeyFactory(
+  measlesProtectionApiQueryKey(["archivingApi"]),
+);

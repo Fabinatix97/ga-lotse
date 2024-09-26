@@ -3,16 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { addMilliseconds, format, isToday } from "date-fns";
+import {
+  addMilliseconds,
+  format,
+  isSameDay,
+  isSameWeek,
+  isSameYear,
+  isThisWeek,
+  isThisYear,
+  isToday,
+  isYesterday,
+  startOfDay,
+} from "date-fns";
+import { de } from "date-fns/locale";
 import {
   EventTimeline,
   MatrixClient,
   MatrixEvent,
   ReceiptType,
   Room,
+  RoomMember,
   User,
 } from "matrix-js-sdk/lib/matrix";
-import { isEmpty, isString, last } from "remeda";
+import { isEmpty, isStrictEqual, isString, last } from "remeda";
 
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import {
@@ -52,12 +65,7 @@ export function getRoomNameAndCommunicationType(
   const type = room.getDMInviter() ? "directMessage" : "room";
 
   if (type === "directMessage") {
-    return {
-      room: Object.assign(room, {
-        name: room.name.replace(/@(\w+):.+/, "$1"),
-      }),
-      communicationType: CommunicationType.DirectMessage,
-    };
+    return { room, communicationType: CommunicationType.DirectMessage };
   }
 
   const allMembers = room
@@ -67,7 +75,16 @@ export function getRoomNameAndCommunicationType(
 
   // These are the direct chats that you invited someone to
   if (type === "room" && allMembers?.length && allMembers.length <= 2) {
-    if (allMembers?.some((m) => m.getDMInviter())) {
+    const someDMInviter = allMembers?.some((m) => m.getDMInviter());
+    const otherMember = allMembers.find(
+      (m) => !isStrictEqual(m.userId, room.myUserId),
+    );
+    const isRoomNameAndOtherMemberEqual = isStrictEqual(
+      otherMember?.name,
+      room.name,
+    );
+
+    if (someDMInviter || isRoomNameAndOtherMemberEqual) {
       return { room, communicationType: CommunicationType.DirectMessage };
     }
   }
@@ -79,6 +96,16 @@ export function getDirectMessageMember(room: RoomWithCommunicationType) {
     return;
   }
   return room.room.getAvatarFallbackMember();
+}
+
+export function getDMMemberInfo(
+  room: Room,
+  communicationType: CommunicationType,
+) {
+  if (communicationType === CommunicationType.PublicRoom) {
+    return;
+  }
+  return room.getAvatarFallbackMember();
 }
 
 export function formatUserReceipts(
@@ -292,8 +319,122 @@ export function convertMessageTimestamp(timestamp?: Date | null) {
   if (!timestamp) return "";
 
   if (isToday(timestamp)) {
-    return format(timestamp, "HH:MM");
+    return format(timestamp, "hh:mm");
   }
 
   return format(timestamp, "MM/dd");
+}
+
+export function getDayLabel(date: Date): string {
+  const localDate = startOfDay(date);
+  if (isToday(localDate)) {
+    return "Heute";
+  }
+  if (isYesterday(localDate)) {
+    return "Gestern";
+  }
+  if (isThisWeek(localDate, { weekStartsOn: 1 })) {
+    return format(localDate, "EEEE", { locale: de });
+  }
+  if (isThisYear(localDate)) {
+    return format(localDate, "MMMM d");
+  }
+  return format(localDate, "MMMM d, yyyy");
+}
+
+export function formatDateForChat(date: Date): string {
+  const currentTime = new Date();
+  if (isSameDay(currentTime, date)) {
+    return "HH:mm";
+  }
+  if (isYesterday(date)) {
+    return `Gestern ${format(date, "HH:mm", { locale: de })}`;
+  }
+  if (isSameWeek(currentTime, date, { weekStartsOn: 1 })) {
+    return format(date, "EEEE HH:mm", { locale: de });
+  }
+  if (isSameYear(currentTime, date)) {
+    return format(date, "dd.MM HH:mm");
+  }
+  return format(date, "dd.MM.YY HH:mm");
+}
+
+// TODO: fix mapping of synapse server name to appropriate health department
+export function mapToDepartmentName(
+  serverName: string | undefined,
+): string | undefined {
+  if (serverName === "synapse.local.dev") {
+    return "Gesundheitsamt Frankfurt";
+  }
+}
+
+export function getDepartmentNameFromUserId(userId?: string) {
+  if (!userId) return;
+
+  const splittedName = userId.split(":");
+  return {
+    username: splittedName[0],
+    organisationName: splittedName[1]?.replaceAll(".", " "),
+  };
+}
+
+export function isGroupRoom(communicationType?: CommunicationType) {
+  return communicationType === CommunicationType.PublicRoom;
+}
+
+export function isDMRoom(communicationType?: CommunicationType) {
+  return communicationType === CommunicationType.DirectMessage;
+}
+
+export function delayed<T>(fn: () => T, delay: number): Promise<T> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(fn());
+    }, delay);
+  });
+}
+
+function getImageUrl(matrixClient: MatrixClient, url: string | null) {
+  if (!url) return null;
+
+  const isMxc = new URL(url).protocol === "mxc:";
+  return isMxc ? matrixClient.mxcUrlToHttp(url) : url;
+}
+
+export function getRoomAvatarUrl(
+  matrixClient: MatrixClient,
+  room: Room | null,
+) {
+  if (!room) return null;
+  const homeserverUrl = matrixClient.getHomeserverUrl();
+  const roomAvatarUrl = room.getAvatarUrl(homeserverUrl, 40, 40, "scale", true);
+
+  const imageUrl = getImageUrl(matrixClient, roomAvatarUrl);
+  return imageUrl;
+}
+
+export function getMemberAvatarUrl(
+  matrixClient: MatrixClient,
+  member?: RoomMember,
+) {
+  if (!member) return null;
+  const homeserverUrl = matrixClient.getHomeserverUrl();
+  const memberAvatarUrl = member.getAvatarUrl(
+    homeserverUrl,
+    40,
+    40,
+    "scale",
+    true,
+    false,
+  );
+
+  const imageUrl = getImageUrl(matrixClient, memberAvatarUrl);
+  return imageUrl;
+}
+
+export async function leaveRoom(matrixClient: MatrixClient, roomId?: string) {
+  if (!roomId) return;
+  try {
+    await matrixClient.leave(roomId);
+  } catch {}
 }

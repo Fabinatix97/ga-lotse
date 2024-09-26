@@ -28,9 +28,8 @@ import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/Filt
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { useFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
+import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
 import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
-
-import { useSearchParamStateProvider } from "./useSearchParamStateProvider";
 
 type ProceduresFilterDefinition = FilterDefinition & {
   key: keyof ProcedureFilters;

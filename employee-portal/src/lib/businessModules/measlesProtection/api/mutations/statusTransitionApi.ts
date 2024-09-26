@@ -22,6 +22,7 @@ export function useCloseProcedure({
   onError,
 }: MutationPassThrough<void, UseCloseProcedureRequest> = {}) {
   const statusTransitionApi = useStatusTransitionApi();
+
   return useHandledMutation({
     mutationFn: (request: UseCloseProcedureRequest) =>
       statusTransitionApi.close(request.procedureId),
@@ -36,6 +37,7 @@ export function useReopenProcedure({
   onError,
 }: MutationPassThrough<void, UseReopenProcedureRequest> = {}) {
   const statusTransitionApi = useStatusTransitionApi();
+
   return useHandledMutation({
     mutationFn: (request: UseReopenProcedureRequest) =>
       statusTransitionApi.reopen(request.procedureId),

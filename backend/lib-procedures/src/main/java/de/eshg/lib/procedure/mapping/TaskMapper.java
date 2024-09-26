@@ -33,6 +33,7 @@ public final class TaskMapper {
         domainModelTask.getProcedure().getExternalId(),
         businessModule,
         domainModelTask.getExternalId(),
+        domainModelTask.getVersion(),
         domainModelTask.getCreatedAt(),
         domainModelTask.getModifiedAt(),
         domainModelTask.getDueAt(),

@@ -30,4 +30,8 @@ public final class ExceptionUtil {
         "Location id is mandatory when location selection mode is %s"
             .formatted(LocationSelectionMode.HEALTH_DEPARTMENT));
   }
+
+  public static BadRequestException badRequestExceptionUnsupportedLocationMode() {
+    return new BadRequestException("Unsupported location mode");
+  }
 }

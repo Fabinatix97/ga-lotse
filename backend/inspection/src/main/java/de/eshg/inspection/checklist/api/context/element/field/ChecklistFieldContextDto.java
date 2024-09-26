@@ -71,4 +71,22 @@ public abstract class ChecklistFieldContextDto extends ChecklistElementContextDt
   public int hashCode() {
     return Objects.hash(super.hashCode(), text, mandatory, note, help);
   }
+
+  @Override
+  public String toString() {
+    return "ChecklistFieldContextDto{"
+        + "text='"
+        + text
+        + '\''
+        + ", mandatory="
+        + mandatory
+        + ", note='"
+        + note
+        + '\''
+        + ", help='"
+        + help
+        + '\''
+        + "} "
+        + super.toString();
+  }
 }

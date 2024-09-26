@@ -23,7 +23,7 @@ import {
   styled,
 } from "@mui/joy";
 import { TOptions } from "i18next";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 
 import { useTranslation } from "@/lib/i18n/client";
@@ -52,7 +52,11 @@ export function LanguagePicker() {
 
   return (
     <Dropdown>
-      <MenuButton ref={toggleButton} {...buttonStyling}>
+      <MenuButton
+        ref={toggleButton}
+        data-testId="languagePicker"
+        {...buttonStyling}
+      >
         {currentLanguage.name}
       </MenuButton>
       <Menu
@@ -159,13 +163,20 @@ type LanguageOptionType =
 
 function LanguageOption({ option }: { option: LanguageOptionType }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const givenLocale = useGivenLang();
+
   let newPath = pathname;
   if (givenLocale !== option.shortCode) {
     const parts = pathname.split("/");
     const newParts = parts.slice(givenLocale === undefined ? 1 : 2);
     newPath = ["", option.shortCode, ...newParts].join("/");
   }
+
+  if (searchParams.size > 0) {
+    newPath = `${newPath}?${searchParams.toString()}`;
+  }
+
   return (
     <MenuItem
       component={NavigationLink}

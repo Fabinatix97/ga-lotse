@@ -7,7 +7,6 @@
 
 import { Stack, Typography } from "@mui/joy";
 
-import { NewFacilityButton } from "@/lib/businessModules/inspection/components/facility/pending/NewFacilityButton";
 import { PendingFacilitiesOfflineTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesOfflineTable";
 import { PendingFacilitiesTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTable";
 import { SearchParams } from "@/lib/shared/helpers/searchParams";
@@ -31,9 +30,6 @@ export function PendingFacilities(
 
   return (
     <Stack spacing={3}>
-      <Stack direction="row" spacing={3} justifyContent="end">
-        <NewFacilityButton />
-      </Stack>
       <PendingFacilitiesTable filter={props.searchParams} />
     </Stack>
   );

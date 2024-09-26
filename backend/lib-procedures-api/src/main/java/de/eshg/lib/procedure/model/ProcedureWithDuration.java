@@ -5,7 +5,6 @@
 
 package de.eshg.lib.procedure.model;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -13,5 +12,5 @@ import java.util.UUID;
 
 public record ProcedureWithDuration(
     @NotNull UUID id,
-    @CanBeLogged @NotNull Instant createdAt,
-    @CanBeLogged @NotNull @Schema(description = "A duration in ISO 8601") String duration) {}
+    @NotNull Instant createdAt,
+    @NotNull @Schema(description = "A duration in ISO 8601") String duration) {}

@@ -1,22 +1,19 @@
 {
   "organization": {
     "landing_page": {
-      "header": "Welcome to the health department. 🏢",
-      "subheader": "We look forward to welcoming you here. Our team is at your disposal to help you with all your questions and concerns in the field of public health. Your health is important to us and we are committed to your well-being with expertise and dedication.",
-      "contact_us": "Please do not hesitate to contact us if you need support or are looking for information on health-related topics. We will be happy to help and advise you."
+      "header": "Welcome to the health department.",
+      "subheader": "The {{name}} offers extensive services for the protection and restoration of health."
     }
   },
   "private_person": {
     "landing_page": {
-      "header": "Welcome to the health department. 🏢",
-      "subheader": "We look forward to welcoming you here. Our team is at your disposal to help you with all your questions and concerns in the field of public health. Your health is important to us and we are committed to your well-being with expertise and dedication.",
-      "contact_us": "Please do not hesitate to contact us if you need support or are looking for information on health-related topics. We will be happy to help and advise you."
+      "header": "Welcome to the health department.",
+      "subheader": "The {{name}} offers extensive services for the protection and restoration of health."
     }
   },
   "site_title": "Online-Portal",
   "site_description": "Von Bürgern für Bürger",
   "health_department_title": "Health Department",
-  "health_officers_link": "Public Health Officers",
   "most_searched_services_title": "Most Search for Services",
   "common": {
     "address": "Address",

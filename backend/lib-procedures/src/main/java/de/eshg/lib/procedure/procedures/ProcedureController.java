@@ -315,7 +315,8 @@ public class ProcedureController<
         fileDeletionApprovalRequestRoot.get(FileDeletionApprovalRequest_.file);
 
     Root<ProgressEntry> progressEntryRoot = query.from(ProgressEntry.class);
-    Join<ProgressEntry, File> progressEntryFile = progressEntryRoot.join(ProgressEntry_.file);
+    Join<ProgressEntry, File> progressEntryFile =
+        progressEntryRoot.join(ProgressEntry_.file, JoinType.LEFT);
 
     return cb.and(
         cb.equal(progressEntryFile, approvalRequestFile),

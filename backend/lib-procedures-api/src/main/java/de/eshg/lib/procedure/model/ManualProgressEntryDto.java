@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.lib.foureyes.model.ApprovalRequestEntityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -21,13 +20,13 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
     implements ApprovalRequestEntityDto {
   public static final String SCHEMA_NAME = "ManualProgressEntry";
 
-  @CanBeLogged @NotNull private ManualProgressEntryTypeDto manualProgressEntryType;
+  @NotNull private ManualProgressEntryTypeDto manualProgressEntryType;
   private String subject;
   private String messageText;
   private String note;
-  @CanBeLogged private KeyDocumentTypeDto keyDocumentType;
-  @CanBeLogged private Integer keyDocumentVersion;
-  @CanBeLogged @NotNull private boolean locked;
+  private KeyDocumentTypeDto keyDocumentType;
+  private Integer keyDocumentVersion;
+  @NotNull private boolean locked;
 
   @NotNull private UUID createdBy;
   private String createdByUserFirstName;

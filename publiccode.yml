@@ -69,5 +69,5 @@ platforms:
 releaseDate: '2024-10-01'
 softwareType: standalone/web
 softwareVersion: '1.0'
-url: 'https://gitlab.opencode.de/ga-lotse/ga-lotse.git'
+url: 'https://gitlab.opencode.de/ga-lotse/ga-lotse-code.git'
 landingUrl: 'https://gitlab.opencode.de/ga-lotse'

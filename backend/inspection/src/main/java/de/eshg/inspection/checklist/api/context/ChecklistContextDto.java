@@ -19,10 +19,12 @@ public class ChecklistContextDto { // This is a ChecklistDefinitionVersion entit
   private @NotNull UUID defId;
   private @NotNull String name;
   private String description;
-  private @NotNull Instant validFrom;
+  private Instant validFrom;
   private Instant validTo;
   private @NotNull boolean expandable;
   private @NotNull boolean deleted;
+  private @NotNull boolean published;
+  private Instant lastModified;
   private @NotNull int version;
   private Integer repositoryVersion;
   private @NotNull @Valid List<ChecklistSectionContextDto> sections;
@@ -91,6 +93,22 @@ public class ChecklistContextDto { // This is a ChecklistDefinitionVersion entit
     this.deleted = deleted;
   }
 
+  public boolean isPublished() {
+    return published;
+  }
+
+  public void setPublished(boolean published) {
+    this.published = published;
+  }
+
+  public Instant getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Instant lastModified) {
+    this.lastModified = lastModified;
+  }
+
   public int getVersion() {
     return version;
   }
@@ -121,6 +139,8 @@ public class ChecklistContextDto { // This is a ChecklistDefinitionVersion entit
     if (o == null || getClass() != o.getClass()) return false;
     ChecklistContextDto that = (ChecklistContextDto) o;
     return expandable == that.expandable
+        && deleted == that.deleted
+        && published == that.published
         && version == that.version
         && Objects.equals(id, that.id)
         && Objects.equals(defId, that.defId)
@@ -128,6 +148,7 @@ public class ChecklistContextDto { // This is a ChecklistDefinitionVersion entit
         && Objects.equals(description, that.description)
         && Objects.equals(validFrom, that.validFrom)
         && Objects.equals(validTo, that.validTo)
+        && Objects.equals(lastModified, that.lastModified)
         && Objects.equals(repositoryVersion, that.repositoryVersion)
         && Objects.equals(sections, that.sections);
   }
@@ -142,8 +163,45 @@ public class ChecklistContextDto { // This is a ChecklistDefinitionVersion entit
         validFrom,
         validTo,
         expandable,
+        deleted,
+        published,
+        lastModified,
         version,
         repositoryVersion,
         sections);
+  }
+
+  @Override
+  public String toString() {
+    return "ChecklistContextDto{"
+        + "id="
+        + id
+        + ", defId="
+        + defId
+        + ", name='"
+        + name
+        + '\''
+        + ", description='"
+        + description
+        + '\''
+        + ", validFrom="
+        + validFrom
+        + ", validTo="
+        + validTo
+        + ", expandable="
+        + expandable
+        + ", deleted="
+        + deleted
+        + ", published="
+        + published
+        + ", lastModified="
+        + lastModified
+        + ", version="
+        + version
+        + ", repositoryVersion="
+        + repositoryVersion
+        + ", sections="
+        + sections
+        + '}';
   }
 }

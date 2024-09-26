@@ -57,6 +57,7 @@ export interface UseFilterSettingsParams {
 }
 
 export interface UseFilterSettings {
+  activeValues: FilterValue[];
   filterSettingsVisible: boolean;
   filterButtonProps: FilterButtonProps;
   filterSettingsProps: FilterSettingsProps;
@@ -220,6 +221,7 @@ export function useFilterSettings({
   };
 
   return {
+    activeValues,
     filterSettingsVisible,
     filterButtonProps,
     filterSettingsProps,

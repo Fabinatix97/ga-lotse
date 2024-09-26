@@ -65,22 +65,26 @@ tasks.register('pushDockerImage', DockerPushImage) {
 }
 
 tasks.register("signDockerImage", Exec) {
-    def digest = ""
+  doFirst {
+    assertTagNameIsGiven()
+  }
 
-    commandLine 'cosign', 'sign', digest,
-            '--annotations', "com.gitlab.ci.pipeline.id=${System.getenv("CI_PIPELINE_ID")}",
-            '--annotations', "com.gitlab.ci.pipeline.url=${System.getenv("CI_PIPELINE_URL")}",
-            '--annotations', "com.gitlab.ci.job.id=${System.getenv("CI_JOB_ID")}",
-            '--annotations', "com.gitlab.ci.job.url=${System.getenv("CI_JOB_URL")}",
-            '--annotations', "com.gitlab.ci.commit.sha=${System.getenv("CI_COMMIT_SHA")}",
-            '--annotations', "com.gitlab.ci.commit.ref.name=${System.getenv("CI_COMMIT_REF_NAME")}",
-            '--annotations', "com.gitlab.ci.project.path=${System.getenv("CI_PROJECT_PATH")}",
-            '--annotations', "org.opencontainers.image.source=${System.getenv("CI_PROJECT_URL")}",
-            '--annotations', "org.opencontainers.image.revision=${System.getenv("CI_COMMIT_SHA")}"
-    doFirst {
-        assertTagNameIsGiven()
-        digest = getRepoDigest(getImageNameWithTag())
-    }
+  def argProv = {
+    [
+      'sign', getRepoDigest(getImageNameWithTag()),
+      '--annotations', "com.gitlab.ci.pipeline.id=${System.getenv("CI_PIPELINE_ID")}".toString(),
+      '--annotations', "com.gitlab.ci.pipeline.url=${System.getenv("CI_PIPELINE_URL")}".toString(),
+      '--annotations', "com.gitlab.ci.job.id=${System.getenv("CI_JOB_ID")}".toString(),
+      '--annotations', "com.gitlab.ci.job.url=${System.getenv("CI_JOB_URL")}".toString(),
+      '--annotations', "com.gitlab.ci.commit.sha=${System.getenv("CI_COMMIT_SHA")}".toString(),
+      '--annotations', "com.gitlab.ci.commit.ref.name=${System.getenv("CI_COMMIT_REF_NAME")}".toString(),
+      '--annotations', "com.gitlab.ci.project.path=${System.getenv("CI_PROJECT_PATH")}".toString(),
+      '--annotations', "org.opencontainers.image.source=${System.getenv("CI_PROJECT_URL")}".toString(),
+      '--annotations', "org.opencontainers.image.revision=${System.getenv("CI_COMMIT_SHA")}".toString()
+    ]
+  } as CommandLineArgumentProvider
+  executable 'cosign'
+  argumentProviders.add(argProv)
 }
 
 tasks.register("verifyImageSignature", Exec) {

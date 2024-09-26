@@ -21,20 +21,20 @@ import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField"
 
 export interface CheckboxGroupProps {
   name: string;
-  element: WeekdayCheckboxOption[];
+  options: WeekdayCheckboxOption[];
   label: string;
   sx?: SxProps;
-  onChange?: (values: WeekdayCheckboxOption[]) => void;
+  onChange?: (options: WeekdayCheckboxOption[]) => void;
 }
 
 export function WeekdayCheckboxGroup({
-  element,
+  options,
   label,
   ...props
 }: Readonly<CheckboxGroupProps>) {
   const { input, meta, helperText } = useBaseField<WeekdayCheckboxOption[]>({
-    validate: (value: WeekdayCheckboxOption[]) => {
-      if (value.length <= 0) {
+    validate: (options: WeekdayCheckboxOption[] = []) => {
+      if (!options.length) {
         return "Bitte mindestens einen Tag auswählen";
       } else {
         return undefined;
@@ -59,7 +59,7 @@ export function WeekdayCheckboxGroup({
           role="listbox"
           sx={{ flexDirection: "row", mt: 1, gap: 2 }}
         >
-          {element?.map((val, index) => (
+          {options?.map((option, index) => (
             <ListItem
               key={index}
               sx={{
@@ -70,8 +70,8 @@ export function WeekdayCheckboxGroup({
             >
               <CheckboxField
                 name={props.name}
-                representingValue={val.id}
-                label={val.label}
+                representingValue={option.id}
+                label={option.label}
                 size="sm"
               />
             </ListItem>

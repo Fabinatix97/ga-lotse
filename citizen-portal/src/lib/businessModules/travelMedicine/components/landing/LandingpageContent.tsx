@@ -23,6 +23,10 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 import {
+  TableListing,
+  TableListingRow,
+} from "@/lib/shared/components/tableListing";
+import {
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
 } from "@/lib/shared/formatters/address";
@@ -38,8 +42,8 @@ export function LandingpageContent() {
         <InfoSectionGrid>
           <AddressSection department={department} />
           <ContactDataSection department={department} />
-          <OpeningHoursSection />
         </InfoSectionGrid>
+        <OpeningHoursSection />
       </ContentSheet>
     </GridColumnStack>
   );
@@ -64,10 +68,22 @@ function OpeningHoursSection() {
   return (
     <InfoSection icon={<AccessTimeOutlined />}>
       <InfoSectionTitle>Öffnungszeiten</InfoSectionTitle>
-      <Typography>
-        Für einzelne Bereiche und Beratungsstellen gelten unterschiedliche
-        Sprechzeiten.
-      </Typography>
+      <TableListing>
+        <tr>
+          <td colSpan={2} style={{ paddingBottom: 3 }}>
+            Sprechzeiten nur nach Terminvereinbarung (telefonisch oder per
+            E-Mail)
+          </td>
+        </tr>
+        <TableListingRow label="Mo bis Do">08:00 bis 12:00 Uhr</TableListingRow>
+        <tr>
+          <td colSpan={2} style={{ paddingTop: 3, paddingBottom: 3 }}>
+            Telefonische Terminvereinbarung
+          </td>
+        </tr>
+        <TableListingRow label="Mo bis Mi">14:00 bis 15:00 Uhr</TableListingRow>
+        <TableListingRow label="Fr">08:00 bis 10:00 Uhr</TableListingRow>
+      </TableListing>
     </InfoSection>
   );
 }

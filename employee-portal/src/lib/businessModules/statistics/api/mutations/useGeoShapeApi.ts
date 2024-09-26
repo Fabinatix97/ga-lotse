@@ -7,7 +7,7 @@ import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 
 import { useGeoShapeApi } from "@/lib/businessModules/statistics/api/clients";
-import { AddGeoShapeValues } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapesSidebar";
+import { AddGeoShapeValues } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeSidebar";
 
 export function useAddGeoShape() {
   const geoShapeApi = useGeoShapeApi();

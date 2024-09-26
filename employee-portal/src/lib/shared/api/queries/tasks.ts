@@ -9,29 +9,36 @@ import {
   GetTasksByAssigneeRequest,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
 export interface TeamviewFilters {
   assigneeId?: Set<string>;
 }
 
-export function useFetchTasksForTeamViewTemplate(
+interface UseFetchTasksForTeamViewTemplateProps {
   useTaskApi: () => {
     getTasksByAssigneeRaw: (
       request: GetTasksByAssigneeRequest,
       initOverrides?: RequestInit,
     ) => Promise<ApiResponse<ApiGetTaskByUserResponse>>;
-  },
+  };
   queryKeyFactory: (
     queryKey: (string | Record<string, string> | string[])[],
-  ) => readonly (string | Record<string, string> | string[])[],
-  teamviewFilters: TeamviewFilters,
-  getInitOverrides?: () => RequestInit,
-) {
+  ) => readonly (string | Record<string, string> | string[])[];
+  teamviewFilters: TeamviewFilters;
+  getInitOverrides?: () => RequestInit;
+}
+
+export function useFetchTasksForTeamViewTemplateOptions({
+  useTaskApi,
+  queryKeyFactory,
+  teamviewFilters,
+  getInitOverrides,
+}: UseFetchTasksForTeamViewTemplateProps) {
   const taskApi = useTaskApi();
   const searchParams = Object.fromEntries(useSearchParams().entries());
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: queryKeyFactory([
       "fetchTasks",
       searchParams,

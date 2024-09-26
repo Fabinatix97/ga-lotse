@@ -44,5 +44,5 @@
   <include file="migrations/0034_procedure_sequences.xml"/>
   <include file="migrations/0035_refactor_web_search_entry_tags.xml"/>
   <include file="migrations/0036_inspection_notes.xml"/>
-
+  <include file="migrations/0037_cld_drafts.xml"/>
 </databaseChangeLog>

@@ -15,7 +15,7 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
   SchoolEntryPublicSecurityConfig() {
     super("school-entry");
 
-    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
+    grantAccessToLibAppointmentBlockUrls(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, false);
     grantAccessToStatistics();
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, ModuleLeaderRole.SCHOOL_ENTRY_LEADER);

@@ -9,7 +9,6 @@ import { SnackbarComponentProps } from "@eshg/lib-portal/components/snackbar/Sna
 import { Check, Info, SvgIconComponent, Warning } from "@mui/icons-material";
 import { Snackbar, Theme, styled } from "@mui/joy";
 
-import { responsiveContent } from "@/lib/baseModule/components/layout/Content";
 import {
   ContentMargin,
   contentMarginDesktop,
@@ -17,6 +16,7 @@ import {
   headerHeightDesktop,
   headerHeightMobile,
 } from "@/lib/baseModule/components/layout/sizes";
+import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
 
 const ICONS: Record<SnackbarComponentProps["color"], SvgIconComponent> = {
   primary: Info,

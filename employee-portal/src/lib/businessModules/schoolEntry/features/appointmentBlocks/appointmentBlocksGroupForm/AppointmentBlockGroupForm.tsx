@@ -124,7 +124,7 @@ export function AppointmentBlockGroupForm(
             <Stack gap={4}>
               <AppointmentStaffSelection
                 physicianOptions={physicianOptions}
-                medicalAssistantsOptions={medicalAssistantsOptions}
+                medicalAssistantOptions={medicalAssistantsOptions}
                 freeStaff={props.freeStaff}
                 blockedStaff={props.blockedStaff}
                 validateAvailability={() => props.validateAvailability(values)}

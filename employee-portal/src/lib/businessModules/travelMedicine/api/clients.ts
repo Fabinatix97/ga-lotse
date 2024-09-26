@@ -7,6 +7,7 @@ import {
   AppointmentBlockApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
+  ArchivingApi,
   Configuration,
   DiseaseApi,
   EditorApi,
@@ -110,4 +111,9 @@ export function useEditorApi() {
 
 export function useTextBlockApi() {
   return new TextBlockApi(useConfiguration());
+}
+
+export function useArchivingApi() {
+  const configuration = useConfiguration();
+  return new ArchivingApi(configuration);
 }

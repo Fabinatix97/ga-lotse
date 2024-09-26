@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiAuditLogGrantedAccessDto,
+  ApiAuditLogGrantedAccessCount,
   ApiAuditLogSource,
   ApiGetAvailableAuditLogsResponse,
 } from "@eshg/employee-portal-api/auditlog/models";
@@ -31,7 +31,7 @@ export function mapResponse(
   };
 }
 
-function mapAuditLog(log: ApiAuditLogGrantedAccessDto): AuditLog {
+function mapAuditLog(log: ApiAuditLogGrantedAccessCount): AuditLog {
   return {
     auditLogSource: log.auditLog.source,
     createdAt: log.auditLog.date,

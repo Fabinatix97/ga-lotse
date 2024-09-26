@@ -13,7 +13,6 @@ import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.PROCEDURE_ST
 import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.PROCEDURE_TYPE;
 import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.UNASSIGNED;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.time.Year;
 import java.util.Set;
@@ -47,8 +46,7 @@ public record GetProceduresFilterOptions(
             """)
         @BindParam(ONCE_ASSIGNED_TO_ID)
         UUID onceAssignedToId,
-    @CanBeLogged
-        @Parameter(
+    @Parameter(
             description =
                 """
             Filter logic:
@@ -58,8 +56,7 @@ public record GetProceduresFilterOptions(
             """)
         @BindParam(UNASSIGNED)
         Boolean unassigned,
-    @CanBeLogged
-        @BindParam(PROCEDURE_TYPE)
+    @BindParam(PROCEDURE_TYPE)
         @Parameter(
             description =
                 """
@@ -68,8 +65,7 @@ public record GetProceduresFilterOptions(
         - If not submitted, no filtering takes place
         """)
         Set<ProcedureTypeDto> procedureType,
-    @CanBeLogged
-        @BindParam(PROCEDURE_STATUS)
+    @BindParam(PROCEDURE_STATUS)
         @Parameter(
             description =
                 """
@@ -78,8 +74,7 @@ public record GetProceduresFilterOptions(
             - If not submitted, no filtering takes place
             """)
         Set<ProcedureStatusDto> procedureStatus,
-    @CanBeLogged
-        @Parameter(
+    @Parameter(
             description =
                 """
             Filter logic:

@@ -43,16 +43,10 @@ export const facilityInitial: FacilityFormInputs = {
 
 interface FacilityFormProps extends NestedFormProps {
   onCancel?: () => unknown;
-  onSubmit?: () => unknown;
   sx?: SxProps;
 }
 
-export function FacilityForm({
-  onCancel,
-  onSubmit,
-  name,
-  sx,
-}: FacilityFormProps) {
+export function FacilityForm({ onCancel, name, sx }: FacilityFormProps) {
   const {
     isSubmitting,
     values: {
@@ -109,7 +103,6 @@ export function FacilityForm({
       <ReportCaseOverviewCard
         isSubmitting={isSubmitting}
         facilityName={facilityName}
-        onSubmit={onSubmit}
         onCancel={onCancel}
       />
     </>

@@ -14,16 +14,12 @@ import { PropsWithChildren } from "react";
 import { EDIT_BUTTON_ID } from "@/lib/components/table/addEditColumns";
 import { TOGGLE_EXPAND_ID } from "@/lib/helpers/addFeatureColumns";
 
-const StyledHeaderCell = styled("th")<{ width?: number | string }>(
-  ({ theme, width }) => ({
-    width,
-    "--TableCell-paddingY": theme.spacing(1.5),
-    "--TableCell-paddingX": theme.spacing(1.5),
-  }),
-);
+const StyledHeaderCell = styled("th")(({ theme }) => ({
+  "--TableCell-paddingY": theme.spacing(1.5),
+  "--TableCell-paddingX": theme.spacing(1.5),
+}));
 
 export type HeaderProps = PropsWithChildren<{
-  width?: number | string;
   canSort: boolean;
   isSorted: false | SortDirection;
   onSort?: (event: unknown) => void;
@@ -41,7 +37,6 @@ export function Header(props: HeaderProps) {
   return (
     <StyledHeaderCell
       role={isLink ? "columnheader" : "none"}
-      width={props.width}
       aria-label={isLink ? props.label : undefined}
       id={props.id}
     >

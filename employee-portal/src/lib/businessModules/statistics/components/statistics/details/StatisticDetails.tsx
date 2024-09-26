@@ -17,6 +17,7 @@ import { CreateDiagramSidebar } from "@/lib/businessModules/statistics/component
 import { CreateEvaluationSidebar } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/CreateEvaluationSidebar";
 import { DetailsInformationCardProps } from "@/lib/businessModules/statistics/components/statistics/details/DetailsInformationCard";
 import { InformationCards } from "@/lib/businessModules/statistics/components/statistics/details/InformationCards";
+import { StatisticNameChangeModal } from "@/lib/businessModules/statistics/components/statistics/details/StatisticNameChangeModal";
 import { UpdateStatisticDataBasisSidebar } from "@/lib/businessModules/statistics/components/statistics/details/UpdateStatisticDataBasisSidebar/UpdateStatisticDataBasisSidebar";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
@@ -30,6 +31,7 @@ export function StatisticDetails(
     useState(false);
   const [isUpdateDataBasisSidebarOpen, setIsUpdateDataBasisSidebarOpen] =
     useState(false);
+  const [isNameChangeModalOpen, setIsNameChangeModalOpen] = useState(false);
   const [createDiagramSidebarState, setCreateDiagramSidebarState] = useState<
     SidebarState<{ evaluationId: string }>
   >({ open: false });
@@ -41,6 +43,7 @@ export function StatisticDetails(
     createdBy: props.createdBy,
     onEvaluationCreateClicked: () => setIsCreateEvaluationSidebarOpen(true),
     onDataBasisUpdateClicked: () => setIsUpdateDataBasisSidebarOpen(true),
+    onNameChangeClicked: () => setIsNameChangeModalOpen(true),
   };
 
   const businessModuleInformationCardsProps: BusinessModuleInformationCardProps[] =
@@ -93,6 +96,13 @@ export function StatisticDetails(
         </OverlayBoundary>
       )}
 
+      <OverlayBoundary>
+        <StatisticNameChangeModal
+          open={isNameChangeModalOpen}
+          onClose={() => setIsNameChangeModalOpen(false)}
+          initialName={props.title}
+        />
+      </OverlayBoundary>
       <InformationCards
         detailsInformationCardProps={detailsInformationCardProps}
         businessModuleInformationCardsProps={

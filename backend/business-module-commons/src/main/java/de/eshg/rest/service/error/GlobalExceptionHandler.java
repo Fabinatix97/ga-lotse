@@ -5,6 +5,8 @@
 
 package de.eshg.rest.service.error;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.LinkedHashMap;
@@ -59,7 +61,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @NotNull HttpStatusCode status,
       @NotNull WebRequest request) {
     log.error("Bad Request", ex);
-    return ResponseEntity.badRequest().body(ex.getMessage());
+    String errorMessage;
+    Throwable cause = ex.getCause();
+    if (cause instanceof JsonParseException) {
+      errorMessage = "Invalid JSON format.";
+    } else if (cause instanceof JsonMappingException) {
+      errorMessage = "Error in mapping if JSON data.";
+    } else if (ex.getMessage().contains("Required request body is missing")) {
+      errorMessage = "Required request body is missing";
+    } else {
+      errorMessage = "The request contains invalid data";
+    }
+    return ResponseEntity.badRequest().body(errorMessage);
   }
 
   @Override

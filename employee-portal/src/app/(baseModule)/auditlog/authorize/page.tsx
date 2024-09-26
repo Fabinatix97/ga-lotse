@@ -8,8 +8,8 @@
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { useParams, useRouter } from "next/navigation";
 
-import { AuditLogAuthorizePage } from "@/lib/baseModule/components/auditlog/authorize/AuditLogAuthorizePage";
-import { AuditLogAuthorizeSidebar } from "@/lib/baseModule/components/auditlog/authorize/AuditLogAuthorizeSidebar";
+import { AuditLogAuthorizePage } from "@/lib/auditlog/components/authorize/AuditLogAuthorizePage";
+import { AuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize/AuditLogAuthorizeSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";

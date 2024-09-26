@@ -17,4 +17,5 @@ public record ChecklistDefinitionVersionDto(
     @NotNull @Valid ChecklistContextDto context,
     @Valid UserDto modifiedBy,
     @Valid ObjectTypeRefDto objectType,
-    Boolean isCoreChecklist) {}
+    Boolean isCoreChecklist,
+    Boolean hasDraft) {}

@@ -5,7 +5,7 @@
 
 package de.eshg.base.testhelper;
 
-import de.eshg.auditlog.AuditLogTestHelperApi;
+import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.base.contact.api.SearchContactsResponse;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @ConditionalOnTestHelperEnabled
 public class BaseTestHelperController extends TestHelperController
-    implements BaseTestHelperApi, AuditLogTestHelperApi {
+    implements BaseTestHelperApi, SharedAuditLogTestHelperApi {
 
   private final BaseTestHelperService baseTestHelperService;
   private final BaseFeatureToggle baseFeatureToggle;

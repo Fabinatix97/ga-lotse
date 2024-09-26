@@ -10,7 +10,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSchoolEntryCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getSelfProcedureAsCitizenQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryCitizenApi";
 import { CitizenAnamnesisForm } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
-import { Page } from "@/lib/shared/components/layout/page";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function SchoolEntrySelfAnamnesisPage() {
   const schoolEntryCitizenApi = useSchoolEntryCitizenApi();
@@ -19,8 +20,10 @@ export default function SchoolEntrySelfAnamnesisPage() {
   );
 
   return (
-    <Page>
-      <CitizenAnamnesisForm child={procedure.child} />
-    </Page>
+    <PageLayout>
+      <PageContent>
+        <CitizenAnamnesisForm child={procedure.child} />
+      </PageContent>
+    </PageLayout>
   );
 }

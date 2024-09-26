@@ -7,6 +7,7 @@ import {
   AppointmentBlockApi,
   AppointmentTypeApi,
   ApprovalRequestApi,
+  ArchivingApi,
   Configuration,
   FileApi,
   InboxProcedureApi,
@@ -91,4 +92,9 @@ export function useApprovalRequestApi() {
 export function useAppointmentTypeApi() {
   const configuration = useConfiguration();
   return new AppointmentTypeApi(configuration);
+}
+
+export function useArchivingApi() {
+  const configuration = useConfiguration();
+  return new ArchivingApi(configuration);
 }

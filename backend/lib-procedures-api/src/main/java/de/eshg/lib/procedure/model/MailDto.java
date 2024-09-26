@@ -7,7 +7,6 @@ package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +23,7 @@ public final class MailDto extends ConcreteFileDto {
 
   private @Valid List<ConcreteFileDto> attachments;
 
-  private @CanBeLogged @NotNull int removedInvalidAttachments;
+  private @NotNull int removedInvalidAttachments;
 
   public MailMetaDataDto getMetaData() {
     return metaData;

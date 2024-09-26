@@ -2,26 +2,24 @@
   "pageTitle": "School Entry Examination",
   "information": {
     "title": "Information about the Appointment",
-    "invitation": "The Health Department will send the appointment for the school enrollment examination by mail with an invitation letter and the currently applicable data protection regulations approximately 3 to 4 weeks before the appointment.",
-    "cancellation": "If this appointment cannot be kept, it should be canceled in good time. The contact details are provided in the invitation letter.",
-    "location": "The school enrollment examination takes place at the Health Department at {{address}}. Please report to the reception area at the entrance and present the invitation letter."
+    "invitation": "The appointment for the school enrollment examination is sent by mail from the health department along with an invitation letter approximately 3 to 4 weeks before the appointment.",
+    "cancellation": "If you are unable to attend this appointment, it should be rescheduled in a timely manner. You can conveniently do this yourself here via the online portal. Using the registration code on the invitation and your child's date of birth, you can access your personal area.",
+    "location": "The school enrollment examination takes place at the health department at {{address}}. Please report to the reception at the entrance and present the invitation letter."
   },
   "place": {
-    "title": "Where does the school enrollment examination take place?",
-    "school": "At your child's school",
-    "or": "or",
-    "healthDepartment": "at the following Health Department"
+    "title": "Where does the school enrollment examination take place?"
   },
   "address": {
     "title": "Address"
   },
   "openingHours": {
     "title": "Opening and Consultation Hours",
-    "days": "Mon, Tue, Thu",
-    "daysHoliday": "Tue, Thu",
-    "hours": "1:30 PM - 3:00 PM",
-    "remark": "By appointment only",
-    "remarkHoliday": "During Hessian school holidays – By appointment only."
+    "days": "Mon - Thu",
+    "daysShort": "Fri",
+    "hours": "07:30 AM - 4:00 PM",
+    "remark": "By appointment only.",
+    "hoursShort": "07:30 AM - 2:00 PM",
+    "remarkShort": "By appointment only."
   },
   "telefon": {
     "title": "Phone",
@@ -31,12 +29,12 @@
     "title": "Email Address"
   },
   "personalArea": {
-    "title": "Did you receive an invitation?",
+    "title": "Have you received an invitation?",
     "information": "To view your appointment, you must first agree to the following data protection regulations.",
-    "confirmPrivacyNotice": "I accept the privacy notice.",
-    "privacyNotice": "View Privacy Notice",
+    "confirmPrivacyNotice": "I accept the data protection notice.",
+    "privacyNotice": "Go to the data protection notice",
     "confirmPrivacyPolicy": "I accept the privacy policy.",
-    "privacyPolicy": "View Privacy Policy",
-    "goToPersonalArea": "View Invitation"
+    "privacyPolicy": "Go to the privacy policy",
+    "goToPersonalArea": "View invitation"
   }
 }

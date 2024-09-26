@@ -5,6 +5,15 @@
 
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout } from "@/lib/shared/components/layout/page";
+
 export default function Loading() {
-  return <LoadingIndicator text="Seite wird geladen…" fullHeight />;
+  return (
+    <PageLayout>
+      <PageContent fullHeight>
+        <LoadingIndicator text="Seite wird geladen…" fullHeight flexGrow={1} />
+      </PageContent>
+    </PageLayout>
+  );
 }

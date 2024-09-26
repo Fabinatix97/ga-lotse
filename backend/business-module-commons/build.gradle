@@ -11,7 +11,7 @@ dependencies {
     api project(':test-helper-commons')
     api project(':lib-commons')
     api project(':lib-security-config')
-    implementation project(':rest-service-commons')
+    runtimeOnly project(':rest-service-commons')
 
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-actuator'
@@ -29,7 +29,7 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:latest.release'
 
     testImplementation project(':test-commons')
-    testImplementation testFixtures(project(':rest-service-commons'))
+    testImplementation project(':rest-service-commons')
 
     testFixturesApi project(':test-commons')
     testFixturesApi 'org.springframework.boot:spring-boot-testcontainers'

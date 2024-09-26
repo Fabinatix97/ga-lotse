@@ -8,7 +8,6 @@ package de.eshg.lib.procedure.model;
 import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.PAGE_NUMBER;
 import static de.eshg.lib.procedure.api.ProcedureApi.QueryParameter.PAGE_SIZE;
 
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
@@ -17,15 +16,13 @@ import java.util.Objects;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetProceduresPaginationOptions(
-    @CanBeLogged
-        @Parameter(description = "Limit of returned procedures")
+    @Parameter(description = "Limit of returned procedures")
         @BindParam(value = PAGE_SIZE)
         @Schema(defaultValue = "50")
         @Min(1)
         @Max(200)
         Integer pageSize,
-    @CanBeLogged
-        @Parameter(description = "Offset used for pagination")
+    @Parameter(description = "Offset used for pagination")
         @BindParam(value = PAGE_NUMBER)
         @Schema(defaultValue = "0")
         @Min(0)

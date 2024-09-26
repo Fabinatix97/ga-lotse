@@ -62,6 +62,7 @@ export function HandicapWithDiagnosisFields(
         setFieldValue={props.setFieldValue}
         onClickIcd10Code={props.onClickIcd10Code}
         disabled={!props.values.result}
+        softRequired
       />
     </Stack>
   );

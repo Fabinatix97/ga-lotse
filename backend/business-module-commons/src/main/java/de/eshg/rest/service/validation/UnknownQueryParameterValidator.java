@@ -5,7 +5,6 @@
 
 package de.eshg.rest.service.validation;
 
-import de.eshg.rest.service.commons.utils.RequestParameterUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

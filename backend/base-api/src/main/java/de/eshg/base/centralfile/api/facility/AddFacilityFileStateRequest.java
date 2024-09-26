@@ -66,6 +66,20 @@ public record AddFacilityFileStateRequest(
   }
 
   public AddFacilityFileStateRequest(
+      UUID referenceFacilityId, FacilityDetailsDto facilityDetails, DataOriginDto dataOrigin) {
+    this(
+        referenceFacilityId,
+        facilityDetails.name(),
+        facilityDetails.emailAddresses(),
+        facilityDetails.phoneNumbers(),
+        facilityDetails.contactPersons(),
+        facilityDetails.contactAddress(),
+        facilityDetails.differentBillingAddress(),
+        dataOrigin,
+        null);
+  }
+
+  public AddFacilityFileStateRequest(
       String name,
       List<String> emailAddresses,
       List<String> phoneNumbers,

@@ -5,7 +5,6 @@
 
 package de.eshg.lib.procedure.api;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.procedure.model.GetTasksFilterOptions;
 import de.eshg.lib.procedure.model.GetTasksSortByDto;
@@ -52,8 +51,7 @@ public interface TaskListApi {
   TaskResponse getTasks(
       @InlineParameterObject @ParameterObject @Valid GetTasksFilterOptions filterOptions,
       @InlineParameterObject @ParameterObject @Valid GetTasksSortOptions sortOptions,
-      @CanBeLogged
-          @RequestParam(name = QueryParameter.LIMIT, required = false, defaultValue = "50")
+      @RequestParam(name = QueryParameter.LIMIT, required = false, defaultValue = "50")
           @Min(1)
           @Max(200)
           Integer limit);

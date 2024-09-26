@@ -8,7 +8,7 @@ package de.eshg.lib.procedure.domain.serialization;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -17,7 +17,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class ZipFileWrapper {
 
-  private final Map<String, byte[]> entries = new HashMap<>();
+  private final Map<String, byte[]> entries = new LinkedHashMap<>();
 
   public String getCollisionFreeFileName(String originalFileName) {
     int number = 0;
@@ -35,13 +35,15 @@ public class ZipFileWrapper {
   }
 
   public byte[] asByteArray() {
-    try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
-      for (Entry<String, byte[]> file : entries.entrySet()) {
-        zipOutputStream.putNextEntry(new ZipEntry(file.getKey()));
-        zipOutputStream.write(file.getValue());
-        zipOutputStream.closeEntry();
+    try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+      try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+        for (Entry<String, byte[]> file : entries.entrySet()) {
+          zipOutputStream.putNextEntry(new ZipEntry(file.getKey()));
+          zipOutputStream.write(file.getValue());
+          zipOutputStream.closeEntry();
+        }
       }
+
       return byteArrayOutputStream.toByteArray();
     } catch (IOException e) {
       throw new UncheckedIOException("Error during creating zip file", e);

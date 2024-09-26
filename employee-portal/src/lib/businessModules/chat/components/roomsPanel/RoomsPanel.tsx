@@ -5,25 +5,41 @@
 
 import { Stack } from "@mui/joy";
 
-import { chatColumnHeaderHeight } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { RoomList } from "@/lib/businessModules/chat/components/roomList/RoomList";
 import { RoomsPanelHeader } from "@/lib/businessModules/chat/components/roomsPanel/RoomsPanelHeader";
+import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 
-export function RoomsPanel() {
+interface RoomsPanelProps {
+  setChatPanelView: (viewType: ChatPanelView) => void;
+  isOpenChatSettings: boolean;
+  toggleChatSettingsView(): void;
+}
+export function RoomsPanel({
+  setChatPanelView,
+  isOpenChatSettings,
+  toggleChatSettingsView,
+}: Readonly<RoomsPanelProps>) {
   const { roomList } = useChatRoomList();
 
   return (
     <>
       {/* TODO - rooms filtering */}
-      <RoomsPanelHeader />
+      <RoomsPanelHeader
+        setChatPanelView={(viewType) => {
+          setChatPanelView(viewType);
+          if (isOpenChatSettings) {
+            toggleChatSettingsView();
+          }
+        }}
+      />
       <Stack
         sx={{
-          height: `calc(100% - ${chatColumnHeaderHeight})`,
+          flex: 1,
           overflowY: "auto",
         }}
       >
-        <RoomList roomList={roomList} />
+        <RoomList roomList={roomList} setChatPanelView={setChatPanelView} />
       </Stack>
     </>
   );

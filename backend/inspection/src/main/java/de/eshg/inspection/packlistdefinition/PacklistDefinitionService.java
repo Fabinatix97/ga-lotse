@@ -5,8 +5,6 @@
 
 package de.eshg.inspection.packlistdefinition;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 import de.eshg.base.user.api.UserDto;
 import de.eshg.inspection.client.UserClient;
 import de.eshg.inspection.packlistdefinition.api.AddPacklistDefinitionRevisionRequest;
@@ -120,7 +118,7 @@ public class PacklistDefinitionService {
     // revision
     PacklistDefinitionRevision latestRevision = dbDefinition.getRevisions().getLast();
 
-    latestRevision.setValidTo(Instant.now(clock).truncatedTo(SECONDS));
+    latestRevision.setValidTo(Instant.now(clock));
 
     PacklistDefinitionRevision newRevisionEntity =
         mapper.entityFrom(request, dbDefinition, latestRevision.getRevision() + 1);

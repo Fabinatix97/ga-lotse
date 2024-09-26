@@ -5,6 +5,7 @@
 
 import { ApiUser } from "@eshg/employee-portal-api/base";
 import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
@@ -14,7 +15,10 @@ import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/travelMedicine/c
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import {
+  AppointmentCountWithDays,
+  calculateAppointmentCount,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
@@ -48,6 +52,18 @@ function validateForm(values: AppointmentBlockGroupValues) {
   return errors;
 }
 
+function hasAtLeastOneAppointmentInGroup(values: AppointmentBlockGroupValues) {
+  return (
+    calculateAppointmentCount({
+      ...values,
+      appointmentDurations: values.allAppointmentTypes,
+      parallelExaminations: (values.parallelExaminations as number) ?? 1,
+      skipCalculatingOfBlocks:
+        validateForm(values).appointmentBlocks != undefined,
+    }) > 0
+  );
+}
+
 interface AppointmentBlockGroupFormProps {
   initialValues: AppointmentBlockGroupValues;
   onSubmit: (values: AppointmentBlockGroupValues) => Promise<void>;
@@ -70,6 +86,7 @@ export interface AppointmentBlockGroupValues {
 export function AppointmentBlockGroupForm(
   props: Readonly<AppointmentBlockGroupFormProps>,
 ) {
+  const snackbar = useSnackbar();
   const physicianOptions = props.allPhysicians.map((option) => ({
     value: option.userId,
     label: fullName(option),
@@ -83,7 +100,15 @@ export function AppointmentBlockGroupForm(
   return (
     <Formik
       initialValues={props.initialValues}
-      onSubmit={props.onSubmit}
+      onSubmit={async (appointments) => {
+        if (hasAtLeastOneAppointmentInGroup(appointments)) {
+          await props.onSubmit(appointments);
+        } else {
+          snackbar.notification(
+            "Es muss mindestens ein Termin enthalten sein.",
+          );
+        }
+      }}
       validate={validateForm}
     >
       {({ values, isSubmitting, handleSubmit }) => (
@@ -100,7 +125,7 @@ export function AppointmentBlockGroupForm(
           <Stack gap={4}>
             <AppointmentStaffSelection
               physicianOptions={physicianOptions}
-              medicalAssistantsOptions={medicalAssistantsOptions}
+              medicalAssistantOptions={medicalAssistantsOptions}
               freeStaff={props.freeStaff}
               blockedStaff={props.blockedStaff}
               validateAvailability={() => props.validateAvailability(values)}

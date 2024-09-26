@@ -4,10 +4,10 @@
  */
 
 import { useUpdateDiagram } from "@/lib/businessModules/statistics/api/mutations/useUpdateDiagram";
-import { SidebarStepper } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/SidebarStepper";
-import { SidebarStep } from "@/lib/businessModules/statistics/components/shared/SidebarStepper/sidebarStep";
 import { SaveDiagramStep } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/SaveDiagramStep/SaveDiagramStep";
 import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/statistics/details/UpdateDiagramSidebar/updateDiagramFormModel";
+import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 
 export function UpdateDiagramSidebar(props: {
   open: boolean;

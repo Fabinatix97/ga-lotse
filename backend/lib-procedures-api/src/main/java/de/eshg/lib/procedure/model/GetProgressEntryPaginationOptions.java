@@ -7,7 +7,6 @@ package de.eshg.lib.procedure.model;
 
 import static de.eshg.lib.procedure.api.ProgressEntryApi.QueryParameter.PAGE_NUMBER;
 
-import de.eshg.api.commons.CanBeLogged;
 import de.eshg.lib.procedure.api.ProgressEntryApi.QueryParameter;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,15 +17,13 @@ import java.util.Objects;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record GetProgressEntryPaginationOptions(
-    @CanBeLogged
-        @Parameter(description = "Maximum number of elements to return")
+    @Parameter(description = "Maximum number of elements to return")
         @BindParam(value = QueryParameter.PAGE_SIZE)
         @Schema(defaultValue = "50")
         @Min(1)
         @Max(200)
         Integer pageSize,
-    @CanBeLogged
-        @Parameter(description = "Index of page to be returned")
+    @Parameter(description = "Index of page to be returned")
         @BindParam(value = PAGE_NUMBER)
         @Schema(defaultValue = "0")
         @PositiveOrZero

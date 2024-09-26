@@ -24,6 +24,8 @@ interface ChecklistDefinitionHeaderRowProps {
   versionId?: string;
   isCoreChecklist?: boolean;
   isSubmitting?: boolean;
+  hasDraft?: boolean;
+  onPublish(publish: boolean): void;
 }
 
 export function ChecklistDefinitionHeaderRow({
@@ -35,6 +37,8 @@ export function ChecklistDefinitionHeaderRow({
   versionId,
   isCoreChecklist,
   isSubmitting = false,
+  hasDraft,
+  onPublish,
 }: Readonly<ChecklistDefinitionHeaderRowProps>) {
   const [canEditChecklists, canEditCoreChecklists] = useHasUserRolesCheck([
     ApiUserRole.InspectionChecklistdefinitionsWrite,
@@ -42,9 +46,10 @@ export function ChecklistDefinitionHeaderRow({
   ]);
   const canSeeSaveActions =
     canEditChecklists && (canEditCoreChecklists || !isCoreChecklist);
-  const canCreateNewVersion = newestVersion && !!defId && !!versionId;
+  const canCreateNewVersion =
+    newestVersion && !!defId && !!versionId && !hasDraft;
 
-  const versionLabel = (version ?? 0) + (readOnlyMode ? 0 : 1);
+  const versionLabel = (version ?? 0) + (readOnlyMode || hasDraft ? 0 : 1);
 
   const newVersionUrl = routes.checklists.definitions.newVersion(
     defId!,
@@ -77,7 +82,28 @@ export function ChecklistDefinitionHeaderRow({
             Neue Version anlegen
           </InternalLinkButton>
         ) : (
-          <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
+          <Stack
+            spacing={2}
+            direction="row"
+            alignItems="center"
+            justifyContent={"space-between"}
+          >
+            <SubmitButton
+              key="draft"
+              variant="outlined"
+              submitting={isSubmitting}
+              onClick={() => onPublish(false)}
+            >
+              Als Entwurf speichern
+            </SubmitButton>
+            <SubmitButton
+              key="publish"
+              submitting={isSubmitting}
+              onClick={() => onPublish(true)}
+            >
+              Checkliste veröffentlichen
+            </SubmitButton>
+          </Stack>
         ))}
     </Stack>
   );

@@ -8,17 +8,20 @@
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { List, ListItem } from "@mui/joy";
 
-import { Page, PageTitle } from "@/lib/shared/components/layout/page";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenSchoolEntryPage() {
   return (
-    <Page>
-      <PageTitle>Playground</PageTitle>
-      <List marker="disc">
-        <ListItem>
-          <InternalLink href="/playground/snackbar">Snackbar</InternalLink>
-        </ListItem>
-      </List>
-    </Page>
+    <PageLayout>
+      <PageContent>
+        <PageTitle>Playground</PageTitle>
+        <List marker="disc">
+          <ListItem>
+            <InternalLink href="/playground/snackbar">Snackbar</InternalLink>
+          </ListItem>
+        </List>
+      </PageContent>
+    </PageLayout>
   );
 }

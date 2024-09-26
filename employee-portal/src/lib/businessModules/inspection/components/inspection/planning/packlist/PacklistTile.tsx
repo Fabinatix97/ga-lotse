@@ -26,11 +26,13 @@ import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddB
 
 export interface PacklistTileProps {
   readonly?: boolean;
+  isOffline?: boolean;
   inspection: ApiInspection;
 }
 
 export function PacklistTile({
   readonly,
+  isOffline,
   inspection,
 }: Readonly<PacklistTileProps>) {
   const queryClient = useQueryClient();
@@ -187,7 +189,7 @@ export function PacklistTile({
                 idx={idx}
                 handleCheck={handleCheck}
                 handleDeleteClick={handleDeleteClick}
-                readonly={readonly}
+                readonly={readonly ?? isOffline}
               />
             )
           );

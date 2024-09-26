@@ -41,16 +41,10 @@ const columns = [
     header: "",
     enableGlobalFilter: false,
     cell: RevisionTypeCell,
-    meta: {
-      width: "48px",
-    },
   }),
   accessor("description", {
     cell: AuditCell,
     enableGlobalFilter: false,
-    meta: {
-      width: "15%",
-    },
   }),
   accessor("client", {
     cell: AuditCell,
@@ -63,9 +57,6 @@ const columns = [
   accessor("active", {
     cell: AuditCell,
     enableGlobalFilter: false,
-    meta: {
-      width: "5%",
-    },
   }),
 ];
 

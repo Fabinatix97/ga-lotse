@@ -6,6 +6,7 @@
 package de.eshg.servicedirectory.testcontainers;
 
 import static de.eshg.base.PostgresContainerConstants.POSTGRES_PORT;
+import static de.eshg.testhelper.ConditionalOnTestHelperEnabled.TEST_HELPER_PROFILE_NAME;
 
 import de.eshg.base.PostgresContainerConstants;
 import de.eshg.base.TestContainersUtil;
@@ -39,7 +40,7 @@ public class ServiceDirectoryTestContainerUtil {
         .withNetwork(network)
         .withExposedPorts(SD_PORT)
         .dependsOn(dbContainer)
-        .withEnv("spring.profiles.active", "test-helper")
+        .withEnv("spring.profiles.active", TEST_HELPER_PROFILE_NAME)
         .withEnv("spring.datasource.url", jdbcUrl)
         .withEnv("SERVER_PORT", Integer.toString(SD_PORT))
         .withCreateContainerCmdModifier(

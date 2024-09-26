@@ -402,10 +402,12 @@ services:
     image: matrixdotorg/synapse:v1.114.0@sha256:0983d976eaaed08af558b8ce720caa89340124146e0c6e49042c9072acff7919
     environment:
       - SYNAPSE_SERVER_NAME=synapse.local.dev
-      - UID=1000
-      - GID=1000
+      - UID=0
+      - GID=0
     volumes:
-      - ./resources/matrix/synapse:/data
+      - ./resources/matrix/synapse/media_store:/data/media_store
+      - ./resources/matrix/synapse/homeserver.yaml:/data/homeserver.yaml
+      - ./resources/matrix/synapse/synapse.local.dev.log.config:/data/synapse.local.dev.log.config
     ports:
       - "${SYNAPSE_HTTP_PORT:-8008}:8008"
     healthcheck:
@@ -443,6 +445,8 @@ services:
 
   sti-protection:
     image: ga-lotse/sti-protection
+    env_file:
+      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
       - spring.datasource.url=jdbc:postgresql://sti-protection-db/sti_protection

@@ -218,6 +218,9 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .permitAll();
     requestMatchers(GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT)
         .permitAll();
+    requestMatchers(
+            GET, BaseUrls.Base.DEPARTMENT_API + BaseUrls.Base.DEPARTMENT_API_SECURITY_TXT_PGP_KEY)
+        .permitAll();
   }
 
   private void features() {

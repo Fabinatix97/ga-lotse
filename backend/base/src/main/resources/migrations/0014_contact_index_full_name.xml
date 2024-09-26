@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1726999149301-1">
+    <sql dbms="postgresql">
+      CREATE OR REPLACE FUNCTION immutable_concat_strings_ws(text variadic text[])
+        RETURNS text AS
+      $body$
+        select concat_ws(' ', text)
+      $body$
+        LANGUAGE SQL IMMUTABLE;
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726999149301-2">
+    <sql dbms="postgresql">
+      DROP INDEX IF EXISTS trgm_contact_name_idx;
+      CREATE INDEX trgm_contact_fullname_idx
+        ON contact
+        USING gin (normalize_text(immutable_concat_strings_ws(first_name, name)) gin_trgm_ops);
+    </sql>
+  </changeSet>
+</databaseChangeLog>

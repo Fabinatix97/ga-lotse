@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ApiSchoolEntryFeature } from "@eshg/employee-portal-api/schoolEntry";
+import {
+  ApiLocationSelectionMode,
+  ApiSchoolEntryFeature,
+} from "@eshg/employee-portal-api/schoolEntry";
 import { Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -23,12 +26,15 @@ const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 
 interface ProcedureDetailsProps {
   procedure: ProcedureDetailsType;
+  locationSelectionMode: ApiLocationSelectionMode;
 }
 
-export function ProcedureDetails({ procedure }: ProcedureDetailsProps) {
+export function ProcedureDetails(props: ProcedureDetailsProps) {
   const waitingRoomEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.WaitingRoom,
   );
+
+  const procedure = props.procedure;
 
   return (
     <PageGrid>
@@ -58,6 +64,7 @@ export function ProcedureDetails({ procedure }: ProcedureDetailsProps) {
           <ProcedureDetailsSection procedure={procedure} />
           <ProcedureActionsPanel procedure={procedure} />
           {waitingRoomEnabled &&
+            props.locationSelectionMode === ApiLocationSelectionMode.None &&
             !procedure.isClosed &&
             isDefined(procedure.appointment) && (
               <WaitingRoomPanel procedure={procedure} />

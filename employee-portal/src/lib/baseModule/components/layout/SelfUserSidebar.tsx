@@ -9,6 +9,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import ProfileIcon from "@mui/icons-material/AccountCircle";
 import DevicesIcon from "@mui/icons-material/Devices";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { Button, Divider, Stack } from "@mui/joy";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect } from "react";
@@ -70,6 +71,9 @@ export function SelfUserSidebar({
   const isActiveSessionsEnabled = useIsNewFeatureEnabled(
     ApiBaseFeature.AccountActiveSessions,
   );
+  const isLoginProtocolEnabled = useIsNewFeatureEnabled(
+    ApiBaseFeature.LoginProtocol,
+  );
   const { data: selfUser } = useGetSelfUser();
   const pathname = usePathname();
 
@@ -100,6 +104,15 @@ export function SelfUserSidebar({
               </NavLinkButton>
             )}
 
+            {isLoginProtocolEnabled && (
+              <NavLinkButton
+                href={routes.account.loginProtocol}
+                decorator={<ManageSearchIcon />}
+              >
+                Anmeldeprotokoll
+              </NavLinkButton>
+            )}
+
             <Divider orientation="horizontal" />
           </Stack>
 
@@ -111,6 +124,10 @@ export function SelfUserSidebar({
             <MiscLinkButton
               href={routes.privacy}
               label="Datenschutzerklärung"
+            />
+            <MiscLinkButton
+              href={routes.usageNotes}
+              label={"Nutzungshinweise"}
             />
             <MiscLinkButton href={routes.acknowledgements} label="Danksagung" />
             <MiscLinkButton href={routes.contact} label="Kontakt" />

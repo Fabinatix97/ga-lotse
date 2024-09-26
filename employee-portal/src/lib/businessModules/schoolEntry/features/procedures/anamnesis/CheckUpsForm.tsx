@@ -5,8 +5,7 @@
 
 "use client";
 
-import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
-import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
+import { SoftRequiredSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import {
   NestedFormProps,
@@ -16,8 +15,12 @@ import {
 import { Stack, Typography } from "@mui/joy";
 
 import { CheckUpsValues } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/AnamnesisForm";
-import { SetAllBooleanSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
-import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { SetAllBooleanWithUnknownSelect } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllSelect";
+import { BOOLEAN_WITH_UNKNOWN_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
+import {
+  BOOLEAN_SELECT_STYLE,
+  BOOLEAN_WITH_UNKNOWN_STYLE,
+} from "@/lib/businessModules/schoolEntry/features/procedures/styles";
 
 const CHECKUPS: { name: string; label: string }[] = [
   { name: "u2", label: "U2" },
@@ -39,7 +42,7 @@ interface CheckUpsFormProps extends NestedFormProps {
 export function CheckUpsForm(props: CheckUpsFormProps) {
   const fieldName = createFieldNameMapper(props.name);
 
-  function setAllCheckUpFields(value: OptionalFieldValue<boolean>) {
+  function setAllCheckUpFields(value: OptionalFieldValue<string>) {
     CHECKUPS.forEach(
       (checkUp) => void props.setFieldValue(fieldName(checkUp.name), value),
     );
@@ -49,21 +52,20 @@ export function CheckUpsForm(props: CheckUpsFormProps) {
     <Stack gap={2} data-testid="checkUpsForm">
       <Typography level="title-sm">Vorsorgeuntersuchungen</Typography>
       <Stack direction="row" gap={4}>
-        <SetAllBooleanSelect
+        <SetAllBooleanWithUnknownSelect
           label="Alle"
           onChange={setAllCheckUpFields}
           sx={BOOLEAN_SELECT_STYLE}
         />
         <Stack direction="row" gap={4} flexWrap="wrap">
           {CHECKUPS.map((checkUp) => (
-            <SoftRequiredBooleanSelectField
+            <SoftRequiredSelectField
               key={checkUp.name}
               name={fieldName(checkUp.name)}
               label={checkUp.label}
-              component={HorizontalField}
-              sx={BOOLEAN_SELECT_STYLE}
+              options={BOOLEAN_WITH_UNKNOWN_OPTIONS}
+              sx={BOOLEAN_WITH_UNKNOWN_STYLE}
               softRequired
-              allowDeselection
             />
           ))}
         </Stack>

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { isObjectType } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useSelectedRoomId } from "@/lib/businessModules/chat/shared/hooks/useSelectedRoomId";
+import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import {
   ReadConfirmationsPerRoom,
   ReadConfirmationsPerUser,
@@ -25,7 +25,7 @@ export function useReadConfirmation(showReadConfirmation: boolean) {
     useState<ReadConfirmationsPerRoom>({});
   const { matrixClient } = useChatClientContext();
   const isFocused = useWindowFocus();
-  const { selectedRoomId } = useSelectedRoomId();
+  const { selectedRoomId } = useChatSearchParams();
 
   useEffect(() => {
     if (!isFocused) return;

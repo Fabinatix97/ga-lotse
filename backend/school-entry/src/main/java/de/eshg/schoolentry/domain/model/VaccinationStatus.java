@@ -43,7 +43,9 @@ public class VaccinationStatus extends GenericEntity<Long> implements Validatabl
   private Integer rota;
   private Integer tbe;
   private Integer hepatitisA;
-  private Boolean perkombiHbv;
+
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private BooleanWithUnknown perkombiHbv;
 
   @ElementCollection
   @CollectionTable(
@@ -199,11 +201,11 @@ public class VaccinationStatus extends GenericEntity<Long> implements Validatabl
     this.vaccinationPassPresented = vaccinationPassPresented;
   }
 
-  public Boolean getPerkombiHbv() {
+  public BooleanWithUnknown getPerkombiHbv() {
     return perkombiHbv;
   }
 
-  public void setPerkombiHbv(Boolean perkombiHbv) {
+  public void setPerkombiHbv(BooleanWithUnknown perkombiHbv) {
     this.perkombiHbv = perkombiHbv;
   }
 

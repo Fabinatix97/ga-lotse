@@ -20,16 +20,31 @@ public record CreateNewChecklistDefinitionRequest(
     Boolean isExpandable,
     Boolean deleted,
     Boolean isCoreChecklist,
+    Boolean published,
     @NotNull UUID objectTypeId,
     @NotNull @Valid List<ChecklistSectionContextDto> sections) {
 
   public CreateNewChecklistDefinitionRequest withObjectTypeId(@NotNull UUID objectTypeId) {
     return new CreateNewChecklistDefinitionRequest(
-        name, description, isExpandable, deleted, isCoreChecklist, objectTypeId, sections);
+        name,
+        description,
+        isExpandable,
+        deleted,
+        isCoreChecklist,
+        published,
+        objectTypeId,
+        sections);
   }
 
   public CreateNewChecklistDefinitionRequest withName(@NotBlank String name) {
     return new CreateNewChecklistDefinitionRequest(
-        name, description, isExpandable, deleted, isCoreChecklist, objectTypeId, sections);
+        name,
+        description,
+        isExpandable,
+        deleted,
+        isCoreChecklist,
+        published,
+        objectTypeId,
+        sections);
   }
 }

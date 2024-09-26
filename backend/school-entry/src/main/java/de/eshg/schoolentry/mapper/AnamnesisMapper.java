@@ -10,6 +10,7 @@ import de.eshg.schoolentry.api.anamnesis.*;
 import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.api.citizen.CitizenMigrationBackgroundDto;
 import de.eshg.schoolentry.domain.model.Anamnesis;
+import de.eshg.schoolentry.domain.model.BooleanWithUnknown;
 import de.eshg.schoolentry.domain.model.CountryCode;
 import jakarta.annotation.Nullable;
 
@@ -27,15 +28,15 @@ public class AnamnesisMapper {
         anamnesis.getChildLanguageScreening(),
         anamnesis.getPreliminaryCourse(),
         new CheckUpsDto(
-            anamnesis.getU2(),
-            anamnesis.getU3(),
-            anamnesis.getU4(),
-            anamnesis.getU5(),
-            anamnesis.getU6(),
-            anamnesis.getU7(),
-            anamnesis.getU7a(),
-            anamnesis.getU8(),
-            anamnesis.getU9()),
+            mapToDto(anamnesis.getU2()),
+            mapToDto(anamnesis.getU3()),
+            mapToDto(anamnesis.getU4()),
+            mapToDto(anamnesis.getU5()),
+            mapToDto(anamnesis.getU6()),
+            mapToDto(anamnesis.getU7()),
+            mapToDto(anamnesis.getU7a()),
+            mapToDto(anamnesis.getU8()),
+            mapToDto(anamnesis.getU9())),
         new PromotionBeforeSchoolEntryDto(
             anamnesis.getEarlySupport(),
             anamnesis.getIntegrationPlace(),
@@ -99,6 +100,15 @@ public class AnamnesisMapper {
     return CountryCodeDto.valueOf(nationalityChild.name());
   }
 
+  private static BooleanWithUnknownDto mapToDto(BooleanWithUnknown value) {
+    return switch (value) {
+      case null -> null;
+      case TRUE -> BooleanWithUnknownDto.TRUE;
+      case FALSE -> BooleanWithUnknownDto.FALSE;
+      case UNKNOWN -> BooleanWithUnknownDto.UNKNOWN;
+    };
+  }
+
   public static Anamnesis mapToDomain(AnamnesisDto dto) {
     if (dto == null) {
       return null;
@@ -130,15 +140,15 @@ public class AnamnesisMapper {
     anamnesis.setOtherInterests(dto.interestsAndSportsInfo().otherInterests());
     anamnesis.setCanSwim(dto.interestsAndSportsInfo().canSwim());
     anamnesis.setHasSeahorseBadge(dto.interestsAndSportsInfo().hasSeahorseBadge());
-    anamnesis.setU2(dto.checkUps().u2());
-    anamnesis.setU3(dto.checkUps().u3());
-    anamnesis.setU4(dto.checkUps().u4());
-    anamnesis.setU5(dto.checkUps().u5());
-    anamnesis.setU6(dto.checkUps().u6());
-    anamnesis.setU7(dto.checkUps().u7());
-    anamnesis.setU7a(dto.checkUps().u7a());
-    anamnesis.setU8(dto.checkUps().u8());
-    anamnesis.setU9(dto.checkUps().u9());
+    anamnesis.setU2(mapToDomain(dto.checkUps().u2()));
+    anamnesis.setU3(mapToDomain(dto.checkUps().u3()));
+    anamnesis.setU4(mapToDomain(dto.checkUps().u4()));
+    anamnesis.setU5(mapToDomain(dto.checkUps().u5()));
+    anamnesis.setU6(mapToDomain(dto.checkUps().u6()));
+    anamnesis.setU7(mapToDomain(dto.checkUps().u7()));
+    anamnesis.setU7a(mapToDomain(dto.checkUps().u7a()));
+    anamnesis.setU8(mapToDomain(dto.checkUps().u8()));
+    anamnesis.setU9(mapToDomain(dto.checkUps().u9()));
     anamnesis.setEarlySupport(dto.promotionBeforeSchoolEntry().earlySupport());
     anamnesis.setIntegrationPlace(dto.promotionBeforeSchoolEntry().integrationPlace());
     anamnesis.setErgotherapy(dto.promotionBeforeSchoolEntry().ergotherapy());
@@ -172,6 +182,15 @@ public class AnamnesisMapper {
     anamnesis.setPersonalConspicuities(dto.personalConspicuities());
 
     return anamnesis;
+  }
+
+  private static BooleanWithUnknown mapToDomain(BooleanWithUnknownDto value) {
+    return switch (value) {
+      case null -> null;
+      case TRUE -> BooleanWithUnknown.TRUE;
+      case FALSE -> BooleanWithUnknown.FALSE;
+      case UNKNOWN -> BooleanWithUnknown.UNKNOWN;
+    };
   }
 
   public static Anamnesis mapCitizenAnamnesisToDomain(CitizenAnamnesisDto citizenAnamnesisDto) {

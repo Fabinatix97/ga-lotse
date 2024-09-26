@@ -262,6 +262,10 @@ public class InspectionService {
     return inspectionRepository.findNewestOpenInspectionForFacility(facility);
   }
 
+  public Inspection findNewestClosedInspectionForFacility(Facility facility) {
+    return inspectionRepository.findNewestClosedInspectionForFacility(facility);
+  }
+
   public InspectionAvailableCLDVersionsResponse getAvailableCLDs(UUID externalId) {
     Inspection inspection = loadInspection(externalId);
     ObjectType objectType = inspection.getFacility().getObjectType();

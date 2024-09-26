@@ -10,7 +10,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/joy";
 
-import { ChecklistDefinitionOverviewTable } from "@/lib/businessModules/inspection/components/checklistDefinition/ChecklistDefinitionOverviewTable";
+import { ChecklistDefinitionOverviewTable } from "@/lib/businessModules/inspection/components/checklistDefinition/overview/ChecklistDefinitionOverviewTable";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";

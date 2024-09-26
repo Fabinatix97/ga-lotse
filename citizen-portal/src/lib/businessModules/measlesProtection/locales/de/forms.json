@@ -82,5 +82,14 @@
       "title": "Titel"
     },
     "requiredField": "Pflichtfeld"
+  },
+  "data_and_privacy": {
+    "information_one": "Um den Fall zu melden, müssen Sie erst folgenden Datenschutzverordnungen zustimmen.",
+    "information_other": "Um die Fälle zu melden, müssen Sie erst folgenden Datenschutzverordnungen zustimmen.",
+    "confirm_privacy_notice": "Ich akzeptiere den Datenschutzhinweis.",
+    "privacy_notice": "Zum Datenschutzhinweis",
+    "confirm_privacy_policy": "Ich akzeptiere die Datenschutzerklärung.",
+    "privacy_policy": "Zur Datenschutzerklärung",
+    "confirm_required": "Bitte Zustimmung erteilen um fortzufahren."
   }
 }

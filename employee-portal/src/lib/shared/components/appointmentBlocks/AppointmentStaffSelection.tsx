@@ -15,7 +15,8 @@ export const BUTTON_STYLES: SxProps = {
 
 export interface AppointmentStaffSelectionProps {
   physicianOptions: SelectionOption[];
-  medicalAssistantsOptions: SelectionOption[];
+  medicalAssistantOptions?: SelectionOption[];
+  consultantOptions?: SelectionOption[];
   blockedStaff: string[];
   freeStaff: string[];
   validateAvailability: () => void;
@@ -41,16 +42,30 @@ export function AppointmentStaffSelection(
           blockedStaff={props.blockedStaff}
         />
       </Grid>
-      <Grid xs={4}>
-        <AppointmentStaffField
-          name="mfas"
-          label="MFA"
-          placeholder="auswählen"
-          options={props.medicalAssistantsOptions}
-          freeStaff={props.freeStaff}
-          blockedStaff={props.blockedStaff}
-        />
-      </Grid>
+      {props.medicalAssistantOptions && (
+        <Grid xs={4}>
+          <AppointmentStaffField
+            name="mfas"
+            label="MFA"
+            placeholder="auswählen"
+            options={props.medicalAssistantOptions}
+            freeStaff={props.freeStaff}
+            blockedStaff={props.blockedStaff}
+          />
+        </Grid>
+      )}
+      {props.consultantOptions && (
+        <Grid xs={4}>
+          <AppointmentStaffField
+            name="consultants"
+            label="Berater:in"
+            placeholder="auswählen"
+            options={props.consultantOptions}
+            freeStaff={props.freeStaff}
+            blockedStaff={props.blockedStaff}
+          />
+        </Grid>
+      )}
       <Grid xs={4}>
         <Button
           variant="outlined"

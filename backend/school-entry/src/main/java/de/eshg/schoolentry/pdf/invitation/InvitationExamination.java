@@ -5,5 +5,11 @@
 
 package de.eshg.schoolentry.pdf.invitation;
 
+import de.eshg.schoolentry.pdf.Address;
+
 public record InvitationExamination(
-    String executionDate, String executionTime, String qrCode, String accessCode) {}
+    String executionDate,
+    String executionTime,
+    String qrCode,
+    String accessCode,
+    Address executionLocation) {}

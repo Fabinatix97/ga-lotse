@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.client;
 
+import com.google.common.collect.Lists;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.CountryCodeDto;
 import de.eshg.base.SortDirection;
@@ -44,6 +45,9 @@ public class PersonClient {
 
   private static final Logger log = LoggerFactory.getLogger(PersonClient.class);
 
+  // Needs to be aligned with the constraint of AddPersonFileStatesRequest.persons
+  private static final int MAX_PERSONS_PER_BATCH = 10_000;
+
   private final PersonApi personApi;
   private final Map<UUID, GetPersonFileStateResponse> personCache = new ConcurrentHashMap<>();
 
@@ -57,14 +61,21 @@ public class PersonClient {
       return List.of();
     }
 
-    AddPersonFileStatesRequest request =
-        new AddPersonFileStatesRequest(mapToFlatRequestList(procedureData, dataOrigin));
-
     log.info("Creating persons in the central file");
 
-    GetPersonFileStatesResponse response = personApi.addPersonFileStates(request);
+    List<AddPersonFileStateRequest> personsToAdd = mapToFlatRequestList(procedureData, dataOrigin);
+
     List<UUID> ids =
-        response.personFileStates().stream().map(AddPersonFileStateResponse::id).toList();
+        Lists.partition(personsToAdd, MAX_PERSONS_PER_BATCH).stream()
+            .flatMap(
+                personsToAddPartition -> {
+                  AddPersonFileStatesRequest request =
+                      new AddPersonFileStatesRequest(personsToAddPartition);
+
+                  AddPersonFileStatesResponse response = personApi.addPersonFileStates(request);
+                  return response.personFileStateIds().stream();
+                })
+            .toList();
 
     log.info(
         "Created {} persons in the central file with IDs={}",
@@ -104,9 +115,9 @@ public class PersonClient {
   public List<UUID> createCustodiansInCentralFile(List<ImportCustodianData> custodianData) {
     List<AddPersonFileStateRequest> requests =
         mapToPersonFileStateRequest(custodianData, DataOrigin.DATA_IMPORT);
-    GetPersonFileStatesResponse response =
+    AddPersonFileStatesResponse response =
         personApi.addPersonFileStates(new AddPersonFileStatesRequest(requests));
-    return response.personFileStates().stream().map(AddPersonFileStateResponse::id).toList();
+    return response.personFileStateIds();
   }
 
   public UUID updatePersonInCentralFile(UpdatePersonRequest custodian, UUID centralFileStateId) {

@@ -72,7 +72,7 @@ const sideNavigationItems: SideNavigationItem[] = [
   },
   {
     name: "Kennzahlen",
-    href: routes.metrics,
+    href: routes.metrics.index,
     decorator: <Speed />,
     accessCheck: hasUserRole(ApiUserRole.BaseProcedureMetricsRead),
   },

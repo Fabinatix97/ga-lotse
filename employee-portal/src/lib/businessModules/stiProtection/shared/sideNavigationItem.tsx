@@ -29,7 +29,12 @@ const defaultSubItems: SideNavigationSubItem[] = [
   {
     name: "Terminblöcke",
     href: routes.appointmentBlockGroups.index,
-    accessCheck: hasUserRole(ApiUserRole.StiProtectionAdmin),
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+  },
+  {
+    name: "Terminarten",
+    href: routes.appointmentDefinition,
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
   },
 ];
 

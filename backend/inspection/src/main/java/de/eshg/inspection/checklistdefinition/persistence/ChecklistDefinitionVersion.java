@@ -20,8 +20,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(
@@ -50,8 +54,7 @@ public class ChecklistDefinitionVersion {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private String description;
 
-  @Column(nullable = false)
-  @NotNull
+  @Column()
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private Instant validFrom;
 
@@ -82,11 +85,17 @@ public class ChecklistDefinitionVersion {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean isExpandable = true;
 
+  @Column(nullable = false)
+  @NotNull
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @LastModifiedDate
+  private Instant lastModified;
+
   @NotNull
   @OneToMany(
       fetch = FetchType.LAZY,
       mappedBy = ChecklistDefinitionSection_.CHECKLIST_DEFINITION_VERSION,
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy(ChecklistDefinitionSection_.POSITION)
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -106,6 +115,15 @@ public class ChecklistDefinitionVersion {
   @ColumnDefault("false")
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean deleted = false;
+
+  /**
+   * If a checklist definition version has published = false, this CLD is considered in published
+   * state
+   */
+  @Column(nullable = false)
+  @ColumnDefault("true")
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean published = true;
 
   public UUID getId() {
     return id;
@@ -183,6 +201,14 @@ public class ChecklistDefinitionVersion {
     isExpandable = expandable;
   }
 
+  public @NotNull Instant getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(@NotNull Instant lastModified) {
+    this.lastModified = lastModified;
+  }
+
   public List<ChecklistDefinitionSection> getSections() {
     return sections;
   }
@@ -207,5 +233,22 @@ public class ChecklistDefinitionVersion {
 
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
+  }
+
+  public boolean isPublished() {
+    return published;
+  }
+
+  public void setPublished(boolean draft) {
+    this.published = draft;
+  }
+
+  @PrePersist
+  @PreUpdate
+  private void validate() {
+    if (this.validFrom == null && this.published) {
+      throw new ConstraintViolationException(
+          "validFrom can not be null for published checklist definition versions", null);
+    }
   }
 }

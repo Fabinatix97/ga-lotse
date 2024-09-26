@@ -5,15 +5,18 @@
 
 import { Box, Stack, Typography } from "@mui/joy";
 
-import { Presence } from "@/lib/businessModules/chat/shared/types";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { getStatusColor } from "@/lib/businessModules/chat/shared/utils";
 
 interface OnlineStatusProps {
+  userId: string;
   name?: string;
-  presence?: Presence;
 }
 
-export function OnlineStatus({ name, presence }: OnlineStatusProps) {
+export function OnlineStatus({ userId, name }: OnlineStatusProps) {
+  const { usersPresence } = useChatClientContext();
+  const presence = usersPresence[userId];
+
   return (
     <Stack
       direction="row"

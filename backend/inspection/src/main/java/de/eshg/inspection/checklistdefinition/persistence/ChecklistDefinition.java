@@ -87,6 +87,17 @@ public class ChecklistDefinition extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean deleted;
 
+  /**
+   * If a checklist definition version has published = false, this CLD is considered in draft state
+   * *
+   *
+   * <p>The current state is set by the most recent version.
+   */
+  @Column(nullable = false)
+  @ColumnDefault("true")
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private boolean published;
+
   public String getName() {
     return name;
   }
@@ -129,7 +140,6 @@ public class ChecklistDefinition extends GloballyUniqueEntityBase {
 
   public void addNewVersion(ChecklistDefinitionVersion version) {
     name = version.getName();
-    deleted = version.isDeleted();
     version.setChecklistDefinition(this);
     versions.add(version);
   }
@@ -144,5 +154,17 @@ public class ChecklistDefinition extends GloballyUniqueEntityBase {
 
   public boolean isDeleted() {
     return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
+  }
+
+  public boolean isPublished() {
+    return published;
+  }
+
+  public void setPublished(boolean published) {
+    this.published = published;
   }
 }

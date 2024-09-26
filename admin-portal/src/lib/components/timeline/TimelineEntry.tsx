@@ -79,7 +79,9 @@ function Content(props: PropsWithChildren<TitleAndLabel>) {
           </>
         )}
       </Typography>
-      <Stack spacing={1}>{props.children}</Stack>
+      <Stack flexDirection="column" spacing={1}>
+        {props.children}
+      </Stack>
     </>
   );
 }

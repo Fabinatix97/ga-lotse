@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import de.eshg.api.commons.CanBeLogged;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -16,8 +15,8 @@ import java.util.UUID;
 public final class SystemProgressEntryDto extends ProgressEntryDto {
   public static final String SCHEMA_NAME = "SystemProgressEntry";
 
-  @CanBeLogged @NotNull private String systemProgressEntryType;
-  @CanBeLogged @NotNull private TriggerTypeDto triggerType;
+  @NotNull private String systemProgressEntryType;
+  @NotNull private TriggerTypeDto triggerType;
   private String changeDescription;
 
   private UUID triggeredBy;

@@ -6,12 +6,15 @@
 "use client";
 
 import { AppointmentStepper } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentStepper";
-import { Page } from "@/lib/shared/components/layout/page";
+import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function TravelMedicineAppointmentPage() {
   return (
-    <Page>
-      <AppointmentStepper />
-    </Page>
+    <PageLayout>
+      <PageContent>
+        <AppointmentStepper />
+      </PageContent>
+    </PageLayout>
   );
 }
