@@ -9,11 +9,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
+import de.eshg.statistics.api.report.AbstractUpdateReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
 import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
-import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,10 +64,10 @@ public class ReportSeriesController {
 
   @PatchExchange(value = "/{reportSeriesId}", accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "The patched report series")
-  @Operation(summary = "Change title and description of a report series")
+  @Operation(summary = "Change title and description of a report series or change activation")
   public ReportSeriesDto updateReportSeries(
       @PathVariable(name = "reportSeriesId") UUID reportSeriesId,
-      @RequestBody @Valid UpdateReportSeriesRequest updateReportSeriesRequest) {
+      @RequestBody @Valid AbstractUpdateReportSeriesRequest updateReportSeriesRequest) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     return reportSeriesService.updateReportSeries(reportSeriesId, updateReportSeriesRequest);
   }

@@ -5,7 +5,10 @@
 
 package de.eshg.auditlog;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
 public record GetEncryptedSymmetricKeyResponse(
-    @NotNull byte[] encapsulatedKey, @NotNull byte[] encryptedSymmetricKey) {}
+    @NotNull @NotEmpty List<Byte> encapsulatedKey,
+    @NotNull @NotEmpty List<Byte> encryptedSymmetricKey) {}

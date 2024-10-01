@@ -77,7 +77,7 @@ public class GdprProcedureService {
     return repository.findByExternalId(gdprProcedureId).orElseThrow(notFound(gdprProcedureId));
   }
 
-  private GdprProcedure getGdprProcedureForUpdate(UUID gdprProcedureId) {
+  public GdprProcedure getGdprProcedureForUpdate(UUID gdprProcedureId) {
     return repository
         .findByExternalIdForUpdate(gdprProcedureId)
         .orElseThrow(notFound(gdprProcedureId));

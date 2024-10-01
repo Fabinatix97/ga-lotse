@@ -16,6 +16,7 @@ import de.eshg.schoolentry.api.SchoolEntryAppointmentBlockPopulationResult;
 import de.eshg.schoolentry.api.SchoolEntryProcedurePopulationResult;
 import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.api.PopulationRequest;
@@ -38,6 +39,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
 
   private final SchoolEntryTestHelperService schoolEntryTestHelperService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
+  private final SchoolEntryProperties schoolEntryProperties;
   private final SchoolEntryProceduresPopulator schoolEntryProceduresPopulator;
   private final AppointmentBlockGroupsPopulator schoolEntryAppointmentBlockGroupsPopulator;
   private final AuditLogTestHelperService auditLogTestHelperService;
@@ -46,6 +48,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
   public SchoolEntryTestHelperController(
       SchoolEntryTestHelperService schoolEntryTestHelperService,
       SchoolEntryFeatureToggle schoolEntryFeatureToggle,
+      SchoolEntryProperties schoolEntryProperties,
       SchoolEntryProceduresPopulator schoolEntryProceduresPopulator,
       AppointmentBlockGroupsPopulator schoolEntryAppointmentBlockGroupsPopulator,
       AuditLogTestHelperService auditLogTestHelperService,
@@ -53,6 +56,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
     super(schoolEntryTestHelperService);
     this.schoolEntryTestHelperService = schoolEntryTestHelperService;
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
+    this.schoolEntryProperties = schoolEntryProperties;
     this.schoolEntryProceduresPopulator = schoolEntryProceduresPopulator;
     this.schoolEntryAppointmentBlockGroupsPopulator = schoolEntryAppointmentBlockGroupsPopulator;
     this.auditLogTestHelperService = auditLogTestHelperService;
@@ -87,6 +91,11 @@ public class SchoolEntryTestHelperController extends TestHelperController
   public void updateLocationSelectionMode(
       @PathVariable("newLocationSelectionMode") LocationSelectionMode newLocationSelectionMode) {
     appointmentBlockProperties.setLocationSelectionMode(newLocationSelectionMode);
+  }
+
+  @PostExchange("/direct-procedure-type-assignment-on-import")
+  public void enableDirectProcedureTypeAssignmentOnImport() {
+    schoolEntryProperties.setDirectProcedureTypeAssignmentOnImport(true);
   }
 
   @PostExchange("/population/procedures")

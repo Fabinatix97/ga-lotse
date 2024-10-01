@@ -1,0 +1,44 @@
+= Flaky Tests
+:sectnums:
+
+Due to their nature, flaky tests can be hard to reproduce locally. Sometimes, the reason for a flakiness is not obvious. Then it's essential to reproduce the test failure locally in order to identify the cause and come up with a stable fix.
+
+== Reproducing flaky tests
+
+=== Stressing the CPU
+
+When flakiness comes from a high workload on the machine running the test (e.g. a Gitlab Runner), the `stress` command is a reliable utility to reproduce flakiness. It can be used to put high load on your CPUs before executing the test to be analyzed.
+
+[source, shell]
+----
+stress -c 16
+----
+
+`-c` denotes the number of CPUs to put under stress. This value is depending on your system. In most cases, the number of CPUs available on your system is a good choice.
+
+`stress` can also be used to stress your local memory and hard drive. However, stressing the CPU is usually sufficient to reproduce flakiness.
+
+Note: `stress` is only available for UNIX systems. Windows users will need another tool.
+
+=== Retry until failure
+
+Flakiness can also be reproduced by retrying a test continuously. While this can be done manually, it's time-consuming and cumbersome. The `retry` command helps to automate this process. It can be configured to retry a command until it fails:
+
+[source, shell]
+----
+retry --until=fail [--times=50] -- command-to-retry
+----
+
+Configuring `--times` is optional, but is useful to make the command terminate in case it hits no failure.
+Consider setting `--delay=0` to disable the back-off time after each attempt.
+After `--` follows the command to execute the test to analyze.
+
+.Playwright Example
+[source, shell]
+----
+retry --until=fail -- pnpm playwright test path/to/test.spec.ts:123
+----
+
+`retry` is also a useful utility to verify whether a potential fix actually stabilizes a flaky test.
+
+Note: `retry` is only available for UNIX systems. Windows users will need another tool.

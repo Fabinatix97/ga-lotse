@@ -49,7 +49,7 @@ function getActionItems(
   seriesId: string,
   description: string | undefined,
   updateReport: (report: UpdateReportSidebarReportInfo) => void,
-  deleteReportWithConfirmation: (reportId: string, name: string) => void,
+  deleteReportWithConfirmation: (reportId: string) => void,
 ) {
   // Uncomment in https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
   // const rememberReport = {
@@ -81,7 +81,7 @@ function getActionItems(
     },
     {
       label: "Report löschen",
-      onClick: () => deleteReportWithConfirmation(seriesId, name),
+      onClick: () => deleteReportWithConfirmation(seriesId),
       startDecorator: <Delete />,
       color: "danger",
     },

@@ -63,6 +63,8 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.REPORT_URL + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
 
     requestMatchers(BaseUrls.Statistics.DATA_SOURCE_CONTROLLER + "/**")
         .hasAnyRole(

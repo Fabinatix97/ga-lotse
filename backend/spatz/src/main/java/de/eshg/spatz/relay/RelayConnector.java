@@ -220,7 +220,7 @@ public class RelayConnector extends WebSocketClient {
       return;
     }
     String id = UUID.randomUUID().toString();
-    logger.info("Sending ping {}", id);
+    logger.debug("Sending ping {}", id);
     try {
       PingFrame ping = new PingFrame();
       ping.setPayload(ByteBuffer.wrap(id.getBytes(StandardCharsets.UTF_8)));
@@ -322,7 +322,7 @@ public class RelayConnector extends WebSocketClient {
 
   @Override
   public void onMessage(String message) {
-    logger.info("Received String message: {}", message);
+    logger.debug("Received String message: {}", message);
     onMessage(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
   }
 
@@ -425,7 +425,7 @@ public class RelayConnector extends WebSocketClient {
 
   @Override
   public void onWebsocketPong(WebSocket conn, Framedata f) {
-    logger.info("Received pong {}", f);
+    logger.debug("Received pong {}", f);
     String pongPayload = StandardCharsets.UTF_8.decode(f.getPayloadData()).toString();
     if (!pongPayload.equals(outstandingPingPayload.get())) {
       logger.warn("Payload mismatch: expected {}. Ignoring pong", outstandingPingPayload.get());

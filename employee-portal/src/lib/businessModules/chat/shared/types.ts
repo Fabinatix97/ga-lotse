@@ -29,6 +29,7 @@ export interface Message {
   sender: User | null;
   roomId: string;
   mentions?: string[];
+  readReceipts?: ReadConfirmationsPerUser;
 }
 
 export function isChatMessageType(data: unknown): data is Message {

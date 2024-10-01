@@ -9,9 +9,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServicedirectoryApplication {
+public class ServiceDirectoryApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(ServicedirectoryApplication.class, args);
+    SpringApplication.run(ServiceDirectoryApplication.class, args);
   }
 }

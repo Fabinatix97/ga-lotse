@@ -19,6 +19,26 @@ export function useGetLocationSelectionMode() {
   return locationSelectionMode;
 }
 
+export function useIsDirectProcedureTypeAssignmentOnImport() {
+  const configApi = useConfigApi();
+  const { data: isDirectProcedureTypeAssignmentOnImport } = useSuspenseQuery(
+    getIsDirectProcedureTypeAssignmentOnImportQuery(configApi),
+  );
+  return isDirectProcedureTypeAssignmentOnImport;
+}
+
+export function getIsDirectProcedureTypeAssignmentOnImportQuery(
+  configApi: SchoolEntryConfigApi,
+) {
+  return queryOptions({
+    queryKey: configApiQueryKey(["getConfig"]),
+    queryFn: () => configApi.getConfig(),
+    select: (response) => response.isDirectProcedureTypeAssignmentOnImport,
+    staleTime: CACHE_DURATION_1DAY,
+    gcTime: CACHE_DURATION_1DAY,
+  });
+}
+
 export function getLocationSelectionModeQuery(configApi: SchoolEntryConfigApi) {
   return queryOptions({
     queryKey: configApiQueryKey(["getConfig"]),

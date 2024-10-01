@@ -53,5 +53,6 @@ export function mapAnamnesis(response: ApiAnamnesis): Anamnesis {
     promotionTherapyAndAidInfo: response.promotionTherapyAndAidInfo,
     interestsAndSportsInfo: response.interestsAndSportsInfo,
     migrationBackground: response.migrationBackground,
+    personalConspicuities: response.personalConspicuities,
   };
 }

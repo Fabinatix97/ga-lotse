@@ -35,6 +35,7 @@ export interface FormChecklistDefinitionVersion {
 
 export function useCreateChecklistDefinition() {
   const checklistDefinitionApi = useChecklistDefinitionApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: async (cldVersion: FormChecklistDefinitionVersion) => {
       const createdChecklist: ApiCreateNewChecklistDefinitionRequest = {
@@ -52,11 +53,15 @@ export function useCreateChecklistDefinition() {
         createdChecklist,
       );
     },
+    onSuccess: () => {
+      snackbar.confirmation("Checkliste erfolgreich erstellt.");
+    },
   });
 }
 
 export function useAddChecklistDefinitionVersion() {
   const checklistDefinitionApi = useChecklistDefinitionApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: async ({
       defId,
@@ -81,11 +86,15 @@ export function useAddChecklistDefinitionVersion() {
         createdChecklist,
       );
     },
+    onSuccess: () => {
+      snackbar.confirmation("Checkliste erfolgreich aktualisiert");
+    },
   });
 }
 
 export function useEditDraftChecklistDefinitionVersion() {
   const checklistDefinitionApi = useChecklistDefinitionApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: async ({
       versionId,
@@ -109,6 +118,9 @@ export function useEditDraftChecklistDefinitionVersion() {
         versionId,
         request,
       );
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Checkliste erfolgreich aktualisiert");
     },
   });
 }

@@ -13,17 +13,21 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
+import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.SchoolEntryService;
 import de.eshg.schoolentry.api.ImportStatisticsDto;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
+import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Year;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
@@ -35,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 public class ImportService {
@@ -46,11 +51,18 @@ public class ImportService {
 
   private final SchoolEntryService schoolEntryService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
+  private final SchoolEntryProperties schoolEntryProperties;
+  private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
 
   public ImportService(
-      SchoolEntryService schoolEntryService, SchoolEntryFeatureToggle schoolEntryFeatureToggle) {
+      SchoolEntryService schoolEntryService,
+      SchoolEntryFeatureToggle schoolEntryFeatureToggle,
+      SchoolEntryProperties schoolEntryProperties,
+      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
     this.schoolEntryService = schoolEntryService;
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
+    this.schoolEntryProperties = schoolEntryProperties;
+    this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
   }
 
   public ImportResult processSheetAndPersistProcedures(
@@ -62,7 +74,9 @@ public class ImportService {
       RowProcessor<? extends RowValues> rowProcessor =
           switch (importType) {
             case CITIZEN_LIST -> new CitizenListRowProcessor(normalizedSheet);
-            case SCHOOL_LIST -> new SchoolListRowProcessor(normalizedSheet);
+            case SCHOOL_LIST ->
+                new SchoolListRowProcessor(
+                    normalizedSheet, schoolYear, procedureTypeAssignmentHelper);
           };
       return new Importer<>(
               normalizedSheet, importType, rowProcessor, schoolId, locationId, schoolYear)
@@ -211,39 +225,59 @@ public class ImportService {
               .filter(Objects::nonNull)
               .toList();
       List<UUID> existingProcedureIds = schoolEntryService.collectExistingProcedures(procedureIds);
+      Map<PersonKeyAttributes, List<ProcedureWithChildData>> mergeCandidates;
+      if (schoolEntryFeatureToggle.isNewFeatureEnabled(
+          SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)) {
+        Set<PersonKeyAttributes> rowsToSearchFor =
+            rowValues.values().stream()
+                .filter(row -> row.getProcedureId() == null)
+                .filter(RowValues::isValid)
+                .map(Importer::getChildKeyAttributes)
+                .collect(StreamUtil.toLinkedHashSet());
+        mergeCandidates = schoolEntryService.searchForMergeCandidates(rowsToSearchFor);
+      } else {
+        mergeCandidates = Map.of();
+      }
 
-      rowValues.forEach(
-          (row, value) -> {
-            if (value.getProcedureId() != null) {
-              if (existingProcedureIds.contains(value.getProcedureId())) {
-                writeStatus(row, IMPORTED_PREVIOUSLY);
-                stats.countPreviouslyImported();
-              } else {
-                writeStatus(row, INVALID_PROCEDURE_ID);
-                stats.countFailed();
-              }
-            } else if (value.getStatus() == DUPLICATE_WITHIN_LIST
-                || containsMatchingRow(validRows, value)) {
-              writeStatus(row, DUPLICATE_WITHIN_LIST);
-              stats.countDuplicated();
-            } else if (value.isValid()) {
-              if (schoolEntryFeatureToggle.isNewFeatureEnabled(
-                  SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)) {
-                merge(row, value);
-              } else {
-                validRows.importableRows().add(value);
-                stats.countCreated();
-              }
-            } else {
-              writeStatus(row, ERROR_INPUT_DATA);
-              stats.countFailed();
-            }
-          });
+      for (Entry<Row, T> entry : rowValues.entrySet()) {
+        Row row = entry.getKey();
+        T value = entry.getValue();
+        if (value.getProcedureId() != null) {
+          if (existingProcedureIds.contains(value.getProcedureId())) {
+            writeStatus(row, IMPORTED_PREVIOUSLY);
+            stats.countPreviouslyImported();
+          } else {
+            writeStatus(row, INVALID_PROCEDURE_ID);
+            stats.countFailed();
+          }
+        } else if (value.getStatus() == DUPLICATE_WITHIN_LIST
+            || containsMatchingRow(validRows, value)) {
+          writeStatus(row, DUPLICATE_WITHIN_LIST);
+          stats.countDuplicated();
+        } else if (value.isValid()) {
+          if (schoolEntryFeatureToggle.isNewFeatureEnabled(
+              SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)) {
+            evaluateActionsWhenMergeIsEnabled(row, value, mergeCandidates);
+          } else {
+            validRows.importableRows().add(value);
+            stats.countCreated();
+          }
+        } else {
+          writeStatus(row, ERROR_INPUT_DATA);
+          stats.countFailed();
+        }
+      }
     }
 
-    private void merge(Row row, T value) {
+    private static PersonKeyAttributes getChildKeyAttributes(RowValues rowValues) {
+      ImportChildData child = rowValues.getChild();
+      return new PersonKeyAttributes(child.firstName(), child.lastName(), child.dateOfBirth());
+    }
+
+    private void evaluateActionsWhenMergeIsEnabled(
+        Row row, T value, Map<PersonKeyAttributes, List<ProcedureWithChildData>> mergeCandidates) {
       List<ProcedureWithChildData> procedures =
-          schoolEntryService.searchOpenProceduresByChildWithExactMatching(value.getChild());
+          mergeCandidates.getOrDefault(getChildKeyAttributes(value), List.of());
       if (procedures.isEmpty()) {
         validRows.importableRows().add(value);
         stats.countCreated();
@@ -253,6 +287,9 @@ public class ImportService {
             row, DUPLICATE_IN_ASSET, procedures.getFirst().procedure().getExternalId());
         stats.countMergeFailed();
       } else {
+        Assert.isTrue(
+            !schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport(),
+            "Procedures of a draft type should not exist when direct procedure type assignment is enabled.");
         ProcedureWithChildData procedure = procedures.getFirst();
         if (procedureMatchesImportValues(procedure, value)) {
           value.setProcedureId(procedure.procedure().getExternalId());

@@ -352,6 +352,7 @@ function mapToRequest(
       ),
       promotionTherapyAndAidInfo: mapPromotionTherapyAndAidInfo(
         formValues.promotionTherapyAndAidInfo,
+        formValues.promotionBeforeSchoolEntry,
       ),
       personalConspicuities: mapOptionalValue(formValues.personalConspicuities),
     },
@@ -446,6 +447,7 @@ function mapPromotionBeforeSchoolEntry(
 
 function mapPromotionTherapyAndAidInfo(
   values: PromotionTherapyAndAidInfoValues,
+  promotionBeforeSchoolEntryValues: PromotionBeforeSchoolEntryValues,
 ) {
   return {
     visionImpairment: mapOptionalValue(values.visionImpairment),
@@ -454,12 +456,24 @@ function mapPromotionTherapyAndAidInfo(
     spectaclesSince: mapOptionalDate(values.spectaclesSince),
     visionSchoolSince: mapOptionalDate(values.visionSchoolSince),
     hearingAid: mapOptionalValue(values.hearingAid),
-    speechTherapyStart: mapOptionalDate(values.speechTherapyStart),
-    speechTherapyEnd: mapOptionalDate(values.speechTherapyEnd),
-    ergoTherapyStart: mapOptionalDate(values.ergoTherapyStart),
-    ergoTherapyEnd: mapOptionalDate(values.ergoTherapyEnd),
-    physioTherapyStart: mapOptionalDate(values.physioTherapyStart),
-    physioTherapyEnd: mapOptionalDate(values.physioTherapyEnd),
+    speechTherapyStart: promotionBeforeSchoolEntryValues.speechTherapy
+      ? mapOptionalDate(values.speechTherapyStart)
+      : undefined,
+    speechTherapyEnd: promotionBeforeSchoolEntryValues.speechTherapy
+      ? mapOptionalDate(values.speechTherapyEnd)
+      : undefined,
+    ergoTherapyStart: promotionBeforeSchoolEntryValues.ergotherapy
+      ? mapOptionalDate(values.ergoTherapyStart)
+      : undefined,
+    ergoTherapyEnd: promotionBeforeSchoolEntryValues.ergotherapy
+      ? mapOptionalDate(values.ergoTherapyEnd)
+      : undefined,
+    physioTherapyStart: promotionBeforeSchoolEntryValues.physiotherapy
+      ? mapOptionalDate(values.physioTherapyStart)
+      : undefined,
+    physioTherapyEnd: promotionBeforeSchoolEntryValues.physiotherapy
+      ? mapOptionalDate(values.physioTherapyEnd)
+      : undefined,
     additionalTherapies: mapOptionalValue(values.additionalTherapies),
   };
 }

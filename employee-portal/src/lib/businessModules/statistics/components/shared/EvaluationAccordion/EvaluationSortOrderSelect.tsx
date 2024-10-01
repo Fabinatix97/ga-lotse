@@ -62,7 +62,12 @@ export function EvaluationSortOrderSelect(
       }}
       color="primary"
       value={props.sortOrder}
-      onChange={(_, value) => props.onSortOrderChange(value!)}
+      onChange={(_, value) => {
+        if (value === null) {
+          return;
+        }
+        props.onSortOrderChange(value);
+      }}
     >
       <SelectOptions options={buildEnumOptions(evaluationSortOrderOptions)} />
     </Select>

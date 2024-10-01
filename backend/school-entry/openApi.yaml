@@ -2686,6 +2686,14 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/direct-procedure-type-assignment-on-import:
+    post:
+      operationId: enableDirectProcedureTypeAssignmentOnImport
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/enabled-new-features/{featureToDisable}:
     delete:
       operationId: disableNewFeature
@@ -3413,8 +3421,6 @@ components:
           items:
             type: integer
             format: int32
-      required:
-      - siblingsBirthYears
     CitizenAnamnesis:
       type: object
       properties:
@@ -5203,9 +5209,12 @@ components:
     GetSchoolEntryConfigResponse:
       type: object
       properties:
+        isDirectProcedureTypeAssignmentOnImport:
+          type: boolean
         locationSelectionMode:
           $ref: "#/components/schemas/LocationSelectionMode"
       required:
+      - isDirectProcedureTypeAssignmentOnImport
       - locationSelectionMode
     GetSchoolEntryFeatureTogglesResponse:
       type: object

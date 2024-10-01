@@ -12,7 +12,7 @@ plugins {
 }
 
 bootRun {
-    systemProperty 'spring.profiles.active', 'test-helper'
+    systemProperty 'spring.profiles.active', getActiveSpringProfiles()
 }
 
 def dockerBuildDir = layout.buildDirectory.dir('docker')
@@ -165,12 +165,21 @@ rootProject.tasks.named("composeUp").configure {
     dependsOn tasks.named("composeUp")
 }
 
+String getActiveSpringProfiles() {
+  String defaultSpringProfiles = "local, test-helper"
+  if (project.hasProperty("preview-features") || project.hasProperty("previewFeatures")) {
+    return "${defaultSpringProfiles}, preview-features"
+  } else {
+    return defaultSpringProfiles
+  }
+}
+
 dockerCompose {
     projectName = rootProject.name
     useComposeFiles = ["${rootDir}/docker-compose.yaml"]
 
     if (project.hasProperty("preview-features") || project.hasProperty("previewFeatures")) {
-        environment.put "ACTIVE_SPRING_PROFILES", "test-helper, preview-features"
+        environment.put "ACTIVE_SPRING_PROFILES", getActiveSpringProfiles()
     }
 }
 

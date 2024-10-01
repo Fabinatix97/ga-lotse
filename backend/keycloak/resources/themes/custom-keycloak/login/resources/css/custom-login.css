@@ -176,6 +176,10 @@ a {
     }
 }
 
+#kc-current-locale-link {
+  display: none;
+}
+
 #kc-page-title {
     text-align: left;
     align-self: self-start;

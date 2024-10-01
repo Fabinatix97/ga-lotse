@@ -53,6 +53,9 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private IdentificationData identificationData;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private String matterOfConcern;
+
   public UUID getCentralFileId() {
     return centralFileId;
   }
@@ -115,5 +118,13 @@ public class GdprProcedure extends BaseEntityWithExternalId {
 
   public void setIdentificationData(IdentificationData identificationData) {
     this.identificationData = identificationData;
+  }
+
+  public String getMatterOfConcern() {
+    return matterOfConcern;
+  }
+
+  public void setMatterOfConcern(String matterOfConcern) {
+    this.matterOfConcern = matterOfConcern;
   }
 }

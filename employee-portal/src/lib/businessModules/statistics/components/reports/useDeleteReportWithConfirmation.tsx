@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { List, ListItem } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
 
@@ -24,12 +25,23 @@ export function useDeleteReportWithConfirmation({
     },
   });
 
-  function deleteReportWithConfirmation(seriesId: string, reportName: string) {
+  function deleteReportWithConfirmation(seriesId: string) {
     openConfirmationDialog({
-      title: "Report löschen?",
-      description: `Der Report "${reportName}" wird dann unwiderruflich gelöscht.`,
-      confirmLabel: "Report löschen",
       color: "danger",
+      title: "Report löschen?",
+      description: "Wenn Sie mit dem Löschen fortfahren, wird ...",
+      children: (
+        <List marker="disc">
+          <ListItem>der Report unwiderruflich gelöscht,</ListItem>
+          <ListItem>der Report aus allen Merklisten entfernt,</ListItem>
+          <ListItem>
+            eine Nachricht an die Nutzer:innen gesendet, die den Report in ihrer
+            Merkliste haben.
+          </ListItem>
+        </List>
+      ),
+      cancelLabel: "Abbrechen",
+      confirmLabel: "Ja, löschen",
       onConfirm: () => {
         deleteReport(seriesId);
       },

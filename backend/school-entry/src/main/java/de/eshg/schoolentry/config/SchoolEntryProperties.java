@@ -22,6 +22,7 @@ public final class SchoolEntryProperties implements ResettableProperties {
   private @NotNull MonthDay maxDateOfBirthForRegularSchoolEntry;
   private boolean maxDateOfBirthForRegularSchoolEntryIsInclusive;
   private @NotNull Integer maxNumberOfImportRows = 10_000;
+  private boolean directProcedureTypeAssignmentOnImport;
 
   public Period getBulkCreateAppointmentsMinLeadTime() {
     return bulkCreateAppointmentsMinLeadTime;
@@ -63,6 +64,15 @@ public final class SchoolEntryProperties implements ResettableProperties {
 
   public void setBulkCreateAppointmentsMinLeadTime(Period bulkCreateAppointmentsMinLeadTime) {
     this.bulkCreateAppointmentsMinLeadTime = bulkCreateAppointmentsMinLeadTime;
+  }
+
+  public boolean isDirectProcedureTypeAssignmentOnImport() {
+    return directProcedureTypeAssignmentOnImport;
+  }
+
+  public void setDirectProcedureTypeAssignmentOnImport(
+      boolean directProcedureTypeAssignmentOnImport) {
+    this.directProcedureTypeAssignmentOnImport = directProcedureTypeAssignmentOnImport;
   }
 
   public record Citizens(

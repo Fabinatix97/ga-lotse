@@ -88,23 +88,39 @@ export function ChecklistDefinitionHeaderRow({
             alignItems="center"
             justifyContent={"space-between"}
           >
-            <SubmitButton
-              key="draft"
-              variant="outlined"
-              submitting={isSubmitting}
-              onClick={() => onPublish(false)}
-            >
-              Als Entwurf speichern
-            </SubmitButton>
-            <SubmitButton
-              key="publish"
-              submitting={isSubmitting}
-              onClick={() => onPublish(true)}
-            >
-              Checkliste veröffentlichen
-            </SubmitButton>
+            <ChecklistDefinitionSubmitButtons
+              isSubmitting={isSubmitting}
+              onPublish={onPublish}
+            />
           </Stack>
         ))}
     </Stack>
+  );
+}
+
+export function ChecklistDefinitionSubmitButtons({
+  isSubmitting = false,
+  onPublish,
+}: Readonly<
+  Pick<ChecklistDefinitionHeaderRowProps, "isSubmitting" | "onPublish">
+>) {
+  return (
+    <>
+      <SubmitButton
+        key="draft"
+        variant="outlined"
+        submitting={isSubmitting}
+        onClick={() => onPublish(false)}
+      >
+        Als Entwurf speichern
+      </SubmitButton>
+      <SubmitButton
+        key="publish"
+        submitting={isSubmitting}
+        onClick={() => onPublish(true)}
+      >
+        Checkliste veröffentlichen
+      </SubmitButton>
+    </>
   );
 }

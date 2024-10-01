@@ -10,6 +10,7 @@ import static de.eshg.servicedirectory.util.X509Utils.ESHGACTOR_BUNDLE_NAME;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.ssl.SslContext;
 import jakarta.annotation.PreDestroy;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.net.ssl.SSLException;
@@ -49,6 +50,7 @@ public abstract class ProxyServer implements HealthIndicator {
   private DisposableChannel server;
 
   private final boolean clientAuth;
+  private final List<String> clientCnAllowList;
   private final SslBundles sslBundles;
   private final SSLFactory dynamicSSLFactory;
 
@@ -62,11 +64,13 @@ public abstract class ProxyServer implements HealthIndicator {
       String listeningHost,
       Integer listeningPort,
       boolean clientAuth,
+      List<String> clientCnAllowList,
       SslBundles sslBundles) {
     this.baseServer = baseServer;
     this.listeningHost = Objects.requireNonNull(listeningHost);
     this.listeningPort = Objects.requireNonNull(listeningPort);
     this.clientAuth = clientAuth;
+    this.clientCnAllowList = clientCnAllowList;
     this.sslBundles = sslBundles;
     dynamicSSLFactory =
         SSLFactory.builder()
@@ -91,6 +95,10 @@ public abstract class ProxyServer implements HealthIndicator {
 
   public boolean isClientAuth() {
     return clientAuth;
+  }
+
+  public List<String> getClientCnAllowList() {
+    return clientCnAllowList;
   }
 
   void onSslBundleUpdate(SslBundle sslBundle) {

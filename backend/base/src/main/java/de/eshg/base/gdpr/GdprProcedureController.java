@@ -20,7 +20,9 @@ import de.eshg.base.gdpr.api.*;
 import de.eshg.base.gdpr.persistence.*;
 import de.eshg.base.util.MappingUtil;
 import de.eshg.base.util.PaginationUtil;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +60,8 @@ public class GdprProcedureController implements GdprProcedureApi {
         mapToApi(gdprProcedure.getStatus()),
         mapToApi(gdprProcedure.getType()),
         mapToApi(gdprProcedure.getIdentificationData()),
-        gdprProcedure.getCreatedAt());
+        gdprProcedure.getCreatedAt(),
+        gdprProcedure.getMatterOfConcern());
   }
 
   private static GdprIdentificationDataDto mapToApi(IdentificationData identificationData) {
@@ -235,6 +238,43 @@ public class GdprProcedureController implements GdprProcedureApi {
         service.addCentralFileIdToGdprProcedure(request.centralFileId(), id, request.version()));
   }
 
+  @Override
+  @Transactional
+  public void setMatterOfConcern(UUID id, SetMatterOfConcernRequest request) {
+    GdprProcedure procedure = service.getGdprProcedureForUpdate(id);
+    ValidationUtil.validateVersion(request.version(), procedure);
+    procedure.setMatterOfConcern(request.concern());
+  }
+
+  @Override
+  @Transactional
+  public void changeStatus(UUID id, GdprProcedureChangeStatusRequest request) {
+    GdprProcedure procedure = service.getGdprProcedureForUpdate(id);
+
+    if (procedure.getType() != GdprProcedureType.RIGHT_TO_OBJECT) {
+      throw new BadRequestException(
+          "Changing the status of GDPR procedures with type '"
+              + procedure.getType()
+              + "' is not supported yet.");
+    }
+
+    ValidationUtil.validateVersion(request.version(), procedure);
+
+    if (procedure.getStatus() == GdprProcedureStatus.DRAFT) {
+      if (request.newStatus() != GdprProcedureStatusDto.IN_PROGRESS) {
+        throw badStatusTransition(request.newStatus(), procedure.getStatus());
+      }
+
+      if (procedure.getMatterOfConcern() == null) {
+        throw new BadRequestException("Cannot start procedure without valid matter of concern.");
+      }
+
+      procedure.setStatus(GdprProcedureStatus.IN_PROGRESS);
+    } else {
+      throw badStatusTransition(request.newStatus(), procedure.getStatus());
+    }
+  }
+
   public GetGdprProceduresResponse mapGdprProceduresToApi(Page<GdprProcedure> procedures) {
     return new GetGdprProceduresResponse(
         procedures.stream().map(GdprProcedureController::mapGdprProcedureToApi).toList(),
@@ -256,5 +296,15 @@ public class GdprProcedureController implements GdprProcedureApi {
       case null -> GdprProcedure_.CREATED_AT;
       case GdprProcedureSortKey.CREATED_AT -> GdprProcedure_.CREATED_AT;
     };
+  }
+
+  private static BadRequestException badStatusTransition(
+      GdprProcedureStatusDto wantedStatus, GdprProcedureStatus currentStatus) {
+    return new BadRequestException(
+        "Status cannot be changed to '"
+            + wantedStatus
+            + "' while current status is '"
+            + currentStatus
+            + "'.");
   }
 }

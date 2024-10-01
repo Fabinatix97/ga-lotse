@@ -10,7 +10,6 @@ import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import java.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationAutoConfiguration;
@@ -38,19 +37,15 @@ public class TestHelperAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "eshg.testclock.enabled",
-      havingValue = "true",
-      matchIfMissing = true)
-  public TestHelperClock testHelperClock() {
+  @ConditionalOnProperty(value = "eshg.testclock.enabled", havingValue = "true")
+  TestHelperClock testHelperClock() {
     TestHelperClock testHelperClock = TestHelperClock.defaultBerlin();
     log.warn("Using {}", testHelperClock.getClass().getSimpleName());
     return testHelperClock;
   }
 
   @Bean
-  public ValidationConfigurationCustomizer clockProviderConfigurationCustomizer(
-      @Autowired Clock clock) {
+  ValidationConfigurationCustomizer clockProviderConfigurationCustomizer(Clock clock) {
     return configuration -> configuration.clockProvider(() -> clock);
   }
 }

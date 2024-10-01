@@ -75,8 +75,8 @@ public class BusinessModuleAggregationHelper extends AggregationHelper {
     }
   }
 
-  public <T2> List<ClientResponse<T2>> requestFromBusinessModulesClients(
-      Set<String> businessModules, Function<BusinessModuleClient, T2> getFromBusinessModule) {
+  public <T> List<ClientResponse<T>> requestFromBusinessModulesClients(
+      Set<String> businessModules, Function<BusinessModuleClient, T> getFromBusinessModule) {
     List<BusinessModuleClient> businessModuleClients =
         businessModuleClientRegistry.getBusinessModuleClients().stream()
             .filter(client -> bySetContainingValue(businessModules, client::getLocation))
@@ -84,9 +84,9 @@ public class BusinessModuleAggregationHelper extends AggregationHelper {
     return requestFromClients(businessModuleClients, getFromBusinessModule);
   }
 
-  public <T2> List<ClientResponse<T2>> requestFromBusinessModules(
+  public <T> List<ClientResponse<T>> requestFromBusinessModules(
       Set<BusinessModule> businessModules,
-      Function<BusinessModuleClient, T2> getFromBusinessModule) {
+      Function<BusinessModuleClient, T> getFromBusinessModule) {
     Set<String> businessModuleNames =
         businessModules == null
             ? null

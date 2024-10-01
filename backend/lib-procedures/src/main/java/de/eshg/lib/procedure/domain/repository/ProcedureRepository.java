@@ -171,9 +171,31 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
   List<ProcedureT> findByRelatedPersonsCentralFileStateIdInOrderByCreatedAtDescIdAsc(
       Collection<UUID> centralFileStateIds);
 
-  List<ProcedureT>
-      findByRelatedPersonsCentralFileStateIdInAndRelatedPersonsPersonTypeOrderByCreatedAtDescIdAsc(
-          Collection<UUID> centralFileStateIds, PersonType personType);
+  @Query(
+      """
+ SELECT procedure from #{#entityName} procedure
+JOIN procedure.relatedPersons relatedPerson
+WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
+AND relatedPerson.personType = :personType
+ORDER BY procedure.createdAt DESC, procedure.id ASC
+""")
+  List<ProcedureT> findByRelatedPersonsCentralFileStateIds(
+      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds,
+      @Param("personType") PersonType personType);
+
+  @Query(
+      """
+    SELECT procedure from #{#entityName} procedure
+    JOIN procedure.relatedPersons relatedPerson
+    WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
+    AND relatedPerson.personType = :personType
+    AND procedure.procedureStatus = :procedureStatus
+    ORDER BY procedure.createdAt DESC, procedure.id ASC
+    """)
+  List<ProcedureT> findByRelatedPersonsCentralFileStateIds(
+      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds,
+      @Param("personType") PersonType personType,
+      @Param("procedureStatus") ProcedureStatus procedureStatus);
 
   List<ProcedureT> findAllByArchivingRelevance(ArchivingRelevance archivingRelevance);
 

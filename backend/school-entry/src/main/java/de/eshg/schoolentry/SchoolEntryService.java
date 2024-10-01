@@ -14,6 +14,7 @@ import static java.util.Comparator.nullsLast;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.SortDirection;
+import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
@@ -53,19 +54,18 @@ import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
 import de.eshg.schoolentry.percentiles.PercentileCalculationService;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProcedureSortKey;
+import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.MonthDay;
 import java.time.Year;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -105,6 +105,7 @@ public class SchoolEntryService {
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
   private final ProceduresHelper proceduresHelper;
   private final ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService;
+  private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
 
   public SchoolEntryService(
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
@@ -133,7 +134,8 @@ public class SchoolEntryService {
       ProcedureSearchService<SchoolEntryProcedure> procedureSearchService,
       SchoolEntryFeatureToggle schoolEntryFeatureToggle,
       ProceduresHelper proceduresHelper,
-      ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService) {
+      ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService,
+      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.personRepository = personRepository;
     this.hearingTestResultRepository = hearingTestResultRepository;
@@ -161,11 +163,14 @@ public class SchoolEntryService {
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
     this.proceduresHelper = proceduresHelper;
     this.procedureDeletionService = procedureDeletionService;
+    this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
   }
 
   public SchoolEntryProcedure createProcedure(CreateProcedureRequest request) {
     return createProcedures(
-            List.of(new ImportProcedureData(request.child(), request.type())),
+            List.of(
+                new ImportProcedureData(
+                    request.child(), ProcedureMapper.mapToDomain(request.type()))),
             null,
             null,
             null,
@@ -192,7 +197,7 @@ public class SchoolEntryService {
       ImportProcedureData procedure = procedures.get(i);
       ProcedureIds procedureIds = createdIds.get(i);
 
-      ProcedureTypeDto procedureType = procedure.procedureType();
+      ProcedureType procedureType = procedure.procedureType();
 
       SchoolEntryProcedure schoolEntryProcedure =
           saveSchoolEntryProcedure(
@@ -230,14 +235,14 @@ public class SchoolEntryService {
   private SchoolEntryProcedure saveSchoolEntryProcedure(
       UUID childIdFromCentralFile,
       List<UUID> custodianIdsFromCentralFile,
-      ProcedureTypeDto type,
+      ProcedureType type,
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
       boolean isEntryLevel) {
     SchoolEntryProcedure schoolEntryProcedure = new SchoolEntryProcedure();
     schoolEntryProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
-    schoolEntryProcedure.setProcedureType(ProcedureMapper.mapToDomain(type));
+    schoolEntryProcedure.setProcedureType(type);
     schoolEntryProcedure.setSchoolId(schoolId);
     schoolEntryProcedure.setLocationId(locationId);
     schoolEntryProcedure.setEntryLevel(isEntryLevel);
@@ -1064,26 +1069,11 @@ public class SchoolEntryService {
     }
   }
 
-  public List<ProcedureWithChildData> searchOpenProceduresByChildWithExactMatching(
-      ImportChildData childData) {
-    List<SchoolEntryProcedure> procedures =
-        procedureSearchService
-            .searchProceduresByPerson(
-                childData.firstName(),
-                childData.lastName(),
-                childData.dateOfBirth(),
-                PersonType.PATIENT)
-            .stream()
-            .filter(procedure -> ProcedureStatus.OPEN.equals(procedure.getProcedureStatus()))
-            .toList();
-    return personClient
-        .augmentWithChildData(procedures)
-        .filter(
-            procedure ->
-                Objects.equals(procedure.child().firstName(), childData.firstName())
-                    && Objects.equals(procedure.child().lastName(), childData.lastName())
-                    && Objects.equals(procedure.child().dateOfBirth(), childData.dateOfBirth()))
-        .toList();
+  public Map<PersonKeyAttributes, List<ProcedureWithChildData>> searchForMergeCandidates(
+      Set<PersonKeyAttributes> searchAttributes) {
+    Map<PersonKeyAttributes, List<SchoolEntryProcedure>> proceduresByPersons =
+        procedureSearchService.searchOpenProceduresByPersons(searchAttributes, PersonType.PATIENT);
+    return personClient.augmentWithChildData(proceduresByPersons);
   }
 
   void updateHearingTestResult(
@@ -1456,37 +1446,11 @@ public class SchoolEntryService {
   }
 
   private void updateProcedureTypeWithSuggestion(SchoolEntryProcedure procedure) {
-    if (procedure.isEntryLevel()) {
-      procedure.setProcedureType(ProcedureType.ENTRY_LEVEL);
-    } else {
-      LocalDate dateOfBirth = personClient.fetchChildData(procedure).dateOfBirth();
-      if (isRegularSchoolEntry(dateOfBirth, procedure.getSchoolYear())) {
-        procedure.setProcedureType(ProcedureType.REGULAR_EXAMINATION);
-      } else {
-        procedure.setProcedureType(ProcedureType.CAN_CHILD);
-      }
-    }
-  }
-
-  @VisibleForTesting
-  boolean isRegularSchoolEntry(LocalDate dateOfBirth, Year schoolYear) {
-    MonthDay maxDateOfBirthForRegularSchoolEntry =
-        schoolEntryProperties.getMaxDateOfBirthForRegularSchoolEntry();
-    if (schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      LocalDate maxDateOfBirthForRegularSchoolEntryWithYear =
-          schoolYear.minusYears(6).atMonthDay(maxDateOfBirthForRegularSchoolEntry);
-      if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
-        return !dateOfBirth.isAfter(maxDateOfBirthForRegularSchoolEntryWithYear);
-      } else {
-        return dateOfBirth.isBefore(maxDateOfBirthForRegularSchoolEntryWithYear);
-      }
-    } else {
-      if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
-        return MonthDay.from(dateOfBirth).compareTo(maxDateOfBirthForRegularSchoolEntry) <= 0;
-      } else {
-        return MonthDay.from(dateOfBirth).compareTo(maxDateOfBirthForRegularSchoolEntry) < 0;
-      }
-    }
+    procedure.setProcedureType(
+        procedureTypeAssignmentHelper.suggestProcedureType(
+            procedure.isEntryLevel(),
+            personClient.fetchChildData(procedure).dateOfBirth(),
+            procedure.getSchoolYear()));
   }
 
   void updateWaitingRoomDetails(

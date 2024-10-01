@@ -222,11 +222,12 @@ public class AnamnesisMapper {
     anamnesis.setResponsiblePhysician(
         citizenAnamnesisDto.additionalChildInfo().responsiblePhysician());
     anamnesis.setNumberOfSiblings(
-        citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().isEmpty()
+        citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears() == null
+                || citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().isEmpty()
             ? null
             : citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().size());
     anamnesis.setSiblingsBirthYears(
-        citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears().isEmpty()
+        citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears() == null
             ? null
             : citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears());
 

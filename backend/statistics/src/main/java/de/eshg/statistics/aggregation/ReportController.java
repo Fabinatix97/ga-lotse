@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
@@ -41,5 +42,13 @@ public class ReportController {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
 
     return reportService.getReportDetailPage(reportId);
+  }
+
+  @DeleteExchange(value = "/{reportId}", accept = APPLICATION_JSON_VALUE)
+  @ApiResponse(responseCode = "200", description = "Returned when the report is deleted")
+  @Operation(summary = "Delete a report")
+  public void deleteReport(@PathVariable(name = "reportId") UUID reportId) {
+    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
+    reportService.deleteReport(reportId);
   }
 }

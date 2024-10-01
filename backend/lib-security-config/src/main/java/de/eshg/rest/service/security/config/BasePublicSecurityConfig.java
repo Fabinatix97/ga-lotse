@@ -71,6 +71,8 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
     requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
+    requestMatchers(PUT, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
   }
 
   private void contacts() {

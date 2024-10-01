@@ -7,7 +7,7 @@ package de.eshg.schoolentry.importer;
 
 import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
-import de.eshg.schoolentry.api.ProcedureTypeDto;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.business.model.AddressData;
 import de.eshg.schoolentry.business.model.ImportChildData;
 import de.eshg.schoolentry.business.model.ImportCustodianData;
@@ -56,7 +56,7 @@ public class CitizenListRowProcessor extends RowProcessor<CitizenListRowValues> 
     return new ImportProcedureData(
         PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
         values.getCustodians(),
-        ProcedureTypeDto.DRAFT_CITIZEN_OFFICE_IMPORT,
+        ProcedureType.DRAFT_CITIZEN_OFFICE_IMPORT,
         false,
         false);
   }

@@ -4,12 +4,12 @@
  */
 
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
-import { Button } from "@mui/joy";
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import { Button, Divider, Stack } from "@mui/joy";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { MessagesSidebarContent } from "./MessagesSidebarContent";
@@ -17,26 +17,29 @@ import { MessagesSidebarContent } from "./MessagesSidebarContent";
 export function MessagesSidebar() {
   const { chatSidebar } = useChat();
   const { tryNavigate } = useNavigation();
+
   return (
     <Sidebar
       open={chatSidebar.isOpen}
       onClose={chatSidebar.close}
       zIndex={"headerSidebar"}
     >
-      <SidebarContent title="Nachrichten">
+      <SidebarContent title="Ungelesene Chats">
         <MessagesSidebarContent />
       </SidebarContent>
-      <SidebarActions>
+      <Stack sx={{ paddingTop: 3 }} data-testid="sidebarActions">
+        <Divider sx={{ marginBottom: 3, marginInline: -3, marginTop: -3 }} />
         <Button
+          sx={{ alignSelf: "end" }}
           onClick={() => {
             chatSidebar.close();
             tryNavigate(routes.chat as string);
           }}
-          sx={{ alignSelf: "end" }}
+          endDecorator={<OpenInNew />}
         >
-          Zum Chat
+          Chatbereich
         </Button>
-      </SidebarActions>
+      </Stack>
     </Sidebar>
   );
 }

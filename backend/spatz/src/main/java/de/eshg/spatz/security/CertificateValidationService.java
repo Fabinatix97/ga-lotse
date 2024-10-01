@@ -98,6 +98,8 @@ public class CertificateValidationService {
     for (ActorResponseDto actor : allActors) {
       if (ActorTypeDto.LSD == actor.type() || isValidActor(actor)) {
         result.add(actor);
+      } else {
+        log.info("Ignoring invalid actor {}", actor.commonName());
       }
     }
 

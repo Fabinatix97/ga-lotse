@@ -70,7 +70,7 @@ public class HttpProxyClient {
       HttpMethod method,
       Consumer<? super HttpHeaders> headersConsumer,
       HttpClient httpClient) {
-    log.info("Starting proxy client");
+    log.debug("Starting proxy client");
 
     logConnecting(uri, httpClient);
 

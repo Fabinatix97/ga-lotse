@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiChecklistDefinitionVersion } from "@eshg/employee-portal-api/inspection";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Stack } from "@mui/joy";
@@ -20,8 +21,13 @@ import {
   useEditDraftChecklistDefinitionVersion,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { ChecklistDefinitionHeaderCard } from "@/lib/businessModules/inspection/components/checklistDefinition/header/ChecklistDefinitionHeaderCard";
-import { ChecklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/checklistDefinition/header/ChecklistDefinitionHeaderRow";
+import {
+  ChecklistDefinitionHeaderRow,
+  ChecklistDefinitionSubmitButtons,
+} from "@/lib/businessModules/inspection/components/checklistDefinition/header/ChecklistDefinitionHeaderRow";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { ChecklistDefinitionSectionsList } from "./sections/ChecklistDefinitionSectionsList";
 
@@ -42,6 +48,10 @@ export function EditChecklistDefinition({
   const { mutateAsync: addCldVersion } = useAddChecklistDefinitionVersion();
   const { mutateAsync: editDraftCldVersion } =
     useEditDraftChecklistDefinitionVersion();
+  const [canEditChecklists, canEditCoreChecklists] = useHasUserRolesCheck([
+    ApiUserRole.InspectionChecklistdefinitionsWrite,
+    ApiUserRole.InspectionCorechecklistdefinitionsEdit,
+  ]);
 
   const hasDraft = cldVersion?.hasDraft ?? false;
   const isNewestVersion =
@@ -49,6 +59,9 @@ export function EditChecklistDefinition({
     (cldVersion?.context.validTo === undefined &&
       cldVersion?.context.published === true);
   const readOnlyMode = readonly ?? !isNewestVersion;
+  const canSeeSaveActions =
+    canEditChecklists &&
+    (canEditCoreChecklists || !cldVersion?.isCoreChecklist);
 
   const formData: FormChecklistDefinitionVersion = useMemo(
     () =>
@@ -136,6 +149,16 @@ export function EditChecklistDefinition({
               version={cldVersion?.context.version}
             />
             <ChecklistDefinitionSectionsList readOnlyMode={readOnlyMode} />
+            {canSeeSaveActions && !readOnlyMode && (
+              <ButtonBar
+                right={
+                  <ChecklistDefinitionSubmitButtons
+                    isSubmitting={isSubmitting}
+                    onPublish={(shouldPublish) => (publish = shouldPublish)}
+                  />
+                }
+              />
+            )}
           </Stack>
         </FormPlus>
       )}

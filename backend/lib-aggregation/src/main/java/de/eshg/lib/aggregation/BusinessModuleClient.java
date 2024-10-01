@@ -30,6 +30,7 @@ import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.rest.client.AccessTokenForwardingInterceptor;
+import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
 import java.time.Duration;
 import java.time.Instant;
@@ -93,6 +94,7 @@ public class BusinessModuleClient extends ClientWithLocationAndTimeout
         restClientBuilder
             .baseUrl(url)
             .requestInterceptor(new AccessTokenForwardingInterceptor())
+            .requestInterceptor(new CorrelationIdForwardingInterceptor())
             .build();
 
     RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);

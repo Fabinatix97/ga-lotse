@@ -28,6 +28,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.net.ssl.SSLHandshakeException;
@@ -67,6 +68,7 @@ public final class OutboundServer extends ProxyServer {
         outboundConfiguration.listeningHost(),
         outboundConfiguration.handlerPort(),
         true,
+        List.of(),
         sslBundles);
     this.outboundTargetPort = outboundConfiguration.targetPort();
     this.addressMapper = addressMapper;

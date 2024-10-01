@@ -7,7 +7,7 @@ package de.eshg.statistics.persistence.entity;
 
 import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -26,7 +26,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(
     uniqueConstraints = @UniqueConstraint(columnNames = {"table_column_id", "table_row_id"}),
     indexes = @Index(columnList = "table_row_id"))
-public abstract class CellEntry extends BaseEntity {
+public abstract class CellEntry extends SequencedBaseEntity {
 
   @DataSensitivity(PUBLIC)
   @ManyToOne(fetch = FetchType.LAZY, optional = false)

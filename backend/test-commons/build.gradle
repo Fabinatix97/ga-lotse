@@ -9,6 +9,7 @@ dependencies {
     api project(':util-commons')
     api project(':lib-keycloak')
     api project(':test-helper-commons-api')
+    implementation project(':test-helper-commons-spring')
 
     implementation 'de.cronn:postgres-snapshot-util:latest.release'
     implementation 'org.springframework:spring-webmvc'

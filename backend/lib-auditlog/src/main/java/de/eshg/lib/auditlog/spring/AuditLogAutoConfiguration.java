@@ -13,6 +13,7 @@ import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.auditlog.DefaultUuidProvider;
 import de.eshg.lib.auditlog.config.AuditLogConfig;
 import de.eshg.rest.client.AccessTokenForwardingInterceptor;
+import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,7 @@ public class AuditLogAutoConfiguration {
         restClientBuilder
             .baseUrl(auditLogConfig.getServiceUrl())
             .requestInterceptor(new AccessTokenForwardingInterceptor())
+            .requestInterceptor(new CorrelationIdForwardingInterceptor())
             .build();
 
     RestClientAdapter restClientAdapter = RestClientAdapter.create(restTemplate);

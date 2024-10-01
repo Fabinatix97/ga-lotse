@@ -21,7 +21,7 @@ import { mapEvaluations } from "./useGetDetailPageInformation";
 export function mapToReportDetailsView(
   response: ApiGetReportDetailPageResponse,
 ): ReportDetailsView {
-  const user = response.userDto;
+  const user = response.userReportSeries;
   const attributes: FlatAttribute[] = mapTableColumnHeadersToFlatAttributes(
     response.tableColumnHeaders,
   );

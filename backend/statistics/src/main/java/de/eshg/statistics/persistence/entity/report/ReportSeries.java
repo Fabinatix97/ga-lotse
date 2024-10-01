@@ -193,6 +193,11 @@ public class ReportSeries extends BaseEntityWithExternalId {
     reports.add(report);
   }
 
+  public void removeReport(Report report) {
+    report.setReportSeries(null);
+    this.reports.remove(report);
+  }
+
   public List<Report> getReports() {
     return reports;
   }

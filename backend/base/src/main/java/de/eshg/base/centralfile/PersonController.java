@@ -135,6 +135,27 @@ public class PersonController implements PersonApi {
 
   @Override
   @Transactional(readOnly = true)
+  public GetPersonFileStateIdsByKeyAttributesResponse
+      getPersonFileStateIdsByReferencePersonKeyAttributes(
+          GetPersonFileStateIdsByKeyAttributesRequest request) {
+    List<Person> referencePersons =
+        personService.findReferencePersonsByKeyAttributes(request.searchAttributes());
+
+    Map<PersonKeyAttributes, List<UUID>> result = new LinkedHashMap<>();
+    for (Person referencePerson : referencePersons) {
+      PersonKeyAttributes key =
+          new PersonKeyAttributes(
+              referencePerson.getFirstName(),
+              referencePerson.getLastName(),
+              referencePerson.getBirthDetails().dateOfBirth());
+      result.put(
+          key, personRepository.findAllByReferencePersonIdOrderById(referencePerson.getId()));
+    }
+    return new GetPersonFileStateIdsByKeyAttributesResponse(result);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
   public GetPersonFileStatesResponse getPersonFileStates(GetPersonFileStatesRequest request) {
     List<UUID> queryIds = request.fileStateIds().stream().distinct().toList();
 

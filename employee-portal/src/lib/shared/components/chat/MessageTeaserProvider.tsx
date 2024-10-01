@@ -29,7 +29,6 @@ import { getStatusColor } from "@/lib/businessModules/chat/shared/utils";
 
 interface SnackbarValues {
   username: string;
-  avatar?: string | null;
   text: string;
   link: string;
   userPresence: string;
@@ -46,13 +45,13 @@ type SnackbarValuesWithoutKey = Omit<SnackbarValues, "key">;
 function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
   const pathname = usePathname();
   const { tryNavigate } = useNavigation();
-  const { chatSidebar } = useChat();
+  const { chatSidebar, userSettings } = useChat();
 
   useEffect(() => {
-    if (pathname === routes.index) {
+    if (pathname === routes.index || chatSidebar.isOpen) {
       onClose();
     }
-  }, [onClose, pathname]);
+  }, [onClose, pathname, chatSidebar.isOpen]);
 
   return (
     <Snackbar
@@ -60,7 +59,7 @@ function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
       variant="soft"
       size="md"
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      autoHideDuration={4000}
+      autoHideDuration={5000}
       key={snackbar?.key}
       onClose={(_event, reason) => {
         if (reason !== "clickaway") {
@@ -96,7 +95,7 @@ function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
                   alignItems: "center",
                 }}
               >
-                {snackbar.userPresence && (
+                {userSettings.sharePresence && snackbar.userPresence && (
                   <Box
                     sx={{
                       width: "0.625rem",
@@ -111,7 +110,6 @@ function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
                 )}
                 <Typography
                   level="title-md"
-                  fontStyle="Poppins"
                   fontWeight={500}
                   sx={{
                     fontWeight: "bold",

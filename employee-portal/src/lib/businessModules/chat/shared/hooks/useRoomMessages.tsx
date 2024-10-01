@@ -18,6 +18,7 @@ import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import {
   Message,
+  ReadConfirmationsPerUser,
   RoomEventDetails,
   isChatMessageType,
   isMessageTypeWithBody,
@@ -30,6 +31,7 @@ export function useRoomMessages() {
   const { matrixClient, clientState } = useChatClientContext();
   const messagesLimit = 10;
   const [isLoading, setIsLoading] = useState(false);
+  const loggedInUserId = matrixClient.getUserId();
 
   async function handleSendMessage(text: string, mentionedUsers?: string[]) {
     try {
@@ -169,7 +171,23 @@ export function useRoomMessages() {
             ) {
               return;
             }
-            return await onMessage({ event, room, removed: false });
+            const readReceipts = room.getReceiptsForEvent(event);
+            const message = await onMessage({ event, room, removed: false });
+            const readReceiptsObj =
+              readReceipts?.reduce<ReadConfirmationsPerUser>(
+                (acc, { userId, data }) => {
+                  if (userId === loggedInUserId) return acc;
+                  return {
+                    ...acc,
+                    [userId]: {
+                      timestamp: data.ts,
+                      eventId: event.event.event_id ?? "",
+                    },
+                  };
+                },
+                {},
+              );
+            return { ...message, readReceipts: readReceiptsObj };
           }),
         );
 
@@ -203,7 +221,7 @@ export function useRoomMessages() {
         setIsLoading(false);
       }
     },
-    [matrixClient, onMessage],
+    [loggedInUserId, matrixClient, onMessage],
   );
 
   async function paginateMessages() {

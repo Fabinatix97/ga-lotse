@@ -12,8 +12,10 @@ import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateIdsByKeyAttributesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
+import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -26,10 +28,13 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.function.Function;
@@ -104,6 +109,27 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     return foundProcedures;
   }
 
+  public Map<PersonKeyAttributes, List<ProcedureT>> searchOpenProceduresByPersons(
+      Set<PersonKeyAttributes> searchAttributes, PersonType personType) {
+    if (searchAttributes.isEmpty()) {
+      return Map.of();
+    }
+    Map<PersonKeyAttributes, List<UUID>> fileStateIdsByPersonAttributes =
+        personApi
+            .getPersonFileStateIdsByReferencePersonKeyAttributes(
+                new GetPersonFileStateIdsByKeyAttributesRequest(searchAttributes))
+            .fileStateIdsByPersons();
+
+    Map<PersonKeyAttributes, List<ProcedureT>> result = new LinkedHashMap<>();
+    for (Entry<PersonKeyAttributes, List<UUID>> entry : fileStateIdsByPersonAttributes.entrySet()) {
+      List<ProcedureT> procedures =
+          procedureRepository.findByRelatedPersonsCentralFileStateIds(
+              entry.getValue(), personType, ProcedureStatus.OPEN);
+      result.put(entry.getKey(), procedures);
+    }
+    return result;
+  }
+
   public List<ProcedureT> searchProceduresByPerson(
       String firstName, String lastName, LocalDate dateOfBirth, PersonType personType) {
     List<UUID> fileStateIds =
@@ -116,9 +142,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
                         .fileStateIds())
             .flatMap(Collection::stream)
             .toList();
-    return procedureRepository
-        .findByRelatedPersonsCentralFileStateIdInAndRelatedPersonsPersonTypeOrderByCreatedAtDescIdAsc(
-            fileStateIds, personType);
+    return procedureRepository.findByRelatedPersonsCentralFileStateIds(fileStateIds, personType);
   }
 
   private Function<ProcedureT, SearchableProcedure<ProcedureT>> formatAsSearchable(

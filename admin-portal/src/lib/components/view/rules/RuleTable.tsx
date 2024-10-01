@@ -9,7 +9,6 @@ import {
   ApiAdminStagedEntityAdminPartialRule,
   ApiAdminStagedEntityType,
   ApiGetRulesResponse,
-  ApiStagingStatus,
 } from "@eshg/admin-portal-api/serviceDirectory";
 import { createColumnHelper, filterFns } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -216,7 +215,7 @@ function useGetSubRows() {
             _matchingClientActors: [],
             _matchingServerActors: [],
             stagedEntityType: ApiAdminStagedEntityType.Del,
-            stagingStatus: ApiStagingStatus.WorkInProgress,
+            stagingStatus: sr.stagingStatus,
             _type: "rule",
             _parent: originalRow,
           };

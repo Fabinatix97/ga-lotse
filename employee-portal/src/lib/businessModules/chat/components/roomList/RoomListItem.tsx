@@ -14,7 +14,7 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { RoomLastMessage } from "@/lib/businessModules/chat/shared/types";
 import {
-  convertMessageTimestamp,
+  formatChatDate,
   getMemberAvatarUrl,
   getRoomAvatarUrl,
   getRoomLastMessage,
@@ -34,7 +34,7 @@ export function RoomListItem({
   const { matrixClient, unreadNotificationsPerRoom } = useChatClientContext();
   const [lastMessage, setLastMessage] = useState<RoomLastMessage>();
 
-  const parsedDate = convertMessageTimestamp(lastMessage?.timestamp);
+  const parsedDate = formatChatDate(lastMessage?.timestamp);
   const unreadNotifications = unreadNotificationsPerRoom[room.roomId];
 
   // TO DO - finish notification feature

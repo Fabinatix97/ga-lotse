@@ -5,24 +5,24 @@
 
 package de.eshg.schoolentry.business.model;
 
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.api.CreatePersonDto;
-import de.eshg.schoolentry.api.ProcedureTypeDto;
 import java.util.List;
 
 public record ImportProcedureData(
     CreatePersonDto child,
     List<ImportCustodianData> custodians,
-    ProcedureTypeDto procedureType,
+    ProcedureType procedureType,
     boolean isEntryLevel,
     boolean isEarlyExamination) {
 
-  public ImportProcedureData(CreatePersonDto child, ProcedureTypeDto procedureType) {
+  public ImportProcedureData(CreatePersonDto child, ProcedureType procedureType) {
     this(child, procedureType, false, false);
   }
 
   public ImportProcedureData(
       CreatePersonDto child,
-      ProcedureTypeDto procedureType,
+      ProcedureType procedureType,
       boolean isEntryLevel,
       boolean isEarlyExamination) {
     this(child, List.of(), procedureType, isEntryLevel, isEarlyExamination);

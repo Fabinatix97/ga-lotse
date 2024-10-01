@@ -12,6 +12,7 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.RequestContextFaker;
 import java.time.Clock;
 import net.datafaker.Faker;
 import org.springframework.core.env.Environment;
@@ -61,7 +62,11 @@ public class InspectionPopulator extends BasePopulator<InspectionDto> {
       Faker faker,
       BasePopulator<InspectionDto>.UniqueValueProvider uniqueValueProvider) {
     InspectionDto response = facilityTestDataProvider.createTestFacilityAndStartInsp(index);
-    inspectionTestDataProvider.prepareTestInspection(response.externalId(), faker, index);
+    RequestContextFaker.withFakedRequestContextIfNecessary(
+        () -> {
+          inspectionTestDataProvider.prepareTestInspection(response.externalId(), faker, index);
+          return null;
+        });
     return response;
   }
 

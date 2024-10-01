@@ -12,7 +12,6 @@ import {
   ApiFederalState,
   ApiGetOrgUnitsResponse,
   ApiOrgUnitType,
-  ApiStagingStatus,
 } from "@eshg/admin-portal-api/serviceDirectory";
 import { createColumnHelper, filterFns } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -206,7 +205,7 @@ function getSubRows(orgUnits: ApiGetOrgUnitsResponse | undefined) {
             author: sou.author,
             _override: DeleteRow,
             stagedEntityType: ApiAdminStagedEntityType.Del,
-            stagingStatus: ApiStagingStatus.WorkInProgress,
+            stagingStatus: sou.stagingStatus,
             _type: "orgUnit",
             _parent: originalRow,
           },

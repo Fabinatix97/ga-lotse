@@ -16,13 +16,18 @@ import org.springframework.stereotype.Component;
 public class CreateLabelsTask {
 
   public static final String SPECIAL_NEEDS_LABEL_NAME = "Besonderer Förderbedarf";
+  public static final String INFORMATION_BLOCK_LABEL_NAME = "Auskunftssperre";
 
   private static final List<LabelData> SYSTEM_LABELS =
       List.of(
           new LabelData(
               SPECIAL_NEEDS_LABEL_NAME,
               "Vorgänge mit dieser Kennung erhalten Termine aus den geplanten Terminblöcken der Art \"Besonderer Förderbedarf\"",
-              "#008000"));
+              "#008000"),
+          new LabelData(
+              INFORMATION_BLOCK_LABEL_NAME,
+              "Für den Vorgang liegt eine Auskunftssperre vor.",
+              "#800080"));
 
   private final LabelRepository labelRepository;
   private final TransactionHelper transactionHelper;
@@ -37,7 +42,7 @@ public class CreateLabelsTask {
     transactionHelper.executeInTransaction(
         () ->
             SYSTEM_LABELS.forEach(
-                (labelData) -> {
+                labelData -> {
                   if (!labelRepository.existsByName(labelData.name())) {
                     Label label = new Label();
                     label.setName(labelData.name());

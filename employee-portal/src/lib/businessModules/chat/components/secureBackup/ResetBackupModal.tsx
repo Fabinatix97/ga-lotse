@@ -29,18 +29,18 @@ export function ResetBackupModal(props: Omit<BaseModalProps, "children">) {
 
   return (
     <BaseModal
-      modalTitle="Reset everything"
+      modalTitle="Alles zurücksetzen"
       key="reset-backup-modal"
       {...props}
     >
       <>
         <Typography>
-          Only do this if you have no other device to complete verification
-          with.
+          Tun Sie dies nur, wenn Sie kein anderes Gerät haben, mit dem Sie die
+          Verifizierung abschließen können.
         </Typography>
         <Typography textColor="text.secondary">
-          If you reset everything, you will restart with no trusted sessions, no
-          trusted users, and might not be able to see past messages.
+          Wenn Sie alles zurücksetzen, können Sie möglicherweise frühere
+          Nachrichten nicht mehr lesen.
         </Typography>
         <Stack
           direction="row"
@@ -54,7 +54,7 @@ export function ResetBackupModal(props: Omit<BaseModalProps, "children">) {
             onClick={props.onClose}
             data-testid="confirmationDialogCancel"
           >
-            Cancel
+            Abbrechen
           </Button>
           <Button
             size="sm"
@@ -63,7 +63,7 @@ export function ResetBackupModal(props: Omit<BaseModalProps, "children">) {
             onClick={handleResetAllClick}
             data-testid="confirmationDialogConfirm"
           >
-            Reset everything
+            Alles zurücksetzen
           </Button>
         </Stack>
       </>

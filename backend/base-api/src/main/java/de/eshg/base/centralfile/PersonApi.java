@@ -120,6 +120,17 @@ public interface PersonApi {
           @Valid
           AddPersonFileStatesRequest request);
 
+  @PostExchange(FILE_STATES_URL + "/bulk-search")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+    Search multiple reference persons by the given key attributes
+    and return all file state ids associated with these reference persons.
+    """)
+  GetPersonFileStateIdsByKeyAttributesResponse getPersonFileStateIdsByReferencePersonKeyAttributes(
+      @Valid @RequestBody GetPersonFileStateIdsByKeyAttributesRequest request);
+
   @PostExchange(FILE_STATES_URL + "/bulk-get")
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get multiple persons")

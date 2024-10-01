@@ -55,6 +55,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,6 +69,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ContentDisposition;
@@ -337,10 +339,15 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
       byte[] encapsulatedKey = Files.readAllBytes(encapsulatedKeyPath);
       log.info("Using encapsulated key {}", encapsulatedKeyPath);
 
-      return new GetEncryptedSymmetricKeyResponse(encapsulatedKey, encryptedSymmetricKey);
+      return new GetEncryptedSymmetricKeyResponse(
+          toByteList(encapsulatedKey), toByteList(encryptedSymmetricKey));
     } catch (IOException e) {
       throw new UncheckedIOException("Unable to read user specific key", e);
     }
+  }
+
+  private List<Byte> toByteList(byte[] byteArray) {
+    return Arrays.asList(ArrayUtils.toObject(byteArray));
   }
 
   @Override

@@ -8,12 +8,14 @@ package de.eshg.schoolentry.importer;
 import static de.eshg.schoolentry.importer.SchoolListRowProcessor.SchoolListFields.*;
 
 import de.eshg.base.CountryCodeDto;
-import de.eshg.schoolentry.api.ProcedureTypeDto;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.business.model.AddressData;
 import de.eshg.schoolentry.business.model.ImportChildData;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.mapper.PersonMapper;
+import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
+import java.time.Year;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import org.apache.poi.ss.usermodel.Cell;
@@ -44,8 +46,14 @@ public class SchoolListRowProcessor extends RowProcessor<SchoolListRowValues> {
     }
   }
 
-  public SchoolListRowProcessor(Sheet sheet) {
+  private final Year schoolYear;
+  private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
+
+  public SchoolListRowProcessor(
+      Sheet sheet, Year schoolYear, ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
     super(sheet);
+    this.schoolYear = schoolYear;
+    this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
   }
 
   @Override
@@ -69,9 +77,12 @@ public class SchoolListRowProcessor extends RowProcessor<SchoolListRowValues> {
 
   @Override
   public ImportProcedureData mapValuesToImportData(SchoolListRowValues values) {
+    ProcedureType procedureType =
+        procedureTypeAssignmentHelper.getProcedureTypeForSchoolListImport(
+            values.isEntryLevel(), values.getChild().dateOfBirth(), schoolYear);
     return new ImportProcedureData(
         PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
-        ProcedureTypeDto.DRAFT_SCHOOL_IMPORT,
+        procedureType,
         values.isEntryLevel(),
         values.isEarlyExamination());
   }

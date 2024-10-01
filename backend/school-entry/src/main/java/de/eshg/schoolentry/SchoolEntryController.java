@@ -19,6 +19,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
@@ -26,6 +27,7 @@ import de.eshg.schoolentry.business.model.ImportResult;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.importer.ImportService;
 import de.eshg.schoolentry.importer.ImportType;
@@ -88,6 +90,7 @@ public class SchoolEntryController {
   private final Clock clock;
   private final SchoolEntryFeatureToggle featureToggle;
   private final AppointmentBlockProperties appointmentBlockProperties;
+  private final SchoolEntryProperties schoolEntryProperties;
 
   public SchoolEntryController(
       SchoolEntryService schoolEntryService,
@@ -99,7 +102,8 @@ public class SchoolEntryController {
       @Value("classpath:templates/import/CitizenListTemplate.xlsx") Resource citizenListTemplate,
       @Value("classpath:templates/import/SchoolListTemplate.xlsx") Resource schoolListTemplate,
       SchoolEntryFeatureToggle featureToggle,
-      AppointmentBlockProperties appointmentBlockProperties) {
+      AppointmentBlockProperties appointmentBlockProperties,
+      SchoolEntryProperties schoolEntryProperties) {
     this.schoolEntryService = schoolEntryService;
     this.importService = importService;
     this.medicalReportGenerator = medicalReportGenerator;
@@ -110,6 +114,7 @@ public class SchoolEntryController {
     this.clock = clock;
     this.featureToggle = featureToggle;
     this.appointmentBlockProperties = appointmentBlockProperties;
+    this.schoolEntryProperties = schoolEntryProperties;
   }
 
   @PostMapping
@@ -438,6 +443,10 @@ public class SchoolEntryController {
       @RequestParam(value = "schoolYear") @Min(1900) int schoolYear,
       @RequestPart("file") MultipartFile file)
       throws IOException {
+    if (schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport()) {
+      throw new BadRequestException(
+          "Citizen list import is not allowed when direct procedure type assignment is enabled.");
+    }
     return importData(file, ImportType.CITIZEN_LIST, null, null, Year.of(schoolYear));
   }
 
@@ -604,6 +613,7 @@ public class SchoolEntryController {
       @Valid @RequestBody CreateMedicalReportRequest request) {
     featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.MEDICAL_REPORT);
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
+    Validator.validateProcedureStatusNotClosed(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf = medicalReportGenerator.generateMedicalReport(procedureDetailsData.child(), request);
@@ -625,6 +635,7 @@ public class SchoolEntryController {
     featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_INFO_LETTER);
 
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
+    Validator.validateProcedureStatusNotClosed(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf =

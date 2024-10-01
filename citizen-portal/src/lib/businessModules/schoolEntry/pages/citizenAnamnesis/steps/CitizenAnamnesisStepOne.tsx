@@ -97,7 +97,7 @@ function ContactForm(props: ContactFormProps) {
             {t("migration.inGermanySince")}
           </FormLabel>
           <LocalMonthAndYearFields
-            fieldName={migrationBackground("migration.inGermanySince")}
+            fieldName={migrationBackground("child.inGermanySince")}
             date={props.values.migrationBackground.child.inGermanySince}
           />
         </Grid>

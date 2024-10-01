@@ -9,6 +9,7 @@ dependencies {
     implementation 'org.springframework:spring-web'
     implementation 'org.apache.tomcat.embed:tomcat-embed-core'
 
+    implementation project(":logging-commons")
     implementation project(':test-helper-commons-spring')
 
     compileOnly 'org.jetbrains:annotations:latest.release'

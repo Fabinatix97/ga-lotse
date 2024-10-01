@@ -55,13 +55,16 @@ public record SpatzConfigurationProperties(
    *     connection and all content then will be forwarded to the application container.
    * @param targetPort Port where mTLS-terminated data ist forwarded to unencrypted
    * @param forceClientAuth can be set to {@code false} to disable mTLS in favor of TLS
+   * @param clientCnAllowList List of CNs that are allowed to call this service in addition to CNs
+   *     configured in the service-directory
    */
   public record InboundConfiguration(
       String listeningHost,
       int handlerPort,
       String targetHost,
       int targetPort,
-      boolean forceClientAuth) {}
+      boolean forceClientAuth,
+      List<String> clientCnAllowList) {}
 
   /**
    * @param handlerPort Port for outgoing unencrypted traffic.

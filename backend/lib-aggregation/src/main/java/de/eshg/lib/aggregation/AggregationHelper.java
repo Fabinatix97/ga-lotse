@@ -44,8 +44,8 @@ public abstract class AggregationHelper {
   <R, C extends ClientWithLocationAndTimeout> List<ClientResponse<R>> requestFromClients(
       List<C> clients, Function<C, R> getFromClient) {
     try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
-      DelegatingSecurityContextExecutor delegatingSecurityContextExecutor =
-          new DelegatingSecurityContextExecutor(executorService);
+      Executor executor =
+          new CorrelationIdAwareExecutor(new DelegatingSecurityContextExecutor(executorService));
 
       Map<String, Future<R>> futures =
           clients.stream()
@@ -56,7 +56,7 @@ public abstract class AggregationHelper {
                           getAsyncOrTimout(
                               () -> getFromClient.apply(client),
                               client.getClientTimeout(),
-                              delegatingSecurityContextExecutor)));
+                              executor)));
 
       try {
         return futures.entrySet().stream()

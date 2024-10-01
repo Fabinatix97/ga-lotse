@@ -36,12 +36,11 @@ export function InterestAndSportsInfoForm() {
           sx={BOOLEAN_SELECT_STYLE}
           allowDeselection
         />
-        <BooleanSelectField
+        <InputField
           name={interestAndSportsInfo("clubSport")}
           label="Sport im Verein"
+          type="text"
           component={HorizontalField}
-          sx={BOOLEAN_SELECT_STYLE}
-          allowDeselection
         />
         <InputField
           name={interestAndSportsInfo("otherInterests")}

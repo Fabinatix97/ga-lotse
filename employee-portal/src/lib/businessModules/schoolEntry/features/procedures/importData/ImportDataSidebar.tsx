@@ -11,7 +11,10 @@ import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
 import { useImportData } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
-import { useGetLocationSelectionMode } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
+import {
+  useGetLocationSelectionMode,
+  useIsDirectProcedureTypeAssignmentOnImport,
+} from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
@@ -46,6 +49,8 @@ export function ImportDataSidebar() {
     ApiSchoolEntryFeature.SchoolYear,
   );
   const locationSelectionMode = useGetLocationSelectionMode();
+  const isDirectProcedureTypeAssignmentOnImport =
+    useIsDirectProcedureTypeAssignmentOnImport();
   const importData = useImportData(isSchoolYearEnabled);
 
   async function handleSubmit(values: ImportDataValues) {
@@ -69,12 +74,18 @@ export function ImportDataSidebar() {
                 <ImportResult
                   file={importData.data.file}
                   statistics={importData.data.statistics}
+                  isDirectProcedureTypeAssignmentOnImport={
+                    isDirectProcedureTypeAssignmentOnImport
+                  }
                 />
               ) : (
                 <ImportDataFields
                   listType={values.listType}
                   requireSchoolYear={isSchoolYearEnabled}
                   locationSelectionMode={locationSelectionMode}
+                  isDirectProcedureTypeAssignmentOnImport={
+                    isDirectProcedureTypeAssignmentOnImport
+                  }
                   setFieldValue={setFieldValue}
                 />
               )}

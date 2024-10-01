@@ -21,18 +21,19 @@ export interface SecureBackupContent {
 
 const content = {
   [ClientState.CreateBackupKey]: {
-    header: "Set up Secure Backup",
-    subheader: "Set up a secure backup to be able to use chat.",
+    header: "Richten Sie ein Sicherheitsbackup ein",
+    subheader:
+      "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen",
     description: [
-      "Safeguard against losing access to encrypted messages & data by backing up encryption keys on your server.",
-      "Enter a Security Phrase only you know, as it's used to safeguard your data. To be secure, you shouldn't re-use your account password.",
+      "Schützen Sie sich vor dem Verlust des Zugriffs auf verschlüsselte Nachrichten und Daten, indem Sie die Sicherheitsschlüssel auf Ihrem Server sichern.",
+      "Geben Sie ein Passwort ein, das nur Sie kennen, da es zum Schutz Ihrer Daten verwendet wird. Aus Sicherheitsgründen sollten Sie Ihr GA-Lotse Benutzerpasswort nicht wieder verwenden.",
     ],
   },
   [ClientState.RestoreBackupKey]: {
-    header: "Verify this device",
-    subheader: "Verify this device to be able to use chat.",
+    header: "Bestätigen sie dieses Endgerät",
+    subheader: "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen",
     description: [
-      "Verify your identity to access encrypted messages and prove your identity to others.",
+      "Bestätigen Sie Ihre Identität, um auf verschlüsselte Nachrichten zuzugreifen und Ihre Identität gegenüber anderen zu bestätigen.",
     ],
   },
 };

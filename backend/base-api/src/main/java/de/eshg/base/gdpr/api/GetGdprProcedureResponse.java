@@ -34,4 +34,9 @@ public record GetGdprProcedureResponse(
             description = "The date and time of when the GDPR procedure was created.",
             example = "2024-02-01T00:00:00.123456Z")
         @NotNull
-        Instant createdAt) {}
+        Instant createdAt,
+    @Schema(
+            description =
+                "The matter of concern for this GDPR procedure, only relevant for right to correction and right to objection.",
+            example = "Person requested to stop all related procedures.")
+        String matterOfConcern) {}

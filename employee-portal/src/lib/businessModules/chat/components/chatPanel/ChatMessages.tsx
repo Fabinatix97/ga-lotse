@@ -6,44 +6,55 @@
 import { Box, Divider, List, ListItem, Typography, useTheme } from "@mui/joy";
 import { isSameDay, startOfDay } from "date-fns";
 import { Fragment, useEffect, useRef } from "react";
+import { isEmpty, isNonNullish } from "remeda";
 
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { ChatBubble } from "@/lib/businessModules/chat/components/chatPanel/ChatBubble";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
-import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoomMessages";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import {
   Message,
   RoomWithCommunicationType,
 } from "@/lib/businessModules/chat/shared/types";
-import {
-  formatUserReceipts,
-  getDayLabel,
-} from "@/lib/businessModules/chat/shared/utils";
+import { getDayLabel } from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatMessagesProps {
   room: RoomWithCommunicationType;
+  messages: Message[];
 }
 
-export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
+export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
   const {
     userSettings: { showReadConfirmation },
   } = useChat();
   const { matrixClient } = useChatClientContext();
-  const loggedInUserId = matrixClient.getUserId();
+  const loggedInUserId = matrixClient.getUserId() ?? "";
   const { readConfirmationsPerRoom } =
     useReadConfirmation(showReadConfirmation);
-  const confirmationsArr = formatUserReceipts(
-    readConfirmationsPerRoom[room.room.roomId],
+  const roomReceipts = readConfirmationsPerRoom[room.room.roomId];
+  // Here we filter out the logged-in user ID.
+  const { [loggedInUserId]: _, ...readConfirmationFromOtherUsers } =
+    roomReceipts ?? {};
+  const lastReadMessageIds = Object.values(readConfirmationFromOtherUsers)?.map(
+    ({ eventId }) => eventId,
   );
+  const lastReadIndexes = messages
+    .map(({ id }, index) =>
+      lastReadMessageIds.includes(id) ? index : undefined,
+    )
+    .filter((item) => isNonNullish(item));
+  const initialReadIndexes = messages
+    .map(({ readReceipts }, index) =>
+      readReceipts && !isEmpty(readReceipts) ? index : undefined,
+    )
+    .filter((item) => isNonNullish(item));
   const {
     userSettings: { showTypingNotification },
   } = useChat();
   const { typingUsersList } = useTyping(showTypingNotification);
   const typingUsers = typingUsersList[room.room.roomId];
-  const { messages } = useRoomMessages();
   const theme = useTheme();
   const messagesWrapperRef = useRef<HTMLUListElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -77,12 +88,6 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
         {messages?.map((message: Message, index: number) => {
           const isYou = message.sender?.userId === loggedInUserId;
 
-          const confirmationIds = confirmationsArr?.[message.id];
-
-          const receiptUsers =
-            showReadConfirmation && Array.isArray(confirmationIds)
-              ? confirmationIds.map((userId) => matrixClient.getUser(userId))
-              : [];
           const nextMessage = messages[index + 1];
           const shouldShowDivider =
             index !== messages.length - 1 &&
@@ -108,9 +113,10 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                   variant={isYou ? "sent" : "received"}
                   loggedInUserId={loggedInUserId}
                   message={message}
-                  receiptUsers={receiptUsers.filter(
-                    (user) => user?.userId !== loggedInUserId,
-                  )}
+                  lastReadMessageIndexes={
+                    [...initialReadIndexes, ...lastReadIndexes] as number[]
+                  }
+                  index={index}
                 />
               </ListItem>
               {shouldShowDivider && message.timestamp && (

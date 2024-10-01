@@ -16,7 +16,7 @@ import {
 } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { endOfToday } from "date-fns";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { unique } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
@@ -68,7 +68,11 @@ export function ProcedureMetricsDisplay() {
       <TimeRangeSelect
         optionsInMonths={[1, 3, 6, 12]}
         selectedTimeRange={selectedTimeRange}
-        setSelectedTimeRange={setSelectedTimeRange}
+        setSelectedTimeRange={(value) =>
+          startTransition(() => {
+            setSelectedTimeRange(value);
+          })
+        }
       />
       <Stack role="list" direction="row" flexWrap="wrap" gap={2}>
         <FlashCard
@@ -105,13 +109,13 @@ export function ProcedureMetricsDisplay() {
       <Stack gap={5}>
         {uniqueBusinessModules.map((businessModule) => (
           <Stack key={businessModuleNames[businessModule]} gap={2}>
-            <Typography
-              level={"body-lg"}
-              key={businessModuleNames[businessModule]}
+            <TableSheet
+              title={
+                <Typography level="h3" component="h2">
+                  {businessModuleNames[businessModule]}
+                </Typography>
+              }
             >
-              {businessModuleNames[businessModule]}
-            </Typography>
-            <TableSheet>
               <DataTable
                 data={procedureMetrics.filter(
                   (procedure) => procedure.businessModule === businessModule,

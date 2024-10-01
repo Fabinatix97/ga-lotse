@@ -6,13 +6,21 @@
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
-import SendIcon from "@mui/icons-material/Send";
-import { Avatar, Card, IconButton, Stack, Typography } from "@mui/joy";
+import CloseIcon from "@mui/icons-material/Close";
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+import { Box, Card, IconButton, Stack, Typography } from "@mui/joy";
+import { de } from "date-fns/locale";
 import { Formik } from "formik";
 import { User } from "matrix-js-sdk/lib/matrix";
 
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { useGetUsersPresence } from "@/lib/businessModules/chat/shared/hooks/useGetUsersPresence";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
-import { Message } from "@/lib/businessModules/chat/shared/types";
+import { Message, Presence } from "@/lib/businessModules/chat/shared/types";
+import {
+  getStatusColor,
+  markAllMessagesAsRead,
+} from "@/lib/businessModules/chat/shared/utils";
 import { formatDateTimeRangeToNow } from "@/lib/shared/helpers/dateTime";
 
 export function MessageNotification({
@@ -23,30 +31,99 @@ export function MessageNotification({
   sender: User | null;
 }) {
   const { sendMessage } = useSendMessage();
+  const usersPresence = useGetUsersPresence();
+  const { matrixClient } = useChatClientContext();
+  const isPrivateChat =
+    matrixClient
+      .getRoom(message.roomId)
+      ?.getMembers()
+      .filter((member) => member.userId !== matrixClient.getUserId()).length ==
+    1;
 
   return (
-    <Card variant="soft" data-testid="notification" size="sm">
-      <Stack direction="row" spacing={1}>
-        <Stack direction="row" alignItems="start">
-          <Avatar src={sender?.avatarUrl} />
-        </Stack>
-        <Stack width="100%">
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={1}
-          >
-            <Typography level="body-md" fontWeight={600}>
-              {sender?.displayName}
-            </Typography>
-            <Typography level="body-xs" color="neutral" flexShrink={0}>
-              {message.timestamp
-                ? formatDateTimeRangeToNow(message.timestamp)
-                : ""}
-            </Typography>
+    <Card
+      variant="plain"
+      data-testid="notification"
+      size="sm"
+      slotProps={{
+        root: {
+          sx: {
+            backgroundColor: "common.white",
+            marginInline: 0,
+            p: 0,
+          },
+        },
+      }}
+    >
+      <Stack direction="row">
+        <Stack width="100%" justifyContent="space-between">
+          <Stack direction="row" alignItems="center">
+            <Box
+              display="flex"
+              flexDirection="row"
+              sx={{
+                width: "100%",
+                boxSizing: "content-box",
+                alignItems: "center",
+              }}
+            >
+              {usersPresence && isPrivateChat && (
+                <Box
+                  sx={{
+                    width: "0.625rem",
+                    height: "0.625rem",
+                    borderRadius: "100%",
+                    backgroundColor: getStatusColor(
+                      sender?.presence as Presence,
+                    ),
+                    marginRight: 0.8,
+                  }}
+                ></Box>
+              )}
+              <Typography
+                level="title-md"
+                sx={{
+                  fontWeight: "bold",
+                  height: "1.5rem",
+                  maxWidth: "15rem",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {isPrivateChat
+                  ? sender?.displayName
+                  : matrixClient?.getRoom(message.roomId)?.name}
+              </Typography>
+            </Box>
+            <IconButton
+              aria-label="Schließen"
+              onClick={() =>
+                markAllMessagesAsRead({
+                  matrixClient: matrixClient,
+                  roomId: message.roomId,
+                })
+              }
+              color="primary"
+            >
+              <CloseIcon />
+            </IconButton>
           </Stack>
-          <Typography mb={0.5}>{message.content}</Typography>
+          <Box display="flex" flexDirection="row">
+            <Typography mb={0.5}>
+              {isPrivateChat
+                ? message.content
+                : `${sender?.displayName}: ${message.content}`}
+              <Typography
+                component="span"
+                flexShrink={0}
+                paddingLeft="4px"
+                sx={{ color: "text.tertiary" }}
+              >
+                {message.timestamp
+                  ? formatDateTimeRangeToNow(message.timestamp, { locale: de })
+                  : ""}
+              </Typography>
+            </Typography>
+          </Box>
           <Formik
             initialValues={{ messageValue: "" }}
             onSubmit={({ messageValue }) => {
@@ -58,16 +135,24 @@ export function MessageNotification({
             <FormPlus>
               <InputField
                 label=""
+                placeholder="Antworten"
                 type="text"
                 name="messageValue"
                 endDecorator={
-                  <IconButton aria-label="Schaltfläche Senden" type="submit">
-                    <SendIcon />
+                  <IconButton
+                    aria-label="Schaltfläche Senden"
+                    type="submit"
+                    color="primary"
+                  >
+                    <SendOutlinedIcon />
                   </IconButton>
                 }
                 sx={{
-                  "& input": {
-                    width: "100%",
+                  ".MuiInput-endDecorator": {
+                    paddingRight: "8px",
+                  },
+                  ".MuiInput-root": {
+                    height: "2.75rem",
                   },
                 }}
               />

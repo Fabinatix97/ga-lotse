@@ -6,48 +6,33 @@
 "use client";
 
 import { ApiProcedureType } from "@eshg/employee-portal-api/base";
-import { endOfToday } from "date-fns";
-import { useState } from "react";
 
-import { useTaskMetricsQuery } from "@/lib/baseModule/api/queries/taskMetrics";
-import { lastXMonthsInDate } from "@/lib/baseModule/components/procedureMetrics/rangeSelectHelper";
+import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
+import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 
 export default function TaskMetricsPage(
   props: Readonly<{
-    params: {
-      businessModuleName: string;
-      procedureType: ApiProcedureType;
-    };
+    params: { businessModuleName: string; procedureType: ApiProcedureType };
   }>,
 ) {
-  const timeRangeEnd = endOfToday();
-
-  const [selectedTimeRange, _setSelectedTimeRange] = useState(12);
-
-  const timeRangeStart = lastXMonthsInDate(timeRangeEnd, selectedTimeRange);
-
-  const procedureMetrics = useTaskMetricsQuery({
-    businessModuleName: props.params.businessModuleName,
-    procedureType: props.params.procedureType,
-    timeRangeStart,
-    timeRangeEnd,
-  });
-
   return (
     <StickyToolbarLayout
       toolbar={
         <Toolbar
-          title={`Aufgabenkennzahlen: ${props.params.procedureType}`}
+          title={`Aufgabenkennzahlen: ${procedureTypeNames[props.params.procedureType]}`}
           backHref={routes.metrics.index}
         />
       }
     >
       <MainContentLayout>
-        {procedureMetrics.taskMetrics.join()}
+        <TaskMetricsDisplay
+          businessModuleName={props.params.businessModuleName}
+          procedureType={props.params.procedureType}
+        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

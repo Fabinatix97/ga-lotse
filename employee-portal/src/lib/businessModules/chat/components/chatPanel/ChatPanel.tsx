@@ -47,7 +47,7 @@ export function ChatPanel({
     userSettings: { showTypingNotification },
   } = useChat();
   const { handleUserTyping } = useTyping(showTypingNotification);
-  const { handleSendMessage } = useRoomMessages();
+  const { handleSendMessage, messages } = useRoomMessages();
   const [userList, setUserList] = useState<
     (ApiUser & { department?: string })[] | undefined
   >();
@@ -143,7 +143,7 @@ export function ChatPanel({
             flexDirection: "column",
           }}
         >
-          <ChatMessages room={roomWithCommunicationType} />
+          <ChatMessages room={roomWithCommunicationType} messages={messages} />
           <MessageInput
             handleUserTyping={handleUserTyping}
             selectedRoomId={roomId}

@@ -65,7 +65,8 @@ export function RestoreBackupSidebar({
       return undefined;
     } catch {
       return {
-        passphrase: "Error while verifying the device. Is the phrase correct?",
+        passphrase:
+          "Fehler bei der Verifizierung des Geräts. Ist die Phrase korrekt?",
       };
     }
   }
@@ -86,10 +87,10 @@ export function RestoreBackupSidebar({
         values.passphrase,
       );
       setClientState(ClientState.Prepared);
-      snackbar.confirmation("Your device is now verified");
+      snackbar.confirmation("Ihr Gerät wurde nun verifiziert");
     } catch (e) {
       handleClose();
-      snackbar.error("Cannot access chat");
+      snackbar.error("Kein Zugriff auf den Chat");
       setClientState(ClientState.Error);
       logger.error(e);
     }
@@ -118,23 +119,23 @@ export function RestoreBackupSidebar({
                   ))}
                   <PasswordField
                     data-testid={"passphrase"}
-                    label={"Enter a Security Phrase"}
+                    label={"Sicherheitsphrase vergeben"}
                     name={fieldName("passphrase")}
                     visibilityLabel={"visiblePassphrase"}
                   />
                   <Stack direction="row" spacing={0.5}>
                     <Typography level="body-sm" color="neutral">
-                      Forgotten or lost recovery phrase?
+                      Wiederherstellungsphrase vergessen oder verloren?{` `}
+                      <Link
+                        component="button"
+                        type="button"
+                        level="body-sm"
+                        color="danger"
+                        onClick={() => setModalOpen(true)}
+                      >
+                        Alles zurücksetzen
+                      </Link>
                     </Typography>
-                    <Link
-                      component="button"
-                      type="button"
-                      level="body-sm"
-                      color="danger"
-                      onClick={() => setModalOpen(true)}
-                    >
-                      Reset all
-                    </Link>
                   </Stack>
                 </Stack>
               </SidebarContent>

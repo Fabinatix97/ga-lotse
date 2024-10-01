@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip } from "@mui/joy";
+import { Chip, Tooltip } from "@mui/joy";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 
@@ -36,14 +36,17 @@ function c(color: number) {
 
 export function LabelChip(props: Props) {
   return (
-    <Chip
-      variant="solid"
-      sx={{
-        backgroundColor: props.label.hexColor,
-        color: contrastColor(props.label.hexColor),
-      }}
-    >
-      {props.label.name}
-    </Chip>
+    <Tooltip title={props.label.name} size="sm" placement="right">
+      <Chip
+        variant="solid"
+        sx={{
+          backgroundColor: props.label.hexColor,
+          color: contrastColor(props.label.hexColor),
+          maxWidth: "100%",
+        }}
+      >
+        {props.label.name}
+      </Chip>
+    </Tooltip>
   );
 }

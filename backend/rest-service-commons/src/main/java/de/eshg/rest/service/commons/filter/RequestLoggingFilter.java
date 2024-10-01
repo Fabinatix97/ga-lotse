@@ -5,16 +5,19 @@
 
 package de.eshg.rest.service.commons.filter;
 
+import de.eshg.logging.LoggingConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -55,20 +58,32 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
       return;
     }
-    log.info(
-        "Starting to process {} {}{}",
-        request.getMethod(),
-        request.getRequestURI(),
-        maskedQueryString(request.getQueryString()));
-    try {
-      filterChain.doFilter(request, response);
-    } finally {
-      log.info(
-          "Processed {} {} with result {}",
-          request.getMethod(),
-          request.getRequestURI(),
-          HttpStatus.valueOf(response.getStatus()));
+    try (Closeable closeable = putCorrelationIdToMdc(request)) {
+      log.trace("{}", closeable);
+      try {
+        log.info(
+            "Starting to process {} {}{}",
+            request.getMethod(),
+            request.getRequestURI(),
+            maskedQueryString(request.getQueryString()));
+
+        filterChain.doFilter(request, response);
+      } finally {
+        log.info(
+            "Processed {} {} with result {}",
+            request.getMethod(),
+            request.getRequestURI(),
+            HttpStatus.valueOf(response.getStatus()));
+      }
     }
+  }
+
+  private static Closeable putCorrelationIdToMdc(HttpServletRequest request) {
+    String correlationId = request.getHeader(LoggingConstants.CORRELATION_ID_HEADER);
+    if (correlationId == null) {
+      return () -> {};
+    }
+    return MDC.putCloseable(LoggingConstants.CORRELATION_ID_MDC_KEY, correlationId);
   }
 
   @VisibleForTesting

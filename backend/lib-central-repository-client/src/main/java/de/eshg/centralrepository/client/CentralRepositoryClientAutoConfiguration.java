@@ -6,12 +6,12 @@
 package de.eshg.centralrepository.client;
 
 import de.eshg.rest.client.AccessTokenForwardingInterceptor;
+import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestClient;
 
 @AutoConfiguration
@@ -21,13 +21,12 @@ public class CentralRepositoryClientAutoConfiguration {
 
   @Bean
   CentralRepositoryRestClient centralRepositoryRestClient(
-      RestClient.Builder restClientBuilder,
-      CentralRepositoryClientProperties properties,
-      Environment env) {
+      RestClient.Builder restClientBuilder, CentralRepositoryClientProperties properties) {
 
     restClientBuilder
         .baseUrl(properties.getServiceUrl())
-        .requestInterceptor(new AccessTokenForwardingInterceptor());
+        .requestInterceptor(new AccessTokenForwardingInterceptor())
+        .requestInterceptor(new CorrelationIdForwardingInterceptor());
 
     if (StringUtils.isNotEmpty(properties.getMockCertSubjectCn())) {
       restClientBuilder.requestInterceptor(

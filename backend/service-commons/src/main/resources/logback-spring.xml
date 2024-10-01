@@ -7,7 +7,7 @@
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
-  <springProfile name="!(dev | production)">
+  <springProfile name="local">
     <root level="info">
       <appender-ref ref="CONSOLE" />
     </root>
@@ -24,8 +24,6 @@
   </springProfile>
 
   <springProfile name="production">
-<!--    <property name="DEBUG_LOG_DIRECTORY" value="${DEBUG_LOG_DIRECTORY:-/logs}"/>-->
-
     <appender name="logstash-info" class="ch.qos.logback.core.ConsoleAppender">
       <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
       <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -33,24 +31,25 @@
       </filter>
     </appender>
 
-    <!-- TODO: clarify the volume path -->
-<!--    <appender name="debug-log" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--      <file>${DEBUG_LOG_DIRECTORY}/debug.log</file>-->
+    <property name="DEBUG_LOG_DIRECTORY" value="/var/log/eshg-debug"/>
 
-<!--      <encoder>-->
-<!--        <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} [%-5p] [%t] %-40.40logger{39} : %m%n%wEx</pattern>-->
-<!--        <charset>UTF-8</charset>-->
-<!--      </encoder>-->
+    <appender name="debug-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+      <file>${DEBUG_LOG_DIRECTORY}/debug.log</file>
 
-<!--      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-<!--        <fileNamePattern>${DEBUG_LOG_DIRECTORY}/debug.log.%d{yyyy-MM-dd}</fileNamePattern>-->
-<!--        <maxHistory>14</maxHistory>-->
-<!--      </rollingPolicy>-->
-<!--    </appender>-->
+      <encoder>
+        <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} [%-5p] [%t] [%X] %-40.40logger{39} : %m%n%wEx</pattern>
+        <charset>UTF-8</charset>
+      </encoder>
+
+      <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>${DEBUG_LOG_DIRECTORY}/debug.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+        <maxHistory>14</maxHistory>
+      </rollingPolicy>
+    </appender>
 
     <root level="info">
       <appender-ref ref="logstash-info" />
-<!--      <appender-ref ref="debug-log" />-->
+      <appender-ref ref="debug-log" />
     </root>
   </springProfile>
 

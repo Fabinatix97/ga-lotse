@@ -8,4 +8,6 @@ package de.eshg.schoolentry.api;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import jakarta.validation.constraints.NotNull;
 
-public record GetSchoolEntryConfigResponse(@NotNull LocationSelectionMode locationSelectionMode) {}
+public record GetSchoolEntryConfigResponse(
+    @NotNull LocationSelectionMode locationSelectionMode,
+    @NotNull boolean isDirectProcedureTypeAssignmentOnImport) {}

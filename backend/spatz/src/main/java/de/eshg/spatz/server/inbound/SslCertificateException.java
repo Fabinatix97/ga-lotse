@@ -13,4 +13,8 @@ public class SslCertificateException extends RuntimeException {
   public SslCertificateException(String message, Throwable cause) {
     super(message, cause);
   }
+
+  public SslCertificateException(String message) {
+    super(message);
+  }
 }

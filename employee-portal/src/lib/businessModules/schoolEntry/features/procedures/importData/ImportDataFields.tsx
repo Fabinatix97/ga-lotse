@@ -27,6 +27,7 @@ interface ImportDataFieldsProps {
   listType: ImportListType;
   requireSchoolYear: boolean;
   locationSelectionMode: ApiLocationSelectionMode;
+  isDirectProcedureTypeAssignmentOnImport: boolean;
   setFieldValue: SetFieldValueHelper;
 }
 
@@ -67,14 +68,16 @@ export function ImportDataFields(props: ImportDataFieldsProps) {
 
   return (
     <Stack gap={4}>
-      <RadioGroupField
-        name="listType"
-        orientation="horizontal"
-        onChange={handleChangeListType}
-      >
-        <Radio value={ImportListType.SchoolList} label="Schulliste" />
-        <Radio value={ImportListType.CitizenList} label="Bürgeramtsliste" />
-      </RadioGroupField>
+      {!props.isDirectProcedureTypeAssignmentOnImport && (
+        <RadioGroupField
+          name="listType"
+          orientation="horizontal"
+          onChange={handleChangeListType}
+        >
+          <Radio value={ImportListType.SchoolList} label="Schulliste" />
+          <Radio value={ImportListType.CitizenList} label="Bürgeramtsliste" />
+        </RadioGroupField>
+      )}
       {props.listType === ImportListType.SchoolList && (
         <Stack gap={1}>
           <SearchContactField

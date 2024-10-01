@@ -152,7 +152,6 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       ) {
         showMessageTeaser({
           username: room.name,
-          avatar: undefined,
           text:
             guestCount > 1
               ? `${sender.displayName}: ${messageContent.body}`

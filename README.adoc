@@ -28,6 +28,7 @@ We appreciate your help in improving the project!
 - link:docs/sharing-code.adoc[Sharing Code]
 - link:reverse-proxy/README.md[Reverse Proxy]
 - link:docs/content-security-policy-header.adoc[Content Security Policy (CSP) Header]
+- link:docs/flaky-tests.adoc[Flaky Tests]
 
 == Licensing
 

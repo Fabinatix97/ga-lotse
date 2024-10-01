@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -88,15 +89,16 @@ public class ServiceDirectoryTopologyService {
 
       if (eTag.equals(lastEtag)) {
         logger.debug("serviceDirectory topology has not changed");
+        logTrustedActors(Level.TRACE);
       } else {
         trustedActors = getValidTrustedActors(trustedActorsCacheEntry);
 
         logTopologyChanged(trustedActorsCacheEntry, trustedActors);
+        logTrustedActors(Level.INFO);
         notifyListeners(trustedActors);
         lastEtag = eTag;
       }
 
-      logTrustedActors();
       lastSuccessfulPollTime = Instant.now();
     } catch (RuntimeException e) {
       handlePollingFailure(e);
@@ -155,15 +157,17 @@ public class ServiceDirectoryTopologyService {
         trustedActorsCacheEntry.eTag());
   }
 
-  private void logTrustedActors() {
-    if (logger.isTraceEnabled()) {
-      logger.trace(
-          "valid active inbound actors: {}",
-          trustedActors.inbound.stream().map(ActorResponseDto::commonName).sorted().toList());
-      logger.trace(
-          "valid active outbound actors: {}",
-          trustedActors.outbound.stream().map(ActorResponseDto::commonName).sorted().toList());
-    }
+  private void logTrustedActors(Level level) {
+    logger
+        .atLevel(level)
+        .log(
+            "valid active inbound actors: {}",
+            trustedActors.inbound.stream().map(ActorResponseDto::commonName).sorted().toList());
+    logger
+        .atLevel(level)
+        .log(
+            "valid active outbound actors: {}",
+            trustedActors.outbound.stream().map(ActorResponseDto::commonName).sorted().toList());
   }
 
   public interface TopologyChangedListener {

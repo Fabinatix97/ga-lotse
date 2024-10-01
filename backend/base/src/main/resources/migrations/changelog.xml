@@ -22,5 +22,6 @@
     <include file="migrations/0012_rename_single_string_entity_columns.xml"/>
     <include file="migrations/0013_person_sequence.xml"/>
     <include file="migrations/0014_contact_index_full_name.xml" />
+    <include file="migrations/0015_gdpr_matter_of_concern.xml" />
 
 </databaseChangeLog>

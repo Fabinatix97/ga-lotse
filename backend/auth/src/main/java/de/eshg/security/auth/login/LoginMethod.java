@@ -13,6 +13,8 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public abstract class LoginMethod {
+  public static final String LOGIN_LOCALE_PARAM_NAME = "ui_locales";
+
   protected final AntPathMatcher antPathMatcher = new AntPathMatcher();
   protected final AuthProperties authProperties;
 
@@ -28,6 +30,14 @@ public abstract class LoginMethod {
       OAuth2AuthorizationRequest auth2AuthorizationRequest, String redirectUrl) {
     return OAuth2AuthorizationRequest.from(auth2AuthorizationRequest)
         .additionalParameters(params -> this.applyParameters(params, redirectUrl))
+        .additionalParameters(
+            params -> {
+              String urlPath = UriComponentsBuilder.fromUriString(redirectUrl).build().getPath();
+              LocaleAndPath localeAndPath = extractLanguagePathPrefix(urlPath);
+              if (localeAndPath.language() != null) {
+                params.put(LOGIN_LOCALE_PARAM_NAME, localeAndPath.language());
+              }
+            })
         .build();
   }
 
@@ -37,21 +47,26 @@ public abstract class LoginMethod {
       return false;
     }
     String urlPath = UriComponentsBuilder.fromUriString(url).build().getPath();
-    String normalizedUrlPath = replaceLanguagePathPrefix(urlPath);
+    LocaleAndPath localeAndPath = extractLanguagePathPrefix(urlPath);
+    String normalizedUrlPath = localeAndPath.path();
     return normalizedUrlPath != null
         && patterns.stream().anyMatch(pattern -> antPathMatcher.match(pattern, normalizedUrlPath));
   }
 
-  private String replaceLanguagePathPrefix(String url) {
+  private LocaleAndPath extractLanguagePathPrefix(String url) {
     List<String> languagePathPrefixes = authProperties.getLanguagePathPrefixes();
     if (languagePathPrefixes == null) {
-      return url;
+      return new LocaleAndPath(null, url);
     }
     for (String languagePathPrefix : languagePathPrefixes) {
       if (url.startsWith(languagePathPrefix + "/")) {
-        return url.substring(languagePathPrefix.length());
+        String locale = url.substring(1, languagePathPrefix.length());
+        String subPath = url.substring(languagePathPrefix.length());
+        return new LocaleAndPath(locale, subPath);
       }
     }
-    return url;
+    return new LocaleAndPath(null, url);
   }
+
+  record LocaleAndPath(String language, String path) {}
 }

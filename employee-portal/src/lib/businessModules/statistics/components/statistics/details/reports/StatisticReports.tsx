@@ -49,7 +49,7 @@ const meta = {
 };
 
 function columns(
-  deleteReportWithConfirmation: (reportId: string, name: string) => void,
+  deleteReportWithConfirmation: (reportId: string) => void,
   editReport: (report: SingleReport) => void,
 ) {
   return [
@@ -104,10 +104,7 @@ function columns(
             {
               label: "Löschen",
               onClick: () =>
-                deleteReportWithConfirmation(
-                  props.row.original.seriesId,
-                  props.row.original.name,
-                ),
+                deleteReportWithConfirmation(props.row.original.seriesId),
               startDecorator: <Delete />,
               color: "danger",
             },

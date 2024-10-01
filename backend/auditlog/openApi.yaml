@@ -539,11 +539,15 @@ components:
       type: object
       properties:
         encapsulatedKey:
-          type: string
-          format: byte
+          type: array
+          items:
+            type: string
+            format: byte
         encryptedSymmetricKey:
-          type: string
-          format: byte
+          type: array
+          items:
+            type: string
+            format: byte
       required:
       - encapsulatedKey
       - encryptedSymmetricKey

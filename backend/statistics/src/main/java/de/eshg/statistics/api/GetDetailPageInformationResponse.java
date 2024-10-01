@@ -15,5 +15,5 @@ public record GetDetailPageInformationResponse(
     @NotNull @Valid StatisticInfo statisticInfo,
     @NotNull @Valid List<TableColumnHeader> tableColumnHeaders,
     @NotNull @Min(0) long totalNumberOfElements,
-    @Valid UserDto userDto,
+    @Valid UserDto user,
     @NotNull @Valid List<EvaluationDto> evaluations) {}

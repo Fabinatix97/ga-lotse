@@ -7,7 +7,7 @@ package de.eshg.statistics.persistence.entity;
 
 import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -24,7 +24,7 @@ import java.util.List;
 @Entity
 @DataSensitivity(PUBLIC)
 @Table(indexes = @Index(columnList = "aggregation_result_id"))
-public class TableRow extends BaseEntity {
+public class TableRow extends SequencedBaseEntity {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "aggregation_result_id")
   private AbstractAggregationResult aggregationResult;

@@ -17,6 +17,8 @@ services:
   auth-employee-portal:
     extends:
       service: auth-base
+    environment:
+      - spring.profiles.active=local, employee-portal
     ports:
       - 8092:8080
 
@@ -24,7 +26,7 @@ services:
     extends:
       service: auth-base
     environment:
-      - spring.profiles.active=citizen-portal
+      - spring.profiles.active=local, citizen-portal
       - spring.data.redis.database=1
       # use a different SESSION cookie such that browsers don’t confuse the session
       # when opening http://localhost:4000 and http://localhost:4001 in parallel
@@ -49,7 +51,7 @@ services:
     image: ga-lotse/base
     environment:
       - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://base-db/eshgbase
       - eshg.keycloak.internal.url=http://keycloak:8080
       - eshg.keycloak.admin-client.client-secret=admin
@@ -89,6 +91,7 @@ services:
 
   keycloak-reverse-proxy:
     image: nginx:1.27.1
+    restart: unless-stopped
     ports:
       - 4003:4003
     read_only: true
@@ -141,7 +144,7 @@ services:
     env_file:
       - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://inspection-db/inspection
       - de.eshg.base.service-url=http://base:8080
       - de.eshg.centralrepository.service-url=http://central-repository:8080
@@ -171,7 +174,7 @@ services:
     env_file:
       - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://school-entry-db/schoolentry
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
@@ -199,7 +202,7 @@ services:
   service-directory:
     image: ga-lotse/service-directory
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://service-directory-db/servicedirectory
     restart: unless-stopped
     depends_on:
@@ -224,7 +227,8 @@ services:
     env_file:
       - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://travel-medicine-db/travelmedicine
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
@@ -239,6 +243,8 @@ services:
       - de.eshg.travel-medicine.department-info.phoneNumber=+49 123 12345678
       - de.eshg.travel-medicine.department-info.homepage=www.travel-medicine.de
       - de.eshg.travel-medicine.department-info.email=travel@medicine.de
+      - de.eshg.travel-medicine.notification.fromAddress=info.reisemedizin@stadt-frankfurt.de
+      - de.eshg.travel-medicine.notification.greeting=Ihr Impfberatungsteam der Stadt Frankfurt
     restart: unless-stopped
     depends_on:
       travel-medicine-db:
@@ -264,7 +270,7 @@ services:
       - eshg.keycloak.internal.url=http://keycloak:8080
       - eshg.servicedirectory.baseUrl=http://service-directory:8080
       - de.eshg.servicedirectory.mock-cert-subject-cn=dummy
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
     restart: unless-stopped
     depends_on:
       keycloak:
@@ -279,7 +285,7 @@ services:
     env_file:
       - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://measles-protection-db/measles_protection
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
@@ -305,7 +311,7 @@ services:
   statistics:
     image: ga-lotse/statistics
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://statistics-db/statistics
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.base.service-url=http://base:8080
@@ -333,7 +339,7 @@ services:
   central-repository:
     image: ga-lotse/central-repository
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://central-repository-db/centralrepository
       - eshg.servicedirectory.baseUrl=http://service-directory:8080
       - de.eshg.servicedirectory.mock-cert-subject-cn=dummy
@@ -361,7 +367,7 @@ services:
     image: ga-lotse/chat-management
     environment:
       - synapse.url=http://synapse:8008
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://chat-management-db/chat_management
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
@@ -429,7 +435,7 @@ services:
       - spring.datasource.url=jdbc:postgresql://auditlog-db/auditlog
       - de.eshg.base.service-url=http://base:8080
       - de.eshg.auditlog.log-storage-dir=/tmp/auditlog-storage
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - eshg.keycloak.internal.url=http://keycloak:8080
 
   auditlog-db:
@@ -448,7 +454,7 @@ services:
     env_file:
       - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
-      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-test-helper}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://sti-protection-db/sti_protection
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
@@ -476,13 +482,12 @@ services:
     ports:
       - 8096:8080
     environment:
-      DOCKER_HOSTNAME: ${DOCKER_HOSTNAME:-localhost}
-      spring.datasource.url: jdbc:postgresql://opendata-db/opendata
-      de.eshg.base.service-url: http://base:8080
-      de.eshg.auditlog.log-storage-dir: /tmp/opendata-storage
-      spring.profiles.active: test-helper
-      eshg.testclock.enabled: true
-      eshg.keycloak.internal.url: http://keycloak:8080
+      - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
+      - spring.datasource.url=jdbc:postgresql://opendata-db/opendata
+      - de.eshg.base.service-url=http://base:8080
+      - de.eshg.auditlog.log-storage-dir=/tmp/opendata-storage
+      - eshg.keycloak.internal.url=http://keycloak:8080
 
   opendata-db:
     extends:

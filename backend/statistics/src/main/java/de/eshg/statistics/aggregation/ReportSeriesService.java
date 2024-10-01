@@ -12,12 +12,15 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
+import de.eshg.statistics.api.report.AbstractUpdateReportSeriesRequest;
+import de.eshg.statistics.api.report.ActivateAutoReportSeriesRequest;
 import de.eshg.statistics.api.report.AddAutoReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
+import de.eshg.statistics.api.report.DeactivateAutoReportSeriesRequest;
 import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
-import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
+import de.eshg.statistics.api.report.UpdateNameAndDescriptionReportSeriesRequest;
 import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -43,14 +46,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportSeriesService {
   private final ReportSeriesRepository reportSeriesRepository;
   private final StatisticService statisticService;
+  private final ReportService reportService;
   private final Clock clock;
 
   public ReportSeriesService(
       ReportSeriesRepository reportSeriesRepository,
       StatisticService statisticService,
+      ReportService reportService,
       Clock clock) {
     this.reportSeriesRepository = reportSeriesRepository;
     this.statisticService = statisticService;
+    this.reportService = reportService;
     this.clock = clock;
   }
 
@@ -111,20 +117,26 @@ public class ReportSeriesService {
     reportSeries.setPeriod(
         ReportMapper.mapToReportingPeriod(addAutoReportSeriesRequest.reportingPeriod()));
 
-    LocalDate executionAndEndDate = calculateExecutionDate(addAutoReportSeriesRequest.startMonth());
+    addNewPlannedReportToSeries(
+        reportSeries, "1", addAutoReportSeriesRequest.startMonth(), statistic);
+
+    return reportSeries;
+  }
+
+  private void addNewPlannedReportToSeries(
+      ReportSeries reportSeries, String name, int startMonth, Statistic statistic) {
+    LocalDate executionAndEndDate = calculateExecutionDate(startMonth);
     LocalDate dateStart =
         ReportService.calculateStartDate(reportSeries.getPeriod(), executionAndEndDate);
 
     reportSeries.addReport(
         ReportService.createReport(
-            "1",
+            name,
             dateStart.atStartOfDay(clock.getZone()).toInstant(),
             executionAndEndDate.atStartOfDay(clock.getZone()).toInstant(),
             AggregationResultState.PLANNED,
             executionAndEndDate,
             statistic));
-
-    return reportSeries;
   }
 
   private LocalDate calculateExecutionDate(int startMonth) {
@@ -150,19 +162,91 @@ public class ReportSeriesService {
 
   @Transactional
   public ReportSeriesDto updateReportSeries(
-      UUID reportSeriesId, UpdateReportSeriesRequest updateReportSeriesRequest) {
+      UUID reportSeriesId, AbstractUpdateReportSeriesRequest updateReportSeriesRequest) {
     ReportSeries reportSeries = getReportSeriesInternal(reportSeriesId);
-    validateNotPendingManualReport(reportSeries);
-    reportSeries.setName(updateReportSeriesRequest.name());
-    reportSeries.setDescription(updateReportSeriesRequest.description());
-    if (reportSeries.getReportType().equals(ReportType.MANUAL)) {
-      reportSeries.getReports().getFirst().setName(updateReportSeriesRequest.name());
+
+    switch (updateReportSeriesRequest) {
+      case ActivateAutoReportSeriesRequest activateAutoReportSeriesRequest ->
+          activateReportSeries(activateAutoReportSeriesRequest, reportSeries);
+      case DeactivateAutoReportSeriesRequest ignored -> deactivateReportSeries(reportSeries);
+      case UpdateNameAndDescriptionReportSeriesRequest
+                  updateNameAndDescriptionReportSeriesRequest ->
+          updateNameAndDescription(updateNameAndDescriptionReportSeriesRequest, reportSeries);
     }
 
     return ReportMapper.mapToApi(reportSeries);
   }
 
-  private void validateNotPendingManualReport(ReportSeries reportSeries) {
+  private void activateReportSeries(
+      ActivateAutoReportSeriesRequest activateAutoReportSeriesRequest, ReportSeries reportSeries) {
+    validateIsAutoReportSeries(reportSeries);
+    reportSeries.setActive(true);
+    reportSeries.setStartMonth(activateAutoReportSeriesRequest.startMonth());
+    reportSeries.setFrequency(
+        ReportMapper.mapToFrequency(activateAutoReportSeriesRequest.frequency()));
+    reportSeries.setPeriod(
+        ReportMapper.mapToReportingPeriod(activateAutoReportSeriesRequest.reportingPeriod()));
+
+    Report plannedReport = getPlannedReport(reportSeries);
+    if (plannedReport == null) {
+      int nextNumber = reportService.findNextNumberInReports(reportSeries.getReports());
+      addNewPlannedReportToSeries(
+          reportSeries,
+          String.valueOf(nextNumber),
+          reportSeries.getStartMonth(),
+          reportSeries.getStatistic());
+    } else {
+      LocalDate executionAndEndDate = calculateExecutionDate(reportSeries.getStartMonth());
+      LocalDate dateStart =
+          ReportService.calculateStartDate(reportSeries.getPeriod(), executionAndEndDate);
+
+      plannedReport.setTimeRangeStart(dateStart.atStartOfDay(clock.getZone()).toInstant());
+      plannedReport.setTimeRangeEnd(executionAndEndDate.atStartOfDay(clock.getZone()).toInstant());
+      plannedReport.setExecutionDate(executionAndEndDate);
+    }
+  }
+
+  private void deactivateReportSeries(ReportSeries reportSeries) {
+    validateIsAutoReportSeries(reportSeries);
+    if (reportSeries.isActive()) {
+      reportSeries.setActive(false);
+      Report plannedReport = getPlannedReport(reportSeries);
+      if (plannedReport != null) {
+        reportSeries.removeReport(plannedReport);
+      }
+    }
+  }
+
+  private static void validateIsAutoReportSeries(ReportSeries reportSeries) {
+    if (!reportSeries.getReportType().equals(ReportType.AUTO)) {
+      throw new BadRequestException(
+          "Report series %s is not of type 'AUTO'".formatted(reportSeries.getExternalId()));
+    }
+  }
+
+  private static Report getPlannedReport(ReportSeries reportSeries) {
+    return reportSeries.getReports().stream()
+        .filter(report -> report.getState().equals(AggregationResultState.PLANNED))
+        .findFirst()
+        .orElse(null);
+  }
+
+  private static void updateNameAndDescription(
+      UpdateNameAndDescriptionReportSeriesRequest updateNameAndDescriptionReportSeriesRequest,
+      ReportSeries reportSeries) {
+    validateNotPendingManualReport(reportSeries);
+
+    reportSeries.setName(updateNameAndDescriptionReportSeriesRequest.name());
+    reportSeries.setDescription(updateNameAndDescriptionReportSeriesRequest.description());
+    if (reportSeries.getReportType().equals(ReportType.MANUAL)) {
+      reportSeries
+          .getReports()
+          .getFirst()
+          .setName(updateNameAndDescriptionReportSeriesRequest.name());
+    }
+  }
+
+  private static void validateNotPendingManualReport(ReportSeries reportSeries) {
     if (reportSeries.getReportType().equals(ReportType.MANUAL)
         && reportSeries.getReports().getFirst().getState().equals(AggregationResultState.PENDING)) {
       throw new BadRequestException(
@@ -177,7 +261,7 @@ public class ReportSeriesService {
     reportSeriesRepository.delete(reportSeries);
   }
 
-  private void validateBelongsToCurrentUserOrIsAdmin(ReportSeries reportSeries) {
+  static void validateBelongsToCurrentUserOrIsAdmin(ReportSeries reportSeries) {
     UUID userId = CurrentUserHelper.getCurrentUserId();
     if (!userId.equals(reportSeries.getCreatedByUserId())
         && CurrentUserHelper.currentUserHasNoRole(

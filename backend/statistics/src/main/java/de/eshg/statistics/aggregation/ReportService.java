@@ -37,6 +37,7 @@ import de.eshg.statistics.persistence.entity.report.ReportSeries;
 import de.eshg.statistics.persistence.entity.report.ReportType;
 import de.eshg.statistics.persistence.entity.report.ReportingPeriod;
 import de.eshg.statistics.persistence.repository.ReportRepository;
+import de.eshg.statistics.persistence.repository.ReportSeriesRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -57,6 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReportService {
   private final ReportRepository reportRepository;
+  private final ReportSeriesRepository reportSeriesRepository;
   private final StatisticService statisticService;
   private final Clock clock;
   private final DataAggregationService dataAggregationService;
@@ -66,11 +68,13 @@ public class ReportService {
 
   public ReportService(
       ReportRepository reportRepository,
+      ReportSeriesRepository reportSeriesRepository,
       StatisticService statisticService,
       Clock clock,
       DataAggregationService dataAggregationService,
       EvaluationService evaluationService) {
     this.reportRepository = reportRepository;
+    this.reportSeriesRepository = reportSeriesRepository;
     this.statisticService = statisticService;
     this.clock = clock;
     this.dataAggregationService = dataAggregationService;
@@ -107,8 +111,11 @@ public class ReportService {
   public GetReportDetailPageResponse getReportDetailPage(UUID reportId) {
     Report report = getReportInternal(reportId);
     validateReportCompleted(report);
-    Map<UUID, UserDto> resolvedUsers =
-        statisticService.getResolvedUsers(Set.of(report.getCreatedByUserId()));
+    UUID reportSeriesUserId = report.getReportSeries().getCreatedByUserId();
+    Set<UUID> userIds = new HashSet<>();
+    userIds.add(reportSeriesUserId);
+    userIds.add(report.getCreatedByUserId());
+    Map<UUID, UserDto> resolvedUsers = statisticService.getResolvedUsers(userIds);
     List<EvaluationDto> evaluations = EvaluationMapper.getEvaluations(report.getEvaluations());
 
     return new GetReportDetailPageResponse(
@@ -122,6 +129,7 @@ public class ReportService {
         report.getCreatedAt(),
         StatisticMapper.mapToApi(report.getTableColumns()),
         report.getNumberOfTableRows(),
+        resolvedUsers.get(reportSeriesUserId),
         resolvedUsers.get(report.getCreatedByUserId()),
         evaluations);
   }
@@ -161,6 +169,9 @@ public class ReportService {
   public void createNewPlannedReportInSeries(UUID reportId) {
     Report report = getReportInternal(reportId);
     ReportSeries reportSeries = report.getReportSeries();
+    if (!reportSeries.isActive()) {
+      return;
+    }
     int nextNumber = getNextNumber(report);
 
     LocalDate executionAndEndDate =
@@ -199,14 +210,31 @@ public class ReportService {
   }
 
   private int getNextNumber(Report report) {
+    return getNumberOfReport(report).orElse(report.getReportSeries().getReports().size()) + 1;
+  }
+
+  int findNextNumberInReports(List<Report> reports) {
+    int currentHighest = 0;
+    for (Report report : reports) {
+      Optional<Integer> numberOfReport = getNumberOfReport(report);
+      if (numberOfReport.isEmpty()) {
+        return reports.size() + 1;
+      } else if (numberOfReport.get() > currentHighest) {
+        currentHighest = numberOfReport.get();
+      }
+    }
+    return currentHighest + 1;
+  }
+
+  private Optional<Integer> getNumberOfReport(Report report) {
     try {
-      return Integer.parseInt(report.getName()) + 1;
+      return Optional.of(Integer.parseInt(report.getName()));
     } catch (NumberFormatException e) {
       log.error(
           "Report {} has name '{}' which is not a number",
           report.getExternalId(),
           report.getName());
-      return report.getReportSeries().getReports().size() + 1;
+      return Optional.empty();
     }
   }
 
@@ -486,6 +514,22 @@ public class ReportService {
     Report report = getReportInternal(reportId);
     if (!report.getState().equals(AggregationResultState.FAILED)) {
       report.setState(AggregationResultState.FAILED);
+    }
+  }
+
+  @Transactional
+  public void deleteReport(UUID reportId) {
+    Report report = getReportInternal(reportId);
+    ReportSeries reportSeries = report.getReportSeries();
+    ReportSeriesService.validateBelongsToCurrentUserOrIsAdmin(reportSeries);
+    if (report.getState().equals(AggregationResultState.PLANNED)) {
+      throw new BadRequestException(
+          "Report is in state 'PLANNED', deactivate report series to remove this report");
+    }
+    if (reportSeries.getReportType().equals(ReportType.MANUAL)) {
+      reportSeriesRepository.delete(reportSeries);
+    } else {
+      reportRepository.delete(report);
     }
   }
 }

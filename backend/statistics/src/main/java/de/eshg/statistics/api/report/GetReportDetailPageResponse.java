@@ -27,5 +27,6 @@ public record GetReportDetailPageResponse(
     @NotNull Instant createdAt,
     @NotNull @Valid List<TableColumnHeader> tableColumnHeaders,
     @NotNull @Min(0) long totalNumberOfElements,
-    @Valid UserDto userDto,
+    @Valid UserDto userReportSeries,
+    @Valid UserDto userReport,
     @NotNull @Valid List<EvaluationDto> evaluation) {}

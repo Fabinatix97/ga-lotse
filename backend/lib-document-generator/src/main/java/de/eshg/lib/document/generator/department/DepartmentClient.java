@@ -14,21 +14,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component
+@RequestScope
 public class DepartmentClient {
 
   private final DepartmentApi departmentApi;
+  private GetDepartmentInfoResponse cachedDepartmentInfo;
+  private DepartmentLogo cachedDepartmentLogo;
 
   public DepartmentClient(DepartmentApi departmentApi) {
     this.departmentApi = departmentApi;
   }
 
   public GetDepartmentInfoResponse getDepartmentInfo() {
-    return departmentApi.getDepartmentInfo();
+    if (cachedDepartmentInfo == null) {
+      cachedDepartmentInfo = departmentApi.getDepartmentInfo();
+    }
+    return cachedDepartmentInfo;
   }
 
   public DepartmentLogo getDepartmentLogo() {
+    if (cachedDepartmentLogo == null) {
+      cachedDepartmentLogo = fetchDepartmentLogo();
+    }
+    return cachedDepartmentLogo;
+  }
+
+  public DepartmentLogo fetchDepartmentLogo() {
     ResponseEntity<Resource> departmentLogoResponse = departmentApi.getDepartmentLogo();
     Assert.isTrue(
         departmentLogoResponse.getStatusCode().equals(HttpStatus.OK),

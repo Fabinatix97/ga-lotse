@@ -1326,6 +1326,28 @@ paths:
       summary: Add central file id to GDPR procedure.
       tags:
       - GdprProcedure
+  /gdpr-procedures/{id}/change-status:
+    post:
+      operationId: changeStatus
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GdprProcedureChangeStatusRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Changes the current status of the GDPR procedure.
+      tags:
+      - GdprProcedure
   /gdpr-procedures/{id}/details-page:
     get:
       operationId: getGdprProcedureDetailsPage
@@ -1346,6 +1368,29 @@ paths:
           description: OK
       summary: Get GDPR procedure details page information. Used exclusively by the
         frontend to display the GDPR Procedure.
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/{id}/matter-of-concern:
+    put:
+      operationId: setMatterOfConcern
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetMatterOfConcernRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: "Changes the matter of concern of this GDPR procedure, this is only\
+        \ relevant for right to correction and right to objection."
       tags:
       - GdprProcedure
   /inventoryItems:
@@ -1924,6 +1969,27 @@ paths:
                 $ref: "#/components/schemas/GetPersonFileStatesResponse"
           description: OK
       summary: Get multiple persons
+      tags:
+      - Person
+  /persons/centralfilestates/bulk-search:
+    post:
+      operationId: getPersonFileStateIdsByReferencePersonKeyAttributes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetPersonFileStateIdsByKeyAttributesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetPersonFileStateIdsByKeyAttributesResponse"
+          description: OK
+      summary: |
+        Search multiple reference persons by the given key attributes
+        and return all file state ids associated with these reference persons.
       tags:
       - Person
   /persons/centralfilestates/external-source:
@@ -5241,6 +5307,17 @@ components:
       - dateOfBirth
       - firstName
       - lastName
+    GdprProcedureChangeStatusRequest:
+      type: object
+      properties:
+        newStatus:
+          $ref: "#/components/schemas/GdprProcedureStatus"
+        version:
+          type: integer
+          format: int64
+      required:
+      - newStatus
+      - version
     GdprProcedureSortKey:
       type: string
       enum:
@@ -5800,6 +5877,11 @@ components:
           oneOf:
           - $ref: "#/components/schemas/GdprFacility"
           - $ref: "#/components/schemas/GdprPerson"
+        matterOfConcern:
+          type: string
+          description: "The matter of concern for this GDPR procedure, only relevant\
+            \ for right to correction and right to objection."
+          example: Person requested to stop all related procedures.
         status:
           $ref: "#/components/schemas/GdprProcedureStatus"
         type:
@@ -5892,6 +5974,28 @@ components:
       - contactAddressDiff
       - personDetailsDiff
       - referenceVersion
+    GetPersonFileStateIdsByKeyAttributesRequest:
+      type: object
+      properties:
+        searchAttributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/PersonKeyAttributes"
+          uniqueItems: true
+      required:
+      - searchAttributes
+    GetPersonFileStateIdsByKeyAttributesResponse:
+      type: object
+      properties:
+        fileStateIdsByPersons:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              format: uuid
+      required:
+      - fileStateIdsByPersons
     GetPersonFileStateResponse:
       type: object
       properties:
@@ -7204,6 +7308,20 @@ components:
       - phoneNumbers
       - referenceVersion
       - salutation
+    PersonKeyAttributes:
+      type: object
+      properties:
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+      - dateOfBirth
+      - firstName
+      - lastName
     Population:
       type: object
       properties:
@@ -7678,6 +7796,18 @@ components:
       - subject
       - text
       - to
+    SetMatterOfConcernRequest:
+      type: object
+      properties:
+        concern:
+          type: string
+          description: The matter of concern for the GDPR procedure.
+        version:
+          type: integer
+          format: int64
+      required:
+      - concern
+      - version
     ShowAs:
       type: string
       description: |2

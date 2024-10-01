@@ -191,7 +191,7 @@ public class DnsResolver {
       Message request, Resolver resolver, List<String> forwardRequestAllowList) throws IOException {
     String name = request.getQuestion().getName().toString(true).toLowerCase();
     if (!forwardRequestAllowList.contains(name)) {
-      logger.warn("Refusing to forward query not in allow-list");
+      logger.warn("Refusing to forward query to {} not in allow-list", name);
       return error(request, Rcode.REFUSED);
     }
     logger.trace("Forwarding request to {}", resolver);

@@ -21,6 +21,7 @@ import de.eshg.travelmedicine.informationstatementtemplate.persistence.entity.In
 import de.eshg.travelmedicine.informationstatementtemplate.persistence.entity.InformationStatementTemplateRepository;
 import de.eshg.travelmedicine.informationstatementtemplate.persistence.entity.InformationStatementTemplateState;
 import de.eshg.travelmedicine.medicalhistory.MedicalHistoryService;
+import de.eshg.travelmedicine.notification.NotificationService;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppliedServiceDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentOverviewEntryDto;
@@ -106,6 +107,7 @@ public class VaccinationConsultationService {
       "The list of travel destinations must not contain null elements.";
   private final ProcedureAccessor procedureAccessor;
   private final InformationStatementTemplateRepository informationStatementTemplateRepository;
+  private final NotificationService notificationService;
 
   public VaccinationConsultationService(
       VaccinationConsultationRepository vaccinationConsultationRepository,
@@ -124,7 +126,8 @@ public class VaccinationConsultationService {
       Clock clock,
       AuditLogger auditLogger,
       ProcedureAccessor procedureAccessor,
-      InformationStatementTemplateRepository informationStatementTemplateRepository) {
+      InformationStatementTemplateRepository informationStatementTemplateRepository,
+      NotificationService notificationService) {
     this.vaccinationConsultationRepository = vaccinationConsultationRepository;
     this.procedureStepRepository = procedureStepRepository;
     this.procedureStepService = procedureStepService;
@@ -142,6 +145,7 @@ public class VaccinationConsultationService {
     this.auditLogger = auditLogger;
     this.procedureAccessor = procedureAccessor;
     this.informationStatementTemplateRepository = informationStatementTemplateRepository;
+    this.notificationService = notificationService;
   }
 
   public UUID createProcedure(PostVaccinationConsultationRequest request) {
@@ -195,6 +199,9 @@ public class VaccinationConsultationService {
     vaccinationConsultation.getProcedureSteps().add(initialProcedureStep);
     vaccinationConsultationRepository.save(vaccinationConsultation);
     procedureStepRepository.save(initialProcedureStep);
+
+    notificationService.onNewCitizenProcedure(
+        citizenAccessCodeUser.accessCode(), request.patient(), initialProcedureStep);
 
     return vaccinationConsultation.getExternalId();
   }

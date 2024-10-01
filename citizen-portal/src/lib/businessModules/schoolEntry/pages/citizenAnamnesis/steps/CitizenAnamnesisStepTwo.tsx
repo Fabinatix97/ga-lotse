@@ -168,6 +168,23 @@ export function CitizenAnamnesisStepTwo({
       <Typography level="h4" component="h3">
         {t("additionalInfo.interests")}
       </Typography>
+      <Typography level="title-md">
+        {t("additionalInfo.clubSportAndOther")}
+      </Typography>
+      <Grid container sx={{ flexGrow: 1 }} spacing={2}>
+        <Grid xxs={12} lg={6}>
+          <InputField
+            name={interestsAndSportsInfo("clubSport")}
+            label={t("additionalInfo.clubSport")}
+          />
+        </Grid>
+        <Grid xxs={12} lg={6}>
+          <InputField
+            name={interestsAndSportsInfo("otherInterests")}
+            label={t("additionalInfo.otherInterests")}
+          />
+        </Grid>
+      </Grid>
       <LocalBooleanRadioField
         name={interestsAndSportsInfo("canSwim")}
         label={

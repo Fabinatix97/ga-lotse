@@ -27,6 +27,7 @@ import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.mapper.PersonMapper;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -213,6 +214,34 @@ public class PersonClient {
     List<CustodianDetailsData> custodianData =
         extractCustodianDetailsData(procedure, custodianFileStates);
     return new ProcedureWithPersonDetailsData(procedure, childDetailsData, custodianData);
+  }
+
+  public Map<PersonKeyAttributes, List<ProcedureWithChildData>> augmentWithChildData(
+      Map<PersonKeyAttributes, List<SchoolEntryProcedure>> proceduresByPerson) {
+    if (proceduresByPerson.isEmpty()) {
+      return Map.of();
+    }
+
+    List<UUID> personIdsToFetch =
+        proceduresByPerson.values().stream()
+            .flatMap(Collection::stream)
+            .map(SchoolEntryProcedure::getChildIdFromCentralFile)
+            .toList();
+
+    Map<UUID, AddPersonFileStateResponse> personsById =
+        fetchPersonsBulk(personIdsToFetch, null, null, null, null).stream()
+            .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id));
+
+    Map<PersonKeyAttributes, List<ProcedureWithChildData>> result = new LinkedHashMap<>();
+    for (Entry<PersonKeyAttributes, List<SchoolEntryProcedure>> entry :
+        proceduresByPerson.entrySet()) {
+      List<ProcedureWithChildData> augmentedProcedures =
+          entry.getValue().stream()
+              .map(procedure -> extractChildData(procedure, personsById))
+              .toList();
+      result.put(entry.getKey(), augmentedProcedures);
+    }
+    return result;
   }
 
   public Stream<ProcedureWithChildData> augmentWithChildData(

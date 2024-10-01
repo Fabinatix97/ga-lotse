@@ -20,6 +20,10 @@ export function CitizenAnamnesisStepFour() {
     "promotionTherapyAndAidInfo",
   );
 
+  const promotionBeforeSchoolEntry = createFieldNameMapper(
+    "promotionBeforeSchoolEntry",
+  );
+
   return (
     <ContentSheet>
       <Typography level="h3">{t("support.title")}</Typography>
@@ -102,7 +106,7 @@ export function CitizenAnamnesisStepFour() {
       </ToggleableSection>
       <Typography level="h4">{t("support.therapy.title")}</Typography>
       <ToggleableSection
-        name={promotionTherapyAndAidInfo("speechTherapy.show")}
+        name={promotionBeforeSchoolEntry("speechTherapy")}
         title={t("support.therapy.speechTherapy")}
       >
         <Typography level="body-sm">{t("support.therapy.date")}</Typography>
@@ -124,7 +128,7 @@ export function CitizenAnamnesisStepFour() {
         </Grid>
       </ToggleableSection>
       <ToggleableSection
-        name={promotionTherapyAndAidInfo("ergoTherapy.show")}
+        name={promotionBeforeSchoolEntry("ergotherapy")}
         title={t("support.therapy.ergoTherapy")}
       >
         <Typography level="body-sm">{t("support.therapy.date")}</Typography>
@@ -146,7 +150,7 @@ export function CitizenAnamnesisStepFour() {
         </Grid>
       </ToggleableSection>
       <ToggleableSection
-        name={promotionTherapyAndAidInfo("physioTherapy.show")}
+        name={promotionBeforeSchoolEntry("physiotherapy")}
         title={t("support.therapy.physioTherapy")}
       >
         <Typography level="body-sm">{t("support.therapy.date")}</Typography>

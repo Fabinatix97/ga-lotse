@@ -7,18 +7,17 @@
 
 import { ApiReportType } from "@eshg/employee-portal-api/statistics";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Box, List, ListItem } from "@mui/joy";
+import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
-import { useDeleteReport } from "@/lib/businessModules/statistics/api/mutations/useDeleteReport";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
+import { useDeleteReportWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteReportWithConfirmation";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
@@ -64,8 +63,7 @@ const filterDefinitions: FilterDefinition[] = [
 
 export function ReportsOverview() {
   const snackbar = useSnackbar();
-  const { openConfirmationDialog } = useConfirmationDialog();
-  const deleteReport = useDeleteReport();
+  const deleteReportWithConfirmation = useDeleteReportWithConfirmation();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
@@ -105,27 +103,6 @@ export function ReportsOverview() {
     snackbar.notification("Link in die Zwischenablage kopiert");
   }
 
-  function handleDeleteReport(id: string) {
-    openConfirmationDialog({
-      color: "danger",
-      title: "Report löschen?",
-      description: "Wenn Sie mit dem Löschen fortfahren, wird ...",
-      children: (
-        <List marker="disc">
-          <ListItem>der Report unwiderruflich gelöscht,</ListItem>
-          <ListItem>der Report aus allen Merklisten entfernt,</ListItem>
-          <ListItem>
-            eine Nachricht an die Nutzer:innen gesendet, die den Report in ihrer
-            Merkliste haben.
-          </ListItem>
-        </List>
-      ),
-      cancelLabel: "Abbrechen",
-      confirmLabel: "Ja, löschen",
-      onConfirm: () => deleteReport(id),
-    });
-  }
-
   return (
     <TablePage
       data-testid="statistics-reports-overview-table"
@@ -149,7 +126,7 @@ export function ReportsOverview() {
           wrapHeader
           columns={getReportsOverviewColumns(
             handleClickCopyAddress,
-            handleDeleteReport,
+            deleteReportWithConfirmation,
           )}
           data={reportsOverview.reports}
           noDataComponent={() => (

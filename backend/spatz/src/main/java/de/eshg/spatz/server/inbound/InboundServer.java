@@ -23,7 +23,9 @@ import io.netty.handler.ssl.SslHandler;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import org.reactivestreams.Publisher;
@@ -60,6 +62,7 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
         inboundConfiguration.listeningHost(),
         inboundConfiguration.handlerPort(),
         inboundConfiguration.forceClientAuth(),
+        Optional.ofNullable(inboundConfiguration.clientCnAllowList()).orElse(List.of()),
         sslBundles);
     this.inboundTargetPort = inboundConfiguration.targetPort();
     this.inboundTargetHost =
@@ -110,6 +113,11 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
                       EshgHttpHeaders.X_ESHG_SENDER_ORGUNIT.headerName,
                       senderActor.orgUnitId().toString()
                     });
+              } else if (!getClientCnAllowList().contains(peerCommonName)) {
+                throw new SslCertificateException(
+                    "Rejecting certificate with CN "
+                        + peerCommonName
+                        + " not in valid active inbound actors or client CN allow list");
               }
 
               ActorResponseDto currentSelf = self;
@@ -133,6 +141,7 @@ public class InboundServer extends ProxyServer implements TopologyChangedListene
 
               headersHolder.set(headers.toArray(String[][]::new));
             } catch (Exception e) {
+              if (e instanceof SslCertificateException) throw (SslCertificateException) e;
               throw new SslCertificateException("could not parse client certificate: " + e, e);
             }
           });

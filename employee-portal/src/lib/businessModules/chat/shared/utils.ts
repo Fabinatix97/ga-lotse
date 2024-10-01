@@ -29,6 +29,7 @@ import { isEmpty, isStrictEqual, isString, last } from "remeda";
 
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import {
+  Message,
   Presence,
   ReadConfirmationsPerUser,
   RoomLastMessage,
@@ -96,16 +97,6 @@ export function getDirectMessageMember(room: RoomWithCommunicationType) {
     return;
   }
   return room.room.getAvatarFallbackMember();
-}
-
-export function getDMMemberInfo(
-  room: Room,
-  communicationType: CommunicationType,
-) {
-  if (communicationType === CommunicationType.PublicRoom) {
-    return;
-  }
-  return room.getAvatarFallbackMember();
 }
 
 export function formatUserReceipts(
@@ -315,14 +306,14 @@ export async function getRoomLastMessage(
   }
 }
 
-export function convertMessageTimestamp(timestamp?: Date | null) {
+export function formatChatDate(timestamp?: Date | null) {
   if (!timestamp) return "";
 
   if (isToday(timestamp)) {
-    return format(timestamp, "hh:mm");
+    return format(timestamp, "HH:mm");
   }
 
-  return format(timestamp, "MM/dd");
+  return formatDateForChat(timestamp);
 }
 
 export function getDayLabel(date: Date): string {
@@ -437,4 +428,16 @@ export async function leaveRoom(matrixClient: MatrixClient, roomId?: string) {
   try {
     await matrixClient.leave(roomId);
   } catch {}
+}
+
+export function allMessagesRead(
+  matrixClient: MatrixClient,
+  newMessages: Message[],
+) {
+  newMessages.forEach((message) => {
+    void markAllMessagesAsRead({
+      roomId: message.roomId,
+      matrixClient: matrixClient,
+    });
+  });
 }

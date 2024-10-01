@@ -10,6 +10,7 @@ dependencies {
     implementation 'org.apache.httpcomponents.client5:httpclient5'
     implementation "org.zalando:logbook-httpclient5:latest.release"
     implementation project(":api-commons")
+    implementation project(":logging-commons")
 
     runtimeOnly "org.zalando:logbook-spring-boot-starter:latest.release"
 

@@ -139,7 +139,7 @@ export function mapToStatisticDetailsView(
     start: result.statisticInfo.timeRangeStart,
     end: mapTimeRangeEndApiToFrontend(result.statisticInfo.timeRangeEnd),
     createdAt: result.statisticInfo.createdAt,
-    createdBy: fullName(result.userDto),
+    createdBy: fullName(result.user),
     dataSource: {
       // We only have one datasource currently. If this changes the data structure changes and thus
       // this aggregation method has to become more sophisticated.

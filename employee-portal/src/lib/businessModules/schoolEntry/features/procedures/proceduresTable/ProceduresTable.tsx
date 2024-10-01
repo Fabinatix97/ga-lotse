@@ -106,6 +106,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
     ...filterValues,
+    labelsFilter: filterValues.labelsFilter?.map((label) => label.id),
     ...personSearch.searchParams,
     sortKey: getSortKey(tableControl.tableSorting),
     sortDirection: getSortDirection(tableControl.tableSorting),

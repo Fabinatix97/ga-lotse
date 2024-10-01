@@ -10,6 +10,7 @@ import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.CentralFileAuditLogger;
+import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails_;
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Person;
@@ -108,7 +109,7 @@ public class PersonService {
   private List<UUID> addPersonFileStatesWhenLocked(List<Person> fileStates) {
     Set<PersonKeyAttributes> personKeyAttributes = collectPersonKeyAttributes(fileStates);
 
-    List<Person> potentialMatches = findAllByKeyAttributes(personKeyAttributes);
+    List<Person> potentialMatches = findReferencePersonsByKeyAttributes(personKeyAttributes);
 
     Map<PersonKeyAttributes, Person> lowestIdPersons = createLowestIdMap(potentialMatches);
 
@@ -314,7 +315,7 @@ public class PersonService {
     return personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(fileStateIds);
   }
 
-  public List<Person> findAllByKeyAttributes(Set<PersonKeyAttributes> keyAttributes) {
+  public List<Person> findReferencePersonsByKeyAttributes(Set<PersonKeyAttributes> keyAttributes) {
     Specification<Person> personSpecification =
         (root, query, criteriaBuilder) -> {
           root.fetch(Person_.emailAddresses, JoinType.LEFT);
@@ -323,14 +324,14 @@ public class PersonService {
 
           List<Predicate> conjunctions = new ArrayList<>();
 
-          for (PersonKeyAttributes pair : keyAttributes) {
+          for (PersonKeyAttributes key : keyAttributes) {
             conjunctions.add(
                 criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(Person_.firstName), pair.firstName()),
-                    criteriaBuilder.equal(root.get(Person_.lastName), pair.lastName()),
+                    criteriaBuilder.equal(root.get(Person_.firstName), key.firstName()),
+                    criteriaBuilder.equal(root.get(Person_.lastName), key.lastName()),
                     criteriaBuilder.equal(
                         root.get(Person_.birthDetails).get(BirthDetails_.dateOfBirth),
-                        pair.dateOfBirth()),
+                        key.dateOfBirth()),
                     criteriaBuilder.isNull(root.get(Person_.referencePerson)),
                     criteriaBuilder.notEqual(root.get(Person_.dataOrigin), DataOrigin.EXTERNAL)));
           }

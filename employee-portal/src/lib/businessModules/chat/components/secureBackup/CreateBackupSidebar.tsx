@@ -5,7 +5,6 @@
 
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -29,9 +28,9 @@ import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
-  getPassphraseValidityInfo,
-  validatePassphrase,
-} from "@/lib/shared/helpers/validatePassphrase";
+  getPasswordValidityInfo,
+  validatePassword,
+} from "@/lib/shared/helpers/validatePassword";
 
 const initialValues = {
   validForm: "",
@@ -144,7 +143,7 @@ export function CreateBackupSidebar({
           }}
           validate={(values) => {
             if (
-              !validatePassphrase(values.passphrase, values.repeatedPassphrase)
+              !validatePassword(values.passphrase, values.repeatedPassphrase)
             ) {
               return { validForm: "false" };
             }
@@ -163,17 +162,15 @@ export function CreateBackupSidebar({
                   ))}
                   <PasswordField
                     data-testid={"passphrase"}
-                    label={"Enter a Security Phrase"}
+                    label={"Sicherheitsphrase vergeben"}
                     name={fieldName("passphrase")}
                     visibilityLabel={"visiblePassphrase"}
-                    validate={validateLength(1, 10)}
                   />
                   <PasswordField
                     data-testid={"repeatedPassphrase"}
-                    label={"Confirm your Security Phrase"}
+                    label={"Sicherheitsphrase wiederholen"}
                     name={fieldName("repeatedPassphrase")}
                     visibilityLabel={"visibleRepeatedPassphrase"}
-                    validate={validateLength(1, 10)}
                   />
                 </Stack>
                 <PasswortRequirementHints
@@ -225,7 +222,7 @@ function PasswortRequirementHints({
         Anforderungen an Sicherheitsphrasen:
       </Typography>
 
-      {getPassphraseValidityInfo(password, repeatedPassword).map(
+      {getPasswordValidityInfo(password, repeatedPassword).map(
         ({ message, valid }) => (
           <Typography
             fontWeight={"lighter"}

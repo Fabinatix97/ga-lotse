@@ -20,6 +20,7 @@ export function useUpdateReport(onSuccess: () => void) {
           props.model.description.trim().length > 0
             ? props.model.description.trim()
             : undefined,
+        type: "UpdateNameAndDescriptionReportSeriesRequest",
       }),
     onSuccess: () => {
       snackbar.confirmation("Report bearbeitet");

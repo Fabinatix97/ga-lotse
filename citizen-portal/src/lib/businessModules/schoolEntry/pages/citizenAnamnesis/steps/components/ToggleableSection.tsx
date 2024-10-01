@@ -33,6 +33,7 @@ export function ToggleableSection({
         }
         trueLabel={t("yes")}
         falseLabel={t("no")}
+        allowDeselection
       />
       {field.value && children}
     </Stack>

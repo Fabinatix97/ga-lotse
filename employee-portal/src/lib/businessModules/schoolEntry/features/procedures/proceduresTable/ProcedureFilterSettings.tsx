@@ -14,10 +14,12 @@ import {
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
 import { FormControl, FormLabel, Input, Select } from "@mui/joy";
-import { isDefined } from "remeda";
+import { isDefined, isEmpty } from "remeda";
 
+import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
+import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
 import { SearchSchoolFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchSchoolFilter";
 import { SchoolYearAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/shared/schoolYear";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
@@ -36,8 +38,7 @@ export type ProcedureFilters = Pick<
   | "dayOfAppointmentFilter"
   | "hasAppointmentFilter"
   | "schoolYearFilter"
-  | "labelsFilter"
->;
+> & { labelsFilter?: Label[] };
 
 const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   procedureTypeFilter: "Art",
@@ -188,6 +189,19 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
           >
             <SelectOptions options={PROCEDURE_TYPE_OPTIONS} />
           </Select>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Kennungen</FormLabel>
+          <LabelAutocomplete
+            name="labels"
+            value={props.filterFormValues.labelsFilter ?? []}
+            onChange={(newValue) => {
+              props.setFilterFormValue(
+                "labelsFilter",
+                isEmpty(newValue) ? undefined : newValue,
+              );
+            }}
+          />
         </FormControl>
       </FilterSettingsContent>
     </FilterSettingsSheet>

@@ -30,5 +30,6 @@
     <include file="migrations/0020_introduce_reports.xml"/>
     <include file="migrations/0021_cell_entry_indexes.xml"/>
     <include file="migrations/0022_auto_report_series.xml"/>
+    <include file="migrations/0023_tablerow_cellentry_sequences.xml"/>
 
 </databaseChangeLog>

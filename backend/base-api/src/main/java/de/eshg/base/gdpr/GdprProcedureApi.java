@@ -7,8 +7,10 @@ package de.eshg.base.gdpr;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.gdpr.api.AddGdprProcedureRequest;
+import de.eshg.base.gdpr.api.GdprProcedureChangeStatusRequest;
 import de.eshg.base.gdpr.api.GetGdprProcedureDetailsPageResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureResponse;
+import de.eshg.base.gdpr.api.SetMatterOfConcernRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.web.service.annotation.PutExchange;
 
 @HttpExchange(url = GdprProcedureApi.BASE_URL)
 public interface GdprProcedureApi {
@@ -59,4 +62,18 @@ public interface GdprProcedureApi {
   GetGdprProcedureResponse addCentralFileIdToGdprProcedure(
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id,
       @RequestBody @Valid AddCentralFileIdToGdprProcedureRequest request);
+
+  @PutExchange("/{id}/matter-of-concern")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          "Changes the matter of concern of this GDPR procedure, this is only relevant for right to correction and right to objection.")
+  void setMatterOfConcern(
+      @PathVariable("id") UUID id, @RequestBody @Valid SetMatterOfConcernRequest request);
+
+  @PostExchange("/{id}/change-status")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Changes the current status of the GDPR procedure.")
+  void changeStatus(
+      @PathVariable("id") UUID id, @RequestBody @Valid GdprProcedureChangeStatusRequest request);
 }

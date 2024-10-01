@@ -85,7 +85,7 @@ public class WebsocketEndpoint {
   @OnMessage
   public void onPong(PongMessage pongMessage) {
     String pongPayload = StandardCharsets.UTF_8.decode(pongMessage.getApplicationData()).toString();
-    logger.info("Received pong with applicationData {} for sni {}", pongPayload, this.sni);
+    logger.debug("Received pong with applicationData {} for sni {}", pongPayload, this.sni);
     if (!pongPayload.equals(outstandingPingPayload.get())) {
       logger.warn(
           "Payload mismatch: expected {}. Ignoring pong for sni {}",
@@ -206,7 +206,7 @@ public class WebsocketEndpoint {
       return;
     }
     String id = UUID.randomUUID().toString();
-    logger.info("Sending ping for sni {} with payload {}", this.sni, id);
+    logger.debug("Sending ping for sni {} with payload {}", this.sni, id);
     try {
       session.getBasicRemote().sendPing(ByteBuffer.wrap(id.getBytes(StandardCharsets.UTF_8)));
       outstandingPingPayload.set(id);

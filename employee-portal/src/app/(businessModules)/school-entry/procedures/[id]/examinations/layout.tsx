@@ -15,6 +15,7 @@ import { PropsWithChildren, useState } from "react";
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
+import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { RequiredProcedureDataDialog } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/RequiredProcedureDataModal";
 import { MedicalReportSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/MedicalReportSidebar";
 import { SchoolInfoLetterSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/SchoolInfoLetterSidebar";
@@ -64,6 +65,7 @@ export default function SchoolEntryExaminationLayout(
   );
   const procedureId = props.params.id;
   const navItems = buildNavItems(procedureId);
+  const procedureDetails = useGetProcedure(procedureId).data;
 
   return (
     <PageGrid>
@@ -80,13 +82,14 @@ export default function SchoolEntryExaminationLayout(
               ))}
             </SidePanelNav>
           </SidePanel>
-          {(medicalReportEnabled || schoolInfoLetterEnabled) && (
-            <CreateReportsPanel
-              procedureId={procedureId}
-              showMedicalReportButton={medicalReportEnabled}
-              showSchoolInfoLetterButton={schoolInfoLetterEnabled}
-            />
-          )}
+          {(medicalReportEnabled || schoolInfoLetterEnabled) &&
+            !procedureDetails.isClosed && (
+              <CreateReportsPanel
+                procedureId={procedureId}
+                showMedicalReportButton={medicalReportEnabled}
+                showSchoolInfoLetterButton={schoolInfoLetterEnabled}
+              />
+            )}
         </Stack>
       </Grid>
     </PageGrid>

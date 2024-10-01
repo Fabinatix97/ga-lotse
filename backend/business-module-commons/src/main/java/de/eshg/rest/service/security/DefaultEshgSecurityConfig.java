@@ -45,6 +45,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHeaderWriter.CrossOriginOpenerPolicy;
 import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter.CrossOriginResourcePolicy;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
@@ -111,6 +112,7 @@ public class DefaultEshgSecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(AbstractHttpConfigurer::disable)
         .headers(DefaultEshgSecurityConfig::securityHeaders)
+        .addFilterAfter(new UserSessionIdLoggingFilter(), AuthorizationFilter.class)
         .build();
   }
 

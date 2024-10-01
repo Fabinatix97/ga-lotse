@@ -649,7 +649,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateReportSeriesRequest"
+              oneOf:
+              - $ref: "#/components/schemas/ActivateAutoReportSeriesRequest"
+              - $ref: "#/components/schemas/DeactivateAutoReportSeriesRequest"
+              - $ref: "#/components/schemas/UpdateNameAndDescriptionReportSeriesRequest"
         required: true
       responses:
         "200":
@@ -658,10 +661,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReportSeries"
           description: The patched report series
-      summary: Change title and description of a report series
+      summary: Change title and description of a report series or change activation
       tags:
       - ReportSeries
   /statistic/report/{reportId}:
+    delete:
+      operationId: deleteReport
+      parameters:
+      - in: path
+        name: reportId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the report is deleted
+      summary: Delete a report
+      tags:
+      - Report
     get:
       operationId: getReportDetailPage
       parameters:
@@ -978,6 +996,34 @@ components:
           type: string
       required:
       - '@type'
+    AbstractUpdateReportSeriesRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    ActivateAutoReportSeriesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateReportSeriesRequest"
+      - type: object
+        properties:
+          frequency:
+            $ref: "#/components/schemas/Frequency"
+          reportingPeriod:
+            $ref: "#/components/schemas/ReportingPeriod"
+          startMonth:
+            type: integer
+            format: int32
+            maximum: 12
+            minimum: 1
+      required:
+      - frequency
+      - reportingPeriod
+      - startMonth
     AddAutoReportSeriesRequest:
       type: object
       allOf:
@@ -1603,6 +1649,10 @@ components:
       required:
       - code
       - name
+    DeactivateAutoReportSeriesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateReportSeriesRequest"
     DecimalAttribute:
       type: object
       allOf:
@@ -1966,7 +2016,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        userDto:
+        user:
           $ref: "#/components/schemas/User"
       required:
       - evaluations
@@ -2034,7 +2084,9 @@ components:
           type: integer
           format: int64
           minimum: 0
-        userDto:
+        userReport:
+          $ref: "#/components/schemas/User"
+        userReportSeries:
           $ref: "#/components/schemas/User"
       required:
       - createdAt
@@ -2893,13 +2945,16 @@ components:
           type: string
       required:
       - name
-    UpdateReportSeriesRequest:
+    UpdateNameAndDescriptionReportSeriesRequest:
       type: object
-      properties:
-        description:
-          type: string
-        name:
-          type: string
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateReportSeriesRequest"
+      - type: object
+        properties:
+          description:
+            type: string
+          name:
+            type: string
       required:
       - name
     User:

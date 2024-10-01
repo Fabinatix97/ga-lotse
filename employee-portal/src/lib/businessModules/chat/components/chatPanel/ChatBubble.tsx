@@ -7,29 +7,30 @@ import Box from "@mui/joy/Box";
 import Sheet from "@mui/joy/Sheet";
 import Stack from "@mui/joy/Stack";
 import Typography from "@mui/joy/Typography";
-import { format, isToday } from "date-fns";
-import { User } from "matrix-js-sdk/lib/matrix";
 import { ReactNode } from "react";
+import { isEmpty } from "remeda";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { ReadingReceipt } from "@/lib/businessModules/chat/components/chatPanel/ReadingReceipt";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { Message } from "@/lib/businessModules/chat/shared/types";
-import { formatDateForChat } from "@/lib/businessModules/chat/shared/utils";
+import { formatChatDate } from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatBubbleProps {
   message: Message;
   variant: "sent" | "received";
   loggedInUserId: string;
-  receiptUsers: (User | null)[];
+  lastReadMessageIndexes: number[];
+  index: number;
 }
 
 export function ChatBubble({
   variant,
   message,
   loggedInUserId,
-  receiptUsers,
+  lastReadMessageIndexes = [],
+  index,
 }: Readonly<ChatBubbleProps>) {
   const { matrixClient } = useChatClientContext();
   const { userSettings } = useChat();
@@ -40,6 +41,14 @@ export function ChatBubble({
       return user?.displayName;
     })
     .filter((item) => !!item) as string[];
+  const hasNoReceipts = isEmpty(lastReadMessageIndexes);
+
+  // Messages are sorted from newest to oldest.
+  // Here, we compare the index to check if it is greater than the last read index.
+  // This means that the message is older than the read ones, so it must have been read.
+  const isMessageRead = lastReadMessageIndexes.some(
+    (readIndex) => index >= readIndex,
+  );
 
   return (
     <Stack direction="column" alignItems="flex-start">
@@ -59,9 +68,7 @@ export function ChatBubble({
         </Typography>
         {message.timestamp && (
           <Typography textColor="text.secondary" sx={{ fontSize: "0.875rem" }}>
-            {isToday(message.timestamp)
-              ? `${format(message.timestamp, "HH:MM")} Uhr`
-              : formatDateForChat(message.timestamp)}
+            {formatChatDate(message.timestamp)}
           </Typography>
         )}
       </Stack>
@@ -100,7 +107,7 @@ export function ChatBubble({
         {isSent && (
           <ReadingReceipt
             isReadReceiptEnabled={userSettings.showReadConfirmation}
-            isRead={receiptUsers?.length > 0}
+            isRead={hasNoReceipts ? false : isMessageRead}
           />
         )}
       </Box>

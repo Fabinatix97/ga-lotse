@@ -75,9 +75,9 @@ interface MigrationBackgroundValues {
 interface PromotionBeforeSchoolEntryValues {
   earlySupport: boolean | null;
   integrationPlace: boolean | null;
-  ergotherapy: OptionalFieldValue<boolean>;
-  speechTherapy: OptionalFieldValue<boolean>;
-  physiotherapy: OptionalFieldValue<boolean>;
+  ergotherapy: boolean | null;
+  speechTherapy: boolean | null;
+  physiotherapy: boolean | null;
 }
 
 interface AdditionalChildInfoValues {
@@ -96,6 +96,8 @@ interface DaycareAndSchoolInfoValues {
 interface InterestAndSportsInfoValues {
   canSwim: boolean | null;
   hasSeahorseBadge: boolean | null;
+  clubSport: OptionalFieldValue<string>;
+  otherInterests: OptionalFieldValue<string>;
 }
 
 interface DevelopmentInfoValues {
@@ -133,15 +135,15 @@ interface PromotionTherapyAndAidInfoValues {
   hearingAid: ToggleableSectionFormValue & {
     which: OptionalFieldValue<string>;
   };
-  speechTherapy: ToggleableSectionFormValue & {
+  speechTherapy: {
     start: OptionalFieldValue<string>;
     end: OptionalFieldValue<string>;
   };
-  ergoTherapy: ToggleableSectionFormValue & {
+  ergoTherapy: {
     start: OptionalFieldValue<string>;
     end: OptionalFieldValue<string>;
   };
-  physioTherapy: ToggleableSectionFormValue & {
+  physioTherapy: {
     start: OptionalFieldValue<string>;
     end: OptionalFieldValue<string>;
   };
@@ -151,7 +153,7 @@ interface PromotionTherapyAndAidInfoValues {
 }
 
 interface ToggleableSectionFormValue {
-  show: boolean;
+  show: boolean | null;
 }
 
 const INITIAL_VALUES: CitizenAnamnesisFormValues = {
@@ -168,7 +170,7 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
       nationality: "",
     },
     secondParent: {
-      show: false,
+      show: null,
       countryOfBirth: "",
       nationality: "",
     },
@@ -176,14 +178,14 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
   promotionBeforeSchoolEntry: {
     earlySupport: null,
     integrationPlace: null,
-    ergotherapy: "",
-    speechTherapy: "",
-    physiotherapy: "",
+    ergotherapy: null,
+    speechTherapy: null,
+    physiotherapy: null,
   },
   additionalChildInfo: {
     responsiblePhysician: "",
     siblings: {
-      show: false,
+      show: null,
       birthYears: [""],
     },
   },
@@ -195,6 +197,8 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
   interestsAndSportsInfo: {
     canSwim: null,
     hasSeahorseBadge: null,
+    clubSport: "",
+    otherInterests: "",
   },
   personalConspicuities: null,
   developmentInfo: {
@@ -205,7 +209,7 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
   },
   illnessAndAccidentInfo: {
     allergies: {
-      show: false,
+      show: null,
       values: [""],
     },
     severeIllnesses: null,
@@ -216,7 +220,7 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
   familyHistoryInfo: {
     spectaclesInFamily: null,
     chronicIllnessOrDisabilityInFamily: {
-      show: false,
+      show: null,
       value: "",
     },
   },
@@ -226,34 +230,31 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
     speechImpairment: null,
     spectacles: {
       since: "",
-      show: false,
+      show: null,
     },
     visionSchool: {
       since: "",
-      show: false,
+      show: null,
     },
     hearingAid: {
       which: "",
-      show: false,
+      show: null,
     },
     speechTherapy: {
       start: "",
       end: "",
-      show: false,
     },
     ergoTherapy: {
       start: "",
       end: "",
-      show: false,
     },
     physioTherapy: {
       start: "",
       end: "",
-      show: false,
     },
     additionalTherapies: {
       which: "",
-      show: false,
+      show: null,
     },
   },
 };
@@ -284,6 +285,7 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
       })
       .catch();
   }
+
   return (
     <MultiStepForm<CitizenAnamnesisFormValues> steps={STEPS}>
       {({ Outlet, currentStep, totalSteps }) => (
@@ -359,31 +361,33 @@ function mapToRequest(
         nationalityFirstParent: mapOptionalValue(
           values.migrationBackground.firstParent.nationality,
         ),
-        countryOfBirthSecondParent: onlyIfShown(
+        countryOfBirthSecondParent: fallbackIfExplicitlyHidden(
           values.migrationBackground.secondParent,
           mapOptionalValue(
             values.migrationBackground.secondParent.countryOfBirth,
           ),
+          ApiSchoolEntryCountryCode.Uuu,
         ),
-        nationalitySecondParent: onlyIfShown(
+        nationalitySecondParent: fallbackIfExplicitlyHidden(
           values.migrationBackground.secondParent,
           mapOptionalValue(values.migrationBackground.secondParent.nationality),
+          ApiSchoolEntryCountryCode.Uuu,
         ),
       },
       promotionBeforeSchoolEntry: {
         earlySupport: mapNullableValue(
           values.promotionBeforeSchoolEntry.earlySupport,
         ),
-        ergotherapy: mapOptionalValue(
+        ergotherapy: mapNullableValue(
           values.promotionBeforeSchoolEntry.ergotherapy,
         ),
         integrationPlace: mapNullableValue(
           values.promotionBeforeSchoolEntry.integrationPlace,
         ),
-        physiotherapy: mapOptionalValue(
+        physiotherapy: mapNullableValue(
           values.promotionBeforeSchoolEntry.physiotherapy,
         ),
-        speechTherapy: mapOptionalValue(
+        speechTherapy: mapNullableValue(
           values.promotionBeforeSchoolEntry.speechTherapy,
         ),
       },
@@ -394,8 +398,8 @@ function mapToRequest(
         siblingsBirthYears: values.additionalChildInfo.siblings.show
           ? dropBlankStrings(
               values.additionalChildInfo.siblings.birthYears,
-            ).map(parseInt)
-          : [],
+            ).map((it) => parseInt(it))
+          : undefined,
       },
       daycareAndSchoolInfo: {
         inDaycareSince: mapMonthAndYear(
@@ -447,6 +451,10 @@ function mapToRequest(
         hasSeahorseBadge: mapNullableValue(
           values.interestsAndSportsInfo.hasSeahorseBadge,
         ),
+        clubSport: mapOptionalValue(values.interestsAndSportsInfo.clubSport),
+        otherInterests: mapOptionalValue(
+          values.interestsAndSportsInfo.otherInterests,
+        ),
       },
       promotionTherapyAndAidInfo: {
         visionImpairment: mapNullableValue(
@@ -471,31 +479,31 @@ function mapToRequest(
           mapOptionalValue(values.promotionTherapyAndAidInfo.hearingAid.which),
         ),
         speechTherapyStart: onlyIfShown(
-          values.promotionTherapyAndAidInfo.speechTherapy,
+          { show: values.promotionBeforeSchoolEntry.speechTherapy },
           mapOptionalDate(
             values.promotionTherapyAndAidInfo.speechTherapy.start,
           ),
         ),
         speechTherapyEnd: onlyIfShown(
-          values.promotionTherapyAndAidInfo.speechTherapy,
+          { show: values.promotionBeforeSchoolEntry.speechTherapy },
           mapOptionalDate(values.promotionTherapyAndAidInfo.speechTherapy.end),
         ),
         ergoTherapyStart: onlyIfShown(
-          values.promotionTherapyAndAidInfo.ergoTherapy,
+          { show: values.promotionBeforeSchoolEntry.ergotherapy },
           mapOptionalDate(values.promotionTherapyAndAidInfo.ergoTherapy.start),
         ),
         ergoTherapyEnd: onlyIfShown(
-          values.promotionTherapyAndAidInfo.ergoTherapy,
+          { show: values.promotionBeforeSchoolEntry.ergotherapy },
           mapOptionalDate(values.promotionTherapyAndAidInfo.ergoTherapy.end),
         ),
         physioTherapyStart: onlyIfShown(
-          values.promotionTherapyAndAidInfo.physioTherapy,
+          { show: values.promotionBeforeSchoolEntry.physiotherapy },
           mapOptionalDate(
             values.promotionTherapyAndAidInfo.physioTherapy.start,
           ),
         ),
         physioTherapyEnd: onlyIfShown(
-          values.promotionTherapyAndAidInfo.physioTherapy,
+          { show: values.promotionBeforeSchoolEntry.physiotherapy },
           mapOptionalDate(values.promotionTherapyAndAidInfo.physioTherapy.end),
         ),
         additionalTherapies: onlyIfShown(
@@ -515,4 +523,11 @@ function onlyIfShown<TValue>(
   value: TValue,
 ): TValue | undefined {
   return section.show ? value : undefined;
+}
+function fallbackIfExplicitlyHidden<TValue>(
+  section: ToggleableSectionFormValue,
+  value: TValue,
+  fallback: TValue,
+): TValue {
+  return section.show === false ? fallback : value;
 }

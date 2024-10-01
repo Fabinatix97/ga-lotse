@@ -13,6 +13,7 @@ interface ImportResultProcedures {
 
 interface ImportResultProceduresSummaryProps {
   result: ImportResultProcedures;
+  isDirectProcedureTypeAssignmentOnImport: boolean;
 }
 
 interface SummaryItemProps {
@@ -43,6 +44,13 @@ function SummaryItem(props: SummaryItemProps) {
 export function ImportResultProceduresSummary(
   props: ImportResultProceduresSummaryProps,
 ) {
+  const createdOrMerged = props.isDirectProcedureTypeAssignmentOnImport
+    ? "angelegt"
+    : "angelegt oder zusammengeführt";
+  const mergeFailedMessage = props.isDirectProcedureTypeAssignmentOnImport
+    ? "nicht angelegt wegen Duplikaten im Bestand"
+    : "konnten nicht zusammengeführt werden";
+
   return (
     <Stack gap={1}>
       {props.result.created > 0 && (
@@ -58,14 +66,11 @@ export function ImportResultProceduresSummary(
         />
       )}
       {props.result.created == 0 && props.result.merged == 0 && (
-        <SummaryItem
-          content="0 angelegt oder zusammengeführt"
-          color="primary"
-        />
+        <SummaryItem content={`0 ${createdOrMerged}`} color="primary" />
       )}
       {props.result.mergeFailed > 0 && (
         <SummaryItem
-          content={`${props.result.mergeFailed} konnten nicht zusammengeführt werden`}
+          content={`${props.result.mergeFailed} ${mergeFailedMessage}`}
           color="danger"
         />
       )}

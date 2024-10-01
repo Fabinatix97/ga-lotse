@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation project(':business-module-commons')
+    implementation project(':logging-commons')
 
     api project(':lib-statistics-api')
     api project(':lib-procedures-api')
