@@ -10,6 +10,7 @@ import de.eshg.lib.editor.TextBlockController;
 import de.eshg.lib.editor.api.model.TextBlockDto;
 import de.eshg.lib.editor.api.model.TextBlockRequest;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
 import net.datafaker.Faker;
@@ -27,8 +28,9 @@ public class TextBlockPopulator extends BasePopulator<TextBlockDto> {
       Clock clock,
       Environment environment,
       TextBlockController textBlockController,
-      TextBlockRepository textBlockRepository) {
-    super(clock, environment, "text_block");
+      TextBlockRepository textBlockRepository,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, "text_block", environmentConfig);
     this.textBlockController = textBlockController;
     this.textBlockRepository = textBlockRepository;
   }

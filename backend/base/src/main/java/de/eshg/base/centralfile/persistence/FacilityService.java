@@ -6,6 +6,7 @@
 package de.eshg.base.centralfile.persistence;
 
 import static de.eshg.base.centralfile.FacilityController.FACILITY_REFERENCE_NOT_FOUND;
+import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
@@ -20,6 +21,7 @@ import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.entity.FacilityContactPerson;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
+import de.eshg.base.centralfile.persistence.repository.FacilitySearchSpecification;
 import de.eshg.base.util.*;
 import de.eshg.mutex.MutexService;
 import de.eshg.rest.service.error.AlreadyExistsException;
@@ -38,19 +40,28 @@ import org.springframework.stereotype.Service;
 public class FacilityService {
   public static final String MUTEX_FACILITY_WRITE = "FACILITY_WRITE";
   private final FacilityRepository facilityRepository;
+  private final FuzzySearchHelper fuzzySearchHelper;
   private final MutexService mutexService;
   private final CentralFileAuditLogger auditLogger;
   private final Clock clock;
 
   public FacilityService(
       FacilityRepository facilityRepository,
+      FuzzySearchHelper fuzzySearchHelper,
       MutexService mutexService,
       CentralFileAuditLogger auditLogger,
       Clock clock) {
     this.facilityRepository = facilityRepository;
     this.mutexService = mutexService;
     this.auditLogger = auditLogger;
+    this.fuzzySearchHelper = fuzzySearchHelper;
     this.clock = clock;
+  }
+
+  public List<Facility> searchReferenceFacilities(String name) {
+    fuzzySearchHelper.setSimilarityThreshold(getSimilarityThreshold(name));
+    FacilitySearchSpecification spec = new FacilitySearchSpecification(name);
+    return facilityRepository.findAll(spec);
   }
 
   public Facility addFacilityFileState(
@@ -85,7 +96,7 @@ public class FacilityService {
     }
   }
 
-  private Facility getReferenceFacility(UUID referenceFacilityId) {
+  public Facility getReferenceFacility(UUID referenceFacilityId) {
     return facilityRepository
         .findByExternalIdEqualsAndReferenceFacilityIsNull(referenceFacilityId)
         .orElseThrow(() -> new NotFoundException(FACILITY_REFERENCE_NOT_FOUND));

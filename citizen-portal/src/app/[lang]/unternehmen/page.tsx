@@ -23,7 +23,7 @@ export default function OrganizationHomePage() {
 
   return (
     <PageLayout banner="business">
-      <PageContent spacing="lg">
+      <PageContent spacing="lg" spaceContentToSide>
         <section>
           <Typography component="h2" level="h2" mb={3}>
             {t("organization.landing_page.header")}

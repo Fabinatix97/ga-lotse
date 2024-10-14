@@ -1,0 +1,33 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentSummary,
+  ApiAppointmentType,
+} from "@eshg/employee-portal-api/travelMedicine";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+
+export interface AppointmentSummary {
+  readonly appointmentBookingType: ApiAppointmentBookingType;
+  readonly appointmentType: ApiAppointmentType;
+  readonly earliestDate?: Date;
+  readonly end?: Date;
+  readonly procedureStepId: string;
+  readonly start?: Date;
+}
+
+export function mapAppointment(
+  response: ApiAppointmentSummary,
+): AppointmentSummary {
+  return {
+    appointmentBookingType: response.appointmentBookingType,
+    appointmentType: response.appointmentType,
+    earliestDate: mapOptionalValue(response.earliestDate),
+    procedureStepId: response.procedureStepId,
+    start: mapOptionalValue(response.start),
+    end: mapOptionalValue(response.end),
+  };
+}

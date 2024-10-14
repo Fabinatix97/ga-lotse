@@ -6,35 +6,42 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import UserIcon from "@mui/icons-material/Person";
 import { Badge, Box } from "@mui/joy";
-import { Dispatch, SetStateAction, useLayoutEffect, useRef } from "react";
+import { useRef } from "react";
 
+import { useGetUnreadNotifications } from "@/lib/baseModule/api/queries/notifications";
+import { useSelfUserSidebar } from "@/lib/baseModule/components/layout/SelfUserSidebar";
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
+import { useNotificationsSidebar } from "@/lib/baseModule/components/layout/notificationsSidebar/NotificationsSidebar";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 
-import { HeaderProps } from "./Header";
 import { HeaderMessagesButton } from "./HeaderMessagesButton";
 
-interface HeaderButtonsProps extends Pick<HeaderProps, "notificationsCount"> {
-  setUserSidebarOpen: Dispatch<SetStateAction<boolean>>;
-  notificationsSidebarOpen: boolean;
-  setNotificationsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-}
-
-export function HeaderButtons({
-  setUserSidebarOpen,
-  notificationsSidebarOpen,
-  setNotificationsSidebarOpen,
-  notificationsCount,
-}: HeaderButtonsProps) {
+export function HeaderButtons() {
   const nodeRef = useRef(null);
-  const { canAccessChat, chatSidebar } = useChat();
+  const { canAccessChat } = useChat();
+  const userSidebar = useSelfUserSidebar();
+  const { data: notificationResponse } = useGetUnreadNotifications();
+  const notificationsSidebar = useNotificationsSidebar();
 
-  useLayoutEffect(() => {
-    if (chatSidebar.isOpen) {
-      setUserSidebarOpen(false);
-      setNotificationsSidebarOpen(false);
+  const notificationsCount = notificationResponse
+    ? notificationResponse.notifications.length
+    : 0;
+
+  function toggleNotificationsSidebar(): void {
+    if (notificationsSidebar.isOpen) {
+      notificationsSidebar.close();
+    } else {
+      notificationsSidebar.open({ notificationResponse });
     }
-  }, [chatSidebar.isOpen, setNotificationsSidebarOpen, setUserSidebarOpen]);
+  }
+
+  function toggleUserSidebar(): void {
+    if (userSidebar.isOpen) {
+      userSidebar.close();
+    } else {
+      userSidebar.open();
+    }
+  }
 
   return (
     <Box
@@ -47,11 +54,7 @@ export function HeaderButtons({
     >
       <HeaderIconButton
         aria-label={`${notificationsCount} Benachrichtigungen`}
-        onClick={() => {
-          setUserSidebarOpen(false);
-          chatSidebar.close();
-          setNotificationsSidebarOpen(!notificationsSidebarOpen);
-        }}
+        onClick={toggleNotificationsSidebar}
       >
         <Badge
           color="danger"
@@ -67,11 +70,7 @@ export function HeaderButtons({
         sx={{
           backgroundColor: "transparent",
         }}
-        onClick={() => {
-          setNotificationsSidebarOpen(false);
-          chatSidebar.close();
-          setUserSidebarOpen((prevState) => !prevState);
-        }}
+        onClick={toggleUserSidebar}
       >
         <UserIcon sx={{ color: "background.body" }} />
       </HeaderIconButton>

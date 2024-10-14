@@ -1,0 +1,78 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1728369437940-4">
+    <addColumn tableName="evaluation">
+      <column name="chart_configuration_id" type="int8"/>
+    </addColumn>
+    <sql>
+      UPDATE evaluation e
+      SET chart_configuration_id = cc.id
+        FROM chart_configuration cc
+      WHERE cc.evaluation_id = e.id;
+    </sql>
+    <addNotNullConstraint columnDataType="bigint" columnName="chart_configuration_id" tableName="evaluation" validate="true"/>
+    <addUniqueConstraint columnNames="chart_configuration_id" constraintName="evaluation_chart_configuration_id_key" tableName="evaluation"/>
+    <addForeignKeyConstraint baseColumnNames="chart_configuration_id" baseTableName="evaluation" constraintName="fk_evaluation_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+
+    <dropUniqueConstraint constraintName="chart_configuration_evaluation_id_key" tableName="chart_configuration"/>
+    <dropForeignKeyConstraint baseTableName="chart_configuration" constraintName="fk_chart_configuration_evaluation"/>
+    <dropColumn columnName="evaluation_id" tableName="chart_configuration"/>
+
+    <createTable tableName="analysis_template">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_analysis_template"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="chart_configuration_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="evaluation_template_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="chart_configuration_id" constraintName="analysis_template_chart_configuration_id_key" tableName="analysis_template"/>
+    <addForeignKeyConstraint baseColumnNames="chart_configuration_id" baseTableName="analysis_template" constraintName="fk_analysis_template_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="evaluation_template_id" baseTableName="analysis_template" constraintName="fk_analysis_template_evaluation_template" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="evaluation_template" validate="true"/>
+    <createIndex indexName="idx_analysis_template_evaluation_template_id" tableName="analysis_template">
+      <column name="evaluation_template_id"/>
+    </createIndex>
+
+    <createTable tableName="diagram_template">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_diagram_template"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="TEXT"/>
+      <column name="title" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="analysis_template_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="analysis_template_id" baseTableName="diagram_template" constraintName="fk_diagram_template_analysis_template" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="analysis_template" validate="true"/>
+    <createIndex indexName="idx_diagram_template_analysis_template_id" tableName="diagram_template">
+      <column name="analysis_template_id"/>
+    </createIndex>
+
+    <addColumn tableName="abstract_filter_parameter">
+      <column name="diagram_template_id" type="int8"/>
+    </addColumn>
+    <addForeignKeyConstraint baseColumnNames="diagram_template_id" baseTableName="abstract_filter_parameter" constraintName="fk_abstract_filter_parameter_diagram_template" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="diagram_template" validate="true"/>
+    <createIndex indexName="idx_abstract_filter_parameter_diagram_template_id" tableName="abstract_filter_parameter">
+      <column name="diagram_template_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

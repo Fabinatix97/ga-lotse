@@ -16,6 +16,7 @@ import de.eshg.servicedirectory.ServiceDirectoryReadService;
 import de.eshg.servicedirectory.common.AdminNameHolder;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,8 +34,9 @@ public class ServiceDirectoryTestHelperController extends TestHelperController
   public ServiceDirectoryTestHelperController(
       ServiceDirectoryTestHelperService testHelperService,
       ServiceDirectoryAdminService serviceDirectoryAdminService,
-      ServiceDirectoryReadService serviceDirectoryReadService) {
-    super(testHelperService);
+      ServiceDirectoryReadService serviceDirectoryReadService,
+      EnvironmentConfig environmentConfig) {
+    super(testHelperService, environmentConfig);
     this.serviceDirectoryTestHelperService = testHelperService;
     this.serviceDirectoryAdminService = serviceDirectoryAdminService;
     this.serviceDirectoryReadService = serviceDirectoryReadService;

@@ -5,12 +5,15 @@
 
 import { ApiCreateProcedureResponse } from "@eshg/employee-portal-api/schoolEntry";
 import {
+  ApiAppointment,
+  ApiAppointmentBookingType,
   ApiConcern,
   ApiCountryCode,
   ApiCreateProcedureRequest,
   ApiGender,
 } from "@eshg/employee-portal-api/stiProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
 import { useReducer } from "react";
@@ -18,6 +21,10 @@ import { useReducer } from "react";
 import { useCreateStiProcedureMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { COUNTRY_CODE_OPTIONS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
+import {
+  deleteUndefined,
+  optionalInt,
+} from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
@@ -30,7 +37,10 @@ import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 import { AppointmentForm } from "./AppointmentForm";
-import { PersonalDataForm } from "./PersonalDataForm";
+import {
+  PersonalDataForm,
+  personalDataFormValidation,
+} from "./PersonalDataForm";
 import { SummaryForm, SummaryFormProps } from "./SummaryForm";
 
 export const CONCERN_OPTIONS = Object.entries(CONCERN_VALUES).map(
@@ -58,6 +68,7 @@ const steps = [
   {
     subTitle: "Persönliche Daten erfassen",
     fields: () => <PersonalDataForm />,
+    validate: personalDataFormValidation,
   },
   {
     subTitle: "Überprüfen und bestätigen",
@@ -82,9 +93,9 @@ const initialValues: AddNewProcedureForm = {
 export interface AddNewProcedureForm {
   concern?: ApiConcern | "";
 
-  appointmentType?: string;
-  blockAppointment?: null | Date;
-  customAppointmentDate: "" | Date;
+  appointmentType?: ApiAppointmentBookingType | "";
+  blockAppointment?: null | ApiAppointment;
+  customAppointmentDate: string;
   customAppointmentDuration: string;
 
   gender: ApiGender | "";
@@ -129,8 +140,8 @@ export function AddNewProcedureSidebar() {
     _helpers: FormikHelpers<AddNewProcedureForm>,
   ) {
     if (isOnLastStep) {
-      addNewProcedure.mutate(mapFormToApi(newValues));
-      return;
+      const mappedValues = mapFormToApi(newValues);
+      return addNewProcedure.mutateAsync(mappedValues);
     }
     changeToStep(stepIndex + 1);
   }
@@ -138,7 +149,11 @@ export function AddNewProcedureSidebar() {
 
   return (
     <Sidebar open={isOpen} onClose={handleClose}>
-      <Formik initialValues={initialValues} onSubmit={handleNext}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleNext}
+        validate={step.validate}
+      >
         <SidebarForm ref={sidebarFormRef}>
           <SidebarContent
             title="Neuen Vorgang anlegen"
@@ -169,40 +184,31 @@ export function AddNewProcedureSidebar() {
   );
 }
 
-function optionalInt(num: string | undefined): number | undefined {
-  if (num == null) {
-    return;
-  }
-  const parsed = parseInt(num, 10);
-  return !isNaN(parsed) ? parsed : undefined;
-}
-
-type NoUndefined<T> = T extends object
-  ? {
-      [K in keyof T]: Exclude<T[K], undefined>;
-    }
-  : never;
-function deleteUndefined<T extends object>(obj: T): NoUndefined<T> {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([_key, value]) => value !== undefined),
-  ) as NoUndefined<T>;
-}
-
-export function mapOptional<T, K>(
-  val: T | undefined | null,
-  predicate: (t: T) => K,
-): K | undefined {
-  if (val == null) {
-    return;
-  }
-  return predicate(val);
-}
-
 function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
   if (!form.yearOfBirth) {
     throw new Error("Year of birth must be defined");
   }
+  if (!form.appointmentType) {
+    throw new Error("Appointment type must be defined");
+  }
+  const isCustomAppointment =
+    form.appointmentType === ApiAppointmentBookingType.UserDefined;
+
+  const appointmentStart = isCustomAppointment
+    ? new Date(form.customAppointmentDate)
+    : form.blockAppointment?.start;
+
+  if (!appointmentStart) {
+    throw new Error("Appointment start must be defined");
+  }
+
+  const blockAppointmentEnd = form.blockAppointment?.end;
+  if (!isCustomAppointment && blockAppointmentEnd == null) {
+    throw new Error("Appointment end must be defined");
+  }
+
   return deleteUndefined({
+    appointmentBookingType: form.appointmentType,
     concern: CONCERN_OPTIONS.find((t) => t.value === form.concern)?.value,
     countryOfBirth: COUNTRY_CODE_OPTIONS.find(
       (t) => t.value === form.countryOfBirth,
@@ -210,6 +216,10 @@ function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
     gender: GENDER_OPTIONS.find((t) => t.value === form.gender)?.value as
       | ApiGender
       | undefined,
+    durationInMinutes: isCustomAppointment
+      ? optionalInt(form.customAppointmentDuration)
+      : differenceInMinutes(blockAppointmentEnd!, appointmentStart),
+    appointmentStart,
     inGermanySince: optionalInt(form.inGermanySince),
     yearOfBirth: parseInt(form.yearOfBirth, 10),
   });
@@ -221,8 +231,8 @@ export function getAppointmentDate(form: AddNewProcedureForm) {
       ? new Date(form.customAppointmentDate)
       : undefined;
   const date =
-    form.appointmentType === "APPOINTMENT_BLOCK"
-      ? form.blockAppointment
+    form.appointmentType === ApiAppointmentBookingType.AppointmentBlock
+      ? form.blockAppointment?.start
       : customAppointmentDate;
   return date ?? undefined;
 }

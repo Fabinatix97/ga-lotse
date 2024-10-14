@@ -21,6 +21,7 @@ import { useCallback } from "react";
 
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 
 import {
@@ -38,10 +39,10 @@ const reportCaseSuccessStyles: SxProps = {
   borderRadius: "xl",
   p: 3,
   flex: 1,
-  mr: {
-    xxs: 0,
-    md: 2,
-  },
+  mr: byBreakpoint({
+    mobile: 0,
+    desktop: 2,
+  }),
 };
 
 const textPrimaryColor = "var(--joy-palette-text-primary)";
@@ -141,7 +142,13 @@ export function ReportCaseSuccessActionsCard() {
       <CardContent orientation="vertical">
         <Typography
           level="h4"
-          sx={{ fontSize: { xxs: "1.125rem", sm: "1.5rem" }, mb: 2 }}
+          sx={{
+            fontSize: byBreakpoint({
+              mobile: "1.125rem",
+              desktop: "1.5rem",
+            }),
+            mb: 2,
+          }}
         >
           Was möchten Sie als nächstes tun?
         </Typography>

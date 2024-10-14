@@ -13,7 +13,9 @@ import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
 import de.eshg.base.client.ContactClient;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
+import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.rest.service.error.BadRequestException;
@@ -28,6 +30,7 @@ import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
 import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
+import de.eshg.schoolentry.util.ExceptionUtil;
 import java.beans.PropertyDescriptor;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -62,6 +65,7 @@ public class Validator {
   private final Clock clock;
   private final SchoolEntryFeatureToggle featureToggle;
   private final SchoolEntryProperties schoolEntryProperties;
+  private final AppointmentBlockProperties appointmentBlockProperties;
 
   public Validator(
       Icd10CodeRepository icd10CodeRepository,
@@ -69,13 +73,15 @@ public class Validator {
       ContactClient contactClient,
       Clock clock,
       SchoolEntryFeatureToggle featureToggle,
-      SchoolEntryProperties schoolEntryProperties) {
+      SchoolEntryProperties schoolEntryProperties,
+      AppointmentBlockProperties appointmentBlockProperties) {
     this.icd10CodeRepository = icd10CodeRepository;
     this.icd10GroupRepository = icd10GroupRepository;
     this.contactClient = contactClient;
     this.clock = clock;
     this.featureToggle = featureToggle;
     this.schoolEntryProperties = schoolEntryProperties;
+    this.appointmentBlockProperties = appointmentBlockProperties;
   }
 
   void validateSearchParametersAreNull(ProcedureSearchParameters searchParameters) {
@@ -116,7 +122,7 @@ public class Validator {
     }
     Year currentYear = Year.now(clock);
     int numberOfYearsInFutureOrPast = Math.abs(schoolYear.getValue() - currentYear.getValue());
-    if (numberOfYearsInFutureOrPast > 10) {
+    if (numberOfYearsInFutureOrPast > 5) {
       throw new BadRequestException("Illegal school year: " + schoolYear);
     }
   }
@@ -487,6 +493,20 @@ public class Validator {
     }
   }
 
+  public void validateLocationIdForImport(UUID locationId) {
+    if (appointmentBlockProperties.getLocationSelectionMode()
+        == LocationSelectionMode.HEALTH_DEPARTMENT) {
+      if (locationId == null) {
+        throw ExceptionUtil.badRequestExceptionMissingLocationId();
+      }
+      validateHealthDepartmentExists(locationId);
+    } else {
+      if (locationId != null) {
+        throw ExceptionUtil.badRequestExceptionForbiddenLocationId();
+      }
+    }
+  }
+
   public void validateSchoolExists(UUID schoolId) {
     contactClient.validateContactIsInstitutionWithCategory(
         schoolId, InstitutionContactCategoryDto.SCHOOL);
@@ -554,6 +574,13 @@ public class Validator {
           ErrorCode.INVALID_FILE,
           "Invalid file structure. At most %s rows are allowed."
               .formatted(schoolEntryProperties.getMaxNumberOfImportRows()));
+    }
+  }
+
+  static void validateSchoolInfoLetterCreated(SchoolEntryProcedure procedure) {
+    if (procedure.getschoolInfoLetterCreatedAt() == null) {
+      throw new BadRequestException(
+          "A school info letter must be created before the procedure can be closed.");
     }
   }
 }

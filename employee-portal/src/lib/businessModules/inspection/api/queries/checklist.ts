@@ -18,11 +18,12 @@ export function useGetChecklists(inspectionId: string) {
   const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: getChecklistsQueryKey(inspectionId),
-    queryFn: () =>
-      checklistApi.getChecklists(
-        inspectionId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
-      ),
+    queryFn: ({ signal }) => {
+      return checklistApi.getChecklists(inspectionId, {
+        ...getPreCacheForOfflineModeHeaders(inspectionId),
+        signal,
+      });
+    },
     select: (response) => response.checklists,
   });
 }

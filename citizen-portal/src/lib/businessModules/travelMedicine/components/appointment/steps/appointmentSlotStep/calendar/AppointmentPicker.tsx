@@ -15,6 +15,7 @@ import { useCallback, useState } from "react";
 import { AppointmentDayPicker } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/calendar/AppointmentDayPicker";
 import { AppointmentTimePicker } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/calendar/AppointmentTimePicker";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 export function AppointmentPicker({
   filteredAppointments,
@@ -88,7 +89,7 @@ export function AppointmentPicker({
         </Typography>
       )}
       <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-        <Grid sm={6} xs={12}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <AppointmentDayPicker
             appointmentDayCandidates={filteredAppointments}
             preselectedAppointmentDate={getSelectedAppointmentDateFromContext()}
@@ -99,7 +100,7 @@ export function AppointmentPicker({
             resetPreviousSelectedAppointment={resetSelectedAppointment}
           />
         </Grid>
-        <Grid sm={6} xs={12}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <AppointmentTimePicker
             onAppointmentDateAndTimeSelected={handleAppointmentSelection}
             availableAppointments={availableAppointments}

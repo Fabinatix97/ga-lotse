@@ -9,6 +9,8 @@ import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
 
+import { useIsFormDisabled } from "../form/DisabledFormContext";
+
 import { BaseField, BaseFieldProps, useBaseField } from "./BaseField";
 
 interface YearFieldProps {
@@ -41,6 +43,7 @@ export function YearField({
     },
   });
   const FieldComponent = component ?? BaseField;
+  const disabled = useIsFormDisabled();
 
   return (
     <FieldComponent label={label} {...field}>
@@ -50,6 +53,7 @@ export function YearField({
           placeholder="JJJJ"
           sx={{ flexGrow: 1, ...sx }}
           {...field.input}
+          disabled={disabled}
         />
         {fieldDecorator}
       </Stack>

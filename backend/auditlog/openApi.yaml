@@ -468,6 +468,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
       - AUDITLOG
       - STATISTICS
     DefaultPopulationResponse:

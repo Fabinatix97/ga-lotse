@@ -12,6 +12,7 @@ import RemoveRedEyeOutlined from "@mui/icons-material/RemoveRedEyeOutlined";
 import { Button } from "@mui/joy";
 
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
+import { isSafari } from "@/lib/businessModules/inspection/shared/isSafari";
 
 export function ReportDownloadButtons({
   reportId,
@@ -30,14 +31,18 @@ export function ReportDownloadButtons({
       >
         Download
       </DownloadButton>
-      <Button
-        variant="plain"
-        color="neutral"
-        startDecorator={<RemoveRedEyeOutlined />}
-        onClick={() => reportFile.preview()}
-      >
-        Vorschau
-      </Button>
+      {!isSafari() && (
+        // Safari does not support previewing blob URLs.
+        //  Because the normal download already gives a preview in Safari, we just hide the button.
+        <Button
+          variant="plain"
+          color="neutral"
+          startDecorator={<RemoveRedEyeOutlined />}
+          onClick={() => reportFile.preview()}
+        >
+          Vorschau
+        </Button>
+      )}
     </>
   );
 }

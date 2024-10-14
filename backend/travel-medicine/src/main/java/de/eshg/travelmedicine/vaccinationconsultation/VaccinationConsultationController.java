@@ -19,7 +19,7 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.GetMedicalHistoriesRes
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetStepsWithAppliedServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetVaccinationConsultationDetailsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchOtherServiceRequest;
-import de.eshg.travelmedicine.vaccinationconsultation.api.PatchServiceAssingnmentRequest;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatchServiceAssignmentRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationConsultationPatientRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationConsultationTravelDetailsRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationRequest;
@@ -127,10 +127,10 @@ public class VaccinationConsultationController {
   @PostMapping(path = "/{id}" + PROCEDURE_STEP_URL)
   @Operation(summary = "Add procedure step to vaccination consultation with given id")
   @Transactional
-  public void addProcedureStep(
+  public UUID addProcedureStep(
       @PathVariable("id") UUID externalId,
       @RequestBody @Valid PostProcedureStepRequest procedureStepRequest) {
-    procedureStepService.createProcedureStep(externalId, procedureStepRequest);
+    return procedureStepService.createProcedureStep(externalId, procedureStepRequest);
   }
 
   @GetMapping(path = "/{procedureId}" + DETAILS_URL)
@@ -150,7 +150,6 @@ public class VaccinationConsultationController {
       @RequestParam(name = "dateOfBirth", required = false) LocalDate dateOfBirth,
       @RequestParam(name = "procedureStatus", required = false)
           ProcedureStatusDto procedureStatus) {
-    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.PROCEDURE_SEARCH);
     return vaccinationConsultationService.searchVaccinationConsultation(
         StringUtils.trimToNull(firstName),
         StringUtils.trimToNull(lastName),
@@ -172,7 +171,7 @@ public class VaccinationConsultationController {
   public void assignStepToService(
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("serviceId") UUID serviceId,
-      @Valid @RequestBody PatchServiceAssingnmentRequest request) {
+      @Valid @RequestBody PatchServiceAssignmentRequest request) {
     vaccinationConsultationService.assignProcedureStepToService(
         procedureId, request.procedureStepId(), serviceId);
   }

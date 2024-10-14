@@ -74,6 +74,20 @@ export function ChecklistSectionElement({
 
   const sendUpdateWithDebounce = useDebouncedCallback(sendUpdateRequest, 500);
 
+  async function sendUpdateWithDebounceAndCancel(
+    request: ApiUpdateChecklistRequest,
+  ) {
+    await sendUpdateWithDebounce(request);
+    // updating the checklist will force a refetch,
+    // this would cause the input to ruberband back to the old value
+    // to prevent this we cancel the query as soon as the input is changed.
+    // Because the update is debounced and thus happens after this line,
+    // only the last invalidation will be allowed to go through.
+    await queryClient.cancelQueries({
+      queryKey: getChecklistsQueryKey(inspectionExternalId),
+    });
+  }
+
   async function handleSubmit(changedElement: CLFormElement) {
     const updateElement = mapToUpdateElement(changedElement);
 
@@ -135,7 +149,7 @@ export function ChecklistSectionElement({
       checklist: { elements: [updateElement] },
     };
     if (changedElement.type === "TEXT") {
-      await sendUpdateWithDebounce(request);
+      await sendUpdateWithDebounceAndCancel(request);
     } else {
       await sendUpdateRequest(request);
     }

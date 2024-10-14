@@ -4,10 +4,9 @@
  */
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Delete, Edit } from "@mui/icons-material";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
-import { isNonNullish } from "remeda";
+import { doNothing, isNonNullish } from "remeda";
 
 import {
   headerHeightDesktop,
@@ -19,16 +18,18 @@ import {
   UpdateReportSidebar,
   UpdateReportSidebarReportInfo,
 } from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/UpdateReportSidebar";
+import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import {
-  ActionsItem,
-  ActionsMenu,
-} from "@/lib/shared/components/buttons/ActionsMenu";
+import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
+import { useCopy } from "@/lib/shared/hooks/useCopy";
+
+import { getReportActionItems } from "./getReportActionItems";
 
 export interface ReportDetailsTileProps {
+  id: string;
   seriesId: string;
   title: string;
   description?: string;
@@ -40,71 +41,27 @@ export interface ReportDetailsTileProps {
   dataSource: string;
   datasetAmount: number;
   attributeLabels: string[];
-}
-
-// Uncomment in https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
-function getActionItems(
-  _isSeries: boolean,
-  name: string,
-  seriesId: string,
-  description: string | undefined,
-  updateReport: (report: UpdateReportSidebarReportInfo) => void,
-  deleteReportWithConfirmation: (reportId: string) => void,
-) {
-  // Uncomment in https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
-  // const rememberReport = {
-  //   label: "Report merken",
-  //   onClick: doNothing,
-  //   startDecorator: <BookmarkAdd />,
-  // };
-  // const subscribeSeries = {
-  //   label: "Serie abonnieren",
-  //   onClick: doNothing,
-  //   startDecorator: <Bookmarks />,
-  // };
-  const staticActionItems: ActionsItem[] = [
-    // Uncomment in https://cronn-gmbh.atlassian.net/browse/ISSUE-5002
-    // {
-    //   label: "Teilen",
-    //   onClick: doNothing,
-    //   startDecorator: <Share />,
-    // },
-    {
-      label: "Bearbeiten",
-      onClick: () =>
-        updateReport({
-          seriesId: seriesId,
-          name: name,
-          description: description,
-        }),
-      startDecorator: <Edit />,
-    },
-    {
-      label: "Report löschen",
-      onClick: () => deleteReportWithConfirmation(seriesId),
-      startDecorator: <Delete />,
-      color: "danger",
-    },
-  ];
-  // Uncomment in https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
-  // if (isSeries) {
-  //   return [rememberReport, subscribeSeries].concat(staticActionItems);
-  // } else {
-  //   return [rememberReport].concat(staticActionItems);
-  // }
-  return staticActionItems;
+  userId: string;
 }
 
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
   const [openUpdateReportSidebar, setOpenUpdateReportSidebar] =
     useState<UpdateReportSidebarReportInfo | null>(null);
+  const canWrite = useStatisticRoleChecks().canWrite();
+  const canDelete = useStatisticRoleChecks().canDelete(props.userId);
   const deleteReportWithConfirmation = useDeleteReportWithConfirmation({
     redirectRoute: routes.reports.index,
   });
 
-  function updateReport(report: UpdateReportSidebarReportInfo) {
-    setOpenUpdateReportSidebar({ ...report });
+  function updateReport() {
+    setOpenUpdateReportSidebar({
+      seriesId: props.seriesId,
+      name: props.title,
+      description: props.description,
+    });
   }
+
+  const copy = useCopy();
 
   return (
     <>
@@ -142,13 +99,21 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
             >
               <Typography level="h3">Report-Details</Typography>
               <ActionsMenu
-                actionItems={getActionItems(
+                actionItems={getReportActionItems(
+                  [
+                    { type: "remember", action: doNothing },
+                    {
+                      type: "update",
+                      action: updateReport,
+                    },
+                  ],
                   isNonNullish(props.series),
-                  props.title,
                   props.seriesId,
-                  props.description,
-                  updateReport,
+                  props.id,
+                  copy,
                   deleteReportWithConfirmation,
+                  canWrite,
+                  canDelete,
                 )}
                 slotProps={{ root: { variant: "outlined", color: "primary" } }}
               />

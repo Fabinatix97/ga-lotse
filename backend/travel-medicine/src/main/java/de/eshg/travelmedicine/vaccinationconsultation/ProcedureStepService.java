@@ -6,10 +6,11 @@
 package de.eshg.travelmedicine.vaccinationconsultation;
 
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
-import de.eshg.travelmedicine.medicalhistorytemplate.persistence.entity.MedicalHistoryTemplate;
-import de.eshg.travelmedicine.medicalhistorytemplate.persistence.entity.MedicalHistoryTemplateRepository;
+import de.eshg.travelmedicine.template.medicalhistorytemplate.persistence.entity.MedicalHistoryTemplate;
+import de.eshg.travelmedicine.template.medicalhistorytemplate.persistence.entity.MedicalHistoryTemplateRepository;
 import de.eshg.travelmedicine.util.MappingUtil;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetProcedureStepServicesResponse;
@@ -20,6 +21,7 @@ import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherSe
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStepRepository;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ServiceRepository;
+import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.UserDefinedAppointment;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Vaccination;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VcService;
@@ -40,18 +42,21 @@ public class ProcedureStepService {
   private final AppointmentService appointmentService;
 
   private final ProcedureAccessor procedureAccessor;
+  private final AppointmentBookingTypeMapper appointmentBookingTypeMapper;
 
   public ProcedureStepService(
       ProcedureStepRepository procedureStepRepository,
       MedicalHistoryTemplateRepository medicalHistoryTemplateRepository,
       ServiceRepository serviceRepository,
       AppointmentService appointmentService,
-      ProcedureAccessor procedureAccessor) {
+      ProcedureAccessor procedureAccessor,
+      AppointmentBookingTypeMapper appointmentBookingTypeMapper) {
     this.procedureStepRepository = procedureStepRepository;
     this.medicalHistoryTemplateRepository = medicalHistoryTemplateRepository;
     this.serviceRepository = serviceRepository;
     this.appointmentService = appointmentService;
     this.procedureAccessor = procedureAccessor;
+    this.appointmentBookingTypeMapper = appointmentBookingTypeMapper;
   }
 
   public MedicalHistory createMedicalHistory(boolean followUp) {
@@ -108,7 +113,7 @@ public class ProcedureStepService {
 
     if (procedureStepRequest.appointmentBookingType()
         == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
-      appointmentService.createAppointment(
+      appointmentService.createBlockAppointmentForStep(
           procedureStep,
           procedureStepRequest.appointmentStart(),
           procedureStepRequest.durationInMinutes());
@@ -179,20 +184,23 @@ public class ProcedureStepService {
             procedureStepId, null, ProcedureAccessor.checkNotClosed);
 
     validatePatchAppointmentRequest(appointmentRequest);
+
+    if (appointmentRequest.earliestDate() != null) {
+      procedureStep.setEarliestDate(appointmentRequest.earliestDate());
+    }
+
     if (!checkForAppointmentChanges(procedureStep, appointmentRequest)) {
       return;
     }
 
     procedureStep.setAppointmentType(
         MappingUtil.mapEnum(AppointmentType.class, appointmentRequest.appointmentType()));
-    if (appointmentRequest.earliestDate() != null) {
-      procedureStep.setEarliestDate(appointmentRequest.earliestDate());
-    }
+
     procedureStep.setAppointment(null);
     procedureStep.setUserDefinedAppointment(null);
     if (appointmentRequest.appointmentBookingType()
         == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
-      appointmentService.createAppointment(
+      appointmentService.createBlockAppointmentForStep(
           procedureStep,
           appointmentRequest.appointmentStart(),
           appointmentRequest.durationInMinutes());
@@ -212,7 +220,10 @@ public class ProcedureStepService {
         != MappingUtil.mapEnum(AppointmentType.class, appointmentRequest.appointmentType())) {
       return true;
     }
-    if (ps.getAppointment() != null
+
+    AppointmentBookingTypeDto currentBookingType = determineBookingType(ps);
+
+    if (currentBookingType == AppointmentBookingTypeDto.APPOINTMENT_BLOCK
         && (appointmentRequest.appointmentBookingType()
                 != AppointmentBookingTypeDto.APPOINTMENT_BLOCK
             || !ps.getAppointment()
@@ -220,17 +231,14 @@ public class ProcedureStepService {
                 .equals(appointmentRequest.appointmentStart()))) {
       return true;
     }
-    if (ps.getUserDefinedAppointment() != null
+    if (currentBookingType == AppointmentBookingTypeDto.USER_DEFINED
         && (appointmentRequest.appointmentBookingType() != AppointmentBookingTypeDto.USER_DEFINED
             || !ps.getUserDefinedAppointment()
                 .getAppointmentStart()
                 .equals(appointmentRequest.appointmentStart()))) {
       return true;
     }
-    return ps.getAppointment() == null
-        && ps.getUserDefinedAppointment() == null
-        && (appointmentRequest.appointmentBookingType() != AppointmentBookingTypeDto.SELF_BOOKING
-            || !appointmentRequest.earliestDate().equals(ps.getEarliestDate()));
+    return currentBookingType == AppointmentBookingTypeDto.CANCELLED;
   }
 
   private void validatePatchAppointmentRequest(PatchAppointmentRequest appointmentRequest) {
@@ -244,5 +252,11 @@ public class ProcedureStepService {
             "appointmentStart and duration must be set to book a appointment.");
       }
     }
+  }
+
+  private AppointmentBookingTypeDto determineBookingType(ProcedureStep procedureStep) {
+    Appointment appointment = procedureStep.getAppointment();
+    UserDefinedAppointment userDefinedAppointment = procedureStep.getUserDefinedAppointment();
+    return appointmentBookingTypeMapper.mapToInterfaceType(appointment, userDefinedAppointment);
   }
 }

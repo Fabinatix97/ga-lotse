@@ -19,12 +19,10 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
+import { AppointmentBlockGroupValues } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
-import {
-  AppointmentBlockGroupForm,
-  AppointmentBlockGroupValues,
-} from "./AppointmentBlockGroupForm";
+import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 
 const INITIAL_VALUES: AppointmentBlockGroupValues = {
   type: ApiAppointmentType.ProofSubmission,

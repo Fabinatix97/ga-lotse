@@ -35,11 +35,7 @@ export function MergeStringField({
   const normalizedTarget = normalizeValue(target);
   const normalizedSource = normalizeValue(source);
 
-  if (
-    normalizedTarget === normalizedSource ||
-    normalizedSource === " " ||
-    normalizedSource === emptyValue
-  ) {
+  if (normalizedTarget === normalizedSource || normalizedSource === " ") {
     const value = getLabel(normalizedTarget);
 
     return (

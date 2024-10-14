@@ -8,36 +8,28 @@
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiChatFeature } from "@eshg/employee-portal-api/chatManagement";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useMemo } from "react";
 import { isNullish, omit } from "remeda";
 
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
+import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
+import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { useGetUserSettings } from "@/lib/businessModules/chat/api/queries/userSettingsApi";
 import { ChatClientProvider } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ChatConfiguration } from "@/lib/businessModules/chat/shared/config";
 import { MessageTeaserProvider } from "@/lib/shared/components/chat/MessageTeaserProvider";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
+import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 import { ChatUserSettings } from "./types";
 
 export interface ChatProviderContextType {
   configuration: ChatConfiguration;
   userSettings: ChatUserSettings;
-  chatSidebar: {
-    isOpen: boolean;
-    toggle: () => void;
-    close: () => void;
-  };
   canAccessChat: boolean;
   isSettingsLoading: boolean;
   isFeatureToggleLoading: boolean;
+  messagesSidebar: { isOpen: boolean; open: () => void; close: () => void };
 }
 
 const ChatContext = createContext<ChatProviderContextType | undefined>(
@@ -48,16 +40,24 @@ export interface ChatProviderProps extends RequiresChildren {
   configuration: ChatConfiguration;
 }
 
-export function ChatProvider({ children, configuration }: ChatProviderProps) {
+export function ChatProvider(props: ChatProviderProps) {
+  const isOffline = useIsOffline();
+
+  return isOffline ? props.children : <InnerChatProvider {...props} />;
+}
+
+function InnerChatProvider({ children, configuration }: ChatProviderProps) {
   const {
     data: featureToggleChatEnabled,
     isLoading: featureToggleChatEnabledLoading,
-  } = useIsNewFeatureEnabled(ApiChatFeature.ChatBase);
+  } = useIsNewFeatureEnabledUnsuspended(ApiChatFeature.ChatBase);
 
+  const { data: selfUser } = useGetSelfUser();
   const canAccessChat =
     useHasUserRoleCheck(ApiUserRole.ChatManagementWrite) &&
-    !!featureToggleChatEnabled;
-  const { data: selfUser } = useGetSelfUser();
+    !!featureToggleChatEnabled &&
+    selfUser.username !== "dummy"; //TODO: Don't allow dummy user to use chat until it becomes more stable in demo environment
+  const messagesSidebar = useMessagesSidebar();
   const { data: userSettingsData, isLoading } = useGetUserSettings(
     selfUser.userId,
     canAccessChat,
@@ -76,30 +76,15 @@ export function ChatProvider({ children, configuration }: ChatProviderProps) {
     [userSettingsData],
   );
 
-  // Chat sidebar
-  const [chatSidebarOpen, setChatSidebarOpen] = useState(false);
-
-  const toggleChatSidebar = useCallback(() => {
-    if (canAccessChat && userSettings.chatUsageEnabled) {
-      setChatSidebarOpen((prev) => !prev);
-    }
-  }, [canAccessChat, userSettings.chatUsageEnabled]);
-
-  const closeChatSidebar = useCallback(() => setChatSidebarOpen(false), []);
-
   return (
     <ChatContext.Provider
       value={{
         configuration,
         userSettings,
-        chatSidebar: {
-          close: closeChatSidebar,
-          toggle: toggleChatSidebar,
-          isOpen: chatSidebarOpen,
-        },
         canAccessChat,
         isSettingsLoading: isLoading,
         isFeatureToggleLoading: featureToggleChatEnabledLoading,
+        messagesSidebar,
       }}
     >
       {userSettings.chatUsageEnabled ? (

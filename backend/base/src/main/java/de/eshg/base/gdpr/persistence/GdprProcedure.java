@@ -10,13 +10,18 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private UUID centralFileId;
@@ -56,6 +61,15 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String matterOfConcern;
 
+  @OneToMany(
+      fetch = FetchType.LAZY,
+      mappedBy = GdprDownload_.GDPR_PROCEDURE,
+      cascade = CascadeType.PERSIST,
+      orphanRemoval = true)
+  @OrderBy
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private final List<GdprDownload> downloads = new ArrayList<>();
+
   public UUID getCentralFileId() {
     return centralFileId;
   }
@@ -92,10 +106,6 @@ public class GdprProcedure extends BaseEntityWithExternalId {
     return createdAt;
   }
 
-  public void setCreatedAt(Instant createdAt) {
-    this.createdAt = createdAt;
-  }
-
   public Instant getModifiedAt() {
     return modifiedAt;
   }
@@ -126,5 +136,14 @@ public class GdprProcedure extends BaseEntityWithExternalId {
 
   public void setMatterOfConcern(String matterOfConcern) {
     this.matterOfConcern = matterOfConcern;
+  }
+
+  public Collection<GdprDownload> getDownloads() {
+    return downloads;
+  }
+
+  public void addDownload(GdprDownload download) {
+    downloads.add(download);
+    download.setGdprProcedure(this);
   }
 }

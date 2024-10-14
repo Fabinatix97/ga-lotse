@@ -9,28 +9,17 @@ import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import { Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
-import { CreateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/CreateLabelSidebar";
+import { useCreateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/CreateLabelSidebar";
 import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
-import { UpdateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/UpdateLabelSidebar";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { useUpdateLabelSidebar } from "@/lib/businessModules/schoolEntry/features/labels/UpdateLabelSidebar";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 const columnHelper = createColumnHelper<Label>();
-
-type SidebarState =
-  | {
-      type: "create";
-    }
-  | {
-      type: "edit";
-      item: Label;
-    };
 
 interface LabelColumnsProps {
   onEdit: (item: Label) => void;
@@ -89,7 +78,8 @@ interface LabelsTableProps {
 }
 
 export function LabelsTable(props: LabelsTableProps) {
-  const [action, setAction] = useState<SidebarState>();
+  const createLabelSidebar = useCreateLabelSidebar();
+  const updateLabelSidebar = useUpdateLabelSidebar();
 
   return (
     <>
@@ -99,7 +89,7 @@ export function LabelsTable(props: LabelsTableProps) {
             right={
               <Button
                 startDecorator={<Add />}
-                onClick={() => setAction({ type: "create" })}
+                onClick={createLabelSidebar.open}
                 size="sm"
               >
                 Kennung hinzufügen
@@ -112,29 +102,12 @@ export function LabelsTable(props: LabelsTableProps) {
           <DataTable
             data={props.labels}
             columns={labelColumns({
-              onEdit: (item) => {
-                setAction({ type: "edit", item });
-              },
+              onEdit: (item) => updateLabelSidebar.open({ label: item }),
             })}
             minWidth={750}
           />
         </TableSheet>
       </TablePage>
-
-      {action?.type === "create" && (
-        <OverlayBoundary>
-          <CreateLabelSidebar onClose={() => setAction(undefined)} />
-        </OverlayBoundary>
-      )}
-
-      {action?.type === "edit" && (
-        <OverlayBoundary>
-          <UpdateLabelSidebar
-            onClose={() => setAction(undefined)}
-            label={action.item}
-          />
-        </OverlayBoundary>
-      )}
     </>
   );
 }

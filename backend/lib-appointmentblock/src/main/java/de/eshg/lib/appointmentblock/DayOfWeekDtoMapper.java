@@ -19,6 +19,13 @@ public abstract class DayOfWeekDtoMapper {
     return source.stream().filter(Objects::nonNull).map(DayOfWeekDtoMapper::toJavaTime).toList();
   }
 
+  public static DayOfWeekDto toDto(DayOfWeek source) {
+    if (source == null) {
+      return null;
+    }
+    return DayOfWeekDto.valueOf(source.name());
+  }
+
   private static DayOfWeek toJavaTime(DayOfWeekDto source) {
     if (source == null) {
       return null;

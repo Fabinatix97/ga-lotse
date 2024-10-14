@@ -104,6 +104,9 @@ export default function PlaygroundIndexPage() {
           <li>
             <InternalLink href="/playground/chat">Chat</InternalLink>
           </li>
+          <li>
+            <InternalLink href="/playground/sidebar">Sidebar</InternalLink>
+          </li>
         </ul>
       </MainContentLayout>
     </StickyToolbarLayout>

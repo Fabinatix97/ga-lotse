@@ -10,8 +10,11 @@ import {
   statusTranslation,
   typeTranslation,
 } from "@/lib/baseModule/components/gdpr/i18n";
+import {
+  SectionTile,
+  SectionTitle,
+} from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
-import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 export function ProcedureDetailsTile({
   procedure,
@@ -19,7 +22,8 @@ export function ProcedureDetailsTile({
   procedure: ApiGetGdprProcedureResponse;
 }) {
   return (
-    <InfoTile name={"procedure-details"} title={"Vorgangsdaten"}>
+    <SectionTile id={"procedure-details"}>
+      <SectionTitle id={"procedure-details"}>Vorgangsdaten</SectionTitle>
       <DetailsCell
         name={"createdAt"}
         label={"Erstellt"}
@@ -36,6 +40,6 @@ export function ProcedureDetailsTile({
         label={"Status"}
         value={statusTranslation[procedure.status]}
       />
-    </InfoTile>
+    </SectionTile>
   );
 }

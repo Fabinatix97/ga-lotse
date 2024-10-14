@@ -5,6 +5,8 @@
 
 package de.eshg.base.keycloak;
 
+import java.util.List;
+
 public enum EmployeeUserAttribute implements KeycloakUserAttribute {
   EMAIL(
       DEFAULT_ATTRIBUTE_EMAIL,
@@ -21,8 +23,16 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
       KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_LAST_NAME),
       true,
       Group.DEFAULT),
-  PHONE_NUMBER("eshg.phone_number", "Telefon"),
-  EXTERNAL_CHAT_USERNAME("eshg.external_chat_username", "Chatname"),
+  PHONE_NUMBER(
+      "eshg.phone_number",
+      "Telefon",
+      new ValidationRule.Length(1, 23),
+      new ValidationRule.Pattern("[-+0-9() ]+")),
+  EXTERNAL_CHAT_USERNAME(
+      "eshg.external_chat_username",
+      "Chatname",
+      new ValidationRule.Length(3, 255),
+      new ValidationRule.Pattern("\\p{ASCII}+")),
   SUGGESTED_BY("eshg.suggested_by", "Vorgeschlagen von"),
   AUDIT_LOG_ENCRYPTED_PRIVATE_KEY(
       "eshg.audit_log.encrypted_private_key", "Audit Log - Privater Schlüssel (verschlüsselt)"),
@@ -34,16 +44,23 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
   private final String displayName;
   private final boolean required;
   private final Group group;
+  private final List<ValidationRule> validationRules;
 
-  EmployeeUserAttribute(String key, String displayName) {
-    this(key, displayName, false, Group.CUSTOM);
+  EmployeeUserAttribute(String key, String displayName, ValidationRule... validationRules) {
+    this(key, displayName, false, Group.CUSTOM, validationRules);
   }
 
-  EmployeeUserAttribute(String key, String displayName, boolean required, Group group) {
+  EmployeeUserAttribute(
+      String key,
+      String displayName,
+      boolean required,
+      Group group,
+      ValidationRule... validationRules) {
     this.key = key;
     this.displayName = displayName;
     this.required = required;
     this.group = group;
+    this.validationRules = List.of(validationRules);
   }
 
   @Override
@@ -64,5 +81,10 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
   @Override
   public boolean isRequired() {
     return required;
+  }
+
+  @Override
+  public List<ValidationRule> validationRules() {
+    return validationRules;
   }
 }

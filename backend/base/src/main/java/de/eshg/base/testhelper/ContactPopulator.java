@@ -14,6 +14,7 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.persistence.entity.InstitutionContactCategory;
 import de.eshg.base.contact.persistence.repository.ContactRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
 import java.util.List;
@@ -28,8 +29,9 @@ public class ContactPopulator extends AbstractContactPopulator {
       Clock clock,
       Environment environment,
       ContactController contactController,
-      ContactRepository contactRepository) {
-    super(clock, environment, contactController, contactRepository);
+      ContactRepository contactRepository,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, contactController, contactRepository, environmentConfig);
   }
 
   @Override

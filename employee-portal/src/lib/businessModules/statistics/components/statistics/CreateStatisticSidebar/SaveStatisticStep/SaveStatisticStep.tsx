@@ -28,20 +28,20 @@ export function SaveStatisticStep() {
   function onCheckedChange(checked: boolean) {
     setChecked(checked);
     if (checked) {
-      void setFieldValue("schemeName", values.statisticName);
+      void setFieldValue("templateName", values.statisticName);
     } else {
-      void setFieldValue("schemeName", "");
+      void setFieldValue("templateName", "");
     }
   }
 
-  const isTemplateStepper = isDefined(values.scheme);
+  const isTemplateStepper = isDefined(values.template);
 
   return (
     <Stack gap={3}>
       <Stack gap={2}>
         <InputField
           name={fieldName("statisticName")}
-          label="Name der Statistik"
+          label="Name der Auswertung"
           required="Bitte Name angeben."
         />
         {!isTemplateStepper && (
@@ -64,12 +64,12 @@ export function SaveStatisticStep() {
                   />
                 }
               >
-                Statistik als Vorlage speichern
+                Auswertung als Vorlage speichern
               </Typography>
             </Stack>
             {checked && (
               <InputField
-                name={fieldName("schemeName")}
+                name={fieldName("templateName")}
                 label="Name der Vorlage"
                 required="Bitte Name angeben."
               />
@@ -110,7 +110,7 @@ function getBusinessModuleName(
 ) {
   const businessModule = values.dataSource
     ? values.dataSource.businessModule
-    : values.scheme!.dataSource!.businessModule;
+    : values.template!.dataSource!.businessModule;
   return businessModuleNames[mapToApiBusinessModule(businessModule)];
 }
 
@@ -121,5 +121,5 @@ function getSelectedAttributeNames(
   if (values.selectedAttributes) {
     return values.selectedAttributes.map((it) => it.name);
   }
-  return values.scheme!.dataSource!.attributes.map((it) => it.name);
+  return values.template!.dataSource!.attributes.map((it) => it.name);
 }

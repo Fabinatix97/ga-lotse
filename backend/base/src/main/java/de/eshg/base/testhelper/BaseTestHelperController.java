@@ -26,9 +26,8 @@ import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.api.RealmDto;
 import de.eshg.testhelper.api.TestHelperLoginAsCitizenAccessCodeUserRequest;
 import de.eshg.testhelper.api.TestHelperLoginRequest;
-import de.eshg.testhelper.clock.TestHelperClockUpdateResponse;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.io.IOException;
-import java.sql.SQLException;
 import org.keycloak.admin.client.resource.UserResource;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,8 +45,9 @@ public class BaseTestHelperController extends TestHelperController
       BaseTestHelperService baseTestHelperService,
       BaseFeatureToggle baseFeatureToggle,
       MasterKeycloakProvisioning masterKeycloakProvisioning,
-      AuditLogTestHelperService auditLogTestHelperService) {
-    super(baseTestHelperService);
+      AuditLogTestHelperService auditLogTestHelperService,
+      EnvironmentConfig environmentConfig) {
+    super(baseTestHelperService, environmentConfig);
     this.baseTestHelperService = baseTestHelperService;
     this.baseFeatureToggle = baseFeatureToggle;
     this.masterKeycloakProvisioning = masterKeycloakProvisioning;
@@ -97,12 +97,6 @@ public class BaseTestHelperController extends TestHelperController
   @Override
   public SearchContactsResponse populateSchoolContacts(PopulationRequest request) {
     return baseTestHelperService.populateSchoolContacts(request.numberOfEntitiesToPopulate());
-  }
-
-  @Override
-  public TestHelperClockUpdateResponse reset() throws SQLException {
-    resetKeycloak();
-    return super.reset();
   }
 
   @Override

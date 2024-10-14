@@ -102,6 +102,9 @@ importers:
       '@tanstack/react-table':
         specifier: 8.20.5
         version: 8.20.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      asn1js:
+        specifier: 3.0.5
+        version: 3.0.5
       i18next:
         specifier: 23.15.1
         version: 23.15.1
@@ -110,7 +113,13 @@ importers:
         version: 1.2.1
       next:
         specifier: 14.2.12
-        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      pkijs:
+        specifier: 3.2.4
+        version: 3.2.4
+      pvutils:
+        specifier: 1.1.3
+        version: 1.1.3
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -203,7 +212,7 @@ importers:
         version: 0.6.3
       next:
         specifier: 14.2.12
-        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -252,7 +261,7 @@ importers:
     devDependencies:
       '@axe-core/playwright':
         specifier: 4.10.0
-        version: 4.10.0(playwright-core@1.46.1)
+        version: 4.10.0(playwright-core@1.48.0)
       '@eshg/admin-portal-api':
         specifier: workspace:*
         version: link:../admin-portal-api
@@ -269,8 +278,8 @@ importers:
         specifier: 25.0.6
         version: 25.0.6
       '@playwright/test':
-        specifier: 1.46.1
-        version: 1.46.1
+        specifier: 1.48.0
+        version: 1.48.0
       axe-html-reporter:
         specifier: 2.2.11
         version: 2.2.11(axe-core@4.10.0)
@@ -281,7 +290,7 @@ importers:
     dependencies:
       '@ducanh2912/next-pwa':
         specifier: 10.2.8
-        version: 10.2.8(@types/babel__core@7.20.5)(next@14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)
+        version: 10.2.8(@types/babel__core@7.20.5)(next@14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)
       '@emotion/cache':
         specifier: 11.13.1
         version: 11.13.1
@@ -361,11 +370,11 @@ importers:
         specifier: 2.1.2
         version: 2.1.2
       matrix-js-sdk:
-        specifier: 34.5.0
-        version: 34.5.0
+        specifier: 34.3.1
+        version: 34.3.1
       next:
         specifier: 14.2.12
-        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -443,7 +452,7 @@ importers:
         version: 5.56.2(react@18.3.1)
       next:
         specifier: 14.2.12
-        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: 18.3.1
         version: 18.3.1
@@ -491,14 +500,14 @@ importers:
         specifier: workspace:*
         version: link:../employee-portal-api
       '@faker-js/faker':
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.0.3
+        version: 9.0.3
       '@keycloak/keycloak-admin-client':
         specifier: 25.0.6
         version: 25.0.6
       '@types/k6':
-        specifier: 0.53.2
-        version: 0.53.2
+        specifier: 0.54.1
+        version: 0.54.1
       tsx:
         specifier: 4.19.1
         version: 4.19.1
@@ -1588,8 +1597,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@faker-js/faker@9.0.1':
-    resolution: {integrity: sha512-4mDeYIgM3By7X6t5E6eYwLAa+2h4DeZDF7thhzIg6XB76jeEvMwadYAMCFJL/R4AnEBcAUO9+gL0vhy3s+qvZA==}
+  '@faker-js/faker@9.0.3':
+    resolution: {integrity: sha512-lWrrK4QNlFSU+13PL9jMbMKLJYXDFu3tQfayBsMXX7KL/GiQeqfB1CzHkqD5UHBUtPAuPo6XwGbMFNdVMZObRA==}
     engines: {node: '>=18.0.0', npm: '>=9.0.0'}
 
   '@floating-ui/core@1.6.2':
@@ -1982,8 +1991,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@playwright/test@1.46.1':
-    resolution: {integrity: sha512-Fq6SwLujA/DOIvNC2EL/SojJnkKf/rAwJ//APpJJHRyMi1PdKrY3Az+4XNQ51N4RTbItbIByQ0jgd1tayq1aeA==}
+  '@playwright/test@1.48.0':
+    resolution: {integrity: sha512-W5lhqPUVPqhtc/ySvZI5Q8X2ztBOUgZ8LbAFy0JQgrXZs2xaILrUcNO3rQjwbLPfGK13+rZsDa1FpG+tqYkT5w==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2259,8 +2268,8 @@ packages:
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
-  '@types/k6@0.53.2':
-    resolution: {integrity: sha512-TxFJbeSfD/RfQe+GeMbpdwiOOySRTj3vfHvcA4yoLQ3wvGPjyppCqmyKXgktf3535T+YAc41bB7GkhuCPRmfUg==}
+  '@types/k6@0.54.1':
+    resolution: {integrity: sha512-ezTMhuWr3TZIMOqAv51/4rD5T4FE1pSryrh5BCgxsniuqxbi5jQ3YEiOlO9C1+LvJcliC2byyd2Cw6cnUY7CLg==}
 
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
@@ -2653,6 +2662,10 @@ packages:
     resolution: {integrity: sha512-bMxMKAjg13EBSVscxTaYA4mRc5t1UAXa2kXiGTNfZ079HIWXEkKmkgFrh/nJqamaLSrXO5H4WFFkPEaLJWbs3A==}
     engines: {node: '>= 0.4'}
 
+  asn1js@3.0.5:
+    resolution: {integrity: sha512-FVnvrKJwpt9LP2lAMl8qZswRNm3T4q9CON+bxldk2iwk3FFpuwhx2FfinyitizWHsVYyaY+y5JzDR0rCMV5yTQ==}
+    engines: {node: '>=12.0.0'}
+
   assertion-error@2.0.1:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
@@ -2785,6 +2798,10 @@ packages:
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+
+  bytestreamjs@2.0.1:
+    resolution: {integrity: sha512-U1Z/ob71V/bXfVABvNr/Kumf5VyeQRBEm6Txb0PQ6S7V5GpBM3w4Cbqz/xPDicR5tN0uvDifng8C+5qECeGwyQ==}
+    engines: {node: '>=6.0.0'}
 
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -3371,6 +3388,7 @@ packages:
   eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -4185,8 +4203,8 @@ packages:
   matrix-events-sdk@0.0.1:
     resolution: {integrity: sha512-1QEOsXO+bhyCroIe2/A5OwaxHvBm7EsSQ46DEDn8RBIfQwN5HWBpFvyWWR4QY0KHPPnnJdI99wgRiAl7Ad5qaA==}
 
-  matrix-js-sdk@34.5.0:
-    resolution: {integrity: sha512-pbp+IxAkSwGmefrlUGCrtrs3UWyqN2iWh4lKnJW+jFIlsksXq7A8vL4cS1z8LXmpcHQAg3mKNuj8n8uhm51t1A==}
+  matrix-js-sdk@34.3.1:
+    resolution: {integrity: sha512-EZ62XNVYRfwtFA9VAyIDw8IzaM3W3LauSAG+it1jROlJBzAtxiOU8BxPQ4IKFHDaKWEkas3gOtayfisiTOFYBQ==}
     engines: {node: '>=20.0.0'}
 
   matrix-widget-api@1.8.2:
@@ -4611,13 +4629,17 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  playwright-core@1.46.1:
-    resolution: {integrity: sha512-h9LqIQaAv+CYvWzsZ+h3RsrqCStkBHlgo6/TJlFst3cOTlLghBQlJwPOZKQJTKNaD3QIB7aAVQ+gfWbN3NXB7A==}
+  pkijs@3.2.4:
+    resolution: {integrity: sha512-Et9V5QpvBilPFgagJcaKBqXjKrrgF5JL2mSDELk1vvbOTt4fuBhSSsGn9Tcz0TQTfS5GCpXQ31Whrpqeqp0VRg==}
+    engines: {node: '>=12.0.0'}
+
+  playwright-core@1.48.0:
+    resolution: {integrity: sha512-RBvzjM9rdpP7UUFrQzRwR8L/xR4HyC1QXMzGYTbf1vjw25/ya9NRAVnXi/0fvFopjebvyPzsmoK58xxeEOaVvA==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.46.1:
-    resolution: {integrity: sha512-oPcr1yqoXLCkgKtD5eNUPLiN40rYEM39odNpIb6VE6S7/15gJmA1NzVv6zJYusV0e7tzvkU/utBFNa/Kpxmwng==}
+  playwright@1.48.0:
+    resolution: {integrity: sha512-qPqFaMEHuY/ug8o0uteYJSRfMGFikhUysk8ZvAtfKmUK3kc/6oNl/y3EczF8OFGYIi/Ex2HspMfzYArk6+XQSA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -4704,6 +4726,13 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  pvtsutils@1.3.5:
+    resolution: {integrity: sha512-ARvb14YB9Nm2Xi6nBq1ZX6dAM0FsJnuk+31aUp4TrcZEdKUlSqOqsxJHUPJDNE3qiIp+iUPEIeR6Je/tgV7zsA==}
+
+  pvutils@1.1.3:
+    resolution: {integrity: sha512-pMpnA0qRdFp32b1sJl1wOJNxZLQ2cbQx+k6tjNtZ8CpvVhNqEPRgivZ2WOUev2YMajecdH7ctUPDvEe87nariQ==}
+    engines: {node: '>=6.0.0'}
 
   qs@6.11.0:
     resolution: {integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==}
@@ -5862,10 +5891,10 @@ snapshots:
       '@bufbuild/protobuf': 1.7.2
     optional: true
 
-  '@axe-core/playwright@4.10.0(playwright-core@1.46.1)':
+  '@axe-core/playwright@4.10.0(playwright-core@1.48.0)':
     dependencies:
       axe-core: 4.10.0
-      playwright-core: 1.46.1
+      playwright-core: 1.48.0
 
   '@babel/code-frame@7.24.7':
     dependencies:
@@ -6830,10 +6859,10 @@ snapshots:
 
   '@drauu/core@0.4.1': {}
 
-  '@ducanh2912/next-pwa@10.2.8(@types/babel__core@7.20.5)(next@14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)':
+  '@ducanh2912/next-pwa@10.2.8(@types/babel__core@7.20.5)(next@14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(webpack@5.92.1)':
     dependencies:
       fast-glob: 3.3.2
-      next: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       semver: 7.6.2
       webpack: 5.92.1
       workbox-build: 7.1.1(@types/babel__core@7.20.5)
@@ -7091,7 +7120,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@faker-js/faker@9.0.1': {}
+  '@faker-js/faker@9.0.3': {}
 
   '@floating-ui/core@1.6.2':
     dependencies:
@@ -7533,9 +7562,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@playwright/test@1.46.1':
+  '@playwright/test@1.48.0':
     dependencies:
-      playwright: 1.46.1
+      playwright: 1.48.0
 
   '@polka/url@1.0.0-next.25': {}
 
@@ -7796,7 +7825,7 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
-  '@types/k6@0.53.2': {}
+  '@types/k6@0.54.1': {}
 
   '@types/ms@0.7.34':
     optional: true
@@ -8328,6 +8357,12 @@ snapshots:
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
 
+  asn1js@3.0.5:
+    dependencies:
+      pvtsutils: 1.3.5
+      pvutils: 1.1.3
+      tslib: 2.6.3
+
   assertion-error@2.0.1: {}
 
   ast-types-flow@0.0.8: {}
@@ -8480,6 +8515,8 @@ snapshots:
 
   bytes@3.1.2:
     optional: true
+
+  bytestreamjs@2.0.1: {}
 
   cac@6.7.14: {}
 
@@ -10225,9 +10262,9 @@ snapshots:
 
   matrix-events-sdk@0.0.1: {}
 
-  matrix-js-sdk@34.5.0:
+  matrix-js-sdk@34.3.1:
     dependencies:
-      '@babel/runtime': 7.25.4
+      '@babel/runtime': 7.25.6
       '@matrix-org/matrix-sdk-crypto-wasm': 7.0.0
       '@matrix-org/olm': 3.2.15
       another-json: 0.2.0
@@ -10376,7 +10413,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@14.2.12(@babel/core@7.24.7)(@playwright/test@1.46.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@14.2.12(@babel/core@7.24.7)(@playwright/test@1.48.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 14.2.12
       '@swc/helpers': 0.5.5
@@ -10397,7 +10434,7 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 14.2.12
       '@next/swc-win32-ia32-msvc': 14.2.12
       '@next/swc-win32-x64-msvc': 14.2.12
-      '@playwright/test': 1.46.1
+      '@playwright/test': 1.48.0
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
@@ -10717,11 +10754,20 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  playwright-core@1.46.1: {}
-
-  playwright@1.46.1:
+  pkijs@3.2.4:
     dependencies:
-      playwright-core: 1.46.1
+      '@noble/hashes': 1.4.0
+      asn1js: 3.0.5
+      bytestreamjs: 2.0.1
+      pvtsutils: 1.3.5
+      pvutils: 1.1.3
+      tslib: 2.6.3
+
+  playwright-core@1.48.0: {}
+
+  playwright@1.48.0:
+    dependencies:
+      playwright-core: 1.48.0
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -10804,6 +10850,12 @@ snapshots:
     optional: true
 
   punycode@2.3.1: {}
+
+  pvtsutils@1.3.5:
+    dependencies:
+      tslib: 2.6.3
+
+  pvutils@1.1.3: {}
 
   qs@6.11.0:
     dependencies:
@@ -10922,7 +10974,7 @@ snapshots:
 
   regenerator-transform@0.15.2:
     dependencies:
-      '@babel/runtime': 7.25.4
+      '@babel/runtime': 7.25.6
 
   regexp.prototype.flags@1.5.2:
     dependencies:

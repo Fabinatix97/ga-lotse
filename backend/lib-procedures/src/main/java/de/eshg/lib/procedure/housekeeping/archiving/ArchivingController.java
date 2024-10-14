@@ -101,6 +101,7 @@ public class ArchivingController<
   private static final String ARCHIVE_EXPORT_FILE_NAME_TEMPLATE = "Archiv-Vorgangsexport_%s.zip";
   private static final String ARCHIVE_EXPORT_ZIP_ENTRY_NAME_TEMPLATE = "Archiv-Vorgang_";
   private static final String CONTENT_DISPOSITION_NAME_ZIP = "zip";
+  private static final int CSV_FILE_SIZE_ESTIMATE = 3000;
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
@@ -271,15 +272,20 @@ public class ArchivingController<
 
     int fileSizeBytes =
         procedureRepository.sumFileSizeBytesOrZero(
-            procedurePage.stream()
-                .map(EntityWithExternalId::getExternalId)
-                .collect(Collectors.toSet()));
+                procedurePage.stream()
+                    .map(EntityWithExternalId::getExternalId)
+                    .collect(Collectors.toSet()))
+            + sumCsvFileSizeEstimate(procedurePage);
 
     return new GetRelevantArchivableProceduresResponse(
         procedurePage.getTotalPages(),
         procedurePage.getTotalElements(),
         procedurePage.stream().map(enrichingMapper::enrichAndMap).toList(),
         fileSizeBytes);
+  }
+
+  private int sumCsvFileSizeEstimate(Page<ProcedureT> procedurePage) {
+    return procedurePage.getNumberOfElements() * CSV_FILE_SIZE_ESTIMATE;
   }
 
   private Specification<ProcedureT> archivingRelevanceRelevant() {
@@ -344,7 +350,7 @@ public class ArchivingController<
   @Transactional(readOnly = true)
   public GetArchivingConfigurationResponse getArchivingConfiguration() {
     return new GetArchivingConfigurationResponse(
-        archivingProperties.getGracePeriodMonths(), getArchivingProperties());
+        archivingProperties.getGracePeriodMonthsOrDefault(), getArchivingProperties());
   }
 
   private Map<ProcedureTypeDto, ArchivingDetailsDto> getArchivingProperties() {

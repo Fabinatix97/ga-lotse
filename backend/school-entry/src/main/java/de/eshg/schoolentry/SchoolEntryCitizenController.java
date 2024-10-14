@@ -75,6 +75,7 @@ public class SchoolEntryCitizenController {
     return new GetCitizenProcedureResponse(
         schoolEntryProcedure.getAppointment().getAppointmentStart(),
         schoolEntryProcedure.getAppointment().getAppointmentEnd(),
+        schoolEntryCitizenService.getAppointmentAddress(schoolEntryProcedure),
         new CitizenChildDto(child.firstName(), child.lastName(), child.dateOfBirth()),
         !schoolEntryProcedure.getAnamnesis().hasEdits(),
         appointmentChangesLeft,
@@ -104,7 +105,6 @@ public class SchoolEntryCitizenController {
       @Valid @RequestBody UpdateCitizenAppointmentRequest request) {
     SchoolEntryProcedure schoolEntryProcedure = getSchoolEntryProcedureForUpdate(principal);
 
-    Validator.validateProcedureStatusNotClosed(schoolEntryProcedure);
     validator.validateAppointmentChanges(schoolEntryProcedure);
     AppointmentDto newAppointment = request.newAppointment();
 
@@ -132,7 +132,6 @@ public class SchoolEntryCitizenController {
       @AuthenticationPrincipal Jwt principal,
       @Valid @RequestBody AddCitizenAnamnesisRequest request) {
     SchoolEntryProcedure schoolEntryProcedure = getSchoolEntryProcedureForUpdate(principal);
-    Validator.validateProcedureStatusNotClosed(schoolEntryProcedure);
 
     if (schoolEntryProcedure.getAnamnesis().hasEdits()) {
       throw new BadRequestException(

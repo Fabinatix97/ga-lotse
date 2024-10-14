@@ -12,5 +12,5 @@ public enum ReportStateDto {
   PLANNED,
   COMPLETED,
   FAILED,
-  PENDING
+  CREATING
 }

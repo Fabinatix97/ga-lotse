@@ -22,14 +22,22 @@ import java.util.stream.Collectors;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(
     indexes = {
       @Index(columnList = "reference_person_id"),
-      @Index(columnList = "first_name, last_name, date_of_birth"),
+      @Index(columnList = "first_name, last_name, date_of_birth")
     })
+@EntityListeners(AuditingEntityListener.class)
 public class Person extends SequencedBaseEntityWithExternalId implements CentralFileData {
+
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  @Column(nullable = false)
+  @CreatedDate
+  private Instant createdAt;
 
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant modifiedAt;
@@ -102,6 +110,14 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
   @OneToOne(cascade = CascadeType.PERSIST)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private PersonAddress differentBillingAddress;
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
+  }
 
   @Override
   public Instant getModifiedAt() {

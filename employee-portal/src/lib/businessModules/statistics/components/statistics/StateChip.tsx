@@ -9,15 +9,17 @@ import { Chip, ChipProps } from "@mui/joy";
 const statusNames = {
   [ApiStatisticState.Completed]: "Erstellt",
   [ApiStatisticState.Failed]: "Fehler",
-  [ApiStatisticState.Pending]: "Wird erstellt",
+  [ApiStatisticState.Creating]: "Wird erstellt",
   [ApiStatisticState.CopyOngoing]: "Wird kopiert",
+  [ApiStatisticState.Updating]: "Wird aktualisiert",
 } satisfies Record<ApiStatisticState, string>;
 
 const statusColors = {
   [ApiStatisticState.Completed]: "success",
   [ApiStatisticState.Failed]: "danger",
-  [ApiStatisticState.Pending]: "warning",
+  [ApiStatisticState.Creating]: "warning",
   [ApiStatisticState.CopyOngoing]: "warning",
+  [ApiStatisticState.Updating]: "warning",
 } satisfies Record<ApiStatisticState, ChipProps["color"]>;
 
 export function StateChip({ value }: { value: ApiStatisticState }) {

@@ -6,14 +6,22 @@
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-export function useEditStatisticName() {
-  // TODO: Implement, once the API has been defined
+import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
+
+export function useEditStatisticName(statisticId: string) {
   const snackbar = useSnackbar();
+  const statisticApi = useStatisticApi();
+
   const mutation = useHandledMutation({
-    mutationFn: () => Promise.resolve(),
-    onSuccess: () => snackbar.confirmation("Name geändert."),
+    mutationFn: (name: string) =>
+      statisticApi.updateStatistic(statisticId, {
+        type: "UpdateStatisticNameRequest",
+        name,
+      }),
+    onSuccess: () => snackbar.confirmation("Name geändert"),
   });
-  return async (_name: string) => {
-    return mutation.mutateAsync().catch();
+
+  return async (name: string) => {
+    return mutation.mutateAsync(name).catch();
   };
 }

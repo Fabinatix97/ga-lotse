@@ -12,6 +12,7 @@ import de.eshg.base.user.mapper.UserMapper;
 import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.lib.keycloak.KeycloakUser;
 import de.eshg.lib.keycloak.PermissionRole;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.List;
@@ -30,15 +31,21 @@ public abstract class KeycloakTestProvisioning {
   private static final Duration TEST_HELPER_CLIENT_ACCESS_TOKEN_LIFESPAN = Duration.ofHours(2);
   protected final KeycloakTestClient keycloakTestClient;
   protected final KeycloakProperties keycloakProperties;
+  protected final EnvironmentConfig environmentConfig;
 
   protected KeycloakTestProvisioning(
-      KeycloakTestClient keycloakTestClient, KeycloakProperties keycloakProperties) {
+      KeycloakTestClient keycloakTestClient,
+      KeycloakProperties keycloakProperties,
+      EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     this.keycloakTestClient = keycloakTestClient;
     this.keycloakProperties = keycloakProperties;
+    this.environmentConfig = environmentConfig;
   }
 
   @PostConstruct
   void provisionTestResources() {
+    environmentConfig.assertIsNotProduction();
     if (keycloakProperties.testClientEnabled()) {
       log.warn("Adding a test client with direct access grant");
       createOrRecreateClientForTestHelper();
@@ -61,11 +68,13 @@ public abstract class KeycloakTestProvisioning {
   }
 
   public void createOrUpdateUsers() {
+    environmentConfig.assertIsNotProduction();
     List<KeycloakUser> allUsers = getAllKeycloakUsersToProvision();
     keycloakTestClient.createOrUpdateUsers(allUsers, this::configureUser);
   }
 
   public void removeUnmanagedUsers() {
+    environmentConfig.assertIsNotProduction();
     List<String> allUsers =
         getAllKeycloakUsersToProvision().stream().map(KeycloakUser::username).toList();
     keycloakTestClient.removeUnmanagedUsers(allUsers);

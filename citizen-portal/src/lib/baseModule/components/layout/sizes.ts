@@ -23,11 +23,3 @@ export const contentMarginMobile: ContentMargin = {
   topBottom: 2,
   leftRight: 2,
 };
-
-export const headerLogoHeightMobile = "44px"; // TODO: adapt or remove when we have real logo
-export const headerLogoHeightDesktop = "80px";
-
-export const headerLogoWidthMobile = "115px";
-export const headerLogoWidthDesktop = "174px";
-
-export const footerMaxWidthDesktop = "1220px";

@@ -5,6 +5,7 @@
 
 package de.eshg.base.contact.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -29,7 +30,7 @@ public record PersonContactDto(
             example = "@username:server")
         String externalChatUsername,
     @NotNull List<String> phoneNumbers,
-    @NotNull List<String> emailAddresses,
+    @NotNull List<@EmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements ContactDto {

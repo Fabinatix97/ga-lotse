@@ -16,8 +16,8 @@ export function SaveEvaluationStep() {
     <Stack gap={2}>
       <InputField
         name={fieldName("name")}
-        label="Name der Auswertung"
-        required="Die Auswertung muss benannt werden."
+        label="Name der Analyse"
+        required="Bitte Name angeben."
       />
     </Stack>
   );

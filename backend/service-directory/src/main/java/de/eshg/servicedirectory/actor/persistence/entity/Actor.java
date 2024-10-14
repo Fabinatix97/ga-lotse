@@ -40,5 +40,9 @@ public sealed interface Actor permits StagedActor, AuditedActor {
 
   void setActive(Boolean active);
 
-  record Certificate(@NotNull String value, @NotNull String signature, @NotNull String signatory) {}
+  Boolean isManualCertificate();
+
+  void setManualCertificate(Boolean manualCertificate);
+
+  record Certificate(@NotNull String value, String signature, String signatory) {}
 }

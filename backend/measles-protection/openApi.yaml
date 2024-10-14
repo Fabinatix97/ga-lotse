@@ -47,43 +47,6 @@ paths:
       summary: Get all appointment block groups.
       tags:
       - AppointmentBlock
-    post:
-      operationId: createAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CreateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
-  /appointment-blocks/appointment-block-groups/validate:
-    post:
-      operationId: validateAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ValidateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
   /appointment-blocks/daily-appointment-block-groups:
     post:
       operationId: createDailyAppointmentBlocksForGroup
@@ -3107,6 +3070,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     CaseStatus:
       type: string
       description: Indicates the current status of the procedure or the final outcome.
@@ -3506,58 +3470,6 @@ components:
       required:
       - recipientId
       - sentAt
-    CreateAppointmentBlock:
-      type: object
-      properties:
-        end:
-          type: string
-          format: date-time
-          description: Time at which the appointment block ends.
-          example: 2016-01-01T01:45:00.123456+01:00
-        start:
-          type: string
-          format: date-time
-          description: Time at which the appointment block starts.
-          example: 2016-01-01T01:00:00.123456+01:00
-      required:
-      - end
-      - start
-    CreateAppointmentBlockGroupRequest:
-      type: object
-      properties:
-        appointmentBlocks:
-          type: array
-          items:
-            $ref: "#/components/schemas/CreateAppointmentBlock"
-        consultants:
-          type: array
-          items:
-            type: string
-            format: uuid
-        locationId:
-          type: string
-          format: uuid
-        mfas:
-          type: array
-          items:
-            type: string
-            format: uuid
-        parallelExaminations:
-          type: integer
-          format: int32
-          maximum: 10
-          minimum: 1
-        physicians:
-          type: array
-          items:
-            type: string
-            format: uuid
-        type:
-          $ref: "#/components/schemas/AppointmentType"
-      required:
-      - appointmentBlocks
-      - parallelExaminations
-      - type
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -3614,6 +3526,9 @@ components:
           items:
             type: string
             format: uuid
+        locationId:
+          type: string
+          format: uuid
         mfas:
           type: array
           items:
@@ -3847,6 +3762,8 @@ components:
       - WEDNESDAY
       - THURSDAY
       - FRIDAY
+      - SATURDAY
+      - SUNDAY
     Decision:
       type: string
       enum:

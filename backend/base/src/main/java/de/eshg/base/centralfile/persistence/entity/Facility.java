@@ -19,10 +19,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(indexes = @Index(columnList = "reference_facility_id"))
+@EntityListeners(AuditingEntityListener.class)
 public class Facility extends BaseEntityWithExternalId implements CentralFileData {
+
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  @Column(nullable = false)
+  @CreatedDate
+  private Instant createdAt;
 
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant modifiedAt;
@@ -81,6 +89,14 @@ public class Facility extends BaseEntityWithExternalId implements CentralFileDat
   @JoinColumn(name = "reference_facility_id")
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private Facility referenceFacility;
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
+  }
 
   @Override
   public Instant getModifiedAt() {

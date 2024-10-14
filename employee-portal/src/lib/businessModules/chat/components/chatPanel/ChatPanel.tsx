@@ -23,7 +23,7 @@ import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoom
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import {
-  extractHomeserverNameFromUserMatrixID,
+  getChatUserDirectory,
   getDepartmentNameFromUserId,
   getRoomNameAndCommunicationType,
 } from "@/lib/businessModules/chat/shared/utils";
@@ -31,15 +31,12 @@ import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
 
 export interface ChatPanelProps {
   roomId: string | null;
-  isOpenChatSettings: boolean;
-  toggleChatSettingsView(): void;
   chatPanelView: ChatPanelView;
   setChatPanelView: (viewType: ChatPanelView) => void;
 }
 
 export function ChatPanel({
   roomId,
-  toggleChatSettingsView,
   chatPanelView,
   setChatPanelView,
 }: Readonly<ChatPanelProps>) {
@@ -62,9 +59,7 @@ export function ChatPanel({
   useEffect(() => {
     async function getUsers() {
       try {
-        const data = await matrixClient.searchUserDirectory({
-          term: extractHomeserverNameFromUserMatrixID(loggedInUserId),
-        });
+        const data = await getChatUserDirectory(matrixClient);
         if (data.results.length) {
           const users = data.results.filter(
             (user) =>
@@ -132,10 +127,7 @@ export function ChatPanel({
   if (roomId && roomWithCommunicationType) {
     return (
       <>
-        <ChatPanelHeader
-          roomId={roomId}
-          toggleChatSettingsView={toggleChatSettingsView}
-        />
+        <ChatPanelHeader roomId={roomId} />
         <Box
           sx={{
             height: `calc(100% - ${chatColumnHeaderHeight})`,
@@ -149,6 +141,7 @@ export function ChatPanel({
             selectedRoomId={roomId}
             sendMessage={handleSendMessage}
             roomMembers={roomWithCommunicationType.room.getMembers()}
+            disabled={selectedRoom?.getMyMembership() === "leave"}
           />
         </Box>
       </>

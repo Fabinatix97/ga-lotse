@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiCreateAppointmentBlockGroupRequest,
+  ApiCreateDailyAppointmentBlockGroupRequest,
   AppointmentBlockApi,
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
@@ -34,18 +34,19 @@ export function getAppointmentBlockGroupsQuery(
   });
 }
 
-export function useValidateAppointmentBlockGroup(
-  request: ApiCreateAppointmentBlockGroupRequest | null,
+export function useValidateDailyAppointmentBlocksForGroup(
+  request: ApiCreateDailyAppointmentBlockGroupRequest | null,
 ) {
   const appointmentBlockApi = useAppointmentBlockApi();
   return useQuery({
     queryKey: appointmentBlockApiQueryKey([
-      "validateAppointmentBlockGroup",
+      "validateDailyAppointmentBlocksForGroup",
       request,
     ]),
     queryFn: () =>
-      request != null
-        ? appointmentBlockApi.validateAppointmentBlockGroup(request)
-        : null,
+      request !== null
+        ? appointmentBlockApi.validateDailyAppointmentBlocksForGroup(request)
+        : Promise.reject(new Error("Request is not defined")),
+    enabled: request !== null,
   });
 }

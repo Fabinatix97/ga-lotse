@@ -10,6 +10,7 @@ import { FormLabel, Grid, Typography } from "@mui/joy";
 import { LocalBooleanRadioField } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalBooleanRadioField";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
@@ -111,14 +112,14 @@ export function CitizenAnamnesisStepFour() {
       >
         <Typography level="body-sm">{t("support.therapy.date")}</Typography>
         <Grid container sx={{ flexGrow: 1 }} spacing={2}>
-          <Grid xxs={12} lg={6}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.from")}
               name={promotionTherapyAndAidInfo("speechTherapy.start")}
               aria-description={`${t("support.therapy.speechTherapy")} ${t("support.therapy.start")}`}
             />
           </Grid>
-          <Grid xxs={12} lg={6}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.to")}
               name={promotionTherapyAndAidInfo("speechTherapy.end")}
@@ -133,14 +134,14 @@ export function CitizenAnamnesisStepFour() {
       >
         <Typography level="body-sm">{t("support.therapy.date")}</Typography>
         <Grid container sx={{ flexGrow: 1 }} spacing={2}>
-          <Grid xxs={12} lg={6}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.from")}
               name={promotionTherapyAndAidInfo("ergoTherapy.start")}
               aria-description={`${t("support.therapy.ergoTherapy")} ${t("support.therapy.start")}`}
             />
           </Grid>
-          <Grid xxs={12} lg={6}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.to")}
               name={promotionTherapyAndAidInfo("ergoTherapy.end")}
@@ -155,14 +156,14 @@ export function CitizenAnamnesisStepFour() {
       >
         <Typography level="body-sm">{t("support.therapy.date")}</Typography>
         <Grid container sx={{ flexGrow: 1 }} spacing={2}>
-          <Grid xxs={12} lg={6}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.from")}
               name={promotionTherapyAndAidInfo("physioTherapy.start")}
               aria-description={`${t("support.therapy.physioTherapy")} ${t("support.therapy.end")}`}
             />
           </Grid>
-          <Grid xxs={12} lg={6}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
             <DateField
               label={t("support.therapy.to")}
               name={promotionTherapyAndAidInfo("physioTherapy.end")}

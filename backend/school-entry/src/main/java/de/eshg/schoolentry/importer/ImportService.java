@@ -6,7 +6,7 @@
 package de.eshg.schoolentry.importer;
 
 import static de.eshg.schoolentry.importer.ImportStatus.*;
-import static de.eshg.schoolentry.util.ImportDataUtil.*;
+import static de.eshg.schoolentry.importer.XlsxUtil.writeValue;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.GenderDto;
@@ -22,6 +22,7 @@ import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
+import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,9 +47,6 @@ public class ImportService {
 
   private static final Logger log = LoggerFactory.getLogger(ImportService.class);
 
-  private static final int STATUS_COLUMN_HEADER_WIDTH = 20;
-  private static final int PROCEDURE_COLUMN_WIDTH = 36;
-
   private final SchoolEntryService schoolEntryService;
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
   private final SchoolEntryProperties schoolEntryProperties;
@@ -68,33 +66,54 @@ public class ImportService {
   public ImportResult processSheetAndPersistProcedures(
       Sheet sheet, ImportType importType, UUID schoolId, UUID locationId, Year schoolYear)
       throws IOException {
+
     try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
       XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
 
-      RowProcessor<? extends RowValues> rowProcessor =
+      RowProcessor<? extends RowValues, ? extends XlsxColumn> rowProcessor =
           switch (importType) {
-            case CITIZEN_LIST -> new CitizenListRowProcessor(normalizedSheet);
-            case SCHOOL_LIST ->
-                new SchoolListRowProcessor(
-                    normalizedSheet, schoolYear, procedureTypeAssignmentHelper);
+            case CITIZEN_LIST -> {
+              List<CitizenListColumn> actualColumns =
+                  ImportValidator.validateHeaderFormat(CitizenListColumn.values(), normalizedSheet);
+              yield new CitizenListRowProcessor(normalizedSheet, actualColumns);
+            }
+            case SCHOOL_LIST -> {
+              List<SchoolListColumn> actualColumns =
+                  ImportValidator.validateHeaderFormat(SchoolListColumn.values(), normalizedSheet);
+              yield new SchoolListRowProcessor(
+                  normalizedSheet, actualColumns, schoolYear, procedureTypeAssignmentHelper);
+            }
+            case PAST_PROCEDURE_LIST -> {
+              List<PastProcedureListColumn> actualColumns =
+                  ImportValidator.validateHeaderFormat(
+                      PastProcedureListColumn.values(), normalizedSheet);
+              yield new PastProcedureListRowProcessor(normalizedSheet, actualColumns);
+            }
           };
+
+      FeedbackColumnAccessor feedbackColumnAccessor =
+          new FeedbackColumnAccessor(rowProcessor.getActualColumns());
+
       return new Importer<>(
-              normalizedSheet, importType, rowProcessor, schoolId, locationId, schoolYear)
+              normalizedSheet,
+              importType,
+              rowProcessor,
+              feedbackColumnAccessor,
+              schoolId,
+              locationId,
+              schoolYear)
           .process();
     }
   }
 
   private class Importer<T extends RowValues> {
     private final XSSFSheet sheet;
-    private final XSSFCellStyle headerCellStyle;
     private final XSSFCellStyle defaultCellStyle;
     private final ImportStatistics stats = new ImportStatistics();
     private final ValidRows<T> validRows = new ValidRows<>(new ArrayList<>(), new ArrayList<>());
-    private final int statusColumn;
-    private final int procedureColumn;
-    private final int referenceIdColumn;
     private final ImportType importType;
-    private final RowProcessor<T> rowProcessor;
+    private final RowProcessor<T, ?> rowProcessor;
+    private final FeedbackColumnAccessor col;
     private final UUID schoolId;
     private final UUID locationId;
     private final Year schoolYear;
@@ -105,13 +124,13 @@ public class ImportService {
     private Importer(
         XSSFSheet sheet,
         ImportType importType,
-        RowProcessor<T> rowProcessor,
+        RowProcessor<T, ?> rowProcessor,
+        FeedbackColumnAccessor feedbackColumnAccessor,
         UUID schoolId,
         UUID locationId,
         Year schoolYear) {
       this.sheet = sheet;
       this.locationId = locationId;
-      this.headerCellStyle = createHeaderCellStyle();
       this.defaultCellStyle = createDefaultCellStyle();
 
       this.importedSuccessfullyCellStyle =
@@ -135,11 +154,9 @@ public class ImportService {
                 font.setColor(XlsxUtil.newColor(228, 114, 0));
               });
 
-      this.statusColumn = findOrAddHeader(STATUS_COLUMN_HEADER, STATUS_COLUMN_HEADER_WIDTH);
-      this.procedureColumn = findOrAddHeader(PROCEDURE_COLUMN_HEADER, PROCEDURE_COLUMN_WIDTH);
-      this.referenceIdColumn = findOrAddHeader(REFERENCE_COLUMN_HEADER, PROCEDURE_COLUMN_WIDTH);
       this.importType = importType;
       this.rowProcessor = rowProcessor;
+      this.col = feedbackColumnAccessor;
       this.schoolId = schoolId;
       this.schoolYear = schoolYear;
     }
@@ -148,13 +165,6 @@ public class ImportService {
       XSSFCellStyle cellStyle = createDefaultCellStyle();
       XSSFFont font = cellStyle.getFont();
       fontCustomizer.accept(font);
-      return cellStyle;
-    }
-
-    private XSSFCellStyle createHeaderCellStyle() {
-      XSSFWorkbook workbook = sheet.getWorkbook();
-      XSSFCellStyle cellStyle = workbook.createCellStyle();
-      cellStyle.setFont(XlsxNormalizer.createHeaderFont(workbook));
       return cellStyle;
     }
 
@@ -173,8 +183,14 @@ public class ImportService {
           importableRows.stream().map(rowProcessor::mapValuesToImportData).toList();
       try {
         List<SchoolEntryProcedure> createdProcedures =
-            schoolEntryService.createProcedures(
-                importData, schoolId, locationId, schoolYear, DataOrigin.DATA_IMPORT);
+            switch (importType) {
+              case CITIZEN_LIST, SCHOOL_LIST ->
+                  schoolEntryService.createProceduresWithBookAppointmentTask(
+                      importData, schoolId, locationId, schoolYear, DataOrigin.DATA_IMPORT);
+              case PAST_PROCEDURE_LIST ->
+                  schoolEntryService.createProcedures(
+                      importData, schoolId, locationId, schoolYear, DataOrigin.DATA_IMPORT);
+            };
         writeProcedureIdsInSheet(importableRows, createdProcedures);
       } catch (Exception e) {
         log.error("Failure during creating new procedures.", e);
@@ -183,7 +199,8 @@ public class ImportService {
       }
 
       if (schoolEntryFeatureToggle.isNewFeatureEnabled(
-          SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)) {
+              SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)
+          && importType.supportsMerge()) {
         List<T> mergeableRows = validRows.mergeableRows();
         List<MergeProcedureData> mergeData =
             mergeableRows.stream().map(rowProcessor::mapValuesToMergeData).toList();
@@ -227,7 +244,8 @@ public class ImportService {
       List<UUID> existingProcedureIds = schoolEntryService.collectExistingProcedures(procedureIds);
       Map<PersonKeyAttributes, List<ProcedureWithChildData>> mergeCandidates;
       if (schoolEntryFeatureToggle.isNewFeatureEnabled(
-          SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)) {
+              SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)
+          && importType.supportsMerge()) {
         Set<PersonKeyAttributes> rowsToSearchFor =
             rowValues.values().stream()
                 .filter(row -> row.getProcedureId() == null)
@@ -256,7 +274,8 @@ public class ImportService {
           stats.countDuplicated();
         } else if (value.isValid()) {
           if (schoolEntryFeatureToggle.isNewFeatureEnabled(
-              SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)) {
+                  SchoolEntryFeature.MERGE_PROCEDURES_ON_IMPORT)
+              && importType.supportsMerge()) {
             evaluateActionsWhenMergeIsEnabled(row, value, mergeCandidates);
           } else {
             validRows.importableRows().add(value);
@@ -307,6 +326,7 @@ public class ImportService {
       return switch (importType) {
         case CITIZEN_LIST -> ProcedureType.DRAFT_SCHOOL_IMPORT;
         case SCHOOL_LIST -> ProcedureType.DRAFT_CITIZEN_OFFICE_IMPORT;
+        case PAST_PROCEDURE_LIST -> throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
       };
     }
 
@@ -315,20 +335,22 @@ public class ImportService {
     private void writeStatusAndProcedureId(
         Row row, ImportStatus status, SchoolEntryProcedure procedure) {
       writeStatus(row, status);
-      writeValue(row, procedureColumn, procedure.getExternalId().toString(), defaultCellStyle);
+      writeValue(col.getProcedureId(row), procedure.getExternalId().toString(), defaultCellStyle);
     }
 
     private void deleteReferenceId(Row row) {
-      writeValue(row, referenceIdColumn, "", defaultCellStyle);
+      if (col.hasReferenceIdColum()) {
+        writeValue(col.getReferenceId(row), "", defaultCellStyle);
+      }
     }
 
     private void deleteProcedureId(Row row) {
-      writeValue(row, procedureColumn, "", defaultCellStyle);
+      writeValue(col.getProcedureId(row), "", defaultCellStyle);
     }
 
     private void writeStatusAndReferenceId(Row row, ImportStatus status, UUID referenceId) {
       writeStatus(row, status);
-      writeValue(row, referenceIdColumn, referenceId.toString(), defaultCellStyle);
+      writeValue(col.getReferenceId(row), referenceId.toString(), defaultCellStyle);
     }
 
     private boolean procedureMatchesImportValues(ProcedureWithChildData procedure, T values) {
@@ -368,11 +390,12 @@ public class ImportService {
                 && (procedure.child().countryOfBirth() == null
                     || Objects.equals(
                         procedure.child().countryOfBirth(), values.getChild().countryOfBirth()));
+        case PAST_PROCEDURE_LIST -> throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
       };
     }
 
     private void writeStatus(Row row, ImportStatus importStatus) {
-      writeValue(row, statusColumn, importStatus.getDescription(), getCellStyle(importStatus));
+      writeValue(col.getStatus(row), importStatus.getDescription(), getCellStyle(importStatus));
     }
 
     private XSSFCellStyle getCellStyle(ImportStatus importStatus) {
@@ -417,32 +440,6 @@ public class ImportService {
     private boolean containsMatchingRow(ValidRows<T> rows, T values) {
       return Stream.concat(rows.importableRows().stream(), rows.mergeableRows().stream())
           .anyMatch(row -> rowProcessor.equalRowValues(row, values));
-    }
-
-    private int findOrAddHeader(String header, int columnWidth) {
-      Row headerRow = getHeaderRow(sheet);
-      return findHeaderIndexByText(headerRow, header)
-          .orElseGet(
-              () -> {
-                Cell cell =
-                    writeValue(
-                        headerRow, headerRow.getPhysicalNumberOfCells(), header, headerCellStyle);
-                // See the Javadoc of setColumnWidth(…) why we multiple with 256 here
-                cell.getSheet().setColumnWidth(cell.getColumnIndex(), columnWidth * 256);
-                return cell.getColumnIndex();
-              });
-    }
-
-    private static Cell writeValue(
-        Row row, int columnIndex, String value, XSSFCellStyle cellStyle) {
-      Cell cell = row.getCell(columnIndex);
-      if (cell == null) {
-        cell = row.createCell(columnIndex, CellType.STRING);
-      }
-      cell.setCellValue(value);
-      cell.setCellStyle(cellStyle);
-
-      return cell;
     }
   }
 

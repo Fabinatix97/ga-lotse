@@ -8,28 +8,28 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
   useDataSourceApi,
+  useEvaluationTemplateApi,
   useStatisticApi,
-  useStatisticsSchemeApi,
 } from "@/lib/businessModules/statistics/api/clients";
 import { createQueryGetAvailableDataSources } from "@/lib/businessModules/statistics/api/queries/useGetAvailableDataSources";
+import { createQueryGetEvaluationTemplates } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplates";
 import { createQueryGetStatistics } from "@/lib/businessModules/statistics/api/queries/useGetStatistics";
-import { createQueryGetStatisticsSchemes } from "@/lib/businessModules/statistics/api/queries/useGetStatisticsSchemes";
 
 export function useGetStatisticsOverviewPage(
   statisticsRequest: GetStatisticsRequest,
 ) {
   const statisticApi = useStatisticApi();
   const dataSourceApi = useDataSourceApi();
-  const statisticsSchemeApi = useStatisticsSchemeApi();
+  const evaluationTemplateApi = useEvaluationTemplateApi();
   const [
     { data: statistics, isFetching: statisticsIsFetching },
     { data: availableDataSources },
-    { data: statisticsSchemes },
+    { data: evaluationTemplates },
   ] = useSuspenseQueries({
     queries: [
       createQueryGetStatistics(statisticApi, statisticsRequest),
       createQueryGetAvailableDataSources(dataSourceApi),
-      createQueryGetStatisticsSchemes(statisticsSchemeApi),
+      createQueryGetEvaluationTemplates(evaluationTemplateApi),
     ],
   });
 
@@ -37,6 +37,6 @@ export function useGetStatisticsOverviewPage(
     statistics,
     statisticsIsFetching,
     availableDataSources,
-    statisticsSchemes,
+    evaluationTemplates,
   };
 }

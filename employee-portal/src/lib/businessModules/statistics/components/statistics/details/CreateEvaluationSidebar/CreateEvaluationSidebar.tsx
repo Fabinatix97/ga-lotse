@@ -163,7 +163,7 @@ export function CreateEvaluationSidebar({
           {
             type: "StandardStep",
             step: {
-              title: "Auswertung speichern",
+              title: "Analyse speichern",
               content: <SaveEvaluationStep />,
             },
           },

@@ -69,7 +69,7 @@ public class FilterTemplateService {
 
   @Transactional(readOnly = true)
   public GetFilterTemplatesForStatisticResponse findFilterTemplatesForStatistic(UUID statisticId) {
-    Statistic statistic = statisticService.getStatistic(statisticId);
+    Statistic statistic = statisticService.getStatisticInternal(statisticId);
     List<String> allSearchKeys =
         statistic.getTableColumns().stream().map(TableColumn::getSearchKey).toList();
 

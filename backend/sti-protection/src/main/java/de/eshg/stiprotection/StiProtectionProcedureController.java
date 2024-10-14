@@ -13,9 +13,15 @@ import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresResponse;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.StiProtectionProcedureDto;
+import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryRequest;
+import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryResponse;
+import de.eshg.stiprotection.api.medicalhistory.GetMedicalHistoryResponse;
+import de.eshg.stiprotection.api.medicalhistory.MedicalHistoryDto;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
+import de.eshg.stiprotection.mapper.medicalhistory.MedicalHistoryMapper;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
+import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +43,9 @@ public class StiProtectionProcedureController {
 
   public static final String BASE_URL = BaseUrls.StiProtection.PROCEDURE_CONTROLLER;
 
-  private final StiProtectionService stiProtectionService;
+  private final StiProtectionProcedureService stiProtectionService;
 
-  public StiProtectionProcedureController(StiProtectionService stiProtectionService) {
+  public StiProtectionProcedureController(StiProtectionProcedureService stiProtectionService) {
     this.stiProtectionService = stiProtectionService;
   }
 
@@ -74,5 +81,45 @@ public class StiProtectionProcedureController {
         procedures.totalPages(),
         procedures.totalElements(),
         procedures.elements().stream().map(StiProtectionProcedureMapper::toOverviewType).toList());
+  }
+
+  @PostMapping("/{id}/medical-history")
+  @Operation(summary = "Add medical history item to STI protection procedure.")
+  @Transactional
+  public CreateMedicalHistoryResponse createMedicalHistory(
+      @PathVariable("id") UUID procedureId,
+      @Valid @RequestBody CreateMedicalHistoryRequest request) {
+    MedicalHistory databaseType = MedicalHistoryMapper.toDatabaseType(request.medicalHistory());
+    MedicalHistory medicalHistory =
+        stiProtectionService.createMedicalHistory(procedureId, databaseType);
+    MedicalHistoryDto interfaceType = MedicalHistoryMapper.toInterfaceType(medicalHistory);
+    return new CreateMedicalHistoryResponse(interfaceType);
+  }
+
+  @GetMapping("/{id}/medical-history")
+  @Operation(summary = "Get medical history item.")
+  @Transactional
+  public GetMedicalHistoryResponse getMedicalHistory(@PathVariable("id") UUID procedureId) {
+    MedicalHistory medicalHistory = stiProtectionService.getMedicalHistory(procedureId);
+    MedicalHistoryDto interfaceType = MedicalHistoryMapper.toInterfaceType(medicalHistory);
+    return new GetMedicalHistoryResponse(interfaceType);
+  }
+
+  @PutMapping("/{id}/close")
+  @Operation(summary = "Close an STI procedure.")
+  @Transactional
+  public StiProtectionProcedureDto closeProcedure(@PathVariable("id") UUID procedureId) {
+    stiProtectionService.closeProcedure(procedureId);
+    return StiProtectionProcedureMapper.toInterfaceType(
+        stiProtectionService.getProcedure(procedureId));
+  }
+
+  @PutMapping("/{id}/reopen")
+  @Operation(summary = "Re-open an STI procedure.")
+  @Transactional
+  public StiProtectionProcedureDto reopenProcedure(@PathVariable("id") UUID procedureId) {
+    stiProtectionService.reopenProcedure(procedureId);
+    return StiProtectionProcedureMapper.toInterfaceType(
+        stiProtectionService.getProcedure(procedureId));
   }
 }

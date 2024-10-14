@@ -61,7 +61,7 @@ export function Icd10CodeField(props: Icd10CodeFieldProps) {
       name={props.name}
       label="ICD-10"
       unstyledReadOnly
-      disabled={props.disabled ?? disabled}
+      disabled={disabled || props.disabled}
       sx={FIXED_WIDTH_STYLE}
       component={HorizontalField}
       input={Icd10CodeInput}

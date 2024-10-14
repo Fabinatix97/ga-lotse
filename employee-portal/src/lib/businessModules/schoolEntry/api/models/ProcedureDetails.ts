@@ -44,6 +44,7 @@ export interface ProcedureDetails extends Procedure {
   readonly custodians: PersonDetails[];
   readonly waitingRoom?: WaitingRoom;
   readonly isDeletable: boolean;
+  readonly schoolInfoLetterCreatedAt?: Date;
 }
 
 export function mapProcedureDetails(
@@ -63,6 +64,7 @@ export function mapProcedureDetails(
     custodians: response.custodians.map(mapPersonDetails),
     waitingRoom: mapOptional(response.waitingRoom, mapWaitingRoom),
     isDeletable: response.isDeletable,
+    schoolInfoLetterCreatedAt: response.schoolInfoLetterCreatedAt,
   };
 }
 

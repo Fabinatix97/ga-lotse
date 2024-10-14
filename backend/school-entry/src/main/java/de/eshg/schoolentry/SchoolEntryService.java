@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry;
 
+import static de.eshg.schoolentry.population.CreateLabelsTask.INFORMATION_BLOCK_LABEL_NAME;
 import static de.eshg.schoolentry.population.CreateLabelsTask.SPECIAL_NEEDS_LABEL_NAME;
 import static de.eshg.schoolentry.util.ExceptionUtil.notFoundException;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.*;
@@ -167,7 +168,7 @@ public class SchoolEntryService {
   }
 
   public SchoolEntryProcedure createProcedure(CreateProcedureRequest request) {
-    return createProcedures(
+    return createProceduresWithBookAppointmentTask(
             List.of(
                 new ImportProcedureData(
                     request.child(), ProcedureMapper.mapToDomain(request.type()))),
@@ -179,6 +180,19 @@ public class SchoolEntryService {
         .collect(StreamUtil.toSingleElement());
   }
 
+  public List<SchoolEntryProcedure> createProceduresWithBookAppointmentTask(
+      List<ImportProcedureData> procedures,
+      UUID schoolId,
+      UUID locationId,
+      Year schoolYear,
+      DataOrigin dataOrigin) {
+    List<SchoolEntryProcedure> createdProcedures =
+        createProcedures(procedures, schoolId, locationId, schoolYear, dataOrigin);
+    createdProcedures.forEach(
+        procedure -> addOpenTaskWithType(procedure, TaskType.BOOK_APPOINTMENT));
+    return createdProcedures;
+  }
+
   public List<SchoolEntryProcedure> createProcedures(
       List<ImportProcedureData> procedures,
       UUID schoolId,
@@ -188,8 +202,12 @@ public class SchoolEntryService {
     List<SchoolEntryProcedure> result = new ArrayList<>();
 
     Label specialNeedsLabel = null;
+    Label informationBlockLabel = null;
     if (procedures.stream().anyMatch(ImportProcedureData::isEarlyExamination)) {
       specialNeedsLabel = getSpecialNeedsLabel();
+    }
+    if (procedures.stream().anyMatch(ImportProcedureData::hasInformationBlock)) {
+      informationBlockLabel = getInformationBlockLabel();
     }
 
     List<ProcedureIds> createdIds = personClient.createPersonsInCentralFile(procedures, dataOrigin);
@@ -207,15 +225,18 @@ public class SchoolEntryService {
               schoolId,
               locationId,
               schoolYear,
-              procedure.isEntryLevel());
+              procedure.isEntryLevel(),
+              procedure.examinationDate());
 
       if (procedure.isEarlyExamination()) {
         Assert.notNull(specialNeedsLabel, "specialNeedsLabel must be fetched at this point");
-        schoolEntryProcedure.setLabels(List.of(specialNeedsLabel));
+        schoolEntryProcedure.addLabel(specialNeedsLabel);
       }
-
-      addOpenTaskWithType(schoolEntryProcedure, TaskType.BOOK_APPOINTMENT);
-
+      if (procedure.hasInformationBlock()) {
+        Assert.notNull(
+            informationBlockLabel, "informationBlockLabel must be fetched at this point");
+        schoolEntryProcedure.addLabel(informationBlockLabel);
+      }
       result.add(schoolEntryProcedure);
     }
 
@@ -223,13 +244,20 @@ public class SchoolEntryService {
   }
 
   private Label getSpecialNeedsLabel() {
-    String specialNeedsLabelName = SPECIAL_NEEDS_LABEL_NAME;
+    return findSystemLabelOrThrow(SPECIAL_NEEDS_LABEL_NAME);
+  }
+
+  private Label getInformationBlockLabel() {
+    return findSystemLabelOrThrow(INFORMATION_BLOCK_LABEL_NAME);
+  }
+
+  private Label findSystemLabelOrThrow(String labelName) {
     return labelRepository
-        .findByName(specialNeedsLabelName)
+        .findByName(labelName)
         .orElseThrow(
             () ->
                 new IllegalStateException(
-                    "System-populated label %s is missing".formatted(specialNeedsLabelName)));
+                    "System-populated label %s is missing".formatted(labelName)));
   }
 
   private SchoolEntryProcedure saveSchoolEntryProcedure(
@@ -239,13 +267,15 @@ public class SchoolEntryService {
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
-      boolean isEntryLevel) {
+      boolean isEntryLevel,
+      LocalDate examinationDate) {
     SchoolEntryProcedure schoolEntryProcedure = new SchoolEntryProcedure();
     schoolEntryProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
     schoolEntryProcedure.setProcedureType(type);
     schoolEntryProcedure.setSchoolId(schoolId);
     schoolEntryProcedure.setLocationId(locationId);
     schoolEntryProcedure.setEntryLevel(isEntryLevel);
+    schoolEntryProcedure.setExaminationDate(examinationDate);
 
     buildChild(childIdFromCentralFile, schoolEntryProcedure);
 
@@ -615,7 +645,8 @@ public class SchoolEntryService {
         isProcedureDeletable(procedure),
         procedure.getCreatedAt(),
         procedure.getModifiedAt(),
-        procedure.getWaitingRoom());
+        procedure.getWaitingRoom(),
+        procedure.getschoolInfoLetterCreatedAt());
   }
 
   private SchoolDto getSchool(SchoolEntryProcedure procedure) {
@@ -790,9 +821,7 @@ public class SchoolEntryService {
     }
   }
 
-  public SchoolEntryProcedure closeProcedure(UUID procedureId, CloseProcedureRequest request) {
-    SchoolEntryProcedure procedure =
-        findProcedureByExternalIdForUpdate(procedureId, request.version());
+  public void closeProcedure(SchoolEntryProcedure procedure) {
     procedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
 
     UUID citizenUserId = procedure.getCitizenUserId();
@@ -801,7 +830,6 @@ public class SchoolEntryService {
     }
 
     schoolEntryProcedureRepository.flush();
-    return procedure;
   }
 
   private void removeCitizenUserAccess(UUID citizenUserId) {
@@ -1268,6 +1296,10 @@ public class SchoolEntryService {
     toResult.setOtherVaccinations(fromResult.getOtherVaccinations());
     toResult.setVaccinationPassPresented(fromResult.getVaccinationPassPresented());
     toResult.setPerkombiHbv(fromResult.getPerkombiHbv());
+    toResult.setMeaslesContraIndication(fromResult.getMeaslesContraIndication());
+    toResult.setMeaslesContraIndicationIsPermanent(
+        fromResult.getMeaslesContraIndicationIsPermanent());
+    toResult.setMeaslesContraIndicationUntil(fromResult.getMeaslesContraIndicationUntil());
   }
 
   void updateAnamnesis(Anamnesis persistedAnamnesis, Anamnesis newAnamnesis) {
@@ -1384,6 +1416,8 @@ public class SchoolEntryService {
             switch (importType) {
               case CITIZEN_LIST -> MERGED_DATA_FROM_CITIZEN_LIST;
               case SCHOOL_LIST -> MERGED_DATA_FROM_SCHOOL_LIST;
+              case PAST_PROCEDURE_LIST ->
+                  throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
             };
         ProgressEntryUtil.addProgressEntry(procedure, progressEntryType);
 

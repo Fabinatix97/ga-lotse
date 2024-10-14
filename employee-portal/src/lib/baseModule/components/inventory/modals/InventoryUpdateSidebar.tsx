@@ -4,7 +4,6 @@
  */
 
 import { ApiInventoryItem, ApiLabel } from "@eshg/employee-portal-api/base";
-import { Ref } from "react";
 
 import {
   mapInventoryItemToUpdateInventoryValues,
@@ -15,36 +14,42 @@ import {
   InventoryForm,
   InventoryFormValues,
 } from "@/lib/baseModule/components/inventory/forms/InventoryForm";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface UpdateInventorySidebarProps {
-  inventory: ApiInventoryItem;
-  labels: ApiLabel[];
-  onClose: () => void;
-  onSuccess: () => void;
-  sidebarFormRef: Ref<SidebarFormHandle>;
+export function useInventoryUpdateSidebar(): UseSidebarWithFormRefResult<UpdateInventorySidebarProps> {
+  return useSidebarWithFormRef({
+    component: InventoryUpdateSidebar,
+  });
 }
 
-export function InventoryUpdateSidebar({
+interface UpdateInventorySidebarProps extends SidebarWithFormRefProps {
+  inventory: ApiInventoryItem;
+  labels: ApiLabel[];
+}
+
+function InventoryUpdateSidebar({
   inventory,
   labels,
   onClose,
-  onSuccess,
-  sidebarFormRef,
+  formRef,
 }: UpdateInventorySidebarProps) {
   const updateInventory = useUpdateInventoryItem(inventory.id);
 
   async function handleSubmit(values: InventoryFormValues) {
     await updateInventory
       .mutateAsync(mapUpdateInventoryItemRequest(values), {
-        onSuccess: onSuccess,
+        onSuccess: () => onClose(true),
       })
       .catch();
   }
 
   return (
     <InventoryForm
-      formRef={sidebarFormRef}
+      formRef={formRef}
       initialValues={mapInventoryItemToUpdateInventoryValues(inventory)}
       labels={labels}
       title={"Inventar ändern"}

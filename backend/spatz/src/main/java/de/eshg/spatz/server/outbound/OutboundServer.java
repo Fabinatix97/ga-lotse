@@ -25,8 +25,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.resolver.dns.DnsAddressResolverGroup;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.stereotype.Component;
-import org.xbill.DNS.SimpleResolver;
 import reactor.netty.ByteBufFlux;
 import reactor.netty.http.client.HttpClientResponse;
 import reactor.netty.http.server.HttpServer;
@@ -73,16 +70,7 @@ public final class OutboundServer extends ProxyServer {
     this.outboundTargetPort = outboundConfiguration.targetPort();
     this.addressMapper = addressMapper;
 
-    final URI uri;
-    try {
-      uri = new URI("dns://" + dnsServer);
-    } catch (URISyntaxException e) {
-      throw new IllegalArgumentException(e);
-    }
-    int port = uri.getPort() < 0 ? SimpleResolver.DEFAULT_PORT : uri.getPort();
-    InetSocketAddress dnsAddress = new InetSocketAddress(uri.getHost(), port);
-    DnsAddressResolverGroup resolver = ResolverFactory.useUpstreamDns(dnsAddress);
-    logger.info("resolving outbound targets via {}}", dnsAddress);
+    DnsAddressResolverGroup resolver = ResolverFactory.useUpstreamDns(dnsServer);
     httpProxyClient = new HttpProxyClient(OutboundServer.this.addressMapper, resolver);
   }
 

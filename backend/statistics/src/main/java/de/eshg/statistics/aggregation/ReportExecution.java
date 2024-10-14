@@ -62,8 +62,9 @@ public class ReportExecution {
 
   public void completeReport(UUID reportId) {
     try {
-      ReportStateInformation stateInfo = reportService.getReportStateInformation(reportId);
-      while (stateInfo.state().equals(AggregationResultState.PENDING)) {
+      AggregationResultStateInformation stateInfo =
+          reportService.getReportStateInformation(reportId);
+      while (stateInfo.state().equals(AggregationResultState.CREATING)) {
         AggregationResultPendingState pendingState = stateInfo.pendingState();
         moduleClientAuthenticator.doWithModuleClientAuthentication(
             () -> {
@@ -71,9 +72,6 @@ public class ReportExecution {
                 case DATA_AGGREGATION -> reportService.aggregateData(reportId);
                 case MIN_MAX_DETERMINATION -> reportService.minMaxDetermination(reportId);
                 case EVALUATION_CONDUCTION -> reportService.evaluationConduction(reportId);
-                case COPY_ONGOING ->
-                    throw new IllegalStateException(
-                        "Report of series %s in copy ongoing state".formatted(reportId));
                 case DIAGRAM_CREATION -> {
                   Map<EvaluationDto, AddDiagramRequest> map =
                       reportService.findMissingDiagramOrCompleteAutoReport(reportId);
@@ -83,6 +81,10 @@ public class ReportExecution {
                     diagramCreationService.createDiagram(entry.getKey(), entry.getValue());
                   }
                 }
+                default ->
+                    throw new IllegalStateException(
+                        "Report of series %s in illegal state: %s"
+                            .formatted(reportId, pendingState));
               }
             });
         stateInfo = reportService.getReportStateInformation(reportId);

@@ -61,6 +61,7 @@ export function VersionSheet({
   isCurrentVersion,
   onUploadCldClick,
   onUpdateCldClick,
+  label,
 }: Readonly<{
   definition: ApiChecklistDefinition;
   version: ApiChecklistDefinitionVersion;
@@ -68,6 +69,7 @@ export function VersionSheet({
   nameChange?: string;
   onUploadCldClick: () => void;
   onUpdateCldClick: () => void;
+  label: string;
 }>) {
   const snackbar = useSnackbar();
   const router = useRouter();
@@ -141,6 +143,7 @@ export function VersionSheet({
         },
       }}
       onClick={handleSheetClicked}
+      aria-label={label}
     >
       <Stack direction="column" gap={2}>
         <Stack direction="row" gap={2}>

@@ -9,16 +9,22 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.ANAMNE
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.APPOINTMENT_RESCHEDULED_BY_CITIZEN;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.address.DomesticAddressDto;
+import de.eshg.base.client.ContactClient;
+import de.eshg.base.contact.api.ContactDto;
+import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.schoolentry.api.citizen.AppointmentAddressDto;
 import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.Anamnesis;
@@ -29,11 +35,13 @@ import de.eshg.schoolentry.util.ProgressEntryUtil;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 public class SchoolEntryCitizenService {
@@ -45,18 +53,24 @@ public class SchoolEntryCitizenService {
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final SchoolEntryService schoolEntryService;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final DepartmentClient departmentClient;
+  private final ContactClient contactClient;
 
   public SchoolEntryCitizenService(
       Clock clock,
       SchoolEntryProperties schoolEntryProperties,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       SchoolEntryService schoolEntryService,
-      AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
+      AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      DepartmentClient departmentClient,
+      ContactClient contactClient) {
     this.clock = clock;
     this.citizensProperties = schoolEntryProperties.getCitizens();
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.schoolEntryService = schoolEntryService;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.departmentClient = departmentClient;
+    this.contactClient = contactClient;
   }
 
   SchoolEntryProcedure findOrThrow(UUID userId) {
@@ -144,5 +158,31 @@ public class SchoolEntryCitizenService {
         AnamnesisMapper.mapCitizenAnamnesisToDomain(anamnesis);
     schoolEntryService.copyValues(citizenAnamnesisAsDomainModel, procedure.getAnamnesis());
     ProgressEntryUtil.addProgressEntry(procedure, ANAMNESIS_ADDED_BY_CITIZEN, TriggerType.CITIZEN);
+  }
+
+  public AppointmentAddressDto getAppointmentAddress(SchoolEntryProcedure procedure) {
+    return Optional.ofNullable(schoolEntryService.getAppointmentLocation(procedure))
+        .map((contactId) -> mapToAppointmentAddress(contactClient.getContact(contactId)))
+        .orElse(mapToAppointmentAddress(departmentClient.getDepartmentInfo()));
+  }
+
+  private AppointmentAddressDto mapToAppointmentAddress(
+      GetDepartmentInfoResponse departmentInfoResponse) {
+    return new AppointmentAddressDto(
+        departmentInfoResponse.name(),
+        new DomesticAddressDto(
+            departmentInfoResponse.country(),
+            departmentInfoResponse.city(),
+            departmentInfoResponse.postalCode(),
+            null,
+            departmentInfoResponse.street(),
+            departmentInfoResponse.houseNumber(),
+            null));
+  }
+
+  private AppointmentAddressDto mapToAppointmentAddress(ContactDto contact) {
+    Assert.isInstanceOf(DomesticAddressDto.class, contact.contactAddress());
+    return new AppointmentAddressDto(
+        contact.name(), ((DomesticAddressDto) contact.contactAddress()));
   }
 }

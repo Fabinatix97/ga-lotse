@@ -14,6 +14,8 @@ import de.eshg.base.user.mapper.UserMapper;
 import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.lib.keycloak.KeycloakUser;
+import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.*;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +29,7 @@ import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 /** "Extension" of KeycloakClient for test-only functionality */
@@ -38,15 +41,32 @@ public class KeycloakTestClient {
   protected final RealmBoundKeycloakClient keycloakClient;
 
   protected final KeycloakProperties keycloakProperties;
+  protected final EnvironmentConfig environmentConfig;
   private final int maxNumberOfParallelThreads;
+
+  protected static final class TestHelperOrTestUserProvisioningEnabled extends AnyNestedCondition {
+
+    TestHelperOrTestUserProvisioningEnabled() {
+      super(ConfigurationPhase.PARSE_CONFIGURATION);
+    }
+
+    @ConditionalOnTestHelperEnabled
+    static final class TestHelperEnabled {}
+
+    @ConditionalOnTestUserProvisioningEnabled
+    static final class TestUserProvisioningEnabled {}
+  }
 
   public KeycloakTestClient(
       RealmBoundKeycloakClient keycloakClient,
       KeycloakProperties keycloakProperties,
-      int maxNumberOfParallelThreads) {
+      int maxNumberOfParallelThreads,
+      EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     this.keycloakClient = keycloakClient;
     this.keycloakProperties = keycloakProperties;
     this.maxNumberOfParallelThreads = maxNumberOfParallelThreads;
+    this.environmentConfig = environmentConfig;
   }
 
   public void createOrRecreateClient(ClientRepresentation clientRepresentation) {

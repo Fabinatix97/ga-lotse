@@ -11,9 +11,11 @@ import { FormikErrors } from "formik";
 import { isEmpty } from "remeda";
 
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
-import { getAppointmentDurationInMinutes } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { calculateAppointmentsPerBlock } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import {
+  calculateAppointmentsPerBlock,
+  getAppointmentDurationInMinutes,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 const MAX_DAYS_IN_APPOINTMENT_BLOCK = 31;

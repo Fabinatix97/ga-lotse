@@ -64,6 +64,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -143,7 +144,7 @@ public class DataAggregationService {
     statistic.setTimeRangeEnd(timeRangeEnd);
     statistic.addTableColumns(tableColumns);
     statistic.setNumberOfTableRows(0);
-    statistic.setState(AggregationResultState.PENDING);
+    statistic.setState(AggregationResultState.CREATING);
     statistic.setPendingState(
         dataFromBusinessModule.totalNumberOfElements() == 0
             ? AggregationResultPendingState.MIN_MAX_DETERMINATION
@@ -347,7 +348,7 @@ public class DataAggregationService {
   }
 
   public void collectTableRows(AbstractAggregationResult aggregationResult) {
-    Long tableRowsCount = tableRowRepository.countTableRowByAggregationResult(aggregationResult);
+    Long tableRowsCount = countTableRows(aggregationResult);
     int page = (int) (tableRowsCount / pageSizeForBusinessModuleDataRequest);
     int ignoreTableRowsCount = (int) (tableRowsCount % pageSizeForBusinessModuleDataRequest);
 
@@ -421,6 +422,10 @@ public class DataAggregationService {
       aggregationResult.setPendingState(AggregationResultPendingState.MIN_MAX_DETERMINATION);
       auditLogAggregationResult(aggregationResult);
     }
+  }
+
+  public Long countTableRows(AbstractAggregationResult aggregationResult) {
+    return tableRowRepository.countTableRowByAggregationResult(aggregationResult);
   }
 
   private static Map<String, List<String>> getCodeToBaseAttributeCodesMap(
@@ -701,11 +706,17 @@ public class DataAggregationService {
   }
 
   private MinMaxNullUnknownValues determineNullValuesBoolean(TableColumn tableColumn) {
-    MinMaxNullUnknownValues minMaxNullUnknownValues = new MinMaxNullUnknownValues();
+    MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setNumberOfNullEntries(
         tableRowRepository.count(
             AggregationResultSpecifications.getNullSpecification(tableColumn)));
     return minMaxNullUnknownValues;
+  }
+
+  private MinMaxNullUnknownValues getOrCreateMinMax(TableColumn tableColumn) {
+    return tableColumn.getMinMaxNullUnknownValues() == null
+        ? new MinMaxNullUnknownValues()
+        : tableColumn.getMinMaxNullUnknownValues();
   }
 
   private MinMaxNullUnknownValues determineNullUnknownValuesDate(TableColumn tableColumn) {
@@ -714,7 +725,7 @@ public class DataAggregationService {
             .map(DataAggregationService::getUnknownDate)
             .orElse(null);
 
-    MinMaxNullUnknownValues minMaxNullUnknownValues = new MinMaxNullUnknownValues();
+    MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setNumberOfNullEntries(
         tableRowRepository.count(
             AggregationResultSpecifications.getNullSpecification(tableColumn)));
@@ -743,7 +754,7 @@ public class DataAggregationService {
     BigDecimal minValue = cellEntryRepository.findDecimalValueMin(tableColumn, unknownValue);
     BigDecimal maxValue = cellEntryRepository.findDecimalValueMax(tableColumn, unknownValue);
 
-    MinMaxNullUnknownValues minMaxNullUnknownValues = new MinMaxNullUnknownValues();
+    MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setMinDecimal(minValue);
     minMaxNullUnknownValues.setMaxDecimal(maxValue);
     minMaxNullUnknownValues.setNumberOfNullEntries(
@@ -766,7 +777,7 @@ public class DataAggregationService {
     Integer minValue = cellEntryRepository.findIntegerValueMin(tableColumn, unknownValue);
     Integer maxValue = cellEntryRepository.findIntegerValueMax(tableColumn, unknownValue);
 
-    MinMaxNullUnknownValues minMaxNullUnknownValues = new MinMaxNullUnknownValues();
+    MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setMinInteger(minValue);
     minMaxNullUnknownValues.setMaxInteger(maxValue);
     minMaxNullUnknownValues.setNumberOfNullEntries(
@@ -787,7 +798,7 @@ public class DataAggregationService {
     String unknownValue =
         getUnknownValueOptional(tableColumn).map(ValueToMeaning::getValue).orElse(null);
 
-    MinMaxNullUnknownValues minMaxNullUnknownValues = new MinMaxNullUnknownValues();
+    MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setNumberOfNullEntries(
         tableRowRepository.count(
             AggregationResultSpecifications.getNullSpecification(tableColumn)));
@@ -870,6 +881,14 @@ public class DataAggregationService {
                   return sb.toString();
                 })
             .collect(Collectors.joining(", ")));
+  }
+
+  public void removeTableRows(Statistic statistic) {
+    tableRowRepository.deleteAll(
+        tableRowRepository
+            .findAllByAggregationResult(
+                statistic, Pageable.ofSize(pageSizeForBusinessModuleDataRequest))
+            .getContent());
   }
 
   private record BaseStatisticsData(BaseDataTableHeader dataTableHeader, List<DataRow> dataRows) {}

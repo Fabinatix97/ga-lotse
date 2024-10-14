@@ -6,6 +6,7 @@
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, styled } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { FormEventHandler } from "react";
 
 const StyledSheet = styled(Sheet)(({ theme }) => ({
@@ -17,6 +18,7 @@ const StyledSheet = styled(Sheet)(({ theme }) => ({
 interface FormSheetProps extends RequiresChildren {
   id?: string;
   onSubmit?: FormEventHandler<HTMLFormElement>;
+  sx?: SxProps;
 }
 
 export function FormSheet(props: FormSheetProps) {

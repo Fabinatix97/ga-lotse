@@ -19,6 +19,7 @@ export const businessModuleNames = {
     "Reisemedizinische Beratung und Impfungen",
   [ApiBusinessModule.MeaslesProtection]: "Masernschutzimpfung",
   [ApiBusinessModule.StiProtection]: "HIV-STI Schutz",
+  [ApiBusinessModule.MedicalRegistry]: "Medizinalkartei",
 } satisfies Record<ApiBusinessModule, string>;
 
 export const procedureTypeNames = {

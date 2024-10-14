@@ -4,14 +4,13 @@
  */
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Delete, Share } from "@mui/icons-material";
-import { ColorPaletteProp } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import { ReportForOverview } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
-import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+
+import { getReportActionItems } from "./getReportActionItems";
 
 const columnHelper = createColumnHelper<ReportForOverview>();
 
@@ -29,8 +28,10 @@ export function getId(reportData: ReportForOverview) {
 }
 
 export function getReportsOverviewColumns(
-  shareFunction: (id: string) => Promise<void>,
-  deleteReport: (id: string) => void,
+  share: (id: string) => Promise<void>,
+  deleteReportWithConfirmation: (id: string) => void,
+  canWrite: boolean,
+  canDelete: (creatorUserId: string) => boolean,
 ) {
   return [
     columnHelper.accessor("name", {
@@ -61,26 +62,16 @@ export function getReportsOverviewColumns(
       header: "Aktionen",
       cell: (props) => (
         <ActionsMenu
-          actionItems={[
-            {
-              label: "Teilen",
-              startDecorator: <Share />,
-              onClick: () => shareFunction(getId(props.row.original)),
-            },
-            ...(props.row.original.type === ReportDataType.Single
-              ? [
-                  {
-                    label:
-                      props.row.original.type === "SINGLE"
-                        ? "Report löschen"
-                        : "Ausgabe löschen",
-                    startDecorator: <Delete />,
-                    onClick: () => deleteReport(props.row.original.seriesId),
-                    color: "danger" as ColorPaletteProp,
-                  },
-                ]
-              : []),
-          ]}
+          actionItems={getReportActionItems(
+            [],
+            props.row.original.type === "SERIES",
+            props.row.original.seriesId,
+            getId(props.row.original),
+            share,
+            deleteReportWithConfirmation,
+            canWrite,
+            canDelete(props.row.original.userId),
+          )}
         />
       ),
       meta: {

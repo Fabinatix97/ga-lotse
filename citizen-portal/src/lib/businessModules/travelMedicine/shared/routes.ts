@@ -20,7 +20,10 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
         travelMedicinePath("/meine-termine"),
         (appointmentPath) => ({
           index: accessCodeRoute(appointmentPath("/")),
-          details: accessCodeRoute(appointmentPath("/details")),
+          details: defineRoutes(appointmentPath("/details"), (detailsPath) => ({
+            index: accessCodeRoute(detailsPath("/")),
+            medicalHistory: accessCodeRoute(detailsPath("/anamnese")),
+          })),
         }),
       ),
     }),

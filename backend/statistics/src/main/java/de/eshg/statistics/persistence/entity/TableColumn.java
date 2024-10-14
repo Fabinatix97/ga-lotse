@@ -176,10 +176,6 @@ public class TableColumn extends BaseEntity {
     this.cellEntries.add(cellEntry);
   }
 
-  public List<CellEntry> getCellEntries() {
-    return cellEntries;
-  }
-
   public String getDataSourceName() {
     return dataSourceName;
   }

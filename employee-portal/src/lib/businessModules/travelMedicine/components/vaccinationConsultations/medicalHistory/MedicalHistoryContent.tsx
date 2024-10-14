@@ -14,11 +14,12 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { Button, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import {
-  useGetAllMedicalHistories,
-  useGetStatus,
+  useGetAllMedicalHistoriesQuery,
+  useGetStatusQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { MedicalHistory } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistory";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -41,9 +42,12 @@ export function MedicalHistoriesContent({
     }
   }
 
-  const allMedicalHistories = useGetAllMedicalHistories(procedureId).data;
-
-  const status = useGetStatus(procedureId).data;
+  const [{ data: allMedicalHistories }, { data: status }] = useSuspenseQueries({
+    queries: [
+      useGetAllMedicalHistoriesQuery(procedureId),
+      useGetStatusQuery(procedureId),
+    ],
+  });
 
   function isProcedureClosed() {
     return status === ApiProcedureStatus.Closed;
@@ -110,7 +114,7 @@ export function MedicalHistoriesContent({
                   key={index}
                   color="neutral"
                   startDecorator={
-                    value.isAnswered ? (
+                    value.isCompletelyAnswered ? (
                       <CheckCircleOutlineIcon />
                     ) : (
                       <EditNoteIcon />

@@ -14,12 +14,17 @@ import {
 } from "matrix-js-sdk/lib/matrix";
 import { isEmpty, isObjectType, isString } from "remeda";
 
-import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import {
+  CommunicationType,
+  Membership,
+  MessageTypeEnum,
+} from "@/lib/businessModules/chat/shared/enums";
 import { BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 export interface RoomWithCommunicationType {
   room: Room;
   communicationType: CommunicationType;
+  latestMessage?: Message;
 }
 
 export interface Message {
@@ -30,6 +35,7 @@ export interface Message {
   roomId: string;
   mentions?: string[];
   readReceipts?: ReadConfirmationsPerUser;
+  messageType: MessageTypeEnum;
 }
 
 export function isChatMessageType(data: unknown): data is Message {
@@ -124,7 +130,52 @@ export interface RoomLastMessage {
   mentions: string[];
 }
 
-export interface AllRoomMembers {
+export interface ChatRoomMember {
   member: RoomMember;
   isRoomCreator: boolean;
+}
+
+export interface ChatSystemMessage {
+  type: string;
+  messageType: MessageTypeEnum;
+  userId?: string;
+  userName?: string;
+  membership?: Membership;
+  left?: boolean;
+  roomName?: string;
+  timestamp: Date | null;
+  admin?: string[];
+  creator?: string;
+  id: string;
+  avatarUrl?: string;
+}
+
+export function isChatMessage(data: unknown): data is Message {
+  if (!isObjectType(data)) return false;
+  return (
+    "messageType" in data && data.messageType === MessageTypeEnum.ChatMessage
+  );
+}
+
+export function isSystemMessage(data: unknown): data is ChatSystemMessage {
+  if (!isObjectType(data)) return false;
+  return (
+    "messageType" in data && data.messageType === MessageTypeEnum.SystemMessage
+  );
+}
+
+export interface MentionedMember {
+  name: string;
+  userId: string;
+}
+
+export interface UserFromDirectory {
+  user_id: string;
+  display_name?: string;
+  avatar_url?: string;
+}
+
+export interface UserDirectoryResponse {
+  results: UserFromDirectory[];
+  limited: boolean;
 }

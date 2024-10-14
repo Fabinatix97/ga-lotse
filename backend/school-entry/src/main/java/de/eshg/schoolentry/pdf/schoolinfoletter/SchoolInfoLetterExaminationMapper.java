@@ -36,7 +36,6 @@ public class SchoolInfoLetterExaminationMapper {
       LoggerFactory.getLogger(SchoolInfoLetterExaminationMapper.class);
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
   private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
-
   private final Clock clock;
   private final SchoolEntryFeatureToggle featureToggle;
 
@@ -149,8 +148,12 @@ public class SchoolInfoLetterExaminationMapper {
         Optional.ofNullable(vaccinationStatus.getVaccinationPassPresented())
             .map(presented -> !presented)
             .orElse(false),
-        // TODO needs https://cronn-gmbh.atlassian.net/browse/ISSUE-4608 to be implemented properly
-        false);
+        Optional.ofNullable(vaccinationStatus.getMeaslesContraIndication()).orElse(false),
+        Optional.ofNullable(vaccinationStatus.getMeaslesContraIndicationIsPermanent())
+            .orElse(false),
+        vaccinationStatus.getMeaslesContraIndicationUntil() != null
+            ? vaccinationStatus.getMeaslesContraIndicationUntil().format(DATE_FORMATTER)
+            : null);
   }
 
   private static SchoolInfoLetterEyeExaminationInfo mapEyeExaminationResult(

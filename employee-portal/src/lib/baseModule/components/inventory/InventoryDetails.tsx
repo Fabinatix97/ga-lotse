@@ -5,18 +5,14 @@
 
 import { ApiInventoryItem, ApiLabel } from "@eshg/employee-portal-api/base";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
 
 import { LowCountWarning } from "@/lib/baseModule/components/inventory/LowCountWarning";
 import { inventoryItemTypeNames } from "@/lib/baseModule/components/inventory/constants";
-import { InventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
+import { useInventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
 import { LabelList } from "@/lib/baseModule/components/labels/LabelList";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 export function InventoryDetails({
   inventory,
@@ -27,11 +23,7 @@ export function InventoryDetails({
   labels: ApiLabel[];
   hasWritePerms: boolean;
 }) {
-  const [isUpdate, setUpdate] = useState(false);
-
-  const { sidebarFormRef, closeSidebar, handleClose } = useSidebarForm({
-    onClose: () => setUpdate(false),
-  });
+  const inventoryUpdateSidebar = useInventoryUpdateSidebar();
 
   return (
     <Sheet sx={{ flex: 1, padding: 3 }}>
@@ -52,7 +44,7 @@ export function InventoryDetails({
           {hasWritePerms && (
             <EditButton
               aria-label={"Details ändern"}
-              onClick={() => setUpdate(true)}
+              onClick={() => inventoryUpdateSidebar.open({ inventory, labels })}
             />
           )}
         </Stack>
@@ -111,20 +103,6 @@ export function InventoryDetails({
           value={inventory.description ?? ""}
         />
       </Stack>
-
-      {hasWritePerms && (
-        <OverlayBoundary>
-          <Sidebar open={isUpdate} onClose={handleClose}>
-            <InventoryUpdateSidebar
-              inventory={inventory}
-              labels={labels}
-              onClose={handleClose}
-              onSuccess={closeSidebar}
-              sidebarFormRef={sidebarFormRef}
-            />
-          </Sidebar>
-        </OverlayBoundary>
-      )}
     </Sheet>
   );
 }

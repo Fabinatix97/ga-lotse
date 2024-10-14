@@ -27,3 +27,20 @@ export enum ChatPanelView {
   NewGroupChat = "NEW_GROUP_CHAT",
   ChatMessages = "CHAT_MESSAGES",
 }
+
+export enum MessageTypeEnum {
+  ChatMessage = "CHAT_MESSAGE",
+  SystemMessage = "SYSTEM_MESSAGE",
+}
+
+export enum Membership {
+  Join = "join",
+  Leave = "leave",
+  Invite = "invite",
+  SelfLeave = "self_leave",
+}
+
+export enum InfoPanelView {
+  RoomInfo = "ROOM_INFO",
+  UserInfo = "USER_INFO",
+}

@@ -4,85 +4,98 @@
  */
 
 import { ApiGdprPerson, ApiSalutation } from "@eshg/employee-portal-api/base";
-import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 
-import { ResponsiveDivider } from "@/lib/baseModule/components/gdpr/procedure/tiles/ResponsiveDivider";
+import {
+  SectionTile,
+  SectionTitle,
+} from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
+import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
-import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
-import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
+import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import {
+  PERSON_FIELD_NAME,
+  SALUTATION_VALUES,
+} from "@/lib/shared/components/personSidebar/constants";
 
-export function GdprPersonDataTile({ identity }: { identity: ApiGdprPerson }) {
+export function GdprPersonDataTile({
+  identity,
+  columnSx,
+}: {
+  identity: ApiGdprPerson;
+  columnSx: SxProps;
+}) {
   return (
-    <InfoTile name={"procedure-identity-details"} title={"Antragsteller"}>
-      <Stack direction={{ xxs: "column", md: "row" }} gap={3}>
-        <Stack sx={{ flex: 1 }} gap={1}>
+    <SectionTile id={"procedure-identity-details"}>
+      <SectionTitle id={"procedure-identity-details"}>
+        Antragsteller
+      </SectionTitle>
+      <Stack
+        direction={{ xxs: "column", md: "row" }}
+        gap={3}
+        divider={<ResponsiveDivider />}
+      >
+        <DetailsColumn sx={columnSx}>
           <DetailsRow>
             {isNonEmptyString(identity.salutation) &&
               identity.salutation !== ApiSalutation.NotSpecified && (
                 <DetailsCell
                   name={"salutation"}
-                  label={"Anrede"}
+                  label={PERSON_FIELD_NAME.salutation}
                   value={SALUTATION_VALUES[identity.salutation]}
                 />
               )}
             <DetailsCell
               name={"title"}
-              label={"Titel"}
+              label={PERSON_FIELD_NAME.title}
               value={identity.title}
               avoidWrap
             />
           </DetailsRow>
           <DetailsCell
             name={"firstName"}
-            label={"Vorname"}
+            label={PERSON_FIELD_NAME.firstName}
             value={identity.firstName}
           />
           <DetailsCell
             name={"lastName"}
-            label={"Name"}
+            label={PERSON_FIELD_NAME.lastName}
             value={identity.lastName}
           />
           <DetailsCell
             name={"dateOfBirth"}
-            label={"Geburtsdatum"}
+            label={PERSON_FIELD_NAME.dateOfBirth}
             value={formatDate(identity.dateOfBirth)}
           />
-        </Stack>
+        </DetailsColumn>
 
-        <ResponsiveDivider />
-
-        <BaseAddressDetails address={identity.address} sx={{ flex: 1 }} />
+        <BaseAddressDetails address={identity.address} sx={columnSx} />
 
         {(isNonEmptyString(identity.emailAddress) ||
           isNonEmptyString(identity.phoneNumber)) && (
-          <>
-            <ResponsiveDivider />
-            <Stack sx={{ flex: 1 }} gap={1}>
-              {isNonEmptyString(identity.emailAddress) && (
-                <DetailsCell
-                  name={"emailAddress"}
-                  label={"E-Mail-Adresse"}
-                  value={
-                    <ExternalLink href={`mailto:${identity.emailAddress}`}>
-                      {identity.emailAddress}
-                    </ExternalLink>
-                  }
-                />
-              )}
-              <DetailsCell
-                name={"phoneNumber"}
-                label={"Telefonnummer"}
-                value={identity.phoneNumber}
+          <DetailsColumn sx={columnSx}>
+            {isNonEmptyString(identity.emailAddress) && (
+              <ExternalLinkDetailsCell
+                name={"emailAddress"}
+                label={PERSON_FIELD_NAME.emailAddresses}
+                value={identity.emailAddress}
+                href={(value) => `mailto:${value}`}
               />
-            </Stack>
-          </>
+            )}
+            <DetailsCell
+              name={"phoneNumber"}
+              label={PERSON_FIELD_NAME.phoneNumbers}
+              value={identity.phoneNumber}
+            />
+          </DetailsColumn>
         )}
       </Stack>
-    </InfoTile>
+    </SectionTile>
   );
 }

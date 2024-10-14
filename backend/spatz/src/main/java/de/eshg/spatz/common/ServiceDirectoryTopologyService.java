@@ -11,7 +11,6 @@ import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.GetTrustedA
 import de.eshg.lib.servicedirectory.ServiceDirectoryApiConfiguration.TrustedActorsSupplier;
 import de.eshg.lib.servicedirectory.api.ActorResponseDto;
 import de.eshg.lib.servicedirectory.api.CertificateDto;
-import de.eshg.lib.servicedirectory.util.CertificateSignatureUtil;
 import de.eshg.servicedirectory.util.X509Utils;
 import de.eshg.spatz.config.SelfSignedCertificateLatch;
 import de.eshg.spatz.dns.DnsResolver;
@@ -120,6 +119,7 @@ public class ServiceDirectoryTopologyService {
 
     if (durationSinceLastSuccessfulPoll.compareTo(pollRetryGracePeriod) > 0) {
       trustedActors = new TrustedActors(List.of(), List.of());
+      lastEtag = null;
       logger.warn(
           "could not poll trusted actors since {}: {} - pollRetryGracePeriod expired -> "
               + "trusting nobody until next successful polling",
@@ -228,7 +228,6 @@ public class ServiceDirectoryTopologyService {
           allTrustedActors.values().stream()
               .flatMap(a -> Stream.of(a.currentCertificate(), a.previousCertificate()))
               .filter(Objects::nonNull)
-              .filter(CertificateSignatureUtil::validateSignature)
               .map(CertificateDto::value)
               .map(X509Utils::parsePem)
               .toList();

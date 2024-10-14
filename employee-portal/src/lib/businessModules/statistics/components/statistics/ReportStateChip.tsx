@@ -9,14 +9,14 @@ import { Chip, ChipProps } from "@mui/joy";
 const statusNames = {
   [ApiReportState.Completed]: "Erstellt",
   [ApiReportState.Failed]: "Fehler",
-  [ApiReportState.Pending]: "Wird erstellt",
+  [ApiReportState.Creating]: "Wird erstellt",
   [ApiReportState.Planned]: "Geplant",
 } satisfies Record<ApiReportState, string>;
 
 const statusColors = {
   [ApiReportState.Completed]: "success",
   [ApiReportState.Failed]: "danger",
-  [ApiReportState.Pending]: "warning",
+  [ApiReportState.Creating]: "warning",
   [ApiReportState.Planned]: "warning",
 } satisfies Record<ApiReportState, ChipProps["color"]>;
 

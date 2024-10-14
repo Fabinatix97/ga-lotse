@@ -9,11 +9,7 @@ import { isObjectType } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
-import {
-  ReadConfirmationsPerRoom,
-  ReadConfirmationsPerUser,
-  isReceiptType,
-} from "@/lib/businessModules/chat/shared/types";
+import { isReceiptType } from "@/lib/businessModules/chat/shared/types";
 import {
   markAllMessagesAsRead,
   setReadMarker,
@@ -21,11 +17,12 @@ import {
 import { useWindowFocus } from "@/lib/shared/hooks/useWindowFocus";
 
 export function useReadConfirmation(showReadConfirmation: boolean) {
-  const [readConfirmationsPerRoom, setReadConfirmationsPerRoom] =
-    useState<ReadConfirmationsPerRoom>({});
   const { matrixClient } = useChatClientContext();
   const isFocused = useWindowFocus();
   const { selectedRoomId } = useChatSearchParams();
+  const [messageReadsPerRoom, setMessageReadsPerRoom] = useState<
+    Record<string, string[]>
+  >({});
 
   useEffect(() => {
     if (!isFocused) return;
@@ -46,42 +43,26 @@ export function useReadConfirmation(showReadConfirmation: boolean) {
   useEffect(() => {
     function onRoomReceipt(event: MatrixEvent, room: Room) {
       const receiptContent = event.getContent();
+      const loggedInUserId = matrixClient.getUserId() ?? "";
 
       // Map to keep track of the latest read event for each user
-      const latestReadEvents: ReadConfirmationsPerUser = {};
-
-      // First pass: Find the latest read event for each user
       Object.entries(receiptContent).forEach(([eventId, receiptTypes]) => {
         if (!isObjectType(receiptTypes)) return;
         Object.entries(receiptTypes).forEach(([_, receipts]) => {
           if (!isObjectType(receipts)) return;
           Object.entries(receipts).forEach(([eventUserId, receipt]) => {
             if (!isReceiptType(receipt)) return;
-            const timestamp = receipt.ts || 0;
-            // Update the latest event ID if the current timestamp is newer
-            if (
-              !latestReadEvents[eventUserId] ||
-              timestamp > (latestReadEvents[eventUserId]?.timestamp ?? 0)
-            ) {
-              latestReadEvents[eventUserId] = { eventId, timestamp };
+            if (eventUserId === loggedInUserId) {
+              return;
+            } else {
+              const readMessagesInRoom = messageReadsPerRoom[room.roomId] ?? [];
+              setMessageReadsPerRoom((prevState) => ({
+                ...prevState,
+                [room.roomId]: [...readMessagesInRoom, eventId],
+              }));
             }
           });
         });
-      });
-
-      // Update the state with the new read confirmations
-      setReadConfirmationsPerRoom((prevState) => {
-        const updatedRoomState = Object.entries(latestReadEvents).reduce(
-          (acc, [userId, { eventId, timestamp }]) => {
-            return { ...acc, [userId]: { eventId, timestamp } };
-          },
-          prevState[room.roomId] ?? {},
-        );
-
-        return {
-          ...prevState,
-          [room.roomId]: updatedRoomState,
-        };
       });
     }
     matrixClient.on(RoomEvent.Receipt, onRoomReceipt);
@@ -89,7 +70,7 @@ export function useReadConfirmation(showReadConfirmation: boolean) {
     return () => {
       matrixClient.removeListener(RoomEvent.Receipt, onRoomReceipt);
     };
-  }, [matrixClient]);
+  }, [matrixClient, messageReadsPerRoom]);
 
-  return { readConfirmationsPerRoom };
+  return { messageReadsPerRoom };
 }

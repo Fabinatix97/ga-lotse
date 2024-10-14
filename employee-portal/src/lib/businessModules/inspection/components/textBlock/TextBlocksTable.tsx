@@ -137,6 +137,7 @@ export function TextBlocksTable({ params }: TextBlocksTableProps) {
   return (
     <>
       <TablePage
+        fullHeight
         data-testid="textblocks-table"
         controls={
           <ButtonBar

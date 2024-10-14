@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum CitizenTestUser implements KeycloakUser {
-  CITIZEN("citizen", "+49 228 710 310-0", "password", "Max", "Mustermann", List.of());
+  CITIZEN("citizen", "+49 555 123 100", "password", "Max", "Mustermann", List.of());
 
   private final String username;
   private final String email;

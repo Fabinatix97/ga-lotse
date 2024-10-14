@@ -34,6 +34,7 @@ export function AppointmentOverviewDetails() {
   const splitArr = values.appointmentBlockDate.split(",");
   const split = splitArr.at(0);
   const appointmentStart = new Date(split!);
+  const durationInMinutes = splitArr.at(1);
 
   return (
     <Stack gap={1} data-testid="appointment-overview-summary">
@@ -55,7 +56,7 @@ export function AppointmentOverviewDetails() {
       )}
       {values.appointmentBlockDate && (
         <DetailsField
-          value={formatTime(appointmentStart)}
+          value={`${formatTime(appointmentStart)} ${t("appointmentOverviewSection.values.appointmentDuration", { durationInMinutes: durationInMinutes })}`}
           icon={<AccessTimeOutlined />}
         />
       )}

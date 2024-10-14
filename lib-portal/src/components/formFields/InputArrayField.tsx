@@ -63,6 +63,7 @@ export function InputArrayField(props: InputArrayFieldProps) {
                 </IconButton>
               }
               sx={props.sx}
+              disabled={disabled}
             />
           ))}
           <FormAddMoreButton onClick={() => push("")} disabled={disabled}>

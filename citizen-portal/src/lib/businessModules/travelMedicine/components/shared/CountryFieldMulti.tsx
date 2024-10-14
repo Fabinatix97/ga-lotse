@@ -53,6 +53,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
         filterSelectedOptions
         name={props.name}
         disableClearable={field.required}
+        value={field.input.value}
         onChange={(_, newValue) => {
           setValue(newValue);
         }}
@@ -60,8 +61,10 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
           const { inputValue } = params;
           return options.filter(
             (opt) =>
-              opt.label.toLowerCase().includes(inputValue.toLowerCase()) &&
-              !field.input.value.includes(opt.label),
+              (opt as SelectionOption).label
+                .toLowerCase()
+                .includes(inputValue.toLowerCase()) &&
+              !field.input.value.includes((opt as SelectionOption).value),
           );
         }}
         onBlur={field.input.onBlur}
@@ -80,7 +83,7 @@ export function CountryFieldMulti(props: CountryFieldMultiProps) {
               {...getTagProps({ index })}
               key={index}
             >
-              {item.label}
+              {props.options.find((a) => a.value === item)!.label}
             </Chip>
           ))
         }

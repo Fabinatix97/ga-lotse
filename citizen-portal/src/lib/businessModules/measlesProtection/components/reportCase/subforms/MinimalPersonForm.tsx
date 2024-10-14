@@ -64,7 +64,7 @@ export function MinimalPersonForm(props: Readonly<NestedFormProps>) {
         validate={validateLength(1, LAST_NAME_MAX_LENGTH)}
       />
       <Grid container columnSpacing={2}>
-        <Grid xs={12}>
+        <Grid xxs={12}>
           <DateField
             name={fieldName("dateOfBirth")}
             label={minimalPersonFormConfig.dateOfBirth.label}

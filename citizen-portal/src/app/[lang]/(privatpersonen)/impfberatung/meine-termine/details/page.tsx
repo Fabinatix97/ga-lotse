@@ -5,64 +5,23 @@
 
 "use client";
 
-import { useSearchParams } from "next/navigation";
-
-import { useGetProcedureStepAppointmentDetails } from "@/lib/businessModules/travelMedicine/api/queries/citizenAuthApi";
-import { AppointmentDetails } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetails";
-import { AppointmentDetailsSidePanel } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsSidePanel";
+import { IdContextProvider } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
+import { AppointmentPageContent } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentPageContent";
 import { AppointmentPageTitle } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentPageTitle";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
-import {
-  OneColumnGrid,
-  TwoColumnGrid,
-} from "@/lib/shared/components/layout/grid";
 import { PageLayout } from "@/lib/shared/components/layout/page";
 
 export default function AppointmentDetailsPage() {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
-  const isMobile = useIsMobile();
-  const searchParams = useSearchParams();
-  const procedureId = searchParams.get("procedureId");
-  const procedureStepId = searchParams.get("procedureStepId");
-  const { data: appointmentDetails } = useGetProcedureStepAppointmentDetails(
-    procedureId!,
-    procedureStepId!,
-  );
 
   return (
     <PageLayout>
       <PageContent>
-        <AppointmentPageTitle title={t("header.title")} />
-        {isMobile ? (
-          <OneColumnGrid
-            contentTop={
-              <AppointmentDetails appointmentDetails={appointmentDetails} />
-            }
-            contentCenter={
-              <AppointmentDetailsSidePanel
-                hasAccomplishedService={
-                  appointmentDetails.hasAccomplishedService
-                }
-              />
-            }
-            contentBottom={null}
-          />
-        ) : (
-          <TwoColumnGrid
-            content={
-              <AppointmentDetails appointmentDetails={appointmentDetails} />
-            }
-            sidePanel={
-              <AppointmentDetailsSidePanel
-                hasAccomplishedService={
-                  appointmentDetails.hasAccomplishedService
-                }
-              />
-            }
-          />
-        )}
+        <IdContextProvider>
+          <AppointmentPageTitle title={t("header.title")} />
+          <AppointmentPageContent />
+        </IdContextProvider>
       </PageContent>
     </PageLayout>
   );

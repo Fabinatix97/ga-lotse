@@ -4,20 +4,12 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Grid, GridProps, Stack } from "@mui/joy";
+import { Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-function responsiveColumns(
-  desktopBreakpoint: number,
-  mobileBreakpoint = desktopBreakpoint,
-) {
-  return {
-    xxs: mobileBreakpoint,
-    sm: desktopBreakpoint,
-  } satisfies GridProps;
-}
+import { allBreakpoints, byBreakpoint } from "@/lib/shared/breakpoints";
 
-const GRID_COLUMNS = responsiveColumns(3, 1);
+const GRID_COLUMNS = byBreakpoint({ mobile: 1, desktop: 3 });
 const GRID_SPACING = 2;
 
 interface TwoColumnGridProps {
@@ -32,8 +24,8 @@ export function GridColumnStack(props: RequiresChildren) {
 export function TwoColumnGrid(props: TwoColumnGridProps) {
   return (
     <Grid container columns={GRID_COLUMNS} spacing={GRID_SPACING}>
-      <Grid {...responsiveColumns(2, 1)}>{props.content}</Grid>
-      <Grid {...responsiveColumns(1)}>{props.sidePanel}</Grid>
+      <Grid {...byBreakpoint({ mobile: 1, desktop: 2 })}>{props.content}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.sidePanel}</Grid>
     </Grid>
   );
 }
@@ -47,9 +39,9 @@ interface ThreeColumnGridProps {
 export function ThreeColumnGrid(props: ThreeColumnGridProps) {
   return (
     <Grid container columns={GRID_COLUMNS} spacing={GRID_SPACING}>
-      <Grid {...responsiveColumns(1)}>{props.contentLeft}</Grid>
-      <Grid {...responsiveColumns(1)}>{props.contentRight}</Grid>
-      <Grid {...responsiveColumns(1)}>{props.sidePanel}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.contentLeft}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.contentRight}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.sidePanel}</Grid>
     </Grid>
   );
 }
@@ -63,9 +55,9 @@ interface OneColumnGridProps {
 export function OneColumnGrid(props: OneColumnGridProps) {
   return (
     <Grid container columns={GRID_COLUMNS} spacing={GRID_SPACING}>
-      <Grid {...responsiveColumns(1)}>{props.contentTop}</Grid>
-      <Grid {...responsiveColumns(1)}>{props.contentCenter}</Grid>
-      <Grid {...responsiveColumns(1)}>{props.contentBottom}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.contentTop}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.contentCenter}</Grid>
+      <Grid {...allBreakpoints(1)}>{props.contentBottom}</Grid>
     </Grid>
   );
 }

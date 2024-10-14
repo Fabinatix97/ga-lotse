@@ -20,7 +20,7 @@ public interface VaccinationConsultationRepository
     extends ProcedureRepository<VaccinationConsultation> {
 
   @Query(
-      "select new de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ServicePlanEntry(vc.externalId, s, ps, a, uda, mh.isAnswered) "
+      "select new de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ServicePlanEntry(vc.externalId, s, ps, a, uda, mh.isCompletelyAnswered) "
           + "from VcService s left join fetch s.vaccinationConsultation vc left join fetch s.procedureStep ps "
           + "left join fetch ps.medicalHistory mh left join fetch ps.appointment a left join fetch ps.userDefinedAppointment uda "
           + "where vc.externalId = :externalId order by s.id")
@@ -29,7 +29,7 @@ public interface VaccinationConsultationRepository
   @Query(
       """
       select new de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.AppointmentOverviewEntry(vc.externalId, person.centralFileStateId, vc.travelStartDate,
-      vc.createdBy, vc.procedureStatus, uda.appointmentStart, a.appointmentStart, ps.earliestDate, ps.appointmentType)
+      vc.createdBy, vc.procedureStatus, uda.appointmentStart, uda.cancelled, a.appointmentStart, ps.earliestDate, ps.appointmentType)
       from VaccinationConsultation vc inner join vc.relatedPersons person inner join vc.procedureSteps ps left join ps.appointment a left join ps.userDefinedAppointment uda
       where a.appointmentStart between :startInstant and :endInstant
       or uda.appointmentStart between :startInstant and :endInstant

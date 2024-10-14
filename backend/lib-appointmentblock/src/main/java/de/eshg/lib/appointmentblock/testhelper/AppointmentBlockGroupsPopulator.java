@@ -14,8 +14,8 @@ import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.lib.appointmentblock.AppointmentBlockController;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
-import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupRequest;
-import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupResponse;
+import de.eshg.lib.appointmentblock.DayOfWeekDtoMapper;
+import de.eshg.lib.appointmentblock.api.*;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockGroupRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
@@ -23,14 +23,11 @@ import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,8 +64,13 @@ public class AppointmentBlockGroupsPopulator
       @Qualifier(TECHNICAL_GROUP_CONSULTANTS) Optional<TechnicalGroup> groupConsultants,
       @SuppressWarnings("unused") // Used as dependency
           CreateAppointmentTypeTask createAppointmentTypeTask,
-      UserApi userApi) {
-    super(clock, environment, getClassNameAsPropertyKey(AppointmentBlockGroup.class));
+      UserApi userApi,
+      EnvironmentConfig environmentConfig) {
+    super(
+        clock,
+        environment,
+        getClassNameAsPropertyKey(AppointmentBlockGroup.class),
+        environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.appointmentBlockController = appointmentBlockController;
     this.appointmentBlockGroupRepository = appointmentBlockGroupRepository;
@@ -98,13 +100,14 @@ public class AppointmentBlockGroupsPopulator
     AppointmentType type = randomElement(faker, appointmentTypes);
 
     int parallelExaminations = faker.random().nextInt(1, 3);
-    Instant start =
+    ZonedDateTime zonedDateTimeStart =
         LocalDate.now(clock)
             .plusDays(faker.random().nextInt(50))
             .atTime(LocalTime.of(7, 0))
             .atZone(clock.getZone())
-            .plusMinutes(15L * faker.random().nextInt(20))
-            .toInstant();
+            .plusMinutes(15L * faker.random().nextInt(20));
+    Instant start = zonedDateTimeStart.toInstant();
+    DayOfWeekDto dayOfWeek = DayOfWeekDtoMapper.toDto(zonedDateTimeStart.getDayOfWeek());
     Duration appointmentDuration =
         appointmentBlockProperties.getDefaultAppointmentTypeConfiguration().get(type);
     Instant end = start.plus(appointmentDuration.multipliedBy(faker.random().nextInt(1, 5)));
@@ -113,17 +116,16 @@ public class AppointmentBlockGroupsPopulator
     List<UUID> mfaIds = getRandomUserIdAsList(faker, groupMfas);
     List<UUID> consultantIds = getRandomUserIdAsList(faker, groupConsultants);
 
-    CreateAppointmentBlockGroupRequest request =
-        new CreateAppointmentBlockGroupRequest(
+    CreateDailyAppointmentBlockGroupRequest request =
+        new CreateDailyAppointmentBlockGroupRequest(
             AppointmentTypeMapper.toInterfaceType(type),
             parallelExaminations,
-            start,
-            end,
+            List.of(new CreateDailyAppointmentBlockDto(start, end, List.of(dayOfWeek))),
             physicianIds,
             mfaIds,
             consultantIds);
 
-    return appointmentBlockController.createAppointmentBlockGroup(request);
+    return appointmentBlockController.createDailyAppointmentBlocksForGroup(request);
   }
 
   private List<UUID> getRandomUserIdAsList(Faker faker, Optional<TechnicalGroup> technicalGroup) {

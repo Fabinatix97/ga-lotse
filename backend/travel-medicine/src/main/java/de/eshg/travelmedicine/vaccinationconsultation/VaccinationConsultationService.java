@@ -5,10 +5,15 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import static de.eshg.travelmedicine.medicalhistory.MedicalHistoryHelper.isMedicalHistoryCompletelyAnswered;
 import static de.eshg.travelmedicine.util.MappingUtil.mapEnum;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
+import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
@@ -17,11 +22,15 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
-import de.eshg.travelmedicine.informationstatementtemplate.persistence.entity.InformationStatementTemplate;
-import de.eshg.travelmedicine.informationstatementtemplate.persistence.entity.InformationStatementTemplateRepository;
-import de.eshg.travelmedicine.informationstatementtemplate.persistence.entity.InformationStatementTemplateState;
+import de.eshg.travelmedicine.medicalhistory.MedicalHistoryMapper;
 import de.eshg.travelmedicine.medicalhistory.MedicalHistoryService;
+import de.eshg.travelmedicine.medicalhistory.api.MedicalHistoryContentDto;
+import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
 import de.eshg.travelmedicine.notification.NotificationService;
+import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplate;
+import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplateRepository;
+import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplateState;
+import de.eshg.travelmedicine.util.MappingUtil;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppliedServiceDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentOverviewEntryDto;
@@ -177,6 +186,13 @@ public class VaccinationConsultationService {
 
   public UUID createProcedure(PostCitizenVaccinationConsultationRequest request) {
     validateTravelInformation(request.travelInformation());
+
+    Appointment appointment =
+        appointmentService.createBlockAppointment(
+            MappingUtil.mapEnum(AppointmentType.class, request.initialStepAppointmentType()),
+            request.appointmentStart(),
+            request.durationInMinutes());
+
     UUID personFileStateId = personClient.createPersonFromExternalSource(request.patient());
 
     VaccinationConsultation vaccinationConsultation =
@@ -193,8 +209,7 @@ public class VaccinationConsultationService {
             AppointmentTypeMapper.toDomainType(request.initialStepAppointmentType()), null);
     initialProcedureStep.setVaccinationConsultation(vaccinationConsultation);
     initialProcedureStep.setMedicalHistory(procedureStepService.createMedicalHistory(false));
-    appointmentService.createAppointment(
-        initialProcedureStep, request.appointmentStart(), request.durationInMinutes());
+    initialProcedureStep.setAppointment(appointment);
 
     vaccinationConsultation.getProcedureSteps().add(initialProcedureStep);
     vaccinationConsultationRepository.save(vaccinationConsultation);
@@ -227,7 +242,7 @@ public class VaccinationConsultationService {
   private void bookAppointment(
       ProcedureStep initialProcedureStep, PostVaccinationConsultationRequest request) {
     if (request.appointmentBookingType() == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
-      appointmentService.createAppointment(
+      appointmentService.createBlockAppointmentForStep(
           initialProcedureStep, request.appointmentStart(), request.durationInMinutes());
 
     } else if (request.appointmentBookingType() == AppointmentBookingTypeDto.USER_DEFINED) {
@@ -711,8 +726,16 @@ public class VaccinationConsultationService {
           }
         });
 
-    openAppointments.sort(Comparator.comparing(AppointmentSummaryDto::start));
-    pastAppointments.sort(Comparator.comparing(AppointmentSummaryDto::start).reversed());
+    openAppointments.sort(
+        Comparator.comparing(
+                AppointmentSummaryDto::start, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .thenComparing(
+                AppointmentSummaryDto::earliestDate,
+                Comparator.nullsFirst(Comparator.naturalOrder())));
+    pastAppointments.sort(
+        Comparator.comparing(
+                AppointmentSummaryDto::start, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .reversed());
 
     return new GetCitizenAppointmentOverviewResponse(
         vaccinationConsultation.getExternalId(), openAppointments, pastAppointments);
@@ -739,5 +762,61 @@ public class VaccinationConsultationService {
 
     return AppointmentDetailsMapper.mapToDetails(
         summaryDto, hasAccomplishedService, patient, procedureStep.getMedicalHistory());
+  }
+
+  public MedicalHistoryContentDto getMedicalHistory(
+      UUID citizenUserId, UUID procedureId, UUID procedureStepId) {
+    ProcedureStep procedureStep =
+        procedureAccessor.accessProcedureStep(
+            procedureStepId,
+            procedureId,
+            List.of(
+                new ProcedureAccessor.CheckNotClosed(),
+                new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
+
+    return MedicalHistoryMapper.contentToInterfaceType(procedureStep.getMedicalHistory());
+  }
+
+  public void patchMedicalHistory(
+      UUID citizenUserId,
+      UUID procedureId,
+      UUID procedureStepId,
+      MedicalHistoryContentDto patchMedicalHistoryContent) {
+    ProcedureStep procedureStep =
+        procedureAccessor.accessProcedureStep(
+            procedureStepId,
+            procedureId,
+            List.of(
+                new ProcedureAccessor.CheckNotClosed(),
+                new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
+    MedicalHistory medicalHistory = procedureStep.getMedicalHistory();
+    if (medicalHistory.isCitizenHasAnswered()) {
+      throw new BadRequestException("Medical history already answered by citizen.");
+    }
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      medicalHistory.setContent(objectMapper.writeValueAsString(patchMedicalHistoryContent));
+    } catch (JsonProcessingException e) {
+      throw new BadRequestException("Content does not match required structure");
+    }
+    medicalHistory.setCompletelyAnswered(
+        isMedicalHistoryCompletelyAnswered(patchMedicalHistoryContent));
+    medicalHistory.setCitizenHasAnswered(true);
+  }
+
+  public void deleteAppointment(UUID citizenUserId, UUID procedureId, UUID procedureStepId) {
+    ProcedureStep procedureStep =
+        procedureAccessor.accessProcedureStep(
+            procedureStepId,
+            procedureId,
+            List.of(
+                new ProcedureAccessor.CheckNotClosed(),
+                new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
+    if (procedureStep.getServices().stream().anyMatch(VcService::isAccomplished)) {
+      throw new BadRequestException(
+          "Appointment has accomplished services and cannot be cancelled.");
+    }
+    appointmentService.deleteAppointment(procedureStep);
   }
 }

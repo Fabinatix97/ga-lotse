@@ -18,6 +18,7 @@ import {
 import { de } from "date-fns/locale";
 import {
   EventTimeline,
+  EventType,
   MatrixClient,
   MatrixEvent,
   ReceiptType,
@@ -25,15 +26,17 @@ import {
   RoomMember,
   User,
 } from "matrix-js-sdk/lib/matrix";
-import { isEmpty, isStrictEqual, isString, last } from "remeda";
+import { isEmpty, isNonNullish, isStrictEqual, isString, last } from "remeda";
 
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import {
+  ChatSystemMessage,
   Message,
   Presence,
   ReadConfirmationsPerUser,
   RoomLastMessage,
   RoomWithCommunicationType,
+  UserDirectoryResponse,
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
 
@@ -336,7 +339,7 @@ export function getDayLabel(date: Date): string {
 export function formatDateForChat(date: Date): string {
   const currentTime = new Date();
   if (isSameDay(currentTime, date)) {
-    return "HH:mm";
+    return format(date, "HH:mm");
   }
   if (isYesterday(date)) {
     return `Gestern ${format(date, "HH:mm", { locale: de })}`;
@@ -440,4 +443,112 @@ export function allMessagesRead(
       matrixClient: matrixClient,
     });
   });
+}
+
+export async function reassignAdminRole({
+  matrixClient,
+  newAdminId,
+  prevAdminId,
+  roomId,
+}: {
+  matrixClient: MatrixClient;
+  newAdminId: string;
+  prevAdminId: string;
+  roomId: string;
+}) {
+  const powerLevelsContent = {
+    users: {
+      [prevAdminId]: 0,
+      [newAdminId]: 100,
+    },
+  };
+  await matrixClient.sendStateEvent(
+    roomId,
+    EventType.RoomPowerLevels,
+    powerLevelsContent,
+  );
+}
+
+export function sortMessages<T extends ChatSystemMessage | Message>(
+  messages: T[],
+): T[] {
+  return messages.sort((a, b) =>
+    !a?.timestamp
+      ? 1
+      : !b?.timestamp
+        ? -1
+        : new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+  );
+}
+
+export function findLatestEvent(room: Room) {
+  const timelineSet = room.getLiveTimeline();
+  const events = timelineSet.getEvents();
+  if (events.length <= 0) return;
+  return events[events.length - 1];
+}
+
+export function findLatestMessage(room: Room) {
+  const timelineSet = room.getLiveTimeline();
+  const events = timelineSet.getEvents();
+  if (events.length <= 0) return;
+  return events.findLast((event) => {
+    const eventType = event.getType();
+    return eventType === "m.room.message" || eventType === "m.room.encrypted";
+  });
+}
+
+export function removeAtFromUsernames(str: string) {
+  return str.replace(/\B@\w+/g, (match) => match.slice(1));
+}
+
+export async function getChatUserDirectory(
+  matrixClient: MatrixClient,
+): Promise<UserDirectoryResponse> {
+  return matrixClient.searchUserDirectory({
+    term: extractHomeserverNameFromUserMatrixID(matrixClient.getUserId()),
+  });
+}
+
+export async function getChatUser(
+  matrixClient: MatrixClient,
+  userId: string,
+): Promise<UserDirectoryResponse> {
+  return matrixClient.searchUserDirectory({
+    term: userId,
+  });
+}
+
+export function getReadReceipts(
+  event: MatrixEvent,
+  room: Room,
+  loggedInUserId?: string | null,
+) {
+  if (!loggedInUserId) return;
+  const readReceipts = room.getReceiptsForEvent(event);
+  return readReceipts?.reduce<ReadConfirmationsPerUser>(
+    (acc, { userId, data }) => {
+      if (userId === loggedInUserId) return acc;
+      const eventId = event.getId();
+      if (!eventId) return acc;
+      return {
+        ...acc,
+        [userId]: {
+          timestamp: data.ts,
+          eventId,
+        },
+      };
+    },
+    {},
+  );
+}
+
+export function clearLoginToken() {
+  const loginTokenParamName = "loginToken";
+  const url = new URL(window.location.href);
+  const loginTokenParam = url.searchParams.get(loginTokenParamName);
+  if (isNonNullish(loginTokenParam)) {
+    url.searchParams.delete(loginTokenParamName);
+    window.history.replaceState(null, "", url.href);
+  }
 }

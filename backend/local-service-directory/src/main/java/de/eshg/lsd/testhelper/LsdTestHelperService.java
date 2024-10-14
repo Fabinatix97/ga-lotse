@@ -15,10 +15,10 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperClock;
 import de.eshg.testhelper.TestHelperService;
 import de.eshg.testhelper.api.DefaultPopulationResponse;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.InterceptionType;
 import de.eshg.testhelper.interception.TestHelperInterceptionRequestFilter;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -54,17 +54,19 @@ public class LsdTestHelperService implements TestHelperService {
       LsdInternalKeycloakProperties lsdInternalKeycloakProperties,
       ServiceDirectoryTestHelperApi serviceDirectoryTestHelperClient,
       TestRequestInterceptor testRequestInterceptor,
-      Clock clock) {
+      Clock clock,
+      EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
+    log.warn("Creating {}", getClass().getSimpleName());
     this.serviceDirectoryTestHelperClient = serviceDirectoryTestHelperClient;
     this.testRequestInterceptor = testRequestInterceptor;
     this.clock = clock;
-    log.warn("Creating {}", getClass().getSimpleName());
     this.keycloakProvisioning = keycloakProvisioning;
     this.lsdInternalKeycloakProperties = lsdInternalKeycloakProperties;
   }
 
   @Override
-  public Instant reset() throws SQLException {
+  public Instant reset() throws Exception {
     cachedAccessTokens.clear();
     serviceDirectoryTestHelperClient.reset();
 

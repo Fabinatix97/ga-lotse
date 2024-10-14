@@ -9,6 +9,7 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
+import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -25,7 +26,12 @@ import jakarta.persistence.Table;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type")
 @DataSensitivity(PUBLIC)
-@Table(indexes = {@Index(columnList = "diagram_id"), @Index(columnList = "filter_template_id")})
+@Table(
+    indexes = {
+      @Index(columnList = "diagram_id"),
+      @Index(columnList = "filter_template_id"),
+      @Index(columnList = "diagram_template_id")
+    })
 public abstract class AbstractFilterParameter extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "diagram_id")
@@ -34,6 +40,10 @@ public abstract class AbstractFilterParameter extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "filter_template_id")
   private FilterTemplate filterTemplate;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "diagram_template_id")
+  private DiagramTemplate diagramTemplate;
 
   @OneToOne(
       cascade = CascadeType.PERSIST,
@@ -56,5 +66,13 @@ public abstract class AbstractFilterParameter extends BaseEntity {
 
   public void setAttributeSelection(AttributeSelection attributeSelection) {
     this.attributeSelection = attributeSelection;
+  }
+
+  public DiagramTemplate getDiagramTemplate() {
+    return diagramTemplate;
+  }
+
+  public void setDiagramTemplate(DiagramTemplate diagramTemplate) {
+    this.diagramTemplate = diagramTemplate;
   }
 }

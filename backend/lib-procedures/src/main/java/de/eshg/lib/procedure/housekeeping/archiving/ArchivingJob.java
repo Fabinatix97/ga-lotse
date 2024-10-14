@@ -59,7 +59,7 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
     boolean withinGracePeriod = isWithinGracePeriod();
     logger.info(
         "Started with grace period of {} months, is within grace period: {}",
-        archivingProperties.getGracePeriodMonths(),
+        archivingProperties.getGracePeriodMonthsOrDefault(),
         withinGracePeriod);
 
     if (!withinGracePeriod) {
@@ -116,6 +116,6 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
 
   private boolean isWithinGracePeriod() {
     return LocalDate.ofInstant(Instant.now(clock), clock.getZone()).getMonthValue()
-        <= archivingProperties.getGracePeriodMonths();
+        <= archivingProperties.getGracePeriodMonthsOrDefault();
   }
 }

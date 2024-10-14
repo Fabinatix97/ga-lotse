@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="add-updating-creating">
+    <ext:addPostgresEnumValues enumTypeName="aggregationresultstate" valuesToAdd="CREATING, UPDATING"/>
+    <ext:addPostgresEnumValues enumTypeName="aggregationresultpendingstate" valuesToAdd="TABLE_ROWS_REMOVAL"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="refactor-aggregation-result-states">
+    <update tableName="abstract_aggregation_result">
+      <column name="state" value="FAILED"/>
+      <where>state = 'PENDING' OR state = 'TABLE_ROWS_REMOVAL'</where>
+    </update>
+    <ext:modifyPostgresEnumType name="aggregationresultstate" newValues="COMPLETED, COPY_ONGOING, CREATING, FAILED, PLANNED, UPDATING"/>
+  </changeSet>
+</databaseChangeLog>

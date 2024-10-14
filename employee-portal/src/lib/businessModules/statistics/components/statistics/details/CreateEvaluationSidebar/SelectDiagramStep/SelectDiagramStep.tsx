@@ -67,7 +67,7 @@ export function SelectDiagramStep() {
   return (
     <>
       <Typography level="body-md" sx={{ paddingBottom: 2 }}>
-        Wie soll die Auswertung dargestellt werden?
+        Wie soll die Analyse dargestellt werden?
       </Typography>
 
       <SelectableCardsField

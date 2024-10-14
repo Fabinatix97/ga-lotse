@@ -18,14 +18,23 @@ import {
   LabelFormFields,
   LabelValues,
 } from "@/lib/businessModules/schoolEntry/features/labels/LabelFormFields";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-interface UpdateLabelProps {
-  onClose: () => void;
+export function useUpdateLabelSidebar(): UseSidebarResult<UpdateLabelProps> {
+  return useSidebar({
+    component: UpdateLabelSidebar,
+  });
+}
+
+interface UpdateLabelProps extends DrawerProps {
   label: Label;
 }
 
@@ -36,7 +45,7 @@ function mapToLabelForm(label: Label): LabelValues {
   };
 }
 
-export function UpdateLabelSidebar(props: UpdateLabelProps) {
+function UpdateLabelSidebar(props: UpdateLabelProps) {
   const updateLabel = useUpdateLabel();
 
   async function handleSubmit(labelFormValues: LabelValues) {
@@ -44,13 +53,13 @@ export function UpdateLabelSidebar(props: UpdateLabelProps) {
     const labelVersion = props.label.version;
     await updateLabel
       .mutateAsync(mapToRequest(labelId, labelFormValues, labelVersion), {
-        onSuccess: props.onClose,
+        onSuccess: () => props.onClose(),
       })
       .catch();
   }
 
   return (
-    <Sidebar open onClose={props.onClose}>
+    <>
       <Formik
         initialValues={mapToLabelForm(props.label)}
         onSubmit={handleSubmit}
@@ -71,7 +80,7 @@ export function UpdateLabelSidebar(props: UpdateLabelProps) {
           </SidebarForm>
         )}
       </Formik>
-    </Sidebar>
+    </>
   );
 }
 

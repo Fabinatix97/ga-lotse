@@ -28,6 +28,7 @@ import de.eshg.lib.keycloak.EmployeeTestUser;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
 import de.eshg.testhelper.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
@@ -95,9 +96,15 @@ public class BaseTestHelperService extends DefaultTestHelperService {
       ResourcePopulator resourcePopulator,
       InventoryPopulator inventoryPopulator,
       ContactPopulator contactPopulator,
-      SchoolContactPopulator schoolContactPopulator) {
-    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
-    log.warn("Creating {}", getClass().getSimpleName());
+      SchoolContactPopulator schoolContactPopulator,
+      EnvironmentConfig environmentConfig) {
+    super(
+        databaseResetHelper,
+        testRequestInterceptor,
+        clock,
+        populators,
+        resettableProperties,
+        environmentConfig);
     this.calendarService = calendarService;
     this.calendarEventService = calendarEventService;
     this.resourcePopulator = resourcePopulator;
@@ -112,6 +119,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   }
 
   public void resetKeycloak() {
+    environmentConfig.assertIsNotProduction();
     employeeKeycloakTestClient.resetUser(EmployeeTestUser.DUMMY);
     employeeKeycloakTestClient.resetUser(EmployeeTestUser.WORK_COUNCIL_DUMMY);
     employeeKeycloakTestClient.deleteUser(KeycloakTestClient.TEMPORARY_TEST_USER_USERNAME);
@@ -123,16 +131,19 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   }
 
   public void invalidateAllKeycloakSessions() {
+    environmentConfig.assertIsNotProduction();
     employeeKeycloakTestClient.invalidateAllSessions(
         KeycloakProvisioning.ESHG_AUTH_SERVICE_CLIENT_ID);
     cachedAccessTokens.clear();
   }
 
   public void deleteKeycloakUser(String username) {
+    environmentConfig.assertIsNotProduction();
     employeeKeycloakTestClient.deleteUser(username);
   }
 
   public UserDto createTemporaryTestUser() {
+    environmentConfig.assertIsNotProduction();
     UserRepresentation testUser = employeeKeycloakTestClient.createTemporaryTestUser();
     return UserMapper.mapUserToApi(testUser);
   }
@@ -165,6 +176,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   }
 
   public AccessToken loginUncached(UsernamePassword usernamePassword, String userAgent) {
+    environmentConfig.assertIsNotProduction();
     try (Keycloak keycloak =
         KeycloakBuilder.builder()
             .serverUrl(keycloakProperties.internal().url())
@@ -208,6 +220,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
 
   public CreateCalendarTestEventsResponse createCalendarTestEvents(
       CreateCalendarTestEventsRequest request) {
+    environmentConfig.assertIsNotProduction();
 
     UserCalendar currentUserCalendar = calendarService.getCurrentUserCalendar();
 

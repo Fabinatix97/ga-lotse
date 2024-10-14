@@ -23,5 +23,7 @@
     <include file="migrations/0013_person_sequence.xml"/>
     <include file="migrations/0014_contact_index_full_name.xml" />
     <include file="migrations/0015_gdpr_matter_of_concern.xml" />
+    <include file="migrations/016_add_creation_at_to_person_and_facility.xml" />
+    <include file="migrations/017_add_download_ids_to_gdpr_procedure.xml" />
 
 </databaseChangeLog>

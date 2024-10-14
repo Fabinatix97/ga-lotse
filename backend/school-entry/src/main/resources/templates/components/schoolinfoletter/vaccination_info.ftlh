@@ -18,7 +18,7 @@
         <@forms.checkbox checked=!vaccinationInfo.measlesProtectionComplete title="Masernschutz unvollständig"/>
       </td>
       <td colspan="2">
-        <@forms.checkbox checked=vaccinationInfo.medicalContraindicationAgainstMeasles title="Medizinische Kontraindikation gegen Masernimpfung besteht:"/>
+        <@forms.checkbox checked=vaccinationInfo.measlesContraIndication title="Medizinische Kontraindikation gegen Masernimpfung besteht:"/>
       </td>
     </tr>
     <tr>
@@ -26,10 +26,10 @@
         <@forms.checkbox checked=vaccinationInfo.vaccinationPassNotPresented title="Impfbuch nicht vorgelegt"/>
       </td>
       <td>
-        <@forms.checkbox checked=false title="ständig"/>
+        <@forms.checkbox checked=vaccinationInfo.measlesContraIndicationPermanent title="ständig"/>
       </td>
       <td>
-        <@forms.checkbox checked=false title="bis zum: _______________________________________"/>
+        <@forms.checkbox checked=(vaccinationInfo.measlesContraIndicationUntil??) title="bis zum: " + (vaccinationInfo.measlesContraIndicationUntil ! "_______________________________________")/>
       </td>
     </tr>
   </table>

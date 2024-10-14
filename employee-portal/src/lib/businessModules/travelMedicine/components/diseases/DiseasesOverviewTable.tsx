@@ -15,6 +15,7 @@ import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRef, useState } from "react";
 
@@ -24,7 +25,7 @@ import {
   usePostDisease,
   usePutDisease,
 } from "@/lib/businessModules/travelMedicine/api/mutations/diseaseApi";
-import { useGetAllDiseases } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
+import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
 import { diseasesColumns } from "@/lib/businessModules/travelMedicine/components/diseases/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
@@ -45,7 +46,9 @@ import { validateNonNegativeNumberWithAtMostTwoDecimalDigits } from "@/lib/share
 export function DiseasesOverviewTable() {
   const [currentDisease, setCurrentDisease] = useState<ApiDisease>();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const allDiseases = useGetAllDiseases().data;
+  const [{ data: allDiseases }] = useSuspenseQueries({
+    queries: [useGetAllDiseasesQuery()],
+  });
 
   const postDisease = usePostDisease();
   const putDisease = usePutDisease();

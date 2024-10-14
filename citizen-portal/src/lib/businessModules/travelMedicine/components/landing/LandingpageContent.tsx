@@ -12,6 +12,7 @@ import {
 import { Typography } from "@mui/joy";
 
 import { useGetDepartmentInfo } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
+import { useTranslation } from "@/lib/i18n/client";
 import {
   InfoSection,
   InfoSectionGrid,
@@ -33,12 +34,13 @@ import {
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
 export function LandingpageContent() {
+  const { t } = useTranslation(["travelMedicine/landing"]);
   const { data: department } = useGetDepartmentInfo();
 
   return (
     <GridColumnStack>
       <ContentSheet>
-        <ContentSheetTitle>Kontakt und Erreichbarkeit</ContentSheetTitle>
+        <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
         <InfoSectionGrid>
           <AddressSection department={department} />
           <ContactDataSection department={department} />
@@ -50,9 +52,11 @@ export function LandingpageContent() {
 }
 
 function AddressSection(props: DepartmentInfoProps) {
+  const { t } = useTranslation(["travelMedicine/landing"]);
+
   return (
     <InfoSection icon={<FmdGoodOutlined />}>
-      <InfoSectionTitle>Adresse</InfoSectionTitle>
+      <InfoSectionTitle>{t("contact.address")}</InfoSectionTitle>
       <Typography>
         {props.department.name}
         <br />
@@ -65,36 +69,50 @@ function AddressSection(props: DepartmentInfoProps) {
 }
 
 function OpeningHoursSection() {
+  const { t } = useTranslation(["travelMedicine/landing"]);
+
   return (
     <InfoSection icon={<AccessTimeOutlined />}>
-      <InfoSectionTitle>Öffnungszeiten</InfoSectionTitle>
+      <InfoSectionTitle>{t("contact.openingHours")}</InfoSectionTitle>
       <TableListing>
         <tr>
           <td colSpan={2} style={{ paddingBottom: 3 }}>
-            Sprechzeiten nur nach Terminvereinbarung (telefonisch oder per
-            E-Mail)
+            {t("contact.consultationHours")}
           </td>
         </tr>
-        <TableListingRow label="Mo bis Do">08:00 bis 12:00 Uhr</TableListingRow>
+        <TableListingRow label={t("contact.moDoLabel")}>
+          {t("contact.moDoValue")}
+        </TableListingRow>
         <tr>
           <td colSpan={2} style={{ paddingTop: 3, paddingBottom: 3 }}>
-            Telefonische Terminvereinbarung
+            {t("contact.telephoneBooking")}
           </td>
         </tr>
-        <TableListingRow label="Mo bis Mi">14:00 bis 15:00 Uhr</TableListingRow>
-        <TableListingRow label="Fr">08:00 bis 10:00 Uhr</TableListingRow>
+        <TableListingRow label={t("contact.moMiLabel")}>
+          {t("contact.moMiValue")}
+        </TableListingRow>
+        <TableListingRow label={t("contact.frLabel")}>
+          {t("contact.frValue")}
+        </TableListingRow>
       </TableListing>
     </InfoSection>
   );
 }
 
 function ContactDataSection(props: DepartmentInfoProps) {
+  const { t } = useTranslation(["travelMedicine/landing"]);
+
   return (
     <InfoSection icon={<ChatBubbleOutlineOutlined />}>
-      <InfoSectionTitle>Kontakt</InfoSectionTitle>
-      <Typography>Telefon: {props.department.phoneNumber}</Typography>
+      <InfoSectionTitle>{t("contact.contact")}</InfoSectionTitle>
+      <Typography>
+        {t("contact.phoneNumber", {
+          phoneNumber: props.department.phoneNumber,
+        })}
+      </Typography>
       <Typography display="inline">
-        E-Mail:{`\u00A0`}
+        {t("contact.eMail")}
+        {`\u00A0`}
         <ExternalLink href={`mailto:${props.department.email}`}>
           {props.department.email}
         </ExternalLink>

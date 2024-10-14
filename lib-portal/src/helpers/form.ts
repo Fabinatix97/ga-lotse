@@ -8,7 +8,7 @@ import { isDefined, mapToObj } from "remeda";
 import { SelectOption } from "../components/formFields/SelectOptions";
 import { OptionalFieldValue } from "../types/form";
 
-import { toUtcDate } from "./dateTime";
+import { toDateString, toUtcDate } from "./dateTime";
 import { isEmptyString, isNonEmptyString } from "./guards";
 
 export function createFieldNameMapper<T = Record<string, unknown>>(
@@ -56,6 +56,10 @@ export function mapOptionalDate(
   value: OptionalFieldValue<string>,
 ): Date | undefined {
   return value === "" ? undefined : toUtcDate(value);
+}
+
+export function parseOptionalDate(date: Date | undefined) {
+  return isDefined(date) ? toDateString(date) : "";
 }
 
 export function mapNullableValue<T>(value: T | null): T | undefined {

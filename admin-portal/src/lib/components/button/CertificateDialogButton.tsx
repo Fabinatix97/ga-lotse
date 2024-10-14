@@ -49,26 +49,30 @@ export function CertificateDialogButton({
                 </Typography>
               </ListItemContent>
             </ListItem>
-            <ListItem>
-              <ListItemContent>
-                <Typography level="title-md" color="neutral">
-                  {t("certificate.signature")}
-                </Typography>
-                <Typography level="body-md" sx={{ wordBreak: "break-word" }}>
-                  {value.signature}
-                </Typography>
-              </ListItemContent>
-            </ListItem>
-            <ListItem>
-              <ListItemContent>
-                <Typography level="title-md" color="neutral">
-                  {t("certificate.signatory")}
-                </Typography>
-                <Typography level="body-md" component="pre">
-                  {value.signatory}
-                </Typography>
-              </ListItemContent>
-            </ListItem>
+            {value.signature && (
+              <ListItem>
+                <ListItemContent>
+                  <Typography level="title-md" color="neutral">
+                    {t("certificate.signature")}
+                  </Typography>
+                  <Typography level="body-md" sx={{ wordBreak: "break-word" }}>
+                    {value.signature}
+                  </Typography>
+                </ListItemContent>
+              </ListItem>
+            )}
+            {value.signatory && (
+              <ListItem>
+                <ListItemContent>
+                  <Typography level="title-md" color="neutral">
+                    {t("certificate.signatory")}
+                  </Typography>
+                  <Typography level="body-md" component="pre">
+                    {value.signatory}
+                  </Typography>
+                </ListItemContent>
+              </ListItem>
+            )}
           </List>
         </ModalDialog>
       </Modal>

@@ -26,7 +26,13 @@ export const archiveAdminTableColumns = [
   columnHelper.accessor("exportedAt", {
     id: ApiGetRelevantArchivableProceduresSortBy.ExportedAt,
     header: "Zuletzt exportiert",
-    cell: (props) => formatDateTime(props.getValue()),
+    cell: (props) => {
+      const exportedAt = props.getValue();
+      if (exportedAt === undefined) {
+        return "offen";
+      }
+      return formatDateTime(exportedAt);
+    },
     meta: {
       width: "260px",
     },

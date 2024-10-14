@@ -1705,6 +1705,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     ConcreteFileDto:
       type: object
       allOf:

@@ -6,9 +6,10 @@
 package de.eshg.statistics.persistence.entity;
 
 public enum AggregationResultPendingState {
+  TABLE_ROWS_REMOVAL,
   DATA_AGGREGATION,
   MIN_MAX_DETERMINATION,
   EVALUATION_CONDUCTION,
   COPY_ONGOING,
-  DIAGRAM_CREATION,
+  DIAGRAM_CREATION
 }

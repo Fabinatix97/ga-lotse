@@ -6,7 +6,26 @@
 import { ApiSchoolEntryCountryCode } from "@eshg/citizen-portal-api/schoolEntry";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
-export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
+const CountryCodesWithoutGeneralGroups = Object.values(
+  ApiSchoolEntryCountryCode,
+).filter(
+  (code) =>
+    code !== ApiSchoolEntryCountryCode.G1 &&
+    code !== ApiSchoolEntryCountryCode.G2 &&
+    code !== ApiSchoolEntryCountryCode.G3 &&
+    code !== ApiSchoolEntryCountryCode.G4 &&
+    code !== ApiSchoolEntryCountryCode.G5 &&
+    code !== ApiSchoolEntryCountryCode.G6 &&
+    code !== ApiSchoolEntryCountryCode.G7 &&
+    code !== ApiSchoolEntryCountryCode.G8 &&
+    code !== ApiSchoolEntryCountryCode.G9,
+);
+
+type CountryCodesWithoutGeneralGroups =
+  (typeof CountryCodesWithoutGeneralGroups)[number];
+
+export const COUNTRY_CODE_VALUES: EnumMap<CountryCodesWithoutGeneralGroups> = {
+  [ApiSchoolEntryCountryCode.Deu]: "Deutschland",
   [ApiSchoolEntryCountryCode.Afg]: "Afghanistan",
   [ApiSchoolEntryCountryCode.Egy]: "Ägypten",
   [ApiSchoolEntryCountryCode.Alb]: "Albanien",
@@ -45,7 +64,6 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Cor]: "Costa Rica",
   [ApiSchoolEntryCountryCode.Civ]: "Côte d'Ivoire",
   [ApiSchoolEntryCountryCode.Dan]: "Dänemark",
-  [ApiSchoolEntryCountryCode.Deu]: "Deutschland",
   [ApiSchoolEntryCountryCode.Doa]: "Dominica",
   [ApiSchoolEntryCountryCode.Dom]: "Dominikanische Republik",
   [ApiSchoolEntryCountryCode.Dsc]: "Dschibuti",
@@ -174,12 +192,10 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Skn]: "Slowakei",
   [ApiSchoolEntryCountryCode.Slo]: "Slowenien",
   [ApiSchoolEntryCountryCode.Som]: "Somalia",
-  [ApiSchoolEntryCountryCode.Son]: "sonstige Staaten",
   [ApiSchoolEntryCountryCode.Spa]: "Spanien",
   [ApiSchoolEntryCountryCode.Cey]: "Sri Lanka",
   [ApiSchoolEntryCountryCode.Stk]: "St. Kitts und Nevis",
   [ApiSchoolEntryCountryCode.Vct]: "St. Vincent und die Grenadinen",
-  [ApiSchoolEntryCountryCode.Sta]: "staatenlos",
   [ApiSchoolEntryCountryCode.Sar]: "Südafrika",
   [ApiSchoolEntryCountryCode.Sam]: "Südamerika",
   [ApiSchoolEntryCountryCode.Sud]: "Sudan",
@@ -203,7 +219,6 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Tuv]: "Tuvalu",
   [ApiSchoolEntryCountryCode.Uga]: "Uganda",
   [ApiSchoolEntryCountryCode.Ukr]: "Ukraine",
-  [ApiSchoolEntryCountryCode.Uuu]: "Unbekannt",
   [ApiSchoolEntryCountryCode.Ung]: "Ungarn",
   [ApiSchoolEntryCountryCode.Uru]: "Uruguay",
   [ApiSchoolEntryCountryCode.Usa]: "USA",
@@ -216,4 +231,7 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Wru]: "Belarus",
   [ApiSchoolEntryCountryCode.Sca]: "Zentralafrikanische Republik",
   [ApiSchoolEntryCountryCode.Zyp]: "Zypern",
+  [ApiSchoolEntryCountryCode.Uuu]: "Unbekannt",
+  [ApiSchoolEntryCountryCode.Son]: "sonstige Staaten",
+  [ApiSchoolEntryCountryCode.Sta]: "staatenlos",
 };

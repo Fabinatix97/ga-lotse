@@ -37,6 +37,7 @@ export function SelectContactField(props: SelectContactFieldProps) {
       onInputChange={(_, newInputValue) => setSearchString(newInputValue)}
       loading={query.isLoading}
       onValueChanged={props.onChange}
+      disableFiltering
     />
   );
 }

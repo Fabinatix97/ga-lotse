@@ -15,7 +15,13 @@ const StyledFormControl = styled(FormControl)({
 });
 
 export function HorizontalFieldLabelEnd(props: BaseFieldProps) {
-  const { label, helperText, children, ...formControlProps } = props;
+  const {
+    label,
+    helperText,
+    children,
+    fieldDecorator: _,
+    ...formControlProps
+  } = props;
 
   return (
     <StyledFormControl orientation="horizontal" {...formControlProps}>

@@ -13,19 +13,23 @@ import {
 } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { MobileBreakpoint } from "@/lib/shared/breakpoints";
 
-interface ContentSheetProps extends Pick<SheetProps, "sx">, RequiresChildren {}
+interface ContentSheetProps extends Pick<SheetProps, "sx">, RequiresChildren {
+  "data-testid"?: string;
+}
 
 export function ContentSheet(props: ContentSheetProps) {
   return (
     <Sheet
       component="section"
       sx={{
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down(MobileBreakpoint.Down)]: {
           borderRadius: 0,
         },
         ...props.sx,
       }}
+      data-testid={props["data-testid"]}
     >
       <Stack gap={3}>{props.children}</Stack>
     </Sheet>

@@ -6,10 +6,10 @@
 package de.eshg.base.keycloak;
 
 import de.eshg.lib.keycloak.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +19,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @DependsOn(EmployeeKeycloakProvisioning.BEAN_NAME)
-@ConditionalOnProperty(value = "eshg.keycloak.provision-test-users")
+@ConditionalOnTestUserProvisioningEnabled
 public class EmployeeKeycloakTestProvisioning extends KeycloakTestProvisioning {
 
   public EmployeeKeycloakTestProvisioning(
       EmployeeKeycloakTestClient employeeKeycloakTestClient,
-      KeycloakProperties keycloakProperties) {
-    super(employeeKeycloakTestClient, keycloakProperties);
+      KeycloakProperties keycloakProperties,
+      EnvironmentConfig environmentConfig) {
+    super(employeeKeycloakTestClient, keycloakProperties, environmentConfig);
   }
 
   @Override

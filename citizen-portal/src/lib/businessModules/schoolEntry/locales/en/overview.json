@@ -7,7 +7,7 @@
     "location": "The school enrollment examination takes place at the health department at {{address}}. Please report to the reception at the entrance and present the invitation letter."
   },
   "place": {
-    "title": "Where does the school enrollment examination take place?"
+    "title": "Who is responsible for the school enrollment examination?"
   },
   "address": {
     "title": "Address"

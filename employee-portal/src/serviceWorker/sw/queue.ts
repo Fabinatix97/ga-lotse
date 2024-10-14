@@ -50,7 +50,7 @@ queueChannel.onmessage = (event: MessageEvent) => {
       },
     );
   } else if (event.data === SYNC) {
-    onSync({ queue }).catch((reason) => {
+    synchronizedOnSync({ queue }).catch((reason) => {
       throw reason;
     });
   }
@@ -89,9 +89,23 @@ async function onSync({ queue }: { queue: Queue }) {
   syncChannel.postMessage(REPLAY_DONE);
 }
 
+let lock = Promise.resolve();
+async function synchronizedOnSync(onSyncCallbackOptions: { queue: Queue }) {
+  await lock;
+  lock = new Promise((resolve) => {
+    onSync(onSyncCallbackOptions).then(
+      () => resolve(),
+      (reason) => {
+        resolve();
+        throw reason;
+      },
+    );
+  });
+}
+
 const queue = new Queue("inspection-request-queue", {
   maxRetentionTime: CACHE_RETENTION_IN_MINUTES,
-  onSync,
+  onSync: synchronizedOnSync,
 });
 
 function handleHttpError(

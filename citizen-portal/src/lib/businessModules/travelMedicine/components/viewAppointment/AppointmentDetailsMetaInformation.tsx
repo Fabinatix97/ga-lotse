@@ -56,14 +56,19 @@ export function AppointmentDetailsMetaInformation(
       </InfoSection>
       <InfoSection icon={<DateRangeOutlined />}>
         <InfoSectionTitle data-testid={"appointment-date"}>
-          {formatDate(props.appointmentDetails.summaryDto.start)}
+          {formatDate(
+            props.appointmentDetails.summaryDto.start ??
+              props.appointmentDetails.summaryDto.earliestDate,
+          )}
         </InfoSectionTitle>
       </InfoSection>
       <InfoSection icon={<WatchLaterOutlined />}>
         <InfoSectionTitle data-testid={"appointment-time"}>
-          {t("start", {
-            time: formatTime(props.appointmentDetails.summaryDto.start),
-          })}
+          {props.appointmentDetails.summaryDto.start !== undefined
+            ? t("start", {
+                time: formatTime(props.appointmentDetails.summaryDto.start),
+              })
+            : "Noch nicht gebucht"}
         </InfoSectionTitle>
       </InfoSection>
       <InfoSection icon={<VaccinesOutlined />}>
@@ -73,14 +78,16 @@ export function AppointmentDetailsMetaInformation(
             ? t("appointmentType.consultation")
             : t("appointmentType.vaccination")}
         </InfoSectionTitle>
-        <Typography data-testid={"appointment-duration"}>
-          {t("duration", {
-            appointmentDuration: durationBetweenDatesInMinutes(
-              props.appointmentDetails.summaryDto.start!,
-              props.appointmentDetails.summaryDto.end!,
-            ),
-          })}
-        </Typography>
+        {props.appointmentDetails.summaryDto.start && (
+          <Typography data-testid={"appointment-duration"}>
+            {t("duration", {
+              appointmentDuration: durationBetweenDatesInMinutes(
+                props.appointmentDetails.summaryDto.start,
+                props.appointmentDetails.summaryDto.end!,
+              ),
+            })}
+          </Typography>
+        )}
       </InfoSection>
       <InfoSection icon={<FmdGoodOutlined />}>
         <InfoSectionTitle data-testid={"department-name"}>

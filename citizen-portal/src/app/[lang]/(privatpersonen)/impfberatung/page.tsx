@@ -13,6 +13,7 @@ import { LandingpageContent } from "@/lib/businessModules/travelMedicine/compone
 import { LandingpageSidePanel } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageSidePanel";
 import { VaccineOverviewSection } from "@/lib/businessModules/travelMedicine/components/landing/VaccineOverviewSection";
 import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
+import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import {
   OneColumnGrid,
@@ -21,6 +22,7 @@ import {
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenTravelMedicineEntryPage() {
+  const { t } = useTranslation(["travelMedicine/landing"]);
   const citizenPortalProcedureEnabled = useIsNewFeatureEnabled(
     ApiTravelMedicineFeature.CitizenPortalProcedure,
   );
@@ -29,7 +31,7 @@ export default function CitizenTravelMedicineEntryPage() {
   return (
     <PageLayout banner="private">
       <PageContent>
-        <PageTitle>Reisemedizinische Impfberatung</PageTitle>
+        <PageTitle>{t("title")}</PageTitle>
         {isMobile ? (
           <OneColumnGrid
             contentTop={citizenPortalProcedureEnabled && <AppointmentSection />}

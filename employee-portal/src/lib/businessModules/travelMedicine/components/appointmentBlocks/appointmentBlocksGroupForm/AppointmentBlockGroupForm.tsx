@@ -6,6 +6,7 @@
 import { ApiUser } from "@eshg/employee-portal-api/base";
 import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
@@ -26,6 +27,8 @@ import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 import { validateAppointmentBlock } from "./validateAppointmentBlock";
+
+const DEFAULT_PARALLEL_EXAMINATIONS = 1;
 
 function validateForm(values: AppointmentBlockGroupValues) {
   const errors: FormikErrors<AppointmentBlockGroupValues> = {};
@@ -57,7 +60,9 @@ function hasAtLeastOneAppointmentInGroup(values: AppointmentBlockGroupValues) {
     calculateAppointmentCount({
       ...values,
       appointmentDurations: values.allAppointmentTypes,
-      parallelExaminations: (values.parallelExaminations as number) ?? 1,
+      parallelExaminations: isEmptyString(values.parallelExaminations)
+        ? DEFAULT_PARALLEL_EXAMINATIONS
+        : Math.max(values.parallelExaminations, DEFAULT_PARALLEL_EXAMINATIONS),
       skipCalculatingOfBlocks:
         validateForm(values).appointmentBlocks != undefined,
     }) > 0
@@ -118,7 +123,6 @@ export function AppointmentBlockGroupForm(
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
               showParallelExaminations
-              showAppointmentBlockFieldArrayWithDays
             />
           </Stack>
           <Divider />
@@ -138,7 +142,12 @@ export function AppointmentBlockGroupForm(
                 appointments={values}
                 appointmentDurations={values.allAppointmentTypes}
                 parallelExaminations={
-                  (values.parallelExaminations as number) ?? 1
+                  isEmptyString(values.parallelExaminations)
+                    ? DEFAULT_PARALLEL_EXAMINATIONS
+                    : Math.max(
+                        values.parallelExaminations,
+                        DEFAULT_PARALLEL_EXAMINATIONS,
+                      )
                 }
                 skipCalculatingOfBlocks={
                   validateForm(values).appointmentBlocks != undefined

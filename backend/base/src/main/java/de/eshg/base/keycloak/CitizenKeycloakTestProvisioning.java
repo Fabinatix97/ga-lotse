@@ -10,18 +10,18 @@ import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 
 import de.eshg.base.keycloak.differ.ComponentRepresentationDiffer;
 import de.eshg.lib.keycloak.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.ws.rs.core.Response;
 import java.util.*;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 @Component
 @DependsOn(CitizenKeycloakProvisioning.BEAN_NAME)
-@ConditionalOnProperty(value = "eshg.keycloak.provision-test-users")
+@ConditionalOnTestUserProvisioningEnabled
 public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
   public static final String MUK_TEST_REALM_NAME = "muk-test";
   public static final String KEY_PROVIDER_TYPE = "org.keycloak.keys.KeyProvider";
@@ -33,8 +33,9 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
   public CitizenKeycloakTestProvisioning(
       CitizenKeycloakTestClient citizenKeycloakTestClient,
       CitizenKeycloakClient citizenKeycloakClient,
-      KeycloakProperties keycloakProperties) {
-    super(citizenKeycloakTestClient, keycloakProperties);
+      KeycloakProperties keycloakProperties,
+      EnvironmentConfig environmentConfig) {
+    super(citizenKeycloakTestClient, keycloakProperties, environmentConfig);
     this.citizenKeycloakClient = citizenKeycloakClient;
     this.mukKeycloakClient = new RealmBoundKeycloakClient(keycloakProperties, MUK_TEST_REALM_NAME);
   }
@@ -106,7 +107,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
   }
 
   private void addTestUserToMukRealm() {
-    new KeycloakTestClient(mukKeycloakClient, keycloakProperties, 16)
+    new KeycloakTestClient(mukKeycloakClient, keycloakProperties, 16, environmentConfig)
         .createOrUpdateUsers(List.of(MukTestUser.values()), this::configureMukUser);
   }
 
@@ -275,6 +276,11 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     @Override
     public boolean isRequired() {
       return false;
+    }
+
+    @Override
+    public List<ValidationRule> validationRules() {
+      return List.of();
     }
   }
 

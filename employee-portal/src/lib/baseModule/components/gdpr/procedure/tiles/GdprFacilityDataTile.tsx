@@ -7,51 +7,54 @@ import { ApiGdprFacility } from "@eshg/employee-portal-api/base";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 
-import { ResponsiveDivider } from "@/lib/baseModule/components/gdpr/procedure/tiles/ResponsiveDivider";
+import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 export function GdprFacilityDataTile({
   identity,
+  columnSx,
 }: {
   identity: ApiGdprFacility;
+  columnSx: SxProps;
 }) {
   return (
     <InfoTile name={"procedure-identity-details"} title={"Antragsteller"}>
-      <Stack direction={{ xxs: "column", md: "row" }} gap={3}>
-        <Stack sx={{ flex: 1 }} gap={1}>
+      <Stack
+        direction={{ xxs: "column", md: "row" }}
+        gap={3}
+        divider={<ResponsiveDivider />}
+      >
+        <DetailsColumn sx={columnSx}>
           <DetailsCell name={"name"} label={"Name"} value={identity.name} />
-        </Stack>
+        </DetailsColumn>
 
-        <ResponsiveDivider />
-
-        <BaseAddressDetails address={identity.address} sx={{ flex: 1 }} />
+        <BaseAddressDetails address={identity.address} sx={columnSx} />
 
         {(isNonEmptyString(identity.emailAddress) ||
           isNonEmptyString(identity.phoneNumber)) && (
-          <>
-            <ResponsiveDivider />
-            <Stack sx={{ flex: 1 }} gap={1}>
-              {isNonEmptyString(identity.emailAddress) && (
-                <DetailsCell
-                  name={"emailAddress"}
-                  label={"E-Mail-Adresse"}
-                  value={
-                    <ExternalLink href={`mailto:${identity.emailAddress}`}>
-                      {identity.emailAddress}
-                    </ExternalLink>
-                  }
-                />
-              )}
+          <DetailsColumn sx={columnSx}>
+            {isNonEmptyString(identity.emailAddress) && (
               <DetailsCell
-                name={"phoneNumber"}
-                label={"Telefonnummer"}
-                value={identity.phoneNumber}
+                name={"emailAddress"}
+                label={"E-Mail-Adresse"}
+                value={
+                  <ExternalLink href={`mailto:${identity.emailAddress}`}>
+                    {identity.emailAddress}
+                  </ExternalLink>
+                }
               />
-            </Stack>
-          </>
+            )}
+            <DetailsCell
+              name={"phoneNumber"}
+              label={"Telefonnummer"}
+              value={identity.phoneNumber}
+            />
+          </DetailsColumn>
         )}
       </Stack>
     </InfoTile>

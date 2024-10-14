@@ -27,7 +27,7 @@ export function useUpdateEvaluation(
       }),
     onSuccess: () => {
       onSuccess();
-      snackbar.confirmation("Auswertung angepasst");
+      snackbar.confirmation("Analyse angepasst");
     },
   });
 

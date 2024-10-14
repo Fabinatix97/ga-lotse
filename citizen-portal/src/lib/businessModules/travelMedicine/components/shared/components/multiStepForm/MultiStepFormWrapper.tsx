@@ -11,6 +11,9 @@ import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { LogoutButton } from "@/lib/businessModules/travelMedicine/components/shared/components/LogoutButton";
+import { LogoutButtonWithText } from "@/lib/businessModules/travelMedicine/components/shared/components/LogoutButtonWithText";
+import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
 export interface MultiStepFormProps
@@ -21,15 +24,17 @@ export interface MultiStepFormProps
     values: FormikValues,
     resetForm: FormikHelpers<FormikValues>,
   ) => Promise<void>;
+  withLogoutButton: boolean;
 }
 
-export function MultiStepFormWrapper(props: MultiStepFormProps) {
+export function MultiStepFormWrapper(props: Readonly<MultiStepFormProps>) {
   return (
     <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
       <Stack gap={2}>
         <MultiStepFormTitle
           title={props.title}
           stepperTitle={props.stepperTitle}
+          withLogoutButton={props.withLogoutButton}
         />
         <FormPlus>{props.children}</FormPlus>
       </Stack>
@@ -43,9 +48,10 @@ interface StepCounterProps {
 
 export interface MultiStepFormTitleProps extends StepCounterProps {
   title: string;
+  withLogoutButton: boolean;
 }
 
-function StepCounter(props: StepCounterProps) {
+function StepCounter(props: Readonly<StepCounterProps>) {
   return (
     <Typography
       level="h4"
@@ -63,10 +69,24 @@ function StepCounter(props: StepCounterProps) {
 export function MultiStepFormTitle({
   title,
   stepperTitle,
-}: MultiStepFormTitleProps) {
+  withLogoutButton,
+}: Readonly<MultiStepFormTitleProps>) {
+  const isMobile = useIsMobile();
+
   return (
-    <PageTitle toolbar={<StepCounter stepperTitle={stepperTitle} />}>
-      {title}
+    <PageTitle
+      toolbar={
+        <>
+          {!isMobile && <StepCounter stepperTitle={stepperTitle} />}
+          {withLogoutButton &&
+            (isMobile ? <LogoutButton /> : <LogoutButtonWithText />)}
+        </>
+      }
+    >
+      <Stack gap={0.5}>
+        {title}
+        {isMobile && <StepCounter stepperTitle={stepperTitle} />}
+      </Stack>
     </PageTitle>
   );
 }

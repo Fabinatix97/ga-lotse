@@ -7,8 +7,8 @@
 
 import {
   ApiAvailableDataSource,
+  ApiEvaluationTemplate,
   ApiGetStatisticsResponse,
-  ApiStatisticsScheme,
 } from "@eshg/employee-portal-api/statistics";
 import { useState } from "react";
 
@@ -23,14 +23,14 @@ export interface StatisticsOverviewProps {
   statisticsResponse: ApiGetStatisticsResponse;
   isFetchingStatistics: boolean;
   dataSources: ApiAvailableDataSource[];
-  schemes: ApiStatisticsScheme[];
+  templates: ApiEvaluationTemplate[];
 }
 
 export function StatisticsOverview({
   statisticsResponse,
   isFetchingStatistics,
   dataSources,
-  schemes,
+  templates,
 }: StatisticsOverviewProps) {
   const [openSidebar, setOpenSidebar] = useState<OpenSidebarKind>("NONE");
 
@@ -38,7 +38,7 @@ export function StatisticsOverview({
     <>
       <CreateStatisticSidebar
         apiDataSources={dataSources}
-        apiSchemes={schemes}
+        apiTemplates={templates}
         openSidebar={openSidebar}
         setOpenSidebar={setOpenSidebar}
       />

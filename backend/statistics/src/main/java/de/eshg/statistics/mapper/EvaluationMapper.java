@@ -280,7 +280,7 @@ public class EvaluationMapper {
         mapToChartConfigurationDto(chartConfiguration, true),
         evaluation.getDiagrams().stream()
             .sorted(Comparator.comparing(BaseEntity::getId))
-            .map(EvaluationMapper::mapToApi)
+            .map(diagram -> EvaluationMapper.mapToApi(diagram, chartConfiguration))
             .toList());
   }
 
@@ -392,12 +392,20 @@ public class EvaluationMapper {
   }
 
   public static DiagramDto mapToApi(Diagram diagram) {
+    ChartConfiguration chartConfiguration =
+        Hibernate.unproxy(
+            diagram.getEvaluation().getChartConfiguration(), ChartConfiguration.class);
+    return mapToApi(diagram, chartConfiguration);
+  }
+
+  private static DiagramDto mapToApi(Diagram diagram, ChartConfiguration chartConfiguration) {
     DiagramData diagramData = Hibernate.unproxy(diagram.getDiagramData(), DiagramData.class);
     DiagramDataDto diagramDataDto =
         switch (diagramData) {
           case BarChartData barChartData -> mapToApi(barChartData);
           case ChoroplethMapData choroplethMapData -> mapToApi(choroplethMapData);
-          case HistogramChartData histogramChartData -> mapToApi(histogramChartData);
+          case HistogramChartData histogramChartData ->
+              mapToApi(histogramChartData, chartConfiguration);
           case LineOrScatterChartData lineOrScatterChartData -> mapToApi(lineOrScatterChartData);
           case PieChartData pieChartData -> mapToApi(pieChartData);
           default -> throw new BadRequestException("Unexpected class");
@@ -432,12 +440,10 @@ public class EvaluationMapper {
     return new KeyToValueDto(keyToValue.getKey(), keyToValue.getValue());
   }
 
-  private static DiagramDataDto mapToApi(HistogramChartData histogramChartData) {
+  private static DiagramDataDto mapToApi(
+      HistogramChartData histogramChartData, ChartConfiguration chartConfiguration) {
     boolean isSimple =
-        ((HistogramChartConfiguration)
-                    histogramChartData.getDiagram().getEvaluation().getChartConfiguration())
-                .getSecondaryAttributeSelection()
-            == null;
+        ((HistogramChartConfiguration) chartConfiguration).getSecondaryAttributeSelection() == null;
     if (isSimple) {
       return new HistogramChartDataSimpleDto(
           histogramChartData.getHistogramGroupDatas().stream()

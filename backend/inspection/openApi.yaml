@@ -3634,6 +3634,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     CLAudioContext:
       type: object
       allOf:

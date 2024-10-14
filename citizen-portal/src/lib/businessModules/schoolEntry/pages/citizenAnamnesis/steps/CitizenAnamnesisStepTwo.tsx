@@ -17,6 +17,7 @@ import { LocalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages
 import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/QuarterWidthGrid";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
@@ -63,7 +64,12 @@ export function CitizenAnamnesisStepTwo({
                   const canRemove = array.length > 1;
                   return (
                     <Fragment key={index}>
-                      <Grid xxs={canRemove ? 11 : 12} lg={7}>
+                      <Grid
+                        {...byBreakpoint({
+                          mobile: canRemove ? 11 : 12,
+                          desktop: 7,
+                        })}
+                      >
                         <YearField
                           min={1900}
                           max={new Date().getFullYear()}
@@ -103,7 +109,7 @@ export function CitizenAnamnesisStepTwo({
       </ToggleableSection>
       <Typography level="h4">{t("additionalInfo.dayCareAndSchool")}</Typography>
       <Grid container sx={{ flexGrow: 1 }}>
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <Typography level="body-sm">
             {t("additionalInfo.dayCareSince")}
           </Typography>
@@ -112,7 +118,7 @@ export function CitizenAnamnesisStepTwo({
             date={values.daycareAndSchoolInfo.inDaycareSince}
           />
         </Grid>
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <InputField
             name={daycareAndSchoolInfo("daycareName")}
             label={
@@ -172,13 +178,13 @@ export function CitizenAnamnesisStepTwo({
         {t("additionalInfo.clubSportAndOther")}
       </Typography>
       <Grid container sx={{ flexGrow: 1 }} spacing={2}>
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <InputField
             name={interestsAndSportsInfo("clubSport")}
             label={t("additionalInfo.clubSport")}
           />
         </Grid>
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <InputField
             name={interestsAndSportsInfo("otherInterests")}
             label={t("additionalInfo.otherInterests")}

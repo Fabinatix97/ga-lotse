@@ -36,5 +36,6 @@ public record ProcedureDetailsDto(
     @NotNull boolean isDeletable,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt,
-    @Valid WaitingRoomDto waitingRoom)
+    @Valid WaitingRoomDto waitingRoom,
+    Instant schoolInfoLetterCreatedAt)
     implements ProcedureBaseDto {}

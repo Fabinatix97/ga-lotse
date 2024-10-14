@@ -93,6 +93,7 @@ export function FacilityWebSearchResultsTable(
   return (
     <>
       <TablePage
+        fullHeight
         controls={
           <TableControls
             tableControl={tableControl}

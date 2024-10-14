@@ -9,7 +9,8 @@ import de.eshg.schoolentry.business.model.ImportChildData;
 import java.util.UUID;
 import org.apache.poi.ss.usermodel.Row;
 
-public abstract sealed class RowValues permits CitizenListRowValues, SchoolListRowValues {
+public abstract sealed class RowValues
+    permits CitizenListRowValues, SchoolListRowValues, PastProcedureListRowValues {
   private Row row;
   private ImportStatus status;
   private UUID procedureId;

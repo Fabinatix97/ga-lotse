@@ -10,6 +10,7 @@ import {
 
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { routes as measlesProtectionRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
+import { routes as medicalRegistryRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { routes as schoolEntryRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { routes as stiProtectionRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { routes as travelMedicineRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -37,6 +38,8 @@ export function resolveProcedureDetailsRoute({
       return measlesProtectionRoutes.procedures.details(procedureId).index;
     case "STI_PROTECTION":
       return stiProtectionRoutes.procedures.byId(procedureId).index;
+    case "MEDICAL_REGISTRY":
+      return medicalRegistryRoutes.procedures.byId(procedureId).index;
   }
 }
 
@@ -57,6 +60,8 @@ export function resolveProcedureProgressEntriesRoute(
         .progressEntries.index;
     case "STI_PROTECTION":
       return stiProtectionRoutes.procedures.byId(procedureId).index;
+    case "MEDICAL_REGISTRY":
+      return medicalRegistryRoutes.procedures.byId(procedureId).index;
   }
 }
 

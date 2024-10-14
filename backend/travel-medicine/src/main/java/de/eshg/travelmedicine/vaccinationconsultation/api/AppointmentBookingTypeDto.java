@@ -11,5 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum AppointmentBookingTypeDto {
   USER_DEFINED,
   APPOINTMENT_BLOCK,
-  SELF_BOOKING
+  SELF_BOOKING,
+  CANCELLED
 }

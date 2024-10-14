@@ -34,3 +34,19 @@ export function useGetProcedureStepAppointmentDetails(
       ),
   });
 }
+
+export function useGetMedicalHistory(
+  procedureId: string,
+  procedureStepId: string,
+) {
+  const citizenAuthApi = useCitizenAuthApi();
+  return useSuspenseQuery({
+    queryKey: citizenAuthApiQueryKey([
+      "getMedicalHistory",
+      procedureId,
+      procedureStepId,
+    ]),
+    queryFn: () =>
+      citizenAuthApi.getMedicalHistory(procedureId, procedureStepId),
+  });
+}

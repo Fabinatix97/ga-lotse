@@ -17,6 +17,7 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.persistence.entity.Contact;
 import de.eshg.base.contact.persistence.repository.ContactRepository;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
 import java.util.Arrays;
@@ -35,8 +36,9 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
       Clock clock,
       Environment environment,
       ContactController contactController,
-      ContactRepository contactRepository) {
-    super(clock, environment, getClassNameAsPropertyKey(Contact.class));
+      ContactRepository contactRepository,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, getClassNameAsPropertyKey(Contact.class), environmentConfig);
     this.contactController = contactController;
     this.contactRepository = contactRepository;
   }

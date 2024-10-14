@@ -11,6 +11,7 @@ import {
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
 import {
@@ -18,7 +19,7 @@ import {
   useDeleteOtherServiceTemplate,
   useUpdateOtherServiceTemplate,
 } from "@/lib/businessModules/travelMedicine/api/mutations/otherServiceTemplates";
-import { useGetAllOtherServiceTemplates } from "@/lib/businessModules/travelMedicine/api/queries/otherServiceTemplates";
+import { useGetAllOtherServiceTemplatesQuery } from "@/lib/businessModules/travelMedicine/api/queries/otherServiceTemplates";
 import { OtherServiceTable } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/OtherServiceTable";
 import { OtherServiceTemplateSidebarStepForm } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/OtherServiceTemplateSidebarStepForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
@@ -36,7 +37,9 @@ const INITIAL_VALUES: OtherServiceTemplateFormValues = {
 };
 
 export function OtherServiceTemplateForm() {
-  const allOtherServiceTemplates = useGetAllOtherServiceTemplates();
+  const [{ data: allOtherServiceTemplates }] = useSuspenseQueries({
+    queries: [useGetAllOtherServiceTemplatesQuery()],
+  });
   const snackbar = useSnackbar();
   const [sideBarOpen, setSideBarOpen] = useState(false);
   const [otherServiceFormValues, setOtherServiceFormValues] =
@@ -123,7 +126,7 @@ export function OtherServiceTemplateForm() {
   return (
     <>
       <OtherServiceTable
-        data={allOtherServiceTemplates.data}
+        data={allOtherServiceTemplates}
         handleAddEntry={handleAddOtherServiceTemplate}
         handleDeleteEntry={deleteOtherServiceTemplate}
         openCloseVaccinationStepSidebar={(

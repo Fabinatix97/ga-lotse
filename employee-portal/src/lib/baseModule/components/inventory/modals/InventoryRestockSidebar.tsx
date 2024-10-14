@@ -4,24 +4,29 @@
  */
 
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
-import { Ref } from "react";
 
 import { useRestockInventoryItem } from "@/lib/baseModule/api/mutations/inventory";
 import { InventoryRestockForm } from "@/lib/baseModule/components/inventory/forms/InventoryRestockForm";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface InventoryRestockSidebarProps {
-  id: string;
-  minCount: number;
-  onClose: () => void;
-  onSuccess: () => void;
-  sidebarFormRef: Ref<SidebarFormHandle>;
+export function useInventoryRestockSidebar(): UseSidebarWithFormRefResult<InventoryRestockSidebarProps> {
+  return useSidebarWithFormRef({
+    component: InventoryRestockSidebar,
+  });
 }
 
-export function InventoryRestockSidebar({
-  sidebarFormRef,
+interface InventoryRestockSidebarProps extends SidebarWithFormRefProps {
+  id: string;
+  minCount: number;
+}
+
+function InventoryRestockSidebar({
+  formRef,
   onClose,
-  onSuccess,
   id,
   minCount,
 }: InventoryRestockSidebarProps) {
@@ -30,12 +35,12 @@ export function InventoryRestockSidebar({
   return (
     <InventoryRestockForm
       minCount={minCount}
-      formRef={sidebarFormRef}
+      formRef={formRef}
       onClose={onClose}
       onSubmit={async (values) => {
         await restockInventory
           .mutateAsync(mapRequiredValue(values.count), {
-            onSuccess: onSuccess,
+            onSuccess: () => onClose(true),
           })
           .catch();
       }}

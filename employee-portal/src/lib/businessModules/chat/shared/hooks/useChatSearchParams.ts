@@ -22,6 +22,10 @@ export function useChatSearchParams() {
           name: chatSearchParamNames.roomId,
           value: roomId,
         },
+        {
+          name: chatSearchParamNames.userId,
+          value: undefined,
+        },
       ]);
     },
     [replaceSearchParams],
@@ -31,7 +35,7 @@ export function useChatSearchParams() {
     replaceSearchParams([
       {
         name: chatSearchParamNames.roomId,
-        value: "",
+        value: undefined,
       },
     ]);
   }, [replaceSearchParams]);
@@ -52,7 +56,7 @@ export function useChatSearchParams() {
     replaceSearchParams([
       {
         name: chatSearchParamNames.userId,
-        value: "",
+        value: undefined,
       },
     ]);
   }, [replaceSearchParams]);
@@ -61,11 +65,11 @@ export function useChatSearchParams() {
     replaceSearchParams([
       {
         name: chatSearchParamNames.userId,
-        value: "",
+        value: undefined,
       },
       {
         name: chatSearchParamNames.roomId,
-        value: "",
+        value: undefined,
       },
     ]);
   }, [replaceSearchParams]);

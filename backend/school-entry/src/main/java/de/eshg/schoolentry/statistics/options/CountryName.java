@@ -214,7 +214,16 @@ public enum CountryName {
   VIE("Vietnam"),
   WRU("Belarus"),
   SCA("Zentralafrikanische Republik"),
-  ZYP("Zypern");
+  ZYP("Zypern"),
+  G1("Ländergruppe 1"),
+  G2("Ländergruppe 2"),
+  G3("Ländergruppe 3"),
+  G4("Ländergruppe 4"),
+  G5("Ländergruppe 5"),
+  G6("Ländergruppe 6"),
+  G7("Ländergruppe 7"),
+  G8("Ländergruppe 8"),
+  G9("Ländergruppe 9");
 
   private final String name;
 

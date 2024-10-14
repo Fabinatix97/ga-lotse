@@ -20,11 +20,17 @@ export const auditLogAccessibleColumns = [
     header: "Erstellt am",
     cell: (props) => formatDate(props.getValue()),
     enableSorting: false,
+    meta: {
+      canNavigate: { parentRow: true },
+    },
   }),
   columnHelper.accessor("auditLog.source", {
     header: "Modul",
     cell: (props) => auditLogSourceNames[props.getValue()],
     enableSorting: false,
+    meta: {
+      canNavigate: { parentRow: true },
+    },
   }),
   columnHelper.accessor("expiresAt", {
     header: "Status",
@@ -36,6 +42,9 @@ export const auditLogAccessibleColumns = [
       );
     },
     enableSorting: false,
+    meta: {
+      canNavigate: { parentRow: true },
+    },
   }),
   columnHelper.display({
     header: "Aktionen",
@@ -58,6 +67,7 @@ export const auditLogAccessibleColumns = [
     },
     meta: {
       width: 196,
+      canNavigate: { parentRow: true },
     },
   }),
 ];

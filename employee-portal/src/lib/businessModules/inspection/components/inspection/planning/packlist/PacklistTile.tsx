@@ -17,7 +17,10 @@ import { useDebouncedCallback } from "use-debounce";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import { useCheckPacklistElement } from "@/lib/businessModules/inspection/api/mutations/packlist";
 import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useGetPacklists } from "@/lib/businessModules/inspection/api/queries/packlist";
+import {
+  getPacklistsQueryKey,
+  useGetPacklists,
+} from "@/lib/businessModules/inspection/api/queries/packlist";
 import { Packlist } from "@/lib/businessModules/inspection/components/inspection/planning/packlist/Packlist";
 import { PacklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/packlist/PacklistSelectSidebar";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
@@ -120,6 +123,13 @@ export function PacklistTile({
     500,
   );
 
+  async function handleEditNotesWithDebounceAndCancel(notes: string) {
+    await handleEditNotesWithDebounce(notes);
+    await queryClient.cancelQueries({
+      queryKey: getPacklistsQueryKey(inspection.externalId),
+    });
+  }
+
   return (
     <InfoTile
       name="packlistDefinition"
@@ -164,7 +174,9 @@ export function PacklistTile({
         name={"name"}
         readOnly={readonly}
         defaultValue={inspection.notes}
-        onChange={(event) => handleEditNotesWithDebounce(event.target.value)}
+        onChange={(event) =>
+          handleEditNotesWithDebounceAndCancel(event.target.value)
+        }
       />
 
       <Stack

@@ -7,6 +7,6 @@ import { TimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 
 export interface SaveStatisticStepFormModel {
   statisticName: string;
-  schemeName: string;
+  templateName: string;
   timeSpan: TimeSpan;
 }

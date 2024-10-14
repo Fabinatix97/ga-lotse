@@ -25,11 +25,21 @@ public class UserDefinedAppointment extends GloballyUniqueEntityBase {
   @Column(nullable = false)
   private Instant appointmentEnd;
 
+  @Column(nullable = false)
+  private boolean cancelled;
+
   public UserDefinedAppointment() {}
 
   public UserDefinedAppointment(Instant appointmentStart, Instant appointmentEnd) {
     this.appointmentStart = appointmentStart;
     this.appointmentEnd = appointmentEnd;
+  }
+
+  public UserDefinedAppointment(
+      Instant appointmentStart, Instant appointmentEnd, boolean isCancelled) {
+    this.appointmentStart = appointmentStart;
+    this.appointmentEnd = appointmentEnd;
+    this.cancelled = isCancelled;
   }
 
   public Instant getAppointmentStart() {
@@ -46,5 +56,13 @@ public class UserDefinedAppointment extends GloballyUniqueEntityBase {
 
   public void setAppointmentEnd(Instant appointmentEnd) {
     this.appointmentEnd = appointmentEnd;
+  }
+
+  public boolean isCancelled() {
+    return cancelled;
+  }
+
+  public void setCancelled(boolean cancelled) {
+    this.cancelled = cancelled;
   }
 }

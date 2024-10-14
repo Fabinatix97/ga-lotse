@@ -16,4 +16,5 @@ public record ProcedureFilterParameters(
     @Min(1900) Integer schoolYearFilter,
     LocalDate dayOfAppointmentFilter,
     Boolean hasAppointmentFilter,
-    List<UUID> labelsFilter) {}
+    List<UUID> labelsFilter,
+    Boolean isInvitationSentFilter) {}

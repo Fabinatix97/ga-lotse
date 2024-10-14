@@ -8,19 +8,19 @@ import { ReactNode, useState } from "react";
 
 import { BaseModal } from "@/lib/shared/components/BaseModal";
 
-export const NO_CANCEL_LABEL = "__NO_CANCEL_LABEL__";
-
 export interface ConfirmationDialogProps {
   open: boolean;
   onClose: () => void;
   title?: string;
   description?: string;
-  defaultDescriptionEnabled?: boolean;
   children?: ReactNode;
   color?: "primary" | "danger";
   confirmLabel?: string;
   onConfirm: () => Promise<void> | void;
+  onCancel?: () => void;
   cancelLabel?: string;
+  hideDescription?: boolean;
+  hideCancelButton?: boolean;
 }
 
 export function ConfirmationDialog({
@@ -28,31 +28,43 @@ export function ConfirmationDialog({
   onClose,
   title = "Änderung speichern?",
   description = "Möchten Sie die Änderung wirklich speichern?",
-  defaultDescriptionEnabled = true,
   children,
   color = "primary",
   confirmLabel = "Speichern",
   onConfirm,
+  onCancel,
   cancelLabel = "Abbrechen",
+  hideDescription = false,
+  hideCancelButton = false,
 }: ConfirmationDialogProps) {
   const [isConfirming, setIsConfirming] = useState(false);
+
+  function handleCancel(): void {
+    onCancel?.();
+    onClose();
+  }
+
   return (
-    <BaseModal modalTitle={title} color={color} open={open} onClose={onClose}>
+    <BaseModal
+      modalTitle={title}
+      color={color}
+      open={open}
+      onClose={handleCancel}
+    >
       <>
-        {defaultDescriptionEnabled && <Typography>{description}</Typography>}
+        {!hideDescription && <Typography>{description}</Typography>}
         {children}
         <Stack
           direction="row"
           spacing={2}
           sx={{ marginLeft: "auto", paddingTop: 2 }}
         >
-          {cancelLabel !== NO_CANCEL_LABEL && (
+          {!hideCancelButton && (
             <Button
               size="sm"
               variant="outlined"
               color="neutral"
-              onClick={onClose}
-              data-testid="confirmationDialogCancel"
+              onClick={handleCancel}
             >
               {cancelLabel}
             </Button>
@@ -68,7 +80,6 @@ export function ConfirmationDialog({
               setIsConfirming(false);
               onClose();
             }}
-            data-testid="confirmationDialogConfirm"
           >
             {confirmLabel}
           </Button>

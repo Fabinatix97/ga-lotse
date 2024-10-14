@@ -31,6 +31,7 @@ function mapReport(apiReportSeries: ApiReportSeries): SingleReport {
     type: ReportDataType.Single,
     status: apiReportInfo.state,
     description: apiReportSeries.description,
+    userId: apiReportSeries.userId,
   };
 }
 

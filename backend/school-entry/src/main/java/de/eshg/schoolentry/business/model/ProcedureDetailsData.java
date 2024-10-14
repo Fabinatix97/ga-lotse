@@ -38,4 +38,5 @@ public record ProcedureDetailsData(
     boolean isDeletable,
     Instant createdAt,
     Instant modifiedAt,
-    WaitingRoom waitingRoom) {}
+    WaitingRoom waitingRoom,
+    Instant schoolInfoLetterCreatedAt) {}

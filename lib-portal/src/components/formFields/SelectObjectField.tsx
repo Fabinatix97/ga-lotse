@@ -11,6 +11,7 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode, SyntheticEvent } from "react";
+import { identity } from "remeda";
 
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
@@ -32,6 +33,7 @@ export interface SelectObjectFieldProps<
 > extends FieldProps<SelectObjectFieldValue<TValue, TMultiple>> {
   options: TValue[];
   getOptionLabel: (option: TValue) => string;
+  disableFiltering?: boolean;
   multiple?: TMultiple;
   placeholder?: string;
   disabled?: boolean;
@@ -81,10 +83,11 @@ export function SelectObjectField<
           void field.helpers.setValue(value);
           props.onValueChanged?.(value);
         }}
+        filterOptions={props.disableFiltering ? identity() : undefined}
         onBlur={field.input.onBlur}
         multiple={props.multiple}
         placeholder={props.placeholder}
-        disabled={props.disabled ?? disabled}
+        disabled={disabled || props.disabled}
         onInputChange={props.onInputChange}
         loading={props.loading}
         endDecorator={props.loading ? <CircularProgress size="sm" /> : null}

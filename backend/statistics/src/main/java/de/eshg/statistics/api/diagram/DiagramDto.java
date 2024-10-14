@@ -19,5 +19,5 @@ public record DiagramDto(
     @NotBlank String title,
     String description,
     @NotNull int evaluatedDataAmount,
-    @Valid List<TableColumnFilterParameter> filters,
+    @NotNull @Valid List<TableColumnFilterParameter> filters,
     @NotNull @Valid DiagramDataDto diagramData) {}

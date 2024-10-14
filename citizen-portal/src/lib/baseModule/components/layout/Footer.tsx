@@ -5,12 +5,27 @@
 
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Box, Stack, Typography } from "@mui/joy";
+import { Box, Stack, Typography, styled } from "@mui/joy";
 
-import { footerMaxWidthDesktop } from "@/lib/baseModule/components/layout/sizes";
 import { useRoutes } from "@/lib/baseModule/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
+import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
+import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
 import { DepartmentInfoProps } from "@/lib/shared/types";
+
+import { contentMarginMobile } from "./sizes";
+
+const ResponsiveContainer = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(3),
+  paddingBlock: theme.spacing(5),
+  ...responsiveContent(theme, {
+    [MobileBreakpoint.Down]: {
+      gap: theme.spacing(5),
+      paddingBlock: theme.spacing(6),
+      paddingInline: theme.spacing(contentMarginMobile.leftRight),
+    },
+  }),
+}));
 
 interface FooterLinkProps extends RequiresChildren {
   href: string;
@@ -42,38 +57,33 @@ export function Footer(props: DepartmentInfoProps) {
         marginTop: "auto",
       }}
     >
-      <Box
-        sx={{
-          width: footerMaxWidthDesktop,
-          paddingInline: 2,
-          paddingBlock: 5,
-        }}
-      >
-        <Stack sx={{ gap: { xxs: 5, lg: 3 } }}>
-          <Typography level="title-lg" sx={{ color: "white" }}>
-            © {props.department.name} {new Date().getFullYear()}
-          </Typography>
-          <Stack
-            sx={{
-              flexDirection: { lg: "row" },
-              alignItems: "flex-start",
-              gap: { xxs: 3, lg: 5 },
-            }}
-          >
-            <FooterLink href={routes.imprint}>{t("imprint_link")}</FooterLink>
-            <FooterLink href={routes.privacyPolicy}>
-              {t("privacy_policy_link")}
-            </FooterLink>
-            <FooterLink href={routes.accessibility}>
-              {t("accessibility_link")}
-            </FooterLink>
-            <FooterLink href={routes.termsOfUse}>
-              {t("terms_of_use_link")}
-            </FooterLink>
-            <FooterLink href={routes.contact}>{t("contact_link")}</FooterLink>
-          </Stack>
+      <ResponsiveContainer>
+        <Typography level="title-lg" sx={{ color: "white" }}>
+          © {props.department.name} {new Date().getFullYear()}
+        </Typography>
+        <Stack
+          sx={{
+            flexDirection: byBreakpoint({
+              mobile: "column",
+              desktop: "row",
+            }),
+            alignItems: "flex-start",
+            gap: byBreakpoint({ mobile: 3, desktop: 5 }),
+          }}
+        >
+          <FooterLink href={routes.imprint}>{t("imprint_link")}</FooterLink>
+          <FooterLink href={routes.privacyPolicy}>
+            {t("privacy_policy_link")}
+          </FooterLink>
+          <FooterLink href={routes.accessibility}>
+            {t("accessibility_link")}
+          </FooterLink>
+          <FooterLink href={routes.termsOfUse}>
+            {t("terms_of_use_link")}
+          </FooterLink>
+          <FooterLink href={routes.contact}>{t("contact_link")}</FooterLink>
         </Stack>
-      </Box>
+      </ResponsiveContainer>
     </Box>
   );
 }

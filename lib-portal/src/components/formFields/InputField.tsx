@@ -74,7 +74,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
       error={field.error}
       sx={props.sx}
       fieldDecorator={props.fieldDecorator}
-      disabled={props.disabled ?? disabled}
+      disabled={disabled || props.disabled}
     >
       <InputComponent
         type={props.type}

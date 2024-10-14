@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import Box from "@mui/joy/Box";
 import Sheet from "@mui/joy/Sheet";
 import Stack from "@mui/joy/Stack";
@@ -12,10 +13,17 @@ import { isEmpty } from "remeda";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { ReadingReceipt } from "@/lib/businessModules/chat/components/chatPanel/ReadingReceipt";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { Message } from "@/lib/businessModules/chat/shared/types";
-import { formatChatDate } from "@/lib/businessModules/chat/shared/utils";
+import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
+import {
+  MentionedMember,
+  Message,
+} from "@/lib/businessModules/chat/shared/types";
+import {
+  formatChatDate,
+  removeAtFromUsernames,
+} from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatBubbleProps {
   message: Message;
@@ -23,6 +31,7 @@ interface ChatBubbleProps {
   loggedInUserId: string;
   lastReadMessageIndexes: number[];
   index: number;
+  mentions: MentionedMember[];
 }
 
 export function ChatBubble({
@@ -31,16 +40,11 @@ export function ChatBubble({
   loggedInUserId,
   lastReadMessageIndexes = [],
   index,
+  mentions,
 }: Readonly<ChatBubbleProps>) {
-  const { matrixClient } = useChatClientContext();
   const { userSettings } = useChat();
+  const { setInfoPanelView } = useInfoPanelContext();
   const isSent = variant === "sent";
-  const mentionedNames = message.mentions
-    ?.map((mention) => {
-      const user = matrixClient.getUser(mention);
-      return user?.displayName;
-    })
-    .filter((item) => !!item) as string[];
   const hasNoReceipts = isEmpty(lastReadMessageIndexes);
 
   // Messages are sorted from newest to oldest.
@@ -49,6 +53,10 @@ export function ChatBubble({
   const isMessageRead = lastReadMessageIndexes.some(
     (readIndex) => index >= readIndex,
   );
+
+  function handleMentionClick(userId: string) {
+    setInfoPanelView(InfoPanelView.UserInfo, userId);
+  }
 
   return (
     <Stack direction="column" alignItems="flex-start">
@@ -93,14 +101,20 @@ export function ChatBubble({
           }}
         >
           <Typography
+            component="div"
             level="body-md"
             sx={{
               color: isSent ? "background.body" : "text.primary",
               overflowWrap: "break-word",
             }}
           >
-            {mentionedNames
-              ? splitMessageWithNames(message.content, mentionedNames)
+            {mentions.length
+              ? splitMessageWithNames(
+                  message,
+                  mentions,
+                  handleMentionClick,
+                  isSent,
+                )
               : message.content}
           </Typography>
         </Sheet>
@@ -116,32 +130,58 @@ export function ChatBubble({
 }
 
 function splitMessageWithNames(
-  messageContent: string,
-  mentionedNames?: string[],
+  message: Message,
+  mentions: MentionedMember[],
+  onClick: (userId: string) => void,
+  isSent: boolean,
 ) {
   const contentParts: ReactNode[] = [];
-  let remainingContent = messageContent;
+  const memberIndexes: ({
+    start: number;
+    end: number;
+  } & MentionedMember)[] = [];
 
-  mentionedNames?.forEach((name) => {
-    const nameIndex = remainingContent.indexOf(name);
+  const text = removeAtFromUsernames(message.content);
 
-    if (nameIndex !== -1) {
-      const beforeName = remainingContent.substring(0, nameIndex);
-      if (beforeName) {
-        contentParts.push(<>{beforeName}</>);
-      }
-      contentParts.push(
-        <Typography level="title-md" textColor="inherit">
-          {name}
-        </Typography>,
-      );
-      remainingContent = remainingContent.substring(nameIndex + name.length);
+  mentions.forEach((member) => {
+    const match = text.match(member.name);
+    if (match?.index !== undefined) {
+      memberIndexes.push({
+        ...member,
+        start: match.index,
+        end: match.index + member.name.length,
+      });
     }
   });
 
-  if (remainingContent) {
-    contentParts.push(<>{remainingContent}</>);
-  }
+  memberIndexes.sort((a, b) => a.start - b.start);
+
+  memberIndexes.forEach((member, index) => {
+    if (member.start > 0) {
+      contentParts.push(text.slice(0, member.start));
+    }
+
+    contentParts.push(
+      <ButtonLink
+        level="title-md"
+        textColor={isSent ? "inherit" : undefined}
+        sx={{
+          textDecorationColor: "inherit",
+        }}
+        onClick={() => onClick(member.userId)}
+      >
+        {member.name}
+      </ButtonLink>,
+    );
+
+    const nextMember = memberIndexes[index + 1];
+
+    if (nextMember) {
+      contentParts.push(text.slice(member.end, nextMember.start));
+    } else {
+      contentParts.push(text.slice(member.end));
+    }
+  });
 
   return contentParts;
 }

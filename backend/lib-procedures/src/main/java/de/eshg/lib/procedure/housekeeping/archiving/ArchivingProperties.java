@@ -35,6 +35,7 @@ public record ArchivingProperties(
   public static final Period DEFAULT_ARCHIVING_PERIOD = Period.ofYears(10);
   private static final ArchivingRelevance FALLBACK_ARCHIVING_RELEVANCE_ON_MISSING_DEFAULT =
       ArchivingRelevance.IRRELEVANT;
+  private static final Period FALLBACK_ARCHIVING_GRACE_PERIOD = Period.ofMonths(3);
 
   public ArchivingProperties {
     if (schedule != null
@@ -42,6 +43,10 @@ public record ArchivingProperties(
         && !CronExpression.isValidExpression(schedule)) {
       throw new IllegalArgumentException(
           "invalid cron expression used for property archiving schedule: %s".formatted(schedule));
+    }
+
+    if (gracePeriod == null) {
+      gracePeriod = new ArchivingGracePeriod(FALLBACK_ARCHIVING_GRACE_PERIOD);
     }
   }
 
@@ -68,7 +73,7 @@ public record ArchivingProperties(
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  public int getGracePeriodMonths() {
+  public int getGracePeriodMonthsOrDefault() {
     return gracePeriod().months().getMonths();
   }
 

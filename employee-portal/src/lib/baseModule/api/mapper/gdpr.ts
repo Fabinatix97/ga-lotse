@@ -6,7 +6,6 @@
 import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
-  ApiGetReferencePersonResponse,
 } from "@eshg/employee-portal-api/base";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import {
@@ -37,11 +36,11 @@ export function mapAddGdprProcedureRequest(
 }
 
 export function mapAddCentralFileIdToGdprProcedureRequest(
-  selected: ApiGetReferencePersonResponse,
+  selectedId: string,
   procedureVersion: number,
 ): ApiAddCentralFileIdToGdprProcedureRequest {
   return {
-    centralFileId: selected.id,
+    centralFileId: selectedId,
     version: procedureVersion,
   };
 }

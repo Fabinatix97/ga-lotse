@@ -46,7 +46,7 @@ export function FilterTemplates(props: FilterTemplatesProps) {
       title: "Vorlage löschen?",
       description: `Die Vorlage “${props.templates.find((it) => it.id === props.selectedFilterTemplateId)!.name}” wird dann unwiderruflich gelöscht.`,
       cancelLabel: "Abbrechen",
-      confirmLabel: "Vorlage löschen",
+      confirmLabel: "Löschen",
       onConfirm: () => {
         props.deleteTemplate(props.selectedFilterTemplateId!);
         props.onFilterTemplateIdChanged(null);

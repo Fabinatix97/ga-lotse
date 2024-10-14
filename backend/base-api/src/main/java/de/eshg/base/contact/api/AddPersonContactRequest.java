@@ -5,6 +5,7 @@
 
 package de.eshg.base.contact.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -33,7 +34,7 @@ public record AddPersonContactRequest(
         @Size(min = 1, max = 255)
         String externalChatUsername,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
-    List<@NotNull @Size(min = 6, max = 254) String> emailAddresses,
+    List<@EmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements AbstractAddContactRequest {
@@ -41,6 +42,10 @@ public record AddPersonContactRequest(
 
   public AddPersonContactRequest(String name) {
     this(null, null, name, null, null, null, null, null, null, null);
+  }
+
+  public AddPersonContactRequest(String name, List<String> emailAddresses) {
+    this(null, null, name, null, null, null, null, emailAddresses, null, null);
   }
 
   public AddPersonContactRequest(String name, String firstName) {

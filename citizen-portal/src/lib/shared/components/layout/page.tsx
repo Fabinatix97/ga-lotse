@@ -15,6 +15,7 @@ import { ReactNode } from "react";
 import { isDefined } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { MobileBreakpoint } from "@/lib/shared/breakpoints";
 
 import { BannerType, PageBanner } from "./PageBanner";
 import { PageContent } from "./PageContent";
@@ -57,7 +58,7 @@ export function PageTitle(props: PageTitleProps) {
       gap={3}
       alignItems="center"
       sx={{
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down(MobileBreakpoint.Down)]: {
           borderRadius: 0,
         },
       }}

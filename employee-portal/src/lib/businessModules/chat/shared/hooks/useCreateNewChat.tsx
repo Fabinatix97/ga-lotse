@@ -25,7 +25,7 @@ const createRoomInitialState = [
     type: "m.room.history_visibility",
     state_key: "",
     content: {
-      history_visibility: "joined",
+      history_visibility: "shared",
     },
   },
   {

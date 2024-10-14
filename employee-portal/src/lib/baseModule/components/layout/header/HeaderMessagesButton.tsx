@@ -14,12 +14,20 @@ import { useGetUnreadNotification } from "@/lib/businessModules/chat/shared/hook
 
 export function HeaderMessagesButton() {
   const { tryNavigate } = useNavigation();
-  const { canAccessChat, chatSidebar, userSettings } = useChat();
+  const { canAccessChat, userSettings, messagesSidebar } = useChat();
   const { unreadMessagesCount } = useGetUnreadNotification();
 
-  function handleClick() {
+  function toggleMessagesSidebar(): void {
+    if (messagesSidebar.isOpen) {
+      messagesSidebar.close();
+    } else {
+      messagesSidebar.open();
+    }
+  }
+
+  function handleClick(): void {
     if (canAccessChat && userSettings.chatUsageEnabled) {
-      chatSidebar.toggle();
+      toggleMessagesSidebar();
     } else {
       tryNavigate(routes.chat as string);
     }

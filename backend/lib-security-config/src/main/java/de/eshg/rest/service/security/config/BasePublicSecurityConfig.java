@@ -7,6 +7,7 @@ package de.eshg.rest.service.security.config;
 
 import static org.springframework.http.HttpMethod.*;
 
+import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import org.springframework.stereotype.Component;
 
@@ -83,8 +84,11 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .hasRole(EmployeePermissionRole.BASE_CONTACTS_WRITE);
     requestMatchers(PUT, BaseUrls.Base.CONTACT_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_CONTACTS_WRITE);
+    requestMatchers(GET, BaseUrls.Base.CONTACT_API + "/{id}")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_CONTACTS_READ, CitizenPermissionRole.ACCESS_CODE_USER);
     requestMatchers(GET, BaseUrls.Base.CONTACT_API + "/**")
-        .hasRole(EmployeePermissionRole.BASE_CONTACTS_READ);
+        .hasAnyRole(EmployeePermissionRole.BASE_CONTACTS_READ);
   }
 
   private void inventory() {

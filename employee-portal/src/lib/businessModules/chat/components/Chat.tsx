@@ -11,10 +11,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ChatPanel } from "@/lib/businessModules/chat/components/chatPanel/ChatPanel";
+import { InfoPanel } from "@/lib/businessModules/chat/components/infoPanel/InfoPanel";
 import { RoomsPanel } from "@/lib/businessModules/chat/components/roomsPanel/RoomsPanel";
 import { BackupSetupView } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
-import { SettingsPanel } from "@/lib/businessModules/chat/components/settingsPanel/SettingsPanel";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import {
   ChatPanelView,
   ClientState,
@@ -27,18 +28,14 @@ export function Chat() {
   const userIdForChatStart = searchParams.get("userId");
   const theme = useTheme();
   const { clientState } = useChatClientContext();
+  const { infoPanelState } = useInfoPanelContext();
   const { createNewDirectMessage } = useCreateNewChat();
-  const [openChatSettings, setOpenChatSettings] = useState(false);
   const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
     roomId ? ChatPanelView.ChatMessages : ChatPanelView.NoChatSelected,
   );
 
   function changeChatPanelView(newView: ChatPanelView) {
     setChatPanelView(newView);
-  }
-
-  function toggleChatSettingsView() {
-    setOpenChatSettings((prev) => !prev);
   }
 
   // If userId is passed in the search params, it means that the application
@@ -50,10 +47,6 @@ export function Chat() {
     }
     void createNewDirectMessage({ invite: [userIdForChatStart] });
   }, [clientState, userIdForChatStart, createNewDirectMessage]);
-
-  if (clientState === ClientState.Error) {
-    throw new Error("Chat error");
-  }
 
   if (
     clientState === ClientState.CreateBackupKey ||
@@ -88,11 +81,7 @@ export function Chat() {
           overflow: "auto",
         }}
       >
-        <RoomsPanel
-          setChatPanelView={changeChatPanelView}
-          isOpenChatSettings={openChatSettings}
-          toggleChatSettingsView={toggleChatSettingsView}
-        />
+        <RoomsPanel setChatPanelView={changeChatPanelView} />
       </Stack>
       <Stack
         sx={{
@@ -105,13 +94,11 @@ export function Chat() {
       >
         <ChatPanel
           roomId={roomId}
-          isOpenChatSettings={openChatSettings}
-          toggleChatSettingsView={toggleChatSettingsView}
           chatPanelView={chatPanelView}
           setChatPanelView={changeChatPanelView}
         />
       </Stack>
-      {openChatSettings && roomId && (
+      {infoPanelState.isOpen && (
         <Stack
           sx={{
             flex: 1,
@@ -121,11 +108,7 @@ export function Chat() {
             borderColor: "neutral.outlinedBorder",
           }}
         >
-          <SettingsPanel
-            roomId={roomId}
-            isOpenChatSettings={openChatSettings}
-            toggleChatSettingsView={toggleChatSettingsView}
-          />
+          <InfoPanel />
         </Stack>
       )}
     </Stack>

@@ -6,46 +6,31 @@
 "use client";
 
 import {
-  ApiInventoryItem,
   ApiUserRole,
   GetInventoryItemsRequest,
 } from "@eshg/employee-portal-api/base";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
-import { useState } from "react";
-import { isDefined } from "remeda";
 
 import { useGetInventoryOverviewPageQuery } from "@/lib/baseModule/api/queries/inventory";
 import { useGetSelfUserPermissions } from "@/lib/baseModule/api/queries/users";
 import { useInventoryFilterSettings } from "@/lib/baseModule/components/inventory/hooks/useInventoryFilterSettings";
-import { AddInventorySidebar } from "@/lib/baseModule/components/inventory/modals/AddInventorySidebar";
-import { InventoryCountCorrectionSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryCountCorrectionSidebar";
-import { InventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
-import { InventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
+import { useAddInventorySidebar } from "@/lib/baseModule/components/inventory/modals/AddInventorySidebar";
+import { useInventoryCountCorrectionSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryCountCorrectionSidebar";
+import { useInventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
+import { useInventoryUpdateSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryUpdateSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { SearchFilter } from "@/lib/shared/components/tableFilters/SearchFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 import { inventoryColumns } from "./columns";
-
-type SidebarState =
-  | {
-      type: "create";
-    }
-  | {
-      type: "correction" | "edit" | "restock";
-      item: ApiInventoryItem;
-    };
 
 interface InventoryTableProps {
   params: GetInventoryItemsRequest;
@@ -58,11 +43,10 @@ export function InventoryTable({ params }: InventoryTableProps) {
     sortFieldName: "sortKey",
   });
 
-  const [action, setAction] = useState<SidebarState>();
-
-  const { sidebarFormRef, closeSidebar, handleClose } = useSidebarForm({
-    onClose: () => setAction(undefined),
-  });
+  const addInventorySidebar = useAddInventorySidebar();
+  const inventoryUpdateSidebar = useInventoryUpdateSidebar();
+  const inventoryCountCorrectionSidebar = useInventoryCountCorrectionSidebar();
+  const inventoryRestockSidebar = useInventoryRestockSidebar();
 
   const {
     data: { elements, totalNumberOfElements, labels },
@@ -111,11 +95,7 @@ export function InventoryTable({ params }: InventoryTableProps) {
             </Stack>
             {isAdmin && (
               <Button
-                onClick={() =>
-                  setAction({
-                    type: "create",
-                  })
-                }
+                onClick={() => addInventorySidebar.open({ labels })}
                 startDecorator={<AddIcon />}
                 sx={{
                   justifySelf: "flex-end",
@@ -144,54 +124,19 @@ export function InventoryTable({ params }: InventoryTableProps) {
             focusColumnHeader="Name"
             columns={inventoryColumns({
               isAdmin,
-              onCorrection: (item) => setAction({ type: "correction", item }),
-              onEdit: (item) => setAction({ type: "edit", item }),
-              onRestock: (item) => setAction({ type: "restock", item }),
+              onCorrection: (item) =>
+                inventoryCountCorrectionSidebar.open({ item }),
+              onEdit: (item) =>
+                inventoryUpdateSidebar.open({ inventory: item, labels }),
+              onRestock: (item) =>
+                inventoryRestockSidebar.open({
+                  id: item.id,
+                  minCount: item.minCount,
+                }),
             })}
           />
         </TableSheet>
       </TablePage>
-
-      <OverlayBoundary>
-        <Sidebar open={isDefined(action)} onClose={handleClose}>
-          {action?.type === "create" && (
-            <AddInventorySidebar
-              sidebarFormRef={sidebarFormRef}
-              onClose={handleClose}
-              labels={labels}
-            />
-          )}
-
-          {action?.type === "edit" && (
-            <InventoryUpdateSidebar
-              sidebarFormRef={sidebarFormRef}
-              inventory={action.item}
-              labels={labels}
-              onClose={handleClose}
-              onSuccess={closeSidebar}
-            />
-          )}
-
-          {action?.type === "correction" && (
-            <InventoryCountCorrectionSidebar
-              sidebarFormRef={sidebarFormRef}
-              item={action.item}
-              onClose={handleClose}
-              onSuccess={closeSidebar}
-            />
-          )}
-
-          {action?.type === "restock" && (
-            <InventoryRestockSidebar
-              sidebarFormRef={sidebarFormRef}
-              id={action.item.id}
-              minCount={action.item.minCount}
-              onClose={handleClose}
-              onSuccess={closeSidebar}
-            />
-          )}
-        </Sidebar>
-      </OverlayBoundary>
     </>
   );
 }

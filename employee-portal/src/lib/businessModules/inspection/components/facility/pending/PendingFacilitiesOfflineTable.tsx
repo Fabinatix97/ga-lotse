@@ -13,6 +13,7 @@ import { getInspectionPendingFacilityFromOfflineInspections } from "@/lib/busine
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
 import { useServiceWorker } from "@/lib/businessModules/inspection/shared/offline/ServiceWorkerProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
+import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
@@ -55,7 +56,7 @@ export function PendingFacilitiesOfflineTable() {
   }
 
   return (
-    <>
+    <TablePage fullHeight>
       <TableSheet>
         <DataTable
           data={procedures}
@@ -75,7 +76,7 @@ export function PendingFacilitiesOfflineTable() {
           facilityName={userActivity.facilityName}
         />
       )}
-    </>
+    </TablePage>
   );
 }
 

@@ -217,7 +217,16 @@ public enum CountryCodeDto {
   VIE(5),
   WRU(2),
   SCA(6),
-  ZYP(1);
+  ZYP(1),
+  G1(1),
+  G2(2),
+  G3(3),
+  G4(4),
+  G5(5),
+  G6(6),
+  G7(7),
+  G8(8),
+  G9(9);
 
   private final Integer countryGroupCode;
 

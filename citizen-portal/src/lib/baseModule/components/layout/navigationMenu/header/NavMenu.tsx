@@ -23,6 +23,7 @@ import {
 } from "@/lib/baseModule/components/layout/navigationMenu/isItemSelected";
 import { maxContentWidthDesktop } from "@/lib/baseModule/components/layout/sizes";
 import { NavigationItem } from "@/lib/baseModule/components/layout/types";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { GradientIcon } from "@/lib/shared/components/icon/GradientIcon";
 
 export function NavMenu({
@@ -113,7 +114,10 @@ function NavMenuItem({
           anchorEl={anchorEl}
           variant="plain"
           sx={{
-            display: { xxs: "none", md: "flex" },
+            display: byBreakpoint({
+              mobile: "none",
+              desktop: "flex",
+            }),
             flexDirection: "row",
             width: maxContentWidthDesktop,
             flexWrap: "wrap",

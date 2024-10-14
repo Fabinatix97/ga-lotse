@@ -9,7 +9,7 @@ import { Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { isDefined } from "remeda";
 
-import { useDeleteStatisticsScheme } from "@/lib/businessModules/statistics/api/mutations/useDeleteStatisticsScheme";
+import { useDeleteEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteEvaluationTemplate";
 import { ChooseDataSourceStepFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseDataSourceStep/chooseDataSourceStepFormModel";
 import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
@@ -19,7 +19,7 @@ import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialo
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 
-export interface Scheme {
+export interface Template {
   id: string;
   name: string;
   dataSource?: {
@@ -34,75 +34,77 @@ export interface Scheme {
 }
 
 export function ChooseTemplateStep(props: {
-  schemes: Scheme[];
+  templates: Template[];
   viewCreateStatistics: () => void;
 }) {
   const { setFieldValue } = useFormikContext<ChooseDataSourceStepFormModel>();
-  const schemesExist = props.schemes.length > 0;
+  const templatesExist = props.templates.length > 0;
 
   const { openConfirmationDialog } = useConfirmationDialog();
-  const deleteStatisticsScheme = useDeleteStatisticsScheme();
+  const deleteEvaluationTemplate = useDeleteEvaluationTemplate();
   const canWrite = useStatisticRoleChecks().canWrite();
 
-  function deleteSchemeWithConfirmation(schemeId: string) {
+  function deleteTemplateWithConfirmation(templateId: string) {
     openConfirmationDialog({
       title: "Vorlage Löschen?",
       description: "Möchten Sie die Vorlage wirklich löschen?",
       confirmLabel: "Löschen",
-      onConfirm: () => deleteStatisticsScheme(schemeId),
+      onConfirm: () => deleteEvaluationTemplate(templateId),
       color: "danger",
     });
   }
 
   return (
     <>
-      {!schemesExist && (
+      {!templatesExist && (
         <NoSearchResults
           info="Keine Vorlagen vorhanden"
-          buttonLabel="Neue Statistik erstellen"
+          buttonLabel="Neue Auswertung erstellen"
           onClick={props.viewCreateStatistics}
         />
       )}
-      {schemesExist && (
+      {templatesExist && (
         <Stack flexDirection="column" gap={2}>
           <Typography>Wählen Sie eine Vorlage:</Typography>
           <RadioGroupField
-            name="_schemeId"
+            name="_templateId"
             onChange={(id) => {
-              const scheme = props.schemes.find((it) => it.id === id)!;
-              void setFieldValue("scheme", scheme);
+              const template = props.templates.find((it) => it.id === id)!;
+              void setFieldValue("template", template);
             }}
             required="Bitte Vorlage auswählen"
           >
             <Stack gap={2}>
-              {props.schemes.map((scheme) => (
-                <Stack key={scheme.id} sx={{ position: "relative" }}>
+              {props.templates.map((template) => (
+                <Stack key={template.id} sx={{ position: "relative" }}>
                   <SelectableCard
-                    key={scheme.id}
-                    value={scheme.id}
-                    radioProps={{ disabled: !isDefined(scheme.dataSource) }}
+                    key={template.id}
+                    value={template.id}
+                    radioProps={{ disabled: !isDefined(template.dataSource) }}
                   >
-                    {isDefined(scheme.dataSource) && (
+                    {isDefined(template.dataSource) && (
                       <Stack gap={0.5}>
-                        <Typography level="title-md">{scheme.name}</Typography>
+                        <Typography level="title-md">
+                          {template.name}
+                        </Typography>
                         <Typography level="body-sm">
                           {
                             businessModuleNames[
-                              scheme.dataSource.businessModule
+                              template.dataSource.businessModule
                             ]
                           }
                         </Typography>
                         <Typography level="body-sm">
-                          {scheme.dataSource.attributes
+                          {template.dataSource.attributes
                             .map((it) => it.name)
                             .join(", ")}
                         </Typography>
                       </Stack>
                     )}
-                    {!isDefined(scheme.dataSource) && (
+                    {!isDefined(template.dataSource) && (
                       <Stack>
                         <Typography level="title-md" color="neutral">
-                          {scheme.name}
+                          {template.name}
                         </Typography>
                         <Typography level="body-sm" color="danger">
                           Das Schema ist nicht korrekt.
@@ -112,7 +114,7 @@ export function ChooseTemplateStep(props: {
                   </SelectableCard>
                   {canWrite && (
                     <ActionsMenu
-                      actionDescription={`Aktionen für die Vorlage ${scheme.name}`}
+                      actionDescription={`Aktionen für die Vorlage ${template.name}`}
                       sx={{
                         position: "absolute",
                         right: (theme) => theme.spacing(1),
@@ -123,7 +125,7 @@ export function ChooseTemplateStep(props: {
                         {
                           label: "Löschen",
                           onClick: () =>
-                            deleteSchemeWithConfirmation(scheme.id),
+                            deleteTemplateWithConfirmation(template.id),
                           startDecorator: <Delete />,
                         },
                       ]}

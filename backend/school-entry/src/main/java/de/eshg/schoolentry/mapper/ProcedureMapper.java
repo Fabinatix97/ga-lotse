@@ -45,7 +45,8 @@ public final class ProcedureMapper {
         procedureDetailsData.isDeletable(),
         procedureDetailsData.createdAt(),
         procedureDetailsData.modifiedAt(),
-        WaitingRoomMapper.mapToDto(procedureDetailsData.waitingRoom()));
+        WaitingRoomMapper.mapToDto(procedureDetailsData.waitingRoom()),
+        procedureDetailsData.schoolInfoLetterCreatedAt());
   }
 
   public static ProcedureDto mapProcedureToDto(ProcedureData procedureData) {

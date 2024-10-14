@@ -230,7 +230,12 @@ function ProgressEntriesInformationSheet({
 
   return (
     <InformationSheet>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gap={1}
+      >
         <Typography level="h3" component="h2">
           Verlaufseinträge
         </Typography>

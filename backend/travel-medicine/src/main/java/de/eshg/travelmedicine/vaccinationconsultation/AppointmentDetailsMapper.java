@@ -10,7 +10,6 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentSummaryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentDetailsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class AppointmentDetailsMapper {
   private AppointmentDetailsMapper() {}
@@ -23,8 +22,8 @@ public class AppointmentDetailsMapper {
     String lastName = patientDto.lastName();
     String firstName = patientDto.firstName();
     LocalDate dateOfBirth = patientDto.dateOfBirth();
-    UUID medicalHistoryId = medicalHistory.getId();
-    boolean isMedicalHistoryAnswered = medicalHistory.isAnswered();
+    boolean isMedicalHistoryCompletelyAnswered = medicalHistory.isCompletelyAnswered();
+    boolean citizenHasAnswered = medicalHistory.isCitizenHasAnswered();
 
     return new GetAppointmentDetailsResponse(
         appointmentSummary,
@@ -32,7 +31,7 @@ public class AppointmentDetailsMapper {
         lastName,
         firstName,
         dateOfBirth,
-        medicalHistoryId,
-        isMedicalHistoryAnswered);
+        isMedicalHistoryCompletelyAnswered,
+        citizenHasAnswered);
   }
 }

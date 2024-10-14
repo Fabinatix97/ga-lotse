@@ -25,6 +25,7 @@ import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.helper.FacilityFileStateSearchableStringFormatter;
 import de.eshg.lib.procedure.helper.PersonFileStateSearchableStringFormatter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -32,7 +33,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -120,13 +120,45 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
                 new GetPersonFileStateIdsByKeyAttributesRequest(searchAttributes))
             .fileStateIdsByPersons();
 
-    Map<PersonKeyAttributes, List<ProcedureT>> result = new LinkedHashMap<>();
-    for (Entry<PersonKeyAttributes, List<UUID>> entry : fileStateIdsByPersonAttributes.entrySet()) {
-      List<ProcedureT> procedures =
-          procedureRepository.findByRelatedPersonsCentralFileStateIds(
-              entry.getValue(), personType, ProcedureStatus.OPEN);
-      result.put(entry.getKey(), procedures);
+    if (fileStateIdsByPersonAttributes.isEmpty()) {
+      return Map.of();
     }
+
+    List<UUID> allPersonFileStateIds =
+        fileStateIdsByPersonAttributes.values().stream().flatMap(Collection::stream).toList();
+
+    List<ProcedureT> allProcedures =
+        procedureRepository.findByRelatedPersonsCentralFileStateIds(
+            allPersonFileStateIds, personType, ProcedureStatus.OPEN);
+
+    Map<UUID, List<ProcedureT>> proceduresPerPersonFileStateId = new LinkedHashMap<>();
+    for (ProcedureT procedure : allProcedures) {
+      procedure.getRelatedPersons().stream()
+          .filter(person -> person.getPersonType() == personType)
+          .map(RelatedPerson::getCentralFileStateId)
+          .filter(allPersonFileStateIds::contains)
+          .forEach(
+              personFileStateId -> {
+                List<ProcedureT> procedures =
+                    proceduresPerPersonFileStateId.computeIfAbsent(
+                        personFileStateId, k -> new ArrayList<>());
+                procedures.add(procedure);
+              });
+    }
+
+    Map<PersonKeyAttributes, List<ProcedureT>> result = new LinkedHashMap<>();
+    fileStateIdsByPersonAttributes.forEach(
+        (personKeyAttributes, personFileStateIds) -> {
+          List<ProcedureT> procedures =
+              personFileStateIds.stream()
+                  .flatMap(
+                      personFileStateId ->
+                          proceduresPerPersonFileStateId
+                              .getOrDefault(personFileStateId, List.of())
+                              .stream())
+                  .toList();
+          result.put(personKeyAttributes, procedures);
+        });
     return result;
   }
 

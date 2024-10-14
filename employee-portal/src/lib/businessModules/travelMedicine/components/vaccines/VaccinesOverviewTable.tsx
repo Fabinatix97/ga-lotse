@@ -13,6 +13,7 @@ import {
 import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { FormikProps } from "formik";
 import { useRef, useState } from "react";
 
@@ -21,11 +22,11 @@ import {
   usePostVaccine,
   usePutVaccine,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccines";
-import { useGetAllDiseases } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
+import { useGetAllDiseasesQuery } from "@/lib/businessModules/travelMedicine/api/queries/diseaseApi";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
 import {
-  useGetAllVaccines,
-  useGetUnusedInventoryVaccines,
+  useGetAllVaccinesQuery,
+  useGetUnusedInventoryVaccinesQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/vaccines";
 import {
   EditVaccineContent,
@@ -40,10 +41,17 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function VaccinesOverviewTable() {
-  const tableData = useGetAllVaccines();
-
-  const inventoryVaccines = useGetUnusedInventoryVaccines();
-  const allDiseases = useGetAllDiseases();
+  const [
+    { data: tableData },
+    { data: inventoryVaccines },
+    { data: allDiseases },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetAllVaccinesQuery(),
+      useGetUnusedInventoryVaccinesQuery(),
+      useGetAllDiseasesQuery(),
+    ],
+  });
   const defaultBatchIdEnabled = useIsNewFeatureEnabled(
     ApiTravelMedicineFeature.DefaultBatchId,
   );
@@ -96,9 +104,9 @@ export function VaccinesOverviewTable() {
       loadings: {
         currentInventoryVaccineId:
           currentVaccine?.inventoryVaccineId ?? undefined,
-        diseases: allDiseases.data.diseases,
+        diseases: allDiseases.diseases,
         inventoryVaccines:
-          inventoryVaccines.data.inventoryVaccineWithoutRmbiVaccineList,
+          inventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
       },
     };
   }
@@ -170,7 +178,7 @@ export function VaccinesOverviewTable() {
       >
         <TableSheet>
           <DataTable
-            data={tableData.data.vaccines}
+            data={tableData.vaccines}
             columns={vaccinesColumns(
               deleteVaccineWithConfirmation,
               editEntry,

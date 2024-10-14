@@ -5,20 +5,25 @@
 
 "use client";
 
-import { Box, Stack } from "@mui/joy";
+import { Box, Stack, styled } from "@mui/joy";
 
 import { MainMenu } from "@/lib/baseModule/components/layout/navigationMenu/header/MainMenu";
 import { NavMenu } from "@/lib/baseModule/components/layout/navigationMenu/header/NavMenu";
 import {
-  contentMarginDesktop,
+  contentMarginMobile,
   headerHeightDesktop,
   headerHeightMobile,
-  maxContentWidthDesktop,
 } from "@/lib/baseModule/components/layout/sizes";
 import { NavigationProps } from "@/lib/baseModule/components/layout/types";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { responsiveContent } from "@/lib/shared/components/layout/PageContent";
 
 import { HeaderLogo } from "./HeaderLogo";
 import { MenuButton } from "./MenuButton";
+
+const ResponsiveContainer = styled(Stack)(({ theme }) =>
+  responsiveContent(theme),
+);
 
 export function Header(props: NavigationProps) {
   return (
@@ -27,21 +32,22 @@ export function Header(props: NavigationProps) {
       position="sticky"
       top={0}
       zIndex="header"
-      height={{ xxs: headerHeightMobile, md: headerHeightDesktop }}
+      height={byBreakpoint({
+        mobile: headerHeightMobile,
+        desktop: headerHeightDesktop,
+      })}
       display="flex"
       justifyContent="center"
       boxSizing="content-box"
       sx={(theme) => ({
-        background: {
-          xxs: theme.palette.common.white,
-          md: `linear-gradient(180deg, ${theme.palette.background.body} 50%, ${theme.palette.background.surface} 50%)`,
-        },
+        background: byBreakpoint({
+          mobile: theme.palette.common.white,
+          desktop: `linear-gradient(180deg, ${theme.palette.background.body} 50%, ${theme.palette.background.surface} 50%)`,
+        }),
       })}
     >
-      <Stack
-        display={{ xxs: "none", md: "flex" }}
-        width={maxContentWidthDesktop}
-        paddingInline={contentMarginDesktop.leftRight}
+      <ResponsiveContainer
+        display={byBreakpoint({ mobile: "none", desktop: "flex" })}
         flexDirection="row"
         gap={3}
         alignItems="center"
@@ -51,19 +57,20 @@ export function Header(props: NavigationProps) {
           <MainMenu userType={props.userType} />
           <NavMenu navigationItems={props.navigationItems} />
         </Stack>
-      </Stack>
-      <Stack
+      </ResponsiveContainer>
+      <ResponsiveContainer
         flex={1}
         flexDirection="row"
         justifyContent="space-between"
-        padding={2}
-        display={{ xxs: "flex", md: "none" }}
+        paddingBlock={contentMarginMobile.topBottom}
+        paddingInline={contentMarginMobile.leftRight}
+        display={byBreakpoint({ mobile: "flex", desktop: "none" })}
       >
         <HeaderLogo />
         <Stack flexDirection="row" gap={1}>
           <MenuButton {...props} />
         </Stack>
-      </Stack>
+      </ResponsiveContainer>
     </Box>
   );
 }

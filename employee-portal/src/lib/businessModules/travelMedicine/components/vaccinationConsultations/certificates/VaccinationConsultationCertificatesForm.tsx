@@ -5,7 +5,6 @@
 
 "use client";
 
-import { useGetVaccinationConsultationCertificates } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationCertificatesTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/VaccinationConsultationCertificatesTable";
 
 export function VaccinationConsultationCertificatesForm({
@@ -13,13 +12,9 @@ export function VaccinationConsultationCertificatesForm({
 }: Readonly<{
   procedureId: string;
 }>) {
-  const callResult = useGetVaccinationConsultationCertificates(procedureId);
-  const tableData = callResult.data?.certificates ?? [];
-
   return (
     <VaccinationConsultationCertificatesTable
       procedureId={procedureId}
-      tableData={tableData}
     ></VaccinationConsultationCertificatesTable>
   );
 }

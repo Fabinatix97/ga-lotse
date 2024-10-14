@@ -59,6 +59,7 @@ export function AccessRestrictionCard({
       title="Betretungsverbot"
       fullHeight={!!accessRestriction}
       {...(isEditAccessRestrictionEnabled &&
+        !procedureClosed &&
         accessRestriction && {
           actionButton: (
             <IconButton

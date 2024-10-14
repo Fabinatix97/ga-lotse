@@ -21,6 +21,8 @@ public interface AuditedActorRepository extends JpaRepository<AuditedActor, UUID
 
   Optional<AuditedActor> findByCommonName(String commonName);
 
+  Optional<AuditedActor> findByOrgUnitIdAndReadableName(UUID orgUnitId, String readableName);
+
   @Query(
       """
           SELECT a

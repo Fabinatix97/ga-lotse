@@ -893,7 +893,7 @@ paths:
                 $ref: "#/components/schemas/SearchReferenceFacilitiesResponse"
           description: OK
       summary: |
-        Search reference facilities for the given knowledge factor 'name' and for the optional knowledge factor 'address'.
+        Search reference facilities for the given knowledge factor 'name'.
         Excludes facilities created from external sources.
         Caution: The returned ids of the reference facilities must not be stored.
       tags:
@@ -1370,6 +1370,69 @@ paths:
         frontend to display the GDPR Procedure.
       tags:
       - GdprProcedure
+  /gdpr-procedures/{id}/downloads:
+    get:
+      operationId: getDownloads
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprDownloadsResponse"
+          description: OK
+      summary: Get list of download ids of GDPR-related documents or data of this
+        GDPR procedure.
+      tags:
+      - GdprProcedure
+    post:
+      operationId: addDownloads
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprDownloadsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Add a download of GDPR-related document or data for this GDPR procedure.
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/{id}/fileStateIds:
+    get:
+      operationId: getFileStateIds
+      parameters:
+      - description: The Id of the GDPR procedure.
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprProcedureFileStateIdsResponse"
+          description: OK
+      summary: Get file state ids of this gdpr procedure.
+      tags:
+      - GdprProcedure
   /gdpr-procedures/{id}/matter-of-concern:
     put:
       operationId: setMatterOfConcern
@@ -1391,6 +1454,27 @@ paths:
           description: OK
       summary: "Changes the matter of concern of this GDPR procedure, this is only\
         \ relevant for right to correction and right to objection."
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/{id}/report-document:
+    get:
+      operationId: getReportDocument
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Returns the relevant report as PDF for this GDPR Procedure.
       tags:
       - GdprProcedure
   /inventoryItems:
@@ -3642,6 +3726,17 @@ components:
       required:
       - dataOrigin
       - name
+    AddGdprDownloadsRequest:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      required:
+      - downloadIds
     AddGdprProcedureRequest:
       type: object
       properties:
@@ -3959,14 +4054,11 @@ components:
           type: string
           description: The email address of a user
           example: example@mail.de
-          maxLength: 255
-          minLength: 3
         externalChatUsername:
           type: string
           description: The chat username of the gematik TI-Messenger (matrix chat)
           example: '@username:server'
-          maxLength: 255
-          minLength: 0
+          pattern: "\\p{ASCII}{3,255}"
         firstName:
           type: string
           description: The given name(s) of a user
@@ -3991,8 +4083,7 @@ components:
           type: string
           description: The phone number of a user
           example: "+491234567890"
-          maxLength: 100
-          minLength: 0
+          pattern: "[-+0-9() ]{1,23}"
         username:
           type: string
           description: The username which is displayed in the application and can
@@ -4001,7 +4092,6 @@ components:
           maxLength: 255
           minLength: 3
       required:
-      - email
       - firstName
       - groups
       - lastName
@@ -4087,6 +4177,7 @@ components:
       - ACCOUNT_ACTIVE_SESSIONS
       - OPEN_DATA
       - LOGIN_PROTOCOL
+      - GDPR
     BlockingEventsOfCalendar:
       type: object
       properties:
@@ -4147,6 +4238,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     Calendar:
       type: object
       properties:
@@ -5840,20 +5932,68 @@ components:
             format: uuid
       required:
       - fileStateIds
+    GetGdprDownloadsResponse:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      required:
+      - downloadIds
     GetGdprProcedureDetailsPageResponse:
       type: object
       properties:
+        facilityMatches:
+          type: array
+          description: Search result of likely related Reference Data for Facilities
+            from the Central Files for this GDPR procedure.
+          items:
+            $ref: "#/components/schemas/GetReferenceFacilityResponse"
+        linkedCentralFileFacilities:
+          type: array
+          description: Reference Data of Facilities from the Central File that has
+            already been confirmed to be linked to this GDPR procedure.
+          items:
+            $ref: "#/components/schemas/GetReferenceFacilityResponse"
+        linkedCentralFilePersons:
+          type: array
+          description: Reference Data of Persons from the Central File that has already
+            been confirmed to be linked to this GDPR procedure.
+          items:
+            $ref: "#/components/schemas/GetReferencePersonResponse"
         personMatches:
           type: array
-          description: A list of sets of Reference Data for Persons from the Central
-            Files that is connected in the GDPR procedure.
+          description: Search result of likely related Reference Data for Persons
+            from the Central Files for this GDPR procedure.
           items:
             $ref: "#/components/schemas/GetReferencePersonResponse"
         procedure:
           $ref: "#/components/schemas/GetGdprProcedureResponse"
       required:
+      - facilityMatches
+      - linkedCentralFileFacilities
+      - linkedCentralFilePersons
       - personMatches
       - procedure
+    GetGdprProcedureFileStateIdsResponse:
+      type: object
+      properties:
+        facilityFileStateIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        personFileStateIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - facilityFileStateIds
+      - personFileStateIds
     GetGdprProcedureResponse:
       type: object
       properties:
@@ -8274,10 +8414,12 @@ components:
           type: string
           description: The chat username of the gematik TI-Messenger (matrix chat)
           example: '@username:server'
+          pattern: "\\p{ASCII}{3,255}"
         phoneNumber:
           type: string
           description: The phone number of a user
           example: "+491234567890"
+          pattern: "[-+0-9() ]{1,23}"
     User:
       type: object
       properties:
@@ -8459,6 +8601,8 @@ components:
       - STI_PROTECTION_PHYSICIAN
       - STI_PROTECTION_ADMIN
       - STI_PROTECTION_LEADER
+      - MEDICAL_REGISTRY_LEADER
+      - MEDICAL_REGISTRY_ADMIN
     VCardAddress:
       type: object
       properties:

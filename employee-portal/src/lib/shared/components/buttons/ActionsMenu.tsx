@@ -25,6 +25,7 @@ export interface ActionsItem {
   color?: ColorPaletteProp;
   disabled?: boolean;
 }
+
 export interface ActionsMenuProps extends MenuButtonProps {
   actionItems: ActionsItem[];
   actionDescription?: string;
@@ -114,11 +115,13 @@ export function createActionsLinkOrButton(item: ActionsItem) {
 
 export function ActionsMenu(props: ActionsMenuProps) {
   const { actionItems, actionDescription, ...rest } = props;
+
   return (
     <Dropdown>
       <Stack direction="row" alignItems="center" justifyContent="flex-end">
         <MenuButton
           slots={{ root: IconButton }}
+          slotProps={{ root: { variant: props.variant, color: props.color } }}
           aria-label={actionDescription ?? "Aktionen"}
           sx={{
             "&[aria-expanded=true]": {

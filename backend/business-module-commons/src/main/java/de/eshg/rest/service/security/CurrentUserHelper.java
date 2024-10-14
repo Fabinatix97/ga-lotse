@@ -5,7 +5,7 @@
 
 package de.eshg.rest.service.security;
 
-import de.eshg.lib.keycloak.EmployeePermissionRole;
+import de.eshg.lib.keycloak.PermissionRole;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,11 +39,11 @@ public final class CurrentUserHelper {
         .map(String::valueOf);
   }
 
-  public static boolean currentUserHasNoRole(EmployeePermissionRole role) {
+  public static boolean currentUserHasNoRole(PermissionRole role) {
     return !currentUserHasRole(role);
   }
 
-  public static boolean currentUserHasRole(EmployeePermissionRole role) {
+  public static boolean currentUserHasRole(PermissionRole role) {
     Optional<Authentication> authentication = getAuthentication();
     if (authentication.isPresent()
         && authentication.get() instanceof JwtAuthenticationToken token) {

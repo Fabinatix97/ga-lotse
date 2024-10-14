@@ -15,6 +15,7 @@ import de.eshg.base.inventory.persistence.entity.InventoryItem;
 import de.eshg.base.inventory.persistence.entity.InventoryItem_;
 import de.eshg.base.inventory.persistence.repository.InventoryRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
 import java.util.List;
@@ -34,8 +35,9 @@ public class InventoryPopulator extends BasePopulator<InventoryItemDto> {
       Clock clock,
       Environment environment,
       InventoryController inventoryController,
-      InventoryRepository inventoryRepository) {
-    super(clock, environment, getClassNameAsPropertyKey(InventoryItem.class));
+      InventoryRepository inventoryRepository,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, getClassNameAsPropertyKey(InventoryItem.class), environmentConfig);
     this.inventoryController = inventoryController;
     this.inventoryRepository = inventoryRepository;
   }

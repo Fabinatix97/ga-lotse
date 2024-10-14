@@ -21,7 +21,7 @@ public record AddStatisticWithDataSourcesRequest(
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
     @Size(min = 1, max = 1) @NotNull @Valid List<DataSourceDto> dataSources,
-    String schemeName)
+    String templateName)
     implements AbstractAddStatisticRequest {
   public static final String SCHEMA_NAME = "AddStatisticWithDataSourcesRequest";
 

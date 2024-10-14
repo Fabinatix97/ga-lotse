@@ -156,7 +156,7 @@ export function useAddEvaluation(statisticId: string, onClose: () => void) {
   const mutation = useHandledMutation({
     mutationFn: (apiAddEvaluationRequest: ApiAddEvaluationRequest) =>
       evaluationApi.addEvaluation(apiAddEvaluationRequest),
-    onSuccess: () => snackbar.confirmation("Auswertung erstellt."),
+    onSuccess: () => snackbar.confirmation("Analyse erstellt"),
   });
 
   return async (model: CreateEvaluationFormModel) => {

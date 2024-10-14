@@ -16,6 +16,7 @@ import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { Stack } from "@mui/joy";
+import { format } from "date-fns";
 import {
   forwardRef,
   useImperativeHandle,
@@ -144,6 +145,7 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
             eventTextColor={theme.palette.text.primary}
             ref={fullCalendarRef}
             plugins={[timeGridPlugin, dayGridPlugin, listPlugin]}
+            scrollTime={format(new Date(), "HH:00:00")}
             height={"100%"}
             datesSet={({ view }) => {
               setFullCalendarView({

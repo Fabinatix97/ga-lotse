@@ -84,6 +84,7 @@ export default function PlaygroundChartsPage() {
           filterLabels={["Label 1", "Label 2"]}
           evaluatedDataAmount={42}
           isReport={false}
+          openChartInFullScreenDialog={() => undefined}
         >
           <BarChart filterSetData={barChartMuchData} orientation={"VERTICAL"} />
         </EvaluationDiagramBox>
@@ -95,6 +96,7 @@ export default function PlaygroundChartsPage() {
           filterLabels={["Label 1", "Label 2"]}
           evaluatedDataAmount={42}
           isReport={false}
+          openChartInFullScreenDialog={() => undefined}
         >
           <ScatterChart
             filterSet={scatterChartData}

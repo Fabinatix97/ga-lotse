@@ -23,11 +23,11 @@ import java.time.Instant;
       value = AddStatisticWithDataSourcesRequest.class,
       name = AddStatisticWithDataSourcesRequest.SCHEMA_NAME),
   @JsonSubTypes.Type(
-      value = AddStatisticWithSchemeRequest.class,
-      name = AddStatisticWithSchemeRequest.SCHEMA_NAME),
+      value = AddStatisticWithTemplateRequest.class,
+      name = AddStatisticWithTemplateRequest.SCHEMA_NAME),
 })
 public sealed interface AbstractAddStatisticRequest
-    permits AddStatisticWithDataSourcesRequest, AddStatisticWithSchemeRequest {
+    permits AddStatisticWithDataSourcesRequest, AddStatisticWithTemplateRequest {
   @Hidden
   @NotNull
   @JsonProperty("@type")

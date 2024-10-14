@@ -7,10 +7,11 @@
 
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Button } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import { useDeleteInformationStatementTemplate } from "@/lib/businessModules/travelMedicine/api/mutations/informationStatementTemplateApi";
-import { useGetAllInformationStatementTemplates } from "@/lib/businessModules/travelMedicine/api/queries/informationStatementTemplateApi";
+import { useGetAllInformationStatementTemplatesQuery } from "@/lib/businessModules/travelMedicine/api/queries/informationStatementTemplateApi";
 import { informationStatementColumns } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/columns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -20,7 +21,9 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function InformationStatementTemplateOverviewTable() {
   const router = useRouter();
-  const data = useGetAllInformationStatementTemplates().data;
+  const [{ data: allInformationStatementTemplates }] = useSuspenseQueries({
+    queries: [useGetAllInformationStatementTemplatesQuery()],
+  });
 
   const deleteInformationStatementTemplate =
     useDeleteInformationStatementTemplate();
@@ -49,7 +52,7 @@ export function InformationStatementTemplateOverviewTable() {
     >
       <TableSheet>
         <DataTable
-          data={data}
+          data={allInformationStatementTemplates}
           columns={informationStatementColumns(deleteEntry)}
           rowNavRoute={(row) =>
             routes.informationStatementTemplates.details(row.original.id)

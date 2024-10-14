@@ -6,11 +6,13 @@
 package de.eshg.servicedirectory.testcontainers;
 
 import static de.eshg.base.PostgresContainerConstants.POSTGRES_PORT;
+import static de.eshg.testhelper.ConditionalOnLocalEnvironment.LOCAL_PROFILE_NAME;
 import static de.eshg.testhelper.ConditionalOnTestHelperEnabled.TEST_HELPER_PROFILE_NAME;
 
 import de.eshg.base.PostgresContainerConstants;
 import de.eshg.base.TestContainersUtil;
 import java.time.Duration;
+import java.util.List;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.GenericContainer;
@@ -40,7 +42,9 @@ public class ServiceDirectoryTestContainerUtil {
         .withNetwork(network)
         .withExposedPorts(SD_PORT)
         .dependsOn(dbContainer)
-        .withEnv("spring.profiles.active", TEST_HELPER_PROFILE_NAME)
+        .withEnv(
+            "spring.profiles.active",
+            String.join(", ", List.of(LOCAL_PROFILE_NAME, TEST_HELPER_PROFILE_NAME)))
         .withEnv("spring.datasource.url", jdbcUrl)
         .withEnv("SERVER_PORT", Integer.toString(SD_PORT))
         .withCreateContainerCmdModifier(

@@ -20,7 +20,7 @@ export function useAddGeoShape() {
         title: values.title.trim(),
         file: mapRequiredValue(values.file),
       }),
-    onSuccess: () => snackbar.confirmation("Karte erfolgreich importiert."),
+    onSuccess: () => snackbar.confirmation("Karte erfolgreich importiert"),
   });
   return async (
     param: AddGeoShapeValues,

@@ -66,7 +66,7 @@ export function EvaluationAccordionDetails(
         spacing={1}
       >
         <Stack spacing={2} width="30rem">
-          <Typography level="title-md">Auswertungsdetails</Typography>
+          <Typography level="title-md">Analysedetails</Typography>
           <Stack spacing={1}>
             <LabelValuePair
               label="Erstellungsdatum"

@@ -8,17 +8,24 @@ import { Alert } from "@eshg/lib-portal/components/Alert";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { Grid, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { Ref } from "react";
 
 import { useCorrectInventoryItemCount } from "@/lib/baseModule/api/mutations/inventory";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
+import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
+
+export function useInventoryCountCorrectionSidebar(): UseSidebarWithFormRefResult<InventoryCountCorrectionSidebarProps> {
+  return useSidebarWithFormRef({
+    component: InventoryCountCorrectionSidebar,
+  });
+}
 
 function CountDifference({
   currentCount,
@@ -45,17 +52,15 @@ function CountDifference({
   );
 }
 
-export function InventoryCountCorrectionSidebar({
-  onClose,
-  onSuccess,
-  item,
-  sidebarFormRef,
-}: {
-  onClose: () => void;
-  onSuccess: () => void;
-  sidebarFormRef: Ref<SidebarFormHandle>;
+interface InventoryCountCorrectionSidebarProps extends SidebarWithFormRefProps {
   item: ApiInventoryItem;
-}) {
+}
+
+function InventoryCountCorrectionSidebar({
+  onClose,
+  item,
+  formRef,
+}: InventoryCountCorrectionSidebarProps) {
   const { openConfirmationDialog } = useConfirmationDialog();
 
   const correctInventoryCount = useCorrectInventoryItemCount(item.id);
@@ -77,7 +82,7 @@ export function InventoryCountCorrectionSidebar({
             count: parseInt(values.newCount),
           },
           {
-            onSuccess: onSuccess,
+            onSuccess: () => onClose(true),
           },
         );
       },
@@ -95,7 +100,7 @@ export function InventoryCountCorrectionSidebar({
       onSubmit={handleSubmit}
     >
       {() => (
-        <SidebarForm ref={sidebarFormRef}>
+        <SidebarForm ref={formRef}>
           <SidebarContent title={"Inventur durchführen"}>
             <Stack spacing={2}>
               <Alert

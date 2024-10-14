@@ -4,16 +4,25 @@
  */
 
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
+import { styled } from "@mui/joy";
 
 import { useGetDepartmentLogo } from "@/lib/shared/api/queries/department";
+import { MobileBreakpoint } from "@/lib/shared/breakpoints";
+
+const LogoImage = styled("img")(({ theme }) => ({
+  height: 80,
+  width: "auto",
+  [theme.breakpoints.down(MobileBreakpoint.Down)]: {
+    height: 44,
+  },
+}));
 
 export function HeaderLogo() {
   const departmentLogo = useGetDepartmentLogo();
 
   return (
     <NavigationLink href="/">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={departmentLogo.data} alt="logo" />
+      <LogoImage src={departmentLogo.data} alt="logo" />
     </NavigationLink>
   );
 }

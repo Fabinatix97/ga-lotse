@@ -6,14 +6,11 @@
 package de.eshg.travelmedicine.testhelper;
 
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
-import de.eshg.testhelper.DatabaseResetHelper;
-import de.eshg.testhelper.DefaultTestHelperService;
-import de.eshg.testhelper.ResettableProperties;
+import de.eshg.testhelper.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
-import de.eshg.travelmedicine.medicalhistorytemplate.persistence.CreateMedicalHistoryTemplateTask;
-import java.sql.SQLException;
+import de.eshg.travelmedicine.template.medicalhistorytemplate.persistence.CreateMedicalHistoryTemplateTask;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -33,14 +30,21 @@ public class TravelMedicineTestHelperService extends DefaultTestHelperService {
       List<BasePopulator<?>> populators,
       List<ResettableProperties> resettableProperties,
       CreateAppointmentTypeTask createAppointmentTypeTask,
-      CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask) {
-    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
+      CreateMedicalHistoryTemplateTask createMedicalHistoryTemplateTask,
+      EnvironmentConfig environmentConfig) {
+    super(
+        databaseResetHelper,
+        testRequestInterceptor,
+        clock,
+        populators,
+        resettableProperties,
+        environmentConfig);
     this.createAppointmentTypeTask = createAppointmentTypeTask;
     this.createMedicalHistoryTemplateTask = createMedicalHistoryTemplateTask;
   }
 
   @Override
-  public Instant reset() throws SQLException {
+  public Instant reset() throws Exception {
     Instant newInstant = super.reset();
     createAppointmentTypeTask.createAppointmentTypes();
     createMedicalHistoryTemplateTask.createMedicalHistoryTemplate();

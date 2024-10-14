@@ -10,6 +10,7 @@ import de.eshg.chat.featuretoggle.ChatFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
@@ -22,8 +23,10 @@ public class ChatTestHelperController extends TestHelperController {
   private final ChatFeatureToggle chatFeatureToggle;
 
   public ChatTestHelperController(
-      DefaultTestHelperService defaultTestHelperService, ChatFeatureToggle chatFeatureToggle) {
-    super(defaultTestHelperService);
+      DefaultTestHelperService defaultTestHelperService,
+      ChatFeatureToggle chatFeatureToggle,
+      EnvironmentConfig environmentConfig) {
+    super(defaultTestHelperService, environmentConfig);
     this.chatFeatureToggle = chatFeatureToggle;
   }
 

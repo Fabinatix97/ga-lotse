@@ -14,7 +14,7 @@ export function UpdateStatisticDataBasisStep() {
       <Alert
         color="warning"
         title="Duplikat erstellt?"
-        message="Die Datenbasis wird nach der Aktualisierung unwiderruflich ersetzt. Um ein Backup zu erstellen, legen Sie in der Übersicht ein Duplikat der Statistik an."
+        message="Die Datenbasis wird nach der Aktualisierung unwiderruflich ersetzt. Um ein Backup zu erstellen, legen Sie in der Übersicht ein Duplikat der Auswertung an."
       />
       <Typography level="h3">Neuer Betrachtungszeitraum</Typography>
       <TimeSpanField

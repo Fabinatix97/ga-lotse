@@ -40,7 +40,9 @@ export const TIME_FORMAT = "HH:mm";
 export function getDateLocale(): Locale {
   const dateLocales: Record<string, Locale> = DateLocales;
   const localeFormattedBrowserLanguage =
-    typeof navigator !== undefined ? navigator.language.replace("-", "") : "de";
+    typeof navigator !== "undefined"
+      ? navigator.language.replace("-", "")
+      : "de";
   const dateLocale: Locale =
     dateLocales[localeFormattedBrowserLanguage] ?? DateLocales.de;
 
@@ -62,10 +64,11 @@ export function isDateTimeString(value: string) {
 export function isBeforeTime(
   startTime: string,
   endTime: string,
-  referenceDate: Date = new Date(),
+  referenceStartDate: Date = new Date(),
+  referenceEndDate: Date = referenceStartDate,
 ) {
-  const startDate = parseTime(startTime, referenceDate);
-  const endDate = parseTime(endTime, referenceDate);
+  const startDate = parseTime(startTime, referenceStartDate);
+  const endDate = parseTime(endTime, referenceEndDate);
   return isBefore(startDate, endDate);
 }
 

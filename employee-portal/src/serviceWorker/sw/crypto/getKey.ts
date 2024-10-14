@@ -13,9 +13,9 @@ import {
   isPasswordMessage,
 } from "@/serviceWorker/common/offlinePasswordBroadCastChannel";
 import { getAnyDataRaw } from "@/serviceWorker/sw/cache";
+import { KEY_TIMEOUT_IN_MS } from "@/serviceWorker/sw/config";
 import { decryptWithKey, deriveKey } from "@/serviceWorker/sw/crypto/crypto";
 
-const keyTimeoutMs = 10 * 60 * 1000;
 let key: Promise<CryptoKey> | undefined;
 let keyTimeout: ReturnType<typeof setTimeout>;
 
@@ -32,9 +32,9 @@ function deleteKey() {
   key = undefined;
 }
 
-export async function getKey(cipher?: ArrayBufferLike): Promise<CryptoKey> {
+export function getKey(cipher?: ArrayBufferLike): Promise<CryptoKey> {
   clearTimeout(keyTimeout);
-  keyTimeout = setTimeout(deleteKey, keyTimeoutMs);
+  keyTimeout = setTimeout(deleteKey, KEY_TIMEOUT_IN_MS);
   if (key) return key;
   const encryptedDataPromise = cipher
     ? Promise.resolve(cipher)

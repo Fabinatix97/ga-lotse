@@ -5,10 +5,12 @@
 
 package de.eshg.relayserver.testcontainers;
 
+import static de.eshg.testhelper.ConditionalOnLocalEnvironment.LOCAL_PROFILE_NAME;
 import static de.eshg.testhelper.ConditionalOnTestHelperEnabled.TEST_HELPER_PROFILE_NAME;
 
 import de.eshg.base.TestContainersUtil;
 import de.eshg.servicedirectory.testcontainers.ServiceDirectoryTestContainerUtil;
+import java.util.List;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.GenericContainer;
@@ -31,7 +33,9 @@ public class RelayServerTestContainerUtil {
         .withExposedPorts(RS_PORT)
         .dependsOn(serviceDirectory.container())
         .withEnv("SERVER_PORT", Integer.toString(RS_PORT))
-        .withEnv("spring.profiles.active", TEST_HELPER_PROFILE_NAME)
+        .withEnv(
+            "spring.profiles.active",
+            String.join(", ", List.of(LOCAL_PROFILE_NAME, TEST_HELPER_PROFILE_NAME)))
         .withEnv(
             "eshg.servicedirectory.baseUrl",
             ServiceDirectoryTestContainerUtil.getServiceUrl(serviceDirectory.container()))

@@ -68,6 +68,25 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
 
   const { usersPresence } = usePresence(matrixClient.current, clientState);
 
+  useEffect(() => {
+    if (clientState !== ClientState.Prepared) return;
+    //Set initial notification count
+    const rooms = matrixClient.current.getRooms();
+    const joinedRooms = rooms.filter(
+      (room) => room.getMyMembership() === "join",
+    );
+    const initialNotifications = joinedRooms?.reduce<Record<string, number>>(
+      (acc, room) => {
+        if (!room) return acc;
+        const unreadMessagesCount = room.getUnreadNotificationCount();
+        if (!unreadMessagesCount) return acc;
+        return { ...acc, [room.roomId]: unreadMessagesCount };
+      },
+      {},
+    );
+    setUnreadNotificationsPerRoom(initialNotifications);
+  }, [clientState]);
+
   // Handle unread messages notification
   useEffect(() => {
     if (clientState !== ClientState.Prepared) return;
@@ -179,7 +198,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     };
   }, [clientState, showMessageTeaser]);
 
-  const contextValues = useMemo(
+  const contextValues = useMemo<ChatClientContextType>(
     () => ({
       clientState,
       setClientState,

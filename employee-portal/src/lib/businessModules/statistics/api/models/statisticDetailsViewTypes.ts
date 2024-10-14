@@ -47,6 +47,7 @@ export interface StatisticDetailsView {
   };
   evaluations: Evaluation[];
   attributes: FlatAttribute[];
+  userId: string;
 }
 
 export interface Diagram<T> {

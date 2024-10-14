@@ -49,6 +49,7 @@ export function AppointmentFormWrapper() {
       title={t("common.title")}
       initialValues={initialValues}
       onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
+      withLogoutButton={false}
     >
       <AppointmentFormContent />
     </MultiStepFormWrapper>

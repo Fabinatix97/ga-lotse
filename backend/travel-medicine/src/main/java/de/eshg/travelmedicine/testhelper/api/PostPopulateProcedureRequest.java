@@ -19,9 +19,9 @@ public record PostPopulateProcedureRequest(
     @Valid List<OtherServicePopulationDto> otherServices,
     @Valid InitialStepPopulationDto initialStep,
     @Valid List<ProcedureStepPopulationDto> procedureSteps,
+    List<String> cancelSteps,
     List<String> executeVaccinations,
     List<String> executeOtherServices,
-    @Valid List<MedicalHistoryPopulationDto> medicalHistories,
     @Valid List<CertificatePopulationDto> certificates,
     @Valid PostInformationStatementsRequest informationStatements,
     ProcedureStatusDto statusChange) {}

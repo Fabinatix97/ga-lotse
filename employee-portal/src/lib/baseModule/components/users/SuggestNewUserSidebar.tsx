@@ -5,6 +5,7 @@
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import {
   validateLength,
   validatePipe,
@@ -14,6 +15,10 @@ import { Formik } from "formik";
 import { useRef } from "react";
 
 import { useSuggestUser } from "@/lib/baseModule/api/mutations/users";
+import {
+  chatUsernameValidator,
+  phoneNumberValidator,
+} from "@/lib/baseModule/components/users/validation";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import {
@@ -21,6 +26,7 @@ import {
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
 import { EmailField } from "@/lib/shared/components/formFields/EmailField";
+import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -33,6 +39,7 @@ function initialInputs() {
     lastName: "",
     email: "",
     phoneNumber: "",
+    externalChatUsername: "",
     groups: [],
   } as const satisfies UserAddFormInputs;
 }
@@ -54,6 +61,7 @@ interface UserAddFormInputs {
   lastName: string;
   email: string;
   phoneNumber: string;
+  externalChatUsername: string;
   groups: string[];
 }
 
@@ -92,9 +100,20 @@ export function SuggestNewUserFormSidebar({
 
   async function handleSubmit(values: UserAddFormInputs) {
     await suggestUser
-      .mutateAsync(values, {
-        onSuccess: closeAndReset,
-      })
+      .mutateAsync(
+        {
+          username: values.username,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          phoneNumber: mapOptionalValue(values.phoneNumber),
+          externalChatUsername: mapOptionalValue(values.externalChatUsername),
+          groups: values.groups,
+        },
+        {
+          onSuccess: closeAndReset,
+        },
+      )
       .catch();
   }
 
@@ -146,12 +165,17 @@ export function SuggestNewUserFormSidebar({
                   />
                 </Grid>
                 <Grid xxs={12}>
-                  <InputField name={"phoneNumber"} label={"Telefonnummer"} />
+                  <PhoneNumberField
+                    name={"phoneNumber"}
+                    label={"Telefonnummer"}
+                    validate={phoneNumberValidator}
+                  />
                 </Grid>
                 <Grid xxs={12}>
                   <InputField
                     name={"externalChatUsername"}
                     label={"Chat Benutzername"}
+                    validate={chatUsernameValidator}
                   />
                 </Grid>
                 <Grid xxs={12}>

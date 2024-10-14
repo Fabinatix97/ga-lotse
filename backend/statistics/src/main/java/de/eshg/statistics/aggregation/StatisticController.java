@@ -10,20 +10,20 @@ import static de.eshg.statistics.config.StatisticsFeature.CLONE_STATISTIC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.base.SortDirection;
-import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.AbstractAddStatisticRequest;
+import de.eshg.statistics.api.AbstractUpdateStatisticRequest;
 import de.eshg.statistics.api.CloneStatisticRequest;
 import de.eshg.statistics.api.GetDetailPageInformationResponse;
 import de.eshg.statistics.api.GetStatisticRequest;
 import de.eshg.statistics.api.GetStatisticResponse;
 import de.eshg.statistics.api.GetStatisticsResponse;
 import de.eshg.statistics.api.StatisticSortKey;
+import de.eshg.statistics.api.UpdateStatisticTimeRangeRequest;
 import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
 import de.eshg.statistics.api.report.GetReportSeriesEntriesOfStatisticResponse;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
-import de.eshg.statistics.persistence.entity.AggregationResultState;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,8 +32,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PatchExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 @RestController
@@ -50,19 +49,17 @@ public class StatisticController {
   public static final String BASE_URL = BaseUrls.Statistics.STATISTIC_CONTROLLER;
 
   private final StatisticService statisticService;
-  private final ModuleClientAuthenticator moduleClientAuthenticator;
+  private final StatisticExecution statisticExecution;
   private final StatisticCopyService statisticCopyService;
   private final StatisticsFeatureToggle featureToggle;
 
-  private static final Logger log = LoggerFactory.getLogger(StatisticController.class);
-
   public StatisticController(
       StatisticService statisticService,
-      ModuleClientAuthenticator moduleClientAuthenticator,
+      StatisticExecution statisticExecution,
       StatisticCopyService statisticCopyService,
       StatisticsFeatureToggle featureToggle) {
     this.statisticService = statisticService;
-    this.moduleClientAuthenticator = moduleClientAuthenticator;
+    this.statisticExecution = statisticExecution;
     this.statisticCopyService = statisticCopyService;
     this.featureToggle = featureToggle;
   }
@@ -71,22 +68,20 @@ public class StatisticController {
   @ApiResponse(responseCode = "200", description = "The UUID of the statistic")
   @Operation(summary = "Add statistic")
   public UUID addStatistic(@Valid @RequestBody AbstractAddStatisticRequest addStatisticRequest) {
-    UUID uuid = statisticService.addStatistic(addStatisticRequest);
-    CompletableFuture.runAsync(
-        () -> {
-          try {
-            while (statisticService
-                .getAggregationResultState(uuid)
-                .equals(AggregationResultState.PENDING)) {
-              moduleClientAuthenticator.doWithModuleClientAuthentication(
-                  () -> statisticService.workOnPendingStatistic(uuid));
-            }
-          } catch (Exception e) {
-            log.error("Could not complete statistic", e);
-            setState(uuid, AggregationResultState.FAILED);
-          }
-        });
-    return uuid;
+    UUID statisticId = statisticService.addStatistic(addStatisticRequest);
+    CompletableFuture.runAsync(() -> statisticExecution.addStatistic(statisticId));
+    return statisticId;
+  }
+
+  @PatchExchange(value = "/{statisticId}", accept = APPLICATION_JSON_VALUE)
+  @Operation(summary = "Update statistic")
+  public void updateStatistic(
+      @PathVariable(name = "statisticId") UUID statisticId,
+      @Valid @RequestBody AbstractUpdateStatisticRequest updateStatisticRequest) {
+    statisticService.updateStatistic(statisticId, updateStatisticRequest);
+    if (updateStatisticRequest instanceof UpdateStatisticTimeRangeRequest) {
+      CompletableFuture.runAsync(() -> statisticExecution.updateStatistic(statisticId));
+    }
   }
 
   @PostExchange(value = "/clone", accept = APPLICATION_JSON_VALUE)
@@ -97,28 +92,9 @@ public class StatisticController {
     UUID originalId = cloneStatisticRequest.originalStatisticId();
     UUID copyId = statisticCopyService.addCopy(cloneStatisticRequest);
 
-    CompletableFuture.runAsync(
-        () -> {
-          try {
-            while (statisticService
-                .getAggregationResultState(originalId)
-                .equals(AggregationResultState.COPY_ONGOING)) {
-              moduleClientAuthenticator.doWithModuleClientAuthentication(
-                  () -> statisticCopyService.workOnCopy(originalId, copyId));
-            }
-          } catch (Exception e) {
-            log.error("Could not complete cloning statistic", e);
-            setState(originalId, AggregationResultState.COMPLETED);
-            setState(copyId, AggregationResultState.FAILED);
-          }
-        });
+    CompletableFuture.runAsync(() -> statisticExecution.cloneStatistic(originalId, copyId));
 
     return copyId;
-  }
-
-  private void setState(UUID statisticId, AggregationResultState state) {
-    moduleClientAuthenticator.doWithModuleClientAuthentication(
-        () -> statisticService.setState(statisticId, state));
   }
 
   @GetExchange(accept = APPLICATION_JSON_VALUE)

@@ -21,7 +21,7 @@ export function useActivateGeoShape() {
           status: "ACTIVE",
         },
       }),
-    onSuccess: () => snackbar.confirmation("Archivierung aufgehoben."),
+    onSuccess: () => snackbar.confirmation("Archivierung aufgehoben"),
   });
 
   return (geoShapeId: string) => activateGeoShapeMutation.mutate(geoShapeId);

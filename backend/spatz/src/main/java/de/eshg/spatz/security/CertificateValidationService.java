@@ -5,6 +5,8 @@
 
 package de.eshg.spatz.security;
 
+import static org.apache.logging.log4j.util.Strings.isBlank;
+
 import de.eshg.lib.servicedirectory.api.ActorResponseDto;
 import de.eshg.lib.servicedirectory.api.ActorTypeDto;
 import de.eshg.lib.servicedirectory.api.CertificateDto;
@@ -38,8 +40,8 @@ public class CertificateValidationService {
   private static final Logger log = LoggerFactory.getLogger(CertificateValidationService.class);
 
   /**
-   * use the truststore of a predefined SSL bundle, that is exclusively used to validate signatures
-   * of actor certificates
+   * use the truststore of a predefined SSL bundle, that is exclusively used to validate actor
+   * certificates or their signatures
    */
   public static final String SSL_BUNDLE_NAME = "certificatevalidation";
 
@@ -117,6 +119,24 @@ public class CertificateValidationService {
       ActorResponseDto actor, String curOrPrev) {
     CertificateDto cert =
         "current".equals(curOrPrev) ? actor.currentCertificate() : actor.previousCertificate();
+
+    if (isBlank(cert.value())) {
+      return false;
+    }
+
+    if (isBlank(cert.signatory()) || isBlank(cert.signature())) {
+      boolean valid =
+          trustStore == null
+              || X509Utils.inTrustStoreOrWasSignedByOneInTrustStore(trustStore, cert.value());
+      if (!valid) {
+        logInvalidActor(
+            "The {} certificate of the {} '{}' in orgUnit '{}' is untrusted: {}",
+            curOrPrev,
+            actor,
+            cert);
+      }
+      return valid;
+    }
 
     String signatory = cert.signatory();
     if (trustStore != null && !inTrustStoreOrWasSignedByOneInTrustStore(signatory)) {

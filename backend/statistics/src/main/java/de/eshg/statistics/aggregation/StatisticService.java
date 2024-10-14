@@ -7,6 +7,8 @@ package de.eshg.statistics.aggregation;
 
 import static de.eshg.statistics.mapper.StatisticMapper.mapSortDirection;
 import static de.eshg.statistics.mapper.StatisticMapper.mapSortKey;
+import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.EVALUATION_CONDUCTION;
+import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.TABLE_ROWS_REMOVAL;
 
 import de.eshg.base.SortDirection;
 import de.eshg.base.user.UserApi;
@@ -19,11 +21,11 @@ import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
-import de.eshg.statistics.StatisticsSchemeService;
+import de.eshg.statistics.EvaluationTemplateService;
 import de.eshg.statistics.api.AbstractAddStatisticRequest;
+import de.eshg.statistics.api.AbstractUpdateStatisticRequest;
 import de.eshg.statistics.api.AddStatisticWithDataSourcesRequest;
-import de.eshg.statistics.api.AddStatisticWithSchemeRequest;
-import de.eshg.statistics.api.AddStatisticsSchemeRequest;
+import de.eshg.statistics.api.AddStatisticWithTemplateRequest;
 import de.eshg.statistics.api.AttributeSelectionDto;
 import de.eshg.statistics.api.DataSourceDto;
 import de.eshg.statistics.api.EvaluationDto;
@@ -32,17 +34,21 @@ import de.eshg.statistics.api.GetStatisticRequest;
 import de.eshg.statistics.api.GetStatisticResponse;
 import de.eshg.statistics.api.GetStatisticsResponse;
 import de.eshg.statistics.api.StatisticSortKey;
-import de.eshg.statistics.api.StatisticsSchemeDto;
+import de.eshg.statistics.api.UpdateStatisticNameRequest;
+import de.eshg.statistics.api.UpdateStatisticTimeRangeRequest;
 import de.eshg.statistics.api.completeness.CompletenessOfAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBaseAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBusinessAttribute;
 import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
+import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateRequest;
+import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
 import de.eshg.statistics.api.report.GetReportSeriesEntriesOfStatisticResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.Statistic;
@@ -71,27 +77,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StatisticService {
+  private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
   private final StatisticRepository statisticRepository;
   private final UserApi userApiClient;
   private final TableRowRepository tableRowRepository;
-  private final StatisticsSchemeService statisticsSchemeService;
+  private final EvaluationTemplateService evaluationTemplateService;
   private final DataSourceValidator dataSourceValidator;
   private final DataAggregationService dataAggregationService;
-
-  private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
 
   public StatisticService(
       StatisticRepository statisticRepository,
       UserApi userApiClient,
       TableRowRepository tableRowRepository,
-      StatisticsSchemeService statisticsSchemeService,
+      EvaluationTemplateService evaluationTemplateService,
       DataSourceValidator dataSourceValidator,
       DataAggregationService dataAggregationService) {
-    super();
     this.statisticRepository = statisticRepository;
     this.userApiClient = userApiClient;
     this.tableRowRepository = tableRowRepository;
-    this.statisticsSchemeService = statisticsSchemeService;
+    this.evaluationTemplateService = evaluationTemplateService;
     this.dataSourceValidator = dataSourceValidator;
     this.dataAggregationService = dataAggregationService;
   }
@@ -104,31 +108,32 @@ public class StatisticService {
     return switch (addStatisticRequest) {
       case AddStatisticWithDataSourcesRequest addStatisticWithDataSourcesRequest ->
           addStatistic(addStatisticWithDataSourcesRequest);
-      case AddStatisticWithSchemeRequest addStatisticWithSchemeRequest -> {
-        StatisticsSchemeDto statisticScheme =
-            statisticsSchemeService.getStatisticsScheme(addStatisticWithSchemeRequest.schemeId());
+      case AddStatisticWithTemplateRequest addStatisticWithTemplateRequest -> {
+        EvaluationTemplateDto evaluationTemplate =
+            evaluationTemplateService.getEvaluationTemplate(
+                addStatisticWithTemplateRequest.templateId());
         DataSourceDto dataSourceDto =
-            StatisticMapper.mapToDataSourceCode(statisticScheme.dataSources().getFirst());
+            StatisticMapper.mapToDataSourceCode(evaluationTemplate.dataSources().getFirst());
         dataSourceValidator.validateDataSources(List.of(dataSourceDto));
         yield addStatistic(
             dataSourceDto,
-            addStatisticWithSchemeRequest.name(),
-            addStatisticWithSchemeRequest.timeRangeStart(),
-            addStatisticWithSchemeRequest.timeRangeEnd(),
-            addStatisticWithSchemeRequest.schemeId());
+            addStatisticWithTemplateRequest.name(),
+            addStatisticWithTemplateRequest.timeRangeStart(),
+            addStatisticWithTemplateRequest.timeRangeEnd(),
+            addStatisticWithTemplateRequest.templateId());
       }
     };
   }
 
   private UUID addStatistic(AddStatisticWithDataSourcesRequest request) {
-    UUID schemeId = null;
+    UUID templateId = null;
     dataSourceValidator.validateDataSources(request.dataSources());
 
-    if (request.schemeName() != null) {
-      schemeId =
-          statisticsSchemeService
-              .addStatisticsScheme(
-                  new AddStatisticsSchemeRequest(request.schemeName(), request.dataSources()))
+    if (request.templateName() != null) {
+      templateId =
+          evaluationTemplateService
+              .addEvaluationTemplate(
+                  new AddEvaluationTemplateRequest(request.templateName(), request.dataSources()))
               .id();
     }
 
@@ -137,7 +142,7 @@ public class StatisticService {
         request.name(),
         request.timeRangeStart(),
         request.timeRangeEnd(),
-        schemeId);
+        templateId);
   }
 
   private UUID addStatistic(
@@ -145,54 +150,61 @@ public class StatisticService {
       String name,
       Instant timeRangeStart,
       Instant timeRangeEnd,
-      UUID schemeId) {
+      UUID templateId) {
     return addStatistic(
-        schemeId,
+        templateId,
         dataAggregationService.createStatistic(dataSource, name, timeRangeStart, timeRangeEnd));
   }
 
-  private UUID addStatistic(UUID schemeId, Statistic statistic) {
-    if (schemeId != null) {
-      statisticsSchemeService.setLastUsageToNow(schemeId);
+  private UUID addStatistic(UUID templateId, Statistic statistic) {
+    if (templateId != null) {
+      evaluationTemplateService.setLastUsageToNow(templateId);
     }
 
     return statisticRepository.save(statistic).getExternalId();
   }
 
-  @Transactional(readOnly = true)
-  public AggregationResultState getAggregationResultState(UUID statisticId) {
-    return getStatistic(statisticId).getState();
+  @Transactional
+  public void updateStatistic(
+      UUID statisticId, AbstractUpdateStatisticRequest updateStatisticRequest) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    validateBelongsToCurrentUserOrIsAdmin(statistic);
+    validateStatisticCompleted(statistic);
+
+    switch (updateStatisticRequest) {
+      case UpdateStatisticNameRequest updateStatisticNameRequest ->
+          updateName(statistic, updateStatisticNameRequest);
+      case UpdateStatisticTimeRangeRequest updateStatisticTimeRangeRequest ->
+          updateTimeRange(statistic, updateStatisticTimeRangeRequest);
+    }
   }
 
-  @Transactional
-  public void workOnPendingStatistic(UUID statisticId) {
-    Statistic statistic = getStatistic(statisticId);
-    if (!statistic.getState().equals(AggregationResultState.PENDING)) {
-      return;
-    }
+  private void updateName(
+      Statistic statistic, UpdateStatisticNameRequest updateStatisticNameRequest) {
+    statistic.setName(updateStatisticNameRequest.name());
+  }
 
-    switch (statistic.getPendingState()) {
-      case DATA_AGGREGATION -> {
-        try {
-          dataAggregationService.collectTableRows(statistic);
-        } catch (Exception exception) {
-          log.error("Error while collecting table rows", exception);
-          statistic.setState(AggregationResultState.FAILED);
-        }
-      }
-      case MIN_MAX_DETERMINATION -> {
-        dataAggregationService.determineMinMaxNullUnknownValues(statistic);
-        statistic.setState(AggregationResultState.COMPLETED);
-        statistic.setPendingState(null);
-      }
-      case EVALUATION_CONDUCTION -> {
-        statistic.setState(AggregationResultState.COMPLETED);
-        statistic.setPendingState(null);
-      }
-      default -> {
-        // ignore
-      }
-    }
+  private void updateTimeRange(
+      Statistic statistic, UpdateStatisticTimeRangeRequest updateStatisticTimeRangeRequest) {
+    AggregationResultUtil.validateTimeRange(
+        updateStatisticTimeRangeRequest.timeRange().start(),
+        updateStatisticTimeRangeRequest.timeRange().end());
+
+    statistic.setTimeRangeStart(updateStatisticTimeRangeRequest.timeRange().start());
+    statistic.setTimeRangeEnd(updateStatisticTimeRangeRequest.timeRange().end());
+    statistic.setNumberOfTableRows(0);
+    statistic.setState(AggregationResultState.UPDATING);
+    statistic.setPendingState(TABLE_ROWS_REMOVAL);
+  }
+
+  @Transactional(readOnly = true)
+  public AggregationResultState getAggregationResultState(UUID statisticId) {
+    return getStatisticInternal(statisticId).getState();
+  }
+
+  @Transactional(readOnly = true)
+  public AggregationResultPendingState getAggregationResultPendingState(UUID statisticId) {
+    return getStatisticInternal(statisticId).getPendingState();
   }
 
   @Transactional(readOnly = true)
@@ -232,7 +244,7 @@ public class StatisticService {
   @Transactional(readOnly = true)
   public GetStatisticResponse getStatistic(
       UUID statisticId, GetStatisticRequest getStatisticRequest) {
-    Statistic statistic = getStatistic(statisticId);
+    Statistic statistic = getStatisticInternal(statisticId);
     validateStatisticCompleted(statistic);
     TableColumn sortTableColumn =
         validateSortColumn(getStatisticRequest.sortAttribute(), statistic);
@@ -265,14 +277,14 @@ public class StatisticService {
         statistic, tableRowPage.get().toList(), tableRowPage.getTotalElements());
   }
 
-  public Statistic getStatistic(UUID statisticId) {
+  public Statistic getStatisticInternal(UUID statisticId) {
     return statisticRepository
         .findByExternalId(statisticId)
         .orElseThrow(
             () -> new NotFoundException("Statistic with id '%s' not found".formatted(statisticId)));
   }
 
-  public void validateStatisticCompleted(Statistic statistic) {
+  public static void validateStatisticCompleted(Statistic statistic) {
     if (!statistic.getState().equals(AggregationResultState.COMPLETED)) {
       throw new BadRequestException(
           "Statistic %s is not in state COMPLETED".formatted(statistic.getExternalId()));
@@ -294,7 +306,7 @@ public class StatisticService {
 
   @Transactional(readOnly = true)
   public GetDetailPageInformationResponse getDetailPageInformation(UUID statisticId) {
-    Statistic statistic = getStatistic(statisticId);
+    Statistic statistic = getStatisticInternal(statisticId);
     validateStatisticCompleted(statistic);
     Map<UUID, UserDto> resolvedUsers = getResolvedUsers(Stream.of(statistic));
     List<EvaluationDto> evaluations = EvaluationMapper.getEvaluations(statistic.getEvaluations());
@@ -309,7 +321,7 @@ public class StatisticService {
 
   @Transactional
   public void deleteStatistic(UUID statisticId) {
-    Statistic statistic = getStatistic(statisticId);
+    Statistic statistic = getStatisticInternal(statisticId);
     validateBelongsToCurrentUserOrIsAdmin(statistic);
     validateCopyProcessIsNotOngoing(statistic);
     statisticRepository.delete(statistic);
@@ -336,7 +348,7 @@ public class StatisticService {
 
   @Transactional(readOnly = true)
   public GetCompletenessDataResponse getCompletenessInformation(UUID statisticId) {
-    Statistic statistic = getStatistic(statisticId);
+    Statistic statistic = getStatisticInternal(statisticId);
     validateStatisticCompleted(statistic);
 
     List<CompletenessOfAttribute> completenessOfAttributes =
@@ -406,7 +418,7 @@ public class StatisticService {
   @Transactional(readOnly = true)
   public GetReportSeriesEntriesOfStatisticResponse getReportSeriesEntriesOfStatistic(
       UUID statisticId) {
-    Statistic statistic = getStatistic(statisticId);
+    Statistic statistic = getStatisticInternal(statisticId);
 
     List<ReportSeriesDto> reportSeriesDtos =
         statistic.getReportSeriesList().stream().map(ReportMapper::mapToApi).toList();
@@ -425,7 +437,42 @@ public class StatisticService {
 
   @Transactional
   public void setState(UUID statisticId, AggregationResultState state) {
-    Statistic statistic = getStatistic(statisticId);
+    Statistic statistic = getStatisticInternal(statisticId);
     statistic.setState(state);
+  }
+
+  @Transactional(readOnly = true)
+  public AggregationResultStateInformation getStateInformation(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    return new AggregationResultStateInformation(statistic.getState(), statistic.getPendingState());
+  }
+
+  @Transactional
+  public void aggregateData(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    try {
+      dataAggregationService.collectTableRows(statistic);
+    } catch (Exception exception) {
+      log.error("Error while collecting table rows", exception);
+      statistic.setState(AggregationResultState.FAILED);
+    }
+  }
+
+  @Transactional
+  public void minMaxDetermination(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    dataAggregationService.determineMinMaxNullUnknownValues(statistic);
+    statistic.setPendingState(EVALUATION_CONDUCTION);
+  }
+
+  @Transactional
+  public void removeTableRows(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+
+    dataAggregationService.removeTableRows(statistic);
+
+    if (dataAggregationService.countTableRows(statistic) <= 0) {
+      statistic.setPendingState(AggregationResultPendingState.DATA_AGGREGATION);
+    }
   }
 }

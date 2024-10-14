@@ -60,6 +60,8 @@ export const routes = {
   },
   auditlog: {
     index: auditLogPath,
+    access: (source: string, date: string) =>
+      `${auditLogPath}/${source}/${date}/decrypt`,
     authorize: {
       index: auditLogAuthorizePath,
       grantAccess: (source: string, date: string) =>

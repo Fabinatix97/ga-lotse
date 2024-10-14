@@ -62,7 +62,8 @@ public class ReportSeriesService {
 
   @Transactional
   public ReportSeriesDto addReportSeries(AbstractAddReportSeriesRequest addReportSeriesRequest) {
-    Statistic statistic = statisticService.getStatistic(addReportSeriesRequest.statisticId());
+    Statistic statistic =
+        statisticService.getStatisticInternal(addReportSeriesRequest.statisticId());
     if (StatisticService.hasNoDiagrams(statistic)) {
       throw new BadRequestException("Report creation is only possible with existing diagrams");
     }
@@ -98,7 +99,7 @@ public class ReportSeriesService {
             addManualReportSeriesRequest.name(),
             addManualReportSeriesRequest.timeRangeStart(),
             addManualReportSeriesRequest.timeRangeEnd(),
-            AggregationResultState.PENDING,
+            AggregationResultState.CREATING,
             null,
             statistic));
 
@@ -248,7 +249,11 @@ public class ReportSeriesService {
 
   private static void validateNotPendingManualReport(ReportSeries reportSeries) {
     if (reportSeries.getReportType().equals(ReportType.MANUAL)
-        && reportSeries.getReports().getFirst().getState().equals(AggregationResultState.PENDING)) {
+        && reportSeries
+            .getReports()
+            .getFirst()
+            .getState()
+            .equals(AggregationResultState.CREATING)) {
       throw new BadRequestException(
           "Report series %s has a pending report".formatted(reportSeries.getExternalId()));
     }

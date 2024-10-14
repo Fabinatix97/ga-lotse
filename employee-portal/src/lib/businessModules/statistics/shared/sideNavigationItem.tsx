@@ -30,7 +30,7 @@ export function useSideNavigationItems(): SideNavigationItem[] {
         : undefined,
       subItems: [
         {
-          name: "Statistiken",
+          name: "Auswertungen",
           href: routes.statistics.index,
           accessCheck: hasAnyUserRoles([
             ApiUserRole.StatisticsStatisticsRead,

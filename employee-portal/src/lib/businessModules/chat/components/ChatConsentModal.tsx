@@ -6,13 +6,15 @@
 import { Block, Done } from "@mui/icons-material";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 
+import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 export function ChatConsentModal(props: Omit<BaseModalProps, "children">) {
   const { updateChatUserConsents } = useUserSettings();
 
-  function handleAcceptClick() {
+  async function handleAcceptClick() {
+    await clearCachedCredentials();
     updateChatUserConsents({
       isChatConsentAsked: true,
       isChatUsageEnabled: true,

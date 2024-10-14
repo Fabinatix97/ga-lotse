@@ -6,6 +6,7 @@
 import { SearchOutlined } from "@mui/icons-material";
 import { Autocomplete } from "@mui/joy";
 import { useState } from "react";
+import { identity } from "remeda";
 
 import { useSearchSchools } from "@/lib/baseModule/api/queries/contacts";
 import { mapContactToSelectOption } from "@/lib/businessModules/schoolEntry/features/procedures/helpers";
@@ -29,6 +30,7 @@ export function SearchSchoolFilter(props: SearchSchoolFilterProps) {
       value={selectedOption ?? null}
       inputValue={schoolName}
       options={schoolOptions}
+      filterOptions={identity()}
       placeholder="Schule suchen"
       endDecorator={<SearchOutlined />}
       loading={searchSchools.isLoading}

@@ -28,7 +28,6 @@ declare module "@mui/joy/styles/types/zIndex" {
   interface ZIndexOverrides {
     toolbar: true;
     sideNavigation: true;
-    headerSidebar: true;
     header: true;
   }
 }
@@ -130,7 +129,6 @@ export const theme = extendTheme({
   zIndex: {
     toolbar: 50,
     sideNavigation: 100,
-    headerSidebar: 200,
     header: 500,
   },
   typography: {

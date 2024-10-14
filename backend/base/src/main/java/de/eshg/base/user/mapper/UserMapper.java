@@ -173,6 +173,8 @@ public class UserMapper {
       case STI_PROTECTION_PHYSICIAN -> EmployeePermissionRole.STI_PROTECTION_PHYSICIAN;
       case STI_PROTECTION_ADMIN -> EmployeePermissionRole.STI_PROTECTION_ADMIN;
       case STI_PROTECTION_LEADER -> EmployeePermissionRole.STI_PROTECTION_LEADER;
+      case MEDICAL_REGISTRY_LEADER -> EmployeePermissionRole.MEDICAL_REGISTRY_LEADER;
+      case MEDICAL_REGISTRY_ADMIN -> EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN;
     };
   }
 
@@ -244,6 +246,8 @@ public class UserMapper {
       case STI_PROTECTION_PHYSICIAN -> UserRoleDto.STI_PROTECTION_PHYSICIAN;
       case STI_PROTECTION_ADMIN -> UserRoleDto.STI_PROTECTION_ADMIN;
       case STI_PROTECTION_LEADER -> UserRoleDto.STI_PROTECTION_LEADER;
+      case MEDICAL_REGISTRY_LEADER -> UserRoleDto.MEDICAL_REGISTRY_LEADER;
+      case MEDICAL_REGISTRY_ADMIN -> UserRoleDto.MEDICAL_REGISTRY_ADMIN;
     };
   }
 

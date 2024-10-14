@@ -14,24 +14,44 @@ import { isNullish } from "remeda";
 
 import { formatSchoolYear } from "@/lib/businessModules/schoolEntry/features/procedures/formatters";
 
-const SCHOOL_YEAR_OPTIONS = generateSchoolYears(new Date().getFullYear(), 10);
+interface SchoolYearAutocompleteProps
+  extends Omit<
+    AutocompleteProps<number, false, false, false>,
+    "options" | "getOptionLabel"
+  > {
+  range?: YearRange;
+}
 
-type SchoolYearAutocompleteProps = Omit<
-  AutocompleteProps<number, false, false, false>,
-  "options" | "getOptionLabel"
->;
+export interface YearRange {
+  numberOfYearsInPast: number;
+  numberOfYearsInFuture: number;
+}
+
+const DEFAULT_RANGE: YearRange = {
+  numberOfYearsInPast: 5,
+  numberOfYearsInFuture: 5,
+};
 
 export function SchoolYearAutocomplete(props: SchoolYearAutocompleteProps) {
+  const yearRange = props.range ?? DEFAULT_RANGE;
+  const schoolYearOptions = generateSchoolYears(
+    new Date().getFullYear(),
+    yearRange,
+  );
   return (
     <Autocomplete
       {...props}
-      options={addValueIfNecessary(props.value, SCHOOL_YEAR_OPTIONS)}
+      options={addValueIfNecessary(props.value, schoolYearOptions)}
       getOptionLabel={getSchoolYearLabel}
     />
   );
 }
 
-export function SchoolYearField(props: FieldProps<OptionalFieldValue<number>>) {
+interface SchoolYearFieldProps extends FieldProps<OptionalFieldValue<number>> {
+  range?: YearRange;
+}
+
+export function SchoolYearField(props: SchoolYearFieldProps) {
   const field = useBaseField<OptionalFieldValue<number>>(props);
 
   const value = isEmptyString(field.input.value) ? null : field.input.value;
@@ -46,6 +66,7 @@ export function SchoolYearField(props: FieldProps<OptionalFieldValue<number>>) {
       <SchoolYearAutocomplete
         name={props.name}
         value={value}
+        range={props.range}
         onChange={(_, newValue) => {
           void field.helpers.setValue(newValue ?? "");
         }}
@@ -78,13 +99,10 @@ function getSchoolYearLabel(value: number | string | null): string {
   return formatSchoolYear(value);
 }
 
-function generateSchoolYears(
-  currentYear: number,
-  numberOfYearsInFutureOrPast: number,
-): number[] {
+function generateSchoolYears(currentYear: number, range: YearRange): number[] {
   const schoolYears: number[] = [];
-  const startYear = currentYear - numberOfYearsInFutureOrPast;
-  const endYear = currentYear + numberOfYearsInFutureOrPast;
+  const startYear = currentYear - range.numberOfYearsInPast;
+  const endYear = currentYear + range.numberOfYearsInFuture;
   for (let year = startYear; year <= endYear; year++) {
     schoolYears.push(year);
   }

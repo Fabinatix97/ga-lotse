@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.GetExchange;
@@ -76,4 +78,28 @@ public interface GdprProcedureApi {
   @Operation(summary = "Changes the current status of the GDPR procedure.")
   void changeStatus(
       @PathVariable("id") UUID id, @RequestBody @Valid GdprProcedureChangeStatusRequest request);
+
+  @GetExchange("/{id}/fileStateIds")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Get file state ids of this gdpr procedure.")
+  GetGdprProcedureFileStateIdsResponse getFileStateIds(
+      @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id);
+
+  @GetExchange("/{id}/report-document")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Returns the relevant report as PDF for this GDPR Procedure.")
+  ResponseEntity<Resource> getReportDocument(@PathVariable("id") UUID id);
+
+  @PostExchange("/{id}/downloads")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Add a download of GDPR-related document or data for this GDPR procedure.")
+  void addDownloads(
+      @PathVariable("id") UUID id, @RequestBody @Valid AddGdprDownloadsRequest request);
+
+  @GetExchange("/{id}/downloads")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          "Get list of download ids of GDPR-related documents or data of this GDPR procedure.")
+  GetGdprDownloadsResponse getDownloads(@PathVariable("id") UUID id);
 }

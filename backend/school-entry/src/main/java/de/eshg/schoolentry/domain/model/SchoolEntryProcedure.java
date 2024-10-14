@@ -16,6 +16,7 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import jakarta.persistence.*;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
@@ -121,6 +122,12 @@ public class SchoolEntryProcedure
   @DataSensitivity(PSEUDONYMIZED)
   private UUID locationId;
 
+  @DataSensitivity(PSEUDONYMIZED)
+  private Instant schoolInfoLetterCreatedAt;
+
+  @DataSensitivity(PSEUDONYMIZED)
+  private LocalDate examinationDate;
+
   public UUID getSchoolId() {
     return schoolId;
   }
@@ -218,6 +225,10 @@ public class SchoolEntryProcedure
     this.labels = labels;
   }
 
+  public void addLabel(Label label) {
+    this.labels.add(label);
+  }
+
   public boolean isEntryLevel() {
     return isEntryLevel;
   }
@@ -307,5 +318,21 @@ public class SchoolEntryProcedure
 
   public void setLocationId(UUID locationId) {
     this.locationId = locationId;
+  }
+
+  public Instant getschoolInfoLetterCreatedAt() {
+    return schoolInfoLetterCreatedAt;
+  }
+
+  public void setschoolInfoLetterCreatedAt(Instant schoolInfoLetterCreatedAt) {
+    this.schoolInfoLetterCreatedAt = schoolInfoLetterCreatedAt;
+  }
+
+  public LocalDate getExaminationDate() {
+    return examinationDate;
+  }
+
+  public void setExaminationDate(LocalDate examinationDate) {
+    this.examinationDate = examinationDate;
   }
 }

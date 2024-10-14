@@ -7,7 +7,7 @@
 
 import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
 
-import { InformationStatementTemplateForm } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateForm";
+import { InformationStatementTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateEditor";
 import { ToggledPage } from "@/lib/businessModules/travelMedicine/shared/ToggledPage";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -27,8 +27,8 @@ export default function NewInformationStatementTemplatePage() {
           />
         }
       >
-        <MainContentLayout fullViewportHeight>
-          <InformationStatementTemplateForm templateId={""} />
+        <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
+          <InformationStatementTemplateEditor templateId={""} />
         </MainContentLayout>
       </StickyToolbarLayout>
     </ToggledPage>

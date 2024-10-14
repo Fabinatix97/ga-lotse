@@ -21,7 +21,7 @@ export function useArchiveGeoShape() {
           status: "ARCHIVED",
         },
       }),
-    onSuccess: () => snackbar.confirmation("Karte archiviert."),
+    onSuccess: () => snackbar.confirmation("Karte archiviert"),
   });
 
   return (geoShapeId: string) => archiveGeoShapeMutation.mutate(geoShapeId);

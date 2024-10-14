@@ -17,8 +17,6 @@ import { routes } from "./routes";
 
 export function useSideNavigationItems(): SideNavigationItem[] {
   // our toggles
-  const { data: procedureSearchEnabled, isError: isErrorProcedureSearch } =
-    useIsNewFeatureEnabledUnsuspended(ApiTravelMedicineFeature.ProcedureSearch);
   const {
     data: informationStatementEnabled,
     isError: isErrorCitizenPortalInformationStatement,
@@ -26,8 +24,7 @@ export function useSideNavigationItems(): SideNavigationItem[] {
     ApiTravelMedicineFeature.CitizenPortalInformationStatement,
   );
 
-  const isTravelMedicineError =
-    isErrorProcedureSearch || isErrorCitizenPortalInformationStatement;
+  const isTravelMedicineError = isErrorCitizenPortalInformationStatement;
 
   // their toggles
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
@@ -45,7 +42,7 @@ export function useSideNavigationItems(): SideNavigationItem[] {
           href: routes.procedures.index,
           accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),
         },
-        procedureSearchEnabled && {
+        {
           name: "Vorgangssuche",
           href: routes.proceduresSearch.index,
           accessCheck: hasUserRole(ApiUserRole.TravelMedicineAdmin),

@@ -5,24 +5,35 @@
 
 package de.eshg.testhelper;
 
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 import de.cronn.reflection.util.PropertyUtils;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.persistence.EntityManagerFactory;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import liquibase.Scope;
+import liquibase.integration.spring.SpringLiquibase;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.generator.Generator;
 import org.hibernate.id.enhanced.PooledOptimizer;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 @Component
@@ -30,26 +41,141 @@ import org.springframework.util.Assert;
 @ConditionalOnTestHelperEnabled
 public class DatabaseResetHelper {
 
+  private final JdbcConnectionDetails jdbcConnectionDetails;
   private final DataSource dataSource;
+  private final SpringLiquibase liquibase;
+  private final LiquibaseProperties liquibaseProperties;
+  private final JdbcTemplate jdbcTemplate;
   private final EntityManagerFactory entityManagerFactory;
+  private final EnvironmentConfig environmentConfig;
 
-  public DatabaseResetHelper(DataSource dataSource, EntityManagerFactory entityManagerFactory) {
+  public DatabaseResetHelper(
+      JdbcConnectionDetails jdbcConnectionDetails,
+      DataSource dataSource,
+      @Autowired(required = false) SpringLiquibase liquibase,
+      @Autowired(required = false) LiquibaseProperties liquibaseProperties,
+      JdbcTemplate jdbcTemplate,
+      EntityManagerFactory entityManagerFactory,
+      EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
+    this.jdbcConnectionDetails = jdbcConnectionDetails;
     this.dataSource = dataSource;
+    this.liquibase = liquibase;
+    this.liquibaseProperties = liquibaseProperties;
+    this.jdbcTemplate = jdbcTemplate;
     this.entityManagerFactory = entityManagerFactory;
+    this.environmentConfig = environmentConfig;
   }
 
-  private static void truncateTablesCascade(
-      Connection connection, List<String> tableNamesToTruncate) throws SQLException {
-    String tableNames = String.join(", ", tableNamesToTruncate);
-    try (PreparedStatement preparedStatement =
-        connection.prepareStatement("TRUNCATE TABLE " + tableNames + " RESTART IDENTITY CASCADE")) {
-      preparedStatement.execute();
+  public JdbcConnectionDetails getJdbcConnectionDetails() {
+    environmentConfig.assertIsNotProduction();
+    return this.jdbcConnectionDetails;
+  }
+
+  public void restoreDatabaseSnapshot(String databaseSnapshotSql) throws Exception {
+    environmentConfig.assertIsNotProduction();
+
+    Assert.isTrue(
+        isLiquibaseAvailableAndEnabled(),
+        "Liquibase must be available and enabled in order to restore a database snapshot.");
+
+    dropAndRecreateThePublicSchema();
+
+    String filteredSql =
+        Arrays.stream(databaseSnapshotSql.split("\\r?\\n"))
+            .filter(line -> !line.isBlank())
+            .filter(line -> !line.trim().startsWith("--"))
+            .filter(line -> !line.trim().startsWith("\\connect"))
+            .filter(line -> !line.trim().toLowerCase(Locale.ROOT).startsWith("create database"))
+            .filter(
+                line -> !line.trim().toLowerCase(Locale.ROOT).startsWith("create schema public"))
+            .collect(Collectors.joining("\n"));
+    jdbcTemplate.execute(filteredSql);
+
+    /*
+     * We need to evict all connection because after dropping and recreating the public schema,
+     * Liquibase would fail when running with old connections:
+     *
+     * Caused by: liquibase.exception.DatabaseException: ERROR: no schema has been selected to create in
+     *   Position: 14 [Failed SQL: (0) CREATE TABLE databasechangelog (ID VARCHAR(255) NOT NULL, AUTHOR VARCHAR(255) NOT NULL, FILENAME VARCHAR(255) NOT NULL, DATEEXECUTED TIMESTAMP WITHOUT TIME ZONE NOT NULL, ORDEREXECUTED INTEGER NOT NULL, EXECTYPE VARCHAR(10) NOT NULL, MD5SUM VARCHAR(35), DESCRIPTION VARCHAR(255), COMMENTS VARCHAR(255), TAG VARCHAR(255), LIQUIBASE VARCHAR(20), CONTEXTS VARCHAR(255), LABELS VARCHAR(255), DEPLOYMENT_ID VARCHAR(10))]
+     *    at […]
+     * Caused by: org.postgresql.util.PSQLException: ERROR: no schema has been selected to create in
+     */
+    evictAllConnections();
+
+    runLiquibaseMigrations();
+  }
+
+  private void runLiquibaseMigrations() throws Exception {
+    // This is a workaround to force Liquibase to clear all internal thread-local caches.
+    // If we do not clear them, we observe that Liquibase sometimes incorrectly assumes that no
+    // migrations need to run.
+    Scope.setScopeManager(null);
+
+    liquibase.afterPropertiesSet();
+  }
+
+  private boolean isLiquibaseAvailableAndEnabled() {
+    return liquibaseProperties != null && liquibaseProperties.isEnabled() && liquibase != null;
+  }
+
+  private void dropAndRecreateThePublicSchema() {
+    List<String> extensions =
+        jdbcTemplate.query(
+            """
+            SELECT extname FROM pg_extension
+            WHERE extnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
+            ORDER BY extname""",
+            (rs, rowNum) -> rs.getString(1));
+
+    jdbcTemplate.execute("drop schema public cascade");
+    jdbcTemplate.execute("create schema public");
+
+    if (!extensions.isEmpty()) {
+      String createExtensions =
+          extensions.stream()
+              .map("create extension %s schema public"::formatted)
+              .collect(Collectors.joining(";\n"));
+      jdbcTemplate.execute(createExtensions);
     }
   }
 
-  private static List<String> getAllTableNames(Connection connection, String... tablesToExclude)
-      throws SQLException {
+  private void evictAllConnections() throws Exception {
+    assertNoActiveConnections();
+    getHikariPoolMXBean().softEvictConnections();
+  }
+
+  private void assertNoActiveConnections() throws Exception {
+    int activeConnections = getHikariPoolMXBean().getActiveConnections();
+    Assert.isTrue(
+        activeConnections == 0,
+        ("No active database connections are expected at this point, but found %d active connections. "
+                + "This may indicate that a previous test did not complete fully, or that a wait is missing.")
+            .formatted(activeConnections));
+  }
+
+  private HikariPoolMXBean getHikariPoolMXBean() throws Exception {
+    HikariDataSource hikariDataSource = getHikariDataSource();
+    return hikariDataSource.getHikariPoolMXBean();
+  }
+
+  private HikariDataSource getHikariDataSource() throws Exception {
+    if (dataSource instanceof HikariDataSource hikariDataSource) {
+      return hikariDataSource;
+    }
+    return (HikariDataSource)
+        dataSource.getClass().getMethod("getRealDataSource").invoke(dataSource);
+  }
+
+  private void truncateTablesCascade(List<String> tableNamesToTruncate) {
+    String tableNames = String.join(", ", tableNamesToTruncate);
+    jdbcTemplate.execute("TRUNCATE TABLE " + tableNames + " RESTART IDENTITY CASCADE");
+  }
+
+  private List<String> getAllTableNames(String... tablesToExclude) throws SQLException {
     List<String> tableNames = new ArrayList<>();
+
+    Connection connection = DataSourceUtils.getConnection(dataSource);
     try (ResultSet tables =
         connection.getMetaData().getTables(null, "public", "%", new String[] {"TABLE"})) {
       while (tables.next()) {
@@ -58,6 +184,8 @@ public class DatabaseResetHelper {
           tableNames.add(tableName);
         }
       }
+    } finally {
+      DataSourceUtils.releaseConnection(connection, dataSource);
     }
 
     for (String tableToExclude : tablesToExclude) {
@@ -70,20 +198,20 @@ public class DatabaseResetHelper {
     return tableNames.stream().sorted().toList();
   }
 
+  @Transactional
   public void truncateAllTables(String... tablesToExclude) throws SQLException {
-    try (Connection connection = dataSource.getConnection()) {
-      List<String> tableNames = getAllTableNames(connection, tablesToExclude);
-      truncateTablesCascade(connection, tableNames);
-    }
+    environmentConfig.assertIsNotProduction();
+    List<String> tableNames = getAllTableNames(tablesToExclude);
+    truncateTablesCascade(tableNames);
   }
 
-  public void resetAllSequences() throws SQLException {
+  @Transactional
+  public void resetAllSequences() {
+    environmentConfig.assertIsNotProduction();
     List<String> sequenceNamesToReset;
-    try (Connection connection = dataSource.getConnection()) {
-      sequenceNamesToReset = getSequenceNamesThatNeedToBeReset(connection);
-      for (String sequenceName : sequenceNamesToReset) {
-        resetSequence(sequenceName, connection);
-      }
+    sequenceNamesToReset = getSequenceNamesThatNeedToBeReset();
+    for (String sequenceName : sequenceNamesToReset) {
+      resetSequence(sequenceName);
     }
 
     if (!sequenceNamesToReset.isEmpty()) {
@@ -135,27 +263,13 @@ public class DatabaseResetHelper {
     }
   }
 
-  private static List<String> getSequenceNamesThatNeedToBeReset(Connection connection)
-      throws SQLException {
-    try (Statement statement = connection.createStatement();
-        ResultSet resultSet =
-            statement.executeQuery(
-                "select sequencename from pg_sequences where last_value is not null")) {
-      List<String> sequenceNames = new ArrayList<>();
-
-      while (resultSet.next()) {
-        sequenceNames.add(resultSet.getString(1));
-      }
-
-      return sequenceNames;
-    }
+  private List<String> getSequenceNamesThatNeedToBeReset() {
+    return jdbcTemplate.query(
+        "select sequencename from pg_sequences where last_value is not null",
+        (rs, rowNum) -> rs.getString(1));
   }
 
-  private static void resetSequence(String sequenceName, Connection connection)
-      throws SQLException {
-    try (PreparedStatement preparedStatement =
-        connection.prepareStatement("alter sequence " + sequenceName + " restart with 1")) {
-      preparedStatement.execute();
-    }
+  private void resetSequence(String sequenceName) {
+    jdbcTemplate.execute("alter sequence " + sequenceName + " restart with 1");
   }
 }

@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetAppointmentDetailsResponse } from "@eshg/citizen-portal-api/travelMedicine";
+import {
+  ApiAppointmentBookingType,
+  ApiGetAppointmentDetailsResponse,
+} from "@eshg/citizen-portal-api/travelMedicine";
 import { Box, styled } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -48,15 +51,23 @@ export function AppointmentDetailsAdditionalInformation(
   const isMobile = useIsMobile();
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
 
+  function isCancelled() {
+    return (
+      props.appointmentDetails.summaryDto.appointmentBookingType ===
+      ApiAppointmentBookingType.Cancelled
+    );
+  }
+
   return (
-    !props.appointmentDetails.hasAccomplishedService && (
+    !props.appointmentDetails.hasAccomplishedService &&
+    !isCancelled() && (
       <ContentSheet sx={{ padding: 0 }}>
         <ContentSheetTitle sx={{ padding: "24px 24px 0 24px" }}>
           {t("medicalHistoryPanel.title")}
         </ContentSheetTitle>
         <Box sx={isMobile ? BOX_STYLE_MOBILE : BOX_STYLE}>
           <AppointmentDetailsMedicalHistoryInformation
-            isAnswered={props.appointmentDetails.isMedicalHistoryAnswered}
+            citizenHasAnswered={props.appointmentDetails.citizenHasAnswered}
           />
         </Box>
         <InfoSection sx={{ padding: "0 24px 24px 24px" }}>

@@ -122,6 +122,7 @@ class ProceduresHelper {
                 filterParameters.labelsFilter() == null
                     ? Collections.emptyList()
                     : filterParameters.labelsFilter()),
+            filterParameters.isInvitationSentFilter(),
             pageSpec.sortKey(),
             pageSpec.direction());
 

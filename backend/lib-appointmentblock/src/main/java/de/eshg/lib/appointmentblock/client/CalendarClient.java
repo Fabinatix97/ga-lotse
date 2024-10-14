@@ -15,7 +15,7 @@ import de.eshg.base.calendar.api.GetBlockingEventsOfCalendarsResponse;
 import de.eshg.base.calendar.api.GetUserCalendarsRequest;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.api.UserCalendar;
-import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockDto;
+import de.eshg.lib.appointmentblock.model.CreateAppointmentBlockData;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +58,7 @@ public class CalendarClient {
   }
 
   public List<UUID> getUserIdsWithEventConflicts(
-      List<UUID> userIds, List<CreateAppointmentBlockDto> appointmentBlocks) {
+      List<UUID> userIds, List<CreateAppointmentBlockData> appointmentBlocks) {
     List<UserCalendar> userCalendars = getUserCalendarIds(userIds);
     Map<UUID, UUID> calendarUserMap =
         userCalendars.stream()
@@ -76,7 +76,7 @@ public class CalendarClient {
         .toList();
   }
 
-  private TimeRange mapToTimeRange(CreateAppointmentBlockDto appointmentBlock) {
+  private TimeRange mapToTimeRange(CreateAppointmentBlockData appointmentBlock) {
     return new TimeRange(appointmentBlock.start(), appointmentBlock.end());
   }
 }

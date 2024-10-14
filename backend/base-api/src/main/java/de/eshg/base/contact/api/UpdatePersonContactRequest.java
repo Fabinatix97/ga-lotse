@@ -5,6 +5,7 @@
 
 package de.eshg.base.contact.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -50,7 +51,7 @@ public record UpdatePersonContactRequest(
                 @Schema(
                     description = "A list of email addresses of the Contact.",
                     example = "['mail1@address.de','mail2@address.de','mail3@address.de']"))
-        List<@NotNull @Size(min = 6, max = 254) String> emailAddresses,
+        List<@EmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements AbstractUpdateContactRequest {

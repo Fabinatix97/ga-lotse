@@ -34,6 +34,7 @@ interface InputComponent {
   handleUserTyping?: (roomId: string, isTyping: boolean) => Promise<void>;
   selectedRoomId?: string;
   roomMembers: RoomMember[];
+  disabled?: boolean;
 }
 
 export function InputComponent({
@@ -42,6 +43,7 @@ export function InputComponent({
   roomMembers,
   handleUserTyping,
   selectedRoomId,
+  disabled,
 }: Readonly<InputComponent>) {
   const { matrixClient } = useChatClientContext();
   const [filteredUsers, setFilteredUsers] = useState<RoomMember[]>([]);
@@ -215,10 +217,16 @@ export function InputComponent({
         }}
         color="neutral"
         endDecorator={
-          <IconButton size="sm" color="primary" type="submit">
+          <IconButton
+            size="sm"
+            color="primary"
+            type="submit"
+            disabled={disabled}
+          >
             <SendOutlinedIcon />
           </IconButton>
         }
+        disabled={disabled}
       />
     </Box>
   );

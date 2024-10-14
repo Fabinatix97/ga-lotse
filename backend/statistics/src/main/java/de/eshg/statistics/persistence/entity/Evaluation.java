@@ -52,7 +52,6 @@ public class Evaluation extends BaseEntityWithExternalId {
   @OneToOne(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,
-      mappedBy = ChartConfiguration_.EVALUATION,
       optional = false,
       orphanRemoval = true)
   private ChartConfiguration chartConfiguration;
@@ -95,7 +94,6 @@ public class Evaluation extends BaseEntityWithExternalId {
   }
 
   public void setChartConfiguration(ChartConfiguration chartConfiguration) {
-    chartConfiguration.setEvaluation(this);
     this.chartConfiguration = chartConfiguration;
   }
 
@@ -110,6 +108,11 @@ public class Evaluation extends BaseEntityWithExternalId {
 
   public List<Diagram> getDiagrams() {
     return diagrams;
+  }
+
+  public void removeDiagrams() {
+    this.diagrams.forEach(diagram -> diagram.setEvaluation(null));
+    this.diagrams.clear();
   }
 
   public UUID getOriginalEvaluationId() {

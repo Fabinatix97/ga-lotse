@@ -13,6 +13,7 @@ import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DefaultTestHelperService;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +33,9 @@ public class StatisticsTestHelperController extends TestHelperController
       StatisticsFeatureToggle statisticsFeatureToggle,
       DefaultTestHelperService testHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
-      ReportExecution reportExecution) {
-    super(testHelperService);
+      ReportExecution reportExecution,
+      EnvironmentConfig environmentConfig) {
+    super(testHelperService, environmentConfig);
     this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.reportExecution = reportExecution;

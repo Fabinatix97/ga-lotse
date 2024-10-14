@@ -11,6 +11,7 @@ import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,8 +29,9 @@ public class InspectionTestHelperController extends TestHelperController
   public InspectionTestHelperController(
       InspectionTestHelperService inspectionTestHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
-      InspectionFeatureToggle inspectionFeatureToggle) {
-    super(inspectionTestHelperService);
+      InspectionFeatureToggle inspectionFeatureToggle,
+      EnvironmentConfig environmentConfig) {
+    super(inspectionTestHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
   }

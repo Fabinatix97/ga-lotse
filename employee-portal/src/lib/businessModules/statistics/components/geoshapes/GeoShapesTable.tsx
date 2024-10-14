@@ -69,7 +69,7 @@ export function GeoShapesTable({
     openConfirmationDialog({
       title: "Archivierung aufheben?",
       description: "Die Karte kann danach in den Diagrammen ausgewählt werden.",
-      confirmLabel: "Ja, aufheben",
+      confirmLabel: "Aufheben",
       onConfirm: () => activateGeoShape(id),
     });
   }
@@ -78,7 +78,7 @@ export function GeoShapesTable({
     openConfirmationDialog({
       title: `"${geoShape.title}" löschen?`,
       description: "Die Geo-Shapes werden dann unwiderruflich gelöscht.",
-      confirmLabel: "Ja, löschen",
+      confirmLabel: "Löschen",
       onConfirm: () => deleteGeoShape(geoShape.id),
       color: "danger",
     });
@@ -88,6 +88,10 @@ export function GeoShapesTable({
     usePagination();
   const { sortKey, sortDirection, manualSortingProps } = useTableSorting({
     onSortingChange: () => resetPageNumber(),
+    initialSorting: {
+      id: "createdAt",
+      desc: true,
+    },
   });
 
   const { geoShapes, totalNumberOfElements } = useGetGeoShapes({
@@ -132,6 +136,7 @@ export function GeoShapesTable({
               />
             </Box>
           )}
+          enableSortingRemoval={false}
         />
       </TableSheet>
     </TablePage>

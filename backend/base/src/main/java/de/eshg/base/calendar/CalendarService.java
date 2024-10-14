@@ -5,7 +5,6 @@
 
 package de.eshg.base.calendar;
 
-import com.google.common.annotations.VisibleForTesting;
 import de.eshg.base.calendar.api.AddGlobalCalendarRequest;
 import de.eshg.base.calendar.api.CalendarDto;
 import de.eshg.base.calendar.api.CalendarTypeDto;
@@ -194,25 +193,24 @@ public class CalendarService {
         .toList();
   }
 
-  @VisibleForTesting
-  public Map<String, List<UserDto>> getGroupsToUsersWithoutSelf(UUID currentUserId) {
+  private Map<String, List<UserDto>> getGroupsToUsersWithoutSelf(UUID currentUserId) {
     List<String> groupNames = userService.getUserKeycloakGroups();
     List<KeycloakApiGroupMemberDto> groupMembers = userService.getGroupMembers(groupNames);
 
     Map<String, List<UserDto>> groupToUsers = new HashMap<>();
-    groupMembers.stream()
-        .filter(groupMember -> !groupMember.user().id().equals(currentUserId))
-        .forEach(
-            groupMember -> {
-              UserDto userDto = UserMapper.mapUserToApi(groupMember.user());
-              groupMember
-                  .groupNames()
-                  .forEach(
-                      groupName ->
-                          groupToUsers
-                              .computeIfAbsent(groupName, g -> new ArrayList<>())
-                              .add(userDto));
-            });
+    groupNames.forEach(
+        groupName -> {
+          List<UserDto> usersInGroup =
+              groupMembers.stream()
+                  .filter(
+                      groupMember ->
+                          !groupMember.user().id().equals(currentUserId)
+                              && groupMember.groupNames().contains(groupName))
+                  .map(groupMember -> UserMapper.mapUserToApi(groupMember.user()))
+                  .toList();
+          groupToUsers.put(groupName, usersInGroup);
+        });
+
     return groupToUsers;
   }
 

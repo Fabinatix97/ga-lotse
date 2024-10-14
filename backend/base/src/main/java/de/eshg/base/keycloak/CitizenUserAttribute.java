@@ -6,6 +6,7 @@
 package de.eshg.base.keycloak;
 
 import de.eshg.keycloak.api.user.KeycloakAttributes;
+import java.util.List;
 
 public enum CitizenUserAttribute implements KeycloakUserAttribute {
   EMAIL(
@@ -30,16 +31,23 @@ public enum CitizenUserAttribute implements KeycloakUserAttribute {
   private final String displayName;
   private final boolean required;
   private final Group group;
+  private final List<ValidationRule> validationRules;
 
-  CitizenUserAttribute(String key, String displayName) {
-    this(key, displayName, false, Group.CUSTOM);
+  CitizenUserAttribute(String key, String displayName, ValidationRule... validationRules) {
+    this(key, displayName, false, Group.CUSTOM, validationRules);
   }
 
-  CitizenUserAttribute(String key, String displayName, boolean required, Group group) {
+  CitizenUserAttribute(
+      String key,
+      String displayName,
+      boolean required,
+      Group group,
+      ValidationRule... validationRules) {
     this.key = key;
     this.displayName = displayName;
     this.required = required;
     this.group = group;
+    this.validationRules = List.of(validationRules);
   }
 
   @Override
@@ -60,5 +68,10 @@ public enum CitizenUserAttribute implements KeycloakUserAttribute {
   @Override
   public boolean isRequired() {
     return required;
+  }
+
+  @Override
+  public List<ValidationRule> validationRules() {
+    return validationRules;
   }
 }

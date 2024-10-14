@@ -36,6 +36,7 @@ const ApiActorSchema = z.object({
   commonName: z.string(),
   currentCertificate: ApiAdminCertificateSchema.optional(),
   id: z.string(),
+  manualCertificate: z.boolean(),
   metadata: ApiAdminActorMetadataSchema.optional(),
   networkId: z.string().optional(),
   previousCertificate: ApiAdminCertificateSchema.optional(),

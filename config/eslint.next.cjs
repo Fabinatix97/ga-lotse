@@ -40,7 +40,7 @@ const config = {
             name: "@mui/joy",
             importNames: ["Link"],
             message:
-              "For internal links, use 'InternalLink', 'InternalLinkButton' or 'InternalLinkIconButton'.",
+              "For internal links, use 'InternalLink', 'InternalLinkButton' or 'InternalLinkIconButton'. For buttons styled as links, use 'ButtonLink'.",
           },
           {
             name: "next/router",

@@ -17,6 +17,7 @@ public record ActorResponseDto(
     String readableName,
     ActorTypeDto type,
     @NotNull boolean active,
+    @NotNull boolean manualCertificate,
     String commonName,
     @Valid CertificateDto currentCertificate,
     @Valid CertificateDto previousCertificate,

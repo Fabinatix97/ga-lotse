@@ -13,13 +13,16 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Chip, Stack, Typography } from "@mui/joy";
 import { eachDayOfInterval, intervalToDuration } from "date-fns";
 
-import { AppointmentBlockGroupValues } from "@/lib/businessModules/measlesProtection/components/appointmentBlocks/AppointmentBlockGroupForm";
-import { getAppointmentDurationInMinutes } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import {
   AppointmentBlockGroupValuesWithDays,
   WEEKDAY_CHECKBOX_OPTIONS,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { isTimeString, toLocalDateTime } from "@/lib/shared/helpers/dateTime";
+
+export interface AppointmentBlockGroupValues {
+  type: OptionalFieldValue<ApiAppointmentType>;
+  appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
+}
 
 function isValidAppointmentBlock(
   appointmentBlock: AppointmentBlockGroupValuesWithDays,
@@ -58,6 +61,13 @@ export function calculateAppointmentsPerBlock(
   return Number.isInteger(appointmentCount) && appointmentCount > 0
     ? appointmentCount
     : 0;
+}
+
+export function getAppointmentDurationInMinutes<A extends string>(
+  type: OptionalFieldValue<A>,
+  appointmentDurations: Record<string, number>,
+) {
+  return isEmptyString(type) ? 0 : (appointmentDurations[type] ?? 0);
 }
 
 export function calculateAppointmentCount({

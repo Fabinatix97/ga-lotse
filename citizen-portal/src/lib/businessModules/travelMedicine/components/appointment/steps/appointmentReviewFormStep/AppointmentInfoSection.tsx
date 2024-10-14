@@ -5,6 +5,7 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { List, ListItem, Typography } from "@mui/joy";
+import { Trans } from "react-i18next";
 
 import {
   FormSheet,
@@ -24,20 +25,15 @@ export function AppointmentInfoSection() {
         message={t("appointmentInfoSection.alertMessage")}
       />
       <Typography>
-        Sie erhalten in
-        <Typography level={"body-md"} fontWeight={"bold"}>
-          {""} den nächsten Minuten{" "}
-        </Typography>
-        eine{" "}
-        <Typography level={"body-md"} fontWeight={"bold"}>
-          {""} Terminbestätigung{" "}
-        </Typography>{" "}
-        Terminbestätigung per E-Mail. Dort sind alle Informationen zum Termin
-        enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu
-        stornieren
+        <Trans
+          i18nKey={t("appointmentInfoSection.infoText")}
+          components={{
+            t1: <Typography level="body-md" fontWeight="bold" />,
+          }}
+        />
       </Typography>
       <Typography>
-        Notwendige Dokumente, welche Sie bitte zum Termin mitbringen, sind:
+        {t("appointmentInfoSection.requiredDocumentsHeader")}
       </Typography>
       <List
         marker="disc"
@@ -50,11 +46,14 @@ export function AppointmentInfoSection() {
           fontWeight: 700,
         }}
       >
-        <ListItem>Personalausweis</ListItem>
-        <ListItem>Impfpass</ListItem>
+        <ListItem>{t("appointmentInfoSection.listItemIdCard")}</ListItem>
+        <ListItem>
+          {t("appointmentInfoSection.listItemVaccinationCard")}
+        </ListItem>
       </List>
       <Typography>
-        Mit freundlichen Grüßen <br /> Ihr Gesundheitsamt
+        {t("appointmentInfoSection.closingGreeting")} <br />{" "}
+        {t("appointmentInfoSection.healthDepartment")}
       </Typography>
     </FormSheet>
   );

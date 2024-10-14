@@ -12,20 +12,25 @@ import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { RoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { getDepartmentNameFromUserId } from "@/lib/businessModules/chat/shared/utils";
 
-export interface ChatHeaderProps extends RoomInfo {
+export interface ChatHeaderProps extends Partial<RoomInfo> {
+  userId?: string;
+  username?: string;
   variant?: "default" | "settings";
 }
 
 export function ChatHeader({
-  roomAvatarUrl,
+  avatarUrl,
   communicationType,
   dmRoomMember,
+  userId,
+  username,
   room,
   roomMembers,
   variant = "default",
 }: ChatHeaderProps) {
   const theme = useTheme();
   const isSettings = variant === "settings";
+  const name = room?.name ?? username;
 
   // TO DO - finish mute feature
   const muteIndicator = false;
@@ -41,11 +46,11 @@ export function ChatHeader({
       }}
     >
       <ChatAvatar
-        name={room?.name}
+        name={name}
         communicationType={communicationType}
-        avatarUrl={roomAvatarUrl}
+        avatarUrl={avatarUrl ?? null}
         size="lg"
-        userId={dmRoomMember?.member.userId}
+        userId={dmRoomMember?.member.userId ?? userId}
         disablePresence={!isSettings}
       />
       <Stack sx={{ flex: 1, overflow: "hidden" }}>
@@ -55,7 +60,7 @@ export function ChatHeader({
             level={variant === "settings" ? "title-md" : "h3"}
             sx={{ minWidth: "5ch" }}
           >
-            {room?.name}
+            {name}
           </Typography>
           {muteIndicator && (
             <NotificationsOffOutlinedIcon
@@ -79,11 +84,13 @@ export function ChatHeader({
           </Stack>
         )}
         {variant === "settings" &&
-          communicationType === CommunicationType.DirectMessage && (
+          (communicationType === CommunicationType.DirectMessage ||
+            username) && (
             <Typography noWrap sx={{ minWidth: "5ch" }}>
               {
-                getDepartmentNameFromUserId(dmRoomMember?.member.userId)
-                  ?.username
+                getDepartmentNameFromUserId(
+                  dmRoomMember?.member.userId ?? userId,
+                )?.username
               }
             </Typography>
           )}

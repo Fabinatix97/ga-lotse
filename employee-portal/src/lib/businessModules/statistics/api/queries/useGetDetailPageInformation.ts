@@ -152,6 +152,7 @@ export function mapToStatisticDetailsView(
     },
     attributes: attributes,
     evaluations: mapEvaluations(result.evaluations, attributes),
+    userId: result.user!.userId,
   } satisfies StatisticDetailsView;
 }
 

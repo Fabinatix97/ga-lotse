@@ -13,7 +13,7 @@ export function useDeleteDiagram(diagramId: string) {
   const snackbar = useSnackbar();
   const mutation = useHandledMutation({
     mutationFn: () => api.deleteDiagram(diagramId),
-    onSuccess: () => snackbar.confirmation("Diagramm gelöscht."),
+    onSuccess: () => snackbar.confirmation("Diagramm gelöscht"),
   });
 
   return () => {

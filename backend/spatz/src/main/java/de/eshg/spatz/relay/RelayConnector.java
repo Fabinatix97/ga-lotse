@@ -5,11 +5,13 @@
 
 package de.eshg.spatz.relay;
 
+import static de.eshg.servicedirectory.util.X509Utils.extractCommonName;
 import static java.nio.channels.SelectionKey.OP_READ;
 
 import de.eshg.lib.relay.MessageType;
 import de.eshg.lib.relay.SNIParser;
 import de.eshg.lib.relay.UUIDParser;
+import de.eshg.spatz.common.SslBundleFactory;
 import de.eshg.spatz.config.SelfSignedCertificateLatch;
 import de.eshg.spatz.config.SpatzConfigurationProperties;
 import jakarta.annotation.PostConstruct;
@@ -23,6 +25,9 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStoreException;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.UUID;
@@ -66,10 +71,12 @@ public class RelayConnector extends WebSocketClient {
   public RelayConnector(
       @Value("${eshg.spatz.relay.url}") URI relayServerUri,
       SelfSignedCertificateLatch latch,
-      SpatzConfigurationProperties spatzConfigurationProperties) {
+      SpatzConfigurationProperties spatzConfigurationProperties,
+      SslBundleFactory sslBundleFactory)
+      throws KeyStoreException {
     super(relayServerUri);
     this.latch = latch;
-    this.ownSni = Objects.requireNonNull(spatzConfigurationProperties.actor().hostname());
+    this.ownSni = getOwnCommonName(spatzConfigurationProperties, sslBundleFactory);
     this.relayServerUri = relayServerUri;
     executorService = Executors.newScheduledThreadPool(4);
     logger.info("started RelayConnector, connecting as SNI {} to {}", ownSni, relayServerUri);
@@ -432,5 +439,17 @@ public class RelayConnector extends WebSocketClient {
       return;
     }
     outstandingPingPayload.set(null);
+  }
+
+  private static String getOwnCommonName(
+      SpatzConfigurationProperties spatzConfigurationProperties, SslBundleFactory sslBundleFactory)
+      throws KeyStoreException {
+    if (spatzConfigurationProperties.selfSigned().isEnabled()) {
+      return Objects.requireNonNull(spatzConfigurationProperties.actor().hostname());
+    }
+
+    Certificate keyStoreCertificate =
+        sslBundleFactory.build().getStores().getKeyStore().getCertificate("ssl");
+    return extractCommonName((X509Certificate) keyStoreCertificate);
   }
 }

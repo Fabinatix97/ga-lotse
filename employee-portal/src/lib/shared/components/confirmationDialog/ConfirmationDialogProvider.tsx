@@ -5,13 +5,14 @@
 
 "use client";
 
+import { Optional } from "@eshg/lib-portal/types/utility";
 import {
   Dispatch,
   ReactNode,
   SetStateAction,
   createContext,
-  useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
 import { isDefined } from "remeda";
@@ -35,6 +36,7 @@ export function ConfirmationDialogProvider({
 }) {
   const [confirmationDialog, setConfirmationDialog] =
     useState<ConfirmationDialogProps>();
+
   return (
     <ConfirmationDialogContext.Provider
       value={{ confirmationDialog, setConfirmationDialog }}
@@ -45,6 +47,11 @@ export function ConfirmationDialogProvider({
   );
 }
 
+export type ConfirmationDialogOptions = Optional<
+  Omit<ConfirmationDialogProps, "open">,
+  "onClose"
+>;
+
 export function useConfirmationDialog() {
   const context = useContext(ConfirmationDialogContext);
   if (context === null) {
@@ -52,43 +59,35 @@ export function useConfirmationDialog() {
       "useConfirmationDialog was called outside ConfirmationDialogProvider",
     );
   }
+  const { setConfirmationDialog } = context;
 
-  const openConfirmationDialog = useCallback(
-    (
-      confirmationDialog: Omit<ConfirmationDialogProps, "open" | "onClose"> & {
-        onClose?: ConfirmationDialogProps["onClose"];
-      },
-    ) => {
-      context.setConfirmationDialog({
-        ...confirmationDialog,
+  return useMemo(() => {
+    function openConfirmationDialog(options: ConfirmationDialogOptions) {
+      setConfirmationDialog({
+        ...options,
         open: true,
         onClose: () => {
-          context.setConfirmationDialog(undefined);
-          if (isDefined(confirmationDialog.onClose)) {
-            confirmationDialog.onClose();
+          setConfirmationDialog(undefined);
+          if (isDefined(options.onClose)) {
+            options.onClose();
           }
         },
       });
-    },
-    [context],
-  );
+    }
 
-  const openCancelDialog = useCallback(
-    (confirmationDialog: Omit<ConfirmationDialogProps, "open" | "onClose">) => {
-      context.setConfirmationDialog({
+    function openCancelDialog(options: ConfirmationDialogOptions) {
+      openConfirmationDialog({
         title: "Änderungen verwerfen?",
         description: "Möchten Sie die Änderungen wirklich verwerfen?",
         confirmLabel: "Verwerfen",
         color: "danger",
-        ...confirmationDialog,
-        open: true,
-        onClose: () => context.setConfirmationDialog(undefined),
+        ...options,
       });
-    },
-    [context],
-  );
-  return {
-    openConfirmationDialog,
-    openCancelDialog,
-  };
+    }
+
+    return {
+      openConfirmationDialog,
+      openCancelDialog,
+    };
+  }, [setConfirmationDialog]);
 }

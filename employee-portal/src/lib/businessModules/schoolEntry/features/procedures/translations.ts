@@ -214,6 +214,7 @@ export const SCHOOL_FEEDBACK_VALUES: EnumMap<ApiSchoolFeedback> = {
 };
 
 export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
+  [ApiSchoolEntryCountryCode.Deu]: "Deutschland",
   [ApiSchoolEntryCountryCode.Afg]: "Afghanistan",
   [ApiSchoolEntryCountryCode.Egy]: "Ägypten",
   [ApiSchoolEntryCountryCode.Alb]: "Albanien",
@@ -252,7 +253,6 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Cor]: "Costa Rica",
   [ApiSchoolEntryCountryCode.Civ]: "Côte d'Ivoire",
   [ApiSchoolEntryCountryCode.Dan]: "Dänemark",
-  [ApiSchoolEntryCountryCode.Deu]: "Deutschland",
   [ApiSchoolEntryCountryCode.Doa]: "Dominica",
   [ApiSchoolEntryCountryCode.Dom]: "Dominikanische Republik",
   [ApiSchoolEntryCountryCode.Dsc]: "Dschibuti",
@@ -381,12 +381,10 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Skn]: "Slowakei",
   [ApiSchoolEntryCountryCode.Slo]: "Slowenien",
   [ApiSchoolEntryCountryCode.Som]: "Somalia",
-  [ApiSchoolEntryCountryCode.Son]: "sonstige Staaten",
   [ApiSchoolEntryCountryCode.Spa]: "Spanien",
   [ApiSchoolEntryCountryCode.Cey]: "Sri Lanka",
   [ApiSchoolEntryCountryCode.Stk]: "St. Kitts und Nevis",
   [ApiSchoolEntryCountryCode.Vct]: "St. Vincent und die Grenadinen",
-  [ApiSchoolEntryCountryCode.Sta]: "staatenlos",
   [ApiSchoolEntryCountryCode.Sar]: "Südafrika",
   [ApiSchoolEntryCountryCode.Sam]: "Südamerika",
   [ApiSchoolEntryCountryCode.Sud]: "Sudan",
@@ -410,7 +408,6 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Tuv]: "Tuvalu",
   [ApiSchoolEntryCountryCode.Uga]: "Uganda",
   [ApiSchoolEntryCountryCode.Ukr]: "Ukraine",
-  [ApiSchoolEntryCountryCode.Uuu]: "Unbekannt",
   [ApiSchoolEntryCountryCode.Ung]: "Ungarn",
   [ApiSchoolEntryCountryCode.Uru]: "Uruguay",
   [ApiSchoolEntryCountryCode.Usa]: "USA",
@@ -423,6 +420,18 @@ export const COUNTRY_CODE_VALUES: EnumMap<ApiSchoolEntryCountryCode> = {
   [ApiSchoolEntryCountryCode.Wru]: "Belarus",
   [ApiSchoolEntryCountryCode.Sca]: "Zentralafrikanische Republik",
   [ApiSchoolEntryCountryCode.Zyp]: "Zypern",
+  [ApiSchoolEntryCountryCode.Uuu]: "Unbekannt",
+  [ApiSchoolEntryCountryCode.Son]: "sonstige Staaten",
+  [ApiSchoolEntryCountryCode.Sta]: "staatenlos",
+  [ApiSchoolEntryCountryCode.G1]: "Ländergruppe 1",
+  [ApiSchoolEntryCountryCode.G2]: "Ländergruppe 2",
+  [ApiSchoolEntryCountryCode.G3]: "Ländergruppe 3",
+  [ApiSchoolEntryCountryCode.G4]: "Ländergruppe 4",
+  [ApiSchoolEntryCountryCode.G5]: "Ländergruppe 5",
+  [ApiSchoolEntryCountryCode.G6]: "Ländergruppe 6",
+  [ApiSchoolEntryCountryCode.G7]: "Ländergruppe 7",
+  [ApiSchoolEntryCountryCode.G8]: "Ländergruppe 8",
+  [ApiSchoolEntryCountryCode.G9]: "Ländergruppe 9",
 };
 
 export const VACCINATION_SCHEME_VALUES: EnumMap<ApiVaccinationSchemeValue> = {

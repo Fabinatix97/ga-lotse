@@ -17,14 +17,6 @@ public class CertificateSignatureUtil {
 
   private CertificateSignatureUtil() {}
 
-  public static boolean validateSignature(CertificateDto certificateDTO) {
-    if (innerValidateSignature(certificateDTO)) {
-      return true;
-    }
-    logger.warn("Signature of certificate invalid. Ignoring {}.", certificateDTO);
-    return false;
-  }
-
   public static boolean validateSignature(ActorRequestDto actor) {
     String name = actor.readableName();
     if (actor.certificate() == null) {

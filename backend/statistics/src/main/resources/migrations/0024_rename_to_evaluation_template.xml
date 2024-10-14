@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1727354376741-1">
+    <dropUniqueConstraint constraintName="statistics_scheme_external_id_key" tableName="statistics_scheme"/>
+    <dropForeignKeyConstraint baseTableName="data_source" constraintName="fk_data_source_statistics_scheme"/>
+
+    <dropIndex tableName="data_source" indexName="idx_data_source_scheme_id"/>
+    <renameColumn tableName="data_source"
+                  oldColumnName="scheme_id"
+                  newColumnName="evaluation_template_id"/>
+    <createIndex indexName="idx_data_source_evaluation_template_id" tableName="data_source">
+      <column name="evaluation_template_id"/>
+    </createIndex>
+
+    <renameTable oldTableName="statistics_scheme" newTableName="evaluation_template"/>
+    <renameSequence oldSequenceName="statistics_scheme_id_seq"
+                    newSequenceName="evaluation_template_id_seq"/>
+
+    <addUniqueConstraint columnNames="external_id" constraintName="evaluation_template_external_id_key" tableName="evaluation_template"/>
+    <addForeignKeyConstraint baseColumnNames="evaluation_template_id" baseTableName="data_source" constraintName="fk_data_source_evaluation_template" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="evaluation_template" validate="true"/>
+
+    <renameSequence oldSequenceName="aggregation_result_id_seq"
+                    newSequenceName="abstract_aggregation_result_id_seq"/>
+  </changeSet>
+</databaseChangeLog>

@@ -38,6 +38,7 @@ export type ProcedureFilters = Pick<
   | "dayOfAppointmentFilter"
   | "hasAppointmentFilter"
   | "schoolYearFilter"
+  | "isInvitationSentFilter"
 > & { labelsFilter?: Label[] };
 
 const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
@@ -47,6 +48,7 @@ const FILTER_NAMES: Record<keyof ProcedureFilters, string> = {
   hasAppointmentFilter: "Termin",
   schoolYearFilter: "Schuljahr",
   labelsFilter: "Kennungen",
+  isInvitationSentFilter: "Einladung versandt",
 };
 
 function getFilterLabel(filterValue: ActiveFilter<keyof ProcedureFilters>) {
@@ -63,6 +65,14 @@ interface ProcedureFilterSettingsProps {
   clearFilterValues: () => void;
   filterSettingsSheetProps: FilterSettingsSheetProps;
   activeFilters: ActiveFilter<keyof ProcedureFilters>[];
+}
+
+function evaluateBooleanValue(value: boolean | undefined) {
+  return value === true ? "true" : value === false ? "false" : "";
+}
+
+function evaluateStringAsBoolean(value: string) {
+  return value === "true" ? true : value === "false" ? false : undefined;
 }
 
 export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
@@ -105,24 +115,16 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
         <FormControl>
           <FormLabel>Termin</FormLabel>
           <Select
-            value={
-              props.filterFormValues.hasAppointmentFilter === true
-                ? "true"
-                : props.filterFormValues.hasAppointmentFilter === false
-                  ? "false"
-                  : ""
-            }
+            value={evaluateBooleanValue(
+              props.filterFormValues.hasAppointmentFilter,
+            )}
             onChange={(_, newValue) => {
               if (newValue === null) {
                 return;
               }
               props.setFilterFormValue(
                 "hasAppointmentFilter",
-                newValue === "true"
-                  ? true
-                  : newValue === "false"
-                    ? false
-                    : undefined,
+                evaluateStringAsBoolean(newValue),
               );
             }}
             endDecorator={
@@ -139,6 +141,42 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
               options={[
                 { value: "true", label: "mit Termin" },
                 { value: "false", label: "ohne Termin" },
+              ]}
+            />
+          </Select>
+        </FormControl>
+        <FormControl>
+          <FormLabel>Einladung versandt</FormLabel>
+          <Select
+            value={evaluateBooleanValue(
+              props.filterFormValues.isInvitationSentFilter,
+            )}
+            onChange={(_, newValue) => {
+              if (newValue === null) {
+                return;
+              }
+              props.setFilterFormValue(
+                "isInvitationSentFilter",
+                evaluateStringAsBoolean(newValue),
+              );
+            }}
+            endDecorator={
+              isDefined(props.filterFormValues.isInvitationSentFilter) ? (
+                <ResetButton
+                  onReset={() => {
+                    props.setFilterFormValue(
+                      "isInvitationSentFilter",
+                      undefined,
+                    );
+                  }}
+                />
+              ) : undefined
+            }
+          >
+            <SelectOptions
+              options={[
+                { value: "true", label: "Ja" },
+                { value: "false", label: "Nein" },
               ]}
             />
           </Select>

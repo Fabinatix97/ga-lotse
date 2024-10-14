@@ -12,6 +12,7 @@ import de.eshg.testhelper.AccessToken;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.api.RealmDto;
 import de.eshg.testhelper.api.TestHelperLoginRequest;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.security.AuthenticationSupport;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,9 @@ public class PopulateWithAccessTokenHelper {
 
   private final BaseTestHelperApi baseTestHelper;
 
-  public PopulateWithAccessTokenHelper(BaseTestHelperApi baseTestHelper) {
+  public PopulateWithAccessTokenHelper(
+      BaseTestHelperApi baseTestHelper, EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     this.baseTestHelper = baseTestHelper;
   }
 

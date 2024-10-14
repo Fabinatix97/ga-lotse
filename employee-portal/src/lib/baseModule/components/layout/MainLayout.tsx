@@ -6,20 +6,9 @@
 "use client";
 
 import { Box } from "@mui/joy";
-import { usePathname } from "next/navigation";
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useState } from "react";
 
-import { useGetUnreadNotifications } from "@/lib/baseModule/api/queries/notifications";
-import { SelfUserSidebar } from "@/lib/baseModule/components/layout/SelfUserSidebar";
 import { Header } from "@/lib/baseModule/components/layout/header/Header";
-import { MessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
 import { SideNavigation } from "@/lib/baseModule/components/layout/sideNavigation/SideNavigation";
 import {
   headerHeightDesktop,
@@ -27,49 +16,17 @@ import {
   sideNavigationCollapsedWidth,
   sideNavigationWidth,
 } from "@/lib/baseModule/components/layout/sizes";
-import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { SidebarSlot } from "@/lib/shared/components/drawer/SidebarSlot";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
-import { NotificationsSidebar } from "./notificationsSidebar/NotificationsSidebar";
-
 export function MainLayout({ children }: { children: ReactNode }) {
-  const unreadNotifications = useGetUnreadNotifications().data;
-  const { canAccessChat } = useChat();
-
   const isOffline = useIsOffline();
-
-  const [sideNavigationDrawerOpen, setSideNavigationDrawerOpen] =
-    useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [userSidebarOpen, setUserSidebarOpen] = useState(false);
-  const [notificationsSidebarOpen, setNotificationsSidebarOpen] =
-    useState(false);
-
-  const closeUserSidebar = useCallback(
-    () => setUserSidebarOpen(false),
-    [setUserSidebarOpen],
-  );
-
-  const notificationsCount = unreadNotifications
-    ? unreadNotifications.notifications.length
-    : 0;
-
   const drawerTransitionTime = "0.3s";
 
   return (
     <>
-      <NavigationEvents
-        setSideNavigationDrawerOpen={setSideNavigationDrawerOpen}
-      />
-      <Header
-        sideNavigationDrawerOpen={sideNavigationDrawerOpen}
-        setSideNavigationDrawerOpen={setSideNavigationDrawerOpen}
-        setUserSidebarOpen={setUserSidebarOpen}
-        notificationsSidebarOpen={notificationsSidebarOpen}
-        setNotificationsSidebarOpen={setNotificationsSidebarOpen}
-        notificationsCount={notificationsCount}
-      />
+      <Header />
       <Box
         sx={{
           display: "flex",
@@ -95,12 +52,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
               },
             }}
           >
-            <SideNavigation
-              sideNavigationDrawerOpen={sideNavigationDrawerOpen}
-              setSideNavigationDrawerOpen={setSideNavigationDrawerOpen}
-              collapsed={collapsed}
-              setCollapsed={setCollapsed}
-            />
+            <SideNavigation collapsed={collapsed} setCollapsed={setCollapsed} />
           </Box>
         )}
 
@@ -130,30 +82,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </Box>
         </Box>
 
-        <SelfUserSidebar open={userSidebarOpen} onClose={closeUserSidebar} />
-        <OverlayBoundary>
-          <NotificationsSidebar
-            open={notificationsSidebarOpen}
-            onClose={() => setNotificationsSidebarOpen(false)}
-            notificationResponse={unreadNotifications}
-          />
-        </OverlayBoundary>
-        {canAccessChat && <MessagesSidebar />}
+        <SidebarSlot />
       </Box>
     </>
   );
-}
-
-function NavigationEvents({
-  setSideNavigationDrawerOpen,
-}: {
-  setSideNavigationDrawerOpen: Dispatch<SetStateAction<boolean>>;
-}) {
-  const pathname = usePathname();
-
-  useEffect(() => {
-    setSideNavigationDrawerOpen(false);
-  }, [pathname, setSideNavigationDrawerOpen]);
-
-  return null;
 }

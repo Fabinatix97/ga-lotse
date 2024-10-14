@@ -302,7 +302,7 @@ const SCHOOL_YEAR_COLUMN = columnHelper.accessor("schoolYear", {
   cell: (props) => formatSchoolYear(props.getValue()),
   enableSorting: true,
   meta: {
-    width: 110,
+    width: 116,
     canNavigate: {
       parentRow: true,
     },

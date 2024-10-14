@@ -19,6 +19,7 @@ import { API_CONFIGURATION } from "@/lib/shared/api/config";
 import { EmployeeSnackbar } from "@/lib/shared/components/EmployeeSnackbar";
 import { ConfirmNavigationProvider } from "@/lib/shared/components/confirmationDialog/ConfirmNavigationProvider";
 import { ConfirmationDialogProvider } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { DrawerProvider } from "@/lib/shared/components/drawer/drawerContext";
 
 // Opt out of the Data Cache and Full Route Cache. All routes are dynamically rendered.
 export const dynamic = "force-dynamic";
@@ -63,15 +64,17 @@ export default function RootLayout({
             <SnackbarProvider snackbar={EmployeeSnackbar}>
               <ConfirmationDialogProvider>
                 <ConfirmNavigationProvider>
-                  <ApiProvider configuration={API_CONFIGURATION}>
-                    <OfflinePasswordPrompt />
-                    <ServiceWorkerProvider>
-                      <ChatProvider configuration={CHAT_CONFIGURATION}>
-                        <MainLayout>{children}</MainLayout>
-                      </ChatProvider>
-                      {modal}
-                    </ServiceWorkerProvider>
-                  </ApiProvider>
+                  <DrawerProvider>
+                    <ApiProvider configuration={API_CONFIGURATION}>
+                      <OfflinePasswordPrompt />
+                      <ServiceWorkerProvider>
+                        <ChatProvider configuration={CHAT_CONFIGURATION}>
+                          <MainLayout>{children}</MainLayout>
+                        </ChatProvider>
+                        {modal}
+                      </ServiceWorkerProvider>
+                    </ApiProvider>
+                  </DrawerProvider>
                 </ConfirmNavigationProvider>
               </ConfirmationDialogProvider>
             </SnackbarProvider>

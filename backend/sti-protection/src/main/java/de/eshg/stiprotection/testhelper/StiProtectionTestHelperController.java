@@ -12,6 +12,7 @@ import de.eshg.stiprotection.api.StiProtectionProcedurePopulationRequest;
 import de.eshg.stiprotection.api.StiProtectionProcedurePopulationResponse;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -30,8 +31,9 @@ public class StiProtectionTestHelperController extends TestHelperController
   public StiProtectionTestHelperController(
       StiProtectionTestHelperService testHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
-      StiProtectionPopulator populator) {
-    super(testHelperService);
+      StiProtectionPopulator populator,
+      EnvironmentConfig environmentConfig) {
+    super(testHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.populator = populator;
   }

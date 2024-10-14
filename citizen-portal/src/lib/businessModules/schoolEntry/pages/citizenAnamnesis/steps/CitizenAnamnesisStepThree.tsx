@@ -11,6 +11,7 @@ import { FormLabel, Grid, Stack, Typography } from "@mui/joy";
 import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/QuarterWidthGrid";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
@@ -105,7 +106,7 @@ export function CitizenAnamnesisStepThree() {
         allowDeselection
       />
       <Grid container sx={{ flexGrow: 1 }} spacing={2}>
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <InputField
             name={illnessAndAccidentInfo("underMedicalTreatmentFor")}
             label={
@@ -115,7 +116,7 @@ export function CitizenAnamnesisStepThree() {
             }
           />
         </Grid>
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <InputField
             name={illnessAndAccidentInfo("regularMedication")}
             label={

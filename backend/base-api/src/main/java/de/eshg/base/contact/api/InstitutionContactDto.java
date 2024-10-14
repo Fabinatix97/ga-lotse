@@ -5,6 +5,7 @@
 
 package de.eshg.base.contact.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public record InstitutionContactDto(
         String name,
     InstitutionContactCategoryDto category,
     @NotNull List<String> phoneNumbers,
-    @NotNull List<String> emailAddresses,
+    @NotNull List<@EmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements ContactDto {

@@ -10,6 +10,8 @@ import "@fontsource/poppins/900.css";
 import { FontSize, extendTheme } from "@mui/joy/styles";
 import { isNullish } from "remeda";
 
+import { MobileBreakpoint } from "@/lib/shared/breakpoints";
+
 import { customBreakpoints } from "./customBreakpoints";
 
 declare module "@mui/joy/styles" {
@@ -151,6 +153,9 @@ export const theme = extendTheme({
           borderRadius: theme.radius.lg,
           padding: theme.spacing(3),
           boxShadow: "none",
+          [theme.breakpoints.down(MobileBreakpoint.Down)]: {
+            padding: theme.spacing(2),
+          },
         }),
       },
     },

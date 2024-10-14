@@ -39,10 +39,13 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
   Stream<SchoolEntryProcedure> findByRelatedPersons(
       @Param("centralFileStateIds") List<UUID> centralFileStateIds);
 
+  @Query(
+      "select s from SchoolEntryProcedure s where s.citizenUserId = :citizenUserId and s.procedureStatus <> de.eshg.lib.procedure.domain.model.ProcedureStatus.CLOSED")
   Optional<SchoolEntryProcedure> findOneByCitizenUserId(UUID citizenUserId);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
-  @Query("select s from SchoolEntryProcedure s where s.citizenUserId = :citizenUserId")
+  @Query(
+      "select s from SchoolEntryProcedure s where s.citizenUserId = :citizenUserId and s.procedureStatus <> de.eshg.lib.procedure.domain.model.ProcedureStatus.CLOSED")
   Optional<SchoolEntryProcedure> findOneByCitizenUserIdForUpdate(
       @Param("citizenUserId") UUID citizenUserId);
 

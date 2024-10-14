@@ -36,7 +36,7 @@ export function CreateStatisticFromScratchSidebar({
   viewTemplates: () => void;
 }) {
   const initialValues: CreateStatisticFromScratchFormModel = {
-    schemeName: "",
+    templateName: "",
     statisticName: "",
     timeSpan: getLastXMonthsTimeRange(3),
   };
@@ -77,7 +77,7 @@ export function CreateStatisticFromScratchSidebar({
       ],
       timeRangeStart: parseISO(model.timeSpan.start),
       timeRangeEnd: parseISO(model.timeSpan.end),
-      schemeName: model.schemeName !== "" ? model.schemeName : undefined,
+      templateName: model.templateName !== "" ? model.templateName : undefined,
     });
   }
 
@@ -95,7 +95,7 @@ export function CreateStatisticFromScratchSidebar({
         {
           type: "StandardStep",
           step: {
-            title: "Neue Statistik erstellen",
+            title: "Neue Auswertung erstellen",
             content: (
               <ChooseDataSourceStep
                 dataSources={dataSources}
@@ -115,7 +115,7 @@ export function CreateStatisticFromScratchSidebar({
         {
           type: "StandardStep",
           step: {
-            title: "Statistik speichern",
+            title: "Auswertung speichern",
             content: <SaveStatisticStep />,
             validator: validateSaveStatisticStep,
           },

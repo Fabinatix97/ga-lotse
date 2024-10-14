@@ -14,14 +14,20 @@ import {
   LabelFormFields,
   LabelValues,
 } from "@/lib/businessModules/schoolEntry/features/labels/LabelFormFields";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-interface CreateLabelProps {
-  onClose: () => void;
+export function useCreateLabelSidebar(): UseSidebarResult {
+  return useSidebar({
+    component: CreateLabelSidebar,
+  });
 }
 
 const INITIAL_VALUES: LabelValues = {
@@ -29,17 +35,17 @@ const INITIAL_VALUES: LabelValues = {
   description: "",
 };
 
-export function CreateLabelSidebar(props: CreateLabelProps) {
+function CreateLabelSidebar(props: DrawerProps) {
   const createLabel = useCreateLabel();
 
   async function handleSubmit(data: LabelValues) {
     await createLabel
-      .mutateAsync(mapToRequest(data), { onSuccess: props.onClose })
+      .mutateAsync(mapToRequest(data), { onSuccess: () => props.onClose() })
       .catch();
   }
 
   return (
-    <Sidebar open onClose={props.onClose}>
+    <>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ isSubmitting }) => (
           <SidebarForm>
@@ -57,7 +63,7 @@ export function CreateLabelSidebar(props: CreateLabelProps) {
           </SidebarForm>
         )}
       </Formik>
-    </Sidebar>
+    </>
   );
 }
 

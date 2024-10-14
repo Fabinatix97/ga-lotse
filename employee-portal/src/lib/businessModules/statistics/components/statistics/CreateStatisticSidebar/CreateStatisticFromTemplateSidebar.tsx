@@ -4,12 +4,11 @@
  */
 
 import { parseISO } from "date-fns";
-import { groupBy, isDefined } from "remeda";
 
 import { useAddStatistic } from "@/lib/businessModules/statistics/api/mutations/useAddStatistic";
 import {
   ChooseTemplateStep,
-  Scheme,
+  Template,
 } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseTemplateStep/ChooseTemplateStep";
 import { validateChooseTemplateStep } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseTemplateStep/validateChooseTemplateStep";
 import { SaveStatisticStep } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/SaveStatisticStep/SaveStatisticStep";
@@ -21,16 +20,16 @@ import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarSt
 export function CreateStatisticFromTemplateSidebar({
   open,
   onClose,
-  schemes,
+  templates,
   viewCreateStatistics,
 }: {
   open: boolean;
   onClose: () => void;
-  schemes: Scheme[];
+  templates: Template[];
   viewCreateStatistics: () => void;
 }) {
   const initialValues: CreateStatisticFromTemplateFormModel = {
-    schemeName: "",
+    templateName: "",
     statisticName: "",
     timeSpan: getLastXMonthsTimeRange(3),
   };
@@ -39,39 +38,16 @@ export function CreateStatisticFromTemplateSidebar({
   });
 
   async function onSubmit(model: CreateStatisticFromTemplateFormModel) {
-    if (!model.scheme?.dataSource) {
+    if (!model.template?.id) {
       throw new Error();
     }
 
-    const attributeGroups = groupBy(
-      model.scheme.dataSource.attributes,
-      (item) => item.code,
-    );
-
     await addStatistic({
-      type: "AddStatisticWithDataSourcesRequest",
+      type: "AddStatisticWithTemplateRequest",
       name: model.statisticName.trim(),
-      dataSources: [
-        {
-          businessModuleName: model.scheme.dataSource.businessModule,
-          attributeCodes: Object.entries(attributeGroups).map(
-            ([code, attributes]) => {
-              const baseAttributes = attributes
-                .filter((it) => isDefined(it.baseCode))
-                .map((it) => it.baseCode!);
-              return {
-                code: code,
-                baseAttributeCodes:
-                  baseAttributes.length > 0 ? baseAttributes : undefined,
-              };
-            },
-          ),
-          id: model.scheme.dataSource.id,
-        },
-      ],
       timeRangeStart: parseISO(model.timeSpan.start),
       timeRangeEnd: parseISO(model.timeSpan.end),
-      schemeName: model.schemeName !== "" ? model.schemeName : undefined,
+      templateId: model.template.id,
     });
   }
 
@@ -82,7 +58,7 @@ export function CreateStatisticFromTemplateSidebar({
       onSubmit={onSubmit}
       initialValues={{
         ...initialValues,
-        _schemeId: null,
+        _templateId: null,
       }}
       steps={[
         {
@@ -91,18 +67,18 @@ export function CreateStatisticFromTemplateSidebar({
             title: "Vorlagen",
             content: (
               <ChooseTemplateStep
-                schemes={schemes}
+                templates={templates}
                 viewCreateStatistics={viewCreateStatistics}
               />
             ),
             validator: validateChooseTemplateStep,
-            disableContinue: schemes.length === 0,
+            disableContinue: templates.length === 0,
           },
         },
         {
           type: "StandardStep",
           step: {
-            title: "Statistik speichern",
+            title: "Auswertung speichern",
             content: <SaveStatisticStep />,
             validator: validateSaveStatisticStep,
           },

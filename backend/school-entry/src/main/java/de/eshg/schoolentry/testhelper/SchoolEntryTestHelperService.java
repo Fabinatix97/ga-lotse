@@ -11,13 +11,10 @@ import de.eshg.schoolentry.domain.model.Icd10Group;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.schoolentry.population.CreateLabelsTask;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
-import de.eshg.testhelper.DatabaseResetHelper;
-import de.eshg.testhelper.DefaultTestHelperService;
-import de.eshg.testhelper.ResettableProperties;
+import de.eshg.testhelper.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -42,8 +39,15 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
       CreateAppointmentTypeTask createAppointmentTypeTask,
       CreateLabelsTask createLabelsTask,
       Icd10CodeTestHelper icd10CodeTestHelper,
-      SchoolEntryProcedureRepository schoolEntryProcedureRepository) {
-    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
+      SchoolEntryProcedureRepository schoolEntryProcedureRepository,
+      EnvironmentConfig environmentConfig) {
+    super(
+        databaseResetHelper,
+        testRequestInterceptor,
+        clock,
+        populators,
+        resettableProperties,
+        environmentConfig);
     this.createAppointmentTypeTask = createAppointmentTypeTask;
     this.createLabelsTask = createLabelsTask;
     this.icd10CodeTestHelper = icd10CodeTestHelper;
@@ -51,7 +55,7 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
   }
 
   @Override
-  public Instant reset() throws SQLException {
+  public Instant reset() throws Exception {
     Instant instant = super.reset();
     createAppointmentTypeTask.createAppointmentTypes();
     createLabelsTask.createLabels();
@@ -71,6 +75,7 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
   }
 
   public void clearCitizenUserId(UUID procedureId) {
+    environmentConfig.assertIsNotProduction();
     schoolEntryProcedureRepository.clearCitizenUserId(procedureId);
   }
 }

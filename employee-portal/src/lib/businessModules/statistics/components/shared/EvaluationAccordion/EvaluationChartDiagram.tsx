@@ -25,6 +25,7 @@ import { LineChart } from "@/lib/businessModules/statistics/components/shared/ch
 import { PieChart } from "@/lib/businessModules/statistics/components/shared/charts/PieChart";
 import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
 import { ImageType } from "@/lib/businessModules/statistics/components/shared/charts/types";
+import { BaseModal } from "@/lib/shared/components/BaseModal";
 
 export function EvaluationChartDiagram(props: {
   configuration: EvaluationDiagramConfiguration;
@@ -113,18 +114,35 @@ export function EvaluationChartDiagram(props: {
     }
   }
 
+  const [openFullScreenChart, setOpenFullScreenChart] = useState(false);
+  const chart = getChart();
   return (
-    <EvaluationDiagramBox
-      diagramId={props.evaluationDiagram.diagramId}
-      title={props.evaluationDiagram.title}
-      description={props.evaluationDiagram.description}
-      filterLabels={props.evaluationDiagram.filterLabels}
-      evaluatedDataAmount={props.evaluationDiagram.evaluatedDataAmount}
-      evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-      onExportAsImage={onExportAsImage}
-      isReport={props.isReport}
-    >
-      {getChart()}
-    </EvaluationDiagramBox>
+    <>
+      <BaseModal
+        open={openFullScreenChart}
+        onClose={() => setOpenFullScreenChart(false)}
+        modalTitle={props.evaluationDiagram.title}
+        sx={{
+          width: "95vw",
+          height: "85vh",
+          marginTop: "2.25rem",
+        }}
+      >
+        {chart}
+      </BaseModal>
+      <EvaluationDiagramBox
+        diagramId={props.evaluationDiagram.diagramId}
+        title={props.evaluationDiagram.title}
+        description={props.evaluationDiagram.description}
+        filterLabels={props.evaluationDiagram.filterLabels}
+        evaluatedDataAmount={props.evaluationDiagram.evaluatedDataAmount}
+        evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
+        onExportAsImage={onExportAsImage}
+        isReport={props.isReport}
+        openChartInFullScreenDialog={() => setOpenFullScreenChart(true)}
+      >
+        {chart}
+      </EvaluationDiagramBox>
+    </>
   );
 }

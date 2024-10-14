@@ -5,14 +5,14 @@
 
 import {
   ApiAvailableDataSource,
-  ApiStatisticsScheme,
+  ApiEvaluationTemplate,
 } from "@eshg/employee-portal-api/statistics";
 import { isNonNullish } from "remeda";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
 import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseAttributesStep/ChooseAttributesStep";
 import { DataSource } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
-import { Scheme } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseTemplateStep/ChooseTemplateStep";
+import { Template } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseTemplateStep/ChooseTemplateStep";
 import { CreateStatisticFromScratchSidebar } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/CreateStatisticFromScratchSidebar";
 import { CreateStatisticFromTemplateSidebar } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/CreateStatisticFromTemplateSidebar";
 import { getAttributeLabel } from "@/lib/businessModules/statistics/components/statistics/getAttributeLabel";
@@ -22,12 +22,12 @@ export type OpenSidebarKind = "FROM_SCRATCH" | "FROM_TEMPLATE" | "NONE";
 
 export function CreateStatisticSidebar({
   apiDataSources,
-  apiSchemes,
+  apiTemplates,
   openSidebar,
   setOpenSidebar,
 }: {
   apiDataSources: ApiAvailableDataSource[];
-  apiSchemes: ApiStatisticsScheme[];
+  apiTemplates: ApiEvaluationTemplate[];
   openSidebar: OpenSidebarKind;
   setOpenSidebar: (sidebar: OpenSidebarKind) => void;
 }) {
@@ -35,7 +35,7 @@ export function CreateStatisticSidebar({
     mapToCategorizedFlatAttributes,
   );
   const dataSources: DataSource[] = apiDataSources.map(mapToDataSource);
-  const schemes: Scheme[] = apiSchemes.map(mapToScheme);
+  const templates: Template[] = apiTemplates.map(mapToTemplate);
 
   return (
     <>
@@ -53,7 +53,7 @@ export function CreateStatisticSidebar({
           <CreateStatisticFromTemplateSidebar
             open={openSidebar === "FROM_TEMPLATE"}
             onClose={() => setOpenSidebar("NONE")}
-            schemes={schemes}
+            templates={templates}
             viewCreateStatistics={() => setOpenSidebar("FROM_SCRATCH")}
           />
         )}
@@ -92,20 +92,20 @@ function mapToDataSource(apiDataSource: ApiAvailableDataSource): DataSource {
   };
 }
 
-function mapToScheme(apiStatisticsScheme: ApiStatisticsScheme): Scheme {
+function mapToTemplate(apiEvaluationTemplate: ApiEvaluationTemplate): Template {
   return {
-    id: apiStatisticsScheme.id,
-    name: apiStatisticsScheme.name,
+    id: apiEvaluationTemplate.id,
+    name: apiEvaluationTemplate.name,
     dataSource:
-      apiStatisticsScheme.dataSources.length === 0
+      apiEvaluationTemplate.dataSources.length === 0
         ? undefined
         : {
-            id: apiStatisticsScheme.dataSources[0]!.id,
+            id: apiEvaluationTemplate.dataSources[0]!.id,
             businessModule: mapToApiBusinessModule(
-              apiStatisticsScheme.dataSources[0]!.businessModuleName,
+              apiEvaluationTemplate.dataSources[0]!.businessModuleName,
             ),
             attributes:
-              apiStatisticsScheme.dataSources[0]!.dataAttributes.flatMap(
+              apiEvaluationTemplate.dataSources[0]!.dataAttributes.flatMap(
                 (attribute) => {
                   if (attribute.baseDataAttributes.length === 0) {
                     return [

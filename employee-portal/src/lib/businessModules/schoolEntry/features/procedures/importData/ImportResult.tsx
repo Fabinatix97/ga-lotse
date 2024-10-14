@@ -67,7 +67,7 @@ function getStatusHeading(
 interface ImportResultProps {
   file: File;
   statistics: ApiImportStatistics;
-  isDirectProcedureTypeAssignmentOnImport: boolean;
+  isImportWithMerge: boolean;
 }
 
 export function ImportResult(props: ImportResultProps) {
@@ -86,9 +86,7 @@ export function ImportResult(props: ImportResultProps) {
           {isMergeEnabled && (
             <ImportResultProceduresSummary
               result={props.statistics}
-              isDirectProcedureTypeAssignmentOnImport={
-                props.isDirectProcedureTypeAssignmentOnImport
-              }
+              isImportWithMerge={props.isImportWithMerge}
             />
           )}
         </Stack>

@@ -6,44 +6,42 @@
 import NotificationsOffOutlinedIcon from "@mui/icons-material/NotificationsOffOutlined";
 import { Box, Stack, Typography, useTheme } from "@mui/joy";
 import { Room } from "matrix-js-sdk";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
+import { HighlightedText } from "@/lib/businessModules/chat/components/roomList/HighlightedText";
 import { ReceiptStatus } from "@/lib/businessModules/chat/components/roomList/ReceiptStatus";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
-import { RoomLastMessage } from "@/lib/businessModules/chat/shared/types";
+import { Message } from "@/lib/businessModules/chat/shared/types";
 import {
   formatChatDate,
   getMemberAvatarUrl,
   getRoomAvatarUrl,
-  getRoomLastMessage,
   isDMRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
 export interface RoomListItemProps {
   room: Room;
   communicationType?: CommunicationType;
+  latestMessage?: Message;
+  searchQuery?: string;
 }
 
 export function RoomListItem({
   room,
   communicationType = CommunicationType.DirectMessage,
-}: RoomListItemProps) {
+  latestMessage,
+  searchQuery,
+}: Readonly<RoomListItemProps>) {
   const theme = useTheme();
   const { matrixClient, unreadNotificationsPerRoom } = useChatClientContext();
-  const [lastMessage, setLastMessage] = useState<RoomLastMessage>();
 
-  const parsedDate = formatChatDate(lastMessage?.timestamp);
+  const parsedDate = formatChatDate(latestMessage?.timestamp);
   const unreadNotifications = unreadNotificationsPerRoom[room.roomId];
 
   // TO DO - finish notification feature
   const disableNotifications = false;
-
-  const updateRoomLastMessage = useCallback(async () => {
-    const lastMessage = await getRoomLastMessage(matrixClient, room.roomId);
-    setLastMessage(lastMessage);
-  }, [matrixClient, room.roomId]);
 
   const dmMember = useMemo(
     () => (isDMRoom(communicationType) ? room.getAvatarFallbackMember() : null),
@@ -57,10 +55,6 @@ export function RoomListItem({
         : getRoomAvatarUrl(matrixClient, room),
     [dmMember, matrixClient, room],
   );
-
-  useEffect(() => {
-    void updateRoomLastMessage();
-  }, [updateRoomLastMessage, unreadNotifications]);
 
   return (
     <Stack
@@ -77,7 +71,7 @@ export function RoomListItem({
       <Stack sx={{ flex: 1, overflow: "hidden" }}>
         <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
           <Typography noWrap level="title-md" sx={{ minWidth: "4ch" }}>
-            {room.name}
+            <HighlightedText searchQuery={searchQuery} text={room.name} />
           </Typography>
           {disableNotifications && (
             <NotificationsOffOutlinedIcon
@@ -89,7 +83,12 @@ export function RoomListItem({
             />
           )}
         </Stack>
-        <Typography noWrap>{lastMessage?.content}</Typography>
+        <Typography noWrap>
+          <HighlightedText
+            searchQuery={searchQuery}
+            text={latestMessage?.content}
+          />
+        </Typography>
       </Stack>
       <Stack
         sx={{

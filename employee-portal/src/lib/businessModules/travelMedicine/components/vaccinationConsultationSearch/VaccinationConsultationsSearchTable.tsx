@@ -6,8 +6,9 @@
 "use client";
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useGetSearchVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { useGetSearchVaccinationConsultationQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import {
   ProcedureFilters,
   VaccinationConsultationsSearchFilterSettings,
@@ -36,12 +37,16 @@ export function VaccinationConsultationsSearchTable() {
     activeFilters,
   } = useFilterDictionary<keyof ProcedureFilters, ProcedureFilters>({});
 
-  const searchResults = useGetSearchVaccinationConsultation(
-    filterValues.lastName,
-    filterValues.firstName,
-    filterValues.dateOfBirth,
-    filterValues.status,
-  );
+  const [{ data: searchResults, isFetching }] = useSuspenseQueries({
+    queries: [
+      useGetSearchVaccinationConsultationQuery(
+        filterValues.lastName,
+        filterValues.firstName,
+        filterValues.dateOfBirth,
+        filterValues.status,
+      ),
+    ],
+  });
 
   function filterValuesNotEmpty() {
     if (
@@ -84,7 +89,7 @@ export function VaccinationConsultationsSearchTable() {
       }
     >
       <TableSheet
-        loading={searchResults.isFetching}
+        loading={isFetching}
         title={
           <Alert
             title="Es werden maximal 50 Suchergebnisse angezeigt."
@@ -94,9 +99,7 @@ export function VaccinationConsultationsSearchTable() {
       >
         <DataTable
           data={
-            filterValuesNotEmpty()
-              ? searchResults.data.vaccinationConsultations
-              : []
+            filterValuesNotEmpty() ? searchResults.vaccinationConsultations : []
           }
           columns={searchColumns()}
           sorting={tableControl.tableSorting}

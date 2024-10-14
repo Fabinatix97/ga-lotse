@@ -91,17 +91,31 @@ public class UserHelper {
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
       SequencedMap<UUID, List<T>> map) {
+    return resolveUsers(map, false);
+  }
+
+  public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
+      SequencedMap<UUID, List<T>> map, boolean ignoreUnknownId) {
     SequencedSet<UUID> userIds = collectUserIds(map);
-    return resolveUsers(userIds);
+    return resolveUsers(userIds, ignoreUnknownId);
   }
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(List<T> list) {
+    return resolveUsers(list, false);
+  }
+
+  public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
+      List<T> list, boolean ignoreUnknownId) {
     SequencedSet<UUID> userIds = collectUserIds(list);
-    return resolveUsers(userIds);
+    return resolveUsers(userIds, ignoreUnknownId);
   }
 
   public Map<UUID, UserDto> resolveUsers(SequencedSet<UUID> userIds) {
-    return userApi.getUsersBulk(new GetUsersRequest(userIds, false)).users().stream()
+    return resolveUsers(userIds, false);
+  }
+
+  public Map<UUID, UserDto> resolveUsers(SequencedSet<UUID> userIds, boolean ignoreUnknownId) {
+    return userApi.getUsersBulk(new GetUsersRequest(userIds, ignoreUnknownId)).users().stream()
         .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
   }
 
@@ -126,6 +140,7 @@ public class UserHelper {
       case TRAVEL_MEDICINE_LEADER -> UserRoleDto.TRAVEL_MEDICINE_LEADER;
       case MEASLES_PROTECTION_LEADER -> UserRoleDto.MEASLES_PROTECTION_LEADER;
       case STI_PROTECTION_LEADER -> UserRoleDto.STI_PROTECTION_LEADER;
+      case MEDICAL_REGISTRY_LEADER -> UserRoleDto.MEDICAL_REGISTRY_LEADER;
     };
   }
 }

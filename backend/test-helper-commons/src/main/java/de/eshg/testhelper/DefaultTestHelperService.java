@@ -6,6 +6,8 @@
 package de.eshg.testhelper;
 
 import de.eshg.testhelper.api.DefaultPopulationResponse;
+import de.eshg.testhelper.api.TestHelperDatabaseConnectionDetailsResponse;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.InterceptionType;
 import de.eshg.testhelper.interception.TestHelperInterceptionRequestFilter;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
@@ -23,13 +25,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 @ConditionalOnTestHelperEnabled
 @ConditionalOnMissingBean(TestHelperService.class)
-public class DefaultTestHelperService implements TestHelperService {
+public class DefaultTestHelperService implements TestHelperWithDatabaseService {
+
+  private static final Logger log = LoggerFactory.getLogger(DefaultTestHelperService.class);
 
   private final DatabaseResetHelper databaseResetHelper;
   private final TestRequestInterceptor testRequestInterceptor;
@@ -39,15 +45,18 @@ public class DefaultTestHelperService implements TestHelperService {
   protected final List<ResettableProperties> resettableProperties;
 
   private final Map<ResettableProperties, String> initialResettablePropertiesSnapshots;
-
-  private static final Logger log = LoggerFactory.getLogger(DefaultTestHelperService.class);
+  protected final EnvironmentConfig environmentConfig;
 
   protected DefaultTestHelperService(
-      DatabaseResetHelper databaseResetHelper,
+      @Autowired(required = false) DatabaseResetHelper databaseResetHelper,
       TestRequestInterceptor testRequestInterceptor,
       Clock clock,
       List<BasePopulator<?>> populators,
-      List<ResettableProperties> resettableProperties) {
+      List<ResettableProperties> resettableProperties,
+      EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
+    log.warn("Creating {}", getClass().getSimpleName());
+    this.environmentConfig = environmentConfig;
     this.databaseResetHelper = databaseResetHelper;
     this.testRequestInterceptor = testRequestInterceptor;
     this.clock = clock;
@@ -59,13 +68,36 @@ public class DefaultTestHelperService implements TestHelperService {
   }
 
   @Override
-  public Instant reset() throws SQLException {
-    databaseResetHelper.truncateAllTables(getTablesToExclude());
-    databaseResetHelper.resetAllSequences();
+  public Instant reset() throws Exception {
+    environmentConfig.assertIsNotProduction();
+    if (databaseResetHelper != null) {
+      resetDatabase();
+    }
     resetInterceptions();
     resetResettableProperties();
     withTestClock(TestHelperClock::reset);
     return Instant.now(clock);
+  }
+
+  private void resetDatabase() throws SQLException {
+    databaseResetHelper.truncateAllTables(getTablesToExclude());
+    databaseResetHelper.resetAllSequences();
+  }
+
+  @Override
+  public void restoreDatabaseSnapshot(String databaseSnapshotSql) throws Exception {
+    environmentConfig.assertIsNotProduction();
+    databaseResetHelper.restoreDatabaseSnapshot(databaseSnapshotSql);
+  }
+
+  @Override
+  public TestHelperDatabaseConnectionDetailsResponse getDatabaseConnectionDetails() {
+    environmentConfig.assertIsNotProduction();
+    JdbcConnectionDetails jdbcConnectionDetails = databaseResetHelper.getJdbcConnectionDetails();
+    return new TestHelperDatabaseConnectionDetailsResponse(
+        jdbcConnectionDetails.getJdbcUrl(),
+        jdbcConnectionDetails.getUsername(),
+        jdbcConnectionDetails.getPassword());
   }
 
   void withTestClock(Consumer<TestHelperClock> testClockConsumer) {
@@ -77,6 +109,7 @@ public class DefaultTestHelperService implements TestHelperService {
   }
 
   public void resetResettableProperties() {
+    environmentConfig.assertIsNotProduction();
     for (ResettableProperties resettableProperties : resettableProperties) {
       String resettablePropertiesSnapshot =
           initialResettablePropertiesSnapshots.get(resettableProperties);
@@ -127,6 +160,7 @@ public class DefaultTestHelperService implements TestHelperService {
 
   @Override
   public DefaultPopulationResponse populateDefaults() {
+    environmentConfig.assertIsNotProduction();
     List<DefaultPopulationResponse.Population> populations =
         populators.stream()
             .map(

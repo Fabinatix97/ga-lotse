@@ -11,6 +11,15 @@ import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel"
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
+const dateFormater = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" });
+const timeFormater = new Intl.DateTimeFormat("de-DE", { timeStyle: "short" });
+function formatAppointmentTime(date?: Date) {
+  if (date == null) {
+    return "-";
+  }
+  return `${dateFormater.format(date)}, ${timeFormater.format(date)} Uhr`;
+}
+
 export function AdditionalDataSection({
   procedure,
 }: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
@@ -26,7 +35,11 @@ export function AdditionalDataSection({
           label="Art"
           value={CONCERN_VALUES[procedure.concern]}
         />
-        <DetailsCell name="nextAppointment" label="Nächster Termin" value="-" />
+        <DetailsCell
+          name="nextAppointment"
+          label="Nächster Termin"
+          value={formatAppointmentTime(procedure?.appointment?.start)}
+        />
       </DetailsSection>
     </ContentPanel>
   );

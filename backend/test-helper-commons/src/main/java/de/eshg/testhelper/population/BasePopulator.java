@@ -5,6 +5,7 @@
 
 package de.eshg.testhelper.population;
 
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.security.AuthenticationFaker;
 import jakarta.annotation.PostConstruct;
 import java.time.Clock;
@@ -33,12 +34,19 @@ public abstract class BasePopulator<R> {
   private final Environment environment;
   protected final Clock clock;
   private final String entityNameInPropertyKey;
+  private final EnvironmentConfig environmentConfig;
 
-  protected BasePopulator(Clock clock, Environment environment, String entityNameInPropertyKey) {
+  protected BasePopulator(
+      Clock clock,
+      Environment environment,
+      String entityNameInPropertyKey,
+      EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     log.warn("Creating {}", getClass().getSimpleName());
     this.clock = clock;
     this.environment = environment;
     this.entityNameInPropertyKey = entityNameInPropertyKey;
+    this.environmentConfig = environmentConfig;
   }
 
   protected static Supplier<Random> newRandomSupplier() {
@@ -58,6 +66,7 @@ public abstract class BasePopulator<R> {
   }
 
   public ListWithTotalNumber<R> populateWithAuthentication(int numberOfEntitiesToPopulate) {
+    environmentConfig.assertIsNotProduction();
     Supplier<Random> randomSupplier = newRandomSupplier();
     UniqueValueProvider uniqueValueProvider = new UniqueValueProvider();
 
@@ -133,6 +142,7 @@ public abstract class BasePopulator<R> {
 
   @PostConstruct
   void automaticPopulationOnStartup() {
+    environmentConfig.assertIsNotProduction();
     int numberOfEntitiesToPopulate = getDefaultNumberOfEntitiesToPopulate();
 
     if (numberOfEntitiesToPopulate == 0) {

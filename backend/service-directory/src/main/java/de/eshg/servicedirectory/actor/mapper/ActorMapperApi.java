@@ -36,6 +36,7 @@ public class ActorMapperApi {
         actor.getReadableName(),
         ActorType.convert(actor.getType(), de.eshg.lib.servicedirectory.api.ActorTypeDto.class),
         actor.isActive(),
+        actor.isManualCertificate(),
         actor.getCommonName(),
         toApi(actor.getCurrentCertificate()),
         toApi(actor.getPreviousCertificate()),
@@ -93,6 +94,7 @@ public class ActorMapperApi {
     actor.setCurrentCertificate(auditedActor.getCurrentCertificate());
     actor.setPreviousCertificate(auditedActor.getPreviousCertificate());
     actor.setActive(auditedActor.isActive());
+    actor.setManualCertificate(auditedActor.isManualCertificate());
     actor.setType(auditedActor.getType());
 
     // will most likely be overwritten but set to WIP just in case
@@ -110,14 +112,18 @@ public class ActorMapperApi {
     actor.setCommonName(commonName);
     actor.setNetworkId(networkId);
     actor.setActive(false);
+    actor.setManualCertificate(false);
     return actor;
   }
 
   public static void toAudited(AuditedActor auditedActor, StagedActor actor) {
     auditedActor.setCommonName(actor.getCommonName());
     auditedActor.setReadableName(actor.getReadableName());
-    auditedActor.setCurrentCertificate(actor.getCurrentCertificate());
-    auditedActor.setPreviousCertificate(actor.getPreviousCertificate());
+    auditedActor.setManualCertificate(actor.isManualCertificate());
+    if (auditedActor.isManualCertificate()) {
+      auditedActor.setCurrentCertificate(actor.getCurrentCertificate());
+      auditedActor.setPreviousCertificate(actor.getPreviousCertificate());
+    }
     auditedActor.setNetworkId(actor.getNetworkId());
     auditedActor.setType(actor.getType());
     auditedActor.setActive(actor.isActive());

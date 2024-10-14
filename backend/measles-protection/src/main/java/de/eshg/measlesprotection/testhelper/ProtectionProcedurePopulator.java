@@ -31,6 +31,7 @@ import de.eshg.measlesprotection.api.draft.OpenProcedureResponse;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedureRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -57,8 +58,13 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
       Environment environment,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       DraftProtectionProcedureController draftProtectionProcedureController,
-      MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository) {
-    super(clock, environment, getClassNameAsPropertyKey(MeaslesProtectionProcedure.class));
+      MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
+      EnvironmentConfig environmentConfig) {
+    super(
+        clock,
+        environment,
+        getClassNameAsPropertyKey(MeaslesProtectionProcedure.class),
+        environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.draftProtectionProcedureController = draftProtectionProcedureController;
     this.measlesProtectionProcedureRepository = measlesProtectionProcedureRepository;

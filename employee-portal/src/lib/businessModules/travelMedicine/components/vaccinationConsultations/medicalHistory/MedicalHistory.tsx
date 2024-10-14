@@ -75,7 +75,7 @@ export function MedicalHistory({
                 (section, sectionIndex) => (
                   <MedicalHistorySection
                     key={"Section-" + sectionIndex}
-                    dataTestId={"section-" + sectionIndex}
+                    dataTestId={"document-section-" + sectionIndex}
                   >
                     <MedicalHistorySectionElements
                       sectionTitle={section.sectionTitle}
@@ -88,9 +88,7 @@ export function MedicalHistory({
                             "-Element-" +
                             elementIndex
                           }
-                          dataTestId={
-                            "element-" + sectionIndex + "-" + elementIndex
-                          }
+                          dataTestId={"document-element-" + elementIndex}
                         >
                           <>
                             <MedicalHistoryRadioButtonElement

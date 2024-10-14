@@ -26,7 +26,6 @@ import {
   SidePanelNavigationTab,
 } from "@/lib/businessModules/inspection/components/inspection/execution/SidePanelNavigation";
 import { useChecklistValidateContext } from "@/lib/businessModules/inspection/components/inspection/execution/checklist/ChecklistValidateContext";
-import { NO_CANCEL_LABEL } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
@@ -79,7 +78,7 @@ export function ExecutionSidePanel({
       description:
         "Bitte erfassen Sie Änderungen bevor Sie die Begehung abschließen.",
       confirmLabel: "Verstanden",
-      cancelLabel: NO_CANCEL_LABEL,
+      hideCancelButton: true,
       color: "danger",
       onConfirm: () => undefined,
     });
@@ -90,7 +89,7 @@ export function ExecutionSidePanel({
       title: "Unvollständige Eingaben",
       description: "Bitte füllen Sie erst alle Pflichtfelder aus.",
       confirmLabel: "Verstanden",
-      cancelLabel: NO_CANCEL_LABEL,
+      hideCancelButton: true,
       color: "danger",
       onConfirm: () => undefined,
     });

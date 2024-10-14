@@ -9,10 +9,8 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentType,
   ApiAssignableService,
-  ApiGetAssignableServicesResponse,
   ApiProcedureStepService,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { List, ListItem, Stack, Typography } from "@mui/joy";
@@ -24,14 +22,17 @@ import {
   usePatchAppointment,
 } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import { useAddProcedureStep } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
+import { useGetAllAppointmentTypesUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import { useGetProcedureStepServices } from "@/lib/businessModules/travelMedicine/api/queries/procedureSteps";
 import { useGetAllAssignableServices } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { VaccinationConsultationSidebarsProps } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
 import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
 import {
   CheckboxGroup,
   Mode as CheckboxGroupMode,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/CheckboxGroup";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { mapDateTimeToInput } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -42,29 +43,42 @@ export enum Mode {
   edit,
 }
 
-interface ServiceAppointmentFormProps {
+export interface ServiceAppointmentValues {
   procedureId: string;
   serviceChecks?: ApiAssignableService[];
-  bookingType?: ApiAppointmentBookingType | null;
+  bookingType?: ApiAppointmentBookingType;
   appointmentBlockDate?: string;
   userDefinedAppointmentDate?: string;
   appointmentTypeStandardDuration: number;
   procedureStepId: string;
   appointmentType?: ApiAppointmentType;
-  initialAppointment?: Date;
+  appointment?: Date;
 }
 
-interface InitServiceAppointmentFormProps extends ServiceAppointmentFormProps {
-  assignableServices: ApiGetAssignableServicesResponse;
-  procedureStepServices: ApiProcedureStepService[];
-}
+export const initialServiceAppointmentValues = {
+  procedureId: "",
+  serviceChecks: [],
+  bookingType: "" as ApiAppointmentBookingType,
+  appointmentBlockDate: "",
+  userDefinedAppointmentDate: "",
+  appointmentTypeStandardDuration: 0,
+  procedureStepId: "",
+  appointmentType: "" as ApiAppointmentType,
+  appointment: new Date(""),
+};
 
 interface ServiceAppointmentSidebarProps {
   open: boolean;
-  onClose: () => void;
-  initialValues: ServiceAppointmentFormProps;
+  initialValues: ServiceAppointmentValues;
   /** The mode to open the sidebar in, either `create` or `edit`. The default is `create` */
   mode: Mode;
+  onSuccess: () => void;
+  onCancel: (
+    currentValues: ServiceAppointmentValues,
+    initialValues: ServiceAppointmentValues,
+    dirty: boolean,
+  ) => void;
+  onClose: (item: VaccinationConsultationSidebarsProps) => void;
 }
 
 export function ServiceAppointmentSidebar(
@@ -75,34 +89,35 @@ export function ServiceAppointmentSidebar(
 
   const procedureStepServicesResponse = useGetProcedureStepServices(
     props.initialValues.procedureStepId,
+    props.open,
   );
-
   const procedureStepServices =
     procedureStepServicesResponse.data?.procedureStepServices ??
     ([] as ApiProcedureStepService[]);
 
-  const assignableServicesResponse = useGetAllAssignableServices(
+  const getAssignableServices = useGetAllAssignableServices(
     props.initialValues.procedureId,
+    props.open,
   );
-  const assignableServices = assignableServicesResponse.data;
+  const allAssignableServices = getAssignableServices.data ?? [];
 
-  function createUseAddProcedureRequest(
-    values: InitServiceAppointmentFormProps,
-  ) {
+  const getAllAppointmentTypes = useGetAllAppointmentTypesUnsuspended(
+    props.open,
+  );
+  const vaccinationStandardDuration = getAllAppointmentTypes.data
+    ? getAllAppointmentTypes.data.find(
+        (type) => type.appointmentTypeDto == ApiAppointmentType.Vaccination,
+      )!.standardDurationInMinutes
+    : "";
+
+  function createUseAddProcedureRequest(values: ServiceAppointmentValues) {
     const services: string[] = [];
     values.serviceChecks?.forEach((value) => {
       services.push(value.serviceId);
     });
-    let appointmentStart: Date;
-    let durationInMinutes: number;
-    if (values.bookingType == ApiAppointmentBookingType.UserDefined) {
-      appointmentStart = new Date(values.userDefinedAppointmentDate!);
-      durationInMinutes = values.appointmentTypeStandardDuration;
-    } else {
-      const split = values.appointmentBlockDate!.split(",");
-      appointmentStart = new Date(split.at(0)!);
-      durationInMinutes = Number.parseInt(split.at(1)!);
-    }
+
+    const { appointmentStart, durationInMinutes } =
+      calcAppointmentDetails(values);
 
     const apiPostProcedureStepRequest = {
       services: services,
@@ -114,9 +129,7 @@ export function ServiceAppointmentSidebar(
     return { procedureId: values.procedureId, apiPostProcedureStepRequest };
   }
 
-  function createUsePatchAppointmentRequest(
-    values: InitServiceAppointmentFormProps,
-  ) {
+  function calcAppointmentDetails(values: ServiceAppointmentValues) {
     let appointmentStart: Date;
     let durationInMinutes: number;
     if (values.bookingType == ApiAppointmentBookingType.UserDefined) {
@@ -127,6 +140,12 @@ export function ServiceAppointmentSidebar(
       appointmentStart = new Date(split.at(0)!);
       durationInMinutes = Number.parseInt(split.at(1)!);
     }
+    return { appointmentStart, durationInMinutes };
+  }
+
+  function createUsePatchAppointmentRequest(values: ServiceAppointmentValues) {
+    const { appointmentStart, durationInMinutes } =
+      calcAppointmentDetails(values);
 
     const request: PatchAppointmentRequest = {
       procedureStepId: props.initialValues.procedureStepId,
@@ -137,33 +156,32 @@ export function ServiceAppointmentSidebar(
         durationInMinutes: durationInMinutes,
       },
     };
-
     return {
       request,
     };
   }
 
-  async function handleSubmit(values: InitServiceAppointmentFormProps) {
+  async function handleSubmit(values: ServiceAppointmentValues) {
     if (props.mode === Mode.create) {
       const useAddProcedureRequest = createUseAddProcedureRequest(values);
-      await addProcedure.mutateAsync(useAddProcedureRequest, {
-        onSuccess: () => {
-          props.onClose();
-        },
-      });
+      await addProcedure
+        .mutateAsync(useAddProcedureRequest, {
+          onSuccess: props.onSuccess,
+        })
+        .catch();
     } else if (props.mode === Mode.edit) {
       const usePatchAppointment = createUsePatchAppointmentRequest(values);
 
-      await patchProcedure.mutateAsync(usePatchAppointment.request, {
-        onSuccess: () => {
-          props.onClose();
-        },
-      });
+      await patchProcedure
+        .mutateAsync(usePatchAppointment.request, {
+          onSuccess: props.onSuccess,
+        })
+        .catch();
     }
   }
 
-  function validateForm(values: ServiceAppointmentFormProps) {
-    const errors: FormikErrors<ServiceAppointmentFormProps> = {};
+  function validateForm(values: ServiceAppointmentValues) {
+    const errors: FormikErrors<ServiceAppointmentValues> = {};
     if (
       values.bookingType === ApiAppointmentBookingType.AppointmentBlock &&
       values.appointmentBlockDate === ""
@@ -183,12 +201,12 @@ export function ServiceAppointmentSidebar(
     return errors;
   }
 
-  function handleCheckboxChange(
+  function handleServiceChecksChange(
     values: ApiAssignableService[],
     setFieldValue: (
       field: string,
       value: string,
-    ) => Promise<void | FormikErrors<InitServiceAppointmentFormProps>>,
+    ) => Promise<void | FormikErrors<ServiceAppointmentValues>>,
   ) {
     let earliestDate = new Date();
     void setFieldValue(
@@ -219,9 +237,9 @@ export function ServiceAppointmentSidebar(
       return undefined;
     } else {
       return {
-        label: formatDateTime(props.initialValues.initialAppointment) + " Uhr",
+        label: formatDateTime(props.initialValues.appointment) + " Uhr",
         value:
-          props.initialValues.initialAppointment?.toISOString() +
+          props.initialValues.appointment?.toISOString() +
           "," +
           props.initialValues.appointmentTypeStandardDuration,
       };
@@ -229,40 +247,44 @@ export function ServiceAppointmentSidebar(
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onClose}>
-      <Formik
-        initialValues={{
-          ...props.initialValues,
-          assignableServices,
-          procedureStepServices: procedureStepServices ?? [],
-          serviceChecks: [],
-          bookingType:
-            props.mode === Mode.create ? null : props.initialValues.bookingType,
-          userDefinedAppointmentDate:
-            props.mode === Mode.create
-              ? format(new Date(), "yyyy-MM-dd'T'HH:mm")
-              : mapDateTimeToInput(
-                  props.initialValues.initialAppointment!,
-                  false,
-                ),
-          appointmentBlockDate:
-            props.mode === Mode.create
-              ? ""
-              : props.initialValues.bookingType ==
-                  ApiAppointmentBookingType.AppointmentBlock
-                ? props.initialValues.initialAppointment?.toISOString() +
-                  "," +
-                  props.initialValues.appointmentTypeStandardDuration
-                : "",
-        }}
-        onSubmit={async (values, { resetForm }) => {
-          await handleSubmit(values).then(() => resetForm());
-        }}
-        enableReinitialize
-        validate={validateForm}
-      >
-        {({ isSubmitting, values, resetForm, setFieldValue }) => (
-          <FormPlus style={{ display: "contents" }}>
+    <Formik
+      initialValues={{
+        ...props.initialValues,
+        appointmentTypeStandardDuration: vaccinationStandardDuration as number,
+        procedureStepServices: procedureStepServices ?? [],
+        userDefinedAppointmentDate:
+          props.mode === Mode.create
+            ? format(new Date(), "yyyy-MM-dd'T'HH:mm")
+            : mapDateTimeToInput(props.initialValues.appointment!, false),
+        appointmentBlockDate:
+          props.mode === Mode.create
+            ? ""
+            : props.initialValues.bookingType ==
+                ApiAppointmentBookingType.AppointmentBlock
+              ? props.initialValues.appointment?.toISOString() +
+                "," +
+                props.initialValues.appointmentTypeStandardDuration
+              : "",
+      }}
+      onSubmit={handleSubmit}
+      enableReinitialize
+      validate={validateForm}
+    >
+      {({ isSubmitting, setFieldValue, values, dirty }) => (
+        <Sidebar
+          onClose={() => {
+            props.onClose({
+              open: false,
+              mode: props.mode,
+              initialValues:
+                props.mode === Mode.create
+                  ? { ...values }
+                  : initialServiceAppointmentValues,
+            });
+          }}
+          open={props.open}
+        >
+          <SidebarForm style={{ display: "contents" }}>
             <SidebarContent
               title={
                 props.mode === Mode.create
@@ -276,10 +298,10 @@ export function ServiceAppointmentSidebar(
                     <CheckboxGroup
                       mode={CheckboxGroupMode.assignableService}
                       name={`serviceChecks`}
-                      element={values.assignableServices.assignableServices}
+                      element={allAssignableServices}
                       label={"Impfung"}
                       onChange={(services) =>
-                        handleCheckboxChange(services, setFieldValue)
+                        handleServiceChecksChange(services, setFieldValue)
                       }
                     />
                   </Stack>
@@ -316,14 +338,13 @@ export function ServiceAppointmentSidebar(
                 }
                 submitting={isSubmitting}
                 onCancel={() => {
-                  props.onClose();
-                  resetForm();
+                  props.onCancel(values, props.initialValues, dirty);
                 }}
               />
             </SidebarActions>
-          </FormPlus>
-        )}
-      </Formik>
-    </Sidebar>
+          </SidebarForm>
+        </Sidebar>
+      )}
+    </Formik>
   );
 }

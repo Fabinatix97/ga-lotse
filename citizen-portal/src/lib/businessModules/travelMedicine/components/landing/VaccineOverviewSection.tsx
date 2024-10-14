@@ -6,17 +6,21 @@
 import { List, ListItem } from "@mui/joy";
 
 import { useGetAllDiseasesCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
+import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 
 export function VaccineOverviewSection() {
+  const { t } = useTranslation(["travelMedicine/landing"]);
   const diseases = useGetAllDiseasesCitizen().data.diseases;
 
   return (
     <ContentSheet>
-      <ContentSheetTitle>Verfügbare Impfungen</ContentSheetTitle>
+      <ContentSheetTitle>
+        {t("vaccinations.availableVaccinations")}
+      </ContentSheetTitle>
       {diseases && (
         <List
           marker="disc"

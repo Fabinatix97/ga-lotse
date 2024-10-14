@@ -33,7 +33,7 @@ function formatAppointmentDate(form: AddNewProcedureForm) {
   if (!date) {
     return;
   }
-  return `${germanDateFormater.format(date)}, ${germanTimeFormater.format(date)}`;
+  return `${germanDateFormater.format(date)}, ${germanTimeFormater.format(date)} Uhr`;
 }
 
 export function SummaryForm({

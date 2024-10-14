@@ -6,9 +6,11 @@
 import {
   ApiAppointmentType,
   ApiConcern,
+  ApiDiseaseType,
   ApiGender,
   ApiProcedureStatus,
   ApiProcedureType,
+  ApiSexualOrientation,
   ApiTaskType,
 } from "@eshg/employee-portal-api/stiProtection";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
@@ -57,3 +59,28 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.SpecialNeeds]: "Besonderer Förderbedarf",
   [ApiAppointmentType.Vaccination]: "Impfung",
 };
+
+export const sexualOrientationNames: EnumMap<ApiSexualOrientation> = {
+  [ApiSexualOrientation.Bisexual]: "Bisexuell",
+  [ApiSexualOrientation.Heterosexual]: "Heterosexuell",
+  [ApiSexualOrientation.Homosexual]: "Homosexuell",
+  [ApiSexualOrientation.NotSpecified]: "Sonstige",
+} satisfies Record<ApiSexualOrientation, string>;
+
+export const sexualContactNames: EnumMap<ApiGender> = {
+  [ApiGender.Diverse]: "Diverse",
+  [ApiGender.Female]: "Frauen",
+  [ApiGender.Male]: "Männer",
+  [ApiGender.NotSpecified]: "Keine Angabe",
+} satisfies Record<ApiGender, string>;
+
+export const diseaseTypeNames: EnumMap<ApiDiseaseType> = {
+  [ApiDiseaseType.Chlamydia]: "Chlamydien",
+  [ApiDiseaseType.Gonorrhea]: "Gonorrhoe (Tripper)",
+  [ApiDiseaseType.HepatitisA]: "Hepatitis A",
+  [ApiDiseaseType.HepatitisB]: "Hepatitis B",
+  [ApiDiseaseType.HepatitisC]: "Hepatitis C",
+  [ApiDiseaseType.Hiv]: "HIV",
+  [ApiDiseaseType.Hpv]: "HPV",
+  [ApiDiseaseType.Syphilis]: "Syphilis (Lues)",
+} satisfies Record<ApiDiseaseType, string>;

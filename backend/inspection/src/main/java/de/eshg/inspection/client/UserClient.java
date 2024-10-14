@@ -56,6 +56,6 @@ public class UserClient {
   }
 
   private UserDto createUnknownUser(UUID userId) {
-    return new UserDto(userId, UNKNOWN_USER, null, null, null, "", "", false);
+    return new UserDto(userId, UNKNOWN_USER, "unknown@example.com", null, null, "", "", false);
   }
 }

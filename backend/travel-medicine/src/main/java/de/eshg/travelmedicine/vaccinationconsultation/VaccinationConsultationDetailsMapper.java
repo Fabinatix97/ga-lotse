@@ -42,10 +42,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class VaccinationConsultationDetailsMapper {
   private final InformationStatementMapper informationStatementMapper;
+  private final AppointmentBookingTypeMapper appointmentBookingTypeMapper;
 
   public VaccinationConsultationDetailsMapper(
-      InformationStatementMapper informationStatementMapper) {
+      InformationStatementMapper informationStatementMapper,
+      AppointmentBookingTypeMapper appointmentBookingTypeMapper) {
     this.informationStatementMapper = informationStatementMapper;
+    this.appointmentBookingTypeMapper = appointmentBookingTypeMapper;
   }
 
   public GetVaccinationConsultationDetailsResponse toInterfaceType(
@@ -100,13 +103,15 @@ public class VaccinationConsultationDetailsMapper {
     LocalDate earliestDate =
         service.getProcedureStep() == null ? null : service.getProcedureStep().getEarliestDate();
     AppointmentTypeDto appointmentType = getAppointmentType(service.getProcedureStep());
-    AppointmentBookingTypeDto appointmentBookingType =
-        getAppointmentBookingType(
-            servicePlanEntry.appointment(), servicePlanEntry.userDefinedAppointment());
     ServiceStatusDto status =
         MappingUtil.mapEnum(ServiceStatusDto.class, service.getServiceStatus());
     UUID procedureStepId =
         servicePlanEntry.procedureStep() == null ? null : servicePlanEntry.procedureStep().getId();
+    AppointmentBookingTypeDto appointmentBookingType =
+        procedureStepId == null
+            ? null
+            : appointmentBookingTypeMapper.mapToInterfaceType(
+                servicePlanEntry.appointment(), servicePlanEntry.userDefinedAppointment());
     BigDecimal fee = service.getFee();
     Boolean medicalHistoryCompleted = servicePlanEntry.isMedicalHistoryAnswered();
     LocalDate appliedAt = service.getAppliedAt();
@@ -166,18 +171,6 @@ public class VaccinationConsultationDetailsMapper {
     return null;
   }
 
-  private AppointmentBookingTypeDto getAppointmentBookingType(
-      Appointment appointment, UserDefinedAppointment userDefinedAppointment) {
-
-    if (appointment != null) {
-      return AppointmentBookingTypeDto.APPOINTMENT_BLOCK;
-    }
-    if (userDefinedAppointment != null) {
-      return AppointmentBookingTypeDto.USER_DEFINED;
-    }
-    return null;
-  }
-
   private Instant getAppointmentEndDate(
       Appointment appointment, UserDefinedAppointment userDefinedAppointment) {
 
@@ -196,19 +189,20 @@ public class VaccinationConsultationDetailsMapper {
     }
     return procedureSteps.stream()
         .map(this::mapToAppointmentSummaryInterfaceType)
-        .sorted(Comparator.comparing(AppointmentSummaryDto::start))
+        .sorted(
+            Comparator.comparing(
+                    AppointmentSummaryDto::start, Comparator.nullsFirst(Comparator.naturalOrder()))
+                .thenComparing(
+                    AppointmentSummaryDto::earliestDate,
+                    Comparator.nullsFirst(Comparator.naturalOrder())))
         .toList();
   }
 
   public AppointmentSummaryDto mapToAppointmentSummaryInterfaceType(ProcedureStep ps) {
-    AppointmentBookingTypeDto bookingType;
-    if (ps.getAppointment() != null) {
-      bookingType = AppointmentBookingTypeDto.APPOINTMENT_BLOCK;
-    } else if (ps.getUserDefinedAppointment() != null) {
-      bookingType = AppointmentBookingTypeDto.USER_DEFINED;
-    } else {
-      bookingType = AppointmentBookingTypeDto.SELF_BOOKING;
-    }
+    UserDefinedAppointment uda = ps.getUserDefinedAppointment();
+    Appointment appointment = ps.getAppointment();
+    AppointmentBookingTypeDto bookingType =
+        appointmentBookingTypeMapper.mapToInterfaceType(appointment, uda);
     Instant appointmentStartDate =
         getAppointmentStartDate(ps.getAppointment(), ps.getUserDefinedAppointment());
 

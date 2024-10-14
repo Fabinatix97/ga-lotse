@@ -41,7 +41,7 @@ export function useDeleteReportWithConfirmation({
         </List>
       ),
       cancelLabel: "Abbrechen",
-      confirmLabel: "Ja, löschen",
+      confirmLabel: "Löschen",
       onConfirm: () => {
         deleteReport(seriesId);
       },

@@ -5,10 +5,9 @@
 
 package de.eshg.schoolentry;
 
-import static de.eshg.schoolentry.util.ImportDataUtil.validateConsistencyBetweenHeaderAndRows;
-import static de.eshg.schoolentry.util.ImportDataUtil.validateFileExistsAndHasCorrectType;
-import static de.eshg.schoolentry.util.ImportDataUtil.validateHeaderExists;
-import static de.eshg.schoolentry.util.ImportDataUtil.validateSheet;
+import static de.eshg.schoolentry.importer.ImportValidator.validateFileExistsAndHasCorrectType;
+import static de.eshg.schoolentry.importer.ImportValidator.validateHeaderExists;
+import static de.eshg.schoolentry.importer.ImportValidator.validateSheet;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MEDICAL_REPORT_GENERATED;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.SCHOOL_INFO_LETTER_GENERATED;
 
@@ -36,7 +35,6 @@ import de.eshg.schoolentry.pdf.medicalreport.MedicalReportGenerator;
 import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterGenerator;
 import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterValidator;
 import de.eshg.schoolentry.util.ExceptionUtil;
-import de.eshg.schoolentry.util.ImportDataUtil;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,6 +46,7 @@ import jakarta.validation.constraints.Min;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -186,8 +185,14 @@ public class SchoolEntryController {
   public ProcedureDetailsDto closeProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CloseProcedureRequest request) {
+    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_INFO_LETTER);
     featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.CLOSE_PROCEDURE);
-    SchoolEntryProcedure procedure = schoolEntryService.closeProcedure(procedureId, request);
+
+    SchoolEntryProcedure procedure =
+        schoolEntryService.findProcedureByExternalIdForUpdate(procedureId, request.version());
+    Validator.validateSchoolInfoLetterCreated(procedure);
+
+    schoolEntryService.closeProcedure(procedure);
     return augmentAndMap(procedure);
   }
 
@@ -463,7 +468,27 @@ public class SchoolEntryController {
       @RequestPart("file") MultipartFile file)
       throws IOException {
     validator.validateSchoolExists(schoolId);
+    validator.validateLocationIdForImport(locationId);
     return importData(file, ImportType.SCHOOL_LIST, schoolId, locationId, Year.of(schoolYear));
+  }
+
+  @ApiResponse(
+      responseCode = "200",
+      content = @Content(mediaType = MediaType.ALL_VALUE, schema = @Schema(type = "object")))
+  @PostMapping(
+      path = "/past-procedure-list/{schoolId}",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Transactional
+  @Operation(summary = "Upload a XLSX file to create multiple past procedures.")
+  public ResponseEntity<MultiValueMap<String, Object>> importPastProcedureList(
+      @PathVariable("schoolId") UUID schoolId,
+      @RequestParam(value = "schoolYear") @Min(1900) int schoolYear,
+      @RequestPart("file") MultipartFile file)
+      throws IOException {
+    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_YEAR);
+    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.IMPORT_PAST_PROCEDURES);
+    validator.validateSchoolExists(schoolId);
+    return importData(file, ImportType.PAST_PROCEDURE_LIST, schoolId, null, Year.of(schoolYear));
   }
 
   private ResponseEntity<MultiValueMap<String, Object>> importData(
@@ -471,17 +496,6 @@ public class SchoolEntryController {
       throws IOException {
     validateFileExistsAndHasCorrectType(file);
 
-    if (appointmentBlockProperties.getLocationSelectionMode()
-        == LocationSelectionMode.HEALTH_DEPARTMENT) {
-      if (locationId == null) {
-        throw ExceptionUtil.badRequestExceptionMissingLocationId();
-      }
-      validator.validateHealthDepartmentExists(locationId);
-    } else {
-      if (locationId != null) {
-        throw ExceptionUtil.badRequestExceptionForbiddenLocationId();
-      }
-    }
     if (featureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
       validator.validateSchoolYear(schoolYear);
     }
@@ -494,11 +508,6 @@ public class SchoolEntryController {
 
       validator.validateNumberOfRows(sheet);
       validateHeaderExists(sheet);
-      switch (importType) {
-        case CITIZEN_LIST -> ImportDataUtil.validateCitizenListHeaderFormat(sheet);
-        case SCHOOL_LIST -> ImportDataUtil.validateSchoolListHeaderFormat(sheet);
-      }
-      validateConsistencyBetweenHeaderAndRows(sheet);
 
       ImportResult result =
           importService.processSheetAndPersistProcedures(
@@ -642,6 +651,7 @@ public class SchoolEntryController {
         schoolInfoLetterGenerator.generateSchoolInfoLetter(
             procedure, procedureDetailsData, request);
     ProgressEntryUtil.addProgressEntry(procedure, SCHOOL_INFO_LETTER_GENERATED, pdf);
+    procedure.setschoolInfoLetterCreatedAt(Instant.now(clock));
 
     return ResponseEntity.ok()
         .header(

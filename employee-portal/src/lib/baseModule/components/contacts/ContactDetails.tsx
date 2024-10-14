@@ -16,9 +16,9 @@ import {
   isInstitutionContact,
   isPersonContact,
 } from "@/lib/baseModule/components/contacts/types";
-import { ResponsiveDivider } from "@/lib/baseModule/components/gdpr/procedure/tiles/ResponsiveDivider";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
+import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";

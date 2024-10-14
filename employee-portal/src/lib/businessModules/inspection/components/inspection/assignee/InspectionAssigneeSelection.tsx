@@ -4,7 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/employee-portal-api/base";
-import Link from "@mui/joy/Link";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
 import { useGetAllAssignableUsers } from "@/lib/businessModules/inspection/api/queries/users";
 import { AssigneeAutocompleteField } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeAutocompleteField";
@@ -52,7 +52,7 @@ export function InspectionAssigneeSelection(
       )}
       {!(props.onlySelfAssignable && props.currentAssigneeId == null) &&
         props.currentAssigneeId !== selfUserOption.value && (
-          <Link onClick={props.onSelfAssign}>Mir zuweisen</Link>
+          <ButtonLink onClick={props.onSelfAssign}>Mir zuweisen</ButtonLink>
         )}
     </>
   );

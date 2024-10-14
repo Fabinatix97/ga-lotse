@@ -9,6 +9,7 @@ import de.eshg.inspection.checklistdefinition.api.ChecklistDefinitionDto;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionRepository;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
 import net.datafaker.Faker;
@@ -28,8 +29,9 @@ public class ChecklistDefinitionPopulator extends BasePopulator<ChecklistDefinit
       Environment environment,
       ChecklistDefinitionTestDataProvider cldTestDataProvider,
       ChecklistDefinitionRepository cldRepository,
-      TransactionHelper transactionHelper) {
-    super(clock, environment, "checklist_definition");
+      TransactionHelper transactionHelper,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, "checklist_definition", environmentConfig);
     this.cldTestDataProvider = cldTestDataProvider;
     this.cldRepository = cldRepository;
     this.transactionHelper = transactionHelper;

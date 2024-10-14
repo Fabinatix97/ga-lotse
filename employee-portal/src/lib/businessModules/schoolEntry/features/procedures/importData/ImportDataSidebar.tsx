@@ -7,6 +7,7 @@
 
 import { ApiSchoolEntryFeature } from "@eshg/employee-portal-api/schoolEntry";
 import type { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { CircularProgress, Stack, Typography, styled } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
@@ -48,6 +49,9 @@ export function ImportDataSidebar() {
   const isSchoolYearEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.SchoolYear,
   );
+  const isPastProcedureImportEnabled = useIsNewFeatureEnabled(
+    ApiSchoolEntryFeature.ImportPastProcedures,
+  );
   const locationSelectionMode = useGetLocationSelectionMode();
   const isDirectProcedureTypeAssignmentOnImport =
     useIsDirectProcedureTypeAssignmentOnImport();
@@ -67,41 +71,83 @@ export function ImportDataSidebar() {
   return (
     <Sidebar open onClose={handleClose}>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        {({ values, setFieldValue, isSubmitting, handleSubmit }) => (
+        {({
+          values,
+          setFieldValue,
+          setTouched,
+          isSubmitting,
+          handleSubmit,
+        }) => (
           <SidebarForm onSubmit={handleSubmit}>
             <SidebarContent title="Daten importieren">
               {importData.isSuccess ? (
                 <ImportResult
                   file={importData.data.file}
                   statistics={importData.data.statistics}
-                  isDirectProcedureTypeAssignmentOnImport={
-                    isDirectProcedureTypeAssignmentOnImport
+                  isImportWithMerge={
+                    !(
+                      isDirectProcedureTypeAssignmentOnImport ||
+                      values.listType === ImportListType.PastProcedureList
+                    )
                   }
                 />
               ) : (
                 <ImportDataFields
                   listType={values.listType}
                   requireSchoolYear={isSchoolYearEnabled}
+                  isPastProcedureImportEnabled={isPastProcedureImportEnabled}
                   locationSelectionMode={locationSelectionMode}
                   isDirectProcedureTypeAssignmentOnImport={
                     isDirectProcedureTypeAssignmentOnImport
                   }
                   setFieldValue={setFieldValue}
+                  setTouched={setTouched}
                 />
               )}
+              {isSubmitting && <ImportPendingOverlay />}
             </SidebarContent>
-            <SidebarActions>
-              <FormButtonBar
-                submitLabel="Importieren"
-                submitting={isSubmitting}
-                onCancel={handleClose}
-                onFinish={importData.isSuccess ? handleClose : undefined}
-                size="sm"
-              />
-            </SidebarActions>
+            {!isSubmitting && (
+              <SidebarActions>
+                <FormButtonBar
+                  submitLabel="Importieren"
+                  submitting={isSubmitting}
+                  onCancel={importData.isSuccess ? undefined : handleClose}
+                  onFinish={importData.isSuccess ? handleClose : undefined}
+                  size="sm"
+                />
+              </SidebarActions>
+            )}
           </SidebarForm>
         )}
       </Formik>
     </Sidebar>
+  );
+}
+
+const OverlayStack = styled(Stack)(({ theme }) => ({
+  background: theme.palette.background.body,
+  userSelect: "none", // disable interactions
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  alignItems: "center",
+  padding: theme.spacing(12),
+}));
+
+function ImportPendingOverlay() {
+  return (
+    <OverlayStack data-testid="importPending" spacing={2}>
+      <CircularProgress
+        variant="plain"
+        size="md"
+        sx={{ "--CircularProgress-size": "100px" }}
+      />
+      <Typography level="body-md" textAlign="center">
+        Der Import kann einige Zeit in Anspruch nehmen. Bitte schließen Sie
+        dieses Fenster nicht.
+      </Typography>
+    </OverlayStack>
   );
 }

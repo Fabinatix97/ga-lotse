@@ -15,7 +15,7 @@ export function useDeleteStatistic() {
     mutationFn: (statisticId: string) =>
       statisticApi.deleteStatistic(statisticId),
     onSuccess: () => {
-      snackbar.confirmation("Statistik gelöscht");
+      snackbar.confirmation("Auswertung gelöscht");
     },
   });
   return (statisticId: string) => mutation.mutate(statisticId);

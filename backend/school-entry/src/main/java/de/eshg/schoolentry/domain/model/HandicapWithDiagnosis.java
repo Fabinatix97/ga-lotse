@@ -19,9 +19,7 @@ public class HandicapWithDiagnosis {
 
   private Boolean result;
 
-  @ElementCollection(targetClass = String.class)
-  @OrderColumn
-  private List<String> icd10Codes = new ArrayList<>();
+  @ElementCollection @OrderColumn private List<String> icd10Codes = new ArrayList<>();
 
   public Boolean getResult() {
     return result;

@@ -6,6 +6,7 @@
 export const ImportListType = {
   CitizenList: "citizenList",
   SchoolList: "schoolList",
+  PastProcedureList: "pastProcedureList",
 } as const;
 export type ImportListType =
   (typeof ImportListType)[keyof typeof ImportListType];

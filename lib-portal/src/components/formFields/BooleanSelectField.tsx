@@ -44,6 +44,7 @@ export function BooleanSelectField(props: BooleanSelectFieldProps) {
       helperText={field.helperText}
       required={field.required}
       error={field.error}
+      fieldDecorator={props.fieldDecorator}
       sx={props.sx}
     >
       <SelectComponent
@@ -64,7 +65,7 @@ export function BooleanSelectField(props: BooleanSelectFieldProps) {
           }
         }}
         placeholder={props.placeholder}
-        disabled={props.disabled ?? disabled}
+        disabled={disabled || props.disabled}
         color={props.primary ? "primary" : undefined}
       >
         <Option value={true}>{props.labelTrue ?? "Ja"}</Option>

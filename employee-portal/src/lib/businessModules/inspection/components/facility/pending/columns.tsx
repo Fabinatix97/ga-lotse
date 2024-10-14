@@ -7,9 +7,9 @@ import {
   type ApiInspPendingFacility,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/inspection";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Stack } from "@mui/joy";
-import Link from "@mui/joy/Link";
 import { ColumnHelper, Row, createColumnHelper } from "@tanstack/react-table";
 
 import { translateProcedureStatus } from "@/lib/baseModule/api/procedures/enums";
@@ -138,7 +138,8 @@ export function createPendingFacilitiesColumns(
       header: "Vork.",
       cell: (ctx) =>
         ctx.getValue() > 0 && (
-          <Link
+          <ButtonLink
+            data-testid={"incidents " + ctx.row.original.name}
             onClick={() => {
               if (ctx.row.original.inspection) {
                 handleViewIncidentsClick(
@@ -149,7 +150,7 @@ export function createPendingFacilitiesColumns(
             }}
           >
             {ctx.getValue()}
-          </Link>
+          </ButtonLink>
         ),
       meta: {
         width: 70,

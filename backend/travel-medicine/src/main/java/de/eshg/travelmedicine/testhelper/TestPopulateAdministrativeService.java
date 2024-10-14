@@ -6,7 +6,8 @@
 package de.eshg.travelmedicine.testhelper;
 
 import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.*;
-import static de.eshg.travelmedicine.informationstatementtemplate.api.InformationStatementTemplateStateDto.*;
+import static de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateStateDto.DRAFT;
+import static de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateStateDto.FINAL;
 
 import de.eshg.base.inventory.InventoryApi;
 import de.eshg.base.inventory.api.AddInventoryItemRequest;
@@ -14,10 +15,7 @@ import de.eshg.base.inventory.api.InventoryItemDto;
 import de.eshg.base.inventory.api.InventoryItemTypeDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
-import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
-import de.eshg.lib.appointmentblock.api.CreateAppointmentBlockGroupRequest;
-import de.eshg.lib.editor.api.model.element.EditorElementDto;
-import de.eshg.lib.editor.api.model.element.EditorElementTextDto;
+import de.eshg.lib.appointmentblock.api.*;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -25,12 +23,18 @@ import de.eshg.travelmedicine.disease.DiseaseService;
 import de.eshg.travelmedicine.disease.api.DiseaseDto;
 import de.eshg.travelmedicine.disease.api.PostPutDiseaseRequest;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
-import de.eshg.travelmedicine.informationstatementtemplate.InformationStatementTemplateService;
-import de.eshg.travelmedicine.informationstatementtemplate.api.InformationStatementTemplateDto;
-import de.eshg.travelmedicine.informationstatementtemplate.api.InformationStatementTemplateRequest;
 import de.eshg.travelmedicine.otherservicetemplate.OtherServiceTemplateService;
 import de.eshg.travelmedicine.otherservicetemplate.api.OtherServiceTemplateDto;
 import de.eshg.travelmedicine.otherservicetemplate.api.PostPutOtherServiceTemplateRequest;
+import de.eshg.travelmedicine.template.api.TemplateContentDto;
+import de.eshg.travelmedicine.template.api.TemplateSectionDto;
+import de.eshg.travelmedicine.template.api.TemplateSectionElementDataDto;
+import de.eshg.travelmedicine.template.api.TemplateSectionElementDto;
+import de.eshg.travelmedicine.template.api.TemplateSubElementMultiSelectDto;
+import de.eshg.travelmedicine.template.api.TemplateSubElementTextDto;
+import de.eshg.travelmedicine.template.informationstatementtemplate.InformationStatementTemplateService;
+import de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateDto;
+import de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateRequest;
 import de.eshg.travelmedicine.testhelper.api.PostPopulateAdministrativeResponse;
 import de.eshg.travelmedicine.vaccine.VaccineService;
 import de.eshg.travelmedicine.vaccine.api.PostPutVaccineRequest;
@@ -323,16 +327,17 @@ public class TestPopulateAdministrativeService {
 
     UUID appointmentBlockGroup_consultNow =
         appointmentBlockService
-            .createAppointmentBlockGroup(
-                new CreateAppointmentBlockGroupRequest(
+            .createDailyAppointmentBlocksForGroup(
+                new CreateDailyAppointmentBlockGroupRequest(
                     AppointmentTypeDto.CONSULTATION,
                     4,
-                    startBlock_consultNow,
-                    endBlock_consultNow,
+                    List.of(
+                        new CreateDailyAppointmentBlockDto(
+                            startBlock_consultNow, endBlock_consultNow, DayOfWeekDto.allDays())),
                     List.of(physician),
                     List.of(mfa),
                     List.of()))
-            .appointmentBlockGroupId();
+            .id();
 
     Instant startBlock_2 =
         ZonedDateTime.now(clock)
@@ -344,16 +349,17 @@ public class TestPopulateAdministrativeService {
 
     UUID appointmentBlockGroup_vaccinateLater =
         appointmentBlockService
-            .createAppointmentBlockGroup(
-                new CreateAppointmentBlockGroupRequest(
+            .createDailyAppointmentBlocksForGroup(
+                new CreateDailyAppointmentBlockGroupRequest(
                     AppointmentTypeDto.VACCINATION,
                     2,
-                    startBlock_2,
-                    endBlock_2,
+                    List.of(
+                        new CreateDailyAppointmentBlockDto(
+                            startBlock_2, endBlock_2, DayOfWeekDto.allDays())),
                     List.of(physician),
                     List.of(mfa),
                     List.of()))
-            .appointmentBlockGroupId();
+            .id();
 
     Map<String, UUID> appointmentBlockGroups = new LinkedHashMap<>();
     appointmentBlockGroups.put(CONSULT_NOW_KEY, appointmentBlockGroup_consultNow);
@@ -373,7 +379,11 @@ public class TestPopulateAdministrativeService {
       InformationStatementTemplateDto emptyDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
-                  "Empty Template Name", "Empty Template Title", DRAFT, null, null));
+                  "Empty Template Name",
+                  "Empty Template Title",
+                  DRAFT,
+                  null,
+                  createTemplateContent(false)));
       InformationStatementTemplateDto standardDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
@@ -384,7 +394,7 @@ public class TestPopulateAdministrativeService {
                       diseases.get(CHOLERA_DISEASE_KEY),
                       diseases.get(MALARIA_DISEASE_KEY),
                       diseases.get(MEASLES_DISEASE_KEY)),
-                  createEditorContent("Standard")));
+                  createTemplateContent(false)));
       InformationStatementTemplateDto choleraFinalDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
@@ -392,7 +402,7 @@ public class TestPopulateAdministrativeService {
                   "Cholera Final Template Title",
                   FINAL,
                   List.of(diseases.get(CHOLERA_DISEASE_KEY)),
-                  createEditorContent("Cholera Final")));
+                  createTemplateContent(false)));
       InformationStatementTemplateDto choleraDraftDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
@@ -400,7 +410,7 @@ public class TestPopulateAdministrativeService {
                   "Cholera Draft Template Title",
                   DRAFT,
                   List.of(diseases.get(CHOLERA_DISEASE_KEY)),
-                  createEditorContent("Cholera Draft")));
+                  createTemplateContent(false)));
 
       Map<String, UUID> informationStatementTemplates = new LinkedHashMap<>();
       informationStatementTemplates.put(EMPTY_IST_KEY, emptyDto.id());
@@ -410,14 +420,68 @@ public class TestPopulateAdministrativeService {
 
       return informationStatementTemplates;
     }
-
     return Map.of();
   }
 
-  private List<EditorElementDto> createEditorContent(String name) {
-    return List.of(
-        new EditorElementTextDto(UUID.randomUUID(), true, true, true, false, null, "first text"),
-        new EditorElementTextDto(UUID.randomUUID(), true, true, true, false, null, name),
-        new EditorElementTextDto(UUID.randomUUID(), true, true, true, false, null, "last text"));
+  private TemplateContentDto createTemplateContent(boolean answered) {
+    Boolean closedAnswer = answered ? true : null;
+    String openAnswer = answered ? "Antworttext" : null;
+    return new TemplateContentDto(
+        List.of(
+            new TemplateSectionDto(
+                "1. Section Titel",
+                List.of(
+                    new TemplateSectionElementDto(
+                        "option",
+                        new TemplateSectionElementDataDto(
+                            "1. Section, 1. Frage, keine Subelemente",
+                            closedAnswer,
+                            List.of(),
+                            null)),
+                    new TemplateSectionElementDto(
+                        "option",
+                        new TemplateSectionElementDataDto(
+                            "1. Section, 2. Frage, SubElementMultiSelect",
+                            closedAnswer,
+                            List.of(
+                                new TemplateSubElementMultiSelectDto(
+                                    "1. Antwortoption", closedAnswer),
+                                new TemplateSubElementMultiSelectDto(
+                                    "2. Antwortoption", closedAnswer)),
+                            null)),
+                    new TemplateSectionElementDto(
+                        "option",
+                        new TemplateSectionElementDataDto(
+                            "1. Section, 3. Frage, SubElementText",
+                            closedAnswer,
+                            List.of(),
+                            new TemplateSubElementTextDto("3. Frage, offene Angabe", openAnswer))),
+                    new TemplateSectionElementDto(
+                        "option",
+                        new TemplateSectionElementDataDto(
+                            "1. Section, 4. Frage, kombiniert",
+                            closedAnswer,
+                            List.of(
+                                new TemplateSubElementMultiSelectDto(
+                                    "1. Antwortoption", closedAnswer),
+                                new TemplateSubElementMultiSelectDto(
+                                    "2. Antwortoption", closedAnswer)),
+                            new TemplateSubElementTextDto(
+                                "4. Frage, offene Angabe in Subelementen", openAnswer))))),
+            new TemplateSectionDto(
+                "2. Section Titel",
+                List.of(
+                    new TemplateSectionElementDto(
+                        "option",
+                        new TemplateSectionElementDataDto(
+                            "2. Section, 1. Frage",
+                            closedAnswer,
+                            List.of(
+                                new TemplateSubElementMultiSelectDto(
+                                    "Eine Antwortoption", closedAnswer),
+                                new TemplateSubElementMultiSelectDto(
+                                    "Noch eine Antwortoption", closedAnswer)),
+                            new TemplateSubElementTextDto(
+                                "Sonstige Antwortoption", openAnswer)))))));
   }
 }

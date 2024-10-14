@@ -5,8 +5,6 @@
 
 package de.eshg.base.centralfile;
 
-import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
-
 import de.eshg.base.centralfile.api.*;
 import de.eshg.base.centralfile.api.facility.*;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
@@ -14,10 +12,8 @@ import de.eshg.base.centralfile.mapper.FacilityMapper;
 import de.eshg.base.centralfile.persistence.FacilityService;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
-import de.eshg.base.centralfile.persistence.repository.FacilitySearchSpecification;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
-import de.eshg.base.util.FuzzySearchHelper;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Clock;
@@ -38,19 +34,16 @@ public class FacilityController implements FacilityApi {
   private final FacilityRepository facilityRepository;
   private final FacilityService facilityService;
   private final BaseFeatureToggle featureToggle;
-  private final FuzzySearchHelper fuzzySearchHelper;
   private final Clock clock;
 
   public FacilityController(
       FacilityRepository facilityRepository,
       FacilityService facilityService,
       BaseFeatureToggle featureToggle,
-      FuzzySearchHelper fuzzySearchHelper,
       Clock clock) {
     this.facilityRepository = facilityRepository;
     this.facilityService = facilityService;
     this.featureToggle = featureToggle;
-    this.fuzzySearchHelper = fuzzySearchHelper;
     this.clock = clock;
   }
 
@@ -87,11 +80,8 @@ public class FacilityController implements FacilityApi {
   @Override
   @Transactional(readOnly = true)
   public SearchReferenceFacilitiesResponse searchReferenceFacilities(String name) {
-    fuzzySearchHelper.setSimilarityThreshold(getSimilarityThreshold(name));
-    FacilitySearchSpecification spec = new FacilitySearchSpecification(name);
-
     List<GetReferenceFacilityResponse> facilities =
-        facilityRepository.findAll(spec).stream()
+        facilityService.searchReferenceFacilities(name).stream()
             .map(FacilityMapper::mapReferenceFacilityToApi)
             .toList();
 

@@ -7,8 +7,9 @@
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useGetVaccinationConsultationDetails } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { calculateAge } from "@/lib/businessModules/travelMedicine/shared/helper";
 import {
   TabNavigationHeader,
@@ -20,9 +21,11 @@ export function VaccinationConsultationTabHeader({
 }: {
   readonly id: string;
 }) {
-  const data = useGetVaccinationConsultationDetails(id).data;
-  const name = formatPersonName(data.patient);
-  const dateOfBirth = data.patient.dateOfBirth;
+  const [{ data: detailsResponse }] = useSuspenseQueries({
+    queries: [useGetVaccinationConsultationDetailsQuery(id)],
+  });
+  const name = formatPersonName(detailsResponse.patient);
+  const dateOfBirth = detailsResponse.patient.dateOfBirth;
   return (
     <TabNavigationHeader titleAsH1>
       <TabNavigationHeaderTypography>{name}</TabNavigationHeaderTypography>

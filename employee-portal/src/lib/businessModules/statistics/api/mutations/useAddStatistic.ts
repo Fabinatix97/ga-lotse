@@ -16,7 +16,7 @@ export function useAddStatistic({ onSuccess }: { onSuccess: () => void }) {
   const mutation = useHandledMutation({
     mutationFn: (apiAddStatisticRequest: ApiAddStatisticRequest) =>
       statisticApi.addStatistic(mapAddStatistic(apiAddStatisticRequest)),
-    onSuccess: () => snackbar.confirmation("Statistik wird erstellt."),
+    onSuccess: () => snackbar.confirmation("Auswertung wird erstellt"),
   });
   return (apiAddStatisticRequest: ApiAddStatisticRequest) =>
     mutation.mutateAsync(apiAddStatisticRequest, { onSuccess }).catch();

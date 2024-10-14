@@ -6,6 +6,8 @@
 import { Button, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
+import { useDeleteAppointment } from "@/lib/businessModules/travelMedicine/api/mutations/citizenAuthApi";
+import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
@@ -16,18 +18,29 @@ import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function AppointmentDetailsSidePanel({
   hasAccomplishedService,
+  isCancelled,
 }: Readonly<{
   hasAccomplishedService: boolean;
+  isCancelled: boolean;
 }>) {
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
+  const { procedureId, procedureStepId } = useIdContext();
+  const deleteAppointment = useDeleteAppointment();
+
+  async function handleDeleteAppointment() {
+    await deleteAppointment.mutateAsync({
+      procedureId: procedureId,
+      procedureStepId: procedureStepId,
+    });
+  }
 
   return (
     <ContentSheet>
       <Stack gap={"16px"}>
-        {!hasAccomplishedService && (
+        {!hasAccomplishedService && !isCancelled && (
           <>
             <ContentSheetTitle sx={{ paddingBottom: "8px" }}>
               {t("sidePanel.title")}
@@ -35,7 +48,12 @@ export function AppointmentDetailsSidePanel({
             <Button color="primary" variant="outlined" type="submit">
               {t("sidePanel.postponeAppointment")}
             </Button>
-            <Button color="danger" variant="outlined" type="submit">
+            <Button
+              color="danger"
+              variant="outlined"
+              type="submit"
+              onClick={handleDeleteAppointment}
+            >
               {t("sidePanel.cancelAppointment")}
             </Button>
           </>

@@ -22,12 +22,17 @@ import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
+import {
+  chatUsernameValidator,
+  phoneNumberValidator,
+} from "@/lib/baseModule/components/users/validation";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
   SidebarForm,
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
+import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
@@ -95,16 +100,17 @@ export function UserProfileEditForm({
                 />
               )}
 
-              <InputField
-                type={"tel"}
+              <PhoneNumberField
                 label={"Telefonnummer"}
                 name={fieldName("phoneNumber")}
+                validate={phoneNumberValidator}
               />
 
               {showChatUsername && (
                 <InputField
                   label={"Chat Benutzername"}
                   name={fieldName("externalChatUsername")}
+                  validate={chatUsernameValidator}
                 />
               )}
 

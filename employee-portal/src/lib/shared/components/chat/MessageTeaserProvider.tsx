@@ -45,13 +45,21 @@ type SnackbarValuesWithoutKey = Omit<SnackbarValues, "key">;
 function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
   const pathname = usePathname();
   const { tryNavigate } = useNavigation();
-  const { chatSidebar, userSettings } = useChat();
+  const { userSettings, messagesSidebar } = useChat();
 
   useEffect(() => {
-    if (pathname === routes.index || chatSidebar.isOpen) {
+    if (pathname === routes.index || messagesSidebar.isOpen) {
       onClose();
     }
-  }, [onClose, pathname, chatSidebar.isOpen]);
+  }, [onClose, pathname, messagesSidebar.isOpen]);
+
+  function toggleMessagesSidebar(): void {
+    if (messagesSidebar.isOpen) {
+      messagesSidebar.close();
+    } else {
+      messagesSidebar.open();
+    }
+  }
 
   return (
     <Snackbar
@@ -181,7 +189,7 @@ function BaseSnackbar({ snackbar, onClose }: Readonly<BaseSnackbarProps>) {
                   border: "1px",
                 }}
                 onClick={() => {
-                  chatSidebar.toggle();
+                  toggleMessagesSidebar();
                   onClose();
                 }}
               >

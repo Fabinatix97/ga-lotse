@@ -9,6 +9,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode } from "react";
 
 import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 export function AppointmentOverviewSectionGrid(
   props: Readonly<RequiresChildren>,
@@ -19,7 +20,7 @@ export function AppointmentOverviewSectionGrid(
     <Grid
       container
       spacing={2}
-      columns={{ xxs: 1, md: 4 }}
+      columns={byBreakpoint({ mobile: 1, desktop: 4 })}
       sx={{ padding: isMobile ? 0 : "24px", flexGrow: 1 }}
     >
       {Children.map(props.children, (infoSection) => (

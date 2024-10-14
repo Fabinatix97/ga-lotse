@@ -12,9 +12,10 @@ import {
   TimelineOutlined,
 } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
-import { useGetStatus } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { useGetStatusQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { VaccinationConsultationTabHeader } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/VaccinationConsultationTabHeader";
 import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { statusColors } from "@/lib/shared/components/procedures/constants";
@@ -27,7 +28,9 @@ export function VaccinationConsultationTabNavigationToolbar({
   id: string;
 }>) {
   const tabItems = createTabItems(id);
-  const status = useGetStatus(id).data;
+  const [{ data: status }] = useSuspenseQueries({
+    queries: [useGetStatusQuery(id)],
+  });
 
   return (
     <TabNavigationToolbar

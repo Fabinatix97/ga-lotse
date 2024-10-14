@@ -5,18 +5,32 @@
 
 import { Box, Divider, List, ListItem, Typography, useTheme } from "@mui/joy";
 import { isSameDay, startOfDay } from "date-fns";
-import { Fragment, useEffect, useRef } from "react";
-import { isEmpty, isNonNullish } from "remeda";
+import { Fragment, useEffect, useMemo, useRef } from "react";
+import {
+  filter,
+  find,
+  isEmpty,
+  isNonNullish,
+  isStrictEqual,
+  isTruthy,
+  map,
+  pipe,
+} from "remeda";
 
 import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { ChatBubble } from "@/lib/businessModules/chat/components/chatPanel/ChatBubble";
+import { ChatSystemMessage } from "@/lib/businessModules/chat/components/chatPanel/ChatSystemMessages";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { useChatSystemMessages } from "@/lib/businessModules/chat/shared/hooks/useChatSystemMessages";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import {
+  MentionedMember,
   Message,
   RoomWithCommunicationType,
+  isChatMessage,
+  isSystemMessage,
 } from "@/lib/businessModules/chat/shared/types";
 import { getDayLabel } from "@/lib/businessModules/chat/shared/utils";
 
@@ -31,15 +45,8 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
   } = useChat();
   const { matrixClient } = useChatClientContext();
   const loggedInUserId = matrixClient.getUserId() ?? "";
-  const { readConfirmationsPerRoom } =
-    useReadConfirmation(showReadConfirmation);
-  const roomReceipts = readConfirmationsPerRoom[room.room.roomId];
-  // Here we filter out the logged-in user ID.
-  const { [loggedInUserId]: _, ...readConfirmationFromOtherUsers } =
-    roomReceipts ?? {};
-  const lastReadMessageIds = Object.values(readConfirmationFromOtherUsers)?.map(
-    ({ eventId }) => eventId,
-  );
+  const { messageReadsPerRoom } = useReadConfirmation(showReadConfirmation);
+  const lastReadMessageIds = messageReadsPerRoom[room.room.roomId] ?? [];
   const lastReadIndexes = messages
     .map(({ id }, index) =>
       lastReadMessageIds.includes(id) ? index : undefined,
@@ -58,6 +65,18 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
   const theme = useTheme();
   const messagesWrapperRef = useRef<HTMLUListElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const { roomSystemMessages } = useChatSystemMessages();
+  const chatAndSystemMessages = useMemo(() => {
+    return [...messages, ...roomSystemMessages].sort((a, b) =>
+      !a?.timestamp
+        ? 1
+        : !b?.timestamp
+          ? -1
+          : new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
+  }, [messages, roomSystemMessages]);
+
+  const roomMembers = room.room.getMembers();
 
   useEffect(() => {
     wrapperRef.current?.scrollTo(
@@ -73,7 +92,7 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
   return (
     <Box
       sx={{
-        overflowY: "auto",
+        overflowY: "hidden",
         flex: 1,
       }}
       ref={wrapperRef}
@@ -83,14 +102,15 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
         sx={{
           display: "flex",
           flexDirection: "column-reverse",
+          height: "100%",
+          overflowY: "auto",
         }}
       >
-        {messages?.map((message: Message, index: number) => {
-          const isYou = message.sender?.userId === loggedInUserId;
-
+        {chatAndSystemMessages?.map((message, index: number) => {
+          if (!message) return null;
           const nextMessage = messages[index + 1];
           const shouldShowDivider =
-            index !== messages.length - 1 &&
+            index !== chatAndSystemMessages.length - 1 &&
             message.timestamp &&
             nextMessage?.timestamp &&
             nextMessage &&
@@ -99,25 +119,55 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
               startOfDay(nextMessage.timestamp),
             );
 
+          const mentions: MentionedMember[] =
+            "mentions" in message && message.mentions?.length
+              ? pipe(
+                  [...new Set(message.mentions)],
+                  map((user) => {
+                    const roomMember = find(roomMembers, (m) =>
+                      isStrictEqual(m.userId, user),
+                    );
+
+                    return roomMember
+                      ? { name: roomMember.name, userId: roomMember.userId }
+                      : undefined;
+                  }),
+                  filter((u) => isTruthy(u)),
+                )
+              : [];
+
           return (
             <Fragment key={message.id}>
               <ListItem
                 sx={{
-                  flexDirection: isYou ? "row-reverse" : "row",
+                  flexDirection:
+                    "sender" in message &&
+                    message.sender?.userId === loggedInUserId
+                      ? "row-reverse"
+                      : "row",
                   paddingX: theme.spacing(3),
                   paddingY: 0,
-                  marginBottom: 3,
+                  marginBottom: isChatMessage(message) ? 3 : 2,
                 }}
               >
-                <ChatBubble
-                  variant={isYou ? "sent" : "received"}
-                  loggedInUserId={loggedInUserId}
-                  message={message}
-                  lastReadMessageIndexes={
-                    [...initialReadIndexes, ...lastReadIndexes] as number[]
-                  }
-                  index={index}
-                />
+                {isSystemMessage(message) ? (
+                  <ChatSystemMessage message={message} key={message.id} />
+                ) : (
+                  <ChatBubble
+                    variant={
+                      message.sender?.userId === loggedInUserId
+                        ? "sent"
+                        : "received"
+                    }
+                    loggedInUserId={loggedInUserId}
+                    message={message}
+                    mentions={mentions}
+                    lastReadMessageIndexes={
+                      [...initialReadIndexes, ...lastReadIndexes] as number[]
+                    }
+                    index={index}
+                  />
+                )}
               </ListItem>
               {shouldShowDivider && message.timestamp && (
                 <Divider

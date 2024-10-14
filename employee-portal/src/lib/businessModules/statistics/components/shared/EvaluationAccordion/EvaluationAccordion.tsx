@@ -78,7 +78,7 @@ export function EvaluationAccordion(props: EvaluationAccordionProps) {
       </Stack>
 
       {sortedEvaluations.length === 0 && (
-        <NoSearchResults info="Keine Auswertungen vorhanden" />
+        <NoSearchResults info="Keine Analysen vorhanden" />
       )}
 
       {sortedEvaluations.map((evaluation) => (
@@ -119,10 +119,10 @@ function EvaluationAccordionItem(props: EvaluationAccordionItemProps) {
   function handleEvaluationDelete(evaluationId: string, name: string) {
     openConfirmationDialog({
       onConfirm: () => deleteEvaluation(evaluationId),
-      title: "Auswertung löschen?",
-      description: `Die Auswertung “${name}” und alle darin enthaltenen Diagramme werden dann unwiderruflich gelöscht.`,
+      title: "Analyse löschen?",
+      description: `Die Analyse “${name}” und alle darin enthaltenen Diagramme werden dann unwiderruflich gelöscht.`,
       cancelLabel: "Abbrechen",
-      confirmLabel: "Auswertung löschen",
+      confirmLabel: "Löschen",
       color: "danger",
     });
   }

@@ -8,46 +8,56 @@ package de.eshg.schoolentry.importer;
 import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
+import de.eshg.schoolentry.business.model.AddressData;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.util.StringUtils;
 
-public abstract class RowProcessor<T extends RowValues>
+public abstract class RowProcessor<T extends RowValues, C extends XlsxColumn>
     implements EqualityComparator<T>, RowValueMapper<T> {
 
   private static final DataFormatter DATA_FORMATTER = new DataFormatter();
 
+  private final List<C> actualColumns;
   private final CellStyle errorCellStyle;
   private final Drawing<?> drawing;
   private final CreationHelper factory;
   private final ClientAnchor anchor;
 
-  protected RowProcessor(Sheet sheet) {
+  protected RowProcessor(Sheet sheet, List<C> actualColumns) {
     Workbook workbook = sheet.getWorkbook();
 
+    this.actualColumns = actualColumns;
     errorCellStyle = createErrorStyle(workbook);
     drawing = sheet.createDrawingPatriarch();
     factory = workbook.getCreationHelper();
     anchor = factory.createClientAnchor();
   }
 
+  public List<C> getActualColumns() {
+    return actualColumns;
+  }
+
   public T processRow(Row row) {
-    ColumnAccessor col = new ColumnAccessor(row);
+    ColumnAccessor<C> col = new ColumnAccessor<>(row, actualColumns);
     T result = process(col);
     result.setRow(row);
 
     return result;
   }
 
-  protected abstract T process(ColumnAccessor col);
+  protected abstract T process(ColumnAccessor<C> col);
 
-  protected ImportStatus processStatus(Cell cell, BiConsumer<Cell, String> errorHandler) {
-    String status = cellAsString(cell, true, true, errorHandler);
+  protected ImportStatus processStatus(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String status = cellAsString(cell, true, false, errorHandler);
     if (!StringUtils.hasLength(status)) {
       return null;
     }
@@ -60,8 +70,10 @@ public abstract class RowProcessor<T extends RowValues>
     }
   }
 
-  protected UUID processProcedureId(Cell cell, BiConsumer<Cell, String> errorHandler) {
-    String uuid = cellAsString(cell, true, true, errorHandler);
+  protected UUID processProcedureId(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String uuid = cellAsString(cell, true, false, errorHandler);
     if (!StringUtils.hasLength(uuid)) {
       return null;
     }
@@ -101,27 +113,48 @@ public abstract class RowProcessor<T extends RowValues>
     return comment;
   }
 
-  protected static String cellAsString(Cell cell, BiConsumer<Cell, String> errorHandler) {
-    return cellAsString(cell, false, true, errorHandler);
+  protected String cellAsString(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    return cellAsString(col.get(column), errorHandler);
   }
 
-  protected static String cellAsString(
-      Cell cell, boolean optional, boolean strict, BiConsumer<Cell, String> errorHandler) {
+  protected static String cellAsString(Cell cell, BiConsumer<Cell, String> errorHandler) {
+    return cellAsString(cell, false, false, errorHandler);
+  }
+
+  protected String cellAsString(
+      ColumnAccessor<C> col,
+      C column,
+      boolean optional,
+      boolean allowCellTypeNumeric,
+      BiConsumer<Cell, String> errorHandler) {
+    return cellAsString(col.get(column), optional, allowCellTypeNumeric, errorHandler);
+  }
+
+  private static String cellAsString(
+      Cell cell,
+      boolean optional,
+      boolean allowCellTypeNumeric,
+      BiConsumer<Cell, String> errorHandler) {
     List<CellType> expectedTypes =
-        strict ? List.of(CellType.STRING) : List.of(CellType.STRING, CellType.NUMERIC);
+        allowCellTypeNumeric
+            ? List.of(CellType.STRING, CellType.NUMERIC)
+            : List.of(CellType.STRING);
 
     if (isOptionalBlank(cell, optional) || invalidType(cell, expectedTypes, errorHandler)) {
       return null;
     }
 
-    if (strict) {
-      return cell.getStringCellValue().trim();
-    } else {
+    if (allowCellTypeNumeric) {
       return DATA_FORMATTER.formatCellValue(cell).trim();
+    } else {
+      return cell.getStringCellValue().trim();
     }
   }
 
-  protected static boolean cellAsFlag(Cell cell, BiConsumer<Cell, String> errorHandler) {
+  protected boolean cellAsFlag(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
     return !isOptionalBlank(cell, true)
         && !invalidType(cell, CellType.STRING, errorHandler)
         && !invalidFlag(cell, errorHandler);
@@ -138,15 +171,19 @@ public abstract class RowProcessor<T extends RowValues>
     return cell.getCellType();
   }
 
-  protected static LocalDate cellAsDate(Cell cell, BiConsumer<Cell, String> errorHandler) {
+  protected LocalDate cellAsDate(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
     if (invalidType(cell, CellType.NUMERIC, errorHandler) || invalidDate(cell, errorHandler)) {
       return null;
     }
     return cell.getLocalDateTimeCellValue().toLocalDate();
   }
 
-  protected static GenderDto cellAsGender(Cell cell, BiConsumer<Cell, String> errorHandler) {
-    String gender = cellAsString(cell, true, true, errorHandler);
+  protected GenderDto cellAsGender(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String gender = cellAsString(cell, true, false, errorHandler);
     if (gender == null) {
       return null;
     }
@@ -166,9 +203,10 @@ public abstract class RowProcessor<T extends RowValues>
     };
   }
 
-  protected static SalutationDto cellAsSalutation(
-      Cell cell, BiConsumer<Cell, String> errorHandler) {
-    String salutation = cellAsString(cell, true, true, errorHandler);
+  protected SalutationDto cellAsSalutation(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String salutation = cellAsString(cell, true, false, errorHandler);
     if (salutation == null) {
       return null;
     }
@@ -188,9 +226,10 @@ public abstract class RowProcessor<T extends RowValues>
     };
   }
 
-  protected static CountryCodeDto cellAsCountryCode(
-      Cell cell, BiConsumer<Cell, String> errorHandler) {
-    String countryCode = cellAsString(cell, true, true, errorHandler);
+  protected CountryCodeDto cellAsCountryCode(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String countryCode = cellAsString(cell, true, false, errorHandler);
     if (countryCode == null) {
       return null;
     }
@@ -245,4 +284,42 @@ public abstract class RowProcessor<T extends RowValues>
     }
     return false;
   }
+
+  private boolean anyValueInRange(
+      ColumnAccessor<C> col,
+      AddressColumns<C> addressColumns,
+      BiConsumer<Cell, String> errorHandler) {
+    return anyValueInRange(
+        col.getRange(addressColumns.street(), addressColumns.addressAddition()), errorHandler);
+  }
+
+  protected static boolean anyValueInRange(
+      Stream<Cell> range, BiConsumer<Cell, String> errorHandler) {
+    return range
+        .map(cell -> cellAsString(cell, true, false, errorHandler))
+        .anyMatch(org.apache.commons.lang3.StringUtils::isNotBlank);
+  }
+
+  protected AddressData processAddressData(
+      ColumnAccessor<C> col,
+      AddressColumns<C> addressColumns,
+      BiConsumer<Cell, String> errorHandler,
+      boolean mandatoryAddress) {
+
+    if (anyValueInRange(col, addressColumns, errorHandler) || mandatoryAddress) {
+      String street = cellAsString(col, addressColumns.street(), false, false, errorHandler);
+      String houseNumber =
+          cellAsString(col, addressColumns.houseNumber(), true, true, errorHandler);
+      String postalCode = cellAsString(col, addressColumns.postalCode(), false, true, errorHandler);
+      String city = cellAsString(col, addressColumns.city(), false, false, errorHandler);
+      String addressAddition =
+          cellAsString(col, addressColumns.addressAddition(), true, true, errorHandler);
+      return new AddressData(
+          CountryCodeDto.DE, city, postalCode, street, houseNumber, addressAddition);
+    }
+    return null;
+  }
+
+  protected record AddressColumns<C extends XlsxColumn>(
+      C street, C houseNumber, C postalCode, C city, C addressAddition) {}
 }

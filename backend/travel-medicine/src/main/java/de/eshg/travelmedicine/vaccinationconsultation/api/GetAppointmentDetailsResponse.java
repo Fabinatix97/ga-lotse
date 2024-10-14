@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.UUID;
 
 public record GetAppointmentDetailsResponse(
     @NotNull @Valid AppointmentSummaryDto summaryDto,
@@ -17,5 +16,5 @@ public record GetAppointmentDetailsResponse(
     @NotBlank String lastName,
     @NotBlank String firstName,
     @NotNull LocalDate dateOfBirth,
-    UUID medicalHistoryId,
-    @NotNull boolean isMedicalHistoryAnswered) {}
+    @NotNull boolean isMedicalHistoryCompletelyAnswered,
+    @NotNull boolean citizenHasAnswered) {}

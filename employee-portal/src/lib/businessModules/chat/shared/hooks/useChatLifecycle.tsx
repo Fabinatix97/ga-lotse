@@ -5,7 +5,6 @@
 
 import { ClientEvent, MatrixClient } from "matrix-js-sdk/lib/client";
 import { SyncState, createClient } from "matrix-js-sdk/lib/matrix";
-import { usePathname, useRouter } from "next/navigation";
 import {
   Dispatch,
   MutableRefObject,
@@ -34,49 +33,35 @@ import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { IStoredCredentials } from "@/lib/businessModules/chat/shared/types";
 import {
+  clearLoginToken,
   delayed,
   validateChatUsername,
 } from "@/lib/businessModules/chat/shared/utils";
-
-const MAX_ATTEMPTS = 3;
 
 export function useChatLifecycle(
   matrixClient: MutableRefObject<MatrixClient>,
   clientState: ClientState,
   setClientState: Dispatch<SetStateAction<ClientState>>,
 ) {
-  const pathname = usePathname();
-  const router = useRouter();
   const { data: selfUser } = useGetSelfUser();
   const updateSelfUser = useUpdateSelfUser();
 
   const { configuration } = useChat();
 
   const baseUrl = configuration.MATRIX_SERVER_URL;
-  const publicFrontendUrl = configuration.PUBLIC_FRONTEND_URL;
 
   const [credentials, setCredentials] = useState<IStoredCredentials>();
-  const [loginAttempts, setLoginAttempts] = useState(0);
   const wasAuthenticated = useRef(false);
 
-  // TO DO - check search params like room id and update redirect url
-  const redirectUrl = publicFrontendUrl + pathname;
-
   const restartChat = useCallback(async () => {
+    logger.warn("RESTARTING CHAT");
+
     await clearCachedCredentials();
     await matrixClient.current.clearStores();
 
-    if (loginAttempts >= MAX_ATTEMPTS) {
-      setClientState(ClientState.Error);
-      return;
-    }
-
-    logger.warn("RESTARTING CHAT", { loginAttempts: loginAttempts + 1 });
-
     wasAuthenticated.current = false;
     setClientState(ClientState.Idle);
-    setLoginAttempts((prev) => prev + 1);
-  }, [loginAttempts, matrixClient, setClientState]);
+  }, [matrixClient, setClientState]);
 
   /**
    * Prepare the matrix client
@@ -97,14 +82,13 @@ export function useChatLifecycle(
       if (creds) {
         setCredentials(creds);
         setClientState(ClientState.Authorized);
-
-        router.replace(redirectUrl);
       }
     } catch (error) {
       logger.error("Error logging into matrix chat:", error);
-      await restartChat();
+      setClientState(ClientState.Error);
     }
-  }, [baseUrl, redirectUrl, restartChat, router, selfUser, setClientState]);
+    void clearLoginToken();
+  }, [baseUrl, selfUser, setClientState]);
 
   /**
    * Start the matrix client
@@ -144,7 +128,8 @@ export function useChatLifecycle(
       });
     } catch (error) {
       logger.error("Init Rust crypto error", error);
-      await restartChat();
+      setClientState(ClientState.Error);
+      return;
     }
 
     setClientState(ClientState.ClientCreated);
@@ -153,8 +138,9 @@ export function useChatLifecycle(
 
     await matrixClient.current.startClient({
       initialSyncLimit: 10,
+      includeArchivedRooms: true,
     });
-  }, [baseUrl, credentials, matrixClient, restartChat, setClientState]);
+  }, [baseUrl, credentials, matrixClient, setClientState]);
 
   /**
    * Handle matrix encryption
@@ -212,13 +198,12 @@ export function useChatLifecycle(
         break;
       case ClientState.Authorized:
         void createChatClient();
-        void updateSelfUserChatUsername();
         break;
       case ClientState.ReadyForEncryption:
+        void updateSelfUserChatUsername();
         void handleChatEncryption();
         break;
       case ClientState.Restart:
-        setLoginAttempts(0);
         void restartChat();
         break;
       default:

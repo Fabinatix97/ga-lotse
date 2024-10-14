@@ -13,6 +13,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AppointmentTypeRepository extends JpaRepository<AppointmentTypeConfig, UUID> {
 
   Optional<AppointmentTypeConfig> findByAppointmentType(AppointmentType appointmentType);
-
-  boolean existsByAppointmentType(AppointmentType appointmentType);
 }

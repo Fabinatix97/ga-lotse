@@ -26,6 +26,7 @@ export function mapToReportDetailsView(
     response.tableColumnHeaders,
   );
   return {
+    id: response.id,
     seriesId: response.reportSeriesId,
     title: response.name,
     description: response.description,
@@ -42,6 +43,7 @@ export function mapToReportDetailsView(
     },
     evaluations: mapEvaluations(response.evaluation, attributes),
     attributes: attributes,
+    userId: response.userReport?.userId ?? response.userReportSeries!.userId,
   };
 }
 

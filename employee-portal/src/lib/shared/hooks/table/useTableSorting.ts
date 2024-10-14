@@ -18,8 +18,11 @@ interface UseTableSorting {
 
 export function useTableSorting(params: {
   onSortingChange: () => void;
+  initialSorting?: ColumnSort;
 }): UseTableSorting {
-  const [columnSort, setColumnSort] = useState<ColumnSort>();
+  const [columnSort, setColumnSort] = useState<ColumnSort | undefined>(
+    params.initialSorting,
+  );
 
   return {
     sortKey: columnSort?.id,

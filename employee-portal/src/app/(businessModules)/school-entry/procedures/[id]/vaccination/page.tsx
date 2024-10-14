@@ -12,8 +12,10 @@ import {
 } from "@eshg/employee-portal-api/schoolEntry";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
+  mapOptionalDate,
   mapOptionalValue,
   mapRequiredValue,
+  parseOptionalDate,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
@@ -98,6 +100,15 @@ function mapToFormValues(
       vaccinationStatus.vaccinationPassPresented,
     ),
     perkombiHbv: parseOptionalValue(vaccinationStatus.perkombiHbv),
+    measlesContraIndication: parseOptionalValue(
+      vaccinationStatus.measlesContraIndication,
+    ),
+    measlesContraIndicationIsPermanent: parseOptionalValue(
+      vaccinationStatus.measlesContraIndicationIsPermanent,
+    ),
+    measlesContraIndicationUntil: parseOptionalDate(
+      vaccinationStatus.measlesContraIndicationUntil,
+    ),
   };
 }
 
@@ -141,6 +152,15 @@ function mapToRequest(
         formValues.vaccinationPassPresented,
       ),
       perkombiHbv: mapOptionalValue(formValues.perkombiHbv),
+      measlesContraIndication: mapOptionalValue(
+        formValues.measlesContraIndication,
+      ),
+      measlesContraIndicationIsPermanent: formValues.measlesContraIndication
+        ? mapOptionalValue(formValues.measlesContraIndicationIsPermanent)
+        : undefined,
+      measlesContraIndicationUntil: formValues.measlesContraIndication
+        ? mapOptionalDate(formValues.measlesContraIndicationUntil)
+        : undefined,
     },
   };
 }

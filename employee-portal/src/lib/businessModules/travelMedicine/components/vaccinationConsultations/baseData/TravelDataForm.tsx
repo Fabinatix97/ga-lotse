@@ -53,7 +53,7 @@ export function TravelDataForm({
   onCancel,
   validate,
   sidebarFormRef,
-}: TravelDataFormProps) {
+}: Readonly<TravelDataFormProps>) {
   const [hideTravelData, setHideTravelData] = useState(
     travelData.travelType === ApiTravelType.NoTravel,
   );

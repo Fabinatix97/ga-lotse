@@ -32,6 +32,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Statistik"), Module.STATISTICS),
   STI_PROTECTION_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("HIV-STI"), Module.STI_PROTECTION),
+  MEDICAL_REGISTRY_LEADER(
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Medizinalkartei"),
+      Module.MEDICAL_REGISTRY),
 
   BASE_PERSONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Personen (Zentralkartei)"),
@@ -268,6 +272,14 @@ public enum EmployeePermissionRole implements PermissionRole {
       STI_PROTECTION_CONSULTANT,
       STI_PROTECTION_PHYSICIAN),
 
+  MEDICAL_REGISTRY_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("Medizinalkartei"),
+      Module.MEDICAL_REGISTRY,
+      BASE_PERSONS_READ,
+      BASE_PERSONS_WRITE,
+      BASE_FACILITIES_READ,
+      BASE_FACILITIES_WRITE),
+
   CHAT_MANAGEMENT_WRITE(
       READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT);
 
@@ -319,7 +331,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     MAILROOM("Poststelle"),
     ARCHIVE("Archiv"),
     AUDIT_LOG_SERVICE("Audit-Log-Service"),
-    STI_PROTECTION("HIV-STI-Service");
+    STI_PROTECTION("HIV-STI-Service"),
+    MEDICAL_REGISTRY("Medizinalkartei");
 
     private final String displayName;
 

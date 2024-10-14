@@ -30,6 +30,7 @@ import { useTranslation } from "@/lib/i18n/client";
 import { DeutschFlag } from "@/lib/i18n/flags/DeutschFlag";
 import { UKFlag } from "@/lib/i18n/flags/UKFlag";
 import { useGivenLang, useLang } from "@/lib/i18n/useLang";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 const languages = [
   { name: "English", shortCode: "en", image: <UKFlag /> },
@@ -62,7 +63,7 @@ export function LanguagePicker() {
       <Menu
         variant="plain"
         sx={{
-          display: { xxs: "none", md: "flex" },
+          display: byBreakpoint({ mobile: "none", desktop: "flex" }),
           flexDirection: "row",
           flexWrap: "wrap",
           padding: 3,
@@ -118,7 +119,7 @@ function LanguagePickerListItems({
     <Stack
       flexDirection="column"
       paddingBlock={3}
-      paddingInline={{ xxs: 2, md: 3 }}
+      paddingInline={byBreakpoint({ mobile: 2, desktop: 3 })}
       gap={3}
       flex={1}
     >
@@ -195,7 +196,7 @@ const buttonStyling: MenuButtonProps & ButtonProps = {
   variant: "plain",
   sx: {
     color: (theme) => theme.palette.text.primary,
-    width: { xxs: "100%", md: "auto" },
+    width: byBreakpoint({ mobile: "100%", desktop: "auto" }),
     justifyContent: "flex-start",
     height: "40px",
   },

@@ -25,7 +25,7 @@ export function DuplicateStatisticStep(props: {
       <Stack gap={1}>
         <DetailsCell
           name="originalStatisticName"
-          label="Name der Statistik"
+          label="Name der Auswertung"
           value={props.originalStatistic.name}
         />
       </Stack>
@@ -46,7 +46,7 @@ export function DuplicateStatisticStep(props: {
       </Stack>
       <Alert
         color={"primary"}
-        message="Die Auswertungen und Diagramme werden ebenfalls mit dupliziert."
+        message="Die Analysen und Diagramme werden ebenfalls mit dupliziert."
       ></Alert>
     </Stack>
   );

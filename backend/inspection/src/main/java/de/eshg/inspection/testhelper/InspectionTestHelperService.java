@@ -7,9 +7,9 @@ package de.eshg.inspection.testhelper;
 
 import de.eshg.inspection.objecttype.persistence.CreateObjectTypeTask;
 import de.eshg.testhelper.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -27,13 +27,20 @@ public class InspectionTestHelperService extends DefaultTestHelperService {
       Clock clock,
       List<BasePopulator<?>> populators,
       List<ResettableProperties> resettableProperties,
-      CreateObjectTypeTask createObjectTypeTask) {
-    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
+      CreateObjectTypeTask createObjectTypeTask,
+      EnvironmentConfig environmentConfig) {
+    super(
+        databaseResetHelper,
+        testRequestInterceptor,
+        clock,
+        populators,
+        resettableProperties,
+        environmentConfig);
     this.createObjectTypeTask = createObjectTypeTask;
   }
 
   @Override
-  public Instant reset() throws SQLException {
+  public Instant reset() throws Exception {
     Instant newInstant = super.reset();
     createObjectTypeTask.createObjectTypes();
     return newInstant;

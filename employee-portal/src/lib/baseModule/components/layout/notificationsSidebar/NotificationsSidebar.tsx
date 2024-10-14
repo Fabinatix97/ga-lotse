@@ -9,19 +9,27 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import { useMarkNotificationsAsRead } from "@/lib/baseModule/api/mutations/notifications";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 import { Notification } from "./Notification";
 
-interface NotificationsSidebarProps {
-  open: boolean;
-  onClose: () => void;
+export function useNotificationsSidebar(): UseSidebarResult<NotificationsSidebarProps> {
+  return useSidebar({
+    component: NotificationsSidebar,
+  });
+}
+
+interface NotificationsSidebarProps extends DrawerProps {
   notificationResponse: ApiGetAggregatedNotificationsResponse | undefined;
 }
 
-export function NotificationsSidebar(props: NotificationsSidebarProps) {
+function NotificationsSidebar(props: NotificationsSidebarProps) {
   const { mutate: markNotificationsAsRead } = useMarkNotificationsAsRead();
   const notificationIds = props.notificationResponse
     ? props.notificationResponse.notifications.map(
@@ -38,7 +46,7 @@ export function NotificationsSidebar(props: NotificationsSidebarProps) {
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onClose} zIndex={"headerSidebar"}>
+    <>
       <SidebarContent title="Benachrichtigungen">
         {isNonNullish(props.notificationResponse) && (
           <Stack sx={{ marginTop: 3 }} gap={2}>
@@ -79,6 +87,6 @@ export function NotificationsSidebar(props: NotificationsSidebarProps) {
           </Button>
         </SidebarActions>
       )}
-    </Sidebar>
+    </>
   );
 }

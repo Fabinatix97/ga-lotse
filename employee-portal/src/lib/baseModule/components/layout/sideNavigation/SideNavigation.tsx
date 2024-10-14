@@ -11,21 +11,19 @@ import {
   headerHeightDesktop,
   headerHeightMobile,
 } from "@/lib/baseModule/components/layout/sizes";
+import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
 
 import { NavigationListExpanded } from "./NavigationListExpanded";
 import { useNavigationItems } from "./useNavigationItems";
 
 export function SideNavigation({
-  sideNavigationDrawerOpen,
-  setSideNavigationDrawerOpen,
   collapsed,
   setCollapsed,
 }: {
-  sideNavigationDrawerOpen: boolean;
-  setSideNavigationDrawerOpen: Dispatch<SetStateAction<boolean>>;
   collapsed: boolean;
   setCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
+  const sidenav = useSidenav();
   const items = useNavigationItems();
 
   return (
@@ -54,8 +52,8 @@ export function SideNavigation({
 
       {/* In mobile mode, the side navigation is always expanded and is rendered inside a drawer */}
       <Drawer
-        open={sideNavigationDrawerOpen}
-        onClose={() => setSideNavigationDrawerOpen(false)}
+        open={sidenav.isOpen}
+        onClose={sidenav.close}
         sx={{
           display: { xxs: "block", sm: "none" },
           zIndex: "sideNavigation",

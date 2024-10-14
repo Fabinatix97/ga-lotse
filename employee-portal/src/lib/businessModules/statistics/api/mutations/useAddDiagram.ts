@@ -30,7 +30,7 @@ export function useAddDiagram() {
           params.attributes,
         ),
       }),
-    onSuccess: () => snackbar.confirmation("Diagramm hinzugefügt."),
+    onSuccess: () => snackbar.confirmation("Diagramm hinzugefügt"),
   });
 
   return async (

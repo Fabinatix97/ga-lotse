@@ -6,11 +6,12 @@
 "use client";
 
 import { ApiAppointmentTypeConfig } from "@eshg/employee-portal-api/travelMedicine";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { FormikProps } from "formik";
 import { useRef, useState } from "react";
 
 import { useUpdateAppointmentType } from "@/lib/businessModules/travelMedicine/api/mutations/appointmentTypes";
-import { useGetAllAppointmentTypes } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
+import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import {
   AppointmentTypeEditForm,
   EditableAppointmentType,
@@ -21,8 +22,11 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function AppointmentTypeOverviewTable() {
-  const allAppointmentTypes = useGetAllAppointmentTypes();
-  const initialConfig = allAppointmentTypes.data[0]!;
+  const [{ data: getAllAppointmentTypes }] = useSuspenseQueries({
+    queries: [useGetAllAppointmentTypesQuery()],
+  });
+  const initialConfig = getAllAppointmentTypes[0];
+
   const updateAppointmentType = useUpdateAppointmentType();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentTypeConfig, setCurrentTypeConfig] =
@@ -34,7 +38,7 @@ export function AppointmentTypeOverviewTable() {
       id: currentTypeConfig?.id ?? "",
       appointmentTypeDto:
         currentTypeConfig?.appointmentTypeDto ??
-        initialConfig.appointmentTypeDto,
+        initialConfig!.appointmentTypeDto,
       standardDurationInMinutes:
         currentTypeConfig?.standardDurationInMinutes?.toString() ?? "",
     };
@@ -66,7 +70,7 @@ export function AppointmentTypeOverviewTable() {
     <>
       <TableSheet>
         <DataTable
-          data={allAppointmentTypes.data}
+          data={getAllAppointmentTypes}
           columns={appointmentTypesColumns(editEntry)}
         />
       </TableSheet>

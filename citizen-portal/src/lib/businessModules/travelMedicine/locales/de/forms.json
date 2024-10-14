@@ -95,7 +95,12 @@
     "title": "Informationen zum Termin",
     "alertHeader": "Vorbereitungen zum Termin",
     "alertMessage": "Bitte bringen Sie ihren Impfpass mit",
-    "infoText": ""
+    "infoText": "Sie erhalten in <t1>den nächsten Minuten</t1> eine <t1>Terminbestätigung</t1> per E-Mail. Dort sind alle Informationen zum Termin enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu stornieren",
+    "requiredDocumentsHeader": "Notwendige Dokumente, welche Sie bitte zum Termin mitbringen, sind:",
+    "listItemIdCard": "Personalausweis",
+    "listItemVaccinationCard": "Impfpass",
+    "closingGreeting": "Mit freundlichen Grüßen",
+    "healthDepartment": "Ihr Gesundheitsamt"
   },
   "appointmentOverviewSection": {
     "title": "Übersicht",
@@ -107,7 +112,8 @@
       "travelDuration": "Reisedauer",
       "travelDestinations_one": "Reiseziel",
       "travelDestinations_other": "Reiseziele",
-      "travelStartDate": "Reisebeginn"
+      "travelStartDate": "Reisebeginn",
+      "appointmentDuration": "(Dauer: {{ durationInMinutes }} Minuten)"
     }
   },
   "confirmationSection": {

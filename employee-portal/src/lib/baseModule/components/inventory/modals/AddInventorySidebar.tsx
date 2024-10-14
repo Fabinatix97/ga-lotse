@@ -5,7 +5,6 @@
 
 import { ApiLabel } from "@eshg/employee-portal-api/base";
 import { useRouter } from "next/navigation";
-import { Ref } from "react";
 
 import { mapAddInventoryItemRequest } from "@/lib/baseModule/api/mapper/inventory";
 import { useAddInventoryItem } from "@/lib/baseModule/api/mutations/inventory";
@@ -14,12 +13,20 @@ import {
   InventoryFormValues,
 } from "@/lib/baseModule/components/inventory/forms/InventoryForm";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface AddInventorySidebarProps {
+export function useAddInventorySidebar(): UseSidebarWithFormRefResult<AddInventorySidebarProps> {
+  return useSidebarWithFormRef({
+    component: AddInventorySidebar,
+  });
+}
+
+interface AddInventorySidebarProps extends SidebarWithFormRefProps {
   labels: ApiLabel[];
-  onClose: () => void;
-  sidebarFormRef: Ref<SidebarFormHandle>;
 }
 
 const initialInventoryFormValues: InventoryFormValues = {
@@ -31,14 +38,17 @@ const initialInventoryFormValues: InventoryFormValues = {
   labelNames: [],
 };
 
-export function AddInventorySidebar(props: AddInventorySidebarProps) {
+function AddInventorySidebar(props: AddInventorySidebarProps) {
   const router = useRouter();
   const createInventory = useAddInventoryItem();
 
   async function handleSubmit(values: InventoryFormValues) {
     await createInventory
       .mutateAsync(mapAddInventoryItemRequest(values), {
-        onSuccess: (item) => router.push(routes.inventory.details(item.id)),
+        onSuccess: (item) => {
+          props.onClose(true);
+          router.push(routes.inventory.details(item.id));
+        },
       })
       .catch();
   }
@@ -47,7 +57,7 @@ export function AddInventorySidebar(props: AddInventorySidebarProps) {
     <InventoryForm
       initialValues={initialInventoryFormValues}
       labels={props.labels}
-      formRef={props.sidebarFormRef}
+      formRef={props.formRef}
       onCancel={props.onClose}
       onSubmit={handleSubmit}
       title={"Inventar hinzufügen"}

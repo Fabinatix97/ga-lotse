@@ -10,6 +10,7 @@ import static de.eshg.base.keycloak.differ.KeycloakDiffer.toJson;
 import static java.util.function.Function.identity;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.keycloak.KeycloakUserAttribute.ValidationRule;
 import de.eshg.base.keycloak.differ.AuthenticationExecutionRepresentationDiffer;
 import de.eshg.base.keycloak.differ.ClientRepresentationDiffer;
 import de.eshg.base.keycloak.differ.ClientScopeRepresentationDiffer;
@@ -368,6 +369,14 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
       attributeConfig.setGroup(getGroupName(attribute, group));
       attributeConfig.setPermissions(
           new UPAttributePermissions(Set.of("user", "admin"), Set.of("user", "admin")));
+
+      Map<String, Map<String, Object>> validation =
+          Objects.requireNonNullElseGet(attributeConfig.getValidations(), LinkedHashMap::new);
+      for (ValidationRule rule : attribute.validationRules()) {
+        validation.put(rule.ruleId(), rule.toMap());
+      }
+      attributeConfig.setValidations(validation);
+
       profileConfig.addOrReplaceAttribute(attributeConfig);
     }
 

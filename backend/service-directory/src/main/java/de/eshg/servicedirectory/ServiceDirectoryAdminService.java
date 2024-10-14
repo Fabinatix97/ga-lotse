@@ -117,11 +117,20 @@ public class ServiceDirectoryAdminService {
     if (partialActorDto.active() != null) {
       updatedActor.setActive(partialActorDto.active());
     }
+    if (partialActorDto.manualCertificate() != null) {
+      updatedActor.setManualCertificate(partialActorDto.manualCertificate());
+    }
     if (partialActorDto.commonName() != null) {
       updatedActor.setCommonName(partialActorDto.commonName());
-      validateCommonName(updatedActor.getCurrentCertificate(), updatedActor.getCommonName());
-      validateCommonName(updatedActor.getPreviousCertificate(), updatedActor.getCommonName());
     }
+    if (partialActorDto.currentCertificate() != null) {
+      updatedActor.setCurrentCertificate(toPersistence(partialActorDto.currentCertificate()));
+    }
+    validateCommonName(updatedActor.getCurrentCertificate(), updatedActor.getCommonName());
+    if (partialActorDto.previousCertificate() != null) {
+      updatedActor.setPreviousCertificate(toPersistence(partialActorDto.previousCertificate()));
+    }
+    validateCommonName(updatedActor.getPreviousCertificate(), updatedActor.getCommonName());
     if (partialActorDto.stagingStatus() != null) {
       updatedActor.setStagingStatus(StagingStatus.from(partialActorDto.stagingStatus()));
     }
@@ -309,11 +318,15 @@ public class ServiceDirectoryAdminService {
 
   @Transactional
   public void deleteRuleById(UUID id) {
-    StagedRule actorToBeDeleted = serviceDirectoryReadService.getStagedRule(id);
-    if (actorToBeDeleted.getStagedEntityType() != StagedEntityType.ADD) {
-      actorToBeDeleted.setStagedEntityType(StagedEntityType.DEL);
+    StagedRule ruleToBeDeleted = serviceDirectoryReadService.getStagedRule(id);
+
+    // A WORK_IN_PROGRESS stagingStatus makes no sense for a deletion
+    ruleToBeDeleted.setStagingStatus(StagingStatus.READY_FOR_REVIEW);
+
+    if (ruleToBeDeleted.getStagedEntityType() != StagedEntityType.ADD) {
+      ruleToBeDeleted.setStagedEntityType(StagedEntityType.DEL);
     } else {
-      stagedRuleRepository.delete(actorToBeDeleted);
+      stagedRuleRepository.delete(ruleToBeDeleted);
     }
   }
 
@@ -371,6 +384,7 @@ public class ServiceDirectoryAdminService {
     actorData.setType(ActorType.from(importActor.type()));
     actorData.setNetworkId(importActor.networkId());
     actorData.setActive(importActor.active());
+    actorData.setManualCertificate(importActor.manualCertificate());
     if (importActor.currentCertificate() != null) {
       validateCommonName(importActor.currentCertificate().value(), importActor.commonName());
       actorData.setCurrentCertificate(toPersistence(importActor.currentCertificate()));

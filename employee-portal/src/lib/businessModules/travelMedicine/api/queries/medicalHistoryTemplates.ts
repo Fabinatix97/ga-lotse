@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useMedicalHistoryTemplateApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { medicalHistoryTemplateApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
@@ -20,9 +20,9 @@ export function useGetOneMedicalHistoryTemplate(id: string) {
   });
 }
 
-export function useGetAllMedicalHistoryTemplates() {
+export function useGetAllMedicalHistoryTemplatesQuery() {
   const medicalHistoryTemplateApi = useMedicalHistoryTemplateApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: medicalHistoryTemplateApiQueryKey([
       "getAllMedicalHistoryTemplates",
     ]),

@@ -3,8 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Delete, Download, Edit } from "@mui/icons-material";
-import { Box, Divider, Stack, Typography } from "@mui/joy";
+import {
+  Delete,
+  Download,
+  Edit,
+  OpenInFullOutlined,
+} from "@mui/icons-material";
+import { Box, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { PropsWithChildren, useState } from "react";
 import { isObjectType } from "remeda";
 
@@ -26,6 +31,7 @@ type EvaluationDiagramProps = PropsWithChildren<{
   evaluatedDataAmountTotal: number;
   onExportAsImage?: (imageType: ImageType) => void;
   isReport: boolean;
+  openChartInFullScreenDialog: () => void;
 }>;
 
 export function EvaluationDiagramBox({
@@ -38,6 +44,7 @@ export function EvaluationDiagramBox({
   onExportAsImage,
   isReport,
   children,
+  openChartInFullScreenDialog,
 }: EvaluationDiagramProps) {
   const [isUpdateDiagramSidebarOpen, setIsUpdateDiagramSidebarOpen] =
     useState(false);
@@ -81,45 +88,59 @@ export function EvaluationDiagramBox({
             <Typography level="title-md" data-testid="evaluation-diagram-title">
               {title}
             </Typography>
-            <ActionsMenu
-              actionItems={[
-                canWrite &&
-                  !isReport && {
-                    label: "Anpassen",
-                    startDecorator: <Edit />,
-                    onClick: () => setIsUpdateDiagramSidebarOpen(true),
+            <Stack direction="row" gap={1}>
+              <IconButton
+                aria-label="Im Vollbildmodus anzeigen"
+                onClick={() => openChartInFullScreenDialog()}
+                variant="outlined"
+                sx={{ background: "none" }}
+                color="primary"
+              >
+                <OpenInFullOutlined />
+              </IconButton>
+              <ActionsMenu
+                variant="outlined"
+                sx={{ background: "none" }}
+                color="primary"
+                actionItems={[
+                  canWrite &&
+                    !isReport && {
+                      label: "Anpassen",
+                      startDecorator: <Edit />,
+                      onClick: () => setIsUpdateDiagramSidebarOpen(true),
+                    },
+                  {
+                    label: "Als PNG exportieren",
+                    startDecorator: <Download />,
+                    onClick: () => onExportAsImage?.(ImageType.PNG),
                   },
-                {
-                  label: "Als PNG exportieren",
-                  startDecorator: <Download />,
-                  onClick: () => onExportAsImage?.(ImageType.PNG),
-                },
-                {
-                  label: "Als SVG exportieren",
-                  startDecorator: <Download />,
-                  onClick: () => onExportAsImage?.(ImageType.SVG),
-                },
-                {
-                  label: "Als XLSX exportieren",
-                  startDecorator: <Download />,
-                  onClick: exportData,
-                },
-                canWrite &&
-                  !isReport && {
-                    label: "Löschen",
-                    onClick: () =>
-                      openConfirmationDialog({
-                        onConfirm: deleteDiagram,
-                        title: "Diagramm löschen?",
-                        description: `Das Diagramm “${title}” wird dann unwiderruflich gelöscht.`,
-                        cancelLabel: "Abbrechen",
-                        confirmLabel: "Diagramm löschen",
-                        color: "danger",
-                      }),
-                    startDecorator: <Delete />,
+                  {
+                    label: "Als SVG exportieren",
+                    startDecorator: <Download />,
+                    onClick: () => onExportAsImage?.(ImageType.SVG),
                   },
-              ].filter(isObjectType)}
-            />
+                  {
+                    label: "Als XLSX exportieren",
+                    startDecorator: <Download />,
+                    onClick: exportData,
+                  },
+                  canWrite &&
+                    !isReport && {
+                      label: "Löschen",
+                      onClick: () =>
+                        openConfirmationDialog({
+                          onConfirm: deleteDiagram,
+                          title: "Diagramm löschen?",
+                          description: `Das Diagramm “${title}” wird dann unwiderruflich gelöscht.`,
+                          cancelLabel: "Abbrechen",
+                          confirmLabel: "Löschen",
+                          color: "danger",
+                        }),
+                      startDecorator: <Delete />,
+                    },
+                ].filter(isObjectType)}
+              />
+            </Stack>
           </Stack>
           <Stack flex="1" minWidth={0}>
             {children}

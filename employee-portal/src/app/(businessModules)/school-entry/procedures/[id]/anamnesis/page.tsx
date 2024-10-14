@@ -20,10 +20,10 @@ import {
 } from "@eshg/employee-portal-api/schoolEntry";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   mapOptionalDate,
   mapOptionalValue,
+  parseOptionalDate,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -266,10 +266,6 @@ function parsePromotionBeforeSchoolEntry(
     speechTherapy: parseOptionalValue(promotionBeforeSchoolEntry.speechTherapy),
     physiotherapy: parseOptionalValue(promotionBeforeSchoolEntry.physiotherapy),
   };
-}
-
-function parseOptionalDate(date: Date | undefined) {
-  return isDefined(date) ? toDateString(date) : "";
 }
 
 function parsePromotionTherapyAndAidInfo(

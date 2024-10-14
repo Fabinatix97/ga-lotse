@@ -5,6 +5,7 @@
 
 package de.eshg.base.user.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +22,9 @@ public record UserDto(
             example = "testuser")
         @NotBlank
         String username,
-    @Schema(description = "The email address of a user.", example = "example@mail.de") String email,
+    @Schema(description = "The email address of a user.", example = "example@mail.de")
+        @EmailAddressConstraint
+        String email,
     @Schema(description = "The phone number of a user.", example = "+491234567890")
         String phoneNumber,
     @Schema(

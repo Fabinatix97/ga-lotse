@@ -34,6 +34,9 @@ export interface VaccinationStatus extends Versioned {
   otherVaccinations: ApiOtherVaccination[];
   vaccinationPassPresented?: boolean;
   perkombiHbv?: ApiBooleanWithUnknown;
+  measlesContraIndication?: boolean;
+  measlesContraIndicationIsPermanent?: boolean;
+  measlesContraIndicationUntil?: Date;
 }
 
 export function mapVaccinationStatus(
@@ -59,5 +62,9 @@ export function mapVaccinationStatus(
     otherVaccinations: response.otherVaccinations,
     vaccinationPassPresented: response.vaccinationPassPresented,
     perkombiHbv: response.perkombiHbv,
+    measlesContraIndication: response.measlesContraIndication,
+    measlesContraIndicationIsPermanent:
+      response.measlesContraIndicationIsPermanent,
+    measlesContraIndicationUntil: response.measlesContraIndicationUntil,
   };
 }

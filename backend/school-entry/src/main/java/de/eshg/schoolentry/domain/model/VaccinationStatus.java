@@ -11,6 +11,7 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
 import java.beans.PropertyDescriptor;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -55,6 +56,12 @@ public class VaccinationStatus extends GenericEntity<Long> implements Validatabl
   private List<OtherVaccination> otherVaccinations;
 
   private Boolean vaccinationPassPresented;
+
+  private Boolean measlesContraIndication;
+
+  private Boolean measlesContraIndicationIsPermanent;
+
+  private LocalDate measlesContraIndicationUntil;
 
   @Override
   public Long getId() {
@@ -215,6 +222,30 @@ public class VaccinationStatus extends GenericEntity<Long> implements Validatabl
 
   public void setVaccinationScheme(VaccinationSchemeValue vaccinationScheme) {
     this.vaccinationScheme = vaccinationScheme;
+  }
+
+  public Boolean getMeaslesContraIndication() {
+    return measlesContraIndication;
+  }
+
+  public void setMeaslesContraIndication(Boolean measlesContraIndication) {
+    this.measlesContraIndication = measlesContraIndication;
+  }
+
+  public Boolean getMeaslesContraIndicationIsPermanent() {
+    return measlesContraIndicationIsPermanent;
+  }
+
+  public void setMeaslesContraIndicationIsPermanent(Boolean measlesContraIndicationIsPermanent) {
+    this.measlesContraIndicationIsPermanent = measlesContraIndicationIsPermanent;
+  }
+
+  public LocalDate getMeaslesContraIndicationUntil() {
+    return measlesContraIndicationUntil;
+  }
+
+  public void setMeaslesContraIndicationUntil(LocalDate measlesContraIndicationUntil) {
+    this.measlesContraIndicationUntil = measlesContraIndicationUntil;
   }
 
   public Stream<PropertyDescriptor> getPropertiesToValidate() {

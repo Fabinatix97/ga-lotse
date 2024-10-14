@@ -9,18 +9,20 @@ import {
   GetAppointmentBlockGroupsRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useAppointmentBlockApi } from "@/lib/businessModules/travelMedicine/api/clients";
+import { mapAppointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { mapAppointmentBlockGroup } from "@/lib/businessModules/travelMedicine/api/models/AppointmentBlock";
 import { appointmentBlockApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
-export function useGetAppointmentBlockGroups(
+export function useGetAppointmentBlockGroupsQuery(
   request: GetAppointmentBlockGroupsRequest,
 ) {
   const appointmentApi = useAppointmentBlockApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: appointmentBlockApiQueryKey([
       "getAppointmentBlockGroups",
       request,
@@ -33,13 +35,13 @@ export function useGetAppointmentBlockGroups(
   });
 }
 
-export function useGetFreeAppointments(
+export function useGetFreeAppointmentsUnsuspended(
   appointmentType: ApiAppointmentType,
   earliestDate?: Date,
 ) {
   const appointmentApi = useAppointmentBlockApi();
 
-  return useSuspenseQuery({
+  return useHandledBackgroundQuery({
     queryKey: appointmentBlockApiQueryKey([
       "getFreeAppointments",
       appointmentType,
@@ -47,6 +49,9 @@ export function useGetFreeAppointments(
     ]),
     queryFn: () =>
       appointmentApi.getFreeAppointments(appointmentType, earliestDate),
+    select: (response) => response.appointments.map(mapAppointment),
+    gcTime: 60000,
+    staleTime: 60000,
   });
 }
 

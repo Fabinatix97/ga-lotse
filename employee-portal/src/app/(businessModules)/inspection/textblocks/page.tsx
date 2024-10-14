@@ -18,7 +18,7 @@ export default function TextBlocksOverviewPage(props: {
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Textbausteine" />}>
-      <MainContentLayout>
+      <MainContentLayout fullViewportHeight>
         <TextBlocksTable params={request} />
       </MainContentLayout>
     </StickyToolbarLayout>

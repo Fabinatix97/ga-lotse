@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable no-restricted-imports */
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { Link, Stack, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useRef, useState } from "react";
 
@@ -126,15 +126,13 @@ export function RestoreBackupSidebar({
                   <Stack direction="row" spacing={0.5}>
                     <Typography level="body-sm" color="neutral">
                       Wiederherstellungsphrase vergessen oder verloren?{` `}
-                      <Link
-                        component="button"
-                        type="button"
+                      <ButtonLink
                         level="body-sm"
                         color="danger"
                         onClick={() => setModalOpen(true)}
                       >
                         Alles zurücksetzen
-                      </Link>
+                      </ButtonLink>
                     </Typography>
                   </Stack>
                 </Stack>

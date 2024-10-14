@@ -17,6 +17,7 @@ public record ActorDto(
     @NotNull String readableName,
     @NotNull ActorTypeDto type,
     @NotNull boolean active,
+    @NotNull boolean manualCertificate,
     @NotNull String commonName,
     @Valid CertificateDto currentCertificate,
     @Valid CertificateDto previousCertificate,

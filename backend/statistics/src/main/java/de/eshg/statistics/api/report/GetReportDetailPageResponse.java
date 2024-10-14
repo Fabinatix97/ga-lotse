@@ -20,6 +20,7 @@ public record GetReportDetailPageResponse(
     @NotNull UUID id,
     @NotNull UUID reportSeriesId,
     @NotBlank String name,
+    @NotNull String reportSeriesName,
     String description,
     @NotNull @Min(1) int numberOfReportsInSeries,
     @NotNull Instant timeRangeStart,
@@ -29,4 +30,5 @@ public record GetReportDetailPageResponse(
     @NotNull @Min(0) long totalNumberOfElements,
     @Valid UserDto userReportSeries,
     @Valid UserDto userReport,
-    @NotNull @Valid List<EvaluationDto> evaluation) {}
+    @NotNull @Valid List<EvaluationDto> evaluation,
+    @NotNull ReportTypeDto reportType) {}

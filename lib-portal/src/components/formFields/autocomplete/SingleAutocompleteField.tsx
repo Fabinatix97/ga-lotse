@@ -5,6 +5,7 @@
 
 import { Autocomplete } from "@mui/joy";
 import { SyntheticEvent } from "react";
+import { identity } from "remeda";
 
 import { useIsFormDisabled } from "../../form/DisabledFormContext";
 import { BaseField } from "../BaseField";
@@ -17,6 +18,7 @@ import {
 export interface SingleAutocompleteFieldProps
   extends CommonAutocompleteFieldProps<string> {
   freeSolo?: boolean;
+  disableFiltering?: boolean;
 }
 
 export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
@@ -51,6 +53,7 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
         }}
         onInputChange={handleInputChange}
         options={props.options.map((opt) => opt.value)}
+        filterOptions={props.disableFiltering ? identity() : undefined}
         disabled={disabled}
       />
     </BaseField>

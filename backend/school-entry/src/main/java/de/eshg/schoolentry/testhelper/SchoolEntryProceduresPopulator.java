@@ -24,6 +24,7 @@ import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.api.PopulationRequest;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -67,8 +68,13 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
       BaseTestHelperApi baseTestHelperApi,
       SchoolEntryFeatureToggle featureToggle,
       @SuppressWarnings("unused") // Used to define a dependency
-          AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator) {
-    super(clock, environment, getClassNameAsPropertyKey(SchoolEntryProcedure.class));
+          AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
+      EnvironmentConfig environmentConfig) {
+    super(
+        clock,
+        environment,
+        getClassNameAsPropertyKey(SchoolEntryProcedure.class),
+        environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.schoolEntryController =
         RequestContextFaker.withFakedRequestContextsIfNecessary(schoolEntryController);
@@ -595,7 +601,10 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         faker.random().nextInt(0, 9),
         List.of(),
         faker.bool().bool(),
-        randomBooleanWithUnknownSchoolEntry(faker));
+        randomBooleanWithUnknownSchoolEntry(faker),
+        faker.bool().bool(),
+        faker.bool().bool(),
+        null);
   }
 
   private static VaccinationSchemeValueDto randomVaccinationSchemeSchoolEntry(Faker faker) {

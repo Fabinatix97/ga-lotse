@@ -31,6 +31,8 @@ import de.eshg.statistics.api.diagram.UpdateDiagramRequest;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
+import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
@@ -120,8 +122,8 @@ public class EvaluationService {
 
   @Transactional
   public EvaluationDto addEvaluation(AddEvaluationRequest addEvaluationRequest) {
-    Statistic statistic = statisticService.getStatistic(addEvaluationRequest.statisticId());
-    statisticService.validateStatisticCompleted(statistic);
+    Statistic statistic = statisticService.getStatisticInternal(addEvaluationRequest.statisticId());
+    StatisticService.validateStatisticCompleted(statistic);
 
     String geoJson = null;
     List<HistogramBin> histogramBins = null;
@@ -1388,5 +1390,36 @@ public class EvaluationService {
     Diagram diagram = getDiagram(diagramId);
     validateEvaluationNotInReport(diagram.getEvaluation());
     diagramRepository.delete(diagram);
+  }
+
+  @Transactional
+  public void evaluationConduction(UUID statisticId) {
+    Statistic statistic = statisticService.getStatisticInternal(statisticId);
+    if (statistic.getEvaluations().isEmpty()) {
+      statistic.setPendingState(null);
+      statistic.setState(AggregationResultState.COMPLETED);
+    } else {
+      recalculateHistogramBins(statistic);
+      statistic.setPendingState(AggregationResultPendingState.DIAGRAM_CREATION);
+    }
+  }
+
+  private void recalculateHistogramBins(Statistic statistic) {
+    statistic
+        .getEvaluations()
+        .forEach(
+            evaluation -> {
+              ChartConfiguration chartConfiguration =
+                  Hibernate.unproxy(evaluation.getChartConfiguration(), ChartConfiguration.class);
+              if (chartConfiguration
+                  instanceof HistogramChartConfiguration histogramChartConfiguration) {
+                histogramChartConfiguration.removeBins();
+                histogramChartConfiguration.addBins(
+                    calculateHistogramBins(
+                        EvaluationMapper.mapToHistogramChartConfigurationDto(
+                            histogramChartConfiguration),
+                        statistic));
+              }
+            });
   }
 }

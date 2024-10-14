@@ -170,6 +170,7 @@ export function PendingFacilitiesTable(
   return (
     <>
       <TablePage
+        fullHeight
         controls={
           <ButtonBar
             left={

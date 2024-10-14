@@ -13,6 +13,7 @@ import {
   contentMarginMobile,
   maxContentWidthDesktop,
 } from "@/lib/baseModule/components/layout/sizes";
+import { MobileBreakpoint } from "@/lib/shared/breakpoints";
 
 declare module "@mui/system" {
   interface BreakpointOverrides {
@@ -21,32 +22,39 @@ declare module "@mui/system" {
   }
 }
 
+const customProps = ["spacing", "spaceContentToSide", "fullHeight"];
+
 interface PageContentProps {
   spacing?: "md" | "lg";
+  spaceContentToSide?: boolean;
   fullHeight?: boolean;
 }
 
 export const PageContent = styled("div", {
-  shouldForwardProp: (prop) => prop !== "spacing" && prop !== "fullHeight",
-})<PageContentProps>(({ theme, spacing, fullHeight }) => ({
+  shouldForwardProp: filterCustomProps,
+})<PageContentProps>(({ theme, spacing, spaceContentToSide, fullHeight }) => ({
   flex: fullHeight ? 1 : undefined,
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(spacing === "lg" ? 5 : contentMarginDesktop.topBottom),
   paddingBlock: theme.spacing(
     spacing === "lg" ? 5 : contentMarginDesktop.topBottom,
-    contentMarginDesktop.leftRight,
   ),
+  paddingInline: 0,
   ...responsiveContent(theme, {
-    sm: {
+    [MobileBreakpoint.Down]: {
       gap: theme.spacing(contentMarginMobile.topBottom),
-      paddingBlock: theme.spacing(
-        contentMarginMobile.topBottom,
-        contentMarginMobile.leftRight,
-      ),
+      paddingBlock: theme.spacing(contentMarginMobile.topBottom),
+      paddingInline: spaceContentToSide
+        ? theme.spacing(contentMarginMobile.leftRight)
+        : 0,
     },
   }),
 }));
+
+function filterCustomProps(propName: string): boolean {
+  return !customProps.includes(propName);
+}
 
 const ContentBreakpoints = {
   XL: "xl",

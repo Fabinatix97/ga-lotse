@@ -18,6 +18,8 @@ import { usePrecacheInspections } from "@/lib/businessModules/inspection/shared/
 import { useServiceWorkerMessageListeners } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerMessageListeners";
 import { LoadingOverlay } from "@/lib/shared/components/LoadingOverlay";
 
+import { NoSyncWorkaround } from "./NoSyncWorkaround";
+
 // injected by next-pwa
 declare global {
   interface Window {
@@ -104,6 +106,7 @@ export function RegisterServiceWorker({
           {controlling && <PrecacheInspections inspectionIds={inspectionIds} />}
         </ErrorBoundary>
       )}
+      <NoSyncWorkaround />
     </>
   );
 }

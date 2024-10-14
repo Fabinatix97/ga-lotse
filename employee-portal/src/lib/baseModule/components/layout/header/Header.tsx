@@ -6,7 +6,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Typography } from "@mui/joy";
-import { Dispatch, SetStateAction } from "react";
 
 import { HeaderButtons } from "@/lib/baseModule/components/layout/header/HeaderButtons";
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
@@ -14,26 +13,20 @@ import {
   headerHeightDesktop,
   headerHeightMobile,
 } from "@/lib/baseModule/components/layout/sizes";
+import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
-export interface HeaderProps {
-  sideNavigationDrawerOpen: boolean;
-  setSideNavigationDrawerOpen: Dispatch<SetStateAction<boolean>>;
-  setUserSidebarOpen: Dispatch<SetStateAction<boolean>>;
-  notificationsSidebarOpen: boolean;
-  setNotificationsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-  notificationsCount: number;
-}
-
-export function Header({
-  sideNavigationDrawerOpen,
-  setSideNavigationDrawerOpen,
-  setUserSidebarOpen,
-  notificationsSidebarOpen,
-  setNotificationsSidebarOpen,
-  notificationsCount,
-}: HeaderProps) {
+export function Header() {
+  const sidenav = useSidenav();
   const isOffline = useIsOffline();
+
+  function toggleSidenav(): void {
+    if (sidenav.isOpen) {
+      sidenav.close();
+    } else {
+      sidenav.open();
+    }
+  }
 
   return (
     <Box
@@ -57,17 +50,13 @@ export function Header({
       }}
     >
       <HeaderIconButton
-        aria-label={
-          sideNavigationDrawerOpen ? "navigation-close" : "navigation-open"
-        }
+        aria-label={sidenav.isOpen ? "navigation-close" : "navigation-open"}
         sx={{
           display: { xxs: "flex", sm: "none" },
         }}
-        onClick={() => {
-          setSideNavigationDrawerOpen((prev) => !prev);
-        }}
+        onClick={toggleSidenav}
       >
-        {sideNavigationDrawerOpen ? (
+        {sidenav.isOpen ? (
           <CloseIcon sx={{ color: "background.body" }} />
         ) : (
           <MenuIcon sx={{ color: "background.body" }} />
@@ -91,12 +80,7 @@ export function Header({
           Offline
         </Typography>
       ) : (
-        <HeaderButtons
-          setUserSidebarOpen={setUserSidebarOpen}
-          notificationsSidebarOpen={notificationsSidebarOpen}
-          setNotificationsSidebarOpen={setNotificationsSidebarOpen}
-          notificationsCount={notificationsCount}
-        />
+        <HeaderButtons />
       )}
     </Box>
   );

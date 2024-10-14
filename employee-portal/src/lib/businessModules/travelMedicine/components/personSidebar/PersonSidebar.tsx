@@ -10,7 +10,7 @@ import { FormikErrors } from "formik";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { isNullish } from "remeda";
 
-import { useGetAllAppointmentTypes } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
+import { useGetAllAppointmentTypesUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import {
   InitialAppointmentForm,
   InitialAppointmentFormValuesProps,
@@ -146,9 +146,13 @@ export function PersonSidebar({
       await onSubmit(values, resetAndCloseForm);
     }
   }
-  const appointmentTypeStandardDuration = useGetAllAppointmentTypes().data.find(
-    (type) => type.appointmentTypeDto == ApiAppointmentType.Consultation,
-  )!.standardDurationInMinutes;
+
+  const getAllAppointmentTypes = useGetAllAppointmentTypesUnsuspended(open);
+  const consultationStandardDuration = getAllAppointmentTypes.data
+    ? getAllAppointmentTypes.data.find(
+        (type) => type.appointmentTypeDto == ApiAppointmentType.Consultation,
+      )!.standardDurationInMinutes
+    : "";
 
   //Boundaries should be placed outside of the sidebar but they won't work correctly either way
   // and this way seems to cause the least trouble
@@ -163,7 +167,8 @@ export function PersonSidebar({
             initialValues={{
               selectedPerson: selectedPerson!,
               initialStepAppointmentType: ApiAppointmentType.Consultation,
-              appointmentTypeStandardDuration: appointmentTypeStandardDuration,
+              appointmentTypeStandardDuration:
+                consultationStandardDuration as number,
             }}
           />
         </OverlayBoundary>

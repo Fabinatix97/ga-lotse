@@ -118,4 +118,9 @@ public class HistogramChartConfiguration extends ChartConfiguration {
     bins.forEach(bin -> bin.setHistogramChartConfiguration(this));
     this.bins.addAll(bins);
   }
+
+  public void removeBins() {
+    this.bins.forEach(bin -> bin.setHistogramChartConfiguration(null));
+    this.bins.clear();
+  }
 }

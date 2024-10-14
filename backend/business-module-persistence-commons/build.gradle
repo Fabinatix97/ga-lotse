@@ -20,6 +20,7 @@ dependencies {
     testFixturesImplementation project(':test-commons')
     testFixturesImplementation project(':rest-service-commons')
     testFixturesImplementation 'org.springframework.boot:spring-boot-test'
+    testFixturesImplementation 'de.cronn:postgres-snapshot-util:latest.release'
     testFixturesApi 'de.cronn:liquibase-changelog-generator-postgresql:latest.release'
 }
 

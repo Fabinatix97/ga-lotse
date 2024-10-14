@@ -21,10 +21,6 @@ export const informationStatementTemplateApiQueryKey = queryKeyFactory(
 
 export const diseaseApiQueryKey = queryKeyFactory(apiQueryKey(["diseaseApi"]));
 
-export const medicalHistoryApiQueryKey = queryKeyFactory(
-  apiQueryKey(["medicalHistoryApi"]),
-);
-
 export const medicalHistoryTemplateApiQueryKey = queryKeyFactory(
   apiQueryKey(["medicalHistoryTemplateApi"]),
 );

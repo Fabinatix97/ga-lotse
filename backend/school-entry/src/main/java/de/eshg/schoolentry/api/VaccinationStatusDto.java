@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 @Schema(name = "VaccinationStatus")
@@ -41,4 +42,7 @@ public record VaccinationStatusDto(
         List<OtherVaccinationDto> otherVaccinations,
     @Schema(description = "Boolean that indicates, if the vaccination pass was shown or not.")
         Boolean vaccinationPassPresented,
-    BooleanWithUnknownDto perkombiHbv) {}
+    BooleanWithUnknownDto perkombiHbv,
+    Boolean measlesContraIndication,
+    Boolean measlesContraIndicationIsPermanent,
+    LocalDate measlesContraIndicationUntil) {}

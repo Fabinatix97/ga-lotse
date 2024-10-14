@@ -16,6 +16,7 @@ public record PartialActorDto(
     String readableName,
     ActorTypeDto type,
     Boolean active,
+    Boolean manualCertificate,
     String commonName,
     @Valid CertificateDto currentCertificate,
     @Valid CertificateDto previousCertificate,

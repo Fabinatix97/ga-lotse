@@ -5,9 +5,9 @@
 
 "use client";
 
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Stack, Typography } from "@mui/joy";
-import Link from "@mui/joy/Link";
 
 import { useGetPacklistDefinitionRevisions } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
 import { PacklistDefinitionRevisionTile } from "@/lib/businessModules/inspection/components/packlistDefinition/sidebars/PacklistDefinitionRevisionTile";
@@ -73,7 +73,7 @@ function PacklistRevisionsSidebarWithQuery({
           </Stack>
         </Typography>
         <Box display="flex" justifyContent="flex-end" sx={{ mb: 2 }}>
-          <Link
+          <ButtonLink
             onClick={() =>
               onClickNewRevision(
                 newestRevision?.defId ?? "",
@@ -85,7 +85,7 @@ function PacklistRevisionsSidebarWithQuery({
             startDecorator={<AddIcon />}
           >
             Neue Version anlegen
-          </Link>
+          </ButtonLink>
         </Box>
         <Stack direction={"column-reverse"}>
           {revisions.map((revision, index) => (
@@ -97,6 +97,7 @@ function PacklistRevisionsSidebarWithQuery({
               key={revision.id}
               onClickOnRevision={onClickOnRevision}
               version={version}
+              label={"versionTile"}
             />
           ))}
         </Stack>

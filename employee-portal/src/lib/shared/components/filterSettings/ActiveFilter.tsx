@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// eslint-disable-next-line no-restricted-imports
-import { Chip, ChipDelete, Link, Stack, Typography } from "@mui/joy";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
+import { Chip, ChipDelete, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
 
 export interface ActiveFilter<TKey extends string = string> {
@@ -32,15 +32,14 @@ export function ActiveFilter<TKey extends string = string>(
     <Stack gap={1} data-testid="activeFilters">
       <Stack justifyContent="space-between" direction="row">
         <Typography level="body-md">Aktive Filter:</Typography>
-        <Link
+        <ButtonLink
           data-testid="resetAllActiveFilters"
-          component="button"
           underline="none"
           color="primary"
           onClick={() => props.deleteAllFilterValues()}
         >
           Löschen
-        </Link>
+        </ButtonLink>
       </Stack>
       <ActiveFilterList
         filterValues={props.filterValues}
@@ -72,15 +71,14 @@ function ActiveFilterList<TKey extends string = string>(
           ))}
       </Stack>
       {props.filterValues.length > props.maxVisible && (
-        <Link
-          component={"button"}
+        <ButtonLink
           underline="always"
           onClick={() => setShowAll((prev) => !prev)}
         >
           {showAll
             ? "Weniger anzeigen"
             : `Alle anzeigen (${props.filterValues.length})`}
-        </Link>
+        </ButtonLink>
       )}
     </Stack>
   );

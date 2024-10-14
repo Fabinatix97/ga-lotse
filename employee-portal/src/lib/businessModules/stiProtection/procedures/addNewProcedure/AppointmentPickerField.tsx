@@ -24,16 +24,21 @@ import {
   MonthSelectionProps,
 } from "./AppointmentCalendar";
 
-export interface AppointmentPickerFieldProps extends MonthSelectionProps {
+interface Appointment {
+  start: Date;
+}
+
+export interface AppointmentPickerFieldProps<T extends Appointment>
+  extends MonthSelectionProps {
   name: string;
   sx?: SxProps;
   className?: string;
   required?: string | undefined;
   active?: boolean;
-  monthAppointments: Date[];
-  onAppointmentSelected?: (d: Date) => unknown;
+  monthAppointments: T[];
+  onAppointmentSelected?: (d: T) => unknown;
 }
-export function AppointmentPickerField({
+export function AppointmentPickerField<T extends Appointment>({
   sx,
   className,
   active,
@@ -43,15 +48,14 @@ export function AppointmentPickerField({
   onAppointmentSelected,
   required,
   ...props
-}: AppointmentPickerFieldProps) {
-  const field = useBaseField<Date | undefined>({
+}: AppointmentPickerFieldProps<T>) {
+  const field = useBaseField<T | undefined>({
     ...props,
     required: active ? required : undefined,
     type: "date",
   });
-  // const { error, required } = field;
   const [selectedDay, setSelectedDayRaw] = useState<Date | undefined>(
-    field.input.value,
+    field.input.value?.start,
   );
 
   function setSelectedDay(d: Date) {
@@ -61,6 +65,8 @@ export function AppointmentPickerField({
     }
   }
 
+  const dateAppointments = monthAppointments.map((t) => t.start);
+
   return (
     <Stack sx={sx} className={className}>
       <AppointmentCalendar
@@ -68,7 +74,7 @@ export function AppointmentPickerField({
         onDateSelected={setSelectedDay}
         currentMonth={currentMonth}
         setCurrentMonth={setCurrentMonth}
-        monthAppointments={monthAppointments}
+        monthAppointments={dateAppointments}
       />
       <FormControl error={field.error} required={field.required}>
         <AppointmentListForDate
@@ -92,16 +98,16 @@ const dateFullForm = Intl.DateTimeFormat("de-DE", {
   weekday: "long",
   year: "numeric",
 });
-function AppointmentListForDate({
+function AppointmentListForDate<T extends Appointment>({
   date,
   field,
   monthAppointments,
   onAppointmentSelected,
 }: {
   date: Date | undefined;
-  field: ReturnType<typeof useBaseField<Date | undefined>>;
-  monthAppointments: Date[];
-  onAppointmentSelected?: (d: Date) => unknown;
+  field: ReturnType<typeof useBaseField<T | undefined>>;
+  monthAppointments: T[];
+  onAppointmentSelected?: (d: T) => unknown;
 }) {
   const currentInterval = date
     ? {
@@ -112,7 +118,7 @@ function AppointmentListForDate({
   const dayAppointments =
     currentInterval != null
       ? monthAppointments
-          .filter((t) => isWithinInterval(t, currentInterval))
+          .filter((t) => isWithinInterval(t.start, currentInterval))
           .sort()
       : [];
   const hasAppointments = dayAppointments.length > 0;
@@ -120,7 +126,7 @@ function AppointmentListForDate({
     return null;
   }
 
-  function createOnSelected(d: Date) {
+  function createOnSelected(d: T) {
     return () => {
       onAppointmentSelected?.(d);
       return field.helpers.setValue(d);
@@ -139,10 +145,13 @@ function AppointmentListForDate({
         sx={{ marginBottom: "16px", gap: "8px", padding: 0 }}
         aria-description={`Liste verfügbarer Termine für ${dateFullForm.format(date)}`}
       >
-        {dayAppointments.map((t) => {
-          const isSelected = field.input.value === t;
+        {dayAppointments.map((apt) => {
+          const isSelected = field.input.value === apt;
           return (
-            <ListItem sx={{ padding: 0, minHeight: 0 }} key={t.toString()}>
+            <ListItem
+              sx={{ padding: 0, minHeight: 0 }}
+              key={apt.start.toString()}
+            >
               <Chip
                 variant={isSelected ? "soft" : "plain"}
                 color={isSelected ? "primary" : "neutral"}
@@ -150,14 +159,14 @@ function AppointmentListForDate({
               >
                 <Radio
                   component={"time"}
-                  dateTime={timeForm.format(t)}
+                  dateTime={timeForm.format(apt.start)}
                   disableIcon
                   overlay
                   name={`appointments-${date.getDate()}`}
-                  value={t}
-                  checked={field.input.value === t}
-                  onChange={createOnSelected(t)}
-                  label={timeForm.format(t)}
+                  value={apt.start}
+                  checked={isSelected}
+                  onChange={createOnSelected(apt)}
+                  label={timeForm.format(apt.start)}
                 />
               </Chip>
             </ListItem>

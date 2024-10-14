@@ -13,6 +13,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Schedule, TodayOutlined } from "@mui/icons-material";
 import { Chip, Stack, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
@@ -20,7 +21,7 @@ import {
   AppointmentBlock,
   AppointmentBlockGroup,
 } from "@/lib/businessModules/travelMedicine/api/models/AppointmentBlock";
-import { useGetAppointmentBlockGroups } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
+import { useGetAppointmentBlockGroupsQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { appointmentTypes } from "@/lib/businessModules/travelMedicine/shared/appointmentTypes";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
@@ -150,13 +151,19 @@ export function AppointmentBlockGroupsTable(
     initialSorting: initialSorting,
   });
 
-  const appointmentBlockGroups = useGetAppointmentBlockGroups({
-    pageNumber: tableControl.paginationProps.pageNumber,
-    pageSize: tableControl.paginationProps.pageSize,
-    sortKey: getSortKey<ApiAppointmentBlockSortKey>(tableControl.tableSorting),
-    sortDirection: getSortDirection(tableControl.tableSorting),
+  const [{ data: appointmentBlockGroups }] = useSuspenseQueries({
+    queries: [
+      useGetAppointmentBlockGroupsQuery({
+        pageNumber: tableControl.paginationProps.pageNumber,
+        pageSize: tableControl.paginationProps.pageSize,
+        sortKey: getSortKey<ApiAppointmentBlockSortKey>(
+          tableControl.tableSorting,
+        ),
+        sortDirection: getSortDirection(tableControl.tableSorting),
+      }),
+    ],
   });
-  const rows = appointmentBlockGroups.data.elements.map(
+  const rows = appointmentBlockGroups.elements.map(
     toAggregatedAppointmentBlockRow,
   );
 
@@ -169,7 +176,7 @@ export function AppointmentBlockGroupsTable(
       <TableSheet
         footer={
           <Pagination
-            totalCount={appointmentBlockGroups.data.totalNumberOfElements}
+            totalCount={appointmentBlockGroups.totalNumberOfElements}
             {...tableControl.paginationProps}
           />
         }

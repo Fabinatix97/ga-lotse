@@ -37,7 +37,6 @@ function AuditlogView() {
   const isAuditlogAccessibleTableEnabled = useIsNewFeatureEnabled(
     ApiAuditLogFeature.AuditLogAccessibleTable,
   );
-
   function isPortalErrorNotFound() {
     return (
       response instanceof PortalError &&
@@ -50,7 +49,9 @@ function AuditlogView() {
   }
 
   if (isAuditlogAccessibleTableEnabled) {
-    return <AuditlogAccessibleTableView />;
+    return (
+      <AuditlogAccessibleTableView encryptedPrivateKey={response as string[]} />
+    );
   } else {
     return <AuditlogRecordingView />;
   }

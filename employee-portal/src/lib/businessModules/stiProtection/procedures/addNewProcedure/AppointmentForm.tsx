@@ -3,58 +3,40 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiAppointmentBookingType } from "@eshg/employee-portal-api/stiProtection";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { Grid, Radio, Sheet, Stack, Typography } from "@mui/joy";
-import {
-  addDays,
-  addHours,
-  addMinutes,
-  endOfMonth,
-  isWithinInterval,
-  startOfDay,
-  startOfMonth,
-} from "date-fns";
+import { Button, Grid, Radio, Sheet, Stack, Typography } from "@mui/joy";
+import { addMinutes, startOfHour } from "date-fns";
 import { useFormikContext } from "formik";
 import { useEffect, useId, useState } from "react";
-import { uniqueBy } from "remeda";
 
+import { useGetFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import { Row } from "@/lib/shared/Row";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
+import { validateTodayOrFutureDate } from "@/lib/shared/helpers/validators";
 
 import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
 import { AppointmentPickerField } from "./AppointmentPickerField";
-
-const availableAppointments = uniqueBy(
-  new Array(1000)
-    .fill(startOfDay(new Date()))
-    .map((d: Date, index) =>
-      addMinutes(
-        addHours(addDays(d, (index % 101) - 50), (index % 8) + 5),
-        (index % 3) * 15,
-      ),
-    )
-    .filter((t) => t.getDay() !== 0 && t.getDay() !== 6),
-  (d) => d.getTime(),
-);
 
 function ConnectedAppointmentPicker({
   name,
   active,
   initialMonth,
+  concern,
 }: {
   name: string;
   active?: boolean;
   initialMonth: Date | null;
+  concern: AddNewProcedureForm["concern"];
 }) {
+  const now = new Date();
   const [currentMonth, setCurrentMonth] = useState(initialMonth ?? new Date());
-  const currentInterval = {
-    start: startOfMonth(currentMonth),
-    end: endOfMonth(currentMonth),
-  };
-  const monthAppointments = availableAppointments.filter((t) =>
-    isWithinInterval(t, currentInterval),
-  );
+  const freeAppointments = useGetFreeAppointments({
+    concern: concern === "" ? undefined : concern,
+    earliestDate: startOfHour(now),
+  });
+  const monthAppointments = freeAppointments.data ?? [];
 
   return (
     <AppointmentPickerField
@@ -72,20 +54,28 @@ export function AppointmentForm() {
   const appointmentBlockDescriptionlId = useId();
   const { values, setFieldValue } = useFormikContext<AddNewProcedureForm>();
 
-  const blockSectionSelected = values.appointmentType === "APPOINTMENT_BLOCK";
-  const customSectionSelected = values.appointmentType === "CUSTOM";
+  const blockSectionSelected =
+    values.appointmentType === ApiAppointmentBookingType.AppointmentBlock;
+  const customSectionSelected =
+    values.appointmentType === ApiAppointmentBookingType.UserDefined;
 
   useEffect(() => {
     if (!values.blockAppointment) {
       return;
     }
-    void setFieldValue("appointmentType", "APPOINTMENT_BLOCK");
+    void setFieldValue(
+      "appointmentType",
+      ApiAppointmentBookingType.AppointmentBlock,
+    );
   }, [values.blockAppointment, setFieldValue]);
   useEffect(() => {
     if (!values.customAppointmentDate && !values.customAppointmentDuration) {
       return;
     }
-    void setFieldValue("appointmentType", "CUSTOM");
+    void setFieldValue(
+      "appointmentType",
+      ApiAppointmentBookingType.UserDefined,
+    );
   }, [
     values.customAppointmentDate,
     values.customAppointmentDuration,
@@ -100,7 +90,12 @@ export function AppointmentForm() {
       <Stack gap={2}>
         <Sheet
           aria-current={blockSectionSelected}
-          onClick={() => setFieldValue("appointmentType", "APPOINTMENT_BLOCK")}
+          onClick={() =>
+            setFieldValue(
+              "appointmentType",
+              ApiAppointmentBookingType.AppointmentBlock,
+            )
+          }
           aria-description="Termin aus Terminblock wählen"
         >
           <Grid container spacing={3} direction="row">
@@ -108,7 +103,7 @@ export function AppointmentForm() {
               <Radio
                 sx={{ flexBasis: "max-content" }}
                 name="appointmentType"
-                value="APPOINTMENT_BLOCK"
+                value={ApiAppointmentBookingType.AppointmentBlock}
               />
             </Grid>
             <Grid xxs={10}>
@@ -123,7 +118,8 @@ export function AppointmentForm() {
                   <ConnectedAppointmentPicker
                     name="blockAppointment"
                     active={blockSectionSelected}
-                    initialMonth={values.blockAppointment ?? null}
+                    concern={values.concern}
+                    initialMonth={values.blockAppointment?.start ?? null}
                   />
                 </Row>
               </Stack>
@@ -132,24 +128,31 @@ export function AppointmentForm() {
         </Sheet>
         <Sheet
           aria-current={customSectionSelected}
-          onClick={() => setFieldValue("appointmentType", "CUSTOM")}
+          onClick={() =>
+            setFieldValue(
+              "appointmentType",
+              ApiAppointmentBookingType.UserDefined,
+            )
+          }
           aria-description="Frei wählbarer Zeitraum für den Termin"
         >
           <Row>
             <Radio
               id="appointmentTypeCustom"
               name="appointmentType"
-              value="CUSTOM"
+              value={ApiAppointmentBookingType.UserDefined}
             />
             <Stack gap={1}>
               <DateTimeField
                 allowEmpty={!customSectionSelected}
                 label="Individueller Termin"
                 name="customAppointmentDate"
+                validate={validateTodayOrFutureDate}
                 required={
                   customSectionSelected ? "Bitte ein Datum eingeben" : undefined
                 }
               />
+              <CustomAppointmentQuickButtons />
               <NumberField
                 label="Termin Dauer in Min."
                 name="customAppointmentDuration"
@@ -162,5 +165,58 @@ export function AppointmentForm() {
         </Sheet>
       </Stack>
     </RadioGroupField>
+  );
+}
+
+function CustomAppointmentQuickButtons() {
+  const { setFieldValue } = useFormikContext<AddNewProcedureForm>();
+  function setCustomAppointment(inMinutes: number) {
+    const now = new Date();
+    const roundTo = 5;
+    const roundMinutes = now.getMinutes() % roundTo;
+    const minutesToAdd =
+      inMinutes > 0 ? inMinutes - roundMinutes : roundTo - roundMinutes;
+    const customTime = addMinutes(now, minutesToAdd - now.getTimezoneOffset());
+    void setFieldValue(
+      "customAppointmentDate",
+      customTime.toISOString().slice(0, 16),
+    );
+  }
+
+  return (
+    <Row mb={2} justifyContent="right">
+      <Button
+        title="Individueller Termin in den nächsten Minuten setzen"
+        onClick={() => setCustomAppointment(0)}
+        size="sm"
+        variant="soft"
+      >
+        Jetzt
+      </Button>
+      <Button
+        title="Individueller Termin in ca. 10 Minuten setzen"
+        onClick={() => setCustomAppointment(10)}
+        size="sm"
+        variant="soft"
+      >
+        in 10m
+      </Button>
+      <Button
+        title="Individueller Termin in ca. 20 Minuten setzen"
+        onClick={() => setCustomAppointment(20)}
+        size="sm"
+        variant="soft"
+      >
+        in 20m
+      </Button>
+      <Button
+        title="Individueller Termin in ca. 30 Minuten setzen"
+        onClick={() => setCustomAppointment(30)}
+        size="sm"
+        variant="soft"
+      >
+        in 30m
+      </Button>
+    </Row>
   );
 }

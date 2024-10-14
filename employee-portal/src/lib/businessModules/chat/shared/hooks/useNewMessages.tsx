@@ -9,6 +9,7 @@ import { last } from "remeda";
 
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { MessageTypeEnum } from "@/lib/businessModules/chat/shared/enums";
 import {
   Message,
   isMessageTypeWithBody,
@@ -58,8 +59,12 @@ export function useNewMessages() {
                 id,
                 roomId,
                 mentions: messageContent["m.mentions"]?.user_ids,
+                messageType: MessageTypeEnum.ChatMessage,
               };
-              lastUnreadMessages.push(newMessage);
+
+              if (sender?.userId !== currentMatrixClient.getUserId()) {
+                lastUnreadMessages.push(newMessage);
+              }
             }
           }
         }

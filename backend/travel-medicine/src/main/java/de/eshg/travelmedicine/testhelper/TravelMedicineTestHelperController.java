@@ -10,6 +10,7 @@ import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperApi;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
@@ -44,8 +45,9 @@ public class TravelMedicineTestHelperController extends TestHelperController
       TestPopulateAdministrativeService testPopulateAdministrativeService,
       TestPopulateProcedureService testPopulateProcedureService,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
-      AuditLogTestHelperService auditLogTestHelperService) {
-    super(travelMedicineTestHelperService);
+      AuditLogTestHelperService auditLogTestHelperService,
+      EnvironmentConfig environmentConfig) {
+    super(travelMedicineTestHelperService, environmentConfig);
     this.travelMedicineFeatureToggle = travelMedicineFeatureToggle;
     this.testPopulateAdministrativeService = testPopulateAdministrativeService;
     this.testPopulateProcedureService = testPopulateProcedureService;

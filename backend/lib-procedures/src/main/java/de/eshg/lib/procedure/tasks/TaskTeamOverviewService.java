@@ -71,7 +71,7 @@ public class TaskTeamOverviewService<
 
     assigneeIds.forEach(userId -> tasksByAssignee.putIfAbsent(userId, Collections.emptyList()));
 
-    Map<UUID, UserDto> resolvedUsers = userHelper.resolveUsers(tasksByAssignee);
+    Map<UUID, UserDto> resolvedUsers = userHelper.resolveUsers(tasksByAssignee, true);
 
     return new GetTaskByUserResponse(toSortedMap(tasksByAssignee, resolvedUsers), resolvedUsers);
   }

@@ -8,12 +8,15 @@ package de.eshg.base.keycloak;
 import de.eshg.base.citizenuser.CitizenUserService;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.UUID;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 @Component
+@Conditional(KeycloakTestClient.TestHelperOrTestUserProvisioningEnabled.class)
 public class CitizenKeycloakTestClient extends KeycloakTestClient {
 
   private final CitizenUserService citizenUserService;
@@ -23,8 +26,9 @@ public class CitizenKeycloakTestClient extends KeycloakTestClient {
       KeycloakProperties keycloakProperties,
       CitizenUserService citizenUserService,
       @Value("${eshg.keycloak.test-client.max-number-of-parallel-threads:8}")
-          int maxNumberOfParallelThreads) {
-    super(client, keycloakProperties, maxNumberOfParallelThreads);
+          int maxNumberOfParallelThreads,
+      EnvironmentConfig environmentConfig) {
+    super(client, keycloakProperties, maxNumberOfParallelThreads, environmentConfig);
     this.citizenUserService = citizenUserService;
   }
 

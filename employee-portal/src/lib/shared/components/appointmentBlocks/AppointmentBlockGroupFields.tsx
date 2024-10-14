@@ -13,9 +13,7 @@ import {
 } from "@eshg/lib-portal/helpers/validators";
 import { Grid } from "@mui/joy";
 
-import { AppointmentBlockFieldArray } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFieldArray";
 import { AppointmentBlockFieldArrayWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFieldArrayWithDays";
-import { AppointmentBlockValues } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockForm";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
@@ -25,11 +23,9 @@ const validateParallelExaminations = validatePipe(
 );
 
 export interface AppointmentBlockGroupFieldsProps {
-  appointmentBlocks?: AppointmentBlockValues[];
   appointmentBlocksWithDays?: AppointmentBlockGroupValuesWithDays[];
   options: SelectOption[];
   showParallelExaminations?: boolean;
-  showAppointmentBlockFieldArrayWithDays: boolean;
 }
 
 export function AppointmentBlockGroupFields(
@@ -58,17 +54,10 @@ export function AppointmentBlockGroupFields(
           </Grid>
         ) : null}
       </FormGroupGrid>
-      {props.showAppointmentBlockFieldArrayWithDays ? (
-        <AppointmentBlockFieldArrayWithDays
-          name="appointmentBlocks"
-          appointmentBlocks={props.appointmentBlocksWithDays!}
-        />
-      ) : (
-        <AppointmentBlockFieldArray
-          name="appointmentBlocks"
-          appointmentBlocks={props.appointmentBlocks!}
-        />
-      )}
+      <AppointmentBlockFieldArrayWithDays
+        name="appointmentBlocks"
+        appointmentBlocks={props.appointmentBlocksWithDays!}
+      />
     </>
   );
 }

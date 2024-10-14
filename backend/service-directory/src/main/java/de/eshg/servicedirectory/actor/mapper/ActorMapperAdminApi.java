@@ -29,6 +29,7 @@ public class ActorMapperAdminApi {
         actor.getReadableName(),
         ActorType.convert(actor.getType(), ActorTypeDto.class),
         actor.isActive(),
+        actor.isManualCertificate(),
         actor.getCommonName(),
         toApi(actor.getCurrentCertificate()),
         toApi(actor.getPreviousCertificate()),
@@ -93,6 +94,7 @@ public class ActorMapperAdminApi {
     actor.setCurrentCertificate(toPersistence(partialActorDto.currentCertificate()));
     actor.setPreviousCertificate(toPersistence(partialActorDto.previousCertificate()));
     actor.setActive(partialActorDto.active());
+    actor.setManualCertificate(partialActorDto.manualCertificate());
     actor.setStagingStatus(StagingStatus.from(partialActorDto.stagingStatus()));
     return actor;
   }
@@ -111,6 +113,7 @@ public class ActorMapperAdminApi {
         auditedActor.getReadableName(),
         ActorType.convert(auditedActor.getType(), ActorTypeDto.class),
         auditedActor.isActive(),
+        auditedActor.isManualCertificate(),
         auditedActor.getCommonName(),
         withCertificates && currentCertificate != null
             ? new CertificateDto(

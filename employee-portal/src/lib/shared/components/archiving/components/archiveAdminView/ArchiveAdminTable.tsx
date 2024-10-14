@@ -71,7 +71,7 @@ export function ArchiveAdminTable(props: ArchiveAdminTableProps) {
   function handleExportAction() {
     openConfirmationDialog({
       title: "Dateien exportieren?",
-      description: `Möchten Sie die Vorgänge wirklich herunterladen? Die exportierte Datei ist im ZIP-Format und ${formatFileSize(fileSizeBytes)} groß.`,
+      description: `Möchten Sie die Vorgänge wirklich herunterladen? Die exportierte Datei ist im ZIP-Format und ungefähr ${formatFileSize(fileSizeBytes)} groß.`,
       confirmLabel: "Herunterladen",
       color: "danger",
       onConfirm: handleExportActionConfirm,

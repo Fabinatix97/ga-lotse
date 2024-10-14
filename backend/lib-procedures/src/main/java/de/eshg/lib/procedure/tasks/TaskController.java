@@ -248,10 +248,10 @@ public class TaskController<
     taskTypeCounts.forEach(
         (entryKey, entryValue) -> {
           switch (entryKey.intValue()) {
-            case 0 -> noOccurrences.addAndGet(1);
-            case 1 -> oneOccurrence.addAndGet(1);
-            case 2 -> twoOccurrences.addAndGet(1);
-            default -> moreThanTwoOccurrences.addAndGet(1);
+            case 0 -> noOccurrences.addAndGet(entryValue.intValue());
+            case 1 -> oneOccurrence.addAndGet(entryValue.intValue());
+            case 2 -> twoOccurrences.addAndGet(entryValue.intValue());
+            default -> moreThanTwoOccurrences.addAndGet(entryValue.intValue());
           }
         });
 

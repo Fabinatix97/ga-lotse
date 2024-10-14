@@ -7,7 +7,7 @@
 
 import { ApiTravelMedicineFeature } from "@eshg/employee-portal-api/travelMedicine";
 
-import { InformationStatementTemplateForm } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateForm";
+import { InformationStatementTemplateEditor } from "@/lib/businessModules/travelMedicine/components/templates/informationStatement/InformationStatementTemplateEditor";
 import { ToggledPage } from "@/lib/businessModules/travelMedicine/shared/ToggledPage";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -16,7 +16,9 @@ import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function InformationStatementDetailsPage({
   params,
-}: Readonly<{ params: { id: string } }>) {
+}: Readonly<{
+  params: { id: string };
+}>) {
   return (
     <ToggledPage
       feature={ApiTravelMedicineFeature.CitizenPortalInformationStatement}
@@ -29,8 +31,8 @@ export default function InformationStatementDetailsPage({
           />
         }
       >
-        <MainContentLayout fullViewportHeight>
-          <InformationStatementTemplateForm templateId={params.id} />
+        <MainContentLayout sx={{ margin: 0, padding: 0 }} fullViewportHeight>
+          <InformationStatementTemplateEditor templateId={params.id} />
         </MainContentLayout>
       </StickyToolbarLayout>
     </ToggledPage>

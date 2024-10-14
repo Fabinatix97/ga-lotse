@@ -5,7 +5,6 @@
 
 import {
   ApiPatchOtherServiceRequest,
-  ApiPatchServiceAssingnmentRequest,
   ApiPatchVaccinationConsultationPatientRequest,
   ApiPatchVaccinationConsultationTravelDetailsRequest,
   ApiPatchVaccinationRequest,
@@ -15,7 +14,9 @@ import {
   ApiPostServicesRequest,
   ApiPostVaccinationConsultationRequest,
   ApiProcedureStatus,
+  AssignStepToServiceRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -192,22 +193,15 @@ export function useDeleteService() {
   });
 }
 
-export interface UseAssignStepToServiceRequest {
-  procedureId: string;
-  serviceId: string;
-  apiRequest: ApiPatchServiceAssingnmentRequest;
-}
 export function useAssignStepToService() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
   return useHandledMutation({
-    mutationFn: (request: UseAssignStepToServiceRequest) =>
-      vaccinationConsultationApi.assignStepToService(
-        request.procedureId,
-        request.serviceId,
-        request.apiRequest,
-      ),
+    mutationFn: (request: AssignStepToServiceRequest) =>
+      vaccinationConsultationApi
+        .assignStepToServiceRaw(request)
+        .then(unwrapRawResponse),
     onSuccess: () =>
       snackbar.confirmation("Leistung erfolgreich zu Termin hinzugefügt"),
   });

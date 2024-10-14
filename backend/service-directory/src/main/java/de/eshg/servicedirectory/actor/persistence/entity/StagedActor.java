@@ -45,6 +45,7 @@ public non-sealed class StagedActor extends GloballyUniqueEntityBase
   @Column private String previousCertificateSignatory;
 
   @Column private Boolean active;
+  @Column private Boolean manualCertificate;
 
   @Column private UUID orgUnitId;
 
@@ -140,6 +141,16 @@ public non-sealed class StagedActor extends GloballyUniqueEntityBase
   @Override
   public void setActive(Boolean active) {
     this.active = active;
+  }
+
+  @Override
+  public Boolean isManualCertificate() {
+    return manualCertificate;
+  }
+
+  @Override
+  public void setManualCertificate(Boolean manualCertificate) {
+    this.manualCertificate = manualCertificate;
   }
 
   public UUID getOrgUnitId() {

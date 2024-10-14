@@ -27,7 +27,7 @@ dependencies {
     implementation('com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:latest.release') {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-jdbc"
     }
-    implementation 'org.hibernate.orm:hibernate-core'
-    implementation 'org.jetbrains:annotations:latest.release'
+    compileOnly 'org.hibernate.orm:hibernate-core'
+    compileOnly 'org.jetbrains:annotations:latest.release'
     implementation 'commons-io:commons-io:latest.release'
 }

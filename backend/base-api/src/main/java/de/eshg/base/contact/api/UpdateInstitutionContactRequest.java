@@ -5,6 +5,7 @@
 
 package de.eshg.base.contact.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +37,7 @@ public record UpdateInstitutionContactRequest(
                 @Schema(
                     description = "A list of email addresses of the Contact.",
                     example = "['mail1@address.de','mail2@address.de','mail3@address.de']"))
-        List<@Size(min = 6, max = 254) String> emailAddresses,
+        List<@EmailAddressConstraint String> emailAddresses,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements AbstractUpdateContactRequest {

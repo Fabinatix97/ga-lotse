@@ -5,6 +5,9 @@
 
 package de.eshg.base.contact;
 
+import static de.eshg.base.contact.persistence.entity.InstitutionContactCategory.HEALTH_DEPARTMENT;
+import static de.eshg.base.contact.persistence.entity.InstitutionContactCategory.SCHOOL;
+
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.SortDirection;
 import de.eshg.base.address.AddressDto;
@@ -18,10 +21,12 @@ import de.eshg.base.history.HistoryStep;
 import de.eshg.base.user.UserService;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.util.PaginationUtil.PageSpec;
+import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.mapper.RevisionEntryWithChange;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
 import java.io.IOException;
@@ -34,9 +39,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @Tag(name = "Contact")
@@ -67,6 +74,17 @@ public class ContactController implements ContactApi {
   @Transactional(readOnly = true)
   public ContactDto getContact(UUID id) {
     Contact savedContact = findByIdOrThrow(id);
+    boolean isCitizenAccessCodeUser =
+        CurrentUserHelper.currentUserHasRole(CitizenPermissionRole.ACCESS_CODE_USER);
+    if (isCitizenAccessCodeUser) {
+      if (savedContact instanceof InstitutionContact institution
+          && (institution.getCategory() == SCHOOL
+              || institution.getCategory() == HEALTH_DEPARTMENT)) {
+        return ContactMapper.mapContactToApi(savedContact);
+      } else {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      }
+    }
     return ContactMapper.mapContactToApi(savedContact);
   }
 

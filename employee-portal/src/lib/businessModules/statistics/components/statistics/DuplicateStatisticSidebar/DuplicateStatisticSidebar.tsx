@@ -49,7 +49,7 @@ export function DuplicateStatisticSidebar(props: {
           {
             type: "StandardStep",
             step: {
-              title: "Statistik duplizieren",
+              title: "Auswertung duplizieren",
               content: (
                 <DuplicateStatisticStep
                   originalStatistic={props.originalStatistic}

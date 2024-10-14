@@ -8,26 +8,36 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
+import {
+  SectionTile,
+  SectionTitle,
+} from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 
 export function CentralFileLinkTile({
   centralFileId,
-  hasMatches,
+  numMatches,
   onAddLink,
 }: {
   centralFileId?: string;
-  hasMatches: boolean;
+  numMatches: number;
   onAddLink: (() => void) | false;
 }) {
   return (
-    <InfoTile name={"procedure-central-file-links"} title={"Stammdaten (WIP)"}>
-      {hasMatches ? (
+    <SectionTile id={"procedure-central-file-links"}>
+      <SectionTitle id={"procedure-central-file-links"}>
+        {numMatches > 0
+          ? numMatches === 1
+            ? "1 Datensatz gefunden"
+            : `${numMatches} Datensätze gefunden`
+          : "Keine Datensätze gefunden"}
+      </SectionTitle>
+      {numMatches > 0 ? (
         isNonNullish(centralFileId) ? (
           <Typography>{centralFileId}</Typography>
         ) : (
           onAddLink !== false && (
             <FormAddMoreButton onClick={onAddLink}>
-              Stammdaten hinzufügen
+              Datensatz hinzufügen
             </FormAddMoreButton>
           )
         )
@@ -37,6 +47,6 @@ export function CentralFileLinkTile({
           Keine Treffer.
         </Stack>
       )}
-    </InfoTile>
+    </SectionTile>
   );
 }

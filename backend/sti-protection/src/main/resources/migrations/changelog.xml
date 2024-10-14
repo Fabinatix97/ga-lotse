@@ -9,7 +9,5 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
   <include file="migrations/0001_initial.xml"/>
-  <include file="migrations/0002_procedure_sequences.xml"/>
-  <include file="migrations/00003_unique_constraint_person_procedure_id_key.xml"/>
 
 </databaseChangeLog>

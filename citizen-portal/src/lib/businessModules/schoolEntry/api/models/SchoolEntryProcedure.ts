@@ -8,9 +8,18 @@ import { Duration, intervalToDuration } from "date-fns";
 
 import { SchoolEntryChild, mapSchoolEntryChild } from "./SchoolEntryChild";
 
+export interface AppointmentAddress {
+  name?: string;
+  street: string;
+  houseNumber?: string;
+  postalCode: string;
+  city: string;
+}
+
 export interface SchoolEntryProcedure {
   appointmentStart: Date;
   appointmentDuration: Duration;
+  appointmentAddress: AppointmentAddress;
   child: SchoolEntryChild;
   allowCitizenAnamnesis: boolean;
   appointmentChangesByCitizenLeft: number;
@@ -26,6 +35,10 @@ export function mapSchoolEntryProcedure(
       start: response.appointmentStart,
       end: response.appointmentEnd,
     }),
+    appointmentAddress: {
+      name: response.appointmentAddress.name,
+      ...response.appointmentAddress.address,
+    },
     child: mapSchoolEntryChild(response.child),
     allowCitizenAnamnesis: response.allowCitizenAnamnesis,
     appointmentChangesByCitizenLeft: response.appointmentChangesByCitizenLeft,

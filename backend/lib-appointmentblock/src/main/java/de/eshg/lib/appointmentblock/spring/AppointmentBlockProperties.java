@@ -23,6 +23,7 @@ public final class AppointmentBlockProperties implements ResettableProperties {
   private Map<AppointmentType, @DurationMin(minutes = 1) Duration>
       defaultAppointmentTypeConfiguration;
 
+  private boolean overwriteAppointmentTypeConfigurationWithProperties = false;
   private boolean allowAppointmentBlocksWithCalendarEventConflicts = true;
   private boolean createAppointmentBlockForCurrentUser = true;
   private LocationSelectionMode locationSelectionMode = LocationSelectionMode.NONE;
@@ -38,6 +39,16 @@ public final class AppointmentBlockProperties implements ResettableProperties {
   public void setDefaultAppointmentTypeConfiguration(
       Map<AppointmentType, Duration> defaultAppointmentTypeConfiguration) {
     this.defaultAppointmentTypeConfiguration = defaultAppointmentTypeConfiguration;
+  }
+
+  public boolean isOverwriteAppointmentTypeConfigurationWithProperties() {
+    return overwriteAppointmentTypeConfigurationWithProperties;
+  }
+
+  public void setOverwriteAppointmentTypeConfigurationWithProperties(
+      boolean overwriteAppointmentTypeConfigurationWithProperties) {
+    this.overwriteAppointmentTypeConfigurationWithProperties =
+        overwriteAppointmentTypeConfigurationWithProperties;
   }
 
   public boolean isAllowAppointmentBlocksWithCalendarEventConflicts() {

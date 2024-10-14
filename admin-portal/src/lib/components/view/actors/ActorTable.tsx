@@ -25,6 +25,7 @@ import {
   orgUnitFilterFn,
 } from "@/lib/components/table/Filter";
 import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
+import { BooleanCell } from "@/lib/components/table/cell/BooleanCell";
 import { CertificateCell } from "@/lib/components/table/cell/CertificateCell";
 import { EditableActiveCell } from "@/lib/components/table/cell/EditableActiveCell";
 import { EditableCommonNameCell } from "@/lib/components/table/cell/EditableCommonNameCell";
@@ -138,6 +139,15 @@ const columns = [
     filterFn: filterFns.includesString,
     cell: MetadataCell,
   }),
+  accessor("manualCertificate", {
+    enableColumnFilter: true,
+    filterFn: filterFns.equals,
+    cell: BooleanCell,
+    meta: {
+      options: [false, true],
+      stringToValue: (v) => v === "true",
+    },
+  }),
   accessor("currentCertificate", {
     enableColumnFilter: true,
     cell: CertificateCell,
@@ -190,6 +200,7 @@ function ActorTableContent({
           _matchingServerRules: false,
           _matchingClientRules: false,
           commonName: false,
+          manualCertificate: false,
           currentCertificate: false,
           previousCertificate: false,
         }}

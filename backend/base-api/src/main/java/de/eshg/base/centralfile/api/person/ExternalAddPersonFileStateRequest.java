@@ -5,6 +5,7 @@
 
 package de.eshg.base.centralfile.api.person;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
@@ -27,7 +28,7 @@ public record ExternalAddPersonFileStateRequest(
     @Size(min = 1, max = 40) String nameAtBirth,
     @Size(min = 1, max = 50) String placeOfBirth,
     CountryCodeDto countryOfBirth,
-    List<@NotNull @Size(min = 6, max = 254) String> emailAddresses,
+    List<@EmailAddressConstraint String> emailAddresses,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)

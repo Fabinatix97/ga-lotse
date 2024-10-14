@@ -5,12 +5,8 @@
 
 "use client";
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
 import { ApiServiceStatus } from "@eshg/employee-portal-api/travelMedicine";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { Sheet, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
@@ -18,16 +14,24 @@ import {
   UseUpdateVaccinationRequest,
   useUpdateVaccination,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
+import {
+  useGetAllMedicalAssistantsUnsuspended,
+  useGetAllPhysiciansUnsuspended,
+} from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
+import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AppliedByFields";
+import { VaccinationConsultationSidebarsProps } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
+import { determineInitialUser } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { CurrentUsers } from "@/lib/businessModules/travelMedicine/shared/currentUsers";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
+import { sortUsersByName } from "@/lib/shared/helpers/users";
 import { validateRequiredBatchId } from "@/lib/shared/helpers/validators";
 
-interface InitServiceAppliedFormValues {
+export interface ServiceAppliedValues {
   procedureId: string;
   serviceId: string;
   serviceStatus: string;
@@ -39,22 +43,51 @@ interface InitServiceAppliedFormValues {
   medicalAssistant?: string;
 }
 
+export const initialServiceAppliedValues: ServiceAppliedValues = {
+  procedureId: "",
+  serviceId: "",
+  serviceStatus: "",
+  vaccinationInfo: "",
+  vaccineName: "",
+  batchIdentifier: "",
+  appliedAt: "",
+  physician: "",
+  medicalAssistant: "",
+};
+
 interface ServiceAppliedSideBarProps {
-  sideBarOpen: boolean;
-  closeSideBar: () => void;
-  allPhysicians: ApiUser[];
-  allMedicalAssistants: ApiUser[];
+  open: boolean;
+  onCancel: (
+    currentValues: ServiceAppliedValues,
+    initialValues: ServiceAppliedValues,
+    dirty: boolean,
+  ) => void;
+  onSuccess: () => void;
+  onClose: (item: VaccinationConsultationSidebarsProps) => void;
   storeUsers: (currentUsers: CurrentUsers) => void;
-  initialValues: InitServiceAppliedFormValues;
+  currentUsers: { physician: string; medicalAssistant: string };
+  initialValues: ServiceAppliedValues;
 }
 
 export function ServiceAppliedSideBar(
   props: Readonly<ServiceAppliedSideBarProps>,
 ) {
   const updateVaccination = useUpdateVaccination();
+
+  const getAllPhysicians = useGetAllPhysiciansUnsuspended(props.open);
+  const allPhysicians = getAllPhysicians.data
+    ? getAllPhysicians.data.toSorted(sortUsersByName)
+    : [];
+
+  const getAllMedicalAssistants = useGetAllMedicalAssistantsUnsuspended(
+    props.open,
+  );
+  const allMedicalAssistants = getAllMedicalAssistants.data
+    ? getAllMedicalAssistants.data.toSorted(sortUsersByName)
+    : [];
+
   async function handleServiceSideBarSubmit(
-    values: InitServiceAppliedFormValues,
-    resetForm: () => void,
+    values: ServiceAppliedValues,
     storeUsers: (currentUsers: CurrentUsers) => void,
   ) {
     storeUsers({
@@ -74,35 +107,47 @@ export function ServiceAppliedSideBar(
     };
     await updateVaccination
       .mutateAsync(request, {
-        onSuccess: () => {
-          props.closeSideBar();
-          resetForm();
-        },
+        onSuccess: props.onSuccess,
       })
       .catch();
   }
 
-  const physicianOptions = props.allPhysicians.map((option) => ({
-    value: option.userId,
-    label: fullName(option),
-  }));
-
-  const medicalAssistantOptions = props.allMedicalAssistants.map((option) => ({
-    value: option === undefined ? "" : option.userId,
-    label: option === undefined ? "" : fullName(option),
-  }));
-
   return (
-    <Sidebar open={props.sideBarOpen} onClose={props.closeSideBar}>
-      <Formik
-        initialValues={props.initialValues}
-        onSubmit={async (values, { resetForm }) => {
-          await handleServiceSideBarSubmit(values, resetForm, props.storeUsers);
-        }}
-        enableReinitialize
-      >
-        {({ isSubmitting, resetForm }) => (
-          <FormPlus style={{ display: "contents" }}>
+    <Formik
+      initialValues={{
+        ...props.initialValues,
+        physician: determineInitialUser(
+          props.initialValues.physician,
+          props.initialValues.serviceStatus,
+          allPhysicians,
+          props.currentUsers.physician,
+        ),
+        medicalAssistant: determineInitialUser(
+          props.initialValues.medicalAssistant!,
+          props.initialValues.serviceStatus,
+          allMedicalAssistants,
+          props.currentUsers.medicalAssistant,
+        ),
+      }}
+      onSubmit={async (values) => {
+        await handleServiceSideBarSubmit(values, props.storeUsers);
+      }}
+      enableReinitialize
+    >
+      {({ isSubmitting, values, dirty }) => (
+        <Sidebar
+          open={props.open}
+          onClose={() => {
+            props.onClose({
+              open: false,
+              initialValues:
+                props.initialValues.serviceStatus === ApiServiceStatus.Planned
+                  ? { ...values }
+                  : { ...initialServiceAppliedValues },
+            });
+          }}
+        >
+          <SidebarForm style={{ display: "contents" }}>
             <SidebarContent
               title={
                 props.initialValues.serviceStatus === ApiServiceStatus.Planned
@@ -131,21 +176,9 @@ export function ServiceAppliedSideBar(
                   required="Bitte geben Sie eine Charge an"
                   validate={validateRequiredBatchId}
                 />
-                <DateField
-                  name="appliedAt"
-                  label="Datum"
-                  required="Bitte geben Sie ein Datum an"
-                />
-                <SingleAutocompleteField
-                  label="Durchführende(r) Arzt/Ärztin"
-                  name="physician"
-                  required="Bitte eine(n) Arzt/Ärztin auswählen"
-                  options={physicianOptions}
-                />
-                <SingleAutocompleteField
-                  label="Arzthilfe"
-                  name="medicalAssistant"
-                  options={medicalAssistantOptions}
+                <AppliedByFields
+                  allPhysicians={allPhysicians}
+                  allMedicalAssistants={allMedicalAssistants}
                 />
               </Stack>
             </SidebarContent>
@@ -158,14 +191,13 @@ export function ServiceAppliedSideBar(
                 }
                 submitting={isSubmitting}
                 onCancel={() => {
-                  props.closeSideBar();
-                  resetForm();
+                  props.onCancel(values, props.initialValues, dirty);
                 }}
               />
             </SidebarActions>
-          </FormPlus>
-        )}
-      </Formik>
-    </Sidebar>
+          </SidebarForm>
+        </Sidebar>
+      )}
+    </Formik>
   );
 }

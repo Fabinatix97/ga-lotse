@@ -33,7 +33,7 @@ export function UpdateEvaluationSidebar(props: {
           {
             type: "StandardStep",
             step: {
-              title: "Änderungen speichern",
+              title: "Anpassung speichern",
               content: <SaveEvaluationStep />,
             },
           },

@@ -5,7 +5,7 @@
 
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useQuery } from "@tanstack/react-query";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { isObjectType, isString, last } from "remeda";
 
 import { useAdminApi } from "@/lib/api/clients";
@@ -47,14 +47,13 @@ export function useCommitDryRun() {
   const [key, entityIds] = useOwnStagedEntityIds();
   const debouncedKey = useDebounce(key, 5000);
 
-  const queryFn = useCallback<() => Promise<Error | null>>(() => {
+  function queryFn() {
     return entityIds.length
       ? adminApi
           .commitStaged(undefined, entityIds, true)
           .then(() => null, toError)
       : Promise.resolve(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
   const { data } = useQuery<Error | null>({
     queryKey: ["query-dry-run", debouncedKey],

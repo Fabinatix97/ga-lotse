@@ -44,6 +44,7 @@ export function SearchContactField(props: SearchContactFieldProps) {
       endDecorator={<SearchOutlined />}
       loading={searchContacts.isLoading}
       onInputChange={(_, newInputValue) => setContactName(newInputValue)}
+      disableFiltering
     />
   );
 }

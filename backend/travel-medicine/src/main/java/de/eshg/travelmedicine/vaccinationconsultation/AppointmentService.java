@@ -6,7 +6,9 @@
 package de.eshg.travelmedicine.vaccinationconsultation;
 
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
+import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.UserDefinedAppointment;
@@ -42,7 +44,7 @@ public class AppointmentService {
     procedureStep.setUserDefinedAppointment(savedUserDefinedAppointment);
   }
 
-  public void createAppointment(
+  public void createBlockAppointmentForStep(
       ProcedureStep procedureStep, Instant start, Integer durationInMinutes) {
 
     checkExistingAppointment(procedureStep);
@@ -50,6 +52,33 @@ public class AppointmentService {
     AppointmentType appointmentType = procedureStep.getAppointmentType();
     Instant end = start.plus(Duration.ofMinutes(durationInMinutes));
     appointmentBlockSlotUtil.updateAppointment(appointmentType, null, procedureStep, start, end);
+  }
+
+  public Appointment createBlockAppointment(
+      AppointmentType appointmentType, Instant start, Integer durationInMinutes) {
+    DummyEntityWithAppointment appointmentHolder = new DummyEntityWithAppointment();
+    Instant end = start.plus(Duration.ofMinutes(durationInMinutes));
+    appointmentBlockSlotUtil.updateAppointment(
+        appointmentType, null, appointmentHolder, start, end);
+    return appointmentHolder.getAppointment();
+  }
+
+  public void deleteAppointment(ProcedureStep procedureStep) {
+
+    Appointment blockAppointment = procedureStep.getAppointment();
+    UserDefinedAppointment userDefinedAppointment = procedureStep.getUserDefinedAppointment();
+    if (blockAppointment != null) {
+      UserDefinedAppointment cancelledUda =
+          new UserDefinedAppointment(
+              blockAppointment.getAppointmentStart(), blockAppointment.getAppointmentEnd(), true);
+      userDefinedAppointmentRepository.save(cancelledUda);
+      procedureStep.setUserDefinedAppointment(cancelledUda);
+      procedureStep.setAppointment(null);
+    } else if (userDefinedAppointment != null && !userDefinedAppointment.isCancelled()) {
+      userDefinedAppointment.setCancelled(true);
+    } else {
+      throw new BadRequestException("Procedure step has no uncancelled appointment.");
+    }
   }
 
   private void checkExistingAppointment(ProcedureStep procedureStep) {
@@ -63,6 +92,21 @@ public class AppointmentService {
           String.format(
               "Procedure step %s already has an appointment from appointment block.",
               procedureStep.getId()));
+    }
+  }
+
+  static class DummyEntityWithAppointment implements EntityWithAppointment {
+
+    private Appointment appointment;
+
+    @Override
+    public Appointment getAppointment() {
+      return appointment;
+    }
+
+    @Override
+    public void setAppointment(Appointment appointment) {
+      this.appointment = appointment;
     }
   }
 }

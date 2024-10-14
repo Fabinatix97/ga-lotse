@@ -21,6 +21,7 @@ import {
   InitialAppointmentForm,
   InitialAppointmentFormValuesProps,
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/appointment/InitialAppointmentForm";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { mapDateTimeToInput } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
@@ -77,11 +78,13 @@ export function InitialAppointmentTile(
           />
         </Grid>
       </DetailsSection>
-      <EditInitialAppointmentSidebar
-        initialAppointment={props.initialValues.initialAppointment}
-        openState={open}
-        onClose={() => updateSidebar(false)}
-      />
+      {open && (
+        <EditInitialAppointmentSidebar
+          initialAppointment={props.initialValues.initialAppointment}
+          openState={open}
+          onClose={() => updateSidebar(false)}
+        />
+      )}
     </>
   );
 }
@@ -161,11 +164,13 @@ function EditInitialAppointmentSidebar({
 
   return (
     <Sidebar open={openState} onClose={onClose}>
-      <InitialAppointmentForm
-        initialValues={createInitialValues(initialAppointment)}
-        onSubmit={handleChangeAppointment}
-        onCancel={onClose}
-      />
+      <OverlayBoundary>
+        <InitialAppointmentForm
+          initialValues={createInitialValues(initialAppointment)}
+          onSubmit={handleChangeAppointment}
+          onCancel={onClose}
+        />
+      </OverlayBoundary>
     </Sidebar>
   );
 }

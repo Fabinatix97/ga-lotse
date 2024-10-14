@@ -11,6 +11,7 @@ export interface SeriesInfo {
   length: number;
 }
 export interface ReportDetailsView {
+  id: string;
   seriesId: string;
   title: string;
   description?: string;
@@ -26,4 +27,5 @@ export interface ReportDetailsView {
   };
   evaluations: Evaluation[];
   attributes: FlatAttribute[];
+  userId: string;
 }

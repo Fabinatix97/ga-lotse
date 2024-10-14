@@ -5,6 +5,7 @@
 
 import {
   ApiContactCategory,
+  ApiContactSortKey,
   ApiSearchContactsResponse,
   GetContactHistoryRequest,
   GetContactsRequest,
@@ -110,7 +111,11 @@ export function useSearchSchools(schoolName: string) {
     trailing: true,
   });
   return useSearchContactsQuery(
-    { name: debouncedSchoolName, category: ApiContactCategory.School },
+    {
+      name: debouncedSchoolName,
+      category: ApiContactCategory.School,
+      sortKey: ApiContactSortKey.Relevance,
+    },
     { enabled: debouncedSchoolName.length >= 1 },
   );
 }
@@ -123,7 +128,11 @@ export function useSearchContacts(
     trailing: true,
   });
   return useSearchContactsQuery(
-    { name: debouncedName, category: contactCategory },
+    {
+      name: debouncedName,
+      category: contactCategory,
+      sortKey: ApiContactSortKey.Relevance,
+    },
     { enabled: debouncedName.length >= 1 },
   );
 }

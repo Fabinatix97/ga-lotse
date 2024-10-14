@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.api;
 
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -18,4 +19,5 @@ public record StiProtectionProcedureDto(
     @NotNull Instant createdAt,
     @NotNull ProcedureStatusDto status,
     @NotNull ConcernDto concern,
-    @NotNull @Valid PersonDto person) {}
+    @NotNull @Valid PersonDto person,
+    @NotNull @Valid AppointmentDto appointment) {}

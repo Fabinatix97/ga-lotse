@@ -24,6 +24,7 @@ interface TextareaFieldProps extends ValidationRules<string> {
   sx?: SxProps;
   sxTextarea?: SxProps;
   readOnly?: boolean;
+  minRows?: number;
 }
 
 export function TextareaField(props: TextareaFieldProps) {
@@ -43,7 +44,7 @@ export function TextareaField(props: TextareaFieldProps) {
         value={field.input.value}
         onChange={field.input.onChange}
         onBlur={field.input.onBlur}
-        minRows={2}
+        minRows={props.minRows ?? 2}
         placeholder={props.placeholder}
         readOnly={props.readOnly}
       />

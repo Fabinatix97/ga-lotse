@@ -42,7 +42,11 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
   STI_PROTECTION(
       "HIV-STI-Schutz",
       ModuleMemberGroup.STI_PROTECTION,
-      EmployeePermissionRole.STI_PROTECTION_LEADER);
+      EmployeePermissionRole.STI_PROTECTION_LEADER),
+  MEDICAL_REGISTRY(
+      "Medizinalkartei",
+      ModuleMemberGroup.MEDICAL_REGISTRY,
+      EmployeePermissionRole.MEDICAL_REGISTRY_LEADER);
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

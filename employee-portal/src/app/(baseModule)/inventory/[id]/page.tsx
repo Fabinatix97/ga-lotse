@@ -13,15 +13,12 @@ import { useState } from "react";
 import { useGetInventoryItem } from "@/lib/baseModule/api/queries/inventory";
 import { InventoryBooking } from "@/lib/baseModule/components/inventory/InventoryBooking";
 import { InventoryDetails } from "@/lib/baseModule/components/inventory/InventoryDetails";
-import { InventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
+import { useInventoryRestockSidebar } from "@/lib/baseModule/components/inventory/modals/InventoryRestockSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 export default function InventoryDetailsPage({
   params,
@@ -41,11 +38,7 @@ export default function InventoryDetailsPage({
     { data: history },
   ] = useGetInventoryItem(params.id, bookingHistoryPage);
 
-  const [deliverySidebarOpen, setDeliverySidebarOpen] = useState(false);
-
-  const { sidebarFormRef, closeSidebar, handleClose } = useSidebarForm({
-    onClose: () => setDeliverySidebarOpen(false),
-  });
+  const inventoryRestockSidebar = useInventoryRestockSidebar();
 
   return (
     <StickyToolbarLayout
@@ -58,7 +51,12 @@ export default function InventoryDetailsPage({
               <Button
                 startDecorator={<AddIcon />}
                 sx={{ width: "fit-content" }}
-                onClick={() => setDeliverySidebarOpen(true)}
+                onClick={() =>
+                  inventoryRestockSidebar.open({
+                    id: item.id,
+                    minCount: item.minCount,
+                  })
+                }
               >
                 Inventar auffüllen
               </Button>
@@ -84,20 +82,6 @@ export default function InventoryDetailsPage({
             />
           </Stack>
         </Stack>
-
-        {hasWritePerms && (
-          <OverlayBoundary>
-            <Sidebar open={deliverySidebarOpen} onClose={handleClose}>
-              <InventoryRestockSidebar
-                sidebarFormRef={sidebarFormRef}
-                onClose={handleClose}
-                onSuccess={closeSidebar}
-                id={item.id}
-                minCount={item.minCount}
-              />
-            </Sidebar>
-          </OverlayBoundary>
-        )}
       </MainContentLayout>
     </StickyToolbarLayout>
   );

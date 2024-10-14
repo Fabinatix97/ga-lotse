@@ -37,7 +37,7 @@ export function StatisticDetailsLayout({
   const tabNavigationItems: TabNavigationItem[] = [
     {
       href: routes.statistics.details(statisticId).index,
-      tabButtonName: "Statistik",
+      tabButtonName: "Analysen",
       decorator: <PieChartOutlined />,
       exactMatch: true,
     },

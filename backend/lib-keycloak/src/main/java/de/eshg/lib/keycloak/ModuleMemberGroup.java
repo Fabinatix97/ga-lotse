@@ -49,7 +49,11 @@ public enum ModuleMemberGroup implements KeycloakGroup {
       EmployeePermissionRole.STATISTICS_STATISTICS_READ,
       EmployeePermissionRole.STATISTICS_STATISTICS_WRITE),
   STI_PROTECTION(
-      "HIV-STI-Schutz", getStandardRoles(), List.of(EmployeePermissionRole.STI_PROTECTION_USER));
+      "HIV-STI-Schutz", getStandardRoles(), List.of(EmployeePermissionRole.STI_PROTECTION_USER)),
+  MEDICAL_REGISTRY(
+      "Medizinalkartei",
+      getStandardRoles(),
+      List.of(EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN));
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

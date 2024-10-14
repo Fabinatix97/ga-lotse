@@ -1,0 +1,10 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.base.pdf.data;
+
+import java.util.List;
+
+public record FieldSet(List<FieldRow> rows) {}

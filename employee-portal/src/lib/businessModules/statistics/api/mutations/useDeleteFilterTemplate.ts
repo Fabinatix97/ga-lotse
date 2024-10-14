@@ -14,7 +14,7 @@ export function useDeleteFilterTemplate() {
   const mutation = useHandledMutation({
     mutationFn: (filterTemplateId: string) =>
       api.deleteFilterTemplate(filterTemplateId),
-    onSuccess: () => snackbar.confirmation("Vorlage gelöscht."),
+    onSuccess: () => snackbar.confirmation("Vorlage gelöscht"),
   });
 
   return (filterTemplateId: string) => {

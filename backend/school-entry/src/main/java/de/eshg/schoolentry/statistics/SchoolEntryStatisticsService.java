@@ -66,7 +66,7 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
       case CHILD_CENTRAL_FILE_ID -> procedure.getChildIdFromCentralFile();
       case PROCEDURE_ID -> procedure.getExternalId();
       case KIND -> getProcedureType(procedure);
-      case UNTERSDAT -> getAppointmentDate(procedure);
+      case UNTERSDAT -> getAppointmentOrExaminationDate(procedure);
       case KT -> getDaycareValue(procedure);
       case KISS -> getAnamnesisAttribute(procedure, Anamnesis::getChildLanguageScreening);
       case VLK -> getAnamnesisAttribute(procedure, Anamnesis::getPreliminaryCourse);
@@ -515,16 +515,20 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
     return Child.convertTypeToValue(procedure.getProcedureType());
   }
 
-  private @Nullable String getAppointmentDate(SchoolEntryProcedure procedure) {
-    if (procedure == null || procedure.getAppointment() == null) {
+  private @Nullable String getAppointmentOrExaminationDate(SchoolEntryProcedure procedure) {
+    if (procedure == null
+        || (procedure.getAppointment() == null && procedure.getExaminationDate() == null)) {
       return null;
     }
-
-    return procedure
-        .getAppointment()
-        .getAppointmentStart()
-        .atZone(clock.getZone())
-        .format(DATE_FORMAT);
+    if (procedure.getExaminationDate() != null) {
+      return procedure.getExaminationDate().format(DATE_FORMAT);
+    } else {
+      return procedure
+          .getAppointment()
+          .getAppointmentStart()
+          .atZone(clock.getZone())
+          .format(DATE_FORMAT);
+    }
   }
 
   private <T> @Nullable String getExaminationResultFourOptionValue(

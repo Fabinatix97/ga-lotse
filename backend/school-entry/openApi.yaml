@@ -47,43 +47,6 @@ paths:
       summary: Get all appointment block groups.
       tags:
       - AppointmentBlock
-    post:
-      operationId: createAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CreateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
-  /appointment-blocks/appointment-block-groups/validate:
-    post:
-      operationId: validateAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ValidateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
   /appointment-blocks/daily-appointment-block-groups:
     post:
       operationId: createDailyAppointmentBlocksForGroup
@@ -1484,6 +1447,11 @@ paths:
             type: string
             format: uuid
       - in: query
+        name: isInvitationSentFilter
+        required: false
+        schema:
+          type: boolean
+      - in: query
         name: sortKey
         required: false
         schema:
@@ -1631,6 +1599,44 @@ paths:
                 $ref: "#/components/schemas/SearchIcd10CodesResponse"
           description: OK
       summary: Search in the ICD-10 catalogue.
+      tags:
+      - SchoolEntry
+  /school-entries/past-procedure-list/{schoolId}:
+    post:
+      operationId: importPastProcedureList
+      parameters:
+      - in: path
+        name: schoolId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: schoolYear
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1900
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Upload a XLSX file to create multiple past procedures.
       tags:
       - SchoolEntry
   /school-entries/school-list/{schoolId}:
@@ -3145,6 +3151,16 @@ components:
       required:
       - end
       - start
+    AppointmentAddress:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/DomesticAddress"
+        name:
+          type: string
+      required:
+      - address
+      - name
     AppointmentBlockSortKey:
       type: string
       enum:
@@ -3365,6 +3381,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     CheckUps:
       type: object
       properties:
@@ -3857,58 +3874,6 @@ components:
       - ZA
       - ZM
       - ZW
-    CreateAppointmentBlock:
-      type: object
-      properties:
-        end:
-          type: string
-          format: date-time
-          description: Time at which the appointment block ends.
-          example: 2016-01-01T01:45:00.123456+01:00
-        start:
-          type: string
-          format: date-time
-          description: Time at which the appointment block starts.
-          example: 2016-01-01T01:00:00.123456+01:00
-      required:
-      - end
-      - start
-    CreateAppointmentBlockGroupRequest:
-      type: object
-      properties:
-        appointmentBlocks:
-          type: array
-          items:
-            $ref: "#/components/schemas/CreateAppointmentBlock"
-        consultants:
-          type: array
-          items:
-            type: string
-            format: uuid
-        locationId:
-          type: string
-          format: uuid
-        mfas:
-          type: array
-          items:
-            type: string
-            format: uuid
-        parallelExaminations:
-          type: integer
-          format: int32
-          maximum: 10
-          minimum: 1
-        physicians:
-          type: array
-          items:
-            type: string
-            format: uuid
-        type:
-          $ref: "#/components/schemas/AppointmentType"
-      required:
-      - appointmentBlocks
-      - parallelExaminations
-      - type
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -3994,6 +3959,9 @@ components:
           items:
             type: string
             format: uuid
+        locationId:
+          type: string
+          format: uuid
         mfas:
           type: array
           items:
@@ -4188,6 +4156,8 @@ components:
       - WEDNESDAY
       - THURSDAY
       - FRIDAY
+      - SATURDAY
+      - SUNDAY
     DaycareAndSchoolInfo:
       type: object
       properties:
@@ -4891,6 +4861,8 @@ components:
       properties:
         allowCitizenAnamnesis:
           type: boolean
+        appointmentAddress:
+          $ref: "#/components/schemas/AppointmentAddress"
         appointmentChangesByCitizenLeft:
           type: integer
           format: int32
@@ -4908,6 +4880,7 @@ components:
           type: boolean
       required:
       - allowCitizenAnamnesis
+      - appointmentAddress
       - appointmentChangesByCitizenLeft
       - appointmentEnd
       - appointmentStart
@@ -6352,6 +6325,9 @@ components:
           format: date-time
         school:
           $ref: "#/components/schemas/School"
+        schoolInfoLetterCreatedAt:
+          type: string
+          format: date-time
         schoolYear:
           type: integer
           format: int32
@@ -6883,6 +6859,15 @@ components:
       - WRU
       - SCA
       - ZYP
+      - G1
+      - G2
+      - G3
+      - G4
+      - G5
+      - G6
+      - G7
+      - G8
+      - G9
       example: DEU
     SchoolEntryFeature:
       type: string
@@ -6896,6 +6881,7 @@ components:
       - SCHOOL_INFO_LETTER
       - SCHOOL_YEAR
       - WAITING_ROOM
+      - IMPORT_PAST_PROCEDURES
     SchoolEntryLabel:
       type: object
       description: Labels can be associated to a procedure. There are predefined labels
@@ -7588,6 +7574,13 @@ components:
           description: Number of hib vaccinations.
           maximum: 9
           minimum: 0
+        measlesContraIndication:
+          type: boolean
+        measlesContraIndicationIsPermanent:
+          type: boolean
+        measlesContraIndicationUntil:
+          type: string
+          format: date
         meningococcusB:
           type: integer
           format: int32

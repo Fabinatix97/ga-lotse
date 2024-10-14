@@ -20,6 +20,7 @@ import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/schoolEntry/api/models/Appointment";
 import { useTranslation } from "@/lib/i18n/client";
 import { useLocale } from "@/lib/i18n/useLocale";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -93,7 +94,12 @@ export function UpdateAppointmentContent(props: UpdateAppointmentContentProps) {
                     {appointments.map((appointment, innerIndex) => (
                       <Button
                         key={`${outerIndex}, ${innerIndex}`}
-                        sx={{ width: { xxs: "61.25px", lg: "172px" } }}
+                        sx={{
+                          width: byBreakpoint({
+                            mobile: "61.25px",
+                            desktop: "172px",
+                          }),
+                        }}
                         variant={
                           props.newAppointment === appointment
                             ? "solid"

@@ -12,10 +12,11 @@ interface StatisticNameChangeModalProps {
   open: boolean;
   onClose: () => void;
   initialName: string;
+  statisticId: string;
 }
 
 export function StatisticNameChangeModal(props: StatisticNameChangeModalProps) {
-  const editStatisticName = useEditStatisticName();
+  const editStatisticName = useEditStatisticName(props.statisticId);
 
   async function onSubmit(model: { name: string }) {
     return editStatisticName(model.name).then(() => props.onClose());
@@ -30,14 +31,14 @@ export function StatisticNameChangeModal(props: StatisticNameChangeModalProps) {
         name: props.initialName,
       }}
       title="Name ändern"
-      description="Wählen Sie einen neuen Namen für die Statistik."
+      description="Wählen Sie einen neuen Namen für die Auswertung."
       color="primary"
       confirmLabel="Speichern"
       cancelLabel="Abbrechen"
     >
       <InputField
         name="name"
-        label="Name der Statistik"
+        label="Name der Auswertung"
         required="Bitte neuen Namen angeben."
         sx={{ marginTop: 2 }}
       />

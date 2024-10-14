@@ -4,10 +4,11 @@
  */
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { AddchartOutlined, Edit } from "@mui/icons-material";
+import { AddchartOutlined, Delete, Edit, FileCopy } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
+import { isPlainObject } from "remeda";
 
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import {
@@ -17,6 +18,9 @@ import {
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 
 export interface DetailsInformationCardProps {
+  canWrite: boolean;
+  canDelete: boolean;
+  canUpdateStatistic: boolean;
   start: Date;
   end: Date;
   createdAt: Date;
@@ -24,19 +28,22 @@ export interface DetailsInformationCardProps {
   onEvaluationCreateClicked: () => void;
   onDataBasisUpdateClicked: () => void;
   onNameChangeClicked: () => void;
+  onStatisticDeleteClicked: () => void;
+  onStatisticDuplicateClicked: () => void;
 }
 
 export function DetailsInformationCard(props: DetailsInformationCardProps) {
-  const canWrite = useStatisticRoleChecks().canWrite();
-  // TODO: ISSUE-5587: Add once it exists
-  const statisticNameChangeFeatureToggle = false;
+  const cloneStatisticFeatureToggle = useIsNewFeatureEnabled("CLONE_STATISTIC");
+
+  const canDuplicateStatistic = props.canWrite && cloneStatisticFeatureToggle;
+  const { canDelete, canUpdateStatistic } = props;
 
   return (
     <InfoTile
       name="aggregation-details"
       title="Details"
       footer={
-        canWrite && (
+        props.canWrite && (
           <Stack
             alignItems={{ md: "start" }}
             marginTop={2}
@@ -49,7 +56,7 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
               onClick={props.onEvaluationCreateClicked}
               data-testid="create-evaluation-button"
             >
-              Auswertung erstellen
+              Analyse erstellen
             </Button>
             {/* TODO: Comment out for now, replace when feature-toggle is ready */}
             {/* <Button
@@ -63,16 +70,25 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
         )
       }
       controls={
-        canWrite &&
-        statisticNameChangeFeatureToggle && (
+        (canUpdateStatistic || canDuplicateStatistic || canDelete) && (
           <ActionsMenu
             actionItems={[
-              {
+              canUpdateStatistic && {
                 label: "Name ändern",
                 onClick: () => props.onNameChangeClicked(),
                 startDecorator: <Edit />,
               },
-            ]}
+              canDuplicateStatistic && {
+                label: "Duplizieren",
+                onClick: () => props.onStatisticDuplicateClicked(),
+                startDecorator: <FileCopy />,
+              },
+              canDelete && {
+                label: "Löschen",
+                onClick: () => props.onStatisticDeleteClicked(),
+                startDecorator: <Delete />,
+              },
+            ].filter(isPlainObject)}
           />
         )
       }

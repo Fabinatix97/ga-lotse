@@ -8,9 +8,11 @@
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 
 import { Chat } from "@/lib/businessModules/chat/components/Chat";
+import { ChatErrorBoundary } from "@/lib/businessModules/chat/components/ChatErrorBoundary";
 import { ChatFeatureUnavailable } from "@/lib/businessModules/chat/components/ChatFeatureUnavailable";
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { InfoPanelProvider } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 
 export default function ChatPage() {
   const {
@@ -20,7 +22,7 @@ export default function ChatPage() {
     isFeatureToggleLoading,
   } = useChat();
 
-  if (isFeatureToggleLoading) {
+  if (isFeatureToggleLoading || isSettingsLoading) {
     return <LoadingIndicator text="Seite wird geladen…" fullHeight />;
   }
 
@@ -28,9 +30,13 @@ export default function ChatPage() {
     return <ChatFeatureUnavailable />;
   }
 
-  if (isSettingsLoading) {
-    return <LoadingIndicator text="Seite wird geladen…" fullHeight />;
-  }
-
-  return userSettings.chatUsageEnabled ? <Chat /> : <ChatNoAccessAlert />;
+  return userSettings.chatUsageEnabled ? (
+    <ChatErrorBoundary>
+      <InfoPanelProvider>
+        <Chat />
+      </InfoPanelProvider>
+    </ChatErrorBoundary>
+  ) : (
+    <ChatNoAccessAlert />
+  );
 }

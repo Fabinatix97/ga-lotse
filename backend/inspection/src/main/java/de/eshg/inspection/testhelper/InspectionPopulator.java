@@ -9,6 +9,7 @@ import de.eshg.inspection.facility.persistence.FacilityRepository;
 import de.eshg.inspection.inspection.api.InspectionDto;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
@@ -38,8 +39,9 @@ public class InspectionPopulator extends BasePopulator<InspectionDto> {
       InspectionTestDataProvider inspectionTestDataProvider,
       @SuppressWarnings("unused") // Used to define a dependency
           ChecklistDefinitionPopulator checklistDefinitionPopulator,
-      PlatformTransactionManager platformTransactionManager) {
-    super(clock, environment, "inspection");
+      PlatformTransactionManager platformTransactionManager,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, "inspection", environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.facilityRepository = facilityRepository;
     this.facilityTestDataProvider = facilityTestDataProvider;

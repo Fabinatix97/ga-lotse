@@ -14,7 +14,7 @@ export function useDeleteGeoShape() {
 
   const deleteGeoShapeMutation = useHandledMutation({
     mutationFn: (geoShapeId: string) => geoShapeApi.deleteGeoShape(geoShapeId),
-    onSuccess: () => snackbar.confirmation("Geo-Shapes gelöscht."),
+    onSuccess: () => snackbar.confirmation("Geo-Shapes gelöscht"),
   });
   return (geoShapeId: string) => deleteGeoShapeMutation.mutate(geoShapeId);
 }

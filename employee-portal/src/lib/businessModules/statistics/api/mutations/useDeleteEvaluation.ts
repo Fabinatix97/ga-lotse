@@ -13,7 +13,7 @@ export function useDeleteEvaluation() {
   const snackbar = useSnackbar();
   const mutation = useHandledMutation({
     mutationFn: (evaluationId: string) => api.deleteEvaluation(evaluationId),
-    onSuccess: () => snackbar.confirmation("Auswertung gelöscht."),
+    onSuccess: () => snackbar.confirmation("Analyse gelöscht"),
   });
 
   return (evaluationId: string) => {

@@ -17,6 +17,7 @@ import java.time.LocalDate;
 public record GetCitizenProcedureResponse(
     @NotNull Instant appointmentStart,
     @NotNull Instant appointmentEnd,
+    @NotNull @Valid AppointmentAddressDto appointmentAddress,
     @NotNull @Valid GetCitizenProcedureResponse.CitizenChildDto child,
     @NotNull Boolean allowCitizenAnamnesis,
     @NotNull @Min(0) @Max(2) Integer appointmentChangesByCitizenLeft,

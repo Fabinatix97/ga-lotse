@@ -30,6 +30,7 @@ export function mapToReportsOverview(
             timeRangeStart: singleReport.timeRangeStart,
             timeRangeEnd: singleReport.timeRangeEnd,
             type: ReportDataType.Single,
+            userId: reportSeries.userId,
           };
         }
         throw Error("reportInfos length doesn't match");

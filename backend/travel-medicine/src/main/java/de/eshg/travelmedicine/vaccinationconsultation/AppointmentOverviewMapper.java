@@ -8,6 +8,7 @@ package de.eshg.travelmedicine.vaccinationconsultation;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.travelmedicine.util.MappingUtil;
+import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentOverviewEntryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.CreatedByUserTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
@@ -42,6 +43,9 @@ public class AppointmentOverviewMapper {
                     AppointmentOverviewEntryDto::appointment,
                     Comparator.nullsFirst(Comparator.naturalOrder()))
                 .thenComparing(
+                    AppointmentOverviewEntryDto::earliestDate,
+                    Comparator.nullsFirst(Comparator.naturalOrder()))
+                .thenComparing(
                     AppointmentOverviewEntryDto::lastName,
                     Comparator.nullsFirst(Comparator.naturalOrder())))
         .toList();
@@ -54,12 +58,18 @@ public class AppointmentOverviewMapper {
     ProcedureStatusDto statusDto = MappingUtil.mapEnum(ProcedureStatusDto.class, aoEntry.status());
     AppointmentTypeDto appointmentTypeDto =
         MappingUtil.mapEnum(AppointmentTypeDto.class, aoEntry.appointmentType());
+    AppointmentBookingTypeDto appointmentBookingType =
+        getAppointmentBookingTypeDto(
+            aoEntry.appointmentBlockAppointment(),
+            aoEntry.userDefinedAppointment(),
+            aoEntry.cancelled());
     Instant appointment;
     if (aoEntry.userDefinedAppointment() != null) {
       appointment = aoEntry.userDefinedAppointment();
     } else {
       appointment = aoEntry.appointmentBlockAppointment();
     }
+
     int age = Period.between(patient.dateOfBirth(), LocalDate.now(clock)).getYears();
     return new AppointmentOverviewEntryDto(
         aoEntry.procedureId(),
@@ -70,7 +80,23 @@ public class AppointmentOverviewMapper {
         aoEntry.travelStartDate(),
         createdByUserType,
         statusDto,
+        appointmentTypeDto,
         appointment,
-        appointmentTypeDto);
+        aoEntry.earliestDate(),
+        appointmentBookingType);
+  }
+
+  private AppointmentBookingTypeDto getAppointmentBookingTypeDto(
+      Instant blockAppointment, Instant userDefinedAppointment, Boolean cancelled) {
+    if (blockAppointment != null) {
+      return AppointmentBookingTypeDto.APPOINTMENT_BLOCK;
+    }
+    if (Boolean.TRUE.equals(cancelled)) {
+      return AppointmentBookingTypeDto.CANCELLED;
+    }
+    if (userDefinedAppointment != null) {
+      return AppointmentBookingTypeDto.USER_DEFINED;
+    }
+    return AppointmentBookingTypeDto.SELF_BOOKING;
   }
 }

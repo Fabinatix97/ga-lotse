@@ -1329,7 +1329,7 @@ public enum EsuAttributes implements AttributeInfo {
       "Untersuchungsdatum",
       "UntersDat",
       true,
-      ValueType.DATE,
+      ValueType.TEXT,
       ATTRIBUTE_CATEGORY_PROCEDURE_INFOS,
       true),
 

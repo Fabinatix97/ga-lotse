@@ -10,5 +10,6 @@ import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/inspect
 export function useIsOfflineFeatureEnabled() {
   const { isSuccess: isOfflineQuerySuccess, data: isOfflineFTEnabled } =
     useIsNewFeatureEnabledUnsuspended(ApiInspectionFeature.Offline);
-  return isOfflineQuerySuccess && isOfflineFTEnabled;
+  // The offline feature is opt-out. default to true.
+  return !isOfflineQuerySuccess || isOfflineFTEnabled;
 }

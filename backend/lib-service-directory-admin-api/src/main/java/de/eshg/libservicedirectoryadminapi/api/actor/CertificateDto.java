@@ -9,5 +9,4 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "AdminCertificate")
-public record CertificateDto(
-    @NotNull String value, @NotNull String signature, @NotNull String signatory) {}
+public record CertificateDto(@NotNull String value, String signature, String signatory) {}

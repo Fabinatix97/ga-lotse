@@ -6,10 +6,12 @@
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid } from "@mui/joy";
 
+import { byBreakpoint } from "@/lib/shared/breakpoints";
+
 export function QuarterWidthGrid(props: RequiresChildren) {
   return (
     <Grid container sx={{ flexGrow: 1 }}>
-      <Grid xxs={12} lg={3}>
+      <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
         {props.children}
       </Grid>
     </Grid>

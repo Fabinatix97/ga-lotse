@@ -128,7 +128,7 @@ public class SchoolEntrySimulator implements StatisticsApi {
   public static final Attribute BOOLEAN_ATTRIBUTE =
       new Attribute(
           "Boolean Attribute", "ESU BOOLEAN", ValueType.BOOLEAN, null, null, CATEGORY, true);
-  private static final List<Attribute> ATTRIBUTE_LIST =
+  public static final List<Attribute> ATTRIBUTE_LIST =
       List.of(
           PROCEDURE_ID_ATTRIBUTE,
           VALUE_WITH_OPTIONS_ATTRIBUTE,

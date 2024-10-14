@@ -5,11 +5,7 @@
 
 import { MatrixClient } from "matrix-js-sdk/lib/client";
 import { KeyBackupInfo } from "matrix-js-sdk/lib/crypto-api";
-import {
-  AuthDict,
-  UIAResponse,
-  UIAuthCallback,
-} from "matrix-js-sdk/lib/matrix";
+import { UIAuthCallback } from "matrix-js-sdk/lib/matrix";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
@@ -34,20 +30,6 @@ export async function deleteBackup(
   } catch (error) {
     logger.softError("DeleteBackup: failed", error);
   }
-}
-
-export async function authUploadDeviceSigningKeysByPassword(
-  makeRequest: (authData: AuthDict | null) => Promise<UIAResponse<void>>,
-  matrixClient: MatrixClient,
-) {
-  await makeRequest({
-    type: "m.login.password",
-    identifier: {
-      type: "m.id.user",
-      user: matrixClient.getSafeUserId(),
-    },
-    password: "password",
-  });
 }
 
 export async function restoreKeyBackupWithCache(

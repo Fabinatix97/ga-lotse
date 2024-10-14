@@ -32,11 +32,11 @@ export function UpdateStatisticDataBasisSidebar({
         children: (
           <Alert
             color="warning"
-            message="Wenn Sie fortfahren, wird die Datenbasis für diese Statistik unwiderruflich ersetzt."
+            message="Wenn Sie fortfahren, wird die Datenbasis für diese Auswertung unwiderruflich ersetzt."
           />
         ),
         cancelLabel: "Abbrechen",
-        confirmLabel: "Ja, aktualisieren",
+        confirmLabel: "Aktualisieren",
       });
     });
   }

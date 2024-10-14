@@ -5,11 +5,19 @@
 
 package de.eshg.stiprotection.persistence.data;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Person;
+import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import java.time.Instant;
 import java.util.UUID;
 
 public record StiProtectionProcedureData(
-    UUID id, Instant createdAt, ProcedureStatus status, Concern concern, Person person) {}
+    UUID id,
+    Instant createdAt,
+    ProcedureStatus status,
+    Concern concern,
+    Person person,
+    Appointment appointment,
+    UserDefinedAppointment userDefinedAppointment) {}

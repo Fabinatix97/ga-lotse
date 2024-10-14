@@ -14,11 +14,11 @@ import {
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
 
-export function AppointmentDetails({
-  appointmentDetails,
-}: Readonly<{
+interface AppointmentDetailsProps {
   appointmentDetails: ApiGetAppointmentDetailsResponse;
-}>) {
+}
+
+export function AppointmentDetails(props: Readonly<AppointmentDetailsProps>) {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
 
   return (
@@ -26,11 +26,11 @@ export function AppointmentDetails({
       <ContentSheet>
         <ContentSheetTitle>{t("title")}</ContentSheetTitle>
         <AppointmentDetailsMetaInformation
-          appointmentDetails={appointmentDetails}
+          appointmentDetails={props.appointmentDetails}
         />
       </ContentSheet>
       <AppointmentDetailsAdditionalInformation
-        appointmentDetails={appointmentDetails}
+        appointmentDetails={props.appointmentDetails}
       />
     </GridColumnStack>
   );

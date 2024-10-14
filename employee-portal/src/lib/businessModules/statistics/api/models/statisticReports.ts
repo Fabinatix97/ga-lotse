@@ -35,6 +35,7 @@ export interface ReportBase {
   datasetAmount?: number;
   status: ApiReportState;
   type: Extract<ReportDataType, "SINGLE" | "CHILD">;
+  userId: string;
 }
 
 export interface ReportSeries {
@@ -44,6 +45,7 @@ export interface ReportSeries {
   timeRangeStart?: Date;
   timeRangeEnd?: Date;
   type: Extract<ReportDataType, "SERIES">;
+  userId: string;
 }
 
 export interface ReportSeriesItem extends ReportBase {

@@ -18,11 +18,11 @@ export function useGetPacklists(inspectionId: string) {
   const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: getPacklistsQueryKey(inspectionId),
-    queryFn: () =>
-      packlistApi.getPacklists(
-        inspectionId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
-      ),
+    queryFn: ({ signal }) =>
+      packlistApi.getPacklists(inspectionId, {
+        ...getPreCacheForOfflineModeHeaders(inspectionId),
+        signal,
+      }),
     select: (response) => response.packlists,
   });
 }

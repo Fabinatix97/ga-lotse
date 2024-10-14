@@ -48,7 +48,7 @@ public class ReportMapper {
     return ReportStateDto.valueOf(state.name());
   }
 
-  private static ReportTypeDto mapToReportTypeDto(ReportType reportType) {
+  public static ReportTypeDto mapToReportTypeDto(ReportType reportType) {
     return ReportTypeDto.valueOf(reportType.name());
   }
 

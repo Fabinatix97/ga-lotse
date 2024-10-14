@@ -19,4 +19,16 @@ public record CreateDailyAppointmentBlockGroupRequest(
     @Valid @NotNull @NotEmpty List<CreateDailyAppointmentBlockDto> appointmentBlocks,
     List<UUID> physicians,
     List<UUID> mfas,
-    List<UUID> consultants) {}
+    List<UUID> consultants,
+    UUID locationId) {
+
+  public CreateDailyAppointmentBlockGroupRequest(
+      AppointmentTypeDto type,
+      int parallelExaminations,
+      List<CreateDailyAppointmentBlockDto> appointmentBlocks,
+      List<UUID> physicians,
+      List<UUID> mfas,
+      List<UUID> consultants) {
+    this(type, parallelExaminations, appointmentBlocks, physicians, mfas, consultants, null);
+  }
+}

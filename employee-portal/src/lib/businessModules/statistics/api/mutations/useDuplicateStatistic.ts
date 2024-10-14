@@ -21,7 +21,7 @@ export function useDuplicateStatistic({
       statisticApi.cloneStatistic(params),
     onSuccess: () => {
       onSuccess();
-      snackbar.confirmation("Statistik wird dupliziert.");
+      snackbar.confirmation("Auswertung wird dupliziert");
     },
   });
   return (params: ApiCloneStatisticRequest) =>

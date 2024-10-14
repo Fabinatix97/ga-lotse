@@ -5,9 +5,11 @@
 
 package de.eshg.base.user.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
@@ -27,8 +29,7 @@ public record AddUserRequest(
         @Size(min = 3, max = 255)
         String username,
     @Schema(description = "The email address of a user", example = "example@mail.de")
-        @NotNull
-        @Size(min = 3, max = 255)
+        @EmailAddressConstraint
         String email,
     @Schema(description = "The given name(s) of a user", example = "John")
         @NotNull
@@ -38,12 +39,13 @@ public record AddUserRequest(
         @NotNull
         @Size(min = 2, max = 255)
         String lastName,
-    @Schema(description = "The phone number of a user", example = "+491234567890") @Size(max = 100)
+    @Schema(description = "The phone number of a user", example = "+491234567890")
+        @Pattern(regexp = "[-+0-9() ]{1,23}")
         String phoneNumber,
     @Schema(
             description = "The chat username of the gematik TI-Messenger (matrix chat)",
             example = "@username:server")
-        @Size(max = 255)
+        @Pattern(regexp = "\\p{ASCII}{3,255}")
         String externalChatUsername,
     @Schema(
             description = "A list of groups the user shall be part of",

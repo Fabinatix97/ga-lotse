@@ -4,23 +4,19 @@
  */
 
 import { ApiUser } from "@eshg/employee-portal-api/base";
-import {
-  ApiAppointmentType,
-  ApiAppointmentTypeConfig,
-  ApiLocationSelectionMode,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
+import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
+import { validateAppointmentBlock } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/validateAppointmentBlock";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import {
-  AppointmentCount,
-  AppointmentValues,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentCount";
+import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentLocationSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentLocationSelection";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
@@ -28,15 +24,13 @@ import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
-import { validateAppointmentBlock } from "./validateAppointmentBlock";
+const DEFAULT_PARALLEL_EXAMINATIONS = 1;
 
 function validateForm(
-  values: AppointmentValues<ApiAppointmentType, ApiAppointmentTypeConfig>,
+  values: CreateAppointmentBlockGroupValues,
   appointmentTypes: AppointmentTypeConfig[],
 ) {
-  const errors: FormikErrors<
-    AppointmentValues<ApiAppointmentType, ApiAppointmentTypeConfig>
-  > = {};
+  const errors: FormikErrors<CreateAppointmentBlockGroupValues> = {};
   const examinationDurations = mapToObj(
     appointmentTypes,
     (appointmentTypeConfig) => [
@@ -68,21 +62,14 @@ function validateForm(
 }
 
 interface AppointmentBlockGroupFormProps {
-  initialValues: AppointmentValues<
-    ApiAppointmentType,
-    ApiAppointmentTypeConfig
-  >;
-  onSubmit: (
-    values: AppointmentValues<ApiAppointmentType, ApiAppointmentTypeConfig>,
-  ) => Promise<void>;
+  initialValues: CreateAppointmentBlockGroupValues;
+  onSubmit: (values: CreateAppointmentBlockGroupValues) => Promise<void>;
   allAppointmentTypes: AppointmentTypeConfig[];
   allPhysicians: ApiUser[];
   allMfas: ApiUser[];
   blockedStaff: string[];
   freeStaff: string[];
-  validateAvailability: (
-    values: AppointmentValues<ApiAppointmentType, ApiAppointmentTypeConfig>,
-  ) => void;
+  validateAvailability: (values: CreateAppointmentBlockGroupValues) => void;
   locationSelectionMode: ApiLocationSelectionMode;
 }
 
@@ -98,6 +85,12 @@ export function AppointmentBlockGroupForm(
     value: option.userId,
     label: fullName(option),
   }));
+  const appointmentDurations = Object.fromEntries(
+    props.allAppointmentTypes.map((currentType) => [
+      currentType.appointmentTypeDto,
+      currentType.standardDurationInMinutes,
+    ]),
+  );
 
   return (
     <Formik
@@ -110,10 +103,9 @@ export function AppointmentBlockGroupForm(
           <Stack gap={3} divider={<Divider />}>
             <Stack gap={4}>
               <AppointmentBlockGroupFields
-                appointmentBlocks={values.appointmentBlocks}
+                appointmentBlocksWithDays={values.appointmentBlocks}
                 options={APPOINTMENT_TYPE_OPTIONS}
                 showParallelExaminations
-                showAppointmentBlockFieldArrayWithDays={false}
               />
             </Stack>
             {props.locationSelectionMode !== ApiLocationSelectionMode.None && (
@@ -131,7 +123,20 @@ export function AppointmentBlockGroupForm(
               />
             </Stack>
             <FormButtonBar
-              left={<AppointmentCount appointments={values} />}
+              left={
+                <AppointmentCountWithDays
+                  appointments={values}
+                  appointmentDurations={appointmentDurations}
+                  parallelExaminations={
+                    isEmptyString(values.parallelExaminations)
+                      ? DEFAULT_PARALLEL_EXAMINATIONS
+                      : Math.max(
+                          values.parallelExaminations,
+                          DEFAULT_PARALLEL_EXAMINATIONS,
+                        )
+                  }
+                />
+              }
               submitLabel="Planen"
               submitting={isSubmitting}
               onCancel={routes.appointmentBlockGroups.overview}

@@ -7,6 +7,7 @@ import { Button, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { useTranslation } from "@/lib/i18n/client";
 import {
   ContentSheet,
   ContentSheetTitle,
@@ -14,6 +15,7 @@ import {
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function AppointmentSection() {
+  const { t } = useTranslation(["travelMedicine/landing"]);
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
@@ -28,18 +30,17 @@ export function AppointmentSection() {
 
   return (
     <ContentSheet>
-      <ContentSheetTitle>Termin vereinbaren?</ContentSheetTitle>
-      <Typography>
-        Sie haben die Möglichkeit Termine für Impfungen, Folgeimpfungen und
-        Beratungsgespräche mit anschließender Impfung zu vereinbaren.
-      </Typography>
+      <ContentSheetTitle>
+        {t("appointment.bookAppointmentTitle")}
+      </ContentSheetTitle>
+      <Typography>{t("appointment.bookAppointmentText")}</Typography>
       <Button
         type="submit"
         onClick={() => {
           handleBookAppointment();
         }}
       >
-        Termin buchen
+        {t("appointment.bookAppointment")}
       </Button>
       <Button
         type="submit"
@@ -48,7 +49,7 @@ export function AppointmentSection() {
           handleAppointmentLogin();
         }}
       >
-        Zu meinen Terminen
+        {t("appointment.myAppointment")}
       </Button>
     </ContentSheet>
   );

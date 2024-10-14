@@ -1,0 +1,38 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1728310266379-1">
+    <createTable tableName="gdpr_download">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_gdpr_download"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="download_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="gdpr_procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1728310266379-2">
+    <addUniqueConstraint columnNames="download_id" constraintName="gdpr_download_download_id_key" tableName="gdpr_download"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1728310266379-3">
+    <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="gdpr_download_seq" startValue="1"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1728310266379-4">
+    <createIndex indexName="idx_gdpr_download_gdpr_procedure_id" tableName="gdpr_download">
+      <column name="gdpr_procedure_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1728310266379-5">
+    <addForeignKeyConstraint baseColumnNames="gdpr_procedure_id" baseTableName="gdpr_download" constraintName="fk_gdpr_download_gdpr_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="gdpr_procedure" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

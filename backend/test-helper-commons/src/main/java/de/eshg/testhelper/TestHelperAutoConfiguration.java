@@ -5,6 +5,7 @@
 
 package de.eshg.testhelper;
 
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import java.time.Clock;
@@ -21,7 +22,6 @@ import org.springframework.context.annotation.*;
     before = ValidationAutoConfiguration.class,
     after = SqlInitializationAutoConfiguration.class)
 @Import({
-  TestHelperController.class,
   DefaultTestHelperService.class,
   TestRequestInterceptor.class,
   PopulateWithAccessTokenHelper.class,
@@ -32,13 +32,15 @@ public class TestHelperAutoConfiguration {
 
   private static final Logger log = LoggerFactory.getLogger(TestHelperAutoConfiguration.class);
 
-  TestHelperAutoConfiguration() {
+  TestHelperAutoConfiguration(EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     log.warn("Test Helper is enabled!");
   }
 
   @Bean
   @ConditionalOnProperty(value = "eshg.testclock.enabled", havingValue = "true")
-  TestHelperClock testHelperClock() {
+  TestHelperClock testHelperClock(EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     TestHelperClock testHelperClock = TestHelperClock.defaultBerlin();
     log.warn("Using {}", testHelperClock.getClass().getSimpleName());
     return testHelperClock;

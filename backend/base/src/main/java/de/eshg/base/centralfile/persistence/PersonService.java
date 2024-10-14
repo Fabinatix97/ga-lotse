@@ -86,7 +86,7 @@ public class PersonService {
     }
   }
 
-  private Person getReferencePerson(UUID referencePersonId) {
+  public Person getReferencePerson(UUID referencePersonId) {
     return personRepository
         .findByExternalIdEqualsAndReferencePersonIsNull(referencePersonId)
         .orElseThrow(() -> new NotFoundException(REFERENCE_PERSON_NOT_FOUND));

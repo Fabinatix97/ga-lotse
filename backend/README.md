@@ -56,7 +56,7 @@ The set of all preview features is defined in the `application-preview-features.
 ### port mapping
 
 | Name                    | Internal Port | External Port |
-|-------------------------| ------------- |---------------|
+|-------------------------|---------------|---------------|
 | maildev ui              | 1080          | 1080          |
 | maildev smtp            | 1025          | 1025          |
 | base-db                 | 5432          | 5433          |
@@ -72,6 +72,8 @@ The set of all preview features is defined in the `application-preview-features.
 | central-repository-db   | 5432          | 5443          |
 | auditlog-db             | 5432          | 5444          |
 | sti-protection-db       | 5432          | 5445          |
+| opendata-db             | 5432          | 5446          |
+| medical-registry-db     | 5432          | 5447          |
 | synapse                 | 8008          | 8008          |
 | base                    | 8080          | 8080          |
 | inspection              | 8080          | 8081          |
@@ -82,6 +84,8 @@ The set of all preview features is defined in the `application-preview-features.
 | measles-protection      | 8080          | 8086          |
 | statistics              | 8080          | 8087          |
 | sti-protection          | 8080          | 8095          |
+| opendata                | 8080          | 8096          |
+| medical-registry        | 8080          | 8097          |
 | chat-management         | 8080          | 8088          |
 | local-service-directory | 8080          | 8089          |
 | central-repository      | 8080          | 8091          |

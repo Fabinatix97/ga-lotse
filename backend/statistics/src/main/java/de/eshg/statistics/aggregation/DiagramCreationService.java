@@ -14,6 +14,10 @@ import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
 import de.eshg.statistics.api.chart.PointBasedChartConfiguration;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
+import de.eshg.statistics.mapper.EvaluationMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
+import de.eshg.statistics.persistence.entity.AggregationResultState;
+import de.eshg.statistics.persistence.entity.Statistic;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,13 +28,17 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DiagramCreationService {
   private final EvaluationService evaluationService;
+  private final StatisticService statisticService;
 
-  public DiagramCreationService(EvaluationService evaluationService) {
+  public DiagramCreationService(
+      EvaluationService evaluationService, StatisticService statisticService) {
     this.evaluationService = evaluationService;
+    this.statisticService = statisticService;
   }
 
   public UUID createDiagram(EvaluationDto evaluationDto, AddDiagramRequest addDiagramRequest) {
@@ -179,5 +187,34 @@ public class DiagramCreationService {
     }
 
     return addDiagramFunction.apply(chartDataHolder);
+  }
+
+  @Transactional
+  public void diagramRecreation(UUID statisticId) {
+    Statistic statistic = statisticService.getStatisticInternal(statisticId);
+    recreateDiagrams(statistic);
+    statistic.setPendingState(null);
+    statistic.setState(AggregationResultState.COMPLETED);
+  }
+
+  private void recreateDiagrams(Statistic statistic) {
+    statistic
+        .getEvaluations()
+        .forEach(
+            evaluation -> {
+              EvaluationDto evaluationDto = EvaluationMapper.mapToApi(evaluation, true);
+              List<AddDiagramRequest> addDiagramRequests =
+                  evaluation.getDiagrams().stream()
+                      .map(
+                          diagram ->
+                              new AddDiagramRequest(
+                                  diagram.getTitle(),
+                                  diagram.getDescription(),
+                                  FilterParameterMapper.mapToApi(diagram.getFilters())))
+                      .toList();
+              evaluation.removeDiagrams();
+              addDiagramRequests.forEach(
+                  addDiagramRequest -> createDiagram(evaluationDto, addDiagramRequest));
+            });
   }
 }

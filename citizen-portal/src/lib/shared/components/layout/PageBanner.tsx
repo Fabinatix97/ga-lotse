@@ -7,6 +7,7 @@ import { Box, Typography, styled, useTheme } from "@mui/joy";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useGetDepartmentInfo } from "@/lib/shared/api/queries/department";
+import { MobileBreakpoint, byBreakpoint } from "@/lib/shared/breakpoints";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 
 export type BannerType = "private" | "business" | "general";
@@ -43,7 +44,7 @@ export function PageBanner(props: PageBannerProps) {
         justifyContent: "center",
         width: "100%",
         position: "relative",
-        [theme.breakpoints.down("md")]: {
+        [theme.breakpoints.down(MobileBreakpoint.Down)]: {
           height: 124,
         },
         overflow: "hidden",
@@ -67,7 +68,7 @@ export function PageBanner(props: PageBannerProps) {
         <Box
           sx={{
             display: "flex",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down(MobileBreakpoint.Down)]: {
               justifyContent: "center",
             },
           }}
@@ -92,7 +93,10 @@ export function PageBanner(props: PageBannerProps) {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
-              fontSize={{ xxs: "2rem", md: "6.25rem" }}
+              fontSize={byBreakpoint({
+                mobile: "2rem",
+                desktop: "6.25rem",
+              })}
               fontWeight="900"
               lineHeight="0.8"
               component="span"
@@ -107,9 +111,15 @@ export function PageBanner(props: PageBannerProps) {
                 sx={{
                   textAlign: "right",
                 }}
-                fontSize={{ xxs: "1.75rem", md: "3rem" }}
+                fontSize={byBreakpoint({
+                  mobile: "1.75rem",
+                  desktop: "3rem",
+                })}
                 fontWeight="700"
-                lineHeight={{ xxs: "1.2", md: "1.33" }}
+                lineHeight={byBreakpoint({
+                  mobile: "1.2",
+                  desktop: "1.33",
+                })}
                 textAlign="right"
               >
                 {department.city}

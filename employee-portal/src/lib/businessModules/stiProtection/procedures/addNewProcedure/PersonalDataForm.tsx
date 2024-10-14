@@ -13,6 +13,8 @@ import { Stack } from "@mui/joy";
 import { COUNTRY_CODE_OPTIONS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import { GENDER_OPTIONS } from "@/lib/shared/components/personSidebar/constants";
 
+import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
+
 const thisYear = new Date().getFullYear();
 const validateYear = createBoundedIntValidator(
   thisYear - 150,
@@ -62,4 +64,17 @@ export function createBoundedIntValidator(
 
     return message;
   };
+}
+
+export function personalDataFormValidation(form: AddNewProcedureForm) {
+  if (!form.yearOfBirth || !form.inGermanySince) {
+    return;
+  }
+  const yearOfBirth = parseInt(form.yearOfBirth, 10);
+  const inGermanySince = parseInt(form.inGermanySince, 10);
+  if (yearOfBirth > inGermanySince) {
+    const message =
+      "Das Geburtsjahr muss vor dem Zeitpunkt des Aufenthalts in Deutschland liegen.";
+    return { inGermanySince: message };
+  }
 }

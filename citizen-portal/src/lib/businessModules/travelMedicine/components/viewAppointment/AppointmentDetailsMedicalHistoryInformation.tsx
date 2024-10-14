@@ -5,24 +5,41 @@
 
 import { Check, CloseOutlined } from "@mui/icons-material";
 import { Button, Typography } from "@mui/joy";
+import { useRouter } from "next/navigation";
 
+import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
+import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   InfoSection,
   InfoSectionGrid,
   InfoSectionTitle,
 } from "@/lib/shared/components/infoSection";
+import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
-export function AppointmentDetailsMedicalHistoryInformation({
-  isAnswered,
-}: Readonly<{ isAnswered: boolean }>) {
+interface AppointmentDetailsMedicalHistoryInformationProps {
+  citizenHasAnswered: boolean;
+}
+
+export function AppointmentDetailsMedicalHistoryInformation(
+  props: Readonly<AppointmentDetailsMedicalHistoryInformationProps>,
+) {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
+  const router = useRouter();
+  const citizenRoutes = useCitizenRoutes();
+  const accessCode = useAccessCodeParam();
+  const { procedureId, procedureStepId } = useIdContext();
+
+  function navigateToMedicalHistory() {
+    const url = `${citizenRoutes.viewAppointment.details.medicalHistory(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
+    router.push(url);
+  }
 
   return (
     <InfoSectionGrid>
       <InfoSection
         icon={
-          isAnswered ? (
+          props.citizenHasAnswered ? (
             <Check color="success" />
           ) : (
             <CloseOutlined color="danger" />
@@ -33,13 +50,17 @@ export function AppointmentDetailsMedicalHistoryInformation({
           {t("medicalHistoryPanel.medicalHistorySheet")}
         </InfoSectionTitle>
         <Typography data-testid="medical-history-state">
-          {isAnswered
+          {props.citizenHasAnswered
             ? t("medicalHistoryPanel.answered")
             : t("medicalHistoryPanel.notAnswered")}
         </Typography>
       </InfoSection>
-      {!isAnswered && (
-        <Button sx={{ marginTop: 1 }} fullWidth>
+      {!props.citizenHasAnswered && (
+        <Button
+          sx={{ marginTop: 1 }}
+          fullWidth
+          onClick={navigateToMedicalHistory}
+        >
           {t("medicalHistoryPanel.answerNow")}
         </Button>
       )}

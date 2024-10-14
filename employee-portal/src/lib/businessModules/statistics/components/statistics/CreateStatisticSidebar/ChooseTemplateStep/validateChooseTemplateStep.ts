@@ -6,9 +6,9 @@
 import { ChooseTemplateStepFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseTemplateStep/chooseTemplateStepFormModel";
 
 export function validateChooseTemplateStep(model: ChooseTemplateStepFormModel) {
-  if (!model.scheme) {
+  if (!model.template) {
     return {
-      scheme: "Bitte Vorlage auswählen.",
+      template: "Bitte Vorlage auswählen.",
     };
   }
   return undefined;

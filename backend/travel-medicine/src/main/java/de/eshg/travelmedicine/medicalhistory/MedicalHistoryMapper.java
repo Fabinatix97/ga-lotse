@@ -33,7 +33,8 @@ public class MedicalHistoryMapper {
         getAppointment(ps),
         ps.getIsFollowUp(),
         medicalHistoryContent,
-        medicalHistory.isAnswered(),
+        medicalHistory.isCompletelyAnswered(),
+        medicalHistory.isCitizenHasAnswered(),
         medicalHistory.getNote(),
         medicalHistory.getCreatedAt(),
         medicalHistory.getModifiedAt());
@@ -41,5 +42,17 @@ public class MedicalHistoryMapper {
 
   private static Instant getAppointment(ProcedureStep ps) {
     return ProcedureStepService.getAppointment(ps);
+  }
+
+  public static MedicalHistoryContentDto contentToInterfaceType(MedicalHistory medicalHistory) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    MedicalHistoryContentDto medicalHistoryContent;
+    try {
+      medicalHistoryContent =
+          objectMapper.readValue(medicalHistory.getContent(), MedicalHistoryContentDto.class);
+    } catch (JsonProcessingException e) {
+      throw new BadRequestException("Content does not match required structure");
+    }
+    return medicalHistoryContent;
   }
 }

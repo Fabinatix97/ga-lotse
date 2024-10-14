@@ -33,12 +33,7 @@ export default function SchoolEntryAppointmentPage() {
       <PageContent>
         <AppointmentPageTitle />
         <TwoColumnGrid
-          content={
-            <AppointmentContent
-              procedure={procedure}
-              departmentInfo={departmentInfo}
-            />
-          }
+          content={<AppointmentContent procedure={procedure} />}
           sidePanel={
             <AppointmentSidePanel
               isClosed={procedure.isClosedProcedure}

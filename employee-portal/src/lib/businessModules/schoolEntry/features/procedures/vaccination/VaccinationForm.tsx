@@ -14,6 +14,9 @@ import {
   SoftRequiredSelectField,
 } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { useIsFormDisabled } from "@eshg/lib-portal/components/form/DisabledFormContext";
+import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
+import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import {
   validateIntegerAnd,
   validateRange,
@@ -27,6 +30,7 @@ import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Divider, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FieldArray, Formik, FormikHelpers } from "formik";
+import { isDefined } from "remeda";
 
 import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
 import { SetAllNumberInput } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/SetAllNumberInput";
@@ -72,6 +76,9 @@ export interface VaccinationFormValues {
   otherVaccinations: OtherVaccinationValues[];
   vaccinationPassPresented: OptionalFieldValue<boolean>;
   perkombiHbv: OptionalFieldValue<ApiBooleanWithUnknown>;
+  measlesContraIndication: OptionalFieldValue<boolean>;
+  measlesContraIndicationIsPermanent: OptionalFieldValue<boolean>;
+  measlesContraIndicationUntil: string;
 }
 
 export interface OtherVaccinationValues {
@@ -130,6 +137,19 @@ export function VaccinationForm(props: FormProps<VaccinationFormValues>) {
     VACCINATIONS[index]?.forEach((vaccination) => {
       void setFieldValue(vaccination.name, value);
     });
+  }
+
+  function validateContraIndicationValues(values: VaccinationFormValues) {
+    if (
+      isDefined(values.measlesContraIndicationUntil) &&
+      !isEmptyString(values.measlesContraIndicationUntil) &&
+      isDefined(values.measlesContraIndicationIsPermanent) &&
+      values.measlesContraIndicationIsPermanent
+    ) {
+      return "Bitte nur eine Option angeben.";
+    }
+
+    return undefined;
   }
 
   return (
@@ -229,6 +249,32 @@ export function VaccinationForm(props: FormProps<VaccinationFormValues>) {
             allowDeselection
             sx={BOOLEAN_SELECT_STYLE}
           />
+          <Divider />
+          <Stack direction="row" gap={4} flexWrap="wrap">
+            <SoftRequiredBooleanSelectField
+              name="measlesContraIndication"
+              label="Medizinische Kontraindikation gegen Masernimpfung besteht"
+              allowDeselection
+              sx={BOOLEAN_SELECT_STYLE}
+            />
+            {values.measlesContraIndication && (
+              <>
+                <SoftRequiredBooleanSelectField
+                  name="measlesContraIndicationIsPermanent"
+                  label="Ständig"
+                  allowDeselection
+                  validate={() => validateContraIndicationValues(values)}
+                  sx={BOOLEAN_SELECT_STYLE}
+                />
+                <DateField
+                  name="measlesContraIndicationUntil"
+                  label="oder bis zum"
+                  validate={() => validateContraIndicationValues(values)}
+                  component={HorizontalField}
+                />
+              </>
+            )}
+          </Stack>
           <FormFooter isSubmitting={isSubmitting} />
         </FormStack>
       )}

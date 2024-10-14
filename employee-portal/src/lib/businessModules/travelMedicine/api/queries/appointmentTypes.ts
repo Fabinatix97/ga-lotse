@@ -3,24 +3,31 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+import { queryOptions } from "@tanstack/react-query";
 
 import { useAppointmentTypeApi } from "@/lib/businessModules/travelMedicine/api/clients";
+import { mapAppointmentTypeConfig } from "@/lib/businessModules/travelMedicine/api/models/AppointmentTypeConfig";
 import { appointmentTypesApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 
-export function useGetAllAppointmentTypes() {
+export function useGetAllAppointmentTypesQuery() {
   const appointmentTypesApi = useAppointmentTypeApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: appointmentTypesApiQueryKey(["getAppointmentTypes"]),
     queryFn: () => appointmentTypesApi.getAppointmentTypes(),
     select: (response) => response.appointmentTypeConfigDtos ?? [],
   });
 }
 
-export function useGetOneAppointmentType(id: string) {
-  const appointmentTypeApi = useAppointmentTypeApi();
-  return useSuspenseQuery({
-    queryKey: appointmentTypesApiQueryKey(["getOneAppointmentType", id]),
-    queryFn: () => appointmentTypeApi.getOneAppointmentType(id),
+export function useGetAllAppointmentTypesUnsuspended(open: boolean) {
+  const appointmentTypesApi = useAppointmentTypeApi();
+  return useHandledBackgroundQuery({
+    queryKey: appointmentTypesApiQueryKey(["getAppointmentTypes"]),
+    queryFn: () => appointmentTypesApi.getAppointmentTypes(),
+    select: (response) =>
+      response.appointmentTypeConfigDtos.map(mapAppointmentTypeConfig),
+    enabled: open,
+    gcTime: 60000,
+    staleTime: 60000,
   });
 }

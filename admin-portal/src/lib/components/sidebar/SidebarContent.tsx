@@ -15,7 +15,6 @@ export function SidebarContent<TData extends UniqueEntity & EditableEntity>({
   row?: Row<TData>;
 }>) {
   if (!row) return false;
-
   const original = row.original;
   if (isPlainObject(original)) {
     if ("_type" in original) {
@@ -31,6 +30,7 @@ export function SidebarContent<TData extends UniqueEntity & EditableEntity>({
                 "commonName",
                 "networkId",
                 "metadata",
+                "manualCertificate",
                 "currentCertificate",
                 "previousCertificate",
                 "_matchingClientRules",

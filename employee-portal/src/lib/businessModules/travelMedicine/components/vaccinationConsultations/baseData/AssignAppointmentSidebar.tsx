@@ -4,128 +4,126 @@
  */
 
 import {
-  ApiGetAvailableAppointmentsResponse,
-  ApiPatchServiceAssingnmentRequest,
+  ApiPatchServiceAssignmentRequest,
+  AssignStepToServiceRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { Formik } from "formik";
+import { isDefined } from "remeda";
 
-import {
-  UseAssignStepToServiceRequest,
-  useAssignStepToService,
-} from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
-import { useGetAllAvailableAppointments } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { useAssignStepToService } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
+import { useGetAllAvailableAppointmentsUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
+import { AppointmentSheet } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AppointmentSheet";
+import { VaccinationConsultationSidebarsProps } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
+import { createAppointmentOptions } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-interface InitAssignAppointmentForm {
+export interface AssignAppointmentValues {
   procedureId: string;
   serviceId: string;
   procedureStepId?: string;
 }
 
+export const initialValuesAssignAppointmentSidebar: AssignAppointmentValues = {
+  procedureId: "",
+  procedureStepId: "",
+  serviceId: "",
+};
+
 interface AssignAppointmentSidebarProps {
+  onSuccess: () => void;
+  onCancel: (
+    currentValues: AssignAppointmentValues,
+    initialValues: AssignAppointmentValues,
+    dirty: boolean,
+  ) => void;
+  onClose: (item: VaccinationConsultationSidebarsProps) => void;
   open: boolean;
-  onClose: () => void;
-  initialValues: InitAssignAppointmentForm;
+  initialValues: AssignAppointmentValues;
 }
 export function AssignAppointmentSidebar(
   props: Readonly<AssignAppointmentSidebarProps>,
 ) {
-  const assignStepToServiceApi = useAssignStepToService();
-  const allAvailableAppointments = useGetAllAvailableAppointments(
+  const getAllAvailableAppointments = useGetAllAvailableAppointmentsUnsuspended(
     props.initialValues.procedureId,
+    props.open,
   );
 
+  const allAvailableAppointments = getAllAvailableAppointments.data ?? [];
+
+  const assignStepToServiceApi = useAssignStepToService();
+
   function createAssignsStepToServiceRequest(
-    values: InitAssignAppointmentForm,
-  ) {
-    const apiRequest: ApiPatchServiceAssingnmentRequest = {
+    values: AssignAppointmentValues,
+  ): AssignStepToServiceRequest {
+    const apiPatchServiceAssignmentRequest: ApiPatchServiceAssignmentRequest = {
       procedureStepId: values.procedureStepId!,
     };
 
-    const request: UseAssignStepToServiceRequest = {
-      apiRequest,
+    return {
       procedureId: values.procedureId,
       serviceId: values.serviceId,
+      apiPatchServiceAssignmentRequest: apiPatchServiceAssignmentRequest,
     };
-    return request;
   }
 
-  function handleSubmit(
-    values: InitAssignAppointmentForm,
-    resetForm: () => void,
-  ) {
-    const request = createAssignsStepToServiceRequest(values);
-    return assignStepToServiceApi.mutate(request, {
-      onSuccess: () => {
-        props.onClose();
-        resetForm();
-      },
-    });
-  }
-
-  function createAppointmentOptions(
-    availableAppointments: ApiGetAvailableAppointmentsResponse | undefined,
-  ) {
-    if (availableAppointments) {
-      const labelOptions: SelectOption[] =
-        availableAppointments.appointmentSummaryList.map((appointment) => ({
-          label: formatDateTime(appointment.start) + " Uhr",
-          value: appointment.procedureStepId,
-        }));
-
-      return labelOptions;
-    } else {
-      return [];
-    }
+  async function handleSubmit(values: AssignAppointmentValues) {
+    await assignStepToServiceApi
+      .mutateAsync(createAssignsStepToServiceRequest(values), {
+        onSuccess: props.onSuccess,
+      })
+      .catch();
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onClose}>
-      <Formik
-        initialValues={{
-          ...props.initialValues,
-          availableAppointments: allAvailableAppointments.data,
-          procedureStepId:
-            allAvailableAppointments.data?.appointmentSummaryList?.at(-1)
-              ?.procedureStepId,
-        }}
-        onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
-        enableReinitialize
-      >
-        {({ isSubmitting, values, resetForm }) => (
-          <FormPlus style={{ display: "contents" }}>
+    <Formik
+      initialValues={{
+        ...props.initialValues,
+        procedureStepId: props.initialValues.procedureStepId
+          ? props.initialValues.procedureStepId
+          : isDefined(allAvailableAppointments.at(-1)?.procedureStepId)
+            ? allAvailableAppointments.at(-1)?.procedureStepId
+            : "",
+      }}
+      onSubmit={handleSubmit}
+      enableReinitialize
+    >
+      {({ isSubmitting, values, dirty }) => (
+        <Sidebar
+          onClose={() => {
+            props.onClose({
+              open: false,
+              initialValues: { ...values },
+            });
+          }}
+          open={props.open}
+        >
+          <SidebarForm style={{ display: "contents" }}>
             <SidebarContent title={"Impftermin"}>
-              <Typography level="body-md" sx={{ fontWeight: "bold" }}>
-                Termin
-              </Typography>
-              <SelectField
-                label="Termin aus Vorgang"
-                name="procedureStepId"
-                options={createAppointmentOptions(values.availableAppointments)}
-                required={"Bitte einen Termin auswählen"}
-              />
+              <Stack flexDirection="column" gap={2}>
+                <AppointmentSheet
+                  name="procedureStepId"
+                  label="Termin aus Vorgang"
+                  options={createAppointmentOptions(allAvailableAppointments)}
+                />
+              </Stack>
             </SidebarContent>
             <SidebarActions>
               <MultiFormButtonBar
                 submitLabel={"Speichern"}
                 submitting={isSubmitting}
                 onCancel={() => {
-                  props.onClose();
-                  resetForm();
+                  props.onCancel(values, props.initialValues, dirty);
                 }}
               />
             </SidebarActions>
-          </FormPlus>
-        )}
-      </Formik>
-    </Sidebar>
+          </SidebarForm>
+        </Sidebar>
+      )}
+    </Formik>
   );
 }

@@ -102,7 +102,7 @@ export function SelectField<
         }}
         multiple={props.multiple}
         placeholder={props.placeholder}
-        disabled={props.disabled ?? disabled}
+        disabled={disabled || props.disabled}
         renderValue={props.renderValue}
         color={props.primary ? "primary" : undefined}
       >

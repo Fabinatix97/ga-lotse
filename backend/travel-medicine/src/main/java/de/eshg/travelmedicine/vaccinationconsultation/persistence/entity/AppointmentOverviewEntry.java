@@ -19,6 +19,7 @@ public record AppointmentOverviewEntry(
     @NotNull CreatedByUserType createdBy,
     @NotNull ProcedureStatus status,
     Instant userDefinedAppointment,
+    Boolean cancelled,
     Instant appointmentBlockAppointment,
     LocalDate earliestDate,
     @NotNull AppointmentType appointmentType) {}

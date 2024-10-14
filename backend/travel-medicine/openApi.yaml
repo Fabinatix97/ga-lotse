@@ -47,43 +47,6 @@ paths:
       summary: Get all appointment block groups.
       tags:
       - AppointmentBlock
-    post:
-      operationId: createAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CreateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
-  /appointment-blocks/appointment-block-groups/validate:
-    post:
-      operationId: validateAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ValidateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
   /appointment-blocks/daily-appointment-block-groups:
     post:
       operationId: createDailyAppointmentBlocksForGroup
@@ -487,6 +450,81 @@ paths:
       summary: Gets details for a procedure step appointment
       tags:
       - CitizenAuth
+  /citizen/auth/vaccination-consultations/{procedureId}/procedure-steps/{procedureStepId}/appointment:
+    delete:
+      operationId: deleteAppointment
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: procedureStepId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Cancel an appointment.
+      tags:
+      - CitizenAuth
+  /citizen/auth/vaccination-consultations/{procedureId}/procedure-steps/{procedureStepId}/medical-history:
+    get:
+      operationId: getMedicalHistory
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: procedureStepId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicalHistoryContent"
+          description: OK
+      summary: Gets medical history for a procedure step appointment
+      tags:
+      - CitizenAuth
+    patch:
+      operationId: patchCitizenMedicalHistory
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: procedureStepId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MedicalHistoryContent"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Updates medical history content
+      tags:
+      - CitizenAuth
   /citizen/public/department-info:
     get:
       operationId: getDepartmentInfo
@@ -649,105 +687,6 @@ paths:
       summary: Modifies an existing Disease
       tags:
       - Disease
-  /editor/{editorId}:
-    get:
-      operationId: loadEditor
-      parameters:
-      - in: path
-        name: editorId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Editor"
-          description: OK
-      summary: Get editor content
-      tags:
-      - Editor
-  /editor/{editorId}/element:
-    post:
-      operationId: insertEditorElement
-      parameters:
-      - in: path
-        name: editorId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/InsertEditorRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ModifyEditorElementResponse"
-          description: OK
-      summary: Insert an editor element
-      tags:
-      - Editor
-  /editor/{editorId}/element/{elementId}:
-    delete:
-      operationId: deleteEditorElement
-      parameters:
-      - in: path
-        name: editorId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - in: path
-        name: elementId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: OK
-      summary: Delete an editor element
-      tags:
-      - Editor
-    patch:
-      operationId: updateEditorElement
-      parameters:
-      - in: path
-        name: editorId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - in: path
-        name: elementId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateEditorRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ModifyEditorElementResponse"
-          description: OK
-      summary: Update an editor element
-      tags:
-      - Editor
   /feature-toggles:
     get:
       operationId: getFeatureToggles
@@ -2392,127 +2331,6 @@ paths:
           description: OK
       tags:
       - TestHelper
-  /textblocks:
-    get:
-      operationId: getTextBlocks
-      parameters:
-      - in: query
-        name: searchQuery
-        required: false
-        schema:
-          type: string
-      - in: query
-        name: sortKey
-        required: false
-        schema:
-          $ref: "#/components/schemas/TextBlockSortKey"
-      - in: query
-        name: sortDirection
-        required: false
-        schema:
-          $ref: "#/components/schemas/SortDirection"
-      - in: query
-        name: pageNumber
-        required: false
-        schema:
-          type: integer
-          format: int32
-          minimum: 0
-      - in: query
-        name: pageSize
-        required: false
-        schema:
-          type: integer
-          format: int32
-          minimum: 1
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GetTextBlocksResponse"
-          description: OK
-      summary: "Get all text blocks, filtered and paginated"
-      tags:
-      - TextBlock
-    post:
-      operationId: createTextBlock
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TextBlockRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/TextBlock"
-          description: OK
-      summary: Creates a new text block
-      tags:
-      - TextBlock
-  /textblocks/{textBlockId}:
-    delete:
-      operationId: deleteTextBlock
-      parameters:
-      - in: path
-        name: textBlockId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: OK
-      summary: Delete a text block
-      tags:
-      - TextBlock
-    get:
-      operationId: getTextBlock
-      parameters:
-      - in: path
-        name: textBlockId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/TextBlock"
-          description: OK
-      summary: Get a text block by its id
-      tags:
-      - TextBlock
-    patch:
-      operationId: updateTextBlock
-      parameters:
-      - in: path
-        name: textBlockId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TextBlockRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/TextBlock"
-          description: OK
-      summary: Update the data for a text block
-      tags:
-      - TextBlock
   /unused-inventory-vaccines:
     get:
       operationId: getInventoryVaccinesWithoutRmbiVaccine
@@ -2625,6 +2443,11 @@ paths:
         required: true
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
           description: OK
       summary: Add procedure step to vaccination consultation with given id
       tags:
@@ -2909,7 +2732,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PatchServiceAssingnmentRequest"
+              $ref: "#/components/schemas/PatchServiceAssignmentRequest"
         required: true
       responses:
         "200":
@@ -3262,6 +3085,7 @@ components:
       - USER_DEFINED
       - APPOINTMENT_BLOCK
       - SELF_BOOKING
+      - CANCELLED
     AppointmentLocation:
       type: object
       properties:
@@ -3282,11 +3106,16 @@ components:
         appointment:
           type: string
           format: date-time
+        appointmentBookingType:
+          $ref: "#/components/schemas/AppointmentBookingType"
         appointmentType:
           $ref: "#/components/schemas/AppointmentType"
         createdBy:
           $ref: "#/components/schemas/CreatedByUserType"
         dateOfBirth:
+          type: string
+          format: date
+        earliestDate:
           type: string
           format: date
         firstName:
@@ -3522,6 +3351,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     CertificatePopulation:
       type: object
       description: request the creation of a certificate for some of the services
@@ -3905,58 +3735,6 @@ components:
       - ZA
       - ZM
       - ZW
-    CreateAppointmentBlock:
-      type: object
-      properties:
-        end:
-          type: string
-          format: date-time
-          description: Time at which the appointment block ends.
-          example: 2016-01-01T01:45:00.123456+01:00
-        start:
-          type: string
-          format: date-time
-          description: Time at which the appointment block starts.
-          example: 2016-01-01T01:00:00.123456+01:00
-      required:
-      - end
-      - start
-    CreateAppointmentBlockGroupRequest:
-      type: object
-      properties:
-        appointmentBlocks:
-          type: array
-          items:
-            $ref: "#/components/schemas/CreateAppointmentBlock"
-        consultants:
-          type: array
-          items:
-            type: string
-            format: uuid
-        locationId:
-          type: string
-          format: uuid
-        mfas:
-          type: array
-          items:
-            type: string
-            format: uuid
-        parallelExaminations:
-          type: integer
-          format: int32
-          maximum: 10
-          minimum: 1
-        physicians:
-          type: array
-          items:
-            type: string
-            format: uuid
-        type:
-          $ref: "#/components/schemas/AppointmentType"
-      required:
-      - appointmentBlocks
-      - parallelExaminations
-      - type
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -4013,6 +3791,9 @@ components:
           items:
             type: string
             format: uuid
+        locationId:
+          type: string
+          format: uuid
         mfas:
           type: array
           items:
@@ -4097,6 +3878,8 @@ components:
       - WEDNESDAY
       - THURSDAY
       - FRIDAY
+      - SATURDAY
+      - SUNDAY
     Decision:
       type: string
       enum:
@@ -4218,289 +4001,6 @@ components:
       - country
       - postalCode
       - street
-    Editor:
-      type: object
-      properties:
-        editorBody:
-          $ref: "#/components/schemas/EditorBody"
-        id:
-          type: string
-          format: uuid
-      required:
-      - editorBody
-      - id
-    EditorBody:
-      type: object
-      properties:
-        elements:
-          type: array
-          items:
-            oneOf:
-            - $ref: "#/components/schemas/EditorElementAudios"
-            - $ref: "#/components/schemas/EditorElementChapter"
-            - $ref: "#/components/schemas/EditorElementFullTextBlock"
-            - $ref: "#/components/schemas/EditorElementImages"
-            - $ref: "#/components/schemas/EditorElementQA"
-            - $ref: "#/components/schemas/EditorElementSection"
-            - $ref: "#/components/schemas/EditorElementSeparator"
-            - $ref: "#/components/schemas/EditorElementText"
-            - $ref: "#/components/schemas/EditorElementTextBlock"
-            - $ref: "#/components/schemas/EditorElementTopLevelTitle"
-      required:
-      - elements
-    EditorElement:
-      type: object
-      discriminator:
-        mapping:
-          AUDIOS: "#/components/schemas/EditorElementAudios"
-          CHAPTER: "#/components/schemas/EditorElementChapter"
-          FULL_TEXT_BLOCK: "#/components/schemas/EditorElementFullTextBlock"
-          IMAGES: "#/components/schemas/EditorElementImages"
-          QUESTION_AND_ANSWERS: "#/components/schemas/EditorElementQA"
-          SECTION: "#/components/schemas/EditorElementSection"
-          SEPARATOR: "#/components/schemas/EditorElementSeparator"
-          TEXT: "#/components/schemas/EditorElementText"
-          TEXT_BLOCK: "#/components/schemas/EditorElementTextBlock"
-          TOPLEVEL_TITLE: "#/components/schemas/EditorElementTopLevelTitle"
-        propertyName: '@type'
-      properties:
-        '@type':
-          type: string
-        deletable:
-          type: boolean
-        editable:
-          type: boolean
-        highlighted:
-          type: boolean
-        id:
-          type: string
-          format: uuid
-        moveable:
-          type: boolean
-        referenceID:
-          type: string
-          format: uuid
-      required:
-      - '@type'
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-    EditorElementAnswer:
-      type: object
-      properties:
-        answerId:
-          type: string
-          format: uuid
-        answerText:
-          type: string
-        extraText:
-          type: string
-        selected:
-          type: boolean
-      required:
-      - answerId
-      - answerText
-      - selected
-    EditorElementAudio:
-      type: object
-      properties:
-        externalId:
-          type: string
-          format: uuid
-        fileDate:
-          type: string
-          format: date-time
-        fileName:
-          type: string
-        fileSize:
-          type: integer
-          format: int64
-      required:
-      - externalId
-    EditorElementAudios:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          audios:
-            type: array
-            items:
-              $ref: "#/components/schemas/EditorElementAudio"
-          title:
-            type: string
-      required:
-      - audios
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - title
-    EditorElementChapter:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          title:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - title
-    EditorElementFullTextBlock:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          text:
-            type: string
-          title:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - text
-      - title
-    EditorElementImage:
-      type: object
-      properties:
-        externalId:
-          type: string
-          format: uuid
-        fileDate:
-          type: string
-          format: date-time
-        fileName:
-          type: string
-        fileSize:
-          type: integer
-          format: int64
-      required:
-      - externalId
-    EditorElementImages:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          images:
-            type: array
-            items:
-              $ref: "#/components/schemas/EditorElementImage"
-          title:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - images
-      - moveable
-      - title
-    EditorElementQA:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          answers:
-            type: array
-            items:
-              $ref: "#/components/schemas/EditorElementAnswer"
-          title:
-            type: string
-      required:
-      - answers
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - title
-    EditorElementSection:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          title:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - title
-    EditorElementSeparator:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-    EditorElementText:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          text:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - text
-    EditorElementTextBlock:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          text:
-            type: string
-          title:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - text
-      - title
-    EditorElementTopLevelTitle:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/EditorElement"
-      - type: object
-        properties:
-          title:
-            type: string
-      required:
-      - deletable
-      - editable
-      - highlighted
-      - id
-      - moveable
-      - title
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -4760,6 +4260,8 @@ components:
     GetAppointmentDetailsResponse:
       type: object
       properties:
+        citizenHasAnswered:
+          type: boolean
         dateOfBirth:
           type: string
           format: date
@@ -4767,20 +4269,18 @@ components:
           type: string
         hasAccomplishedService:
           type: boolean
-        isMedicalHistoryAnswered:
+        isMedicalHistoryCompletelyAnswered:
           type: boolean
         lastName:
           type: string
-        medicalHistoryId:
-          type: string
-          format: uuid
         summaryDto:
           $ref: "#/components/schemas/AppointmentSummary"
       required:
+      - citizenHasAnswered
       - dateOfBirth
       - firstName
       - hasAccomplishedService
-      - isMedicalHistoryAnswered
+      - isMedicalHistoryCompletelyAnswered
       - lastName
       - summaryDto
     GetAppointmentOverviewResponse:
@@ -5332,20 +4832,6 @@ components:
       enum:
       - ASC
       - DESC
-    GetTextBlocksResponse:
-      type: object
-      properties:
-        elements:
-          type: array
-          items:
-            $ref: "#/components/schemas/TextBlock"
-        totalNumberOfElements:
-          type: integer
-          format: int64
-          minimum: 0
-      required:
-      - elements
-      - totalNumberOfElements
     GetTravelMedicineFeatureTogglesResponse:
       type: object
       properties:
@@ -5565,6 +5051,8 @@ components:
     InformationStatementTemplate:
       type: object
       properties:
+        content:
+          $ref: "#/components/schemas/TemplateContent"
         createdAt:
           type: string
           format: date-time
@@ -5589,6 +5077,7 @@ components:
           maxLength: 200
           minLength: 0
       required:
+      - content
       - createdAt
       - diseases
       - id
@@ -5598,25 +5087,13 @@ components:
     InformationStatementTemplateRequest:
       type: object
       properties:
+        content:
+          $ref: "#/components/schemas/TemplateContent"
         diseaseIDs:
           type: array
           items:
             type: string
             format: uuid
-        editorElements:
-          type: array
-          items:
-            oneOf:
-            - $ref: "#/components/schemas/EditorElementAudios"
-            - $ref: "#/components/schemas/EditorElementChapter"
-            - $ref: "#/components/schemas/EditorElementFullTextBlock"
-            - $ref: "#/components/schemas/EditorElementImages"
-            - $ref: "#/components/schemas/EditorElementQA"
-            - $ref: "#/components/schemas/EditorElementSection"
-            - $ref: "#/components/schemas/EditorElementSeparator"
-            - $ref: "#/components/schemas/EditorElementText"
-            - $ref: "#/components/schemas/EditorElementTextBlock"
-            - $ref: "#/components/schemas/EditorElementTopLevelTitle"
         name:
           type: string
           maxLength: 200
@@ -5628,6 +5105,7 @@ components:
           maxLength: 200
           minLength: 0
       required:
+      - content
       - name
       - state
       - title
@@ -5649,31 +5127,6 @@ components:
             type: string
       required:
       - initialStepKey
-    InsertEditorRequest:
-      type: object
-      properties:
-        editorElement:
-          oneOf:
-          - $ref: "#/components/schemas/EditorElementAudios"
-          - $ref: "#/components/schemas/EditorElementChapter"
-          - $ref: "#/components/schemas/EditorElementFullTextBlock"
-          - $ref: "#/components/schemas/EditorElementImages"
-          - $ref: "#/components/schemas/EditorElementQA"
-          - $ref: "#/components/schemas/EditorElementSection"
-          - $ref: "#/components/schemas/EditorElementSeparator"
-          - $ref: "#/components/schemas/EditorElementText"
-          - $ref: "#/components/schemas/EditorElementTextBlock"
-          - $ref: "#/components/schemas/EditorElementTopLevelTitle"
-        insertAfter:
-          type: integer
-          format: int32
-          minimum: 0
-        insertBefore:
-          type: integer
-          format: int32
-          minimum: 0
-      required:
-      - editorElement
     InsertRequestInterceptionTestHelperRequest:
       type: object
       properties:
@@ -5854,6 +5307,8 @@ components:
         appointment:
           type: string
           format: date-time
+        citizenHasAnswered:
+          type: boolean
         createdAt:
           type: string
           format: date-time
@@ -5862,7 +5317,7 @@ components:
         id:
           type: string
           format: uuid
-        isAnswered:
+        isCompletelyAnswered:
           type: boolean
         medicalHistoryContent:
           $ref: "#/components/schemas/MedicalHistoryContent"
@@ -5876,10 +5331,11 @@ components:
           format: uuid
       required:
       - appointment
+      - citizenHasAnswered
       - createdAt
       - followUp
       - id
-      - isAnswered
+      - isCompletelyAnswered
       - medicalHistoryContent
       - modifiedAt
       - procedureStepId
@@ -5894,18 +5350,6 @@ components:
           minItems: 1
       required:
       - sections
-    MedicalHistoryPopulation:
-      type: object
-      description: request the modification of the medical history of one of the steps/appointment
-      properties:
-        answered:
-          type: boolean
-        note:
-          type: string
-        stepKey:
-          type: string
-      required:
-      - stepKey
     MedicalHistorySection:
       type: object
       properties:
@@ -5979,7 +5423,7 @@ components:
       type: object
       properties:
         content:
-          $ref: "#/components/schemas/MedicalHistoryTemplateContent"
+          $ref: "#/components/schemas/TemplateContent"
         createdAt:
           type: string
           format: date-time
@@ -6007,91 +5451,11 @@ components:
       - mainFlag
       - state
       - title
-    MedicalHistoryTemplateContent:
-      type: object
-      properties:
-        sections:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistoryTemplateSection"
-          maxItems: 2147483647
-          minItems: 1
-      required:
-      - sections
-    MedicalHistoryTemplateSection:
-      type: object
-      properties:
-        sectionElements:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistoryTemplateSectionElement"
-          maxItems: 2147483647
-          minItems: 1
-        sectionTitle:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - sectionElements
-    MedicalHistoryTemplateSectionElement:
-      type: object
-      properties:
-        elementData:
-          $ref: "#/components/schemas/MedicalHistoryTemplateSectionElementData"
-        elementType:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - elementData
-      - elementType
-    MedicalHistoryTemplateSectionElementData:
-      type: object
-      properties:
-        answer:
-          type: boolean
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-        subElementMultiSelect:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistoryTemplateSubElementMultiSelect"
-        subElementText:
-          $ref: "#/components/schemas/MedicalHistoryTemplateSubElementText"
-      required:
-      - questionText
-      - subElementMultiSelect
     MedicalHistoryTemplateState:
       type: string
       enum:
       - DRAFT
       - FINAL
-    MedicalHistoryTemplateSubElementMultiSelect:
-      type: object
-      properties:
-        answer:
-          type: boolean
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - questionText
-    MedicalHistoryTemplateSubElementText:
-      type: object
-      properties:
-        answer:
-          type: string
-          maxLength: 4000
-          minLength: 0
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - questionText
     MetaData:
       type: object
       discriminator:
@@ -6120,28 +5484,6 @@ components:
       - '@type'
       - changedAt
       - changedBy
-    ModifyEditorElementResponse:
-      type: object
-      properties:
-        element:
-          oneOf:
-          - $ref: "#/components/schemas/EditorElementAudios"
-          - $ref: "#/components/schemas/EditorElementChapter"
-          - $ref: "#/components/schemas/EditorElementFullTextBlock"
-          - $ref: "#/components/schemas/EditorElementImages"
-          - $ref: "#/components/schemas/EditorElementQA"
-          - $ref: "#/components/schemas/EditorElementSection"
-          - $ref: "#/components/schemas/EditorElementSeparator"
-          - $ref: "#/components/schemas/EditorElementText"
-          - $ref: "#/components/schemas/EditorElementTextBlock"
-          - $ref: "#/components/schemas/EditorElementTopLevelTitle"
-      required:
-      - element
-    MoveOperation:
-      type: string
-      enum:
-      - UP
-      - DOWN
     Operation:
       type: string
       enum:
@@ -6246,7 +5588,7 @@ components:
       required:
       - appliedAt
       - physician
-    PatchServiceAssingnmentRequest:
+    PatchServiceAssignmentRequest:
       type: object
       properties:
         procedureStepId:
@@ -6613,6 +5955,10 @@ components:
     PostPopulateProcedureRequest:
       type: object
       properties:
+        cancelSteps:
+          type: array
+          items:
+            type: string
         certificates:
           type: array
           items:
@@ -6631,10 +5977,6 @@ components:
           $ref: "#/components/schemas/PostInformationStatementsRequest"
         initialStep:
           $ref: "#/components/schemas/InitialStepPopulation"
-        medicalHistories:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistoryPopulation"
         otherServices:
           type: array
           items:
@@ -6732,7 +6074,7 @@ components:
       type: object
       properties:
         content:
-          $ref: "#/components/schemas/MedicalHistoryTemplateContent"
+          $ref: "#/components/schemas/TemplateContent"
         state:
           $ref: "#/components/schemas/MedicalHistoryTemplateState"
         title:
@@ -7402,6 +6744,86 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+    TemplateContent:
+      type: object
+      properties:
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/TemplateSection"
+          maxItems: 2147483647
+          minItems: 1
+      required:
+      - sections
+    TemplateSection:
+      type: object
+      properties:
+        sectionElements:
+          type: array
+          items:
+            $ref: "#/components/schemas/TemplateSectionElement"
+          maxItems: 2147483647
+          minItems: 1
+        sectionTitle:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - sectionElements
+    TemplateSectionElement:
+      type: object
+      properties:
+        elementData:
+          $ref: "#/components/schemas/TemplateSectionElementData"
+        elementType:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - elementData
+      - elementType
+    TemplateSectionElementData:
+      type: object
+      properties:
+        answer:
+          type: boolean
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+        subElementMultiSelect:
+          type: array
+          items:
+            $ref: "#/components/schemas/TemplateSubElementMultiSelect"
+        subElementText:
+          $ref: "#/components/schemas/TemplateSubElementText"
+      required:
+      - questionText
+      - subElementMultiSelect
+    TemplateSubElementMultiSelect:
+      type: object
+      properties:
+        answer:
+          type: boolean
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - questionText
+    TemplateSubElementText:
+      type: object
+      properties:
+        answer:
+          type: string
+          maxLength: 4000
+          minLength: 0
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - questionText
     TestHelperClockSetRequest:
       type: object
       properties:
@@ -7461,34 +6883,6 @@ components:
           type: string
         urlPatternFilter:
           type: string
-    TextBlock:
-      type: object
-      properties:
-        content:
-          type: string
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-      required:
-      - content
-      - id
-      - name
-    TextBlockRequest:
-      type: object
-      properties:
-        content:
-          type: string
-        name:
-          type: string
-      required:
-      - content
-      - name
-    TextBlockSortKey:
-      type: string
-      enum:
-      - NAME
     Title:
       type: string
       enum:
@@ -7521,7 +6915,6 @@ components:
       - CITIZEN_PORTAL_INFORMATION_STATEMENT
       - CITIZEN_PORTAL_PROCEDURE
       - DEFAULT_BATCH_ID
-      - PROCEDURE_SEARCH
     TravelTimeUnit:
       type: string
       enum:
@@ -7552,18 +6945,6 @@ components:
           minimum: 0
       required:
       - standardDurationInMinutes
-    UpdateEditorRequest:
-      type: object
-      properties:
-        answerId:
-          type: string
-          format: uuid
-        moveOperation:
-          $ref: "#/components/schemas/MoveOperation"
-        text:
-          type: string
-        title:
-          type: string
     User:
       type: object
       properties:

@@ -5,6 +5,7 @@
 
 package de.eshg.base.centralfile.api.facility;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +20,7 @@ public record GetFacilityFileStateResponse(
         @NotNull
         UUID id,
     @NotNull @Size(min = 1, max = 300) String name,
-    @NotNull List<@NotNull @Size(min = 6, max = 254) String> emailAddresses,
+    @NotNull List<@EmailAddressConstraint String> emailAddresses,
     @NotNull List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Schema(
             description =

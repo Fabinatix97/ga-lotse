@@ -6,6 +6,8 @@
 package de.eshg.servicedirectory.testhelper;
 
 import de.eshg.lib.common.FederalState;
+import de.eshg.lib.servicedirectory.api.ActorRequestDto;
+import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorTypeDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.CertificateDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.PartialActorDto;
@@ -19,12 +21,14 @@ import de.eshg.libservicedirectoryadminapi.api.staging.StagingStatusDto;
 import de.eshg.servicedirectory.ServiceDirectoryAdminService;
 import de.eshg.servicedirectory.ServiceDirectoryCommitService;
 import de.eshg.servicedirectory.ServiceDirectoryReadService;
+import de.eshg.servicedirectory.ServiceDirectoryService;
 import de.eshg.servicedirectory.common.AdminNameHolder;
 import de.eshg.servicedirectory.common.exception.ChangesNotFoundException;
 import de.eshg.servicedirectory.orgunit.persistence.entity.OrgUnitType;
 import de.eshg.servicedirectory.util.X509Utils;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperClock;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.x509.CertificateTestUtil;
@@ -35,8 +39,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.time.Clock;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import net.datafaker.Faker;
@@ -67,18 +73,24 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
   private final ServiceDirectoryReadService serviceDirectoryReadService;
   private final Optional<TestHelperClock> testHelperClock;
 
+  private final Map<String, KeyStoreInfo> lsdCertificates = new ConcurrentHashMap<>();
+  private final ServiceDirectoryService serviceDirectoryService;
+
   protected OrgUnitPopulator(
       Clock clock,
       Environment environment,
       ServiceDirectoryAdminService serviceDirectoryAdminService,
       ServiceDirectoryCommitService serviceDirectoryCommitService,
       ServiceDirectoryReadService serviceDirectoryReadService,
-      Optional<TestHelperClock> testHelperClock) {
-    super(clock, environment, "org-unit");
+      Optional<TestHelperClock> testHelperClock,
+      EnvironmentConfig environmentConfig,
+      ServiceDirectoryService serviceDirectoryService) {
+    super(clock, environment, "org-unit", environmentConfig);
     this.serviceDirectoryAdminService = serviceDirectoryAdminService;
     this.serviceDirectoryCommitService = serviceDirectoryCommitService;
     this.serviceDirectoryReadService = serviceDirectoryReadService;
     this.testHelperClock = testHelperClock;
+    this.serviceDirectoryService = serviceDirectoryService;
   }
 
   @Override
@@ -105,6 +117,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
     }
     try {
       CommitResponseDto commitResponseDto = commitStaged();
+      setSelfSignedCertificates(commitResponseDto);
       OrgUnitDto result = commitResponseDto.orgUnits().values().stream().findAny().orElseThrow();
       logger.info(
           "populated #{}: {} with {} actors",
@@ -122,6 +135,32 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
       logger.warn("failed to populate #{}: {}:", index, orgUnit.name, e);
       return existingOrgUnit;
     }
+  }
+
+  private void setSelfSignedCertificates(CommitResponseDto commitResponseDto) {
+    Optional<ActorDto> lsd =
+        commitResponseDto.actors().values().stream()
+            .filter(a -> a.type().equals(ActorTypeDto.LSD))
+            .findAny();
+
+    Optional<KeyStoreInfo> lsdCert =
+        lsd.map(ActorDto::currentCertificate).map(CertificateDto::value).map(lsdCertificates::get);
+    if (lsdCert.isEmpty()) {
+      return;
+    }
+
+    var actors =
+        commitResponseDto.actors().values().stream()
+            .filter(a -> !a.manualCertificate())
+            .map(
+                a ->
+                    new ActorRequestDto(
+                        a.readableName(),
+                        de.eshg.lib.servicedirectory.api.ActorTypeDto.valueOf(a.type().name()),
+                        a.commonName(),
+                        createCertificate(lsdCert.get(), a.commonName())))
+            .toList();
+    serviceDirectoryService.updateTopology(lsd.get().commonName(), actors);
   }
 
   @Override
@@ -206,9 +245,9 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
                 OrgUnitTypeDto.LA,
                 FederalState.HE,
                 StagingStatusDto.READY_FOR_REVIEW));
-    KeyStoreInfo lsdCertificate = createLsd(orgUnit, generateCertificates);
-    createActor("base", ActorTypeDto.GM, orgUnit, lsdCertificate);
-    createActor(STATISTICS, ActorTypeDto.FM, orgUnit, lsdCertificate);
+    createLsd(orgUnit, generateCertificates);
+    createActor("base", ActorTypeDto.GM, orgUnit);
+    createActor(STATISTICS, ActorTypeDto.FM, orgUnit);
 
     ActorSelectorDto base =
         new ActorSelectorDto(
@@ -259,14 +298,14 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
                 OrgUnitTypeDto.GA,
                 FederalState.HE,
                 StagingStatusDto.READY_FOR_REVIEW));
-    KeyStoreInfo lsdCertificate = createLsd(orgUnit, generateCertificates);
-    createActor("base", ActorTypeDto.GM, orgUnit, lsdCertificate);
-    createActor("inspection", ActorTypeDto.FM, orgUnit, lsdCertificate);
-    createActor("chat-management", ActorTypeDto.FM, orgUnit, lsdCertificate);
-    createActor("measles-protection", ActorTypeDto.FM, orgUnit, lsdCertificate);
-    createActor("school-entry", ActorTypeDto.FM, orgUnit, lsdCertificate);
-    createActor("statistics", ActorTypeDto.FM, orgUnit, lsdCertificate);
-    createActor("travel-medicine", ActorTypeDto.FM, orgUnit, lsdCertificate);
+    createLsd(orgUnit, generateCertificates);
+    createActor("base", ActorTypeDto.GM, orgUnit);
+    createActor("inspection", ActorTypeDto.FM, orgUnit);
+    createActor("chat-management", ActorTypeDto.FM, orgUnit);
+    createActor("measles-protection", ActorTypeDto.FM, orgUnit);
+    createActor("school-entry", ActorTypeDto.FM, orgUnit);
+    createActor("statistics", ActorTypeDto.FM, orgUnit);
+    createActor("travel-medicine", ActorTypeDto.FM, orgUnit);
 
     ActorSelectorDto base =
         new ActorSelectorDto(
@@ -308,8 +347,8 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
                 OrgUnitTypeDto.ZD,
                 FederalState.HE,
                 StagingStatusDto.READY_FOR_REVIEW));
-    KeyStoreInfo lsdCertificate = createLsd(orgUnit, generateCertificates);
-    createActor("central-repository", ActorTypeDto.ZR, orgUnit, lsdCertificate);
+    createLsd(orgUnit, generateCertificates);
+    createActor("central-repository", ActorTypeDto.ZR, orgUnit);
     ActorSelectorDto server =
         new ActorSelectorDto(
             FederalState.HE.toString(),
@@ -329,32 +368,27 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
         server);
   }
 
-  private KeyStoreInfo createLsd(PartialOrgUnitDto orgUnit, boolean generateCertificate)
-      throws IOException, CertificateException, NoSuchAlgorithmException, KeyStoreException {
+  private void createLsd(PartialOrgUnitDto orgUnit, boolean generateCertificate)
+      throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
     String name = "local-service-directory";
     String orgUnitName = orgUnit.readableName().toLowerCase();
     String commonName = name + "." + orgUnitName + ".ga-lotse";
-    KeyStoreInfo signatory = null;
     CertificateDto certificate = null;
     // TODO: for this to work with spatz, we have to sign the lsd certificate(s) with a valid CA.
     if (generateCertificate) {
-      signatory = CertificateTestUtil.generateKeyStore(commonName, null);
-      certificate = createCertificate(signatory, null);
+      KeyStoreInfo signatory = CertificateTestUtil.generateKeyStore(commonName, null);
+      String certPem = CertificateTestUtil.generateCertPem(X509Utils.parsePem(signatory.cert()));
+      String signature = X509Utils.sign(certPem, signatory.privateKey());
+      certificate = new CertificateDto(certPem, signature, signatory.cert());
+      lsdCertificates.put(signatory.cert(), signatory);
     }
     createActor(name, ActorTypeDto.LSD, orgUnit, commonName, certificate);
-    return signatory;
   }
 
-  private void createActor(
-      String name, ActorTypeDto type, PartialOrgUnitDto orgUnit, KeyStoreInfo lsdCertificate)
-      throws IOException, CertificateException, NoSuchAlgorithmException {
+  private void createActor(String name, ActorTypeDto type, PartialOrgUnitDto orgUnit) {
     String orgUnitName = orgUnit.readableName().toLowerCase();
     String commonName = name + "." + orgUnitName + ".ga-lotse";
-    CertificateDto certificate = null;
-    if (lsdCertificate != null) {
-      certificate = createCertificate(lsdCertificate, commonName);
-    }
-    createActor(name, type, orgUnit, commonName, certificate);
+    createActor(name, type, orgUnit, commonName, null);
   }
 
   private void createActor(
@@ -369,6 +403,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
             StringUtils.capitalize(name),
             type,
             true,
+            type == ActorTypeDto.LSD,
             commonName,
             certificate,
             null,
@@ -383,18 +418,22 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
             null, description, client, server, true, StagingStatusDto.READY_FOR_REVIEW));
   }
 
-  private static CertificateDto createCertificate(KeyStoreInfo signatory, String commonName)
-      throws IOException, CertificateException, NoSuchAlgorithmException {
+  private static de.eshg.lib.servicedirectory.api.CertificateDto createCertificate(
+      KeyStoreInfo signatory, String commonName) {
 
     String certificate;
-    if (commonName == null) {
-      certificate = CertificateTestUtil.generateCertPem(X509Utils.parsePem(signatory.cert()));
-    } else {
+    try {
       certificate = CertificateTestUtil.generateCertPem(commonName);
+    } catch (Exception e) {
+      if (e instanceof RuntimeException re) {
+        throw re;
+      }
+      throw new RuntimeException(e);
     }
 
     String signature = X509Utils.sign(certificate, signatory.privateKey());
-    return new CertificateDto(certificate, signature, signatory.cert());
+    return new de.eshg.lib.servicedirectory.api.CertificateDto(
+        certificate, signature, signatory.cert());
   }
 
   private CommitResponseDto commitStaged() {

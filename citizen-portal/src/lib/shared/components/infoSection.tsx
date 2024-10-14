@@ -8,9 +8,15 @@ import { Grid, Stack, Typography, TypographyProps, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode } from "react";
 
+import { byBreakpoint } from "@/lib/shared/breakpoints";
+
 export function InfoSectionGrid(props: RequiresChildren) {
   return (
-    <Grid container spacing={2} columns={{ xxs: 1, md: 2 }}>
+    <Grid
+      container
+      spacing={2}
+      columns={byBreakpoint({ mobile: 1, desktop: 2 })}
+    >
       {Children.map(props.children, (infoSection) => (
         <Grid xxs={1}>{infoSection}</Grid>
       ))}

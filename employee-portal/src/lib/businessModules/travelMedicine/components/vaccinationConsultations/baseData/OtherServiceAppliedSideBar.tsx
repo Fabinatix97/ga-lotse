@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiUser } from "@eshg/employee-portal-api/base";
 import { ApiServiceStatus } from "@eshg/employee-portal-api/travelMedicine";
-import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
 import { Sheet, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
@@ -15,15 +11,23 @@ import {
   UseUpdateOtherServiceRequest,
   useUpdateOtherService,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
+import {
+  useGetAllMedicalAssistantsUnsuspended,
+  useGetAllPhysiciansUnsuspended,
+} from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
+import { AppliedByFields } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AppliedByFields";
+import { VaccinationConsultationSidebarsProps } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
+import { determineInitialUser } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { CurrentUsers } from "@/lib/businessModules/travelMedicine/shared/currentUsers";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
+import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
-import { fullName } from "@/lib/shared/components/users/userFormatter";
+import { sortUsersByName } from "@/lib/shared/helpers/users";
 
-interface InitOtherServiceAppliedFormValues {
+export interface OtherServiceAppliedValues {
   procedureId: string;
   serviceId: string;
   serviceTypeDescription: string;
@@ -33,23 +37,49 @@ interface InitOtherServiceAppliedFormValues {
   medicalAssistant?: string;
 }
 
+export const initialOtherServiceAppliedValues: OtherServiceAppliedValues = {
+  procedureId: "",
+  serviceId: "",
+  serviceTypeDescription: "",
+  serviceStatus: "",
+  appliedAt: "",
+  physician: "",
+  medicalAssistant: "",
+};
+
 interface OtherServiceAppliedSideBarProps {
-  sideBarOpen: boolean;
-  closeSideBar: () => void;
-  allPhysicians: ApiUser[];
-  allMedicalAssistants: ApiUser[];
+  open: boolean;
+  onCancel: (
+    currentValues: OtherServiceAppliedValues,
+    initialValues: OtherServiceAppliedValues,
+    dirty: boolean,
+  ) => void;
+  onSuccess: () => void;
+  onClose: (item: VaccinationConsultationSidebarsProps) => void;
   storeUsers: (currentUsers: CurrentUsers) => void;
-  initialValues: InitOtherServiceAppliedFormValues;
+  currentUsers: { physician: string; medicalAssistant: string };
+  initialValues: OtherServiceAppliedValues;
 }
 
 export function OtherServiceAppliedSideBar(
   props: Readonly<OtherServiceAppliedSideBarProps>,
 ) {
+  const getAllPhysicians = useGetAllPhysiciansUnsuspended(props.open);
+  const allPhysicians = getAllPhysicians.data
+    ? getAllPhysicians.data.toSorted(sortUsersByName)
+    : [];
+
+  const getAllMedicalAssistants = useGetAllMedicalAssistantsUnsuspended(
+    props.open,
+  );
+  const allMedicalAssistants = getAllMedicalAssistants.data
+    ? getAllMedicalAssistants.data.toSorted(sortUsersByName)
+    : [];
+
   const updateOtherServiceApi = useUpdateOtherService();
 
   async function handleOtherServiceSideBarSubmit(
-    values: InitOtherServiceAppliedFormValues,
-    resetForm: () => void,
+    values: OtherServiceAppliedValues,
     storeUsers: (currentUsers: CurrentUsers) => void,
   ) {
     storeUsers({
@@ -66,39 +96,49 @@ export function OtherServiceAppliedSideBar(
         mfa: values.medicalAssistant,
       },
     };
-    await updateOtherServiceApi.mutateAsync(request, {
-      onSuccess: () => {
-        props.closeSideBar();
-        resetForm();
-      },
-    });
+    await updateOtherServiceApi
+      .mutateAsync(request, {
+        onSuccess: props.onSuccess,
+      })
+      .catch();
   }
 
-  const physicianOptions = props.allPhysicians.map((option) => ({
-    value: option.userId,
-    label: fullName(option),
-  }));
-
-  const medicalAssistantOptions = props.allMedicalAssistants.map((option) => ({
-    value: option === undefined ? "" : option.userId,
-    label: option === undefined ? "" : fullName(option),
-  }));
-
   return (
-    <Sidebar open={props.sideBarOpen} onClose={props.closeSideBar}>
-      <Formik
-        initialValues={props.initialValues}
-        onSubmit={async (values, { resetForm }) =>
-          await handleOtherServiceSideBarSubmit(
-            values,
-            resetForm,
-            props.storeUsers,
-          )
-        }
-        enableReinitialize
-      >
-        {({ isSubmitting, resetForm }) => (
-          <FormPlus style={{ display: "contents" }}>
+    <Formik
+      initialValues={{
+        ...props.initialValues,
+        physician: determineInitialUser(
+          props.initialValues.physician,
+          props.initialValues.serviceStatus,
+          allPhysicians,
+          props.currentUsers.physician,
+        ),
+        medicalAssistant: determineInitialUser(
+          props.initialValues.medicalAssistant!,
+          props.initialValues.serviceStatus,
+          allMedicalAssistants,
+          props.currentUsers.medicalAssistant,
+        ),
+      }}
+      onSubmit={async (values) =>
+        await handleOtherServiceSideBarSubmit(values, props.storeUsers)
+      }
+      enableReinitialize
+    >
+      {({ isSubmitting, values, dirty }) => (
+        <Sidebar
+          open={props.open}
+          onClose={() => {
+            props.onClose({
+              open: false,
+              initialValues:
+                props.initialValues.serviceStatus === ApiServiceStatus.Planned
+                  ? { ...values }
+                  : { ...initialOtherServiceAppliedValues },
+            });
+          }}
+        >
+          <SidebarForm style={{ display: "contents" }}>
             <SidebarContent
               title={
                 props.initialValues.serviceStatus === ApiServiceStatus.Planned
@@ -120,21 +160,9 @@ export function OtherServiceAppliedSideBar(
                     />
                   </Stack>
                 </Sheet>
-                <DateField
-                  name="appliedAt"
-                  label="Datum"
-                  required="Bitte geben Sie ein Datum an"
-                />
-                <SingleAutocompleteField
-                  label="Durchführende(r) Arzt/Ärztin"
-                  name="physician"
-                  required="Bitte eine(n) Arzt/Ärztin auswählen"
-                  options={physicianOptions}
-                />
-                <SingleAutocompleteField
-                  label="Arzthilfe"
-                  name="medicalAssistant"
-                  options={medicalAssistantOptions}
+                <AppliedByFields
+                  allPhysicians={allPhysicians}
+                  allMedicalAssistants={allMedicalAssistants}
                 />
               </Stack>
             </SidebarContent>
@@ -147,14 +175,13 @@ export function OtherServiceAppliedSideBar(
                 }
                 submitting={isSubmitting}
                 onCancel={() => {
-                  props.closeSideBar();
-                  resetForm();
+                  props.onCancel(values, props.initialValues, dirty);
                 }}
               />
             </SidebarActions>
-          </FormPlus>
-        )}
-      </Formik>
-    </Sidebar>
+          </SidebarForm>
+        </Sidebar>
+      )}
+    </Formik>
   );
 }

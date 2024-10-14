@@ -6,11 +6,13 @@
 package de.eshg.base.centralfile.persistence.repository;
 
 import de.eshg.base.centralfile.persistence.entity.Facility;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
 public interface FacilityRepository
     extends JpaRepository<Facility, UUID>, JpaSpecificationExecutor<Facility> {
@@ -79,4 +81,15 @@ public interface FacilityRepository
     facilities = findAllInOrderByIdJoinFetchingContactPersons(facilities);
     return facilities;
   }
+
+  @Query(
+      """
+    select fileState.externalId from Facility fileState
+    join Facility ref on fileState.referenceFacility.id = ref.id
+    where ref.externalId = :refExternalId
+    and fileState.createdAt <= :createdAt
+    order by fileState.id
+    """)
+  List<UUID> findAllFileStateIdsByReferenceFacilityCreatedBefore(
+      @Param("refExternalId") UUID refExternalId, @Param("createdAt") Instant createdAt);
 }

@@ -8,5 +8,5 @@
 import { Typography } from "@mui/joy";
 
 export default function StiProtectionProcedureExaminationPage() {
-  return <Typography>Untersuchung</Typography>;
+  return <Typography level="h3">Untersuchung</Typography>;
 }

@@ -23,6 +23,7 @@ import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
+import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -95,7 +96,7 @@ public class ReportService {
     report.setNumberOfTableRows(0);
     report.setState(state);
     report.setPendingState(
-        state.equals(AggregationResultState.PENDING)
+        state.equals(AggregationResultState.CREATING)
             ? AggregationResultPendingState.DATA_AGGREGATION
             : null);
     report.setExecutionDate(executionDate);
@@ -122,6 +123,7 @@ public class ReportService {
         report.getExternalId(),
         report.getReportSeries().getExternalId(),
         report.getName(),
+        report.getReportSeries().getName(),
         report.getReportSeries().getDescription(),
         report.getReportSeries().getReports().size(),
         report.getTimeRangeStart(),
@@ -131,7 +133,8 @@ public class ReportService {
         report.getNumberOfTableRows(),
         resolvedUsers.get(reportSeriesUserId),
         resolvedUsers.get(report.getCreatedByUserId()),
-        evaluations);
+        evaluations,
+        ReportMapper.mapToReportTypeDto(report.getReportSeries().getReportType()));
   }
 
   private Report getReportInternal(UUID reportId) {
@@ -157,7 +160,7 @@ public class ReportService {
             now, AggregationResultState.PLANNED);
     if (reportOptional.isPresent()) {
       Report report = reportOptional.get();
-      report.setState(AggregationResultState.PENDING);
+      report.setState(AggregationResultState.CREATING);
       report.setPendingState(AggregationResultPendingState.DATA_AGGREGATION);
       return report.getExternalId();
     } else {
@@ -239,9 +242,9 @@ public class ReportService {
   }
 
   @Transactional(readOnly = true)
-  public ReportStateInformation getReportStateInformation(UUID reportId) {
+  public AggregationResultStateInformation getReportStateInformation(UUID reportId) {
     Report report = getReportInternal(reportId);
-    return new ReportStateInformation(report.getState(), report.getPendingState());
+    return new AggregationResultStateInformation(report.getState(), report.getPendingState());
   }
 
   @Transactional
@@ -485,7 +488,7 @@ public class ReportService {
 
   private static boolean wrongConstellationForMethod(
       Report report, AggregationResultPendingState expectedPendingState, String method) {
-    if (!report.getState().equals(AggregationResultState.PENDING)
+    if (!report.getState().equals(AggregationResultState.CREATING)
         || !report.getPendingState().equals(expectedPendingState)) {
 
       log.error(

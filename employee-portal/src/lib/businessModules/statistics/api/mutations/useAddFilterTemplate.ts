@@ -28,7 +28,7 @@ export function useAddFilterTemplate(attributes: FlatAttribute[]) {
           attributes,
         ),
       }),
-    onSuccess: () => snackbar.confirmation("Vorlage gespeichert."),
+    onSuccess: () => snackbar.confirmation("Vorlage gespeichert"),
   });
   return async (useAddFilterTemplate: UseAddFilterTemplate) => {
     return mutation.mutateAsync(useAddFilterTemplate).catch();

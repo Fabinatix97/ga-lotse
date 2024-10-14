@@ -46,6 +46,7 @@ export function useActorsApi(): {
       adminApi.createActor({
         orgUnitId,
         active: false,
+        manualCertificate: false,
         stagingStatus: ApiStagingStatus.WorkInProgress,
       }),
     onSuccess: handleCreateSuccess,

@@ -7,7 +7,6 @@
 
 import {
   ApiAppointmentType,
-  ApiCreateAppointmentBlockGroupRequest,
   ApiCreateDailyAppointmentBlock,
   ApiCreateDailyAppointmentBlockGroupRequest,
 } from "@eshg/employee-portal-api/stiProtection";
@@ -21,7 +20,7 @@ import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useAppointmentTypeApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { mapAppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/models/AppointmentTypeConfig";
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/stiProtection/api/mutations/appointmentBlocks";
-import { useValidateAppointmentBlockGroup } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
+import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import {
   getAllConsultantsQuery,
   getAllPhysiciansQuery,
@@ -81,12 +80,12 @@ export function CreateAppointmentBlockGroupForm() {
     useCreateDailyAppointmentBlocksForGroup();
 
   const [validateRequest, setValidateRequest] =
-    useState<ApiCreateAppointmentBlockGroupRequest | null>(null);
+    useState<ApiCreateDailyAppointmentBlockGroupRequest | null>(null);
   const [freeStaff, setFreeStaff] = useState<string[]>([]);
   const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
 
   const validateAppointmentBlockGroup =
-    useValidateAppointmentBlockGroup(validateRequest);
+    useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const [
     { data: allAppointmentTypesData },
     { data: allPhysicians },

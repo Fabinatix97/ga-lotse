@@ -34,4 +34,8 @@ public final class ExceptionUtil {
   public static BadRequestException badRequestExceptionUnsupportedLocationMode() {
     return new BadRequestException("Unsupported location mode");
   }
+
+  public static IllegalStateException mergeNotSupportedForPastProcedureImport() {
+    return new IllegalStateException("Merge is not supported for past procedure import.");
+  }
 }

@@ -5,6 +5,7 @@
 
 package de.eshg.base.contact.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.address.AddressDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -19,7 +20,7 @@ public record AddInstitutionContactRequest(
         String name,
     InstitutionContactCategoryDto category,
     List<@Size(min = 1, max = 23) String> phoneNumbers,
-    List<@Size(min = 6, max = 254) String> emailAddresses,
+    List<@EmailAddressConstraint String> emailAddresses,
     @Valid @NotNull AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress)
     implements AbstractAddContactRequest {
@@ -27,5 +28,10 @@ public record AddInstitutionContactRequest(
 
   public AddInstitutionContactRequest(String name, AddressDto contactAddress) {
     this(name, null, null, null, contactAddress, null);
+  }
+
+  public AddInstitutionContactRequest(
+      String name, List<String> emailAddresses, AddressDto contactAddress) {
+    this(name, null, null, emailAddresses, contactAddress, null);
   }
 }

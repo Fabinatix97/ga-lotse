@@ -10,13 +10,13 @@ import {
 } from "@eshg/employee-portal-api/auditlog";
 import { ApiUser } from "@eshg/employee-portal-api/base";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { FeedOutlined } from "@mui/icons-material";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useParams, useRouter } from "next/navigation";
 import { useRef } from "react";
 import { isEmpty } from "remeda";
 
+import { AuditLogSheet } from "@/lib/auditlog/components/AuditLogSheet";
 import {
   ErrorHints,
   UserAutoCompleteField,
@@ -29,9 +29,7 @@ import {
 import { routes } from "@/lib/baseModule/shared/routes";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
-import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import {
   SidebarForm,
@@ -113,7 +111,7 @@ export function AuditLogAuthorizeSidebar({
 
           openConfirmationDialog({
             title: "Log File wirklich freigeben?",
-            defaultDescriptionEnabled: false,
+            hideDescription: true,
             children: (
               <AuditLogAuthorizeConfirmationDescription
                 source={source}
@@ -161,32 +159,6 @@ export function AuditLogAuthorizeSidebar({
         )}
       </Formik>
     </Sidebar>
-  );
-}
-
-function AuditLogSheet({
-  date,
-  source,
-}: {
-  source: string | string[] | undefined;
-  date: Date;
-}) {
-  return (
-    <Sheet variant="soft">
-      <DetailsRow alignItems="center" columnGap={4} rowGap={2}>
-        <FeedOutlined />
-        <DetailsCell
-          name={"createdAt"}
-          label={"Erstellungsdatum"}
-          value={formatDate(date)}
-        />
-        <DetailsCell
-          name={"source"}
-          label={"Modul"}
-          value={auditLogSourceNames[ApiAuditLogSourceFromJSON(source)]}
-        />
-      </DetailsRow>
-    </Sheet>
   );
 }
 

@@ -16,7 +16,9 @@
     }
   },
   "appointmentStatus": {
-    "booked": "Termin gebucht"
+    "booked": "Termin gebucht",
+    "nonBooked": "Termin noch nicht gebucht",
+    "cancelled": "Termin abgesagt"
   },
   "noAppointments": {
     "upcomingAppointments": "Anstehende Termine",

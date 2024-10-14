@@ -7,8 +7,8 @@
 
 import {
   ApiAppointmentType,
-  ApiCreateAppointmentBlock,
-  ApiCreateAppointmentBlockGroupRequest,
+  ApiCreateDailyAppointmentBlock,
+  ApiCreateDailyAppointmentBlockGroupRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
@@ -26,8 +26,8 @@ import {
   useConfigApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
-import { useCreateAppointmentBlockGroup } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
-import { useValidateAppointmentBlockGroup } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
+import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/mutations/appointmentBlockApi";
+import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/schoolEntry/api/queries/appointmentBlockApi";
 import {
   getAllMedicalAssistantsQuery,
   getAllPhysiciansQuery,
@@ -36,9 +36,9 @@ import { getAllAppointmentTypesQuery } from "@/lib/businessModules/schoolEntry/a
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import {
-  AppointmentBlockValues,
-  emptyAppointmentBlock,
-} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockForm";
+  AppointmentBlockGroupValuesWithDays,
+  emptyAppointmentBlockGroup,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { toLocalDateTime } from "@/lib/shared/helpers/dateTime";
 
 import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
@@ -46,7 +46,7 @@ import { AppointmentBlockGroupForm } from "./AppointmentBlockGroupForm";
 const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
   type: "",
   parallelExaminations: 1,
-  appointmentBlocks: [emptyAppointmentBlock()],
+  appointmentBlocks: [emptyAppointmentBlockGroup()],
   allAppointmentTypes: [],
   physicians: [],
   mfas: [],
@@ -55,7 +55,7 @@ const INITIAL_VALUES: CreateAppointmentBlockGroupValues = {
 
 function mapFormValues(
   values: CreateAppointmentBlockGroupValues,
-): ApiCreateAppointmentBlockGroupRequest {
+): ApiCreateDailyAppointmentBlockGroupRequest {
   return {
     type: mapRequiredValue(values.type),
     parallelExaminations: mapRequiredValue(values.parallelExaminations),
@@ -67,18 +67,19 @@ function mapFormValues(
 }
 
 function mapAppointmentBlock(
-  values: AppointmentBlockValues,
-): ApiCreateAppointmentBlock {
+  values: AppointmentBlockGroupValuesWithDays,
+): ApiCreateDailyAppointmentBlock {
   return {
-    start: toLocalDateTime(values.date, values.startTime),
-    end: toLocalDateTime(values.date, values.endTime),
+    daysOfWeek: values.daysOfWeek,
+    start: toLocalDateTime(values.startDate, values.startTime),
+    end: toLocalDateTime(values.endDate, values.endTime),
   };
 }
 
 export interface CreateAppointmentBlockGroupValues {
   type: OptionalFieldValue<ApiAppointmentType>;
   parallelExaminations: OptionalFieldValue<number>;
-  appointmentBlocks: AppointmentBlockValues[];
+  appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   allAppointmentTypes: AppointmentTypeConfig[];
   physicians: string[];
   mfas: string[];
@@ -88,11 +89,12 @@ export interface CreateAppointmentBlockGroupValues {
 export function CreateAppointmentBlockGroupForm() {
   const snackbar = useSnackbar();
   const router = useRouter();
-  const createAppointmentBlockGroup = useCreateAppointmentBlockGroup();
+  const createDailyAppointmentBlockGroup =
+    useCreateDailyAppointmentBlocksForGroup();
   const [validateRequest, setValidateRequest] =
-    useState<ApiCreateAppointmentBlockGroupRequest | null>(null);
+    useState<ApiCreateDailyAppointmentBlockGroupRequest | null>(null);
   const validateAppointmentBlockGroup =
-    useValidateAppointmentBlockGroup(validateRequest);
+    useValidateDailyAppointmentBlocksForGroup(validateRequest);
   const configApi = useConfigApi();
   const appointmentTypeApi = useAppointmentTypeApi();
   const userApi = useUserApi();
@@ -141,7 +143,7 @@ export function CreateAppointmentBlockGroupForm() {
   }, [validateAppointmentBlockGroup]);
 
   async function handleSubmit(values: CreateAppointmentBlockGroupValues) {
-    await createAppointmentBlockGroup
+    await createDailyAppointmentBlockGroup
       .mutateAsync(mapFormValues(values), {
         onSuccess: () => router.push(routes.appointmentBlockGroups.overview),
       })

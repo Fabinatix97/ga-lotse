@@ -14,10 +14,8 @@ import de.eshg.libservicedirectoryadminapi.api.testhelper.OrgUnitPopulationRespo
 import de.eshg.servicedirectory.ServiceDirectoryCommitService;
 import de.eshg.servicedirectory.ServiceDirectoryReadService;
 import de.eshg.servicedirectory.common.AdminNameHolder;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
-import de.eshg.testhelper.DatabaseResetHelper;
-import de.eshg.testhelper.DefaultTestHelperService;
-import de.eshg.testhelper.ResettableProperties;
+import de.eshg.testhelper.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
@@ -47,8 +45,15 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
       List<ResettableProperties> resettableProperties,
       OrgUnitPopulator orgUnitPopulator,
       ServiceDirectoryCommitService serviceDirectoryCommitService,
-      ServiceDirectoryReadService serviceDirectoryReadService) {
-    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
+      ServiceDirectoryReadService serviceDirectoryReadService,
+      EnvironmentConfig environmentConfig) {
+    super(
+        databaseResetHelper,
+        testRequestInterceptor,
+        clock,
+        populators,
+        resettableProperties,
+        environmentConfig);
     this.orgUnitPopulator = orgUnitPopulator;
     this.serviceDirectoryCommitService = serviceDirectoryCommitService;
     this.serviceDirectoryReadService = serviceDirectoryReadService;
@@ -56,6 +61,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
 
   public OrgUnitPopulationResponse populateOrgUnits(
       int numberOfEntitiesToPopulate, boolean generateCertificates) {
+    environmentConfig.assertIsNotProduction();
     ListWithTotalNumber<OrgUnitDto> result =
         orgUnitPopulator.populate(numberOfEntitiesToPopulate, generateCertificates);
 
@@ -63,6 +69,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
   }
 
   public CommitResponseDto commitStaged() {
+    environmentConfig.assertIsNotProduction();
     String backup = AdminNameHolder.getAdminName();
     AdminNameHolder.setAdminName("test-helper");
 
@@ -77,6 +84,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
   }
 
   public CommitResponseDto commitAllStaged() {
+    environmentConfig.assertIsNotProduction();
     Set<String> authors = getAuthorsOfStagedEntities();
 
     return authors.stream()

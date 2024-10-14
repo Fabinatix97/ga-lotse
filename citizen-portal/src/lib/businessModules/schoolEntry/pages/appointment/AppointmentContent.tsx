@@ -24,7 +24,6 @@ import { theme } from "@/lib/baseModule/theme/theme";
 import { SchoolEntryProcedure } from "@/lib/businessModules/schoolEntry/api/models/SchoolEntryProcedure";
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
-import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import {
   InfoSection,
   InfoSectionGrid,
@@ -54,7 +53,6 @@ const BOX_STYLE = {
 
 interface AppointmentContentProps {
   procedure: SchoolEntryProcedure;
-  departmentInfo: DepartmentInfo;
 }
 
 export function AppointmentContent(props: AppointmentContentProps) {
@@ -102,11 +100,11 @@ export function AppointmentContent(props: AppointmentContentProps) {
           <InfoSection icon={<FmdGoodOutlined />}>
             <InfoSectionTitle>{t("details.place")}</InfoSectionTitle>
             <Typography>
-              {props.departmentInfo.name}
+              {props.procedure.appointmentAddress.name}
               <br />
-              {formatStreetAndHouseNumber(props.departmentInfo)}
+              {formatStreetAndHouseNumber(props.procedure.appointmentAddress)}
               <br />
-              {formatPostalCodeAndCity(props.departmentInfo)}
+              {formatPostalCodeAndCity(props.procedure.appointmentAddress)}
             </Typography>
           </InfoSection>
         </InfoSectionGrid>

@@ -16,10 +16,10 @@ import { useState } from "react";
 import { isNullish } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import { ResponsiveDivider } from "@/lib/baseModule/components/gdpr/procedure/tiles/ResponsiveDivider";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { UserProfileEditSidebar } from "@/lib/baseModule/components/users/UserProfileEditSidebar";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
+import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";

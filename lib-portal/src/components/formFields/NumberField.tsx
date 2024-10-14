@@ -47,6 +47,7 @@ export function NumberField(props: NumberFieldProps) {
       label={props.label}
       helperText={field.helperText}
       required={field.required}
+      fieldDecorator={props.fieldDecorator}
       error={field.error}
     >
       <InputComponent

@@ -10,7 +10,6 @@ import {
   ArchivingApi,
   Configuration,
   DiseaseApi,
-  EditorApi,
   FileApi,
   InboxProcedureApi,
   InformationStatementTemplateApi,
@@ -20,7 +19,6 @@ import {
   ProcedureApi,
   ProcedureStepApi,
   ProgressEntryApi,
-  TextBlockApi,
   TravelMedicineFeatureTogglesPublicApi,
   UnusedBaseInventoryVaccineApi,
   VaccinationConsultationApi,
@@ -103,14 +101,6 @@ export function useApprovalRequestApi() {
 
 export function useFeatureTogglesApi() {
   return new TravelMedicineFeatureTogglesPublicApi(useConfiguration());
-}
-
-export function useEditorApi() {
-  return new EditorApi(useConfiguration());
-}
-
-export function useTextBlockApi() {
-  return new TextBlockApi(useConfiguration());
 }
 
 export function useArchivingApi() {

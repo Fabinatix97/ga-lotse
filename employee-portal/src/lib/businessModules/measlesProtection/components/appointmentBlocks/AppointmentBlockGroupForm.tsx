@@ -3,28 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/employee-portal-api/measlesProtection";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isDefined } from "remeda";
 
 import { AppointmentDurationsMeasles } from "@/lib/businessModules/measlesProtection/api/models/AppointmentBlockGroup";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import {
+  AppointmentBlockGroupValues,
+  AppointmentCountWithDays,
+} from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
 import { validateAppointmentBlock } from "./ValidateAppointmentBlock";
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
-
-export interface AppointmentBlockGroupValues {
-  type: OptionalFieldValue<ApiAppointmentType>;
-  appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
-}
 
 function validateForm(
   values: AppointmentBlockGroupValues,
@@ -71,7 +66,6 @@ export function AppointmentBlockGroupForm(
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
               showParallelExaminations={false}
-              showAppointmentBlockFieldArrayWithDays
             />
           </Stack>
           <Divider />

@@ -4,9 +4,9 @@
  */
 
 import { ApiUser } from "@eshg/employee-portal-api/inspection";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import AddIcon from "@mui/icons-material/Add";
 import { Stack, Typography } from "@mui/joy";
-import Link from "@mui/joy/Link";
 
 import { isUnknownUser } from "@/lib/businessModules/inspection/shared/isUnknownUser";
 import { UserLink } from "@/lib/shared/components/users/UserLink";
@@ -56,7 +56,7 @@ export function PacklistDefinitionHeaderRow({
       )}
 
       {readOnlyMode && (
-        <Link
+        <ButtonLink
           onClick={
             onClickNewRevision
               ? () =>
@@ -72,7 +72,7 @@ export function PacklistDefinitionHeaderRow({
           startDecorator={<AddIcon />}
         >
           Neue Version anlegen
-        </Link>
+        </ButtonLink>
       )}
     </Stack>
   );

@@ -21,19 +21,18 @@ import { useState } from "react";
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { ChatHeader } from "@/lib/businessModules/chat/components/ChatHeader";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
+import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { isDMRoom, leaveRoom } from "@/lib/businessModules/chat/shared/utils";
 
 export interface ChatPanelHeaderProps {
   roomId: string;
-  toggleChatSettingsView: () => void;
 }
 
-export function ChatPanelHeader({
-  roomId,
-  toggleChatSettingsView,
-}: Readonly<ChatPanelHeaderProps>) {
+export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
+  const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const roomInfo = useRoomInfo(roomId);
   const { clearChatParams } = useChatSearchParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -42,13 +41,14 @@ export function ChatPanelHeader({
     return <ChatColumnHeaderWrapper />;
   }
 
-  function handleRoomSettingsClick() {
-    toggleChatSettingsView();
+  function handleRoomInfoClick() {
+    setInfoPanelView(InfoPanelView.RoomInfo, roomId);
   }
 
   function handleLeaveRoomClick() {
     setIsOpen(false);
     clearChatParams();
+    closeInfoPanel();
     void leaveRoom(roomInfo.matrixClient, roomId);
   }
 
@@ -97,7 +97,7 @@ export function ChatPanelHeader({
                 <MoreVertIcon color="primary" />
               </MenuButton>
               <Menu placement="bottom-end">
-                <MenuItem onClick={handleRoomSettingsClick}>
+                <MenuItem onClick={handleRoomInfoClick}>
                   {roomSettingsItem}
                 </MenuItem>
                 <MenuItem onClick={() => setIsOpen(true)}>

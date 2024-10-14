@@ -22,7 +22,10 @@ export default function GDPRProcedurePage({
       <MainContentLayout>
         <GDPRProcedureDetails
           procedure={data.procedure}
-          centralFilePersons={data.personMatches}
+          personMatches={data.personMatches}
+          facilityMatches={data.facilityMatches}
+          linkedPersons={data.linkedCentralFilePersons}
+          linkedFacilities={data.linkedCentralFileFacilities}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

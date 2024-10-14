@@ -102,7 +102,10 @@ export function useGetEmployeePrivateUserKey() {
     queryKey: userApiQueryKey(["getEmployeePrivateUserKey"]),
     queryFn: async () => {
       try {
-        return await userApi.getEmployeePrivateUserKeyRaw();
+        return await userApi
+          .getEmployeePrivateUserKeyRaw()
+          .then(unwrapRawResponse)
+          .then((value) => value.encryptedPrivateKey);
       } catch (error) {
         const portalError = resolveError(error);
         if (portalError.errorCode === PortalErrorCode.NotFound) {

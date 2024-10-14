@@ -13,6 +13,7 @@ import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citiz
 import { COUNTRY_CODE_VALUES } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/translations";
 import { SelectionOption } from "@/lib/businessModules/travelMedicine/components/shared/CountryFieldMulti";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
@@ -77,14 +78,14 @@ function ContactForm(props: ContactFormProps) {
   );
   return (
     <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-      <Grid xxs={12} lg={6}>
+      <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
         <SelectField
           options={options}
           name={migrationBackground(`${props.for}.countryOfBirth`)}
           label={`${t("migration.countryOfBirth")} ${props.label}`}
         />
       </Grid>
-      <Grid xxs={12} lg={6}>
+      <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
         <SelectField
           options={options}
           name={migrationBackground(`${props.for}.nationality`)}
@@ -92,7 +93,7 @@ function ContactForm(props: ContactFormProps) {
         />
       </Grid>
       {props.for === "child" && (
-        <Grid xxs={12} lg={6}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
           <FormLabel sx={{ fontSize: "14px", fontWeight: "500" }}>
             {t("migration.inGermanySince")}
           </FormLabel>

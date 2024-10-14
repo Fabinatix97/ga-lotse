@@ -33,13 +33,18 @@ export function isOneOfStagedEntity(
   );
 }
 
-export function useEditableRow<TData extends UniqueEntity & EditableEntity>(
+export function isEditableRow<TData extends UniqueEntity & EditableEntity>(
   row: Row<TData>,
 ): boolean {
   return (
-    useEditableTable() &&
     isOneOfStagedEntity(row.original) &&
     row.original.stagingStatus === ApiStagingStatus.WorkInProgress &&
     row.original.author === getAdminName()
   );
+}
+
+export function useEditableRow<TData extends UniqueEntity & EditableEntity>(
+  row: Row<TData>,
+): boolean {
+  return useEditableTable() && isEditableRow(row);
 }

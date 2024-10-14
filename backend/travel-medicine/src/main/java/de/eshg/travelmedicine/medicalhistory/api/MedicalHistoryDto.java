@@ -18,7 +18,8 @@ public record MedicalHistoryDto(
     @NotNull Instant appointment,
     @NotNull boolean followUp,
     @NotNull @Valid MedicalHistoryContentDto medicalHistoryContent,
-    @NotNull boolean isAnswered,
+    @NotNull boolean isCompletelyAnswered,
+    @NotNull boolean citizenHasAnswered,
     String note,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt) {}

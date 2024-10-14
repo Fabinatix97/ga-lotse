@@ -147,7 +147,7 @@ public final class BaseUrls {
     public static final String DATA_SOURCE_CONTROLLER = "/data-source";
     public static final String FILTER_TEMPLATE_CONTROLLER = "/filter-template";
     public static final String GEO_SHAPE_CONTROLLER = "/geo-shape";
-    public static final String STATISTICS_SCHEME_CONTROLLER = "/scheme";
+    public static final String EVALUATION_TEMPLATE_CONTROLLER = "/evaluation-template";
     public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 
     private Statistics() {}

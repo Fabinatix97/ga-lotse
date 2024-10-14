@@ -6,7 +6,6 @@
 "use client";
 
 import { ApiReportType } from "@eshg/employee-portal-api/statistics";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
@@ -14,6 +13,7 @@ import { translateReportType } from "@/lib/businessModules/statistics/api/mapper
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
 import { useDeleteReportWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteReportWithConfirmation";
+import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -28,6 +28,7 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
+import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { getId, getReportsOverviewColumns } from "./columns";
 
@@ -62,8 +63,10 @@ const filterDefinitions: FilterDefinition[] = [
 ];
 
 export function ReportsOverview() {
-  const snackbar = useSnackbar();
+  const copy = useCopy();
+
   const deleteReportWithConfirmation = useDeleteReportWithConfirmation();
+  const userPermissions = useStatisticRoleChecks();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
@@ -96,13 +99,6 @@ export function ReportsOverview() {
     totalCount: reportsOverview.totalNumberOfElements,
   });
 
-  async function handleClickCopyAddress(id: string) {
-    await navigator.clipboard.writeText(
-      new URL(routes.reports.details(id).index, window.location.origin).href,
-    );
-    snackbar.notification("Link in die Zwischenablage kopiert");
-  }
-
   return (
     <TablePage
       data-testid="statistics-reports-overview-table"
@@ -125,8 +121,10 @@ export function ReportsOverview() {
           wrapContent
           wrapHeader
           columns={getReportsOverviewColumns(
-            handleClickCopyAddress,
+            copy,
             deleteReportWithConfirmation,
+            userPermissions.canWrite(),
+            userPermissions.canDelete,
           )}
           data={reportsOverview.reports}
           noDataComponent={() => (

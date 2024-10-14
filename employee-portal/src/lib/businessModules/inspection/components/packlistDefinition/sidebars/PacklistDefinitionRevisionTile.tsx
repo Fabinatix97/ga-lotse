@@ -24,6 +24,7 @@ interface PacklistDefinitionRevisionTileProps {
     revisionId: string,
   ) => void;
   version: number;
+  label: string;
 }
 
 export function PacklistDefinitionRevisionTile({
@@ -31,9 +32,10 @@ export function PacklistDefinitionRevisionTile({
   previousName,
   onClickOnRevision,
   version,
+  label,
 }: Readonly<PacklistDefinitionRevisionTileProps>) {
   return (
-    <Sheet variant="outlined" sx={{ mt: 1 }}>
+    <Sheet variant="outlined" sx={{ mt: 1 }} aria-label={label}>
       <Stack spacing={1} direction="row" alignItems={"flex-start"}>
         <Grid container>
           <FactCheckOutlined
@@ -56,7 +58,6 @@ export function PacklistDefinitionRevisionTile({
               </Grid>
               <Grid container direction="row" sx={{ marginLeft: "auto" }}>
                 <IconButton
-                  aria-label={`Version ${revision.revision} anzeigen`}
                   color="primary"
                   variant="outlined"
                   onClick={() =>

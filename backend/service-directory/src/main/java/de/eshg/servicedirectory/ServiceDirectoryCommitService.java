@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -151,6 +152,8 @@ public class ServiceDirectoryCommitService {
             ? stagedRuleRepository.findAllByStagingInfo_CreatedBy(author)
             : stagedRuleRepository.findAllByStagingInfo_CreatedByAndIdIn(author, ids);
 
+    assertNoMissingIds(ids, actors, orgUnits, rules);
+
     assertChangesExist(actors, orgUnits, rules);
     if (!isDryRun) {
       // we don't check this on a dry run, as a WIP is expected there
@@ -243,6 +246,10 @@ public class ServiceDirectoryCommitService {
       throw new ServiceDirectoryBadRequestException(
           "(" + actor.getId() + ") (actor.active)=(null) not allowed");
     }
+    if (auditedActor.isManualCertificate() == null) {
+      throw new ServiceDirectoryBadRequestException(
+          "(" + actor.getId() + ") (actor.manualCertificate)=(null) not allowed");
+    }
 
     auditedActorRepository.save(auditedActor);
   }
@@ -322,6 +329,32 @@ public class ServiceDirectoryCommitService {
     if (Arrays.stream(entities).mapToInt(List::size).sum() == 0) {
       throw new ChangesNotFoundException("No changes to commit");
     }
+  }
+
+  private static void assertNoMissingIds(
+      List<UUID> ids,
+      List<StagedActor> actors,
+      List<StagedOrgUnit> orgUnits,
+      List<StagedRule> rules) {
+    if (ids != null) {
+      List<UUID> missingIds =
+          ids.stream()
+              .filter(
+                  id ->
+                      actors.stream().noneMatch(e -> e.getId().equals(id))
+                          && orgUnits.stream().noneMatch(e -> e.getId().equals(id))
+                          && rules.stream().noneMatch(e -> e.getId().equals(id)))
+              .toList();
+      if (!missingIds.isEmpty()) {
+        handleMissingEntitiesError(missingIds);
+      }
+    }
+  }
+
+  public static void handleMissingEntitiesError(List<UUID> missingIds) {
+    String missingIdString =
+        missingIds.stream().map(id -> "(" + id + ")").collect(Collectors.joining(", "));
+    throw new ServiceDirectoryBadRequestException("Entities " + missingIdString + " not found");
   }
 
   private void assertNoChangesAreWIP(

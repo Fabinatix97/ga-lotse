@@ -15,6 +15,7 @@ import de.eshg.base.resource.persistence.entity.Resource;
 import de.eshg.base.resource.persistence.entity.Resource_;
 import de.eshg.base.resource.persistence.repository.ResourceRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import java.time.Clock;
 import java.util.List;
@@ -35,8 +36,9 @@ public class ResourcePopulator extends BasePopulator<ResourceDto> {
       ResourceRepository resourceRepository,
       Clock clock,
       Environment environment,
-      ResourceController resourceController) {
-    super(clock, environment, getClassNameAsPropertyKey(Resource.class));
+      ResourceController resourceController,
+      EnvironmentConfig environmentConfig) {
+    super(clock, environment, getClassNameAsPropertyKey(Resource.class), environmentConfig);
     this.resourceRepository = resourceRepository;
     this.resourceController = resourceController;
   }

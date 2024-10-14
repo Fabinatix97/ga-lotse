@@ -48,6 +48,7 @@ function startSingleSignOn(
   idpId?: string,
   action?: SSOAction,
 ) {
+  logger.debug("Starting Synapse SSO login flow.");
   const callbackUrl = new URL(window.location.href).toString();
 
   window.location.href = matrixClient.getSsoLoginUrl(
@@ -58,26 +59,41 @@ function startSingleSignOn(
   );
 }
 
+function extractSSOFailureMessage() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get("synapseError");
+}
+
 function extractLoginToken() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get("loginToken");
 }
 
 async function handleSSOLogin(matrixClient: MatrixClient) {
-  logger.debug("Start SSO login");
-  const loginToken = extractLoginToken();
+  const synapseHealthy = await healthcheckHomeserver(matrixClient);
+  if (!synapseHealthy) {
+    logger.error("Synapse is offline, aborting login to chat.");
+    return undefined;
+  }
 
-  // if token not found, start SSO flow
+  const ssoRedirectFailure = extractSSOFailureMessage();
+  if (ssoRedirectFailure) {
+    logger.error("Synapse SSO redirect failed, aborting login to chat.");
+    return undefined;
+  }
+
+  const loginToken = extractLoginToken();
   if (!loginToken) {
-    const serverHealthy = await healthcheckHomeserver(matrixClient);
-    if (serverHealthy) {
-      void startSingleSignOn(matrixClient);
-    }
+    // if token not found, start SSO flow
+    void startSingleSignOn(matrixClient);
 
     // Return undefined to stop login process
     return undefined;
   }
 
+  logger.debug(
+    "Synapse SSO flow finished successfully, performing login to matrix chat with loginToken.",
+  );
   return matrixClient.loginWithToken(loginToken);
 }
 

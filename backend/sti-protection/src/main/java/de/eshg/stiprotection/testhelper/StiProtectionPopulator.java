@@ -10,18 +10,22 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.stiprotection.StiProtectionProcedureController;
+import de.eshg.stiprotection.api.AppointmentBookingTypeDto;
 import de.eshg.stiprotection.api.ConcernDto;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.temporal.ChronoUnit;
 import net.datafaker.Faker;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -39,8 +43,13 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
       Environment environment,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       StiProtectionProcedureController stiProtectionProcedureController,
-      StiProtectionProcedureRepository stiProtectionProcedureRepository) {
-    super(clock, environment, getClassNameAsPropertyKey(StiProtectionProcedure.class));
+      StiProtectionProcedureRepository stiProtectionProcedureRepository,
+      EnvironmentConfig environmentConfig) {
+    super(
+        clock,
+        environment,
+        getClassNameAsPropertyKey(StiProtectionProcedure.class),
+        environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.stiProtectionProcedureController = stiProtectionProcedureController;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
@@ -65,7 +74,10 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
             gender(faker),
             yearOfBirth(faker, age),
             optional(faker, countryOfBirth(faker), 0.66),
-            optional(faker, inGermanySince(faker, age), 0.5));
+            optional(faker, inGermanySince(faker, age), 0.5),
+            appointmentBookingType(),
+            appointmentStart(faker, clock),
+            durationInMinutes(faker));
 
     return stiProtectionProcedureController.createProcedure(createProcedureRequest);
   }
@@ -98,5 +110,17 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
 
   private static CountryCodeDto countryOfBirth(Faker faker) {
     return BasePopulator.randomElement(faker, CountryCodeDto.values());
+  }
+
+  private static AppointmentBookingTypeDto appointmentBookingType() {
+    return AppointmentBookingTypeDto.USER_DEFINED;
+  }
+
+  private static Instant appointmentStart(Faker faker, Clock clock) {
+    return clock.instant().plus(faker.random().nextInt(0, 120), ChronoUnit.MINUTES);
+  }
+
+  private static Integer durationInMinutes(Faker faker) {
+    return faker.random().nextInt(30, 120);
   }
 }

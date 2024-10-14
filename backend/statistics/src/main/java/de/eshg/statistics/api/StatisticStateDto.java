@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum StatisticStateDto {
   COMPLETED,
   FAILED,
-  PENDING,
+  CREATING,
+  UPDATING,
   COPY_ONGOING
 }

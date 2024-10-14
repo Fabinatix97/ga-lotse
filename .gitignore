@@ -45,3 +45,4 @@ bin/
 **/data/test/tmp
 
 .local
+.jpb/

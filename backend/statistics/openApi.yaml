@@ -43,6 +43,72 @@ paths:
       summary: Get statistics data sources
       tags:
       - DataSource
+  /evaluation-template:
+    get:
+      operationId: getEvaluationTemplates
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEvaluationTemplatesResponse"
+          description: All evaluation templates
+      summary: Get all evaluation templates
+      tags:
+      - EvaluationTemplate
+    post:
+      operationId: addEvaluationTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddEvaluationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationTemplate"
+          description: The added evaluation template
+      summary: Add an evaluation template
+      tags:
+      - EvaluationTemplate
+  /evaluation-template/{templateId}:
+    delete:
+      operationId: deleteEvaluationTemplate
+      parameters:
+      - in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the evaluation template is deleted
+      summary: Delete an evaluation template
+      tags:
+      - EvaluationTemplate
+    get:
+      operationId: getEvaluationTemplate
+      parameters:
+      - in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationTemplate"
+          description: The evaluation template
+      summary: Get an evaluation template
+      tags:
+      - EvaluationTemplate
   /feature-toggles:
     get:
       operationId: getFeatureToggles
@@ -266,72 +332,6 @@ paths:
       summary: Change the geo shape with the id
       tags:
       - GeoShape
-  /scheme:
-    get:
-      operationId: getStatisticsSchemes
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetStatisticsSchemesResponse"
-          description: All statistics schemes
-      summary: Get all statistics schemes
-      tags:
-      - StatisticsScheme
-    post:
-      operationId: addStatisticsScheme
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddStatisticsSchemeRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StatisticsScheme"
-          description: The added statistics scheme
-      summary: Add a statistics scheme
-      tags:
-      - StatisticsScheme
-  /scheme/{schemeId}:
-    delete:
-      operationId: deleteStatisticsScheme
-      parameters:
-      - in: path
-        name: schemeId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the statistics scheme is deleted
-      summary: Delete a statistics scheme
-      tags:
-      - StatisticsScheme
-    get:
-      operationId: getStatisticsScheme
-      parameters:
-      - in: path
-        name: schemeId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StatisticsScheme"
-          description: The statistics scheme
-      summary: Get a statistics scheme
-      tags:
-      - StatisticsScheme
   /statistic:
     get:
       operationId: getStatistics
@@ -381,7 +381,7 @@ paths:
             schema:
               oneOf:
               - $ref: "#/components/schemas/AddStatisticWithDataSourcesRequest"
-              - $ref: "#/components/schemas/AddStatisticWithSchemeRequest"
+              - $ref: "#/components/schemas/AddStatisticWithTemplateRequest"
         required: true
       responses:
         "200":
@@ -760,6 +760,29 @@ paths:
       summary: Get the information for the detail page
       tags:
       - Statistic
+    patch:
+      operationId: updateStatistic
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/UpdateStatisticNameRequest"
+              - $ref: "#/components/schemas/UpdateStatisticTimeRangeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update statistic
+      tags:
+      - Statistic
   /statistic/{statisticId}/report-series:
     get:
       operationId: getReportSeriesEntriesOfStatistic
@@ -1005,6 +1028,15 @@ components:
           type: string
       required:
       - '@type'
+    AbstractUpdateStatisticRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     ActivateAutoReportSeriesRequest:
       type: object
       allOf:
@@ -1123,6 +1155,20 @@ components:
       - chartConfiguration
       - name
       - statisticId
+    AddEvaluationTemplateRequest:
+      type: object
+      properties:
+        dataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataSource"
+          maxItems: 1
+          minItems: 1
+        name:
+          type: string
+      required:
+      - dataSources
+      - name
     AddFilterTemplateRequest:
       type: object
       properties:
@@ -1183,7 +1229,7 @@ components:
             minItems: 1
           name:
             type: string
-          schemeName:
+          templateName:
             type: string
           timeRangeEnd:
             type: string
@@ -1196,7 +1242,7 @@ components:
       - name
       - timeRangeEnd
       - timeRangeStart
-    AddStatisticWithSchemeRequest:
+    AddStatisticWithTemplateRequest:
       type: object
       allOf:
       - $ref: "#/components/schemas/AbstractAddStatisticRequest"
@@ -1204,7 +1250,7 @@ components:
         properties:
           name:
             type: string
-          schemeId:
+          templateId:
             type: string
             format: uuid
           timeRangeEnd:
@@ -1215,22 +1261,23 @@ components:
             format: date-time
       required:
       - name
-      - schemeId
+      - templateId
       - timeRangeEnd
       - timeRangeStart
-    AddStatisticsSchemeRequest:
+    AnalysisInfo:
       type: object
       properties:
-        dataSources:
+        '@type':
+          type: string
+        diagramTitles:
           type: array
           items:
-            $ref: "#/components/schemas/DataSource"
-          maxItems: 1
-          minItems: 1
+            type: string
         name:
           type: string
       required:
-      - dataSources
+      - '@type'
+      - diagramTitles
       - name
     AttributeSelection:
       type: object
@@ -1760,6 +1807,7 @@ components:
       required:
       - diagramData
       - evaluatedDataAmount
+      - filters
       - id
       - title
     DiagramData:
@@ -1829,6 +1877,34 @@ components:
       - id
       - name
       - numberOfDiagrams
+    EvaluationTemplate:
+      type: object
+      properties:
+        analysisInfos:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnalysisInfo"
+        createdAt:
+          type: string
+          format: date-time
+        dataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataSourceWithAttributeNames"
+        id:
+          type: string
+          format: uuid
+        lastUsageAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+      required:
+      - analysisInfos
+      - createdAt
+      - dataSources
+      - id
+      - name
     EvaluationWithDiagrams:
       type: object
       properties:
@@ -2023,6 +2099,15 @@ components:
       - statisticInfo
       - tableColumnHeaders
       - totalNumberOfElements
+    GetEvaluationTemplatesResponse:
+      type: object
+      properties:
+        evaluationTemplates:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationTemplate"
+      required:
+      - evaluationTemplates
     GetFilterTemplatesForStatisticResponse:
       type: object
       properties:
@@ -2070,6 +2155,10 @@ components:
         reportSeriesId:
           type: string
           format: uuid
+        reportSeriesName:
+          type: string
+        reportType:
+          $ref: "#/components/schemas/ReportType"
         tableColumnHeaders:
           type: array
           items:
@@ -2095,6 +2184,8 @@ components:
       - name
       - numberOfReportsInSeries
       - reportSeriesId
+      - reportSeriesName
+      - reportType
       - tableColumnHeaders
       - timeRangeEnd
       - timeRangeStart
@@ -2242,15 +2333,6 @@ components:
       - resolvedUsers
       - statistics
       - totalNumberOfElements
-    GetStatisticsSchemesResponse:
-      type: object
-      properties:
-        statisticsSchemes:
-          type: array
-          items:
-            $ref: "#/components/schemas/StatisticsScheme"
-      required:
-      - statisticsSchemes
     Grouping:
       type: string
       enum:
@@ -2652,7 +2734,7 @@ components:
       - PLANNED
       - COMPLETED
       - FAILED
-      - PENDING
+      - CREATING
     ReportType:
       type: string
       enum:
@@ -2766,36 +2848,14 @@ components:
       enum:
       - COMPLETED
       - FAILED
-      - PENDING
+      - CREATING
+      - UPDATING
       - COPY_ONGOING
     StatisticsFeature:
       type: string
       enum:
       - REPORTS
       - CLONE_STATISTIC
-    StatisticsScheme:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-        dataSources:
-          type: array
-          items:
-            $ref: "#/components/schemas/DataSourceWithAttributeNames"
-        id:
-          type: string
-          format: uuid
-        lastUsageAt:
-          type: string
-          format: date-time
-        name:
-          type: string
-      required:
-      - createdAt
-      - dataSources
-      - id
-      - name
     TableColumnFilterParameter:
       type: object
       discriminator:
@@ -2919,6 +2979,18 @@ components:
       required:
       - attribute
       - text
+    TimeRange:
+      type: object
+      properties:
+        end:
+          type: string
+          format: date-time
+        start:
+          type: string
+          format: date-time
+      required:
+      - end
+      - start
     TrendLine:
       type: object
       properties:
@@ -2957,6 +3029,26 @@ components:
             type: string
       required:
       - name
+    UpdateStatisticNameRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateStatisticRequest"
+      - type: object
+        properties:
+          name:
+            type: string
+      required:
+      - name
+    UpdateStatisticTimeRangeRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateStatisticRequest"
+      - type: object
+        properties:
+          timeRange:
+            $ref: "#/components/schemas/TimeRange"
+      required:
+      - timeRange
     User:
       type: object
       properties:

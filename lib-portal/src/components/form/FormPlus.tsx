@@ -8,6 +8,8 @@ import { formControlClasses } from "@mui/joy";
 import { Form, FormikFormProps, useFormikContext } from "formik";
 import { MutableRefObject, useEffect, useRef } from "react";
 
+import { usePrevious } from "../../hooks/usePrevious";
+
 const inputsSelector =
   'input, textarea, select, [role="input"], [role="checkbox"], [role="radio"], [role="textbox"]';
 
@@ -19,13 +21,13 @@ export function useScrollToError({
   formRef: MutableRefObject<HTMLFormElement | null>;
 }) {
   const { isSubmitting, errors } = useFormikContext();
+  const wasSubmitting = usePrevious(isSubmitting);
 
   useEffect(() => {
-    if (!isSubmitting || !errors || !enabled) {
-      return;
+    if (wasSubmitting && !isSubmitting && errors && enabled) {
+      scrollToFirstFormError(formRef);
     }
-    scrollToFirstFormError(formRef);
-  }, [isSubmitting, errors, enabled, formRef]);
+  }, [wasSubmitting, isSubmitting, errors, enabled, formRef]);
 
   return formRef;
 }

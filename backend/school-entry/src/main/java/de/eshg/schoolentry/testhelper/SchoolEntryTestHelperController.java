@@ -20,6 +20,7 @@ import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.api.PopulationRequest;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -52,8 +53,9 @@ public class SchoolEntryTestHelperController extends TestHelperController
       SchoolEntryProceduresPopulator schoolEntryProceduresPopulator,
       AppointmentBlockGroupsPopulator schoolEntryAppointmentBlockGroupsPopulator,
       AuditLogTestHelperService auditLogTestHelperService,
-      AppointmentBlockProperties appointmentBlockProperties) {
-    super(schoolEntryTestHelperService);
+      AppointmentBlockProperties appointmentBlockProperties,
+      EnvironmentConfig environmentConfig) {
+    super(schoolEntryTestHelperService, environmentConfig);
     this.schoolEntryTestHelperService = schoolEntryTestHelperService;
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
     this.schoolEntryProperties = schoolEntryProperties;

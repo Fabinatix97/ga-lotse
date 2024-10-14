@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
+<#-- @ftlvariable name="department" type="de.eshg.base.department.GetDepartmentInfoResponse" -->
+
+<#-- @ftlvariable name="date" type="String" -->
+<#-- @ftlvariable name="matterOfConcern" type="String" -->
+
+<#-- @ftlvariable name="entityName" type="String" -->
+<#-- @ftlvariable name="entity" type="String" -->
+<#-- @ftlvariable name="datasets" type="de.eshg.base.pdf.data.FieldSet[]" -->
+
+<html xml:lang="de" lang="de">
+  <head>
+    <title>Antrag auf Widerspruch gemäß Art. 21 DSGVO am ${date}</title>
+    <style type="text/css">
+      @page {
+        size: A4 portrait;
+        margin: 15mm 0 15mm 0;
+
+        @bottom-left {
+          content: element(--var-footerRunning);
+          font-family: sans-serif;
+          font-size: 7pt;
+          vertical-align: top;
+          padding-left: 15mm;
+        }
+
+        @bottom-right {
+          content: "Seite " counter(page) " von " counter(pages);
+          font-family: sans-serif;
+          font-size: 7pt;
+          padding-right: 1cm;
+          padding-top: 1rem;
+          vertical-align: top;
+        }
+      }
+
+      html {
+        font-size: 8.5pt;
+      }
+
+      body {
+        font-family: sans-serif;
+        font-weight: 400;
+        line-height: 1.5rem;
+        height: 100%;
+        box-sizing: border-box;
+        margin: 0 1cm 0 15mm;
+      }
+
+      /* the footer is a running element, which is used in the @bottom-center margin box */
+      /* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+      footer {
+        position: running(--var-footerRunning);
+        font-size: 0.75rem;
+        padding-top: 1rem;
+      }
+
+      footer hr {
+        position: absolute;
+        left: 15mm;
+        right: 1cm;
+        top: 0;
+        border: none;
+        border-bottom: 1px solid #D9D9D9;
+      }
+
+      h1 {
+        line-height: 2rem;
+        vertical-align: top;
+      }
+
+      p, span {
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        padding-top: 13mm;
+        padding-bottom: 50px;
+        width: 100%;
+      }
+
+      .header .letterhead td {
+        padding-top: 22px;
+        padding-bottom: 22px;
+      }
+
+      .header .sender-address {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+      }
+
+      .header .office-address {
+        font-size: 0.7rem;
+      }
+
+      .sender-label {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .sender-data {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .salutation {
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+
+      .identity {
+        font-weight: 600;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        white-space: pre;
+      }
+
+      .search-result {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+
+      .search-result .label {
+        padding-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .related-entity {
+        padding: 1rem;
+
+        border-left: 2px solid #21BBEF;
+        background-color: #EBEBEB;
+      }
+
+      .field-row {
+        display: block;
+      }
+
+      .field {
+        display: inline-block;
+        margin: 1rem;
+      }
+
+      .field .value {
+        font-weight: 600;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <footer>
+      <hr />
+      ${department.name} • ${department.street} ${department.houseNumber} ${department.postalCode} ${department.city}<br/>
+      Webseite: ${department.homepage} E-Mail: ${department.email}
+    </footer>
+
+    <table class="header">
+      <colgroup>
+        <col style="width: 70%;"/>
+        <col style="width: 30%;"/>
+      </colgroup>
+      <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <img
+              src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}"
+              alt="logo" style="width: 130px"/>
+          </td>
+        </tr>
+        <tr class="letterhead">
+          <td valign="bottom" class="receiver">
+            <div class="office-address">${department.name}, ${department.street} ${department.houseNumber}, ${department.postalCode} ${department.city}</div>
+          </td>
+          <td valign="top" class="sender">
+            <div class="sender-address">
+              <div>${department.name}</div>
+              <div>${department.street} ${department.houseNumber}</div>
+              <div>${department.postalCode} ${department.city}</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <div class="sender-address">
+              <div>z.H. Rechtsabteilung</div>
+            </div>
+          </td>
+          <td valign="top">
+            <div class="sender-label">Telefon</div>
+            <div class="sender-data">${department.phoneNumber}</div>
+            <#if department.email??>
+              <div class="sender-label">E-Mail</div>
+              <div class="sender-data">${department.email}</div>
+            </#if>
+            <div class="sender-label">Datum Widerspruch</div>
+            <div class="sender-data">${date}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="salutation">Sehr geehrte:r Kolleg:in,</p>
+    <p>Gemäß der durch Art. 21 DSGVO eingeräumten Rechte legte die folgende
+      Entität am <strong>${date}</strong> Widerspruch gegen die Verarbeitung
+      der sie betreffenden personenbezogenen Daten ein:
+      <p class="identity">${entity}</p>
+      Anliegen: ${matterOfConcern}
+    </p>
+
+    <#assign length = datasets?size/>
+    <div class="search-result">
+      <p class="label">Ergebnis:</p>
+      <#if length gt 1>
+        <p>${length} Datensätze gefunden</p>
+      <#elseif length gt 0>
+        <p>1 Datensatz gefunden</p>
+      <#else>
+        <p>Es wurden keine zugehörigen personenbezogenen Daten in der Anwendung gefunden.</p>
+      </#if>
+    </div>
+
+    <#list datasets as dataset>
+      <div class="related-entity">
+        <#list dataset.rows as fieldRow>
+          <div class="field-row">
+            <#list fieldRow.fields as field>
+              <div class="field">
+                <span class="label">${field.label}</span><br/>
+                <span class="value">${field.value}</span>
+              </div>
+            </#list>
+          </div>
+        </#list>
+      </div>
+    </#list>
+  </body>
+</html>

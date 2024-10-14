@@ -29,7 +29,12 @@ public class MedicalHistory extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @NotNull
   @Column
-  private boolean isAnswered;
+  private boolean isCompletelyAnswered;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @NotNull
+  @Column
+  private boolean citizenHasAnswered;
 
   @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   @Column
@@ -55,12 +60,20 @@ public class MedicalHistory extends GloballyUniqueEntityBase {
     this.content = content;
   }
 
-  public boolean isAnswered() {
-    return isAnswered;
+  public boolean isCompletelyAnswered() {
+    return isCompletelyAnswered;
   }
 
-  public void setAnswered(boolean answered) {
-    isAnswered = answered;
+  public void setCompletelyAnswered(boolean completelyAnswered) {
+    isCompletelyAnswered = completelyAnswered;
+  }
+
+  public boolean isCitizenHasAnswered() {
+    return citizenHasAnswered;
+  }
+
+  public void setCitizenHasAnswered(boolean citizenHasAnswered) {
+    this.citizenHasAnswered = citizenHasAnswered;
   }
 
   public String getNote() {

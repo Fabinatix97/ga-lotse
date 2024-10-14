@@ -11,17 +11,25 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { Button, Divider, Stack } from "@mui/joy";
-import { usePathname } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+
+export function useSelfUserSidebar(): UseSidebarResult {
+  return useSidebar({
+    component: SelfUserSidebar,
+  });
+}
 
 function NavLinkButton({
   href,
@@ -61,13 +69,7 @@ function MiscLinkButton({ href, label }: { href: string; label: string }) {
   );
 }
 
-export function SelfUserSidebar({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+function SelfUserSidebar() {
   const isActiveSessionsEnabled = useIsNewFeatureEnabled(
     ApiBaseFeature.AccountActiveSessions,
   );
@@ -75,14 +77,9 @@ export function SelfUserSidebar({
     ApiBaseFeature.LoginProtocol,
   );
   const { data: selfUser } = useGetSelfUser();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    onClose();
-  }, [pathname, onClose]);
 
   return (
-    <Sidebar open={open} onClose={onClose} zIndex={"headerSidebar"}>
+    <>
       <SidebarContent header={<UserSidebarHeader selfUser={selfUser} />}>
         <Stack gap={3} height="100%">
           <Stack gap={2} flex={1}>
@@ -139,7 +136,7 @@ export function SelfUserSidebar({
       <SidebarActions>
         <ButtonBar right={<LogoutButton />} />
       </SidebarActions>
-    </Sidebar>
+    </>
   );
 }
 

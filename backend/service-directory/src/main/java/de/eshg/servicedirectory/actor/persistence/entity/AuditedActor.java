@@ -60,6 +60,9 @@ public non-sealed class AuditedActor extends GloballyUniqueEntityBase implements
   @Column(nullable = false)
   private Boolean active;
 
+  @Column(nullable = false)
+  private Boolean manualCertificate;
+
   @ManyToOne(optional = false)
   @JoinColumn(name = "org_unit_id")
   private AuditedOrgUnit orgUnit;
@@ -158,6 +161,14 @@ public non-sealed class AuditedActor extends GloballyUniqueEntityBase implements
   @Override
   public void setActive(Boolean active) {
     this.active = active;
+  }
+
+  public Boolean isManualCertificate() {
+    return manualCertificate;
+  }
+
+  public void setManualCertificate(Boolean manualCertificate) {
+    this.manualCertificate = manualCertificate;
   }
 
   public AuditedOrgUnit getOrgUnit() {

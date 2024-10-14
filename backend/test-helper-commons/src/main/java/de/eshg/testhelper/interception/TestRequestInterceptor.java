@@ -10,6 +10,7 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletResponse;
@@ -50,7 +51,8 @@ public class TestRequestInterceptor extends OncePerRequestFilter {
 
   private final ObjectMapper objectMapper;
 
-  TestRequestInterceptor(ObjectMapper objectMapper) {
+  TestRequestInterceptor(ObjectMapper objectMapper, EnvironmentConfig environmentConfig) {
+    environmentConfig.assertIsNotProduction();
     this.objectMapper = objectMapper;
     log.warn("{} is enabled!", getClass().getSimpleName());
   }

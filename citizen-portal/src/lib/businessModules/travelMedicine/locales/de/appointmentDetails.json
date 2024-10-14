@@ -28,5 +28,8 @@
     "uBooklet": "das gelbe Vorsorgeheft (U-Heft)",
     "medicalDocuments": "gegebenenfalls weitere medizinische Unterlagen, evtl. aktuelle Medikation",
     "otherTools": "gegebenenfalls vorhandene Hilfsmittel (Brille, Hörgerät)"
+  },
+  "snackbar": {
+    "cancelAppointmentConfirmation": "Termin erfolgreich abgesagt"
   }
 }

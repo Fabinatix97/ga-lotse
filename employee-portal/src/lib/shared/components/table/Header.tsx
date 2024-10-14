@@ -5,9 +5,9 @@
 
 "use client";
 
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-// eslint-disable-next-line no-restricted-imports
-import { Link, Typography, styled } from "@mui/joy";
+import { Typography, styled } from "@mui/joy";
 import { ColumnMeta, SortDirection } from "@tanstack/react-table";
 import { PropsWithChildren } from "react";
 
@@ -41,8 +41,7 @@ export function Header(props: HeaderProps) {
       aria-label={props.meta?.headerLabel}
     >
       {props.canSort ? (
-        <Link
-          component="button"
+        <ButtonLink
           underline="none"
           color="neutral"
           textColor={props.isSorted ? "primary.plainColor" : "text.primary"}
@@ -67,7 +66,7 @@ export function Header(props: HeaderProps) {
           }}
         >
           {props.children}
-        </Link>
+        </ButtonLink>
       ) : (
         <Typography level="title-sm" color="neutral" textColor="text.primary">
           {props.children}

@@ -58,6 +58,7 @@ import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -85,12 +86,13 @@ public class StatisticCopyService {
 
   @Transactional
   public UUID addCopy(CloneStatisticRequest cloneStatisticRequest) {
-    Statistic original = statisticService.getStatistic(cloneStatisticRequest.originalStatisticId());
-    statisticService.validateStatisticCompleted(original);
+    Statistic original =
+        statisticService.getStatisticInternal(cloneStatisticRequest.originalStatisticId());
+    StatisticService.validateStatisticCompleted(original);
     original.setState(AggregationResultState.COPY_ONGOING);
 
     Statistic copy = new Statistic();
-    copy.setState(AggregationResultState.PENDING);
+    copy.setState(AggregationResultState.CREATING);
     copy.setPendingState(AggregationResultPendingState.COPY_ONGOING);
     copy.setTimeRangeStart(original.getTimeRangeStart());
     copy.setTimeRangeEnd(original.getTimeRangeEnd());
@@ -165,8 +167,11 @@ public class StatisticCopyService {
             originalEvaluation -> {
               Evaluation copy = new Evaluation();
               copy.setName(originalEvaluation.getName());
+              ChartConfiguration originalChartConfiguration =
+                  Hibernate.unproxy(
+                      originalEvaluation.getChartConfiguration(), ChartConfiguration.class);
               ChartConfiguration chartConfigurationCopy =
-                  copyChartConfiguration(originalEvaluation.getChartConfiguration(), true);
+                  copyChartConfiguration(originalChartConfiguration, true);
               copy.setChartConfiguration(chartConfigurationCopy);
               copy.addDiagrams(
                   copyDiagrams(originalEvaluation.getDiagrams(), chartConfigurationCopy));
@@ -541,8 +546,8 @@ public class StatisticCopyService {
 
   @Transactional
   public void workOnCopy(UUID originalId, UUID copyId) {
-    Statistic original = statisticService.getStatistic(originalId);
-    Statistic copy = statisticService.getStatistic(copyId);
+    Statistic original = statisticService.getStatisticInternal(originalId);
+    Statistic copy = statisticService.getStatisticInternal(copyId);
 
     if (!original.getState().equals(AggregationResultState.COPY_ONGOING)) {
       return;

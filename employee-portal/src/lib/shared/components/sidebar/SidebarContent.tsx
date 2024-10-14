@@ -72,7 +72,7 @@ export function SidebarContent({
       <Stack
         flex={1}
         justifyContent={verticallyCenterContent ? "center" : undefined}
-        sx={{ overflow: "hidden auto" }}
+        sx={{ overflow: "hidden auto", position: "relative" }}
       >
         <Box
           sx={{

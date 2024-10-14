@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Checkbox, Stack, Typography, checkboxClasses } from "@mui/joy";
+import {
+  Checkbox,
+  Stack,
+  Typography,
+  checkboxClasses,
+  useTheme,
+} from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 import { isNonNullish, isNullish, unique } from "remeda";
 
@@ -15,9 +21,17 @@ import {
 
 import { CalendarInfo } from "./calendarDisplay";
 
-type CalendarGroupItem = SearchableGroupItem & {
+type CalendarGroupItemCalender = SearchableGroupItem & {
+  type: "ITEM";
   calendar: CalendarInfo;
 };
+
+type CalendarGroupItemAll = SearchableGroupItem & {
+  type: "ALL";
+  calendarIds: string[];
+};
+
+type CalendarGroupItem = CalendarGroupItemCalender | CalendarGroupItemAll;
 
 export function CalendarSelector(props: {
   calendars: CalendarInfo[];
@@ -27,22 +41,37 @@ export function CalendarSelector(props: {
   const groupNames = unique(
     props.calendars.flatMap((calendar) => calendar.groupNames ?? []),
   );
+  const theme = useTheme();
+
   const calendarGroups: SearchableGroup<CalendarGroupItem>[] = groupNames.map(
-    (name) => ({
-      name,
-      inAccordion: true,
-      items: props.calendars
+    (name) => {
+      const items = props.calendars
         .filter(
           (calendar) =>
             isNonNullish(calendar.groupNames) &&
             calendar.groupNames.includes(name),
         )
-        .map<CalendarGroupItem>((calendar) => ({
+        .map<CalendarGroupItemCalender>((calendar) => ({
+          type: "ITEM",
           calendar,
           key: calendar.id,
           searchableValue: calendar.name,
-        })),
-    }),
+        }));
+
+      return {
+        name,
+        inAccordion: true,
+        items: [
+          {
+            type: "ALL",
+            calendarIds: items.map((it) => it.calendar.id),
+            key: "SELECT_ALL",
+            searchableValue: "",
+          },
+          ...items,
+        ],
+      };
+    },
   );
 
   function toggleCalendarVisibility(calendarId: string) {
@@ -69,6 +98,7 @@ export function CalendarSelector(props: {
               calendar={calendar}
               checked={props.displayedCalendarIds.includes(calendar.id)}
               onChange={() => toggleCalendarVisibility(calendar.id)}
+              hasMargin={false}
             />
           ))}
       </Stack>
@@ -78,13 +108,56 @@ export function CalendarSelector(props: {
           groups={calendarGroups}
           label="Teams"
           placeholder="Mitarbeiter Suchen"
-          renderItem={(item) => (
-            <CalendarSettingCheckbox
-              calendar={item.calendar}
-              checked={props.displayedCalendarIds.includes(item.calendar.id)}
-              onChange={() => toggleCalendarVisibility(item.calendar.id)}
-            />
-          )}
+          renderItem={(item) => {
+            if (item.type === "ALL") {
+              const everyItemSelected = item.calendarIds.every((it) =>
+                props.displayedCalendarIds.includes(it),
+              );
+              const someItemSelected =
+                everyItemSelected ||
+                item.calendarIds.some((it) =>
+                  props.displayedCalendarIds.includes(it),
+                );
+
+              return (
+                <CalendarSettingCheckbox
+                  calendar={{
+                    id: "ALLE_ANZEIGEN",
+                    name: "Alle anzeigen",
+                    color: theme.palette.primary.plainColor,
+                  }}
+                  indeterminate={someItemSelected && !everyItemSelected}
+                  checked={everyItemSelected}
+                  onChange={() => {
+                    if (everyItemSelected) {
+                      props.setDisplayedCalendarIds((previousCalenderIds) =>
+                        previousCalenderIds.filter(
+                          (it) => !item.calendarIds.includes(it),
+                        ),
+                      );
+                    } else {
+                      props.setDisplayedCalendarIds((previousCalenderIds) => [
+                        ...new Set([
+                          ...previousCalenderIds,
+                          ...item.calendarIds,
+                        ]).values(),
+                      ]);
+                    }
+                  }}
+                  hasMargin={false}
+                />
+              );
+            }
+
+            return (
+              <CalendarSettingCheckbox
+                calendar={item.calendar}
+                checked={props.displayedCalendarIds.includes(item.calendar.id)}
+                onChange={() => toggleCalendarVisibility(item.calendar.id)}
+                hasMargin={true}
+              />
+            );
+          }}
         />
       )}
     </Stack>
@@ -95,6 +168,8 @@ function CalendarSettingCheckbox(props: {
   calendar: CalendarInfo;
   checked: boolean;
   onChange: () => void;
+  indeterminate?: boolean;
+  hasMargin: boolean;
 }) {
   return (
     <Checkbox
@@ -109,7 +184,9 @@ function CalendarSettingCheckbox(props: {
         [`& > .${checkboxClasses.checked}:hover`]: {
           backgroundColor: props.calendar.color,
         },
+        marginLeft: props.hasMargin ? theme.spacing(3) : undefined,
       })}
+      indeterminate={props.indeterminate}
       label={props.calendar.name}
       checked={props.checked}
       onChange={props.onChange}

@@ -83,6 +83,7 @@ function ChecklistVersionsSidebarWithQuery({
               nameChange={nameChangeMap.get(newestVersion.context.id)}
               onUploadCldClick={onUploadCldClick}
               onUpdateCldClick={onUpdateCldClick}
+              label={"currentVersion"}
             />
             {oldVersions.length > 0 && (
               <Typography fontSize="14px" lineHeight="21px" fontWeight="500">
@@ -99,6 +100,7 @@ function ChecklistVersionsSidebarWithQuery({
                   nameChange={nameChangeMap.get(version.context.id)}
                   onUploadCldClick={onUploadCldClick}
                   onUpdateCldClick={onUpdateCldClick}
+                  label={"oldVersion"}
                 />
               );
             })}

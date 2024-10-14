@@ -67,6 +67,7 @@ public class KeycloakMapper {
       case TRAVEL_MEDICINE -> ModuleMemberGroup.TRAVEL_MEDICINE;
       case MEASLES_PROTECTION -> ModuleMemberGroup.MEASLES_PROTECTION;
       case STI_PROTECTION -> ModuleMemberGroup.STI_PROTECTION;
+      case MEDICAL_REGISTRY -> ModuleMemberGroup.MEDICAL_REGISTRY;
     };
   }
 

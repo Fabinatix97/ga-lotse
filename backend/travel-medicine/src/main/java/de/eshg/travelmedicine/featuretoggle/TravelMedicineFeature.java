@@ -8,6 +8,5 @@ package de.eshg.travelmedicine.featuretoggle;
 public enum TravelMedicineFeature {
   CITIZEN_PORTAL_INFORMATION_STATEMENT,
   CITIZEN_PORTAL_PROCEDURE,
-  DEFAULT_BATCH_ID,
-  PROCEDURE_SEARCH
+  DEFAULT_BATCH_ID
 }

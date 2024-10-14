@@ -12,11 +12,21 @@ const StyledFormControl = styled(FormControl)({
 });
 
 export function HorizontalField(props: BaseFieldProps) {
-  const { label, helperText, children, ...formControlProps } = props;
+  const {
+    label,
+    helperText,
+    children,
+    fieldDecorator: _,
+    ...formControlProps
+  } = props;
 
   return (
     <StyledFormControl orientation="horizontal" {...formControlProps}>
-      <Stack direction="row" alignContent="center">
+      <Stack
+        direction="row"
+        alignContent="center"
+        justifyContent="space-between"
+      >
         {renderLabel(label)}
         {children}
       </Stack>

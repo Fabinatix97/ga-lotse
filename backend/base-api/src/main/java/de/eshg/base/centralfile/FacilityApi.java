@@ -69,7 +69,7 @@ public interface FacilityApi {
   @Operation(
       summary =
           """
-  Search reference facilities for the given knowledge factor 'name' and for the optional knowledge factor 'address'.
+  Search reference facilities for the given knowledge factor 'name'.
   Excludes facilities created from external sources.
   Caution: The returned ids of the reference facilities must not be stored.
   """)

@@ -7,8 +7,6 @@ package de.eshg.travelmedicine.testhelper;
 
 import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersResponse;
@@ -22,14 +20,9 @@ import de.eshg.travelmedicine.certificate.api.CertificateTypeDto;
 import de.eshg.travelmedicine.certificate.api.PostPutCertificateRequest;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
-import de.eshg.travelmedicine.medicalhistory.MedicalHistoryService;
-import de.eshg.travelmedicine.medicalhistory.api.MedicalHistoryContentDto;
-import de.eshg.travelmedicine.medicalhistory.api.PatchMedicalHistoryRequest;
-import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
 import de.eshg.travelmedicine.testhelper.api.CertificatePopulationDto;
 import de.eshg.travelmedicine.testhelper.api.CitizenPortalCredentialsDto;
 import de.eshg.travelmedicine.testhelper.api.InitialStepPopulationDto;
-import de.eshg.travelmedicine.testhelper.api.MedicalHistoryPopulationDto;
 import de.eshg.travelmedicine.testhelper.api.OtherServicePopulationDto;
 import de.eshg.travelmedicine.testhelper.api.PostPopulateProcedureRequest;
 import de.eshg.travelmedicine.testhelper.api.PostPopulateProcedureResponse;
@@ -67,7 +60,6 @@ public class TestPopulateProcedureService {
   private final VaccinationConsultationRepository vaccinationConsultationRepository;
   private final ProcedureStepService procedureStepService;
   private final ProcedureStepRepository procedureStepRepository;
-  private final MedicalHistoryService medicalHistoryService;
   private final CertificateService certificateService;
 
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
@@ -81,7 +73,6 @@ public class TestPopulateProcedureService {
       VaccinationConsultationRepository vaccinationConsultationRepository,
       ProcedureStepService procedureStepService,
       ProcedureStepRepository procedureStepRepository,
-      MedicalHistoryService medicalHistoryService,
       CertificateService certificateService,
       UserApi userApi,
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
@@ -90,7 +81,6 @@ public class TestPopulateProcedureService {
     this.vaccinationConsultationRepository = vaccinationConsultationRepository;
     this.procedureStepService = procedureStepService;
     this.procedureStepRepository = procedureStepRepository;
-    this.medicalHistoryService = medicalHistoryService;
     this.certificateService = certificateService;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.userApi = userApi;
@@ -128,7 +118,6 @@ public class TestPopulateProcedureService {
     // 4. deal with initial procedure step
     InitialStepPopulationDto initialStep = populateProcedureRequest.initialStep();
     if (initialStep != null) {
-      // memo key
       UUID initialStepId =
           procedureStepRepository
               .findInitialProcedureStep(procedureId)
@@ -146,13 +135,12 @@ public class TestPopulateProcedureService {
     // 5. populate steps
     stepMap.putAll(
         populateSteps(procedureId, populateProcedureRequest.procedureSteps(), serviceMap));
+    // 6. cancel appointments
+    cancelAppointments(procedureId, stepMap, populateProcedureRequest.cancelSteps());
 
-    // 6. perform services
+    // 7. perform services
     executeVaccinations(procedureId, serviceMap, populateProcedureRequest.executeVaccinations());
     executeOtherServices(procedureId, serviceMap, populateProcedureRequest.executeOtherServices());
-
-    // 7. patch medical histories
-    patchMedicalHistories(populateProcedureRequest.medicalHistories(), stepMap);
 
     // 8. add certificates
     populateCertificates(procedureId, populateProcedureRequest.certificates(), stepMap, serviceMap);
@@ -269,7 +257,7 @@ public class TestPopulateProcedureService {
       for (ProcedureStepPopulationDto step : procedureStepPopulations) {
         List<UUID> serviceIds = getAll(step.serviceKeys(), serviceMap);
 
-        // patch the list of services according to the service memo and the keys in the request
+        // patch the list of services according to the service map and the keys in the request
         PostProcedureStepRequest inputRequest = step.request();
         PostProcedureStepRequest patchedRequest =
             new PostProcedureStepRequest(
@@ -285,6 +273,25 @@ public class TestPopulateProcedureService {
       }
     }
     return stepMap;
+  }
+
+  private void cancelAppointments(
+      UUID procedureId, Map<String, UUID> stepMap, List<String> stepKeys) {
+    if (stepKeys == null) {
+      return;
+    }
+    for (String key : stepKeys) {
+      UUID stepId = stepMap.get(key);
+      if (stepId == null) {
+        throw new IllegalArgumentException("Unknown step key");
+      }
+      UUID citizenUserId =
+          vaccinationConsultationRepository
+              .findByExternalId(procedureId)
+              .orElseThrow()
+              .getCitizenUserId();
+      vaccinationConsultationService.deleteAppointment(citizenUserId, procedureId, stepId);
+    }
   }
 
   private void executeVaccinations(
@@ -317,42 +324,6 @@ public class TestPopulateProcedureService {
                 otherServiceId,
                 new PatchOtherServiceRequest(
                     LocalDate.of(2024, 1, 1), getPhysicians().getFirst(), null));
-          });
-    }
-  }
-
-  private void patchMedicalHistories(
-      List<MedicalHistoryPopulationDto> medicalHistoryPopulations, Map<String, UUID> stepMap) {
-    if (medicalHistoryPopulations != null) {
-      medicalHistoryPopulations.forEach(
-          medicalHistoryInput -> {
-            UUID procedureStepId =
-                Optional.of(stepMap.get(medicalHistoryInput.stepKey()))
-                    .orElseThrow(() -> new RuntimeException("Unknown step key"));
-
-            MedicalHistory medicalHistory =
-                procedureStepRepository.findById(procedureStepId).orElseThrow().getMedicalHistory();
-
-            boolean isAlreadyAnswered = medicalHistory.isAnswered();
-            if (isAlreadyAnswered && !medicalHistoryInput.answered())
-              throw new BadRequestException(
-                  "A medical history cannot be un-answered - procedure step: "
-                      + medicalHistoryInput.stepKey());
-            try {
-              ObjectMapper objectMapper = new ObjectMapper();
-              MedicalHistoryContentDto medicalHistoryContent =
-                  objectMapper.readValue(
-                      medicalHistory.getContent(), MedicalHistoryContentDto.class);
-              if (!isAlreadyAnswered && medicalHistoryInput.answered()) {
-                // todo Answers überall setzen
-              }
-              medicalHistoryService.patchMedicalHistory(
-                  procedureStepId,
-                  new PatchMedicalHistoryRequest(
-                      medicalHistoryContent, medicalHistoryInput.note()));
-            } catch (JsonProcessingException jpe) {
-              throw new RuntimeException("Failed to parse medical history content", jpe);
-            }
           });
     }
   }

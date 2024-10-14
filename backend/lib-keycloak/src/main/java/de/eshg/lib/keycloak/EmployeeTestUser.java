@@ -17,7 +17,7 @@ import java.util.List;
 public enum EmployeeTestUser implements KeycloakUser {
   DUMMY(
       "dummy",
-      "+49 228 710 310-0",
+      "+49 555 123 100",
       "password",
       "Max",
       "Mustermann",
@@ -138,14 +138,53 @@ public enum EmployeeTestUser implements KeycloakUser {
       "Philipp",
       "Küster",
       List.of(ModuleMemberGroup.STATISTICS, ModuleLeaderGroup.STATISTICS)),
-  CHAT_USER(
-      "chat_user",
+  CHAT_USER_1(
+      "chat_user1",
       "+49 555 123 463",
       "password",
       "Thomas",
       "Anderson",
       List.of(BASE_CONTACTS_READ, CHAT_MANAGEMENT_WRITE),
-      List.of());
+      List.of()),
+  CHAT_USER_2(
+      "chat_user2",
+      "+49 555 123 468",
+      "password",
+      "Lorenz",
+      "Fischborn",
+      List.of(BASE_CONTACTS_READ, CHAT_MANAGEMENT_WRITE),
+      List.of()),
+  CHAT_USER_3(
+      "chat_user3",
+      "+49 555 123 469",
+      "password",
+      "Karin-Anne",
+      "Moß",
+      List.of(BASE_CONTACTS_READ, CHAT_MANAGEMENT_WRITE),
+      List.of()),
+  ALL_ROLES_NO_GROUPS(
+      "all_roles_no_groups",
+      "+49 555 123 464",
+      "password",
+      "Norbert",
+      "Krupp",
+      List.of(EmployeePermissionRole.values()),
+      CollectionUtils.arrayUnion(List.of())),
+  MEDICAL_REGISTRY_DUMMY(
+      "medical_registry_dummy_user",
+      "+49 555 123 466",
+      "password",
+      "Marco",
+      "Adamec",
+      List.of(ModuleMemberGroup.MEDICAL_REGISTRY)),
+  MEDICAL_REGISTRY_MODULE_LEADER(
+      "medical_registry_module_leader",
+      "+49 555 123 467",
+      "password",
+      "Jürgen",
+      "Klinsmann",
+      List.of(ModuleMemberGroup.MEDICAL_REGISTRY, ModuleLeaderGroup.MEDICAL_REGISTRY)),
+  ;
 
   private final String username;
   private final String email;

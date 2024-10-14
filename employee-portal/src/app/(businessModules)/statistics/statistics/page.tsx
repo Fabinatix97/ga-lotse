@@ -43,17 +43,17 @@ export default function StatisticsOverviewPage(props: {
     statistics,
     statisticsIsFetching,
     availableDataSources,
-    statisticsSchemes,
+    evaluationTemplates,
   } = useGetStatisticsOverviewPage(params);
 
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Statistiken" />}>
+    <StickyToolbarLayout toolbar={<Toolbar title="Auswertungen" />}>
       <MainContentLayout fullViewportHeight>
         <StatisticsOverview
           statisticsResponse={statistics}
           isFetchingStatistics={statisticsIsFetching}
           dataSources={availableDataSources}
-          schemes={statisticsSchemes}
+          templates={evaluationTemplates}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

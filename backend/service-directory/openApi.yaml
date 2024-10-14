@@ -932,6 +932,8 @@ components:
         id:
           type: string
           format: uuid
+        manualCertificate:
+          type: boolean
         naturalId:
           type: string
         networkId:
@@ -947,12 +949,15 @@ components:
           $ref: "#/components/schemas/ActorType"
       required:
       - active
+      - manualCertificate
     ActorType:
       type: string
       enum:
+      - EXT
       - GM
       - FM
       - LSD
+      - MISC
       - WEB
       - ZA
       - ZR
@@ -977,6 +982,8 @@ components:
         id:
           type: string
           format: uuid
+        manualCertificate:
+          type: boolean
         metadata:
           $ref: "#/components/schemas/AdminActorMetadata"
         naturalId:
@@ -993,6 +1000,7 @@ components:
       - active
       - commonName
       - id
+      - manualCertificate
       - readableName
       - type
     AdminActorMetadata:
@@ -1025,9 +1033,11 @@ components:
     AdminActorType:
       type: string
       enum:
+      - EXT
       - GM
       - FM
       - LSD
+      - MISC
       - WEB
       - ZA
       - ZR
@@ -1041,8 +1051,6 @@ components:
         value:
           type: string
       required:
-      - signatory
-      - signature
       - value
     AdminCommitResponse:
       type: object
@@ -1117,6 +1125,8 @@ components:
         id:
           type: string
           format: uuid
+        manualCertificate:
+          type: boolean
         networkId:
           type: string
         orgUnitId:
@@ -1307,8 +1317,6 @@ components:
         value:
           type: string
       required:
-      - signatory
-      - signature
       - value
     DefaultPopulationResponse:
       type: object

@@ -9,6 +9,7 @@ public enum AggregationResultState {
   PLANNED,
   COMPLETED,
   FAILED,
-  PENDING,
+  CREATING,
+  UPDATING,
   COPY_ONGOING
 }

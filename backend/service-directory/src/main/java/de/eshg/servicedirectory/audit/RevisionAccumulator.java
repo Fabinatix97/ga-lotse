@@ -139,6 +139,7 @@ class RevisionAccumulator {
               READABLE_NAME,
               "type",
               ACTIVE,
+              "manual_certificate",
               "common_name",
               "current_certificate_value",
               "current_certificate_signature",
@@ -158,11 +159,12 @@ class RevisionAccumulator {
         (String) revisionRecord[offset + 1],
         actorType((String) revisionRecord[offset + 2]),
         Boolean.TRUE.equals(revisionRecord[offset + 3]),
-        (String) revisionRecord[offset + 4],
-        mapCertificate(revisionRecord, offset + 5),
-        mapCertificate(revisionRecord, offset + 8),
-        (String) revisionRecord[offset + 11],
-        (UUID) revisionRecord[offset + 12],
+        Boolean.TRUE.equals(revisionRecord[offset + 4]),
+        (String) revisionRecord[offset + 5],
+        mapCertificate(revisionRecord, offset + 6),
+        mapCertificate(revisionRecord, offset + 9),
+        (String) revisionRecord[offset + 12],
+        (UUID) revisionRecord[offset + 13],
         null);
   }
 

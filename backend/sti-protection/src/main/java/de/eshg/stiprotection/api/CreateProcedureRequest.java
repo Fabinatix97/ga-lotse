@@ -13,6 +13,8 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import java.time.Instant;
 import java.time.Year;
 
 public record CreateProcedureRequest(
@@ -25,7 +27,11 @@ public record CreateProcedureRequest(
             description = "The year since the person has been residing in Germany.",
             example = "2022")
         @PastOrPresent
-        Year inGermanySince) {
+        Year inGermanySince,
+    @NotNull AppointmentBookingTypeDto appointmentBookingType,
+    @NotNull Instant appointmentStart,
+    @NotNull @Positive Integer durationInMinutes) {
+
   @AssertTrue(message = "The year of birth must be prior to the date of residence in Germany.")
   @JsonIgnore
   @SuppressWarnings("unused")

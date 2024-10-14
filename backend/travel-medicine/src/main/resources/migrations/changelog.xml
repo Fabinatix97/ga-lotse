@@ -33,5 +33,8 @@
   <include file="migrations/0023_add_procedure_exported_at.xml"/>
   <include file="migrations/0024_add_consultant_to_appointment_blocks.xml"/>
   <include file="migrations/0025_procedure_sequences.xml"/>
+  <include file="migrations/0026_add_citizen_has_answered.xml"/>
+  <include file="migrations/0027_add_cancelled_to_uda.xml"/>
+  <include file="migrations/0028_change_information_statement_template.xml"/>
 
 </databaseChangeLog>

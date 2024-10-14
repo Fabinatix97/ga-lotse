@@ -26,6 +26,7 @@ import { getReverseGeoCode } from "@/lib/businessModules/inspection/api/queries/
 import { TravelTimeSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeSidebar";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
+import { useCopy } from "@/lib/shared/hooks/useCopy";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 const DATE_TIME_CLOCK_SUFFIX = " Uhr";
@@ -111,9 +112,10 @@ export function TravelTimeTile({
     window.open(url, "_blank", "noreferrer");
   }
 
+  const copy = useCopy();
+
   async function handleClickCopyAddress() {
-    await navigator.clipboard.writeText(addressString);
-    snackbar.confirmation("Die Adresse wurde in die Zwischenablage kopiert.");
+    await copy(addressString);
   }
 
   return (

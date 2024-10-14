@@ -6,9 +6,11 @@
 package de.eshg.servicedirectory.actor.persistence.entity;
 
 public enum ActorType {
+  EXT("external module", "Externes Modul"),
   GM("base module", "Grundmodul"),
   FM("business module", "Fachmodul"),
   LSD("local service directory", "lokales Dienstverzeichnis"),
+  MISC("Miscellaneous", "Sonstige"),
   WEB("webserver", "Webserver"),
   ZA("central application", "zentrale Anwendung"),
   ZR("central repository", "zentrale Ablage"),

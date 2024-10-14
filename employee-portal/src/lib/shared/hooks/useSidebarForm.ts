@@ -18,6 +18,9 @@ export interface UseSidebarForm {
   sidebarFormRef: Ref<SidebarFormHandle>;
 }
 
+/**
+ * @deprecated Replaced by `useSidebarWithFormRef`.
+ */
 export function useSidebarForm({
   onClose,
 }: UseSidebarFormProps): UseSidebarForm {

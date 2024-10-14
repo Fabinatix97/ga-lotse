@@ -126,3 +126,17 @@ export function validateRange(
     return `Bitte eine Zahl zwischen ${startInclusive} und ${endInclusive} angeben.`;
   };
 }
+
+export function validateRegex(
+  regex: RegExp,
+  errorMessage: string,
+): Validator<string> {
+  return (value: string) => {
+    const trimmed = value.trim();
+    if (isEmptyString(trimmed) || regex.test(trimmed)) {
+      return undefined;
+    }
+
+    return errorMessage;
+  };
+}

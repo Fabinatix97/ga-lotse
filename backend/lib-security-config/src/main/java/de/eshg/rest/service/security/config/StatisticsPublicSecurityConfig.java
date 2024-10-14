@@ -37,6 +37,8 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(PATCH, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(DELETE, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(
@@ -98,11 +100,11 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
     requestMatchers(DELETE, BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
 
-    requestMatchers(POST, BaseUrls.Statistics.STATISTICS_SCHEME_CONTROLLER)
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER)
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(DELETE, BaseUrls.Statistics.STATISTICS_SCHEME_CONTROLLER + "/**")
+    requestMatchers(DELETE, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(GET, BaseUrls.Statistics.STATISTICS_SCHEME_CONTROLLER + "/**")
+    requestMatchers(GET, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/**")
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);

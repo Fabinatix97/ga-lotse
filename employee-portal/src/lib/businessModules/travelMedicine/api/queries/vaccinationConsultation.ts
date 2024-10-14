@@ -4,9 +4,12 @@
  */
 
 import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useVaccinationConsultationApi } from "@/lib/businessModules/travelMedicine/api/clients";
+import { mapAppointment } from "@/lib/businessModules/travelMedicine/api/models/AppointmentSummary";
+import { mapAssignableService } from "@/lib/businessModules/travelMedicine/api/models/AssignableService";
 import { vaccinationConsultationApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 
 export function useGetAllProcedureAppointmentSummaries(
@@ -28,22 +31,29 @@ export function useGetAllProcedureAppointmentSummaries(
   });
 }
 
-export function useGetAllAssignableServices(procedureId: string) {
+export function useGetAllAssignableServices(
+  procedureId: string,
+  open: boolean,
+) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
-  return useSuspenseQuery({
+  return useHandledBackgroundQuery({
     queryKey: vaccinationConsultationApiQueryKey([
       "getAllAssignableServices",
       procedureId,
     ]),
     queryFn: () =>
       vaccinationConsultationApi.getAllAssignableServices(procedureId),
+    select: (response) => response.assignableServices.map(mapAssignableService),
+    enabled: open,
+    gcTime: 60000,
+    staleTime: 60000,
   });
 }
 
-export function useGetVaccinationConsultationDetails(id: string) {
+export function useGetVaccinationConsultationDetailsQuery(id: string) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "getVaccinationConsultationDetails",
       id,
@@ -53,20 +63,28 @@ export function useGetVaccinationConsultationDetails(id: string) {
   });
 }
 
-export function useGetAllAvailableAppointments(procedureId: string) {
+export function useGetAllAvailableAppointmentsUnsuspended(
+  procedureId: string,
+  open: boolean,
+) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useQuery({
+  return useHandledBackgroundQuery({
     queryKey: vaccinationConsultationApiQueryKey([
       "getAllAvailableAppointments",
       procedureId,
     ]),
     queryFn: () =>
       vaccinationConsultationApi.getAllAvailableAppointments(procedureId),
+    select: (response) => response.appointmentSummaryList.map(mapAppointment),
+    enabled: procedureId.length > 0 && open,
+    gcTime: 60000,
+    staleTime: 60000,
   });
 }
-export function useGetAllMedicalHistories(procedureId: string) {
+
+export function useGetAllMedicalHistoriesQuery(procedureId: string) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "getMedicalHistories",
       procedureId,
@@ -75,9 +93,11 @@ export function useGetAllMedicalHistories(procedureId: string) {
   });
 }
 
-export function useGetVaccinationConsultationCertificates(procedureId: string) {
+export function useGetVaccinationConsultationCertificatesQuery(
+  procedureId: string,
+) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "getCertificates",
       procedureId,
@@ -86,9 +106,9 @@ export function useGetVaccinationConsultationCertificates(procedureId: string) {
   });
 }
 
-export function useGetStepsWithAppliedServices(procedureId: string) {
+export function useGetStepsWithAppliedServicesQuery(procedureId: string) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "getStepsWithAppliedServices",
       procedureId,
@@ -98,15 +118,16 @@ export function useGetStepsWithAppliedServices(procedureId: string) {
   });
 }
 
-export function useGetStatus(procedureId: string) {
+export function useGetStatusQuery(procedureId: string) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey(["getStatus", procedureId]),
     queryFn: () => vaccinationConsultationApi.getStatus(procedureId),
+    gcTime: 60000, // 1 minute cache
   });
 }
 
-export function useGetSearchVaccinationConsultation(
+export function useGetSearchVaccinationConsultationQuery(
   lastName?: string,
   firstName?: string,
   dateOfBirth?: Date,
@@ -119,7 +140,7 @@ export function useGetSearchVaccinationConsultation(
     (firstName && firstName.length >= 2) ??
     dateOfBirth !== undefined;
 
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "searchVaccinationConsultation",
       firstName,

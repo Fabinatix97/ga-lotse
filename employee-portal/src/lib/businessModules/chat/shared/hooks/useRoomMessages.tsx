@@ -14,7 +14,10 @@ import {
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import {
+  ClientState,
+  MessageTypeEnum,
+} from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import {
   Message,
@@ -23,13 +26,15 @@ import {
   isChatMessageType,
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
+import { sortMessages } from "@/lib/businessModules/chat/shared/utils";
+
+const messagesLimit = 10;
 
 export function useRoomMessages() {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [canPaginate, setCanPaginate] = useState(true);
   const { selectedRoomId } = useChatSearchParams();
   const { matrixClient, clientState } = useChatClientContext();
-  const messagesLimit = 10;
   const [isLoading, setIsLoading] = useState(false);
   const loggedInUserId = matrixClient.getUserId();
 
@@ -87,6 +92,7 @@ export function useRoomMessages() {
         id,
         roomId: room?.roomId,
         mentions: messageContent["m.mentions"]?.user_ids,
+        messageType: MessageTypeEnum.ChatMessage,
       };
     },
     [matrixClient],
@@ -115,18 +121,9 @@ export function useRoomMessages() {
         const updatedMessagesFromRoom = [
           ...(prevState[room.roomId] ?? []),
           newMessage,
-        ];
+        ].filter(isChatMessageType);
 
-        const sortedMessagesFromRoom = updatedMessagesFromRoom
-          .sort((a, b) =>
-            !a?.timestamp
-              ? 1
-              : !b?.timestamp
-                ? -1
-                : new Date(b.timestamp).getTime() -
-                  new Date(a.timestamp).getTime(),
-          )
-          .filter(isChatMessageType);
+        const sortedMessagesFromRoom = sortMessages(updatedMessagesFromRoom);
 
         return { ...prevState, [room.roomId]: sortedMessagesFromRoom };
       });
@@ -191,7 +188,9 @@ export function useRoomMessages() {
           }),
         );
 
-        const filteredMessages = newRoomMessages.filter(isChatMessageType);
+        const filteredMessages = newRoomMessages
+          .filter(isChatMessageType)
+          .filter((item) => !!item);
 
         setCanPaginate(canPaginate);
 
@@ -200,20 +199,13 @@ export function useRoomMessages() {
           if (!filteredMessages.length) {
             return { ...prevState, [roomId]: [] };
           }
-          const sortedMessagesFromRoom = filteredMessages
-            .sort((a, b) =>
-              !a?.timestamp
-                ? 1
-                : !b?.timestamp
-                  ? -1
-                  : new Date(b.timestamp).getTime() -
-                    new Date(a.timestamp).getTime(),
-            )
-            .filter(isChatMessageType);
+          const sortedMessagesFromRoom = sortMessages(
+            filteredMessages as Message[],
+          );
 
           return {
             ...prevState,
-            [roomId]: sortedMessagesFromRoom as Message[],
+            [roomId]: sortedMessagesFromRoom,
           };
         });
         setIsLoading(false);
@@ -256,23 +248,17 @@ export function useRoomMessages() {
       );
 
       setMessages((prevState) => {
-        if (!newMessages.length) {
+        const correctNewMessages = newMessages
+          .filter(isChatMessageType)
+          .filter((item) => !!item);
+        if (!correctNewMessages.length) {
           return { ...prevState, [selectedRoomId]: [] };
         }
-        const sortedMessagesFromRoom = newMessages
-          .sort((a, b) =>
-            !a?.timestamp
-              ? 1
-              : !b?.timestamp
-                ? -1
-                : new Date(b.timestamp).getTime() -
-                  new Date(a.timestamp).getTime(),
-          )
-          .filter(isChatMessageType);
+        const sortedMessagesFromRoom = sortMessages(correctNewMessages);
 
         return {
           ...prevState,
-          [selectedRoomId]: sortedMessagesFromRoom as Message[],
+          [selectedRoomId]: sortedMessagesFromRoom,
         };
       });
       setIsLoading(false);

@@ -18,7 +18,6 @@ import { AppointmentTypeConfig } from "@/lib/businessModules/stiProtection/api/m
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
-import { AppointmentValues } from "@/lib/shared/components/appointmentBlocks/AppointmentCount";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
@@ -39,11 +38,13 @@ export interface AppointmentBlockGroupValues {
   locationId: OptionalFieldValue<string>;
 }
 
-export interface StiProtectionAppointmentValues
-  extends Omit<
-    AppointmentValues<ApiAppointmentType, ApiAppointmentTypeConfig>,
-    "appointmentBlocks" | "mfas"
-  > {
+export interface StiProtectionAppointmentValues {
+  type: OptionalFieldValue<ApiAppointmentType>;
+  parallelExaminations: OptionalFieldValue<number>;
+  allAppointmentTypes: ApiAppointmentTypeConfig[];
+  physicians: string[];
+  mfas?: string[];
+  locationId: OptionalFieldValue<string>;
   appointmentBlocks: AppointmentBlockGroupValuesWithDays[];
   consultants: string[];
 }
@@ -52,9 +53,7 @@ function validateForm(
   values: StiProtectionAppointmentValues,
   appointmentTypes: AppointmentTypeConfig[],
 ) {
-  const errors: FormikErrors<
-    AppointmentValues<ApiAppointmentType, ApiAppointmentTypeConfig>
-  > = {};
+  const errors: FormikErrors<StiProtectionAppointmentValues> = {};
   const appointmentDurations = mapToObj(
     appointmentTypes,
     (appointmentTypeConfig) => [
@@ -134,7 +133,6 @@ export function AppointmentBlockGroupForm({
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
-              showAppointmentBlockFieldArrayWithDays
             />
           </Stack>
           <Divider />

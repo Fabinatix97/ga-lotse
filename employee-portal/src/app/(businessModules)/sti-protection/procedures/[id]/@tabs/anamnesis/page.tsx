@@ -5,8 +5,13 @@
 
 "use client";
 
-import { Typography } from "@mui/joy";
+import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/layout";
+import { MedicalHistoryForm } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm";
 
-export default function StiProtectionProcedureAnamnesisPage() {
-  return <Typography>Anamnese</Typography>;
+export default function StiProtectionProcedureAnamnesisPage({
+  params,
+}: Readonly<{
+  params: StiProtectionProcedurePageParams;
+}>) {
+  return <MedicalHistoryForm procedureId={params.id} />;
 }

@@ -4,34 +4,39 @@
  */
 
 import { Stack } from "@mui/joy";
+import { useMemo, useState } from "react";
 
 import { RoomList } from "@/lib/businessModules/chat/components/roomList/RoomList";
 import { RoomsPanelHeader } from "@/lib/businessModules/chat/components/roomsPanel/RoomsPanelHeader";
+import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 
 interface RoomsPanelProps {
   setChatPanelView: (viewType: ChatPanelView) => void;
-  isOpenChatSettings: boolean;
-  toggleChatSettingsView(): void;
 }
-export function RoomsPanel({
-  setChatPanelView,
-  isOpenChatSettings,
-  toggleChatSettingsView,
-}: Readonly<RoomsPanelProps>) {
+export function RoomsPanel({ setChatPanelView }: Readonly<RoomsPanelProps>) {
   const { roomList } = useChatRoomList();
+  const { closeInfoPanel, infoPanelState } = useInfoPanelContext();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredRooms = useMemo(() => {
+    return roomList.filter((room) =>
+      room.room.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [roomList, searchQuery]);
 
   return (
     <>
-      {/* TODO - rooms filtering */}
       <RoomsPanelHeader
         setChatPanelView={(viewType) => {
           setChatPanelView(viewType);
-          if (isOpenChatSettings) {
-            toggleChatSettingsView();
+          if (infoPanelState.isOpen) {
+            closeInfoPanel();
           }
         }}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <Stack
         sx={{
@@ -39,7 +44,12 @@ export function RoomsPanel({
           overflowY: "auto",
         }}
       >
-        <RoomList roomList={roomList} setChatPanelView={setChatPanelView} />
+        <RoomList
+          roomList={searchQuery?.length ? filteredRooms : roomList}
+          setChatPanelView={setChatPanelView}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
       </Stack>
     </>
   );

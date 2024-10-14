@@ -14,6 +14,7 @@ import de.eshg.measlesprotection.config.MeaslesProtectionFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.api.PopulationRequest;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -35,8 +36,9 @@ public class ProtectionProcedureTestHelperController extends TestHelperControlle
       MeaslesProtectionTestHelperService testHelperService,
       ProtectionProcedurePopulator populator,
       MeaslesProtectionFeatureToggle measlesProtectionFeatureToggle,
-      AuditLogTestHelperService auditLogTestHelperService) {
-    super(testHelperService);
+      AuditLogTestHelperService auditLogTestHelperService,
+      EnvironmentConfig environmentConfig) {
+    super(testHelperService, environmentConfig);
     this.populator = populator;
     this.measlesProtectionFeatureToggle = measlesProtectionFeatureToggle;
     this.auditLogTestHelperService = auditLogTestHelperService;

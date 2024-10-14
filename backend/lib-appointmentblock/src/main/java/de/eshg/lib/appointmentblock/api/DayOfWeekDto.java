@@ -6,6 +6,7 @@
 package de.eshg.lib.appointmentblock.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 
 @Schema(name = "DayOfWeek")
 public enum DayOfWeekDto {
@@ -13,5 +14,11 @@ public enum DayOfWeekDto {
   TUESDAY,
   WEDNESDAY,
   THURSDAY,
-  FRIDAY
+  FRIDAY,
+  SATURDAY,
+  SUNDAY;
+
+  public static List<DayOfWeekDto> allDays() {
+    return List.of(DayOfWeekDto.values());
+  }
 }

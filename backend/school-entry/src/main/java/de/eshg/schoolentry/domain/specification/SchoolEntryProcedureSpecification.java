@@ -38,6 +38,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
   private final Instant dayOfAppointmentFilter;
   private final Boolean hasAppointmentFilter;
   private final ArrayList<UUID> labelFilter;
+  private final Boolean isInvitationSentFilter;
   private final ProcedureSortKey sortKey;
   private final Sort.Direction sortDirection;
 
@@ -49,6 +50,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
       Instant dayOfAppointmentFilter,
       Boolean hasAppointmentFilter,
       ArrayList<UUID> labelFilter,
+      Boolean isInvitationSentFilter,
       ProcedureSortKey sortKey,
       Sort.Direction sortDirection) {
     this.procedureStatusFilter = procedureStatusFilter;
@@ -58,6 +60,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
     this.dayOfAppointmentFilter = dayOfAppointmentFilter;
     this.hasAppointmentFilter = hasAppointmentFilter;
     this.labelFilter = labelFilter;
+    this.isInvitationSentFilter = isInvitationSentFilter;
     this.sortKey = sortKey;
     this.sortDirection = sortDirection;
   }
@@ -114,6 +117,12 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
         subquery.where(criteriaBuilder.equal(labelJoin.get(Label_.externalId), labelId));
         conjunctions.add(criteriaBuilder.exists(subquery));
       }
+    }
+
+    if (isInvitationSentFilter != null) {
+      conjunctions.add(
+          criteriaBuilder.equal(
+              root.get(SchoolEntryProcedure_.isInvitationSent), isInvitationSentFilter));
     }
 
     Set<Order> orders = new LinkedHashSet<>();

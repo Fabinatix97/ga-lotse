@@ -6,4 +6,5 @@
 export const chatSearchParamNames = {
   userId: "userId",
   roomId: "roomId",
+  loginToken: "loginToken",
 } as const;

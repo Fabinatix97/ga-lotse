@@ -15,22 +15,22 @@ import { Add } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import { Button } from "@mui/joy";
+import { Box, Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 import { isDefined } from "remeda";
 
-import { useDeleteStatistic } from "@/lib/businessModules/statistics/api/mutations/useDeleteStatistic";
 import { getStatisticsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { DuplicateStatisticSidebar } from "@/lib/businessModules/statistics/components/statistics/DuplicateStatisticSidebar/DuplicateStatisticSidebar";
+import { useDeleteStatisticWithConfirmation } from "@/lib/businessModules/statistics/components/statistics/useDeleteStatisticWithConfirmation";
 import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
+import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
-import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -57,7 +57,7 @@ function TemplatesButton({ onClick }: { onClick: () => void }) {
 function CreateStatisticsButton({ onClick }: { onClick: () => void }) {
   return (
     <Button size="md" startDecorator={<Add />} onClick={onClick}>
-      Statistik erstellen
+      Auswertung erstellen
     </Button>
   );
 }
@@ -184,9 +184,11 @@ export function StatisticsTable({
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
+    initialSorting: {
+      id: "timeRangeStart",
+      desc: true,
+    },
   });
-  const deleteStatistic = useDeleteStatistic();
-  const { openConfirmationDialog } = useConfirmationDialog();
   const duplicateStatisticEnabled = useIsNewFeatureEnabled(
     ApiStatisticsFeature.CloneStatistic,
   );
@@ -202,18 +204,7 @@ export function StatisticsTable({
     }),
   );
 
-  function deleteStatisticsWithConfirmation(
-    statisticId: string,
-    statisticsName: string,
-  ) {
-    openConfirmationDialog({
-      title: "Statistik Löschen?",
-      description: `Die Statistik "${statisticsName}" wird dann unwiderruflich gelöscht.`,
-      confirmLabel: "Löschen",
-      onConfirm: () => deleteStatistic(statisticId),
-      color: "danger",
-    });
-  }
+  const deleteStatisticsWithConfirmation = useDeleteStatisticWithConfirmation();
 
   return (
     <>
@@ -258,7 +249,7 @@ export function StatisticsTable({
             data={tableData}
             columns={columns(
               deleteStatisticsWithConfirmation,
-              userPermissions.canDeleteStatistic,
+              userPermissions.canDelete,
               userPermissions.canWrite,
               setDuplicateStatisticAction,
               duplicateStatisticEnabled,
@@ -270,6 +261,17 @@ export function StatisticsTable({
                 : undefined
             }
             focusColumnHeader="Name"
+            enableSortingRemoval={false}
+            noDataComponent={() => (
+              <Box flex={1} alignContent="center">
+                <NoSearchResults
+                  info="Keine Auswertungen vorhanden"
+                  buttonLabel="Auswertung erstellen"
+                  onClick={onCreateStatisticClick}
+                  decorator={<Add />}
+                />
+              </Box>
+            )}
           />
         </TableSheet>
       </TablePage>

@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiAppointmentBookingType,
   ApiAppointmentSummary,
   ApiAppointmentType,
 } from "@eshg/citizen-portal-api/travelMedicine";
@@ -13,6 +14,8 @@ import {
   ChevronRightOutlined,
   DateRangeOutlined,
   EventAvailableOutlined,
+  EventBusyOutlined,
+  EventOutlined,
   PeopleOutlined,
   VaccinesOutlined,
   WatchLaterOutlined,
@@ -21,6 +24,7 @@ import { Button, Sheet } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { AppointmentOverviewButtonElement } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentOverviewButtonElement";
 import {
   AppointmentOverviewSection,
   AppointmentOverviewSectionGrid,
@@ -48,8 +52,24 @@ export function AppointmentOverviewSheetButton(
   const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
 
   function navigateToDetails(procedureId: string, procedureStepId: string) {
-    const url = `${citizenRoutes.viewAppointment.details(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
+    const url = `${citizenRoutes.viewAppointment.details.index(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
     router.push(url);
+  }
+
+  function isCancelled() {
+    return (
+      props.appointment.appointmentBookingType ===
+      ApiAppointmentBookingType.Cancelled
+    );
+  }
+
+  function isBooked() {
+    return (
+      props.appointment.appointmentBookingType ===
+        ApiAppointmentBookingType.AppointmentBlock ||
+      props.appointment.appointmentBookingType ===
+        ApiAppointmentBookingType.UserDefined
+    );
   }
 
   return (
@@ -75,60 +95,69 @@ export function AppointmentOverviewSheetButton(
         }}
       >
         <AppointmentOverviewSectionGrid>
-          <AppointmentOverviewSection icon={<DateRangeOutlined />}>
-            <AppointmentOverviewSectionTitle
-              data-testid={`appointment-date-${props.index}`}
-            >
-              {formatDate(props.appointment.start)}
-            </AppointmentOverviewSectionTitle>
-          </AppointmentOverviewSection>
-          <AppointmentOverviewSection icon={<WatchLaterOutlined />}>
-            <AppointmentOverviewSectionTitle
-              data-testid={`appointment-time-${props.index}`}
-            >
-              {t("appointmentCard.start", {
-                time: formatTime(props.appointment.start),
-              })}
-            </AppointmentOverviewSectionTitle>
-            {props.appointment.start && props.appointment.end && (
-              <AppointmentOverviewSectionText
-                data-testid={`appointment-duration-${props.index}`}
-              >
-                {t("appointmentCard.duration", {
-                  appointmentDuration: durationBetweenDatesInMinutes(
-                    props.appointment.start,
-                    props.appointment.end,
-                  ),
-                })}
-              </AppointmentOverviewSectionText>
+          <AppointmentOverviewButtonElement
+            icon={<DateRangeOutlined />}
+            testId={`appointment-date-${props.index}`}
+            text={formatDate(
+              props.appointment.start ?? props.appointment.earliestDate,
             )}
-          </AppointmentOverviewSection>
-          {props.appointment.appointmentType ===
-          ApiAppointmentType.Consultation ? (
-            <AppointmentOverviewSection icon={<PeopleOutlined />}>
+          />
+          {props.appointment.start && (
+            <AppointmentOverviewSection icon={<WatchLaterOutlined />}>
               <AppointmentOverviewSectionTitle
-                data-testid={`appointment-type-${props.index}`}
+                data-testid={`appointment-time-${props.index}`}
               >
-                {t("appointmentCard.appointmentType.consultation")}
+                {t("appointmentCard.start", {
+                  time: formatTime(props.appointment.start),
+                })}
               </AppointmentOverviewSectionTitle>
-            </AppointmentOverviewSection>
-          ) : (
-            <AppointmentOverviewSection icon={<VaccinesOutlined />}>
-              <AppointmentOverviewSectionTitle
-                data-testid={`appointment-type-${props.index}`}
-              >
-                {t("appointmentCard.appointmentType.vaccination")}
-              </AppointmentOverviewSectionTitle>
+              {props.appointment.start && props.appointment.end && (
+                <AppointmentOverviewSectionText
+                  data-testid={`appointment-duration-${props.index}`}
+                >
+                  {t("appointmentCard.duration", {
+                    appointmentDuration: durationBetweenDatesInMinutes(
+                      props.appointment.start,
+                      props.appointment.end,
+                    ),
+                  })}
+                </AppointmentOverviewSectionText>
+              )}
             </AppointmentOverviewSection>
           )}
-          <AppointmentOverviewSection icon={<EventAvailableOutlined />}>
-            {/* TODO make text and icon dynamic when status is used */}
-            <AppointmentOverviewSectionTitle
-              data-testid={`appointment-status-${props.index}`}
-            >
-              {t("appointmentStatus.booked")}
-            </AppointmentOverviewSectionTitle>
-          </AppointmentOverviewSection>
+          {props.appointment.appointmentType ===
+          ApiAppointmentType.Consultation ? (
+            <AppointmentOverviewButtonElement
+              icon={<PeopleOutlined />}
+              testId={`appointment-type-${props.index}`}
+              text={t("appointmentCard.appointmentType.consultation")}
+            />
+          ) : (
+            <AppointmentOverviewButtonElement
+              icon={<VaccinesOutlined />}
+              testId={`appointment-type-${props.index}`}
+              text={t("appointmentCard.appointmentType.vaccination")}
+            />
+          )}
+          {isCancelled() ? (
+            <AppointmentOverviewButtonElement
+              icon={<EventBusyOutlined />}
+              testId={`appointment-status-${props.index}`}
+              text={t("appointmentStatus.cancelled")}
+            />
+          ) : isBooked() ? (
+            <AppointmentOverviewButtonElement
+              icon={<EventAvailableOutlined />}
+              testId={`appointment-status-${props.index}`}
+              text={t("appointmentStatus.booked")}
+            />
+          ) : (
+            <AppointmentOverviewButtonElement
+              icon={<EventOutlined />}
+              testId={`appointment-status-${props.index}`}
+              text={t("appointmentStatus.nonBooked")}
+            />
+          )}
         </AppointmentOverviewSectionGrid>
         <ChevronRightOutlined
           color={"primary"}

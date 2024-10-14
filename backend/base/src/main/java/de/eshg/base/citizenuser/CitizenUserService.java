@@ -16,6 +16,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -43,6 +44,7 @@ public class CitizenUserService {
   private final CitizenKeycloakClient citizenKeycloakClient;
   private final MutexService mutexService;
   private final boolean testHelperEnabled;
+  private final EnvironmentConfig environmentConfig;
 
   public CitizenUserService(
       AuditLogger auditLogger,
@@ -50,12 +52,14 @@ public class CitizenUserService {
       @Value("${eshg.access-code-generator.max-tries:5}") int maxAccessCodeGenerationTries,
       CitizenKeycloakClient citizenKeycloakClient,
       MutexService mutexService,
-      Environment environment) {
+      Environment environment,
+      EnvironmentConfig environmentConfig) {
     this.auditLogger = auditLogger;
     this.accessCodeGenerator = accessCodeGenerator;
     this.maxAccessCodeGenerationTries = maxAccessCodeGenerationTries;
     this.citizenKeycloakClient = citizenKeycloakClient;
     this.mutexService = mutexService;
+    this.environmentConfig = environmentConfig;
     this.testHelperEnabled =
         Arrays.asList(environment.getActiveProfiles())
             .contains(ConditionalOnTestHelperEnabled.TEST_HELPER_PROFILE_NAME);
@@ -151,6 +155,7 @@ public class CitizenUserService {
     String formattedDateOfBirth = dateOfBirth.format(DateTimeFormatter.ISO_LOCAL_DATE);
     attributes.put(KeycloakAttributes.DATE_OF_BIRTH_ATTRIBUTE, List.of(formattedDateOfBirth));
     if (testHelperEnabled) {
+      environmentConfig.assertIsNotProduction();
       log.warn("Provisioning password for citizen user since test-helper profile is enabled!");
       setPasswordCredentials(accessCode, formattedDateOfBirth, user);
     }
@@ -172,6 +177,7 @@ public class CitizenUserService {
   }
 
   public String getPasswordOfAccessCodeUser(UserRepresentation user) {
+    environmentConfig.assertIsNotProduction();
     Assert.isTrue(
         testHelperEnabled, "This must not be invoked when the test-helper is not enabled");
     Assert.isTrue(

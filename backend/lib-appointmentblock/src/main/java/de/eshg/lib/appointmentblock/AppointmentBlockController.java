@@ -7,7 +7,6 @@ package de.eshg.lib.appointmentblock;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.lib.appointmentblock.api.*;
-import de.eshg.lib.appointmentblock.model.CreateAppointmentBlockGroupResponseData;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,17 +36,6 @@ public class AppointmentBlockController {
     this.appointmentBlockService = appointmentBlockService;
   }
 
-  @Operation(summary = "Create an appointment block group.")
-  @PostMapping("/appointment-block-groups")
-  @Transactional
-  public CreateAppointmentBlockGroupResponse createAppointmentBlockGroup(
-      @RequestBody @Valid CreateAppointmentBlockGroupRequest request) {
-    CreateAppointmentBlockGroupResponseData groupData =
-        appointmentBlockService.createAppointmentBlockGroup(request);
-    return new CreateAppointmentBlockGroupResponse(
-        groupData.appointmentBlockGroupId(), groupData.appointmentBlockIds());
-  }
-
   @Operation(summary = "Create appointment group with blocks for week days.")
   @PostMapping("/daily-appointment-block-groups")
   @Transactional
@@ -55,14 +43,6 @@ public class AppointmentBlockController {
       @Valid @RequestBody CreateDailyAppointmentBlockGroupRequest request) {
 
     return appointmentBlockService.createDailyAppointmentBlocksForGroup(request);
-  }
-
-  @Operation(summary = "Create an appointment block group.")
-  @PostMapping("/appointment-block-groups/validate")
-  @Transactional
-  public ValidateAppointmentBlockGroupResponse validateAppointmentBlockGroup(
-      @RequestBody @Valid CreateAppointmentBlockGroupRequest request) {
-    return appointmentBlockService.validateAppointmentBlockGroup(request);
   }
 
   @Operation(summary = "Create appointment group with blocks for week days.")

@@ -21,6 +21,7 @@ import {
   toUtcDate,
 } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
@@ -43,7 +44,12 @@ export function FormHeader({ children }: { children: string }) {
       <Typography
         component="h3"
         level="h4"
-        sx={{ fontSize: { xxs: "1.125rem", sm: "1.5rem" } }}
+        sx={{
+          fontSize: byBreakpoint({
+            mobile: "1.125rem",
+            desktop: "1.5rem",
+          }),
+        }}
       >
         {children}
       </Typography>
@@ -98,10 +104,10 @@ const reportCaseSubformStyles: SxProps = {
   borderRadius: "xl",
   p: 3,
   flex: 1,
-  mr: {
-    xxs: 0,
-    md: 2,
-  },
+  mr: byBreakpoint({
+    mobile: 0,
+    desktop: 2,
+  }),
 };
 
 export interface ReportMeaslesCaseFormProps {
@@ -244,10 +250,10 @@ export function ReportCaseForm({ onSubmit }: ReportMeaslesCaseFormProps) {
           component={FormPlus}
           sx={{
             display: "flex",
-            flexDirection: {
-              xxs: "column-reverse",
-              md: "row",
-            },
+            flexDirection: byBreakpoint({
+              mobile: "column-reverse",
+              desktop: "row",
+            }),
             mb: "4rem",
           }}
         >

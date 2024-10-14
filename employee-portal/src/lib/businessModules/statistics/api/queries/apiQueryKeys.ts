@@ -27,8 +27,8 @@ export const dataSourceApiQueryKey = queryKeyFactory(
   apiQueryKey(["dataSourceApi"]),
 );
 
-export const statisticsSchemeApiQueryKey = queryKeyFactory(
-  apiQueryKey(["statisticsSchemeApi"]),
+export const evaluationTemplateApiQueryKey = queryKeyFactory(
+  apiQueryKey(["evaluationTemplateApi"]),
 );
 
 export const geoShapeApiQueryKey = queryKeyFactory(

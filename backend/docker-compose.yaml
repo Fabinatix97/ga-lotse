@@ -54,7 +54,6 @@ services:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://base-db/eshgbase
       - eshg.keycloak.internal.url=http://keycloak:8080
-      - eshg.keycloak.admin-client.client-secret=admin
       - spring.mail.host=maildev
       - eshg.synapse.url=http://localhost:8008
       - eshg.synapse.client.secret=very-secrety-synapse-client-secret
@@ -66,6 +65,10 @@ services:
       - de.eshg.business-modules.clients[2].url=http://travel-medicine:8080
       - de.eshg.business-modules.clients[3].type=MEASLES_PROTECTION
       - de.eshg.business-modules.clients[3].url=http://measles-protection:8080
+      - de.eshg.business-modules.clients[4].type=STI_PROTECTION
+      - de.eshg.business-modules.clients[4].url=http://sti-protection:8080
+      - de.eshg.business-modules.clients[5].type=MEDICAL_REGISTRY
+      - de.eshg.business-modules.clients[5].url=http://medical-registry:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
     restart: unless-stopped
     depends_on:
@@ -481,6 +484,10 @@ services:
     image: ga-lotse/opendata
     ports:
       - 8096:8080
+    depends_on:
+      opendata-db:
+        condition: service_healthy
+    restart: unless-stopped
     environment:
       - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
@@ -497,5 +504,33 @@ services:
       - 5446:5432
     environment:
       POSTGRES_DB: opendata
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  medical-registry:
+    image: ga-lotse/medical-registry
+    env_file:
+      - 'lib-procedures/src/test/resources/archiving-test.env'
+    environment:
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
+      - spring.datasource.url=jdbc:postgresql://medical-registry-db/medical_registry
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - de.eshg.auditlog.service-url=http://auditlog:8080
+    restart: unless-stopped
+    depends_on:
+      medical-registry-db:
+        condition: service_healthy
+    ports:
+      - 8097:8080
+
+  medical-registry-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5447:5432
+    environment:
+      POSTGRES_DB: medical_registry
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword

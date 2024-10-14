@@ -5,65 +5,44 @@
 
 package de.eshg.schoolentry.importer;
 
-import static de.eshg.schoolentry.importer.SchoolListRowProcessor.SchoolListFields.*;
+import static de.eshg.schoolentry.importer.SchoolListColumn.*;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.schoolentry.business.model.AddressData;
 import de.eshg.schoolentry.business.model.ImportChildData;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.mapper.PersonMapper;
 import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import java.time.Year;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class SchoolListRowProcessor extends RowProcessor<SchoolListRowValues> {
-
-  enum SchoolListFields {
-    LAST_NAME(0),
-    FIRST_NAME(1),
-    DATE_OF_BIRTH(2),
-    GENDER(3),
-    STREET(4),
-    HOUSE_NUMBER(5),
-    POSTAL_CODE(6),
-    CITY(7),
-    ADDRESS_ADDITION(8),
-    PHONE_NUMBER(9),
-    ENTRY_LEVEL(10),
-    EARLY_EXAMINATION(11),
-    STATUS(12),
-    PROCEDURE_ID(13);
-
-    final int column;
-
-    SchoolListFields(int column) {
-      this.column = column;
-    }
-  }
+public class SchoolListRowProcessor extends RowProcessor<SchoolListRowValues, SchoolListColumn> {
 
   private final Year schoolYear;
   private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
 
   public SchoolListRowProcessor(
-      Sheet sheet, Year schoolYear, ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
-    super(sheet);
+      Sheet sheet,
+      List<SchoolListColumn> actualColumns,
+      Year schoolYear,
+      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
+    super(sheet, actualColumns);
     this.schoolYear = schoolYear;
     this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
   }
 
   @Override
-  protected SchoolListRowValues process(ColumnAccessor col) {
+  protected SchoolListRowValues process(ColumnAccessor<SchoolListColumn> col) {
     SchoolListRowValues result = new SchoolListRowValues();
     BiConsumer<Cell, String> errorHandler = createErrorHandler(result);
 
     result.setChild(processChildData(col, errorHandler));
-    result.setStatus(processStatus(col.get(STATUS.column), errorHandler));
-    result.setProcedureId(processProcedureId(col.get(PROCEDURE_ID.column), errorHandler));
+    result.setStatus(processStatus(col, STATUS, errorHandler));
+    result.setProcedureId(processProcedureId(col, PROCEDURE_ID, errorHandler));
     result.setEntryLevel(processEntryLevel(col, errorHandler));
     result.setEarlyExamination(processEarlyExamination(col, errorHandler));
 
@@ -83,8 +62,10 @@ public class SchoolListRowProcessor extends RowProcessor<SchoolListRowValues> {
     return new ImportProcedureData(
         PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
         procedureType,
+        null,
         values.isEntryLevel(),
-        values.isEarlyExamination());
+        values.isEarlyExamination(),
+        false);
   }
 
   @Override
@@ -100,37 +81,32 @@ public class SchoolListRowProcessor extends RowProcessor<SchoolListRowValues> {
   }
 
   private ImportChildData processChildData(
-      ColumnAccessor col, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
     return new ImportChildData(
-        cellAsString(col.get(FIRST_NAME.column), errorHandler),
-        cellAsString(col.get(LAST_NAME.column), errorHandler),
-        cellAsDate(col.get(DATE_OF_BIRTH.column), errorHandler),
-        cellAsGender(col.get(GENDER.column), errorHandler),
-        processAddressData(col, errorHandler),
+        cellAsString(col, FIRST_NAME, errorHandler),
+        cellAsString(col, LAST_NAME, errorHandler),
+        cellAsDate(col, DATE_OF_BIRTH, errorHandler),
+        cellAsGender(col, GENDER, errorHandler),
+        processAddressData(
+            col,
+            new AddressColumns<>(STREET, HOUSE_NUMBER, POSTAL_CODE, CITY, ADDRESS_ADDITION),
+            errorHandler,
+            true),
         processPhoneNumber(col, errorHandler));
   }
 
-  private AddressData processAddressData(
-      ColumnAccessor col, BiConsumer<Cell, String> errorHandler) {
-    return new AddressData(
-        CountryCodeDto.DE,
-        cellAsString(col.get(CITY.column), false, true, errorHandler),
-        cellAsString(col.get(POSTAL_CODE.column), false, false, errorHandler),
-        cellAsString(col.get(STREET.column), false, true, errorHandler),
-        cellAsString(col.get(HOUSE_NUMBER.column), true, false, errorHandler),
-        cellAsString(col.get(ADDRESS_ADDITION.column), true, false, errorHandler));
+  private String processPhoneNumber(
+      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+    return cellAsString(col, PHONE_NUMBER, true, true, errorHandler);
   }
 
-  private String processPhoneNumber(ColumnAccessor col, BiConsumer<Cell, String> errorHandler) {
-    return cellAsString(col.get(PHONE_NUMBER.column), true, false, errorHandler);
-  }
-
-  private boolean processEntryLevel(ColumnAccessor col, BiConsumer<Cell, String> errorHandler) {
-    return cellAsFlag(col.get(ENTRY_LEVEL.column), errorHandler);
+  private boolean processEntryLevel(
+      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+    return cellAsFlag(col, ENTRY_LEVEL, errorHandler);
   }
 
   private boolean processEarlyExamination(
-      ColumnAccessor col, BiConsumer<Cell, String> errorHandler) {
-    return cellAsFlag(col.get(EARLY_EXAMINATION.column), errorHandler);
+      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+    return cellAsFlag(col, EARLY_EXAMINATION, errorHandler);
   }
 }

@@ -32,6 +32,7 @@ import {
   roleStatusNames,
 } from "@/lib/businessModules/measlesProtection/shared/translations";
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
 import { useSearchParam } from "@/lib/shared/hooks/useSearchParam";
 
@@ -39,19 +40,19 @@ import { formatAddress } from "./helpers";
 import { ReportMeaslesCase } from "./types";
 
 export const reportCaseOverviewCardStyles: SxProps = {
-  minWidth: {
-    xxs: "250px",
-    sm: "400px",
-  },
-  maxWidth: {
-    xxs: "100%",
-    sm: "400px",
-  },
+  minWidth: byBreakpoint({
+    mobile: "250px",
+    desktop: "400px",
+  }),
+  maxWidth: byBreakpoint({
+    mobile: "100%",
+    desktop: "400px",
+  }),
   overflow: "auto",
-  mb: {
-    xxs: 2,
-    md: 0,
-  },
+  mb: byBreakpoint({
+    mobile: 2,
+    desktop: 0,
+  }),
   alignSelf: {
     md: "flex-start",
   },
@@ -105,7 +106,12 @@ export function ReportCaseOverviewCard({
       <CardContent orientation="vertical">
         <Typography
           level="h4"
-          sx={{ fontSize: { xxs: "1.125rem", sm: "1.5rem" } }}
+          sx={{
+            fontSize: byBreakpoint({
+              mobile: "1.125rem",
+              desktop: "1.5rem",
+            }),
+          }}
         >
           {t("common.overview")}
         </Typography>

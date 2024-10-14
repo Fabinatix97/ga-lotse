@@ -14,12 +14,14 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { CalendarTodayOutlined } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import { Button, Stack, Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 
 import { useDownloadTravelMedicineFile } from "@/lib/businessModules/travelMedicine/api/download/files";
 import {
-  useGetStatus,
-  useGetStepsWithAppliedServices,
+  useGetStatusQuery,
+  useGetStepsWithAppliedServicesQuery,
+  useGetVaccinationConsultationCertificatesQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
 import { CreateCertificateSideBar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/CreateCertificateSideBar";
 import { vaccinationConsultationCertificatesColumns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/certificatesColumns";
@@ -30,10 +32,8 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function VaccinationConsultationCertificatesTable({
   procedureId,
-  tableData,
 }: Readonly<{
   procedureId: string;
-  tableData: ApiTMCertificate[];
 }>) {
   const snackbar = useSnackbar();
   const downloadFile = useDownloadTravelMedicineFile();
@@ -41,10 +41,17 @@ export function VaccinationConsultationCertificatesTable({
   const [createCertificateSideBarOpen, setCreateCertificateSideBarOpen] =
     useState(false);
 
-  const stepsWithAppliedServices =
-    useGetStepsWithAppliedServices(procedureId).data;
-
-  const status = useGetStatus(procedureId).data;
+  const [
+    { data: tableData },
+    { data: stepsWithAppliedServices },
+    { data: status },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetVaccinationConsultationCertificatesQuery(procedureId),
+      useGetStepsWithAppliedServicesQuery(procedureId),
+      useGetStatusQuery(procedureId),
+    ],
+  });
 
   function isProcedureClosed() {
     return status === ApiProcedureStatus.Closed;
@@ -97,7 +104,7 @@ export function VaccinationConsultationCertificatesTable({
       >
         <TableSheet>
           <DataTable
-            data={tableData}
+            data={tableData.certificates}
             columns={vaccinationConsultationCertificatesColumns(
               downloadCertificate,
             )}

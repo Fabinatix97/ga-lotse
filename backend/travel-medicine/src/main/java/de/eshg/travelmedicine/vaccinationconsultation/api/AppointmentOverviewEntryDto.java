@@ -24,5 +24,7 @@ public record AppointmentOverviewEntryDto(
     LocalDate travelStartDate,
     @NotNull CreatedByUserTypeDto createdBy,
     @NotNull ProcedureStatusDto status,
+    @NotNull AppointmentTypeDto appointmentType,
     Instant appointment,
-    @NotNull AppointmentTypeDto appointmentType) {}
+    LocalDate earliestDate,
+    AppointmentBookingTypeDto appointmentBookingType) {}

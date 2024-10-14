@@ -9,7 +9,6 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import {
   ColorPaletteProp,
   SnackbarProps as JoySnackbarProps,
-  Link, // eslint-disable-line no-restricted-imports
   Snackbar,
 } from "@mui/joy";
 import {
@@ -24,6 +23,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 import { Optional } from "../../types/utility";
+import { ButtonLink } from "../buttons/ButtonLink";
 
 import { addSnackbarToQueue, removeSnackbarFromQueue } from "./snackbarUtils";
 
@@ -95,8 +95,7 @@ function BaseSnackbar({
       endDecorator={
         <>
           {action && (
-            <Link
-              component="button"
+            <ButtonLink
               color="primary"
               fontSize="sm"
               onClick={() => {
@@ -106,24 +105,22 @@ function BaseSnackbar({
               sx={{ paddingInline: 0.5 }}
             >
               {action.name}
-            </Link>
+            </ButtonLink>
           )}
           {manualClose && (
-            <Link
-              component="button"
+            <ButtonLink
               color={"primary"}
               aria-label={closeLabel}
               onClick={() => setOpen(false)}
             >
               <CloseIcon />
-            </Link>
+            </ButtonLink>
           )}
-          <Link
+          <ButtonLink
             tabIndex={-1}
             aria-hidden={true}
             aria-label="Technical test close button"
             data-testid="snackbar-internal-close-button"
-            component="button"
             style={{ opacity: 0 }}
             onClick={() => setOpen(false)}
           />

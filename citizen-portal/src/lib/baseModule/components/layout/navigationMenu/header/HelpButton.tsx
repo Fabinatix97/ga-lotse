@@ -7,6 +7,7 @@ import { HelpOutlineOutlined } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
 import { useTranslation } from "@/lib/i18n/client";
+import { byBreakpoint } from "@/lib/shared/breakpoints";
 
 export function HelpButton() {
   const { t } = useTranslation("base/header");
@@ -16,7 +17,10 @@ export function HelpButton() {
       variant="plain"
       sx={{
         color: (theme) => theme.palette.text.primary,
-        width: { xxs: "100%", md: "auto" },
+        width: byBreakpoint({
+          mobile: "100%",
+          desktop: "auto",
+        }),
         justifyContent: "flex-start",
         height: "40px",
       }}

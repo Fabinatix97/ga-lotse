@@ -251,6 +251,19 @@ public class ServiceDirectoryService {
     }
     Optional<AuditedActor> actorData = getActor(commonName);
 
+    if (actorData.isEmpty() && actorRequestDto.readableName() != null) {
+      getActor(orgUnitId, actorRequestDto.readableName())
+          .ifPresent(
+              otherActor -> {
+                throw new ServiceDirectoryBadRequestException(
+                    "Cannot update CN of actor %s from %s to %s"
+                        .formatted(
+                            ActorMapperApi.calculateNaturalId(otherActor),
+                            otherActor.getCommonName(),
+                            commonName));
+              });
+    }
+
     actorData.ifPresentOrElse(
         actor -> {
           boolean certificateUpdate =
@@ -274,6 +287,11 @@ public class ServiceDirectoryService {
       String commonName,
       Certificate previousCertificate,
       UUID orgUnitId) {
+    if (updatedActor.isManualCertificate()) {
+      throw new ServiceDirectoryBadRequestException(
+          "Cannot update certificate for actor %s (%s): manual_certificate"
+              .formatted(ActorMapperApi.calculateNaturalId(updatedActor), updatedActor.getId()));
+    }
     if (!isEmpty(actorRequestDto.readableName())
         && !actorRequestDto.readableName().equals(updatedActor.getReadableName())) {
       logChangeAttempt("readableName");
@@ -346,6 +364,10 @@ public class ServiceDirectoryService {
 
   private Optional<AuditedActor> getActor(String commonName) {
     return auditedActorRepository.findByCommonName(commonName);
+  }
+
+  private Optional<AuditedActor> getActor(UUID orgUnitId, String readableName) {
+    return auditedActorRepository.findByOrgUnitIdAndReadableName(orgUnitId, readableName);
   }
 
   private static void validateCommonName(CertificateDto certificate, String commonName) {

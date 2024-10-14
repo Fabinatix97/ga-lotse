@@ -9,7 +9,7 @@ import { isStrictEqual } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
-import { AllRoomMembers } from "@/lib/businessModules/chat/shared/types";
+import { ChatRoomMember } from "@/lib/businessModules/chat/shared/types";
 import {
   getMemberAvatarUrl,
   getRoomAvatarUrl,
@@ -21,10 +21,10 @@ export interface RoomInfo {
   room: Room | null;
   roomCreator?: string;
   communicationType?: CommunicationType;
-  roomAvatarUrl: string | null;
-  allRoomMembers: AllRoomMembers[];
-  roomMembers: AllRoomMembers[];
-  dmRoomMember: AllRoomMembers | undefined;
+  avatarUrl: string | null;
+  allRoomMembers: ChatRoomMember[];
+  roomMembers: ChatRoomMember[];
+  dmRoomMember: ChatRoomMember | undefined;
   isAdmin: boolean;
   matrixClient: MatrixClient;
 }
@@ -61,7 +61,7 @@ export function useRoomInfo(roomId: string): RoomInfo {
     ? roomMembers?.[0]
     : undefined;
 
-  const roomAvatarUrl = useMemo(
+  const avatarUrl = useMemo(
     () =>
       isDMRoom(rct?.communicationType)
         ? getMemberAvatarUrl(matrixClient, dmRoomMember?.member)
@@ -75,7 +75,7 @@ export function useRoomInfo(roomId: string): RoomInfo {
     room,
     roomCreator,
     communicationType: rct?.communicationType,
-    roomAvatarUrl,
+    avatarUrl,
     roomMembers,
     allRoomMembers,
     dmRoomMember,

@@ -47,43 +47,6 @@ paths:
       summary: Get all appointment block groups.
       tags:
       - AppointmentBlock
-    post:
-      operationId: createAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CreateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
-  /appointment-blocks/appointment-block-groups/validate:
-    post:
-      operationId: validateAppointmentBlockGroup
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateAppointmentBlockGroupRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ValidateAppointmentBlockGroupResponse"
-          description: OK
-      summary: Create an appointment block group.
-      tags:
-      - AppointmentBlock
   /appointment-blocks/daily-appointment-block-groups:
     post:
       operationId: createDailyAppointmentBlocksForGroup
@@ -1408,6 +1371,91 @@ paths:
       summary: Get STI protection procedure by id.
       tags:
       - StiProtectionProcedure
+  /sti-procedures/{id}/close:
+    put:
+      operationId: closeProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StiProtectionProcedure"
+          description: OK
+      summary: Close an STI procedure.
+      tags:
+      - StiProtectionProcedure
+  /sti-procedures/{id}/medical-history:
+    get:
+      operationId: getMedicalHistory
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetMedicalHistoryResponse"
+          description: OK
+      summary: Get medical history item.
+      tags:
+      - StiProtectionProcedure
+    post:
+      operationId: createMedicalHistory
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMedicalHistoryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CreateMedicalHistoryResponse"
+          description: OK
+      summary: Add medical history item to STI protection procedure.
+      tags:
+      - StiProtectionProcedure
+  /sti-procedures/{id}/reopen:
+    put:
+      operationId: reopenProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StiProtectionProcedure"
+          description: OK
+      summary: Re-open an STI procedure.
+      tags:
+      - StiProtectionProcedure
   /task-metrics:
     get:
       operationId: getTaskMetrics
@@ -1866,6 +1914,11 @@ components:
       enum:
       - START
       - END
+    AppointmentBookingType:
+      type: string
+      enum:
+      - USER_DEFINED
+      - APPOINTMENT_BLOCK
     AppointmentLocation:
       type: object
       properties:
@@ -2046,6 +2099,7 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY
     Concern:
       type: string
       enum:
@@ -2403,58 +2457,6 @@ components:
       - ZA
       - ZM
       - ZW
-    CreateAppointmentBlock:
-      type: object
-      properties:
-        end:
-          type: string
-          format: date-time
-          description: Time at which the appointment block ends.
-          example: 2016-01-01T01:45:00.123456+01:00
-        start:
-          type: string
-          format: date-time
-          description: Time at which the appointment block starts.
-          example: 2016-01-01T01:00:00.123456+01:00
-      required:
-      - end
-      - start
-    CreateAppointmentBlockGroupRequest:
-      type: object
-      properties:
-        appointmentBlocks:
-          type: array
-          items:
-            $ref: "#/components/schemas/CreateAppointmentBlock"
-        consultants:
-          type: array
-          items:
-            type: string
-            format: uuid
-        locationId:
-          type: string
-          format: uuid
-        mfas:
-          type: array
-          items:
-            type: string
-            format: uuid
-        parallelExaminations:
-          type: integer
-          format: int32
-          maximum: 10
-          minimum: 1
-        physicians:
-          type: array
-          items:
-            type: string
-            format: uuid
-        type:
-          $ref: "#/components/schemas/AppointmentType"
-      required:
-      - appointmentBlocks
-      - parallelExaminations
-      - type
     CreateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -2511,6 +2513,9 @@ components:
           items:
             type: string
             format: uuid
+        locationId:
+          type: string
+          format: uuid
         mfas:
           type: array
           items:
@@ -2570,13 +2575,39 @@ components:
           type: string
       required:
       - manualProgressEntryType
+    CreateMedicalHistoryRequest:
+      type: object
+      properties:
+        medicalHistory:
+          oneOf:
+          - $ref: "#/components/schemas/SexWorkMedicalHistory"
+          - $ref: "#/components/schemas/StiConsultationMedicalHistory"
+      required:
+      - medicalHistory
+    CreateMedicalHistoryResponse:
+      type: object
+      properties:
+        medicalHistory:
+          oneOf:
+          - $ref: "#/components/schemas/SexWorkMedicalHistory"
+          - $ref: "#/components/schemas/StiConsultationMedicalHistory"
+      required:
+      - medicalHistory
     CreateProcedureRequest:
       type: object
       properties:
+        appointmentBookingType:
+          $ref: "#/components/schemas/AppointmentBookingType"
+        appointmentStart:
+          type: string
+          format: date-time
         concern:
           $ref: "#/components/schemas/Concern"
         countryOfBirth:
           $ref: "#/components/schemas/CountryCode"
+        durationInMinutes:
+          type: integer
+          format: int32
         gender:
           $ref: "#/components/schemas/Gender"
         inGermanySince:
@@ -2588,7 +2619,10 @@ components:
           type: integer
           format: int32
       required:
+      - appointmentBookingType
+      - appointmentStart
       - concern
+      - durationInMinutes
       - gender
       - yearOfBirth
     CreateProcedureResponse:
@@ -2619,6 +2653,8 @@ components:
       - WEDNESDAY
       - THURSDAY
       - FRIDAY
+      - SATURDAY
+      - SUNDAY
     Decision:
       type: string
       enum:
@@ -2662,6 +2698,17 @@ components:
           $ref: "#/components/schemas/Task"
       required:
       - task
+    DiseaseType:
+      type: string
+      enum:
+      - CHLAMYDIA
+      - GONORRHEA
+      - HEPATITIS_A
+      - HEPATITIS_B
+      - HEPATITIS_C
+      - HIV
+      - HPV
+      - SYPHILIS
     DomesticAddress:
       type: object
       allOf:
@@ -2715,6 +2762,17 @@ components:
       - country
       - postalCode
       - street
+    Examination:
+      type: object
+      properties:
+        diseaseType:
+          $ref: "#/components/schemas/DiseaseType"
+        examinationDate:
+          type: string
+          format: date
+      required:
+      - diseaseType
+      - examinationDate
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -3108,6 +3166,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ManualProgressEntryHistory"
+    GetMedicalHistoryResponse:
+      type: object
+      properties:
+        medicalHistory:
+          oneOf:
+          - $ref: "#/components/schemas/SexWorkMedicalHistory"
+          - $ref: "#/components/schemas/StiConsultationMedicalHistory"
+      required:
+      - medicalHistory
     GetMetaDataHistoryResponse:
       type: object
       properties:
@@ -3627,6 +3694,15 @@ components:
       - EMAIL
       - IMAGE
       - DOCUMENT
+    MedicalHistory:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     MetaData:
       type: object
       discriminator:
@@ -4100,14 +4176,63 @@ components:
           format: int64
       required:
       - taskVersion
+    SexWorkMedicalHistory:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MedicalHistory"
+      - type: object
+        properties:
+          examinationReason:
+            type: string
+          examinations:
+            type: array
+            items:
+              $ref: "#/components/schemas/Examination"
+          sexualContact:
+            $ref: "#/components/schemas/Gender"
+          sexualOrientation:
+            $ref: "#/components/schemas/SexualOrientation"
+          vaccinations:
+            type: array
+            items:
+              $ref: "#/components/schemas/Vaccination"
+    SexualOrientation:
+      type: string
+      enum:
+      - HETEROSEXUAL
+      - HOMOSEXUAL
+      - BISEXUAL
+      - NOT_SPECIFIED
     SortDirection:
       type: string
       enum:
       - ASC
       - DESC
+    StiConsultationMedicalHistory:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MedicalHistory"
+      - type: object
+        properties:
+          examinationReason:
+            type: string
+          examinations:
+            type: array
+            items:
+              $ref: "#/components/schemas/Examination"
+          sexualContact:
+            $ref: "#/components/schemas/Gender"
+          sexualOrientation:
+            $ref: "#/components/schemas/SexualOrientation"
+          vaccinations:
+            type: array
+            items:
+              $ref: "#/components/schemas/Vaccination"
     StiProtectionProcedure:
       type: object
       properties:
+        appointment:
+          $ref: "#/components/schemas/Appointment"
         concern:
           $ref: "#/components/schemas/Concern"
         createdAt:
@@ -4121,6 +4246,7 @@ components:
         status:
           $ref: "#/components/schemas/ProcedureStatus"
       required:
+      - appointment
       - concern
       - createdAt
       - id
@@ -4129,6 +4255,8 @@ components:
     StiProtectionProcedureOverview:
       type: object
       properties:
+        appointment:
+          $ref: "#/components/schemas/Appointment"
         concern:
           $ref: "#/components/schemas/Concern"
         createdAt:
@@ -4145,6 +4273,7 @@ components:
           type: integer
           format: int32
       required:
+      - appointment
       - concern
       - createdAt
       - gender
@@ -4427,6 +4556,17 @@ components:
       - lastName
       - userId
       - username
+    Vaccination:
+      type: object
+      properties:
+        diseaseType:
+          $ref: "#/components/schemas/DiseaseType"
+        vaccinationDate:
+          type: string
+          format: date
+      required:
+      - diseaseType
+      - vaccinationDate
     ValidateAppointmentBlockGroupResponse:
       type: object
       properties:

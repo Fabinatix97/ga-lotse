@@ -1,0 +1,35 @@
+plugins {
+    id "eshg.service"
+}
+
+dependencies {
+    implementation project(':lib-base-client')
+    implementation project(':lib-procedures')
+    implementation project(':business-module-persistence-commons')
+
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation "org.testcontainers:postgresql"
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+}
+
+dockerCompose {
+    startedServices = [
+        'medical-registry',
+        'medical-registry-db'
+    ]
+}
+
+tasks.named("test").configure {
+    dependsOn project(':base').tasks.named("composeUp")
+    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-medical-registry') ?: "unspecified"
+}

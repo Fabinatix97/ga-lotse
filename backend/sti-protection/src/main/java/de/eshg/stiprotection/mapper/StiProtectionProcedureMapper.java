@@ -27,7 +27,9 @@ public class StiProtectionProcedureMapper {
         procedureData.createdAt(),
         ProcedureMapper.toInterfaceType(procedureData.status()),
         ConcernMapper.toInterfaceType(procedureData.concern()),
-        PersonMapper.toInterfaceType(procedureData.person()));
+        PersonMapper.toInterfaceType(procedureData.person()),
+        AppointmentMapper.toInterfaceType(
+            procedureData.appointment(), procedureData.userDefinedAppointment()));
   }
 
   public static StiProtectionProcedureOverviewDto toOverviewType(
@@ -38,6 +40,8 @@ public class StiProtectionProcedureMapper {
         ProcedureMapper.toInterfaceType(procedureData.status()),
         ConcernMapper.toInterfaceType(procedureData.concern()),
         procedureData.person().getYearOfBirth(),
-        GenderMapper.toInterfaceType(procedureData.person().getGender()));
+        GenderMapper.toInterfaceType(procedureData.person().getGender()),
+        AppointmentMapper.toInterfaceType(
+            procedureData.appointment(), procedureData.userDefinedAppointment()));
   }
 }

@@ -6,6 +6,7 @@
 package de.eshg.base.centralfile.persistence.repository;
 
 import de.eshg.base.centralfile.persistence.entity.Person;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -110,6 +111,17 @@ public interface PersonRepository
     )
     """)
   boolean isReferencePersonObsolete(UUID externalId);
+
+  @Query(
+      """
+    select fileState.externalId from Person fileState
+    join Person ref on fileState.referencePerson.id = ref.id
+    where ref.externalId = :refExternalId
+    and fileState.createdAt <= :createdAt
+    order by fileState.id
+    """)
+  List<UUID> findAllFileStateIdsByReferencePersonCreatedBefore(
+      @Param("refExternalId") UUID refExternalId, @Param("createdAt") Instant createdAt);
 
   @Query(
       """

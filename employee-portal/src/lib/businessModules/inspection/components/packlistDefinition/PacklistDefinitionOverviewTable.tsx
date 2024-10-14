@@ -9,9 +9,9 @@ import {
   ApiPacklistDefinition,
   ApiPacklistDefinitionRevision,
 } from "@eshg/employee-portal-api/inspection";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Add, Edit, History } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
-import Link from "@mui/joy/Link";
 import { CellContext, createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -120,7 +120,7 @@ export function PacklistDefinitionOverviewTable() {
     columnHelper.accessor("name", {
       header: "Name",
       cell: (info) => (
-        <Link
+        <ButtonLink
           onClick={() =>
             handleViewRevisionClick(
               info.row.original.id,
@@ -133,7 +133,7 @@ export function PacklistDefinitionOverviewTable() {
           <Stack direction="row" spacing={0.5}>
             {info.renderValue()}
           </Stack>
-        </Link>
+        </ButtonLink>
       ),
     }),
 

@@ -11,16 +11,17 @@ import {
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useCreateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/travelMedicine/api/mutations/appointmentBlocks";
 import { useValidateDailyAppointmentBlocksForGroup } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import {
-  useGetAllMedicalAssistants,
-  useGetAllPhysicians,
+  useGetAllMedicalAssistantsQuery,
+  useGetAllPhysiciansQuery,
 } from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
-import { useGetAllAppointmentTypes } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
+import { useGetAllAppointmentTypesQuery } from "@/lib/businessModules/travelMedicine/api/queries/appointmentTypes";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import {
   AppointmentBlockGroupValuesWithDays,
@@ -69,8 +70,17 @@ function mapAppointmentBlock(
 
 export function CreateAppointmentBlockGroupForm() {
   const snackbar = useSnackbar();
-  const allPhysiciansQuery = useGetAllPhysicians();
-  const allMedicalAssistants = useGetAllMedicalAssistants();
+  const [
+    { data: allPhysicians },
+    { data: allMedicalAssistants },
+    { data: allAppointmentTypes },
+  ] = useSuspenseQueries({
+    queries: [
+      useGetAllPhysiciansQuery(),
+      useGetAllMedicalAssistantsQuery(),
+      useGetAllAppointmentTypesQuery(),
+    ],
+  });
   const [freeStaff, setFreeStaff] = useState<string[]>([]);
   const [blockedStaff, setBlockedStaff] = useState<string[]>([]);
   const [validateRequest, setValidateRequest] =
@@ -81,10 +91,9 @@ export function CreateAppointmentBlockGroupForm() {
     useCreateDailyAppointmentBlocksForGroup();
   const validateDailyAppointmentBlocksForGroup =
     useValidateDailyAppointmentBlocksForGroup(validateRequest);
-  const allAppointmentTypes = useGetAllAppointmentTypes();
 
   const appointmentTypesRecord: Record<string, number> = {};
-  allAppointmentTypes.data.forEach(
+  allAppointmentTypes.forEach(
     (currentType) =>
       (appointmentTypesRecord[currentType.appointmentTypeDto] =
         currentType.standardDurationInMinutes),
@@ -132,8 +141,8 @@ export function CreateAppointmentBlockGroupForm() {
   return (
     <AppointmentBlockGroupForm
       initialValues={INITIAL_VALUES}
-      allPhysicians={allPhysiciansQuery.data}
-      allMedicalAssistants={allMedicalAssistants.data}
+      allPhysicians={allPhysicians}
+      allMedicalAssistants={allMedicalAssistants}
       onSubmit={handleSubmit}
       validateAvailability={validateAvailability}
       freeStaff={freeStaff}

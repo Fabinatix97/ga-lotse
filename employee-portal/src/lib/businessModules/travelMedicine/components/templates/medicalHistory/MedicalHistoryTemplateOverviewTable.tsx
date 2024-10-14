@@ -7,6 +7,7 @@
 
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Button } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import {
@@ -15,7 +16,7 @@ import {
   usePatchMedicalHistoryTemplateFollowUpFlag,
   usePatchMedicalHistoryTemplateMainFlag,
 } from "@/lib/businessModules/travelMedicine/api/mutations/medicalHistoryTemplates";
-import { useGetAllMedicalHistoryTemplates } from "@/lib/businessModules/travelMedicine/api/queries/medicalHistoryTemplates";
+import { useGetAllMedicalHistoryTemplatesQuery } from "@/lib/businessModules/travelMedicine/api/queries/medicalHistoryTemplates";
 import { medicalHistoryColumns } from "@/lib/businessModules/travelMedicine/components/templates/medicalHistory/columns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -25,8 +26,9 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
 export function MedicalHistoryTemplateOverviewTable() {
   const router = useRouter();
-  const { data: allMedicalHistoryTemplates, refetch } =
-    useGetAllMedicalHistoryTemplates();
+  const [{ data: allMedicalHistoryTemplates, refetch }] = useSuspenseQueries({
+    queries: [useGetAllMedicalHistoryTemplatesQuery()],
+  });
   const deleteMedicalHistoryTemplateById =
     useDeleteMedicalHistoryTemplateById();
   const patchMedicalHistoryTemplateMainFlag =

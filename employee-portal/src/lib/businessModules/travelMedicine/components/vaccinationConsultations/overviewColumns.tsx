@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentOverviewEntry } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentOverviewEntry,
+} from "@eshg/employee-portal-api/travelMedicine";
 import {
   formatDate,
   formatDateTime,
@@ -26,6 +29,19 @@ import {
 
 const columnHelper: ColumnHelper<ApiAppointmentOverviewEntry> =
   createColumnHelper<ApiAppointmentOverviewEntry>();
+
+function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
+  if (
+    bookingType === ApiAppointmentBookingType.UserDefined ||
+    bookingType === ApiAppointmentBookingType.AppointmentBlock
+  ) {
+    return <Chip color={"success"}>Gebucht</Chip>;
+  } else if (bookingType === ApiAppointmentBookingType.Cancelled) {
+    return <Chip color={"danger"}>Abgesagt</Chip>;
+  } else {
+    return <Chip color={"warning"}>Noch nicht gebucht</Chip>;
+  }
+}
 
 export function appointmentOverviewEntriesColumns() {
   return [
@@ -110,6 +126,10 @@ export function appointmentOverviewEntriesColumns() {
           parentRow: true,
         },
       },
+    }),
+    columnHelper.accessor("appointmentBookingType", {
+      header: "Terminstatus",
+      cell: (props) => formatBookingType(props.getValue()),
     }),
   ];
 }

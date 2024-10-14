@@ -15,9 +15,13 @@ export function useStatisticRoleChecks() {
   ]);
   const selfUser = useGetSelfUser().data;
 
+  function isAdminOrOwner(creatorUserId: string) {
+    return isAdmin || creatorUserId === selfUser.userId;
+  }
+
   return {
-    canDeleteStatistic: (creatorUserId: string) =>
-      isAdmin || creatorUserId === selfUser.userId,
+    canDelete: isAdminOrOwner,
+    canUpdateStatistic: isAdminOrOwner,
     canWrite: () => canWrite,
   };
 }

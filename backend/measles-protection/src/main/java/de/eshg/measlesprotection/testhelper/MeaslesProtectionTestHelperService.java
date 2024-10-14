@@ -6,13 +6,10 @@
 package de.eshg.measlesprotection.testhelper;
 
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
-import de.eshg.testhelper.DatabaseResetHelper;
-import de.eshg.testhelper.DefaultTestHelperService;
-import de.eshg.testhelper.ResettableProperties;
+import de.eshg.testhelper.*;
+import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -30,13 +27,20 @@ public class MeaslesProtectionTestHelperService extends DefaultTestHelperService
       Clock clock,
       List<BasePopulator<?>> populators,
       List<ResettableProperties> resettableProperties,
-      CreateAppointmentTypeTask createAppointmentTypeTask) {
-    super(databaseResetHelper, testRequestInterceptor, clock, populators, resettableProperties);
+      CreateAppointmentTypeTask createAppointmentTypeTask,
+      EnvironmentConfig environmentConfig) {
+    super(
+        databaseResetHelper,
+        testRequestInterceptor,
+        clock,
+        populators,
+        resettableProperties,
+        environmentConfig);
     this.createAppointmentTypeTask = createAppointmentTypeTask;
   }
 
   @Override
-  public Instant reset() throws SQLException {
+  public Instant reset() throws Exception {
     Instant instant = super.reset();
     createAppointmentTypeTask.createAppointmentTypes();
     return instant;

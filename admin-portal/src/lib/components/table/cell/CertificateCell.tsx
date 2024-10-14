@@ -8,11 +8,18 @@ import { CellContext } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import { CertificateDialogButton } from "@/lib/components/button/CertificateDialogButton";
+import { EditableCertificateCell } from "@/lib/components/table/cell/EditableCertificateCell";
 import { EmptyCell } from "@/lib/components/table/cell/EmptyCell";
+import { Actor } from "@/lib/components/view/actors/ActorTable";
+import { useEditableRow } from "@/lib/helpers/entityFilter";
 
-export function CertificateCell<TData>(
-  props: CellContext<TData, ApiAdminCertificate>,
+export function CertificateCell(
+  props: CellContext<Actor, ApiAdminCertificate>,
 ): ReactNode {
+  if (useEditableRow(props.row) && props.row.original.manualCertificate) {
+    return <EditableCertificateCell {...props} />;
+  }
+
   const val: ApiAdminCertificate = props.getValue();
   if (!val) {
     return <EmptyCell />;

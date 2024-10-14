@@ -6,6 +6,8 @@
 package de.eshg.schoolentry.pdf.schoolinfoletter.model;
 
 public record SchoolInfoLetterVaccinationInfo(
-    Boolean measlesProtectionComplete,
-    Boolean vaccinationPassNotPresented,
-    Boolean medicalContraindicationAgainstMeasles) {}
+    boolean measlesProtectionComplete,
+    boolean vaccinationPassNotPresented,
+    boolean measlesContraIndication,
+    boolean measlesContraIndicationPermanent,
+    String measlesContraIndicationUntil) {}

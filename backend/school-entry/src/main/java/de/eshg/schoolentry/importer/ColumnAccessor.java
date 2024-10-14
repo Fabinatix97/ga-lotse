@@ -5,39 +5,30 @@
 
 package de.eshg.schoolentry.importer;
 
-import de.eshg.schoolentry.util.ImportDataUtil;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.util.Assert;
 
-public class ColumnAccessor {
+public class ColumnAccessor<T extends XlsxColumn> {
 
   private final Row row;
-  private final int inputColumns;
-  private int col;
+  private final List<T> actualColumns;
 
-  public ColumnAccessor(Row row) {
+  public ColumnAccessor(Row row, List<T> actualColumns) {
     this.row = row;
-    this.inputColumns = ImportDataUtil.computeNumberOfInputColumns(row.getSheet());
+    this.actualColumns = actualColumns;
   }
 
-  public boolean hasNext() {
-    return col < inputColumns;
+  public boolean hasColumn(T col) {
+    return actualColumns.contains(col);
   }
 
-  public Cell next() {
-    return getCellNullSafe(col++);
-  }
-
-  public void skip(int numberOfCells) {
-    col = col + numberOfCells;
-  }
-
-  public int getCurrentColumn() {
-    return col;
-  }
-
-  public Cell get(int col) {
-    return getCellNullSafe(col);
+  public Cell get(T col) {
+    int index = actualColumns.indexOf(col);
+    return getCellNullSafe(index);
   }
 
   private Cell getCellNullSafe(int col) {
@@ -46,5 +37,14 @@ public class ColumnAccessor {
       cell = row.createCell(col);
     }
     return cell;
+  }
+
+  public Stream<Cell> getRange(T start, T end) {
+    int startIndex = actualColumns.indexOf(start);
+    int endIndex = actualColumns.indexOf(end);
+    Assert.isTrue(startIndex >= 0, "Start column must exist");
+    Assert.isTrue(endIndex >= 0, "End column must exist");
+    Assert.isTrue(endIndex >= startIndex, "Start column must be before end column");
+    return IntStream.rangeClosed(startIndex, endIndex).boxed().map(this::getCellNullSafe);
   }
 }

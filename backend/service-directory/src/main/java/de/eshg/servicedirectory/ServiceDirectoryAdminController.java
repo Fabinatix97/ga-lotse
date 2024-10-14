@@ -5,6 +5,8 @@
 
 package de.eshg.servicedirectory;
 
+import static de.eshg.servicedirectory.ServiceDirectoryCommitService.handleMissingEntitiesError;
+
 import de.eshg.libservicedirectoryadminapi.ServiceDirectoryAdminApi;
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorDto;
 import de.eshg.libservicedirectoryadminapi.api.actor.ActorMetadataDto;
@@ -200,8 +202,10 @@ public class ServiceDirectoryAdminController implements ServiceDirectoryAdminApi
   public CommitResponseDto commitStaged(String user, List<UUID> ids, boolean dryRun) {
     if (user == null) {
       List<String> authors = serviceDirectoryCommitService.getAuthors(ids);
-      if (authors.size() != 1) {
+      if (authors.size() > 1) {
         throw new ServiceDirectoryBadRequestException("changes are not from single author");
+      } else if (authors.isEmpty()) {
+        handleMissingEntitiesError(ids);
       }
       user = authors.getFirst();
     }

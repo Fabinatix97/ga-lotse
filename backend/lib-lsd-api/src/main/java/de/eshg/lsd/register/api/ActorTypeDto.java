@@ -9,10 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "ActorType")
 public enum ActorTypeDto {
+  EXT("external module", "Externes Modul"),
   GM("base module", "Grundmodul"),
   FM("business module", "Fachmodul"),
-  LM("land module", "Landesmodul"),
   LSD("local service directory", "lokales Dienstverzeichnis"),
+  MISC("Miscellaneous", "Sonstige"),
   WEB("webserver", "Webserver"),
   ZA("central application", "zentrale Anwendung"),
   ZR("central repository", "zentrale Ablage"),
