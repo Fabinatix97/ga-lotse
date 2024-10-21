@@ -10,7 +10,7 @@ import {
   ApiPostPutOtherServiceTemplateRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -45,7 +45,7 @@ export function OtherServiceTemplateForm() {
   const [otherServiceFormValues, setOtherServiceFormValues] =
     useState<OtherServiceTemplateFormValues>(INITIAL_VALUES);
 
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   const createOtherServiceTemplateMutation = useAddOtherServiceTemplate();
   const updateOtherServiceTemplateMutation = useUpdateOtherServiceTemplate();
@@ -54,12 +54,6 @@ export function OtherServiceTemplateForm() {
   function updateSidebar(sideBarState: boolean) {
     setSideBarOpen(sideBarState);
     resetAlertContext();
-  }
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
   }
 
   async function createOtherServiceTemplate(

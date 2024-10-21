@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
   FormatListBulletedOutlined,
   MedicalServicesOutlined,
@@ -16,18 +17,22 @@ import {
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { ProcedureTabHeader } from "./ProcedureTabHeader";
 
 export function ProcedureToolbar({
   procedureId,
 }: Readonly<{ procedureId: string }>) {
+  const hasStiProtectionUserRole = useHasUserRoleCheck(
+    ApiUserRole.StiProtectionUser,
+  );
   const tabItems = buildTabItems(procedureId);
 
   return (
     <TabNavigationToolbar
       items={tabItems}
-      routeBack={routes.procedures.index}
+      routeBack={hasStiProtectionUserRole ? routes.procedures.index : undefined}
       header={<ProcedureTabHeader procedureId={procedureId} />}
     />
   );

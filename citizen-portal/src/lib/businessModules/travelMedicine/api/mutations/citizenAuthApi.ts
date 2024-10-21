@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistoryContent } from "@eshg/citizen-portal-api/travelMedicine";
+import {
+  ApiAppointment,
+  ApiMedicalHistoryContent,
+} from "@eshg/citizen-portal-api/travelMedicine";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -54,6 +57,31 @@ export function useDeleteAppointment() {
     },
     onSuccess: () => {
       snackbar.confirmation(t("snackbar.cancelAppointmentConfirmation"));
+    },
+  });
+}
+
+export interface PutAppointmentRequest {
+  procedureId: string;
+  procedureStepId: string;
+  appointment: ApiAppointment;
+}
+
+export function usePutAppointment() {
+  const { t } = useTranslation(["travelMedicine/rebookAppointment"]);
+  const citizenAuthApi = useCitizenAuthApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: (data: PutAppointmentRequest) => {
+      return citizenAuthApi.putAppointment(
+        data.procedureId,
+        data.procedureStepId,
+        data.appointment,
+      );
+    },
+    onSuccess: () => {
+      snackbar.confirmation(t("snackbar.putAppointmentConfirmation"));
     },
   });
 }

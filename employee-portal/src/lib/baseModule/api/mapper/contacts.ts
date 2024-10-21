@@ -63,6 +63,7 @@ export function mapAddContactRequest(
 
 export function mapImportMergeContactRequest(
   values: MergePersonContactFormValues | MergeInstitutionContactFormValues,
+  mergedFrom?: string,
 ): ApiUpdateContactRequest {
   switch (values.type) {
     case "UpdatePersonContactRequest":
@@ -82,6 +83,7 @@ export function mapImportMergeContactRequest(
         differentBillingAddress: mapBaseAddressToApi(
           values.differentBillingAddress,
         ),
+        mergedFrom,
       };
     case "UpdateInstitutionContactRequest":
       return {
@@ -94,6 +96,7 @@ export function mapImportMergeContactRequest(
         differentBillingAddress: mapBaseAddressToApi(
           values.differentBillingAddress,
         ),
+        mergedFrom,
       };
   }
 }

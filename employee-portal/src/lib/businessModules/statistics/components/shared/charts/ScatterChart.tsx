@@ -44,7 +44,9 @@ export function ScatterChart({
         name: group.label,
         data: unique(group.dataPoints.map((it) => it.x)).map((it) => [
           it,
-          group.trendline!.offset + group.trendline!.slope * it,
+          group.trendline
+            ? group.trendline.offset + group.trendline.slope * it
+            : undefined,
         ]),
       });
     }

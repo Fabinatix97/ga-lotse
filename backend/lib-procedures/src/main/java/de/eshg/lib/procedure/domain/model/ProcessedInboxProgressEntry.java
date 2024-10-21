@@ -75,7 +75,7 @@ public class ProcessedInboxProgressEntry extends ProgressEntry implements FileAw
   }
 
   @Override
-  public boolean supportsUpload(FileType fileType) {
+  public boolean supportsUpload(ProcedureFileType fileType) {
     return false;
   }
 

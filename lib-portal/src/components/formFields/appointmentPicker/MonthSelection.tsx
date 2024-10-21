@@ -1,0 +1,59 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { IconButton, Typography } from "@mui/joy";
+import { addMonths } from "date-fns";
+import { useId } from "react";
+
+import { Row } from "../../Row";
+
+import { monthLabel } from "./helpers";
+
+export interface MonthSelectionProps {
+  currentMonth: Date;
+  setCurrentMonth: (d: Date) => void;
+  label: string;
+  nextMonthLabel: string;
+  prevMonthLabel: string;
+}
+export function MonthSelection({
+  currentMonth,
+  setCurrentMonth,
+  label,
+  nextMonthLabel,
+  prevMonthLabel,
+}: MonthSelectionProps) {
+  const monthYearId = useId();
+  return (
+    <Row justifyContent="space-between" width="100%" alignItems="center">
+      <Typography level="title-md" id={monthYearId} aria-label={label}>
+        {monthLabel(currentMonth)}
+      </Typography>
+      <Row gap={2}>
+        <IconButton
+          size="sm"
+          color="primary"
+          variant="outlined"
+          title={prevMonthLabel}
+          aria-controls={monthYearId}
+          onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}
+        >
+          <ChevronLeft />
+        </IconButton>
+        <IconButton
+          size="sm"
+          color="primary"
+          variant="outlined"
+          title={nextMonthLabel}
+          aria-controls={monthYearId}
+          onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+        >
+          <ChevronRight />
+        </IconButton>
+      </Row>
+    </Row>
+  );
+}

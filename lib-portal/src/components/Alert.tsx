@@ -6,6 +6,7 @@
 import {
   AccountCircleOutlined,
   CheckCircleOutlined,
+  CloseRounded,
   ErrorOutlineOutlined,
   InfoOutlined,
   WarningAmberOutlined,
@@ -16,6 +17,7 @@ import {
   Box,
   Button,
   ButtonProps,
+  IconButton,
   Typography,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -63,12 +65,13 @@ function renderAction(
   color: AlertProps["color"],
   variant: AlertProps["variant"],
 ): ReactNode {
-  const buttonProps: ActionButtonProps = {
+  const buttonProps = {
+    "data-testid": "action",
     variant,
     size: "sm",
     color,
     sx: { textTransform: "uppercase" },
-  };
+  } as const;
 
   if ("href" in action) {
     return (
@@ -96,6 +99,7 @@ export interface AlertProps {
   variant?: Extract<AlertPropsJoy["variant"], "soft" | "outlined">;
   action?: AlertAction;
   sx?: SxProps;
+  onClose?: () => void;
 }
 
 export function Alert({
@@ -105,6 +109,7 @@ export function Alert({
   variant = "soft",
   action,
   sx,
+  onClose,
 }: AlertProps) {
   return (
     <AlertJoy
@@ -113,7 +118,20 @@ export function Alert({
       sx={{ ...sx, alignItems: "flex-start" }}
       startDecorator={renderIcon(color)}
       endDecorator={
-        isDefined(action) ? renderAction(action, color, variant) : undefined
+        <>
+          {isDefined(action) && renderAction(action, color, variant)}
+          {isDefined(onClose) && (
+            <IconButton
+              variant={variant}
+              color={color}
+              size="sm"
+              aria-label="Schließen"
+              onClick={onClose}
+            >
+              <CloseRounded />
+            </IconButton>
+          )}
+        </>
       }
     >
       <Box>

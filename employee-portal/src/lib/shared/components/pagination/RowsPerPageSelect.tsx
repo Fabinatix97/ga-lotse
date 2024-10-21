@@ -9,6 +9,7 @@ import {
 } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { Select, SelectProps } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { isNonNullish } from "remeda";
 
 export function RowsPerPageSelect(props: {
   value: string;
@@ -26,7 +27,13 @@ export function RowsPerPageSelect(props: {
         ...props.sx,
       }}
       value={props.value}
-      onChange={props.onChange}
+      onChange={(event, value) => {
+        // event is null when the select changes without user interaction,
+        // this seems to happen randomly when the page re-renders due to changed query parameters
+        if (isNonNullish(event)) {
+          props.onChange?.(event, value);
+        }
+      }}
     >
       <SelectOptions options={props.options} />
     </Select>

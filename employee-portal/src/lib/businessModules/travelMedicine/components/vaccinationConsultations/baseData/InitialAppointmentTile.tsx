@@ -8,7 +8,7 @@ import {
   ApiAppointmentSummary,
   ApiAppointmentType,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Grid } from "@mui/joy";
 import { useState } from "react";
@@ -41,17 +41,11 @@ export function InitialAppointmentTile(
   props: Readonly<InitialAppointmentTileProps>,
 ) {
   const [open, setOpen] = useState<boolean>(false);
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function updateSidebar(sideBarState: boolean) {
     setOpen(sideBarState);
     resetAlertContext();
-  }
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
   }
 
   return (

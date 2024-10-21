@@ -51,7 +51,7 @@ export function PacklistDefinitionElement({
     >
       <div
         {...dragHandleProps}
-        aria-label={`Element ${defaultIndex} Ziehen und Verschieben`}
+        aria-label={`Element ${defaultIndex} ziehen und verschieben`}
         role="button"
         style={{
           display: "flex",

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
   FormatListBulletedOutlined,
   ReceiptOutlined,
@@ -21,12 +22,16 @@ import { routes as businessRoutes } from "@/lib/businessModules/travelMedicine/s
 import { statusColors } from "@/lib/shared/components/procedures/constants";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function VaccinationConsultationTabNavigationToolbar({
   id,
 }: Readonly<{
   id: string;
 }>) {
+  const hasTravelMedicineAdminRole = useHasUserRoleCheck(
+    ApiUserRole.TravelMedicineAdmin,
+  );
   const tabItems = createTabItems(id);
   const [{ data: status }] = useSuspenseQueries({
     queries: [useGetStatusQuery(id)],
@@ -34,7 +39,9 @@ export function VaccinationConsultationTabNavigationToolbar({
 
   return (
     <TabNavigationToolbar
-      routeBack={businessRoutes.procedures.index}
+      routeBack={
+        hasTravelMedicineAdminRole ? businessRoutes.procedures.index : undefined
+      }
       header={<VaccinationConsultationTabHeader id={id} />}
       afterTabs={
         <Chip data-testid="tab-procedure-state" color={statusColors[status]}>

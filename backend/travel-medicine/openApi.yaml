@@ -472,6 +472,34 @@ paths:
       summary: Cancel an appointment.
       tags:
       - CitizenAuth
+  /citizen/auth/vaccination-consultations/{procedureId}/procedure-steps/{procedureStepId}/appointments:
+    put:
+      operationId: putAppointment
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: procedureStepId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Book or rebook an appointment
+      tags:
+      - CitizenAuth
   /citizen/auth/vaccination-consultations/{procedureId}/procedure-steps/{procedureStepId}/medical-history:
     get:
       operationId: getMedicalHistory
@@ -4260,6 +4288,9 @@ components:
     GetAppointmentDetailsResponse:
       type: object
       properties:
+        bookingsRemaining:
+          type: integer
+          format: int32
         citizenHasAnswered:
           type: boolean
         dateOfBirth:
@@ -4276,6 +4307,7 @@ components:
         summaryDto:
           $ref: "#/components/schemas/AppointmentSummary"
       required:
+      - bookingsRemaining
       - citizenHasAnswered
       - dateOfBirth
       - firstName
@@ -5855,6 +5887,7 @@ components:
       enum:
       - PATIENT
       - PARENT
+      - PROFESSIONAL
     Population:
       type: object
       properties:
@@ -6366,6 +6399,9 @@ components:
       - TM_VACCINATION_CONSULTATION
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY_ENTRY
+      - MEDICAL_REGISTRY_CITIZEN_DRAFT
+      - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
     ProcedureWithDuration:
       type: object
       properties:

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { PacklistDefinitionApi } from "@eshg/employee-portal-api/inspection";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { usePacklistDefinitionApi } from "@/lib/businessModules/inspection/api/clients";
 import { packlistDefinitionApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
@@ -17,9 +18,11 @@ export function useGetPacklistDefinitions() {
   });
 }
 
-export function useGetPacklistDefinitionRevision(versionId: string) {
-  const packlistDefinitionApi = usePacklistDefinitionApi();
-  return useSuspenseQuery({
+export function getPacklistDefinitionRevisionQuery(
+  packlistDefinitionApi: PacklistDefinitionApi,
+  versionId: string,
+) {
+  return queryOptions({
     queryKey: packlistDefinitionApiQueryKey([
       "getPacklistDefinitionRevision",
       { versionId },

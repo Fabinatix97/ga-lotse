@@ -5,8 +5,8 @@
 
 package de.eshg.stiprotection.api;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.Year;
@@ -17,5 +17,5 @@ public record PersonDto(
     @NotNull UUID id,
     @NotNull GenderDto gender,
     @Schema(type = "integer") @NotNull Year yearOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     @Schema(type = "integer") Year inGermanySince) {}

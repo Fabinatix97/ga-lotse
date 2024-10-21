@@ -334,7 +334,7 @@ public class InspectionUpdater {
     // get or create planning task
     InspectionTask planningTask =
         planningTaskOpt.orElseGet(
-            () -> inspection.createPlanningTask(CurrentUserHelper.getCurrentUserId()));
+            () -> inspection.createPlanningTask(CurrentUserHelper.getCurrentUserId(), clock));
     planningTask.updateDueAt(computePlanningDueDate(inspection, appointmentStart));
   }
 
@@ -782,7 +782,7 @@ public class InspectionUpdater {
 
     // Create planning task if it doesn't exist yet.
     if (inspection.getPlanningTask().isEmpty()) {
-      inspection.createPlanningTask(assigneeId);
+      inspection.createPlanningTask(assigneeId, clock);
     }
 
     if (inspection.getCalendarEventId() != null) {
@@ -842,7 +842,7 @@ public class InspectionUpdater {
     }
   }
 
-  private static void advanceToReadyForExecutionIfPossible(Inspection inspection) {
+  private void advanceToReadyForExecutionIfPossible(Inspection inspection) {
     if (inspection.getPhase().equals(InspectionPhase.PLANNING)
         && inspection.getPlannedAppointment() != null
         && !inspection.getChecklists().isEmpty()
@@ -857,20 +857,21 @@ public class InspectionUpdater {
       // copy plannedAppointment to executionAppointment
       inspection.setExecutionAppointment(inspection.getPlannedAppointment().getClone());
       // create execution task
-      InspectionTask executionTask = inspection.createExecutionTask();
+      InspectionTask executionTask = inspection.createExecutionTask(clock);
       executionTask.updateDueAt(inspection.getExecutionAppointment().getAppointmentStart());
       // set next phase
       inspection.setPhase(InspectionPhase.READY_FOR_EXECUTION);
     }
   }
 
-  public static void advanceToExecutingPhase(Inspection inspection) {
+  public void advanceToExecutingPhase(Inspection inspection) {
     if (inspection.getPhase() == InspectionPhase.READY_FOR_EXECUTION) {
       inspection.setPhase(InspectionPhase.EXECUTING);
       InspectionTask planningTask =
           inspection
               .getPlanningTask()
-              .orElseGet(() -> inspection.createPlanningTask(CurrentUserHelper.getCurrentUserId()));
+              .orElseGet(
+                  () -> inspection.createPlanningTask(CurrentUserHelper.getCurrentUserId(), clock));
       planningTask.setTaskStatus(TaskStatus.CLOSED);
       InspectionAppointment plannedAppointment = inspection.getPlannedAppointment();
       if (plannedAppointment != null) {

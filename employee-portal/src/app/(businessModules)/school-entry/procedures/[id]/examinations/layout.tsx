@@ -5,27 +5,22 @@
 
 "use client";
 
-import {
-  ApiRequiredProcedureData,
-  ApiSchoolEntryFeature,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiRequiredProcedureData } from "@eshg/employee-portal-api/schoolEntry";
 import { Button, Grid, Stack } from "@mui/joy";
 import { PropsWithChildren, useState } from "react";
 
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { RequiredProcedureDataDialog } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/RequiredProcedureDataModal";
-import { MedicalReportSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/MedicalReportSidebar";
-import { SchoolInfoLetterSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/SchoolInfoLetterSidebar";
+import { useMedicalReportSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/MedicalReportSidebar";
+import { useSchoolInfoLetterSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/reports/SchoolInfoLetterSidebar";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
 import { SidePanel } from "@/lib/shared/components/sidePanel/SidePanel";
 import { SidePanelNav } from "@/lib/shared/components/sidePanel/SidePanelNav";
 import { SidePanelNavLink } from "@/lib/shared/components/sidePanel/SidePanelNavLink";
 import { SidePanelTitle } from "@/lib/shared/components/sidePanel/SidePanelTitle";
-import { useToggle } from "@/lib/shared/hooks/useToggle";
 
 interface NavItem {
   name: string;
@@ -57,12 +52,6 @@ function buildNavItems(procedureId: string): NavItem[] {
 export default function SchoolEntryExaminationLayout(
   props: PropsWithChildren<SchoolEntryProcedurePageProps>,
 ) {
-  const medicalReportEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.MedicalReport,
-  );
-  const schoolInfoLetterEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.SchoolInfoLetter,
-  );
   const procedureId = props.params.id;
   const navItems = buildNavItems(procedureId);
   const procedureDetails = useGetProcedure(procedureId).data;
@@ -82,14 +71,9 @@ export default function SchoolEntryExaminationLayout(
               ))}
             </SidePanelNav>
           </SidePanel>
-          {(medicalReportEnabled || schoolInfoLetterEnabled) &&
-            !procedureDetails.isClosed && (
-              <CreateReportsPanel
-                procedureId={procedureId}
-                showMedicalReportButton={medicalReportEnabled}
-                showSchoolInfoLetterButton={schoolInfoLetterEnabled}
-              />
-            )}
+          {!procedureDetails.isClosed && (
+            <CreateReportsPanel procedureId={procedureId} />
+          )}
         </Stack>
       </Grid>
     </PageGrid>
@@ -98,14 +82,11 @@ export default function SchoolEntryExaminationLayout(
 
 interface CreateReportsPanelProps {
   procedureId: string;
-  showMedicalReportButton: boolean;
-  showSchoolInfoLetterButton: boolean;
 }
 
 function CreateReportsPanel(props: CreateReportsPanelProps) {
-  const [medicalReportSidebarOpen, toggleMedicalReportSidebarOpen] =
-    useToggle();
-  const [schoolInfoLetterSidebarOpen, toggleSchoolInfoSidebar] = useToggle();
+  const medicalReportSidebar = useMedicalReportSidebar();
+  const schoolInfoLetterSidebar = useSchoolInfoLetterSidebar();
   const [requiredProcedureData, setRequiredProcedureData] = useState<
     ApiRequiredProcedureData[]
   >([]);
@@ -115,7 +96,7 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
     const data = await schoolEntryApi.validateCompleteness(props.procedureId);
     const invalidAreas = data.invalidAreas;
     if (invalidAreas?.length === 0) {
-      toggleSchoolInfoSidebar();
+      schoolInfoLetterSidebar.open({ procedureId: props.procedureId });
       setRequiredProcedureData([]);
     } else {
       setRequiredProcedureData(invalidAreas);
@@ -125,37 +106,22 @@ function CreateReportsPanel(props: CreateReportsPanelProps) {
   return (
     <SidePanel data-testid="reportsPanel">
       <SidePanelTitle>Berichte erstellen</SidePanelTitle>
-      {props.showSchoolInfoLetterButton && (
-        <>
-          <Button variant="solid" onClick={handleSchoolInfoLetterClick}>
-            Schulinfobrief erstellen
-          </Button>
-          <RequiredProcedureDataDialog
-            open={requiredProcedureData.length > 0}
-            onClose={() => setRequiredProcedureData([])}
-            requiredProcedureData={requiredProcedureData}
-          />
-        </>
-      )}
-      {props.showMedicalReportButton && (
-        <Button variant="outlined" onClick={toggleMedicalReportSidebarOpen}>
-          Arztbrief erstellen
-        </Button>
-      )}
-      {medicalReportSidebarOpen && (
-        <MedicalReportSidebar
-          open={medicalReportSidebarOpen}
-          procedureId={props.procedureId}
-          onClose={toggleMedicalReportSidebarOpen}
-        />
-      )}
-      {schoolInfoLetterSidebarOpen && (
-        <SchoolInfoLetterSidebar
-          procedureId={props.procedureId}
-          open={schoolInfoLetterSidebarOpen}
-          onClose={toggleSchoolInfoSidebar}
-        />
-      )}
+      <Button variant="solid" onClick={handleSchoolInfoLetterClick}>
+        Schulinfobrief erstellen
+      </Button>
+      <RequiredProcedureDataDialog
+        open={requiredProcedureData.length > 0}
+        onClose={() => setRequiredProcedureData([])}
+        requiredProcedureData={requiredProcedureData}
+      />
+      <Button
+        variant="outlined"
+        onClick={() =>
+          medicalReportSidebar.open({ procedureId: props.procedureId })
+        }
+      >
+        Arztbrief erstellen
+      </Button>
     </SidePanel>
   );
 }

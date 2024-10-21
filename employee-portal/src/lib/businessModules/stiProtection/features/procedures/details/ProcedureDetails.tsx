@@ -10,7 +10,7 @@ import { Grid, Stack } from "@mui/joy";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 
 import { AdditionalDataSection } from "./AdditionalDataSection";
-import { CloseProcedurePanel } from "./CloseProcedurePanel";
+import { CloseAndReopenProcedurePanel } from "./CloseProcedurePanel";
 import { PersonDetails } from "./PersonDetails";
 
 const SPACING = { sm: 2, md: 3, xxl: 4 };
@@ -28,7 +28,7 @@ export function ProcedureDetails({
       <Grid xs={4}>
         <Stack spacing={SPACING}>
           <AdditionalDataSection procedure={procedure} />
-          <CloseProcedurePanel />
+          <CloseAndReopenProcedurePanel procedure={procedure} />
         </Stack>
       </Grid>
     </Grid>

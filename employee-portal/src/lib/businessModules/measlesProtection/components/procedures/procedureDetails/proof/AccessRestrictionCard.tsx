@@ -14,16 +14,16 @@ import { Button, IconButton, Stack } from "@mui/joy";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/measlesProtection/api/queries/featureTogglesApi";
 import { ACCESS_RESTRICTION_FIELDS } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/AccessRestrictionSidebar";
-import { DetailCard } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DetailCard";
 import { EDIT_ACCESS_RESTRICTION_SEARCH_PARAM } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/EditAccessRestrictionSidebar";
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/LabeledValue";
 import {
   formatName,
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { ProofTabEntry } from "./ProofTabEntry";
@@ -55,9 +55,9 @@ export function AccessRestrictionCard({
   );
 
   return (
-    <DetailCard
+    <DetailsCard
       title="Betretungsverbot"
-      fullHeight={!!accessRestriction}
+      fullHeight={true}
       {...(isEditAccessRestrictionEnabled &&
         !procedureClosed &&
         accessRestriction && {
@@ -126,6 +126,6 @@ export function AccessRestrictionCard({
           )
         )}
       </Stack>
-    </DetailCard>
+    </DetailsCard>
   );
 }

@@ -4,12 +4,16 @@
  */
 
 import { Alert, AlertProps } from "@eshg/lib-portal/components/Alert";
-import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { Box, DialogTitle, Stack, Typography } from "@mui/joy";
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { Box, DialogTitle, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
-import { isNonNullish } from "remeda";
+import { isDefined, isNonNullish } from "remeda";
 
 import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
+
+const AlertContainer = styled("div")(({ theme }) => ({
+  paddingInline: theme.spacing(sidebarPadding),
+}));
 
 export interface SidebarContentProps {
   title?: string;
@@ -30,9 +34,6 @@ export function SidebarContent({
   footer,
   verticallyCenterContent,
 }: SidebarContentProps) {
-  const contextAlert = useAlert();
-  const activeAlert = alert ?? contextAlert;
-
   return (
     <Stack
       flex={1}
@@ -64,10 +65,12 @@ export function SidebarContent({
       {isNonNullish(header) && (
         <Stack sx={{ paddingLeft: sidebarPadding }}>{header}</Stack>
       )}
-      {isNonNullish(activeAlert) && (
-        <Box sx={{ paddingRight: sidebarPadding, paddingLeft: sidebarPadding }}>
-          <Alert {...activeAlert} />
-        </Box>
+      {isDefined(alert) ? (
+        <AlertContainer>
+          <Alert {...alert} />
+        </AlertContainer>
+      ) : (
+        <AlertSlot container={AlertContainer} />
       )}
       <Stack
         flex={1}

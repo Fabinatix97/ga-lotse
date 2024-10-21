@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetPendingFacilitiesRequest } from "@eshg/employee-portal-api/inspection";
+import {
+  FacilityApi,
+  GetPendingFacilitiesRequest,
+} from "@eshg/employee-portal-api/inspection";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
 import { facilityApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
@@ -25,6 +28,19 @@ export function useGetPendingFacilities(filters: PendingFacilitiesFilters) {
   const req = facilitiesFiltersToApi(filters);
 
   return useSuspenseQuery({
+    queryKey: facilityApiQueryKey(["getPendingFacilities", { req }]),
+    queryFn: () =>
+      facilityApi.getPendingFacilitiesRaw(req).then(unwrapRawResponse),
+  });
+}
+
+export function getPendingFacilitiesQuery(
+  filters: PendingFacilitiesFilters,
+  facilityApi: FacilityApi,
+) {
+  const req = facilitiesFiltersToApi(filters);
+
+  return queryOptions({
     queryKey: facilityApiQueryKey(["getPendingFacilities", { req }]),
     queryFn: () =>
       facilityApi.getPendingFacilitiesRaw(req).then(unwrapRawResponse),

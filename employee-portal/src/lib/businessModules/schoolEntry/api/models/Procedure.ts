@@ -4,30 +4,21 @@
  */
 
 import {
-  ApiSchool,
   ApiSchoolEntryProcedure,
   ApiSchoolEntryProcedureType,
   ApiSchoolEntryStatusType,
 } from "@eshg/employee-portal-api/schoolEntry";
-import { parseOptionalValue } from "@eshg/lib-portal/helpers/form";
-
-import {
-  Label,
-  mapLabels,
-} from "@/lib/businessModules/schoolEntry/api/models/Label";
 
 import { BaseEntity, mapBaseEntity } from "./BaseEntity";
+import { Label, mapLabels } from "./Label";
+import { Location, mapLocation } from "./Location";
 import { Person, mapPerson } from "./Person";
-
-export interface School {
-  readonly id: string;
-  readonly name: string;
-}
+import { mapOptional } from "./utils";
 
 export interface Procedure extends BaseEntity {
   readonly type: ApiSchoolEntryProcedureType;
   readonly child: Person;
-  readonly school: School;
+  readonly school?: Location;
   readonly labels: Label[];
   readonly status: ApiSchoolEntryStatusType;
   readonly appointmentStart?: Date;
@@ -42,7 +33,7 @@ export function mapProcedure(response: ApiSchoolEntryProcedure): Procedure {
     ...mapBaseEntity(response),
     type: response.type,
     child: mapPerson(response.child),
-    school: mapSchool(response.school),
+    school: mapOptional(response.school, mapLocation),
     labels: mapLabels(response.labels),
     status: response.status,
     appointmentStart: response.appointmentStart,
@@ -50,12 +41,5 @@ export function mapProcedure(response: ApiSchoolEntryProcedure): Procedure {
     modifiedAt: response.modifiedAt,
     isClosed: response.status === ApiSchoolEntryStatusType.Closed,
     schoolYear: response.schoolYear,
-  };
-}
-
-function mapSchool(school?: ApiSchool): School {
-  return {
-    id: parseOptionalValue(school?.id),
-    name: parseOptionalValue(school?.name),
   };
 }

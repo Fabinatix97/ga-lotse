@@ -10,7 +10,7 @@ import { PropsWithChildren, ReactNode } from "react";
 
 import { ActionButtonProps } from "../components/Alert";
 
-import { useAlertContext } from "./AlertContext";
+import { useResetAlertContext } from "./AlertContext";
 import { PortalErrorCode } from "./PortalErrorCode";
 
 interface ErrorDescription {
@@ -121,13 +121,11 @@ interface ReloadButtonProps extends ActionButtonProps, PropsWithChildren {}
 function ReloadButton(props: ReloadButtonProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
   const { children, ...buttonProps } = props;
 
   function handleReload() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
+    resetAlertContext();
     void queryClient.invalidateQueries();
     router.refresh();
   }
@@ -139,6 +137,6 @@ function ReloadButton(props: ReloadButtonProps) {
   );
 }
 
-function LoginButton() {
-  return <ReloadButton>Neu anmelden</ReloadButton>;
+function LoginButton(props: Omit<ReloadButtonProps, "children">) {
+  return <ReloadButton {...props}>Neu anmelden</ReloadButton>;
 }

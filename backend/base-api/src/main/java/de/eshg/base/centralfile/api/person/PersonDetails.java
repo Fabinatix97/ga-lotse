@@ -5,10 +5,10 @@
 
 package de.eshg.base.centralfile.api.person;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public interface PersonDetails {
   @Schema(description = "The place of birth (without country) of the Person.", example = "Berlin")
   String placeOfBirth();
 
-  CountryCodeDto countryOfBirth();
+  CountryCode countryOfBirth();
 
   @ArraySchema(
       arraySchema =

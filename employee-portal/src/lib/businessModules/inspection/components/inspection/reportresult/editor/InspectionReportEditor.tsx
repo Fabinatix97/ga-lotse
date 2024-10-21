@@ -6,17 +6,20 @@
 "use client";
 
 import { ApiEditorBodyElementsInner } from "@eshg/employee-portal-api/inspection";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 
 import {
   useConfiguration,
   useEditorApi,
+  useTextBlockApi,
 } from "@/lib/businessModules/inspection/api/clients";
 import {
-  useGetTextBlocks,
-  useLoadEditor,
+  getTextBlocksQuery,
+  loadEditorQuery,
 } from "@/lib/businessModules/inspection/api/queries/inspectionReport";
 import { ReportDownloadButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportDownloadButtons";
+import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
 import { ContentEditor } from "@/lib/shared/components/contentEditor/ContentEditor";
 import {
@@ -31,9 +34,22 @@ export function InspectionReportEditor({
   reportId: string;
   inspectionId: string;
 }>) {
-  const { data: editorData } = useLoadEditor(reportId, inspectionId);
-  const { data: textBlocks } = useGetTextBlocks();
   const editorApi = useEditorApi();
+  const textBlockApi = useTextBlockApi();
+  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
+
+  const [{ data: editorData }, { data: textBlocks }] = useSuspenseQueries({
+    queries: [
+      loadEditorQuery(
+        editorApi,
+        getPreCacheForOfflineModeHeaders,
+        reportId,
+        inspectionId,
+      ),
+      getTextBlocksQuery(textBlockApi),
+    ],
+  });
+
   const { basePath } = useConfiguration();
 
   const palette: PaletteItem[] = textBlocks.map((textBlock) => {

@@ -21,6 +21,8 @@ import jakarta.persistence.OrderColumn;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,6 +34,11 @@ public class EvaluationTemplate extends BaseEntityWithExternalId {
   @CreatedDate
   @Column(nullable = false)
   private Instant createdAt;
+
+  @DataSensitivity(PROTECTED)
+  @CreatedBy
+  @Column(nullable = false)
+  private UUID createdByUserId;
 
   @DataSensitivity(PUBLIC)
   @Column(nullable = false)
@@ -61,6 +68,10 @@ public class EvaluationTemplate extends BaseEntityWithExternalId {
 
   public Instant getCreatedAt() {
     return createdAt;
+  }
+
+  public UUID getCreatedByUserId() {
+    return createdByUserId;
   }
 
   public String getName() {

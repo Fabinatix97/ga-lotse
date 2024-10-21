@@ -38,6 +38,7 @@ const INITIAL_USER_ACTIVITY: UserActivityState = { type: "view-table" };
 export function ChecklistDefinitionRepoOverviewTable() {
   const { data: repoMetadataList, isFetching } =
     useGetNewestChecklistDefinitionsFromCentralRepo();
+
   const { openCancelDialog } = useConfirmationDialog();
   const [canEditCoreCld, canEditCld, canDeleteCld] = useHasUserRolesCheck([
     ApiUserRole.InspectionCorechecklistdefinitionsEdit,

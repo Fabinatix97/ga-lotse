@@ -5,24 +5,26 @@
 
 package de.eshg.schoolentry;
 
-import static de.eshg.schoolentry.importer.ImportValidator.validateFileExistsAndHasCorrectType;
-import static de.eshg.schoolentry.importer.ImportValidator.validateHeaderExists;
-import static de.eshg.schoolentry.importer.ImportValidator.validateSheet;
+import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
+import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
+import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MEDICAL_REPORT_GENERATED;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.SCHOOL_INFO_LETTER_GENERATED;
 
-import de.base.rest.CustomMediaTypes;
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.xlsximport.model.ImportResult;
+import de.eshg.lib.xlsximport.util.FileResponseUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
-import de.eshg.schoolentry.business.model.ImportResult;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
@@ -36,6 +38,7 @@ import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterGenerator;
 import de.eshg.schoolentry.pdf.schoolinfoletter.SchoolInfoLetterValidator;
 import de.eshg.schoolentry.util.ExceptionUtil;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
+import de.eshg.schoolentry.util.TaskUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,12 +63,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -137,13 +138,9 @@ public class SchoolEntryController {
       @InlineParameterObject @ParameterObject @Valid
           ProcedurePaginationAndSortParameters paginationAndSortParameters,
       @InlineParameterObject @ParameterObject @Valid ProcedureSearchParameters searchParameters) {
-    if (featureToggle.isNewFeatureEnabled(SchoolEntryFeature.SEARCH_BY_KNOWLEDGE_FACTORS)) {
-      Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(
-          filterParameters, searchParameters);
-      Validator.validateSearchParametersAreComplete(searchParameters);
-    } else {
-      validator.validateSearchParametersAreNull(searchParameters);
-    }
+
+    Validator.validateOnlyOneOfSearchAndFilterParametersAreSet(filterParameters, searchParameters);
+    Validator.validateSearchParametersAreComplete(searchParameters);
     PagedProcedures pagedProcedures =
         schoolEntryService.getProcedures(
             filterParameters, paginationAndSortParameters, searchParameters);
@@ -185,7 +182,6 @@ public class SchoolEntryController {
   public ProcedureDetailsDto closeProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CloseProcedureRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_INFO_LETTER);
     featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.CLOSE_PROCEDURE);
 
     SchoolEntryProcedure procedure =
@@ -226,7 +222,6 @@ public class SchoolEntryController {
   public void deleteProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody DeleteProcedureRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.DELETE_PROCEDURE);
     SchoolEntryProcedure procedure =
         schoolEntryService.findProcedureByExternalIdForUpdate(procedureId, request.version());
     Validator.validateDeletionOfProcedure(schoolEntryService.augmentWithDetails(procedure));
@@ -485,7 +480,6 @@ public class SchoolEntryController {
       @RequestParam(value = "schoolYear") @Min(1900) int schoolYear,
       @RequestPart("file") MultipartFile file)
       throws IOException {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_YEAR);
     featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.IMPORT_PAST_PROCEDURES);
     validator.validateSchoolExists(schoolId);
     return importData(file, ImportType.PAST_PROCEDURE_LIST, schoolId, null, Year.of(schoolYear));
@@ -496,9 +490,7 @@ public class SchoolEntryController {
       throws IOException {
     validateFileExistsAndHasCorrectType(file);
 
-    if (featureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      validator.validateSchoolYear(schoolYear);
-    }
+    validator.validateSchoolYear(schoolYear);
 
     try (InputStream inputStream = file.getInputStream();
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {
@@ -513,18 +505,7 @@ public class SchoolEntryController {
           importService.processSheetAndPersistProcedures(
               sheet, importType, schoolId, locationId, schoolYear);
 
-      MultiValueMap<String, Object> multipart = new LinkedMultiValueMap<>();
-
-      HttpHeaders statisticsHeaders = new HttpHeaders();
-      statisticsHeaders.setContentType(MediaType.APPLICATION_JSON);
-      multipart.add("statistics", new HttpEntity<>(result.statistics(), statisticsHeaders));
-
-      HttpHeaders fileHeaders = new HttpHeaders();
-      fileHeaders.setContentType(CustomMediaTypes.APPLICATION_XLSX);
-      fileHeaders.setContentDisposition(fileFormData(filename()));
-      multipart.add("file", new HttpEntity<>(result.file(), fileHeaders));
-
-      return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA).body(multipart);
+      return FileResponseUtil.mapImportResultToMultipartResponse(result, filename());
     }
   }
 
@@ -537,7 +518,7 @@ public class SchoolEntryController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX citizen list template.")
   public ResponseEntity<Resource> getCitizenListTemplate() {
-    return getListTemplate(citizenListTemplate);
+    return FileResponseUtil.getTemplateFileResponse(citizenListTemplate);
   }
 
   @GetMapping(
@@ -545,28 +526,7 @@ public class SchoolEntryController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX school list template.")
   public ResponseEntity<Resource> getSchoolListTemplate() {
-    return getListTemplate(schoolListTemplate);
-  }
-
-  private static ResponseEntity<Resource> getListTemplate(Resource citizenListTemplate) {
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            fileAttachment(citizenListTemplate.getFilename()).toString())
-        .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.APPLICATION_XLSX_VALUE)
-        .body(citizenListTemplate);
-  }
-
-  private static ContentDisposition fileFormData(String filename) {
-    return file(filename, ContentDisposition.formData());
-  }
-
-  private static ContentDisposition fileAttachment(String filename) {
-    return file(filename, ContentDisposition.attachment());
-  }
-
-  private static ContentDisposition file(String filename, ContentDisposition.Builder builder) {
-    return builder.name("file").filename(filename).build();
+    return FileResponseUtil.getTemplateFileResponse(schoolListTemplate);
   }
 
   @GetMapping("/{procedureId}/vaccination-status")
@@ -620,7 +580,6 @@ public class SchoolEntryController {
   public ResponseEntity<Resource> createMedicalReport(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CreateMedicalReportRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.MEDICAL_REPORT);
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     Validator.validateProcedureStatusNotClosed(procedure);
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
@@ -641,7 +600,6 @@ public class SchoolEntryController {
   public ResponseEntity<Resource> createSchoolInfoLetter(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CreateSchoolInfoLetterRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_INFO_LETTER);
 
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
     Validator.validateProcedureStatusNotClosed(procedure);
@@ -652,6 +610,7 @@ public class SchoolEntryController {
             procedure, procedureDetailsData, request);
     ProgressEntryUtil.addProgressEntry(procedure, SCHOOL_INFO_LETTER_GENERATED, pdf);
     procedure.setschoolInfoLetterCreatedAt(Instant.now(clock));
+    TaskUtil.closeOptionalTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
 
     return ResponseEntity.ok()
         .header(
@@ -666,7 +625,6 @@ public class SchoolEntryController {
   @Operation(summary = "Update waiting room details for a procedure.")
   public WaitingRoomDto updateWaitingRoomDetails(
       @PathVariable("procedureId") UUID procedureId, @Valid @RequestBody WaitingRoomDto request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.WAITING_ROOM);
     assertLocationModeNotSet();
     WaitingRoom waitingRoom =
         schoolEntryService.findWaitingRoomForUpdate(procedureId, request.version());
@@ -683,7 +641,6 @@ public class SchoolEntryController {
   @Transactional(readOnly = true)
   public ResponseEntity<ValidateRequiredProcedureDataResponse> validateCompleteness(
       @PathVariable("procedureId") UUID procedureId) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_INFO_LETTER);
     SchoolEntryProcedure procedure = schoolEntryService.findProcedureByExternalId(procedureId);
 
     Map<RequiredProcedureData, Boolean> validationResult =
@@ -704,7 +661,6 @@ public class SchoolEntryController {
   public GetWaitingRoomProceduresResponse getWaitingRoomProcedures(
       @InlineParameterObject @ParameterObject @Valid
           WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.WAITING_ROOM);
     assertLocationModeNotSet();
 
     PagedWaitingRoomProcedures pagedProcedures =

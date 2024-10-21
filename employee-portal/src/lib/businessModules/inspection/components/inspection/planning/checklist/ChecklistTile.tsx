@@ -8,6 +8,7 @@
 import {
   ApiFollowupType,
   ApiInspection,
+  ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
 } from "@eshg/employee-portal-api/inspection";
 import { DeleteOutlined } from "@mui/icons-material";
@@ -16,10 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import {
-  inspectionGettersQueryKey,
-  useGetAvailableCLDVs,
-} from "@/lib/businessModules/inspection/api/queries/inspection";
+import { inspectionGettersQueryKey } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
@@ -28,11 +26,13 @@ import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddB
 export interface ChecklistTileProps {
   readonly?: boolean;
   inspection: ApiInspection;
+  availableCldvs: ApiInspectionAvailableCLDVersionsResponse;
 }
 
 export function ChecklistTile({
   readonly,
   inspection,
+  availableCldvs,
 }: Readonly<ChecklistTileProps>) {
   const queryClient = useQueryClient();
 
@@ -41,7 +41,6 @@ export function ChecklistTile({
       .filter((version) => !version.isCoreChecklist)
       .map((version) => version);
 
-  const { data: availableCldvs } = useGetAvailableCLDVs(inspection.externalId);
   const { mutateAsync: updateInspection } = useUpdateInspection();
   const { openCancelDialog } = useConfirmationDialog();
 

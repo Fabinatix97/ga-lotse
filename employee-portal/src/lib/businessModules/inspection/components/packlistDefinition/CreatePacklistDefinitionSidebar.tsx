@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { CreateOrEditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreateOrEditPacklistDefinitionSidebar";
 
 interface CreatePacklistDefinitionSidebarProps {
@@ -14,11 +15,13 @@ interface CreatePacklistDefinitionSidebarProps {
 export function CreatePacklistDefinitionSidebar({
   onClose,
 }: Readonly<CreatePacklistDefinitionSidebarProps>) {
+  const { data: objectTypes } = useGetObjectTypes();
   return (
     <CreateOrEditPacklistDefinitionSidebar
       open
       onClose={onClose}
       title={"Packliste erstellen"}
+      objectTypes={objectTypes}
     />
   );
 }

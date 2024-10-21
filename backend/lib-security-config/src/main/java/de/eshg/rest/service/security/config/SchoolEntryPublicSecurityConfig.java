@@ -5,6 +5,8 @@
 
 package de.eshg.rest.service.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
@@ -33,6 +35,14 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
             BaseUrls.SchoolEntry.CONFIG_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
 
+    requestMatchers(
+            GET,
+            BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/*",
+            BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/{procedureId}/**",
+            BaseUrls.SchoolEntry.VALUE_EVALUATOR_CONTROLLER + "/**",
+            BaseUrls.SchoolEntry.COUNTRY_CODES_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.VALUE_EVALUATOR_CONTROLLER + "/**",

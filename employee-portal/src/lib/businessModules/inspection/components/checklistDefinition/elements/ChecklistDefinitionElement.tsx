@@ -7,32 +7,27 @@ import {
   ApiCLSectionContextElementsInner,
   ApiInspectionFeature,
 } from "@eshg/employee-portal-api/inspection";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import {
-  AudiotrackOutlined,
+  Audiotrack,
+  CheckBox,
   DeleteOutlined,
-  ExpandMore,
-  FormatColorTextOutlined,
-  PhotoCameraOutlined,
-  QuestionAnswerOutlined,
-  RadioButtonCheckedOutlined,
+  DragIndicatorOutlined,
+  FormatColorText,
+  PhotoCamera,
+  QuestionAnswer,
+  RadioButtonChecked,
 } from "@mui/icons-material";
-import {
-  Box,
-  Checkbox,
-  Divider,
-  IconButton,
-  Input,
-  Option,
-  Select,
-  Stack,
-} from "@mui/joy";
-import { ChangeEvent } from "react";
+import { Box, Chip, Divider, Grid, IconButton, Stack } from "@mui/joy";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { NoteAndHelpTextInput } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/NoteAndHelpTextInput";
 import { ChecklistDefinitionElementInner } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/inner/ChecklistDefinitionElementInner";
 import { CopyDeleteDropdown } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/CopyDeleteDropdown";
 import { createChecklistElement } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
+import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 
 interface ChecklistDefinitionElementProps {
   element: ApiCLSectionContextElementsInner;
@@ -42,6 +37,7 @@ interface ChecklistDefinitionElementProps {
   sectionIndex: number;
   elementIndex: number;
   readOnlyMode?: boolean;
+  dragHandleProps?: DraggableProvidedDragHandleProps | null;
 }
 
 export function ChecklistDefinitionElement({
@@ -52,6 +48,7 @@ export function ChecklistDefinitionElement({
   sectionIndex,
   elementIndex,
   readOnlyMode,
+  dragHandleProps,
 }: Readonly<ChecklistDefinitionElementProps>) {
   const isChecklistAudioFeatureEnabled = useIsNewFeatureEnabled(
     ApiInspectionFeature.ChecklistAudios,
@@ -85,7 +82,6 @@ export function ChecklistDefinitionElement({
 
   return !isSeparator ? (
     <Box
-      boxShadow="sm"
       border="1px solid var(--neutral-outlined-border, #CDD7E1)"
       borderRadius={12}
       component="section"
@@ -95,96 +91,169 @@ export function ChecklistDefinitionElement({
         background: "var(--background-level-1, #F0F4F8)",
       }}
     >
-      <Stack
-        direction="row"
-        spacing={2}
-        display="flex"
-        flex={1}
-        alignContent="center"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Input
-          aria-label="Fragenummer"
-          value={sectionIndex + 1 + "." + (elementIndex + 1)}
-          style={{ maxWidth: 60, height: 40 }}
-          disabled
-        />
-        <Input
-          disabled={readOnlyMode}
-          style={{ flex: 1, height: 40 }}
-          placeholder="Frage eingeben"
-          defaultValue={element.text ?? ""}
-          onBlur={(event) => updateElement({ text: event.target.value })}
-        />
-        <Select
-          aria-label="Antworttyp"
-          disabled={readOnlyMode}
-          placeholder="Funktion auswählen"
-          defaultValue={element.type}
-          onChange={(_, newValue) => {
-            changeType(newValue);
-          }}
-        >
-          <Option value="CHECKBOX">
-            <ExpandMore />
-            Einfachauswahl (Ja/Nein)
-          </Option>
-          <Option value="MULTI_SELECT">
-            <QuestionAnswerOutlined />
-            Mehrfachauswahl
-          </Option>
-          <Option value="TEXT">
-            <FormatColorTextOutlined />
-            Textfeld
-          </Option>
-          <Option value="SINGLE_SELECT">
-            <RadioButtonCheckedOutlined />
-            Optionsauswahl
-          </Option>
-          <Option value="IMAGE">
-            <PhotoCameraOutlined />
-            Bilder hinzufügen
-          </Option>
-          {isChecklistAudioFeatureEnabled && (
-            <Option value="AUDIO">
-              <AudiotrackOutlined />
-              Audio hinzufügen
-            </Option>
-          )}
-        </Select>
-        {!isImage && !isAudio && (
-          /* image and audio elements cannot be marked as mandatory */
-          <Checkbox
-            disabled={readOnlyMode}
-            label="Pflichtfeld"
-            checked={element.mandatory}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              updateElement({ mandatory: event.target.checked });
-            }}
+      <Grid container spacing={2}>
+        <Grid xs="auto">
+          <div
+            {...dragHandleProps}
+            style={{ marginTop: "1.7rem" }}
+            aria-label={`Element ${elementIndex + 1} der Sektion ${sectionIndex + 1} ziehen und verschieben`}
+            role="button"
+          >
+            <DragIndicatorOutlined
+              style={{
+                backgroundColor: "white",
+                borderRadius: 50,
+                padding: 4,
+                width: 32,
+                height: 32,
+              }}
+            />
+          </div>
+        </Grid>
+        <Grid xs>
+          <Stack
+            direction="row"
+            spacing={2}
+            display="flex"
+            flex={1}
+            alignContent="center"
+            justifyContent="center"
+            alignItems="flex-start"
+          >
+            <Chip
+              aria-label="Fragenummer"
+              style={{ marginTop: "2.1rem" }}
+              color="success"
+            >
+              {sectionIndex + 1 + "." + (elementIndex + 1)}
+            </Chip>
+            <InputField
+              name={`context.sections.${sectionIndex}.elements.${elementIndex}.text`}
+              label="Frage"
+              disabled={readOnlyMode}
+              sx={{ flex: 1 }}
+              placeholder="Frage eingeben"
+              required="Bitte geben Sie eine Frage ein."
+              onBlur={(event) => updateElement({ text: event.target.value })}
+            />
+            <SelectField
+              name={`context.sections.${sectionIndex}.elements.${elementIndex}.type`}
+              label="Antworttyp"
+              aria-label="Antworttyp"
+              disabled={readOnlyMode}
+              placeholder="Funktion auswählen"
+              required="Bitte wählen Sie einen Antworttyp aus."
+              sx={{ width: "17rem" }}
+              onChange={(newValue) => {
+                changeType(
+                  newValue as
+                    | "CHECKBOX"
+                    | "MULTI_SELECT"
+                    | "TEXT"
+                    | "SINGLE_SELECT"
+                    | "IMAGE"
+                    | "AUDIO"
+                    | null,
+                );
+              }}
+              options={[
+                {
+                  value: "CHECKBOX",
+                  label: (
+                    <>
+                      <CheckBox />
+                      Einfachauswahl (Ja/Nein)
+                    </>
+                  ),
+                },
+                {
+                  value: "MULTI_SELECT",
+                  label: (
+                    <>
+                      <QuestionAnswer />
+                      Mehrfachauswahl
+                    </>
+                  ),
+                },
+                {
+                  value: "TEXT",
+                  label: (
+                    <>
+                      <FormatColorText />
+                      Textfeld
+                    </>
+                  ),
+                },
+                {
+                  value: "SINGLE_SELECT",
+                  label: (
+                    <>
+                      <RadioButtonChecked />
+                      Optionsauswahl
+                    </>
+                  ),
+                },
+                {
+                  value: "IMAGE",
+                  label: (
+                    <>
+                      <PhotoCamera />
+                      Bilder hinzufügen
+                    </>
+                  ),
+                },
+                ...(isChecklistAudioFeatureEnabled
+                  ? [
+                      {
+                        value: "AUDIO",
+                        label: (
+                          <>
+                            <Audiotrack />
+                            Audio hinzufügen
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+            {!isImage && !isAudio && (
+              /* image and audio elements cannot be marked as mandatory */
+              <CheckboxField
+                name={`context.sections.${sectionIndex}.elements.${elementIndex}.mandatory`}
+                label="Pflichtfeld"
+                disabled={readOnlyMode}
+                sx={{ mt: "2.1rem" }}
+              />
+            )}
+            {!readOnlyMode && (
+              <Box mt="1.7rem">
+                <CopyDeleteDropdown
+                  onDelete={deleteElement}
+                  onCopy={() => copyElement()}
+                />
+              </Box>
+            )}
+          </Stack>
+          <ChecklistDefinitionElementInner
+            sectionIndex={sectionIndex}
+            elementIndex={elementIndex}
+            readOnlyMode={readOnlyMode}
+            element={element}
+            setElement={setElement}
           />
-        )}
-        {!readOnlyMode && (
-          <CopyDeleteDropdown
-            onDelete={deleteElement}
-            onCopy={() => copyElement()}
+          <NoteAndHelpTextInput
+            sectionIndex={sectionIndex}
+            elementIndex={elementIndex}
+            element={element}
+            setElement={setElement}
+            readOnlyMode={readOnlyMode}
           />
-        )}
-      </Stack>
-      <ChecklistDefinitionElementInner
-        readOnlyMode={readOnlyMode}
-        element={element}
-        setElement={setElement}
-      />
-      <NoteAndHelpTextInput
-        element={element}
-        setElement={setElement}
-        readOnlyMode={readOnlyMode}
-      />
+        </Grid>
+      </Grid>
     </Box>
   ) : (
     <Box
-      boxShadow="sm"
       border="1px solid var(--neutral-outlined-border, #CDD7E1)"
       borderRadius={12}
       component="section"

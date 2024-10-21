@@ -8,6 +8,7 @@ package de.eshg.inspection.facility.websearch.persistence;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -26,7 +27,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(indexes = @Index(columnList = "websearch_id"))
 @EntityListeners(AuditingEntityListener.class)
 public class WebSearchQuery extends BaseEntity {
-  @ManyToOne
+  @ManyToOne(
+      optional = false,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
   @JoinColumn(name = "websearch_id", nullable = false)
   @NotNull
   @DataSensitivity(SensitivityLevel.PUBLIC)

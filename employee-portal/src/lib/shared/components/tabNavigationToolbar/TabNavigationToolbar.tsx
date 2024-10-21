@@ -15,7 +15,7 @@ export interface TabNavigationToolbarProps {
   /** tab definitions */
   items: TabNavigationItem[];
   /** route for back button */
-  routeBack: string;
+  routeBack?: string;
   /** component to be displayed as header; required. */
   header: ReactNode;
   /** component to be displayed right aligned beneath the tabs; optional. */
@@ -42,13 +42,15 @@ export function TabNavigationToolbar(props: TabNavigationToolbarProps) {
           overflowY: "hidden",
         }}
       >
-        <InternalLinkIconButton
-          href={props.routeBack}
-          aria-label="Zurück"
-          sx={{ minWidth: "3.5rem" }}
-        >
-          <ChevronLeft sx={{ width: "40px", height: "40px" }} />
-        </InternalLinkIconButton>
+        {props.routeBack !== undefined && (
+          <InternalLinkIconButton
+            href={props.routeBack}
+            aria-label="Zurück"
+            sx={{ minWidth: "3.5rem" }}
+          >
+            <ChevronLeft sx={{ width: "40px", height: "40px" }} />
+          </InternalLinkIconButton>
+        )}
         <Stack divider={<Divider />} sx={{ flexGrow: 1, minWidth: 0 }}>
           <Box sx={{ paddingInline: 3 }}>{props.header}</Box>
           <Box

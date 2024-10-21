@@ -36,5 +36,8 @@
   <include file="migrations/0026_add_citizen_has_answered.xml"/>
   <include file="migrations/0027_add_cancelled_to_uda.xml"/>
   <include file="migrations/0028_change_information_statement_template.xml"/>
+  <include file="migrations/0029_add_bookings_remaining_to_ps.xml"/>
+  <include file="migrations/0030_introduce_procedure_file_type.xml"/>
+  <include file="migrations/0031_add_medical_registry_procedure_types.xml"/>
 
 </databaseChangeLog>

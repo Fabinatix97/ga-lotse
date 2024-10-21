@@ -15,9 +15,9 @@ import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
 import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/api/queries/featureTogglesApi";
 import { useGetUserSettings } from "@/lib/businessModules/chat/api/queries/userSettingsApi";
+import { MessageTeaserProvider } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { ChatClientProvider } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ChatConfiguration } from "@/lib/businessModules/chat/shared/config";
-import { MessageTeaserProvider } from "@/lib/shared/components/chat/MessageTeaserProvider";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
@@ -55,8 +55,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
   const { data: selfUser } = useGetSelfUser();
   const canAccessChat =
     useHasUserRoleCheck(ApiUserRole.ChatManagementWrite) &&
-    !!featureToggleChatEnabled &&
-    selfUser.username !== "dummy"; //TODO: Don't allow dummy user to use chat until it becomes more stable in demo environment
+    !!featureToggleChatEnabled;
   const messagesSidebar = useMessagesSidebar();
   const { data: userSettingsData, isLoading } = useGetUserSettings(
     selfUser.userId,

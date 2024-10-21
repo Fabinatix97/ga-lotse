@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<#-- @ftlvariable name="sender" type="de.eshg.stiprotection.pdf.identification.DocumentSender" -->
+<#-- @ftlvariable name="appointment" type="de.eshg.stiprotection.pdf.identification.Appointment" -->
+<html xml:lang="de" lang="de">
+  <head>
+    <link rel="stylesheet" type="text/css" href="anon-ident.css"/>
+  </head>
+
+  <body>
+    <#include "footer.ftlx">
+    <#include "header.ftlx">
+
+    <p>Sehr geehrte:r Bürger:in,</p>
+
+    <p>Vielen Dank, dass Sie unser anonymes Beratungsangebot in Anspruch nehmen.</p>
+
+    <p>Unten stehend finden Sie Ihre Ticketnummer. Damit können Sie</p>
+
+    <ul>
+      <li>sich vor Ort bei Mitarbeitenden des Gesundheitsamts anonym bei Ihrer Untersuchung und Ihrem Beratungsgespräch
+        identifizieren,
+      </li>
+      <li>Ihren Termin ändern oder stornieren und</li>
+      <li>nach der Untersuchung online einsehen, ob Ergebnisse für Ihren Vorgang vorliegen.</li>
+    </ul>
+
+    <p>Bewahren Sie die Ticketnummer gut auf und achten Sie darauf, dass dieser nicht in die Hände von unbefugten
+      Personen gelangt. Wenn Sie zu Ihrem Termin erscheinen, bringen Sie bitte Ihre Ticketnummer mit.
+    </p>
+
+    <table class="highlight">
+      <tr>
+        <td colspan="3">
+          <table class="info-table">
+            <tr>
+              <td style="width: 75px;">
+                <div>Ihr Termin</div>
+              </td>
+              <td style="width: 300px;">
+                ${appointment.date}
+                <br/>
+                ${appointment.time()} Uhr
+                <br/>
+                <span>Planen Sie für den Termin inkl. Wartezeit bitte etwa ${appointment.durationMinutes} Minuten ein.</span>
+              </td>
+              <td style="width: 350px;">
+                ${sender.department.name}
+                <br/>
+                ${sender.department.street} ${sender.department.houseNumber}
+                <br/>
+                ${appointment.room()}
+                <br/>
+                ${sender.department.postalCode} ${sender.department.city}
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 75px;">
+                <div>QR-Code</div>
+                <div class="qr-code"></div>
+              </td>
+              <td style="width: 200px;">
+                <div>URL</div>
+                <div class="officeInfoContent">${appointment.url}</div>
+                <div style="padding-top: 20px;">Ticketnummer</div>
+                <div class="ticket-number">${appointment.ticketNumber}</div>
+              </td>
+              <td style="width: 300px;">
+                <span>Über die links stehende URL können Sie nach der Untersuchung Informationen erhalten, ob Ergebnisse vorliegen.
+                </span>
+                <br/>
+                <ol>
+                  <li>Scannen Sie mit Ihrem Smartphone den QR&#8209;Code oder rufen Sie die nebenstehende URL auf.</li>
+                  <li>Geben Sie die Ticketnummer und Ihr Passwort ein.</li>
+                </ol>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <p>
+      Wichtig: Um absolute Anonymität zu gewährleisten, fragen wir Sie niemals nach Ihren Kontaktdaten,
+      Ausweisdokumenten oder Versicherungskarten. Aus diesem Grund erhalten Sie keine Benachrichtigung, wenn Ergebnisse
+      vorliegen. Bitte rufen Sie proaktiv die genannte Website auf und geben Sie Ihre Ticketnummer ein, um Ihre
+      Ergebnisse einzusehen.
+    </p>
+    <p>
+      Mit freundlichen Grüßen
+      <br/>
+      Im Auftrag, Untersuchungs- und Beratungsstelle für sexuelle und reproduktive Gesundheit (STI)
+      <br/>
+      (Dieses Schreiben wurde maschinell ohne Unterschrift erstellt)
+    </p>
+  </body>
+</html>

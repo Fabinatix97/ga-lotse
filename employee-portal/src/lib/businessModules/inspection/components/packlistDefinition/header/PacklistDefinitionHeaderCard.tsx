@@ -3,26 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { Stack } from "@mui/joy";
 import { useMemo } from "react";
 import { isDefined } from "remeda";
 
-import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
 interface PacklistDefinitionHeaderCardProps {
   readOnlyMode: boolean;
   revision: number | undefined;
+  objectTypes: ApiObjectType[];
 }
 
 export function PacklistDefinitionHeaderCard({
   readOnlyMode,
   revision,
+  objectTypes,
 }: Readonly<PacklistDefinitionHeaderCardProps>) {
-  const { data: objectTypes } = useGetObjectTypes();
-
   const objectTypeOptions = useMemo(
     () =>
       objectTypes.map((item) => ({

@@ -5,14 +5,14 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
 public record PatchVaccinationConsultationTravelDetailsRequest(
     @NotNull TravelTypeDto travelType,
-    @NotNull List<CountryCodeDto> travelDestinations,
+    @NotNull List<CountryCode> travelDestinations,
     LocalDate travelStartDate,
     Integer travelTimeAmount,
     TravelTimeUnitDto travelTimeUnit) {}

@@ -11,9 +11,9 @@ import {
 } from "@eshg/employee-portal-api/measlesProtection";
 
 import { PersonDetails } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/PersonDetails";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
 
 import { ContactDetails } from "./ContactDetails";
-import { DetailCard } from "./DetailCard";
 
 export function AffectedPerson({
   procedure,
@@ -24,9 +24,9 @@ export function AffectedPerson({
   const person = procedure.affectedPerson;
 
   return (
-    <DetailCard data-testid="affectedPersonSection" title={title}>
+    <DetailsCard title={title}>
       <PersonDetails person={person} />
       <ContactDetails persons={[person]} />
-    </DetailCard>
+    </DetailsCard>
   );
 }

@@ -11,7 +11,6 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 import { userApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { sortUsersByName } from "@/lib/shared/helpers/users";
 
 export function useGetUserProfile(id: string) {
@@ -58,10 +57,9 @@ export function useGetUserOverviewPageQuery() {
 
 export function useGetSelfUser() {
   const userApi = useUserApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: userApiQueryKey(["getSelfUser"]),
-    queryFn: () => userApi.getSelfUser(getPreCacheForOfflineModeHeaders()),
+    queryFn: () => userApi.getSelfUser(),
     staleTime: 60_000,
   });
 }
@@ -86,11 +84,9 @@ export function useGetSelfLeadersQueryOptions() {
 
 export function useGetSelfUserPermissions() {
   const userApi = useUserApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: userApiQueryKey(["getSelfUserPermissions"]),
-    queryFn: () =>
-      userApi.getSelfUserPermissions(getPreCacheForOfflineModeHeaders()),
+    queryFn: () => userApi.getSelfUserPermissions(),
     select: (response) => response.permissions,
     staleTime: 60_000,
   });

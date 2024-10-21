@@ -5,9 +5,9 @@
 
 package de.eshg.schoolentry.business.model;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.lib.common.CountryCode;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public record ChildData(
     String lastName,
     LocalDate dateOfBirth,
     String placeOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     GenderDto gender,
     AddressDto address,
     List<String> phoneNumbers) {
@@ -26,7 +26,7 @@ public record ChildData(
       String lastName,
       LocalDate dateOfBirth,
       String placeOfBirth,
-      CountryCodeDto countryOfBirth,
+      CountryCode countryOfBirth,
       GenderDto gender,
       AddressDto address) {
     this(firstName, lastName, dateOfBirth, placeOfBirth, countryOfBirth, gender, address, null);

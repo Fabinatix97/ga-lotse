@@ -106,6 +106,7 @@ services:
     volumes:
       - ../reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../reverse-proxy/keycloak.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../reverse-proxy/forward_headers.conf:/etc/nginx/forward_headers.conf:ro
 
   keycloak:
     image: ga-lotse/keycloak
@@ -118,6 +119,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DB: dev-file
+      KC_PROXY_HEADERS: xforwarded
       KC_HOSTNAME: http://localhost:4003
     depends_on:
       - maildev

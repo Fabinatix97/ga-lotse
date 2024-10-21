@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1728482035845-1">
+    <dropForeignKeyConstraint baseTableName="checklist_element"
+                              constraintName="fk_checklist_element_inspection_incident"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1728482035845-2">
+    <dropUniqueConstraint
+      constraintName="checklist_element_inspection_incident_id_key"
+      tableName="checklist_element"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1728482035845-3">
+    <dropColumn columnName="inspection_incident_id"
+                tableName="checklist_element"/>
+  </changeSet>
+</databaseChangeLog>

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.auditlog.AuditLogger;
@@ -77,6 +78,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -750,8 +752,6 @@ public class VaccinationConsultationService {
             List.of(
                 new ProcedureAccessor.CheckNotClosed(),
                 new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
-    boolean hasAccomplishedService =
-        procedureStep.getServices().stream().anyMatch(VcService::isAccomplished);
 
     UUID patientId =
         procedureStep.getVaccinationConsultation().getPatientIdsFromCentralFile().getFirst();
@@ -760,8 +760,7 @@ public class VaccinationConsultationService {
     AppointmentSummaryDto summaryDto =
         vaccinationConsultationDetailsMapper.mapToAppointmentSummaryInterfaceType(procedureStep);
 
-    return AppointmentDetailsMapper.mapToDetails(
-        summaryDto, hasAccomplishedService, patient, procedureStep.getMedicalHistory());
+    return AppointmentDetailsMapper.mapToDetails(summaryDto, patient, procedureStep);
   }
 
   public MedicalHistoryContentDto getMedicalHistory(
@@ -818,5 +817,54 @@ public class VaccinationConsultationService {
           "Appointment has accomplished services and cannot be cancelled.");
     }
     appointmentService.deleteAppointment(procedureStep);
+  }
+
+  public void bookCitizenAppointment(
+      UUID citizenUserId, UUID procedureId, UUID procedureStepId, AppointmentDto appointmentDto) {
+
+    ProcedureStep procedureStep =
+        procedureAccessor.accessProcedureStep(
+            procedureStepId,
+            procedureId,
+            List.of(
+                new ProcedureAccessor.CheckNotClosed(),
+                new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
+    if (procedureStep.getServices().stream().anyMatch(VcService::isAccomplished)) {
+      throw new BadRequestException(
+          "Appointment has accomplished services and cannot be rebooked.");
+    }
+    if (procedureStep.getEarliestDate() != null) {
+      if (procedureStep
+          .getEarliestDate()
+          .atStartOfDay(clock.getZone())
+          .toInstant()
+          .isAfter(appointmentDto.start())) {
+        throw new BadRequestException(
+            "Appointment has accomplished services and cannot be rebooked.");
+      }
+    }
+    boolean rebook = false;
+    if (procedureStep.getAppointment() != null
+        || procedureStep.getUserDefinedAppointment() != null) {
+      rebook = true;
+      procedureStep.setAppointment(null);
+      procedureStep.setUserDefinedAppointment(null);
+    }
+    int remainingBookings = procedureStep.getBookingsRemaining();
+
+    if (remainingBookings > 0) {
+      appointmentService.createBlockAppointmentForStep(
+          procedureStep,
+          appointmentDto.start(),
+          Math.toIntExact(
+              ChronoUnit.MINUTES.between(appointmentDto.start(), appointmentDto.end())));
+
+    } else {
+      throw new BadRequestException("No more bookings available. 2 rebookings max. allowed.");
+    }
+
+    if (rebook) {
+      procedureStep.setBookingsRemaining(remainingBookings - 1);
+    }
   }
 }

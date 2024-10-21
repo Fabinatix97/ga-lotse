@@ -365,9 +365,7 @@ public class ContactMapper {
   private static DomesticContactAddressChange mapDomesticContactAddressChangeToApi(
       Set<String> fields, DomesticContactAddress entity) {
     return new DomesticContactAddressChange(
-        newChange(
-            fields.contains(DomesticContactAddress_.COUNTRY),
-            mapCountryCodeToApi(entity.getCountry())),
+        newChange(fields.contains(DomesticContactAddress_.COUNTRY), entity.getCountry()),
         newChange(fields.contains(DomesticContactAddress_.CITY), entity.getCity()),
         newChange(fields.contains(DomesticContactAddress_.POSTAL_CODE), entity.getPostalCode()),
         newChange(
@@ -382,9 +380,7 @@ public class ContactMapper {
   private static PostboxContactAddressChange mapPostboxContactAddressChangeToApi(
       Set<String> fields, PostboxContactAddress entity) {
     return new PostboxContactAddressChange(
-        newChange(
-            fields.contains(PostboxContactAddress_.COUNTRY),
-            mapCountryCodeToApi(entity.getCountry())),
+        newChange(fields.contains(PostboxContactAddress_.COUNTRY), entity.getCountry()),
         newChange(fields.contains(PostboxContactAddress_.CITY), entity.getCity()),
         newChange(fields.contains(PostboxContactAddress_.POSTAL_CODE), entity.getPostalCode()),
         newChange(

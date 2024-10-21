@@ -27,6 +27,7 @@ import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class Inspection
 
   @OneToMany(
       mappedBy = InspectionInventory_.INSPECTION,
-      cascade = CascadeType.ALL,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy
   @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -86,7 +87,7 @@ public class Inspection
 
   @OneToMany(
       mappedBy = InspectionResource_.INSPECTION,
-      cascade = CascadeType.ALL,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy
   @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -94,7 +95,7 @@ public class Inspection
 
   @OneToMany(
       mappedBy = InspectionIncident_.INSPECTION,
-      cascade = CascadeType.PERSIST,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy
   @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -123,15 +124,21 @@ public class Inspection
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String notes;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private InspectionAppointment plannedAppointment;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private InspectionAppointment executionAppointment;
 
-  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private InspectionTravelTime travelTime;
 
@@ -139,11 +146,16 @@ public class Inspection
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private UUID calendarEventId;
 
-  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+  @OneToOne(
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private InspectionAnnouncement announcement;
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Report report;
 
@@ -333,37 +345,39 @@ public class Inspection
     this.calendarEventId = calendarEventId;
   }
 
-  public InspectionTask createPlanningTask(UUID assigneeId) {
+  public InspectionTask createPlanningTask(UUID assigneeId, Clock clock) {
     if (getPlanningTask().isPresent()) {
       throw new IllegalStateException("Task with type PLANNING already created");
     }
-    InspectionTask task = InspectionTask.newPlanningTask(assigneeId);
+    InspectionTask task = InspectionTask.newPlanningTask(assigneeId, clock);
     addTask(task);
     return task;
   }
 
-  public InspectionTask createExecutionTask() {
+  public InspectionTask createExecutionTask(Clock clock) {
     if (getExecutionTask().isPresent()) {
       throw new IllegalStateException("Task with type EXECUTION already created");
     }
     InspectionTask task =
         InspectionTask.newExecutionTask(
             getPlanningTask()
-                .orElseGet(() -> createPlanningTask(CurrentUserHelper.getCurrentUserId()))
-                .getAssigneeId());
+                .orElseGet(() -> createPlanningTask(CurrentUserHelper.getCurrentUserId(), clock))
+                .getAssigneeId(),
+            clock);
     addTask(task);
     return task;
   }
 
-  public InspectionTask createReportTask() {
+  public InspectionTask createReportTask(Clock clock) {
     if (getReportTask().isPresent()) {
       throw new IllegalStateException("Task with type REPORT already created");
     }
     InspectionTask task =
         InspectionTask.newReportTask(
             getPlanningTask()
-                .orElseGet(() -> createPlanningTask(CurrentUserHelper.getCurrentUserId()))
-                .getAssigneeId());
+                .orElseGet(() -> createPlanningTask(CurrentUserHelper.getCurrentUserId(), clock))
+                .getAssigneeId(),
+            clock);
     addTask(task);
     return task;
   }

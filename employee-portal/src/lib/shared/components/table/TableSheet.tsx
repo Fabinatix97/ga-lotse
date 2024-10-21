@@ -5,7 +5,7 @@
 
 import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Box, Sheet, Theme, styled } from "@mui/joy";
+import { Box, Sheet, Stack, Theme, styled } from "@mui/joy";
 import { ReactElement, ReactNode } from "react";
 
 export const StyledSheet = styled(Sheet)(({ theme }) => ({
@@ -27,8 +27,10 @@ export interface TableSheetProps extends RequiresChildren {
 export function TableSheet(props: TableSheetProps): ReactElement {
   return (
     <StyledSheet>
-      {props.title}
-      {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}
+      <Stack flex={1} overflow="auto">
+        {props.title}
+        {props.hideTable ? <Box flex={1} overflow="auto" /> : props.children}
+      </Stack>
       {props.footer}
       {props.loading && <LoadingOverlay zIndex={zIndexTable} />}
     </StyledSheet>

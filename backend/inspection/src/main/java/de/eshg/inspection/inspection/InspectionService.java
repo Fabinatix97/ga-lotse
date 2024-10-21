@@ -146,7 +146,7 @@ public class InspectionService {
     inspection.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, clock, auditLogger);
 
     // create planning task (without appointment)
-    InspectionTask planningTask = InspectionTask.newPlanningTask(request.assigneeId());
+    InspectionTask planningTask = InspectionTask.newPlanningTask(request.assigneeId(), clock);
     inspection.addTask(planningTask);
 
     addManualProgressEntry(request.progressEntryText(), inspection);
@@ -346,7 +346,7 @@ public class InspectionService {
             .orElseThrow(
                 () -> new NotFoundException("This checklist is not part of this inspection"));
 
-    InspectionUpdater.advanceToExecutingPhase(inspection);
+    inspectionUpdater.advanceToExecutingPhase(inspection);
 
     ChecklistDto checklistDto = checklistService.updateChecklist(checklist, updateChecklist);
     return new UpdateChecklistResponse(checklistDto);

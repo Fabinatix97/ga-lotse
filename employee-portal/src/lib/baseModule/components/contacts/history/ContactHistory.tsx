@@ -104,6 +104,9 @@ function mapEntryToTimelineEntries(
         } else {
           changes = ["Kontaktdetails geändert"];
         }
+        if (entry.changes.mergedFrom.isChanged) {
+          changes.push("Kontakt zusammengeführt");
+        }
       }
       break;
   }

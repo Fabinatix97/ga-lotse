@@ -57,14 +57,18 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
 
   private void persons() {
     requestMatchers(GET, BaseUrls.Base.PERSON_API)
-        .hasRole(EmployeePermissionRole.BASE_PERSONS_READ);
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_READ, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(GET, BaseUrls.Base.PERSON_API + "/centralfilestates/*/diff")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_READ);
   }
 
   private void facilities() {
     requestMatchers(GET, BaseUrls.Base.FACILITY_API)
-        .hasRole(EmployeePermissionRole.BASE_FACILITIES_READ);
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_FACILITIES_READ,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE_ADMIN);
   }
 
   private void gdpr() {
@@ -86,9 +90,12 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
         .hasRole(EmployeePermissionRole.BASE_CONTACTS_WRITE);
     requestMatchers(GET, BaseUrls.Base.CONTACT_API + "/{id}")
         .hasAnyRole(
-            EmployeePermissionRole.BASE_CONTACTS_READ, CitizenPermissionRole.ACCESS_CODE_USER);
+            EmployeePermissionRole.BASE_CONTACTS_READ,
+            CitizenPermissionRole.ACCESS_CODE_USER,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(GET, BaseUrls.Base.CONTACT_API + "/**")
-        .hasAnyRole(EmployeePermissionRole.BASE_CONTACTS_READ);
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_CONTACTS_READ, EmployeePermissionRole.PROCEDURE_ARCHIVE);
   }
 
   private void inventory() {
@@ -101,7 +108,8 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     requestMatchers(PUT, BaseUrls.Base.INVENTORY_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_INVENTORY_ADMINISTRATE);
     requestMatchers(GET, BaseUrls.Base.INVENTORY_API, BaseUrls.Base.INVENTORY_API + "/*")
-        .hasRole(EmployeePermissionRole.BASE_INVENTORY_READ);
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_INVENTORY_READ, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(
             GET, BaseUrls.Base.INVENTORY_API + "/*" + BaseUrls.Base.INVENTORY_BOOKING_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_INVENTORY_READ);
@@ -113,7 +121,8 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     requestMatchers(PATCH, BaseUrls.Base.RESOURCES_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_RESOURCES_WRITE);
     requestMatchers(GET, BaseUrls.Base.RESOURCES_API + "/**")
-        .hasRole(EmployeePermissionRole.BASE_RESOURCES_READ);
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_RESOURCES_READ, EmployeePermissionRole.PROCEDURE_ARCHIVE);
   }
 
   private void calendarsAndEvents() {

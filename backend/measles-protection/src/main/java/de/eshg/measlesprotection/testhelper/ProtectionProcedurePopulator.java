@@ -7,7 +7,6 @@ package de.eshg.measlesprotection.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -15,6 +14,7 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.FacilityContactPersonDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.measlesprotection.DraftProtectionProcedureController;
 import de.eshg.measlesprotection.api.MPFacilityTypeDto;
 import de.eshg.measlesprotection.api.ReportDataDto;
@@ -102,7 +102,7 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
             dateOfBirth(faker, childAge(faker)),
             List.of(faker.phoneNumber().phoneNumber()),
             List.of(faker.internet().emailAddress()),
-            CountryCodeDto.DE,
+            CountryCode.DE,
             GenderDto.NOT_SPECIFIED,
             lastName,
             address.city(),
@@ -191,7 +191,7 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
 
   private static DomesticAddressDto domesticAddress(Address address) {
     return new DomesticAddressDto(
-        CountryCodeDto.valueOf(address.countryCode()),
+        CountryCode.valueOf(address.countryCode()),
         address.city(),
         address.zipCode(),
         null,

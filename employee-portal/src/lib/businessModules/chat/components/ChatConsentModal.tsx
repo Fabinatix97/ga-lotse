@@ -10,7 +10,11 @@ import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
-export function ChatConsentModal(props: Omit<BaseModalProps, "children">) {
+type ChatConsentModalProps = Omit<BaseModalProps, "children"> & {
+  chatUsageEnabled: boolean;
+};
+
+export function ChatConsentModal(props: ChatConsentModalProps) {
   const { updateChatUserConsents } = useUserSettings();
 
   async function handleAcceptClick() {
@@ -30,12 +34,20 @@ export function ChatConsentModal(props: Omit<BaseModalProps, "children">) {
     props.onClose();
   }
 
+  function handleCloseClick() {
+    updateChatUserConsents({
+      isChatConsentAsked: true,
+      isChatUsageEnabled: props.chatUsageEnabled ?? false,
+    });
+    props.onClose();
+  }
+
   return (
     <BaseModal
       modalTitle="Hier koennten Ihre Nutzungsbedingungen stehen."
       key="chat-consent-modal"
       {...props}
-      onClose={handleRejectClick}
+      onClose={handleCloseClick}
       data-testid="chat-consent-modal"
     >
       <Stack direction="column" alignItems="center" spacing={2} marginTop={2}>

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { InspectionIncidentApi } from "@eshg/employee-portal-api/inspection";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useIncidentApi } from "@/lib/businessModules/inspection/api/clients";
 import { incidentsApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
@@ -12,7 +13,21 @@ import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection
 export function useGetIncidents(inspectionId: string) {
   const incidentApi = useIncidentApi();
   const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery({
+  return useSuspenseQuery(
+    getIncidentsQuery(
+      incidentApi,
+      getPreCacheForOfflineModeHeaders,
+      inspectionId,
+    ),
+  );
+}
+
+export function getIncidentsQuery(
+  incidentApi: InspectionIncidentApi,
+  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
+  inspectionId: string,
+) {
+  return queryOptions({
     queryKey: incidentsApiQueryKey(["getIncidents", { inspectionId }]),
     queryFn: () =>
       incidentApi.getIncidents(

@@ -30,7 +30,7 @@ import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.KeycloakRole;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public class UserMapper {
     representation.setLastName(user.lastName());
     representation.setGroups(user.groups());
     representation.setAttributes(
-        mapAttributesToDm(user.phoneNumber(), user.externalChatUsername()));
+        mapAttributesToDm(new LinkedHashMap<>(), user.phoneNumber(), user.externalChatUsername()));
     return representation;
   }
 
@@ -175,6 +175,8 @@ public class UserMapper {
       case STI_PROTECTION_LEADER -> EmployeePermissionRole.STI_PROTECTION_LEADER;
       case MEDICAL_REGISTRY_LEADER -> EmployeePermissionRole.MEDICAL_REGISTRY_LEADER;
       case MEDICAL_REGISTRY_ADMIN -> EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN;
+      case OPEN_DATA_ADMIN -> EmployeePermissionRole.OPEN_DATA_ADMIN;
+      case OPEN_DATA_LEADER -> EmployeePermissionRole.OPEN_DATA_LEADER;
     };
   }
 
@@ -248,6 +250,8 @@ public class UserMapper {
       case STI_PROTECTION_LEADER -> UserRoleDto.STI_PROTECTION_LEADER;
       case MEDICAL_REGISTRY_LEADER -> UserRoleDto.MEDICAL_REGISTRY_LEADER;
       case MEDICAL_REGISTRY_ADMIN -> UserRoleDto.MEDICAL_REGISTRY_ADMIN;
+      case OPEN_DATA_ADMIN -> UserRoleDto.OPEN_DATA_ADMIN;
+      case OPEN_DATA_LEADER -> UserRoleDto.OPEN_DATA_LEADER;
     };
   }
 
@@ -259,14 +263,17 @@ public class UserMapper {
   }
 
   public static Map<String, List<String>> mapAttributesToDm(
-      String phoneNumber, String externalChatUsername) {
-    Map<String, List<String>> attributes = new HashMap<>();
+      Map<String, List<String>> attributes, String phoneNumber, String externalChatUsername) {
     if (phoneNumber != null) {
       attributes.put(EmployeeUserAttribute.PHONE_NUMBER.getKey(), List.of(phoneNumber));
+    } else {
+      attributes.remove(EmployeeUserAttribute.PHONE_NUMBER.getKey());
     }
     if (externalChatUsername != null) {
       attributes.put(
           EmployeeUserAttribute.EXTERNAL_CHAT_USERNAME.getKey(), List.of(externalChatUsername));
+    } else {
+      attributes.remove(EmployeeUserAttribute.EXTERNAL_CHAT_USERNAME.getKey());
     }
     return attributes;
   }

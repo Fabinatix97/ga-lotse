@@ -5,7 +5,7 @@
 
 package de.eshg.base.street;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,7 +47,7 @@ public interface StreetApi {
               description =
                   "The country code in ISO 3166-1 alpha-2 format of the address for which the search shall be done")
           @RequestParam(name = "country")
-          CountryCodeDto country);
+          CountryCode country);
 
   @GetExchange(AUTOCOMPLETE)
   @ApiResponse(responseCode = "200")

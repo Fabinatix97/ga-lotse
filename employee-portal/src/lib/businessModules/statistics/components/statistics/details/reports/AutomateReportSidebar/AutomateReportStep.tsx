@@ -11,14 +11,16 @@ import {
 } from "@eshg/lib-portal/helpers/form";
 import { Divider, Stack, Typography } from "@mui/joy";
 
-import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-
 import {
-  AutomateReportFormModel,
   INTERVAL_TRANSLATION,
   Interval,
   REPORTING_PERIOD_TRANSLATION,
   ReportingPeriod,
+} from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
+import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
+
+import {
+  AutomateReportFormModel,
   getStartDateOptions as getStartMonthOptions,
 } from "./automateReportFormModel";
 

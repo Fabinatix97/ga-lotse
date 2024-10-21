@@ -7092,6 +7092,7 @@ components:
       enum:
       - PATIENT
       - PARENT
+      - PROFESSIONAL
     Population:
       type: object
       properties:
@@ -7239,6 +7240,9 @@ components:
       - TM_VACCINATION_CONSULTATION
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY_ENTRY
+      - MEDICAL_REGISTRY_CITIZEN_DRAFT
+      - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
     ProcedureWithDuration:
       type: object
       properties:

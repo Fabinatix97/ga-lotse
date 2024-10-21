@@ -7,7 +7,6 @@ package de.eshg.schoolentry.client;
 
 import com.google.common.collect.Lists;
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
@@ -17,6 +16,7 @@ import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -408,7 +408,7 @@ public class PersonClient {
   public UUID updateChild(
       SchoolEntryProcedure procedure,
       String placeOfBirth,
-      CountryCodeDto countryOfBirth,
+      CountryCode countryOfBirth,
       String phoneNumber) {
 
     UUID existingFileStateId = procedure.getChildIdFromCentralFile();

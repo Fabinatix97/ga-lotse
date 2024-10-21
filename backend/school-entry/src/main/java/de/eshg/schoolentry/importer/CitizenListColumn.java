@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.importer;
 
+import de.eshg.lib.xlsximport.XlsxColumn;
+
 public enum CitizenListColumn implements XlsxColumn {
   LAST_NAME("Nachname"),
   FIST_NAME("Vorname"),

@@ -8,8 +8,8 @@ package de.eshg.base.contact.api;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.history.HistoryChange;
+import de.eshg.lib.common.CountryCode;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
 @JsonSubTypes({
@@ -21,7 +21,7 @@ import de.eshg.base.history.HistoryChange;
 public sealed interface ContactAddressChange extends AbstractContactChange
     permits DomesticContactAddressChange, PostboxContactAddressChange {
 
-  HistoryChange<CountryCodeDto> country();
+  HistoryChange<CountryCode> country();
 
   HistoryChange<String> city();
 

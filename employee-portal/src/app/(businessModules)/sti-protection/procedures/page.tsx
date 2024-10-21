@@ -10,7 +10,7 @@ import { Stack } from "@mui/joy";
 
 import { StiProtectionProceduresSearchBar } from "@/lib/businessModules/stiProtection/components/procedures/proceduresTable/StiProtectionProceduresSearchBar";
 import { StiProtectionProceduresTable } from "@/lib/businessModules/stiProtection/components/procedures/proceduresTable/StiProtectionProceduresTable";
-import { AddNewProcedureSidebar } from "@/lib/businessModules/stiProtection/procedures/addNewProcedure/AddNewProcedureSidebar";
+import { AddNewProcedureSidebar } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AddNewProcedureSidebar";
 import { ToggledPage } from "@/lib/shared/components/ToggledPage";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";

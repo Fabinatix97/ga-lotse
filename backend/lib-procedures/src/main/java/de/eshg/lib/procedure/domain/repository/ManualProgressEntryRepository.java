@@ -5,9 +5,9 @@
 
 package de.eshg.lib.procedure.domain.repository;
 
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.KeyDocumentType;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,7 +49,7 @@ public interface ManualProgressEntryRepository
       @Param("keyDocumentType") KeyDocumentType keyDocumentType);
 
   boolean existsByProcedureIdAndKeyDocumentTypeAndFileFileTypeNot(
-      Long procedureId, KeyDocumentType keyDocumentType, FileType fileType);
+      Long procedureId, KeyDocumentType keyDocumentType, ProcedureFileType fileType);
 
   Optional<ManualProgressEntry> findByExternalId(UUID externalId);
 }

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUser } from "@eshg/employee-portal-api/base";
 import {
   ApiInspection,
   ApiObjectType,
@@ -25,9 +26,13 @@ import { mapApiFacilityStateToBaseFacility } from "@/lib/shared/helpers/facility
 export function AddInspectionTiles({
   inspection,
   objectTypes,
+  selfUser,
+  allAssignableUsers,
 }: Readonly<{
   inspection: ApiInspection;
   objectTypes: ApiObjectType[];
+  allAssignableUsers: ApiUser[];
+  selfUser: ApiUser;
 }>) {
   const { mutateAsync: updateFacility } = useUpdateInspectionFacility();
   const facility = inspection.facility;
@@ -59,6 +64,8 @@ export function AddInspectionTiles({
             procedureId={inspection.externalId}
             objectTypes={objectTypes}
             facility={facility}
+            selfUser={selfUser}
+            allAssignableUsers={allAssignableUsers}
           />
         </Grid>
       </Grid>

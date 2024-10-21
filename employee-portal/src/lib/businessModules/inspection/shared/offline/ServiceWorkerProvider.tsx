@@ -14,9 +14,13 @@ import {
   useMemo,
   useState,
 } from "react";
+import { isEmpty } from "remeda";
 
 import { RegisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/RegisterServiceWorker";
-import { deleteInspectionFromAllCaches } from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
+import {
+  deleteAllEncryptedCaches,
+  deleteInspectionFromAllCaches,
+} from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
 import {
   getInspectionIdsOfProcedureBaseDataRequests,
   useGetPrecachedInspections,
@@ -94,12 +98,11 @@ function ServiceWorkerProviderInner({
     );
     if (remove.length > 0) {
       setDeleting(true);
-      void Promise.all(remove.map(deleteInspectionFromAllCaches)).then(
-        () => setDeleting(false),
-        (reason) => {
+      deleteFromCache(remove, isEmpty(desiredPrecachedInspectionIds))
+        .catch((reason) => {
           throw reason;
-        },
-      );
+        })
+        .finally(() => setDeleting(false));
     }
   }, [actualPrecachedInspectionIds, desiredPrecachedInspectionIds]);
 
@@ -179,4 +182,11 @@ const EMPTY_CONTEXT: ServiceWorker = {
 
 async function sendMessageToServiceWorker(message: object) {
   return (await window.workbox?.messageSW(message)) as unknown;
+}
+
+async function deleteFromCache(remove: string[], removeAll: boolean) {
+  await Promise.all(remove.map(deleteInspectionFromAllCaches));
+  if (removeAll) {
+    await deleteAllEncryptedCaches();
+  }
 }

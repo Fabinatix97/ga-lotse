@@ -7,13 +7,15 @@ import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import { useRouter } from "next/navigation";
 
-import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 
-export function NoAppointmentsContent() {
+export function NoAppointmentsContent({
+  backButtonLocation,
+}: Readonly<{
+  backButtonLocation: string;
+}>) {
   const { t } = useTranslation(["travelMedicine/forms"]);
   const router = useRouter();
-  const citizenRoutes = useCitizenRoutes();
 
   return (
     <>
@@ -28,7 +30,7 @@ export function NoAppointmentsContent() {
       <Button
         sx={{ width: "20%" }}
         variant="solid"
-        onClick={() => router.push(citizenRoutes.overview)}
+        onClick={() => router.push(backButtonLocation)}
       >
         {t("appointmentSlotFormContent.backToOverview")}
       </Button>

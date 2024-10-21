@@ -9,6 +9,7 @@ import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLin
 import { List, ListItem } from "@mui/joy";
 
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
+import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
 
 export default function CitizenSchoolEntryPage() {
@@ -16,11 +17,16 @@ export default function CitizenSchoolEntryPage() {
     <PageLayout>
       <PageContent>
         <PageTitle>Playground</PageTitle>
-        <List marker="disc">
-          <ListItem>
-            <InternalLink href="/playground/snackbar">Snackbar</InternalLink>
-          </ListItem>
-        </List>
+        <ContentSheet>
+          <List marker="disc">
+            <ListItem>
+              <InternalLink href="/playground/snackbar">Snackbar</InternalLink>
+            </ListItem>
+            <ListItem>
+              <InternalLink href="/playground/alert">Alert</InternalLink>
+            </ListItem>
+          </List>
+        </ContentSheet>
       </PageContent>
     </PageLayout>
   );

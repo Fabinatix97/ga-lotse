@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1728562253921-6">
+    <delete tableName="attribute_to_base_attributes" />
+    <delete tableName="data_attribute" />
+    <delete tableName="data_source" />
+    <delete tableName="evaluation_template" />
+
+    <dropForeignKeyConstraint baseTableName="attribute_to_base_attributes" constraintName="fk_attribute_to_base_attributes_data_attribute"/>
+    <dropTable tableName="attribute_to_base_attributes"/>
+
+    <addColumn tableName="evaluation_template">
+      <column name="created_by_user_id" type="uuid">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="data_source">
+      <column name="data_source_name" type="text">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="data_attribute">
+      <column name="name" type="text">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+    <createTable tableName="base_data_attribute">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_base_data_attribute"/>
+      </column>
+      <column name="base_attributes_order" type="INTEGER"/>
+      <column name="data_attribute_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="code" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="data_attribute_id" baseTableName="base_data_attribute" constraintName="fk_base_data_attribute_data_attribute" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="data_attribute" validate="true"/>
+    <createIndex indexName="idx_base_data_attribute_data_attribute_id" tableName="base_data_attribute">
+      <column name="data_attribute_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

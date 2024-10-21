@@ -6,10 +6,12 @@
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Divider, Stack, Typography } from "@mui/joy";
 
+import { MessageInformation } from "@/lib/baseModule/components/layout/messagesSidebar/MessageInformation";
 import { MessageNotification } from "@/lib/baseModule/components/layout/messagesSidebar/MessageNotification";
 import { NoMessagesIllustration } from "@/lib/businessModules/chat/assets/NoMessagesIllustration";
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { useMatrixClient } from "@/lib/businessModules/chat/shared/hooks/useMatrixClient";
 import { useNewMessages } from "@/lib/businessModules/chat/shared/hooks/useNewMessages";
 import { allMessagesRead } from "@/lib/businessModules/chat/shared/utils";
@@ -29,10 +31,27 @@ const title = "Ungelesene Chats";
 export function MessagesSidebarContent() {
   const { userSettings } = useChat();
   const { newMessages } = useNewMessages();
-  const matrixClient = useMatrixClient();
+  const matrix = useMatrixClient();
+
   if (!userSettings.chatUsageEnabled) {
-    return <ChatNoAccessAlert />;
+    return (
+      <SidebarContent title={title}>
+        <ChatNoAccessAlert />
+      </SidebarContent>
+    );
   }
+
+  if (
+    matrix?.state === ClientState.CreateBackupKey ||
+    matrix?.state === ClientState.RestoreBackupKey
+  ) {
+    return (
+      <SidebarContent title={title}>
+        <MessageInformation clientState={matrix.state} />
+      </SidebarContent>
+    );
+  }
+
   if (!newMessages.length) {
     return (
       <SidebarContent title={title}>
@@ -40,6 +59,7 @@ export function MessagesSidebarContent() {
       </SidebarContent>
     );
   }
+
   return (
     <SidebarContent
       title={title}
@@ -48,8 +68,8 @@ export function MessagesSidebarContent() {
           <ButtonLink
             level="title-md"
             onClick={() => {
-              if (matrixClient) {
-                allMessagesRead(matrixClient, newMessages);
+              if (matrix) {
+                allMessagesRead(matrix.client, newMessages);
               }
             }}
           >

@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiSchoolEntryFeature,
-  GetProceduresRequest,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { GetProceduresRequest } from "@eshg/employee-portal-api/schoolEntry";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
   isDateString,
@@ -17,7 +14,6 @@ import { FormControl, FormLabel, Input, Select } from "@mui/joy";
 import { isDefined, isEmpty } from "remeda";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
 import { SearchSchoolFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchSchoolFilter";
@@ -76,10 +72,6 @@ function evaluateStringAsBoolean(value: string) {
 }
 
 export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
-  const isSchoolYearEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.SchoolYear,
-  );
-
   return (
     <FilterSettingsSheet {...props.filterSettingsSheetProps}>
       <FilterSettingsContent
@@ -181,20 +173,18 @@ export function ProcedureFilterSettings(props: ProcedureFilterSettingsProps) {
             />
           </Select>
         </FormControl>
-        {isSchoolYearEnabled && (
-          <FormControl>
-            <FormLabel>Schuljahr</FormLabel>
-            <SchoolYearAutocomplete
-              value={props.filterFormValues.schoolYearFilter ?? null}
-              onChange={(_, newValue) => {
-                props.setFilterFormValue(
-                  "schoolYearFilter",
-                  newValue ?? undefined,
-                );
-              }}
-            />
-          </FormControl>
-        )}
+        <FormControl>
+          <FormLabel>Schuljahr</FormLabel>
+          <SchoolYearAutocomplete
+            value={props.filterFormValues.schoolYearFilter ?? null}
+            onChange={(_, newValue) => {
+              props.setFilterFormValue(
+                "schoolYearFilter",
+                newValue ?? undefined,
+              );
+            }}
+          />
+        </FormControl>
         <FormControl>
           <FormLabel>Schule</FormLabel>
           <SearchSchoolFilter

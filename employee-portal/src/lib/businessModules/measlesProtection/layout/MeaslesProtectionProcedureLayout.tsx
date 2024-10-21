@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { PropsWithChildren } from "react";
 
 import { useProcedureQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
@@ -15,6 +16,7 @@ import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLay
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export interface MeaslesProtectionProcedurePageParams
   extends PropsWithChildren {
@@ -27,13 +29,18 @@ export function MeaslesProtectionProcedureLayout({
   navItems,
   id,
 }: MeaslesProtectionProcedurePageParams) {
+  const hasMeaslesProtectionAdminRole = useHasUserRoleCheck(
+    ApiUserRole.MeaslesProtectionAdmin,
+  );
   const procedure = useProcedureQuery(id).data;
   return (
     <StickyToolbarLayout
       toolbar={
         <TabNavigationToolbar
           items={navItems}
-          routeBack={routes.procedures.index}
+          routeBack={
+            hasMeaslesProtectionAdminRole ? routes.procedures.index : undefined
+          }
           header={
             <MeaslesProtectionTabHeader person={procedure.affectedPerson} />
           }

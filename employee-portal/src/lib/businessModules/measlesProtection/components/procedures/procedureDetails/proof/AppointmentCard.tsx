@@ -7,19 +7,18 @@ import { ApiAppointment } from "@eshg/employee-portal-api/measlesProtection";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Button, Stack } from "@mui/joy";
-import { isDefined } from "remeda";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
-import { DetailCard } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DetailCard";
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/LabeledValue";
 import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export interface AppointmentCardProps {
@@ -68,9 +67,9 @@ export function AppointmentCard({
     },
   ];
   return (
-    <DetailCard
+    <DetailsCard
       title="Termin"
-      fullHeight={isDefined(appointment)}
+      fullHeight={true}
       actionButton={
         appointment && (
           <ActionsMenu
@@ -99,17 +98,16 @@ export function AppointmentCard({
               }
             />
           </ValueList>
-        ) : (
+        ) : !procedureClosed ? (
           <Button
             variant="plain"
             startDecorator={<Add />}
-            disabled={procedureClosed}
             onClick={() => setAddingAppointment(true)}
           >
             Hinzufügen
           </Button>
-        )}
+        ) : null}
       </Stack>
-    </DetailCard>
+    </DetailsCard>
   );
 }

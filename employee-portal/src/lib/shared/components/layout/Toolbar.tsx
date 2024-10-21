@@ -5,12 +5,12 @@
 
 "use client";
 
+import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import { Sheet, Typography } from "@mui/joy";
 
 import { simpleToolbarHeight } from "@/lib/baseModule/components/layout/sizes";
-import { Row } from "@/lib/shared/Row";
 
 export interface ToolbarProps {
   title: string;

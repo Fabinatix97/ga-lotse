@@ -5,6 +5,9 @@
 
 import { Alert } from "@eshg/lib-portal/components/Alert";
 
+import { useUpdateDataBasis } from "@/lib/businessModules/statistics/api/mutations/useUpdateDataBasis";
+import { validateUpdateStatisticDataBasisStep } from "@/lib/businessModules/statistics/components/statistics/details/UpdateStatisticDataBasisSidebar/validateUpdateStatisticDataBasisStep";
+import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
@@ -14,21 +17,27 @@ import { UpdateStatisticDataBasisFormModel } from "./updateStatisticDataBasisFor
 export function UpdateStatisticDataBasisSidebar({
   onClose,
   initialValues,
+  statisticId,
 }: {
   onClose: () => void;
   initialValues: UpdateStatisticDataBasisFormModel;
+  statisticId: string;
 }) {
   const { openConfirmationDialog } = useConfirmationDialog();
+  const updateStatisticDataBasis = useUpdateDataBasis({
+    redirectRoute: routes.statistics.index,
+  });
 
-  async function onSubmit() {
+  async function handleSubmit(model: UpdateStatisticDataBasisFormModel) {
     await new Promise<void>((resolve) => {
       openConfirmationDialog({
-        onConfirm: () => {
-          resolve();
+        onConfirm: async () => {
+          await updateStatisticDataBasis(statisticId, model.timeSpan);
           onClose();
         },
         onClose: resolve,
         title: "Datenbasis aktualisieren?",
+        hideDescription: true,
         children: (
           <Alert
             color="warning"
@@ -45,7 +54,7 @@ export function UpdateStatisticDataBasisSidebar({
     <SidebarStepper
       onClose={onClose}
       open={true}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       initialValues={initialValues}
       saveLabel="Aktualisieren"
       steps={[
@@ -54,6 +63,7 @@ export function UpdateStatisticDataBasisSidebar({
           step: {
             title: "Datenbasis aktualisieren",
             content: <UpdateStatisticDataBasisStep />,
+            validator: validateUpdateStatisticDataBasisStep,
           },
         },
       ]}

@@ -12,7 +12,6 @@ import {
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
-import { useState } from "react";
 
 import { Percentiles } from "@/lib/businessModules/schoolEntry/api/models/examinations/Percentiles";
 import { DevelopmentScreeningResultFields } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/DevelopmentScreeningResultFields";
@@ -20,7 +19,7 @@ import {
   HandicapFields,
   HandicapFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/HandicapFields";
-import { Icd10Sidebar } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/Icd10Sidebar";
+import { useIdc10Sidebar } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/Icd10Sidebar";
 import {
   MeasurementFields,
   MeasurementFieldsValues,
@@ -38,7 +37,6 @@ import {
   SocioEducationalFieldsValues,
 } from "@/lib/businessModules/schoolEntry/features/procedures/developmentScreening/SocioEducationalFields";
 import { FormFooter } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FormFooter";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { FormStack } from "@/lib/shared/components/form/FormStack";
 
@@ -53,13 +51,6 @@ export interface DevelopmentScreeningFormValues {
   schoolFeedback: OptionalFieldValue<ApiSchoolFeedback>;
 }
 
-type SidebarState =
-  | "closed"
-  | {
-      initiallySelectedCodes: string[];
-      onSubmit: (selectedCodes: string[]) => void;
-    };
-
 interface DevelopmentScreeningFormProps
   extends FormProps<DevelopmentScreeningFormValues> {
   procedureId: string;
@@ -67,13 +58,13 @@ interface DevelopmentScreeningFormProps
 }
 
 export function DevelopmentScreeningForm(props: DevelopmentScreeningFormProps) {
-  const [sidebarState, setSidebarState] = useState<SidebarState>("closed");
+  const icd10Sidebar = useIdc10Sidebar();
 
   function handleClickIcd10Code(
     currentCodes: string[],
     setFieldValue: (newCodes: string[]) => void,
   ) {
-    setSidebarState({
+    icd10Sidebar.open({
       initiallySelectedCodes: currentCodes,
       onSubmit: (selectedCodes) => setFieldValue(selectedCodes),
     });
@@ -128,16 +119,6 @@ export function DevelopmentScreeningForm(props: DevelopmentScreeningFormProps) {
           <Divider />
           <DevelopmentScreeningResultFields />
           <FormFooter isSubmitting={isSubmitting} />
-          {sidebarState !== "closed" && (
-            <OverlayBoundary>
-              <Icd10Sidebar
-                open
-                onClose={() => setSidebarState("closed")}
-                onSubmit={sidebarState.onSubmit}
-                initiallySelectedCodes={sidebarState.initiallySelectedCodes}
-              />
-            </OverlayBoundary>
-          )}
         </FormStack>
       )}
     </Formik>

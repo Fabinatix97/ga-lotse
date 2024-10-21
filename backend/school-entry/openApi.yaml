@@ -2864,6 +2864,18 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/school-entries/closed:
+    get:
+      operationId: getIdsOfClosedProcedures
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetClosedProceduresResponse"
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/school-entries/{procedureId}/citizen-user-id:
     delete:
       operationId: clearCitizenUserId
@@ -4886,6 +4898,16 @@ components:
       - appointmentStart
       - child
       - isClosedProcedure
+    GetClosedProceduresResponse:
+      type: object
+      properties:
+        procedureIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - procedureIds
     GetCountryCodesResponse:
       type: object
       description: "Possible countries and their group. Expected keys: SchoolEntryCountryCode"
@@ -6144,6 +6166,7 @@ components:
       enum:
       - PATIENT
       - PARENT
+      - PROFESSIONAL
     PhysicalExamination:
       type: object
       description: Physical examination results.
@@ -6408,6 +6431,9 @@ components:
       - TM_VACCINATION_CONSULTATION
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY_ENTRY
+      - MEDICAL_REGISTRY_CITIZEN_DRAFT
+      - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
     ProcedureWithDuration:
       type: object
       properties:
@@ -6872,15 +6898,8 @@ components:
     SchoolEntryFeature:
       type: string
       enum:
-      - MEDICAL_REPORT
-      - MERGE_PROCEDURES_ON_IMPORT
       - CLOSE_PROCEDURE
       - REOPEN_PROCEDURE
-      - DELETE_PROCEDURE
-      - SEARCH_BY_KNOWLEDGE_FACTORS
-      - SCHOOL_INFO_LETTER
-      - SCHOOL_YEAR
-      - WAITING_ROOM
       - IMPORT_PAST_PROCEDURES
     SchoolEntryLabel:
       type: object

@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetReportDetailPageResponse } from "@eshg/employee-portal-api/statistics";
+import {
+  ApiGetReportDetailPageResponse,
+  ApiReportType,
+} from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isNonNullish } from "remeda";
 
@@ -17,7 +20,6 @@ import { ReportDetailsView } from "@/lib/businessModules/statistics/api/models/r
 import { reportApiQueryKey } from "./apiQueryKeys";
 import { mapEvaluations } from "./useGetDetailPageInformation";
 
-//TODO currently only mapping single reports, also map series once this exists. (Map to ReportDetailsView.series)
 export function mapToReportDetailsView(
   response: ApiGetReportDetailPageResponse,
 ): ReportDetailsView {
@@ -25,14 +27,17 @@ export function mapToReportDetailsView(
   const attributes: FlatAttribute[] = mapTableColumnHeadersToFlatAttributes(
     response.tableColumnHeaders,
   );
+  const isReportOfSeries = response.reportType === ApiReportType.Auto;
   return {
     id: response.id,
     seriesId: response.reportSeriesId,
-    title: response.name,
+    title: isReportOfSeries
+      ? `${response.reportSeriesName} - Ausgabe #${response.name}`
+      : response.reportSeriesName,
     description: response.description,
     start: response.timeRangeStart,
     end: response.timeRangeEnd,
-    createdAt: response.createdAt,
+    createdAt: response.executionDate,
     createdBy: isNonNullish(user)
       ? `${user.firstName} ${user.lastName}`
       : undefined,
@@ -44,6 +49,7 @@ export function mapToReportDetailsView(
     evaluations: mapEvaluations(response.evaluation, attributes),
     attributes: attributes,
     userId: response.userReport?.userId ?? response.userReportSeries!.userId,
+    numberInSeries: isReportOfSeries ? response.name : undefined,
   };
 }
 

@@ -1,0 +1,24 @@
+{
+  "header": {
+    "title": "Termin (um)buchen",
+    "logout": "Mein Bereich verlassen"
+  },
+  "content": {
+    "title": "Verfügbare Termine",
+    "requiredTitle": "*Pflichtfeld",
+    "errorMessage": "Bitte einen Termin auswählen",
+    "infoPanelTitle": "Terminverschiebung",
+    "infoPanelText": "Sie können Ihren Termin maximal zwei Mal verschieben."
+  },
+  "sidePanel": {
+    "title": "Übersicht",
+    "dateAndTime": "{{ appointmentStart }} Uhr",
+    "appointmentDuration": "(Dauer: {{ durationInMinutes }} Minuten)",
+    "postponeAppointment": "Termin verschieben",
+    "bookAppointment": "Termin buchen",
+    "back": "Zurück"
+  },
+  "snackbar": {
+    "putAppointmentConfirmation": "Termin erfolgreich (um)gebucht"
+  }
+}

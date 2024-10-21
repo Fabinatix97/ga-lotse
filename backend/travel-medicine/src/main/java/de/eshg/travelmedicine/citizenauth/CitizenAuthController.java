@@ -5,6 +5,7 @@
 
 package de.eshg.travelmedicine.citizenauth;
 
+import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +38,7 @@ public class CitizenAuthController {
   public static final String BASE_URL = BaseUrls.TravelMedicine.CITIZEN_AUTH_CONTROLLER;
 
   public static final String PROCEDURE_APPOINTMENTS_URL = "/procedure-appointments";
+  public static final String APPOINTMENTS_URL = "/appointments";
   public static final String VACCINATION_CONSULTATION_URL = "/vaccination-consultations";
   public static final String PROCEDURE_STEP_URL = "/procedure-steps";
   public static final String MEDICAL_HISTORY_URL = "/medical-history";
@@ -122,6 +125,24 @@ public class CitizenAuthController {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
     vaccinationConsultationService.patchMedicalHistory(
         getCitizenUserId(principal), procedureId, procedureStepId, patchMedicalHistoryContent);
+  }
+
+  @PutMapping(
+      VACCINATION_CONSULTATION_URL
+          + "/{procedureId}"
+          + PROCEDURE_STEP_URL
+          + "/{procedureStepId}"
+          + APPOINTMENTS_URL)
+  @Operation(summary = "Book or rebook an appointment")
+  @Transactional()
+  public void putAppointment(
+      @AuthenticationPrincipal Jwt principal,
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("procedureStepId") UUID procedureStepId,
+      @RequestBody @Valid AppointmentDto appointmentDto) {
+    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
+    vaccinationConsultationService.bookCitizenAppointment(
+        getCitizenUserId(principal), procedureId, procedureStepId, appointmentDto);
   }
 
   private UUID getCitizenUserId(Jwt principal) {

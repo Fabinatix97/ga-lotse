@@ -10,6 +10,9 @@ import static de.eshg.lib.appointmentblock.AppointmentBlockService.TECHNICAL_GRO
 import static de.eshg.lib.appointmentblock.AppointmentBlockService.TECHNICAL_GROUP_MFAS;
 import static de.eshg.lib.appointmentblock.AppointmentBlockService.TECHNICAL_GROUP_PHYSICIANS;
 
+import de.eshg.base.contact.ContactApi;
+import de.eshg.base.contact.api.*;
+import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.UserFilterParameters;
 import de.eshg.lib.appointmentblock.AppointmentBlockController;
@@ -23,10 +26,12 @@ import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.RequestContextFaker;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +56,8 @@ public class AppointmentBlockGroupsPopulator
   private final Optional<TechnicalGroup> groupMfas;
   private final Optional<TechnicalGroup> groupConsultants;
   private final UserApi userApi;
+  private final ContactApi contactApi;
+  private final BaseTestHelperApi baseTestHelperApi;
 
   public AppointmentBlockGroupsPopulator(
       Clock clock,
@@ -65,20 +72,25 @@ public class AppointmentBlockGroupsPopulator
       @SuppressWarnings("unused") // Used as dependency
           CreateAppointmentTypeTask createAppointmentTypeTask,
       UserApi userApi,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ContactApi contactApi,
+      BaseTestHelperApi baseTestHelperApi) {
     super(
         clock,
         environment,
         getClassNameAsPropertyKey(AppointmentBlockGroup.class),
         environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
-    this.appointmentBlockController = appointmentBlockController;
+    this.appointmentBlockController =
+        RequestContextFaker.withFakedRequestContextsIfNecessary(appointmentBlockController);
     this.appointmentBlockGroupRepository = appointmentBlockGroupRepository;
     this.appointmentBlockProperties = appointmentBlockProperties;
     this.groupPhysicians = groupPhysicians;
     this.groupMfas = groupMfas;
     this.groupConsultants = groupConsultants;
     this.userApi = userApi;
+    this.contactApi = contactApi;
+    this.baseTestHelperApi = baseTestHelperApi;
   }
 
   @Override
@@ -116,6 +128,14 @@ public class AppointmentBlockGroupsPopulator
     List<UUID> mfaIds = getRandomUserIdAsList(faker, groupMfas);
     List<UUID> consultantIds = getRandomUserIdAsList(faker, groupConsultants);
 
+    UUID locationId =
+        switch (appointmentBlockProperties.getLocationSelectionMode()) {
+          case NONE -> null;
+          case HEALTH_DEPARTMENT ->
+              getIdOfFirstContactForCategory(InstitutionContactCategoryDto.HEALTH_DEPARTMENT);
+          case SCHOOL -> getIdOfFirstContactForCategory(InstitutionContactCategoryDto.SCHOOL);
+        };
+
     CreateDailyAppointmentBlockGroupRequest request =
         new CreateDailyAppointmentBlockGroupRequest(
             AppointmentTypeMapper.toInterfaceType(type),
@@ -123,7 +143,8 @@ public class AppointmentBlockGroupsPopulator
             List.of(new CreateDailyAppointmentBlockDto(start, end, List.of(dayOfWeek))),
             physicianIds,
             mfaIds,
-            consultantIds);
+            consultantIds,
+            locationId);
 
     return appointmentBlockController.createDailyAppointmentBlocksForGroup(request);
   }
@@ -138,5 +159,30 @@ public class AppointmentBlockGroupsPopulator
   @Override
   protected long countExistingEntities() {
     return this.appointmentBlockGroupRepository.count();
+  }
+
+  private UUID getIdOfFirstContactForCategory(InstitutionContactCategoryDto category) {
+    return contactApi
+        .getContacts(
+            new ContactFilterParameters(
+                null, null, ContactTypeDto.INSTITUTION, category, null, null, null, null))
+        .elements()
+        .stream()
+        .findFirst()
+        .map(ContactDto::id)
+        .orElseGet(() -> populateOneContactOfCategoryAndGetId(category));
+  }
+
+  private UUID populateOneContactOfCategoryAndGetId(InstitutionContactCategoryDto category) {
+    SearchContactsResponse response =
+        switch (category) {
+          case SCHOOL -> baseTestHelperApi.populateSchoolContacts(new PopulationRequest(1));
+          case HEALTH_DEPARTMENT ->
+              baseTestHelperApi.populateHealthDepartmentContacts(new PopulationRequest(1));
+          case null, default ->
+              throw new IllegalStateException(
+                  "Expected only to be used with SCHOOL or HEALTH_DEPARTMENT. Got: " + category);
+        };
+    return response.elements().getFirst().id();
   }
 }

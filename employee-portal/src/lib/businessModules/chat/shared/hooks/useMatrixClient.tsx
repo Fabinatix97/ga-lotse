@@ -15,5 +15,10 @@ export function useMatrixClient() {
   const isChatEnabled =
     canAccessChat && userSettings.chatUsageEnabled && chatContext?.matrixClient;
 
-  return isChatEnabled ? chatContext.matrixClient : null;
+  return isChatEnabled
+    ? {
+        client: chatContext.matrixClient,
+        state: chatContext.clientState,
+      }
+    : null;
 }

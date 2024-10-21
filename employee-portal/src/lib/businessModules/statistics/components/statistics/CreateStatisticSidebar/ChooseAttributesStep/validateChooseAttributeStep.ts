@@ -8,13 +8,13 @@ import { FormikErrors } from "formik";
 import { ChooseAttributesStepFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/ChooseAttributesStep/chooseAttributesStepFormModel";
 
 export function validateChooseAttributeStep(
-  model: ChooseAttributesStepFormModel,
+  model: ChooseAttributesStepFormModel & { _selectedAttributeKeys: string[] },
 ):
   | FormikErrors<{
       selectedAttributes: string;
     }>
   | undefined {
-  if ((model.selectedAttributes?.length ?? 0) === 0) {
+  if ((model._selectedAttributeKeys.length ?? 0) === 0) {
     return {
       selectedAttributes: "Bitte Attribut wählen.",
     };

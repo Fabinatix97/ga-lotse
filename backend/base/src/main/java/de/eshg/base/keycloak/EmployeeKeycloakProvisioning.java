@@ -146,6 +146,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     List<GroupRepresentation> inspection_landesamt =
         KeycloakMapper.map(ModuleMemberGroup.INSPECTION_LANDESAMT);
     List<GroupRepresentation> statistics = KeycloakMapper.map(ModuleMemberGroup.STATISTICS);
+    List<GroupRepresentation> openData = KeycloakMapper.map(ModuleMemberGroup.OPEN_DATA);
 
     keycloakClient.createOrUpdateGroups(
         CollectionUtils.listUnion(
@@ -156,7 +157,8 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
                 modules,
                 inspection_la_checklists,
                 inspection_landesamt,
-                statistics)));
+                statistics,
+                openData)));
   }
 
   private void createOrUpdateRoles() {

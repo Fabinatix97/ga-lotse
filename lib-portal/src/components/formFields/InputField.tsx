@@ -46,7 +46,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
   const FieldComponent = props.component ?? BaseField;
   const InputComponent = props.input ?? Input;
   const field = useBaseField<string>(props);
-  const disabled = useIsFormDisabled();
+  const disabled = useIsFormDisabled() || props.disabled;
 
   function handleChange(event: ChangeEvent<HTMLInputElement>): void {
     field.input.onChange(event);
@@ -74,7 +74,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
       error={field.error}
       sx={props.sx}
       fieldDecorator={props.fieldDecorator}
-      disabled={disabled || props.disabled}
+      disabled={disabled}
     >
       <InputComponent
         type={props.type}
@@ -86,7 +86,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
         onBlur={handleBlur}
         onClick={props.onClick}
         readOnly={props.readOnly}
-        disabled={props.disabled}
+        disabled={disabled}
         startDecorator={props.startDecorator}
         endDecorator={props.endDecorator}
         color={props.primary ? "primary" : undefined}

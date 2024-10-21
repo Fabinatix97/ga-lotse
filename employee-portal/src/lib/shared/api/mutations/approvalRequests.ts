@@ -44,7 +44,7 @@ export function useGrantDeletionForAllRequestsTemplate(
 
 function grantDeletionForAllRequests(approvalRequestApi: ApprovalRequestApi) {
   return async function (approvalRequests: ApiApprovalRequest[]) {
-    for await (const request of approvalRequests) {
+    for (const request of approvalRequests) {
       await decideApprovalRequest(approvalRequestApi)({
         approvalRequestId: request.approvalRequestId,
         decision: "GRANTED",

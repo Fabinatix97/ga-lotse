@@ -6,7 +6,7 @@
 package de.eshg.base.contact.persistence.entity;
 
 import de.eshg.base.address.persistence.entity.PostboxAddress;
-import de.eshg.base.util.CountryCode;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;

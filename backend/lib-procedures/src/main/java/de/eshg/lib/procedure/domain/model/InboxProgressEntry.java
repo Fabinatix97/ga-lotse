@@ -75,7 +75,7 @@ public class InboxProgressEntry extends BaseEntityWithExternalId implements File
   }
 
   @Override
-  public boolean supportsUpload(FileType fileType) {
+  public boolean supportsUpload(ProcedureFileType fileType) {
     return getInboxProgressEntryType().supports(fileType);
   }
 

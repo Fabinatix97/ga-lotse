@@ -4,12 +4,8 @@
  */
 
 import { ApiVCardAddress } from "@eshg/employee-portal-api/base";
-import { isDefined } from "remeda";
+import { isDeepEqual, isDefined } from "remeda";
 
-import {
-  InstitutionContactMergeSource,
-  PersonContactMergeSource,
-} from "@/lib/baseModule/components/contacts/types";
 import {
   BaseAddressFormInputs,
   createEmptyAddress,
@@ -62,20 +58,6 @@ export function distinctConcat<T>(listA: T[], listB: T[]): T[] {
   return [...new Set(listA.concat(listB))];
 }
 
-export function getAddressOptions(
-  targetAddress: BaseAddress | undefined,
-  mergeSource: PersonContactMergeSource | InstitutionContactMergeSource,
-) {
-  return [
-    isDefined(targetAddress) ? mapApiAddressToForm(targetAddress) : undefined,
-    isValidAddress(mergeSource.data.contactAddress)
-      ? mergeSource.type === "Import"
-        ? mergeSource.data.contactAddress
-        : mapApiAddressToForm(mergeSource.data.contactAddress!)
-      : undefined,
-  ].filter(isDefined);
-}
-
 export function mapVCardAddressToForm(address: ApiVCardAddress | undefined) {
   return isDefined(address)
     ? ({
@@ -89,4 +71,42 @@ export function mapVCardAddressToForm(address: ApiVCardAddress | undefined) {
         type: address.postBox !== "" ? "PostboxAddress" : "DomesticAddress",
       } as const)
     : createEmptyAddress();
+}
+
+function isAddressMerge(a?: BaseAddressFormInputs, b?: BaseAddressFormInputs) {
+  return isDefined(a) && isDefined(b) && !isDeepEqual(a, b);
+}
+
+type AddressMergeSource =
+  | {
+      type: "Import";
+      data: BaseAddressFormInputs | undefined;
+    }
+  | {
+      type: "Entity";
+      data: BaseAddress | undefined;
+    };
+
+export function getAddressOptions(
+  targetAddress: BaseAddress | undefined,
+  mergeSource: AddressMergeSource,
+) {
+  const into: BaseAddressFormInputs | undefined = isDefined(targetAddress)
+    ? mapApiAddressToForm(targetAddress)
+    : undefined;
+  const from: BaseAddressFormInputs | undefined =
+    mergeSource.type === "Import"
+      ? mergeSource.data
+      : isDefined(mergeSource.data)
+        ? mapApiAddressToForm(mergeSource.data)
+        : undefined;
+
+  const requiresMerge = isAddressMerge(from, into);
+
+  return {
+    into,
+    from,
+    requiresMerge,
+    initialAddress: requiresMerge ? undefined : (into ?? from),
+  };
 }

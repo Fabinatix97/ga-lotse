@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.importer;
 
+import de.eshg.lib.xlsximport.XlsxColumn;
+
 public enum SchoolListColumn implements XlsxColumn {
   LAST_NAME("Name"),
   FIRST_NAME("Vorname"),

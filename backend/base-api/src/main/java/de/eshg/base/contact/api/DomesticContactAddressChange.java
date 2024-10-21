@@ -5,13 +5,13 @@
 
 package de.eshg.base.contact.api;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.history.HistoryChange;
+import de.eshg.lib.common.CountryCode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 public record DomesticContactAddressChange(
-    @NotNull @Valid HistoryChange<CountryCodeDto> country,
+    @NotNull @Valid HistoryChange<CountryCode> country,
     @NotNull @Valid HistoryChange<String> city,
     @NotNull @Valid HistoryChange<String> postalCode,
     @NotNull @Valid HistoryChange<String> differentName,

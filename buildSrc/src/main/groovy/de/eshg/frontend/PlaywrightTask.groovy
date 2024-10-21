@@ -22,11 +22,6 @@ abstract class PlaywrightTask extends PnpmTask {
         environment.put("RUN_A11Y_TESTS", "true")
       }
 
-      if (project.hasProperty("proxy")) {
-        environment.put("PLAYWRIGHT_PROXY", "true")
-        environment.put("MULTI_INSTANCE", "true")
-      }
-
       def task = super.configure(closure)
 
         task.dependsOn("prepareEnvironment")
@@ -34,7 +29,12 @@ abstract class PlaywrightTask extends PnpmTask {
         task.inputs.dir("${project.projectDir}/data/test/validation")
         task.outputs.dir("${project.projectDir}/data/test/output")
 
-        task.args = ['playwright'] + additionalArgs
+        def smokeTestEnv = project.findProperty("smokeTestEnv")
+        if (smokeTestEnv != null && additionalArgs.contains('test')) {
+          task.args = ['playwright'] + additionalArgs + ['-c', "src/config/playwright.${smokeTestEnv}.config.ts"]
+        } else {
+          task.args = ['playwright'] + additionalArgs
+        }
 
         return task
     }

@@ -9,5 +9,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
   <include file="migrations/0001_initial.xml"/>
+  <include file="migrations/0002_introduce_procedure_file_type.xml"/>
+  <include file="migrations/0003_rename_country_code_dto.xml"/>
+  <include file="migrations/0004_add_medical_registry_procedure_types.xml"/>
 
 </databaseChangeLog>

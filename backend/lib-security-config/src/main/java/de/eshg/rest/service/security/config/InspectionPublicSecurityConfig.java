@@ -63,6 +63,14 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
 
   private void procedure() {
     requestMatchers(
+            GET,
+            BaseUrls.Inspection.INSPECTION_CONTROLLER + "/{id}/**",
+            BaseUrls.Inspection.CHECKLIST_CONTROLLER + "/**",
+            BaseUrls.Inspection.PACKLIST_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
+    requestMatchers(
             BaseUrls.Inspection.INSPECTION_CONTROLLER + "/**",
             BaseUrls.Inspection.FACILITY_CONTROLLER + "/**",
             BaseUrls.Inspection.CHECKLIST_CONTROLLER + "/**",
@@ -72,6 +80,10 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
   }
 
   private void editor() {
+    requestMatchers(GET, BaseUrls.EditorLibrary.EDITOR_API + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(BaseUrls.EditorLibrary.EDITOR_API + "/**")
         .hasRole(EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT);
     requestMatchers(BaseUrls.EditorLibrary.TEXTBLOCK_API + "/**")

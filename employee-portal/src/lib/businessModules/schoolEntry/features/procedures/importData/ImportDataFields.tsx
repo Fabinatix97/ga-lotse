@@ -29,7 +29,6 @@ import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 
 interface ImportDataFieldsProps {
   listType: ImportListType;
-  requireSchoolYear: boolean;
   isPastProcedureImportEnabled: boolean;
   locationSelectionMode: ApiLocationSelectionMode;
   isDirectProcedureTypeAssignmentOnImport: boolean;
@@ -135,14 +134,12 @@ export function ImportDataFields(props: ImportDataFieldsProps) {
               category={ApiContactCategory.HealthDepartment}
             />
           )}
-        {props.requireSchoolYear && (
-          <SchoolYearField
-            name="schoolYear"
-            label="Wählen Sie ein Schuljahr aus"
-            required="Bitte ein Schuljahr auswählen."
-            range={schoolYearRange}
-          />
-        )}
+        <SchoolYearField
+          name="schoolYear"
+          label="Wählen Sie ein Schuljahr aus"
+          required="Bitte ein Schuljahr auswählen."
+          range={schoolYearRange}
+        />
         <FileField
           name="file"
           label="Wählen Sie eine XLSX-Datei aus"

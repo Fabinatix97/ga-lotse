@@ -54,18 +54,17 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
               startDecorator={<AddchartOutlined />}
               variant="solid"
               onClick={props.onEvaluationCreateClicked}
-              data-testid="create-evaluation-button"
             >
               Analyse erstellen
             </Button>
-            {/* TODO: Comment out for now, replace when feature-toggle is ready */}
-            {/* <Button
-              variant="outlined"
-              onClick={props.onDataBasisUpdateClicked}
-              data-testid="update-data-button"
-            >
-              Datenbasis aktualisieren
-            </Button> */}
+            {props.canUpdateStatistic && (
+              <Button
+                variant="outlined"
+                onClick={props.onDataBasisUpdateClicked}
+              >
+                Datenbasis aktualisieren
+              </Button>
+            )}
           </Stack>
         )
       }

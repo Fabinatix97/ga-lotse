@@ -10,10 +10,7 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedDate;
@@ -145,5 +142,17 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   public void addDownload(GdprDownload download) {
     downloads.add(download);
     download.setGdprProcedure(this);
+  }
+
+  public void deleteDownload(UUID downloadIdToDelete) {
+    Iterator<GdprDownload> iterator = downloads.iterator();
+    while (iterator.hasNext()) {
+      GdprDownload download = iterator.next();
+      if (download.getDownloadId().equals(downloadIdToDelete)) {
+        download.setGdprProcedure(null);
+        iterator.remove();
+        break;
+      }
+    }
   }
 }

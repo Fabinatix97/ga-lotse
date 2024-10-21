@@ -56,6 +56,11 @@ public class ProcedureStep extends GloballyUniqueEntityBase implements EntityWit
   private LocalDate earliestDate;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
+  @NotNull
+  @Column
+  private int bookingsRemaining = 2;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
   private UserDefinedAppointment userDefinedAppointment;
 
@@ -137,6 +142,14 @@ public class ProcedureStep extends GloballyUniqueEntityBase implements EntityWit
 
   public void setEarliestDate(LocalDate earliestDate) {
     this.earliestDate = earliestDate;
+  }
+
+  public int getBookingsRemaining() {
+    return bookingsRemaining;
+  }
+
+  public void setBookingsRemaining(int bookingsRemaining) {
+    this.bookingsRemaining = bookingsRemaining;
   }
 
   public UserDefinedAppointment getUserDefinedAppointment() {

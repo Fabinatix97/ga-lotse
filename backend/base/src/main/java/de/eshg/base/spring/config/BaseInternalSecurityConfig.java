@@ -41,6 +41,7 @@ public class BaseInternalSecurityConfig {
       facilities(auth);
       persons(auth);
       mail(auth);
+      gdpr(auth);
 
       auth.requestMatchers(POST, InventoryApi.BASE_URL + "/*" + InventoryApi.BOOKING + "/**")
           .hasRole(EmployeePermissionRole.BASE_INVENTORY_USE.getKeycloakName());
@@ -61,6 +62,19 @@ public class BaseInternalSecurityConfig {
       // To be removed together with the simulators, when we start calling actual services
       auth.requestMatchers("/simulator/**").authenticated();
     };
+  }
+
+  private void gdpr(
+      AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
+          auth) {
+    auth.requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ.getKeycloakName());
+    auth.requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE.getKeycloakName());
+    auth.requestMatchers(PUT, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE.getKeycloakName());
+    auth.requestMatchers(DELETE, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE.getKeycloakName());
   }
 
   private static void users(
@@ -102,7 +116,9 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(
             POST,
             FacilityApi.BASE_URL + FacilityApi.FILE_STATES_URL + BaseUrls.Base.BULK_GET_URL_END)
-        .hasRole(EmployeePermissionRole.BASE_FACILITIES_READ.getKeycloakName());
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_FACILITIES_READ.getKeycloakName(),
+            EmployeePermissionRole.PROCEDURE_ARCHIVE.getKeycloakName());
     auth.requestMatchers(
             POST, FacilityApi.BASE_URL + FacilityApi.FILE_STATES_URL + ARCHIVE_DELETION)
         .hasRole(EmployeePermissionRole.BASE_FACILITIES_DELETE.getKeycloakName());
@@ -117,7 +133,10 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(POST, FacilityApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_FACILITIES_WRITE.getKeycloakName());
     auth.requestMatchers(GET, FacilityApi.BASE_URL + "/**")
-        .hasRole(EmployeePermissionRole.BASE_FACILITIES_READ.getKeycloakName());
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_FACILITIES_READ.getKeycloakName(),
+            EmployeePermissionRole.PROCEDURE_ARCHIVE.getKeycloakName(),
+            EmployeePermissionRole.PROCEDURE_ARCHIVE_ADMIN.getKeycloakName());
   }
 
   private static void persons(
@@ -125,7 +144,9 @@ public class BaseInternalSecurityConfig {
           auth) {
     auth.requestMatchers(
             POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + BaseUrls.Base.BULK_GET_URL_END)
-        .hasRole(EmployeePermissionRole.BASE_PERSONS_READ.getKeycloakName());
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_PERSONS_READ.getKeycloakName(),
+            EmployeePermissionRole.PROCEDURE_ARCHIVE.getKeycloakName());
     auth.requestMatchers(POST, PersonApi.BASE_URL + PersonApi.FILE_STATES_URL + ARCHIVE_DELETION)
         .hasRole(EmployeePermissionRole.BASE_PERSONS_DELETE.getKeycloakName());
 
@@ -139,7 +160,8 @@ public class BaseInternalSecurityConfig {
     auth.requestMatchers(GET, BaseUrls.Base.PERSON_API + PersonApi.FILE_STATES_URL + "/*")
         .hasAnyRole(
             EmployeePermissionRole.BASE_PERSONS_READ.getKeycloakName(),
-            CitizenPermissionRole.ACCESS_CODE_USER.getKeycloakName());
+            CitizenPermissionRole.ACCESS_CODE_USER.getKeycloakName(),
+            EmployeePermissionRole.PROCEDURE_ARCHIVE.getKeycloakName());
 
     auth.requestMatchers(POST, PersonApi.BASE_URL + "/**")
         .hasRole(EmployeePermissionRole.BASE_PERSONS_WRITE.getKeycloakName());

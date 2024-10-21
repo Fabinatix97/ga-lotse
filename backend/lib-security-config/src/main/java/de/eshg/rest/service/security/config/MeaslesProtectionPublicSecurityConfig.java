@@ -5,6 +5,7 @@
 
 package de.eshg.rest.service.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PUT;
 
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -29,6 +30,11 @@ public final class MeaslesProtectionPublicSecurityConfig
 
     requestMatchers(PUT, BaseUrls.MeaslesProtection.PROCEDURE_CONTROLLER + "/*/reopen")
         .hasRole(EmployeePermissionRole.MEASLES_PROTECTION_LEADER);
+    requestMatchers(GET, BaseUrls.MeaslesProtection.PROCEDURE_CONTROLLER + "/{id}/**")
+        .hasAnyRole(
+            EmployeePermissionRole.MEASLES_PROTECTION_LEADER,
+            EmployeePermissionRole.MEASLES_PROTECTION_ADMIN,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(
             BaseUrls.MeaslesProtection.PROCEDURE_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")

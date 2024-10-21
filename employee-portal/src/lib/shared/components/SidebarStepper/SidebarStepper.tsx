@@ -4,7 +4,7 @@
  */
 
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Button, DialogTitle, Stack, Typography, ZIndex } from "@mui/joy";
 import { Formik, FormikErrors, FormikProps, FormikValues } from "formik";
 import { useEffect, useRef, useState } from "react";
@@ -40,7 +40,7 @@ export function SidebarStepper<T extends FormikValues>({
   const { sidebarFormRef, handleClose } = useSidebarForm({
     onClose: onClose,
   });
-  const alertContext = useAlertContext();
+  const alert = useAlert();
   const formikRef = useRef<FormikProps<T>>(null);
 
   const currentStep = steps[stepIndex]!;
@@ -72,10 +72,10 @@ export function SidebarStepper<T extends FormikValues>({
         if (typeof value === "object") {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           Object.keys(value).forEach(
-            (it) => void setFieldTouched(`${key}.${it}`, true),
+            (it) => void setFieldTouched(`${key}.${it}`, true, false),
           );
         } else {
-          void setFieldTouched(key, true);
+          void setFieldTouched(key, true, false);
         }
       });
 
@@ -89,7 +89,7 @@ export function SidebarStepper<T extends FormikValues>({
       }
 
       setStepIndex(stepIndex + 1);
-      alertContext?.setAlert(null);
+      alert.close();
     });
   }
 
@@ -98,7 +98,7 @@ export function SidebarStepper<T extends FormikValues>({
       return;
     }
     setStepIndex(stepIndex - 1);
-    alertContext?.setAlert(null);
+    alert.close();
   }
 
   useEffect(() => {
@@ -116,16 +116,15 @@ export function SidebarStepper<T extends FormikValues>({
         validate={(model) => {
           const errors = stepProps(model).validator?.(model);
           if (errors === undefined) {
-            alertContext?.setAlert(null);
+            alert.close();
           } else {
             const possibleErrors = Object.values(errors).filter(
               (it) => typeof it === "string",
             );
             if (possibleErrors.length > 0) {
-              alertContext?.setAlert({
+              alert.error({
                 title: "",
                 message: possibleErrors[0],
-                color: "danger",
               });
             }
           }
@@ -190,15 +189,14 @@ export function SidebarStepper<T extends FormikValues>({
                       </Button>
                     )}
                     {stepIndex + 1 < steps.length && (
-                      <SubmitButton
-                        submitting={false}
+                      <Button
                         onClick={() => {
                           onNextStep(validateForm, values, setFieldTouched);
                         }}
                         disabled={isDisabledNextStep}
                       >
                         Weiter
-                      </SubmitButton>
+                      </Button>
                     )}
                     {stepIndex + 1 === steps.length && (
                       <SubmitButton

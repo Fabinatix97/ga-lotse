@@ -24,21 +24,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-@ConditionalOnProperty(
-    name = "de.eshg.lib.procedure.housekeeping.archiving-job-enabled",
-    havingValue = "true")
 public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
 
   private static final Logger logger = LoggerFactory.getLogger(ArchivingJob.class);
   private final ArchivingProperties archivingProperties;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
-  private ArchivingJobService<ProcedureT> archivingJobService;
+  private final ArchivingJobService<ProcedureT> archivingJobService;
   private final Clock clock;
 
   public ArchivingJob(

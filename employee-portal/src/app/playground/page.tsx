@@ -107,6 +107,14 @@ export default function PlaygroundIndexPage() {
           <li>
             <InternalLink href="/playground/sidebar">Sidebar</InternalLink>
           </li>
+          <li>
+            <InternalLink href="/playground/alert">Alert</InternalLink>
+          </li>
+          <li>
+            <InternalLink href="/playground/appointment-picker">
+              Appointment Picker Field
+            </InternalLink>
+          </li>
         </ul>
       </MainContentLayout>
     </StickyToolbarLayout>

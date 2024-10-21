@@ -403,6 +403,12 @@ public class GdprProcedureController implements GdprProcedureApi {
     return new GetGdprDownloadsResponse(mapDownloadToApi(procedure.getDownloads()));
   }
 
+  @Override
+  @Transactional
+  public void deleteDownloads(UUID id, DeleteGdprDownloadsRequest request) {
+    service.deleteGdprDownloads(id, request.downloadIds());
+  }
+
   private static Set<UUID> mapDownloadToApi(Collection<GdprDownload> downloads) {
     return downloads.stream().map(GdprDownload::getDownloadId).collect(Collectors.toSet());
   }

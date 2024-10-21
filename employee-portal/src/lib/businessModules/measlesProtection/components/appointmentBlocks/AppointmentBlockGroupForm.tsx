@@ -14,11 +14,11 @@ import {
   AppointmentBlockGroupValues,
   AppointmentCountWithDays,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
+import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
-import { validateAppointmentBlock } from "./ValidateAppointmentBlock";
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 function validateForm(
@@ -60,8 +60,8 @@ export function AppointmentBlockGroupForm(
       }
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet onSubmit={handleSubmit}>
-          <Stack gap={4}>
+        <FormSheet gap={5} onSubmit={handleSubmit}>
+          <Stack gap={5}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}

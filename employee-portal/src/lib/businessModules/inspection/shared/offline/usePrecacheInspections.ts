@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ApiErrorCode,
   ApiUserRole,
   BaseFeatureTogglesApi,
   ConfigApi,
@@ -13,6 +14,7 @@ import {
   UserApi,
 } from "@eshg/employee-portal-api/base";
 import {
+  ApiInspection,
   ApiInspectionFeature,
   ChecklistApi,
   EditorApi,
@@ -25,7 +27,10 @@ import {
   ProgressEntryApi,
 } from "@eshg/employee-portal-api/inspection";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { isNonNullish } from "remeda";
 
 import {
@@ -66,6 +71,7 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { getPacklistsQueryKey } from "@/lib/businessModules/inspection/api/queries/packlist";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
+import { useServiceWorker } from "@/lib/businessModules/inspection/shared/offline/ServiceWorkerProvider";
 import { chunkArray } from "@/lib/businessModules/inspection/shared/offline/password/chunkArray";
 import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
@@ -113,31 +119,68 @@ export function usePrecacheInspections(inspectionIds: string[]) {
     ApiInspectionFeature.Packlists,
   );
 
+  const { removeFromPrecache } = useServiceWorker();
+  const snackbar = useSnackbar();
+
   // execute async call in this synchronous hook
-  prefetchAll({
-    inspectionIds,
+  useMemo(() => {
+    prefetchAll({
+      inspectionIds,
+      cacheHeaders,
+      queryClient,
+      configApi,
+      departmentApi,
+      userApi,
+      baseFeatureTogglesApi,
+      inspectionFeatureTogglesApi,
+      inspectionApi,
+      checklistApi,
+      incidentApi,
+      editorApi,
+      fileApi,
+      progressEntryApi,
+      procedureApi,
+      packlistApi,
+      fetchApprovalRequests,
+      isPacklistsEnabled,
+    })
+      .then((inspectionIdToRemove) => {
+        if (inspectionIdToRemove) {
+          snackbar.error(
+            "Begehung " +
+              inspectionIdToRemove +
+              " existiert nicht. Wird aus dem Offline-Cache entfernt.",
+          );
+          removeFromPrecache(inspectionIdToRemove);
+        }
+      })
+      .catch((reason) => {
+        // eslint-disable-next-line no-console
+        console.error("error pre-fetching offline data", reason);
+        throw reason; // will be caught by the ErrorBoundary in RegisterServiceWorker.tsx
+      });
+  }, [
+    baseFeatureTogglesApi,
     cacheHeaders,
-    queryClient,
+    checklistApi,
     configApi,
     departmentApi,
-    userApi,
-    baseFeatureTogglesApi,
-    inspectionFeatureTogglesApi,
-    inspectionApi,
-    checklistApi,
-    incidentApi,
     editorApi,
-    fileApi,
-    progressEntryApi,
-    procedureApi,
-    packlistApi,
     fetchApprovalRequests,
+    fileApi,
+    incidentApi,
+    inspectionApi,
+    inspectionFeatureTogglesApi,
     isPacklistsEnabled,
-  }).catch((reason) => {
-    // eslint-disable-next-line no-console
-    console.error("error pre-fetching offline data", reason);
-    throw reason; // will be caught by the ErrorBoundary in RegisterServiceWorker.tsx
-  });
+    packlistApi,
+    procedureApi,
+    progressEntryApi,
+    queryClient,
+    removeFromPrecache,
+    snackbar,
+    userApi,
+    inspectionIds,
+  ]);
 }
 
 async function prefetchAll({
@@ -179,75 +222,35 @@ async function prefetchAll({
   fetchApprovalRequests: boolean;
   isPacklistsEnabled: boolean;
 }) {
-  const promises: Promise<unknown>[] = [];
-
-  // 1. pre-fetch api requests
-  // 1.1 pre-fetch useServerConfig()
-  promises.push(
-    queryClient.fetchQuery({
-      queryKey: configApiQueryKey(["getConfig"]),
-      queryFn: () => configApi.getConfigRaw(cacheHeaders()),
-    }),
-  );
-  // 1.2 pre-fetch useGetDepartment()
-  promises.push(
-    queryClient.fetchQuery({
-      queryKey: getDepartmentQueryKey(),
-      queryFn: () => departmentApi.getDepartmentInfo(cacheHeaders()),
-    }),
-  );
-  // 1.3 pre-fetch useGetUsersByGroupQuery(moduleUserGroup.group)
-  promises.push(
-    queryClient.fetchQuery({
-      queryKey: userApiQueryKey(["getUsersByGroup", moduleUserGroup.group]),
-      queryFn: () =>
-        userApi.getUsersByGroup(moduleUserGroup.group, cacheHeaders()),
-    }),
-  );
-  // 1.4 pre-fetch useGetBaseFeatureToggle
-  promises.push(
-    queryClient.fetchQuery({
-      queryKey: baseFeatureTogglesApiQueryKey(["getFeatureToggles"]),
-      queryFn: () => baseFeatureTogglesApi.getFeatureToggles(cacheHeaders()),
-    }),
-  );
-  // 1.5 pre-fetch inspection's useFeatureToggleQuery
-  promises.push(
-    queryClient.fetchQuery({
-      queryKey: inspectionFeatureTogglesApiQueryKey(["getFeatureToggles"]),
-      queryFn: () =>
-        inspectionFeatureTogglesApi.getFeatureToggles(cacheHeaders()),
-    }),
-  );
-
-  // 2. pre-fetch general pages
-  const procedureIndexUrl = inspectionRoutes.procedures.index;
-  promises.push(...precachePage(procedureIndexUrl, cacheHeaders()));
-  promises.push(...precachePage("/~offline", cacheHeaders()));
-
-  // 3. execute all promises gathered so far
-  await executeInChunks(promises);
-
-  // 4. pre-fetch inspection procedure related queries
+  // 1. pre-fetch inspection procedure related queries
   for (const inspectionId of inspectionIds) {
     const inspPromises: Promise<unknown>[] = [];
     const headers = cacheHeaders(inspectionId);
 
-    // 4.1 pre-fetch useGetInspection()
+    // 1.1 pre-fetch useGetInspection()
     //     this gets executed immediately because we need the response
-    const inspection = await queryClient.fetchQuery({
-      queryKey: getInspectionQueryKey(inspectionId),
-      queryFn: () => inspectionApi.getInspection(inspectionId, headers),
-    });
+    let inspection: ApiInspection;
+    try {
+      inspection = await queryClient.fetchQuery({
+        queryKey: getInspectionQueryKey(inspectionId),
+        queryFn: () => inspectionApi.getInspection(inspectionId, headers),
+      });
+    } catch (error) {
+      const { originalErrorCode } = resolveError(error);
+      if (originalErrorCode === ApiErrorCode.NotFound) {
+        return inspectionId;
+      }
+      throw error;
+    }
 
-    // 4.2 pre-fetch useGetChecklists()
+    // 1.2 pre-fetch useGetChecklists()
     //     this gets executed immediately because we need the response
     const checklists = await queryClient.fetchQuery({
       queryKey: getChecklistsQueryKey(inspectionId),
       queryFn: () => checklistApi.getChecklists(inspectionId, headers),
     });
 
-    // 4.3 pre-fetch useGetAvailableCLDVs()
+    // 1.3 pre-fetch useGetAvailableCLDVs()
     inspPromises.push(
       queryClient.fetchQuery({
         queryKey: getAvailableCLDVsQueryKey(inspectionId),
@@ -255,7 +258,7 @@ async function prefetchAll({
       }),
     );
 
-    // 4.4 pre-fetch useGetIncidents()
+    // 1.4 pre-fetch useGetIncidents()
     inspPromises.push(
       queryClient.fetchQuery({
         queryKey: incidentsApiQueryKey(["getIncidents", { inspectionId }]),
@@ -263,7 +266,7 @@ async function prefetchAll({
       }),
     );
 
-    // 4.5 pre-fetch useLoadEditor(reportId, inspectionId) and downloadReport
+    // 1.5 pre-fetch useLoadEditor(reportId, inspectionId) and downloadReport
     if (isNonNullish(inspection.reportId)) {
       inspPromises.push(
         queryClient.fetchQuery({
@@ -277,7 +280,7 @@ async function prefetchAll({
       );
     }
 
-    // 4.6 pre-fetch download report file
+    // 1.6 pre-fetch download report file
     if (isNonNullish(inspection.reportInfo)) {
       inspPromises.push(
         fileApi.downloadFileRaw(
@@ -287,7 +290,7 @@ async function prefetchAll({
       );
     }
 
-    // 4.7 pre-fetch checklist image and audio files
+    // 1.7 pre-fetch checklist image and audio files
     checklists.checklists
       .flatMap(({ sections }) => sections)
       .flatMap(({ elements }) => elements)
@@ -305,7 +308,7 @@ async function prefetchAll({
         inspPromises.push(checklistApi.checklistGetFile(audioID, headers));
       });
 
-    // 4.8 pre-fetch useFetchProgressEntries() aka useFetchProgressEntriesTemplate()
+    // 1.8 pre-fetch useFetchProgressEntries() aka useFetchProgressEntriesTemplate()
     const pgQueryKey = queryKeyFactory(
       progressEntryApiQueryKey([
         "fetchProgressEntries",
@@ -314,7 +317,7 @@ async function prefetchAll({
         `${fetchApprovalRequests}`,
       ]),
     );
-    // 4.8.1 pre-fetch progress entries
+    // 1.8.1 pre-fetch progress entries
     //       this gets executed immediately because we need the response
     const pgResponse = await queryClient.fetchQuery({
       queryKey: pgQueryKey(["progressEntries"]),
@@ -332,7 +335,7 @@ async function prefetchAll({
           headers,
         ),
     });
-    // 4.8.2 pre-fetch useFetchProgressEntryDetailsTemplate()
+    // 1.8.2 pre-fetch useFetchProgressEntryDetailsTemplate()
     for (const { progressEntryId: entryId } of pgResponse.progressEntries) {
       inspPromises.push(
         queryClient.fetchQuery({
@@ -356,7 +359,7 @@ async function prefetchAll({
         ),
       );
     }
-    // 4.8.3 pre-fetch progress entries file details
+    // 1.8.3 pre-fetch progress entries file details
     inspPromises.push(
       queryClient.fetchQuery({
         queryKey: pgQueryKey(["procedureFileDetails"]),
@@ -364,14 +367,14 @@ async function prefetchAll({
           procedureApi.getProcedureFileDetails(inspectionId, headers),
       }),
     );
-    // 4.8.4 pre-fetch progress entries procedure details
+    // 1.8.4 pre-fetch progress entries procedure details
     inspPromises.push(
       queryClient.fetchQuery({
         queryKey: pgQueryKey(["detailedProcedure"]),
         queryFn: () => procedureApi.getDetailedProcedure(inspectionId, headers),
       }),
     );
-    // 4.8.5 fetch progress entries approval requests if needed
+    // 1.8.5 fetch progress entries approval requests if needed
     if (fetchApprovalRequests) {
       inspPromises.push(
         queryClient.fetchQuery({
@@ -382,7 +385,7 @@ async function prefetchAll({
       );
     }
 
-    // 4.9 pre-fetch useGetPacklists()
+    // 1.9 pre-fetch useGetPacklists()
     if (isPacklistsEnabled) {
       inspPromises.push(
         queryClient.fetchQuery({
@@ -390,7 +393,7 @@ async function prefetchAll({
           queryFn: () => packlistApi.getPacklists(inspectionId, headers),
         }),
       );
-      // 4.9.1 pre-fetch useGetAvailablePLDRs()
+      // 1.9.1 pre-fetch useGetAvailablePLDRs()
       inspPromises.push(
         queryClient.fetchQuery({
           queryKey: getAvailablePLDRsQueryKey(inspectionId),
@@ -399,7 +402,7 @@ async function prefetchAll({
       );
     }
 
-    // 4.10 pre-fetch inspection related pages
+    // 1.10 pre-fetch inspection related pages
     const pages = [
       inspectionRoutes.procedures.basedata,
       inspectionRoutes.procedures.planning,
@@ -412,9 +415,74 @@ async function prefetchAll({
       inspPromises.push(...precachePage(page(inspectionId), headers));
     });
 
-    // 4.11 execute all inspection related promises
+    // 1.11 execute all inspection related promises
     await executeInChunks(inspPromises);
   }
+
+  const promises: Promise<unknown>[] = [];
+
+  // 2. pre-fetch general api requests
+  // 2.1 pre-fetch useServerConfig()
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: configApiQueryKey(["getConfig"]),
+      queryFn: () => configApi.getConfigRaw(cacheHeaders()),
+    }),
+  );
+  // 2.2 pre-fetch useGetDepartment()
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: getDepartmentQueryKey(),
+      queryFn: () => departmentApi.getDepartmentInfo(cacheHeaders()),
+    }),
+  );
+  // 2.3 pre-fetch useGetUsersByGroupQuery(moduleUserGroup.group)
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: userApiQueryKey(["getUsersByGroup", moduleUserGroup.group]),
+      queryFn: () =>
+        userApi.getUsersByGroup(moduleUserGroup.group, cacheHeaders()),
+    }),
+  );
+  // 2.4 pre-fetch useGetSelfUser
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: userApiQueryKey(["getSelfUser"]),
+      queryFn: () => userApi.getSelfUser(cacheHeaders()),
+    }),
+  );
+  // 2.5 pre-fetch getSelfUserPermissions
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: userApiQueryKey(["getSelfUserPermissions"]),
+      queryFn: () => userApi.getSelfUserPermissions(cacheHeaders()),
+    }),
+  );
+  // 2.6 pre-fetch useGetBaseFeatureToggle
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: baseFeatureTogglesApiQueryKey(["getFeatureToggles"]),
+      queryFn: () => baseFeatureTogglesApi.getFeatureToggles(cacheHeaders()),
+    }),
+  );
+  // 2.7 pre-fetch inspection's useFeatureToggleQuery
+  promises.push(
+    queryClient.fetchQuery({
+      queryKey: inspectionFeatureTogglesApiQueryKey(["getFeatureToggles"]),
+      queryFn: () =>
+        inspectionFeatureTogglesApi.getFeatureToggles(cacheHeaders()),
+    }),
+  );
+
+  // 3. pre-fetch general pages
+  const procedureIndexUrl = inspectionRoutes.procedures.index;
+  promises.push(...precachePage(procedureIndexUrl, cacheHeaders()));
+  promises.push(...precachePage("/~offline", cacheHeaders()));
+
+  // 4. execute all promises for general requests
+  await executeInChunks(promises);
+
+  return undefined;
 }
 
 function precachePage(url: string, preCacheForOfflineModeHeaders: RequestInit) {

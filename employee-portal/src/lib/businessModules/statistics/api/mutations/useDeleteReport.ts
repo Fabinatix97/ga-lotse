@@ -6,16 +6,16 @@
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
-import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
+import { useReportApi } from "@/lib/businessModules/statistics/api/clients";
 
 export function useDeleteReport({
   onSuccess,
 }: { onSuccess?: () => void } = {}) {
   const snackbar = useSnackbar();
-  const api = useReportSeriesApi();
+  const api = useReportApi();
   const mutation = useHandledMutation({
-    mutationFn: (seriesId: string) => api.deleteReportSeries(seriesId),
-    onSuccess: () => snackbar.confirmation("Report gelöscht"),
+    mutationFn: (reportId: string) => api.deleteReport(reportId),
+    onSuccess: () => snackbar.confirmation("Report wird gelöscht"),
   });
 
   return (reportId: string) => {

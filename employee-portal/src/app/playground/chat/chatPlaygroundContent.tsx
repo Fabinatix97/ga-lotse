@@ -81,9 +81,7 @@ export function ChatPlaygroundContent() {
   }
 
   async function handleDeviceVerify() {
-    const deviceId = matrixClient.getDeviceId();
-    if (!deviceId) return;
-    const isVerified = await isDeviceVerified(matrixClient, deviceId);
+    const isVerified = await isDeviceVerified(matrixClient);
     logger.debug({ isVerified });
   }
 

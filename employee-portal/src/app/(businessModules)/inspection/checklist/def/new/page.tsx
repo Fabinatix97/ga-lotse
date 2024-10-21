@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -12,6 +13,8 @@ import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolba
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function NewChecklist() {
+  const { data: objectTypes } = useGetObjectTypes();
+
   return (
     <StickyToolbarLayout
       toolbar={
@@ -22,7 +25,7 @@ export default function NewChecklist() {
       }
     >
       <MainContentLayout fullViewportHeight>
-        <EditChecklistDefinition />
+        <EditChecklistDefinition objectTypes={objectTypes} />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

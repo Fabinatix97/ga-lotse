@@ -78,4 +78,8 @@ public class SchoolEntryTestHelperService extends DefaultTestHelperService {
     environmentConfig.assertIsNotProduction();
     schoolEntryProcedureRepository.clearCitizenUserId(procedureId);
   }
+
+  public List<UUID> getIdsOfClosedProcedures() {
+    return schoolEntryProcedureRepository.findExternalIdsOfClosedProcedures();
+  }
 }

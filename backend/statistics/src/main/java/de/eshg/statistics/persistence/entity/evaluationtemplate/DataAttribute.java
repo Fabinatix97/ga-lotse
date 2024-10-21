@@ -9,15 +9,14 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
-import jakarta.persistence.CollectionTable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
@@ -34,14 +33,16 @@ public class DataAttribute extends BaseEntity {
   @Column(nullable = false)
   private String code;
 
-  @ElementCollection
-  @CollectionTable(
-      name = "attribute_to_base_attributes",
-      joinColumns = @JoinColumn(name = "id"),
-      foreignKey = @ForeignKey(name = "fk_attribute_to_base_attributes"))
+  @Column(nullable = false)
+  private String name;
+
+  @OneToMany(
+      cascade = CascadeType.PERSIST,
+      fetch = FetchType.LAZY,
+      mappedBy = BaseDataAttribute_.DATA_ATTRIBUTE,
+      orphanRemoval = true)
   @OrderColumn
-  @Column(name = "base_attribute_code", nullable = false)
-  private List<String> baseAttributeCodes = new ArrayList<>();
+  private final List<BaseDataAttribute> baseAttributes = new ArrayList<>();
 
   void setDataSource(DataSource dataSource) {
     this.dataSource = dataSource;
@@ -55,11 +56,20 @@ public class DataAttribute extends BaseEntity {
     this.code = code;
   }
 
-  public List<String> getBaseAttributeCodes() {
-    return baseAttributeCodes;
+  public String getName() {
+    return name;
   }
 
-  public void addBaseAttributeCodes(List<String> baseAttributeCodes) {
-    this.baseAttributeCodes.addAll(baseAttributeCodes);
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<BaseDataAttribute> getBaseAttributes() {
+    return baseAttributes;
+  }
+
+  public void addBaseAttributes(List<BaseDataAttribute> baseAttributes) {
+    baseAttributes.forEach(attribute -> attribute.setDataAttribute(this));
+    this.baseAttributes.addAll(baseAttributes);
   }
 }

@@ -7,7 +7,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useDepartmentApi } from "@/lib/baseModule/api/clients";
 import { departmentApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 
 export function getDepartmentQueryKey() {
   return departmentApiQueryKey(["getDepartment"]);
@@ -15,10 +14,8 @@ export function getDepartmentQueryKey() {
 
 export function useGetDepartment() {
   const departmentApi = useDepartmentApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: getDepartmentQueryKey(),
-    queryFn: () =>
-      departmentApi.getDepartmentInfo(getPreCacheForOfflineModeHeaders()),
+    queryFn: () => departmentApi.getDepartmentInfo(),
   });
 }

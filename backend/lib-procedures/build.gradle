@@ -17,6 +17,7 @@ dependencies {
     implementation project(':business-module-commons')
     implementation project(':business-module-persistence-commons')
     implementation project(':rest-oauth-client-commons')
+    implementation project(':file-commons')
 
     implementation 'jakarta.persistence:jakarta.persistence-api'
     implementation 'org.springframework:spring-context'

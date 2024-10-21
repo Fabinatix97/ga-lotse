@@ -7,12 +7,14 @@ import {
   ApiDomesticAddress,
   ApiPostboxAddress,
 } from "@eshg/employee-portal-api/measlesProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
 
-import { Row } from "@/lib/shared/Row";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import { BaseAddress } from "@/lib/shared/helpers/address";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
-
-import { LabeledValue, ValueList } from "./LabeledValue";
 
 interface AddressDetailsProps {
   address?: BaseAddress;

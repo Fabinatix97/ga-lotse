@@ -527,7 +527,7 @@ export default NextErrorBoundary;
 export default function Template(props: RequiresChildren) {
   return (
     <QueryBoundary>
-      <ScopedAlert />
+      <AlertSlot />
       {props.children}
     </QueryBoundary>
   );

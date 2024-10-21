@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ApiPacklistDefinitionRevision } from "@eshg/employee-portal-api/inspection";
+import {
+  ApiObjectType,
+  ApiPacklistDefinitionRevision,
+} from "@eshg/employee-portal-api/inspection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -44,6 +47,7 @@ interface CreateOrEditPacklistDefinitionSidebarProps {
     version: number,
     revisionId: string,
   ) => void;
+  objectTypes: ApiObjectType[];
 }
 
 export function CreateOrEditPacklistDefinitionSidebar(
@@ -66,6 +70,7 @@ export function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
   readonly,
   title,
   onClickNewRevision,
+  objectTypes,
 }: Readonly<CreateOrEditPacklistDefinitionSidebarProps>) {
   const router = useRouter();
   const sidebarFormRef = useRef<SidebarFormHandle>(null);
@@ -146,6 +151,7 @@ export function CreateOrEditPacklistDefinitionSidebarWithQueriesAndMutations({
                 <PacklistDefinitionHeaderCard
                   readOnlyMode={readOnlyMode}
                   revision={pldRevision?.revision}
+                  objectTypes={objectTypes}
                 />
                 <PacklistDefinitionElementsList readOnlyMode={readOnlyMode} />
               </Stack>

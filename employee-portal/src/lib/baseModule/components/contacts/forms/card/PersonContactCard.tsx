@@ -4,37 +4,25 @@
  */
 
 import { ApiPersonContact } from "@eshg/employee-portal-api/base";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { Stack, Typography } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
-import { join } from "@/lib/shared/helpers/strings";
+import { getContactAddressLine } from "@/lib/baseModule/components/contacts/helpers";
 
-export function PersonContactCard({
-  contact: element,
-}: {
-  contact: ApiPersonContact;
-}) {
+export function PersonContactCard({ contact }: { contact: ApiPersonContact }) {
   return (
-    <Stack>
-      <Typography level={"title-md"}>
-        {element.firstName} {element.name}
+    <Stack sx={{ minWidth: 0 }}>
+      <Typography level={"title-md"} noWrap>
+        {formatPersonName({
+          firstName: contact.firstName,
+          lastName: contact.name,
+        })}
       </Typography>
-      {isNonNullish(element.contactAddress) && (
-        <>
-          <Typography>
-            {element.contactAddress.type === "DomesticAddress"
-              ? join(
-                  [
-                    element.contactAddress.street,
-                    element.contactAddress.houseNumber,
-                  ],
-                  " ",
-                )?.trim()
-              : element.contactAddress.postbox}
-            {", "}
-            {element.contactAddress.postalCode} {element.contactAddress.city}
-          </Typography>
-        </>
+      {isNonNullish(contact.contactAddress) && (
+        <Typography noWrap>
+          {getContactAddressLine(contact.contactAddress)}
+        </Typography>
       )}
     </Stack>
   );

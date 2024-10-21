@@ -5,7 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 
 @Schema(name = "PersonAddress")
 public record PersonAddressDto(
-    @NotNull CountryCodeDto country,
+    @NotNull CountryCode country,
     @NotBlank @Size(max = 50) String city,
     @NotBlank String postalCode,
     @NotBlank @Size(max = 55) String street,

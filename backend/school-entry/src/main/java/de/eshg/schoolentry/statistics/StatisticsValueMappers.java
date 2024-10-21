@@ -15,6 +15,8 @@ import org.springframework.data.domain.Range;
 
 public class StatisticsValueMappers {
 
+  private StatisticsValueMappers() {}
+
   public static Function<Integer, EvaluationResult> jumpCountAssessment() {
     return getEvaluationResult(Range.closed(0, 6), Range.closed(7, 8), Range.closed(9, 30));
   }

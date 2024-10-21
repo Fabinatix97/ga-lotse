@@ -8,6 +8,7 @@ package de.eshg.inspection.report.persistence;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.inspection.inspection.InspectionValidator;
 import de.eshg.inspection.inspection.persistence.Inspection;
+import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.report.persistence.element.ReportElement;
 import de.eshg.inspection.report.persistence.element.ReportElement_;
 import de.eshg.lib.common.DataSensitivity;
@@ -19,7 +20,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -50,7 +50,7 @@ public class Report extends GloballyUniqueEntityBase {
   private Instant createdAt;
 
   @NotNull
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @OneToOne(mappedBy = Inspection_.REPORT, cascade = CascadeType.PERSIST)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Inspection inspection;
 

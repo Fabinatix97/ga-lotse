@@ -6,7 +6,10 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { ApiChecklistDefinitionVersion } from "@eshg/employee-portal-api/inspection";
+import {
+  ApiChecklistDefinitionVersion,
+  ApiObjectType,
+} from "@eshg/employee-portal-api/inspection";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -27,6 +30,7 @@ import {
 } from "@/lib/businessModules/inspection/components/checklistDefinition/header/ChecklistDefinitionHeaderRow";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { ConfirmLeaveDirtyFormEffect } from "@/lib/shared/components/form/ConfirmLeaveDirtyFormEffect";
 import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { ChecklistDefinitionSectionsList } from "./sections/ChecklistDefinitionSectionsList";
@@ -35,12 +39,14 @@ interface EditChecklistDefinitionProps {
   headerRow?: ReactNode;
   cldVersion?: ApiChecklistDefinitionVersion; // unset when this is a completely new cld
   readonly?: boolean;
+  objectTypes: ApiObjectType[];
 }
 
 export function EditChecklistDefinition({
   headerRow,
   cldVersion,
   readonly,
+  objectTypes,
 }: Readonly<EditChecklistDefinitionProps>) {
   const router = useRouter();
 
@@ -129,6 +135,7 @@ export function EditChecklistDefinition({
     >
       {({ isSubmitting }) => (
         <FormPlus>
+          <ConfirmLeaveDirtyFormEffect />
           <Stack spacing={2}>
             {headerRow ?? (
               <ChecklistDefinitionHeaderRow
@@ -147,6 +154,7 @@ export function EditChecklistDefinition({
             <ChecklistDefinitionHeaderCard
               readOnlyMode={readOnlyMode}
               version={cldVersion?.context.version}
+              objectTypes={objectTypes}
             />
             <ChecklistDefinitionSectionsList readOnlyMode={readOnlyMode} />
             {canSeeSaveActions && !readOnlyMode && (

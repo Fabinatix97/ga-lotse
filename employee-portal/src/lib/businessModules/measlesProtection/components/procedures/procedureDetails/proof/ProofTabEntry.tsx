@@ -5,7 +5,7 @@
 
 import { ReactNode } from "react";
 
-import { ValueList } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/LabeledValue";
+import { ValueList } from "@/lib/shared/components/detailsCard/LabeledValue";
 
 interface ProofTabEntryProps {
   children: ReactNode;

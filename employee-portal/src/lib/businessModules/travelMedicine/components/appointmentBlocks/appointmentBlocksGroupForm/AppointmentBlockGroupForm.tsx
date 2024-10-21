@@ -21,12 +21,11 @@ import {
   calculateAppointmentCount,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
+import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
-
-import { validateAppointmentBlock } from "./validateAppointmentBlock";
 
 const DEFAULT_PARALLEL_EXAMINATIONS = 1;
 
@@ -47,7 +46,8 @@ function validateForm(values: AppointmentBlockGroupValues) {
   }
 
   if (isEmpty(values.physicians) && isEmpty(values.mfas)) {
-    const msg = "Es muss mindestens eine Arzt:in oder ein MFA ausgewählt sein.";
+    const msg =
+      "Es muss mindestens ein Arzt/eine Ärztin oder ein:e MFA ausgewählt sein.";
     errors.physicians = msg;
     errors.mfas = msg;
   }
@@ -117,16 +117,15 @@ export function AppointmentBlockGroupForm(
       validate={validateForm}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet onSubmit={handleSubmit}>
-          <Stack gap={4}>
+        <FormSheet gap={5} onSubmit={handleSubmit}>
+          <Stack gap={5}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
               showParallelExaminations
             />
           </Stack>
-          <Divider />
-          <Stack gap={4}>
+          <Stack gap={5}>
             <AppointmentStaffSelection
               physicianOptions={physicianOptions}
               medicalAssistantOptions={medicalAssistantsOptions}

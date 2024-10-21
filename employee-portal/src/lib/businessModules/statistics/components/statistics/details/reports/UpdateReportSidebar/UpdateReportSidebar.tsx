@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { useUpdateReport } from "@/lib/businessModules/statistics/api/mutations/useUpdateReport";
 import { UpdateReportStep } from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/UpdateReportStep";
 import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/updateReportFormModel";
@@ -12,6 +13,7 @@ export interface UpdateReportSidebarReportInfo {
   seriesId: string;
   name: string;
   description?: string;
+  type: ReportDataType;
 }
 export interface UpdateReportSidebarProps {
   onClose: () => void;
@@ -43,7 +45,10 @@ export function UpdateReportSidebar({
         {
           type: "StandardStep",
           step: {
-            title: "Report bearbeiten",
+            title:
+              report.type === ReportDataType.Series
+                ? "Serie bearbeiten"
+                : "Report bearbeiten",
             content: <UpdateReportStep />,
           },
         },

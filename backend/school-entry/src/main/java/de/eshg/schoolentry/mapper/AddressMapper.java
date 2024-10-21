@@ -7,7 +7,7 @@ package de.eshg.schoolentry.mapper;
 
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
-import de.eshg.schoolentry.business.model.AddressData;
+import de.eshg.lib.xlsximport.model.AddressData;
 
 public final class AddressMapper {
   private AddressMapper() {}

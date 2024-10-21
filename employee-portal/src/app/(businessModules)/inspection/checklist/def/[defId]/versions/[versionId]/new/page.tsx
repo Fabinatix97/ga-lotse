@@ -6,8 +6,14 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useGetChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import {
+  useChecklistDefinitionApi,
+  useObjectTypeApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import { getChecklistDefinitionVersionQuery } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -20,8 +26,16 @@ export default function NewChecklistVersion({
 }: Readonly<{
   params: { defId: string; versionId: string };
 }>) {
-  const { data: checklistVersion } =
-    useGetChecklistDefinitionVersion(versionId);
+  const objectTypeApi = useObjectTypeApi();
+  const checklistDefinitionApi = useChecklistDefinitionApi();
+
+  const [{ data: objectTypes }, { data: checklistVersion }] =
+    useSuspenseQueries({
+      queries: [
+        getObjectTypesQuery(objectTypeApi),
+        getChecklistDefinitionVersionQuery(checklistDefinitionApi, versionId),
+      ],
+    });
 
   if (checklistVersion.context.defId !== defId) {
     throw new Error("defId does not match");
@@ -44,6 +58,7 @@ export default function NewChecklistVersion({
         <EditChecklistDefinition
           cldVersion={checklistVersion}
           readonly={!canWrite}
+          objectTypes={objectTypes}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

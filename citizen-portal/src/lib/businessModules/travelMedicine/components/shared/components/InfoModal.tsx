@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { DialogTitle, Modal, ModalClose, ModalDialog, Stack } from "@mui/joy";
 import { DefaultColorPalette, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
@@ -26,15 +26,13 @@ export function InfoModal({
   onClose,
   sx,
 }: InfoModalProps) {
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function handleClose() {
     if (onClose !== undefined) {
       onClose();
     }
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
+    resetAlertContext();
   }
 
   return (

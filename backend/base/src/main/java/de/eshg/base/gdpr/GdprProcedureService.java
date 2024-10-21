@@ -108,4 +108,15 @@ public class GdprProcedureService {
 
     log.info("Added downloadIds={} to GdprProcedure(id={})", downloadIdsToAdd, id);
   }
+
+  public void deleteGdprDownloads(UUID id, @NotNull Set<UUID> downloadIdsToDelete) {
+    log.info("Deleting downloadIds={} of GdprProcedure(id={})", downloadIdsToDelete, id);
+    GdprProcedure procedure = getGdprProcedureForUpdate(id);
+
+    for (UUID uuid : downloadIdsToDelete) {
+      procedure.deleteDownload(uuid);
+    }
+
+    log.info("Deleted downloadIds={} of GdprProcedure(id={})", downloadIdsToDelete, id);
+  }
 }

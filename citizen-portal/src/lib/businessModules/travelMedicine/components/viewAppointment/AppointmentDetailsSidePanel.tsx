@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiAppointmentBookingType } from "@eshg/citizen-portal-api/travelMedicine";
 import { Button, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
@@ -18,16 +19,14 @@ import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
 
 export function AppointmentDetailsSidePanel({
   hasAccomplishedService,
-  isCancelled,
 }: Readonly<{
   hasAccomplishedService: boolean;
-  isCancelled: boolean;
 }>) {
   const router = useRouter();
   const citizenRoutes = useCitizenRoutes();
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
-  const { procedureId, procedureStepId } = useIdContext();
+  const { procedureId, procedureStepId, appointmentDetails } = useIdContext();
   const deleteAppointment = useDeleteAppointment();
 
   async function handleDeleteAppointment() {
@@ -37,25 +36,54 @@ export function AppointmentDetailsSidePanel({
     });
   }
 
+  function navigateToRebookAppointment() {
+    const url = `${citizenRoutes.viewAppointment.details.rebook(accessCode)}?procedureId=${procedureId}&procedureStepId=${procedureStepId}`;
+    router.push(url);
+  }
+
+  function bookingsRemaining() {
+    return appointmentDetails.bookingsRemaining > 0;
+  }
+
+  function isBooked() {
+    return (
+      appointmentDetails.summaryDto.appointmentBookingType ===
+        ApiAppointmentBookingType.AppointmentBlock ||
+      appointmentDetails.summaryDto.appointmentBookingType ===
+        ApiAppointmentBookingType.UserDefined
+    );
+  }
+
   return (
     <ContentSheet>
       <Stack gap={"16px"}>
-        {!hasAccomplishedService && !isCancelled && (
+        {!hasAccomplishedService && (
           <>
             <ContentSheetTitle sx={{ paddingBottom: "8px" }}>
               {t("sidePanel.title")}
             </ContentSheetTitle>
-            <Button color="primary" variant="outlined" type="submit">
-              {t("sidePanel.postponeAppointment")}
-            </Button>
-            <Button
-              color="danger"
-              variant="outlined"
-              type="submit"
-              onClick={handleDeleteAppointment}
-            >
-              {t("sidePanel.cancelAppointment")}
-            </Button>
+            {bookingsRemaining() && (
+              <Button
+                color="primary"
+                variant="outlined"
+                type="submit"
+                onClick={navigateToRebookAppointment}
+              >
+                {isBooked()
+                  ? t("sidePanel.postponeAppointment")
+                  : t("sidePanel.bookAppointment")}
+              </Button>
+            )}
+            {isBooked() && (
+              <Button
+                color="danger"
+                variant="outlined"
+                type="submit"
+                onClick={handleDeleteAppointment}
+              >
+                {t("sidePanel.cancelAppointment")}
+              </Button>
+            )}
           </>
         )}
         <Button

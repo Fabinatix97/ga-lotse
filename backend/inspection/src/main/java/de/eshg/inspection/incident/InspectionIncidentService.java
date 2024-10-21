@@ -60,7 +60,7 @@ public class InspectionIncidentService {
     incident.setInspection(inspection);
     incident.setManualPosition(newPosition);
 
-    InspectionUpdater.advanceToExecutingPhase(inspection);
+    inspectionUpdater.advanceToExecutingPhase(inspection);
     inspectionUpdater.updateModified(inspection);
 
     return InspectionIncidentMapper.mapToDto(incident);
@@ -84,7 +84,7 @@ public class InspectionIncidentService {
       inspectionIncident.setDescription(description);
     }
 
-    InspectionUpdater.advanceToExecutingPhase(inspection);
+    inspectionUpdater.advanceToExecutingPhase(inspection);
     inspectionUpdater.updateModified(inspection);
 
     return InspectionIncidentMapper.mapToDto(inspectionIncident);
@@ -99,7 +99,7 @@ public class InspectionIncidentService {
     inspection.getIncidents().remove(incident);
     adjustPosition(inspection.getIncidents(), incident.getManualPosition());
 
-    InspectionUpdater.advanceToExecutingPhase(inspection);
+    inspectionUpdater.advanceToExecutingPhase(inspection);
     inspectionUpdater.updateModified(inspection);
   }
 

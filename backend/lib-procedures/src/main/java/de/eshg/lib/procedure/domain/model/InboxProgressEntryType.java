@@ -16,7 +16,7 @@ public enum InboxProgressEntryType {
     this.fileTypeGroup = fileTypeGroup;
   }
 
-  boolean supports(FileType fileType) {
+  boolean supports(ProcedureFileType fileType) {
     if (fileTypeGroup == null) {
       return false;
     }

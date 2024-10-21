@@ -47,46 +47,38 @@ interface ImportDataResult {
   statistics: ApiImportStatistics;
 }
 
-export function useImportData(requireSchoolYear: boolean) {
+export function useImportData() {
   const schoolEntryApi = useSchoolEntryApi();
   return useHandledMutation({
     mutationFn: (values: ImportDataValues) =>
       values.listType === ImportListType.SchoolList
         ? schoolEntryApi
-            .importSchoolListRaw(mapSchoolFormValues(values, requireSchoolYear))
+            .importSchoolListRaw(mapSchoolFormValues(values))
             .then(parseImportResult)
         : values.listType === ImportListType.CitizenList
           ? schoolEntryApi
-              .importCitizenListRaw(
-                mapCitizenFormValues(values, requireSchoolYear),
-              )
+              .importCitizenListRaw(mapCitizenFormValues(values))
               .then(parseImportResult)
           : schoolEntryApi
-              .importPastProcedureListRaw(
-                mapPastProcedureFormValues(values, requireSchoolYear),
-              )
+              .importPastProcedureListRaw(mapPastProcedureFormValues(values))
               .then(parseImportResult),
   });
 }
 
 function mapCitizenFormValues(
   values: ImportDataValues,
-  requireSchoolYear: boolean,
 ): ImportCitizenListRequest {
   return {
     file: mapRequiredValue(values.file),
-    schoolYear: requireSchoolYear
-      ? mapRequiredValue(values.schoolYear)
-      : new Date().getFullYear(),
+    schoolYear: mapRequiredValue(values.schoolYear),
   };
 }
 
 function mapSchoolFormValues(
   values: ImportDataValues,
-  requireSchoolYear: boolean,
 ): ImportSchoolListRequest {
   return {
-    ...mapCitizenFormValues(values, requireSchoolYear),
+    ...mapCitizenFormValues(values),
     schoolId: mapRequiredValue(values.schoolId),
     locationId: mapOptionalValue(values.locationId),
   };
@@ -94,10 +86,9 @@ function mapSchoolFormValues(
 
 function mapPastProcedureFormValues(
   values: ImportDataValues,
-  requireSchoolYear: boolean,
 ): ImportPastProcedureListRequest {
   return {
-    ...mapCitizenFormValues(values, requireSchoolYear),
+    ...mapCitizenFormValues(values),
     schoolId: mapRequiredValue(values.schoolId),
   };
 }

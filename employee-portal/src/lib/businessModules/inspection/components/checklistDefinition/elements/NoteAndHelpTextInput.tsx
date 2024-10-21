@@ -13,11 +13,15 @@ interface NoteAndHelpTextInputProps {
   readOnlyMode?: boolean;
   element: ApiCLSectionContextElementsInner;
   setElement: (element: ApiCLSectionContextElementsInner) => void;
+  sectionIndex: number;
+  elementIndex: number;
 }
 
 export function NoteAndHelpTextInput({
   element,
   setElement,
+  sectionIndex,
+  elementIndex,
   readOnlyMode,
 }: Readonly<NoteAndHelpTextInputProps>) {
   const [showNote, setShowNote] = useState(
@@ -51,42 +55,30 @@ export function NoteAndHelpTextInput({
       direction={showNote || showHelpText ? "column" : "row"}
     >
       <InputWithDeleteButton
+        name={`context.sections.${sectionIndex}.elements.${elementIndex}.help`}
         disabled={readOnlyMode}
         placeholder="Hilfetext eingeben"
         multiline
         defaultValue={element.help}
-        title="Hilfetext"
-        onBlur={(value) =>
-          updateElement({
-            help: value,
-          })
-        }
+        label="Hilfetext"
         onDelete={() => {
           setShowHelpText(false);
-          updateElement({
-            help: "",
-          });
+          updateElement({ help: "" });
         }}
         addButtonTitle="Hilfetext verfassen"
         onAddItem={() => setShowHelpText(true)}
       />
 
       <InputWithDeleteButton
+        name={`context.sections.${sectionIndex}.elements.${elementIndex}.note`}
         disabled={readOnlyMode}
         placeholder="Bemerkung eingeben"
         multiline
         defaultValue={element.note}
-        title="Bemerkungsfeld"
-        onBlur={(value) =>
-          updateElement({
-            note: value,
-          })
-        }
+        label="Bemerkungsfeld"
         onDelete={() => {
           setShowNote(false);
-          updateElement({
-            note: "",
-          });
+          updateElement({ note: "" });
         }}
         addButtonTitle="Bemerkungsfeld hinzufügen"
         onAddItem={() => setShowNote(true)}

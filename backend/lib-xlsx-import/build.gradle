@@ -1,0 +1,25 @@
+plugins {
+    id "eshg.java-lib"
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api project(':base-api')
+
+    implementation project(':file-commons')
+    implementation project(':rest-service-errors')
+
+    api 'org.apache.poi:poi:latest.release'
+    api 'org.apache.poi:poi-ooxml:latest.release'
+
+    implementation 'de.cronn:commons-lang:latest.release'
+    implementation 'org.slf4j:slf4j-api'
+
+    testFixturesApi project(':test-commons')
+    testFixturesImplementation project(':file-commons')
+    testFixturesImplementation 'org.assertj:assertj-core'
+    testFixturesImplementation 'jakarta.mail:jakarta.mail-api'
+    testFixturesImplementation 'org.eclipse.angus:jakarta.mail:latest.release'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+}

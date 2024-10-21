@@ -5,7 +5,6 @@
 
 package de.eshg.inspection.testhelper;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
@@ -24,6 +23,7 @@ import de.eshg.inspection.inspection.api.InspectionType;
 import de.eshg.inspection.inspection.api.StartInspectionRequest;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectTypeRepository;
+import de.eshg.lib.common.CountryCode;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,7 @@ public class FacilityTestDataProvider {
   private static final List<DomesticAddressDto> domesticAddressList =
       List.of(
           new DomesticAddressDto(
-              CountryCodeDto.DE,
+              CountryCode.DE,
               "Frankfurt am Main",
               "65933",
               "Indira Nails",
@@ -51,9 +51,9 @@ public class FacilityTestDataProvider {
               "27",
               null),
           new DomesticAddressDto(
-              CountryCodeDto.DE, "Frankfurt am Main", "60311", "Lalesen", "Hasengasse", "3", null),
+              CountryCode.DE, "Frankfurt am Main", "60311", "Lalesen", "Hasengasse", "3", null),
           new DomesticAddressDto(
-              CountryCodeDto.DE,
+              CountryCode.DE,
               "Frankfurt am Main",
               "60431",
               "Mena's Studio",
@@ -61,17 +61,11 @@ public class FacilityTestDataProvider {
               "22",
               null),
           new DomesticAddressDto(
-              CountryCodeDto.DE,
-              "Frankfurt am Main",
-              "60313",
-              "My Nails",
-              "Alte Gasse",
-              "51",
-              null),
+              CountryCode.DE, "Frankfurt am Main", "60313", "My Nails", "Alte Gasse", "51", null),
           new DomesticAddressDto(
-              CountryCodeDto.DE, "Frankfurt am Main", "60329", "Nails", "Taunusstraße", "18", null),
+              CountryCode.DE, "Frankfurt am Main", "60329", "Nails", "Taunusstraße", "18", null),
           new DomesticAddressDto(
-              CountryCodeDto.DE,
+              CountryCode.DE,
               "Frankfurt am Main",
               "60320",
               "Oh, my Nails!",
@@ -205,7 +199,7 @@ public class FacilityTestDataProvider {
 
   private static PostboxAddressDto createPostboxAddress(int index) {
     return new PostboxAddressDto(
-        CountryCodeDto.US, "Frankfurt am Main", "60320", getNameOfFacility(index), "12" + index);
+        CountryCode.US, "Frankfurt am Main", "60320", getNameOfFacility(index), "12" + index);
   }
 
   private static AddFacilityFileStateRequest createAddFacilityFileStateRequest(

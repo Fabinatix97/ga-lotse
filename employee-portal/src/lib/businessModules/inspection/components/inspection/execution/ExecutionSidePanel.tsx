@@ -7,6 +7,7 @@
 
 import {
   ApiChecklist,
+  ApiInspection,
   ApiInspectionPhase,
 } from "@eshg/employee-portal-api/inspection";
 import { scrollToFirstFormError } from "@eshg/lib-portal/components/form/FormPlus";
@@ -15,7 +16,6 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 import { Button, Divider, IconButton, Stack } from "@mui/joy";
 import { useState } from "react";
 
-import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { AppointmentSidebar } from "@/lib/businessModules/inspection/components/inspection/common/appointment/AppointmentSidebar";
 import { getFormattedAppointmentParts } from "@/lib/businessModules/inspection/components/inspection/common/appointment/appointmentUtils";
 import { FinalizeInspectionModal } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModal";
@@ -36,7 +36,7 @@ import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 interface ExecutionSidePanelProps {
   tabs: SidePanelNavigationTab[];
   activeTabId: string;
-  inspectionId: string;
+  inspection: ApiInspection;
   checklists: ApiChecklist[];
   onActiveTabChange: (tab: SidePanelEvent) => void;
   onDeleteClick?: (tab: SidePanelEvent) => void;
@@ -47,15 +47,13 @@ interface ExecutionSidePanelProps {
 export function ExecutionSidePanel({
   tabs,
   activeTabId,
-  inspectionId,
+  inspection,
   onActiveTabChange,
   onDeleteClick,
   onAddButtonClick,
   checklists,
   readOnly,
 }: Readonly<ExecutionSidePanelProps>) {
-  const { data: inspection } = useGetInspection(inspectionId);
-
   const [approvalSidebarOpen, setApprovalSidebarOpen] = useState(false);
   const [approveModalOpen, setApproveModalOpen] = useState(false);
 

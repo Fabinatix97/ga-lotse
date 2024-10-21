@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Row } from "@eshg/lib-portal/components/Row";
 import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
@@ -13,7 +14,6 @@ import { Button, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { FieldArray, Formik } from "formik";
 import { Fragment, ReactNode, RefObject } from "react";
 
-import { Row } from "@/lib/shared/Row";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import {

@@ -66,7 +66,7 @@ public class WebSearch extends GloballyUniqueEntityBase {
 
   @OneToMany(
       mappedBy = WebSearchEntry_.WEB_SEARCH,
-      cascade = CascadeType.ALL,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE},
       fetch = FetchType.LAZY,
       orphanRemoval = true)
   @OrderBy(

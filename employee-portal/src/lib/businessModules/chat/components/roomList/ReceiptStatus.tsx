@@ -3,15 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import DoneIcon from "@mui/icons-material/Done";
 import { Box, useTheme } from "@mui/joy";
+
+import { ReadingReceipt } from "@/lib/businessModules/chat/components/chatPanel/ReadingReceipt";
+import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 
 interface ReceiptStatusProps {
   unreadNotifications?: number;
+  isRead?: boolean;
+  isMessageMine?: boolean;
 }
 
-export function ReceiptStatus({ unreadNotifications }: ReceiptStatusProps) {
+export function ReceiptStatus({
+  unreadNotifications,
+  isRead,
+  isMessageMine,
+}: ReceiptStatusProps) {
   const theme = useTheme();
+  const {
+    userSettings: { showReadConfirmation },
+  } = useChat();
 
   if (!!unreadNotifications) {
     return (
@@ -34,10 +45,12 @@ export function ReceiptStatus({ unreadNotifications }: ReceiptStatusProps) {
     );
   }
 
-  return (
-    <DoneIcon
-      color="primary"
-      sx={{ color: theme.palette.neutral.outlinedDisabledColor }}
-    />
-  );
+  if (!isMessageMine)
+    return (
+      <ReadingReceipt
+        isReadReceiptEnabled={showReadConfirmation}
+        isRead={isRead}
+      />
+    );
+  else return null;
 }

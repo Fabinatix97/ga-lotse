@@ -12,6 +12,7 @@ import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -98,5 +99,18 @@ public class ReportExecution {
   private void setToFailed(UUID reportId) {
     moduleClientAuthenticator.doWithModuleClientAuthentication(
         () -> reportService.setStateToFailed(reportId));
+  }
+
+  public void deleteReport(UUID reportId) {
+    try {
+      AtomicBoolean deletionFinished = new AtomicBoolean(false);
+      while (!deletionFinished.get()) {
+        moduleClientAuthenticator.doWithModuleClientAuthentication(
+            () -> deletionFinished.set(reportService.deleteReport(reportId)));
+      }
+    } catch (Exception e) {
+      log.error("Could not delete report {}", reportId, e);
+      setToFailed(reportId);
+    }
   }
 }

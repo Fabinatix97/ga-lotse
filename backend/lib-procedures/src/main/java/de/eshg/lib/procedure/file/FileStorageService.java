@@ -12,7 +12,6 @@ import de.eshg.lib.procedure.domain.model.FileAware;
 import de.eshg.lib.procedure.domain.model.FileContent;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequestNotification;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Image;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
 import de.eshg.lib.procedure.domain.model.Mail;
@@ -21,6 +20,7 @@ import de.eshg.lib.procedure.domain.model.MetaData;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.repository.FileRepository;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
@@ -118,7 +118,7 @@ public class FileStorageService {
   }
 
   private void auditLogMetaDataModification(
-      Set<String> updatedFields, FileType fileType, UUID externalId) {
+      Set<String> updatedFields, ProcedureFileType fileType, UUID externalId) {
     auditLogger.log(
         "Dokumentenmanagement",
         "Änderungen Metadaten",

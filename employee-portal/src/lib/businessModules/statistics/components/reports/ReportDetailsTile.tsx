@@ -12,8 +12,8 @@ import {
   headerHeightDesktop,
   simpleToolbarHeight,
 } from "@/lib/baseModule/components/layout/sizes";
-import { SeriesInfo } from "@/lib/businessModules/statistics/api/models/reportDetailsViewTypes";
-import { useDeleteReportWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteReportWithConfirmation";
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
+import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import {
   UpdateReportSidebar,
   UpdateReportSidebarReportInfo,
@@ -26,14 +26,18 @@ import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair"
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
-import { getReportActionItems } from "./getReportActionItems";
+import {
+  DeleteReport,
+  getReportActionItems,
+  getSharedURL,
+} from "./getReportActionItems";
 
 export interface ReportDetailsTileProps {
   id: string;
   seriesId: string;
   title: string;
   description?: string;
-  series?: SeriesInfo;
+  numberInSeries?: string;
   start: Date;
   end: Date;
   createdAt: Date;
@@ -49,7 +53,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
     useState<UpdateReportSidebarReportInfo | null>(null);
   const canWrite = useStatisticRoleChecks().canWrite();
   const canDelete = useStatisticRoleChecks().canDelete(props.userId);
-  const deleteReportWithConfirmation = useDeleteReportWithConfirmation({
+  const { deleteReportWithConfirmation } = useDeleteWithConfirmation({
     redirectRoute: routes.reports.index,
   });
 
@@ -58,6 +62,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
       seriesId: props.seriesId,
       name: props.title,
       description: props.description,
+      type: ReportDataType.Single,
     });
   }
 
@@ -83,7 +88,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
       >
         {/* Uncomment in  https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
       <Stack gap={2} direction={"row"}>
-        {isNonNullish(props.series) && (
+        {isNonNullish(props.numberInSeries) && (
           <Button variant="outlined" startDecorator={<BookmarksOutlined />}>
             Serie abonnieren
           </Button>
@@ -106,12 +111,16 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                       type: "update",
                       action: updateReport,
                     },
+                    {
+                      type: "share",
+                      action: async () => await copy(getSharedURL(props.id)),
+                    },
                   ],
-                  isNonNullish(props.series),
-                  props.seriesId,
-                  props.id,
-                  copy,
-                  deleteReportWithConfirmation,
+                  isNonNullish(props.numberInSeries) ? "CHILD" : "SINGLE",
+                  {
+                    deleteReportWithConfirmation: deleteReportWithConfirmation,
+                    reportId: props.id,
+                  } satisfies DeleteReport,
                   canWrite,
                   canDelete,
                 )}
@@ -133,16 +142,13 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                 label="Erstellungsdatum"
                 value={formatDate(props.createdAt, "DE")}
               />
-              {isNonNullish(props.series) && (
-                <LabelValuePair
-                  label="Ausgabe"
-                  value={`${props.series.index} von ${props.series.length}`}
-                />
+              {isNonNullish(props.numberInSeries) && (
+                <LabelValuePair label="Ausgabe" value={props.numberInSeries} />
               )}
               {isNonNullish(props.createdBy) && (
                 <LabelValuePair
                   label="Erstellt von"
-                  value={`${props.createdBy}${isNonNullish(props.series) ? " (automatisiert)" : ""}`}
+                  value={`${props.createdBy}${isNonNullish(props.numberInSeries) ? " (automatisiert)" : ""}`}
                 />
               )}
             </Stack>

@@ -7,12 +7,12 @@ package de.eshg.lib.procedure.file;
 
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.FileContent;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Image;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
 import de.eshg.lib.procedure.domain.model.Mail;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 
 public class FileFactory {
 
@@ -20,7 +20,7 @@ public class FileFactory {
 
   public static Image createImageWithMetaData(
       String fileName,
-      FileType fileType,
+      ProcedureFileType fileType,
       byte[] content,
       ImageMetaData imageMetaData,
       boolean deletable) {
@@ -32,7 +32,7 @@ public class FileFactory {
 
   public static Pdf createPdfWithMetaData(
       String fileName,
-      FileType fileType,
+      ProcedureFileType fileType,
       byte[] content,
       PdfMetaData pdfMetaData,
       boolean deletable) {
@@ -61,7 +61,7 @@ public class FileFactory {
   }
 
   private static void setFileProperties(
-      File file, String fileName, FileType fileType, byte[] content, boolean deletable) {
+      File file, String fileName, ProcedureFileType fileType, byte[] content, boolean deletable) {
     FileContent fileContent = new FileContent();
     fileContent.setContent(content);
 

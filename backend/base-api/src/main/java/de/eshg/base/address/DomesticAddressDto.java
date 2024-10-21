@@ -5,14 +5,14 @@
 
 package de.eshg.base.address;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Schema(name = DomesticAddressDto.SCHEMA_NAME, description = "A usual domestic address.")
 public record DomesticAddressDto(
-    @NotNull CountryCodeDto country,
+    @NotNull CountryCode country,
     @Schema(description = "The city in which the address is located.", example = "Berlin")
         @NotNull
         @Size(min = 1, max = 50)
@@ -48,7 +48,7 @@ public record DomesticAddressDto(
     return SCHEMA_NAME;
   }
 
-  public DomesticAddressDto(CountryCodeDto country, String city, String postalCode, String street) {
+  public DomesticAddressDto(CountryCode country, String city, String postalCode, String street) {
     this(country, city, postalCode, null, street, null, null);
   }
 }

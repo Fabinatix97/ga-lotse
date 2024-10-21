@@ -32,6 +32,7 @@ import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component;
  * certificates for known users.
  */
 @Component
+@DependsOn(LsdInitialSetupService.BEAN_NAME)
 public class LsdKeycloakClient {
   private static final Logger log = LoggerFactory.getLogger(LsdKeycloakClient.class);
   private static final Duration TIMEOUT = Duration.ofSeconds(20);
@@ -56,15 +58,13 @@ public class LsdKeycloakClient {
 
     String keycloakUrl = lsdInternalKeycloakProperties.url();
     try {
-      // TODO(ISSUE-5445): Needs to be converted to client_credentials authorization
       keycloak =
           KeycloakBuilder.builder()
               .serverUrl(keycloakUrl)
-              .grantType(OAuth2Constants.PASSWORD)
-              .realm("master")
-              .clientId("admin-cli")
-              .username(lsdInternalKeycloakProperties.admin().user())
-              .password(lsdInternalKeycloakProperties.admin().password())
+              .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+              .realm(lsdClientKeycloakProperties.realm())
+              .clientId(lsdInternalKeycloakProperties.adminClient().clientId())
+              .clientSecret(lsdInternalKeycloakProperties.adminClient().clientSecret())
               .resteasyClient(createClientWithTimeout())
               .build();
 
@@ -132,42 +132,30 @@ public class LsdKeycloakClient {
     getRealm().roles().create(roleRepresentation);
   }
 
-  public boolean createOrUpdateRealm(Consumer<RealmRepresentation> realmUpdate) { // NOSONAR
+  public void configureRealm(Consumer<RealmRepresentation> realmUpdate) { // NOSONAR
     String realmName = getRealmName();
 
     RealmRepresentation realmRepresentation =
         keycloak.realms().findAll().stream()
             .filter(realm -> realm.getRealm().equals(realmName))
             .collect(StreamUtil.toSingleOptionalElement())
-            .orElse(null);
+            .orElseThrow(
+                () -> new IllegalStateException("Could not find realm '" + realmName + "'"));
 
-    if (realmRepresentation == null) {
-      realmRepresentation = new RealmRepresentation();
-      realmRepresentation.setRealm(realmName);
-      realmRepresentation.setEnabled(true);
-      realmUpdate.accept(realmRepresentation);
-      keycloak.realms().create(realmRepresentation);
+    String previousRealmAsJson = toJson(realmRepresentation);
+    realmUpdate.accept(realmRepresentation);
+    String updatedRealmAsJson = toJson(realmRepresentation);
 
-      log.info("Created Keycloak realm '{}'", realmName);
-      return true;
+    if (Objects.equals(previousRealmAsJson, updatedRealmAsJson)) {
+      log.debug("Keycloak realm '{}' already exists. No change necessary.", realmName);
     } else {
-      String previousRealmAsJson = toJson(realmRepresentation);
-      realmUpdate.accept(realmRepresentation);
-      String updatedRealmAsJson = toJson(realmRepresentation);
-
-      if (Objects.equals(previousRealmAsJson, updatedRealmAsJson)) {
-        log.debug("Keycloak realm '{}' already exists. No change necessary.", realmName);
-      } else {
-        String realmConfigDiff =
-            Differ.calculateMultilineDiff(previousRealmAsJson, updatedRealmAsJson);
-        log.info(
-            "Keycloak realm '{}' already exists but update is required:\n{}",
-            realmName,
-            realmConfigDiff);
-        getRealm().update(realmRepresentation);
-      }
-
-      return false;
+      String realmConfigDiff =
+          Differ.calculateMultilineDiff(previousRealmAsJson, updatedRealmAsJson);
+      log.info(
+          "Keycloak realm '{}' already exists but update is required:\n{}",
+          realmName,
+          realmConfigDiff);
+      getRealm().update(realmRepresentation);
     }
   }
 

@@ -1,0 +1,559 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: Apache-2.0
+
+openapi: 3.0.1
+info:
+  description: This is the API for the opendata service
+  title: OpenData Service API
+  version: "0.1"
+servers:
+- url: http://localhost:8096
+paths:
+  /open-documents:
+    get:
+      description: |
+        Gets all open documents aka all resources including their versions.
+        It is possible to filter by `fileType`, `sources` and the year of
+        `statisticsStartDate` and `statisticsEndDate`
+      operationId: getOpenDocuments
+      parameters:
+      - description: |
+          If set only versions with a `statisticsStartDate` or `statisticsEndDate`
+          within the given year or whose period from `statisticsStartDate` to
+          `statisticsEndDate` covers the given year
+        in: query
+        name: statisticsYearFilter
+        required: false
+        schema:
+          type: string
+      - description: |
+          If set, versions with at least one of the given business modules are returned
+        in: query
+        name: sourcesFilter
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessModule"
+      - description: "If set, versions with the given file type are returned"
+        in: query
+        name: fileTypeFilter
+        required: false
+        schema:
+          $ref: "#/components/schemas/OpenDataFileType"
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetOpenDocumentsResponse"
+          description: OK
+      summary: Gets open documents
+      tags:
+      - OpenData
+    post:
+      description: |
+        Creates a resource as well if there is no existing resource with the
+        given `resourceName`. If resourceName is null, a UUID based one is generated
+      operationId: createOpenDocument
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                postOpenDocumentRequest:
+                  $ref: "#/components/schemas/PostOpenDocumentRequest"
+              required:
+              - file
+              - postOpenDocumentRequest
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Resource"
+          description: OK
+      summary: Creates a new version
+      tags:
+      - OpenData
+  /open-documents/search:
+    get:
+      description: Returns versions with matching `fileName` or `description` grouped
+        by their resource
+      operationId: searchOpenDocuments
+      parameters:
+      - in: query
+        name: searchString
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetOpenDocumentsResponse"
+          description: OK
+      summary: Searches for `searchString` in open documents
+      tags:
+      - OpenData
+  /open-documents/{versionId}:
+    delete:
+      description: Deletes correlating resource as well if there are no other versions
+        left
+      operationId: deleteVersion
+      parameters:
+      - in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Deletes a version
+      tags:
+      - OpenData
+    put:
+      description: "Updates `versionName`, `fileName`, `description`, `licence` and/or\
+        \ `sources`"
+      operationId: updateVersionMetadata
+      parameters:
+      - in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVersionMetaDataRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Updates meta data of a version
+      tags:
+      - OpenData
+  /open-documents/{versionId}/download:
+    get:
+      operationId: downloadDocument
+      parameters:
+      - in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Downloads document of a version
+      tags:
+      - OpenData
+  /test-helper/population:
+    post:
+      operationId: populateDefaults
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DefaultPopulationResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor:
+    post:
+      operationId: interceptNextRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/barriers:
+    post:
+      operationId: addBarrier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperInterceptionRequestFilter"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AddBarrierTestHelperResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/barriers/{barrierId}/await:
+    post:
+      operationId: awaitBarrier
+      parameters:
+      - in: path
+        name: barrierId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: timeoutInMillis
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 0
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/reset:
+    post:
+      operationId: resetInterceptionsAndBarriers
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/reset:
+    post:
+      operationId: reset
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/set-clock:
+    patch:
+      operationId: setClock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperClockSetRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/wind-clock:
+    patch:
+      operationId: windClockForward
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperClockWindForwardRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+components:
+  schemas:
+    AddBarrierTestHelperResponse:
+      type: object
+      properties:
+        barrierId:
+          type: integer
+          format: int64
+          minimum: 1
+      required:
+      - barrierId
+    BusinessModule:
+      type: string
+      enum:
+      - INSPECTION
+      - SCHOOL_ENTRY
+      - TRAVEL_MEDICINE
+      - MEASLES_PROTECTION
+      - STI_PROTECTION
+      - MEDICAL_REGISTRY
+    DefaultPopulationResponse:
+      type: object
+      properties:
+        populations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Population"
+    GetOpenDocumentsResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Resource"
+      required:
+      - elements
+    HttpMethod:
+      type: string
+      enum:
+      - GET
+      - HEAD
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      - TRACE
+    InsertRequestInterceptionTestHelperRequest:
+      type: object
+      properties:
+        filter:
+          $ref: "#/components/schemas/TestHelperInterceptionRequestFilter"
+        type:
+          $ref: "#/components/schemas/InterceptionType"
+      required:
+      - type
+    InterceptionType:
+      type: string
+      enum:
+      - BAD_REQUEST
+      - UNAUTHORIZED
+      - FORBIDDEN
+      - NOT_FOUND
+      - INTERNAL_SERVER_ERROR
+    OpenDataFileType:
+      type: string
+      enum:
+      - PDF
+      - CSV
+    Population:
+      type: object
+      properties:
+        numberOfPopulatedEntities:
+          type: integer
+          format: int32
+        populatorName:
+          type: string
+        totalNumberOfEntities:
+          type: integer
+          format: int64
+      required:
+      - numberOfPopulatedEntities
+      - totalNumberOfEntities
+    PostOpenDocumentRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        licence:
+          type: string
+        resourceName:
+          type: string
+          description: |
+            If set, and a resource with the same value already exists in the database,
+            the version is added to this resource. Otherwise, a new resource is created.
+
+            If this value is not set, a new resource with a generated UUID as `resourceName` is created.
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessModule"
+          uniqueItems: true
+        statisticEndDate:
+          type: string
+          format: date
+          description: Either set `statisticsStartDate` and `statisticsEndDate` together
+            or not at all.
+        statisticStartDate:
+          type: string
+          format: date
+          description: Either set `statisticsStartDate` and `statisticsEndDate` together
+            or not at all.
+        versionName:
+          type: string
+      required:
+      - licence
+      - sources
+      - versionName
+    Resource:
+      type: object
+      properties:
+        resourceName:
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Version"
+      required:
+      - resourceName
+      - versions
+    TestHelperClockSetRequest:
+      type: object
+      properties:
+        newInstant:
+          type: string
+          format: date-time
+      required:
+      - newInstant
+    TestHelperClockUpdateResponse:
+      type: object
+      properties:
+        instant:
+          type: string
+          format: date-time
+      required:
+      - instant
+    TestHelperClockWindForwardRequest:
+      type: object
+      properties:
+        days:
+          type: integer
+          format: int32
+          minimum: 0
+        hours:
+          type: integer
+          format: int32
+          minimum: 0
+        minutes:
+          type: integer
+          format: int32
+          minimum: 0
+        months:
+          type: integer
+          format: int32
+          minimum: 0
+        seconds:
+          type: integer
+          format: int32
+          minimum: 0
+        weeks:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - days
+      - hours
+      - minutes
+      - months
+      - seconds
+      - weeks
+    TestHelperInterceptionRequestFilter:
+      type: object
+      properties:
+        httpMethodFilter:
+          $ref: "#/components/schemas/HttpMethod"
+        queryPatternFilter:
+          type: string
+        urlPatternFilter:
+          type: string
+    UpdateVersionMetaDataRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        fileName:
+          type: string
+          pattern: "^[\\w\\-\\. ]+$"
+        licence:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessModule"
+          uniqueItems: true
+        version:
+          type: integer
+          format: int64
+        versionName:
+          type: string
+      required:
+      - licence
+      - sources
+      - version
+      - versionName
+    Version:
+      type: object
+      properties:
+        author:
+          type: string
+        description:
+          type: string
+        externalId:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+        fileSize:
+          type: integer
+          format: int32
+        fileType:
+          $ref: "#/components/schemas/OpenDataFileType"
+        licence:
+          type: string
+        major:
+          type: integer
+          format: int32
+        minor:
+          type: integer
+          format: int32
+        publicationDate:
+          type: string
+          format: date-time
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessModule"
+          uniqueItems: true
+        statisticEndDate:
+          type: string
+          format: date
+        statisticStartDate:
+          type: string
+          format: date
+        version:
+          type: integer
+          format: int64
+          description: "Version of the entity. Each time the entity is changed, it\
+            \ is incremented by one."
+        versionName:
+          type: string
+      required:
+      - externalId
+      - fileName
+      - fileSize
+      - fileType
+      - licence
+      - major
+      - minor
+      - publicationDate
+      - sources
+      - version
+      - versionName

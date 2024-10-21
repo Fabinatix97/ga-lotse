@@ -9,6 +9,7 @@ import {
   ApiCLSectionContext,
   ApiCLSectionContextElementsInner,
 } from "@eshg/employee-portal-api/inspection";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import { Add, DragIndicatorOutlined } from "@mui/icons-material";
 import {
@@ -16,8 +17,9 @@ import {
   AccordionDetails,
   AccordionGroup,
   AccordionSummary,
+  Box,
   Button,
-  Input,
+  Chip,
   Stack,
 } from "@mui/joy";
 import { doNothing } from "remeda";
@@ -72,12 +74,6 @@ export function ChecklistDefinitionSection({
     });
   }
 
-  function setElements(elements: ApiCLSectionContextElementsInner[]) {
-    updateSection({
-      elements,
-    });
-  }
-
   const defaultIndex = sectionIndex + 1;
   return (
     <AccordionGroup
@@ -100,11 +96,12 @@ export function ChecklistDefinitionSection({
               flex={1}
               alignContent="center"
               justifyContent="center"
-              alignItems="center"
+              alignItems="flex-start"
             >
               <div
                 {...dragHandleProps}
-                aria-label={`Section ${defaultIndex} Ziehen und Verschieben`}
+                style={{ marginTop: "1.7rem" }}
+                aria-label={`Sektion ${defaultIndex} ziehen und verschieben`}
                 role="button"
               >
                 <DragIndicatorOutlined
@@ -117,35 +114,43 @@ export function ChecklistDefinitionSection({
                   }}
                 />
               </div>
-              <Input
-                aria-label="Abschnittsnummer"
-                value={defaultIndex.toString()}
-                disabled
-                style={{ width: 54, height: 51 }}
-              />
-              <Input
+              <Chip
+                aria-label="Sektionsnummer"
+                style={{ marginTop: "2.1rem" }}
+                color="primary"
+              >
+                {defaultIndex.toString()}
+              </Chip>
+              <InputField
+                name={`context.sections.${sectionIndex}.title`}
+                label="Sektionstitel"
                 disabled={readOnlyMode}
-                style={{ flex: 1, height: 51 }}
-                defaultValue={section?.title ?? ""}
+                sx={{ flex: 1 }}
                 placeholder={`Titel Sektion ${defaultIndex} eingeben`}
+                required="Bitte geben Sie einen Titel ein."
                 onBlur={(event) => setTitle(event.target.value)}
               />
               {!readOnlyMode && (
-                <CopyDeleteDropdown
-                  onDelete={() => deleteSection()}
-                  onCopy={() => copySection()}
-                />
+                <Box mt="1.7rem">
+                  <CopyDeleteDropdown
+                    onDelete={() => deleteSection()}
+                    onCopy={() => copySection()}
+                  />
+                </Box>
               )}
               <AccordionSummary
+                sx={{
+                  mt: "1.5rem",
+                }}
                 slotProps={{
                   button: {
-                    "aria-label": "Abschnitt erweitern/einklappen",
+                    "aria-label": "Sektion erweitern/einklappen",
                   },
                 }}
               />
             </Stack>
             <AccordionDetails
-              aria-label={`Fragen zu Abschnitt ${sectionIndex}`}
+              aria-label={`Fragen zu Sektion ${sectionIndex}`}
               slotProps={{
                 root: {
                   "aria-labelledby": undefined,
@@ -155,10 +160,6 @@ export function ChecklistDefinitionSection({
               <Stack spacing={2} style={{ marginTop: 12, marginLeft: 48 }}>
                 <ChecklistDefinitionElementsList
                   readOnlyMode={readOnlyMode}
-                  elements={section.elements}
-                  setElements={(elements) => {
-                    setElements(elements);
-                  }}
                   sectionIndex={sectionIndex}
                 />
                 <Stack spacing={2} direction={"row"}>

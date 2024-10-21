@@ -4,22 +4,69 @@
  */
 
 import {
+  ApiFrequency,
   ApiGetReportSeriesEntriesOfStatisticResponse,
   ApiReportSeries,
+  ApiReportState,
+  ApiReportingPeriod,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { isNonNullish } from "remeda";
 
+import {
+  Interval,
+  ReportingPeriod,
+} from "@/lib/businessModules/statistics/api//models/reportSeriesTypes";
 import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
 import {
+  ActiveSeriesInfo,
   ReportDataType,
+  ReportSeries,
   SingleReport,
   StatisticReports,
 } from "@/lib/businessModules/statistics/api/models/statisticReports";
 
 import { getStatisticReportsQueryKey } from "./apiQueryKeys";
 
-function mapReport(apiReportSeries: ApiReportSeries): SingleReport {
-  //TODO need report series handling, once this exists
+function mapToInterval(apiFrequency?: ApiFrequency): Interval | undefined {
+  switch (apiFrequency) {
+    case ApiFrequency.Month:
+      return Interval.Month;
+    case ApiFrequency.ThreeMonths:
+      return Interval.ThreeMonths;
+    case ApiFrequency.HalfYear:
+      return Interval.HalfYear;
+    case ApiFrequency.Year:
+      return Interval.Year;
+    default:
+      return undefined;
+  }
+}
+
+function mapToReportingPeriod(
+  apiReportingPeriod?: ApiReportingPeriod,
+): ReportingPeriod | undefined {
+  switch (apiReportingPeriod) {
+    case ApiReportingPeriod.Month:
+      return ReportingPeriod.Month;
+    case ApiReportingPeriod.ThreeMonths:
+      return ReportingPeriod.ThreeMonths;
+    case ApiReportingPeriod.HalfYear:
+      return ReportingPeriod.HalfYear;
+    case ApiReportingPeriod.Year:
+      return ReportingPeriod.Year;
+    default:
+      return undefined;
+  }
+}
+
+function mapNextReport(series: ApiReportSeries): Date | undefined {
+  return series.reportInfos.find(
+    (report) => report.state === ApiReportState.Planned,
+  )?.executionDate;
+}
+
+function mapSingleReport(apiReportSeries: ApiReportSeries): SingleReport {
   const apiReportInfo = apiReportSeries.reportInfos[0]!;
   return {
     reportId: apiReportInfo.id,
@@ -35,13 +82,61 @@ function mapReport(apiReportSeries: ApiReportSeries): SingleReport {
   };
 }
 
+function mapSeriesReport(apiReportSeries: ApiReportSeries): ReportSeries {
+  return {
+    seriesId: apiReportSeries.id,
+    userId: apiReportSeries.userId,
+    name: apiReportSeries.name,
+    type: ReportDataType.Series,
+    description: apiReportSeries.description,
+    timeRangeStart: apiReportSeries.timeRangeStart,
+    timeRangeEnd: apiReportSeries.timeRangeEnd,
+    subRows: apiReportSeries.reportInfos.map((reportInfo) => ({
+      type: ReportDataType.Child,
+      seriesId: apiReportSeries.id,
+      userId: apiReportSeries.userId,
+      reportId: reportInfo.id,
+      name: `# ${reportInfo.name}`,
+      timeRangeStart: reportInfo.timeRangeStart,
+      timeRangeEnd: reportInfo.timeRangeEnd,
+      datasetAmount: reportInfo.totalNumberOfElements,
+      status: reportInfo.state,
+    })),
+  };
+}
+
+function mapActiveSeries(
+  response: ApiGetReportSeriesEntriesOfStatisticResponse,
+): ActiveSeriesInfo | undefined {
+  const activeReportSeries = response.reportSeriesEntries.find(
+    (reportSeriesEntry) => reportSeriesEntry.active,
+  );
+  return isNonNullish(activeReportSeries)
+    ? {
+        seriesId: activeReportSeries.id,
+        name: activeReportSeries.name,
+        description: activeReportSeries.description,
+        interval: mapToInterval(activeReportSeries.frequency),
+        reportingPeriod: mapToReportingPeriod(
+          activeReportSeries.reportingPeriod,
+        ),
+        nextReport: mapNextReport(activeReportSeries),
+      }
+    : undefined;
+}
+
 export function mapToStatisticReports(
   response: ApiGetReportSeriesEntriesOfStatisticResponse,
 ): StatisticReports {
   return {
     statisticId: response.statisticId,
     title: response.statisticName,
-    reports: response.reportSeriesEntries.map(mapReport),
+    reports: response.reportSeriesEntries.map((reportSeriesEntry) => {
+      return reportSeriesEntry.reportType === "AUTO"
+        ? mapSeriesReport(reportSeriesEntry)
+        : mapSingleReport(reportSeriesEntry);
+    }),
+    activeSeries: mapActiveSeries(response),
   };
 }
 

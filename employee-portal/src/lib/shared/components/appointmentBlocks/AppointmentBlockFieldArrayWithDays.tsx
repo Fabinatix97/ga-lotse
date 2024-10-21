@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Add, Delete } from "@mui/icons-material";
-import { Grid } from "@mui/joy";
+import { Add } from "@mui/icons-material";
+import { Button, Divider, Grid } from "@mui/joy";
 import { FieldArray } from "formik";
 
 import {
@@ -12,8 +12,6 @@ import {
   AppointmentBlockGroupValuesWithDays,
   emptyAppointmentBlockGroup,
 } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
-import { FieldIconButton } from "@/lib/shared/components/buttons/FieldIconButton";
-import { FieldButtonBar } from "@/lib/shared/components/form/FieldButtonBar";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 
 const APPOINTMENT_BLOCK_GROUP_MAX_LENGTH = 5;
@@ -26,44 +24,46 @@ interface AppointmentBlockFieldArrayWithDaysProps {
 export function AppointmentBlockFieldArrayWithDays(
   props: Readonly<AppointmentBlockFieldArrayWithDaysProps>,
 ) {
+  const hasReachedAppointmentBlockLimit =
+    props.appointmentBlocks.length >= APPOINTMENT_BLOCK_GROUP_MAX_LENGTH;
+
   return (
     <FieldArray name={props.name}>
-      {({ insert, remove }) =>
-        props.appointmentBlocks.map((_value, index) => (
-          <FormGroupGrid key={index} data-testid="appointmentBlockForm">
-            <AppointmentBlockFormWithDays name={`appointmentBlocks.${index}`} />
-            <Grid xs={2}>
-              <FieldButtonBar>
-                <FieldIconButton
-                  title="Weiteren Terminblock hinzufügen"
-                  disabled={
-                    props.appointmentBlocks.length >=
-                    APPOINTMENT_BLOCK_GROUP_MAX_LENGTH
-                  }
+      {({ remove, push }) => (
+        <>
+          {props.appointmentBlocks.map((_value, index) => (
+            <>
+              <FormGroupGrid key={index} data-testid="appointmentBlockForm">
+                <AppointmentBlockFormWithDays
+                  name={`appointmentBlocks.${index}`}
+                  removeBlock={() => remove(index)}
+                  blockCount={props.appointmentBlocks.length}
+                />
+              </FormGroupGrid>
+              {props.appointmentBlocks.length > 1 &&
+                index < props.appointmentBlocks.length - 1 && <Divider />}
+            </>
+          ))}
+          <>
+            <Divider />
+            {!hasReachedAppointmentBlockLimit && (
+              <Grid xs={2}>
+                <Button
+                  variant="outlined"
+                  startDecorator={<Add />}
                   onClick={() => {
-                    if (
-                      props.appointmentBlocks.length <
-                      APPOINTMENT_BLOCK_GROUP_MAX_LENGTH
-                    )
-                      insert(index + 1, emptyAppointmentBlockGroup());
+                    if (!hasReachedAppointmentBlockLimit) {
+                      push(emptyAppointmentBlockGroup());
+                    }
                   }}
                 >
-                  <Add />
-                </FieldIconButton>
-                {props.appointmentBlocks.length > 1 && (
-                  <FieldIconButton
-                    title="Terminblock entfernen"
-                    onClick={() => remove(index)}
-                    color="danger"
-                  >
-                    <Delete color="danger" />
-                  </FieldIconButton>
-                )}
-              </FieldButtonBar>
-            </Grid>
-          </FormGroupGrid>
-        ))
-      }
+                  Terminblock hinzufügen
+                </Button>
+              </Grid>
+            )}
+          </>
+        </>
+      )}
     </FieldArray>
   );
 }

@@ -21,12 +21,21 @@ import { ImportListType } from "@/lib/businessModules/schoolEntry/features/proce
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { ImportDataFields } from "./ImportDataFields";
 import { ImportResult } from "./ImportResult";
+
+export function useImportDataSidebar() {
+  return useSidebarWithFormRef({
+    component: ImportDataSidebar,
+  });
+}
 
 const INITIAL_VALUES: ImportDataValues = {
   listType: ImportListType.SchoolList,
@@ -44,18 +53,15 @@ export interface ImportDataValues {
   schoolYear: OptionalFieldValue<number>;
 }
 
-export function ImportDataSidebar() {
+function ImportDataSidebar(props: SidebarWithFormRefProps) {
   const router = useRouter();
-  const isSchoolYearEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.SchoolYear,
-  );
   const isPastProcedureImportEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.ImportPastProcedures,
   );
   const locationSelectionMode = useGetLocationSelectionMode();
   const isDirectProcedureTypeAssignmentOnImport =
     useIsDirectProcedureTypeAssignmentOnImport();
-  const importData = useImportData(isSchoolYearEnabled);
+  const importData = useImportData();
 
   async function handleSubmit(values: ImportDataValues) {
     await importData.mutateAsync(values).catch();
@@ -63,13 +69,11 @@ export function ImportDataSidebar() {
 
   function handleClose() {
     router.push(routes.procedures.overview);
-    if (importData.isSuccess) {
-      router.refresh();
-    }
+    props.onClose(true);
   }
 
   return (
-    <Sidebar open onClose={handleClose}>
+    <>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({
           values,
@@ -78,7 +82,7 @@ export function ImportDataSidebar() {
           isSubmitting,
           handleSubmit,
         }) => (
-          <SidebarForm onSubmit={handleSubmit}>
+          <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
             <SidebarContent title="Daten importieren">
               {importData.isSuccess ? (
                 <ImportResult
@@ -94,7 +98,6 @@ export function ImportDataSidebar() {
               ) : (
                 <ImportDataFields
                   listType={values.listType}
-                  requireSchoolYear={isSchoolYearEnabled}
                   isPastProcedureImportEnabled={isPastProcedureImportEnabled}
                   locationSelectionMode={locationSelectionMode}
                   isDirectProcedureTypeAssignmentOnImport={
@@ -120,7 +123,7 @@ export function ImportDataSidebar() {
           </SidebarForm>
         )}
       </Formik>
-    </Sidebar>
+    </>
   );
 }
 

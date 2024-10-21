@@ -11,7 +11,10 @@ import {
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isNonNullish } from "remeda";
 
-import { LabeledValue, ValueList } from "./LabeledValue";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 
 export function ContactDetails({
   persons,

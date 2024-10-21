@@ -9,7 +9,7 @@ import {
   useMutation,
 } from "@tanstack/react-query";
 
-import { useAlertContext } from "../errorHandling/AlertContext";
+import { useAlert } from "../errorHandling/AlertContext";
 import {
   getErrorAction,
   getErrorDescription,
@@ -28,7 +28,7 @@ export function useHandledMutation<
   TVariables = void,
   TContext = unknown,
 >(options: UseMutationOptions<TData, TError, TVariables, TContext>) {
-  const alertContext = useAlertContext();
+  const alert = useAlert();
 
   return useMutation({
     ...options,
@@ -36,21 +36,14 @@ export function useHandledMutation<
       const { errorCode } = resolveError(error);
       const { title, message } = getErrorDescription(errorCode);
 
-      if (alertContext === null) {
-        throw new Error("No alert context available.");
-      }
-
-      alertContext.setAlert({
-        color: "danger",
+      alert.error({
         title,
         message,
         action: getErrorAction(errorCode),
       });
     }),
     onSuccess: runBefore(options.onSuccess, () => {
-      if (alertContext !== null) {
-        alertContext.setAlert(null); // we might need to add a key later on to only reset errors from this mutation
-      }
+      alert.close();
     }),
   });
 }

@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  Interval,
+  ReportingPeriod,
+} from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import { useAddAutoReportSeries } from "@/lib/businessModules/statistics/api/mutations/useAddAutoReportSeries";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 
 import { AutomateReportStep } from "./AutomateReportStep";
 import {
   AutomateReportFormModel,
-  Interval,
-  ReportingPeriod,
   getFirstPossibleStartMonth,
 } from "./automateReportFormModel";
 

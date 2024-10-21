@@ -6,7 +6,7 @@
 "use client";
 
 import { ApiPatient } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Divider, Grid } from "@mui/joy";
 
 import { useUpdatePatient } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
@@ -42,17 +42,11 @@ export function PatientPanel({
 
   const updatePatientApi = useUpdatePatient();
 
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function updateSidebar(sideBarState: boolean) {
     setOpen(sideBarState);
     resetAlertContext();
-  }
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
   }
 
   function handleClose() {

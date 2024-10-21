@@ -5,7 +5,6 @@
 
 package de.eshg.base.util;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.SortDirection;
@@ -64,14 +63,6 @@ public class MappingUtil {
       case FEMALE -> GenderDto.FEMALE;
       case MALE -> GenderDto.MALE;
     };
-  }
-
-  public static CountryCode mapCountryCodeToDm(CountryCodeDto countryCode) {
-    return countryCode == null ? null : CountryCode.valueOf(countryCode.name());
-  }
-
-  public static CountryCodeDto mapCountryCodeToApi(CountryCode countryCode) {
-    return countryCode == null ? null : CountryCodeDto.valueOf(countryCode.name());
   }
 
   public static DataOrigin mapDataOriginToDm(DataOriginDto dataOrigin) {

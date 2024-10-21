@@ -10,11 +10,16 @@ import { ApiInspection } from "@eshg/employee-portal-api/inspection";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Divider, Grid, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useRef } from "react";
 
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { useGetSelfUser } from "@/lib/businessModules/inspection/api/queries/users";
+import {
+  getAllAssignableUsersQuery,
+  getSelfUserQuery,
+} from "@/lib/businessModules/inspection/api/queries/users";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { translateInspectionType } from "@/lib/businessModules/inspection/shared/enums";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -92,7 +97,14 @@ function EditInspectionTypeSidebar({
   inspection: ApiInspection;
   modalProps: SimplifiedModalProps;
 }>) {
-  const { data: selfUser } = useGetSelfUser();
+  const userApi = useUserApi();
+
+  const [{ data: selfUser }, { data: allAssignableUsers }] = useSuspenseQueries(
+    {
+      queries: [getSelfUserQuery(userApi), getAllAssignableUsersQuery(userApi)],
+    },
+  );
+
   const initialValues: {
     challenging: boolean;
     assigneeId?: string;
@@ -171,6 +183,7 @@ function EditInspectionTypeSidebar({
                   currentAssigneeId={values.assigneeId ?? selfUser.userId}
                   onlySelfAssignable={onlySelfAssignable}
                   assigneeIdFieldValueName="assigneeId"
+                  allAssignableUsers={allAssignableUsers}
                 />
               </Stack>
             </SidebarContent>

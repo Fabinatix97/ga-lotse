@@ -1,0 +1,12 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    implementation project(':rest-service-errors')
+    implementation project(':test-commons')
+    implementation 'org.springframework:spring-web'
+    implementation 'org.apache.tika:tika-core:latest.release'
+    implementation 'org.verapdf:validation-model-jakarta:latest.release'
+    implementation 'de.cronn:reflection-util:latest.release'
+}

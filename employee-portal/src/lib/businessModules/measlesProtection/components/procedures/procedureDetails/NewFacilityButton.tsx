@@ -8,15 +8,14 @@
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
-
-import { DetailCard } from "./DetailCard";
 
 export function NewFacilityButton() {
   const [_open, setOpen] = useSearchParam("new-facility", "boolean");
 
   return (
-    <DetailCard title="Einrichtung">
+    <DetailsCard title="Einrichtung">
       <Button
         startDecorator={<Add />}
         variant="plain"
@@ -24,6 +23,6 @@ export function NewFacilityButton() {
       >
         Hinzufügen
       </Button>
-    </DetailCard>
+    </DetailsCard>
   );
 }

@@ -9,6 +9,7 @@ dependencies {
     implementation project(':lib-base-client')
     implementation project(':lib-statistics-api')
     implementation project(':rest-oauth-client-commons')
+    implementation project(':file-commons')
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation 'org.apache.poi:poi:latest.release'

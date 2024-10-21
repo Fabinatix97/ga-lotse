@@ -35,7 +35,7 @@ export function AppointmentStaffSelection(
       <Grid xs={4}>
         <AppointmentStaffField
           name="physicians"
-          label="Arzt:in"
+          label="Arzt/Ärztin"
           placeholder="auswählen"
           options={props.physicianOptions}
           freeStaff={props.freeStaff}

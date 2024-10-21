@@ -7,8 +7,8 @@ package de.eshg.stiprotection.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.stiprotection.StiProtectionProcedureController;
 import de.eshg.stiprotection.api.AppointmentBookingTypeDto;
 import de.eshg.stiprotection.api.ConcernDto;
@@ -108,8 +108,8 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
     return Year.of(LocalDate.now(clock).minusYears(faker.random().nextInt(age)).getYear());
   }
 
-  private static CountryCodeDto countryOfBirth(Faker faker) {
-    return BasePopulator.randomElement(faker, CountryCodeDto.values());
+  private static CountryCode countryOfBirth(Faker faker) {
+    return BasePopulator.randomElement(faker, CountryCode.values());
   }
 
   private static AppointmentBookingTypeDto appointmentBookingType() {

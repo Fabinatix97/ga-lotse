@@ -46,7 +46,8 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
   MEDICAL_REGISTRY(
       "Medizinalkartei",
       ModuleMemberGroup.MEDICAL_REGISTRY,
-      EmployeePermissionRole.MEDICAL_REGISTRY_LEADER);
+      EmployeePermissionRole.MEDICAL_REGISTRY_LEADER),
+  OPEN_DATA("Open Data", ModuleMemberGroup.OPEN_DATA, EmployeePermissionRole.OPEN_DATA_LEADER);
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

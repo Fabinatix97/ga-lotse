@@ -1,3 +1,7 @@
 plugins {
     id "eshg.java-lib"
 }
+
+dependencies {
+    implementation("io.swagger.core.v3:swagger-annotations:latest.release")
+}

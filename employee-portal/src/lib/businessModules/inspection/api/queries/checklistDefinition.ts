@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  ChecklistDefinitionApi,
+  ChecklistDefinitionCentralRepoApi,
+} from "@eshg/employee-portal-api/inspection";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import {
   useChecklistDefinitionApi,
@@ -23,9 +27,11 @@ export function useGetChecklistDefinitions() {
   });
 }
 
-export function useGetChecklistDefinitionVersion(versionId: string) {
-  const checklistDefinitionApi = useChecklistDefinitionApi();
-  return useSuspenseQuery({
+export function getChecklistDefinitionVersionQuery(
+  checklistDefinitionApi: ChecklistDefinitionApi,
+  versionId: string,
+) {
+  return queryOptions({
     queryKey: checklistDefinitionApiQueryKey([
       "getChecklistDefinitionVersion",
       { versionId },
@@ -47,13 +53,13 @@ export function useGetChecklistDefinitionVersions(defId: string) {
   });
 }
 
-export function useGetChecklistDefinitionFromCentralRepo(
+export function getChecklistDefinitionFromCentralRepoQuery(
+  repoApi: ChecklistDefinitionCentralRepoApi,
   repositoryID: number,
   repositoryVersion: number,
   isCoreChecklist: boolean,
 ) {
-  const repoApi = useChecklistDefinitionCentralRepoApi();
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: checklistDefinitionCentralRepoApiQueryKey([
       "getChecklistDefinitionFromCentralRepo",
       { repositoryID, repositoryVersion, isCoreChecklist },

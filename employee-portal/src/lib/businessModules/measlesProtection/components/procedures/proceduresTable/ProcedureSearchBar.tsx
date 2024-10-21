@@ -5,8 +5,9 @@
 
 "use client";
 
+import { Row } from "@eshg/lib-portal/components/Row";
+
 import { NewPersonButton } from "@/lib/businessModules/measlesProtection/components/procedures/createProceduresForm/NewPersonButton";
-import { Row } from "@/lib/shared/Row";
 
 import { ProceduresTableFilterButton } from "./ProceduresTableFilters";
 

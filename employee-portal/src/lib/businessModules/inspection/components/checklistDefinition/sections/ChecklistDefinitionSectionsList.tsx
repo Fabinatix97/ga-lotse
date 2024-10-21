@@ -19,6 +19,7 @@ import { FieldArray, useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
+import { createChecklistElement } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/helpers";
 
 import { ChecklistDefinitionSection } from "./ChecklistDefinitionSection";
 
@@ -119,12 +120,7 @@ function createNewSection() {
   return {
     id: uuidv4(),
     title: "",
-    elements: [
-      {
-        id: uuidv4(),
-        type: "CHECKBOX",
-      },
-    ],
+    elements: [createChecklistElement("CHECKBOX")],
   };
 }
 

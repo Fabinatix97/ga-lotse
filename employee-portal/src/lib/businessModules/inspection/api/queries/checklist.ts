@@ -3,20 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { ChecklistApi } from "@eshg/employee-portal-api/inspection";
+import { queryOptions } from "@tanstack/react-query";
 
-import { useChecklistApi } from "@/lib/businessModules/inspection/api/clients";
 import { checklistApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 
 export function getChecklistsQueryKey(inspectionId: string) {
   return checklistApiQueryKey(["getChecklists", { inspectionId }]);
 }
 
-export function useGetChecklists(inspectionId: string) {
-  const checklistApi = useChecklistApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery({
+export function getChecklistsQuery(
+  checklistApi: ChecklistApi,
+  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
+  inspectionId: string,
+) {
+  return queryOptions({
     queryKey: getChecklistsQueryKey(inspectionId),
     queryFn: ({ signal }) => {
       return checklistApi.getChecklists(inspectionId, {

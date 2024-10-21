@@ -5,7 +5,12 @@
 
 "use client";
 
-import { ApiProcedureType } from "@eshg/employee-portal-api/base";
+import {
+  ApiBusinessModule,
+  ApiProcedureStatus,
+  ApiProcedureType,
+  ApiProcedureWithDuration,
+} from "@eshg/employee-portal-api/base";
 import {
   CheckOutlined,
   HourglassEmptyOutlined,
@@ -18,6 +23,7 @@ import { startTransition, useState } from "react";
 import { useTaskMetricsQuery } from "@/lib/baseModule/api/queries/taskMetrics";
 import { TimeRangeSelect } from "@/lib/baseModule/components/procedureMetrics/TimeRangeSelect";
 import { lastXMonthsInDate } from "@/lib/baseModule/components/procedureMetrics/rangeSelectHelper";
+import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { FlashCard } from "@/lib/shared/components/cards/FlashCard";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -96,42 +102,55 @@ export function TaskMetricsDisplay(props: {
           />
         </TableSheet>
 
-        <TableSheet
-          title={
-            <Stack marginBottom={1}>
-              <Typography level="h3" component="h2">
-                Schnellste Vorgänge
-              </Typography>
-            </Stack>
-          }
-        >
-          <DataTable
-            data={taskMetrics.fastestProcedures}
-            columns={slowestAndFastestTasksColumns}
-            sorting={{
-              manualSorting: false,
-            }}
-          />
-        </TableSheet>
-
-        <TableSheet
-          title={
-            <Stack marginBottom={1}>
-              <Typography level="h3" component="h2">
-                Langsamste Vorgänge
-              </Typography>
-            </Stack>
-          }
-        >
-          <DataTable
-            data={taskMetrics.slowestProcedures}
-            columns={slowestAndFastestTasksColumns}
-            sorting={{
-              manualSorting: false,
-            }}
-          />
-        </TableSheet>
+        <SlowestAndFastestTable
+          title="Schnellste Vorgänge"
+          data={taskMetrics.fastestProcedures}
+          businessModuleName={props.businessModuleName}
+        />
+        <SlowestAndFastestTable
+          title="Langsamste Vorgänge"
+          data={taskMetrics.slowestProcedures}
+          businessModuleName={props.businessModuleName}
+        />
       </Stack>
     </Stack>
+  );
+}
+
+function SlowestAndFastestTable({
+  title,
+  data,
+  businessModuleName,
+}: {
+  title: string;
+  data: ApiProcedureWithDuration[];
+  businessModuleName: string;
+}) {
+  return (
+    <TableSheet
+      title={
+        <Stack marginBottom={1}>
+          <Typography level="h3" component="h2">
+            {title}
+          </Typography>
+        </Stack>
+      }
+    >
+      <DataTable
+        data={data}
+        columns={slowestAndFastestTasksColumns}
+        sorting={{
+          manualSorting: false,
+        }}
+        rowNavRoute={(row) =>
+          resolveProcedureDetailsRoute({
+            businessModule: businessModuleName as ApiBusinessModule,
+            procedureId: row.original.id,
+            status: ApiProcedureStatus.Closed,
+          })
+        }
+        focusColumnHeader="Erstellt am"
+      />
+    </TableSheet>
   );
 }

@@ -27,6 +27,8 @@ import de.eshg.statistics.api.AbstractUpdateStatisticRequest;
 import de.eshg.statistics.api.AddStatisticWithDataSourcesRequest;
 import de.eshg.statistics.api.AddStatisticWithTemplateRequest;
 import de.eshg.statistics.api.AttributeSelectionDto;
+import de.eshg.statistics.api.AvailableDataSource;
+import de.eshg.statistics.api.BusinessDataAttribute;
 import de.eshg.statistics.api.DataSourceDto;
 import de.eshg.statistics.api.EvaluationDto;
 import de.eshg.statistics.api.GetDetailPageInformationResponse;
@@ -40,16 +42,23 @@ import de.eshg.statistics.api.completeness.CompletenessOfAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBaseAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBusinessAttribute;
 import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
-import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateRequest;
+import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
 import de.eshg.statistics.api.report.GetReportSeriesEntriesOfStatisticResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
+import de.eshg.statistics.datatransfer.AnalysisTemplateData;
+import de.eshg.statistics.datatransfer.DiagramTemplateData;
+import de.eshg.statistics.datatransfer.EvaluationTemplateData;
 import de.eshg.statistics.mapper.EvaluationMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import de.eshg.statistics.persistence.entity.ChartConfiguration;
+import de.eshg.statistics.persistence.entity.Diagram;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.TableColumn;
@@ -59,13 +68,17 @@ import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -114,7 +127,9 @@ public class StatisticService {
                 addStatisticWithTemplateRequest.templateId());
         DataSourceDto dataSourceDto =
             StatisticMapper.mapToDataSourceCode(evaluationTemplate.dataSources().getFirst());
-        dataSourceValidator.validateDataSources(List.of(dataSourceDto));
+        dataSourceValidator.validateDataSources(
+            List.of(dataSourceDto),
+            dataSourceValidator.getRelevantAvailableDataSources(List.of(dataSourceDto)));
         yield addStatistic(
             dataSourceDto,
             addStatisticWithTemplateRequest.name(),
@@ -127,13 +142,17 @@ public class StatisticService {
 
   private UUID addStatistic(AddStatisticWithDataSourcesRequest request) {
     UUID templateId = null;
-    dataSourceValidator.validateDataSources(request.dataSources());
+    List<AvailableDataSource> relevantAvailableDataSources =
+        dataSourceValidator.getRelevantAvailableDataSources(request.dataSources());
+    dataSourceValidator.validateDataSources(request.dataSources(), relevantAvailableDataSources);
 
     if (request.templateName() != null) {
       templateId =
           evaluationTemplateService
               .addEvaluationTemplate(
-                  new AddEvaluationTemplateRequest(request.templateName(), request.dataSources()))
+                  new AddEvaluationTemplateWithDataSourcesRequest(
+                      request.templateName(), request.dataSources()),
+                  relevantAvailableDataSources)
               .id();
     }
 
@@ -474,5 +493,78 @@ public class StatisticService {
     if (dataAggregationService.countTableRows(statistic) <= 0) {
       statistic.setPendingState(AggregationResultPendingState.DATA_AGGREGATION);
     }
+  }
+
+  @Transactional(readOnly = true)
+  public EvaluationTemplateData getEvaluationTemplateData(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    List<DataSourceDto> dataSourceDtos = determineDataSources(statistic.getTableColumns());
+    List<AnalysisTemplateData> analysisTemplateDatas =
+        determineAnalysisTemplateDatas(statistic.getEvaluations());
+    return new EvaluationTemplateData(dataSourceDtos, analysisTemplateDatas);
+  }
+
+  private List<DataSourceDto> determineDataSources(List<TableColumn> tableColumns) {
+    Map<String, DataSourceDto> keyToDataSourceMap = new LinkedHashMap<>();
+    tableColumns.stream()
+        .filter(tableColumn -> !tableColumn.getValueType().equals(ValueType.CENTRAL_FILE_ID))
+        .forEach(
+            tableColumn -> {
+              String key =
+                  "%s-%s"
+                      .formatted(
+                          tableColumn.getDataSourceId(), tableColumn.getBusinessModuleName());
+              keyToDataSourceMap.computeIfAbsent(
+                  key,
+                  k ->
+                      new DataSourceDto(
+                          tableColumn.getBusinessModuleName(),
+                          tableColumn.getDataSourceId(),
+                          new ArrayList<>()));
+              Optional<BusinessDataAttribute> businessDataAttributeOptional =
+                  keyToDataSourceMap.get(key).attributeCodes().stream()
+                      .filter(
+                          attribute ->
+                              attribute.code().equals(tableColumn.getBusinessModuleAttributeCode()))
+                      .findFirst();
+              BusinessDataAttribute attribute;
+              if (businessDataAttributeOptional.isEmpty()) {
+                attribute =
+                    new BusinessDataAttribute(
+                        tableColumn.getBusinessModuleAttributeCode(), new ArrayList<>());
+                keyToDataSourceMap.get(key).attributeCodes().add(attribute);
+              } else {
+                attribute = businessDataAttributeOptional.get();
+              }
+              if (tableColumn.getBaseModuleAttributeCode() != null) {
+                attribute.baseAttributeCodes().add(tableColumn.getBaseModuleAttributeCode());
+              }
+            });
+    return keyToDataSourceMap.keySet().stream().map(keyToDataSourceMap::get).toList();
+  }
+
+  private List<AnalysisTemplateData> determineAnalysisTemplateDatas(List<Evaluation> evaluations) {
+    return evaluations.stream()
+        .map(
+            evaluation ->
+                new AnalysisTemplateData(
+                    evaluation.getName(),
+                    EvaluationMapper.mapToChartConfigurationDto(
+                        Hibernate.unproxy(
+                            evaluation.getChartConfiguration(), ChartConfiguration.class),
+                        true),
+                    determineDiagramTemplateDatas(evaluation.getDiagrams())))
+        .toList();
+  }
+
+  private List<DiagramTemplateData> determineDiagramTemplateDatas(List<Diagram> diagrams) {
+    return diagrams.stream()
+        .map(
+            diagram ->
+                new DiagramTemplateData(
+                    diagram.getTitle(),
+                    diagram.getDescription(),
+                    FilterParameterMapper.mapToApi(diagram.getFilters())))
+        .toList();
   }
 }

@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
@@ -271,9 +272,15 @@ public class SchoolEntryProcedure
   }
 
   public SchoolEntryTask getTaskOfType(TaskType taskType) {
-    return getTasks().stream()
-        .filter(task -> task.getTaskType() == taskType)
-        .collect(StreamUtil.toSingleElement());
+    return getTasksOfType(taskType).collect(StreamUtil.toSingleElement());
+  }
+
+  public Optional<SchoolEntryTask> getOptionalTaskOfType(TaskType taskType) {
+    return getTasksOfType(taskType).collect(StreamUtil.toSingleOptionalElement());
+  }
+
+  private Stream<SchoolEntryTask> getTasksOfType(TaskType taskType) {
+    return getTasks().stream().filter(task -> task.getTaskType() == taskType);
   }
 
   public boolean hasLabel(String labelName) {

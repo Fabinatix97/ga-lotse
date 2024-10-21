@@ -5,11 +5,11 @@
 
 package de.eshg.lib.procedure.util;
 
-import static de.base.rest.CustomMediaTypes.MEDIA_TYPE_WAV;
-import static de.base.rest.CustomMediaTypes.WAV_MEDIA_TYPE_VALUES_LIST;
+import static de.eshg.file.common.CustomMediaTypes.MEDIA_TYPE_WAV;
+import static de.eshg.file.common.CustomMediaTypes.WAV_MEDIA_TYPE_VALUES_LIST;
 
-import de.eshg.lib.procedure.domain.model.FileType;
-import de.eshg.lib.procedure.file.FileTypeDetector;
+import de.eshg.file.common.FileType;
+import de.eshg.file.common.FileTypeDetector;
 import de.eshg.rest.service.error.BadRequestException;
 import java.io.IOException;
 import java.util.regex.Matcher;

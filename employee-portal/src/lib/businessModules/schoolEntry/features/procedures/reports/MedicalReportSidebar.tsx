@@ -15,14 +15,22 @@ import { useCreateMedicalReport } from "@/lib/businessModules/schoolEntry/api/mu
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface MedicalReportSidebarProps {
+export function useMedicalReportSidebar(): UseSidebarWithFormRefResult<MedicalReportSidebarProps> {
+  return useSidebarWithFormRef({
+    component: MedicalReportSidebar,
+  });
+}
+
+interface MedicalReportSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
-  onClose: () => void;
-  open: boolean;
 }
 
 interface MedicalReportValues {
@@ -35,7 +43,7 @@ const initialValues: MedicalReportValues = {
   remark: "",
 };
 
-export function MedicalReportSidebar(props: MedicalReportSidebarProps) {
+function MedicalReportSidebar(props: MedicalReportSidebarProps) {
   const createMedicalReport = useCreateMedicalReport(props.procedureId);
   const { downloadContainerRef, download } = useFileDownload(
     createMedicalReport.mutateAsync,
@@ -43,14 +51,14 @@ export function MedicalReportSidebar(props: MedicalReportSidebarProps) {
 
   async function handleSubmit(values: MedicalReportValues) {
     await download(values);
-    props.onClose();
+    props.onClose(true);
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onClose}>
+    <>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ isSubmitting, handleSubmit }) => (
-          <SidebarForm onSubmit={handleSubmit}>
+          <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
             <SidebarContent title="Arztbrief erstellen">
               <Stack gap={2}>
                 <BooleanSelectField
@@ -75,7 +83,7 @@ export function MedicalReportSidebar(props: MedicalReportSidebarProps) {
                   <Button
                     variant="plain"
                     color="primary"
-                    onClick={props.onClose}
+                    onClick={() => props.onClose()}
                   >
                     Abbrechen
                   </Button>
@@ -93,6 +101,6 @@ export function MedicalReportSidebar(props: MedicalReportSidebarProps) {
           </SidebarForm>
         )}
       </Formik>
-    </Sidebar>
+    </>
   );
 }

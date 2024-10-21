@@ -89,7 +89,7 @@ public class FileController implements FileApi {
             .filename(file.getFileName(), StandardCharsets.UTF_8)
             .build();
     return ResponseEntity.ok()
-        .contentType(file.getFileType().getMediaType())
+        .contentType(file.getFileType().getCommonFileType().getMediaType())
         .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
         .body(fileContent.getContent());
   }

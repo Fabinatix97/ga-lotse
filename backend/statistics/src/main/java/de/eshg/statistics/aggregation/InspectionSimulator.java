@@ -70,6 +70,8 @@ public class InspectionSimulator implements StatisticsApi {
   private static final UUID FIRST_UUID = UUID.fromString("7efebca3-1780-4ec0-9ff6-df15afeccfbf");
   private static final UUID SECOND_UUID = UUID.fromString("de31b6bd-b704-460b-a276-b4f53824a03c");
 
+  private static final UUID FACILITY_UUID = UUID.fromString("dddddddd-bbbb-4444-aaaa-bbbbbbbbbbbb");
+
   @Override
   public GetDataSourcesResponse getAvailableDataSources() {
     return new GetDataSourcesResponse(
@@ -84,14 +86,26 @@ public class InspectionSimulator implements StatisticsApi {
 
   @Override
   public GetSpecificDataResponse getSpecificData(GetSpecificDataRequest getSpecificDataRequest) {
-    return new GetSpecificDataResponse(
-        "INSPECTION",
-        getSpecificDataRequest.timeRangeStart(),
-        getSpecificDataRequest.timeRangeEnd(),
-        new DataTableHeader(List.of(PROCEDURE_ID_ATTRIBUTE, RESULT_ATTRIBUTE, LOCATION_ATTRIBUTE)),
-        List.of(
-            new DataRow(Arrays.asList(FIRST_UUID, "I", "Schulkantine")),
-            new DataRow(Arrays.asList(SECOND_UUID, "F", "Tattoostudio"))),
-        2);
+    if (getSpecificDataRequest.dataSourceId().equals(DATA_SOURCE_UUID)) {
+      return new GetSpecificDataResponse(
+          "INSPECTION",
+          getSpecificDataRequest.timeRangeStart(),
+          getSpecificDataRequest.timeRangeEnd(),
+          new DataTableHeader(
+              List.of(PROCEDURE_ID_ATTRIBUTE, FACILITY_ATTRIBUTE, LOCATION_ATTRIBUTE)),
+          List.of(new DataRow(Arrays.asList(FIRST_UUID, FACILITY_UUID, "Frankfurt"))),
+          1);
+    } else {
+      return new GetSpecificDataResponse(
+          "INSPECTION2",
+          getSpecificDataRequest.timeRangeStart(),
+          getSpecificDataRequest.timeRangeEnd(),
+          new DataTableHeader(
+              List.of(PROCEDURE_ID_ATTRIBUTE, RESULT_ATTRIBUTE, LOCATION_ATTRIBUTE)),
+          List.of(
+              new DataRow(Arrays.asList(FIRST_UUID, "I", "Schulkantine")),
+              new DataRow(Arrays.asList(SECOND_UUID, "F", "Tattoostudio"))),
+          2);
+    }
   }
 }

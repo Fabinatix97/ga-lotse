@@ -7,18 +7,20 @@ package de.eshg.schoolentry.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.DomesticAddressDto;
-import de.eshg.base.contact.api.SearchContactsResponse;
+import de.eshg.base.contact.ContactApi;
+import de.eshg.base.contact.api.*;
 import de.eshg.base.testhelper.BaseTestHelperApi;
+import de.eshg.lib.appointmentblock.LocationSelectionMode;
+import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.schoolentry.LabelController;
 import de.eshg.schoolentry.SchoolEntryController;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.*;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
@@ -34,12 +36,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 import net.datafaker.Faker;
 import net.datafaker.providers.base.Address;
@@ -57,6 +54,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private final LabelController labelController;
   private final BaseTestHelperApi baseTestHelperApi;
   private final SchoolEntryFeatureToggle featureToggle;
+  private final ContactApi contactApi;
+  private final AppointmentBlockProperties appointmentBlockProperties;
 
   public SchoolEntryProceduresPopulator(
       Clock clock,
@@ -69,7 +68,9 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
       SchoolEntryFeatureToggle featureToggle,
       @SuppressWarnings("unused") // Used to define a dependency
           AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ContactApi contactApi,
+      AppointmentBlockProperties appointmentBlockProperties) {
     super(
         clock,
         environment,
@@ -82,6 +83,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     this.labelController = labelController;
     this.baseTestHelperApi = baseTestHelperApi;
     this.featureToggle = featureToggle;
+    this.contactApi = contactApi;
+    this.appointmentBlockProperties = appointmentBlockProperties;
   }
 
   @Override
@@ -90,12 +93,16 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         () -> {
           ListWithTotalNumber<CreateProcedureResponse> response =
               populateWithAuthentication(numberOfEntitiesToPopulate);
-          createAppointments(response.entities());
-          SearchContactsResponse responseSearchContacts =
-              baseTestHelperApi.populateSchoolContacts(new PopulationRequest(5));
-          UUID schoolId = responseSearchContacts.elements().getFirst().id();
-          assignSpecialNeedsLabel(response.entities().subList(0, numberOfEntitiesToPopulate / 5));
+          UUID schoolId = getIdOfFirstContactForCategory(InstitutionContactCategoryDto.SCHOOL);
           assignSchool(response.entities().subList(0, numberOfEntitiesToPopulate / 2), schoolId);
+          if (appointmentBlockProperties.getLocationSelectionMode()
+              == LocationSelectionMode.HEALTH_DEPARTMENT) {
+            assignLocationId(
+                response.entities().subList(0, numberOfEntitiesToPopulate / 2),
+                getIdOfFirstContactForCategory(InstitutionContactCategoryDto.HEALTH_DEPARTMENT));
+          }
+          assignSpecialNeedsLabel(response.entities().subList(0, numberOfEntitiesToPopulate / 5));
+          createAppointments(response.entities());
           return response;
         });
   }
@@ -155,6 +162,26 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     }
   }
 
+  private void assignLocationId(List<CreateProcedureResponse> procedures, UUID locationId) {
+    for (CreateProcedureResponse procedure : procedures) {
+      ProcedureDetailsDto procedureToUpdate =
+          schoolEntryController.getProcedure(procedure.procedureId());
+      schoolEntryController.updateProcedure(
+          procedure.procedureId(),
+          new UpdateProcedureRequest(
+              procedureToUpdate.version(),
+              procedureToUpdate.type(),
+              procedureToUpdate.labels().stream().map(LabelDto::id).toList(),
+              procedureToUpdate.appointment(),
+              procedureToUpdate.isInvitationSent(),
+              procedureToUpdate.school().id(),
+              locationId,
+              procedureToUpdate.isDeceased(),
+              procedureToUpdate.deceased(),
+              procedureToUpdate.schoolYear()));
+    }
+  }
+
   @Override
   protected CreateProcedureResponse populate(
       int index,
@@ -203,8 +230,8 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         optional(faker, address.secondaryAddress(), 0.1));
   }
 
-  private static CountryCodeDto randomCountryBase(Faker faker) {
-    return randomElement(faker, CountryCodeDto.values());
+  private static CountryCode randomCountryBase(Faker faker) {
+    return randomElement(faker, CountryCode.values());
   }
 
   private void createRandomExaminationsAndAnamnesisForProcedure(UUID procedureId, Faker faker) {
@@ -240,23 +267,21 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   }
 
   private void setRandomSchoolYear(@NotNull UUID procedureId, Faker faker) {
-    if (featureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      ProcedureDetailsDto procedureToUpdate = schoolEntryController.getProcedure(procedureId);
-      int currentYear = Year.now(clock).getValue();
-      schoolEntryController.updateProcedure(
-          procedureId,
-          new UpdateProcedureRequest(
-              procedureToUpdate.version(),
-              procedureToUpdate.type(),
-              procedureToUpdate.labels().stream().map(LabelDto::id).toList(),
-              procedureToUpdate.appointment(),
-              procedureToUpdate.isInvitationSent(),
-              getSchoolId(procedureToUpdate),
-              getLocationId(procedureToUpdate),
-              procedureToUpdate.isDeceased(),
-              procedureToUpdate.deceased(),
-              faker.number().numberBetween(currentYear - 10, currentYear + 10)));
-    }
+    ProcedureDetailsDto procedureToUpdate = schoolEntryController.getProcedure(procedureId);
+    int currentYear = Year.now(clock).getValue();
+    schoolEntryController.updateProcedure(
+        procedureId,
+        new UpdateProcedureRequest(
+            procedureToUpdate.version(),
+            procedureToUpdate.type(),
+            procedureToUpdate.labels().stream().map(LabelDto::id).toList(),
+            procedureToUpdate.appointment(),
+            procedureToUpdate.isInvitationSent(),
+            getSchoolId(procedureToUpdate),
+            getLocationId(procedureToUpdate),
+            procedureToUpdate.isDeceased(),
+            procedureToUpdate.deceased(),
+            faker.number().numberBetween(currentYear - 5, currentYear + 5)));
   }
 
   /* hearing test */
@@ -618,5 +643,30 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   @Override
   protected long countExistingEntities() {
     return this.schoolEntryProcedureRepository.count();
+  }
+
+  private UUID getIdOfFirstContactForCategory(InstitutionContactCategoryDto category) {
+    return contactApi
+        .getContacts(
+            new ContactFilterParameters(
+                null, null, ContactTypeDto.INSTITUTION, category, null, null, null, null))
+        .elements()
+        .stream()
+        .findFirst()
+        .map(ContactDto::id)
+        .orElseGet(() -> populateOneContactOfCategoryAndGetId(category));
+  }
+
+  private UUID populateOneContactOfCategoryAndGetId(InstitutionContactCategoryDto category) {
+    SearchContactsResponse response =
+        switch (category) {
+          case SCHOOL -> baseTestHelperApi.populateSchoolContacts(new PopulationRequest(1));
+          case HEALTH_DEPARTMENT ->
+              baseTestHelperApi.populateHealthDepartmentContacts(new PopulationRequest(1));
+          case null, default ->
+              throw new IllegalStateException(
+                  "Expected only to be used with SCHOOL or HEALTH_DEPARTMENT. Got: " + category);
+        };
+    return response.elements().getFirst().id();
   }
 }

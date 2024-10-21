@@ -12,41 +12,50 @@ import {
 } from "@mui/icons-material";
 import { isDefined } from "remeda";
 
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { ActionsItem } from "@/lib/shared/components/buttons/ActionsMenu";
 
 type OptionalActionItem =
   | { type: "remember"; action: () => void }
   | { type: "subscribe"; action: () => void }
+  | { type: "share"; action: () => Promise<void> }
   | { type: "update"; action: () => void };
+
+export function getSharedURL(detailLinkId: string) {
+  return new URL(
+    routes.reports.details(detailLinkId).index,
+    window.location.origin,
+  ).href;
+}
+
+export interface DeleteReportOrSeries {
+  deleteReportWithConfirmation: (reportId: string) => void;
+  deleteReportSeriesWithConfirmation: (reportId: string) => void;
+  seriesId: string;
+  reportId: string;
+}
+export interface DeleteReport {
+  deleteReportWithConfirmation: (id: string) => void;
+  reportId: string;
+}
 
 export function getReportActionItems(
   optionalActionitems: OptionalActionItem[],
-  isSeries: boolean,
-  seriesId: string,
-  detailLinkId: string,
-  share: (id: string) => Promise<void>,
-  deleteReportWithConfirmation: (reportId: string) => void,
+  type: ReportDataType,
+  deleteActions: DeleteReportOrSeries | DeleteReport,
   canWrite: boolean,
   canDelete: boolean,
 ) {
-  async function handleClickCopyAddress() {
-    await share(
-      new URL(
-        routes.reports.details(detailLinkId).index,
-        window.location.origin,
-      ).href,
-    );
-  }
-
   function concatOptionalActionItem(
     itemName: OptionalActionItem["type"],
     actionsItem: Omit<ActionsItem, "onClick">,
+    typeChecked = true,
   ) {
     const foundItem = optionalActionitems.find(
       (item) => item.type === itemName,
     );
-    return !!foundItem
+    return !!typeChecked && foundItem
       ? {
           ...actionsItem,
           onClick: foundItem.action,
@@ -63,25 +72,48 @@ export function getReportActionItems(
       label: "Serie abonnieren",
       startDecorator: <Bookmarks />,
     }),
-    {
-      // TODO: Discuss and change after https://cronn-gmbh.atlassian.net/browse/ISSUE-5002
-      label: "Teilen",
-      onClick: handleClickCopyAddress,
-      startDecorator: <Share />,
-    },
-    canWrite
-      ? concatOptionalActionItem("update", {
-          label: "Bearbeiten",
-          startDecorator: <Edit />,
-        })
-      : undefined,
+    concatOptionalActionItem(
+      "update",
+      {
+        label:
+          type === ReportDataType.Single
+            ? "Report bearbeiten"
+            : "Serie bearbeiten",
+        startDecorator: <Edit />,
+      },
+      type !== ReportDataType.Child && canWrite,
+    ),
+    concatOptionalActionItem(
+      "share",
+      {
+        // TODO: Discuss and change after https://cronn-gmbh.atlassian.net/browse/ISSUE-5002
+        label: "Teilen",
+        startDecorator: <Share />,
+      },
+      type !== ReportDataType.Series,
+    ),
     canDelete
-      ? {
-          label: isSeries ? "Serie löschen" : "Report löschen",
-          onClick: () => deleteReportWithConfirmation(seriesId),
-          startDecorator: <Delete />,
-          color: "danger",
-        }
+      ? type === ReportDataType.Series && "seriesId" in deleteActions
+        ? {
+            label: "Serie löschen",
+            onClick: () => {
+              deleteActions.deleteReportSeriesWithConfirmation(
+                deleteActions.seriesId,
+              );
+            },
+            startDecorator: <Delete />,
+            color: "danger",
+          }
+        : {
+            label: "Report löschen",
+            onClick: () => {
+              deleteActions.deleteReportWithConfirmation(
+                deleteActions.reportId,
+              );
+            },
+            startDecorator: <Delete />,
+            color: "danger",
+          }
       : undefined,
   ].filter((it) => isDefined(it)) as ActionsItem[];
 }

@@ -82,7 +82,7 @@ public class ReportSeriesService {
     return ReportMapper.mapToApi(reportSeries);
   }
 
-  private static ReportSeries createManualReportSeries(
+  private ReportSeries createManualReportSeries(
       Statistic statistic, AddManualReportSeriesRequest addManualReportSeriesRequest) {
     AggregationResultUtil.validateTimeRange(
         addManualReportSeriesRequest.timeRangeStart(), addManualReportSeriesRequest.timeRangeEnd());
@@ -100,7 +100,7 @@ public class ReportSeriesService {
             addManualReportSeriesRequest.timeRangeStart(),
             addManualReportSeriesRequest.timeRangeEnd(),
             AggregationResultState.CREATING,
-            null,
+            LocalDate.now(clock),
             statistic));
 
     return reportSeries;

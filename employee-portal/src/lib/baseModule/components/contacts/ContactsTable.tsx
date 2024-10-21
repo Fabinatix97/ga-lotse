@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactType, ApiUserRole } from "@eshg/employee-portal-api/base";
+import {
+  ApiBaseFeature,
+  ApiContactType,
+  ApiUserRole,
+} from "@eshg/employee-portal-api/base";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import AddIcon from "@mui/icons-material/Add";
 import BusinessIcon from "@mui/icons-material/Business";
@@ -21,8 +26,12 @@ import {
   ToggleButtonGroup,
 } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { ContactsTableTitle } from "@/lib/baseModule/components/contacts/ContactsTableTitle";
+import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergeInstitutionContactSidebar";
+import { useMergePersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergePersonContactSidebar";
 import { UpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
 import { Contact } from "@/lib/baseModule/components/contacts/types";
 import { routes } from "@/lib/baseModule/shared/routes";
@@ -37,6 +46,10 @@ import {
   UseTableControl,
   useTableControl,
 } from "@/lib/shared/hooks/searchParams/useTableControl";
+import {
+  mapToRowIds,
+  useRowSelection,
+} from "@/lib/shared/hooks/table/useRowSelection";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { contactTableColumns } from "./columns";
@@ -54,6 +67,35 @@ export interface ContactsTableProps {
   loading: boolean;
 }
 
+// Persists the selected contacts between pages and filtering,
+// to allow merging contacts from different pages
+function usePersistentSelectionCache({ elements }: { elements: Contact[] }) {
+  const { rowSelection, rowSelectionProps } = useRowSelection<Contact>();
+
+  const [selectedContacts, setSelectedContacts] = useState<
+    Map<string, Contact>
+  >(new Map());
+
+  useEffect(() => {
+    setSelectedContacts((previous) => {
+      const contactIds = mapToRowIds(rowSelection);
+      const newSelected = new Map();
+
+      for (const contactId of contactIds) {
+        newSelected.set(
+          contactId,
+          previous.get(contactId) ??
+            elements.find((contact) => contact.id === contactId),
+        );
+      }
+
+      return newSelected;
+    });
+  }, [elements, rowSelection]);
+
+  return { selectedContacts, rowSelection, rowSelectionProps };
+}
+
 export function ContactsTable({
   elements,
   totalNumberOfElements,
@@ -61,16 +103,63 @@ export function ContactsTable({
   onImport,
   loading,
 }: ContactsTableProps) {
+  const isContactMergeEnabled = useIsNewFeatureEnabled(
+    ApiBaseFeature.ContactMerge,
+  );
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseContactsWrite);
+  const snackbar = useSnackbar();
+
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
   });
 
+  const institutionMergeSidebar = useMergeInstitutionContactSidebar();
+  const personMergeSidebar = useMergePersonContactSidebar();
+
   const [editSidebar, setEditSidebar] = useState<{
     open: boolean;
     contact?: Contact;
   }>({ open: false });
+
+  const { selectedContacts, rowSelection, rowSelectionProps } =
+    usePersistentSelectionCache({
+      elements,
+    });
+
+  function handleMerge(contactIds: string[]) {
+    const [first, second, ...rest] = contactIds;
+
+    if (first === undefined || second === undefined || rest.length > 0) {
+      snackbar.error("Sie können nur zwei Kontakte zusammenführen.");
+      return;
+    }
+
+    const firstContact = selectedContacts.get(first)!;
+    const secondContact = selectedContacts.get(second)!;
+
+    if (
+      firstContact.type === "PersonContact" &&
+      secondContact.type === "PersonContact"
+    ) {
+      personMergeSidebar.open({
+        firstContact: firstContact,
+        secondContact: secondContact,
+      });
+    } else if (
+      firstContact.type === "InstitutionContact" &&
+      secondContact.type === "InstitutionContact"
+    ) {
+      institutionMergeSidebar.open({
+        firstContact: firstContact,
+        secondContact: secondContact,
+      });
+    } else {
+      snackbar.error(
+        "Sie können eine Person nicht mit einer Institution zusammenführen.",
+      );
+    }
+  }
 
   return (
     <>
@@ -114,6 +203,15 @@ export function ContactsTable({
       >
         <TableSheet
           loading={loading}
+          title={
+            hasWritePerms &&
+            isContactMergeEnabled && (
+              <ContactsTableTitle
+                rowSelection={rowSelection}
+                onMerge={handleMerge}
+              />
+            )
+          }
           footer={
             <Pagination
               totalCount={totalNumberOfElements}
@@ -130,6 +228,9 @@ export function ContactsTable({
             sorting={tableControl.tableSorting}
             rowNavRoute={(row) => routes.contacts.details(row.original.id)}
             focusColumnHeader="Name"
+            rowSelectionProps={
+              isContactMergeEnabled ? rowSelectionProps : undefined
+            }
           />
         </TableSheet>
       </TablePage>

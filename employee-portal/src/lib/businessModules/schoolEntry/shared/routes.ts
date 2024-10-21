@@ -10,9 +10,6 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
     schoolEntryPath("/procedures"),
     (proceduresPath) => ({
       overview: proceduresPath("/"),
-      importData: proceduresPath("/import-data"),
-      importCitizenList: proceduresPath("/import-citizen-list"),
-      importSchoolList: proceduresPath("/import-school-list"),
       byId: (procedureId: string) =>
         defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
           details: procedurePath("/details"),

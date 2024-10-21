@@ -10,6 +10,7 @@ import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/Inter
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/joy";
 
+import { useGetChecklistDefinitions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { ChecklistDefinitionOverviewTable } from "@/lib/businessModules/inspection/components/checklistDefinition/overview/ChecklistDefinitionOverviewTable";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -21,6 +22,7 @@ export default function ChecklistOverview() {
   const canWrite = useHasUserRoleCheck(
     ApiUserRole.InspectionChecklistdefinitionsWrite,
   );
+  const { data: checklists, isFetching } = useGetChecklistDefinitions();
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Checklistendefinitionen" />}>
@@ -35,7 +37,10 @@ export default function ChecklistOverview() {
             </InternalLinkButton>
           </Box>
         )}
-        <ChecklistDefinitionOverviewTable />
+        <ChecklistDefinitionOverviewTable
+          checklists={checklists}
+          isFetching={isFetching}
+        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

@@ -5,7 +5,14 @@
 
 "use client";
 
-import { useGetChecklistDefinitionFromCentralRepo } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
+import {
+  useChecklistDefinitionCentralRepoApi,
+  useObjectTypeApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import { getChecklistDefinitionFromCentralRepoQuery } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
 import { RepoChecklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/repository/RepoChecklistDefinitionHeaderRow";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
@@ -21,9 +28,25 @@ export default function InspectionRepositoryPage({
   const repoCldId = parseInt(params.repositoryChecklistDefinitionId);
   const repoVersion = parseInt(params.version);
 
-  const {
-    data: { checklistDefinition, ...metadata },
-  } = useGetChecklistDefinitionFromCentralRepo(repoCldId, repoVersion, true);
+  const repoApi = useChecklistDefinitionCentralRepoApi();
+  const objectTypeApi = useObjectTypeApi();
+
+  const [
+    {
+      data: { checklistDefinition, ...metadata },
+    },
+    { data: objectTypes },
+  ] = useSuspenseQueries({
+    queries: [
+      getChecklistDefinitionFromCentralRepoQuery(
+        repoApi,
+        repoCldId,
+        repoVersion,
+        true,
+      ),
+      getObjectTypesQuery(objectTypeApi),
+    ],
+  });
 
   return (
     <StickyToolbarLayout
@@ -47,6 +70,7 @@ export default function InspectionRepositoryPage({
               metadata={metadata}
             />
           }
+          objectTypes={objectTypes}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

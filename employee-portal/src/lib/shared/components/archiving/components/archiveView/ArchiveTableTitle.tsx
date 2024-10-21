@@ -4,16 +4,13 @@
  */
 
 import { ApiArchivingRelevance } from "@eshg/employee-portal-api/businessProcedures";
-import {
-  DeleteOutlined,
-  Inventory2Outlined,
-  SubdirectoryArrowRightOutlined,
-} from "@mui/icons-material";
-import { Button, Divider, Sheet, Typography } from "@mui/joy";
+import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
+import { Button, Divider, Typography } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { ArchiveTableProps } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
 import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
 
 interface ArchiveTableTitleProps extends ArchiveTableProps {
@@ -71,25 +68,13 @@ export function ArchiveTableTitle(props: ArchiveTableTitleProps) {
   }
 
   return (
-    <Sheet
-      variant="soft"
-      sx={{
-        display: "flex",
-        gap: 2,
-        alignItems: "center",
-        borderRadius: 0,
-        height: 48,
-        padding: (theme) => theme.spacing(0.5, 1.5),
+    <RowSelectionTableToolbar
+      rowSelection={props.rowSelection}
+      elementName={{
+        singular: "Vorgang ausgewählt",
+        plural: "Vorgänge ausgewählt",
       }}
     >
-      <SubdirectoryArrowRightOutlined
-        sx={{ transform: "rotate(90deg)", fontSize: "1.25rem" }}
-      />
-      <Typography level="body-sm" data-testid="selectedIndicator">
-        <Typography fontWeight="bold">{selectedProcedureIds.length}</Typography>{" "}
-        {selectedProcedureIds.length === 1 ? "Vorgang" : "Vorgänge"} ausgewählt
-      </Typography>
-      <Divider orientation="vertical" />
       {selectedProcedureIds.length === 0 && (
         <Typography level="body-sm" color="danger">
           Bitte Vorgänge auswählen
@@ -122,6 +107,6 @@ export function ArchiveTableTitle(props: ArchiveTableTitleProps) {
           </Button>
         </>
       )}
-    </Sheet>
+    </RowSelectionTableToolbar>
   );
 }

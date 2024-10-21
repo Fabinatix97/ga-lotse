@@ -126,7 +126,7 @@ export function CreateAppointmentBlockGroupForm() {
     }
     if (values.physicians.length == 0 && values.consultants.length == 0) {
       snackbar.notification(
-        "Bitte mindestens ein:e Arzt:in oder ein:e Berater:in für die Validierung auswählen",
+        "Bitte mindestens einen Arzt/eine Ärztin oder ein:e Berater:in für die Validierung auswählen",
       );
       return;
     }

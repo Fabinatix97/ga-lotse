@@ -11,7 +11,7 @@ import {
   validatePipe,
   validateRange,
 } from "@eshg/lib-portal/helpers/validators";
-import { Grid } from "@mui/joy";
+import { Divider, Grid } from "@mui/joy";
 
 import { AppointmentBlockFieldArrayWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFieldArrayWithDays";
 import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockFormWithDays";
@@ -34,7 +34,7 @@ export function AppointmentBlockGroupFields(
   return (
     <>
       <FormGroupGrid>
-        <Grid xs={4}>
+        <Grid xs={3}>
           <SelectField
             name="type"
             label="Art"
@@ -44,7 +44,7 @@ export function AppointmentBlockGroupFields(
           />
         </Grid>
         {props.showParallelExaminations ? (
-          <Grid xs={2}>
+          <Grid xs={3}>
             <NumberField
               name="parallelExaminations"
               label="Parallele Untersuchungen"
@@ -54,6 +54,7 @@ export function AppointmentBlockGroupFields(
           </Grid>
         ) : null}
       </FormGroupGrid>
+      <Divider />
       <AppointmentBlockFieldArrayWithDays
         name="appointmentBlocks"
         appointmentBlocks={props.appointmentBlocksWithDays!}

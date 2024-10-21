@@ -4,10 +4,7 @@
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
-import {
-  ApiLocationSelectionMode,
-  ApiSchoolEntryFeature,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { EscalatorWarning } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 
@@ -18,7 +15,6 @@ import {
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
@@ -57,9 +53,6 @@ const inboxNavigationItem: SideNavigationSubItem = {
 export function useSideNavigationItems(): SideNavigationItem[] {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
 
-  const { data: isWaitingRoomEnabled, isError: isWaitingRoomError } =
-    useIsNewFeatureEnabledUnsuspended(ApiSchoolEntryFeature.WaitingRoom);
-
   const configApi = useConfigApi();
   const { data: locationSelectionMode, isError: isLocationModeError } =
     useQuery({
@@ -72,9 +65,7 @@ export function useSideNavigationItems(): SideNavigationItem[] {
 
   const subItems = [
     proceduresNavigationItem,
-    ...(isWaitingRoomEnabled && !hasLocationMode
-      ? [waitingRoomNavigationItem]
-      : []),
+    ...(hasLocationMode ? [] : [waitingRoomNavigationItem]),
     ...defaultSubItems,
     ...(isInboxEnabled ? [inboxNavigationItem] : []),
   ];
@@ -82,10 +73,9 @@ export function useSideNavigationItems(): SideNavigationItem[] {
   const sideNavigationItem = {
     name: "Einschulung",
     decorator: <EscalatorWarning />,
-    error:
-      isWaitingRoomError || isLocationModeError
-        ? "Bei der Verbindung zum Einschulungsmodul ist ein Fehler aufgetreten."
-        : undefined,
+    error: isLocationModeError
+      ? "Bei der Verbindung zum Einschulungsmodul ist ein Fehler aufgetreten."
+      : undefined,
   };
 
   return [{ ...sideNavigationItem, subItems }];

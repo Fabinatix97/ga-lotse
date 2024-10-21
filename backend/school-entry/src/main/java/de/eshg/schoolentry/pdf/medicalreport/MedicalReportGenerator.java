@@ -9,9 +9,9 @@ import de.eshg.base.client.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.api.CreateMedicalReportRequest;
 import de.eshg.schoolentry.business.model.ChildDetailsData;
@@ -88,6 +88,7 @@ public class MedicalReportGenerator extends AbstractGenerator {
                 addressee,
                 medicalReportData.child().name().replace(" ", "_"),
                 now.format(ReportGeneratorConstants.FILENAME_TIMESTAMP_FORMAT));
-    return FileFactory.createPdfWithMetaData(filename, FileType.PDF, bytes, pdfMetaData, false);
+    return FileFactory.createPdfWithMetaData(
+        filename, ProcedureFileType.PDF, bytes, pdfMetaData, false);
   }
 }

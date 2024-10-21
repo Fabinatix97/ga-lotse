@@ -30,9 +30,9 @@ import de.eshg.inspection.report.persistence.Report;
 import de.eshg.inspection.util.FileUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
@@ -139,7 +139,7 @@ public class InspectionFinalizer {
     addProgressEntryForFinalization(inspection);
     inspection.setPhase(InspectionPhase.CREATING_REPORT_AND_INVOICE);
     inspection.getExecutionTaskOrThrow().setTaskStatus(TaskStatus.CLOSED);
-    inspection.createReportTask();
+    inspection.createReportTask(clock);
     inspectionValidator.generateSignatureHash(signature, signatureFile, inspection.getPhase());
     inspectionValidator.generateChecklistHashes(inspection.getChecklists(), inspection.getPhase());
     inspectionUpdater.updateModified(inspection);
@@ -200,7 +200,9 @@ public class InspectionFinalizer {
     pdfMetaData.setCreatedDate(reportDate.toInstant());
     pdfMetaData.setDescription(reportData.inspection().title());
     String filename = reportData.reportInfo().filename();
-    Pdf pdf = FileFactory.createPdfWithMetaData(filename, FileType.PDF, bytes, pdfMetaData, false);
+    Pdf pdf =
+        FileFactory.createPdfWithMetaData(
+            filename, ProcedureFileType.PDF, bytes, pdfMetaData, false);
 
     report.setReportFile(pdf);
   }

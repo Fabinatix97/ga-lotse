@@ -7,14 +7,13 @@ import { useNavigation } from "@eshg/lib-portal/components/navigation/Navigation
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import { Button, Divider, Stack } from "@mui/joy";
 
+import { MessagesSidebarContent } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebarContent";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
   UseSidebarResult,
   useSidebar,
 } from "@/lib/shared/components/drawer/useSidebar";
-
-import { MessagesSidebarContent } from "./MessagesSidebarContent";
 
 export function useMessagesSidebar(): UseSidebarResult {
   return useSidebar({

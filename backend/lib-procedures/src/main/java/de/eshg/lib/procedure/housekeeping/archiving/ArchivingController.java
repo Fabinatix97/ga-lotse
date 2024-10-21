@@ -22,11 +22,11 @@ import static org.springframework.data.domain.PageRequest.ofSize;
 import static org.springframework.data.jpa.domain.Specification.where;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
-import de.base.rest.CustomMediaTypes;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.util.CollectionUtils;
 import de.eshg.domain.model.EntityWithExternalId;
 import de.eshg.domain.model.SequencedBaseEntityWithExternalId_;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.procedure.api.ArchivingApi;
 import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.Procedure;

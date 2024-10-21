@@ -115,6 +115,7 @@ export function StatisticDetails(
                 end: toDateString(detailsInformationCardProps.end),
               },
             }}
+            statisticId={props.statisticId}
           />
         </OverlayBoundary>
       )}

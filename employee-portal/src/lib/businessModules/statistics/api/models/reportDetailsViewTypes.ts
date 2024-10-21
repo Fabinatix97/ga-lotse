@@ -6,16 +6,12 @@
 import { FlatAttribute } from "./flatAttribute";
 import { Evaluation } from "./statisticDetailsViewTypes";
 
-export interface SeriesInfo {
-  index: number;
-  length: number;
-}
 export interface ReportDetailsView {
   id: string;
   seriesId: string;
   title: string;
   description?: string;
-  series?: SeriesInfo;
+  numberInSeries?: string;
   start: Date;
   end: Date;
   createdAt: Date;

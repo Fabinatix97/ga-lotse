@@ -11,7 +11,7 @@ import {
 } from "@eshg/employee-portal-api/travelMedicine";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
@@ -54,7 +54,7 @@ export function DiseasesOverviewTable() {
   const putDisease = usePutDisease();
   const deleteDisease = useDeleteDisease();
 
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function updateSidebarAndDisease(
     sideBarState: boolean,
@@ -63,12 +63,6 @@ export function DiseasesOverviewTable() {
     setSidebarOpen(sideBarState);
     setCurrentDisease(disease);
     resetAlertContext();
-  }
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
   }
 
   interface DiseaseFormData {

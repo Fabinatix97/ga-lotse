@@ -128,6 +128,9 @@ export function generateChecklistDefinitionOverviewTableColumns(
     columnHelper.accessor("objectType.name", {
       header: "Objekttyp",
       meta: {
+        canNavigate: {
+          parentRow: true,
+        },
         width: 366,
       },
     }),
@@ -186,6 +189,9 @@ export function generateChecklistDefinitionOverviewTableColumns(
         <Typography>{formatDateTime(info.getValue())}</Typography>
       ),
       meta: {
+        canNavigate: {
+          parentRow: true,
+        },
         width: 186,
       },
     }),

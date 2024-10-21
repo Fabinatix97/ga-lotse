@@ -5,24 +5,14 @@
 
 import { ApiCreateAppointmentsBulkResponse } from "@eshg/employee-portal-api/schoolEntry";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import {
-  CalendarMonthOutlined,
-  SubdirectoryArrowRightOutlined,
-} from "@mui/icons-material";
-import { Button, Divider, Sheet, Stack, Typography, styled } from "@mui/joy";
+import { useAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { CalendarMonthOutlined } from "@mui/icons-material";
+import { Button } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { useCreateAppointmentsInBulk } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
 import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
-
-const StyledSheet = styled(Sheet)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0.5, 1.5),
-  borderRadius: 0,
-  height: 40,
-}));
 
 interface ProcedureTableTitleProps {
   rowSelection: RowSelectionState;
@@ -71,14 +61,15 @@ function errorMessage(numError: number) {
 
 function useDisplayOnSuccessMessageForBulkAppointmentCreation() {
   const snackbar = useSnackbar();
-  const alert = useAlertContext();
+  const alert = useAlert();
 
   return (response: ApiCreateAppointmentsBulkResponse) => {
     if (response.numCreated > 0) {
       if (response.numUnmodified === 0 && response.numError === 0) {
+        alert.close();
         snackbar.confirmation(createdMessage(response.numCreated));
       } else {
-        alert?.setAlert({
+        alert.warning({
           title: "Terminzuweisung teilweise fehlgeschlagen",
           message: (
             <>
@@ -87,11 +78,11 @@ function useDisplayOnSuccessMessageForBulkAppointmentCreation() {
               {errorMessage(response.numError)}
             </>
           ),
-          color: "warning",
+          closeable: true,
         });
       }
     } else {
-      alert?.setAlert({
+      alert.error({
         title: "Es konnten keine Termine vergeben werden.",
         message: (
           <>
@@ -99,7 +90,7 @@ function useDisplayOnSuccessMessageForBulkAppointmentCreation() {
             {errorMessage(response.numError)}
           </>
         ),
-        color: "danger",
+        closeable: true,
       });
     }
   };
@@ -123,36 +114,27 @@ export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
   }
 
   return (
-    <StyledSheet variant="soft">
-      <Stack direction="row" gap={2} alignItems="center">
-        <SubdirectoryArrowRightOutlined
-          sx={{ transform: "rotate(90deg)", fontSize: "1.25rem" }}
-        />
-        <Typography level="body-sm" data-testid="proceduresIndicator">
-          <Typography fontWeight="bold">
-            {selectedProcedureIds.length}
-          </Typography>{" "}
-          {selectedProcedureIds.length === 1 ? "Vorgang" : "Vorgänge"}{" "}
-          ausgewählt
-        </Typography>
-        {selectedProcedureIds.length > 0 && (
-          <>
-            <Divider orientation="vertical" sx={{ marginY: 1 }} />
-            <Button
-              startDecorator={<CalendarMonthOutlined />}
-              variant="plain"
-              color="neutral"
-              size="sm"
-              loading={createAppointmentsInBulk.isPending}
-              loadingPosition="start"
-              disabled={createAppointmentsInBulk.isPending}
-              onClick={handleClickBulkAppointmentButton}
-            >
-              Termin zuweisen
-            </Button>
-          </>
-        )}
-      </Stack>
-    </StyledSheet>
+    <RowSelectionTableToolbar
+      rowSelection={props.rowSelection}
+      elementName={{
+        singular: "Vorgang ausgewählt",
+        plural: "Vorgänge ausgewählt",
+      }}
+    >
+      {selectedProcedureIds.length > 0 && (
+        <Button
+          startDecorator={<CalendarMonthOutlined />}
+          variant="plain"
+          color="neutral"
+          size="sm"
+          loading={createAppointmentsInBulk.isPending}
+          loadingPosition="start"
+          disabled={createAppointmentsInBulk.isPending}
+          onClick={handleClickBulkAppointmentButton}
+        >
+          Termin zuweisen
+        </Button>
+      )}
+    </RowSelectionTableToolbar>
   );
 }

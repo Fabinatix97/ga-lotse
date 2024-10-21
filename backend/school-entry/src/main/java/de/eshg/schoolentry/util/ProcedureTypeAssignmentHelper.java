@@ -6,7 +6,6 @@
 package de.eshg.schoolentry.util;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import java.time.LocalDate;
@@ -53,20 +52,12 @@ public class ProcedureTypeAssignmentHelper {
   boolean isRegularSchoolEntry(LocalDate dateOfBirth, Year schoolYear) {
     MonthDay maxDateOfBirthForRegularSchoolEntry =
         schoolEntryProperties.getMaxDateOfBirthForRegularSchoolEntry();
-    if (schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      LocalDate maxDateOfBirthForRegularSchoolEntryWithYear =
-          schoolYear.minusYears(6).atMonthDay(maxDateOfBirthForRegularSchoolEntry);
-      if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
-        return !dateOfBirth.isAfter(maxDateOfBirthForRegularSchoolEntryWithYear);
-      } else {
-        return dateOfBirth.isBefore(maxDateOfBirthForRegularSchoolEntryWithYear);
-      }
+    LocalDate maxDateOfBirthForRegularSchoolEntryWithYear =
+        schoolYear.minusYears(6).atMonthDay(maxDateOfBirthForRegularSchoolEntry);
+    if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
+      return !dateOfBirth.isAfter(maxDateOfBirthForRegularSchoolEntryWithYear);
     } else {
-      if (schoolEntryProperties.isMaxDateOfBirthForRegularSchoolEntryIsInclusive()) {
-        return MonthDay.from(dateOfBirth).compareTo(maxDateOfBirthForRegularSchoolEntry) <= 0;
-      } else {
-        return MonthDay.from(dateOfBirth).compareTo(maxDateOfBirthForRegularSchoolEntry) < 0;
-      }
+      return dateOfBirth.isBefore(maxDateOfBirthForRegularSchoolEntryWithYear);
     }
   }
 }

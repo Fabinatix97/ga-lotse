@@ -13,6 +13,7 @@ import {
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { Box, Button } from "@mui/joy";
@@ -23,6 +24,7 @@ import { isDefined } from "remeda";
 import { getStatisticsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { DuplicateStatisticSidebar } from "@/lib/businessModules/statistics/components/statistics/DuplicateStatisticSidebar/DuplicateStatisticSidebar";
+import { StatisticNameChangeModal } from "@/lib/businessModules/statistics/components/statistics/details/StatisticNameChangeModal";
 import { useDeleteStatisticWithConfirmation } from "@/lib/businessModules/statistics/components/statistics/useDeleteStatisticWithConfirmation";
 import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
@@ -66,8 +68,10 @@ function columns(
   deleteStatisticWithConfirmation: (id: string, statisticsName: string) => void,
   canDelete: (creatorUserId: string) => boolean,
   canWrite: (creatorUserId: string) => boolean,
+  canUpdateStatistic: (creatorUserId: string) => boolean,
   onDuplicate: (item: StatisticWithUserInfo) => void,
   duplicateStatisticEnabled: boolean,
+  onNameChange: (id: string, name: string) => void,
 ) {
   return [
     columnHelper.accessor("name", {
@@ -128,15 +132,30 @@ function columns(
                 props.row.original.state !== ApiStatisticState.Completed,
               startDecorator: <FullscreenIcon />,
             },
-            ...(canWrite(props.row.original.userId) &&
-            duplicateStatisticEnabled &&
-            props.row.original.state === ApiStatisticState.Completed
+            ...(canUpdateStatistic(props.row.original.userId)
+              ? [
+                  {
+                    label: "Name ändern",
+                    onClick: () =>
+                      onNameChange(
+                        props.row.original.id,
+                        props.row.original.name,
+                      ),
+                    disabled:
+                      props.row.original.state !== ApiStatisticState.Completed,
+                    startDecorator: <Edit />,
+                  },
+                ]
+              : []),
+            ...(canWrite(props.row.original.userId) && duplicateStatisticEnabled
               ? [
                   {
                     label: "Duplizieren",
                     onClick: () => {
                       onDuplicate(props.row.original);
                     },
+                    disabled:
+                      props.row.original.state !== ApiStatisticState.Completed,
                     startDecorator: <FileCopyIcon />,
                   },
                 ]
@@ -194,6 +213,8 @@ export function StatisticsTable({
   );
   const [duplicateStatisticAction, setDuplicateStatisticAction] =
     useState<StatisticWithUserInfo>();
+  const [nameChangeAction, setNameChangeAction] =
+    useState<Pick<ApiStatisticInfo, "id" | "name">>();
 
   const userPermissions = useStatisticRoleChecks();
 
@@ -251,8 +272,10 @@ export function StatisticsTable({
               deleteStatisticsWithConfirmation,
               userPermissions.canDelete,
               userPermissions.canWrite,
+              userPermissions.canUpdateStatistic,
               setDuplicateStatisticAction,
               duplicateStatisticEnabled,
+              (id, name) => setNameChangeAction({ id, name }),
             )}
             sorting={tableControl.tableSorting}
             rowNavRoute={(row) =>
@@ -275,11 +298,23 @@ export function StatisticsTable({
           />
         </TableSheet>
       </TablePage>
+
       {isDefined(duplicateStatisticAction) && (
         <OverlayBoundary>
           <DuplicateStatisticSidebar
             onClose={() => setDuplicateStatisticAction(undefined)}
             originalStatistic={duplicateStatisticAction}
+          />
+        </OverlayBoundary>
+      )}
+
+      {isDefined(nameChangeAction) && (
+        <OverlayBoundary>
+          <StatisticNameChangeModal
+            open={true}
+            onClose={() => setNameChangeAction(undefined)}
+            initialName={nameChangeAction.name}
+            statisticId={nameChangeAction.id}
           />
         </OverlayBoundary>
       )}

@@ -5,14 +5,14 @@
 
 package de.eshg.schoolentry.business.model;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import java.util.List;
 import java.util.UUID;
 
 public record MergeProcedureData(
     UUID procedureId,
     String placeOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     List<ImportCustodianData> custodians,
     String phoneNumber,
     Boolean isEntryLevel,

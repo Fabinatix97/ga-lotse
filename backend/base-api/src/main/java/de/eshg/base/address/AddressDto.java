@@ -8,8 +8,8 @@ package de.eshg.base.address;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.HasTypeDiscriminator;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "Address")
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public sealed interface AddressDto extends HasTypeDiscriminator
     permits DomesticAddressDto, PostboxAddressDto {
 
-  CountryCodeDto country();
+  CountryCode country();
 
   String city();
 

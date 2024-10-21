@@ -133,6 +133,7 @@ export function ProcedureMetricsDisplay() {
                       )
                     : undefined
                 }
+                focusColumnHeader="Typ"
               />
             </TableSheet>
           </Stack>

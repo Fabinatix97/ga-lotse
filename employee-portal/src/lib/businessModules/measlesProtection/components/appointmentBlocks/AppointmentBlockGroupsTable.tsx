@@ -251,7 +251,11 @@ export function AppointmentBlockGroupsTable(
     toAggregatedAppointmentBlockRow,
   );
   return (
-    <TablePage fullHeight controls={props.controls}>
+    <TablePage
+      fullHeight
+      controls={props.controls}
+      data-testid="appointmentBlockGroupsTable"
+    >
       <TableSheet
         footer={
           <Pagination

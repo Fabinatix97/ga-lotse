@@ -5,7 +5,7 @@
 
 package de.eshg.travelmedicine.citizenpublic;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "de.eshg.travel-medicine.department-info")
@@ -16,7 +16,7 @@ public record DepartmentInfoProperties(
     String houseNumber,
     String postalCode,
     String city,
-    CountryCodeDto country,
+    CountryCode country,
     String phoneNumber,
     String homepage,
     String email,

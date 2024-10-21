@@ -5,7 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.persistence.entity;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
@@ -47,7 +47,7 @@ public class VaccinationConsultation
   @NotNull
   @ElementCollection
   @OrderColumn
-  private List<CountryCodeDto> travelDestinations;
+  private List<CountryCode> travelDestinations;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column
@@ -105,11 +105,11 @@ public class VaccinationConsultation
     this.travelType = travelType;
   }
 
-  public List<CountryCodeDto> getTravelDestinations() {
+  public List<CountryCode> getTravelDestinations() {
     return travelDestinations;
   }
 
-  public void setTravelDestinations(List<CountryCodeDto> travelDestinations) {
+  public void setTravelDestinations(List<CountryCode> travelDestinations) {
     this.travelDestinations = travelDestinations;
   }
 

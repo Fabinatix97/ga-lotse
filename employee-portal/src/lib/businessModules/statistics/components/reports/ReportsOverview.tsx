@@ -10,9 +10,10 @@ import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
+import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
-import { useDeleteReportWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteReportWithConfirmation";
+import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
@@ -30,7 +31,7 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
-import { getId, getReportsOverviewColumns } from "./columns";
+import { getReportsOverviewColumns } from "./columns";
 
 function mapFilterValuesToReportsFilter(filterValues: FilterValue[]): string[] {
   return filterValues.map((filterValue) => {
@@ -65,7 +66,8 @@ const filterDefinitions: FilterDefinition[] = [
 export function ReportsOverview() {
   const copy = useCopy();
 
-  const deleteReportWithConfirmation = useDeleteReportWithConfirmation();
+  const { deleteReportWithConfirmation, deleteReportSeriesWithConfirmation } =
+    useDeleteWithConfirmation();
   const userPermissions = useStatisticRoleChecks();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
@@ -99,6 +101,10 @@ export function ReportsOverview() {
     totalCount: reportsOverview.totalNumberOfElements,
   });
 
+  function getSubRows(item: ReportOverviewTableRow) {
+    return item.type === "SERIES" ? item.subRows : undefined;
+  }
+
   return (
     <TablePage
       data-testid="statistics-reports-overview-table"
@@ -118,11 +124,13 @@ export function ReportsOverview() {
     >
       <TableSheet footer={<Pagination {...paginationProps} />}>
         <DataTable
+          striped={false}
           wrapContent
           wrapHeader
           columns={getReportsOverviewColumns(
             copy,
             deleteReportWithConfirmation,
+            deleteReportSeriesWithConfirmation,
             userPermissions.canWrite(),
             userPermissions.canDelete,
           )}
@@ -133,8 +141,11 @@ export function ReportsOverview() {
             </Box>
           )}
           rowNavRoute={(row) =>
-            routes.reports.details(getId(row.original)).index
+            row.original.type !== "SERIES"
+              ? routes.reports.details(row.original.reportId).index
+              : undefined
           }
+          getSubRows={getSubRows}
         />
       </TableSheet>
     </TablePage>

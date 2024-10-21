@@ -23,13 +23,21 @@ import { useDebounce } from "use-debounce";
 
 import { useSearchIcd10Codes } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-interface Idc10SidebarProps {
-  open: boolean;
-  onClose: () => void;
+export function useIdc10Sidebar(): UseSidebarResult<Idc10SidebarProps> {
+  return useSidebar({
+    component: Icd10Sidebar,
+  });
+}
+
+interface Idc10SidebarProps extends DrawerProps {
   onSubmit: (selectedCodes: string[]) => void;
   initiallySelectedCodes: string[];
 }
@@ -43,7 +51,7 @@ const StyledTable = styled(Table)({
   },
 });
 
-export function Icd10Sidebar(props: Idc10SidebarProps) {
+function Icd10Sidebar(props: Idc10SidebarProps) {
   const [selectedCodes, setSelectedCodes] = useState<string[]>(
     props.initiallySelectedCodes,
   );
@@ -88,7 +96,7 @@ export function Icd10Sidebar(props: Idc10SidebarProps) {
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onClose}>
+    <>
       <SidebarContent title="ICD-10 Katalog">
         <Stack gap={3}>
           <FormControl size="md">
@@ -165,7 +173,7 @@ export function Icd10Sidebar(props: Idc10SidebarProps) {
           right={[
             <Button
               key="cancel"
-              onClick={props.onClose}
+              onClick={() => props.onClose()}
               color="neutral"
               variant="soft"
             >
@@ -177,6 +185,6 @@ export function Icd10Sidebar(props: Idc10SidebarProps) {
           ]}
         />
       </SidebarActions>
-    </Sidebar>
+    </>
   );
 }

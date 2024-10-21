@@ -45,4 +45,8 @@
   <include file="migrations/0035_refactor_web_search_entry_tags.xml"/>
   <include file="migrations/0036_inspection_notes.xml"/>
   <include file="migrations/0037_cld_drafts.xml"/>
+  <include file="migrations/0038_remove_report_fk.xml"/>
+  <include file="migrations/0039_remove_fk_checklistelement_incident.xml"/>
+  <include file="migrations/0040_introduce_procedure_file_type.xml"/>
+  <include file="migrations/0041_add_medical_registry_procedure_types.xml"/>
 </databaseChangeLog>

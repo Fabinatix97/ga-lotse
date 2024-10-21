@@ -7,6 +7,7 @@ package de.eshg.stiprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.stiprotection.annotations.ProcedureStatusTransition;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
@@ -108,6 +109,7 @@ public class StiProtectionProcedureController {
   @PutMapping("/{id}/close")
   @Operation(summary = "Close an STI procedure.")
   @Transactional
+  @ProcedureStatusTransition
   public StiProtectionProcedureDto closeProcedure(@PathVariable("id") UUID procedureId) {
     stiProtectionService.closeProcedure(procedureId);
     return StiProtectionProcedureMapper.toInterfaceType(
@@ -117,6 +119,7 @@ public class StiProtectionProcedureController {
   @PutMapping("/{id}/reopen")
   @Operation(summary = "Re-open an STI procedure.")
   @Transactional
+  @ProcedureStatusTransition
   public StiProtectionProcedureDto reopenProcedure(@PathVariable("id") UUID procedureId) {
     stiProtectionService.reopenProcedure(procedureId);
     return StiProtectionProcedureMapper.toInterfaceType(

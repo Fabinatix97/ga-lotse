@@ -5,7 +5,9 @@
 
 package de.eshg.schoolentry.importer;
 
-public final class SchoolListRowValues extends RowValues {
+import java.util.Objects;
+
+public final class SchoolListRowValues extends SchoolEntryRowValues {
 
   private boolean isEntryLevel;
 
@@ -25,5 +27,11 @@ public final class SchoolListRowValues extends RowValues {
 
   public void setEarlyExamination(boolean earlyExamination) {
     isEarlyExamination = earlyExamination;
+  }
+
+  @Override
+  boolean isDuplicateRow(Object other) {
+    return (other instanceof SchoolListRowValues schoolListRowValues)
+        && Objects.equals(this.getChild(), schoolListRowValues.getChild());
   }
 }

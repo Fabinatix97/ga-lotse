@@ -77,6 +77,7 @@ import de.eshg.statistics.persistence.entity.diagramdata.KeyToValue;
 import de.eshg.statistics.persistence.entity.diagramdata.LineOrScatterChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.PieChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.TrendLine;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -110,6 +111,31 @@ public class EvaluationMapper {
           mapToChoroplethMapConfiguration(choroplethMapConfigurationDto, geoJson);
       case HistogramChartConfigurationDto histogramChartConfigurationDto ->
           mapToHistogramChartConfiguration(histogramChartConfigurationDto, histogramBins);
+      case LineChartConfigurationDto lineChartConfigurationDto ->
+          mapToLineChartConfiguration(lineChartConfigurationDto);
+      case PieChartConfigurationDto pieChartConfigurationDto ->
+          mapToPieChartConfiguration(pieChartConfigurationDto);
+      case ScatterChartConfigurationDto scatterChartConfigurationDto ->
+          mapToScatterChartConfiguration(scatterChartConfigurationDto);
+    };
+  }
+
+  @SuppressWarnings("java:S2637")
+  public static ChartConfiguration mapToPersistence(ChartConfigurationDto chartConfiguration) {
+    return switch (chartConfiguration) {
+      case BarChartConfigurationDto barChartConfigurationDto ->
+          mapToBarChartConfiguration(barChartConfigurationDto);
+      case ChoroplethMapConfigurationDto choroplethMapConfigurationDto ->
+          mapToChoroplethMapConfiguration(
+              new AddChoroplethMapConfigurationDto(
+                  choroplethMapConfigurationDto.primaryAttribute(),
+                  choroplethMapConfigurationDto.secondaryAttribute(),
+                  choroplethMapConfigurationDto.calculation(),
+                  null,
+                  choroplethMapConfigurationDto.colorScheme()),
+              choroplethMapConfigurationDto.geoJson());
+      case HistogramChartConfigurationDto histogramChartConfigurationDto ->
+          mapToHistogramChartConfiguration(histogramChartConfigurationDto, Collections.emptyList());
       case LineChartConfigurationDto lineChartConfigurationDto ->
           mapToLineChartConfiguration(lineChartConfigurationDto);
       case PieChartConfigurationDto pieChartConfigurationDto ->
@@ -284,7 +310,7 @@ public class EvaluationMapper {
             .toList());
   }
 
-  private static ChartConfigurationDto mapToChartConfigurationDto(
+  public static ChartConfigurationDto mapToChartConfigurationDto(
       ChartConfiguration chartConfiguration, boolean withJson) {
     return switch (chartConfiguration) {
       case BarChartConfiguration barChartConfiguration ->

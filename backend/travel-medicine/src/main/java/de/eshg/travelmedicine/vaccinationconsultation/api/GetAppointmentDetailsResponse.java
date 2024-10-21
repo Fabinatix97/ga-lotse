@@ -13,6 +13,7 @@ import java.time.LocalDate;
 public record GetAppointmentDetailsResponse(
     @NotNull @Valid AppointmentSummaryDto summaryDto,
     @NotNull boolean hasAccomplishedService,
+    @NotNull int bookingsRemaining,
     @NotBlank String lastName,
     @NotBlank String firstName,
     @NotNull LocalDate dateOfBirth,

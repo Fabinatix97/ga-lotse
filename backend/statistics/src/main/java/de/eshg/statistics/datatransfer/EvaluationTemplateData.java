@@ -1,0 +1,12 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.statistics.datatransfer;
+
+import de.eshg.statistics.api.DataSourceDto;
+import java.util.List;
+
+public record EvaluationTemplateData(
+    List<DataSourceDto> dataSources, List<AnalysisTemplateData> analysisTemplateDatas) {}

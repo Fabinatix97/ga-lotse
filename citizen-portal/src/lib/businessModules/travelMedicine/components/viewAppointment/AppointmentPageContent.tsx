@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentBookingType } from "@eshg/citizen-portal-api/travelMedicine";
-
 import { useGetProcedureStepAppointmentDetails } from "@/lib/businessModules/travelMedicine/api/queries/citizenAuthApi";
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { AppointmentDetails } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetails";
@@ -31,10 +29,6 @@ export function AppointmentPageContent() {
       contentCenter={
         <AppointmentDetailsSidePanel
           hasAccomplishedService={appointmentDetails.hasAccomplishedService}
-          isCancelled={
-            appointmentDetails.summaryDto.appointmentBookingType ===
-            ApiAppointmentBookingType.Cancelled
-          }
         />
       }
       contentBottom={null}
@@ -45,10 +39,6 @@ export function AppointmentPageContent() {
       sidePanel={
         <AppointmentDetailsSidePanel
           hasAccomplishedService={appointmentDetails.hasAccomplishedService}
-          isCancelled={
-            appointmentDetails.summaryDto.appointmentBookingType ===
-            ApiAppointmentBookingType.Cancelled
-          }
         />
       }
     />

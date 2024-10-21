@@ -5,6 +5,8 @@
 
 import { ApiReportState } from "@eshg/employee-portal-api/statistics";
 
+import { Interval, ReportingPeriod } from "./reportSeriesTypes";
+
 export const ReportDataType = {
   Single: "SINGLE",
   Child: "CHILD",
@@ -16,15 +18,18 @@ export type ReportDataType =
 export interface StatisticReports {
   statisticId: string;
   title: string;
-  reports: SingleReport[]; //TODO replace with ReportData[] once series are allowed
+  reports: ReportData[];
+  activeSeries?: ActiveSeriesInfo;
 }
 
 export type ReportData = SingleReport | ReportSeries;
 
+export type ReportTableRow = SingleReport | ReportSeries | ReportSeriesItem;
+
 export interface SingleReport extends ReportBase {
-  seriesId: string;
   type: Extract<ReportDataType, "SINGLE">;
   description?: string;
+  seriesId: string;
 }
 
 export interface ReportBase {
@@ -39,15 +44,25 @@ export interface ReportBase {
 }
 
 export interface ReportSeries {
-  reports: ReportSeriesItem[];
+  subRows: ReportSeriesItem[];
   name: string;
   seriesId: string;
   timeRangeStart?: Date;
   timeRangeEnd?: Date;
   type: Extract<ReportDataType, "SERIES">;
+  description?: string;
   userId: string;
 }
 
 export interface ReportSeriesItem extends ReportBase {
   type: Extract<ReportDataType, "CHILD">;
+}
+
+export interface ActiveSeriesInfo {
+  seriesId: string;
+  name: string;
+  description?: string;
+  interval?: Interval;
+  reportingPeriod?: ReportingPeriod;
+  nextReport?: Date;
 }

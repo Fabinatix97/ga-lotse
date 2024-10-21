@@ -4,12 +4,18 @@
  */
 
 import { ApiCLFieldOptionContext } from "@eshg/employee-portal-api/inspection";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { SubdirectoryArrowRight } from "@mui/icons-material";
 import { Stack } from "@mui/joy";
+import { useFormikContext } from "formik";
 import { useState } from "react";
 
+import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { InputWithDeleteButton } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/InputWithDeleteButton";
 
 interface ChecklistDefinitionAnswerItemProps {
+  sectionIndex: number;
+  elementIndex: number;
   itemIndex: number;
   item: ApiCLFieldOptionContext;
   setItem: (item: ApiCLFieldOptionContext) => void;
@@ -19,6 +25,8 @@ interface ChecklistDefinitionAnswerItemProps {
 }
 
 export function ChecklistDefinitionAnswerItem({
+  sectionIndex,
+  elementIndex,
   itemIndex,
   item,
   setItem,
@@ -26,22 +34,20 @@ export function ChecklistDefinitionAnswerItem({
   hideDeleteButton = false,
   readOnlyMode = false,
 }: Readonly<ChecklistDefinitionAnswerItemProps>) {
-  const [showTextModuleInputTrue, setShowTextModuleInputTrue] = useState(
+  const { values } = useFormikContext<FormChecklistDefinitionVersion>();
+  const [showTextModuleTrue, setShowTextModuleTrue] = useState(
     !!item?.textModuleTrue,
   );
-  const [showTextModuleInputFalse, setShowTextModuleInputFalse] = useState(
+  const [showTextModuleFalse, setShowTextModuleFalse] = useState(
     !!item?.textModuleFalse,
   );
+  const showTextModules = showTextModuleTrue || showTextModuleFalse;
 
   function updateItem(partialItem: Partial<ApiCLFieldOptionContext>) {
     setItem({
       ...item,
       ...partialItem,
     });
-  }
-
-  function setText(text: string) {
-    updateItem({ text });
   }
 
   function setTextModuleTrue(textModuleTrue: string) {
@@ -52,61 +58,79 @@ export function ChecklistDefinitionAnswerItem({
     updateItem({ textModuleFalse });
   }
 
+  function validateMultipleAnswers(value: OptionalFieldValue<string>) {
+    if (value === "") {
+      return undefined;
+    }
+
+    switch (
+      values.context.sections[sectionIndex]?.elements[elementIndex]?.type
+    ) {
+      case "MULTI_SELECT":
+      case "CLMultiSelectContext":
+      case "SINGLE_SELECT":
+      case "CLSingleSelectContext": {
+        const occurances = values.context.sections[sectionIndex]?.elements[
+          elementIndex
+        ].items!.filter((answer) => answer.text === value);
+        if (occurances.length > 1) {
+          return "Bitte unterschiedliche Werte eingeben.";
+        } else {
+          return undefined;
+        }
+      }
+    }
+  }
+
   return (
     <Stack spacing={1}>
       <InputWithDeleteButton
+        name={`context.sections.${sectionIndex}.elements.${elementIndex}.items.${itemIndex}.text`}
         disabled={readOnlyMode}
-        title={`Antwort ${itemIndex + 1}`}
+        label={`Antwort ${itemIndex + 1}`}
         placeholder="Antwort eingeben"
         defaultValue={item?.text}
-        onBlur={setText}
         onDelete={onDelete}
+        validate={validateMultipleAnswers}
+        required="Bitte geben Sie eine Antwort ein."
         onToggleTextModule={(show) => {
-          setShowTextModuleInputTrue(show);
-          setShowTextModuleInputFalse(show);
-          if (!show) {
-            setTextModuleFalse("");
-            setTextModuleTrue("");
-          }
+          setShowTextModuleTrue(show);
+          setShowTextModuleFalse(show);
         }}
-        toggleTextModuleActive={
-          showTextModuleInputTrue || showTextModuleInputFalse
-        }
+        toggleTextModuleActive={showTextModules}
         showTextModule
         hideAddButton
         hideDeleteButton={hideDeleteButton}
       />
-      {showTextModuleInputTrue && (
-        <InputWithDeleteButton
-          disabled={readOnlyMode}
-          style={{ marginLeft: 16 }}
-          multiline
-          title={`Textbaustein ${itemIndex + 1} Ja`}
-          placeholder="Textbaustein eingeben"
-          defaultValue={item?.textModuleTrue}
-          onBlur={setTextModuleTrue}
-          onDelete={() => {
-            setShowTextModuleInputTrue(false);
-            setTextModuleTrue("");
-          }}
-          hideAddButton
-        />
+      {showTextModules && (
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <SubdirectoryArrowRight sx={{ mt: "1.8rem" }} />
+          <InputWithDeleteButton
+            name={`context.sections.${sectionIndex}.elements.${elementIndex}.items.${itemIndex}.textModuleTrue`}
+            disabled={readOnlyMode}
+            multiline
+            label={`Textbaustein für Antwort ${itemIndex + 1} (ausgewählt)`}
+            placeholder="Textbaustein eingeben"
+            defaultValue={item?.textModuleTrue}
+            onDelete={() => setTextModuleTrue("")}
+            hideAddButton
+          />
+        </Stack>
       )}
-      {showTextModuleInputFalse && (
-        <InputWithDeleteButton
-          disabled={readOnlyMode}
-          style={{ marginLeft: 16 }}
-          multiline
-          title={`Textbaustein ${itemIndex + 1} Nein`}
-          placeholder="Textbaustein eingeben"
-          defaultValue={item?.textModuleFalse}
-          onBlur={setTextModuleFalse}
-          onDelete={() => {
-            setShowTextModuleInputFalse(false);
-            setTextModuleFalse("");
-          }}
-          hideAddButton
-        />
+      {showTextModules && (
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <SubdirectoryArrowRight sx={{ mt: "1.8rem" }} />
+          <InputWithDeleteButton
+            name={`context.sections.${sectionIndex}.elements.${elementIndex}.items.${itemIndex}.textModuleFalse`}
+            disabled={readOnlyMode}
+            multiline
+            label={`Textbaustein für Antwort ${itemIndex + 1} (nicht ausgewählt)`}
+            placeholder="Textbaustein eingeben"
+            defaultValue={item?.textModuleFalse}
+            onDelete={() => setTextModuleFalse("")}
+            hideAddButton
+          />
+        </Stack>
       )}
     </Stack>
   );

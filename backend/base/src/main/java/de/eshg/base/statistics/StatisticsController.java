@@ -19,9 +19,8 @@ import de.eshg.base.statistics.options.GenderOptions;
 import de.eshg.base.street.DistrictDto;
 import de.eshg.base.street.SearchStreetResponse;
 import de.eshg.base.street.StreetController;
-import de.eshg.base.util.CountryCode;
 import de.eshg.base.util.Gender;
-import de.eshg.base.util.MappingUtil;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueType;
@@ -251,7 +250,7 @@ public class StatisticsController implements BaseStatisticsApi {
             domesticAddress.getStreet(),
             domesticAddress.getHouseNumber(),
             domesticAddress.getPostalCode(),
-            MappingUtil.mapCountryCodeToApi(domesticAddress.getCountry()));
+            domesticAddress.getCountry());
     Set<DistrictDto> districts = searchStreetResponse.cityDistricts();
     if (districts.size() == 1) {
       return districts.iterator().next();

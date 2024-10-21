@@ -7,20 +7,21 @@ import {
   ApiAffectedPerson,
   ApiCustodian,
 } from "@eshg/employee-portal-api/measlesProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { AddressDetails } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/AddressDetails";
-import { Row } from "@/lib/shared/Row";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import {
   GENDER_VALUES,
   SALUTATION_VALUES,
   getOptionalTitle,
 } from "@/lib/shared/components/personSidebar/constants";
 
-import { LabeledValue, ValueList } from "./LabeledValue";
-
 type Person = ApiAffectedPerson | ApiCustodian;
-
 interface PersonDetailsProps {
   person: Person;
 }

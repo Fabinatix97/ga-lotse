@@ -5,6 +5,8 @@
 
 package de.eshg.rest.service.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,9 @@ public final class StiProtectionPublicSecurityConfig extends AbstractPublicSecur
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.STI_PROTECTION_USER, ModuleLeaderRole.STI_PROTECTION_LEADER);
 
+    requestMatchers(GET, BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{id}/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STI_PROTECTION_USER, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(
             BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")

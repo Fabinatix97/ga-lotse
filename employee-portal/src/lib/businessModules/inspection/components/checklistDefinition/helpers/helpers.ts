@@ -50,6 +50,10 @@ function createCheckboxElement(
   keepId = false,
 ): { type: "CHECKBOX" } & ApiCLCheckboxContext {
   return {
+    text: "",
+    mandatory: false,
+    help: "",
+    note: "",
     ...partial,
     type: "CHECKBOX",
     id: getId(partial, keepId),
@@ -61,6 +65,10 @@ function createMultiselectElement(
   keepId = false,
 ): { type: "MULTI_SELECT" } & ApiCLMultiSelectContext {
   return {
+    text: "",
+    mandatory: false,
+    help: "",
+    note: "",
     ...partial,
     type: "MULTI_SELECT",
     id: getId(partial, keepId),
@@ -73,6 +81,10 @@ function createSingleSelectElement(
   keepId = false,
 ): { type: "SINGLE_SELECT" } & ApiCLSingleSelectContext {
   return {
+    text: "",
+    mandatory: false,
+    help: "",
+    note: "",
     ...partial,
     type: "SINGLE_SELECT",
     id: getId(partial, keepId),
@@ -85,6 +97,10 @@ function createTextElement(
   keepId = false,
 ): { type: "TEXT" } & ApiCLTextElementContext {
   return {
+    text: "",
+    mandatory: false,
+    help: "",
+    note: "",
     ...partial,
     type: "TEXT",
     id: getId(partial, keepId),
@@ -96,6 +112,9 @@ function createImageElement(
   keepId = false,
 ): { type: "IMAGE" } & ApiCLImageContext {
   return {
+    text: "",
+    help: "",
+    note: "",
     ...partial,
     type: "IMAGE",
     id: getId(partial, keepId),
@@ -107,6 +126,9 @@ function createAudioElement(
   keepId = false,
 ): { type: "AUDIO" } & ApiCLAudioContext {
   return {
+    text: "",
+    help: "",
+    note: "",
     ...partial,
     type: "AUDIO",
     id: getId(partial, keepId),

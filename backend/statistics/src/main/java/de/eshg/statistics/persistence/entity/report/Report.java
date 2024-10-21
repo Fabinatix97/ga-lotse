@@ -30,7 +30,7 @@ public class Report extends AbstractAggregationResult {
   private ReportSeries reportSeries;
 
   @DataSensitivity(PUBLIC)
-  @Column
+  @Column(nullable = false)
   private LocalDate executionDate;
 
   void setReportSeries(ReportSeries reportSeries) {

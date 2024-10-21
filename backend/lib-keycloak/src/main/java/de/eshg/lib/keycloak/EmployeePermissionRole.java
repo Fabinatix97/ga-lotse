@@ -36,6 +36,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME,
       LEADER_DESCRIPTION.formatted("Medizinalkartei"),
       Module.MEDICAL_REGISTRY),
+  OPEN_DATA_LEADER(
+      LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Open Data"), Module.OPEN_DATA),
 
   BASE_PERSONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Personen (Zentralkartei)"),
@@ -280,6 +282,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_FACILITIES_READ,
       BASE_FACILITIES_WRITE),
 
+  OPEN_DATA_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Open Data"), Module.OPEN_DATA),
+
   CHAT_MANAGEMENT_WRITE(
       READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT);
 
@@ -332,7 +336,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     ARCHIVE("Archiv"),
     AUDIT_LOG_SERVICE("Audit-Log-Service"),
     STI_PROTECTION("HIV-STI-Service"),
-    MEDICAL_REGISTRY("Medizinalkartei");
+    MEDICAL_REGISTRY("Medizinalkartei"),
+    OPEN_DATA("Open Data");
 
     private final String displayName;
 

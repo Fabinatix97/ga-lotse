@@ -5,10 +5,10 @@
 
 package de.eshg.schoolentry.api;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +28,7 @@ public record CreatePersonDto(
     @NotNull LocalDate dateOfBirth,
     @Size(min = 1, max = 40) String nameAtBirth,
     @Size(min = 1, max = 50) String placeOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     List<@NotNull @Size(min = 6, max = 254) String> emailAddresses,
     List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @Valid AddressDto contactAddress,
@@ -54,7 +54,7 @@ public record CreatePersonDto(
       String lastName,
       LocalDate dateOfBirth,
       String placeOfBirth,
-      CountryCodeDto countryOfBirth,
+      CountryCode countryOfBirth,
       List<String> phoneNumbers,
       AddressDto contactAddress) {
     this(

@@ -7,6 +7,7 @@ package de.eshg.stiprotection.api;
 
 import de.eshg.base.GenderDto;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -22,5 +23,6 @@ public record StiProtectionProcedureOverviewDto(
     @NotNull ProcedureStatusDto status,
     @NotNull ConcernDto concern,
     @Schema(type = "integer") @NotNull Year yearOfBirth,
+    CountryCode countryOfBirth,
     @NotNull GenderDto gender,
     @NotNull @Valid AppointmentDto appointment) {}

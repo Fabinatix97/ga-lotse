@@ -5,7 +5,7 @@
 
 package de.eshg.base.department;
 
-import de.eshg.base.util.CountryCode;
+import de.eshg.lib.common.CountryCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;

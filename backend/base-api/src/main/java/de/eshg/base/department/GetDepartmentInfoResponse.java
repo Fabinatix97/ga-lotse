@@ -5,7 +5,7 @@
 
 package de.eshg.base.department;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -43,7 +43,7 @@ public record GetDepartmentInfoResponse(
             description = "The ISO country code of the country where the department is located.",
             example = "DE")
         @NotNull
-        CountryCodeDto country,
+        CountryCode country,
     @Schema(
             description = "The primary contact telephone number for the department",
             example = "+491234567890")

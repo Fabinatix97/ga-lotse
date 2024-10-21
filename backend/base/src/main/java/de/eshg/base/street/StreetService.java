@@ -5,7 +5,7 @@
 
 package de.eshg.base.street;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -25,8 +25,8 @@ public class StreetService {
   }
 
   public Set<AdministrativeData> getData(
-      String streetName, HouseNumber houseNumber, String postalCode, CountryCodeDto country) {
-    if (country != CountryCodeDto.DE) {
+      String streetName, HouseNumber houseNumber, String postalCode, CountryCode country) {
+    if (country != CountryCode.DE) {
       return Set.of();
     }
 

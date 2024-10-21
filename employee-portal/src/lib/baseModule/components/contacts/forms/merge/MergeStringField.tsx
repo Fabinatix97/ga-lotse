@@ -9,11 +9,13 @@ import { Stack, Typography } from "@mui/joy";
 
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
-interface MergeStringFieldProps extends FieldProps<string> {
+export interface MergeStringFieldProps extends FieldProps<string> {
   target: string | undefined;
   source: string | undefined;
   getOptionLabel?: (value: string) => string | undefined;
   emptyValue?: string;
+  targetValueLabel: string;
+  sourceValueLabel: string;
 }
 
 export function MergeStringField({
@@ -21,6 +23,8 @@ export function MergeStringField({
   source,
   getOptionLabel,
   emptyValue,
+  targetValueLabel,
+  sourceValueLabel,
   ...fieldProps
 }: MergeStringFieldProps) {
   function getLabel(value: string) {
@@ -54,7 +58,7 @@ export function MergeStringField({
       label: (
         <AnnotatedSelectOption
           label={getLabel(normalizedTarget)}
-          title={"Aktuell"}
+          title={targetValueLabel ?? "Aktuell"}
         />
       ),
     },
@@ -63,7 +67,7 @@ export function MergeStringField({
       label: (
         <AnnotatedSelectOption
           label={getLabel(normalizedSource)}
-          title={"Importiert"}
+          title={sourceValueLabel ?? "Importiert"}
         />
       ),
     },

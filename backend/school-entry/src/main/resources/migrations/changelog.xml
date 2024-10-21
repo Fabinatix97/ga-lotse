@@ -56,5 +56,7 @@
   <include file="migrations/0044_add_columns_measles_contra_indication.xml"/>
   <include file="migrations/0045_add_examination_date.xml"/>
   <include file="migrations/0046_add_general_country_options.xml"/>
+  <include file="migrations/0047_introduce_procedure_file_type.xml"/>
+  <include file="migrations/0048_add_medical_registry_procedure_types.xml"/>
 
 </databaseChangeLog>

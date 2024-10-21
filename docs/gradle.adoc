@@ -60,7 +60,7 @@ All common tasks are also available within the e2e project.
 | `./gradlew e2e:startLocalEmployeePortal`   | Start all backend containers and serve the employee portal locally in "production mode"
 | `./gradlew e2e:startLocalCitizenPortal`    | Start all backend containers and serve the citizen portal locally in "production mode"
 | `./gradlew e2e:startLocalAdminPortal`      | Start **only** a service-directory container and serve the admin portal locally in "production mode"
-| `./gradlew e2e:startLocalDocker`           | Start all backend containers and dockerized employee, citizen and admin portals (Linux only due to docker host network)
+| `./gradlew e2e:startLocalDocker`           | Start all backend containers and dockerized employee, citizen and admin portals
 | `./gradlew e2e:test`                       | Run all tests in headless mode
 | `./gradlew e2e:testUi`                     | Open Playwright in UI mode (enables running and debugging individual tests)
 | `./gradlew e2e:testReport`                 | Open HTML test report
@@ -70,4 +70,4 @@ All common tasks are also available within the e2e project.
 
 *Notice:* `testUi` is recommended for local development, because tests can be run individually with a time travel experience. This simplifies the verification of the test runs and the analysis of errors.
 
-There is a separate section in the link:./e2e-tests.adoc[e2e-tests README] concerning the multi instance e2e test setup.
+There is a separate section in the link:./e2e-tests.adoc[e2e-tests README] concerning smoke testing deployed environments using the e2e test setup.

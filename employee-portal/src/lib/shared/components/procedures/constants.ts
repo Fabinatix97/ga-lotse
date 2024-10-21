@@ -32,6 +32,11 @@ export const procedureTypeNames = {
   [ApiProcedureType.TmVaccinationConsultation]: "Impfberatung",
   [ApiProcedureType.MeaslesProtection]: "Masernschutzimpfung",
   [ApiProcedureType.StiProtection]: "HIV-STI-Schutz",
+  [ApiProcedureType.MedicalRegistryEntry]: "Medizinalkarteieintrag",
+  [ApiProcedureType.MedicalRegistryEmployeeDraft]:
+    "Entwurf Medizinalkarteieintrag Mitarbeiter",
+  [ApiProcedureType.MedicalRegistryCitizenDraft]:
+    "Entwurf Medizinalkarteieintrag Bürger",
 } satisfies Record<ApiProcedureType, string>;
 
 export const procedureStatusNames = {

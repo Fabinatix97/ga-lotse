@@ -11,15 +11,12 @@ import static de.eshg.schoolentry.domain.model.SchoolRecommendation.BACK_REGULAR
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.api.CreateSchoolInfoLetterRequest;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
-import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.pdf.schoolinfoletter.model.*;
 import de.eshg.schoolentry.pdf.schoolinfoletter.model.SchoolInfoLetterExaminationType.Type;
 import de.eshg.schoolentry.statistics.StatisticsValueMappers;
 import de.eshg.schoolentry.statistics.options.EvaluationResult;
 import java.time.Clock;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -37,11 +34,9 @@ public class SchoolInfoLetterExaminationMapper {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
   private static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy");
   private final Clock clock;
-  private final SchoolEntryFeatureToggle featureToggle;
 
-  public SchoolInfoLetterExaminationMapper(Clock clock, SchoolEntryFeatureToggle featureToggle) {
+  public SchoolInfoLetterExaminationMapper(Clock clock) {
     this.clock = clock;
-    this.featureToggle = featureToggle;
   }
 
   SchoolInfoLetterExamination mapToData(
@@ -56,7 +51,7 @@ public class SchoolInfoLetterExaminationMapper {
         new SchoolInfoLetterChild(
             concat(procedureDetails.child().firstName(), procedureDetails.child().lastName()),
             procedureDetails.child().dateOfBirth().format(DATE_FORMATTER)),
-        YEAR_FORMATTER.format(getSchoolYear(procedureDetails)),
+        YEAR_FORMATTER.format(procedureDetails.schoolYear()),
         DATE_FORMATTER.format(
             procedureDetails.appointment().getAppointmentEnd().atZone(clock.getZone())),
         new SchoolInfoLetterExaminationType(
@@ -74,14 +69,6 @@ public class SchoolInfoLetterExaminationMapper {
         mapPhysiciansRecommendation(procedure.getDevelopmentScreeningResult(), request),
         new SchoolInfoLetterParentsWish(
             request.parentsWishNote(), request.referredToFurtherConsultationFromSchool()));
-  }
-
-  private Year getSchoolYear(ProcedureDetailsData procedureDetails) {
-    if (featureToggle.isNewFeatureDisabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      log.warn("Using current year since feature toggle is disabled");
-      return Year.now(clock);
-    }
-    return procedureDetails.schoolYear();
   }
 
   private static String concat(String... parts) {

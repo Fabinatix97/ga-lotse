@@ -15,17 +15,24 @@ import {
   Checklist as ChecklistIcon,
 } from "@mui/icons-material";
 import { Grid } from "@mui/joy";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQueries } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
-import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { useGetChecklists } from "@/lib/businessModules/inspection/api/queries/checklist";
-import { useGetIncidents } from "@/lib/businessModules/inspection/api/queries/incidents";
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import {
+  useChecklistApi,
+  useIncidentApi,
+  useInspectionApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import { useUpdateInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import { getChecklistsQuery } from "@/lib/businessModules/inspection/api/queries/checklist";
+import { getIncidentsQuery } from "@/lib/businessModules/inspection/api/queries/incidents";
+import {
+  getAvailableCLDVsQuery,
+  getInspectionQuery,
   inspectionGettersQueryKey,
-  useGetInspection,
 } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useGetSelfUser } from "@/lib/businessModules/inspection/api/queries/users";
+import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
 import { ExecutionSidePanel } from "@/lib/businessModules/inspection/components/inspection/execution/ExecutionSidePanel";
 import {
   SidePanelEvent,
@@ -36,6 +43,7 @@ import { ChecklistValidationProvider } from "@/lib/businessModules/inspection/co
 import { IncidentsPanel } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentsPanel";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
+import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
 export enum InspectionExecutionTabType {
@@ -75,10 +83,42 @@ export function InspectionTabExecution({
 }: Readonly<{ inspectionId: string }>) {
   const queryClient = useQueryClient();
 
-  const { data: checklists } = useGetChecklists(inspectionId);
-  const { data: inspection } = useGetInspection(inspectionId);
-  const { data: incidents } = useGetIncidents(inspectionId);
-  const { data: selfUser } = useGetSelfUser();
+  const checklistApi = useChecklistApi();
+  const inspectionApi = useInspectionApi();
+  const incidentApi = useIncidentApi();
+  const userApi = useUserApi();
+  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
+
+  const [
+    { data: checklists },
+    { data: inspection },
+    { data: incidents },
+    { data: selfUser },
+  ] = useSuspenseQueries({
+    queries: [
+      getChecklistsQuery(
+        checklistApi,
+        getPreCacheForOfflineModeHeaders,
+        inspectionId,
+      ),
+      getInspectionQuery(
+        inspectionApi,
+        getPreCacheForOfflineModeHeaders,
+        inspectionId,
+      ),
+      getIncidentsQuery(
+        incidentApi,
+        getPreCacheForOfflineModeHeaders,
+        inspectionId,
+      ),
+      getSelfUserQuery(userApi),
+      getAvailableCLDVsQuery(
+        inspectionApi,
+        getPreCacheForOfflineModeHeaders,
+        inspectionId,
+      ),
+    ],
+  });
   const { mutateAsync: updateInspection } = useUpdateInspection();
   const { openCancelDialog } = useConfirmationDialog();
   const currentSelectedNonCoreVersions =
@@ -235,7 +275,7 @@ export function InspectionTabExecution({
           <ExecutionSidePanel
             tabs={tabsList.map((tab) => tab.SidePanelProps)}
             activeTabId={tabState.tabId}
-            inspectionId={inspectionId}
+            inspection={inspection}
             checklists={checklists}
             onActiveTabChange={handleActiveTabChange}
             onAddButtonClick={handleAddClick}

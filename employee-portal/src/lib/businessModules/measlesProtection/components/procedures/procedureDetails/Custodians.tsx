@@ -9,9 +9,9 @@ import {
 } from "@eshg/employee-portal-api/measlesProtection";
 
 import { PersonDetails } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/PersonDetails";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
 
 import { ContactDetails } from "./ContactDetails";
-import { DetailCard } from "./DetailCard";
 
 export function Custodians({
   procedure,
@@ -25,13 +25,12 @@ export function Custodians({
   const custodians = procedure.custodians ?? [];
 
   return custodians.map((person, index) => (
-    <DetailCard
-      data-testid="custodianSection"
+    <DetailsCard
       key={`custodian-${index}`}
       title="PSB - Personensorgeberechtigte:r"
     >
       <PersonDetails person={person} />
       <ContactDetails persons={[person]} />
-    </DetailCard>
+    </DetailsCard>
   ));
 }

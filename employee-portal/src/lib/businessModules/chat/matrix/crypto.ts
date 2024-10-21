@@ -93,13 +93,11 @@ export async function getCrossSigningStatus(matrixClient: MatrixClient) {
   };
 }
 
-export async function isDeviceVerified(client: MatrixClient, deviceId: string) {
+export async function isDeviceVerified(client: MatrixClient) {
+  const deviceId = client.getDeviceId();
   const trustLevel = await client
     .getCrypto()
-    ?.getDeviceVerificationStatus(client.getSafeUserId(), deviceId);
-  if (!trustLevel) {
-    // either no crypto, or an unknown/no-e2e device
-    return null;
-  }
-  return trustLevel.crossSigningVerified;
+    ?.getDeviceVerificationStatus(client.getSafeUserId(), deviceId ?? "");
+
+  return trustLevel?.crossSigningVerified ?? null;
 }

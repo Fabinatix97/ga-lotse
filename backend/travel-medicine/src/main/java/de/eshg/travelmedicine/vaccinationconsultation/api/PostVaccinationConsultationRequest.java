@@ -5,8 +5,8 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.lib.common.CountryCode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -17,7 +17,7 @@ import java.util.List;
 public record PostVaccinationConsultationRequest(
     @NotNull @Valid PatientDto patient,
     @NotNull TravelTypeDto travelType,
-    @NotNull List<@NotNull CountryCodeDto> travelDestinations,
+    @NotNull List<@NotNull CountryCode> travelDestinations,
     LocalDate travelStartDate,
     Integer travelTimeAmount,
     TravelTimeUnitDto travelTimeUnit,

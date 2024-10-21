@@ -883,11 +883,11 @@ public class DataAggregationService {
             .collect(Collectors.joining(", ")));
   }
 
-  public void removeTableRows(Statistic statistic) {
+  public void removeTableRows(AbstractAggregationResult aggregationResult) {
     tableRowRepository.deleteAll(
         tableRowRepository
             .findAllByAggregationResult(
-                statistic, Pageable.ofSize(pageSizeForBusinessModuleDataRequest))
+                aggregationResult, Pageable.ofSize(pageSizeForBusinessModuleDataRequest))
             .getContent());
   }
 

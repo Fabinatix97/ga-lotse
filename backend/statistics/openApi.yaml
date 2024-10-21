@@ -62,7 +62,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AddEvaluationTemplateRequest"
+              oneOf:
+              - $ref: "#/components/schemas/AddEvaluationTemplateFromEvaluationRequest"
+              - $ref: "#/components/schemas/AddEvaluationTemplateWithDataSourcesRequest"
         required: true
       responses:
         "200":
@@ -974,6 +976,15 @@ components:
           type: string
       required:
       - '@type'
+    AbstractAddEvaluationTemplateRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     AbstractAddReportSeriesRequest:
       type: object
       discriminator:
@@ -1155,17 +1166,34 @@ components:
       - chartConfiguration
       - name
       - statisticId
-    AddEvaluationTemplateRequest:
+    AddEvaluationTemplateFromEvaluationRequest:
       type: object
-      properties:
-        dataSources:
-          type: array
-          items:
-            $ref: "#/components/schemas/DataSource"
-          maxItems: 1
-          minItems: 1
-        name:
-          type: string
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddEvaluationTemplateRequest"
+      - type: object
+        properties:
+          evaluationId:
+            type: string
+            format: uuid
+          name:
+            type: string
+      required:
+      - evaluationId
+      - name
+    AddEvaluationTemplateWithDataSourcesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddEvaluationTemplateRequest"
+      - type: object
+        properties:
+          dataSources:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataSource"
+            maxItems: 1
+            minItems: 1
+          name:
+            type: string
       required:
       - dataSources
       - name
@@ -2134,15 +2162,15 @@ components:
     GetReportDetailPageResponse:
       type: object
       properties:
-        createdAt:
-          type: string
-          format: date-time
         description:
           type: string
         evaluation:
           type: array
           items:
             $ref: "#/components/schemas/Evaluation"
+        executionDate:
+          type: string
+          format: date
         id:
           type: string
           format: uuid
@@ -2178,8 +2206,8 @@ components:
         userReportSeries:
           $ref: "#/components/schemas/User"
       required:
-      - createdAt
       - evaluation
+      - executionDate
       - id
       - name
       - numberOfReportsInSeries
@@ -2679,6 +2707,7 @@ components:
           format: int64
           minimum: 0
       required:
+      - executionDate
       - id
       - name
       - state
@@ -2735,6 +2764,7 @@ components:
       - COMPLETED
       - FAILED
       - CREATING
+      - DELETING
     ReportType:
       type: string
       enum:

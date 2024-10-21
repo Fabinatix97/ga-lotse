@@ -34,21 +34,32 @@ public class DataSourceValidator {
     this.dataSourceAggregationService = dataSourceAggregationService;
   }
 
-  public void validateDataSources(List<DataSourceDto> dataSources) {
-    checkForAttributeDuplicates(dataSources);
-    validateBusinessModulesExist(dataSources);
+  public List<AvailableDataSource> getRelevantAvailableDataSources(
+      List<DataSourceDto> dataSources) {
+    Set<String> relevantBusinessModules = getRelevantBusinessModules(dataSources);
+    validateBusinessModulesExist(relevantBusinessModules);
 
-    List<AvailableDataSource> relevantAvailableDataSources =
-        getRelevantAvailableDataSources(dataSources);
+    GetAvailableDataSourcesResponse availableDataSources =
+        dataSourceAggregationService.getAvailableDataSources(relevantBusinessModules);
 
-    dataSources.forEach(dataSource -> validateDataSource(dataSource, relevantAvailableDataSources));
+    handleErrorResponses(availableDataSources);
+
+    Set<UUID> relevantDataSources = getRelevantDataSources(dataSources);
+    return availableDataSources.availableDataSources().stream()
+        .filter(availableDataSource -> relevantDataSources.contains(availableDataSource.id()))
+        .toList();
   }
 
-  private void validateBusinessModulesExist(List<DataSourceDto> dataSources) {
-    Set<String> businessModuleNames =
-        dataSources.stream().map(DataSourceDto::businessModuleName).collect(Collectors.toSet());
+  private void validateBusinessModulesExist(Set<String> businessModuleNames) {
     businessModuleNames.forEach(
         businessModuleAggregationHelper::validateBusinessModuleIsRegistered);
+  }
+
+  public void validateDataSources(
+      List<DataSourceDto> dataSources, List<AvailableDataSource> relevantAvailableDataSources) {
+    checkForAttributeDuplicates(dataSources);
+
+    dataSources.forEach(dataSource -> validateDataSource(dataSource, relevantAvailableDataSources));
   }
 
   private void checkForAttributeDuplicates(List<DataSourceDto> dataSources) {
@@ -84,20 +95,6 @@ public class DataSourceValidator {
                         .formatted(baseAttribute, dataAttribute.code(), dataSource.id()));
               }
             });
-  }
-
-  private List<AvailableDataSource> getRelevantAvailableDataSources(
-      List<DataSourceDto> dataSources) {
-    Set<String> relevantBusinessModules = getRelevantBusinessModules(dataSources);
-    GetAvailableDataSourcesResponse availableDataSources =
-        dataSourceAggregationService.getAvailableDataSources(relevantBusinessModules);
-
-    handleErrorResponses(availableDataSources);
-
-    Set<UUID> relevantDataSources = getRelevantDataSources(dataSources);
-    return availableDataSources.availableDataSources().stream()
-        .filter(availableDataSource -> relevantDataSources.contains(availableDataSource.id()))
-        .toList();
   }
 
   private Set<String> getRelevantBusinessModules(List<DataSourceDto> dataSources) {

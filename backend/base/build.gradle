@@ -16,6 +16,7 @@ dependencies {
     implementation project(':util-commons')
     implementation project(':lib-service-directory-api')
     implementation project(':lib-mutex')
+    implementation project(':file-commons')
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

@@ -5,7 +5,7 @@
 
 package de.eshg.base.address.persistence.entity;
 
-import de.eshg.base.util.CountryCode;
+import de.eshg.lib.common.CountryCode;
 
 public interface Address {
 

@@ -4,8 +4,12 @@
  */
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { addMonths, getMonth, startOfMonth, startOfToday } from "date-fns";
+
+import {
+  Interval,
+  ReportingPeriod,
+} from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 
 function getStartOfNextMonth() {
   return addMonths(startOfMonth(startOfToday()), 1);
@@ -27,37 +31,6 @@ export function getStartDateOptions() {
   }
   return dateOptions;
 }
-
-export const Interval = {
-  Month: "MONTH",
-  ThreeMonths: "THREE_MONTHS",
-  HalfYear: "HALF_YEAR",
-  Year: "YEAR",
-} as const;
-export type Interval = (typeof Interval)[keyof typeof Interval];
-
-export const INTERVAL_TRANSLATION: EnumMap<Interval> = {
-  [Interval.Month]: "Monatlich",
-  [Interval.ThreeMonths]: "Alle 3 Monate",
-  [Interval.HalfYear]: "Alle 6 Monate",
-  [Interval.Year]: "Jährlich",
-};
-
-export const ReportingPeriod = {
-  Month: "MONTH",
-  ThreeMonths: "THREE_MONTHS",
-  HalfYear: "HALF_YEAR",
-  Year: "YEAR",
-} as const;
-export type ReportingPeriod =
-  (typeof ReportingPeriod)[keyof typeof ReportingPeriod];
-
-export const REPORTING_PERIOD_TRANSLATION: EnumMap<ReportingPeriod> = {
-  [ReportingPeriod.Month]: "Letzter Monat",
-  [ReportingPeriod.ThreeMonths]: "Letzten 3 Monate",
-  [ReportingPeriod.HalfYear]: "Letzten 6 Monate",
-  [ReportingPeriod.Year]: "Letztes Jahr",
-};
 export interface AutomateReportFormModel {
   name: string;
   description: string;

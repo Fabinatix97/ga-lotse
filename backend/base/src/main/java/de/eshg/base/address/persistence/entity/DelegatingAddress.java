@@ -6,7 +6,7 @@
 package de.eshg.base.address.persistence.entity;
 
 import de.eshg.base.address.persistence.embeddable.EmbeddableAddress;
-import de.eshg.base.util.CountryCode;
+import de.eshg.lib.common.CountryCode;
 
 public interface DelegatingAddress<E extends EmbeddableAddress> extends Address {
 

@@ -162,7 +162,7 @@ public class SchoolEntryCitizenService {
 
   public AppointmentAddressDto getAppointmentAddress(SchoolEntryProcedure procedure) {
     return Optional.ofNullable(schoolEntryService.getAppointmentLocation(procedure))
-        .map((contactId) -> mapToAppointmentAddress(contactClient.getContact(contactId)))
+        .map(contactId -> mapToAppointmentAddress(contactClient.getContact(contactId)))
         .orElse(mapToAppointmentAddress(departmentClient.getDepartmentInfo()));
   }
 

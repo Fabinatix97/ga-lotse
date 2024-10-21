@@ -239,7 +239,9 @@ public class KeycloakTestClient {
         (representation, configured) -> {
           Map<String, List<String>> attributes =
               UserMapper.mapAttributesToDm(
-                  configured.phoneNumber(), configured.externalChatUsername());
+                  new LinkedHashMap<>(),
+                  configured.phoneNumber(),
+                  configured.externalChatUsername());
           representation.setAttributes(attributes);
           representation.setEnabled(true);
         });

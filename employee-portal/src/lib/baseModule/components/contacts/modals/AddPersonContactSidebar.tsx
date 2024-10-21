@@ -98,6 +98,8 @@ export function AddPersonContactSidebar({
         <MergePersonContactForm
           into={formState.into}
           from={formState.from}
+          intoLabel={"Aktuell"}
+          fromLabel={"Importiert"}
           onCancel={onClose}
           onSuccess={onSuccess}
           sidebarFormRef={sidebarFormRef}

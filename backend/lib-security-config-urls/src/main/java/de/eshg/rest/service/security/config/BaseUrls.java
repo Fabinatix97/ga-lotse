@@ -134,6 +134,14 @@ public final class BaseUrls {
 
   public static final class StiProtection {
     public static final String PROCEDURE_CONTROLLER = "/sti-procedures";
+
+    private StiProtection() {}
+  }
+
+  public static final class MedicalRegistry {
+    public static final String MEDICAL_REGISTRY_CONTROLLER = "/medical-registry-entries";
+
+    private MedicalRegistry() {}
   }
 
   public static final class Statistics {
@@ -195,5 +203,11 @@ public final class BaseUrls {
     public static final String TEXTBLOCK_API = "/textblocks";
 
     private EditorLibrary() {}
+  }
+
+  public static final class OpenData {
+    public static final String OPEN_DATA_CONTROLLER = "/open-documents";
+
+    private OpenData() {}
   }
 }

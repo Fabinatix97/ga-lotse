@@ -7,7 +7,8 @@ import { ApiDayOfWeek } from "@eshg/employee-portal-api/measlesProtection";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { Grid } from "@mui/joy";
+import { Delete } from "@mui/icons-material";
+import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { WeekdayCheckboxGroup } from "@/lib/shared/components/appointmentBlocks/WeekdayCheckboxGroup";
@@ -52,7 +53,7 @@ const dateTimeFieldStyle: SxProps = {
 
 export function emptyAppointmentBlockGroup(): AppointmentBlockGroupValuesWithDays {
   return {
-    daysOfWeek: [ApiDayOfWeek.Monday],
+    daysOfWeek: [],
     startDate: "",
     endDate: "",
     startTime: "",
@@ -60,14 +61,21 @@ export function emptyAppointmentBlockGroup(): AppointmentBlockGroupValuesWithDay
   };
 }
 
-export function AppointmentBlockFormWithDays(props: Readonly<NestedFormProps>) {
+export interface AppointmentBlockFormWithDaysProps extends NestedFormProps {
+  removeBlock: () => void;
+  blockCount: number;
+}
+
+export function AppointmentBlockFormWithDays(
+  props: Readonly<AppointmentBlockFormWithDaysProps>,
+) {
   const fieldName = createFieldNameMapper(props.name);
   const daysOfWeekOptions = WEEKDAY_CHECKBOX_OPTIONS.filter(
     ({ disabled }) => !disabled,
   );
 
   return (
-    <Grid direction="column" xs={10}>
+    <Grid direction="column" xs={10} paddingTop={0}>
       <Grid container xs={12} direction={"row"} columnGap={0}>
         <Grid xs={2} sx={{ ...dateTimeFieldStyle, pl: 0 }}>
           <DateField
@@ -110,6 +118,21 @@ export function AppointmentBlockFormWithDays(props: Readonly<NestedFormProps>) {
           />
         </Grid>
       </Grid>
+      {props.blockCount > 1 && (
+        <Grid container xs={12} direction={"row"} padding={0}>
+          <Grid direction={"column"}>
+            <Button
+              variant="outlined"
+              startDecorator={<Delete />}
+              title="Terminblock entfernen"
+              onClick={props.removeBlock}
+              color="danger"
+            >
+              Löschen
+            </Button>
+          </Grid>
+        </Grid>
+      )}
     </Grid>
   );
 }

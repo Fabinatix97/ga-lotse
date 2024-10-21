@@ -129,11 +129,14 @@ public class KeycloakProvisioning {
 
   @PostConstruct
   void provisionRealm() {
-    boolean created = createOrUpdateRealm();
+    configureRealm();
+
+    boolean isNew =
+        keycloakClient.getRealm().clients().findByClientId(keycloakClient.getClientId()).isEmpty();
 
     configureUserProfile();
 
-    if (created) {
+    if (isNew) {
       addEshgClientScope();
 
       addClient();
@@ -168,8 +171,8 @@ public class KeycloakProvisioning {
     }
   }
 
-  public boolean createOrUpdateRealm() {
-    return keycloakClient.createOrUpdateRealm(this::applyRealmAttributes);
+  public void configureRealm() {
+    keycloakClient.configureRealm(this::applyRealmAttributes);
   }
 
   private void applyRealmAttributes(RealmRepresentation realmRepresentation) {

@@ -9,7 +9,7 @@ import {
   ApiMedicalHistory,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -34,13 +34,7 @@ export function MedicalHistoriesContent({
   const [editMode, setEditMode] = useState(false);
   const [medicalHistory, setMedicalHistory] = useState<ApiMedicalHistory>();
 
-  const alertContext = useAlertContext();
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
-  }
+  const resetAlertContext = useResetAlertContext();
 
   const [{ data: allMedicalHistories }, { data: status }] = useSuspenseQueries({
     queries: [

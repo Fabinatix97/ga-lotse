@@ -4,13 +4,15 @@
  */
 
 import { ApiFacilityContactPerson } from "@eshg/employee-portal-api/measlesProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
 import { Grid } from "@mui/joy";
 
-import { Row } from "@/lib/shared/Row";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
-
-import { DetailCard } from "./DetailCard";
-import { LabeledValue, ValueList } from "./LabeledValue";
 
 export function FacilityContact({
   person,
@@ -18,7 +20,7 @@ export function FacilityContact({
   person: ApiFacilityContactPerson;
 }) {
   return (
-    <DetailCard title="Kontaktperson der Einrichtung">
+    <DetailsCard title="Kontaktperson der Einrichtung">
       <ValueList>
         <Row>
           <LabeledValue
@@ -44,7 +46,7 @@ export function FacilityContact({
           href={`tel:${person.phoneNumber}`}
         />
       </ValueList>
-    </DetailCard>
+    </DetailsCard>
   );
 }
 

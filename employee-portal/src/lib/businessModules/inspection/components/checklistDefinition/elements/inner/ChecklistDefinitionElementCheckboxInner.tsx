@@ -4,8 +4,11 @@
  */
 
 import { ApiCLCheckboxContext } from "@eshg/employee-portal-api/inspection";
-import { DeveloperModeRounded } from "@mui/icons-material";
-import { Box, Radio, Stack, Typography } from "@mui/joy";
+import {
+  DeveloperModeRounded,
+  SubdirectoryArrowRight,
+} from "@mui/icons-material";
+import { Radio, Stack } from "@mui/joy";
 import { useState } from "react";
 
 import { ChecklistDefinitionElementInnerProps } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/inner/ChecklistDefinitionElementInner";
@@ -14,6 +17,8 @@ import { ToggleButton } from "@/lib/shared/components/buttons/ToggleButton";
 
 export function ChecklistDefinitionElementCheckboxInner({
   readOnlyMode = true,
+  sectionIndex,
+  elementIndex,
   element,
   setElement,
 }: Readonly<ChecklistDefinitionElementInnerProps<ApiCLCheckboxContext>>) {
@@ -23,6 +28,7 @@ export function ChecklistDefinitionElementCheckboxInner({
   const [showTextModuleFalse, setShowTextModuleFalse] = useState(
     !!element.textModuleFalse,
   );
+  const showTextModules = showTextModuleTrue || showTextModuleFalse;
 
   function setTextModuleTrue(textModuleTrue: string) {
     setElement({
@@ -40,88 +46,54 @@ export function ChecklistDefinitionElementCheckboxInner({
 
   return (
     <Stack spacing={2}>
-      <Stack
-        spacing={2}
-        direction="row"
-        style={{ marginTop: 12 }}
-        alignItems={"center"}
-      >
-        <Typography>Antwortmöglichkeiten: </Typography>
-        <Box
-          style={{
-            backgroundColor: "white",
-            padding: 16,
-            borderRadius: 12,
-
-            flex: 1,
-          }}
-          display={"flex"}
-          alignItems={"center"}
-        >
-          <Radio disabled label="Ja" />
-        </Box>
-        <Box
-          style={{
-            backgroundColor: "white",
-            padding: 16,
-            borderRadius: 12,
-            flex: 1,
-          }}
-          display={"flex"}
-          alignItems={"center"}
-        >
-          <Radio disabled label="Nein" />
-        </Box>
+      <Stack direction="row" spacing={2} mt={1} alignItems={"center"}>
+        <Radio disabled label="Ja" />
+        <Radio disabled label="Nein" />
         {!readOnlyMode && (
           <ToggleButton
             asIcon={true}
             title="Textbausteine"
             aria-label="Textbausteine"
-            aria-pressed={showTextModuleTrue || showTextModuleFalse}
+            aria-pressed={showTextModules}
+            defaultChecked={showTextModules}
             onToggle={(pressed) => {
               setShowTextModuleTrue(pressed);
               setShowTextModuleFalse(pressed);
-              if (!pressed) {
-                setTextModuleTrue("");
-                setTextModuleFalse("");
-              }
             }}
           >
             <DeveloperModeRounded />
           </ToggleButton>
         )}
       </Stack>
-      {showTextModuleTrue && (
-        <InputWithDeleteButton
-          disabled={readOnlyMode}
-          style={{ marginLeft: 16 }}
-          title={`Textbaustein Ja`}
-          multiline
-          placeholder="Textbaustein eingeben"
-          defaultValue={element.textModuleTrue}
-          onBlur={setTextModuleTrue}
-          onDelete={() => {
-            setShowTextModuleTrue(false);
-            setTextModuleTrue("");
-          }}
-          hideAddButton
-        />
+      {showTextModules && (
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <SubdirectoryArrowRight sx={{ mt: "1.8rem" }} />
+          <InputWithDeleteButton
+            name={`context.sections.${sectionIndex}.elements.${elementIndex}.textModuleTrue`}
+            disabled={readOnlyMode}
+            label="Textbaustein für Antwort Ja"
+            multiline
+            placeholder="Textbaustein eingeben"
+            defaultValue={element.textModuleTrue}
+            onDelete={() => setTextModuleTrue("")}
+            hideAddButton
+          />
+        </Stack>
       )}
-      {showTextModuleFalse && (
-        <InputWithDeleteButton
-          disabled={readOnlyMode}
-          style={{ marginLeft: 16 }}
-          title={`Textbaustein Nein`}
-          multiline
-          placeholder="Textbaustein eingeben"
-          defaultValue={element.textModuleFalse}
-          onBlur={setTextModuleFalse}
-          onDelete={() => {
-            setShowTextModuleFalse(false);
-            setTextModuleFalse("");
-          }}
-          hideAddButton
-        />
+      {showTextModules && (
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <SubdirectoryArrowRight sx={{ mt: "1.8rem" }} />
+          <InputWithDeleteButton
+            name={`context.sections.${sectionIndex}.elements.${elementIndex}.textModuleFalse`}
+            disabled={readOnlyMode}
+            label="Textbaustein für Antwort Nein"
+            multiline
+            placeholder="Textbaustein eingeben"
+            defaultValue={element.textModuleFalse}
+            onDelete={() => setTextModuleFalse("")}
+            hideAddButton
+          />
+        </Stack>
       )}
     </Stack>
   );

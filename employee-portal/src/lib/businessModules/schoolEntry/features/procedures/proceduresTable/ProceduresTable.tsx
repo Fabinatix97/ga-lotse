@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiSchoolEntryFeature,
-  ApiSchoolEntryProcedureSortKey,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiSchoolEntryProcedureSortKey } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
   formatDateTime,
@@ -23,7 +20,6 @@ import { ReactNode, useReducer } from "react";
 import { isNullish } from "remeda";
 
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { useGetProcedures } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
 import { formatSchoolYear } from "@/lib/businessModules/schoolEntry/features/procedures/formatters";
@@ -71,9 +67,6 @@ const initialSorting: ColumnSort = {
 };
 
 export function ProceduresTable(props: ProceduresTableProps) {
-  const isSearchByKnowledgeFactorsEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.SearchByKnowledgeFactors,
-  );
   const [activePanel, toggleActivePanel] = useReducer(
     reduceActivePanel,
     undefined,
@@ -132,14 +125,12 @@ export function ProceduresTable(props: ProceduresTableProps) {
               isFilterVisible={activePanel === "filters"}
               onClick={() => toggleActivePanel("filters")}
             />,
-            isSearchByKnowledgeFactorsEnabled ? (
-              <TogglePersonSearchButton
-                {...personSearch.buttonProps}
-                key="personSearchButton"
-                expanded={activePanel === "personSearch"}
-                onClick={() => toggleActivePanel("personSearch")}
-              />
-            ) : null,
+            <TogglePersonSearchButton
+              {...personSearch.buttonProps}
+              key="personSearchButton"
+              expanded={activePanel === "personSearch"}
+              onClick={() => toggleActivePanel("personSearch")}
+            />,
           ]}
           right={props.buttons}
           alignItems="flex-end"
@@ -193,7 +184,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
 }
 
 const columnHelper = createColumnHelper<Procedure>();
-const CHILD_COLUMNS = [
+const COLUMNS = [
   columnHelper.accessor("child.lastName", {
     header: "Name",
     cell: (props) => props.getValue(),
@@ -227,9 +218,17 @@ const CHILD_COLUMNS = [
       },
     },
   }),
-];
-
-const REST_COLUMNS = [
+  columnHelper.accessor("schoolYear", {
+    header: "Schuljahr",
+    cell: (props) => formatSchoolYear(props.getValue()),
+    enableSorting: true,
+    meta: {
+      width: 116,
+      canNavigate: {
+        parentRow: true,
+      },
+    },
+  }),
   columnHelper.accessor("school.name", {
     header: "Schule",
     cell: (props) => props.getValue(),
@@ -297,28 +296,8 @@ const REST_COLUMNS = [
   }),
 ];
 
-const SCHOOL_YEAR_COLUMN = columnHelper.accessor("schoolYear", {
-  header: "Schuljahr",
-  cell: (props) => formatSchoolYear(props.getValue()),
-  enableSorting: true,
-  meta: {
-    width: 116,
-    canNavigate: {
-      parentRow: true,
-    },
-  },
-});
-
 function useProcedureColumns(): TableOptions<Procedure>["columns"] {
-  const isSchoolYearEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.SchoolYear,
-  );
-
-  return [
-    ...CHILD_COLUMNS,
-    ...(isSchoolYearEnabled ? [SCHOOL_YEAR_COLUMN] : []),
-    ...REST_COLUMNS,
-  ];
+  return COLUMNS;
 }
 
 type PanelName = "filters" | "personSearch";

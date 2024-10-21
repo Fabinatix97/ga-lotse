@@ -5,16 +5,23 @@
 
 import {
   ApiInspection,
+  ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionFeature,
   ApiInspectionPhase,
 } from "@eshg/employee-portal-api/inspection";
 import { useWindowDimensions } from "@eshg/lib-portal/hooks/useWindowDimension";
 import { Box, useTheme } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
+import { useUserApi } from "@/lib/baseModule/api/clients";
 import { headerHeightDesktop } from "@/lib/baseModule/components/layout/sizes";
+import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
-import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useGetSelfUser } from "@/lib/businessModules/inspection/api/queries/users";
+import {
+  getAvailableCLDVsQuery,
+  getInspectionQuery,
+} from "@/lib/businessModules/inspection/api/queries/inspection";
+import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
 import { AnnouncementTile } from "@/lib/businessModules/inspection/components/inspection/planning/announcement/AnnouncementTile";
 import { AppointmentTile } from "@/lib/businessModules/inspection/components/inspection/planning/appointment/AppointmentTile";
 import { ChecklistTile } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistTile";
@@ -23,6 +30,7 @@ import { PacklistTile } from "@/lib/businessModules/inspection/components/inspec
 import { ResourceTile } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceTile";
 import { TravelTimeTile } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
+import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 interface InspectionTabPlanningProps {
@@ -32,8 +40,26 @@ interface InspectionTabPlanningProps {
 export function InspectionTabPlanning({
   inspectionId,
 }: Readonly<InspectionTabPlanningProps>) {
-  const { data: inspection } = useGetInspection(inspectionId);
-  const { data: selfUser } = useGetSelfUser();
+  const inspectionApi = useInspectionApi();
+  const userApi = useUserApi();
+  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
+
+  const [{ data: inspection }, { data: selfUser }, { data: availableCldvs }] =
+    useSuspenseQueries({
+      queries: [
+        getInspectionQuery(
+          inspectionApi,
+          getPreCacheForOfflineModeHeaders,
+          inspectionId,
+        ),
+        getSelfUserQuery(userApi),
+        getAvailableCLDVsQuery(
+          inspectionApi,
+          getPreCacheForOfflineModeHeaders,
+          inspectionId,
+        ),
+      ],
+    });
   const isPacklistsEnabled = useIsNewFeatureEnabled(
     ApiInspectionFeature.Packlists,
   );
@@ -93,6 +119,7 @@ export function InspectionTabPlanning({
               lockedByDifferentUser={lockedByDifferentUser}
               hasReachedExecuting={hasReachedExecuting}
               inspection={inspection}
+              availableCldvs={availableCldvs}
             />
           </Box>
           <Box
@@ -148,6 +175,7 @@ export function InspectionTabPlanning({
           lockedByDifferentUser={lockedByDifferentUser}
           hasReachedExecuting={hasReachedExecuting}
           inspection={inspection}
+          availableCldvs={availableCldvs}
         />
         <RightColumnElements
           isOffline={isOffline}
@@ -172,11 +200,13 @@ function TopTwinElements({
   lockedByDifferentUser,
   hasReachedExecuting,
   inspection,
+  availableCldvs,
 }: {
   isOffline: boolean;
   lockedByDifferentUser: boolean;
   hasReachedExecuting: boolean;
   inspection: ApiInspection;
+  availableCldvs: ApiInspectionAvailableCLDVersionsResponse;
 }) {
   return (
     <>
@@ -191,6 +221,7 @@ function TopTwinElements({
         <ChecklistTile
           readonly={isOffline || lockedByDifferentUser || hasReachedExecuting}
           inspection={inspection}
+          availableCldvs={availableCldvs}
         />
       </Box>
     </>

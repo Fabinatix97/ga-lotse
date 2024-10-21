@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Drawer, DrawerProps, ModalClose, Stack, ZIndex } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
@@ -25,7 +25,7 @@ export function Sidebar({
   zIndex,
   children,
 }: SidebarProps) {
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function handleClose(
     ...args: Parameters<NonNullable<DrawerProps["onClose"]>>
@@ -33,9 +33,7 @@ export function Sidebar({
     if (onClose !== undefined) {
       onClose(...args);
     }
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
+    resetAlertContext();
   }
 
   return (

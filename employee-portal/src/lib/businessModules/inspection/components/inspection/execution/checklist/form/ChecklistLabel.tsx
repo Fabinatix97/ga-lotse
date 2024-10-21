@@ -4,12 +4,12 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { InfoOutlined } from "@mui/icons-material";
-import { FormHelperText, FormLabel, Stack, Tooltip } from "@mui/joy";
+import { FormHelperText, FormLabel, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 import { isDefined, isNonNullish } from "remeda";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
 interface ChecklistLabelProps extends RequiresChildren {
   incident?: boolean;
@@ -49,13 +49,7 @@ export function ChecklistLabel(props: Readonly<ChecklistLabelProps>) {
             {props.children}
           </FormLabel>
           {isDefined(props.tooltipText) && (
-            <Tooltip title={props.tooltipText}>
-              <InfoOutlined
-                style={{ marginRight: 8 }}
-                size="md"
-                color="primary"
-              />
-            </Tooltip>
+            <InfoIconTooltipButton size="md" title={props.tooltipText} />
           )}
         </Stack>
         {props.endDecorator}

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
 import {
   OtherHousesOutlined,
@@ -21,19 +22,23 @@ import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export function InspectionTabNavigationToolbar({
   inspectionId,
 }: Readonly<{
   inspectionId: string;
 }>) {
+  const hasProcedureEditRole = useHasUserRoleCheck(
+    ApiUserRole.InspectionProcedureEdit,
+  );
   const { data: inspection } = useGetInspection(inspectionId);
   const tabItems = createTabItems(inspectionId, inspection.phase);
 
   return (
     <TabNavigationToolbar
       items={tabItems}
-      routeBack={routes.procedures.index}
+      routeBack={hasProcedureEditRole ? routes.procedures.index : undefined}
       header={<InspectionTabHeader inspection={inspection} />}
       afterTabs={
         <OfflineSwitch

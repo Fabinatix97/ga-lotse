@@ -5,10 +5,11 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
-import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentSummaryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentDetailsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
+import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
+import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VcService;
 import java.time.LocalDate;
 
 public class AppointmentDetailsMapper {
@@ -16,18 +17,22 @@ public class AppointmentDetailsMapper {
 
   public static GetAppointmentDetailsResponse mapToDetails(
       AppointmentSummaryDto appointmentSummary,
-      boolean hasAccomplishedService,
       PatientDto patientDto,
-      MedicalHistory medicalHistory) {
+      ProcedureStep procedureStep) {
     String lastName = patientDto.lastName();
     String firstName = patientDto.firstName();
     LocalDate dateOfBirth = patientDto.dateOfBirth();
-    boolean isMedicalHistoryCompletelyAnswered = medicalHistory.isCompletelyAnswered();
-    boolean citizenHasAnswered = medicalHistory.isCitizenHasAnswered();
+    boolean isMedicalHistoryCompletelyAnswered =
+        procedureStep.getMedicalHistory().isCompletelyAnswered();
+    boolean citizenHasAnswered = procedureStep.getMedicalHistory().isCitizenHasAnswered();
+    boolean hasAccomplishedService =
+        procedureStep.getServices().stream().anyMatch(VcService::isAccomplished);
+    int bookingsRemaining = procedureStep.getBookingsRemaining();
 
     return new GetAppointmentDetailsResponse(
         appointmentSummary,
         hasAccomplishedService,
+        bookingsRemaining,
         lastName,
         firstName,
         dateOfBirth,

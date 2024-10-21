@@ -95,7 +95,7 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
   }
 
   @Override
-  public boolean supportsUpload(FileType fileType) {
+  public boolean supportsUpload(ProcedureFileType fileType) {
     return getManualProgressEntryType().supports(fileType);
   }
 

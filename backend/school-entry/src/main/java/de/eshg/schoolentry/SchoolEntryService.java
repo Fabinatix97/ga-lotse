@@ -35,11 +35,9 @@ import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.client.PersonClient;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.*;
@@ -58,6 +56,7 @@ import de.eshg.schoolentry.util.ProcedureSortKey;
 import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
+import de.eshg.schoolentry.util.TaskUtil;
 import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
 import java.time.Instant;
@@ -107,6 +106,7 @@ public class SchoolEntryService {
   private final ProceduresHelper proceduresHelper;
   private final ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService;
   private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
+  private final TaskUtil taskUtil;
 
   public SchoolEntryService(
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
@@ -136,7 +136,8 @@ public class SchoolEntryService {
       SchoolEntryFeatureToggle schoolEntryFeatureToggle,
       ProceduresHelper proceduresHelper,
       ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService,
-      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
+      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper,
+      TaskUtil taskUtil) {
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.personRepository = personRepository;
     this.hearingTestResultRepository = hearingTestResultRepository;
@@ -165,6 +166,7 @@ public class SchoolEntryService {
     this.proceduresHelper = proceduresHelper;
     this.procedureDeletionService = procedureDeletionService;
     this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
+    this.taskUtil = taskUtil;
   }
 
   public SchoolEntryProcedure createProcedure(CreateProcedureRequest request) {
@@ -187,10 +189,22 @@ public class SchoolEntryService {
       Year schoolYear,
       DataOrigin dataOrigin) {
     List<SchoolEntryProcedure> createdProcedures =
-        createProcedures(procedures, schoolId, locationId, schoolYear, dataOrigin);
+        createProcedures(
+            procedures, schoolId, locationId, schoolYear, dataOrigin, ProcedureStatus.OPEN);
     createdProcedures.forEach(
-        procedure -> addOpenTaskWithType(procedure, TaskType.BOOK_APPOINTMENT));
+        procedure -> taskUtil.addOpenTaskOfType(procedure, TaskType.BOOK_APPOINTMENT));
     return createdProcedures;
+  }
+
+  public List<SchoolEntryProcedure> createProceduresFromDataImport(
+      List<ImportProcedureData> procedures, UUID schoolId, UUID locationId, Year schoolYear) {
+    return createProcedures(
+        procedures,
+        schoolId,
+        locationId,
+        schoolYear,
+        DataOrigin.DATA_IMPORT,
+        ProcedureStatus.CLOSED);
   }
 
   public List<SchoolEntryProcedure> createProcedures(
@@ -198,7 +212,8 @@ public class SchoolEntryService {
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
-      DataOrigin dataOrigin) {
+      DataOrigin dataOrigin,
+      ProcedureStatus initialProcedureStatus) {
     List<SchoolEntryProcedure> result = new ArrayList<>();
 
     Label specialNeedsLabel = null;
@@ -226,7 +241,8 @@ public class SchoolEntryService {
               locationId,
               schoolYear,
               procedure.isEntryLevel(),
-              procedure.examinationDate());
+              procedure.examinationDate(),
+              initialProcedureStatus);
 
       if (procedure.isEarlyExamination()) {
         Assert.notNull(specialNeedsLabel, "specialNeedsLabel must be fetched at this point");
@@ -268,9 +284,10 @@ public class SchoolEntryService {
       UUID locationId,
       Year schoolYear,
       boolean isEntryLevel,
-      LocalDate examinationDate) {
+      LocalDate examinationDate,
+      ProcedureStatus initialProcedureStatus) {
     SchoolEntryProcedure schoolEntryProcedure = new SchoolEntryProcedure();
-    schoolEntryProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    schoolEntryProcedure.updateProcedureStatus(initialProcedureStatus, clock, auditLogger);
     schoolEntryProcedure.setProcedureType(type);
     schoolEntryProcedure.setSchoolId(schoolId);
     schoolEntryProcedure.setLocationId(locationId);
@@ -290,10 +307,7 @@ public class SchoolEntryService {
     schoolEntryProcedure.setVaccinationStatus(new VaccinationStatus());
     schoolEntryProcedure.setAnamnesis(new Anamnesis());
     schoolEntryProcedure.setWaitingRoom(new WaitingRoom());
-
-    if (schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      schoolEntryProcedure.setSchoolYear(schoolYear);
-    }
+    schoolEntryProcedure.setSchoolYear(schoolYear);
 
     return schoolEntryProcedureRepository.save(schoolEntryProcedure);
   }
@@ -313,17 +327,6 @@ public class SchoolEntryService {
     person.setCentralFileStateId(centralFileStateId);
     person.setPersonType(personType);
     return person;
-  }
-
-  private void addOpenTaskWithType(SchoolEntryProcedure schoolEntryProcedure, TaskType type) {
-    SchoolEntryTask task = new SchoolEntryTask();
-    task.assign(
-        CurrentUserHelper.getCurrentUserId(),
-        CurrentUserHelper.getCurrentUserId(),
-        Instant.now(clock));
-    task.setTaskStatus(TaskStatus.OPEN);
-    task.setTaskType(type);
-    schoolEntryProcedure.addTask(task);
   }
 
   ProcedureDetailsData findAndAugmentProcedureByExternalId(UUID procedureId) {
@@ -468,9 +471,9 @@ public class SchoolEntryService {
                 start.atZone(clock.getZone()).format(ReportGeneratorConstants.DATE_FORMAT_DE)),
         invitation);
 
-    closeSingleTaskOfType(procedure, TaskType.BOOK_APPOINTMENT);
+    TaskUtil.closeSingleTaskOfType(procedure, TaskType.BOOK_APPOINTMENT);
     if (!procedure.hasTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION)) {
-      addOpenTaskWithType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
+      taskUtil.addOpenTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
     }
     procedure.getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION).updateDueAt(start);
 
@@ -546,7 +549,6 @@ public class SchoolEntryService {
     ProcedurePageSpec pageSpec = createPageSpec(paginationAndSortParameters);
 
     if (filterParameters.schoolYearFilter() != null) {
-      schoolEntryFeatureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_YEAR);
       validator.validateSchoolYear(Year.of(filterParameters.schoolYearFilter()));
     }
 
@@ -576,10 +578,6 @@ public class SchoolEntryService {
 
   private ProcedurePageSpec createPageSpec(
       ProcedurePaginationAndSortParameters paginationAndSortParameters) {
-    if (Objects.equals(
-        paginationAndSortParameters.sortKey(), SchoolEntryProcedureSortKey.SCHOOL_YEAR)) {
-      schoolEntryFeatureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SCHOOL_YEAR);
-    }
     return ProcedureMapper.mapToPageSpec(
         paginationAndSortParameters.pageNumberOrFallback(0),
         paginationAndSortParameters.pageSizeOrFallback(25),
@@ -808,16 +806,10 @@ public class SchoolEntryService {
 
   private void updateSchoolYear(
       SchoolEntryProcedure procedure, Year persistedSchoolYear, Year requestedSchoolYear) {
-    if (schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)) {
-      if (!Objects.equals(persistedSchoolYear, requestedSchoolYear)) {
-        validator.validateSchoolYear(requestedSchoolYear);
-        log.info("Modifying schoolYear {} to {}", persistedSchoolYear, requestedSchoolYear);
-        procedure.setSchoolYear(requestedSchoolYear);
-      }
-    } else {
-      if (requestedSchoolYear != null) {
-        log.warn("Ignoring given school year since the feature toggle is disabled");
-      }
+    if (!Objects.equals(persistedSchoolYear, requestedSchoolYear)) {
+      validator.validateSchoolYear(requestedSchoolYear);
+      log.info("Modifying schoolYear {} to {}", persistedSchoolYear, requestedSchoolYear);
+      procedure.setSchoolYear(requestedSchoolYear);
     }
   }
 
@@ -827,6 +819,7 @@ public class SchoolEntryService {
     UUID citizenUserId = procedure.getCitizenUserId();
     if (citizenUserId != null) {
       removeCitizenUserAccess(citizenUserId);
+      procedure.setCitizenUserId(null);
     }
 
     schoolEntryProcedureRepository.flush();
@@ -837,7 +830,8 @@ public class SchoolEntryService {
       CitizenAccessCodeUserDto citizenUser =
           citizenAccessCodeUserApi.getCitizenAccessCodeUser(citizenUserId);
       citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(citizenUser.userId());
-    } catch (NotFoundException ignored) {
+    } catch (HttpClientErrorException.NotFound ignored) {
+      // Access Code User is not present, so there is nothing to do for deletion
     }
   }
 
@@ -845,6 +839,8 @@ public class SchoolEntryService {
     SchoolEntryProcedure procedure = findProcedureByExternalIdForUpdate(procedureId, version);
     Validator.validateProcedureStatusIsClosed(procedure);
     procedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+
+    schoolEntryProcedureRepository.flush();
     return procedure;
   }
 
@@ -860,11 +856,6 @@ public class SchoolEntryService {
     procedure.setLabels(List.of());
     schoolEntryProcedureRepository.flush();
     procedureDeletionService.deleteProcedure(procedure.getExternalId());
-  }
-
-  private void closeSingleTaskOfType(SchoolEntryProcedure procedure, TaskType type) {
-    SchoolEntryTask taskToUpdate = procedure.getTaskOfType(type);
-    taskToUpdate.setTaskStatus(TaskStatus.CLOSED);
   }
 
   public SchoolEntryProcedure updateChildData(
@@ -888,6 +879,7 @@ public class SchoolEntryService {
         switch (person.getPersonType()) {
           case PATIENT -> CHILD_SYNCED_WITH_CENTRAL_FILE;
           case PARENT -> CUSTODIAN_SYNCED_WITH_CENTRAL_FILE;
+          default -> throw new IllegalStateException("Unknown person type");
         };
     ProgressEntryUtil.addProgressEntry(procedure, progressEntryType);
 
@@ -1473,8 +1465,7 @@ public class SchoolEntryService {
       procedure.setLocationId(locationId);
     }
 
-    if (schoolEntryFeatureToggle.isNewFeatureEnabled(SchoolEntryFeature.SCHOOL_YEAR)
-        && schoolYear != null) {
+    if (schoolYear != null) {
       procedure.setSchoolYear(schoolYear);
     }
   }

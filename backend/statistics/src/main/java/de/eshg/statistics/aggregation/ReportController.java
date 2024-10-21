@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
@@ -27,11 +28,15 @@ import org.springframework.web.service.annotation.HttpExchange;
 public class ReportController {
   private final StatisticsFeatureToggle statisticsFeatureToggle;
   private final ReportService reportService;
+  private final ReportExecution reportExecution;
 
   public ReportController(
-      StatisticsFeatureToggle statisticsFeatureToggle, ReportService reportService) {
+      StatisticsFeatureToggle statisticsFeatureToggle,
+      ReportService reportService,
+      ReportExecution reportExecution) {
     this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.reportService = reportService;
+    this.reportExecution = reportExecution;
   }
 
   @GetExchange(value = "/{reportId}", accept = APPLICATION_JSON_VALUE)
@@ -49,6 +54,7 @@ public class ReportController {
   @Operation(summary = "Delete a report")
   public void deleteReport(@PathVariable(name = "reportId") UUID reportId) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
-    reportService.deleteReport(reportId);
+    reportService.flagReportForDeletion(reportId);
+    CompletableFuture.runAsync(() -> reportExecution.deleteReport(reportId));
   }
 }

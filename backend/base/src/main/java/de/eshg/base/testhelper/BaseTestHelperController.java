@@ -100,6 +100,12 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
+  public SearchContactsResponse populateHealthDepartmentContacts(PopulationRequest request) {
+    return baseTestHelperService.populateHealthDepartmentsContacts(
+        request.numberOfEntitiesToPopulate());
+  }
+
+  @Override
   public void resetKeycloak() {
     baseTestHelperService.resetKeycloak();
   }

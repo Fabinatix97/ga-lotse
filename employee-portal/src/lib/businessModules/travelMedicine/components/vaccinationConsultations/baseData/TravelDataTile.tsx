@@ -9,7 +9,7 @@ import {
   ApiPatchVaccinationConsultationTravelDetailsRequest,
   ApiTravelType,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { Stack } from "@mui/joy";
@@ -40,17 +40,11 @@ interface TravelDataTileProps {
 
 export function TravelDataTile(procedure: Readonly<TravelDataTileProps>) {
   const [open, setOpen] = useSearchParam("edit-travel-data", "boolean");
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function updateSidebar(sideBarState: boolean) {
     setOpen(sideBarState);
     resetAlertContext();
-  }
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
   }
 
   return (

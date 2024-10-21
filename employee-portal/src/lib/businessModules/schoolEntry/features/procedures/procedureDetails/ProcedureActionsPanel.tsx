@@ -18,9 +18,6 @@ export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
   const closeProcedureEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.CloseProcedure,
   );
-  const deleteProcedureEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.DeleteProcedure,
-  );
   const reopenProcedureEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.ReopenProcedure,
   );
@@ -54,7 +51,7 @@ export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
     );
   }
 
-  if (deleteProcedureEnabled && props.procedure.isDeletable) {
+  if (props.procedure.isDeletable) {
     buttons.push(
       <OpenModalButton
         key="deleteProcedure"

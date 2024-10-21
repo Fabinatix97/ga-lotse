@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { InspectionApi } from "@eshg/employee-portal-api/inspection";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { inspectionApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
@@ -37,7 +38,21 @@ export function getAvailablePLDRsQueryKey(inspectionId: string) {
 export function useGetInspection(procedureId: string) {
   const inspectionApi = useInspectionApi();
   const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery({
+  return useSuspenseQuery(
+    getInspectionQuery(
+      inspectionApi,
+      getPreCacheForOfflineModeHeaders,
+      procedureId,
+    ),
+  );
+}
+
+export function getInspectionQuery(
+  inspectionApi: InspectionApi,
+  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
+  procedureId: string,
+) {
+  return queryOptions({
     queryKey: getInspectionQueryKey(procedureId),
     queryFn: () =>
       inspectionApi.getInspection(
@@ -50,7 +65,21 @@ export function useGetInspection(procedureId: string) {
 export function useGetAvailableCLDVs(inspectionId: string) {
   const inspectionApi = useInspectionApi();
   const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery({
+  return useSuspenseQuery(
+    getAvailableCLDVsQuery(
+      inspectionApi,
+      getPreCacheForOfflineModeHeaders,
+      inspectionId,
+    ),
+  );
+}
+
+export function getAvailableCLDVsQuery(
+  inspectionApi: InspectionApi,
+  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
+  inspectionId: string,
+) {
+  return queryOptions({
     queryKey: getAvailableCLDVsQueryKey(inspectionId),
     queryFn: () =>
       inspectionApi.getAvailableCLDs(

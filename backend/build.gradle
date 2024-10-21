@@ -302,7 +302,8 @@ def projectsToSequentialize = [
     project(':auditlog'),
     project(':chat-management'),
     project(':sti-protection'),
-    project(':medical-registry')
+    project(':medical-registry'),
+    project(':opendata')
 ]
 
 // We do not need to sequentialize when we only execute schema tests

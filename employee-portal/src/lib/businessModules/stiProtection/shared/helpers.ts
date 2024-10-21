@@ -6,6 +6,8 @@
 import {
   ApiAppointmentType,
   ApiConcern,
+  ApiStiProtectionProcedure,
+  ApiStiProtectionProcedureOverview,
 } from "@eshg/employee-portal-api/stiProtection";
 
 export function concernToAppointmentType(
@@ -46,4 +48,22 @@ export function deleteUndefined<T extends object>(obj: T): NoUndefined<T> {
   return Object.fromEntries(
     Object.entries(obj).filter(([_key, value]) => value !== undefined),
   ) as NoUndefined<T>;
+}
+
+export function isProcedureOpen(
+  procedure: ApiStiProtectionProcedure | ApiStiProtectionProcedureOverview,
+) {
+  return procedure.status !== "CLOSED";
+}
+
+export function createOnlyIfProcedureOpen(
+  procedure: ApiStiProtectionProcedure | ApiStiProtectionProcedureOverview,
+) {
+  const isOpen = isProcedureOpen(procedure);
+  return function onlyIfOpen<T>(t: T) {
+    if (!isOpen) {
+      return;
+    }
+    return t;
+  };
 }

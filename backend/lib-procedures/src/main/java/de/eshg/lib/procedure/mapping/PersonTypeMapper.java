@@ -16,6 +16,7 @@ public final class PersonTypeMapper {
     return switch (personType) {
       case PATIENT -> PersonTypeDto.PATIENT;
       case PARENT -> PersonTypeDto.PARENT;
+      case PROFESSIONAL -> PersonTypeDto.PROFESSIONAL;
     };
   }
 }

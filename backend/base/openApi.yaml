@@ -1371,6 +1371,28 @@ paths:
       tags:
       - GdprProcedure
   /gdpr-procedures/{id}/downloads:
+    delete:
+      operationId: deleteDownloads
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteGdprDownloadsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Delete one or multiple downloads of GDPR-related document or data of
+        this GDPR procedure.
+      tags:
+      - GdprProcedure
     get:
       operationId: getDownloads
       parameters:
@@ -1409,7 +1431,8 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Add a download of GDPR-related document or data for this GDPR procedure.
+      summary: Add one or multiple downloads of GDPR-related document or data for
+        this GDPR procedure.
       tags:
       - GdprProcedure
   /gdpr-procedures/{id}/fileStateIds:
@@ -2992,6 +3015,24 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/population/contacts/health-departments:
+    post:
+      operationId: populateHealthDepartmentContacts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PopulationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SearchContactsResponse"
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population/contacts/schools:
     post:
       operationId: populateSchoolContacts
@@ -4174,10 +4215,9 @@ components:
       - INBOX
       - STI_PROTECTION
       - VERIFICATION_OF_EXTERNAL_DATA
-      - ACCOUNT_ACTIVE_SESSIONS
       - OPEN_DATA
-      - LOGIN_PROTOCOL
       - GDPR
+      - CONTACT_MERGE
     BlockingEventsOfCalendar:
       type: object
       properties:
@@ -4700,6 +4740,17 @@ components:
           minItems: 1
       required:
       - fileStateIds
+    DeleteGdprDownloadsRequest:
+      type: object
+      properties:
+        downloadIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      required:
+      - downloadIds
     DetailedEvent:
       type: object
       properties:
@@ -7668,6 +7719,9 @@ components:
       - TM_VACCINATION_CONSULTATION
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY_ENTRY
+      - MEDICAL_REGISTRY_CITIZEN_DRAFT
+      - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
     ProcedureWithDuration:
       type: object
       properties:
@@ -8603,6 +8657,8 @@ components:
       - STI_PROTECTION_LEADER
       - MEDICAL_REGISTRY_LEADER
       - MEDICAL_REGISTRY_ADMIN
+      - OPEN_DATA_ADMIN
+      - OPEN_DATA_LEADER
     VCardAddress:
       type: object
       properties:

@@ -12,6 +12,9 @@ import { formatOptionalDuration } from "./formatOptionalDuration";
 const columnHelper = createColumnHelper<ApiProcedureWithDuration>();
 
 const meta = {
+  canNavigate: {
+    parentRow: true,
+  },
   width: "6rem",
 };
 

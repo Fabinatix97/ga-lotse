@@ -5,11 +5,11 @@
 
 "use client";
 
+import { Row } from "@eshg/lib-portal/components/Row";
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import { Row } from "@/lib/shared/Row";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useSearchParamLink } from "@/lib/shared/hooks/searchParams/useSearchParam";
 

@@ -34,8 +34,10 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @Table(indexes = @Index(columnList = "websearch_id"))
 public class WebSearchEntry extends BaseEntityWithExternalId {
 
-  @ManyToOne(optional = false, cascade = CascadeType.ALL)
-  @JoinColumn(name = "websearch_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(
+      optional = false,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
+  @JoinColumn(name = "websearch_id", nullable = false)
   @NotNull
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private WebSearch webSearch;

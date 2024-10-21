@@ -8,6 +8,8 @@ package de.eshg.lib.procedure.file;
 import static de.eshg.lib.procedure.file.FileFactory.createImageWithMetaData;
 import static de.eshg.lib.procedure.file.FileFactory.createPdfWithMetaData;
 
+import de.eshg.file.common.FileTypeDetector;
+import de.eshg.file.common.PdfAConformanceValidator;
 import de.eshg.lib.procedure.domain.model.*;
 import de.eshg.lib.procedure.model.FileMetaDataDto;
 import java.io.IOException;
@@ -29,7 +31,9 @@ public class FileUploadService {
 
   public void handleFile(FileAware fileAware, MultipartFile file, FileMetaDataDto fileMetaData)
       throws IOException {
-    FileType fileType = FileTypeDetector.getSupportedFileTypeOrThrow(file.getBytes());
+    ProcedureFileType fileType =
+        FileTypeMapper.mapToProcedureFileType(
+            FileTypeDetector.getSupportedFileTypeOrThrow(file.getBytes()));
     fileUploadValidator.validateFileAwareSupportsFileUpload(fileAware, fileType);
 
     switch (fileType) {
@@ -40,7 +44,10 @@ public class FileUploadService {
   }
 
   private void handleImage(
-      FileAware fileAware, FileType fileType, MultipartFile file, FileMetaDataDto fileMetaData)
+      FileAware fileAware,
+      ProcedureFileType fileType,
+      MultipartFile file,
+      FileMetaDataDto fileMetaData)
       throws IOException {
     byte[] fileContent = file.getBytes();
     String fileName = FileExtensionEnricher.enrich(file.getOriginalFilename(), fileType);
@@ -57,7 +64,10 @@ public class FileUploadService {
   }
 
   private void handlePdf(
-      FileAware fileAware, FileType fileType, MultipartFile file, FileMetaDataDto fileMetaData)
+      FileAware fileAware,
+      ProcedureFileType fileType,
+      MultipartFile file,
+      FileMetaDataDto fileMetaData)
       throws IOException {
     byte[] fileContent = file.getBytes();
     String fileName = FileExtensionEnricher.enrich(file.getOriginalFilename(), fileType);
@@ -76,7 +86,10 @@ public class FileUploadService {
   }
 
   private void handleMailEml(
-      FileAware fileAware, FileType fileType, MultipartFile file, FileMetaDataDto fileMetaData)
+      FileAware fileAware,
+      ProcedureFileType fileType,
+      MultipartFile file,
+      FileMetaDataDto fileMetaData)
       throws IOException {
     byte[] fileContent = file.getBytes();
     String fileName = FileExtensionEnricher.enrich(file.getOriginalFilename(), fileType);

@@ -7,7 +7,7 @@ package de.eshg.statistics.export;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import de.base.rest.CustomMediaTypes;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

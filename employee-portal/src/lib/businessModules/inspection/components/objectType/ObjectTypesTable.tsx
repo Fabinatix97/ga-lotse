@@ -70,7 +70,7 @@ export function ObjectTypesTable() {
           </IconButton>
         ),
       meta: {
-        width: "max-content",
+        cellStyle: "button",
       },
     }),
   ];

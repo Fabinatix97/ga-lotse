@@ -12,13 +12,13 @@ import { isDefined, isEmpty, mapToObj } from "remeda";
 
 import { AppointmentTypeConfig } from "@/lib/businessModules/schoolEntry/api/models/AppointmentTypeConfig";
 import { CreateAppointmentBlockGroupValues } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/CreateAppointmentBlockGroupForm";
-import { validateAppointmentBlock } from "@/lib/businessModules/schoolEntry/features/appointmentBlocks/appointmentBlocksGroupForm/validateAppointmentBlock";
 import { APPOINTMENT_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentLocationSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentLocationSelection";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
+import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
@@ -53,7 +53,7 @@ function validateForm(
 
   if (isEmpty(values.physicians) && isEmpty(values.mfas)) {
     const msg =
-      "Es muss mindestens ein:e Arzt:in oder ein:e MFA ausgewählt sein.";
+      "Es muss mindestens ein Arzt/eine Ärztin oder ein:e MFA ausgewählt sein.";
     errors.physicians = msg;
     errors.mfas = msg;
   }
@@ -99,49 +99,48 @@ export function AppointmentBlockGroupForm(
       validate={(values) => validateForm(values, props.allAppointmentTypes)}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet onSubmit={handleSubmit}>
-          <Stack gap={3} divider={<Divider />}>
-            <Stack gap={4}>
-              <AppointmentBlockGroupFields
-                appointmentBlocksWithDays={values.appointmentBlocks}
-                options={APPOINTMENT_TYPE_OPTIONS}
-                showParallelExaminations
-              />
-            </Stack>
-            {props.locationSelectionMode !== ApiLocationSelectionMode.None && (
-              <AppointmentLocationSelection
-                contactCategory={props.locationSelectionMode}
-              />
-            )}
-            <Stack gap={4}>
-              <AppointmentStaffSelection
-                physicianOptions={physicianOptions}
-                medicalAssistantOptions={medicalAssistantsOptions}
-                freeStaff={props.freeStaff}
-                blockedStaff={props.blockedStaff}
-                validateAvailability={() => props.validateAvailability(values)}
-              />
-            </Stack>
-            <FormButtonBar
-              left={
-                <AppointmentCountWithDays
-                  appointments={values}
-                  appointmentDurations={appointmentDurations}
-                  parallelExaminations={
-                    isEmptyString(values.parallelExaminations)
-                      ? DEFAULT_PARALLEL_EXAMINATIONS
-                      : Math.max(
-                          values.parallelExaminations,
-                          DEFAULT_PARALLEL_EXAMINATIONS,
-                        )
-                  }
-                />
-              }
-              submitLabel="Planen"
-              submitting={isSubmitting}
-              onCancel={routes.appointmentBlockGroups.overview}
+        <FormSheet gap={5} onSubmit={handleSubmit}>
+          <Stack gap={5}>
+            <AppointmentBlockGroupFields
+              appointmentBlocksWithDays={values.appointmentBlocks}
+              options={APPOINTMENT_TYPE_OPTIONS}
+              showParallelExaminations
             />
           </Stack>
+          {props.locationSelectionMode !== ApiLocationSelectionMode.None && (
+            <AppointmentLocationSelection
+              contactCategory={props.locationSelectionMode}
+            />
+          )}
+          <Stack gap={5}>
+            <AppointmentStaffSelection
+              physicianOptions={physicianOptions}
+              medicalAssistantOptions={medicalAssistantsOptions}
+              freeStaff={props.freeStaff}
+              blockedStaff={props.blockedStaff}
+              validateAvailability={() => props.validateAvailability(values)}
+            />
+          </Stack>
+          <Divider />
+          <FormButtonBar
+            left={
+              <AppointmentCountWithDays
+                appointments={values}
+                appointmentDurations={appointmentDurations}
+                parallelExaminations={
+                  isEmptyString(values.parallelExaminations)
+                    ? DEFAULT_PARALLEL_EXAMINATIONS
+                    : Math.max(
+                        values.parallelExaminations,
+                        DEFAULT_PARALLEL_EXAMINATIONS,
+                      )
+                }
+              />
+            }
+            submitLabel="Planen"
+            submitting={isSubmitting}
+            onCancel={routes.appointmentBlockGroups.overview}
+          />
         </FormSheet>
       )}
     </Formik>

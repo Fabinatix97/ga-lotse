@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ScopedAlert,
-  useAlert,
-} from "@eshg/lib-portal/errorHandling/AlertContext";
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Sheet, Stack, Typography, styled } from "@mui/joy";
 import { ReactNode } from "react";
@@ -24,22 +21,20 @@ const MainContents = styled("main")({
   display: "contents",
 });
 
+const AlertContainer = styled(PageContent)({
+  paddingBlockEnd: 0,
+});
+
 interface PageLayoutProps extends RequiresChildren {
   banner?: BannerType;
 }
 
 export function PageLayout(props: PageLayoutProps) {
-  const alert = useAlert();
-
   return (
     <>
       {isDefined(props.banner) && <PageBanner type={props.banner} />}
       <MainContents>
-        {alert !== null && (
-          <PageContent>
-            <ScopedAlert />
-          </PageContent>
-        )}
+        <AlertSlot container={AlertContainer} />
         {props.children}
       </MainContents>
     </>

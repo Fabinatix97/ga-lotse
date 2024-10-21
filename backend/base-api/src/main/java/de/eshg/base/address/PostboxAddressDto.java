@@ -5,14 +5,14 @@
 
 package de.eshg.base.address;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Schema(name = PostboxAddressDto.SCHEMA_NAME, description = "An address which is a postbox.")
 public record PostboxAddressDto(
-    @NotNull CountryCodeDto country,
+    @NotNull CountryCode country,
     @Schema(description = "The city in which the address is located.", example = "Berlin")
         @NotNull
         @Size(min = 1, max = 50)
@@ -40,7 +40,7 @@ public record PostboxAddressDto(
     return SCHEMA_NAME;
   }
 
-  public PostboxAddressDto(CountryCodeDto country, String city, String postalCode, String postbox) {
+  public PostboxAddressDto(CountryCode country, String city, String postalCode, String postbox) {
     this(country, city, postalCode, null, postbox);
   }
 }

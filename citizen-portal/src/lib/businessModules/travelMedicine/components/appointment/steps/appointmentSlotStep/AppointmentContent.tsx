@@ -13,10 +13,12 @@ import { NoAppointmentsContent } from "@/lib/businessModules/travelMedicine/comp
 import { AppointmentPicker } from "@/lib/businessModules/travelMedicine/components/appointment/steps/appointmentSlotStep/calendar/AppointmentPicker";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
+import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
 export function AppointmentContent() {
   const { values } = useFormikContext<InitialAppointmentFormValues>();
   const { onShowOverviewChange } = useStepContext();
+  const citizenRoutes = useCitizenRoutes();
 
   const freeAppointments = useGetFreeAppointmentsForCitizen(
     values.initialStepAppointmentType,
@@ -43,7 +45,7 @@ export function AppointmentContent() {
         <AppointmentPicker filteredAppointments={filteredAppointments} />
       ) : (
         <NoAppointments>
-          <NoAppointmentsContent />
+          <NoAppointmentsContent backButtonLocation={citizenRoutes.overview} />
         </NoAppointments>
       )}
     </>

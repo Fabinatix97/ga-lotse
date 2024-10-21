@@ -7,29 +7,34 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
-import { ReportForOverview } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
+import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
+import {
+  ReportSeries,
+  ReportSeriesItem,
+  SingleReport,
+} from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
-import { getReportActionItems } from "./getReportActionItems";
+import {
+  DeleteReportOrSeries,
+  getReportActionItems,
+  getSharedURL,
+} from "./getReportActionItems";
 
-const columnHelper = createColumnHelper<ReportForOverview>();
+const columnHelper = createColumnHelper<ReportOverviewTableRow>();
 
 const meta = {
   canNavigate: {
     parentRow: true,
+    subRow: true,
   },
   width: "10rem",
 };
 
-export function getId(reportData: ReportForOverview) {
-  return reportData.type === "SINGLE"
-    ? reportData.reportId
-    : reportData.seriesId;
-}
-
 export function getReportsOverviewColumns(
   share: (id: string) => Promise<void>,
-  deleteReportWithConfirmation: (id: string) => void,
+  deleteReportWithConfirmation: (reportId: string) => void,
+  deleteReportSeriesWithConfirmation: (seriesId: string) => void,
   canWrite: boolean,
   canDelete: (creatorUserId: string) => boolean,
 ) {
@@ -63,12 +68,27 @@ export function getReportsOverviewColumns(
       cell: (props) => (
         <ActionsMenu
           actionItems={getReportActionItems(
-            [],
-            props.row.original.type === "SERIES",
-            props.row.original.seriesId,
-            getId(props.row.original),
-            share,
-            deleteReportWithConfirmation,
+            [
+              {
+                type: "share",
+                action: async () =>
+                  await share(
+                    getSharedURL(
+                      (props.row.original as SingleReport | ReportSeriesItem)
+                        .reportId,
+                    ),
+                  ),
+              },
+            ],
+            props.row.original.type,
+            {
+              deleteReportWithConfirmation: deleteReportWithConfirmation,
+              deleteReportSeriesWithConfirmation:
+                deleteReportSeriesWithConfirmation,
+              seriesId: (props.row.original as ReportSeries).seriesId,
+              reportId: (props.row.original as SingleReport | ReportSeriesItem)
+                .reportId,
+            } satisfies DeleteReportOrSeries,
             canWrite,
             canDelete(props.row.original.userId),
           )}

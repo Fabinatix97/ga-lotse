@@ -9,9 +9,9 @@ import de.eshg.base.client.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.api.CreateSchoolInfoLetterRequest;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
@@ -74,7 +74,7 @@ public class SchoolInfoLetterGenerator extends AbstractGenerator {
         "Schulinfobrief_%s.pdf"
             .formatted(now.format(ReportGeneratorConstants.FILENAME_TIMESTAMP_FORMAT));
     return FileFactory.createPdfWithMetaData(
-        filename, FileType.PDF, baos.toByteArray(), pdfMetaData, false);
+        filename, ProcedureFileType.PDF, baos.toByteArray(), pdfMetaData, false);
   }
 
   @VisibleForTesting

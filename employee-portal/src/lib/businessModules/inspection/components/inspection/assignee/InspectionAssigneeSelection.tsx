@@ -6,27 +6,25 @@
 import { ApiUser } from "@eshg/employee-portal-api/base";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 
-import { useGetAllAssignableUsers } from "@/lib/businessModules/inspection/api/queries/users";
 import { AssigneeAutocompleteField } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeAutocompleteField";
 import { AssigneeInfo } from "@/lib/businessModules/inspection/components/inspection/assignee/AssigneeInfo";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
-export interface InspectionStaffSelectionProps {
+export interface InspectionAssigneeSelectionProps {
   selfUser: ApiUser;
   onSelfAssign: () => void;
   currentAssigneeName: string | null;
   currentAssigneeId: string | null;
   onlySelfAssignable?: boolean;
   assigneeIdFieldValueName: string;
+  allAssignableUsers: ApiUser[];
 }
 
 export function InspectionAssigneeSelection(
-  props: Readonly<InspectionStaffSelectionProps>,
+  props: Readonly<InspectionAssigneeSelectionProps>,
 ) {
-  const allAssignableUsersQuery = useGetAllAssignableUsers();
-
-  const assignableUsersOptions = allAssignableUsersQuery.data.map((option) => ({
+  const assignableUsersOptions = props.allAssignableUsers.map((option) => ({
     value: option.userId,
     label: fullName(option),
   }));

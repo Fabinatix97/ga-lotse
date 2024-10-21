@@ -44,10 +44,6 @@ public class ReportMapper {
         reportStream.map(ReportMapper::mapToReportInfoDto).toList());
   }
 
-  private static ReportStateDto mapToReportStateDto(AggregationResultState state) {
-    return ReportStateDto.valueOf(state.name());
-  }
-
   public static ReportTypeDto mapToReportTypeDto(ReportType reportType) {
     return ReportTypeDto.valueOf(reportType.name());
   }
@@ -73,6 +69,10 @@ public class ReportMapper {
         report.getState().equals(AggregationResultState.COMPLETED)
             ? report.getNumberOfTableRows()
             : null);
+  }
+
+  private static ReportStateDto mapToReportStateDto(AggregationResultState state) {
+    return ReportStateDto.valueOf(state.name());
   }
 
   public static ReportType mapToReportType(ReportTypeDto reportType) {

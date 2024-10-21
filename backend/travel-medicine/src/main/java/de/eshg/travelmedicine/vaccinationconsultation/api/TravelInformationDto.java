@@ -5,7 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import java.util.List;
 @Schema(name = "TravelInformation")
 public record TravelInformationDto(
     @NotNull TravelTypeDto travelType,
-    @NotNull List<CountryCodeDto> travelDestinations,
+    @NotNull List<CountryCode> travelDestinations,
     LocalDate travelStartDate,
     Integer travelTimeAmount,
     TravelTimeUnitDto travelTimeUnit) {}

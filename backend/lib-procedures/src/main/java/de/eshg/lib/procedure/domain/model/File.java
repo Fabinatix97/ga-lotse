@@ -63,7 +63,7 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
-  private FileType fileType;
+  private ProcedureFileType fileType;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private int fileSizeBytes;
@@ -127,11 +127,11 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
     this.fileName = fileName;
   }
 
-  public FileType getFileType() {
+  public ProcedureFileType getFileType() {
     return fileType;
   }
 
-  public void setFileType(FileType fileType) {
+  public void setFileType(ProcedureFileType fileType) {
     this.fileType = fileType;
   }
 

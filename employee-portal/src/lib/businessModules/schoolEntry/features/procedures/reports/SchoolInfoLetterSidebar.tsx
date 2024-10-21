@@ -17,9 +17,19 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { Sidebar, SidebarProps } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
+
+export function useSchoolInfoLetterSidebar(): UseSidebarWithFormRefResult<SchoolInfoLetterSidebarProps> {
+  return useSidebarWithFormRef({
+    component: SchoolInfoLetterSidebar,
+  });
+}
 
 interface SchoolInfoLetterFormValues {
   note: OptionalFieldValue<string>;
@@ -37,14 +47,11 @@ const INITIAL_VALUES: SchoolInfoLetterFormValues = {
   referredToFurtherConsultationFromSchool: false,
 };
 
-interface SchoolInfoLetterSidebarProps {
+interface SchoolInfoLetterSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
-  onClose: () => void;
 }
 
-export function SchoolInfoLetterSidebar(
-  props: SchoolInfoLetterSidebarProps & SidebarProps,
-) {
+function SchoolInfoLetterSidebar(props: SchoolInfoLetterSidebarProps) {
   const createSchoolInfoLetter = useCreateSchoolInfoLetter(props.procedureId);
   const { downloadContainerRef, download } = useFileDownload(
     createSchoolInfoLetter.mutateAsync,
@@ -52,18 +59,14 @@ export function SchoolInfoLetterSidebar(
 
   async function handleSubmit(values: SchoolInfoLetterFormValues) {
     await download(mapToRequest(values));
-    props.onClose();
+    props.onClose(true);
   }
 
   return (
-    <Sidebar
-      open={props.open}
-      onClose={props.onClose}
-      aria-label={props["aria-label"]}
-    >
+    <>
       <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
         {({ handleSubmit, isSubmitting }) => (
-          <SidebarForm onSubmit={handleSubmit}>
+          <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
             <SidebarContent title="Schulinfobrief erstellen">
               <Stack gap={2}>
                 <TextareaField
@@ -101,7 +104,7 @@ export function SchoolInfoLetterSidebar(
                   <Button
                     variant="plain"
                     color="primary"
-                    onClick={props.onClose}
+                    onClick={() => props.onClose()}
                   >
                     Abbrechen
                   </Button>
@@ -116,7 +119,7 @@ export function SchoolInfoLetterSidebar(
           </SidebarForm>
         )}
       </Formik>
-    </Sidebar>
+    </>
   );
 }
 

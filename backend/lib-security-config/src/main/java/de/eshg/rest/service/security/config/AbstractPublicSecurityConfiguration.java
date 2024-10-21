@@ -78,15 +78,19 @@ public abstract class AbstractPublicSecurityConfiguration {
 
   protected void grantAccessToLibAppointmentBlockUrls(
       PermissionRole permissionRole, boolean allowUpdateAppointmentType) {
+    requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
+        .hasAnyRole(permissionRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_BLOCK_API + "/**")
         .hasRole(permissionRole);
 
     if (allowUpdateAppointmentType) {
+      requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
+          .hasAnyRole(permissionRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
       requestMatchers(BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
           .hasRole(permissionRole);
     } else {
       requestMatchers(HttpMethod.GET, BaseUrls.LibAppointmentBlock.APPOINTMENT_TYPE_API + "/**")
-          .hasRole(permissionRole);
+          .hasAnyRole(permissionRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
     }
   }
 
@@ -99,11 +103,10 @@ public abstract class AbstractPublicSecurityConfiguration {
         .hasRole(moduleLeaderRole.getEmployeePermissionRole());
 
     requestMatchers(
-            GET,
-            ProcedureLibrary.PROCEDURES_API + "/**",
-            ProcedureLibrary.INBOX_PROCEDURES_API + "/**",
-            ProcedureLibrary.TASKS_API + "/**",
-            ProcedureLibrary.FILES_API + "/**")
+            GET, ProcedureLibrary.PROCEDURES_API + "/**", ProcedureLibrary.FILES_API + "/**")
+        .hasAnyRole(procedureAccessRole, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+    requestMatchers(
+            GET, ProcedureLibrary.INBOX_PROCEDURES_API + "/**", ProcedureLibrary.TASKS_API + "/**")
         .hasRole(procedureAccessRole);
     requestMatchers(GET, ProcedureLibrary.PROCEDURE_METRICS_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_PROCEDURE_METRICS_READ);

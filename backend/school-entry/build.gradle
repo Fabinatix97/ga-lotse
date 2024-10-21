@@ -5,15 +5,15 @@ plugins {
 dependencies {
     implementation project(':lib-appointmentblock')
     implementation project(':lib-base-client')
-    implementation project(':lib-procedures')
     implementation project(':lib-calendar')
-    implementation project(":lib-statistics")
     implementation project(":lib-document-generator")
+    implementation project(':lib-procedures')
+    implementation project(":lib-statistics")
+    implementation project(":lib-xlsx-import")
     implementation project(':business-module-persistence-commons')
+    implementation project(':file-commons')
 
     implementation 'org.apache.commons:commons-math3:latest.release'
-    implementation 'org.apache.poi:poi:latest.release'
-    implementation 'org.apache.poi:poi-ooxml:latest.release'
     implementation 'de.cronn:reflection-util:latest.release'
     implementation 'com.google.zxing:core:latest.release'
     implementation 'org.apache.xmlgraphics:batik-svggen:latest.release'
@@ -29,9 +29,9 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
-    testImplementation 'jakarta.mail:jakarta.mail-api'
     testImplementation 'com.google.zxing:javase:latest.release'
     testImplementation testFixtures(project(':lib-document-generator'))
+    testImplementation testFixtures(project(':lib-xlsx-import'))
 }
 
 dockerCompose {

@@ -13,6 +13,9 @@ import { ChatFeatureUnavailable } from "@/lib/businessModules/chat/components/Ch
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { InfoPanelProvider } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
+import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
+import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function ChatPage() {
   const {
@@ -30,13 +33,19 @@ export default function ChatPage() {
     return <ChatFeatureUnavailable />;
   }
 
-  return userSettings.chatUsageEnabled ? (
-    <ChatErrorBoundary>
-      <InfoPanelProvider>
-        <Chat />
-      </InfoPanelProvider>
-    </ChatErrorBoundary>
-  ) : (
-    <ChatNoAccessAlert />
+  return (
+    <StickyToolbarLayout toolbar={<Toolbar title="Chat" />}>
+      <MainContentLayout fullViewportHeight>
+        {userSettings.chatUsageEnabled ? (
+          <ChatErrorBoundary>
+            <InfoPanelProvider>
+              <Chat />
+            </InfoPanelProvider>
+          </ChatErrorBoundary>
+        ) : (
+          <ChatNoAccessAlert />
+        )}
+      </MainContentLayout>
+    </StickyToolbarLayout>
   );
 }

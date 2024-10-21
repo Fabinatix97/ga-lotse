@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public record GetReportDetailPageResponse(
     @NotNull @Min(1) int numberOfReportsInSeries,
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
-    @NotNull Instant createdAt,
+    @NotNull LocalDate executionDate,
     @NotNull @Valid List<TableColumnHeader> tableColumnHeaders,
     @NotNull @Min(0) long totalNumberOfElements,
     @Valid UserDto userReportSeries,

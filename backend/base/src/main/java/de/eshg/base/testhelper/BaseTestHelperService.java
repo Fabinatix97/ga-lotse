@@ -68,6 +68,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   private final EmployeeKeycloakTestClient employeeKeycloakTestClient;
   private final CitizenKeycloakTestClient citizenKeycloakTestClient;
   private final CitizenKeycloakTestProvisioning citizenKeycloakTestProvisioning;
+  private final HealthDepartmentContactPopulator healthDepartmentContactPopulator;
 
   private final CalendarService calendarService;
 
@@ -97,7 +98,8 @@ public class BaseTestHelperService extends DefaultTestHelperService {
       InventoryPopulator inventoryPopulator,
       ContactPopulator contactPopulator,
       SchoolContactPopulator schoolContactPopulator,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      HealthDepartmentContactPopulator healthDepartmentContactPopulator) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -116,6 +118,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     this.schoolContactPopulator = schoolContactPopulator;
     this.accessCodeGenerator = accessCodeGenerator;
     this.citizenKeycloakTestProvisioning = citizenKeycloakTestProvisioning;
+    this.healthDepartmentContactPopulator = healthDepartmentContactPopulator;
   }
 
   public void resetKeycloak() {
@@ -297,6 +300,12 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   public SearchContactsResponse populateSchoolContacts(int numberOfEntitiesToPopulate) {
     ListWithTotalNumber<ContactDto> result =
         schoolContactPopulator.populate(numberOfEntitiesToPopulate);
+    return new SearchContactsResponse(result.entities(), result.totalNumberOfElements());
+  }
+
+  public SearchContactsResponse populateHealthDepartmentsContacts(int numberOfEntitiesToPopulate) {
+    ListWithTotalNumber<ContactDto> result =
+        healthDepartmentContactPopulator.populate(numberOfEntitiesToPopulate);
     return new SearchContactsResponse(result.entities(), result.totalNumberOfElements());
   }
 }

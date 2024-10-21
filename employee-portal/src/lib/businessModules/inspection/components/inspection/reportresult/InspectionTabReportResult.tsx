@@ -8,8 +8,7 @@
 import { Grid } from "@mui/joy";
 
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
-import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useLoadEditor } from "@/lib/businessModules/inspection/api/queries/inspectionReport";
+import { useGetInspectionAndLoadEditor } from "@/lib/businessModules/inspection/api/queries/inspectionReport";
 import { InspectionResultSidePanel } from "@/lib/businessModules/inspection/components/inspection/reportresult/InspectionResultSidePanel";
 import { ReportApprovalButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportApprovalButtons";
 import { ReportDownloadButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportDownloadButtons";
@@ -23,11 +22,10 @@ interface InspectionTabReportResultProps {
 export function InspectionTabReportResult({
   inspectionId,
 }: Readonly<InspectionTabReportResultProps>) {
-  const { data: inspection } = useGetInspection(inspectionId);
-  const { data: editorData } = useLoadEditor(
-    inspection.reportId!,
-    inspectionId,
-  );
+  const {
+    data: { inspection, editorData },
+  } = useGetInspectionAndLoadEditor(inspectionId);
+
   const elements = editorData.editorBody.elements;
   const { basePath } = useConfiguration();
 

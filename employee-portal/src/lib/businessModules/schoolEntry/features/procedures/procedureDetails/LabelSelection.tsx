@@ -12,7 +12,7 @@ import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
 
 interface LabelSelectionProps {
-  onChange: (newValue: Label[]) => void;
+  onChange?: (newValue: Label[]) => void;
 }
 
 export function LabelSelection(props: LabelSelectionProps) {
@@ -25,7 +25,7 @@ export function LabelSelection(props: LabelSelectionProps) {
         value={field.input.value}
         onChange={(newValue) => {
           void field.helpers.setValue(newValue);
-          props.onChange(newValue);
+          props.onChange?.(newValue);
         }}
       />
     </BaseField>

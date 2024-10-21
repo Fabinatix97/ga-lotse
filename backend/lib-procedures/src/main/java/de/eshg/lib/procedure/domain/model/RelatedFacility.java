@@ -34,6 +34,12 @@ public abstract class RelatedFacility<ProcedureT extends Procedure<ProcedureT, ?
   @Column(nullable = false)
   private FacilityType facilityType;
 
+  public RelatedFacility() {}
+
+  protected RelatedFacility(FacilityType facilityType) {
+    this.facilityType = facilityType;
+  }
+
   public ProcedureT getProcedure() {
     return procedure;
   }

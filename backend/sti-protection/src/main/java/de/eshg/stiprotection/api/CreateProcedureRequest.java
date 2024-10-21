@@ -6,8 +6,8 @@
 package de.eshg.stiprotection.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ public record CreateProcedureRequest(
     @NotNull ConcernDto concern,
     @NotNull GenderDto gender,
     @NotNull @Past @Schema(type = "integer") Year yearOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     @Schema(
             type = "integer",
             description = "The year since the person has been residing in Germany.",

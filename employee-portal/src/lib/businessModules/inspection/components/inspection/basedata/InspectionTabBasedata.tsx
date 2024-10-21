@@ -7,16 +7,20 @@
 
 import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
 import { Grid } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
+import { useUserApi } from "@/lib/baseModule/api/clients";
+import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/api/mutations/facility";
-import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useGetSelfUser } from "@/lib/businessModules/inspection/api/queries/users";
+import { getInspectionQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
+import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
 import { InspectionTypeCard } from "@/lib/businessModules/inspection/components/inspection/basedata/InspectionTypeCard";
 import { BillingAddressTile } from "@/lib/businessModules/inspection/components/inspection/basedata/billingaddress/BillingAddressTile";
 import { ContactPersonTile } from "@/lib/businessModules/inspection/components/inspection/basedata/contactperson/ContactPersonTile";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
+import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import {
   LegacyFacilitySidebar,
   Mode,
@@ -32,9 +36,22 @@ interface InspectionTabBasedataProps {
 export function InspectionTabBasedata({
   inspectionId,
 }: Readonly<InspectionTabBasedataProps>) {
-  const { data: inspection } = useGetInspection(inspectionId);
+  const inspectionApi = useInspectionApi();
+  const userApi = useUserApi();
+  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
+
+  const [{ data: inspection }, { data: selfUser }] = useSuspenseQueries({
+    queries: [
+      getInspectionQuery(
+        inspectionApi,
+        getPreCacheForOfflineModeHeaders,
+        inspectionId,
+      ),
+      getSelfUserQuery(userApi),
+    ],
+  });
+
   const { mutateAsync: updateFacility } = useUpdateInspectionFacility();
-  const { data: selfUser } = useGetSelfUser();
 
   const isOffline = useIsOffline();
   const lockedByDifferentUser =

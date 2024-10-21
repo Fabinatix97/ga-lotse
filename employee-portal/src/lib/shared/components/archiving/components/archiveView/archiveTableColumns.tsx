@@ -19,6 +19,9 @@ export const archiveTableColumns = [
     cell: (props) => formatDate(props.getValue()),
     meta: {
       width: "240px",
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("procedureType", {
@@ -27,6 +30,9 @@ export const archiveTableColumns = [
     cell: (props) => procedureTypeNames[props.getValue()],
     meta: {
       width: "260px",
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor(
@@ -39,6 +45,9 @@ export const archiveTableColumns = [
       enableSorting: false,
       meta: {
         width: "260px",
+        canNavigate: {
+          parentRow: true,
+        },
       },
     },
   ),

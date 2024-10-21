@@ -5,17 +5,13 @@
 
 "use client";
 
-import {
-  ApiTextBlock,
-  GetTextBlocksRequest,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiTextBlock } from "@eshg/employee-portal-api/inspection";
 import { Add, DeleteOutlined, Edit } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 
 import { useDeleteTextBlock } from "@/lib/businessModules/inspection/api/mutations/textblocks";
-import { useGetTextBlocks } from "@/lib/businessModules/inspection/api/queries/textblocks";
 import { EditTextBlockSidebar } from "@/lib/businessModules/inspection/components/textBlock/EditTextBlockSidebar";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -30,7 +26,9 @@ import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl
 const columnHelper = createColumnHelper<ApiTextBlock>();
 
 interface TextBlocksTableProps {
-  params: GetTextBlocksRequest;
+  elements: ApiTextBlock[];
+  totalNumberOfElements: number;
+  isFetching: boolean;
 }
 
 interface TextBlockTableState {
@@ -38,11 +36,11 @@ interface TextBlockTableState {
   textBlock: ApiTextBlock;
 }
 
-export function TextBlocksTable({ params }: TextBlocksTableProps) {
-  const {
-    data: { elements, totalNumberOfElements },
-    isFetching,
-  } = useGetTextBlocks(params);
+export function TextBlocksTable({
+  elements,
+  totalNumberOfElements,
+  isFetching,
+}: TextBlocksTableProps) {
   const deleteTextBlock = useDeleteTextBlock();
   const { openConfirmationDialog } = useConfirmationDialog();
 

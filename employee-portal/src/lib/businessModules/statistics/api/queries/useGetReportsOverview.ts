@@ -6,14 +6,37 @@
 import {
   ApiGetReportsRequest,
   ApiGetReportsResponse,
+  ApiReportInfo,
+  ApiReportSeries,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
-import { ReportsOverview } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
+import {
+  ReportSeriesItemOverview,
+  ReportSeriesOverview,
+  ReportsOverview,
+  SingleReportOverview,
+} from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
+
+export function mapSingleReports(
+  singleReport: ApiReportInfo,
+  reportSeries: ApiReportSeries,
+  isChild = false,
+): SingleReportOverview | ReportSeriesItemOverview {
+  return {
+    userId: reportSeries.userId,
+    reportId: singleReport.id,
+    seriesId: reportSeries.id,
+    name: isChild ? `# ${singleReport.name}` : singleReport.name,
+    timeRangeStart: singleReport.timeRangeStart,
+    timeRangeEnd: singleReport.timeRangeEnd,
+    type: isChild ? ReportDataType.Child : ReportDataType.Single,
+  };
+}
 
 export function mapToReportsOverview(
   response: ApiGetReportsResponse,
@@ -23,19 +46,29 @@ export function mapToReportsOverview(
       case "MANUAL":
         if (reportSeries.reportInfos.length === 1) {
           const singleReport = reportSeries.reportInfos[0]!;
-          return {
-            reportId: singleReport.id,
-            seriesId: reportSeries.id,
-            name: reportSeries.name,
-            timeRangeStart: singleReport.timeRangeStart,
-            timeRangeEnd: singleReport.timeRangeEnd,
-            type: ReportDataType.Single,
-            userId: reportSeries.userId,
-          };
+          return mapSingleReports(
+            singleReport,
+            reportSeries,
+          ) as SingleReportOverview;
         }
         throw Error("reportInfos length doesn't match");
       case "AUTO":
-        throw Error("not implemented yet");
+        return {
+          subRows: reportSeries.reportInfos.map(
+            (reportInfo) =>
+              mapSingleReports(
+                reportInfo,
+                reportSeries,
+                true,
+              ) as ReportSeriesItemOverview,
+          ),
+          name: reportSeries.name,
+          seriesId: reportSeries.id,
+          timeRangeStart: reportSeries.timeRangeStart,
+          timeRangeEnd: reportSeries.timeRangeEnd,
+          type: ReportDataType.Series,
+          userId: reportSeries.userId,
+        } satisfies ReportSeriesOverview;
     }
   });
   return {

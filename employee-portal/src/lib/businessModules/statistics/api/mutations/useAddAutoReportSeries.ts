@@ -13,10 +13,10 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 
 import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
 import {
-  AutomateReportFormModel,
   Interval,
   ReportingPeriod,
-} from "@/lib/businessModules/statistics/components/statistics/details/reports/AutomateReportSidebar/automateReportFormModel";
+} from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
+import { AutomateReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/AutomateReportSidebar/automateReportFormModel";
 
 function mapToApiStartMonth(startMonth: string) {
   return parseInt(startMonth) + 1;

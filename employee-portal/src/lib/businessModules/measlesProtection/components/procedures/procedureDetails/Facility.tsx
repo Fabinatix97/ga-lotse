@@ -10,12 +10,15 @@ import {
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 
 import { facilityTypeNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 
 import { AddressDetails } from "./AddressDetails";
 import { FacilityContactDetails } from "./ContactDetails";
-import { DetailCard } from "./DetailCard";
 import { FacilityContacts } from "./FacilityContact";
-import { LabeledValue, ValueList } from "./LabeledValue";
 
 export function Facility({
   procedure,
@@ -31,7 +34,7 @@ export function Facility({
   return (
     procedure.facility && (
       <>
-        <DetailCard title="Einrichtung">
+        <DetailsCard title="Einrichtung">
           <ValueList>
             <LabeledValue label="Name" value={facility.name} />
             <LabeledValue
@@ -47,7 +50,7 @@ export function Facility({
           </ValueList>
           <AddressDetails address={facility.contactAddress} />
           <FacilityContactDetails facility={procedure.facility} />
-        </DetailCard>
+        </DetailsCard>
         <FacilityContacts persons={facility.contactPersons} />
       </>
     )

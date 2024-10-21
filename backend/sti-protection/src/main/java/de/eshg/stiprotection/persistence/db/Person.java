@@ -5,7 +5,7 @@
 
 package de.eshg.stiprotection.persistence.db;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
@@ -32,7 +32,7 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.UNDEFINED)
-  private CountryCodeDto countryOfBirth;
+  private CountryCode countryOfBirth;
 
   @DataSensitivity(SensitivityLevel.UNDEFINED)
   private Year inGermanySince;
@@ -53,11 +53,11 @@ public class Person extends RelatedPerson<StiProtectionProcedure> {
     this.yearOfBirth = yearOfBirth;
   }
 
-  public CountryCodeDto getCountryOfBirth() {
+  public CountryCode getCountryOfBirth() {
     return countryOfBirth;
   }
 
-  public void setCountryOfBirth(CountryCodeDto countryOfBirth) {
+  public void setCountryOfBirth(CountryCode countryOfBirth) {
     this.countryOfBirth = countryOfBirth;
   }
 

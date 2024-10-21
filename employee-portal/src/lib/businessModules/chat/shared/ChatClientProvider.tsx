@@ -26,6 +26,7 @@ import {
 } from "react";
 import { isNullish, omit } from "remeda";
 
+import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { useChatLifecycle } from "@/lib/businessModules/chat/shared/hooks/useChatLifecycle";
@@ -37,7 +38,6 @@ import {
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
 import { shouldShowMessageTeaser } from "@/lib/businessModules/chat/shared/utils";
-import { useMessageTeaser } from "@/lib/shared/components/chat/MessageTeaserProvider";
 
 export interface ChatClientContextType {
   matrixClient: MatrixClient;
@@ -170,7 +170,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
         sender?.displayName
       ) {
         showMessageTeaser({
-          username: room.name,
+          title: room.name,
           text:
             guestCount > 1
               ? `${sender.displayName}: ${messageContent.body}`
@@ -196,6 +196,22 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     return () => {
       currentMatrixClient.removeListener(RoomEvent.Timeline, onRoomTimeline);
     };
+  }, [clientState, showMessageTeaser]);
+
+  useEffect(() => {
+    if (
+      clientState === ClientState.CreateBackupKey ||
+      clientState === ClientState.RestoreBackupKey
+    ) {
+      showMessageTeaser({
+        title: "Chat",
+        text:
+          clientState === ClientState.CreateBackupKey
+            ? "Richten Sie ein Sicherheitsbackup ein um die Chatfunktion zu nutzen"
+            : "Bestätigen sie dieses Endgerät um die Chatfunktion zu nutzen",
+        type: "info",
+      });
+    }
   }, [clientState, showMessageTeaser]);
 
   const contextValues = useMemo<ChatClientContextType>(

@@ -5,9 +5,21 @@
 
 "use client";
 
-import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
-import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
+import { useUserApi } from "@/lib/baseModule/api/clients";
+import {
+  useInspectionApi,
+  useObjectTypeApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import { getInspectionQuery } from "@/lib/businessModules/inspection/api/queries/inspection";
+import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import {
+  getAllAssignableUsersQuery,
+  getSelfUserQuery,
+} from "@/lib/businessModules/inspection/api/queries/users";
 import { AddInspectionTiles } from "@/lib/businessModules/inspection/components/inspection/new/AddInspectionTiles";
+import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
@@ -18,9 +30,30 @@ export default function NewInspectionProcedurePage({
 }: Readonly<{
   params: { procedureId: string };
 }>) {
-  const { data: inspection } = useGetInspection(params.procedureId);
+  const inspectionApi = useInspectionApi();
+  const objectTypeApi = useObjectTypeApi();
+  const userApi = useUserApi();
+  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
+
+  const [
+    { data: inspection },
+    { data: objectTypes },
+    { data: selfUser },
+    { data: allAssignableUsers },
+  ] = useSuspenseQueries({
+    queries: [
+      getInspectionQuery(
+        inspectionApi,
+        getPreCacheForOfflineModeHeaders,
+        params.procedureId,
+      ),
+      getObjectTypesQuery(objectTypeApi),
+      getSelfUserQuery(userApi),
+      getAllAssignableUsersQuery(userApi),
+    ],
+  });
+
   const facility = inspection.facility;
-  const { data: objectTypes } = useGetObjectTypes();
 
   return (
     <StickyToolbarLayout
@@ -32,7 +65,12 @@ export default function NewInspectionProcedurePage({
       }
     >
       <MainContentLayout>
-        <AddInspectionTiles inspection={inspection} objectTypes={objectTypes} />
+        <AddInspectionTiles
+          inspection={inspection}
+          objectTypes={objectTypes}
+          selfUser={selfUser}
+          allAssignableUsers={allAssignableUsers}
+        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

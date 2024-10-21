@@ -5,10 +5,10 @@
 
 package de.eshg.schoolentry.business.model;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.lib.common.CountryCode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public record CustodianDetailsData(
     LocalDate dateOfBirth,
     String nameAtBirth,
     String placeOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     List<String> emailAddresses,
     List<String> phoneNumbers,
     AddressDto contactAddress,

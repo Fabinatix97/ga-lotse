@@ -24,7 +24,7 @@ export function ChatNoAccessAlert({
   withButton = true,
 }: ChatNoAccessProps) {
   const {
-    userSettings: { chatConsentAsked },
+    userSettings: { chatConsentAsked, chatUsageEnabled },
   } = useChat();
 
   return (
@@ -59,7 +59,12 @@ export function ChatNoAccessAlert({
             size="sm"
             color={color}
             sx={{ textTransform: "uppercase" }}
-            renderModal={(props) => <ChatConsentModal {...props} />}
+            renderModal={(props) => (
+              <ChatConsentModal
+                {...props}
+                chatUsageEnabled={chatUsageEnabled}
+              />
+            )}
             // If consent to use the chat has never been requested, the initial modal value should be true
             initialModalValue={chatConsentAsked === false}
           >

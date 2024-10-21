@@ -49,6 +49,7 @@ function ChecklistVersionsSidebarWithQuery({
   const { data: versions } = useGetChecklistDefinitionVersions(
     checklistDefinition.id,
   );
+
   const nameChangeMap = computeNameChangeMap(versions);
   const [canEditChecklists, canEditCoreChecklists] = useHasUserRolesCheck([
     ApiUserRole.InspectionChecklistdefinitionsWrite,

@@ -5,20 +5,25 @@
 
 package de.eshg.opendata.domain.model;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import de.eshg.opendata.FileType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.Date;
+import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -26,47 +31,60 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @DataSensitivity(SensitivityLevel.PUBLIC)
 @Table(indexes = @Index(columnList = "resource_id"))
 @Entity
-public class Version extends BaseEntity {
+public class Version extends BaseEntityWithExternalId {
 
   public Version() {}
 
-  public Version(int major, int minor, Resource resource) {
-    this.major = major;
-    this.minor = minor;
-    this.resource = resource;
-    this.publicationDate = LocalDateTime.now();
-  }
+  @NotNull private String versionName;
 
-  private int major;
+  @NotNull private int major;
 
-  private int minor;
+  @NotNull private int minor;
 
-  private LocalDateTime publicationDate;
+  @NotNull private Instant publicationDate;
 
-  private Date statisticStartDate;
+  private LocalDate statisticStartDate;
 
-  private Date statisticEndDate;
+  private LocalDate statisticEndDate;
 
-  private byte[] document;
+  @NotNull private int fileSize;
 
-  @ElementCollection(fetch = FetchType.EAGER)
+  @OneToOne(
+      optional = false,
+      fetch = FetchType.LAZY,
+      orphanRemoval = true,
+      cascade = CascadeType.PERSIST)
+  private FileContent document;
+
+  @ElementCollection
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private Set<BusinessModule> sources;
+  @OrderBy
+  @Column(nullable = false)
+  private Set<BusinessModule> sources = new LinkedHashSet<>();
 
   private String author;
 
   private String description;
 
+  @NotNull
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private FileType fileType;
+  private OpenDataFileType fileType;
 
-  private String fileName;
+  @NotNull private String fileName;
 
-  private String licence = "https://creativecommons.org/licenses/by/4.0/deed.de";
+  @NotNull private String licence;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "resource_id")
   private Resource resource;
+
+  public String getVersionName() {
+    return versionName;
+  }
+
+  public void setVersionName(String versionName) {
+    this.versionName = versionName;
+  }
 
   public int getMajor() {
     return major;
@@ -84,35 +102,35 @@ public class Version extends BaseEntity {
     this.minor = minor;
   }
 
-  public LocalDateTime getPublicationDate() {
+  public Instant getPublicationDate() {
     return publicationDate;
   }
 
-  public void setPublicationDate(LocalDateTime publicationDate) {
+  public void setPublicationDate(Instant publicationDate) {
     this.publicationDate = publicationDate;
   }
 
-  public Date getStatisticStartDate() {
+  public LocalDate getStatisticStartDate() {
     return statisticStartDate;
   }
 
-  public void setStatisticStartDate(Date statisticStartDate) {
+  public void setStatisticStartDate(LocalDate statisticStartDate) {
     this.statisticStartDate = statisticStartDate;
   }
 
-  public Date getStatisticEndDate() {
+  public LocalDate getStatisticEndDate() {
     return statisticEndDate;
   }
 
-  public void setStatisticEndDate(Date statisticEndDate) {
+  public void setStatisticEndDate(LocalDate statisticEndDate) {
     this.statisticEndDate = statisticEndDate;
   }
 
-  public byte[] getDocument() {
+  public FileContent getDocument() {
     return document;
   }
 
-  public void setDocument(byte[] document) {
+  public void setDocument(FileContent document) {
     this.document = document;
   }
 
@@ -140,11 +158,11 @@ public class Version extends BaseEntity {
     this.description = description;
   }
 
-  public FileType getFileType() {
+  public OpenDataFileType getFileType() {
     return fileType;
   }
 
-  public void setFileType(FileType fileType) {
+  public void setFileType(OpenDataFileType fileType) {
     this.fileType = fileType;
   }
 
@@ -164,15 +182,24 @@ public class Version extends BaseEntity {
     this.licence = licence;
   }
 
-  public Resource getRessource() {
+  public Resource getResource() {
     return resource;
   }
 
-  public void setRessource(Resource resource) {
+  public void setResource(Resource resource) {
     this.resource = resource;
   }
 
   public String getFullVersionNumber() {
     return major + "." + minor;
+  }
+
+  @NotNull
+  public int getFileSize() {
+    return fileSize;
+  }
+
+  public void setFileSize(@NotNull int fileSize) {
+    this.fileSize = fileSize;
   }
 }

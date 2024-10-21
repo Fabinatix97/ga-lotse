@@ -11,7 +11,7 @@ import {
   ApiServicePlanEntry,
   ApiServiceStatus,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { AddOutlined } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
@@ -146,13 +146,7 @@ export function ServicePlanTable({
     "most-recent-users",
   );
 
-  const alertContext = useAlertContext();
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
-  }
+  const resetAlertContext = useResetAlertContext();
 
   function handleCancel(
     currentValues:

@@ -23,8 +23,9 @@ interface ToggleButtonProps extends Omit<ButtonProps, "onToggle"> {
  * use aria-pressed on the Button or Icon Button component instead."<i>
  */
 export function ToggleButton(props: ToggleButtonProps) {
-  const { onClick, onToggle, asIcon, children, ...restProps } = props;
-  const [pressed, setPressed] = useState(false);
+  const { onClick, onToggle, asIcon, children, defaultChecked, ...restProps } =
+    props;
+  const [pressed, setPressed] = useState(defaultChecked ?? false);
 
   const Component = asIcon ? IconButton : Button;
 

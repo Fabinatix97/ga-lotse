@@ -24,8 +24,6 @@ import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
-import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
@@ -63,7 +61,6 @@ public class Validator {
   private final Icd10GroupRepository icd10GroupRepository;
   private final ContactClient contactClient;
   private final Clock clock;
-  private final SchoolEntryFeatureToggle featureToggle;
   private final SchoolEntryProperties schoolEntryProperties;
   private final AppointmentBlockProperties appointmentBlockProperties;
 
@@ -72,22 +69,14 @@ public class Validator {
       Icd10GroupRepository icd10GroupRepository,
       ContactClient contactClient,
       Clock clock,
-      SchoolEntryFeatureToggle featureToggle,
       SchoolEntryProperties schoolEntryProperties,
       AppointmentBlockProperties appointmentBlockProperties) {
     this.icd10CodeRepository = icd10CodeRepository;
     this.icd10GroupRepository = icd10GroupRepository;
     this.contactClient = contactClient;
     this.clock = clock;
-    this.featureToggle = featureToggle;
     this.schoolEntryProperties = schoolEntryProperties;
     this.appointmentBlockProperties = appointmentBlockProperties;
-  }
-
-  void validateSearchParametersAreNull(ProcedureSearchParameters searchParameters) {
-    if (hasNonNullValue(searchParameters)) {
-      featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.SEARCH_BY_KNOWLEDGE_FACTORS);
-    }
   }
 
   static void validateOnlyOneOfSearchAndFilterParametersAreSet(

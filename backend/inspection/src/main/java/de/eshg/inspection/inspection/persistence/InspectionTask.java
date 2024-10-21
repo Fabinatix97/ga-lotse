@@ -14,7 +14,7 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.Clock;
 import java.util.UUID;
 
 @Entity
@@ -22,24 +22,25 @@ import java.util.UUID;
 @DataSensitivity(SensitivityLevel.SENSITIVE)
 public class InspectionTask extends Task<Inspection> {
 
-  public static InspectionTask newPlanningTask(UUID assigneeId) {
-    return createInspectionTask(TaskType.INSPECTION_PLANNING, assigneeId);
+  public static InspectionTask newPlanningTask(UUID assigneeId, Clock clock) {
+    return createInspectionTask(TaskType.INSPECTION_PLANNING, assigneeId, clock);
   }
 
-  public static InspectionTask newExecutionTask(UUID assigneeId) {
-    return createInspectionTask(TaskType.INSPECTION_EXECUTION, assigneeId);
+  public static InspectionTask newExecutionTask(UUID assigneeId, Clock clock) {
+    return createInspectionTask(TaskType.INSPECTION_EXECUTION, assigneeId, clock);
   }
 
-  public static InspectionTask newReportTask(UUID assigneeId) {
-    return createInspectionTask(TaskType.INSPECTION_REPORT, assigneeId);
+  public static InspectionTask newReportTask(UUID assigneeId, Clock clock) {
+    return createInspectionTask(TaskType.INSPECTION_REPORT, assigneeId, clock);
   }
 
-  private static InspectionTask createInspectionTask(TaskType taskType, UUID assigneeId) {
+  private static InspectionTask createInspectionTask(
+      TaskType taskType, UUID assigneeId, Clock clock) {
     InspectionTask task = new InspectionTask();
     task.setTaskType(taskType);
     task.setTaskStatus(TaskStatus.OPEN);
     UUID currentUserId = CurrentUserHelper.getCurrentUserId();
-    task.assign(assigneeId, currentUserId, Instant.now());
+    task.assign(assigneeId, currentUserId, clock.instant());
     return task;
   }
 }

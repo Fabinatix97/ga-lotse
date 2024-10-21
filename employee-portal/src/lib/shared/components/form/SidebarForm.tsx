@@ -6,7 +6,7 @@
 "use client";
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { useFormikContext } from "formik";
 import {
@@ -64,20 +64,16 @@ export function useSidebarFormHandle(
     resetForm: () => void;
   },
 ) {
-  const alertContext = useAlertContext();
-
-  const resetErrors = useCallback(() => {
-    alertContext?.setAlert?.(null);
-  }, [alertContext]);
+  const resetAlertContext = useResetAlertContext();
 
   const resetForm = useCallback(() => {
     props.resetForm();
-    resetErrors();
-  }, [props, resetErrors]);
+    resetAlertContext();
+  }, [props, resetAlertContext]);
 
   useImperativeHandle(ref, () => ({
     dirty: props.dirty,
     resetForm,
-    resetErrors,
+    resetErrors: resetAlertContext,
   }));
 }

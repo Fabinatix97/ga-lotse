@@ -5,10 +5,10 @@
 
 package de.eshg.lib.procedure.domain.model;
 
-import static de.eshg.lib.procedure.domain.model.FileType.EML;
-import static de.eshg.lib.procedure.domain.model.FileType.JPEG;
-import static de.eshg.lib.procedure.domain.model.FileType.PDF;
-import static de.eshg.lib.procedure.domain.model.FileType.PNG;
+import static de.eshg.lib.procedure.domain.model.ProcedureFileType.EML;
+import static de.eshg.lib.procedure.domain.model.ProcedureFileType.JPEG;
+import static de.eshg.lib.procedure.domain.model.ProcedureFileType.PDF;
+import static de.eshg.lib.procedure.domain.model.ProcedureFileType.PNG;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -19,13 +19,13 @@ public enum FileTypeGroup {
   EMAIL(EML),
   IMAGE(JPEG, PNG);
 
-  private final EnumSet<FileType> fileTypes;
+  private final EnumSet<ProcedureFileType> fileTypes;
 
-  FileTypeGroup(FileType... fileTypes) {
+  FileTypeGroup(ProcedureFileType... fileTypes) {
     this.fileTypes = EnumSet.copyOf(Arrays.asList(fileTypes));
   }
 
-  public Set<FileType> getFileTypes() {
+  public Set<ProcedureFileType> getFileTypes() {
     return fileTypes;
   }
 }

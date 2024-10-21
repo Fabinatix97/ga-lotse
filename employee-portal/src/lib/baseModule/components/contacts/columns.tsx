@@ -11,11 +11,13 @@ import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isDefined } from "remeda";
 
-import { fullContactName } from "@/lib/baseModule/components/contacts/helpers";
+import {
+  fullContactName,
+  getContactAddressLine,
+} from "@/lib/baseModule/components/contacts/helpers";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
-import { BaseAddress } from "@/lib/shared/helpers/address";
 
 import { Contact, isInstitutionContact } from "./types";
 
@@ -80,7 +82,7 @@ export function contactTableColumns({
     columnHelper.accessor("contactAddress", {
       header: "Adresse",
       enableSorting: false,
-      cell: (props) => <AddressColumn address={props.getValue()} />,
+      cell: (props) => getContactAddressLine(props.getValue()),
       meta: {
         canNavigate: {
           parentRow: true,
@@ -117,16 +119,6 @@ export function contactTableColumns({
       },
     }),
   ];
-}
-
-function AddressColumn({ address }: { address: BaseAddress | undefined }) {
-  if (address === undefined) {
-    return undefined;
-  }
-
-  return address.type === "DomesticAddress"
-    ? `${[address.street, address.houseNumber].join(" ")}, ${address.postalCode} ${address.city}`
-    : `${address.postbox}, ${address.postalCode} ${address.city}`;
 }
 
 function ContactType({ type }: { type: string }) {

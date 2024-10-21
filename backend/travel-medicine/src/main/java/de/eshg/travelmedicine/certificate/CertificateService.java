@@ -10,9 +10,9 @@ import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.CERTIF
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
@@ -228,7 +228,8 @@ public class CertificateService {
     pdfMetaData.setCreatedDate(Instant.now(clock));
     pdfMetaData.setDescription(pdfParameters.getTitle());
 
-    return FileFactory.createPdfWithMetaData(PDF_FILENAME, FileType.PDF, bytes, pdfMetaData, false);
+    return FileFactory.createPdfWithMetaData(
+        PDF_FILENAME, ProcedureFileType.PDF, bytes, pdfMetaData, false);
   }
 
   private UUID generateProgressEntry(ProcedureStep procedureStep, List<UUID> serviceIds) {

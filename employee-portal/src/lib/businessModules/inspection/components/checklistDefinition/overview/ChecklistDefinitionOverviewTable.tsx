@@ -16,7 +16,6 @@ import {
   useAddChecklistDefinitionVersion,
   useEditDraftChecklistDefinitionVersion,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
-import { useGetChecklistDefinitions } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { generateChecklistDefinitionOverviewTableColumns } from "@/lib/businessModules/inspection/components/checklistDefinition/overview/columns";
 import { UploadChecklistToRepoSidebar } from "@/lib/businessModules/inspection/components/checklistDefinition/sidebars/UploadChecklistToRepoSidebar";
 import { ChecklistVersionsSidebar } from "@/lib/businessModules/inspection/components/checklistDefinition/sidebars/history/ChecklistVersionsSidebar";
@@ -41,7 +40,15 @@ type UserActivityState =
 
 const initialUserActivity: UserActivityState = { type: "view-table" };
 
-export function ChecklistDefinitionOverviewTable() {
+interface ChecklistDefinitionOverviewTableProps {
+  checklists: ApiChecklistDefinition[];
+  isFetching: boolean;
+}
+
+export function ChecklistDefinitionOverviewTable({
+  checklists,
+  isFetching,
+}: Readonly<ChecklistDefinitionOverviewTableProps>) {
   const { openConfirmationDialog } = useConfirmationDialog();
   const snackbar = useSnackbar();
   const [
@@ -56,7 +63,6 @@ export function ChecklistDefinitionOverviewTable() {
     ApiUserRole.InspectionChecklistdefinitionsWrite,
   ]);
 
-  const { data: checklists, isFetching } = useGetChecklistDefinitions();
   const { mutateAsync: addCldVersion } = useAddChecklistDefinitionVersion();
   const { mutateAsync: editDraftCldVersion } =
     useEditDraftChecklistDefinitionVersion();

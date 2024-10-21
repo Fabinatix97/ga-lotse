@@ -9,7 +9,6 @@ import de.eshg.base.calendar.CalendarEventService;
 import de.eshg.base.calendar.CalendarService;
 import de.eshg.base.calendar.api.GetEventsOfCalendarResponse;
 import de.eshg.base.calendar.api.UserCalendar;
-import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.keycloak.EmployeeKeycloakClient;
 import de.eshg.base.keycloak.EmployeeUserAttribute;
@@ -133,9 +132,11 @@ public class UserController implements UserApi {
         userService.updateUser(
             EmployeeKeycloakClient.getSelfUserId(),
             user -> {
+              Map<String, List<String>> currentAttributes =
+                  Objects.requireNonNullElseGet(user.getAttributes(), LinkedHashMap::new);
               Map<String, List<String>> attributes =
                   UserMapper.mapAttributesToDm(
-                      request.phoneNumber(), request.externalChatUsername());
+                      currentAttributes, request.phoneNumber(), request.externalChatUsername());
               user.setAttributes(attributes);
             });
     return UserMapper.mapUserToApi(updated);
@@ -201,7 +202,6 @@ public class UserController implements UserApi {
 
   @Override
   public GetActiveSessionsResponse getSelfActiveSessions() {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.ACCOUNT_ACTIVE_SESSIONS);
     String sessionId = CurrentUserHelper.getCurrentUserSessionIdGracefully().orElse("");
     return new GetActiveSessionsResponse(
         userService.getSelfActiveSessions().sessions().stream()
@@ -224,14 +224,11 @@ public class UserController implements UserApi {
 
   @Override
   public void invalidateActiveSessions(InvalidateSessionsRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.ACCOUNT_ACTIVE_SESSIONS);
     userService.invalidateSessions(request.sessions());
   }
 
   @Override
   public GetEventsResponse getSelfEvents(UserEventFilterParameters parameters) {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.LOGIN_PROTOCOL);
-
     int offset = parameters.offset();
     int limit = parameters.limit();
     Set<KeycloakEventType> eventTypes = getEventTypeOrFallback(parameters.type());

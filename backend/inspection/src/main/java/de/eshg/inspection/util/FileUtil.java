@@ -8,7 +8,7 @@ package de.eshg.inspection.util;
 import static de.eshg.lib.procedure.util.FileValidator.validate;
 import static de.eshg.lib.procedure.util.FileValidator.validateAudioFile;
 
-import de.base.rest.CustomMediaTypes;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.inspection.common.persistence.MediaFile;
 import de.eshg.inspection.common.persistence.MediaFileContent;
 import de.eshg.rest.service.error.BadRequestException;

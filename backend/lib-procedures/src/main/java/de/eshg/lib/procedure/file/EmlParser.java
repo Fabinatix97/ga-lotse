@@ -5,19 +5,20 @@
 
 package de.eshg.lib.procedure.file;
 
-import static de.eshg.lib.procedure.domain.model.FileType.EML;
-import static de.eshg.lib.procedure.domain.model.FileType.JPEG;
-import static de.eshg.lib.procedure.domain.model.FileType.PDF;
-import static de.eshg.lib.procedure.domain.model.FileType.PNG;
+import static de.eshg.file.common.FileType.JPEG;
+import static de.eshg.file.common.FileType.PDF;
+import static de.eshg.file.common.FileType.PNG;
 import static jakarta.mail.Part.ATTACHMENT;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
+import de.eshg.file.common.FileType;
+import de.eshg.file.common.FileTypeDetector;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
 import de.eshg.lib.procedure.domain.model.MailMetaData;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.rest.service.error.BadRequestException;
 import jakarta.mail.Address;
 import jakarta.mail.BodyPart;
@@ -55,7 +56,7 @@ class EmlParser {
       Message message = new FixedMessageIdMimeMessage(session, inputStream);
 
       ParsedMail parsedMail = new ParsedMail();
-      parsedMail.setFileType(EML);
+      parsedMail.setFileType(ProcedureFileType.EML);
       parsedMail.setSubject(message.getSubject());
       parsedMail.setMessageText(extractMessageText(message));
       parsedMail.setMetaData(extractMetaData(message));
@@ -166,7 +167,7 @@ class EmlParser {
       File file =
           createFile(
               bodyPart.getFileName(),
-              parseFileType(bodyPart),
+              FileTypeMapper.mapToProcedureFileType(parseFileType(bodyPart)),
               parseFileContent(bodyPart),
               deletable);
       files.add(file);
@@ -202,7 +203,7 @@ class EmlParser {
   }
 
   private static File createFile(
-      String fileName, FileType fileType, byte[] fileContent, boolean deletable)
+      String fileName, ProcedureFileType fileType, byte[] fileContent, boolean deletable)
       throws IOException {
     return switch (fileType) {
       case JPEG, PNG -> {

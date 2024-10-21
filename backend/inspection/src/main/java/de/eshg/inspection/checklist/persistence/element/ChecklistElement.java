@@ -10,6 +10,7 @@ import de.eshg.inspection.checklist.persistence.ChecklistSection;
 import de.eshg.inspection.checklistdefinition.api.ChecklistElementType;
 import de.eshg.inspection.checklistdefinition.persistence.section.element.ChecklistDefinitionElement;
 import de.eshg.inspection.incident.persistence.InspectionIncident;
+import de.eshg.inspection.incident.persistence.InspectionIncident_;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.DiscriminatorColumn;
@@ -51,7 +52,7 @@ public abstract class ChecklistElement extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private ChecklistDefinitionElement checklistDefinitionElement;
 
-  @OneToOne
+  @OneToOne(mappedBy = InspectionIncident_.CHECKLIST_ELEMENT)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private InspectionIncident inspectionIncident;
 

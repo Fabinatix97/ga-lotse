@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Row } from "@eshg/lib-portal/components/Row";
 import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Chip, Grid, Sheet, Typography } from "@mui/joy";
 import { useId } from "react";
 
-import { Row } from "@/lib/shared/Row";
 import { ProcedureLiteItem } from "@/lib/shared/components/legacyPersonSidebar/LegacyPersonSidebar";
 import {
   procedureStatusNames,

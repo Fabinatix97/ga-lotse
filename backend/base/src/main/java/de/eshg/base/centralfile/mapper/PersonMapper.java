@@ -7,8 +7,6 @@ package de.eshg.base.centralfile.mapper;
 
 import static de.eshg.base.address.mapper.AddressMapper.mapAddressToApi;
 import static de.eshg.base.util.MappingUtil.extractStrings;
-import static de.eshg.base.util.MappingUtil.mapCountryCodeToApi;
-import static de.eshg.base.util.MappingUtil.mapCountryCodeToDm;
 import static de.eshg.base.util.MappingUtil.mapDataOriginToApi;
 import static de.eshg.base.util.MappingUtil.mapDataOriginToDm;
 import static de.eshg.base.util.MappingUtil.mapGenderToApi;
@@ -56,7 +54,7 @@ public class PersonMapper {
         person.getBirthDetails().dateOfBirth(),
         person.getBirthDetails().nameAtBirth(),
         person.getBirthDetails().placeOfBirth(),
-        mapCountryCodeToApi(person.getBirthDetails().countryOfBirth()),
+        person.getBirthDetails().countryOfBirth(),
         extractStrings(person.getEmailAddresses(), PersonEmailAddress::getEmailAddress),
         extractStrings(person.getPhoneNumbers(), PersonPhoneNumber::getPhoneNumber),
         person.getReferenceVersion(),
@@ -75,7 +73,7 @@ public class PersonMapper {
         person.getBirthDetails().dateOfBirth(),
         person.getBirthDetails().nameAtBirth(),
         person.getBirthDetails().placeOfBirth(),
-        mapCountryCodeToApi(person.getBirthDetails().countryOfBirth()),
+        person.getBirthDetails().countryOfBirth(),
         extractStrings(person.getEmailAddresses(), PersonEmailAddress::getEmailAddress),
         extractStrings(person.getPhoneNumbers(), PersonPhoneNumber::getPhoneNumber),
         mapAddressToApi(person.getContactAddress()),
@@ -94,7 +92,7 @@ public class PersonMapper {
         person.getBirthDetails().dateOfBirth(),
         person.getBirthDetails().nameAtBirth(),
         person.getBirthDetails().placeOfBirth(),
-        mapCountryCodeToApi(person.getBirthDetails().countryOfBirth()),
+        person.getBirthDetails().countryOfBirth(),
         extractStrings(person.getEmailAddresses(), PersonEmailAddress::getEmailAddress),
         extractStrings(person.getPhoneNumbers(), PersonPhoneNumber::getPhoneNumber),
         mapAddressToApi(person.getContactAddress()),
@@ -114,7 +112,7 @@ public class PersonMapper {
         person.getBirthDetails().dateOfBirth(),
         person.getBirthDetails().nameAtBirth(),
         person.getBirthDetails().placeOfBirth(),
-        mapCountryCodeToApi(person.getBirthDetails().countryOfBirth()),
+        person.getBirthDetails().countryOfBirth(),
         extractStrings(person.getEmailAddresses(), PersonEmailAddress::getEmailAddress),
         extractStrings(person.getPhoneNumbers(), PersonPhoneNumber::getPhoneNumber),
         person.getReferenceVersion(),
@@ -209,7 +207,7 @@ public class PersonMapper {
         personDetails.dateOfBirth(),
         personDetails.nameAtBirth(),
         personDetails.placeOfBirth(),
-        mapCountryCodeToDm(personDetails.countryOfBirth()));
+        personDetails.countryOfBirth());
   }
 
   public static List<PersonEmailAddress> mapEmailAddressesToDm(List<String> emailAddresses) {

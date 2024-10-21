@@ -7,8 +7,9 @@
 
 import { ApiFileType } from "@eshg/employee-portal-api/inspection";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
-import { DeleteOutlined, InfoOutlined, OpenInNew } from "@mui/icons-material";
-import { Stack, Tooltip, Typography } from "@mui/joy";
+import { DeleteOutlined, OpenInNew } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/joy";
+import { useId } from "react";
 
 import { useServerConfig } from "@/lib/baseModule/api/queries/config";
 import { useConfiguration } from "@/lib/businessModules/inspection/api/clients";
@@ -20,6 +21,7 @@ import {
   FileCard,
   FileCardActionProps,
 } from "@/lib/shared/components/FileCard";
+import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 import { FileLike } from "@/lib/shared/components/formFields/file/validators";
@@ -52,6 +54,7 @@ export function ChecklistFileElement({
   readOnly = false,
 }: Readonly<ChecklistFileElementProps>) {
   const { data: config } = useServerConfig();
+  const uploadTooltipTitleId = useId();
   if (element.type !== "IMAGE" && element.type !== "AUDIO") {
     return;
   }
@@ -112,14 +115,12 @@ export function ChecklistFileElement({
         {!readOnly && (
           <>
             <Typography level="body-sm">
-              {uploadTooltipTitle}
-              <Tooltip title={uploadTooltipText}>
-                <InfoOutlined
-                  style={{ marginRight: 8 }}
-                  size="sm"
-                  color="primary"
-                />
-              </Tooltip>
+              <label id={uploadTooltipTitleId}>{uploadTooltipTitle}</label>
+              <InfoIconTooltipButton
+                size="sm"
+                iconLabelledBy={uploadTooltipTitleId}
+                title={uploadTooltipText}
+              />
             </Typography>
             <FileField
               name={name}

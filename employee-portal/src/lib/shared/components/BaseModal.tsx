@@ -4,8 +4,8 @@
  */
 
 import {
-  ScopedAlert,
-  useAlertContext,
+  AlertSlot,
+  useResetAlertContext,
 } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { DialogTitle, Modal, ModalClose, ModalDialog } from "@mui/joy";
 import { DefaultColorPalette, SxProps } from "@mui/joy/styles/types";
@@ -29,15 +29,13 @@ export function BaseModal({
   onClose,
   sx,
 }: BaseModalProps) {
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function handleClose() {
     if (onClose !== undefined) {
       onClose();
     }
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
+    resetAlertContext();
   }
 
   return (
@@ -52,7 +50,7 @@ export function BaseModal({
           {isDefined(modalTitle) && (
             <DialogTitle color={color}>{modalTitle}</DialogTitle>
           )}
-          <ScopedAlert />
+          <AlertSlot />
           <ModalClose
             variant="outlined"
             aria-label="Schließen"

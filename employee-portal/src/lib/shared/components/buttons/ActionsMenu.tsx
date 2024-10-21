@@ -32,6 +32,7 @@ export interface ActionsMenuProps extends MenuButtonProps {
   sx?: SxProps;
   color?: ColorPaletteProp;
   disablePortal?: boolean;
+  rowHeight?: boolean;
 }
 
 function ActionLabel({
@@ -114,11 +115,16 @@ export function createActionsLinkOrButton(item: ActionsItem) {
 }
 
 export function ActionsMenu(props: ActionsMenuProps) {
-  const { actionItems, actionDescription, ...rest } = props;
+  const { actionItems, actionDescription, rowHeight, ...rest } = props;
 
   return (
     <Dropdown>
-      <Stack direction="row" alignItems="center" justifyContent="flex-end">
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="flex-end"
+        sx={{ height: rowHeight ? 3 : undefined }}
+      >
         <MenuButton
           slots={{ root: IconButton }}
           slotProps={{ root: { variant: props.variant, color: props.color } }}

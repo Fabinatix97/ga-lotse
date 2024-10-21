@@ -7,8 +7,9 @@ package de.eshg.schoolentry.importer;
 
 import de.eshg.schoolentry.business.model.ImportCustodianData;
 import java.util.List;
+import java.util.Objects;
 
-public final class CitizenListRowValues extends RowValues {
+public final class CitizenListRowValues extends SchoolEntryRowValues {
 
   private List<ImportCustodianData> custodians;
   private boolean informationBlock;
@@ -27,5 +28,12 @@ public final class CitizenListRowValues extends RowValues {
 
   public void setInformationBlock(boolean informationBlock) {
     this.informationBlock = informationBlock;
+  }
+
+  @Override
+  public boolean isDuplicateRow(Object other) {
+    return (other instanceof CitizenListRowValues citizenListRowValues)
+        && Objects.equals(this.getChild(), citizenListRowValues.getChild())
+        && Objects.equals(this.getCustodians(), citizenListRowValues.getCustodians());
   }
 }

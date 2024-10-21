@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUser, ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
   ApiInspFacility,
   ApiInspection,
@@ -26,7 +26,6 @@ import { useRouter } from "next/navigation";
 import { isNonNullish, isNullish } from "remeda";
 
 import { useStartInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
-import { useGetSelfUser } from "@/lib/businessModules/inspection/api/queries/users";
 import { InspectionAssigneeSelection } from "@/lib/businessModules/inspection/components/inspection/assignee/InspectionAssigneeSelection";
 import { inspectionTypeNames } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
@@ -47,17 +46,20 @@ interface AdditionalInfoTileProps {
   procedureId: string;
   objectTypes: ApiObjectType[];
   facility: ApiInspFacility;
+  selfUser: ApiUser;
+  allAssignableUsers: ApiUser[];
 }
 
 export function AdditionalInfoTile({
   procedureId,
   objectTypes,
   facility,
+  selfUser,
+  allAssignableUsers,
 }: Readonly<AdditionalInfoTileProps>) {
   const onlySelfAssignable = !useHasUserRoleCheck(
     ApiUserRole.InspectionProcedureAssign,
   );
-  const { data: selfUser } = useGetSelfUser();
   const router = useRouter();
 
   const TYPE_OPTIONS = buildEnumOptions(inspectionTypeNames);
@@ -149,6 +151,7 @@ export function AdditionalInfoTile({
               currentAssigneeId={values.assigneeId}
               onlySelfAssignable={onlySelfAssignable}
               assigneeIdFieldValueName="assigneeId"
+              allAssignableUsers={allAssignableUsers}
             />
             <Divider sx={{ marginBottom: 2 }} />
             <ButtonBar isSubmitting={isSubmitting} />

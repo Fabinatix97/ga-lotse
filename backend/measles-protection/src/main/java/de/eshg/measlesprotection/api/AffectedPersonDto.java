@@ -5,10 +5,10 @@
 
 package de.eshg.measlesprotection.api;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -32,7 +32,7 @@ public record AffectedPersonDto(
         LocalDate dateOfBirth,
     List<@NotBlank String> phoneNumbers,
     List<@Email String> emailAddresses,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     GenderDto gender,
     String nameAtBirth,
     String placeOfBirth,

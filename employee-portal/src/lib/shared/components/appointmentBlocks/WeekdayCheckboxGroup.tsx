@@ -49,7 +49,7 @@ export function WeekdayCheckboxGroup({
   return (
     <>
       <FormLabel id={ariaLabelId} htmlFor={labelId}>
-        <Typography level="body-md" sx={{ fontWeight: "bold" }}>
+        <Typography level="body-sm" sx={{ fontWeight: 500 }}>
           {label}
         </Typography>
       </FormLabel>

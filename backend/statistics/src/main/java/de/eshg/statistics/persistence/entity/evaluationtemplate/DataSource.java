@@ -37,6 +37,9 @@ public class DataSource extends BaseEntity {
   @Column(nullable = false)
   private UUID externalDataSourceId;
 
+  @Column(nullable = false)
+  private String dataSourceName;
+
   @OneToMany(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,
@@ -63,6 +66,14 @@ public class DataSource extends BaseEntity {
 
   public void setExternalDataSourceId(UUID externalDataSourceId) {
     this.externalDataSourceId = externalDataSourceId;
+  }
+
+  public String getDataSourceName() {
+    return dataSourceName;
+  }
+
+  public void setDataSourceName(String dataSourceName) {
+    this.dataSourceName = dataSourceName;
   }
 
   public List<DataAttribute> getAttributes() {

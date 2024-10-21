@@ -5,7 +5,14 @@
 
 "use client";
 
-import { useGetPacklistDefinitionRevision } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
+import {
+  useObjectTypeApi,
+  usePacklistDefinitionApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { getPacklistDefinitionRevisionQuery } from "@/lib/businessModules/inspection/api/queries/packlistDefinition";
 import { CreateOrEditPacklistDefinitionSidebar } from "@/lib/businessModules/inspection/components/packlistDefinition/CreateOrEditPacklistDefinitionSidebar";
 
 interface EditPacklistDefinitionSidebarProps {
@@ -27,8 +34,17 @@ export function EditPacklistDefinitionSidebar({
   version,
   onClickNewRevision,
 }: Readonly<EditPacklistDefinitionSidebarProps>) {
-  const { data: packlistRevision } =
-    useGetPacklistDefinitionRevision(revisionId);
+  const objectTypeApi = useObjectTypeApi();
+  const packlistDefinitionApi = usePacklistDefinitionApi();
+
+  const [{ data: packlistRevision }, { data: objectTypes }] =
+    useSuspenseQueries({
+      queries: [
+        getPacklistDefinitionRevisionQuery(packlistDefinitionApi, revisionId),
+        getObjectTypesQuery(objectTypeApi),
+      ],
+    });
+
   return (
     <CreateOrEditPacklistDefinitionSidebar
       open
@@ -42,6 +58,7 @@ export function EditPacklistDefinitionSidebar({
       }
       onClickNewRevision={onClickNewRevision}
       version={version}
+      objectTypes={objectTypes}
     />
   );
 }

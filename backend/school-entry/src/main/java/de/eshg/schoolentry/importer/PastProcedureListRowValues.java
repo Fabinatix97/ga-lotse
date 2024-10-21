@@ -7,8 +7,9 @@ package de.eshg.schoolentry.importer;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import java.time.LocalDate;
+import java.util.Objects;
 
-public final class PastProcedureListRowValues extends RowValues {
+public final class PastProcedureListRowValues extends SchoolEntryRowValues {
 
   private ProcedureType procedureType;
 
@@ -28,5 +29,11 @@ public final class PastProcedureListRowValues extends RowValues {
 
   public void setExaminationDate(LocalDate examinationDate) {
     this.examinationDate = examinationDate;
+  }
+
+  @Override
+  boolean isDuplicateRow(Object other) {
+    return (other instanceof PastProcedureListRowValues pastProcedureListRowValues)
+        && Objects.equals(this.getChild(), pastProcedureListRowValues.getChild());
   }
 }

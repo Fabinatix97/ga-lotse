@@ -12,6 +12,7 @@ import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.schoolentry.api.CreateProcedureResponse;
+import de.eshg.schoolentry.api.GetClosedProceduresResponse;
 import de.eshg.schoolentry.api.SchoolEntryAppointmentBlockPopulationResult;
 import de.eshg.schoolentry.api.SchoolEntryProcedurePopulationResult;
 import de.eshg.schoolentry.config.SchoolEntryFeature;
@@ -75,6 +76,12 @@ public class SchoolEntryTestHelperController extends TestHelperController
   @Transactional
   public void clearCitizenUserId(@PathVariable("procedureId") UUID procedureId) {
     schoolEntryTestHelperService.clearCitizenUserId(procedureId);
+  }
+
+  @GetExchange("/school-entries/closed")
+  @Transactional(readOnly = true)
+  public GetClosedProceduresResponse getIdsOfClosedProcedures() {
+    return new GetClosedProceduresResponse(schoolEntryTestHelperService.getIdsOfClosedProcedures());
   }
 
   @PostExchange("/enabled-new-features/{featureToEnable}")

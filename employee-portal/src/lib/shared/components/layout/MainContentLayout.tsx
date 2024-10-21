@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ScopedAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Stack, StackProps, styled } from "@mui/joy";
 
 import { PAGE_ALERT_STYLE } from "@/lib/shared/styles";
@@ -46,7 +46,7 @@ export function MainContentLayout(props: MainContentLayoutProps) {
       {...stackProps}
       className={props.fullViewportHeight ? "fullViewportHeight" : undefined}
     >
-      <ScopedAlert sx={PAGE_ALERT_STYLE} />
+      <AlertSlot sx={PAGE_ALERT_STYLE} />
       {children}
     </LayoutStack>
   );

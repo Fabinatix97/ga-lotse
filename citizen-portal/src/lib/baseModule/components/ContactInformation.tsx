@@ -71,7 +71,7 @@ function OpeningHoursSection() {
 
   return (
     <InfoSection icon={<AccessTimeOutlined />}>
-      <InfoSectionTitle>{t("sectionTitle.openig_hours")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("sectionTitle.opening_hours")}</InfoSectionTitle>
       <Typography>{t("opening_hours_information")}</Typography>
     </InfoSection>
   );

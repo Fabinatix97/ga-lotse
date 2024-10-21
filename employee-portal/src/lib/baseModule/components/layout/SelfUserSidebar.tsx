@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import ProfileIcon from "@mui/icons-material/AccountCircle";
@@ -13,7 +12,6 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { Button, Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
 import { routes } from "@/lib/baseModule/shared/routes";
@@ -70,12 +68,6 @@ function MiscLinkButton({ href, label }: { href: string; label: string }) {
 }
 
 function SelfUserSidebar() {
-  const isActiveSessionsEnabled = useIsNewFeatureEnabled(
-    ApiBaseFeature.AccountActiveSessions,
-  );
-  const isLoginProtocolEnabled = useIsNewFeatureEnabled(
-    ApiBaseFeature.LoginProtocol,
-  );
   const { data: selfUser } = useGetSelfUser();
 
   return (
@@ -91,25 +83,18 @@ function SelfUserSidebar() {
             >
               Profil
             </NavLinkButton>
-
-            {isActiveSessionsEnabled && (
-              <NavLinkButton
-                decorator={<DevicesIcon />}
-                href={routes.account.sessions}
-              >
-                Aktive Sitzungen
-              </NavLinkButton>
-            )}
-
-            {isLoginProtocolEnabled && (
-              <NavLinkButton
-                href={routes.account.loginProtocol}
-                decorator={<ManageSearchIcon />}
-              >
-                Anmeldeprotokoll
-              </NavLinkButton>
-            )}
-
+            <NavLinkButton
+              decorator={<DevicesIcon />}
+              href={routes.account.sessions}
+            >
+              Aktive Sitzungen
+            </NavLinkButton>
+            <NavLinkButton
+              href={routes.account.loginProtocol}
+              decorator={<ManageSearchIcon />}
+            >
+              Anmeldeprotokoll
+            </NavLinkButton>
             <Divider orientation="horizontal" />
           </Stack>
 

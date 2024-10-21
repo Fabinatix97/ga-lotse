@@ -59,23 +59,19 @@ export function ChooseAttributesStep(props: {
     const value = attributeMap.get(event.target.value)!;
     const checked = event.target.checked;
 
+    let attributes = [];
     if (checked) {
       if (!values.selectedAttributes) {
-        void setFieldValue("selectedAttributes", [value]);
+        attributes = [value];
       } else {
-        void setFieldValue("selectedAttributes", [
-          ...values.selectedAttributes,
-          value,
-        ]);
+        attributes = [...values.selectedAttributes, value];
       }
     } else {
-      void setFieldValue(
-        "selectedAttributes",
-        values.selectedAttributes!.filter(
-          (it) => mapAttributeToKey(it) !== mapAttributeToKey(value),
-        ),
+      attributes = values.selectedAttributes!.filter(
+        (it) => mapAttributeToKey(it) !== mapAttributeToKey(value),
       );
     }
+    void setFieldValue("selectedAttributes", attributes, false);
   }
 
   return (

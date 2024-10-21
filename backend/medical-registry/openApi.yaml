@@ -550,6 +550,26 @@ paths:
       summary: Update status of inbox procedure
       tags:
       - InboxProcedure
+  /medical-registry-entries/{procedureId}:
+    get:
+      operationId: getProcedure
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetMedicalRegistryProcedureResponse"
+          description: OK
+      summary: Get medical registry procedure by id.
+      tags:
+      - MedicalRegistry
   /procedure-metrics:
     get:
       operationId: getProcedureMetrics
@@ -2182,6 +2202,17 @@ components:
       - country
       - postalCode
       - street
+    EmploymentStatus:
+      type: string
+      enum:
+      - SELF_EMPLOYED
+      - FREELANCE
+      - EMPLOYEE
+    EmploymentType:
+      type: string
+      enum:
+      - FULL_TIME
+      - PART_TIME
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -2483,6 +2514,32 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ManualProgressEntryHistory"
+    GetMedicalRegistryProcedureResponse:
+      type: object
+      properties:
+        consentToPrivacyPolicy:
+          type: boolean
+        employeesEmployed:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        practice:
+          $ref: "#/components/schemas/Practice"
+        professional:
+          $ref: "#/components/schemas/Professional"
+        requestForWrittenConfirmation:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+      required:
+      - consentToPrivacyPolicy
+      - employeesEmployed
+      - id
+      - professional
+      - requestForWrittenConfirmation
+      - version
     GetMetaDataHistoryResponse:
       type: object
       properties:
@@ -2983,6 +3040,22 @@ components:
       - EMAIL
       - IMAGE
       - DOCUMENT
+    MedicalRegistryAddress:
+      type: object
+      properties:
+        city:
+          type: string
+        houseNumber:
+          type: string
+        postalCode:
+          type: string
+        street:
+          type: string
+      required:
+      - city
+      - houseNumber
+      - postalCode
+      - street
     MetaData:
       type: object
       discriminator:
@@ -3167,6 +3240,7 @@ components:
       enum:
       - PATIENT
       - PARENT
+      - PROFESSIONAL
     Population:
       type: object
       properties:
@@ -3221,6 +3295,38 @@ components:
       - country
       - postalCode
       - postbox
+    Practice:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/MedicalRegistryAddress"
+        emailAddress:
+          type: string
+          maxLength: 254
+          minLength: 6
+        establishmentNumber:
+          type: string
+        healthInsuranceAuthorization:
+          type: boolean
+        institutionIdentifier:
+          type: string
+        name:
+          type: string
+          maxLength: 300
+          minLength: 1
+        openingHours:
+          type: string
+        phoneNumber:
+          type: string
+          maxLength: 23
+          minLength: 1
+        website:
+          type: string
+          maxLength: 254
+          minLength: 6
+      required:
+      - healthInsuranceAuthorization
+      - name
     Procedure:
       type: object
       properties:
@@ -3314,6 +3420,9 @@ components:
       - TM_VACCINATION_CONSULTATION
       - MEASLES_PROTECTION
       - STI_PROTECTION
+      - MEDICAL_REGISTRY_ENTRY
+      - MEDICAL_REGISTRY_CITIZEN_DRAFT
+      - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
     ProcedureWithDuration:
       type: object
       properties:
@@ -3359,6 +3468,117 @@ components:
       - inboxProgressEntryType
       - modifiedAt
       - progressEntryId
+    Professional:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/MedicalRegistryAddress"
+        approbationGrantedOn:
+          type: string
+          format: date
+        approbationIssuingAuthority:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        emailAddress:
+          type: string
+          maxLength: 254
+          minLength: 6
+        employmentStatus:
+          $ref: "#/components/schemas/EmploymentStatus"
+        employmentType:
+          $ref: "#/components/schemas/EmploymentType"
+        fieldOfExpertise:
+          type: string
+        firstName:
+          type: string
+          maxLength: 80
+          minLength: 1
+        furtherTraining:
+          type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
+        lastName:
+          type: string
+          maxLength: 120
+          minLength: 1
+        lifetimeDoctorNumber:
+          type: string
+        nameAtBirth:
+          type: string
+          maxLength: 40
+          minLength: 1
+        nationality:
+          $ref: "#/components/schemas/CountryCode"
+        phoneNumber:
+          type: string
+          maxLength: 23
+          minLength: 1
+        placeOfBirth:
+          type: string
+          maxLength: 50
+          minLength: 1
+        professionalTitle:
+          $ref: "#/components/schemas/ProfessionalTitle"
+        qualifications:
+          type: string
+        specialistTitle:
+          type: string
+        title:
+          type: string
+          maxLength: 119
+          minLength: 1
+      required:
+      - approbationGrantedOn
+      - approbationIssuingAuthority
+      - dateOfBirth
+      - employmentStatus
+      - employmentType
+      - firstName
+      - lastName
+      - nationality
+      - professionalTitle
+    ProfessionalTitle:
+      type: string
+      enum:
+      - DOCTORS
+      - DENTISTS
+      - PSYCHOLOGICAL_PSYCHOTHERAPISTS
+      - NURSING_ASSISTANTS
+      - GERIATRIC_NURSES
+      - DIETICIANS
+      - DISINFECTORS
+      - OCCUPATIONAL_THERAPISTS
+      - HEALTH_SUPERVISORS
+      - HEALTHCARE_AND_PEDIATRIC_NURSES
+      - HEALTHCARE_AND_NURSING_ASSISTANTS
+      - HEALTHCARE_AND_NURSING_ASSISTANTS_HELPER
+      - MIDWIVES_MATERNITY_NURSES
+      - ALTERNATIVE_PRACTITIONERS
+      - NON_MEDICAL_PRACTITIONER_FOR_CHIROPRACTIC
+      - ALTERNATIVE_PRACTITIONER_FOR_SPEECH_THERAPY
+      - NON_MEDICAL_PRACTITIONER_FOR_PHYSIOTHERAPY
+      - NON_MEDICAL_PRACTITIONERS_FOR_PSYCHOTHERAPY
+      - CHILD_AND_YOUTH_PSYCHOTHERAPISTS
+      - SPEECH_THERAPISTS
+      - MASSEURS_AND_MEDICAL_BATH_ATTENDANTS
+      - MEDICAL_DOCUMENTALISTS
+      - MEDICAL_TECHNICAL_LABORATORY_ASSISTANTS
+      - MEDICAL_TECHNICAL_RADIOLOGY_ASSISTANTS
+      - MEDICAL_TECHNICAL_ASSISTANTS_FOR_FUNCTIONAL_DIAGNOSTICS
+      - EMERGENCY_PARAMEDICS
+      - ORTHOPTISTS
+      - CARE_ASSISTANTS
+      - NURSING_SERVICES
+      - NURSING_SERVICE_MANAGERS
+      - PHARMACEUTICAL_TECHNICAL_ASSISTANTS
+      - PHYSIOTHERAPISTS
+      - PODIATRISTS
+      - RADIOLOGY_ASSISTANTS
+      - SPORTS_THERAPISTS
+      - PHARMACISTS
+      - VETERINARIANS
     ProgressEntry:
       type: object
       discriminator:

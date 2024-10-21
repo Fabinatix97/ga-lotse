@@ -5,8 +5,9 @@
 
 package de.eshg.schoolentry.business.model;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
+import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.xlsximport.model.AddressData;
 import java.time.LocalDate;
 
 public record ImportChildData(
@@ -14,7 +15,7 @@ public record ImportChildData(
     String lastName,
     LocalDate dateOfBirth,
     String placeOfBirth,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     GenderDto gender,
     AddressData address,
     String phoneNumber) {
@@ -33,7 +34,7 @@ public record ImportChildData(
       String lastName,
       LocalDate dateOfBirth,
       String placeOfBirth,
-      CountryCodeDto countryOfBirth,
+      CountryCode countryOfBirth,
       GenderDto gender,
       AddressData address) {
     this(firstName, lastName, dateOfBirth, placeOfBirth, countryOfBirth, gender, address, null);

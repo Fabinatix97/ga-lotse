@@ -3,24 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { UserApi } from "@eshg/employee-portal-api/base";
+import { queryOptions } from "@tanstack/react-query";
 
-import { useUserApi } from "@/lib/baseModule/api/clients";
 import { userApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 
-export function useGetAllAssignableUsers() {
-  const userApi = useUserApi();
-  return useSuspenseQuery({
-    queryKey: userApiQueryKey(["useGetAllAssignableUsers"]),
+export function getAllAssignableUsersQuery(userApi: UserApi) {
+  return queryOptions({
+    queryKey: userApiQueryKey(["getAllAssignableUsers"]),
     queryFn: () => userApi.getUsersByGroup("[System] Begehung"),
     select: (response) => response.users ?? [],
   });
 }
 
-export function useGetSelfUser() {
-  const userApi = useUserApi();
-  return useSuspenseQuery({
-    queryKey: userApiQueryKey(["useGetSelfUser"]),
+export function getSelfUserQuery(userApi: UserApi) {
+  return queryOptions({
+    queryKey: userApiQueryKey(["getSelfUser"]),
     queryFn: () => userApi.getSelfUser(),
     select: (response) => response,
   });

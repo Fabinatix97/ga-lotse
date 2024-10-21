@@ -6,6 +6,7 @@
 import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
+  ApiGdprProcedureStatus,
 } from "@eshg/employee-portal-api/base";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -32,5 +33,30 @@ export function useAddCentralFileIdToGdprProcedure(id: string) {
     onSuccess: () => {
       snackbar.confirmation("Stammdaten erfolgreich angeheftet");
     },
+  });
+}
+
+export function useSetMatterOfConcern(id: string, version: number) {
+  const gdprProcedureApi = useGdprProcedureApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: (matterOfConcern: string) =>
+      gdprProcedureApi.setMatterOfConcern(id, {
+        version,
+        concern: matterOfConcern,
+      }),
+    onSuccess: () => {
+      snackbar.confirmation("Anliegen gespeichert");
+    },
+  });
+}
+
+export function useChangeProcedureStatus(id: string, version: number) {
+  const gdprProcedureApi = useGdprProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: (newStatus: ApiGdprProcedureStatus) =>
+      gdprProcedureApi.changeStatus(id, { version, newStatus }),
   });
 }

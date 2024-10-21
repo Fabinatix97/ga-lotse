@@ -25,5 +25,5 @@ public interface FileAware {
 
   void setMessageText(String messageText);
 
-  boolean supportsUpload(FileType fileType);
+  boolean supportsUpload(ProcedureFileType fileType);
 }

@@ -23,11 +23,12 @@ interface TextareaFieldProps extends ValidationRules<string> {
   "label-id"?: string;
   minRows?: number;
   untrimmedInput?: boolean;
+  disabled?: boolean;
 }
 
 export function TextareaField(props: TextareaFieldProps) {
   const field = useBaseField<string>(props);
-  const disabled = useIsFormDisabled();
+  const disabled = useIsFormDisabled() || props.disabled;
 
   async function handleBlur(event: FocusEvent<HTMLTextAreaElement>) {
     if (!props.untrimmedInput) {
@@ -48,6 +49,7 @@ export function TextareaField(props: TextareaFieldProps) {
       required={field.required}
       error={field.error}
       sx={props.sx}
+      disabled={disabled}
     >
       <Textarea
         aria-labelledby={props["label-id"]}

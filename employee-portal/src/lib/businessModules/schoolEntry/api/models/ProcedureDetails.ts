@@ -3,39 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiAppointmentLocation,
-  ApiProcedureDetails,
-} from "@eshg/employee-portal-api/schoolEntry";
-import {
-  mapOptionalValue,
-  parseOptionalValue,
-} from "@eshg/lib-portal/helpers/form";
-
-import {
-  Label,
-  mapLabels,
-} from "@/lib/businessModules/schoolEntry/api/models/Label";
-import {
-  WaitingRoom,
-  mapWaitingRoom,
-} from "@/lib/businessModules/schoolEntry/api/models/WaitingRoom";
+import { ApiProcedureDetails } from "@eshg/employee-portal-api/schoolEntry";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import { Appointment, mapAppointment } from "./Appointment";
+import { Label, mapLabels } from "./Label";
+import { Location, mapLocation } from "./Location";
 import { PersonDetails, mapPersonDetails } from "./Person";
 import { Procedure, mapProcedure } from "./Procedure";
+import { WaitingRoom, mapWaitingRoom } from "./WaitingRoom";
 import { mapOptional } from "./utils";
-
-export interface Location {
-  readonly id: string;
-  readonly name: string;
-}
 
 export interface ProcedureDetails extends Procedure {
   readonly version: number;
   readonly labels: Label[];
   readonly appointment?: Appointment;
-  readonly location: Location;
+  readonly location?: Location;
   readonly isEntryLevel: boolean;
   readonly child: PersonDetails;
   readonly isInvitationSent: boolean;
@@ -55,7 +38,7 @@ export function mapProcedureDetails(
     version: response.version,
     labels: mapLabels(response.labels),
     appointment: mapOptional(response.appointment, mapAppointment),
-    location: mapLocation(response.location),
+    location: mapOptional(response.location, mapLocation),
     isEntryLevel: response.isEntryLevel,
     child: mapPersonDetails(response.child),
     isInvitationSent: response.isInvitationSent,
@@ -65,12 +48,5 @@ export function mapProcedureDetails(
     waitingRoom: mapOptional(response.waitingRoom, mapWaitingRoom),
     isDeletable: response.isDeletable,
     schoolInfoLetterCreatedAt: response.schoolInfoLetterCreatedAt,
-  };
-}
-
-function mapLocation(location?: ApiAppointmentLocation): Location {
-  return {
-    id: parseOptionalValue(location?.id),
-    name: parseOptionalValue(location?.name),
   };
 }

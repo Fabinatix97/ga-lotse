@@ -5,9 +5,9 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
+import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -25,7 +25,7 @@ public record PatientDto(
     @NotNull LocalDate dateOfBirth,
     List<@Email String> emailAddresses,
     List<@NotBlank @Size(min = 1, max = 23) String> phoneNumbers,
-    CountryCodeDto countryOfBirth,
+    CountryCode countryOfBirth,
     @Size(min = 1, max = 40) String nameAtBirth,
     @Size(min = 1, max = 50) String placeOfBirth,
     @Size(min = 1, max = 119) String title,

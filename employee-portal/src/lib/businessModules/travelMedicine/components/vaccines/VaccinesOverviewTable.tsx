@@ -10,7 +10,7 @@ import {
   ApiTravelMedicineFeature,
   ApiVaccine,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -62,7 +62,7 @@ export function VaccinesOverviewTable() {
   const formikRef = useRef<FormikProps<VaccineFormData>>(null);
   const { openConfirmationDialog } = useConfirmationDialog();
 
-  const alertContext = useAlertContext();
+  const resetAlertContext = useResetAlertContext();
 
   function updateSidebarAndVaccine(
     sideBarState: boolean,
@@ -71,12 +71,6 @@ export function VaccinesOverviewTable() {
     setSidebarOpen(sideBarState);
     setCurrentVaccine(vaccine);
     resetAlertContext();
-  }
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
   }
 
   function sidebarTitle(): string {

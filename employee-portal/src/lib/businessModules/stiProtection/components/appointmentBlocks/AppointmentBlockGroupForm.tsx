@@ -20,12 +20,12 @@ import { AppointmentBlockGroupValuesWithDays } from "@/lib/shared/components/app
 import { AppointmentBlockGroupFields } from "@/lib/shared/components/appointmentBlocks/AppointmentBlockGroupFields";
 import { AppointmentCountWithDays } from "@/lib/shared/components/appointmentBlocks/AppointmentCountWithDays";
 import { AppointmentStaffSelection } from "@/lib/shared/components/appointmentBlocks/AppointmentStaffSelection";
+import { validateAppointmentBlock } from "@/lib/shared/components/appointmentBlocks/validateAppointmentBlock";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 import { validateFieldArray } from "@/lib/shared/helpers/validators";
 
-import { validateAppointmentBlock } from "./ValidateAppointmentBlock";
 import { APPOINTMENT_TYPE_OPTIONS } from "./options";
 
 export interface AppointmentBlockGroupValues {
@@ -76,7 +76,7 @@ function validateForm(
 
   if (isEmpty(values.physicians) && isEmpty(values.consultants)) {
     const msg =
-      "Es muss mindestens ein:e Arzt:in oder ein:e Berater:in ausgewählt sein.";
+      "Es muss mindestens ein Arzt/eine Ärztin oder ein:e Berater:in ausgewählt sein.";
     errors.physicians = msg;
     errors.mfas = msg;
   }
@@ -128,14 +128,13 @@ export function AppointmentBlockGroupForm({
       validate={(values) => validateForm(values, appointmentTypes)}
     >
       {({ values, isSubmitting, handleSubmit }) => (
-        <FormSheet onSubmit={handleSubmit}>
+        <FormSheet gap={5} onSubmit={handleSubmit}>
           <Stack gap={4}>
             <AppointmentBlockGroupFields
               appointmentBlocksWithDays={values.appointmentBlocks}
               options={APPOINTMENT_TYPE_OPTIONS}
             />
           </Stack>
-          <Divider />
           <Stack gap={4}>
             <AppointmentStaffSelection
               blockedStaff={blockedStaff}
@@ -145,6 +144,7 @@ export function AppointmentBlockGroupForm({
               validateAvailability={() => validateAvailability(values)}
             />
           </Stack>
+          <Divider />
           <FormButtonBar
             left={
               <AppointmentCountWithDays

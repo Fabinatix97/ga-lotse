@@ -8,10 +8,11 @@ package de.eshg.opendata.domain.model;
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,27 +20,23 @@ import java.util.List;
 public class Resource extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private String ressourceName;
+  @Column(unique = true, nullable = false)
+  private String resourceName;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToMany(mappedBy = "resource")
+  @OneToMany(
+      mappedBy = Version_.RESOURCE,
+      cascade = {CascadeType.PERSIST},
+      orphanRemoval = true)
   @OrderBy
   private final List<Version> versions = new ArrayList<>();
 
-  @Transient
-  @DataSensitivity(SensitivityLevel.PUBLIC)
-  private Version latestVersion;
-
-  public Version getLatestVersion() {
-    return latestVersion;
+  public String getResourceName() {
+    return resourceName;
   }
 
-  public String getRessourceName() {
-    return ressourceName;
-  }
-
-  public void setRessourceName(String ressourceName) {
-    this.ressourceName = ressourceName;
+  public void setResourceName(String resourceName) {
+    this.resourceName = resourceName;
   }
 
   public List<Version> getVersions() {
@@ -47,11 +44,10 @@ public class Resource extends BaseEntity {
   }
 
   public void addVersion(Version version) {
-    this.versions.add(version);
-    setLatestVersion(version);
-  }
-
-  public void setLatestVersion(Version latestVersion) {
-    this.latestVersion = latestVersion;
+    if (version == null) {
+      return;
+    }
+    this.versions.addFirst(version);
+    version.setResource(this);
   }
 }

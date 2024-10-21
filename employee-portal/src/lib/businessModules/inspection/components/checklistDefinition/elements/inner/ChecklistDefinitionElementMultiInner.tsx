@@ -17,6 +17,8 @@ import { ChecklistDefinitionElementInnerProps } from "@/lib/businessModules/insp
 
 export function ChecklistDefinitionElementMultiInner({
   readOnlyMode = false,
+  sectionIndex,
+  elementIndex,
   element,
   setElement,
 }: Readonly<ChecklistDefinitionElementInnerProps<ApiCLMultiSelectContext>>) {
@@ -69,6 +71,8 @@ export function ChecklistDefinitionElementMultiInner({
           <ChecklistDefinitionAnswerItem
             key={key}
             readOnlyMode={readOnlyMode}
+            sectionIndex={sectionIndex}
+            elementIndex={elementIndex}
             itemIndex={index}
             item={item}
             setItem={(item) => setItem(index, item)}

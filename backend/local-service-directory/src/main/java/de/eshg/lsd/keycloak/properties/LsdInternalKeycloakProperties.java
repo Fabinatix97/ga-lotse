@@ -14,7 +14,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record LsdInternalKeycloakProperties(
     String url,
     String realmDisplayName,
-    User admin,
+    AdminUser adminUser,
+    AdminClient adminClient,
     Duration eventExpiration,
     Duration sessionTimeout,
     boolean lenientPasswordPolicy) {
@@ -25,5 +26,7 @@ public record LsdInternalKeycloakProperties(
     log.info("Local Service Directory Keycloak internal URL: {}", url);
   }
 
-  public record User(String user, String password) {}
+  public record AdminUser(String user, String password) {}
+
+  public record AdminClient(String clientId, String clientSecret) {}
 }

@@ -31,5 +31,7 @@
   <include file="migrations/0021_add_procedure_exported_at.xml"/>
   <include file="migrations/0022_add_consultant_to_appointment_blocks.xml"/>
   <include file="migrations/0023_procedure_sequences.xml"/>
+  <include file="migrations/0024_introduce_procedure_file_type.xml"/>
+  <include file="migrations/0025_medical_registry_procedure_types.xml"/>
 
 </databaseChangeLog>

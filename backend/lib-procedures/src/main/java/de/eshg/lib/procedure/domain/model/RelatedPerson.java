@@ -34,6 +34,12 @@ public abstract class RelatedPerson<ProcedureT extends Procedure<ProcedureT, ?, 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private PersonType personType;
 
+  public RelatedPerson() {}
+
+  protected RelatedPerson(PersonType personType) {
+    this.personType = personType;
+  }
+
   public ProcedureT getProcedure() {
     return procedure;
   }

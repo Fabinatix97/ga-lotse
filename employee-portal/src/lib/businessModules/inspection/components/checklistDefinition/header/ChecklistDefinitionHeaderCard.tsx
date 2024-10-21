@@ -4,6 +4,7 @@
  */
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { Stack } from "@mui/joy";
@@ -12,7 +13,6 @@ import { useMemo } from "react";
 import { isDefined } from "remeda";
 
 import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
-import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
@@ -21,14 +21,14 @@ import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 interface ChecklistDefinitionHeaderCardProps {
   readOnlyMode: boolean;
   version: number | undefined;
+  objectTypes: ApiObjectType[];
 }
 
 export function ChecklistDefinitionHeaderCard({
   readOnlyMode,
   version,
+  objectTypes,
 }: Readonly<ChecklistDefinitionHeaderCardProps>) {
-  const { data: objectTypes } = useGetObjectTypes();
-
   const objectTypeOptions = useMemo(
     () =>
       objectTypes.map((item) => ({

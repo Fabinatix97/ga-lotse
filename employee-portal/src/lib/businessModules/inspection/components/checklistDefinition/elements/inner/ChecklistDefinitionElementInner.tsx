@@ -13,6 +13,8 @@ export interface ChecklistDefinitionElementInnerProps<
   TElement = ApiCLSectionContextElementsInner,
 > {
   readOnlyMode?: boolean;
+  sectionIndex: number;
+  elementIndex: number;
   element: { type: ApiCLSectionContextElementsInner["type"] } & TElement;
   setElement: (
     element: { type: ApiCLSectionContextElementsInner["type"] } & TElement,

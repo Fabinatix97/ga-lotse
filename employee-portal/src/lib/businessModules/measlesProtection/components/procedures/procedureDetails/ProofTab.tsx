@@ -13,6 +13,7 @@ import {
   ApiProofSubmission,
   ApiSubmissionResult,
 } from "@eshg/employee-portal-api/measlesProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
 import { Button, Grid, Stack } from "@mui/joy";
@@ -37,14 +38,16 @@ import {
   formatName,
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
-import { Row } from "@/lib/shared/Row";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AccessRestrictionSidebar } from "./AccessRestrictionSidebar";
 import { AdditionalInfoSection } from "./AdditionalInfoSection";
-import { DetailCard } from "./DetailCard";
 import { EditAccessRestrictionSidebar } from "./EditAccessRestrictionSidebar";
-import { LabeledValue, ValueList } from "./LabeledValue";
 import { ProofSidebar } from "./ProofSidebar";
 import { AccessRestrictionCard } from "./proof/AccessRestrictionCard";
 import { AppointmentCard } from "./proof/AppointmentCard";
@@ -164,10 +167,7 @@ function ProofSubmissionsCard({
   procedureClosed,
 }: Readonly<ProofSubmissionsProps>) {
   return (
-    <DetailCard
-      title="Nachweisvorlage"
-      fullHeight={proofSubmissions.length > 0}
-    >
+    <DetailsCard title="Nachweisvorlage" fullHeight={true}>
       <Stack spacing={3} alignItems={"start"} width={"100%"}>
         {proofSubmissions.map((proof) => (
           <ProofTabEntry key={proof.externalId}>
@@ -199,7 +199,7 @@ function ProofSubmissionsCard({
           </Button>
         )}
       </Stack>
-    </DetailCard>
+    </DetailsCard>
   );
 }
 
@@ -215,7 +215,7 @@ function FineCard({
   procedureClosed,
 }: Readonly<FineCardProps>) {
   return (
-    <DetailCard title="Bußgeld" fullHeight={monetaryFines.length > 0}>
+    <DetailsCard title="Bußgeld" fullHeight={true}>
       <Stack spacing={3} alignItems={"start"} width={"100%"}>
         {monetaryFines.length > 0 && (
           <ValueList style={{ flexBasis: "auto" }}>
@@ -239,7 +239,7 @@ function FineCard({
           </Button>
         )}
       </Stack>
-    </DetailCard>
+    </DetailsCard>
   );
 }
 
@@ -257,10 +257,7 @@ function ProofRequestLetterCard({
   proofSubmissionLetters,
 }: Readonly<ProofRequestLetterCardProps>) {
   return (
-    <DetailCard
-      title={"Anschreiben Nachweisvorlage"}
-      fullHeight={proofSubmissionLetters.length > 0}
-    >
+    <DetailsCard title={"Anschreiben Nachweisvorlage"} fullHeight={true}>
       <Stack spacing={3} width={"100%"} alignItems={"start"}>
         {proofSubmissionLetters.map((letter, index) => (
           <ProofTabEntry rowLayout key={index}>
@@ -293,6 +290,6 @@ function ProofRequestLetterCard({
           </Button>
         )}
       </Stack>
-    </DetailCard>
+    </DetailsCard>
   );
 }

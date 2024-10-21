@@ -6,8 +6,10 @@
 package de.eshg.statistics.mapper;
 
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.statistics.AttributeCodeToNameMapping;
+import de.eshg.statistics.api.AvailableDataSource;
+import de.eshg.statistics.api.BaseDataSourceAttribute;
 import de.eshg.statistics.api.BusinessDataAttribute;
+import de.eshg.statistics.api.BusinessDataSourceAttribute;
 import de.eshg.statistics.api.DataSourceDto;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
@@ -15,12 +17,14 @@ import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
-import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateRequest;
 import de.eshg.statistics.api.evaluationtemplate.AnalysisInfo;
 import de.eshg.statistics.api.evaluationtemplate.BaseDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.BusinessDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.DataSourceWithAttributeNames;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
+import de.eshg.statistics.datatransfer.AnalysisTemplateData;
+import de.eshg.statistics.datatransfer.DiagramTemplateData;
+import de.eshg.statistics.datatransfer.EvaluationTemplateData;
 import de.eshg.statistics.exception.InvalidDataSourceException;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
@@ -30,15 +34,12 @@ import de.eshg.statistics.persistence.entity.chart.LineChartConfiguration;
 import de.eshg.statistics.persistence.entity.chart.PieChartConfiguration;
 import de.eshg.statistics.persistence.entity.chart.ScatterChartConfiguration;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.AnalysisTemplate;
+import de.eshg.statistics.persistence.entity.evaluationtemplate.BaseDataAttribute;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.DataAttribute;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.DataSource;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 import org.hibernate.Hibernate;
 
 public class EvaluationTemplateMapper {
@@ -46,46 +47,113 @@ public class EvaluationTemplateMapper {
   private EvaluationTemplateMapper() {}
 
   public static EvaluationTemplate mapToPersistence(
-      AddEvaluationTemplateRequest addEvaluationTemplateRequest) {
-    EvaluationTemplate evaluationTemplate = new EvaluationTemplate();
-    evaluationTemplate.setName(addEvaluationTemplateRequest.name());
-    evaluationTemplate.addDataSources(mapToPersistence(addEvaluationTemplateRequest.dataSources()));
+      String name,
+      EvaluationTemplateData evaluationTemplateData,
+      List<AvailableDataSource> availableDataSources) {
+    EvaluationTemplate evaluationTemplate =
+        mapToPersistence(name, evaluationTemplateData.dataSources(), availableDataSources);
+    evaluationTemplate.addAnalysisTemplates(
+        evaluationTemplateData.analysisTemplateDatas().stream()
+            .map(EvaluationTemplateMapper::mapToAnalysisTemplate)
+            .toList());
     return evaluationTemplate;
   }
 
-  private static List<DataSource> mapToPersistence(List<DataSourceDto> dataSourceDtos) {
-    return dataSourceDtos.stream().map(EvaluationTemplateMapper::mapToPersistence).toList();
+  private static AnalysisTemplate mapToAnalysisTemplate(AnalysisTemplateData analysisTemplateData) {
+    AnalysisTemplate analysisTemplate = new AnalysisTemplate();
+    analysisTemplate.setName(analysisTemplateData.name());
+    analysisTemplate.setChartConfiguration(
+        EvaluationMapper.mapToPersistence(analysisTemplateData.chartConfiguration()));
+    analysisTemplate.addDiagramTemplates(
+        analysisTemplateData.diagramTemplateDatas().stream()
+            .map(EvaluationTemplateMapper::mapToDiagramTemplate)
+            .toList());
+    return analysisTemplate;
   }
 
-  private static DataSource mapToPersistence(DataSourceDto dataSourceDto) {
+  private static DiagramTemplate mapToDiagramTemplate(DiagramTemplateData diagramTemplateData) {
+    DiagramTemplate diagramTemplate = new DiagramTemplate();
+    diagramTemplate.setTitle(diagramTemplateData.title());
+    diagramTemplate.setDescription(diagramTemplateData.description());
+    diagramTemplate.addFilters(
+        diagramTemplateData.filters().stream()
+            .map(FilterParameterMapper::mapToPersistence)
+            .toList());
+    return diagramTemplate;
+  }
+
+  public static EvaluationTemplate mapToPersistence(
+      String name,
+      List<DataSourceDto> dataSourceDtos,
+      List<AvailableDataSource> availableDataSources) {
+    EvaluationTemplate evaluationTemplate = new EvaluationTemplate();
+    evaluationTemplate.setName(name);
+    evaluationTemplate.addDataSources(
+        dataSourceDtos.stream()
+            .map(dataSourceDto -> mapToPersistence(dataSourceDto, availableDataSources))
+            .toList());
+    return evaluationTemplate;
+  }
+
+  private static DataSource mapToPersistence(
+      DataSourceDto dataSourceDto, List<AvailableDataSource> availableDataSources) {
+    AvailableDataSource availableDataSource =
+        availableDataSources.stream()
+            .filter(
+                source ->
+                    source.id().equals(dataSourceDto.id())
+                        && source.businessModule().equals(dataSourceDto.businessModuleName()))
+            .findFirst()
+            .orElseThrow(InvalidDataSourceException::new);
+
     DataSource dataSource = new DataSource();
     dataSource.setBusinessModuleName(dataSourceDto.businessModuleName());
     dataSource.setExternalDataSourceId(dataSourceDto.id());
+    dataSource.setDataSourceName(availableDataSource.name());
     dataSource.addAttributes(
         dataSourceDto.attributeCodes().stream()
-            .map(EvaluationTemplateMapper::mapToPersistence)
+            .map(
+                businessDataAttribute ->
+                    mapToPersistence(businessDataAttribute, availableDataSource))
             .toList());
     return dataSource;
   }
 
-  private static DataAttribute mapToPersistence(BusinessDataAttribute businessDataAttribute) {
+  private static DataAttribute mapToPersistence(
+      BusinessDataAttribute businessDataAttribute, AvailableDataSource availableDataSource) {
+    BusinessDataSourceAttribute businessDataSourceAttribute =
+        availableDataSource.attributes().stream()
+            .filter(attribute -> attribute.code().equals(businessDataAttribute.code()))
+            .findFirst()
+            .orElseThrow(InvalidDataSourceException::new);
+
     DataAttribute dataAttribute = new DataAttribute();
     dataAttribute.setCode(businessDataAttribute.code());
-    dataAttribute.addBaseAttributeCodes(businessDataAttribute.baseAttributeCodes());
+    dataAttribute.setName(businessDataSourceAttribute.name());
+    dataAttribute.addBaseAttributes(
+        businessDataAttribute.baseAttributeCodes().stream()
+            .map(code -> mapToBaseDataAttribute(code, businessDataSourceAttribute))
+            .toList());
     return dataAttribute;
   }
 
-  public static EvaluationTemplateDto mapToApi(
-      EvaluationTemplate evaluationTemplate,
-      Map<UUID, List<AttributeCodeToNameMapping>> codeToNameMappingsByDataSourceId) {
-    List<DataSourceWithAttributeNames> dataSources;
-    try {
-      dataSources =
-          mapToDataSourceDtos(
-              evaluationTemplate.getDataSources(), codeToNameMappingsByDataSourceId);
-    } catch (InvalidDataSourceException e) {
-      dataSources = new ArrayList<>();
-    }
+  private static BaseDataAttribute mapToBaseDataAttribute(
+      String code, BusinessDataSourceAttribute businessDataSourceAttribute) {
+    BaseDataSourceAttribute baseDataSourceAttribute =
+        businessDataSourceAttribute.baseAttributes().stream()
+            .filter(attribute -> attribute.code().equals(code))
+            .findFirst()
+            .orElseThrow(InvalidDataSourceException::new);
+
+    BaseDataAttribute baseDataAttribute = new BaseDataAttribute();
+    baseDataAttribute.setCode(code);
+    baseDataAttribute.setName(baseDataSourceAttribute.name());
+    return baseDataAttribute;
+  }
+
+  public static EvaluationTemplateDto mapToApi(EvaluationTemplate evaluationTemplate) {
+    List<DataSourceWithAttributeNames> dataSources =
+        mapToDataSourceDtos(evaluationTemplate.getDataSources());
 
     return new EvaluationTemplateDto(
         evaluationTemplate.getExternalId(),
@@ -97,64 +165,33 @@ public class EvaluationTemplateMapper {
   }
 
   private static List<DataSourceWithAttributeNames> mapToDataSourceDtos(
-      List<DataSource> dataSources,
-      Map<UUID, List<AttributeCodeToNameMapping>> codeToNameMappingsByDataSourceId) {
-    return dataSources.stream()
-        .map(
-            dataSource ->
-                EvaluationTemplateMapper.mapToDataSourceDto(
-                    dataSource,
-                    codeToNameMappingsByDataSourceId.get(dataSource.getExternalDataSourceId())))
-        .toList();
+      List<DataSource> dataSources) {
+    return dataSources.stream().map(EvaluationTemplateMapper::mapToDataSourceDto).toList();
   }
 
-  private static DataSourceWithAttributeNames mapToDataSourceDto(
-      DataSource dataSource, List<AttributeCodeToNameMapping> attributeCodeToNameMappings) {
-    if (attributeCodeToNameMappings == null) {
-      throw new InvalidDataSourceException();
-    }
+  private static DataSourceWithAttributeNames mapToDataSourceDto(DataSource dataSource) {
 
     return new DataSourceWithAttributeNames(
         dataSource.getBusinessModuleName(),
         dataSource.getExternalDataSourceId(),
         dataSource.getAttributes().stream()
-            .map(
-                attribute ->
-                    EvaluationTemplateMapper.mapToBusinessDataAttribute(
-                        attribute, attributeCodeToNameMappings))
+            .map(EvaluationTemplateMapper::mapToBusinessDataAttribute)
             .toList());
   }
 
   private static BusinessDataAttributeWithName mapToBusinessDataAttribute(
-      DataAttribute dataAttribute, List<AttributeCodeToNameMapping> attributeCodeToNameMappings) {
-    String businessAttributeCode = dataAttribute.getCode();
-
-    return Optional.ofNullable(attributeCodeToNameMappings)
-        .flatMap(
-            mappings ->
-                mappings.stream()
-                    .filter(
-                        mapping -> mapping.businessAttributeCode().equals(businessAttributeCode))
-                    .findFirst())
-        .map(
-            attributeCodeToNameMapping ->
-                new BusinessDataAttributeWithName(
-                    attributeCodeToNameMapping.businessAttributeCode(),
-                    attributeCodeToNameMapping.businessAttributeName(),
-                    dataAttribute.getBaseAttributeCodes().stream()
-                        .map(
-                            baseAttributeCode ->
-                                EvaluationTemplateMapper.mapToBaseDataAttribute(
-                                    baseAttributeCode, attributeCodeToNameMapping.baseAttributes()))
-                        .toList()))
-        .orElseThrow(InvalidDataSourceException::new);
+      DataAttribute dataAttribute) {
+    return new BusinessDataAttributeWithName(
+        dataAttribute.getCode(),
+        dataAttribute.getName(),
+        dataAttribute.getBaseAttributes().stream()
+            .map(EvaluationTemplateMapper::mapToBaseDataAttribute)
+            .toList());
   }
 
   private static BaseDataAttributeWithName mapToBaseDataAttribute(
-      String baseAttributeCode, Map<String, String> baseAttributeCodeToNameMap) {
-    return Optional.ofNullable(baseAttributeCodeToNameMap.get(baseAttributeCode))
-        .map(name -> new BaseDataAttributeWithName(baseAttributeCode, name))
-        .orElseThrow(InvalidDataSourceException::new);
+      BaseDataAttribute baseDataAttribute) {
+    return new BaseDataAttributeWithName(baseDataAttribute.getCode(), baseDataAttribute.getName());
   }
 
   private static List<AnalysisInfo> mapToAnalysisInfos(List<AnalysisTemplate> analysisTemplates) {

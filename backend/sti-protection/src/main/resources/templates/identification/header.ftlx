@@ -1,0 +1,53 @@
+<#-- @ftlvariable name="sender" type="de.eshg.stiprotection.pdf.identification.DocumentSender" -->
+<table class="header">
+  <tr>
+    <td valign="top"/>
+    <td valign="top">
+      <img src="logo-gesundheitsamt-ffm.svg" width="114px" height="52px" alt="logo"/>
+    </td>
+  </tr>
+  <tr class="letterhead">
+    <td valign="top" class="receiver">
+      <div class="officeAddress">
+      ${sender.department.name}, ${sender.department.street} ${sender.department.houseNumber}
+        , ${sender.department.postalCode} ${sender.department.city}
+      </div>
+    </td>
+    <td valign="top" class="sender">
+      <div class="officeInfoHeader">${sender.department.name}</div>
+      <div class="officeInfoHeader">${sender.department.street} ${sender.department.houseNumber}</div>
+      <div class="officeInfoHeader">${sender.department.postalCode} ${sender.department.city}</div>
+      <table>
+        <tr>
+          <td>
+            <div class="officeInfoHeader">Telefon</div>
+            <div class="officeInfoContent">${sender.department.phoneNumber}</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="officeInfoHeader">E-Mail</div>
+            <div class="officeInfoContent">${sender.department.email}</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="officeInfoHeader">Datum</div>
+            <div class="officeInfoContent">${sender.documentDate}</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <#if sender.referenceNumber??>
+              <div class="officeInfoHeader">Aktenzeichen</div>
+              <div class="officeInfoContent">${sender.referenceNumber}</div>
+              <div class="officeInfoHeader">(bitte bei Antwort angeben)</div>
+            <#else>
+              <br/><br/><br/>
+            </#if>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

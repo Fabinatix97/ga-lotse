@@ -29,31 +29,31 @@ export function getPasswordInfo(password: string): {
 }[] {
   const result = [
     {
-      message: `Minimalpasswortlänge: ${minimalPasswordLength} Zeichen`,
+      message: `Mindestens ${minimalPasswordLength} Zeichen lang`,
       valid: validatePasswordLength(password),
     },
   ];
   if (upperCaseLetterRequired) {
     result.push({
-      message: "Passwort muss mindestens einen Großbuchstaben enthalten",
+      message: "Mindestens ein Großbuchstabe",
       valid: validatePasswordUpperCase(password),
     });
   }
   if (lowerCaseLetterRequired) {
     result.push({
-      message: "Passwort muss mindestens einen Kleinbuchstaben enthalten",
+      message: "Mindestens ein Kleinbuchstabe",
       valid: validatePasswordLowerCase(password),
     });
   }
   if (digitRequired) {
     result.push({
-      message: "Passwort muss mindestens eine Ziffer enthalten",
+      message: "Mindestens eine Zahl",
       valid: validatePasswordDigit(password),
     });
   }
   if (symbolRequired) {
     result.push({
-      message: "Passwort muss mindestens ein Symbol enthalten",
+      message: "Mindestens ein Sonderzeichen (z.B. !,@,#,$)",
       valid: validatePasswordSymbol(password),
     });
   }

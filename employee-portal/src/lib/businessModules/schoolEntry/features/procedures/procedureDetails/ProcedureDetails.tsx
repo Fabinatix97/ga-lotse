@@ -5,15 +5,11 @@
 
 "use client";
 
-import {
-  ApiLocationSelectionMode,
-  ApiSchoolEntryFeature,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { ProcedureDetails as ProcedureDetailsType } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { AddCustodianPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/AddCustodianPanel";
 import { ProcedureActionsPanel } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureActionsPanel";
 import { ProcedureDetailsSection } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ProcedureDetailsSection";
@@ -30,10 +26,6 @@ interface ProcedureDetailsProps {
 }
 
 export function ProcedureDetails(props: ProcedureDetailsProps) {
-  const waitingRoomEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.WaitingRoom,
-  );
-
   const procedure = props.procedure;
 
   return (
@@ -63,8 +55,7 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
         <Stack spacing={SPACING}>
           <ProcedureDetailsSection procedure={procedure} />
           <ProcedureActionsPanel procedure={procedure} />
-          {waitingRoomEnabled &&
-            props.locationSelectionMode === ApiLocationSelectionMode.None &&
+          {props.locationSelectionMode === ApiLocationSelectionMode.None &&
             !procedure.isClosed &&
             isDefined(procedure.appointment) && (
               <WaitingRoomPanel procedure={procedure} />

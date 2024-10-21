@@ -163,6 +163,7 @@
       <div class="addressee">
         An den/die Arzt:in des Kindes
       </div>
+      <div>${child.name}</div>
     </td>
     <td valign="top" class="sender">
       <div class="sender-address">

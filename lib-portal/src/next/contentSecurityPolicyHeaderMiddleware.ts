@@ -48,12 +48,6 @@ export function buildContentSecurityPolicyHeaderValue(
       "https: http: 'unsafe-inline'",
   );
 
-  const connectSrc = joinSourceValues(
-    "'self'",
-    // TODO: Remove chat whitelist once passed through the reverse proxy
-    options.developmentMode && "http://localhost:8008",
-  );
-
   const styleSrcElem = joinSourceValues(
     "'self'",
     options.developmentMode ? "'unsafe-inline'" : `'nonce-${options.nonce}'`,
@@ -61,7 +55,7 @@ export function buildContentSecurityPolicyHeaderValue(
 
   const cspHeader = [
     `default-src 'self'`,
-    `connect-src ${connectSrc}`,
+    `connect-src 'self'`,
     `script-src ${scriptSrc}`,
     `style-src-elem ${styleSrcElem}`,
     `style-src-attr 'unsafe-inline'`,

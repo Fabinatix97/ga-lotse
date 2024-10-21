@@ -5,7 +5,14 @@
 
 "use client";
 
-import { useGetChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { useSuspenseQueries } from "@tanstack/react-query";
+
+import {
+  useChecklistDefinitionApi,
+  useObjectTypeApi,
+} from "@/lib/businessModules/inspection/api/clients";
+import { getChecklistDefinitionVersionQuery } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -17,8 +24,16 @@ export default function ViewChecklistVersion({
 }: Readonly<{
   params: { defId: string; versionId: string };
 }>) {
-  const { data: checklistVersion } =
-    useGetChecklistDefinitionVersion(versionId);
+  const objectTypeApi = useObjectTypeApi();
+  const checklistDefinitionApi = useChecklistDefinitionApi();
+
+  const [{ data: objectTypes }, { data: checklistVersion }] =
+    useSuspenseQueries({
+      queries: [
+        getObjectTypesQuery(objectTypeApi),
+        getChecklistDefinitionVersionQuery(checklistDefinitionApi, versionId),
+      ],
+    });
 
   if (checklistVersion.context.defId !== defId) {
     throw new Error("defId does not match");
@@ -34,7 +49,11 @@ export default function ViewChecklistVersion({
       }
     >
       <MainContentLayout>
-        <EditChecklistDefinition cldVersion={checklistVersion} readonly />
+        <EditChecklistDefinition
+          cldVersion={checklistVersion}
+          readonly
+          objectTypes={objectTypes}
+        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

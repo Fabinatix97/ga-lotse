@@ -17,6 +17,7 @@ import { useCallback } from "react";
 
 import { useUpdateAccessRestrictionMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
+import { LabeledValue } from "@/lib/shared/components/detailsCard/LabeledValue";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
@@ -28,7 +29,6 @@ import {
   ACCESS_RESTRICTION_FIELDS,
   DateLabels,
 } from "./AccessRestrictionSidebar";
-import { LabeledValue } from "./LabeledValue";
 
 export const EDIT_ACCESS_RESTRICTION_SEARCH_PARAM = "edit-access-restriction";
 export const initialValues = {

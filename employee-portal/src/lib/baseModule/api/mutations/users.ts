@@ -10,6 +10,7 @@ import {
 } from "@eshg/employee-portal-api/base";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useMutation } from "@tanstack/react-query";
 
 import { useUserApi } from "@/lib/baseModule/api/clients";
 
@@ -85,5 +86,28 @@ export function useInvalidateUserSessions() {
     mutationFn: (sessions: string[]) =>
       userApi.invalidateActiveSessions({ sessions }),
     onSuccess: () => snackbar.confirmation("Sitzungen wurden getrennt."),
+  });
+}
+
+export function useUpdateSelfUserChatUsername() {
+  const userApi = useUserApi();
+  const snackbar = useSnackbar();
+
+  return useMutation({
+    mutationFn: async ({
+      externalChatUsername,
+      phoneNumber,
+    }: ApiUpdateSelfUserRequest) => {
+      await userApi.updateSelfUser({
+        phoneNumber,
+        externalChatUsername,
+      });
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Profil gespeichert");
+    },
+    onError: () => {
+      snackbar.error("Profil nicht gespeichert");
+    },
   });
 }

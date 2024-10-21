@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useUuid } from "@eshg/lib-portal/hooks/useUuid";
+
 import {
   DrawerOpenOptions,
   DrawerProps,
   isDrawer,
   useDrawerContext,
 } from "@/lib/shared/components/drawer/drawerContext";
-import { useUuid } from "@/lib/shared/hooks/useUuid";
 
 export type UseSidebarResult<TSidebarProps extends DrawerProps = DrawerProps> =
   CustomSidebarProps<TSidebarProps> extends Record<string, never>

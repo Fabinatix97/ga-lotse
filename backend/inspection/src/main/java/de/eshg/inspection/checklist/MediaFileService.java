@@ -5,7 +5,7 @@
 
 package de.eshg.inspection.checklist;
 
-import de.base.rest.CustomMediaTypes;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.inspection.checklist.api.UploadMediaFileRequestDto;
 import de.eshg.inspection.checklist.api.update.UpdateChecklistDto;
 import de.eshg.inspection.checklist.api.update.UpdateChecklistResponse;

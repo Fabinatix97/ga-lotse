@@ -5,9 +5,6 @@
 
 package de.eshg.base.address.mapper;
 
-import static de.eshg.base.util.MappingUtil.mapCountryCodeToApi;
-import static de.eshg.base.util.MappingUtil.mapCountryCodeToDm;
-
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
@@ -27,7 +24,7 @@ public final class AddressMapper {
 
   public static PostboxAddressDto mapPostboxAddressToApi(PostboxAddress address) {
     return new PostboxAddressDto(
-        mapCountryCodeToApi(address.getCountry()),
+        address.getCountry(),
         address.getCity(),
         address.getPostalCode(),
         address.getDifferentName(),
@@ -36,7 +33,7 @@ public final class AddressMapper {
 
   public static DomesticAddressDto mapDomesticAddressToApi(DomesticAddress address) {
     return new DomesticAddressDto(
-        mapCountryCodeToApi(address.getCountry()),
+        address.getCountry(),
         address.getCity(),
         address.getPostalCode(),
         address.getDifferentName(),
@@ -64,7 +61,7 @@ public final class AddressMapper {
   private static void setAddressDmFields(Address address, AddressDto addressDto) {
     address.setPostalCode(addressDto.postalCode());
     address.setCity(addressDto.city());
-    address.setCountry(mapCountryCodeToDm(addressDto.country()));
+    address.setCountry(addressDto.country());
     address.setDifferentName(addressDto.differentName());
   }
 

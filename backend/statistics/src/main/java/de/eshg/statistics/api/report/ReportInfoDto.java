@@ -20,5 +20,5 @@ public record ReportInfoDto(
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
     @NotNull ReportStateDto state,
-    LocalDate executionDate,
+    @NotNull LocalDate executionDate,
     @Min(0) Long totalNumberOfElements) {}

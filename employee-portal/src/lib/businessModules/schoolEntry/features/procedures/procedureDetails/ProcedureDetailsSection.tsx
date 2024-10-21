@@ -3,27 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiLocationSelectionMode,
-  ApiSchoolEntryFeature,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Stack } from "@mui/joy";
-import { useState } from "react";
 import { isDefined } from "remeda";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useGetLocationSelectionMode } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
 import { formatSchoolYear } from "@/lib/businessModules/schoolEntry/features/procedures/formatters";
 import { InvitationDetails } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/InvitationDetails";
-import { UpdateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateProcedureSidebar";
+import { useUpdateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateProcedureSidebar";
 import { PROCEDURE_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -33,15 +27,8 @@ interface ProcedureDetailsProps {
 }
 
 export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
-  const isSchoolYearEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.SchoolYear,
-  );
   const locationSelectionMode = useGetLocationSelectionMode();
-  const [isOpen, setIsOpen] = useState(false);
-
-  function handleClose() {
-    setIsOpen(false);
-  }
+  const updateProcedureSidebar = useUpdateProcedureSidebar();
 
   return (
     <>
@@ -49,7 +36,12 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
         <DetailsSection
           name="additional-infos"
           title="Zusatzinfos"
-          onEdit={() => setIsOpen(true)}
+          onEdit={() =>
+            updateProcedureSidebar.open({
+              procedure: props.procedure,
+              locationSelectionMode,
+            })
+          }
           canEdit={!props.procedure.isClosed}
         >
           <Stack gap={2} divider={<Divider />}>
@@ -59,17 +51,15 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
                 label="Art"
                 value={PROCEDURE_TYPES[props.procedure.type]}
               />
-              {isSchoolYearEnabled && (
-                <DetailsCell
-                  name="schoolYear"
-                  label="Schuljahr"
-                  value={
-                    isDefined(props.procedure.schoolYear)
-                      ? formatSchoolYear(props.procedure.schoolYear)
-                      : "Kein Schuljahr zugewiesen"
-                  }
-                />
-              )}
+              <DetailsCell
+                name="schoolYear"
+                label="Schuljahr"
+                value={
+                  isDefined(props.procedure.schoolYear)
+                    ? formatSchoolYear(props.procedure.schoolYear)
+                    : "Kein Schuljahr zugewiesen"
+                }
+              />
               {props.procedure.labels.length > 0 && (
                 <DetailsCell
                   name="labels"
@@ -88,7 +78,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
               name="school"
               label="Schule"
               value={
-                props.procedure.school.name
+                isDefined(props.procedure.school)
                   ? props.procedure.school.name
                   : "Keine Schule zugewiesen"
               }
@@ -99,7 +89,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
                 name="location"
                 label="Gesundheitsamt"
                 value={
-                  props.procedure.location.name
+                  isDefined(props.procedure.location)
                     ? props.procedure.location.name
                     : "Kein Gesundheitsamt zugewiesen"
                 }
@@ -136,16 +126,6 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
           </Stack>
         </DetailsSection>
       </ContentPanel>
-      {isOpen && (
-        <OverlayBoundary>
-          <UpdateProcedureSidebar
-            procedure={props.procedure}
-            canEditSchoolYear={isSchoolYearEnabled}
-            onClose={handleClose}
-            locationSelectionMode={locationSelectionMode}
-          />
-        </OverlayBoundary>
-      )}
     </>
   );
 }

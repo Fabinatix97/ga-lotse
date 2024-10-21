@@ -5,9 +5,7 @@
 
 package de.eshg.base.department;
 
-import de.base.rest.CustomMediaTypes;
-import de.eshg.base.CountryCodeDto;
-import de.eshg.base.util.CountryCode;
+import de.eshg.file.common.CustomMediaTypes;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import org.springframework.core.io.Resource;
@@ -65,7 +63,7 @@ public class DepartmentController implements DepartmentApi {
         departmentConfig.houseNumber(),
         departmentConfig.postalCode(),
         departmentConfig.city(),
-        mapCountryCodeToApi(departmentConfig.country()),
+        departmentConfig.country(),
         departmentConfig.phoneNumber(),
         departmentConfig.homepage(),
         departmentConfig.email(),
@@ -74,9 +72,5 @@ public class DepartmentController implements DepartmentApi {
 
   private static LocationDto mapLocationToApi(DepartmentConfiguration departmentConfig) {
     return new LocationDto(departmentConfig.latitude(), departmentConfig.longitude());
-  }
-
-  private static CountryCodeDto mapCountryCodeToApi(CountryCode country) {
-    return CountryCodeDto.valueOf(country.name());
   }
 }

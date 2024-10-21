@@ -21,11 +21,14 @@ import {
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import {
+  LabeledValue,
+  ValueList,
+} from "@/lib/shared/components/detailsCard/LabeledValue";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AdditionalInfoUpdateSidebar } from "./AdditionalInfoUpdateSidebar";
-import { DetailCard } from "./DetailCard";
-import { LabeledValue, ValueList } from "./LabeledValue";
 import { CLOSE_PROCEDURE_SUCCESS_MESSAGE } from "./helpers";
 
 type AdditionalInfoSectionProps = Readonly<{
@@ -70,7 +73,7 @@ export function AdditionalInfoSection({
 
   return (
     <Stack rowGap={2}>
-      <DetailCard title={"Zusatzinfos"} actionButton={editAction}>
+      <DetailsCard title={"Zusatzinfos"} actionButton={editAction}>
         <ValueList>
           <LabeledValue
             label="Personenstatus"
@@ -99,7 +102,7 @@ export function AdditionalInfoSection({
             />
           ) : null}
         </ValueList>
-      </DetailCard>
+      </DetailsCard>
       <Sheet component="section">
         {!procedure.isOpen ? (
           <Button color="danger" onClick={handleReopenProcedure} fullWidth>

@@ -53,6 +53,10 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
   @PostExchange("/population/contacts/schools")
   SearchContactsResponse populateSchoolContacts(@Valid @RequestBody PopulationRequest request);
 
+  @PostExchange("/population/contacts/health-departments")
+  SearchContactsResponse populateHealthDepartmentContacts(
+      @Valid @RequestBody PopulationRequest request);
+
   @PostExchange("/keycloak/reset")
   void resetKeycloak();
 

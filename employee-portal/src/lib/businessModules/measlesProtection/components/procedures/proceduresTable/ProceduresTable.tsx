@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { EditOutlined, Preview, ToggleOffOutlined } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
@@ -17,10 +18,8 @@ import {
   caseStatusNames,
   facilityTypeNames,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
-import { useTablePageParams } from "@/lib/businessModules/measlesProtection/hooks/useTablePageParams";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
-import { Row } from "@/lib/shared/Row";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
@@ -32,6 +31,7 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
+import { useTablePageParams } from "@/lib/shared/hooks/useTablePageParams";
 
 import {
   ProceduresTableFilters,
@@ -150,6 +150,7 @@ function getProceduresColumns({
       cell: ({ row: { original: procedure } }) => (
         <Row justifyContent="flex-end">
           <ActionsMenu
+            rowHeight
             actionItems={[
               {
                 label: procedure.isOpen ? "Bearbeiten" : "Anzeigen",
@@ -182,7 +183,12 @@ function getProceduresColumns({
 
 export function ProceduresTable() {
   const filters = useProceduresFilters();
-  const tablePage = useTablePageParams();
+  const tablePage = useTablePageParams({
+    fieldNames: {
+      sortFieldName: "sortKey",
+      sortDirectionName: "sortDirection",
+    },
+  });
   const procedures = useProceduresQuery(tablePage, filters);
   const proceduresContext = useProceduresContext();
   const { openProcedureReopenModal } = proceduresContext.action;
@@ -214,6 +220,7 @@ export function ProceduresTable() {
           <DataTable
             data={procedures.data.procedures}
             sorting={tableControl.tableSorting}
+            enableSortingRemoval={false}
             columns={getProceduresColumns({
               isMeaslesProtectionLeader,
               onReopenProcedure: (procedureId) =>

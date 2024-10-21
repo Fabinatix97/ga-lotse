@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ApiGdprProcedureStatus,
   ApiGetGdprProcedureResponse,
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
@@ -26,6 +27,7 @@ import {
   SectionTile,
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
@@ -82,46 +84,53 @@ export function GDPRProcedureDetails({
   }
 
   return (
-    <>
-      <Stack direction={{ xxs: "column", md: "row" }} gap={3}>
-        <Stack sx={{ flex: 5, minWidth: "fit-content" }} gap={3}>
+    <Stack
+      direction={{ xxs: "column", md: "row" }}
+      gap={3}
+      sx={{
+        alignItems: {
+          md: "start",
+        },
+      }}
+    >
+      <Stack gap={3} flex={1}>
+        {isGdprPerson(identity) ? (
+          <GdprPersonDataTile identity={identity} columnSx={COLUMN_STYLE} />
+        ) : (
+          <GdprFacilityDataTile identity={identity} columnSx={COLUMN_STYLE} />
+        )}
+        {linkedPersons.map((person, index) => (
+          <SectionTile key={person.id} id={person.id}>
+            <SectionTitle id={person.id}>
+              {index + 1}. Datensatz aus der Zentralkartei
+            </SectionTitle>
+            <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
+          </SectionTile>
+        ))}
+        {linkedFacilities.map((facility, index) => (
+          <SectionTile key={facility.id} id={facility.id}>
+            <SectionTitle id={facility.id}>
+              {index + 1}. Datensatz aus der Zentralkartei
+            </SectionTitle>
+            <CentralFileFacilityDetails
+              facility={facility}
+              columnSx={COLUMN_STYLE}
+            />
+          </SectionTile>
+        ))}
+      </Stack>
+      <Stack gap={3} flexBasis={"50ch"}>
+        <OverlayBoundary>
           <ProcedureDetailsTile procedure={procedure} />
+        </OverlayBoundary>
+        {procedure.status === ApiGdprProcedureStatus.Draft && (
           <CentralFileLinkTile
             centralFileId={procedure.centralFileId}
             numMatches={personMatches.length + facilityMatches.length}
             onAddLink={hasWritePerms && (() => openLinkSidebar())}
           />
-        </Stack>
-        <Stack sx={{ flex: 20 }} gap={3}>
-          {isGdprPerson(identity) ? (
-            <GdprPersonDataTile identity={identity} columnSx={COLUMN_STYLE} />
-          ) : (
-            <GdprFacilityDataTile identity={identity} columnSx={COLUMN_STYLE} />
-          )}
-          {linkedPersons.map((person, index) => (
-            <SectionTile key={person.id} id={person.id}>
-              <SectionTitle id={person.id}>
-                {index + 1}. Datensatz aus der Zentralkartei
-              </SectionTitle>
-              <CentralFilePersonDetails
-                person={person}
-                columnSx={COLUMN_STYLE}
-              />
-            </SectionTile>
-          ))}
-          {linkedFacilities.map((facility, index) => (
-            <SectionTile key={facility.id} id={facility.id}>
-              <SectionTitle id={facility.id}>
-                {index + 1}. Datensatz aus der Zentralkartei
-              </SectionTitle>
-              <CentralFileFacilityDetails
-                facility={facility}
-                columnSx={COLUMN_STYLE}
-              />
-            </SectionTile>
-          ))}
-        </Stack>
+        )}
       </Stack>
-    </>
+    </Stack>
   );
 }

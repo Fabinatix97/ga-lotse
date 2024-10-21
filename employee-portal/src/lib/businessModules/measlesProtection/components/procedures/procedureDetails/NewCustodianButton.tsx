@@ -12,8 +12,8 @@ import {
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import { DetailCard } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DetailCard";
 import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helpers";
+import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
 import {
   LegacyPerson,
   LegacyPersonFormConfig,
@@ -68,7 +68,7 @@ export function mapToAddCustodianRequest(
 export function NewCustodianButton() {
   const [_, setAddCustodianOpen] = useSearchParam("add-custodian", "boolean");
   return (
-    <DetailCard title={"PSB - Personensorgeberechtigte:r"}>
+    <DetailsCard title={"PSB - Personensorgeberechtigte:r"}>
       <Button
         startDecorator={<Add />}
         variant="plain"
@@ -76,6 +76,6 @@ export function NewCustodianButton() {
       >
         Hinzufügen
       </Button>
-    </DetailCard>
+    </DetailsCard>
   );
 }

@@ -75,11 +75,6 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
         .catch((e) => {
           logger.error("AttemptAuth Error", e);
         });
-      // .finally(() => {
-      //   void authLogic.submitAuthDict({}).then((response) => {
-      //     logger.debug("submitAuthDict", response);
-      //   });
-      // });
     }
   }, [authLogic, values]);
 
@@ -106,14 +101,15 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
 
   return (
     <BaseModal
-      modalTitle="Use Single Sign On to continue"
+      modalTitle="Nutzen Sie Single Sign On um fortzufahren"
       key="sso-auth-modal"
       onClose={handleCancel}
       open={!!values}
     >
       <>
         <Typography textColor="text.secondary">
-          To continue, use Single Sign On to prove your identity.
+          Um fortzufahren und Ihre Identität zu bestätigen, nutzen Sie Single
+          Sign On.
         </Typography>
         <Stack
           direction="row"
@@ -127,7 +123,7 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
             onClick={handleCancel}
             data-testid="ssoAuthDialogCancel"
           >
-            Cancel
+            Abbrechen
           </Button>
           <Button
             size="sm"
@@ -136,7 +132,7 @@ export function SSOAuthModal({ values }: SSOAuthModalProps) {
             onClick={handleSSOClick}
             data-testid="ssoAuthDialogStart"
           >
-            Single Sign On
+            Fortfahren
           </Button>
         </Stack>
       </>

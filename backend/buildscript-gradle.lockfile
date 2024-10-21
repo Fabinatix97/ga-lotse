@@ -2,8 +2,8 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 aopalliance:aopalliance:1.0=classpath
-com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:0.17.8=classpath
-com.avast.gradle:gradle-docker-compose-plugin:0.17.8=classpath
+com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:0.17.9=classpath
+com.avast.gradle:gradle-docker-compose-plugin:0.17.9=classpath
 com.diffplug.durian:durian-collect:1.2.0=classpath
 com.diffplug.durian:durian-core:1.2.0=classpath
 com.diffplug.durian:durian-io:1.2.0=classpath
@@ -99,6 +99,6 @@ org.springframework:spring-jcl:6.1.13=classpath
 org.tomlj:tomlj:1.0.0=classpath
 org.tukaani:xz:1.9=classpath
 org.webjars:d3js:4.10.2=classpath
-org.yaml:snakeyaml:2.2=classpath
+org.yaml:snakeyaml:2.3=classpath
 rpost.grantt:rpost.grantt.gradle.plugin:0.3=classpath
 empty=

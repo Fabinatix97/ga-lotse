@@ -201,7 +201,11 @@ public class StiProtectionProcedureService {
   }
 
   public MedicalHistory getMedicalHistory(UUID procedureId) {
-    return findProcedureByExternalId(procedureId).getMedicalHistory();
+    MedicalHistory medicalHistory = findProcedureByExternalId(procedureId).getMedicalHistory();
+    if (medicalHistory == null) {
+      throw new NotFoundException(procedureId + ": no medical history found");
+    }
+    return medicalHistory;
   }
 
   private void bookAppointment(StiProtectionProcedure procedure, CreateProcedureRequest request) {

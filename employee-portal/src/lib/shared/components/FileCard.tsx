@@ -8,6 +8,7 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import AudioFileOutlinedIcon from "@mui/icons-material/AudioFileOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import ListAltOutlined from "@mui/icons-material/ListAltOutlined";
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
 import {
   AspectRatio,
@@ -37,6 +38,7 @@ export interface FileCardActionProps {
 
 export const CustomFileType = {
   Audio: "AUDIO",
+  Csv: "CSV",
 } as const;
 export type NonApiFileType =
   (typeof CustomFileType)[keyof typeof CustomFileType];
@@ -56,6 +58,7 @@ const iconByType = {
   PDF: PictureAsPdfOutlinedIcon,
   EML: AlternateEmailOutlinedIcon,
   AUDIO: AudioFileOutlinedIcon,
+  CSV: ListAltOutlined,
 } as const;
 
 export function FileCard(props: FileCardProps) {

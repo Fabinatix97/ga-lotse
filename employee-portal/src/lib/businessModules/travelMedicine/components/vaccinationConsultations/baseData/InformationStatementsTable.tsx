@@ -9,7 +9,7 @@ import {
   ApiInformationStatement,
   ApiTravelMedicineFeature,
 } from "@eshg/employee-portal-api/travelMedicine";
-import { useAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
+import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { AddOutlined } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
 import { useState } from "react";
@@ -50,13 +50,7 @@ export function InformationStatementsTable({
       initialValues: { ...initialValuesInformationStatementSidebar },
     });
 
-  const alertContext = useAlertContext();
-
-  function resetAlertContext() {
-    if (alertContext !== null) {
-      alertContext.setAlert(null);
-    }
-  }
+  const resetAlertContext = useResetAlertContext();
 
   const { closeSidebar } = useSidebarForm({
     onClose: () => {

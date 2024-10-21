@@ -34,14 +34,17 @@ export function StaticTextDocumentPanel(props: StackProps) {
   return (
     <ContentPanel>
       <Stack
-        gap={4}
+        gap={2}
         sx={{
-          "& :where(p, span)": {
+          "& :not(:where(h1, h2, h3))": {
+            margin: 0,
+          },
+          "& :where(p, span, li)": {
             maxWidth: "750px",
             textWrap: "pretty",
             hyphens: "auto",
           },
-          "& :where(h2, h3)": {
+          "& :where(h1, h2, h3)": {
             maxWidth: "750px",
             textWrap: "balance",
             hyphens: "auto",

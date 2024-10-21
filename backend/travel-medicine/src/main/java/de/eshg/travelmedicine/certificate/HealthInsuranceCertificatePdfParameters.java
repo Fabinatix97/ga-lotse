@@ -5,8 +5,8 @@
 
 package de.eshg.travelmedicine.certificate;
 
-import de.eshg.base.CountryCodeDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -58,7 +58,7 @@ public class HealthInsuranceCertificatePdfParameters {
       String dateOfBirth,
       String travelDate,
       String travelType,
-      List<CountryCodeDto> travelDestinations,
+      List<CountryCode> travelDestinations,
       String travelDuration,
       List<PdfServiceParameters> pdfServiceParameters) {
     this.departmentInfo = departmentInfo;
@@ -75,8 +75,7 @@ public class HealthInsuranceCertificatePdfParameters {
     this.dateOfBirth = dateOfBirth;
     this.travelDate = travelDate;
     this.travelType = travelType;
-    this.travelDestinations =
-        travelDestinations.stream().map(CountryCodeDto::getCountryName).toList();
+    this.travelDestinations = travelDestinations.stream().map(CountryCode::getCountryName).toList();
     this.travelDuration = travelDuration;
     this.pdfServiceParameters = pdfServiceParameters;
     this.serviceTotalCost =

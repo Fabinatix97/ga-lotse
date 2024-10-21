@@ -10,5 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "PersonType")
 public enum PersonTypeDto {
   PATIENT,
-  PARENT
+  PARENT,
+  PROFESSIONAL
 }

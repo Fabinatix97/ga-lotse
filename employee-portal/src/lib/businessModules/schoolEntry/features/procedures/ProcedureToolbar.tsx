@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
   FormatListBulletedOutlined,
   MedicalServicesOutlined,
@@ -18,21 +19,31 @@ import { ProcedureTabHeader } from "@/lib/businessModules/schoolEntry/features/p
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface ProcedureToolbarProps {
   procedureId: string;
 }
 
 export function ProcedureToolbar(props: ProcedureToolbarProps) {
+  const hasSchoolEntryAdminRole = useHasUserRoleCheck(
+    ApiUserRole.SchoolEntryAdmin,
+  );
   const procedure = useGetProcedure(props.procedureId);
   const tabItems = buildTabItems(props.procedureId);
 
   return (
     <TabNavigationToolbar
       items={tabItems}
-      routeBack={routes.procedures.overview}
+      routeBack={
+        hasSchoolEntryAdminRole ? routes.procedures.overview : undefined
+      }
       header={<ProcedureTabHeader child={procedure.data.child} />}
-      afterTabs={procedure.data.isClosed ? "Vorgang geschlossen" : undefined}
+      afterTabs={
+        procedure.data.isClosed ? (
+          <span data-testid="procedureStatus">Vorgang geschlossen</span>
+        ) : undefined
+      }
     />
   );
 }

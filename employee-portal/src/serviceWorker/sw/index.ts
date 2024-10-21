@@ -16,8 +16,8 @@ import {
   PAGES_CACHE_NAME,
   PAGES_RSC_CACHE_NAME,
 } from "@/serviceWorker/common/common";
+import { CacheableResponsePlugin } from "@/serviceWorker/sw/CacheableResponsePlugin";
 import { EncryptPlugin } from "@/serviceWorker/sw/EncryptPlugin";
-import { FilterByCacheControlPlugin } from "@/serviceWorker/sw/FilterByCacheControlPlugin";
 import { RedirectOnErrorPlugin } from "@/serviceWorker/sw/RedirectOnErrorPlugin";
 import { StripRscRequestPlugin } from "@/serviceWorker/sw/StripRscRequestPlugin";
 import {
@@ -65,7 +65,7 @@ registerRoute(
     cacheName: PAGES_CACHE_NAME,
     networkTimeoutSeconds: NETWORK_TIMEOUT_IN_SECONDS,
     plugins: [
-      new FilterByCacheControlPlugin(),
+      new CacheableResponsePlugin(),
       new ExpirationPlugin({
         maxEntries: 10_000,
       }),
@@ -85,7 +85,7 @@ registerRoute(
     networkTimeoutSeconds: NETWORK_TIMEOUT_IN_SECONDS,
     plugins: [
       new StripRscRequestPlugin(),
-      new FilterByCacheControlPlugin(),
+      new CacheableResponsePlugin(),
       new ExpirationPlugin({
         maxEntries: 10_000,
       }),
@@ -100,7 +100,7 @@ registerRoute(
     cacheName: API_CACHE_NAME,
     networkTimeoutSeconds: NETWORK_TIMEOUT_IN_SECONDS,
     plugins: [
-      new FilterByCacheControlPlugin(),
+      new CacheableResponsePlugin(),
       new ExpirationPlugin({
         maxEntries: 10_000,
       }),

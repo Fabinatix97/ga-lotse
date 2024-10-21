@@ -155,7 +155,10 @@ export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
 
   const tableStyle: SxProps = {
     minWidth: props.minWidth,
-    "--TableCell-paddingY": (theme) => theme.spacing(1),
+    // 7px = 8px padding - 1px for border
+    // We only have one 1px border per row,
+    // so this leaves 1px free (25px content-space): go wild
+    "--TableCell-paddingY": "7px",
     "--TableCell-paddingX": (theme) => theme.spacing(1.5),
     ...(wrapHeader && {
       "& thead th": {

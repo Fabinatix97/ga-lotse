@@ -15,11 +15,12 @@ import {
   useState,
 } from "react";
 
-import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
+import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import {
   fetchBackupInfo,
   getRustCryptoStoreArgs,
+  isDeviceVerified,
 } from "@/lib/businessModules/chat/matrix/crypto";
 import {
   cacheSecretStorageKey,
@@ -44,7 +45,7 @@ export function useChatLifecycle(
   setClientState: Dispatch<SetStateAction<ClientState>>,
 ) {
   const { data: selfUser } = useGetSelfUser();
-  const updateSelfUser = useUpdateSelfUser();
+  const updateSelfUser = useUpdateSelfUserChatUsername();
 
   const { configuration } = useChat();
 
@@ -162,7 +163,9 @@ export function useChatLifecycle(
           res.backupInfo,
         );
 
-        if (!restored) {
+        const isVerified = await isDeviceVerified(matrixClient.current);
+
+        if (!restored || !isVerified) {
           setClientState(ClientState.RestoreBackupKey);
         } else {
           setClientState(ClientState.Prepared);

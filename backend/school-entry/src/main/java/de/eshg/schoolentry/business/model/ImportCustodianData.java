@@ -7,6 +7,7 @@ package de.eshg.schoolentry.business.model;
 
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
+import de.eshg.lib.xlsximport.model.AddressData;
 import java.time.LocalDate;
 
 public record ImportCustodianData(

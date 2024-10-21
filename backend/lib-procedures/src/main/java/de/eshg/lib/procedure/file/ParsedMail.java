@@ -6,14 +6,14 @@
 package de.eshg.lib.procedure.file;
 
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.MailMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import java.util.ArrayList;
 import java.util.List;
 
 class ParsedMail {
   private String fileName;
-  private FileType fileType;
+  private ProcedureFileType fileType;
   private byte[] content;
   private String subject;
   private String messageText;
@@ -30,11 +30,11 @@ class ParsedMail {
     this.fileName = fileName;
   }
 
-  FileType getFileType() {
+  ProcedureFileType getFileType() {
     return fileType;
   }
 
-  void setFileType(FileType fileType) {
+  void setFileType(ProcedureFileType fileType) {
     this.fileType = fileType;
   }
 

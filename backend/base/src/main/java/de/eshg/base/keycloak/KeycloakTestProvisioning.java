@@ -15,6 +15,7 @@ import de.eshg.lib.keycloak.PermissionRole;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -111,7 +112,8 @@ public abstract class KeycloakTestProvisioning {
     }
 
     Map<String, List<String>> attributes =
-        UserMapper.mapAttributesToDm(user.phoneNumber(), user.externalChatUsername());
+        UserMapper.mapAttributesToDm(
+            new LinkedHashMap<>(), user.phoneNumber(), user.externalChatUsername());
     userRepresentation.setAttributes(!attributes.isEmpty() ? attributes : null);
   }
 }

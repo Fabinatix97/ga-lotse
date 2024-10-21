@@ -5,12 +5,12 @@
 
 package de.eshg.lib.procedure.file;
 
-import static de.eshg.lib.procedure.domain.model.FileType.EML;
+import static de.eshg.lib.procedure.domain.model.ProcedureFileType.EML;
 
 import de.eshg.lib.procedure.domain.model.FileAware;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.KeyDocumentType;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.repository.ManualProgressEntryRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import java.util.Objects;
@@ -23,7 +23,7 @@ public class FileUploadValidator {
     this.manualProgressEntryRepository = manualProgressEntryRepository;
   }
 
-  void validateFileAwareSupportsFileUpload(FileAware fileAware, FileType fileType) {
+  void validateFileAwareSupportsFileUpload(FileAware fileAware, ProcedureFileType fileType) {
     validateProgressEntryTypeSupportsFileType(fileAware, fileType);
     validateFileAwareSubjectAndMessageTextIsNull(fileAware, fileType);
 
@@ -32,7 +32,8 @@ public class FileUploadValidator {
     }
   }
 
-  private void validateProgressEntryTypeSupportsFileType(FileAware fileAware, FileType fileType) {
+  private void validateProgressEntryTypeSupportsFileType(
+      FileAware fileAware, ProcedureFileType fileType) {
     if (!fileAware.supportsUpload(fileType)) {
       throw new BadRequestException(
           "File upload not supported for file type `%s`.".formatted(fileType));
@@ -40,7 +41,7 @@ public class FileUploadValidator {
   }
 
   private void validateFileAwareSubjectAndMessageTextIsNull(
-      FileAware fileAware, FileType fileType) {
+      FileAware fileAware, ProcedureFileType fileType) {
     if (EML.equals(fileType) && hasFileAwareSubjectOrMessageText(fileAware)) {
       throw new BadRequestException(
           "Subject and message text are parsed from eml and should not be given");
@@ -52,7 +53,7 @@ public class FileUploadValidator {
   }
 
   private void validateKeyDocumentsUniformFileTypes(
-      ManualProgressEntry manualProgressEntry, FileType fileType) {
+      ManualProgressEntry manualProgressEntry, ProcedureFileType fileType) {
     KeyDocumentType keyDocumentType = manualProgressEntry.getKeyDocumentType();
 
     if (keyDocumentType == null) {

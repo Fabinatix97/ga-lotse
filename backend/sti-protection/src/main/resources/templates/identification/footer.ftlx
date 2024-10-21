@@ -1,0 +1,12 @@
+<#-- @ftlvariable name="sender" type="de.eshg.stiprotection.pdf.identification.DocumentSender" -->
+<footer>
+  <div class="footerContent">
+    <div>
+    ${sender.department.name} • ${sender.department.street} ${sender.department.houseNumber} ${sender.department.postalCode} ${sender.department.city}
+    </div>
+    <div>
+      Webseite: ${sender.department.homepage}
+      E-Mail: ${sender.department.email}
+    </div>
+  </div>
+</footer>

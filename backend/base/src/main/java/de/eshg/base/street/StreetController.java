@@ -5,7 +5,7 @@
 
 package de.eshg.base.street;
 
-import de.eshg.base.CountryCodeDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.rest.service.error.BadRequestException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class StreetController implements StreetApi {
 
   @Override
   public SearchStreetResponse searchStreet(
-      String streetName, String houseNumber, String postalCode, CountryCodeDto country) {
+      String streetName, String houseNumber, String postalCode, CountryCode country) {
     return StreetMapper.mapToSearchStreetResponse(
         streetService.getData(
             streetName, StreetMapper.mapToHouseNumber(houseNumber), postalCode, country));

@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.importer;
 
+import de.eshg.lib.xlsximport.XlsxColumn;
+
 public enum PastProcedureListColumn implements XlsxColumn {
   LAST_NAME("Nachname"),
   FIRST_NAME("Vorname"),

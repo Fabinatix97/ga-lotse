@@ -128,7 +128,7 @@ public class ReportService {
         report.getReportSeries().getReports().size(),
         report.getTimeRangeStart(),
         report.getTimeRangeEnd(),
-        report.getCreatedAt(),
+        report.getExecutionDate(),
         StatisticMapper.mapToApi(report.getTableColumns()),
         report.getNumberOfTableRows(),
         resolvedUsers.get(reportSeriesUserId),
@@ -521,18 +521,36 @@ public class ReportService {
   }
 
   @Transactional
-  public void deleteReport(UUID reportId) {
+  public void flagReportForDeletion(UUID reportId) {
     Report report = getReportInternal(reportId);
     ReportSeries reportSeries = report.getReportSeries();
     ReportSeriesService.validateBelongsToCurrentUserOrIsAdmin(reportSeries);
     if (report.getState().equals(AggregationResultState.PLANNED)) {
       throw new BadRequestException(
           "Report is in state 'PLANNED', deactivate report series to remove this report");
+    } else if (report.getState().equals(AggregationResultState.DELETING)) {
+      throw new BadRequestException("Report is already in the process of being deleted");
     }
-    if (reportSeries.getReportType().equals(ReportType.MANUAL)) {
-      reportSeriesRepository.delete(reportSeries);
-    } else {
-      reportRepository.delete(report);
+
+    report.setState(AggregationResultState.DELETING);
+  }
+
+  @Transactional
+  public boolean deleteReport(UUID reportId) {
+    Report report = getReportInternal(reportId);
+
+    dataAggregationService.removeTableRows(report);
+
+    if (dataAggregationService.countTableRows(report) <= 0) {
+      ReportSeries reportSeries = report.getReportSeries();
+      if (reportSeries.getReportType().equals(ReportType.MANUAL)) {
+        reportSeriesRepository.delete(reportSeries);
+      } else {
+        reportRepository.delete(report);
+      }
+      return true;
     }
+
+    return false;
   }
 }

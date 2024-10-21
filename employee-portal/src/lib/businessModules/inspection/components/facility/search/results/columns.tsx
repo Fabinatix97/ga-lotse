@@ -100,7 +100,7 @@ function DropdownMenu(props: { onClickAdd: () => void }) {
     <ActionsMenu
       actionItems={[
         {
-          label: "Zu Zentralkartei hinzufügen...",
+          label: "Zu Stammdaten hinzufügen...",
           onClick: props.onClickAdd,
           startDecorator: <Add />,
         },

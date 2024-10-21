@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 @Component
-class ProceduresHelper {
+public class ProceduresHelper {
 
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final PersonClient personClient;

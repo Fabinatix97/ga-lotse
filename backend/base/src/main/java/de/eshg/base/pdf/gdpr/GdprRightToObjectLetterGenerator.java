@@ -5,7 +5,6 @@
 
 package de.eshg.base.pdf.gdpr;
 
-import de.base.rest.CustomMediaTypes;
 import de.eshg.base.address.persistence.entity.Address;
 import de.eshg.base.address.persistence.entity.DomesticAddress;
 import de.eshg.base.address.persistence.entity.PostboxAddress;
@@ -22,6 +21,7 @@ import de.eshg.base.pdf.data.FieldData;
 import de.eshg.base.pdf.data.FieldRow;
 import de.eshg.base.pdf.data.FieldSet;
 import de.eshg.base.util.Salutation;
+import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import java.io.ByteArrayOutputStream;

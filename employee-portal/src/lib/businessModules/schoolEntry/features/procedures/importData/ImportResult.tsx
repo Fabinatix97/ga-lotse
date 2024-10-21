@@ -3,13 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiImportStatistics,
-  ApiSchoolEntryFeature,
-} from "@eshg/employee-portal-api/schoolEntry";
+import { ApiImportStatistics } from "@eshg/employee-portal-api/schoolEntry";
 import { Stack, Typography } from "@mui/joy";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { ImportResultProceduresSummary } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportResultProceduresSummary";
 import { FileDownloadButton } from "@/lib/shared/components/buttons/FileDownloadButton";
 
@@ -17,7 +13,6 @@ import { ImportResultItem, ImportResultSummary } from "./ImportResultSummary";
 import {
   formatDuplicatedCount,
   formatFailedCount,
-  formatImportedCount,
   formatTotalCount,
 } from "./formatters";
 
@@ -49,21 +44,6 @@ function buildStatisticItems(
   ];
 }
 
-function getStatusHeading(
-  statistics: ApiImportStatistics,
-  isMergeEnabled: boolean,
-) {
-  if (isMergeEnabled) {
-    return "Vorgänge";
-  } else {
-    if (statistics.total === 0 || statistics.created === 0) {
-      return "Keine Vorgänge angelegt";
-    }
-
-    return `${formatImportedCount(statistics.created)} erfolgreich neu angelegt`;
-  }
-}
-
 interface ImportResultProps {
   file: File;
   statistics: ApiImportStatistics;
@@ -71,24 +51,18 @@ interface ImportResultProps {
 }
 
 export function ImportResult(props: ImportResultProps) {
-  const isMergeEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.MergeProceduresOnImport,
-  );
-
   return (
     <Stack gap={3}>
       <ImportResultSummary items={buildStatisticItems(props.statistics)} />
       <Stack gap={3}>
         <Stack gap={1}>
           <Typography level="h4" component="h2" data-testid="statusHeading">
-            {getStatusHeading(props.statistics, isMergeEnabled)}
+            Vorgänge
           </Typography>
-          {isMergeEnabled && (
-            <ImportResultProceduresSummary
-              result={props.statistics}
-              isImportWithMerge={props.isImportWithMerge}
-            />
-          )}
+          <ImportResultProceduresSummary
+            result={props.statistics}
+            isImportWithMerge={props.isImportWithMerge}
+          />
         </Stack>
         {props.statistics.total > 0 && (
           <Stack gap={1}>

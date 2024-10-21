@@ -3,67 +3,112 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCLSectionContextElementsInner } from "@eshg/employee-portal-api/inspection";
+import { useNonce } from "@eshg/lib-portal/components/NonceProvider";
+import {
+  DragDropContext,
+  Draggable,
+  DraggingStyle,
+  Droppable,
+  NotDraggingStyle,
+} from "@hello-pangea/dnd";
 import { Stack } from "@mui/joy";
+import { FieldArray, useFormikContext } from "formik";
 
+import { FormChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { ChecklistDefinitionElement } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/ChecklistDefinitionElement";
 
 interface ChecklistDefinitionElementsListProps {
   readOnlyMode?: boolean;
-  elements: ApiCLSectionContextElementsInner[];
-  setElements: (elements: ApiCLSectionContextElementsInner[]) => void;
   sectionIndex: number;
 }
 
 export function ChecklistDefinitionElementsList({
   readOnlyMode,
-  elements,
-  setElements,
   sectionIndex,
 }: Readonly<ChecklistDefinitionElementsListProps>) {
-  function setElement(
-    index: number,
-    element: ApiCLSectionContextElementsInner,
-  ) {
-    const newElements = [...elements];
-    newElements[index] = element;
-    setElements(newElements);
-  }
-
-  function deleteElement(index: number) {
-    const newElements = [...elements];
-    newElements.splice(index, 1);
-    setElements(newElements);
-  }
-
-  function addElement(element: ApiCLSectionContextElementsInner) {
-    setElements([...elements, element]);
-  }
+  const nonce = useNonce();
+  const { values } = useFormikContext<FormChecklistDefinitionVersion>();
 
   return (
-    <>
-      {elements.map((element, elementIndex) => {
-        return (
-          <Stack spacing={2} key={element.id}>
-            <ChecklistDefinitionElement
-              readOnlyMode={readOnlyMode}
-              key={element.id}
-              element={element}
-              setElement={(element) => {
-                setElement(elementIndex, element);
-              }}
-              deleteElement={() => {
-                deleteElement(elementIndex);
-              }}
-              addElement={(element) => {
-                addElement(element);
-              }}
-              sectionIndex={sectionIndex}
-              elementIndex={elementIndex}
-            />
-          </Stack>
-        );
-      })}
-    </>
+    <FieldArray name={`context.sections.${sectionIndex}.elements`}>
+      {({ push, remove, replace, move }) => (
+        <>
+          <DragDropContext
+            nonce={nonce}
+            onDragEnd={(result) => {
+              if (result.reason !== "DROP") return;
+              if (result.destination === null) return;
+              if (result.destination.index === result.source.index) return;
+              move(result.source.index, result.destination.index);
+            }}
+          >
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <Stack
+                  spacing={2}
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {values.context.sections[sectionIndex]?.elements.map(
+                    (element, elementIndex) => (
+                      <Draggable
+                        key={element.id}
+                        draggableId={element.id}
+                        index={elementIndex}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style,
+                            )}
+                          >
+                            <ChecklistDefinitionElement
+                              dragHandleProps={provided.dragHandleProps}
+                              readOnlyMode={readOnlyMode}
+                              key={element.id}
+                              element={element}
+                              setElement={(element) =>
+                                replace(elementIndex, element)
+                              }
+                              deleteElement={() => remove(elementIndex)}
+                              addElement={(element) => push(element)}
+                              sectionIndex={sectionIndex}
+                              elementIndex={elementIndex}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ),
+                  )}
+                  {provided.placeholder}
+                </Stack>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </>
+      )}
+    </FieldArray>
   );
+}
+
+function getItemStyle(
+  isDragging: boolean,
+  draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
+) {
+  return {
+    background: isDragging ? "#F0F4F8" : "white",
+    borderRadius: 12,
+    ...draggableStyle,
+  };
+}
+
+function getListStyle(isDraggingOver: boolean) {
+  return {
+    background: isDraggingOver ? "#F0F4F8" : "white",
+    borderRadius: 12,
+  };
 }

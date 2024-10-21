@@ -70,7 +70,7 @@ public class LsdTestHelperService implements TestHelperService {
     cachedAccessTokens.clear();
     serviceDirectoryTestHelperClient.reset();
 
-    keycloakProvisioning.createOrUpdateRealm();
+    keycloakProvisioning.configureRealm();
     keycloakProvisioning.deleteUsers();
     keycloakProvisioning.addDummyUser();
 

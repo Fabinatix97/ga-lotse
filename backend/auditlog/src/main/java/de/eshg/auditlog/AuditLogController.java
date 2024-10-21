@@ -5,10 +5,10 @@
 
 package de.eshg.auditlog;
 
-import static de.base.rest.CustomMediaTypes.TEXT_PLAIN_UTF_8;
 import static de.eshg.auditlog.AuditLogApi.QueryParameter.END_DATE;
 import static de.eshg.auditlog.AuditLogApi.QueryParameter.START_DATE;
 import static de.eshg.base.user.api.UserRoleDto.AUDITLOG_DECRYPT_AND_ACCESS;
+import static de.eshg.file.common.CustomMediaTypes.TEXT_PLAIN_UTF_8;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.auditlog.crypto.AsymmetricEncryption;

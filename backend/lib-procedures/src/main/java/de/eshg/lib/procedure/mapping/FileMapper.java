@@ -7,7 +7,6 @@ package de.eshg.lib.procedure.mapping;
 
 import de.eshg.domain.model.audit.DefaultRevisionEntity;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.FileType;
 import de.eshg.lib.procedure.domain.model.Image;
 import de.eshg.lib.procedure.domain.model.ImageMetaData;
 import de.eshg.lib.procedure.domain.model.Mail;
@@ -15,6 +14,7 @@ import de.eshg.lib.procedure.domain.model.MailMetaData;
 import de.eshg.lib.procedure.domain.model.MetaData;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.model.AbstractFileDto;
 import de.eshg.lib.procedure.model.ConcreteFileDto;
 import de.eshg.lib.procedure.model.FileTypeDto;
@@ -181,7 +181,7 @@ public final class FileMapper {
     return metaDataDto;
   }
 
-  private static FileTypeDto toInterfaceType(FileType fileType) {
+  private static FileTypeDto toInterfaceType(ProcedureFileType fileType) {
     return switch (fileType) {
       case JPEG -> FileTypeDto.JPEG;
       case PNG -> FileTypeDto.PNG;
