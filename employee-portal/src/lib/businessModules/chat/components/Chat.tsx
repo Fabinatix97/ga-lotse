@@ -21,13 +21,17 @@ import {
   ClientState,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
+import {
+  clearUserIdParam,
+  getChatUser,
+} from "@/lib/businessModules/chat/shared/utils";
 
 export function Chat() {
   const searchParams = useSearchParams();
   const roomId = searchParams.get("roomId");
   const userIdForChatStart = searchParams.get("userId");
   const theme = useTheme();
-  const { clientState } = useChatClientContext();
+  const { clientState, matrixClient } = useChatClientContext();
   const { infoPanelState } = useInfoPanelContext();
   const { createNewDirectMessage } = useCreateNewChat();
   const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
@@ -42,11 +46,21 @@ export function Chat() {
   // should either create a new chat with the user identified by that ID,
   // or open an existing chat with that user if one exists.
   useEffect(() => {
-    if (!userIdForChatStart || clientState !== ClientState.Prepared) {
-      return;
-    }
-    void createNewDirectMessage({ invite: [userIdForChatStart] });
-  }, [clientState, userIdForChatStart, createNewDirectMessage]);
+    void (async () => {
+      if (!userIdForChatStart || clientState !== ClientState.Prepared) {
+        return;
+      }
+
+      const user = await getChatUser(matrixClient, userIdForChatStart);
+      const isUserExist = user.results.length;
+
+      if (!isUserExist) {
+        clearUserIdParam();
+        return;
+      }
+      void createNewDirectMessage({ invite: [userIdForChatStart] });
+    })();
+  }, [clientState, userIdForChatStart, createNewDirectMessage, matrixClient]);
 
   if (
     clientState === ClientState.CreateBackupKey ||

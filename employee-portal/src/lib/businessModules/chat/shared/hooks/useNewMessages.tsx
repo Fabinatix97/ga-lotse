@@ -60,6 +60,7 @@ export function useNewMessages() {
                 roomId,
                 mentions: messageContent["m.mentions"]?.user_ids,
                 messageType: MessageTypeEnum.ChatMessage,
+                sent: true,
               };
 
               if (sender?.userId !== currentMatrixClient.getUserId()) {

@@ -4,18 +4,19 @@
  */
 
 import {
-  ApiPatchOtherServiceRequest,
+  AddProcedureStepRequest,
   ApiPatchVaccinationConsultationPatientRequest,
   ApiPatchVaccinationConsultationTravelDetailsRequest,
-  ApiPatchVaccinationRequest,
-  ApiPostInformationStatementsRequest,
-  ApiPostProcedureStepRequest,
   ApiPostPutCertificateRequest,
-  ApiPostServicesRequest,
   ApiPostVaccinationConsultationRequest,
   ApiProcedureStatus,
   AssignStepToServiceRequest,
+  PatchOtherServiceRequest,
+  PatchVaccinationRequest,
+  PostInformationStatementsRequest,
+  PostServicesRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiSyncPersonRequest } from "@eshg/employee-portal-api/travelMedicine/models";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -35,43 +36,30 @@ export function useSaveVaccinationConsultation() {
   });
 }
 
-export interface UseUpdateVaccinationRequest {
-  requestData: ApiPatchVaccinationRequest;
-  procedureId: string;
-  serviceId: string;
-}
-
 export function useUpdateVaccination() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
   return useHandledMutation({
-    mutationFn: (request: UseUpdateVaccinationRequest) =>
-      vaccinationConsultationApi.patchVaccination(
-        request.procedureId,
-        request.serviceId,
-        request.requestData,
-      ),
+    mutationFn: (request: PatchVaccinationRequest) =>
+      vaccinationConsultationApi
+        .patchVaccinationRaw(request)
+        .then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Impfung wurde erfolgreich durchgeführt");
     },
   });
 }
 
-export interface UseAddProcedureRequest {
-  procedureId: string;
-  apiPostProcedureStepRequest: ApiPostProcedureStepRequest;
-}
 export function useAddProcedureStep() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
   return useHandledMutation({
-    mutationFn: (request: UseAddProcedureRequest) =>
-      vaccinationConsultationApi.addProcedureStep(
-        request.procedureId,
-        request.apiPostProcedureStepRequest,
-      ),
+    mutationFn: (request: AddProcedureStepRequest) =>
+      vaccinationConsultationApi
+        .addProcedureStepRaw(request)
+        .then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Impftermin wurde erstellt");
     },
@@ -98,22 +86,16 @@ export function useUpdateVaccinationConsultationTravelDetails() {
   });
 }
 
-export interface UseUpdateOtherServiceRequest {
-  procedureId: string;
-  serviceId: string;
-  apiRequest: ApiPatchOtherServiceRequest;
-}
 export function useUpdateOtherService() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
   return useHandledMutation({
-    mutationFn: (request: UseUpdateOtherServiceRequest) =>
-      vaccinationConsultationApi.patchOtherService(
-        request.procedureId,
-        request.serviceId,
-        request.apiRequest,
-      ),
+    mutationFn: (request: PatchOtherServiceRequest) =>
+      vaccinationConsultationApi
+        .patchOtherServiceRaw(request)
+        .then(unwrapRawResponse),
+
     onSuccess: () => {
       snackbar.confirmation("Leistung wurde erfolgreich durchgeführt");
     },
@@ -157,20 +139,15 @@ export function useUpdateTravelDetails() {
   });
 }
 
-export interface UsePostServicesRequest {
-  procedureId: string;
-  apiRequest: ApiPostServicesRequest;
-}
 export function usePostServices() {
   const snackbar = useSnackbar();
   const vaccinationConsultationApi = useVaccinationConsultationApi();
 
   return useHandledMutation({
-    mutationFn: (request: UsePostServicesRequest) =>
-      vaccinationConsultationApi.postServices(
-        request.procedureId,
-        request.apiRequest,
-      ),
+    mutationFn: (request: PostServicesRequest) =>
+      vaccinationConsultationApi
+        .postServicesRaw(request)
+        .then(unwrapRawResponse),
     onSuccess: () => snackbar.confirmation("Services wurden hinzugefügt"),
   });
 }
@@ -268,19 +245,14 @@ export function usePatchStatus() {
   });
 }
 
-export interface UseCreateInformationStatementRequest {
-  procedureId: string;
-  apiPostInformationStatements: ApiPostInformationStatementsRequest;
-}
 export function useCreateInformationStatements() {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
   const snackbar = useSnackbar();
   return useHandledMutation({
-    mutationFn: (request: UseCreateInformationStatementRequest) =>
-      vaccinationConsultationApi.postInformationStatements(
-        request.procedureId,
-        request.apiPostInformationStatements,
-      ),
+    mutationFn: (request: PostInformationStatementsRequest) =>
+      vaccinationConsultationApi
+        .postInformationStatementsRaw(request)
+        .then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Die Aufklärungsbögen wurden angelegt.");
     },
@@ -303,5 +275,15 @@ export function useDeleteInformationStatement() {
     onSuccess: () => {
       snackbar.confirmation("Der Aufklärungsbogen wurde gelöscht.");
     },
+  });
+}
+
+export function useSyncPerson(procedureId: string) {
+  const procedureApi = useVaccinationConsultationApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (request: ApiSyncPersonRequest) =>
+      procedureApi.syncPersonData(procedureId, request),
+    onSuccess: () => snackbar.confirmation("Die Änderungen wurden übernommen."),
   });
 }

@@ -4,6 +4,7 @@
  */
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { isAdult, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { isInteger } from "@eshg/lib-portal/helpers/guards";
 import { Box, Grid, Sheet, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -16,10 +17,6 @@ import {
   getReportCaseForm,
   setReportCaseForm,
 } from "@/lib/businessModules/measlesProtection/helpers/reportCaseForm.storage";
-import {
-  isAdult,
-  toUtcDate,
-} from "@/lib/businessModules/measlesProtection/shared/helpers";
 import { useRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
 import { useReplaceSearchParams } from "@/lib/shared/hooks/searchParams/useReplaceSearchParams";
@@ -222,8 +219,9 @@ export function ReportCaseForm({ onSubmit }: ReportMeaslesCaseFormProps) {
     if (
       isInteger(pageNumber) &&
       pageNumber < reportCaseFormPages.review.pageNumber
-    )
+    ) {
       setReportCaseForm(values);
+    }
   }
 
   return !formValues ? (

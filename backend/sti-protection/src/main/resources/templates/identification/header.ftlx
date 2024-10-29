@@ -1,16 +1,16 @@
 <#-- @ftlvariable name="sender" type="de.eshg.stiprotection.pdf.identification.DocumentSender" -->
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
 <table class="header">
   <tr>
     <td valign="top"/>
     <td valign="top">
-      <img src="logo-gesundheitsamt-ffm.svg" width="114px" height="52px" alt="logo"/>
+      <img src="data:${sender.departmentLogo.contentType};base64,${sender.departmentLogo.contentAsBase64}" width="140px" alt="logo"/>
     </td>
   </tr>
   <tr class="letterhead">
     <td valign="top" class="receiver">
       <div class="officeAddress">
-      ${sender.department.name}, ${sender.department.street} ${sender.department.houseNumber}
-        , ${sender.department.postalCode} ${sender.department.city}
+      ${sender.department.name}, ${sender.department.street} ${sender.department.houseNumber}, ${sender.department.postalCode} ${sender.department.city}
       </div>
     </td>
     <td valign="top" class="sender">

@@ -61,17 +61,20 @@ public class OpenDataService {
 
   private static final Logger log = LoggerFactory.getLogger(OpenDataService.class);
 
-  private static final String DEFAULT_AUTHOR = "GA Frankfurt";
-
   private final ResourceRepository resourceRepository;
   private final VersionRepository versionRepository;
   private final Clock clock;
+  private final VersionProperties versionProperties;
 
   public OpenDataService(
-      ResourceRepository resourceRepository, VersionRepository versionRepository, Clock clock) {
+      ResourceRepository resourceRepository,
+      VersionRepository versionRepository,
+      Clock clock,
+      VersionProperties versionProperties) {
     this.resourceRepository = resourceRepository;
     this.versionRepository = versionRepository;
     this.clock = clock;
+    this.versionProperties = versionProperties;
   }
 
   public List<ResourceDto> getOpenDocuments(GetOpenDocumentsRequest filterOptions) {
@@ -108,7 +111,7 @@ public class OpenDataService {
   }
 
   public List<ResourceDto> searchOpenDocuments(String searchString) {
-    return resourceRepository.findByResourceNameOrVersionDescription(searchString).stream()
+    return resourceRepository.findByResourceNameOrVersionNameOrDescription(searchString).stream()
         .map(OpenDataMapper::toInterfaceType)
         .toList();
   }
@@ -161,7 +164,7 @@ public class OpenDataService {
     version.setStatisticStartDate(postRequest.statisticStartDate());
     version.setStatisticEndDate(postRequest.statisticEndDate());
     version.setSources(postRequest.sources());
-    version.setAuthor(DEFAULT_AUTHOR);
+    version.setAuthor(versionProperties.getAuthor());
     version.setDescription(postRequest.description());
     version.setPublicationDate(Instant.now(clock));
     version.setVersionName(postRequest.versionName());

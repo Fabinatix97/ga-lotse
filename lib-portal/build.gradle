@@ -4,7 +4,7 @@ plugins {
 }
 
 prettier {
-  include = ['**/*.ts', '**/*.tsx', '**/*.cjs', '**/*.json']
+  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.json']
 }
 
 eslint {
@@ -21,11 +21,11 @@ tasks.named('prepareEnvironment').configure {
 }
 
 tasks.named('lint').configure {
-  inputs.files "${rootDir}/config/eslint.next.cjs"
+  inputs.files "${rootDir}/config/eslint.next.js"
 }
 
 tasks.named('lintFix').configure {
-  inputs.files "${rootDir}/config/eslint.next.cjs"
+  inputs.files "${rootDir}/config/eslint.next.js"
 }
 
 tasks.named('test').configure {

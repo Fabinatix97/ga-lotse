@@ -4,7 +4,6 @@
  */
 
 import { ApiPersonAddress } from "@eshg/employee-portal-api/travelMedicine";
-import { differenceInYears } from "date-fns";
 
 import { LegacyBaseAddress } from "@/lib/shared/components/form/address/LegacyAddressForm";
 
@@ -22,8 +21,4 @@ export function mapToApiPersonAddress(
     postalCode: baseAddress.postalCode,
     street: baseAddress.street,
   };
-}
-
-export function calculateAge(dateOfBirth: Date): number {
-  return differenceInYears(new Date(), dateOfBirth);
 }

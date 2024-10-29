@@ -24,7 +24,7 @@ def nextExtension = project.extensions.create('next', NextPluginConfiguration)
 def dockerBuildDir = layout.buildDirectory.dir('docker')
 
 prettier {
-  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.cjs', '**/*.json']
+  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.json']
   additionalExcludes = ['next-env.d.ts', '.next']
 }
 
@@ -34,7 +34,7 @@ eslint {
 
 typescript {
   // ⚠⚠⚠ Note ⚠⚠⚠: Please adjust the tsconfig.json when changing includes/excludes here
-  include = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.cjs']
+  include = ['**/*.ts', '**/*.tsx', '**/*.js']
   additionalExcludes = ['next-env.d.ts', '.next']
 }
 
@@ -44,15 +44,20 @@ tasks.named('prepareEnvironment').configure {
 }
 
 tasks.named('lint').configure {
-  inputs.files "${rootDir}/config/eslint.next.cjs"
+  inputs.files "${rootDir}/config/eslint.next.js"
 }
 
 tasks.named('lintFix').configure {
-  inputs.files "${rootDir}/config/eslint.next.cjs"
+  inputs.files "${rootDir}/config/eslint.next.js"
 }
 
 tasks.named('test').configure {
   inputs.file "${rootDir}/config/tsconfig.next.json"
+}
+
+tasks.register('copyMarkdownSources', Copy) {
+  from("${projectDir}/markdown")
+  into "${nextDir}/standalone/${project.name}/markdown"
 }
 
 tasks.register('copyStaticBuildAssets', Copy) {
@@ -67,6 +72,7 @@ tasks.register('copyPublicBuildAssets', Copy) {
 
 tasks.register('assemble', PnpmTask) {
   dependsOn 'prepareEnvironment'
+  finalizedBy 'copyMarkdownSources'
   finalizedBy 'copyStaticBuildAssets'
   finalizedBy 'copyPublicBuildAssets'
   inputs.file "${rootDir}/config/tsconfig.base.json"
@@ -149,6 +155,7 @@ tasks.register('createDockerfile', Dockerfile) {
 
 tasks.register('copyAssetsToDockerBuildDir', Copy) {
   dependsOn 'assemble'
+  mustRunAfter 'copyMarkdownSources'
   mustRunAfter 'copyStaticBuildAssets'
   mustRunAfter 'copyPublicBuildAssets'
 

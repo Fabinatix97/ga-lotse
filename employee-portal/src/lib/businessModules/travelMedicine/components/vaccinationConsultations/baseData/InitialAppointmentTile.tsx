@@ -7,20 +7,19 @@ import {
   ApiAppointmentBookingType,
   ApiAppointmentSummary,
   ApiAppointmentType,
+  PatchAppointmentRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Grid } from "@mui/joy";
 import { useState } from "react";
 
-import {
-  PatchAppointmentRequest,
-  usePatchAppointment,
-} from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
+import { usePatchAppointment } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import {
   InitialAppointmentForm,
   InitialAppointmentFormValuesProps,
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/appointment/InitialAppointmentForm";
+import { determineStartAndDuration } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/helpers";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -134,18 +133,15 @@ function EditInitialAppointmentSidebar({
   async function handleChangeAppointment(
     values: InitialAppointmentFormValuesProps,
   ) {
-    let appointmentStart;
-    let durationInMinutes;
-    if (values.bookingType == ApiAppointmentBookingType.AppointmentBlock) {
-      const split = values.appointmentBlockDate!.split(",");
-      appointmentStart = new Date(split.at(0)!);
-      durationInMinutes = Number.parseInt(split.at(1)!);
-    } else {
-      appointmentStart = new Date(values.userDefinedAppointmentDate!);
-      durationInMinutes = values.appointmentTypeStandardDuration;
-    }
+    const { appointmentStart, durationInMinutes } = determineStartAndDuration(
+      values.bookingType,
+      values.userDefinedAppointmentDate!,
+      values.appointmentBlockDate!,
+      values.appointmentTypeStandardDuration,
+    );
+
     const request: PatchAppointmentRequest = {
-      procedureStepId: initialAppointment.procedureStepId,
+      id: initialAppointment.procedureStepId,
       apiPatchAppointmentRequest: {
         appointmentType: values.initialStepAppointmentType,
         appointmentBookingType: values.bookingType!,

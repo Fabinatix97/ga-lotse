@@ -13,4 +13,15 @@ import jakarta.persistence.Entity;
 @Entity
 @DataSensitivity(SensitivityLevel.UNDEFINED)
 @DiscriminatorValue(value = "SEX_WORK")
-public class SexWorkMedicalHistory extends MedicalHistory {}
+public class SexWorkMedicalHistory extends MedicalHistory {
+
+  private String medications;
+
+  public String getMedications() {
+    return medications;
+  }
+
+  public void setMedications(String medications) {
+    this.medications = medications;
+  }
+}

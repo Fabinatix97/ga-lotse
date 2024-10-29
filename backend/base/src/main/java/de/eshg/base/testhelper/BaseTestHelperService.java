@@ -24,6 +24,7 @@ import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.base.user.mapper.UserMapper;
+import de.eshg.lib.common.TimeoutConstants;
 import de.eshg.lib.keycloak.EmployeeTestUser;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
@@ -62,7 +63,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
 
   private static final Logger log = LoggerFactory.getLogger(BaseTestHelperService.class);
 
-  private static final Duration CLOCK_SKEW = Duration.ofMinutes(1);
+  private static final Duration CLOCK_SKEW = TimeoutConstants.LONG_RUNNING_OPERATION_TIMEOUT;
 
   private final KeycloakProperties keycloakProperties;
   private final EmployeeKeycloakTestClient employeeKeycloakTestClient;

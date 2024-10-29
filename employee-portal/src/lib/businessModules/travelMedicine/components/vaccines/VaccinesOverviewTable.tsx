@@ -98,7 +98,7 @@ export function VaccinesOverviewTable() {
       loadings: {
         currentInventoryVaccineId:
           currentVaccine?.inventoryVaccineId ?? undefined,
-        diseases: allDiseases.diseases,
+        diseases: allDiseases,
         inventoryVaccines:
           inventoryVaccines.inventoryVaccineWithoutRmbiVaccineList,
       },
@@ -172,7 +172,7 @@ export function VaccinesOverviewTable() {
       >
         <TableSheet>
           <DataTable
-            data={tableData.vaccines}
+            data={tableData}
             columns={vaccinesColumns(
               deleteVaccineWithConfirmation,
               editEntry,

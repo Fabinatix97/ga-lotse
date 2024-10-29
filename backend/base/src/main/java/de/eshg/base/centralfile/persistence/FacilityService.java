@@ -323,4 +323,13 @@ public class FacilityService {
         contactAddressDiffDto,
         billingAddressDiffDto);
   }
+
+  public int deleteExpiredFileStatesAndReferences(Instant expirationTime) {
+    return mutexService.doWithLockedMutex(
+        MUTEX_FACILITY_WRITE, () -> deleteExpiredFileStatesAndReferencesWhenLocked(expirationTime));
+  }
+
+  private int deleteExpiredFileStatesAndReferencesWhenLocked(Instant expirationTime) {
+    return facilityRepository.deleteByDeleteAtBefore(expirationTime);
+  }
 }

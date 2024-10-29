@@ -42,6 +42,7 @@ export function EnumSingleFilter(props: EnumSingleFilterProps) {
       value={props.value?.selectedValue ?? null}
       onChange={handleChange}
       sx={{ width: "100%" }}
+      aria-label={props.definition.name}
     >
       {props.definition.options.map((option) => (
         <Option key={option.value} value={option.value}>

@@ -44,7 +44,7 @@ public class NominatimApiImpl implements NominatimApi {
     String nominatimUrl = nominatimBaseUrl;
 
     String urlTemplate =
-        UriComponentsBuilder.fromHttpUrl(nominatimUrl)
+        UriComponentsBuilder.fromUriString(nominatimUrl)
             .queryParam("country", "{country}")
             .queryParam("city", "{city}")
             .queryParam("postalcode", "{postalcode}")

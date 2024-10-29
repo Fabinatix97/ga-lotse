@@ -16,7 +16,7 @@ public interface AuditLogTraits extends JUnit5ValidationFileAssertions {
   StaticLogDirExtension auditLogDirExtension();
 
   default ValidationNormalizer defaultValidationNormalizer() {
-    return ValidationNormalizer.combine(new UuidNormalizer());
+    return new UuidNormalizer();
   }
 
   default void assertAuditLogContentWithFile() {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { format, isMatch } from "date-fns";
+import { differenceInYears, format, isMatch } from "date-fns";
 
 export const DATE_FORMAT = "yyyy-MM-dd";
 export const DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
@@ -48,4 +48,12 @@ export function formatDateToFullReadableString(date: Date, locale = "de-DE") {
   return new Intl.DateTimeFormat(locale, {
     dateStyle: "full",
   }).format(date);
+}
+
+export function calculateAge(dateOfBirth: Date): number {
+  return differenceInYears(new Date(), dateOfBirth);
+}
+
+export function isAdult(dateOfBirth: Date): boolean {
+  return calculateAge(dateOfBirth) >= 18;
 }

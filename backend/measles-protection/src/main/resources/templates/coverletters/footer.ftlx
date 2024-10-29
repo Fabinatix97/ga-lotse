@@ -1,11 +1,12 @@
+<#-- @ftlvariable name="departmentInfo" type="de.eshg.measlesprotection.pdf.coverletter.DepartmentInfo" -->
 <footer>
   <div class="footerContent">
     <div>
-      Hausanschrift: Breite Gasse 28 und Zeil 5, 60313 Frankfurt am Main. RMV- Haltestelle Konstablerwache
+      Hausanschrift: ${departmentInfo.street()} ${departmentInfo.houseNumber()}, ${departmentInfo.postalCode()} ${departmentInfo.city()}
     </div>
     <div>
-      Hotline: 069 212-33970. Internet:
-      <a href="https://www.gesundheitsamt.stadt-frankfurt.de">https://www.gesundheitsamt.stadt-frankfurt.de</a>
+      Hotline: ${departmentInfo.phoneNumber()}. Internet:
+      <a href="${departmentInfo.homepage()}">${departmentInfo.homepage()}</a>
     </div>
   </div>
 </footer>

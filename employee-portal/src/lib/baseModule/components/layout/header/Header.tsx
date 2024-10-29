@@ -52,7 +52,7 @@ export function Header() {
       <HeaderIconButton
         aria-label={sidenav.isOpen ? "navigation-close" : "navigation-open"}
         sx={{
-          display: { xxs: "flex", sm: "none" },
+          display: { xxs: "flex", lg: "none" },
         }}
         onClick={toggleSidenav}
       >

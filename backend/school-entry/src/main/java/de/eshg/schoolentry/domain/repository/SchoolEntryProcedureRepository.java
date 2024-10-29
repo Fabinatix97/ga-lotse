@@ -28,6 +28,20 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
   @EntityGraph(attributePaths = SchoolEntryProcedure_.APPOINTMENT)
   Page<SchoolEntryProcedure> findAll(Specification<SchoolEntryProcedure> spec, Pageable pageable);
 
+  @Query("select p from SchoolEntryProcedure p where p.externalId in :externalIds order by p.id")
+  @EntityGraph(
+      attributePaths = {
+        SchoolEntryProcedure_.WAITING_ROOM,
+        SchoolEntryProcedure_.HEARING_TEST_RESULT,
+        SchoolEntryProcedure_.EYE_EXAMINATION_RESULT,
+        SchoolEntryProcedure_.SOPESS_EXAMINATION_RESULT,
+        SchoolEntryProcedure_.DEVELOPMENT_SCREENING_RESULT,
+        SchoolEntryProcedure_.VACCINATION_STATUS,
+        SchoolEntryProcedure_.ANAMNESIS
+      })
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  List<SchoolEntryProcedure> findForBatchDeletion(@Param("externalIds") List<UUID> externalIds);
+
   @Query(
       """
       select s from SchoolEntryProcedure s

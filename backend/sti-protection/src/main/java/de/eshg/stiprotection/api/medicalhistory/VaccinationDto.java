@@ -6,10 +6,9 @@
 package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 
 @Schema(name = "Vaccination")
 public record VaccinationDto(
-    @NotNull DiseaseTypeDto diseaseType, @NotNull @PastOrPresent LocalDate vaccinationDate) {}
+    @PastOrPresent LocalDate hepA, @PastOrPresent LocalDate hepB, @PastOrPresent LocalDate hpv) {}

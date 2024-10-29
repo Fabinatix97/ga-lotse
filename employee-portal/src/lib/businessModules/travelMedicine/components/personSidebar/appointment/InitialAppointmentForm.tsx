@@ -15,7 +15,7 @@ import { format } from "date-fns";
 import { Formik, FormikErrors } from "formik";
 import { useState } from "react";
 
-import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
+import { LegacyAppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/LegacyAppointmentRadioGroup";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import {
   SidebarForm,
@@ -35,7 +35,7 @@ interface AppointmentFormProps {
 export interface InitialAppointmentFormValuesProps {
   selectedPerson?: LegacyPerson;
   initialStepAppointmentType: ApiAppointmentType;
-  bookingType?: ApiAppointmentBookingType | null;
+  bookingType?: ApiAppointmentBookingType;
   appointmentBlockDate?: string;
   appointmentBlockDateOption?: SelectOption;
   userDefinedAppointmentDate?: string;
@@ -87,7 +87,6 @@ export function InitialAppointmentForm({
     <Formik
       initialValues={{
         ...initialValues,
-        bookingType: initialValues.bookingType ?? null,
         appointmentBlockDate: initialValues.appointmentBlockDate ?? "",
         userDefinedAppointmentDate:
           initialValues.userDefinedAppointmentDate ??
@@ -117,7 +116,7 @@ export function InitialAppointmentForm({
                   sx={{ flexGrow: 1 }}
                 />
               </Sheet>
-              <AppointmentRadioGroup
+              <LegacyAppointmentRadioGroup
                 type={type}
                 appointmentBlockDateOption={
                   initialValues.appointmentBlockDateOption

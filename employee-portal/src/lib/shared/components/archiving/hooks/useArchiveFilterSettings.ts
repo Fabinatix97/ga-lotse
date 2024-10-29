@@ -11,15 +11,15 @@ import {
 } from "@eshg/employee-portal-api/businessProcedures";
 
 import { archivingRelevanceNames } from "@/lib/shared/components/archiving/constants";
-import {
-  getFilterDate,
-  getFilterSelectedValues,
-} from "@/lib/shared/components/archiving/helper";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
+import {
+  getFilterDate,
+  getFilterSelectedValues,
+} from "@/lib/shared/helpers/filter";
 
 const FILTER_KEYS = {
   closedAtDay: "closedAtDay",
@@ -84,15 +84,19 @@ export function getArchivableProceduresFilters(
 > {
   return {
     closedAtDay: getFilterDate(filterValues, FILTER_KEYS.closedAtDay),
-    procedureType: getFilterSelectedValues(
-      filterValues,
-      FILTER_KEYS.procedureType,
-      ApiProcedureType,
+    procedureType: new Set(
+      getFilterSelectedValues(
+        filterValues,
+        FILTER_KEYS.procedureType,
+        ApiProcedureType,
+      ),
     ),
-    defaultArchivingRelevance: getFilterSelectedValues(
-      filterValues,
-      FILTER_KEYS.defaultArchivingRelevance,
-      ApiArchivingRelevance,
+    defaultArchivingRelevance: new Set(
+      getFilterSelectedValues(
+        filterValues,
+        FILTER_KEYS.defaultArchivingRelevance,
+        ApiArchivingRelevance,
+      ),
     ),
   };
 }

@@ -81,14 +81,14 @@ public class CitizenAuthController {
           + "/{procedureId}"
           + PROCEDURE_STEP_URL
           + "/{procedureStepId}/appointment")
-  @Operation(summary = "Cancel an appointment.")
+  @Operation(summary = "Cancel an appointment from citizen portal.")
   @Transactional
-  public void deleteAppointment(
+  public void deleteAppointmentCp(
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId) {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
-    vaccinationConsultationService.deleteAppointment(
+    vaccinationConsultationService.cancelAppointment(
         getCitizenUserId(principal), procedureId, procedureStepId);
   }
 

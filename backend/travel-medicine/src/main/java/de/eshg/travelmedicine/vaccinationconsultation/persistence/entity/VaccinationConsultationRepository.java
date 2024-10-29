@@ -33,7 +33,7 @@ public interface VaccinationConsultationRepository
       from VaccinationConsultation vc inner join vc.relatedPersons person inner join vc.procedureSteps ps left join ps.appointment a left join ps.userDefinedAppointment uda
       where a.appointmentStart between :startInstant and :endInstant
       or uda.appointmentStart between :startInstant and :endInstant
-      or ps.earliestDate between :startLocalDate and :endLocalDate
+      or (ps.earliestDate between :startLocalDate and :endLocalDate and a.appointmentStart is null and uda.appointmentStart is null)
       order by ps.id""")
   List<AppointmentOverviewEntry> findAppointmentOverview(
       @Param("startInstant") Instant startInstant,

@@ -91,7 +91,7 @@ export function ReportCaseOverviewCard({
   submitDisabled = false,
   submitLabel,
 }: ReportCaseOverviewCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("measlesProtection/forms");
   const {
     values: {
       affectedPersons,
@@ -152,22 +152,22 @@ export function ReportCaseOverviewCard({
             <Box sx={{ display: "flex", mb: 1 }}>
               <NotificationImportantOutlined sx={{ color: iconColor }} />
               <Typography sx={{ ml: 2 }}>
-                {
+                {t(
                   reportingReasonNames[
                     currentAffectedPerson?.reportData
                       .reportingReason as ApiReportingReason
-                  ]
-                }
+                  ],
+                )}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", mb: 1 }}>
               <WorkOutline sx={{ color: iconColor }} />
               <Typography sx={{ ml: 2 }}>
-                {
+                {t(
                   roleStatusNames[
                     currentAffectedPerson?.roleStatus as ApiRoleStatus
-                  ]
-                }
+                  ],
+                )}
               </Typography>
             </Box>
             <Box sx={{ display: "flex", mb: 1 }}>

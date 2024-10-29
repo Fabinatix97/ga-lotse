@@ -40,7 +40,7 @@ export default function NotFound() {
             entfernt.
           </Typography>
         </Stack>
-        <InternalLinkButton href="/">Zur Startseit</InternalLinkButton>
+        <InternalLinkButton href="/">Zur Startseite</InternalLinkButton>
       </Stack>
     </Box>
   );

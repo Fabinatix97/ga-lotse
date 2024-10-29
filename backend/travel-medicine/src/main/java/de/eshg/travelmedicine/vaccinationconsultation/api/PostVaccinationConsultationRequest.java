@@ -9,7 +9,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.common.CountryCode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +23,5 @@ public record PostVaccinationConsultationRequest(
     TravelTimeUnitDto travelTimeUnit,
     @NotNull AppointmentTypeDto initialStepAppointmentType,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
-    Instant appointmentStart,
-    @PositiveOrZero Integer durationInMinutes,
-    LocalDate earliestDate) {}
+    @NotNull Instant appointmentStart,
+    @NotNull @Positive Integer durationInMinutes) {}

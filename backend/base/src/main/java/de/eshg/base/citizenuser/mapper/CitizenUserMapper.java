@@ -20,6 +20,7 @@ public final class CitizenUserMapper {
       case ACCESS_CODE_USER -> CitizenUserRoleDto.ACCESS_CODE_USER;
       case MUK_USER -> CitizenUserRoleDto.MUK_USER;
       case STANDARD_CITIZEN -> CitizenUserRoleDto.STANDARD_CITIZEN;
+      case BUND_ID_USER -> CitizenUserRoleDto.BUND_ID_USER;
     };
   }
 

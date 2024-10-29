@@ -5,8 +5,12 @@
 
 package de.eshg.measlesprotection.pdf.coverletter;
 
+import de.eshg.lib.document.generator.department.DepartmentLogo;
+
 public record CoverLetterData(
     CoverLetterType coverLetterType,
     CoverLetterPerson addressee,
     CoverLetterPerson affectedPerson,
-    CoverLetterBody body) {}
+    CoverLetterBody body,
+    DepartmentLogo departmentLogo,
+    DepartmentInfo departmentInfo) {}

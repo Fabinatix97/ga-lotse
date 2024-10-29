@@ -7,6 +7,7 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
   Dropdown,
   IconButton,
@@ -25,21 +26,26 @@ import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanel
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
-import { isDMRoom, leaveRoom } from "@/lib/businessModules/chat/shared/utils";
+import { RoomWithCommunicationType } from "@/lib/businessModules/chat/shared/types";
+import {
+  isDMRoom,
+  isGroupRoom,
+  leaveRoom,
+} from "@/lib/businessModules/chat/shared/utils";
 
 export interface ChatPanelHeaderProps {
   roomId: string;
+  room: RoomWithCommunicationType;
 }
 
-export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
+export function ChatPanelHeader({
+  roomId,
+  room,
+}: Readonly<ChatPanelHeaderProps>) {
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const roomInfo = useRoomInfo(roomId);
   const { clearChatParams } = useChatSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-
-  if (!roomInfo) {
-    return <ChatColumnHeaderWrapper />;
-  }
 
   function handleRoomInfoClick() {
     setInfoPanelView(InfoPanelView.RoomInfo, roomId);
@@ -52,7 +58,7 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
     void leaveRoom(roomInfo.matrixClient, roomId);
   }
 
-  const roomSettingsItem = isDMRoom(roomInfo.communicationType) ? (
+  const roomSettingsItem = isDMRoom(room.communicationType) ? (
     <>
       <ListItemDecorator>
         <PersonOutlinedIcon />
@@ -80,7 +86,10 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
             height: "100%",
           }}
         >
-          <ChatHeader {...roomInfo} />
+          <ChatHeader
+            communicationType={room.communicationType}
+            room={room.room}
+          />
           <Stack
             direction="row"
             spacing={1}
@@ -100,11 +109,24 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
                 <MenuItem onClick={handleRoomInfoClick}>
                   {roomSettingsItem}
                 </MenuItem>
+                {/*Display settings button only for admin and only if it's group chat*/}
+                {roomInfo.isAdmin && isGroupRoom(room.communicationType) && (
+                  <MenuItem
+                    onClick={() =>
+                      setInfoPanelView(InfoPanelView.AdminSettings, roomId)
+                    }
+                  >
+                    <ListItemDecorator>
+                      <SettingsOutlinedIcon />
+                    </ListItemDecorator>
+                    Einstellungen
+                  </MenuItem>
+                )}
                 <MenuItem onClick={() => setIsOpen(true)}>
                   <ListItemDecorator>
                     <LogoutOutlinedIcon />
                   </ListItemDecorator>
-                  {isDMRoom(roomInfo.communicationType)
+                  {isDMRoom(room.communicationType)
                     ? "Verlassen"
                     : "Gruppe verlassen"}
                 </MenuItem>

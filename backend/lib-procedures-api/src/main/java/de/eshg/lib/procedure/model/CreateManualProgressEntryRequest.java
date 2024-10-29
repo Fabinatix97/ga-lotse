@@ -12,4 +12,4 @@ public record CreateManualProgressEntryRequest(
     String subject,
     String messageText,
     String note,
-    KeyDocumentTypeDto keyDocumentType) {}
+    String keyDocumentType) {}

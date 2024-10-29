@@ -5,54 +5,100 @@
 
 package de.eshg.stiprotection.persistence.db.medicalhistory;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.GenericEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import de.eshg.stiprotection.persistence.db.Gender;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
+import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
-import org.springframework.util.Assert;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-@Table(indexes = @Index(columnList = "procedure_id", unique = true))
-public abstract class MedicalHistory extends BaseEntity {
+public abstract class MedicalHistory extends GenericEntity<Long> {
 
+  @Id private Long id;
+
+  @MapsId
   @OneToOne(fetch = FetchType.LAZY)
   private StiProtectionProcedure procedure;
 
-  @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.PERSIST, orphanRemoval = true)
-  @OrderBy
-  private final List<Examination> examinations = new ArrayList<>();
-
-  @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.PERSIST, orphanRemoval = true)
-  @OrderBy
-  private final List<Vaccination> vaccinations = new ArrayList<>();
+  // General
 
   private String examinationReason;
 
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private SexualOrientation sexualOrientation;
+  private String currentSymptoms;
+
+  private LocalDate contactToClarifyDuration;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  private Gender sexualContact;
+  private RelationshipModel relationshipModel;
+
+  // Examinations
+
+  @AttributeOverrides({
+    @AttributeOverride(name = "hepA", column = @Column(name = "examination_hep_a")),
+    @AttributeOverride(name = "hepB", column = @Column(name = "examination_hep_b")),
+    @AttributeOverride(name = "hepC", column = @Column(name = "examination_hep_c")),
+    @AttributeOverride(name = "hiv", column = @Column(name = "examination_hiv")),
+    @AttributeOverride(name = "syphilis", column = @Column(name = "examination_syphilis")),
+    @AttributeOverride(name = "gonorrhea", column = @Column(name = "examination_gonorrhea")),
+    @AttributeOverride(name = "chlamydia", column = @Column(name = "examination_chlamydia")),
+  })
+  @Embedded
+  private Examination examinations;
+
+  // Previous Diseases
+
+  @AttributeOverrides({
+    @AttributeOverride(name = "hepA", column = @Column(name = "previous_illnesses_hep_a")),
+    @AttributeOverride(name = "hepB", column = @Column(name = "previous_illnesses_hep_b")),
+    @AttributeOverride(name = "hepC", column = @Column(name = "previous_illnesses_hep_c")),
+    @AttributeOverride(name = "hiv", column = @Column(name = "previous_illnesses_hiv")),
+    @AttributeOverride(name = "syphilis", column = @Column(name = "previous_illnesses_syphilis")),
+    @AttributeOverride(name = "gonorrhea", column = @Column(name = "previous_illnesses_gonorrhea")),
+    @AttributeOverride(name = "chlamydia", column = @Column(name = "previous_illnesses_chlamydia")),
+  })
+  @Embedded
+  private PreviousIllness previousIllnesses;
+
+  // Orientation and Contact
+
+  @Embedded private RiskContact riskContacts;
+
+  // Risk Factors
+
+  @Embedded private RiskFactor riskFactors;
+
+  // Comments
+
+  private String additionalComments;
+
+  // Getter and Setters
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public StiProtectionProcedure getProcedure() {
     return procedure;
@@ -62,41 +108,7 @@ public abstract class MedicalHistory extends BaseEntity {
     this.procedure = procedure;
   }
 
-  public List<Examination> getExaminations() {
-    return examinations;
-  }
-
-  public void addExamination(Examination examination) {
-    Assert.notNull(examination, "Examination must not be null");
-    examinations.add(examination);
-    examination.setMedicalHistory(this);
-  }
-
-  public List<Vaccination> getVaccinations() {
-    return vaccinations;
-  }
-
-  public void addVaccination(Vaccination vaccination) {
-    Assert.notNull(vaccination, "Vaccination must not be null");
-    vaccinations.add(vaccination);
-    vaccination.setMedicalHistory(this);
-  }
-
-  public Gender getSexualContact() {
-    return sexualContact;
-  }
-
-  public void setSexualContact(Gender sexualContact) {
-    this.sexualContact = sexualContact;
-  }
-
-  public SexualOrientation getSexualOrientation() {
-    return sexualOrientation;
-  }
-
-  public void setSexualOrientation(SexualOrientation sexualOrientation) {
-    this.sexualOrientation = sexualOrientation;
-  }
+  // General
 
   public String getExaminationReason() {
     return examinationReason;
@@ -106,13 +118,77 @@ public abstract class MedicalHistory extends BaseEntity {
     this.examinationReason = examinationReason;
   }
 
-  public void clearExaminations() {
-    examinations.forEach(examination -> examination.setMedicalHistory(null));
-    examinations.clear();
+  public String getCurrentSymptoms() {
+    return currentSymptoms;
   }
 
-  public void clearVaccinations() {
-    vaccinations.forEach(vaccination -> vaccination.setMedicalHistory(null));
-    vaccinations.clear();
+  public void setCurrentSymptoms(String currentSymptoms) {
+    this.currentSymptoms = currentSymptoms;
+  }
+
+  public LocalDate getContactToClarifyDuration() {
+    return contactToClarifyDuration;
+  }
+
+  public void setContactToClarifyDuration(LocalDate contactToClarifyDuration) {
+    this.contactToClarifyDuration = contactToClarifyDuration;
+  }
+
+  public RelationshipModel getRelationshipModel() {
+    return relationshipModel;
+  }
+
+  public void setRelationshipModel(RelationshipModel relationshipModel) {
+    this.relationshipModel = relationshipModel;
+  }
+
+  // Examinations
+
+  public Examination getExaminations() {
+    return examinations;
+  }
+
+  public void setExaminations(Examination examinations) {
+    this.examinations = examinations;
+  }
+
+  // Previous Diseases
+
+  public PreviousIllness getPreviousIllnesses() {
+    return previousIllnesses;
+  }
+
+  public void setPreviousIllnesses(PreviousIllness previousIllnesses) {
+    this.previousIllnesses = previousIllnesses;
+  }
+
+  // Orientation and Contact
+
+  public RiskContact getRiskContacts() {
+    return riskContacts;
+  }
+
+  public void setRiskContacts(RiskContact riskContacts) {
+    this.riskContacts = riskContacts;
+  }
+
+  // Risk Factors
+
+  public RiskFactor getRiskFactors() {
+    return riskFactors;
+  }
+
+  public void setRiskFactors(RiskFactor riskFactors) {
+    this.riskFactors = riskFactors;
+  }
+
+  // Comments
+
+  public String getAdditionalComments() {
+    return additionalComments;
+  }
+
+  public void setAdditionalComments(String additionalComments) {
+    this.additionalComments = additionalComments;
   }
 }

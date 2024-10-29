@@ -20,7 +20,7 @@ public class IdentityProviderMapperRepresentationDiffer
         sortConfigs(target),
         sortConfigs(source),
         identityProviderRepresentationUpdater(),
-        IdentityProviderMapperRepresentation::getIdentityProviderMapper);
+        idp -> idp.getIdentityProviderAlias() + ":" + idp.getName());
   }
 
   private static List<IdentityProviderMapperRepresentation> sortConfigs(
@@ -32,7 +32,7 @@ public class IdentityProviderMapperRepresentationDiffer
   private static PropertyUpdater<IdentityProviderMapperRepresentation>
       identityProviderRepresentationUpdater() {
     return (target, source) -> {
-      target.setName(source.getName());
+      target.setIdentityProviderMapper(source.getIdentityProviderMapper());
       target.setConfig(source.getConfig());
     };
   }

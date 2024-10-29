@@ -54,7 +54,7 @@ export function ServiceCard(props: ServiceCardProps) {
             }}
           >
             <Typography
-              component="div"
+              component="p"
               level="h4"
               textAlign="center"
               style={{

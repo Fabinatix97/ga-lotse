@@ -14,74 +14,98 @@ import {
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
+import { TranslateFn } from "@/lib/i18n/client";
+
 export const facilityTypeNames = {
-  [ApiMPFacilityType.School]: "Schule",
-  [ApiMPFacilityType.DayNursery]: "Kindertageseinrichtung und Kinderhort",
-  [ApiMPFacilityType.Daycare]: "Kindertagespflege",
-  [ApiMPFacilityType.ChildrensHome]: "Heim",
+  [ApiMPFacilityType.School]: "common.facility_types.school",
+  [ApiMPFacilityType.DayNursery]: "common.facility_types.day_nursery",
+  [ApiMPFacilityType.Daycare]: "common.facility_types.daycare",
+  [ApiMPFacilityType.ChildrensHome]: "common.facility_types.childrens_home",
   [ApiMPFacilityType.RefugeeAccommodation]:
-    "Gemeinschaftsunterkunft für Geflüchtete",
-  [ApiMPFacilityType.Hospital]: "Krankenhaus",
-  [ApiMPFacilityType.MedicalPractice]:
-    "Arztpraxis, Zahnarztpraxis oder psychotherapeutische Praxis",
-  [ApiMPFacilityType.OutpatientSurgery]: "Einrichtung für ambulantes Operieren",
+    "common.facility_types.refugee_accommodation",
+  [ApiMPFacilityType.Hospital]: "common.facility_types.hospital",
+  [ApiMPFacilityType.MedicalPractice]: "common.facility_types.medical_practice",
+  [ApiMPFacilityType.OutpatientSurgery]:
+    "common.facility_types.outpatient_surgery",
   [ApiMPFacilityType.RehabilitationCentre]:
-    "Vorsorge- oder Rehabilitationseinrichtung",
-  [ApiMPFacilityType.DialysisCentre]: "Dialyseeinrichtung",
-  [ApiMPFacilityType.DayClinic]: "Tagesklinik",
-  [ApiMPFacilityType.MaternityCentre]: "Entbindungseinrichtung",
+    "common.facility_types.rehabilitation_centre",
+  [ApiMPFacilityType.DialysisCentre]: "common.facility_types.dialysis_centre",
+  [ApiMPFacilityType.DayClinic]: "common.facility_types.day_clinic",
+  [ApiMPFacilityType.MaternityCentre]: "common.facility_types.maternity_centre",
   [ApiMPFacilityType.OtherMedicalPractice]:
-    "Praxis sonstiger humanmedizinischer Heilberufe",
+    "common.facility_types.other_medical_practice",
   [ApiMPFacilityType.PublicHealthService]:
-    "Einrichtung des öffentlichen Gesundheitsdienstes",
-  [ApiMPFacilityType.EmergencyService]: "Rettungsdienst",
-  [ApiMPFacilityType.CivilProtection]:
-    "Einrichtung des Zivil- und Katastrophenschutzes",
-  [ApiMPFacilityType.Other]: "Andere",
+    "common.facility_types.public_health_service",
+  [ApiMPFacilityType.EmergencyService]:
+    "common.facility_types.emergency_service",
+  [ApiMPFacilityType.CivilProtection]: "common.facility_types.civil_protection",
+  [ApiMPFacilityType.Other]: "common.facility_types.other",
 } satisfies Record<ApiMPFacilityType, string>;
 
 export const salutationNames: EnumMap<ApiSalutation> = {
-  [ApiSalutation.NotSpecified]: "Keine Angabe",
-  [ApiSalutation.Neutral]: "Neutral",
-  [ApiSalutation.Male]: "Herr",
-  [ApiSalutation.Female]: "Frau",
+  [ApiSalutation.NotSpecified]: "base/translation:salutation.not_specified",
+  [ApiSalutation.Neutral]: "base/translation:salutation.neutral",
+  [ApiSalutation.Male]: "base/translation:salutation.male",
+  [ApiSalutation.Female]: "base/translation:salutation.female",
 };
 
 export const titleNames: EnumMap<ApiTitle> = {
-  [ApiTitle.Dr]: "Dr.",
-  [ApiTitle.Prof]: "Prof.",
-  [ApiTitle.ProfDr]: "Prof. Dr.",
+  [ApiTitle.Dr]: "base/translation:title.dr",
+  [ApiTitle.Prof]: "base/translation:title.prof",
+  [ApiTitle.ProfDr]: "base/translation:title.prof_dr",
 };
 
 export const genderNames: EnumMap<ApiGender> = {
-  [ApiGender.NotSpecified]: "Keine Angabe",
-  [ApiGender.Male]: "Männlich",
-  [ApiGender.Female]: "Weiblich",
-  [ApiGender.Diverse]: "Divers",
+  [ApiGender.NotSpecified]: "base/translation:gender.not_specified",
+  [ApiGender.Male]: "base/translation:gender.male",
+  [ApiGender.Female]: "base/translation:gender.female",
+  [ApiGender.Diverse]: "base/translation:gender.diverse",
 };
 
 export const roleStatusNames: EnumMap<ApiRoleStatus> = {
-  [ApiRoleStatus.Employee]: "Beschäftigte:r",
-  [ApiRoleStatus.Supervised]: "Betreut / Bewohner:in",
+  [ApiRoleStatus.Employee]: "common.role_status.employee",
+  [ApiRoleStatus.Supervised]: "common.role_status.supervised",
 } satisfies Record<ApiRoleStatus, string>;
 
 export const reportingReasonNames: EnumMap<ApiReportingReason> = {
-  [ApiReportingReason.FirstVaccine]: "nur 1. Impfung",
+  [ApiReportingReason.FirstVaccine]: "common.reporting_reason.first_vaccine",
   [ApiReportingReason.MedicalContraindication]:
-    "med. Kontraindikation / Attest",
-  [ApiReportingReason.NoProof]: "ohne Nachweis",
-  [ApiReportingReason.Other]: "anderer Grund",
+    "common.reporting_reason.medical_contraindication",
+  [ApiReportingReason.NoProof]: "common.reporting_reason.no_proof",
+  [ApiReportingReason.Other]: "common.reporting_reason.other",
   [ApiReportingReason.UnassessableProof]:
-    "Nachweis nicht beurteilbar (z.B. unleserlich, Fremdsprache)",
+    "common.reporting_reason.unassessable_proof",
 } satisfies Record<ApiReportingReason, string>;
 
-export const facilityTypeOptions =
-  buildEnumOptions<ApiMPFacilityType>(facilityTypeNames);
-export const salutationOptions =
-  buildEnumOptions<ApiSalutation>(salutationNames);
-export const titleOptions = buildEnumOptions<ApiTitle>(titleNames);
-export const genderOptions = buildEnumOptions<ApiGender>(genderNames);
-export const roleStatusOptions =
-  buildEnumOptions<ApiRoleStatus>(roleStatusNames);
-export const reportingReasonOptions =
-  buildEnumOptions<ApiReportingReason>(reportingReasonNames);
+function translateMap<TEnum extends string>(
+  t: TranslateFn,
+  valueToLabelMap: Record<TEnum, string>,
+) {
+  const entries = Object.entries(valueToLabelMap)
+    .filter((entry): entry is [TEnum, string] => typeof entry[1] === "string")
+    .map(([value, label]: [TEnum, string]) => [value, t(label)]);
+  return Object.fromEntries(entries) as Record<TEnum, string>;
+}
+
+export function facilityTypeOptions(t: TranslateFn) {
+  return buildEnumOptions<ApiMPFacilityType>(
+    translateMap(t, facilityTypeNames),
+  );
+}
+export function salutationOptions(t: TranslateFn) {
+  return buildEnumOptions<ApiSalutation>(translateMap(t, salutationNames));
+}
+export function titleOptions(t: TranslateFn) {
+  return buildEnumOptions<ApiTitle>(translateMap(t, titleNames));
+}
+export function genderOptions(t: TranslateFn) {
+  return buildEnumOptions<ApiGender>(translateMap(t, genderNames));
+}
+export function roleStatusOptions(t: TranslateFn) {
+  return buildEnumOptions<ApiRoleStatus>(translateMap(t, roleStatusNames));
+}
+export function reportingReasonOptions(t: TranslateFn) {
+  return buildEnumOptions<ApiReportingReason>(
+    translateMap(t, reportingReasonNames),
+  );
+}

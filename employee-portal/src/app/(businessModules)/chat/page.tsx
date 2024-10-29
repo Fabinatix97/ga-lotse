@@ -6,16 +6,14 @@
 "use client";
 
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
+import { notFound } from "next/navigation";
+import { useLayoutEffect } from "react";
 
 import { Chat } from "@/lib/businessModules/chat/components/Chat";
 import { ChatErrorBoundary } from "@/lib/businessModules/chat/components/ChatErrorBoundary";
-import { ChatFeatureUnavailable } from "@/lib/businessModules/chat/components/ChatFeatureUnavailable";
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { InfoPanelProvider } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
-import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
-import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export default function ChatPage() {
   const {
@@ -23,29 +21,26 @@ export default function ChatPage() {
     userSettings,
     isSettingsLoading,
     isFeatureToggleLoading,
+    isFeatureToggleSuccess,
   } = useChat();
+
+  useLayoutEffect(() => {
+    if (!canAccessChat && isFeatureToggleSuccess) {
+      notFound();
+    }
+  }, [canAccessChat, isFeatureToggleSuccess]);
 
   if (isFeatureToggleLoading || isSettingsLoading) {
     return <LoadingIndicator text="Seite wird geladen…" fullHeight />;
   }
 
-  if (!canAccessChat) {
-    return <ChatFeatureUnavailable />;
-  }
-
-  return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Chat" />}>
-      <MainContentLayout fullViewportHeight>
-        {userSettings.chatUsageEnabled ? (
-          <ChatErrorBoundary>
-            <InfoPanelProvider>
-              <Chat />
-            </InfoPanelProvider>
-          </ChatErrorBoundary>
-        ) : (
-          <ChatNoAccessAlert />
-        )}
-      </MainContentLayout>
-    </StickyToolbarLayout>
+  return userSettings.chatUsageEnabled ? (
+    <ChatErrorBoundary>
+      <InfoPanelProvider>
+        <Chat />
+      </InfoPanelProvider>
+    </ChatErrorBoundary>
+  ) : (
+    <ChatNoAccessAlert />
   );
 }

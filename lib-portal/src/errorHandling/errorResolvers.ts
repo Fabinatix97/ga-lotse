@@ -17,6 +17,7 @@ interface ApiError {
 const STATUS_MAPPING: Record<number, PortalErrorCode> = {
   401: PortalErrorCode.Unauthorized,
   403: PortalErrorCode.InsufficientUserRights,
+  504: PortalErrorCode.Timeout,
 };
 
 const ERROR_MAPPING: Record<ApiErrorCode, PortalErrorCode> = {

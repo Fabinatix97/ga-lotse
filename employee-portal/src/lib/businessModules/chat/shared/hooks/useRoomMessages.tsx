@@ -5,8 +5,10 @@
 
 import { addMilliseconds, format } from "date-fns";
 import {
+  EventStatus,
   EventType,
   MatrixEvent,
+  MatrixEventEvent,
   MsgType,
   Room,
   RoomEvent,
@@ -28,20 +30,21 @@ import {
 } from "@/lib/businessModules/chat/shared/types";
 import { sortMessages } from "@/lib/businessModules/chat/shared/utils";
 
-const messagesLimit = 10;
+const messagesLimit = 25;
 
 export function useRoomMessages() {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
-  const [canPaginate, setCanPaginate] = useState(true);
+  const [hasNextPage, setHasNextPage] = useState(true);
   const { selectedRoomId } = useChatSearchParams();
   const { matrixClient, clientState } = useChatClientContext();
   const [isLoading, setIsLoading] = useState(false);
   const loggedInUserId = matrixClient.getUserId();
+  const [error, setError] = useState(false);
 
   async function handleSendMessage(text: string, mentionedUsers?: string[]) {
     try {
       const txnId = matrixClient.makeTxnId();
-      const serverMessageId = await matrixClient.sendEvent(
+      await matrixClient.sendEvent(
         selectedRoomId,
         EventType.RoomMessage,
         {
@@ -54,23 +57,8 @@ export function useRoomMessages() {
         },
         txnId,
       );
-      updateMessageId(txnId, serverMessageId.event_id);
       await matrixClient.sendTyping(selectedRoomId, false, 3000);
     } catch {}
-  }
-
-  function updateMessageId(tempId: string, finalId: string) {
-    if (!selectedRoomId) return;
-
-    setMessages((prevState) => {
-      const massagesFromSelectedRoom = prevState[selectedRoomId]?.map((item) =>
-        item.id.includes(tempId) ? { ...item, id: finalId } : item,
-      );
-      if (!massagesFromSelectedRoom) {
-        return prevState;
-      }
-      return { ...prevState, [selectedRoomId]: massagesFromSelectedRoom };
-    });
   }
 
   const onMessage = useCallback(
@@ -112,21 +100,52 @@ export function useRoomMessages() {
       ) {
         return;
       }
-
+      const temporaryId = event.getId();
       const newMessage = await onMessage({ event, room, removed });
+      const messageWithSentStatus = {
+        ...newMessage,
+        sent: event.getSender() !== loggedInUserId,
+      };
       setMessages((prevState) => {
         if (!(room.roomId in prevState)) {
           return prevState;
         }
         const updatedMessagesFromRoom = [
           ...(prevState[room.roomId] ?? []),
-          newMessage,
+          messageWithSentStatus,
         ].filter(isChatMessageType);
-
         const sortedMessagesFromRoom = sortMessages(updatedMessagesFromRoom);
-
         return { ...prevState, [room.roomId]: sortedMessagesFromRoom };
       });
+
+      event.on(MatrixEventEvent.Status, (eventEvent, status) => {
+        void updateMessageId(eventEvent, status);
+      });
+
+      async function updateMessageId(
+        event: MatrixEvent,
+        status: string | null,
+      ) {
+        if (!room) return;
+        if (status === EventStatus.SENT) {
+          const updatedMessage = await onMessage({ event, room, removed });
+          if (!updatedMessage) return;
+          setMessages((prevState) => {
+            if (!(room.roomId in prevState)) {
+              return prevState;
+            }
+            const roomMessages = prevState[room.roomId] ?? [];
+            return {
+              ...prevState,
+              [room.roomId]: roomMessages.map((message) =>
+                message.id === temporaryId
+                  ? { ...updatedMessage, sent: true }
+                  : message,
+              ),
+            };
+          });
+        }
+      }
     }
 
     function onRoomMessage(
@@ -143,7 +162,7 @@ export function useRoomMessages() {
     return () => {
       matrixClient.removeListener(RoomEvent.Timeline, onRoomMessage);
     };
-  }, [matrixClient, onMessage]);
+  }, [loggedInUserId, matrixClient, onMessage]);
 
   // get historical messages on selected room ID change
   const fetchRoomMessages = useCallback(
@@ -158,6 +177,7 @@ export function useRoomMessages() {
           backwards: true,
           limit: messagesLimit,
         });
+
         const events = timeline.getEvents();
         const newRoomMessages = await Promise.all(
           events.map(async (event: MatrixEvent) => {
@@ -192,7 +212,7 @@ export function useRoomMessages() {
           .filter(isChatMessageType)
           .filter((item) => !!item);
 
-        setCanPaginate(canPaginate);
+        setHasNextPage(canPaginate);
 
         // here we set historical messages for a room after changing roomId
         setMessages((prevState) => {
@@ -209,8 +229,10 @@ export function useRoomMessages() {
           };
         });
         setIsLoading(false);
+        setError(false);
       } catch {
         setIsLoading(false);
+        setError(true);
       }
     },
     [loggedInUserId, matrixClient, onMessage],
@@ -226,12 +248,15 @@ export function useRoomMessages() {
 
       const timeline = room.getLiveTimeline();
 
-      const ifCanPaginate = await matrixClient.paginateEventTimeline(timeline, {
+      const canPaginate = await matrixClient.paginateEventTimeline(timeline, {
         backwards: true,
         limit: messagesLimit,
       });
-      setCanPaginate(ifCanPaginate);
-      if (!ifCanPaginate) return;
+      setHasNextPage(canPaginate);
+      if (!canPaginate) {
+        setIsLoading(false);
+        return;
+      }
 
       const events = timeline.getEvents();
       const newMessages = await Promise.all(
@@ -243,7 +268,8 @@ export function useRoomMessages() {
           ) {
             return;
           }
-          return await onMessage({ event, room, removed: false });
+          const message = await onMessage({ event, room, removed: false });
+          return { ...message, sent: true };
         }),
       );
 
@@ -281,15 +307,16 @@ export function useRoomMessages() {
   }, [clientState, selectedRoomId, fetchRoomMessages, messages]);
 
   useEffect(() => {
-    setCanPaginate(true);
+    setHasNextPage(true);
   }, [selectedRoomId]);
 
   return {
     handleSendMessage,
     messages: messages[selectedRoomId] ?? [],
     paginateMessages,
-    canPaginate,
+    hasNextPage,
     isLoading,
     onMessage,
+    error,
   };
 }

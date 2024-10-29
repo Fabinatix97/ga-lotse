@@ -12,13 +12,20 @@ import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
+import de.eshg.base.centralfile.api.person.GetPersonDiffResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.PutPersonRequest;
+import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.rest.service.error.ErrorResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PersonAddressDto;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PersonSyncDto;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 public class PersonClient {
@@ -37,6 +45,8 @@ public class PersonClient {
   public PersonClient(PersonApi personApi) {
     this.personApi = personApi;
   }
+
+  public record PatientSync(@Valid PatientDto patient, @Valid PersonSyncDto personSync) {}
 
   public UUID createPersonInCentralFile(PatientDto patient) {
     AddPersonFileStateRequest addPersonRequest =
@@ -88,6 +98,21 @@ public class PersonClient {
     return personFromExternalSource.id();
   }
 
+  public UUID syncPerson(UUID fileStateId, long referenceVersion) {
+    try {
+      AddPersonFileStateResponse response =
+          personApi.syncFileState(fileStateId, new SyncFileStateRequest(referenceVersion));
+      return response.id();
+    } catch (HttpClientErrorException.BadRequest e) {
+      ErrorResponse body = e.getResponseBodyAs(ErrorResponse.class);
+      if (body != null && ErrorCode.CONFLICT.equals(body.errorCode())) {
+        throw new BadRequestException(
+            ErrorCode.CONFLICT, "Conflict in central file: %s".formatted(body.message()));
+      }
+      throw e;
+    }
+  }
+
   public UUID updatePersonInCentralFile(UUID id, PatientDto patient) {
     GetPersonFileStatesResponse getPersonFileStatesResponse =
         personApi.getPersonFileStates(new GetPersonFileStatesRequest(List.of(id)));
@@ -103,9 +128,9 @@ public class PersonClient {
     return addPersonFileStateResponse.id();
   }
 
-  public PatientDto getPersonFromCentralFile(UUID id) {
+  public PatientSync getPersonFromCentralFile(UUID id) {
     GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(id);
-    return mapToPatientDto(personFromCentralFile);
+    return mapToPatientStatusDto(personFromCentralFile);
   }
 
   public Map<UUID, PatientDto> getPersonsFromCentralFile(List<UUID> ids) {
@@ -122,6 +147,11 @@ public class PersonClient {
 
     return personFileStates.stream()
         .collect(Collectors.toMap(AddPersonFileStateResponse::id, PersonClient::mapToPatientDto));
+  }
+
+  public long getPersonReferenceVersion(UUID fileStateId) {
+    GetPersonDiffResponse personDiff = personApi.getPersonDiff(fileStateId);
+    return personDiff.referenceVersion();
   }
 
   private PutPersonRequest createPutPersonRequest(PatientDto patient, AddressDto billingAddress) {
@@ -142,39 +172,45 @@ public class PersonClient {
             billingAddress));
   }
 
-  private static PatientDto mapToPatientDto(GetPersonFileStateResponse getPersonFileStateResponse) {
-    return new PatientDto(
-        getPersonFileStateResponse.salutation(),
-        getPersonFileStateResponse.firstName(),
-        getPersonFileStateResponse.lastName(),
-        getPersonFileStateResponse.dateOfBirth(),
-        getPersonFileStateResponse.emailAddresses(),
-        getPersonFileStateResponse.phoneNumbers(),
-        getPersonFileStateResponse.countryOfBirth(),
-        getPersonFileStateResponse.nameAtBirth(),
-        getPersonFileStateResponse.placeOfBirth(),
-        getPersonFileStateResponse.title(),
-        getPersonFileStateResponse.gender(),
-        mapAddressToPerson(getPersonFileStateResponse.contactAddress()));
+  private static PatientSync mapToPatientStatusDto(
+      GetPersonFileStateResponse getPersonFileStateResponse) {
+    return new PatientSync(
+        new PatientDto(
+            getPersonFileStateResponse.salutation(),
+            getPersonFileStateResponse.firstName(),
+            getPersonFileStateResponse.lastName(),
+            getPersonFileStateResponse.dateOfBirth(),
+            getPersonFileStateResponse.emailAddresses(),
+            getPersonFileStateResponse.phoneNumbers(),
+            getPersonFileStateResponse.countryOfBirth(),
+            getPersonFileStateResponse.nameAtBirth(),
+            getPersonFileStateResponse.placeOfBirth(),
+            getPersonFileStateResponse.title(),
+            getPersonFileStateResponse.gender(),
+            mapAddressToPerson(getPersonFileStateResponse.contactAddress())),
+        new PersonSyncDto(
+            getPersonFileStateResponse.id(),
+            getPersonFileStateResponse.referenceVersion(),
+            getPersonFileStateResponse.outdated()));
   }
 
-  private static PatientDto mapToPatientDto(AddPersonFileStateResponse getPersonFileStateResponse) {
+  private static PatientDto mapToPatientDto(AddPersonFileStateResponse addPersonFileStateResponse) {
     return new PatientDto(
-        getPersonFileStateResponse.salutation(),
-        getPersonFileStateResponse.firstName(),
-        getPersonFileStateResponse.lastName(),
-        getPersonFileStateResponse.dateOfBirth(),
-        getPersonFileStateResponse.emailAddresses(),
-        getPersonFileStateResponse.phoneNumbers(),
-        getPersonFileStateResponse.countryOfBirth(),
-        getPersonFileStateResponse.nameAtBirth(),
-        getPersonFileStateResponse.placeOfBirth(),
-        getPersonFileStateResponse.title(),
-        getPersonFileStateResponse.gender(),
-        mapAddressToPerson(getPersonFileStateResponse.contactAddress()));
+        addPersonFileStateResponse.salutation(),
+        addPersonFileStateResponse.firstName(),
+        addPersonFileStateResponse.lastName(),
+        addPersonFileStateResponse.dateOfBirth(),
+        addPersonFileStateResponse.emailAddresses(),
+        addPersonFileStateResponse.phoneNumbers(),
+        addPersonFileStateResponse.countryOfBirth(),
+        addPersonFileStateResponse.nameAtBirth(),
+        addPersonFileStateResponse.placeOfBirth(),
+        addPersonFileStateResponse.title(),
+        addPersonFileStateResponse.gender(),
+        mapAddressToPerson(addPersonFileStateResponse.contactAddress()));
   }
 
-  public static PersonAddressDto mapAddressToPerson(de.eshg.base.address.AddressDto address) {
+  private static PersonAddressDto mapAddressToPerson(de.eshg.base.address.AddressDto address) {
     if (address == null) {
       return null;
     }
@@ -195,7 +231,7 @@ public class PersonClient {
         addressDto.addressAddition());
   }
 
-  public static DomesticAddressDto mapAddressToPersonApiType(PersonAddressDto address) {
+  private static DomesticAddressDto mapAddressToPersonApiType(PersonAddressDto address) {
     if (address == null || address.street().isBlank()) {
       return null;
     }

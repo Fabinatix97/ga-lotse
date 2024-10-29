@@ -8,13 +8,51 @@ package de.eshg.stiprotection.mapper.medicalhistory;
 import de.eshg.stiprotection.api.medicalhistory.MedicalHistoryDto;
 import de.eshg.stiprotection.api.medicalhistory.SexWorkMedicalHistoryDto;
 import de.eshg.stiprotection.api.medicalhistory.StiConsultationMedicalHistoryDto;
-import de.eshg.stiprotection.mapper.GenderMapper;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import de.eshg.stiprotection.persistence.db.medicalhistory.SexWorkMedicalHistory;
 import de.eshg.stiprotection.persistence.db.medicalhistory.StiConsultationMedicalHistory;
 
 public final class MedicalHistoryMapper {
   private MedicalHistoryMapper() {}
+
+  public static MedicalHistoryDto toInterfaceType(MedicalHistory entity) {
+    if (entity == null) {
+      return null;
+    }
+
+    return switch (entity) {
+      case StiConsultationMedicalHistory consultation -> toInterfaceType(consultation);
+      case SexWorkMedicalHistory sexWork -> toInterfaceType(sexWork);
+      default -> throw new IllegalArgumentException("Unexpected value: " + entity.getClass());
+    };
+  }
+
+  private static MedicalHistoryDto toInterfaceType(SexWorkMedicalHistory entity) {
+    return new SexWorkMedicalHistoryDto(
+        entity.getExaminationReason(),
+        entity.getCurrentSymptoms(),
+        entity.getContactToClarifyDuration(),
+        RelationshipModelMapper.toInterfaceType(entity.getRelationshipModel()),
+        entity.getMedications(),
+        ExaminationMapper.toInterfaceType(entity.getExaminations()),
+        PreviousIllnessMapper.toInterfaceType(entity.getPreviousIllnesses()),
+        RiskContactMapper.toInterfaceType(entity.getRiskContacts()),
+        RiskFactorMapper.toInterfaceType(entity.getRiskFactors()),
+        entity.getAdditionalComments());
+  }
+
+  private static MedicalHistoryDto toInterfaceType(StiConsultationMedicalHistory entity) {
+    return new StiConsultationMedicalHistoryDto(
+        entity.getExaminationReason(),
+        entity.getCurrentSymptoms(),
+        entity.getContactToClarifyDuration(),
+        RelationshipModelMapper.toInterfaceType(entity.getRelationshipModel()),
+        ExaminationMapper.toInterfaceType(entity.getExaminations()),
+        PreviousIllnessMapper.toInterfaceType(entity.getPreviousIllnesses()),
+        RiskContactMapper.toInterfaceType(entity.getRiskContacts()),
+        RiskFactorMapper.toInterfaceType(entity.getRiskFactors()),
+        entity.getAdditionalComments());
+  }
 
   public static MedicalHistory toDatabaseType(MedicalHistoryDto dto) {
     return switch (dto) {
@@ -24,55 +62,26 @@ public final class MedicalHistoryMapper {
   }
 
   private static MedicalHistory toDatabaseType(SexWorkMedicalHistoryDto dto) {
-    return updateMedicalHistory(dto, new SexWorkMedicalHistory());
+    SexWorkMedicalHistory sexWorkMedicalHistory = new SexWorkMedicalHistory();
+    sexWorkMedicalHistory.setMedications(dto.medications());
+    return updateMedicalHistory(dto, sexWorkMedicalHistory);
   }
 
   private static MedicalHistory toDatabaseType(StiConsultationMedicalHistoryDto dto) {
     return updateMedicalHistory(dto, new StiConsultationMedicalHistory());
   }
 
-  private static MedicalHistory updateMedicalHistory(
-      MedicalHistoryDto dto, MedicalHistory medicalHistory) {
-    medicalHistory.setExaminationReason(dto.examinationReason());
-    medicalHistory.setSexualContact(GenderMapper.toDatabaseType(dto.sexualContact()));
-    medicalHistory.setSexualOrientation(
-        SexualOrientationMapper.toDatabaseType(dto.sexualOrientation()));
-    medicalHistory.clearExaminations();
-    if (dto.examinations() != null) {
-      dto.examinations()
-          .forEach(e -> medicalHistory.addExamination(ExaminationMapper.toDatabaseType(e)));
-    }
-    medicalHistory.clearVaccinations();
-    if (dto.vaccinations() != null) {
-      dto.vaccinations()
-          .forEach(v -> medicalHistory.addVaccination(VaccinationMapper.toDatabaseType(v)));
-    }
-    return medicalHistory;
-  }
+  private static MedicalHistory updateMedicalHistory(MedicalHistoryDto dto, MedicalHistory entity) {
+    entity.setExaminationReason(dto.examinationReason());
+    entity.setCurrentSymptoms(dto.currentSymptoms());
+    entity.setContactToClarifyDuration(dto.contactToClarifyDuration());
+    entity.setRelationshipModel(RelationshipModelMapper.toDatabaseType(dto.relationshipModel()));
+    entity.setExaminations(ExaminationMapper.toDatabaseType(dto.examinations()));
+    entity.setPreviousIllnesses(PreviousIllnessMapper.toDatabaseType(dto.previousIllnesses()));
+    entity.setRiskContacts(RiskContactMapper.toDatabaseType(dto.riskContacts()));
+    entity.setRiskFactors(RiskFactorMapper.toDatabaseType(dto.riskFactors()));
+    entity.setAdditionalComments(dto.additionalComments());
 
-  public static MedicalHistoryDto toInterfaceType(MedicalHistory entity) {
-    return switch (entity) {
-      case StiConsultationMedicalHistory consultation -> toInterfaceType(consultation);
-      case SexWorkMedicalHistory sexWork -> toInterfaceType(sexWork);
-      default -> throw new IllegalArgumentException("Unexpected value: " + entity.getClass());
-    };
-  }
-
-  private static MedicalHistoryDto toInterfaceType(SexWorkMedicalHistory medicalHistory) {
-    return new SexWorkMedicalHistoryDto(
-        medicalHistory.getExaminationReason(),
-        SexualOrientationMapper.toInterfaceType(medicalHistory.getSexualOrientation()),
-        GenderMapper.toInterfaceType(medicalHistory.getSexualContact()),
-        ExaminationMapper.toInterfaceType(medicalHistory.getExaminations()),
-        VaccinationMapper.toInterfaceType(medicalHistory.getVaccinations()));
-  }
-
-  private static MedicalHistoryDto toInterfaceType(StiConsultationMedicalHistory medicalHistory) {
-    return new StiConsultationMedicalHistoryDto(
-        medicalHistory.getExaminationReason(),
-        SexualOrientationMapper.toInterfaceType(medicalHistory.getSexualOrientation()),
-        GenderMapper.toInterfaceType(medicalHistory.getSexualContact()),
-        ExaminationMapper.toInterfaceType(medicalHistory.getExaminations()),
-        VaccinationMapper.toInterfaceType(medicalHistory.getVaccinations()));
+    return entity;
   }
 }

@@ -9,13 +9,13 @@ import {
   ApiDataOrigin,
   ApiFacilityContactPerson,
 } from "@eshg/citizen-portal-api/measlesProtection";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import {
   FacilityContactAddressFormInputs,
   FacilityContactPersonFormInputs,
   FacilityFormInputs,
 } from "@/lib/businessModules/measlesProtection/components/reportCase/types";
-import { mapOptionalValue } from "@/lib/businessModules/measlesProtection/shared/helpers";
 
 export function mapContactPersonToApi(
   contactPerson: FacilityContactPersonFormInputs,

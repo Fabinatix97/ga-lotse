@@ -10,8 +10,7 @@
 <html xml:lang="de" lang="de">
   <head>
     <title>Immunitätsnachweis im Sinne des Masernschutzgesetzes
-      für ${affectedPerson.firstName} ${affectedPerson.lastName},
-      Aktenzeichen: ${body.ourReference}
+      für ${affectedPerson.firstName} ${affectedPerson.lastName}<#if body.ourReference??>, Aktenzeichen: ${body.ourReference}</#if>
     </title>
     <link rel="stylesheet" type="text/css" href="cover-letter.css"/>
   </head>
@@ -22,7 +21,7 @@
 
     <p class="important">
       Betreff: Immunitätsnachweis im Sinne des Masernschutzgesetzes
-      für ${affectedPerson.firstName} ${affectedPerson.lastName}, Aktenzeichen: ${body.ourReference}
+      für ${affectedPerson.firstName} ${affectedPerson.lastName}<#if body.ourReference??>, Aktenzeichen: ${body.ourReference}</#if>
     </p>
     <p>
     ${addressee.salutation},
@@ -50,7 +49,7 @@
       Möglicherweise haben Sie es auch einfach versäumt, einen der unter 1.- 3. genannten Nachweise vorzulegen.
     </p>
     <p class="important">
-      Das Gesundheitsamt Frankfurt fordert Sie gemäß § 20 Abs. 12 IfSG dazu auf, bis zum ${body.deadlineString} einen der oben
+      Das ${departmentInfo.name()} fordert Sie gemäß § 20 Abs. 12 IfSG dazu auf, bis zum ${body.deadlineString} einen der oben
       genannten Nachweise im Original unserer Behörde vorzulegen.
     </p>
     <p>
@@ -62,14 +61,8 @@
       Wird der erforderliche Nachweis nicht innerhalb der Frist erbracht, besteht gemäß § 73 Abs. 1a Nr. 7d
       (IfSG) die Möglichkeit ein Bußgeldverfahren einzuleiten.
     </p>
-    <p>
-      Termine zur Vorlage im Gesundheitsamt Frankfurt am Main, vereinbaren Sie bitte unter
-      folgendem Link:
-    </p>
 
-    <#include "appointment.ftlx">
-
-    <p>Das Gesundheitsamt Frankfurt berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
+    <p>Das ${departmentInfo.name()} berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
       Masernschutzimpfung.
     </p>
 

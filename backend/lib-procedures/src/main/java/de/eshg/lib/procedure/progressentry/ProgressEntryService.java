@@ -11,7 +11,6 @@ import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
 import de.eshg.lib.procedure.audit.AuditService;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.KeyDocumentType;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequestNotification;
@@ -128,8 +127,9 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
       throws IOException {
     for (ProgressEntry progressEntry : resolvedProcedure.getProgressEntries()) {
       if (progressEntry instanceof ManualProgressEntry procedureManualProgressEntry
-          && procedureManualProgressEntry.getKeyDocumentType()
-              == manualProgressEntry.getKeyDocumentType()
+          && Objects.equals(
+              procedureManualProgressEntry.getKeyDocumentType(),
+              manualProgressEntry.getKeyDocumentType())
           && progressEntry.getFile() != null) {
         File file = progressEntry.getFile();
         if (!file.isDeleted()
@@ -173,7 +173,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
 
   private Integer getKeyDocumentVersion(
       P resolvedProcedure, ManualProgressEntry manualProgressEntry) {
-    KeyDocumentType keyDocumentType = manualProgressEntry.getKeyDocumentType();
+    String keyDocumentType = manualProgressEntry.getKeyDocumentType();
 
     if (keyDocumentType == null) {
       return null;
@@ -332,7 +332,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
 
     ManualProgressEntryDeletionApprovalRequest manualProgressEntryDeletionApprovalRequest =
         new ManualProgressEntryDeletionApprovalRequest();
-    manualProgressEntryDeletionApprovalRequest.setManualProgressEntry(manualProgressEntry);
+    manualProgressEntryDeletionApprovalRequest.updateEntity(manualProgressEntry);
     manualProgressEntryDeletionApprovalRequest.setReason(reason);
 
     createApprovalRequestNotifications()

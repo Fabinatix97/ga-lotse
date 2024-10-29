@@ -4,7 +4,7 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Grid, Stack } from "@mui/joy";
+import { Box, Grid, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
@@ -28,20 +28,20 @@ export function InfoTile({
 }: InfoTileProps) {
   return (
     <InformationSheet>
-      <div style={{ flexGrow: 1 }}>
+      <Box flexGrow={1}>
         <DetailsSection
           name={name}
           title={title}
           onEdit={onEdit}
           buttons={controls}
         >
-          <Grid container columns={1} spacing={2} style={{ flexGrow: 1 }}>
-            <Grid xs sx={{ flex: 1 }}>
+          <Grid container columns={1} spacing={2} flexGrow={1}>
+            <Grid xs flex={1}>
               <Stack spacing={2}>{children}</Stack>
             </Grid>
           </Grid>
         </DetailsSection>
-      </div>
+      </Box>
       {footer}
     </InformationSheet>
   );

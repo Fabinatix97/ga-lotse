@@ -10,6 +10,7 @@ import {
   ArchivingApi,
   Configuration,
   FileApi,
+  MedicalHistoryApi,
   ProcedureApi,
   ProgressEntryApi,
   StiProtectionProcedureApi,
@@ -41,6 +42,11 @@ export function useProgressEntryApi() {
 export function useFileApi() {
   const config = useConfiguration();
   return new FileApi(config);
+}
+
+export function useMedicalHistoryApi() {
+  const config = useConfiguration();
+  return new MedicalHistoryApi(config);
 }
 
 export function useApprovalRequestApi() {

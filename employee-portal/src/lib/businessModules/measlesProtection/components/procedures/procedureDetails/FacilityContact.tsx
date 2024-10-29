@@ -40,11 +40,7 @@ export function FacilityContact({
           value={person.emailAddress}
           href={`mailto:${person.emailAddress}`}
         />
-        <LabeledValue
-          label="Telefonnummer"
-          value={person.phoneNumber}
-          href={`tel:${person.phoneNumber}`}
-        />
+        <LabeledValue label="Telefonnummer" value={person.phoneNumber} />
       </ValueList>
     </DetailsCard>
   );

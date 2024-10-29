@@ -51,8 +51,8 @@ public class SchoolEntryCitizenController {
       SchoolEntryCitizenService schoolEntryCitizenService,
       PersonApi personApi,
       Validator validator,
-      @Value("classpath:templates/documents/privacy_notice.pdf") Resource privacyNotice,
-      @Value("classpath:templates/documents/privacy_policy.pdf") Resource privacyPolicy) {
+      @Value("${de.eshg.schoolentry.privacy-notice-location}") Resource privacyNotice,
+      @Value("${de.eshg.schoolentry.privacy-policy-location}") Resource privacyPolicy) {
     this.schoolEntryCitizenService = schoolEntryCitizenService;
     this.personApi = personApi;
     this.validator = validator;

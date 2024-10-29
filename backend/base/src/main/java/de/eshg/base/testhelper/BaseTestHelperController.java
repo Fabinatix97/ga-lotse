@@ -139,7 +139,7 @@ public class BaseTestHelperController extends TestHelperController
   public void deleteSetupAdmin(String userName) {
     masterKeycloakProvisioning
         .getKeycloakClient()
-        .getUserByName(userName)
+        .getUserResourceByName(userName)
         .ifPresent(UserResource::remove);
   }
 

@@ -50,7 +50,7 @@ footer {
 
 .header .receiver {
   padding-right: 20px;
-  width: 75%;
+  width: 70%;
   font-size: 8pt;
 }
 
@@ -61,11 +61,12 @@ footer {
 }
 
 .header .sender {
-  font-size: 8pt;
+  font-size: 7pt;
   margin-top: 10px;
 }
 
 .subject p {
+  font-size: 7pt;
   padding-top: 20px;
   font-weight: bold;
 }
@@ -103,9 +104,9 @@ footer {
 
 .info-table td {
   border: none;
-  padding-top: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-top: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
   vertical-align: top;
 }
 
@@ -124,7 +125,7 @@ footer {
   font-weight: 600;
 }
 
-.ticket-number {
+.registration-code {
   padding: 8px;
   border: 1px solid black;
   font-weight: 600;

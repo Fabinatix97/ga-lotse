@@ -6,6 +6,8 @@
 package de.eshg.schoolentry.importer;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.schoolentry.business.model.ImportAnamnesisData;
+import de.eshg.schoolentry.business.model.ImportVaccinationStatusData;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -14,6 +16,10 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
   private ProcedureType procedureType;
 
   private LocalDate examinationDate;
+
+  private ImportAnamnesisData anamnesisData;
+
+  private ImportVaccinationStatusData vaccinationStatusData;
 
   public ProcedureType getProcedureType() {
     return procedureType;
@@ -29,6 +35,22 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
 
   public void setExaminationDate(LocalDate examinationDate) {
     this.examinationDate = examinationDate;
+  }
+
+  public ImportAnamnesisData getAnamnesisData() {
+    return anamnesisData;
+  }
+
+  public void setAnamnesisData(ImportAnamnesisData anamnesisData) {
+    this.anamnesisData = anamnesisData;
+  }
+
+  public ImportVaccinationStatusData getVaccinationStatusData() {
+    return vaccinationStatusData;
+  }
+
+  public void setVaccinationStatusData(ImportVaccinationStatusData vaccinationStatusData) {
+    this.vaccinationStatusData = vaccinationStatusData;
   }
 
   @Override

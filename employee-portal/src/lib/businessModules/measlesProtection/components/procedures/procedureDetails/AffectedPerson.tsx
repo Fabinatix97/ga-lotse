@@ -9,11 +9,15 @@ import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/employee-portal-api/measlesProtection";
+import { SxProps } from "@mui/joy/styles/types";
 
-import { PersonDetails } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/PersonDetails";
+import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
 
-import { ContactDetails } from "./ContactDetails";
+const COLUMN_STYLE: SxProps = {
+  flexGrow: 1,
+  maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
+};
 
 export function AffectedPerson({
   procedure,
@@ -25,8 +29,13 @@ export function AffectedPerson({
 
   return (
     <DetailsCard title={title}>
-      <PersonDetails person={person} />
-      <ContactDetails persons={[person]} />
+      <CentralFilePersonDetails
+        person={{
+          ...person,
+          contactAddress: person.address,
+        }}
+        columnSx={COLUMN_STYLE}
+      />
     </DetailsCard>
   );
 }

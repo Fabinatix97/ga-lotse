@@ -9,8 +9,7 @@ import {
   ApiDomesticAddress,
   ApiReportPerson,
 } from "@eshg/citizen-portal-api/measlesProtection";
-
-import { mapOptionalValue } from "@/lib/businessModules/measlesProtection/shared/helpers";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import {
   AffectedPersonFormInputs,

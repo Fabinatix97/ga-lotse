@@ -55,6 +55,23 @@ export function useGetFreeAppointmentsUnsuspended(
   });
 }
 
+export function useGetFreeAppointmentsQuery(
+  appointmentType: ApiAppointmentType,
+  earliestDate?: Date,
+) {
+  const appointmentApi = useAppointmentBlockApi();
+  return queryOptions({
+    queryKey: appointmentBlockApiQueryKey([
+      "getFreeAppointments",
+      appointmentType,
+      earliestDate,
+    ]),
+    queryFn: () =>
+      appointmentApi.getFreeAppointments(appointmentType, earliestDate),
+    select: (response) => response.appointments.map(mapAppointment),
+  });
+}
+
 export function useValidateDailyAppointmentBlocksForGroup(
   data: ApiCreateDailyAppointmentBlockGroupRequest | null,
 ) {

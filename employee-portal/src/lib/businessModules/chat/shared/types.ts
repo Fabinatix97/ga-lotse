@@ -36,6 +36,7 @@ export interface Message {
   mentions?: string[];
   readReceipts?: ReadConfirmationsPerUser;
   messageType: MessageTypeEnum;
+  sent: boolean;
 }
 
 export function isChatMessageType(data: unknown): data is Message {
@@ -49,6 +50,7 @@ export interface RoomEventDetails {
   room: Room;
   toStartOfTimeline?: boolean;
   removed?: boolean;
+  isSent?: boolean;
 }
 
 export interface CreateRoomOptions {
@@ -148,6 +150,7 @@ export interface ChatSystemMessage {
   creator?: string;
   id: string;
   avatarUrl?: string;
+  sender?: string;
 }
 
 export function isChatMessage(data: unknown): data is Message {

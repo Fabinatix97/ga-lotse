@@ -26,6 +26,6 @@ public class ProtocolMapperDiffer extends KeycloakDiffer<ProtocolMapperRepresent
         target,
         source,
         protocolMapperRepresentationUpdater(),
-        ProtocolMapperRepresentation::getProtocolMapper);
+        ProtocolMapperRepresentation::getName);
   }
 }

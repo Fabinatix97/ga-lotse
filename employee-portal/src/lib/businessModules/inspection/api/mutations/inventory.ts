@@ -21,7 +21,6 @@ export function useModifyInventory() {
     mutationFn: (req: ModifyInventoryRequest) =>
       inspectionApi.modifyInventoryRaw(req).then(unwrapRawResponse),
     onSuccess: () => {
-      alert.close();
       snackbar.confirmation("Änderung gespeichert.");
     },
     onError: (error) => {
@@ -36,6 +35,9 @@ export function useModifyInventory() {
         message:
           "Das gewählte Inventar ist in der gewünschten Anzahl nicht mehr verfügbar.",
       });
+    },
+    onMutate: () => {
+      alert.close();
     },
   });
 }

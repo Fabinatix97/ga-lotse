@@ -13,22 +13,28 @@ public final class SexualOrientationMapper {
   private SexualOrientationMapper() {}
 
   public static SexualOrientationDto toInterfaceType(SexualOrientation entity) {
+    if (entity == null) {
+      return null;
+    }
+
     return switch (entity) {
       case HETEROSEXUAL -> SexualOrientationDto.HETEROSEXUAL;
       case HOMOSEXUAL -> SexualOrientationDto.HOMOSEXUAL;
       case BISEXUAL -> SexualOrientationDto.BISEXUAL;
       case NOT_SPECIFIED -> SexualOrientationDto.NOT_SPECIFIED;
-      case null -> null;
     };
   }
 
   public static SexualOrientation toDatabaseType(SexualOrientationDto dto) {
+    if (dto == null) {
+      return null;
+    }
+
     return switch (dto) {
       case HETEROSEXUAL -> SexualOrientation.HETEROSEXUAL;
       case HOMOSEXUAL -> SexualOrientation.HOMOSEXUAL;
       case BISEXUAL -> SexualOrientation.BISEXUAL;
       case NOT_SPECIFIED -> SexualOrientation.NOT_SPECIFIED;
-      case null -> null;
     };
   }
 }

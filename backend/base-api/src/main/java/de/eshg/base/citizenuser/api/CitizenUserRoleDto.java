@@ -12,4 +12,5 @@ public enum CitizenUserRoleDto {
   STANDARD_CITIZEN,
   ACCESS_CODE_USER,
   MUK_USER,
+  BUND_ID_USER,
 }

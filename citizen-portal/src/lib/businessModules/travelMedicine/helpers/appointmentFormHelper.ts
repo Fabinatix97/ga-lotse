@@ -13,10 +13,10 @@ import {
   ApiTravelType,
 } from "@eshg/citizen-portal-api/travelMedicine";
 import { toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
+import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isDefined, isEmpty } from "remeda";
 
-import { mapOptionalValue } from "@/lib/businessModules/measlesProtection/shared/helpers";
 import {
   InitialAppointmentFormValues,
   PatientFormValues,

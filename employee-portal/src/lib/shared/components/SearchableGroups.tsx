@@ -255,7 +255,7 @@ function GroupPlain<TItem extends SearchableGroupItem>({
     >
       <ListItemContent>
         <Typography
-          component="h3"
+          component="span"
           level="body-sm"
           fontWeight="md"
           sx={{

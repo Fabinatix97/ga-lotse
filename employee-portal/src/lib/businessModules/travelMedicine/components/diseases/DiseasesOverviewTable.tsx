@@ -164,7 +164,7 @@ export function DiseasesOverviewTable() {
       >
         <TableSheet>
           <DataTable
-            data={allDiseases.diseases}
+            data={allDiseases}
             columns={diseasesColumns(deleteDiseaseWithConfirmation, editEntry)}
           />
         </TableSheet>

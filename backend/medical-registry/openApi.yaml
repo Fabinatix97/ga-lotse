@@ -551,6 +551,27 @@ paths:
       tags:
       - InboxProcedure
   /medical-registry-entries/{procedureId}:
+    delete:
+      operationId: deleteProcedure
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteProcedureRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Delete medical registry procedure by id.
+      tags:
+      - MedicalRegistry
     get:
       operationId: getProcedure
       parameters:
@@ -1350,6 +1371,37 @@ paths:
           description: OK
       tags:
       - Task
+  /test-helper/archiving-job:
+    post:
+      operationId: runArchivingJob
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/audit-log-storage:
+    delete:
+      operationId: clearAuditLogStorageDirectory
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/medical-registry-entries/{procedureId}/close:
+    post:
+      operationId: closeProcedure
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -2083,7 +2135,7 @@ components:
       type: object
       properties:
         keyDocumentType:
-          $ref: "#/components/schemas/KeyDocumentType"
+          type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
         messageText:
@@ -2118,6 +2170,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DeleteProcedureRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+      required:
+      - version
     DetailedFacility:
       type: object
       properties:
@@ -2524,8 +2584,10 @@ components:
         id:
           type: string
           format: uuid
-        practice:
-          $ref: "#/components/schemas/Practice"
+        practices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Practice"
         professional:
           $ref: "#/components/schemas/Professional"
         requestForWrittenConfirmation:
@@ -2913,11 +2975,6 @@ components:
       - FORBIDDEN
       - NOT_FOUND
       - INTERNAL_SERVER_ERROR
-    KeyDocumentType:
-      type: string
-      enum:
-      - INVOICE
-      - REPORT
     Mail:
       type: object
       allOf:
@@ -2995,7 +3052,7 @@ components:
           createdByUserLastName:
             type: string
           keyDocumentType:
-            $ref: "#/components/schemas/KeyDocumentType"
+            type: string
           keyDocumentVersion:
             type: integer
             format: int32

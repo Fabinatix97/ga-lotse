@@ -47,6 +47,7 @@ export function CreateStatisticFromTemplateSidebar({
       name: model.statisticName.trim(),
       timeRangeStart: parseISO(model.timeSpan.start),
       timeRangeEnd: parseISO(model.timeSpan.end),
+      anonymized: false,
       templateId: model.template.id,
     });
   }

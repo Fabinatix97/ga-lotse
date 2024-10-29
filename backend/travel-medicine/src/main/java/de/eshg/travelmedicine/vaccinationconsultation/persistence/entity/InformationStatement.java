@@ -38,6 +38,11 @@ public class InformationStatement extends GloballyUniqueEntityBase {
   private String content;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
+  @NotNull
+  @Column
+  boolean citizenHasAnswered;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "procedure_id")
   private VaccinationConsultation vaccinationConsultation;
@@ -75,6 +80,15 @@ public class InformationStatement extends GloballyUniqueEntityBase {
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  @NotNull
+  public boolean isCitizenHasAnswered() {
+    return citizenHasAnswered;
+  }
+
+  public void setCitizenHasAnswered(@NotNull boolean citizenHasAnswered) {
+    this.citizenHasAnswered = citizenHasAnswered;
   }
 
   public VaccinationConsultation getVaccinationConsultation() {

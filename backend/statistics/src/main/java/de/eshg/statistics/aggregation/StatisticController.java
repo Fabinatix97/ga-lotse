@@ -10,6 +10,7 @@ import static de.eshg.statistics.config.StatisticsFeature.CLONE_STATISTIC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.base.SortDirection;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.AbstractAddStatisticRequest;
 import de.eshg.statistics.api.AbstractUpdateStatisticRequest;
@@ -68,6 +69,10 @@ public class StatisticController {
   @ApiResponse(responseCode = "200", description = "The UUID of the statistic")
   @Operation(summary = "Add statistic")
   public UUID addStatistic(@Valid @RequestBody AbstractAddStatisticRequest addStatisticRequest) {
+    if (!featureToggle.isNewFeatureEnabled(StatisticsFeature.FAKE_ANONYMIZATION)
+        && addStatisticRequest.anonymized()) {
+      throw new BadRequestException("Only allowed without anonymization");
+    }
     UUID statisticId = statisticService.addStatistic(addStatisticRequest);
     CompletableFuture.runAsync(() -> statisticExecution.addStatistic(statisticId));
     return statisticId;

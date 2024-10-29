@@ -6,8 +6,8 @@
 "use client";
 
 import {
-  ApiCreateMedicalHistoryRequest,
   ApiStiProtectionProcedure,
+  CreateMedicalHistoryRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
@@ -22,7 +22,7 @@ import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField"
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { toDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
-import { Divider, FormLabel, Grid, Typography } from "@mui/joy";
+import { Divider, FormLabel, Grid, Typography, styled } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { subDays } from "date-fns";
 import { FieldArray, Formik, useFormikContext } from "formik";
@@ -33,6 +33,7 @@ import { useCreateMedicalHistory } from "@/lib/businessModules/stiProtection/api
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import {
   CONCERN_VALUES,
+  DiseaseType,
   diseaseTypeNames,
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
@@ -46,6 +47,12 @@ import {
   initialValues,
 } from "./MedicalHistoryForm.config";
 import { sexualContactOptions, sexualOrientationOptions } from "./options";
+
+const AutoWidthHorizontalField = styled(HorizontalField)({
+  ".MuiStack-root": {
+    justifyContent: "space-between",
+  },
+});
 
 function MedicalHistoryCommonFields({
   procedure,
@@ -69,7 +76,7 @@ function MedicalHistoryCommonFields({
                   Grund für die heutige Beratung
                 </FormLabel>
               }
-              component={HorizontalField}
+              component={AutoWidthHorizontalField}
             />
           </Grid>
         </Grid>
@@ -80,14 +87,14 @@ function MedicalHistoryCommonFields({
                 <DateField
                   name="lastMenstruation"
                   label="Letzte Menstruation vor"
-                  component={HorizontalField}
+                  component={AutoWidthHorizontalField}
                 />
               </Grid>
               <Grid>
                 <DateField
                   name="lastCancerScreening"
                   label="Letzte Krebsvorsorge vor"
-                  component={HorizontalField}
+                  component={AutoWidthHorizontalField}
                 />
               </Grid>
             </Grid>
@@ -96,7 +103,7 @@ function MedicalHistoryCommonFields({
                 <BooleanSelectField
                   name="hasBeenPregnant"
                   label="Bereits schwanger?"
-                  component={HorizontalField}
+                  component={AutoWidthHorizontalField}
                 />
               </Grid>
               {!!values.hasBeenPregnant && (
@@ -105,7 +112,7 @@ function MedicalHistoryCommonFields({
                     <NumberField
                       name="numberOfPregnancies"
                       label="Wenn ja, wie oft?"
-                      component={HorizontalField}
+                      component={AutoWidthHorizontalField}
                       required={"Bitte eine Zahl angeben"}
                     />
                   </Grid>
@@ -113,7 +120,7 @@ function MedicalHistoryCommonFields({
                     <NumberField
                       name="numberOfBirthsOrAbortions"
                       label="Anzahl Geburten/Aborte"
-                      component={HorizontalField}
+                      component={AutoWidthHorizontalField}
                     />
                   </Grid>
                 </>
@@ -156,50 +163,51 @@ export function MedicalHistoryForm({
   const formTitle = `Anamnesebogen ${CONCERN_VALUES[stiProcedure.concern]}`;
 
   async function onSubmit(values: MedicalHistoryFormData) {
-    const examinationsToReport = values.examinations.filter(
-      (exam) => exam.hadExamination,
-    );
-    const vaccinationsToReport = values.vaccinations.filter(
-      (vax) => vax.hadVaccination,
+    const examinationsToReport = Object.entries(values.examinations).filter(
+      ([_diseaseType, vaccinationDate]) => !!vaccinationDate,
     );
 
-    const medicalHistoryRequest: ApiCreateMedicalHistoryRequest = {
-      medicalHistory: {
-        type:
-          stiProcedure.concern === "SEX_WORK"
-            ? "SexWorkMedicalHistory"
-            : "StiConsultationMedicalHistory",
-        ...(values.examinationReason && {
-          examinationReason: values.examinationReason,
-        }),
-        ...(examinationsToReport && {
-          examinations: examinationsToReport.map(
-            ({ examinationDate, diseaseType }) => ({
-              diseaseType,
-              examinationDate:
-                mapMonthAndYear(examinationDate) ??
-                toUtcDate(toDateString(subDays(new Date(), 7))),
-            }),
-          ),
-        }),
-        ...(values.sexualContact && {
-          sexualContact: values.sexualContact,
-        }),
-        ...(values.sexualOrientation && {
-          sexualOrientation: values.sexualOrientation,
-        }),
-        ...(vaccinationsToReport && {
-          vaccinations: vaccinationsToReport.map(
-            ({ vaccinationDate, diseaseType }) => ({
-              diseaseType,
-              vaccinationDate:
+    const vaccinationsToReport = Object.entries(
+      values.riskFactors.vaccinations,
+    ).filter(([_diseaseType, vaccinationDate]) => !!vaccinationDate);
+
+    const medicalHistoryRequest: CreateMedicalHistoryRequest["apiCreateMedicalHistoryRequest"] =
+      {
+        medicalHistory: {
+          type: "StiConsultationMedicalHistory",
+          ...(values.examinationReason && {
+            examinationReason: values.examinationReason,
+          }),
+          ...(examinationsToReport && {
+            examinations: Object.fromEntries(
+              examinationsToReport.map(([diseaseType, vaccinationDate]) => [
+                diseaseType as DiseaseType,
                 mapMonthAndYear(vaccinationDate) ??
-                toUtcDate(toDateString(subDays(new Date(), 7))),
+                  toUtcDate(toDateString(subDays(new Date(), 7))),
+              ]),
+            ),
+          }),
+          ...(values.sexualContact && {
+            sexualContact: values.sexualContact,
+          }),
+          ...(values.sexualOrientation && {
+            sexualOrientation: values.sexualOrientation,
+          }),
+          previousIllnesses: values.previousIllnesses,
+          riskFactors: {
+            prepInfoProvided: values.riskFactors.prepInfoProvided,
+            ...(vaccinationsToReport && {
+              vaccinations: Object.fromEntries(
+                vaccinationsToReport.map(([diseaseType, vaccinationDate]) => [
+                  diseaseType as DiseaseType,
+                  mapMonthAndYear(vaccinationDate) ??
+                    toUtcDate(toDateString(subDays(new Date(), 7))),
+                ]),
+              ),
             }),
-          ),
-        }),
-      },
-    };
+          },
+        },
+      };
 
     await createMedicalHistory
       .mutateAsync(
@@ -234,17 +242,13 @@ export function MedicalHistoryForm({
               <FieldArray name={"examinations"}>
                 {() => (
                   <>
-                    {values.examinations.map(
-                      (examination, examinationIndex) => {
-                        const showDateField =
-                          values.examinations.find(
-                            (exam) =>
-                              exam.diseaseType === examination.diseaseType,
-                          )?.hadExamination ?? false;
+                    {Object.entries(values.examinations).map(
+                      ([diseaseType, examinationDate]) => {
+                        const showDateField = !!examinationDate;
 
                         return (
                           <Grid
-                            key={examination.diseaseType}
+                            key={diseaseType}
                             container
                             direction="row"
                             xxs={12}
@@ -255,11 +259,11 @@ export function MedicalHistoryForm({
                           >
                             <Grid xxs={12} md={4}>
                               <BooleanSelectField
-                                name={`examinations.${examinationIndex}.hadExamination`}
+                                name={`examinations.${diseaseType}.hadExamination`}
                                 label={
-                                  diseaseTypeNames[examination.diseaseType]
+                                  diseaseTypeNames[diseaseType as DiseaseType]
                                 }
-                                component={HorizontalField}
+                                component={AutoWidthHorizontalField}
                                 sx={{ mr: 1 }}
                               />
                             </Grid>
@@ -275,8 +279,8 @@ export function MedicalHistoryForm({
                               }}
                             >
                               <MonthAndYearFields
-                                fieldName={`examinations.${examinationIndex}.examinationDate`}
-                                date={examination.examinationDate}
+                                fieldName={`examinations.${diseaseType}.examinationDate`}
+                                date={examinationDate}
                               />
                             </Grid>
                           </Grid>
@@ -337,17 +341,13 @@ export function MedicalHistoryForm({
               <FieldArray name={"vaccinations"}>
                 {() => (
                   <>
-                    {values.vaccinations.map(
-                      (vaccination, vaccinationIndex) => {
-                        const showDateField =
-                          values.vaccinations.find(
-                            (vax) =>
-                              vax.diseaseType === vaccination.diseaseType,
-                          )?.hadVaccination ?? false;
+                    {Object.entries(values.riskFactors.vaccinations).map(
+                      ([diseaseType, vaccinationDate]) => {
+                        const showDateField = !!vaccinationDate;
 
                         return (
                           <Grid
-                            key={vaccination.diseaseType}
+                            key={diseaseType}
                             container
                             direction="row"
                             xxs={12}
@@ -358,11 +358,11 @@ export function MedicalHistoryForm({
                           >
                             <Grid xxs={12} md={4}>
                               <BooleanSelectField
-                                name={`vaccinations.${vaccinationIndex}.hadVaccination`}
+                                name={`vaccinations.${diseaseType}.hadVaccination`}
                                 label={
-                                  diseaseTypeNames[vaccination.diseaseType]
+                                  diseaseTypeNames[diseaseType as DiseaseType]
                                 }
-                                component={HorizontalField}
+                                component={AutoWidthHorizontalField}
                                 sx={{ mr: 1 }}
                               />
                             </Grid>
@@ -378,8 +378,8 @@ export function MedicalHistoryForm({
                               }}
                             >
                               <MonthAndYearFields
-                                fieldName={`vaccinations.${vaccinationIndex}.vaccinationDate`}
-                                date={vaccination.vaccinationDate}
+                                fieldName={`vaccinations.${diseaseType}.vaccinationDate`}
+                                date={vaccinationDate}
                               />
                             </Grid>
                           </Grid>

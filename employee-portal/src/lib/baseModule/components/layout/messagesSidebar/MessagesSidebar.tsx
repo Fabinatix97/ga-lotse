@@ -5,7 +5,7 @@
 
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import OpenInNew from "@mui/icons-material/OpenInNew";
-import { Button, Divider, Stack } from "@mui/joy";
+import { Button } from "@mui/joy";
 
 import { MessagesSidebarContent } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebarContent";
 import { routes } from "@/lib/baseModule/shared/routes";
@@ -14,6 +14,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@/lib/shared/components/drawer/useSidebar";
+import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 
 export function useMessagesSidebar(): UseSidebarResult {
   return useSidebar({
@@ -26,8 +27,7 @@ function MessagesSidebar({ onClose }: DrawerProps) {
   return (
     <>
       <MessagesSidebarContent />
-      <Stack sx={{ paddingTop: 3 }} data-testid="sidebarActions">
-        <Divider sx={{ marginBottom: 3, marginInline: -3, marginTop: -3 }} />
+      <SidebarActions>
         <Button
           sx={{ alignSelf: "end" }}
           onClick={() => {
@@ -38,7 +38,7 @@ function MessagesSidebar({ onClose }: DrawerProps) {
         >
           Chatbereich
         </Button>
-      </Stack>
+      </SidebarActions>
     </>
   );
 }

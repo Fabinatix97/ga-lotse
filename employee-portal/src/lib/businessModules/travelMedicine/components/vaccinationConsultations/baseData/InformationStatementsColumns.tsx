@@ -7,24 +7,32 @@ import { ApiInformationStatement } from "@eshg/employee-portal-api/travelMedicin
 import { DeleteOutlined } from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
+import { CitizenHasAnsweredStatusChip } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/CitizenHasAnsweredChip";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiInformationStatement> =
   createColumnHelper<ApiInformationStatement>();
 
-export function informationStatementsColumns(
-  procedureId: string,
-  isProcedureClosed: boolean,
-  deleteInformationStatement: (
-    procedureId: string,
-    informationStatementId: string,
-  ) => void,
-) {
+export function informationStatementsColumns({
+  isProcedureClosed,
+  onDeleteInformationStatement,
+}: Readonly<{
+  isProcedureClosed: boolean;
+  onDeleteInformationStatement: (informationStatementId: string) => void;
+}>) {
   // todo switch back to old structure when having more than one entry in actions menu
   const columns = [
     columnHelper.accessor("title", {
       header: "Titel",
       cell: (props) => props.getValue(),
+    }),
+    columnHelper.accessor("citizenHasAnswered", {
+      header: "Status",
+      cell: (props) => (
+        <CitizenHasAnsweredStatusChip
+          value={props.getValue() ? "ANSWERED" : "NOT_ANSWERED"}
+        />
+      ),
     }),
   ];
 
@@ -42,10 +50,7 @@ export function informationStatementsColumns(
                 color: "danger",
                 startDecorator: <DeleteOutlined color="danger" />,
                 onClick: () =>
-                  deleteInformationStatement(
-                    procedureId,
-                    props.row.original.id,
-                  ),
+                  onDeleteInformationStatement(props.row.original.id),
               },
             ]}
           />

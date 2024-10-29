@@ -18,6 +18,7 @@ public record AddStatisticWithTemplateRequest(
     @NotBlank String name,
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
+    @NotNull boolean anonymized,
     @NotNull UUID templateId)
     implements AbstractAddStatisticRequest {
   public static final String SCHEMA_NAME = "AddStatisticWithTemplateRequest";

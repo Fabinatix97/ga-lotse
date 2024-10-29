@@ -44,10 +44,11 @@ import de.eshg.lib.procedure.api.ProcedureApi;
 import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
-import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest_;
+import de.eshg.lib.procedure.domain.model.File_;
 import de.eshg.lib.procedure.domain.model.Mail;
+import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
-import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest_;
+import de.eshg.lib.procedure.domain.model.ManualProgressEntry_;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -299,7 +300,7 @@ public class ProcedureController<
   private Specification<ApprovalRequest<?>> isAttachedToProcedure(ProcedureT procedure) {
     return (root, query, cb) ->
         cb.or(
-            isManualProgressEntryAttachedToProcedure(procedure, root, cb),
+            isManualProgressEntryAttachedToProcedure(procedure, root, query, cb),
             isFileDeletionApprovalRequestAttachedToProcedure(procedure, root, query, cb));
   }
 
@@ -311,25 +312,39 @@ public class ProcedureController<
 
     Root<FileDeletionApprovalRequest> fileDeletionApprovalRequestRoot =
         cb.treat(root, FileDeletionApprovalRequest.class);
-    Path<File> approvalRequestFile =
-        fileDeletionApprovalRequestRoot.get(FileDeletionApprovalRequest_.file);
 
     Root<ProgressEntry> progressEntryRoot = query.from(ProgressEntry.class);
     Join<ProgressEntry, File> progressEntryFile =
         progressEntryRoot.join(ProgressEntry_.file, JoinType.LEFT);
 
+    Join<File, ApprovalRequest<?>> fileApprovalRequest =
+        progressEntryFile.join(File_.DELETION_APPROVAL_REQUEST, JoinType.LEFT);
+
     return cb.and(
-        cb.equal(progressEntryFile, approvalRequestFile),
+        cb.equal(fileApprovalRequest, fileDeletionApprovalRequestRoot),
         cb.equal(progressEntryRoot.get(ProgressEntry_.procedureId), procedure.getId()));
   }
 
   private Predicate isManualProgressEntryAttachedToProcedure(
-      ProcedureT procedure, Root<ApprovalRequest<?>> root, CriteriaBuilder cb) {
-    return cb.equal(
-        cb.treat(root, ManualProgressEntryDeletionApprovalRequest.class)
-            .join(ManualProgressEntryDeletionApprovalRequest_.manualProgressEntry, JoinType.LEFT)
-            .get(ProgressEntry_.procedureId),
-        procedure.getId());
+      ProcedureT procedure,
+      Root<ApprovalRequest<?>> root,
+      CriteriaQuery<?> query,
+      CriteriaBuilder cb) {
+
+    Root<ManualProgressEntryDeletionApprovalRequest>
+        manualProgressEntryDeletionApprovalRequestRoot =
+            cb.treat(root, ManualProgressEntryDeletionApprovalRequest.class);
+
+    Root<ManualProgressEntry> manualProgressEntryRoot = query.from(ManualProgressEntry.class);
+    Join<ManualProgressEntry, ManualProgressEntryDeletionApprovalRequest>
+        manualProgressEntryDeletionRequest =
+            manualProgressEntryRoot.join(
+                ManualProgressEntry_.DELETION_APPROVAL_REQUEST, JoinType.LEFT);
+
+    return cb.and(
+        cb.equal(
+            manualProgressEntryDeletionRequest, manualProgressEntryDeletionApprovalRequestRoot),
+        cb.equal(manualProgressEntryRoot.get(ManualProgressEntry_.procedureId), procedure.getId()));
   }
 
   private Sort mapToSort(GetProceduresSortOptionsDto sortOptions) {

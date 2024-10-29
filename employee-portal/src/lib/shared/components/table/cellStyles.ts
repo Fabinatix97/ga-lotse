@@ -36,6 +36,8 @@ export function getRowCellStyles(
     ...(isCheckbox ? getCheckboxPadding(theme) : {}),
     ...(isButtonOrIcon ? getButtonOrIconPadding(theme) : {}),
     overflow: meta?.cellStyle === "icon" ? "visible" : undefined,
+    // ensure width, even if header is not present
+    width: meta?.width,
   };
 }
 

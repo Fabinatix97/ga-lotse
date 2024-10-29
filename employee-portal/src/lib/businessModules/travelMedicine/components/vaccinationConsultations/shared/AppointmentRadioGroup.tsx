@@ -12,9 +12,10 @@ import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField"
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Stack, Typography } from "@mui/joy";
+import { useField } from "formik";
+import { isEmpty } from "remeda";
 
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
-import { useGetFreeAppointmentsUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
@@ -23,21 +24,19 @@ import { durationBetweenDatesInMinutes } from "@/lib/shared/helpers/dateTime";
 interface AppointmentRadioGroupProps {
   type?: ApiAppointmentType;
   appointmentBlockDateOption?: SelectOption;
+  required?: boolean;
+  isCitizenFollowUp?: boolean;
+  freeConsultationBlockAppointments: Appointment[];
+  freeVaccinationBlockAppointments: Appointment[];
 }
 
-export function AppointmentRadioGroup(
-  props: Readonly<AppointmentRadioGroupProps>,
-) {
-  const getAllFreeConsultationBlockAppointments =
-    useGetFreeAppointmentsUnsuspended(ApiAppointmentType.Consultation);
-  const freeConsultationBlockAppointments =
-    getAllFreeConsultationBlockAppointments.data ?? [];
-
-  const getAllFreeVaccinationBlockAppointments =
-    useGetFreeAppointmentsUnsuspended(ApiAppointmentType.Vaccination);
-  const freeVaccinationBlockAppointments =
-    getAllFreeVaccinationBlockAppointments.data ?? [];
-
+export function AppointmentRadioGroup({
+  required = true,
+  isCitizenFollowUp = false,
+  freeConsultationBlockAppointments,
+  freeVaccinationBlockAppointments,
+  ...props
+}: Readonly<AppointmentRadioGroupProps>) {
   function createAppointmentOptions(availableBlockAppointments: Appointment[]) {
     if (availableBlockAppointments) {
       let needToAddOption = true;
@@ -68,6 +67,7 @@ export function AppointmentRadioGroup(
       return [];
     }
   }
+  const [bookingTypeFieldProps] = useField("bookingType");
 
   return (
     <Stack gap={2}>
@@ -76,13 +76,15 @@ export function AppointmentRadioGroup(
       </Typography>
       <RadioGroupField
         name="bookingType"
-        required="Bitte einen Termintyp auswählen"
+        required={required ? "Bitte einen Termintyp auswählen" : undefined}
       >
         <SelectableCard
           key={ApiAppointmentBookingType.AppointmentBlock}
           value={ApiAppointmentBookingType.AppointmentBlock}
           sx={{ mb: 2 }}
           radioProps={{ overlay: false }}
+          allowDeselection={!required}
+          forGroupName="bookingType"
         >
           {props.type == ApiAppointmentType.Consultation ? (
             <SelectField
@@ -109,11 +111,24 @@ export function AppointmentRadioGroup(
           value={ApiAppointmentBookingType.UserDefined}
           sx={{ mb: 2 }}
           radioProps={{ overlay: false }}
+          allowDeselection={!required}
+          forGroupName={"bookingType"}
         >
           <Stack gap={2} sx={{ flexGrow: 1 }}>
             <DateTimeField
               label={"Individueller Termin"}
               name={"userDefinedAppointmentDate"}
+              allowEmpty={
+                (!required && isEmpty(bookingTypeFieldProps.value)) ||
+                bookingTypeFieldProps.value ===
+                  ApiAppointmentBookingType.UserDefined ||
+                (!required &&
+                  bookingTypeFieldProps.value !==
+                    ApiAppointmentBookingType.UserDefined) ||
+                (required &&
+                  bookingTypeFieldProps.value !==
+                    ApiAppointmentBookingType.UserDefined)
+              }
             ></DateTimeField>
             <NumberField
               label={"Termin Dauer in Min."}
@@ -121,6 +136,20 @@ export function AppointmentRadioGroup(
             ></NumberField>
           </Stack>
         </SelectableCard>
+        {isCitizenFollowUp && (
+          <SelectableCard
+            key={ApiAppointmentBookingType.SelfBooking}
+            value={ApiAppointmentBookingType.SelfBooking}
+            sx={{ mb: 2 }}
+            radioProps={{ overlay: false }}
+            allowDeselection={!required}
+            forGroupName={"bookingType"}
+          >
+            <Stack gap={2} sx={{ flexGrow: 1 }}>
+              <Typography>Selbstbucher</Typography>
+            </Stack>
+          </SelectableCard>
+        )}
       </RadioGroupField>
     </Stack>
   );

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CalendarMonth } from "@mui/icons-material";
-import { Input, Stack } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 import { isNonNullish } from "remeda";
 
 import { useIsFormDisabled } from "../form/DisabledFormContext";
+import { YearInput } from "../inputs/YearInput";
 
 import { BaseField, BaseFieldProps, useBaseField } from "./BaseField";
 
@@ -48,13 +48,7 @@ export function YearField({
   return (
     <FieldComponent label={label} {...field}>
       <Stack direction="row" spacing={1}>
-        <Input
-          endDecorator={<CalendarMonth />}
-          placeholder="JJJJ"
-          sx={{ flexGrow: 1, ...sx }}
-          {...field.input}
-          disabled={disabled}
-        />
+        <YearInput sx={sx} {...field.input} disabled={disabled} />
         {fieldDecorator}
       </Stack>
     </FieldComponent>

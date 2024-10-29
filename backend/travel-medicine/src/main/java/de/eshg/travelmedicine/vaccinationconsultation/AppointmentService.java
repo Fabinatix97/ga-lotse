@@ -63,7 +63,7 @@ public class AppointmentService {
     return appointmentHolder.getAppointment();
   }
 
-  public void deleteAppointment(ProcedureStep procedureStep) {
+  public void cancelAppointment(ProcedureStep procedureStep) {
 
     Appointment blockAppointment = procedureStep.getAppointment();
     UserDefinedAppointment userDefinedAppointment = procedureStep.getUserDefinedAppointment();

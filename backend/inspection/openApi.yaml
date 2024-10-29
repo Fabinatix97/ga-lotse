@@ -4668,7 +4668,7 @@ components:
       type: object
       properties:
         keyDocumentType:
-          $ref: "#/components/schemas/KeyDocumentType"
+          type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
         messageText:
@@ -6596,11 +6596,6 @@ components:
       - PROTECTIVE_EQUIPMENT
       - TEST_KIT
       - MISC
-    KeyDocumentType:
-      type: string
-      enum:
-      - INVOICE
-      - REPORT
     Mail:
       type: object
       allOf:
@@ -6678,7 +6673,7 @@ components:
           createdByUserLastName:
             type: string
           keyDocumentType:
-            $ref: "#/components/schemas/KeyDocumentType"
+            type: string
           keyDocumentVersion:
             type: integer
             format: int32

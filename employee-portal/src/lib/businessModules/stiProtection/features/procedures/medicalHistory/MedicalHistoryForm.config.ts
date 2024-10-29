@@ -4,36 +4,55 @@
  */
 
 import {
-  ApiCreateMedicalHistoryRequest,
   ApiExamination,
+  ApiGender,
+  ApiRiskFactors,
+  ApiSexualOrientation,
   ApiVaccination,
+  CreateMedicalHistoryRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-interface ExaminationData extends Omit<ApiExamination, "examinationDate"> {
-  examinationDate: MonthAndYear;
-  hadExamination: boolean | null;
-}
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+type Merge<M, N> = Omit<M, Extract<keyof M, keyof N>> & N;
 
-interface VaccinationData extends Omit<ApiVaccination, "vaccinationDate"> {
-  vaccinationDate: MonthAndYear;
-  hadVaccination: boolean | null;
-}
+type ExaminationData = Merge<
+  ApiExamination,
+  {
+    [K in keyof ApiExamination]: MonthAndYear;
+  }
+>;
+
+export type VaccinationData = Merge<
+  ApiVaccination,
+  {
+    [K in keyof ApiVaccination]: MonthAndYear;
+  }
+>;
+
+type RiskFactors = Merge<
+  ApiRiskFactors,
+  {
+    vaccinations: VaccinationData;
+  }
+>;
 
 export interface MedicalHistoryFormData
   extends Omit<
-    ApiCreateMedicalHistoryRequest["medicalHistory"],
-    "examinations" | "vaccinations"
+    CreateMedicalHistoryRequest["apiCreateMedicalHistoryRequest"]["medicalHistory"],
+    "examinations" | "riskFactors"
   > {
-  examinations: ExaminationData[];
-  vaccinations: VaccinationData[];
+  examinations: ExaminationData;
   lastMenstruation: OptionalFieldValue<string>;
   lastCancerScreening: OptionalFieldValue<string>;
   hasBeenPregnant: boolean | null;
   numberOfSexualPartners: number;
   numberOfPregnancies: number;
   numberOfBirthsOrAbortions: number;
+  sexualContact: ApiGender;
+  sexualOrientation: ApiSexualOrientation;
+  riskFactors: RiskFactors;
 }
 
 export const initialValues: MedicalHistoryFormData = {
@@ -41,59 +60,36 @@ export const initialValues: MedicalHistoryFormData = {
   examinationReason: "",
   sexualContact: "NOT_SPECIFIED",
   sexualOrientation: "NOT_SPECIFIED",
-  examinations: [
-    {
-      hadExamination: null,
-      diseaseType: "HEPATITIS_A",
-      examinationDate: { month: null, year: "" },
-    },
-    {
-      hadExamination: null,
-      diseaseType: "HEPATITIS_B",
-      examinationDate: { month: null, year: "" },
-    },
-    {
-      hadExamination: null,
-      diseaseType: "HEPATITIS_C",
-      examinationDate: { month: null, year: "" },
-    },
-    {
-      hadExamination: null,
-      diseaseType: "HIV",
-      examinationDate: { month: null, year: "" },
-    },
-    {
-      hadExamination: null,
-      diseaseType: "SYPHILIS",
-      examinationDate: { month: null, year: "" },
-    },
-    {
-      hadExamination: null,
-      diseaseType: "GONORRHEA",
-      examinationDate: { month: null, year: "" },
-    },
-    {
-      hadExamination: null,
-      diseaseType: "CHLAMYDIA",
-      examinationDate: { month: null, year: "" },
-    },
-  ],
-  vaccinations: [
-    {
-      hadVaccination: null,
-      diseaseType: "HEPATITIS_A",
-      vaccinationDate: { month: null, year: "" },
-    },
-    {
-      hadVaccination: null,
-      diseaseType: "HEPATITIS_B",
-      vaccinationDate: { month: null, year: "" },
-    },
-  ],
+  examinations: {
+    chlamydia: { month: null, year: "" },
+    gonorrhea: { month: null, year: "" },
+    hepA: { month: null, year: "" },
+    hepB: { month: null, year: "" },
+    hepC: { month: null, year: "" },
+    hiv: { month: null, year: "" },
+    syphilis: { month: null, year: "" },
+  },
   hasBeenPregnant: null,
   lastMenstruation: "",
   lastCancerScreening: "",
   numberOfSexualPartners: 0,
   numberOfPregnancies: 0,
   numberOfBirthsOrAbortions: 0,
+  previousIllnesses: {
+    chlamydia: false,
+    gonorrhea: false,
+    hepA: false,
+    hepB: false,
+    hepC: false,
+    hiv: false,
+    syphilis: false,
+  },
+  riskFactors: {
+    prepInfoProvided: false,
+    vaccinations: {
+      hepA: { month: null, year: "" },
+      hepB: { month: null, year: "" },
+      hpv: { month: null, year: "" },
+    },
+  },
 };

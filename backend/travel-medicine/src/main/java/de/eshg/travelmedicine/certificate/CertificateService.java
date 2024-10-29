@@ -213,7 +213,7 @@ public class CertificateService {
 
     UUID patientId =
         procedureStep.getVaccinationConsultation().getPatientIdsFromCentralFile().getFirst();
-    PatientDto patient = personClient.getPersonFromCentralFile(patientId);
+    PatientDto patient = personClient.getPersonFromCentralFile(patientId).patient();
     VaccinationConsultation consultation = procedureStep.getVaccinationConsultation();
 
     HealthInsuranceCertificatePdfParameters pdfParameters =

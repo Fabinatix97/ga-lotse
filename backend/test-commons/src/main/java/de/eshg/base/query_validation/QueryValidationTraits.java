@@ -44,7 +44,12 @@ public interface QueryValidationTraits extends JUnit5ValidationFileAssertions {
   }
 
   default <T> T captureQueryAndCompareWithFile(Callable<T> callable, String suffix) {
-    return captureQueryAndCompareWithFile(callable, new UuidNormalizer(), suffix);
+    return captureQueryAndCompareWithFile(
+        callable, defaultValidationNormalizerForQueryCapturing(), suffix);
+  }
+
+  default ValidationNormalizer defaultValidationNormalizerForQueryCapturing() {
+    return new UuidNormalizer();
   }
 
   default <T> T captureQueryAndCompareWithFile(

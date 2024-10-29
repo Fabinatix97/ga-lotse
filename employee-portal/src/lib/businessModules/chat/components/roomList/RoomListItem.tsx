@@ -51,13 +51,9 @@ export function RoomListItem({
     [communicationType, room],
   );
 
-  const avatarUrl = useMemo(
-    () =>
-      dmMember
-        ? getMemberAvatarUrl(matrixClient, dmMember)
-        : getRoomAvatarUrl(matrixClient, room),
-    [dmMember, matrixClient, room],
-  );
+  const avatarUrl = dmMember
+    ? getMemberAvatarUrl(matrixClient, dmMember)
+    : getRoomAvatarUrl(matrixClient, room);
 
   const isLatestMessageRead = messageReadsPerRoom[room.roomId]?.some(
     (id) => id === latestMessage?.id,
@@ -67,7 +63,7 @@ export function RoomListItem({
     latestMessage?.readReceipts && !isEmpty(latestMessage?.readReceipts);
 
   const isMessageMine =
-    latestMessage?.sender?.userId !== matrixClient.getUserId();
+    latestMessage?.sender?.userId === matrixClient.getUserId();
 
   return (
     <Stack
@@ -130,6 +126,7 @@ export function RoomListItem({
             unreadNotifications={unreadNotifications}
             isRead={isLatestMessageRead ?? latestMessageRead}
             isMessageMine={isMessageMine}
+            isSent={latestMessage?.sent ?? false}
           />
         </Box>
       </Stack>

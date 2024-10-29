@@ -7,13 +7,11 @@ package de.eshg.travelmedicine.vaccinationconsultation.api;
 
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import java.time.Instant;
-import java.time.LocalDate;
 
 public record PatchAppointmentRequest(
     @NotNull AppointmentTypeDto appointmentType,
     @NotNull AppointmentBookingTypeDto appointmentBookingType,
-    Instant appointmentStart,
-    @PositiveOrZero Integer durationInMinutes,
-    LocalDate earliestDate) {}
+    @NotNull Instant appointmentStart,
+    @NotNull @Positive Integer durationInMinutes) {}

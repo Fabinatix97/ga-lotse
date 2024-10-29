@@ -12,9 +12,8 @@ import {
   ApiUpdateProcedureRequest,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { AlertProps as SharedAlertProps } from "@eshg/lib-portal/components/Alert";
+import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
 import { isObjectType } from "remeda";
-
-import { isAdult } from "@/lib/businessModules/measlesProtection/shared/helpers";
 
 export interface UpdateProcedureForm {
   reportData: {

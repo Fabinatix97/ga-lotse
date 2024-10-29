@@ -156,6 +156,58 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
         && !invalidFlag(cell, errorHandler);
   }
 
+  protected boolean cellAsBoolean(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String booleanString = cellAsString(cell, false, false, errorHandler);
+    if (booleanString == null) {
+      errorHandler.accept(
+          cell, "Ungültiger Wert (Erwartet: Ja, Nein, Tatsächlich: %s)".formatted(booleanString));
+      return false;
+    }
+
+    return switch (booleanString.toUpperCase()) {
+      case "JA" -> true;
+      case "NEIN" -> false;
+      default -> {
+        errorHandler.accept(
+            cell, "Ungültiger Wert (Erwartet: Ja, Nein, Tatsächlich: %s)".formatted(booleanString));
+        yield false;
+      }
+    };
+  }
+
+  protected Boolean cellAsBooleanOrNull(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    String booleanString = cellAsString(cell, true, false, errorHandler);
+    if (booleanString == null) {
+      return null;
+    }
+
+    return switch (booleanString.toUpperCase()) {
+      case "JA" -> true;
+      case "NEIN" -> false;
+      default -> {
+        errorHandler.accept(
+            cell,
+            "Ungültiger Wert (Erwartet: Ja, Nein oder leere Zelle. Tatsächlich: %s)"
+                .formatted(booleanString));
+        yield false;
+      }
+    };
+  }
+
+  protected Integer cellAsInt(
+      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+    Cell cell = col.get(column);
+    if (invalidType(cell, CellType.NUMERIC, errorHandler)) {
+      errorHandler.accept(cell, "Ungültiger Wert");
+      return null;
+    }
+    return (int) cell.getNumericCellValue();
+  }
+
   private static boolean isOptionalBlank(Cell cell, boolean optional) {
     return optional && (cell == null || getNormalizedCellType(cell) == CellType.BLANK);
   }

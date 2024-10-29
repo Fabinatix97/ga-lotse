@@ -48,7 +48,7 @@ public final class CurrentUserHelper {
     if (authentication.isPresent()
         && authentication.get() instanceof JwtAuthenticationToken token) {
       return token.getAuthorities().stream()
-          .anyMatch(granted -> granted.getAuthority().equals("ROLE_" + role.getKeycloakName()));
+          .anyMatch(granted -> granted.getAuthority().equals("ROLE_" + role.name()));
     }
     return false;
   }

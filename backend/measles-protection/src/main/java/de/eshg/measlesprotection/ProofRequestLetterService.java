@@ -14,10 +14,13 @@ import static de.eshg.measlesprotection.pdf.coverletter.CoverLetterType.SECOND_L
 import static de.eshg.measlesprotection.pdf.coverletter.CoverLetterType.SECOND_LETTER_EMPLOYEE;
 import static de.eshg.measlesprotection.pdf.coverletter.CoverLetterType.SECOND_LETTER_STUDENT_MINOR;
 import static de.eshg.measlesprotection.pdf.coverletter.CoverLetterType.SECOND_LETTER_STUDENT_OF_AGE;
+import static de.eshg.measlesprotection.pdf.coverletter.DepartmentInfoMapper.toDepartmentInfo;
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.PROOF_REQUEST_LETTER_SAVED;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.lib.document.generator.department.DepartmentClient;
+import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
@@ -34,6 +37,7 @@ import de.eshg.measlesprotection.pdf.coverletter.CoverLetterPerson;
 import de.eshg.measlesprotection.pdf.coverletter.CoverLetterPersonMapper;
 import de.eshg.measlesprotection.pdf.coverletter.CoverLetterService;
 import de.eshg.measlesprotection.pdf.coverletter.CoverLetterType;
+import de.eshg.measlesprotection.pdf.coverletter.DepartmentInfo;
 import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
 import de.eshg.measlesprotection.persistence.db.LetterType;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
@@ -53,14 +57,17 @@ public class ProofRequestLetterService {
 
   private final CoverLetterService coverLetterService;
   private final MeaslesProtectionService measlesProtectionService;
+  private final DepartmentClient departmentClient;
   private final Clock clock;
 
   public ProofRequestLetterService(
       CoverLetterService coverLetterService,
       MeaslesProtectionService measlesProtectionService,
+      DepartmentClient departmentClient,
       Clock clock) {
     this.coverLetterService = coverLetterService;
     this.measlesProtectionService = measlesProtectionService;
+    this.departmentClient = departmentClient;
     this.clock = clock;
   }
 
@@ -80,7 +87,11 @@ public class ProofRequestLetterService {
     CoverLetterPerson addressee = createAddressee(request, procedureDetails, person);
     CoverLetterPerson affectedPerson = createAffectedPerson(person);
     CoverLetterBody body = createLetterBody(request, previousLetterDate);
-    CoverLetterData data = new CoverLetterData(letterType, addressee, affectedPerson, body);
+    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    DepartmentInfo departmentInfo = toDepartmentInfo(departmentClient.getDepartmentInfo());
+    CoverLetterData data =
+        new CoverLetterData(
+            letterType, addressee, affectedPerson, body, departmentLogo, departmentInfo);
     return coverLetterService.createCoverLetter(data);
   }
 
@@ -122,8 +133,7 @@ public class ProofRequestLetterService {
 
   private CoverLetterBody createLetterBody(
       ProofRequestLetterRequest request, LocalDate previousLetterDate) {
-    return new CoverLetterBody(
-        request.deadline(), LocalDate.now(clock), previousLetterDate, "", "");
+    return new CoverLetterBody(request.deadline(), LocalDate.now(clock), previousLetterDate);
   }
 
   private static CoverLetterPerson createAddressee(

@@ -63,7 +63,7 @@ export function ReportCaseSuccess() {
       <Stack component="div" gap={2} rowGap={2} sx={reportCaseSuccessStyles}>
         <Grid xxs={12}>
           <Alert
-            title={t("success.message", {
+            message={t("success.message", {
               casesReported: affectedPersons.length,
             })}
             color="success"
@@ -71,10 +71,7 @@ export function ReportCaseSuccess() {
         </Grid>
         <FormHeader>{t("common.overview")}</FormHeader>
         <Grid container xxs={12}>
-          <Typography level="body-md">
-            Ihre Daten wurden erfolgreich an uns übermittelt. Wir werden uns
-            schnellstmöglich um Ihr Anliegen kümmern.
-          </Typography>
+          <Typography level="body-md">{t("success.overview_text")}</Typography>
         </Grid>
         <Grid container xxs={12}>
           <Box sx={{ display: "flex", mt: 1 }}>
@@ -150,7 +147,7 @@ export function ReportCaseSuccessActionsCard() {
             mb: 2,
           }}
         >
-          Was möchten Sie als nächstes tun?
+          {t("success.what_next_q")}
         </Typography>
         <Stack gap={2}>
           <Button disabled variant="outlined">

@@ -1,20 +1,22 @@
+<#-- @ftlvariable name="departmentLogo" type="de.eshg.lib.document.generator.department.DepartmentLogo" -->
+<#-- @ftlvariable name="departmentInfo" type="de.eshg.measlesprotection.pdf.coverletter.DepartmentInfo" -->
+<#-- @ftlvariable name="addressee" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterPerson" -->
+<#-- @ftlvariable name="body" type="de.eshg.measlesprotection.pdf.coverletter.CoverLetterBody" -->
 <table class="header">
   <colgroup>
     <col style="width: 60%;"/>
     <col style="width: 40%;"/>
   </colgroup>
   <tr>
+    <td valign="top"/>
     <td valign="top">
-      <div class="officeName">Stadt Frankfurt am Main</div>
-    </td>
-    <td valign="top">
-      <img src="logo-gesundheitsamt-ffm.svg" width="250px" alt="logo"/>
+      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" width="250px" alt="logo"/>
     </td>
   </tr>
   <tr class="letterhead">
     <td valign="top" class="receiver">
       <div class="officeAddress">
-        Stadtverwaltung (Amt 53), 60275 Frankfurt am Main
+      ${departmentInfo.street()} ${departmentInfo.houseNumber()}, ${departmentInfo.postalCode()} ${departmentInfo.city()}
       </div>
       <#if addressee.custodianClause??>
         <div>${addressee.custodianClause}</div>
@@ -24,42 +26,19 @@
       <div>${addressee.postalCode} ${addressee.city}</div>
     </td>
     <td valign="top" class="sender">
-      <div class="officeInfoHeader">Akademische Lehreinrichtung des Universitätsklinikums Frankfurt</div>
       <table>
         <tr>
           <td>
-            <div class="officeInfoHeader">Auskunft erteilt</div>
-            <div class="officeInfoContent">Infektiologie</div>
-          </td>
-          <td>
-            <div class="officeInfoHeader">Zimmer</div>
-            <div class="officeInfoContent">5.08</div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="officeInfoHeader">Telefon Durchwahl</div>
-            <div class="officeInfoContent">069 212-4711</div>
-          </td>
-          <td>
-            <div class="officeInfoHeader">Fax</div>
-            <div class="officeInfoContent">069 212-4712</div>
+            <div class="officeInfoContent">${departmentInfo.name()}</div>
+            <div class="officeInfoContent">${departmentInfo.street()} ${departmentInfo.houseNumber()}</div>
+            <div class="officeInfoContent">${departmentInfo.postalCode()} ${departmentInfo.city()}</div>
+            <br/>
           </td>
         </tr>
         <tr>
           <td>
             <div class="officeInfoHeader">E-Mail</div>
-            <div class="officeInfoContent">masern@stadt-frankfurt.de</div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="officeInfoHeader">Ihre Nachricht / Ihre Zeichen</div>
-            <div class="officeInfoContent">${body.yourReference}</div>
-          </td>
-          <td>
-            <div class="officeInfoHeader">Unsere Zeichen</div>
-            <div class="officeInfoContent">${body.ourReference}</div>
+            <div class="officeInfoContent">${departmentInfo.email()}</div>
           </td>
         </tr>
         <tr>

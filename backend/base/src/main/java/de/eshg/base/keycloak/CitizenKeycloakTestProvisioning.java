@@ -13,6 +13,7 @@ import de.eshg.lib.keycloak.*;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.ws.rs.core.Response;
 import java.util.*;
+import java.util.function.Consumer;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.*;
@@ -24,11 +25,13 @@ import org.springframework.stereotype.Component;
 @ConditionalOnTestUserProvisioningEnabled
 public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
   public static final String MUK_TEST_REALM_NAME = "muk-test";
+  public static final String BUND_ID_TEST_REALM_NAME = "bund-id-test";
   public static final String KEY_PROVIDER_TYPE = "org.keycloak.keys.KeyProvider";
   public static final String KEY_PRIORITY = "100";
 
   private final CitizenKeycloakClient citizenKeycloakClient;
   private final RealmBoundKeycloakClient mukKeycloakClient;
+  private final RealmBoundKeycloakClient bundIdKeycloakClient;
 
   public CitizenKeycloakTestProvisioning(
       CitizenKeycloakTestClient citizenKeycloakTestClient,
@@ -38,6 +41,8 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     super(citizenKeycloakTestClient, keycloakProperties, environmentConfig);
     this.citizenKeycloakClient = citizenKeycloakClient;
     this.mukKeycloakClient = new RealmBoundKeycloakClient(keycloakProperties, MUK_TEST_REALM_NAME);
+    this.bundIdKeycloakClient =
+        new RealmBoundKeycloakClient(keycloakProperties, BUND_ID_TEST_REALM_NAME);
   }
 
   @Override
@@ -46,53 +51,86 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
 
     if (keycloakProperties.mukTestRealm().enabled()) {
       log.warn("Adding a muk realm for development");
-      createOrUpdateDummyMukRealm();
-      createOrUpdateMukKeys();
-      createOrUpdateSamlClientInMukDummyRealm();
+      createOrUpdateIdpTestRealm(mukKeycloakClient, this::getMukTestRealmRepresentation);
+      createOrUpdateIdpTestRealmKeys(
+          keycloakProperties.mukTestRealm(),
+          keycloakProperties.citizenRealm().mukIdp(),
+          mukKeycloakClient);
+      createOrUpdateSamlClientInIdpTestRealm(
+          CitizenKeycloakProvisioning.MUK_IDENTITY_PROVIDER_ALIAS, mukKeycloakClient);
       addTestUserToMukRealm();
+    }
+
+    if (keycloakProperties.bundIdTestRealm().enabled()) {
+      log.warn("Adding a bund-id realm for development");
+      createOrUpdateIdpTestRealm(bundIdKeycloakClient, this::getBundIdTestRealmRepresentation);
+      createOrUpdateIdpTestRealmKeys(
+          keycloakProperties.bundIdTestRealm(),
+          keycloakProperties.citizenRealm().bundIdIdp(),
+          bundIdKeycloakClient);
+      createOrUpdateSamlClientInIdpTestRealm(
+          CitizenKeycloakProvisioning.BUND_ID_IDENTITY_PROVIDER_ALIAS, bundIdKeycloakClient);
+      addTestUserToBundIdRealm();
     }
   }
 
-  private void createOrUpdateMukKeys() {
+  private void createOrUpdateIdpTestRealmKeys(
+      KeycloakProperties.IdpTestRealm idpTestRealm,
+      KeycloakProperties.IdentityProvider idpConfig,
+      RealmBoundKeycloakClient idpTestRealmClient) {
     ComponentRepresentationDiffer keysDiffer =
-        new ComponentRepresentationDiffer(getExistingKeys(), List.of(getSignatureKeyProvider()));
-    keysDiffer.getElementsToDelete().forEach(this::deleteMukKey);
-    keysDiffer.getElementsToAdd().forEach(this::addMukKey);
-    keysDiffer.getElementsToUpdate().forEach(this::updateMukKey);
+        new ComponentRepresentationDiffer(
+            getExistingKeys(idpTestRealmClient),
+            List.of(getSignatureKeyProvider(idpTestRealm, idpConfig)));
+    keysDiffer.getElementsToDelete().forEach(key -> deleteIdpTestRealmKey(idpTestRealmClient, key));
+    keysDiffer.getElementsToAdd().forEach(key -> addIdpTestRealmKey(idpTestRealmClient, key));
+    keysDiffer
+        .getElementsToUpdate()
+        .forEach(update -> updateIdpTestRealmKey(idpTestRealmClient, update));
   }
 
-  private void deleteMukKey(ComponentRepresentation representation) {
-    log.info("Removing key provider '{}' from muk realm", representation.getName());
-    mukKeycloakClient.getRealm().components().component(representation.getId()).remove();
+  private void deleteIdpTestRealmKey(
+      RealmBoundKeycloakClient idpTestRealmClient, ComponentRepresentation representation) {
+    log.info(
+        "Removing key provider '{}' from {} realm",
+        representation.getName(),
+        idpTestRealmClient.realmName);
+    idpTestRealmClient.getRealm().components().component(representation.getId()).remove();
   }
 
-  private void addMukKey(ComponentRepresentation representation) {
-    log.info("Adding key provider '{}' to muk realm", representation.getName());
-    try (Response response = mukKeycloakClient.getRealm().components().add(representation)) {
+  private void addIdpTestRealmKey(
+      RealmBoundKeycloakClient idpTestRealmClient, ComponentRepresentation representation) {
+    log.info(
+        "Adding key provider '{}' to {} realm",
+        representation.getName(),
+        idpTestRealmClient.realmName);
+    try (Response response = idpTestRealmClient.getRealm().components().add(representation)) {
       RealmBoundKeycloakClient.assertResponseIs201Created(response);
     }
   }
 
-  private void updateMukKey(ToUpdate<ComponentRepresentation> update) {
+  private void updateIdpTestRealmKey(
+      RealmBoundKeycloakClient idpTestRealmClient, ToUpdate<ComponentRepresentation> update) {
     ComponentRepresentation keyProvider = update.newState();
     log.info(
-        "Key provider '{}' already exists, but update is required: {}",
+        "Key provider '{}' already exists in {} realm, but update is required: {}",
         keyProvider.getName(),
+        idpTestRealmClient.realmName,
         update.multiLineDiff());
-    mukKeycloakClient.getRealm().components().component(keyProvider.getId()).update(keyProvider);
+    idpTestRealmClient.getRealm().components().component(keyProvider.getId()).update(keyProvider);
   }
 
-  private ComponentRepresentation getSignatureKeyProvider() {
+  private ComponentRepresentation getSignatureKeyProvider(
+      KeycloakProperties.IdpTestRealm idpTestRealm, KeycloakProperties.IdentityProvider idpConfig) {
     ComponentRepresentation keyProvider = new ComponentRepresentation();
-    keyProvider.setName("muk-rsa-signature");
+    keyProvider.setName("test-rsa-signature");
     keyProvider.setProviderId("rsa");
     keyProvider.setProviderType(KEY_PROVIDER_TYPE);
     keyProvider.setConfig(
         new MultivaluedHashMap<>(
             Map.of(
-                "privateKey", List.of(keycloakProperties.mukTestRealm().signatureKey()),
-                "certificate",
-                    List.of(keycloakProperties.citizenRealm().mukIdp().signingCertificate()),
+                "privateKey", List.of(idpTestRealm.signatureKey()),
+                "certificate", List.of(idpConfig.signingCertificate()),
                 "priority", List.of(KEY_PRIORITY),
                 "active", List.of(TRUE),
                 "enabled", List.of(TRUE),
@@ -100,15 +138,25 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     return keyProvider;
   }
 
-  private List<ComponentRepresentation> getExistingKeys() {
-    return mukKeycloakClient.getRealm().components().query(null, KEY_PROVIDER_TYPE).stream()
+  private List<ComponentRepresentation> getExistingKeys(
+      RealmBoundKeycloakClient idpTestRealmClient) {
+    return idpTestRealmClient.getRealm().components().query(null, KEY_PROVIDER_TYPE).stream()
         .sorted(Comparator.comparing(ComponentRepresentation::getName))
         .toList();
   }
 
   private void addTestUserToMukRealm() {
-    new KeycloakTestClient(mukKeycloakClient, keycloakProperties, 16, environmentConfig)
-        .createOrUpdateUsers(List.of(MukTestUser.values()), this::configureMukUser);
+    addTestUsersToIdpTestRealm(mukKeycloakClient, List.of(IdpTestUser.MUK_DUMMY));
+  }
+
+  private void addTestUserToBundIdRealm() {
+    addTestUsersToIdpTestRealm(bundIdKeycloakClient, List.of(IdpTestUser.BUND_ID_DUMMY));
+  }
+
+  private void addTestUsersToIdpTestRealm(
+      RealmBoundKeycloakClient realmClient, List<KeycloakUser> users) {
+    new KeycloakTestClient(realmClient, keycloakProperties, 16, environmentConfig)
+        .createOrUpdateUsers(users, this::configureMukUser);
   }
 
   private void configureMukUser(UserRepresentation userRepresentation, KeycloakUser user) {
@@ -120,26 +168,35 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     userRepresentation.setAttributes(null);
   }
 
-  private void createOrUpdateDummyMukRealm() {
-    mukKeycloakClient.createOrUpdateRealm(this::getRealmRepresentation);
-    mukKeycloakClient.configureUserProfile(
-        MukUserAttribute.values(), MUK_TEST_REALM_NAME, MUK_TEST_REALM_NAME);
+  private void createOrUpdateIdpTestRealm(
+      RealmBoundKeycloakClient idpTestRealmClient,
+      Consumer<RealmRepresentation> idpTestRealmRepresentation) {
+    String idpTestRealmName = idpTestRealmClient.realmName;
+    idpTestRealmClient.createOrUpdateRealm(idpTestRealmRepresentation);
+    idpTestRealmClient.configureUserProfile(
+        IdpTestUserAttribute.values(), idpTestRealmName, idpTestRealmName);
   }
 
-  private void getRealmRepresentation(RealmRepresentation realmRepresentation) {
+  private void getMukTestRealmRepresentation(RealmRepresentation realmRepresentation) {
     realmRepresentation.setRealm(MUK_TEST_REALM_NAME);
     realmRepresentation.setDisplayName("MUK (Dev)");
     realmRepresentation.setDisplayNameHtml("MUK (Dev)");
     realmRepresentation.setEnabled(true);
   }
 
-  private void createOrUpdateSamlClientInMukDummyRealm() {
+  private void getBundIdTestRealmRepresentation(RealmRepresentation realmRepresentation) {
+    realmRepresentation.setRealm(BUND_ID_TEST_REALM_NAME);
+    realmRepresentation.setDisplayName("BundID (Dev)");
+    realmRepresentation.setDisplayNameHtml("BundID (Dev)");
+    realmRepresentation.setEnabled(true);
+  }
+
+  private void createOrUpdateSamlClientInIdpTestRealm(
+      String idpAlias, RealmBoundKeycloakClient idpTestRealmClient) {
     String brokerEndpoint =
         "%s/realms/%s/broker/%s/endpoint"
             .formatted(
-                keycloakProperties.url(),
-                keycloakProperties.citizenRealm().name(),
-                CitizenKeycloakProvisioning.MUK_IDENTITY_PROVIDER_ALIAS);
+                keycloakProperties.url(), keycloakProperties.citizenRealm().name(), idpAlias);
     List<KeysMetadataRepresentation.KeyMetadataRepresentation> keys =
         citizenKeycloakClient.getRealm().keys().getKeyMetadata().getKeys();
 
@@ -150,8 +207,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
             .formatted(keycloakProperties.url(), keycloakProperties.citizenRealm().name());
     client.setClientId(clientId);
     client.setProtocol("saml");
-    client.setPublicClient(false);
-    client.setSecret("uEitAacifz6pDUeGAm1XK0elya0BaYxt");
+    client.setPublicClient(true);
     client.setFullScopeAllowed(true);
     client.setRedirectUris(List.of(brokerEndpoint));
     client.setWebOrigins(List.of("+"));
@@ -176,11 +232,11 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
                 new AbstractMap.SimpleEntry<>("saml_name_id_format", "persistent"),
                 new AbstractMap.SimpleEntry<>("saml.server.signature", TRUE),
                 new AbstractMap.SimpleEntry<>("saml.server.signature.keyinfo.ext", FALSE)));
-    mukKeycloakClient
+    idpTestRealmClient
         .getClientByClientId(clientId)
         .ifPresent(existingClient -> setDefaultValuesForDiff(existingClient, attributes));
     client.setAttributes(attributes);
-    mukKeycloakClient.createOrUpdateClients(
+    idpTestRealmClient.createOrUpdateClients(
         List.of(client),
         // Workaround since we cannot use the usual "system-" prefix here
         // The muk-test realm is a separate realm, where we only need exactly this one
@@ -240,7 +296,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     return allUsers;
   }
 
-  private enum MukUserAttribute implements KeycloakUserAttribute {
+  private enum IdpTestUserAttribute implements KeycloakUserAttribute {
     EMAIL(DEFAULT_ATTRIBUTE_EMAIL, KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_EMAIL)),
     FIRST_NAME(
         DEFAULT_ATTRIBUTE_FIRST_NAME,
@@ -253,7 +309,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     private final String key;
     private final String displayName;
 
-    MukUserAttribute(String key, String displayName) {
+    IdpTestUserAttribute(String key, String displayName) {
       this.key = key;
       this.displayName = displayName;
     }
@@ -284,18 +340,17 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
     }
   }
 
-  private enum MukTestUser implements KeycloakUser {
-    MUK_DUMMY("muk-dummy", "password", "muk-dummy" + KeycloakUser.TEST_USER_EMAIL_POSTFIX),
+  private enum IdpTestUser implements KeycloakUser {
+    MUK_DUMMY("muk-dummy", "password"),
+    BUND_ID_DUMMY("bund-id-dummy", "password"),
     ;
 
     private final String username;
     private final String password;
-    private final String email;
 
-    MukTestUser(String username, String password, String email) {
+    IdpTestUser(String username, String password) {
       this.username = username;
       this.password = password;
-      this.email = email;
     }
 
     @Override
@@ -305,7 +360,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
 
     @Override
     public String email() {
-      return email;
+      return username + KeycloakUser.TEST_USER_EMAIL_POSTFIX;
     }
 
     @Override

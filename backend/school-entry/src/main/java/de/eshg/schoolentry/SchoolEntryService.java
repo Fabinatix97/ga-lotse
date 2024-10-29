@@ -37,6 +37,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
+import de.eshg.schoolentry.client.ChildUpdate;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
@@ -44,10 +45,7 @@ import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.domain.repository.*;
 import de.eshg.schoolentry.domain.repository.Icd10CodeRepository.Icd10FuzzySearchResult;
 import de.eshg.schoolentry.importer.ImportType;
-import de.eshg.schoolentry.mapper.AppointmentMapper;
-import de.eshg.schoolentry.mapper.PersonMapper;
-import de.eshg.schoolentry.mapper.ProcedureMapper;
-import de.eshg.schoolentry.mapper.WaitingRoomMapper;
+import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
 import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
 import de.eshg.schoolentry.percentiles.PercentileCalculationService;
@@ -58,10 +56,7 @@ import de.eshg.schoolentry.util.ProgressEntryUtil;
 import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
 import de.eshg.schoolentry.util.TaskUtil;
 import de.eshg.validation.ValidationUtil;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.*;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -197,14 +192,57 @@ public class SchoolEntryService {
   }
 
   public List<SchoolEntryProcedure> createProceduresFromDataImport(
-      List<ImportProcedureData> procedures, UUID schoolId, UUID locationId, Year schoolYear) {
-    return createProcedures(
-        procedures,
-        schoolId,
-        locationId,
-        schoolYear,
-        DataOrigin.DATA_IMPORT,
-        ProcedureStatus.CLOSED);
+      List<ImportPastProcedureData> pastProcedures,
+      UUID schoolId,
+      UUID locationId,
+      Year schoolYear) {
+    List<ImportProcedureData> procedureData =
+        pastProcedures.stream().map(ImportPastProcedureData::procedureData).toList();
+    List<SchoolEntryProcedure> result = new ArrayList<>();
+
+    Label specialNeedsLabel = fetchSpecialNeedsLabelIfNecessary(procedureData);
+    Label informationBlockLabel = fetchInformationBlockLabelIfNecessary(procedureData);
+
+    List<ProcedureIds> createdIds =
+        personClient.createPersonsInCentralFile(procedureData, DataOrigin.DATA_IMPORT);
+    for (int i = 0; i < pastProcedures.size(); i++) {
+      ImportPastProcedureData pastProcedureData = pastProcedures.get(i);
+      ImportProcedureData procedure = procedureData.get(i);
+      ProcedureIds procedureIds = createdIds.get(i);
+
+      ProcedureType procedureType = procedure.procedureType();
+      Anamnesis anamnesis =
+          mapAnamnesisData(pastProcedureData.anamnesisData(), procedure.examinationDate());
+      VaccinationStatus vaccinationStatus =
+          mapVaccinationStatus(pastProcedureData.vaccinationStatusData());
+
+      SchoolEntryProcedure schoolEntryProcedure =
+          saveSchoolEntryProcedure(
+              procedureIds.childId(),
+              procedureIds.custodianIds(),
+              procedureType,
+              schoolId,
+              locationId,
+              schoolYear,
+              procedure.isEntryLevel(),
+              procedure.examinationDate(),
+              ProcedureStatus.CLOSED,
+              anamnesis,
+              vaccinationStatus);
+
+      if (procedure.isEarlyExamination()) {
+        Assert.notNull(specialNeedsLabel, "specialNeedsLabel must be fetched at this point");
+        schoolEntryProcedure.addLabel(specialNeedsLabel);
+      }
+      if (procedure.hasInformationBlock()) {
+        Assert.notNull(
+            informationBlockLabel, "informationBlockLabel must be fetched at this point");
+        schoolEntryProcedure.addLabel(informationBlockLabel);
+      }
+      result.add(schoolEntryProcedure);
+    }
+
+    return result;
   }
 
   public List<SchoolEntryProcedure> createProcedures(
@@ -216,14 +254,8 @@ public class SchoolEntryService {
       ProcedureStatus initialProcedureStatus) {
     List<SchoolEntryProcedure> result = new ArrayList<>();
 
-    Label specialNeedsLabel = null;
-    Label informationBlockLabel = null;
-    if (procedures.stream().anyMatch(ImportProcedureData::isEarlyExamination)) {
-      specialNeedsLabel = getSpecialNeedsLabel();
-    }
-    if (procedures.stream().anyMatch(ImportProcedureData::hasInformationBlock)) {
-      informationBlockLabel = getInformationBlockLabel();
-    }
+    Label specialNeedsLabel = fetchSpecialNeedsLabelIfNecessary(procedures);
+    Label informationBlockLabel = fetchInformationBlockLabelIfNecessary(procedures);
 
     List<ProcedureIds> createdIds = personClient.createPersonsInCentralFile(procedures, dataOrigin);
     for (int i = 0; i < procedures.size(); i++) {
@@ -242,7 +274,9 @@ public class SchoolEntryService {
               schoolYear,
               procedure.isEntryLevel(),
               procedure.examinationDate(),
-              initialProcedureStatus);
+              initialProcedureStatus,
+              new Anamnesis(),
+              new VaccinationStatus());
 
       if (procedure.isEarlyExamination()) {
         Assert.notNull(specialNeedsLabel, "specialNeedsLabel must be fetched at this point");
@@ -257,6 +291,121 @@ public class SchoolEntryService {
     }
 
     return result;
+  }
+
+  private Label fetchSpecialNeedsLabelIfNecessary(List<ImportProcedureData> procedureData) {
+    if (procedureData.stream().anyMatch(ImportProcedureData::isEarlyExamination)) {
+      return getSpecialNeedsLabel();
+    }
+    return null;
+  }
+
+  private Label fetchInformationBlockLabelIfNecessary(List<ImportProcedureData> procedureData) {
+    if (procedureData.stream().anyMatch(ImportProcedureData::hasInformationBlock)) {
+      return getInformationBlockLabel();
+    }
+    return null;
+  }
+
+  private Anamnesis mapAnamnesisData(
+      ImportAnamnesisData importAnamnesisData, LocalDate examinationDate) {
+    Anamnesis anamnesis = new Anamnesis();
+    if (importAnamnesisData == null) {
+      return anamnesis;
+    }
+    anamnesis.setNumberOfSiblings(importAnamnesisData.siblings());
+    anamnesis.setNationalityChild(getCountryCode(importAnamnesisData.nationalityChild()));
+    anamnesis.setCountryOfBirthFirstParent(
+        getCountryCode(importAnamnesisData.countryOfBirthFirstParent()));
+    anamnesis.setNationalityFirstParent(
+        getCountryCode(importAnamnesisData.nationalityFirstParent()));
+    anamnesis.setCountryOfBirthSecondParent(
+        getCountryCode(importAnamnesisData.countryOfBirthSecondParent()));
+    anamnesis.setNationalitySecondParent(
+        getCountryCode(importAnamnesisData.nationalitySecondParent()));
+    anamnesis.setHasMigrationBackground(importAnamnesisData.hasMigrationBackground());
+    anamnesis.setInDaycareSince(
+        approximateInDaycareSince(importAnamnesisData.daycareValue(), examinationDate));
+    anamnesis.setPreliminaryCourse(importAnamnesisData.preliminaryCourse());
+    anamnesis.setBirthWeight(importAnamnesisData.birthWeight());
+    anamnesis.setIntegrationPlace(importAnamnesisData.integrationPlace());
+    anamnesis.setEarlySupport(importAnamnesisData.earlySupport());
+    anamnesis.setErgotherapy(importAnamnesisData.ergoTherapy());
+    anamnesis.setSpeechTherapy(importAnamnesisData.speechTherapy());
+    anamnesis.setPhysiotherapy(importAnamnesisData.physioTherapy());
+    anamnesis.setChildLanguageScreening(importAnamnesisData.childLanguageScreening());
+    anamnesis.setU2(mapBooleanOrNull(importAnamnesisData.u2()));
+    anamnesis.setU3(mapBooleanOrNull(importAnamnesisData.u3()));
+    anamnesis.setU4(mapBooleanOrNull(importAnamnesisData.u4()));
+    anamnesis.setU5(mapBooleanOrNull(importAnamnesisData.u5()));
+    anamnesis.setU6(mapBooleanOrNull(importAnamnesisData.u6()));
+    anamnesis.setU7(mapBooleanOrNull(importAnamnesisData.u7()));
+    anamnesis.setU7a(mapBooleanOrNull(importAnamnesisData.u7a()));
+    anamnesis.setU8(mapBooleanOrNull(importAnamnesisData.u8()));
+    anamnesis.setU9(mapBooleanOrNull(importAnamnesisData.u9()));
+    return anamnesis;
+  }
+
+  private VaccinationStatus mapVaccinationStatus(
+      ImportVaccinationStatusData importVaccinationStatusData) {
+    VaccinationStatus vaccinationStatus = new VaccinationStatus();
+    if (importVaccinationStatusData == null) {
+      return vaccinationStatus;
+    }
+
+    vaccinationStatus.setVaccinationScheme(
+        mapVaccinationScheme(importVaccinationStatusData.vaccinationScheme()));
+    vaccinationStatus.setTetanus(importVaccinationStatusData.tetanus());
+    vaccinationStatus.setDiphtheria(importVaccinationStatusData.diphteria());
+    vaccinationStatus.setPertussis(importVaccinationStatusData.pertussis());
+    vaccinationStatus.setPolio(importVaccinationStatusData.polio());
+    vaccinationStatus.setHib(importVaccinationStatusData.hib());
+    vaccinationStatus.setHepatitisB(importVaccinationStatusData.hepatitisB());
+    vaccinationStatus.setMmr(importVaccinationStatusData.mmr());
+    vaccinationStatus.setVaricella(importVaccinationStatusData.varicella());
+    vaccinationStatus.setMeningococcusC(importVaccinationStatusData.meningococcusC());
+    vaccinationStatus.setPneumococcus(importVaccinationStatusData.pneumococcus());
+    vaccinationStatus.setHepatitisA(importVaccinationStatusData.hepatitisA());
+    vaccinationStatus.setTbe(importVaccinationStatusData.tbe());
+    vaccinationStatus.setRota(importVaccinationStatusData.rota());
+    vaccinationStatus.setMeningococcusB(importVaccinationStatusData.meningococcusB());
+    vaccinationStatus.setPerkombiHbv(mapBooleanOrNull(importVaccinationStatusData.perkombiHbv()));
+    return vaccinationStatus;
+  }
+
+  private static CountryCode getCountryCode(int group) {
+    return AnamnesisMapper.mapToDomain(CountryCodeDto.getCountryGroup(group));
+  }
+
+  private static LocalDate approximateInDaycareSince(int daycareValue, LocalDate examinationDate) {
+    return switch (daycareValue) {
+        // TODO ISSUE-6120 map 0 (child hasn't been in daycare)
+      case 1 -> examinationDate.minus(Period.ofMonths(9));
+      case 2 -> examinationDate.minus(Period.ofMonths(27));
+      case 3 -> examinationDate.minus(Period.ofMonths(45));
+      default -> null;
+    };
+  }
+
+  private static BooleanWithUnknown mapBooleanOrNull(Boolean uExaminationValue) {
+    if (uExaminationValue == null) {
+      return BooleanWithUnknown.UNKNOWN;
+    } else if (uExaminationValue.equals(Boolean.TRUE)) {
+      return BooleanWithUnknown.TRUE;
+    } else {
+      return BooleanWithUnknown.FALSE;
+    }
+  }
+
+  private static VaccinationSchemeValue mapVaccinationScheme(int vaccinationSchemeValue) {
+    return switch (vaccinationSchemeValue) {
+      case 2 -> VaccinationSchemeValue.SCHEME_2_PLUS_1;
+      case 3 -> VaccinationSchemeValue.SCHEME_3_PLUS_1;
+      case 9 -> VaccinationSchemeValue.UNKNOWN;
+      default ->
+          throw new IllegalArgumentException(
+              "Vaccination scheme value must only be one of 2, 3, 9");
+    };
   }
 
   private Label getSpecialNeedsLabel() {
@@ -285,7 +434,9 @@ public class SchoolEntryService {
       Year schoolYear,
       boolean isEntryLevel,
       LocalDate examinationDate,
-      ProcedureStatus initialProcedureStatus) {
+      ProcedureStatus initialProcedureStatus,
+      Anamnesis anamnesis,
+      VaccinationStatus vaccinationStatus) {
     SchoolEntryProcedure schoolEntryProcedure = new SchoolEntryProcedure();
     schoolEntryProcedure.updateProcedureStatus(initialProcedureStatus, clock, auditLogger);
     schoolEntryProcedure.setProcedureType(type);
@@ -304,8 +455,8 @@ public class SchoolEntryService {
     schoolEntryProcedure.setEyeExaminationResult(new EyeExaminationResult());
     schoolEntryProcedure.setSopessExaminationResult(new SopessExaminationResult());
     schoolEntryProcedure.setDevelopmentScreeningResult(new DevelopmentScreening());
-    schoolEntryProcedure.setVaccinationStatus(new VaccinationStatus());
-    schoolEntryProcedure.setAnamnesis(new Anamnesis());
+    schoolEntryProcedure.setVaccinationStatus(vaccinationStatus);
+    schoolEntryProcedure.setAnamnesis(anamnesis);
     schoolEntryProcedure.setWaitingRoom(new WaitingRoom());
     schoolEntryProcedure.setSchoolYear(schoolYear);
 
@@ -845,28 +996,44 @@ public class SchoolEntryService {
   }
 
   public void deleteProcedure(SchoolEntryProcedure procedure) {
-    UUID[] personIds =
-        procedure.getRelatedPersons().stream()
-            .map(RelatedPerson::getCentralFileStateId)
-            .toArray(UUID[]::new);
-    log.info("Marking central file state(s) {} for deletion", Arrays.toString(personIds));
-    personClient.markCentralFileStatesForDeletion(personIds);
-    log.info("Marked central file state(s) {} for deletion", Arrays.toString(personIds));
-
-    procedure.setLabels(List.of());
-    schoolEntryProcedureRepository.flush();
-    procedureDeletionService.deleteProcedure(procedure.getExternalId());
+    markRelatedPersonsForDeletionInCentralFile(List.of(procedure));
+    procedureDeletionService.deleteAndWriteToCemetery(procedure.getExternalId());
   }
 
-  public SchoolEntryProcedure updateChildData(
+  public void deleteProcedures(List<UUID> procedureIds) {
+    List<SchoolEntryProcedure> procedures =
+        schoolEntryProcedureRepository.findForBatchDeletion(procedureIds);
+    markRelatedPersonsForDeletionInCentralFile(procedures);
+    procedureDeletionService.bulkDeleteAndWriteToCemetery(
+        procedures, SchoolEntryTask.class, Person.class, Facility.class);
+  }
+
+  private void markRelatedPersonsForDeletionInCentralFile(List<SchoolEntryProcedure> procedures) {
+    UUID[] personIds =
+        procedures.stream()
+            .map(Procedure::getRelatedPersons)
+            .flatMap(List::stream)
+            .map(RelatedPerson::getCentralFileStateId)
+            .toArray(UUID[]::new);
+    if (log.isInfoEnabled()) {
+      log.info("Marking central file state(s) {} for deletion", Arrays.toString(personIds));
+    }
+    personClient.markCentralFileStatesForDeletion(personIds);
+    if (log.isInfoEnabled()) {
+      log.info("Marked central file state(s) {} for deletion", Arrays.toString(personIds));
+    }
+  }
+
+  public void updateChildData(
       SchoolEntryProcedure procedure, Person child, UpdatePersonRequest request) {
-    UUID updatedFileStateId = personClient.updateChild(child.getCentralFileStateId(), request);
-    child.setCentralFileStateId(updatedFileStateId);
+    UUID currentFileStateId = child.getCentralFileStateId();
+    UUID updatedFileStateId = personClient.updateChild(currentFileStateId, request);
 
-    ProgressEntryUtil.addProgressEntry(procedure, CHILD_MODIFIED);
-
-    personRepository.flush();
-    return procedure;
+    if (!updatedFileStateId.equals(currentFileStateId)) {
+      child.setCentralFileStateId(updatedFileStateId);
+      ProgressEntryUtil.addProgressEntry(procedure, CHILD_MODIFIED);
+      personRepository.flush();
+    }
   }
 
   public SchoolEntryProcedure syncPersonData(
@@ -906,18 +1073,21 @@ public class SchoolEntryService {
     buildParent(centralFileId, procedure);
 
     ProgressEntryUtil.addProgressEntry(procedure, CUSTODIAN_ADDED);
+    schoolEntryProcedureRepository.flush();
   }
 
   public void updateCustodian(UpdatePersonRequest request, UUID centralFileStateId, Person person) {
     UUID newCentralFileStateId =
         personClient.updatePersonInCentralFile(request, centralFileStateId);
-    person.setCentralFileStateId(newCentralFileStateId);
 
-    ProgressEntryUtil.addProgressEntry(person.getProcedure(), CUSTODIAN_MODIFIED);
+    if (!newCentralFileStateId.equals(centralFileStateId)) {
+      person.setCentralFileStateId(newCentralFileStateId);
+      ProgressEntryUtil.addProgressEntry(person.getProcedure(), CUSTODIAN_MODIFIED);
+      schoolEntryProcedureRepository.flush();
+    }
   }
 
   public void removeCustodian(UUID centralFileStateId, SchoolEntryProcedure procedure) {
-
     log.info("Marking central file state {} for deletion", centralFileStateId);
     personClient.markCentralFileStatesForDeletion(centralFileStateId);
     log.info("Marked central file state {} for deletion", centralFileStateId);
@@ -930,6 +1100,7 @@ public class SchoolEntryService {
     procedure.getRelatedPersons().remove(person);
 
     ProgressEntryUtil.addProgressEntry(procedure, CUSTODIAN_REMOVED);
+    schoolEntryProcedureRepository.flush();
   }
 
   SchoolEntryProcedure findProcedureByExternalIdForUpdate(UUID procedureId, long version) {
@@ -1392,34 +1563,74 @@ public class SchoolEntryService {
       UUID schoolId,
       UUID locationId,
       Year schoolYear) {
-    List<UUID> failedIds = new ArrayList<>();
-    for (MergeProcedureData mergeData : mergeDataList) {
-      try {
+    if (mergeDataList.isEmpty()) {
+      return List.of();
+    }
+
+    List<UUID> procedureIds = mergeDataList.stream().map(MergeProcedureData::procedureId).toList();
+
+    try {
+      Assert.isTrue(
+          !StreamUtil.hasDuplicates(procedureIds.stream()),
+          "Merge data contains duplicated procedure IDs");
+
+      Map<UUID, SchoolEntryProcedure> procedures =
+          schoolEntryProcedureRepository
+              .findByExternalIdsForUpdate(procedureIds)
+              .collect(StreamUtil.toLinkedHashMap(SchoolEntryProcedure::getExternalId));
+
+      List<ChildUpdate> childUpdates = new ArrayList<>();
+      for (MergeProcedureData mergeData : mergeDataList) {
         UUID procedureId = mergeData.procedureId();
         SchoolEntryProcedure procedure =
-            schoolEntryProcedureRepository
-                .findByExternalIdForUpdate(procedureId)
+            Optional.ofNullable(procedures.get(procedureId))
                 .orElseThrow(procedureNotFoundException(procedureId));
+
+        childUpdates.add(
+            new ChildUpdate(
+                procedure,
+                mergeData.placeOfBirth(),
+                mergeData.countryOfBirth(),
+                mergeData.phoneNumber()));
+      }
+
+      List<UUID> failedProcedureIds = personClient.updateChildren(childUpdates);
+
+      for (MergeProcedureData mergeData : mergeDataList) {
+        UUID procedureId = mergeData.procedureId();
+
+        SchoolEntryProcedure procedure =
+            Optional.ofNullable(procedures.get(procedureId))
+                .orElseThrow(procedureNotFoundException(procedureId));
+
+        if (failedProcedureIds.contains(procedureId)) {
+          log.debug("Skipping merge of procedure {}. Child update failed", procedureId);
+          continue;
+        }
 
         mergeDataForProcedure(procedure, mergeData, schoolId, locationId, schoolYear);
         updateProcedureTypeWithSuggestion(procedure);
-
-        SchoolEntrySystemProgressEntryType progressEntryType =
-            switch (importType) {
-              case CITIZEN_LIST -> MERGED_DATA_FROM_CITIZEN_LIST;
-              case SCHOOL_LIST -> MERGED_DATA_FROM_SCHOOL_LIST;
-              case PAST_PROCEDURE_LIST ->
-                  throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
-            };
-        ProgressEntryUtil.addProgressEntry(procedure, progressEntryType);
-
-      } catch (Exception e) {
-        log.error("Error during merge of data.", e);
-        failedIds.add(mergeData.procedureId());
+        addProgressEntryForMerge(procedure, importType);
       }
+
+      schoolEntryProcedureRepository.flush();
+
+      return failedProcedureIds;
+    } catch (Exception e) {
+      log.error("Error during merge of data.", e);
+      return procedureIds;
     }
-    schoolEntryProcedureRepository.flush();
-    return failedIds;
+  }
+
+  private static void addProgressEntryForMerge(
+      SchoolEntryProcedure procedure, ImportType importType) {
+    SchoolEntrySystemProgressEntryType progressEntryType =
+        switch (importType) {
+          case CITIZEN_LIST -> MERGED_DATA_FROM_CITIZEN_LIST;
+          case SCHOOL_LIST -> MERGED_DATA_FROM_SCHOOL_LIST;
+          case PAST_PROCEDURE_LIST -> throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
+        };
+    ProgressEntryUtil.addProgressEntry(procedure, progressEntryType);
   }
 
   private void mergeDataForProcedure(
@@ -1428,16 +1639,6 @@ public class SchoolEntryService {
       UUID schoolId,
       UUID locationId,
       Year schoolYear) {
-
-    UUID updatedChildFileStateId =
-        personClient.updateChild(
-            procedure,
-            mergeData.placeOfBirth(),
-            mergeData.countryOfBirth(),
-            mergeData.phoneNumber());
-
-    procedure.getChild().setCentralFileStateId(updatedChildFileStateId);
-
     if (mergeData.custodians() != null && !mergeData.custodians().isEmpty()) {
       personClient
           .createCustodiansInCentralFile(mergeData.custodians())

@@ -20,15 +20,14 @@ import java.util.List;
 
 @Entity
 public class ManualProgressEntryDeletionApprovalRequest
-    extends DeletionApprovalRequest<ManualProgressEntry>
-    implements NotificationsAware<ManualProgressEntryDeletionApprovalRequestNotification> {
+    extends DeletionApprovalRequest<ManualProgressEntry> {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToOne
+  @OneToOne(mappedBy = ManualProgressEntry_.DELETION_APPROVAL_REQUEST)
   private ManualProgressEntry manualProgressEntry;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToMany(mappedBy = APPROVAL_REQUEST, cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = APPROVAL_REQUEST, cascade = CascadeType.PERSIST, orphanRemoval = true)
   @OrderBy
   private final List<ManualProgressEntryDeletionApprovalRequestNotification> notifications =
       new ArrayList<>();
@@ -42,18 +41,8 @@ public class ManualProgressEntryDeletionApprovalRequest
     return manualProgressEntry;
   }
 
-  @Override
-  public void setEntity(ManualProgressEntry entity) {
-    setManualProgressEntry(entity);
-  }
-
   public void setManualProgressEntry(ManualProgressEntry manualProgressEntry) {
     this.manualProgressEntry = manualProgressEntry;
-  }
-
-  @Override
-  public List<ManualProgressEntryDeletionApprovalRequestNotification> getNotifications() {
-    return notifications;
   }
 
   public void addNotification(ManualProgressEntryDeletionApprovalRequestNotification notification) {
@@ -61,5 +50,17 @@ public class ManualProgressEntryDeletionApprovalRequest
       notification.setApprovalRequest(this);
       this.notifications.add(notification);
     }
+  }
+
+  @Override
+  public void updateEntity(ManualProgressEntry manualProgressEntry) {
+    if (manualProgressEntry == null) {
+      if (this.manualProgressEntry != null) {
+        this.manualProgressEntry.setDeletionApprovalRequest(null);
+      }
+    } else {
+      manualProgressEntry.setDeletionApprovalRequest(this);
+    }
+    this.manualProgressEntry = manualProgressEntry;
   }
 }

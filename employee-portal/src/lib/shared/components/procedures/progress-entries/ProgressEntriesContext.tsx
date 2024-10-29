@@ -6,7 +6,6 @@
 "use client";
 
 import {
-  ApiKeyDocumentType,
   ApiManualProgressEntry,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/businessProcedures";
@@ -93,7 +92,7 @@ export function useUndeletedFilesWithoutOldVersions() {
   const undeletedFiles = files.filter((file) => !file.file.deleted);
 
   interface KeyDocumentFile {
-    keyDocumentType: ApiKeyDocumentType;
+    keyDocumentType: string;
     keyDocumentVersion: number;
     progressEntryId: string;
   }
@@ -131,7 +130,7 @@ export function useUndeletedFilesWithoutOldVersions() {
 
       return accumulated;
     },
-    {} as Record<ApiKeyDocumentType, KeyDocumentFile>,
+    {} as Record<string, KeyDocumentFile>,
   );
 
   const latestKeyDocumentProgressEntryIds = Object.values(

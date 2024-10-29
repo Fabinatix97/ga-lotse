@@ -5,6 +5,13 @@
 
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
+export const ReportSeriesState = {
+  Activated: "ACTIVATED",
+  Deactivated: "DEACTIVATED",
+} as const;
+export type ReportSeriesState =
+  (typeof ReportSeriesState)[keyof typeof ReportSeriesState];
+
 export const Interval = {
   Month: "MONTH",
   ThreeMonths: "THREE_MONTHS",
@@ -31,7 +38,7 @@ export type ReportingPeriod =
 
 export const REPORTING_PERIOD_TRANSLATION: EnumMap<ReportingPeriod> = {
   [ReportingPeriod.Month]: "Letzter Monat",
-  [ReportingPeriod.ThreeMonths]: "Letzten 3 Monate",
-  [ReportingPeriod.HalfYear]: "Letzten 6 Monate",
-  [ReportingPeriod.Year]: "Letzten 12 Monate",
+  [ReportingPeriod.ThreeMonths]: "Letzte 3 Monate",
+  [ReportingPeriod.HalfYear]: "Letzte 6 Monate",
+  [ReportingPeriod.Year]: "Letzte 12 Monate",
 };

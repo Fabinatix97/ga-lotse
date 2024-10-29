@@ -43,7 +43,12 @@ export function ChatAvatar({
   } = useChat();
 
   return isGroupRoom(communicationType) ? (
-    <Avatar variant="solid" color="warning" size={size}>
+    <Avatar
+      variant="solid"
+      color="warning"
+      size={size}
+      src={props.avatarUrl ? props.avatarUrl : undefined}
+    >
       <GroupOutlinedIcon size="md" sx={{ color: "white" }} />
     </Avatar>
   ) : (

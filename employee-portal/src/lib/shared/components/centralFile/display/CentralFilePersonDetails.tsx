@@ -4,12 +4,16 @@
  */
 
 import {
-  ApiGetPersonFileStateResponse,
-  ApiGetReferencePersonResponse,
+  ApiCountryCode,
+  ApiGender,
+  ApiSalutation,
 } from "@eshg/employee-portal-api/base";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { isDefined } from "remeda";
 
 import { GENDER_VALUES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
@@ -22,72 +26,108 @@ import {
   PERSON_FIELD_NAME,
   SALUTATION_VALUES,
 } from "@/lib/shared/components/personSidebar/constants";
+import { BaseAddress } from "@/lib/shared/helpers/address";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
 
+export interface CentralFilePerson {
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly dateOfBirth: Date;
+  readonly gender?: ApiGender;
+  readonly title?: string;
+  readonly salutation?: ApiSalutation;
+  readonly nameAtBirth?: string;
+  readonly placeOfBirth?: string;
+  readonly countryOfBirth?: ApiCountryCode;
+  readonly emailAddresses?: string[];
+  readonly phoneNumbers?: string[];
+  readonly contactAddress?: BaseAddress;
+}
+
+const fieldName = createFieldNameMapper<CentralFilePerson>();
+
 export interface CentralFilePersonDetailsProps {
-  person: ApiGetPersonFileStateResponse | ApiGetReferencePersonResponse;
-  columnSx?: SxProps;
+  readonly person: CentralFilePerson;
+  readonly columnSx?: SxProps;
+  readonly showAge?: boolean;
 }
 
 export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
   const person = props.person;
+
+  const emailAddresses = person.emailAddresses ?? [];
+  const phoneNumbers = person.phoneNumbers ?? [];
 
   return (
     <Stack
       direction={{ md: "row" }}
       gap={3}
       divider={<ResponsiveDivider breakpoint="md" />}
+      width="100%"
     >
       <DetailsColumn sx={props.columnSx}>
-        <DetailsRow>
-          <DetailsCell
-            name="salutation"
-            label={PERSON_FIELD_NAME.salutation}
-            value={SALUTATION_VALUES[person.salutation]}
-          />
-          <DetailsCell
-            name="title"
-            label={PERSON_FIELD_NAME.title}
-            value={person.title}
-          />
-        </DetailsRow>
+        {(isDefined(person.salutation) || isDefined(person.title)) && (
+          <DetailsRow>
+            {isDefined(person.salutation) && (
+              <DetailsCell
+                name={fieldName("salutation")}
+                label={PERSON_FIELD_NAME.salutation}
+                value={SALUTATION_VALUES[person.salutation]}
+              />
+            )}
+            <DetailsCell
+              name={fieldName("title")}
+              label={PERSON_FIELD_NAME.title}
+              value={person.title}
+            />
+          </DetailsRow>
+        )}
         <DetailsCell
-          name="firstName"
+          name={fieldName("firstName")}
           label={PERSON_FIELD_NAME.firstName}
           value={person.firstName}
         />
         <DetailsCell
-          name="lastName"
+          name={fieldName("lastName")}
           label={PERSON_FIELD_NAME.lastName}
           value={person.lastName}
         />
         <DetailsRow>
           <DetailsCell
-            name="dateOfBirth"
+            name={fieldName("dateOfBirth")}
             label={PERSON_FIELD_NAME.dateOfBirth}
             value={formatDate(person.dateOfBirth)}
           />
-          <DetailsCell
-            name="gender"
-            label={PERSON_FIELD_NAME.gender}
-            value={GENDER_VALUES[person.gender]}
-          />
+          {props.showAge && (
+            <DetailsCell
+              name="currentAge"
+              label="Alter"
+              value={calculateAge(person.dateOfBirth)}
+            />
+          )}
+          {isDefined(person.gender) && (
+            <DetailsCell
+              name={fieldName("gender")}
+              label={PERSON_FIELD_NAME.gender}
+              value={GENDER_VALUES[person.gender]}
+            />
+          )}
         </DetailsRow>
         <DetailsCell
-          name="nameAtBirth"
+          name={fieldName("nameAtBirth")}
           label={PERSON_FIELD_NAME.nameAtBirth}
           value={person.nameAtBirth}
         />
         {(person.placeOfBirth ?? person.countryOfBirth) && (
           <DetailsRow>
             <DetailsCell
-              name="placeOfBirth"
+              name={fieldName("placeOfBirth")}
               label={PERSON_FIELD_NAME.placeOfBirth}
               value={person.placeOfBirth}
             />
             {person.countryOfBirth && (
               <DetailsCell
-                name="countryOfBirth"
+                name={fieldName("countryOfBirth")}
                 label={PERSON_FIELD_NAME.countryOfBirth}
                 value={translateCountry(person.countryOfBirth)}
               />
@@ -101,9 +141,9 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
           address={person.contactAddress}
         />
       )}
-      {person.emailAddresses.length + person.phoneNumbers.length > 0 && (
+      {emailAddresses.length + phoneNumbers.length > 0 && (
         <DetailsColumn sx={props.columnSx}>
-          {person.emailAddresses.map((email, index) => (
+          {emailAddresses.map((email, index) => (
             <ExternalLinkDetailsCell
               key={`${email}.${index}`}
               name={`emailAddress.${index}`}
@@ -112,7 +152,7 @@ export function CentralFilePersonDetails(props: CentralFilePersonDetailsProps) {
               href={(value) => `mailto:${value}`}
             />
           ))}
-          {person.phoneNumbers.map((phoneNumber, index) => (
+          {phoneNumbers.map((phoneNumber, index) => (
             <DetailsCell
               key={`${phoneNumber}.${index}`}
               name={`phoneNumber.${index}`}

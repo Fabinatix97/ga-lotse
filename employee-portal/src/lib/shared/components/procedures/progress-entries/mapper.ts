@@ -8,7 +8,6 @@ import {
   ApiCreateManualProgressEntryRequest,
   ApiFileMetaData,
   ApiInboxProgressEntryFileReference,
-  ApiKeyDocumentType,
   ApiManualProgressEntryType,
   ApiPatchManualProgressEntryRequest,
   ApiUpdateFileMetaDataRequest,
@@ -44,7 +43,7 @@ function mapDescriptionToFileMetaData(
 
 function mapKeyDocumentType(
   values: CreateProgressEntryFormValues,
-): ApiKeyDocumentType | undefined {
+): string | undefined {
   return hasKeyDocumentTypeField(values.type)
     ? mapOptionalValue(values.keyDocumentType)
     : undefined;

@@ -47,7 +47,6 @@ Object.defineProperty(LanguageDetector, "type", {
   configurable: false,
 });
 
-// eslint-disable-next-line import/no-named-as-default-member
 const instance = i18next
   .use(initReactI18next)
   .use(LanguageDetector)

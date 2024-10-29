@@ -40,31 +40,31 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Open Data"), Module.OPEN_DATA),
 
   BASE_PERSONS_READ(
-      READ_PERMISSION_TEMPLATE.formatted("Personen (Zentralkartei)"),
-      "Kann Personen(daten) aus der Zentralkartei abrufen",
+      READ_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
+      "Kann Personen(daten) aus dem Stammdaten-Konverter abrufen",
       Module.BASE),
   BASE_PERSONS_WRITE(
-      WRITE_PERMISSION_TEMPLATE.formatted("Personen (Zentralkartei)"),
-      "Kann Personen in der Zentralkartei anlegen, aktualisieren und  zur Löschung markieren (z. B. zum Entfernen von Draft-Vorgängen und Spamdaten). Enthält zusätzlich Leseberechtigungen.",
+      WRITE_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
+      "Kann Personen in dem Stammdaten-Konverter anlegen, aktualisieren und  zur Löschung markieren (z. B. zum Entfernen von Draft-Vorgängen und Spamdaten). Enthält zusätzlich Leseberechtigungen.",
       Module.BASE,
       BASE_PERSONS_READ),
   BASE_PERSONS_DELETE(
-      DELETE_PERMISSION_TEMPLATE.formatted("Personen (Zentralkartei)"),
-      "Kann Personen im Rahmen eines Archivierungsvorgangs in der Zentralkartei zur Löschung markieren",
+      DELETE_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
+      "Kann Personen im Rahmen eines Archivierungsvorgangs in dem Stammdaten-Konverter zur Löschung markieren",
       Module.BASE),
 
   BASE_FACILITIES_READ(
-      READ_PERMISSION_TEMPLATE.formatted("Einrichtungen (Zentralkartei)"),
-      "Kann Einrichtungen aus der Zentralkartei abrufen",
+      READ_PERMISSION_TEMPLATE.formatted("Einrichtungen (Stammdaten-Konverter)"),
+      "Kann Einrichtungen aus dem Stammdaten-Konverter abrufen",
       Module.BASE),
   BASE_FACILITIES_WRITE(
-      WRITE_PERMISSION_TEMPLATE.formatted("Einrichtungen (Zentralkartei)"),
-      "Kann Einrichtungen in der Zentralkartei anlegen, aktualisieren und zur Löschung markieren (z. B. zum Entfernen von Draft-Vorgängen und Spamdaten). Enthält zusätzlich Leseberechtigungen.",
+      WRITE_PERMISSION_TEMPLATE.formatted("Einrichtungen (Stammdaten-Konverter)"),
+      "Kann Einrichtungen in dem Stammdaten-Konverter anlegen, aktualisieren und zur Löschung markieren (z. B. zum Entfernen von Draft-Vorgängen und Spamdaten). Enthält zusätzlich Leseberechtigungen.",
       Module.BASE,
       BASE_FACILITIES_READ),
   BASE_FACILITIES_DELETE(
-      DELETE_PERMISSION_TEMPLATE.formatted("Einrichtungen (Zentralkartei)"),
-      "Kann Einrichtungen im Rahmen eines Archivierungsvorgangs in der Zentralkartei zur Löschung markieren",
+      DELETE_PERMISSION_TEMPLATE.formatted("Einrichtungen (Stammdaten-Konverter)"),
+      "Kann Einrichtungen im Rahmen eines Archivierungsvorgangs in dem Stammdaten-Konverter zur Löschung markieren",
       Module.BASE),
 
   BASE_LABELS_READ(

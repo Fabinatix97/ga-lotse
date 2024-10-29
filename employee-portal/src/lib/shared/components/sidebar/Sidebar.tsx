@@ -41,7 +41,7 @@ export function Sidebar({
       anchor="right"
       open={open}
       onClose={handleClose}
-      sx={{ zIndex: zIndex ?? "sideNavigation" }}
+      sx={{ zIndex: zIndex ?? "sidebar" }}
       slotProps={{
         content: {
           "aria-label": ariaLabel,

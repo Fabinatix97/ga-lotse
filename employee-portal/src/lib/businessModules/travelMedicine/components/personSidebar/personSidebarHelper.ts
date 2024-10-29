@@ -81,7 +81,7 @@ export function mapToApiPostVaccinationConsultationRequest(
   if (data.bookingType == ApiAppointmentBookingType.UserDefined) {
     appointmentStart = new Date(data.userDefinedAppointmentDate!);
     durationInMinutes = data.appointmentTypeStandardDuration;
-  } else if (data.bookingType == ApiAppointmentBookingType.AppointmentBlock) {
+  } else {
     const split = data.appointmentBlockDate!.split(",");
     appointmentStart = new Date(split.at(0)!);
     durationInMinutes = Number.parseInt(split.at(1)!);

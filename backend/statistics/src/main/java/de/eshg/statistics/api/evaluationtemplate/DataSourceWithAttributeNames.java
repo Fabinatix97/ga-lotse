@@ -15,4 +15,5 @@ import java.util.UUID;
 public record DataSourceWithAttributeNames(
     @NotBlank String businessModuleName,
     @NotNull UUID id,
+    @NotBlank String dataSourceName,
     @NotNull @Size(min = 1) @Valid List<BusinessDataAttributeWithName> dataAttributes) {}

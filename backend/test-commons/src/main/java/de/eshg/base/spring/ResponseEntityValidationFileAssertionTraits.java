@@ -142,7 +142,7 @@ public interface ResponseEntityValidationFileAssertionTraits
   }
 
   default ValidationNormalizer defaultValidationNormalizer() {
-    return ValidationNormalizer.combine(new UuidNormalizer(), timestampReplacement());
+    return new UuidNormalizer().and(timestampReplacement());
   }
 
   private static ValidationNormalizer timestampReplacement() {

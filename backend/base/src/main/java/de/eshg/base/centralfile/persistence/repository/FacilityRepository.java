@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface FacilityRepository
     extends JpaRepository<Facility, UUID>, JpaSpecificationExecutor<Facility> {
@@ -20,6 +21,8 @@ public interface FacilityRepository
   default List<Facility> findReferenceFacilityByName(String name) {
     return findByNameEqualsAndReferenceFacilityIsNull(name);
   }
+
+  Optional<Facility> findByExternalId(UUID externalId);
 
   List<Facility> findByNameEqualsAndReferenceFacilityIsNull(String name);
 
@@ -92,4 +95,8 @@ public interface FacilityRepository
     """)
   List<UUID> findAllFileStateIdsByReferenceFacilityCreatedBefore(
       @Param("refExternalId") UUID refExternalId, @Param("createdAt") Instant createdAt);
+
+  @Transactional
+  @Modifying
+  int deleteByDeleteAtBefore(Instant expirationTime);
 }

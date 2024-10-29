@@ -59,14 +59,13 @@ function errorMessage(numError: number) {
   );
 }
 
-function useDisplayOnSuccessMessageForBulkAppointmentCreation() {
+function useBulkAppointmentCreationMessage() {
   const snackbar = useSnackbar();
   const alert = useAlert();
 
-  return (response: ApiCreateAppointmentsBulkResponse) => {
+  function open(response: ApiCreateAppointmentsBulkResponse): void {
     if (response.numCreated > 0) {
       if (response.numUnmodified === 0 && response.numError === 0) {
-        alert.close();
         snackbar.confirmation(createdMessage(response.numCreated));
       } else {
         alert.warning({
@@ -93,22 +92,28 @@ function useDisplayOnSuccessMessageForBulkAppointmentCreation() {
         closeable: true,
       });
     }
-  };
+  }
+
+  function close(): void {
+    alert.close();
+  }
+
+  return { open, close };
 }
 
 export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
   const createAppointmentsInBulk = useCreateAppointmentsInBulk();
   const selectedProcedureIds = mapToRowIds(props.rowSelection);
-  const displayOnSuccessMessageForBulkAppointmentCreation =
-    useDisplayOnSuccessMessageForBulkAppointmentCreation();
+  const bulkAppointmentCreationMessage = useBulkAppointmentCreationMessage();
 
   async function handleClickBulkAppointmentButton() {
+    bulkAppointmentCreationMessage.close();
     await createAppointmentsInBulk
       .mutateAsync(
         {
           procedureIds: selectedProcedureIds,
         },
-        { onSuccess: displayOnSuccessMessageForBulkAppointmentCreation },
+        { onSuccess: bulkAppointmentCreationMessage.open },
       )
       .catch();
   }

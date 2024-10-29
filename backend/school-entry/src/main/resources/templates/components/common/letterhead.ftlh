@@ -52,7 +52,7 @@
       </td>
       <td>
         <img src="data:${logo.contentType};base64,${logo.contentAsBase64}" alt="logo"
-             style="width: 130px" />
+             style="width: 130px; height: 2cm" />
       </td>
     </tr>
     <tr class="letterhead">

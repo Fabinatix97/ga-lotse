@@ -16,4 +16,5 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   CERTIFICATE_FOR_HEALTH_INSURANCE: "Bescheinigung für Krankenkasse erstellt",
   VACCINATION_APPLIED: "Impfung durchgeführt",
   VACCINATION_EDIT: "Impfung korrigiert",
+  PERSON_SYNCHRONIZED: "Geänderte Personendaten übernommen",
 };

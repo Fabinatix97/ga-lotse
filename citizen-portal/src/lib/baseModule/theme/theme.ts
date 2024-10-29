@@ -240,11 +240,33 @@ export const theme = extendTheme({
         size: "md",
         slotProps: {
           listbox: {
-            // Place option elements inline, next to their reference Select element (instead of on top of the DOM).
+            // Place the listbox dropdown that contains the option elements inline in the DOM,
+            // next to their reference Select element (instead of below the body).
             // This ensures that the options are accessible, even when placed in Modals (like a Sidebar).
-            // See https://github.com/mui/base-ui/issues/289.
+            // See bug: https://github.com/mui/base-ui/issues/289.
             disablePortal: true,
+            // Using `fixed` instead of the default `absolute` so that the option dropdowns are still visible when they are larger than their containers.
+            // A large dropdown in a small scrolling container would be visually cut off when using `absolute`.
             popperOptions: { strategy: "fixed" },
+            // For the reasons mentioned, the dropdowns are created inline in the DOM.
+            // By default, Popper.js tries to arrange the dropdowns in their scroll container (`clippingParents`).
+            // However, with the `fixed` strategy, the dropdowns can also be displayed outside the surrounding container.
+            // Therefore, Popper.js should always be based on the viewport when placing the dropdowns.
+            // For this reason, null is passed as the `boundary` to the corresponding modifiers.
+            modifiers: [
+              {
+                name: "preventOverflow",
+                options: {
+                  boundary: null,
+                },
+              },
+              {
+                name: "flip",
+                options: {
+                  boundary: null,
+                },
+              },
+            ],
           },
         },
       },

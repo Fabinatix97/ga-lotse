@@ -6,14 +6,7 @@
 import ArrowDropDownOutlined from "@mui/icons-material/ArrowDropDownOutlined";
 import ArrowDropUpOutlined from "@mui/icons-material/ArrowDropUpOutlined";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
-import {
-  Divider,
-  Grid,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/joy";
+import { Box, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/joy";
 
 export function ContentElementPropertiesToolbar({
   moveable,
@@ -34,11 +27,16 @@ export function ContentElementPropertiesToolbar({
 
   return (
     <>
-      <Grid container>
-        <Grid xs={6}>
+      <Stack direction="row" gap={1}>
+        <Box sx={{ flex: 1 }}>
           {moveable && (
             <Stack spacing={1}>
-              <Typography level="title-md">Position</Typography>
+              <Typography
+                level="title-md"
+                sx={{ display: { xxs: "none", lg: "block" } }}
+              >
+                Position
+              </Typography>
               <Stack direction="row" spacing={1}>
                 <Tooltip title="Nach oben verschieben">
                   <IconButton
@@ -63,12 +61,17 @@ export function ContentElementPropertiesToolbar({
               </Stack>
             </Stack>
           )}
-        </Grid>
+        </Box>
 
-        <Grid xs={6}>
+        <Box sx={{ flex: { lg: 1 } }}>
           {deletable && (
             <Stack spacing={1}>
-              <Typography level="title-md">Aktion</Typography>
+              <Typography
+                level="title-md"
+                sx={{ display: { xxs: "none", lg: "block" } }}
+              >
+                Aktion
+              </Typography>
               <Stack direction="row" spacing={1}>
                 <Tooltip title="Ausgewähltes Element entfernen">
                   <IconButton
@@ -83,8 +86,8 @@ export function ContentElementPropertiesToolbar({
               </Stack>
             </Stack>
           )}
-        </Grid>
-      </Grid>
+        </Box>
+      </Stack>
 
       <Divider />
     </>

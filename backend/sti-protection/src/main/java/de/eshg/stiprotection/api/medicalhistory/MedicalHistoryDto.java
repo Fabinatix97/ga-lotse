@@ -8,10 +8,9 @@ package de.eshg.stiprotection.api.medicalhistory;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.eshg.base.GenderDto;
 import de.eshg.base.HasTypeDiscriminator;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
+import java.time.LocalDate;
 
 @Schema(name = "MedicalHistory")
 @JsonTypeInfo(
@@ -27,13 +26,33 @@ import java.util.List;
 public sealed interface MedicalHistoryDto extends HasTypeDiscriminator
     permits StiConsultationMedicalHistoryDto, SexWorkMedicalHistoryDto {
 
+  // General
+
   String examinationReason();
 
-  GenderDto sexualContact();
+  String currentSymptoms();
 
-  SexualOrientationDto sexualOrientation();
+  LocalDate contactToClarifyDuration();
 
-  List<ExaminationDto> examinations();
+  RelationshipModelDto relationshipModel();
 
-  List<VaccinationDto> vaccinations();
+  // Examinations
+
+  ExaminationDto examinations();
+
+  // Previous Illness
+
+  PreviousIllnessDto previousIllnesses();
+
+  // Orientation and Contact
+
+  RiskContactDto riskContacts();
+
+  // Risk Factors
+
+  RiskFactorDto riskFactors();
+
+  // Comments
+
+  String additionalComments();
 }

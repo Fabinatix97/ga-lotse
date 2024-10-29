@@ -32,7 +32,6 @@ class K6TaskWindows extends Exec {
     environment.put('HOST_VITALS_ENABLED', false)
 
     task.dependsOn project.tasks.named('buildK6Executable')
-    task.dependsOn project.tasks.named("setupKeycloak")
 
     def k6Bin = project.layout.projectDirectory.file("/build/k6.exe")
 

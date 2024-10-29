@@ -5,26 +5,22 @@
 
 package de.eshg.schoolentry.importer;
 
+import de.eshg.schoolentry.business.model.ImportPastProcedureData;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
-import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.mapper.PersonMapper;
-import de.eshg.schoolentry.util.ExceptionUtil;
 
-public class PastProcedureListRowValueMapper implements RowValueMapper<PastProcedureListRowValues> {
+public class PastProcedureListRowValueMapper {
 
-  @Override
-  public ImportProcedureData mapValuesToImportData(PastProcedureListRowValues values) {
-    return new ImportProcedureData(
-        PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
-        values.getProcedureType(),
-        values.getExaminationDate(),
-        false,
-        false,
-        false);
-  }
-
-  @Override
-  public MergeProcedureData mapValuesToMergeData(PastProcedureListRowValues values) {
-    throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
+  public ImportPastProcedureData mapValuesToImportData(PastProcedureListRowValues values) {
+    return new ImportPastProcedureData(
+        new ImportProcedureData(
+            PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
+            values.getProcedureType(),
+            values.getExaminationDate(),
+            false,
+            false,
+            false),
+        values.getAnamnesisData(),
+        values.getVaccinationStatusData());
   }
 }

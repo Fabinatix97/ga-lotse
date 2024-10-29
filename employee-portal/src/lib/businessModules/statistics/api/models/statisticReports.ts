@@ -5,7 +5,11 @@
 
 import { ApiReportState } from "@eshg/employee-portal-api/statistics";
 
-import { Interval, ReportingPeriod } from "./reportSeriesTypes";
+import {
+  Interval,
+  ReportSeriesState,
+  ReportingPeriod,
+} from "./reportSeriesTypes";
 
 export const ReportDataType = {
   Single: "SINGLE",
@@ -52,6 +56,7 @@ export interface ReportSeries {
   type: Extract<ReportDataType, "SERIES">;
   description?: string;
   userId: string;
+  status: ReportSeriesState;
 }
 
 export interface ReportSeriesItem extends ReportBase {

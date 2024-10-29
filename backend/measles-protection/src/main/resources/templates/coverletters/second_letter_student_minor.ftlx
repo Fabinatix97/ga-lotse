@@ -9,7 +9,7 @@
 
 <html xml:lang="de" lang="de">
   <head>
-    <title>Maßnahmen nach dem Infektionsschutzgesetz (IfSG) - Vorgangsnummer ${body.ourReference}.</title>
+    <title>Maßnahmen nach dem Infektionsschutzgesetz (IfSG)<#if body.ourReference??> - Vorgangsnummer ${body.ourReference}</#if>.</title>
     <link rel="stylesheet" type="text/css" href="cover-letter.css"/>
   </head>
 
@@ -19,7 +19,7 @@
 
     <p class="important">
       Betreff: Immunitätsnachweis im Sinne des Masernschutzgesetzes
-      für ${affectedPerson.firstName} ${affectedPerson.lastName}, Aktenzeichen: ${body.ourReference}
+      für ${affectedPerson.firstName} ${affectedPerson.lastName}<#if body.ourReference??>, Aktenzeichen: ${body.ourReference}</#if>
     </p>
     <p>
     ${addressee.salutation},
@@ -60,12 +60,6 @@
       Ordnungswidrigkeitsverfahren einleiten. Die Ordnungswidrigkeit kann mit einer Geldbuße von bis zu 2.500 € geahndet
       werden.
     </p>
-    <p>
-      Bitte nutzen Sie zur Nachweisvorlage unsere Terminsprechstunde im Gesundheitsamt Frankfurt am Main. Termine
-      können unter dem folgenden Link vereinbart werden:
-    </p>
-
-    <#include "appointment.ftlx">
 
     <div class="box">
       * Bezüglich der Nachweise ist zu beachten:

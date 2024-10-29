@@ -4033,7 +4033,7 @@ components:
       type: object
       properties:
         keyDocumentType:
-          $ref: "#/components/schemas/KeyDocumentType"
+          type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
         messageText:
@@ -5646,11 +5646,6 @@ components:
           type: boolean
         otherInterests:
           type: string
-    KeyDocumentType:
-      type: string
-      enum:
-      - INVOICE
-      - REPORT
     KnowledgeThinkingExamination:
       type: object
       properties:
@@ -5765,7 +5760,7 @@ components:
           createdByUserLastName:
             type: string
           keyDocumentType:
-            $ref: "#/components/schemas/KeyDocumentType"
+            type: string
           keyDocumentVersion:
             type: integer
             format: int32

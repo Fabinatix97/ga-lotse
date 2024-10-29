@@ -3,37 +3,55 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiGetFacilityFileStateResponse,
-  ApiGetReferenceFacilityResponse,
-} from "@eshg/employee-portal-api/base";
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { ReactNode } from "react";
 
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import { BaseAddress } from "@/lib/shared/helpers/address";
 
-export interface CentralFileFacilityDetailsProps {
-  facility: ApiGetFacilityFileStateResponse | ApiGetReferenceFacilityResponse;
-  columnSx?: SxProps;
+export interface CentralFileFacility {
+  readonly name: string;
+  readonly contactAddress?: BaseAddress;
+  readonly emailAddresses?: string[];
+  readonly phoneNumbers?: string[];
 }
 
-export function CentralFileFacilityDetails(
-  props: CentralFileFacilityDetailsProps,
+const fieldName = createFieldNameMapper<CentralFileFacility>();
+
+export interface CentralFileFacilityDetailsProps<T> {
+  readonly facility: T;
+  readonly columnSx?: SxProps;
+  readonly children?: ReactNode;
+}
+
+export function CentralFileFacilityDetails<T extends CentralFileFacility>(
+  props: CentralFileFacilityDetailsProps<T>,
 ) {
   const facility = props.facility;
+
+  const emailAddresses = facility.emailAddresses ?? [];
+  const phoneNumbers = facility.phoneNumbers ?? [];
 
   return (
     <Stack
       direction={{ md: "row" }}
       gap={3}
       divider={<ResponsiveDivider breakpoint="md" />}
+      width="100%"
     >
       <DetailsColumn sx={props.columnSx}>
-        <DetailsCell name={"name"} label={"Name"} value={facility.name} />
+        <DetailsCell
+          name={fieldName("name")}
+          label={"Name"}
+          value={facility.name}
+        />
+        {props.children}
       </DetailsColumn>
       {facility.contactAddress && (
         <BaseAddressDetails
@@ -41,9 +59,9 @@ export function CentralFileFacilityDetails(
           address={facility.contactAddress}
         />
       )}
-      {facility.emailAddresses.length + facility.phoneNumbers.length > 0 && (
+      {emailAddresses.length + phoneNumbers.length > 0 && (
         <DetailsColumn sx={props.columnSx}>
-          {facility.emailAddresses.map((email, index) => (
+          {emailAddresses.map((email, index) => (
             <ExternalLinkDetailsCell
               key={`${email}.${index}`}
               name={`emailAddress.${index}`}
@@ -52,7 +70,7 @@ export function CentralFileFacilityDetails(
               href={(value) => `mailto:${value}`}
             />
           ))}
-          {facility.phoneNumbers.map((phoneNumber, index) => (
+          {phoneNumbers.map((phoneNumber, index) => (
             <DetailsCell
               key={`${phoneNumber}.${index}`}
               name={`phoneNumber.${index}`}

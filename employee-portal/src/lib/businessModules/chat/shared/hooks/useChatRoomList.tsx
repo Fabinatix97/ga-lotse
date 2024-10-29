@@ -108,7 +108,7 @@ export function useChatRoomList() {
   }, [getLatestMessage, matrixClient]);
 
   const onRoomMessage = useCallback(
-    async ({ event, room }: RoomEventDetails) => {
+    async ({ event, room, isSent }: RoomEventDetails) => {
       const newMessage = await onMessage({ event, room });
       const readReceiptsObj = getReadReceipts(
         event,
@@ -133,6 +133,7 @@ export function useChatRoomList() {
             latestMessage: {
               ...newMessage,
               readReceipts: readReceiptsObj,
+              sent: !!isSent,
             },
           };
         });
@@ -156,10 +157,14 @@ export function useChatRoomList() {
       );
     }
 
-    function onRoomAvatar(room: Room) {
+    function onRoomAvatar(event: MatrixEvent, room: Room) {
+      const updatedRoomWithCommunicationType =
+        getRoomNameAndCommunicationType(room);
       setRoomList((prevState) =>
         prevState.map((prevRoom) =>
-          prevRoom.room.roomId === room.roomId ? { ...prevRoom } : prevRoom,
+          prevRoom.room.roomId === updatedRoomWithCommunicationType.room.roomId
+            ? updatedRoomWithCommunicationType
+            : prevRoom,
         ),
       );
     }
@@ -187,7 +192,7 @@ export function useChatRoomList() {
       }
       const eventType = event.getType();
       if (eventType === "m.room.avatar") {
-        onRoomAvatar(room);
+        onRoomAvatar(event, room);
       }
       // room membership
       if (eventType === "m.room.member") {
@@ -195,11 +200,13 @@ export function useChatRoomList() {
       }
       // new message - add latest message to room object
       if (eventType === "m.room.message" || eventType === "m.room.encrypted") {
-        void onRoomMessage({ event, room });
+        const isSentByCurrentUser =
+          event.getSender() === matrixClient.getUserId();
+        void onRoomMessage({ event, room, isSent: !isSentByCurrentUser });
         // We call the onMessage function again when the message ID changes from a temporary one to the actual ID received from the server.
         event.on(MatrixEventEvent.Status, (eventEvent, status) => {
           if (status === EventStatus.SENT) {
-            void onRoomMessage({ event: eventEvent, room });
+            void onRoomMessage({ event: eventEvent, room, isSent: true });
           }
         });
       }

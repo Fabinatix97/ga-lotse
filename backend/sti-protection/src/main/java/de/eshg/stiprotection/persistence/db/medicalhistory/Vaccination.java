@@ -5,58 +5,40 @@
 
 package de.eshg.stiprotection.persistence.db.medicalhistory;
 
-import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-@Entity
+@Embeddable
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-@Table(indexes = @Index(columnList = "medical_history_id, disease_type", unique = true))
-public class Vaccination extends BaseEntity {
+public class Vaccination {
 
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  @Column(nullable = false)
-  @DiseaseTypes({DiseaseType.HEPATITIS_A, DiseaseType.HEPATITIS_B, DiseaseType.HPV})
-  private DiseaseType diseaseType;
+  private LocalDate hepA;
+  private LocalDate hepB;
+  private LocalDate hpv;
 
-  @Column(nullable = false)
-  private LocalDate vaccinationDate;
-
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "medical_history_id")
-  private MedicalHistory medicalHistory;
-
-  public MedicalHistory getMedicalHistory() {
-    return medicalHistory;
+  public LocalDate getHepA() {
+    return hepA;
   }
 
-  public void setMedicalHistory(MedicalHistory medicalHistory) {
-    this.medicalHistory = medicalHistory;
+  public void setHepA(LocalDate hepA) {
+    this.hepA = hepA;
   }
 
-  public LocalDate getVaccinationDate() {
-    return vaccinationDate;
+  public LocalDate getHepB() {
+    return hepB;
   }
 
-  public void setVaccinationDate(LocalDate vaccinationDate) {
-    this.vaccinationDate = vaccinationDate;
+  public void setHepB(LocalDate hepB) {
+    this.hepB = hepB;
   }
 
-  public DiseaseType getDiseaseType() {
-    return diseaseType;
+  public LocalDate getHpv() {
+    return hpv;
   }
 
-  public void setDiseaseType(DiseaseType diseaseType) {
-    this.diseaseType = diseaseType;
+  public void setHpv(LocalDate hpv) {
+    this.hpv = hpv;
   }
 }

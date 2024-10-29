@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public record AvailableDataSource(
     @NotNull String businessModule,
+    @NotNull boolean withoutAnonymizationAllowed,
     @NotNull UUID id,
     @NotBlank String name,
     @NotNull @Valid List<BusinessDataSourceAttribute> attributes) {}

@@ -34,6 +34,7 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
 
   public static final String BEAN_NAME = "citizenKeycloakProvisioning";
   public static final String MUK_IDENTITY_PROVIDER_ALIAS = "muk";
+  public static final String BUND_ID_IDENTITY_PROVIDER_ALIAS = "bund-id";
 
   static final String PORTAL_BROWSER_FLOW_ALIAS = "portal browser";
   public static final String SYNC_MODE = "syncMode";
@@ -54,13 +55,14 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
   @Override
   void provisionRealmInternal() {
     createOrUpdateRealm();
-    createOrUpdateEshgClientScope();
 
+    createOrUpdateCitizenPortalAuthenticationFlow();
+    createOrUpdateIdentityProviders();
+    CitizenPermissionRole[] permissionRoles = CitizenPermissionRole.values();
+    createOrUpdateRoles(permissionRoles);
+    createOrUpdateEshgClientScope(permissionRoles);
     disableDefaultClients();
     keycloakClient.createOrUpdateClients(List.of(buildEshgAuthServiceClient()));
-    createOrUpdateCitizenPortalAuthenticationFlow();
-    createOrUpdateMukIdentityProvider();
-    createOrUpdateRoles();
     createOrUpdateDefaultRoleComposites();
     configureUserProfile(CitizenUserAttribute.values());
   }
@@ -89,11 +91,6 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
             REALM_MANAGEMENT_CLIENT_ID));
   }
 
-  private void createOrUpdateRoles() {
-    keycloakClient.createOrUpdateRoles(
-        List.of(CitizenPermissionRole.values()), this::configureRole);
-  }
-
   private void createOrUpdateDefaultRoleComposites() {
     keycloakClient.createOrUpdateDefaultRoleComposites(
         List.of(CitizenPermissionRole.STANDARD_CITIZEN));
@@ -110,33 +107,48 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     keycloakClient.bindBrowserFlow(PORTAL_BROWSER_FLOW_ALIAS);
   }
 
-  private void createOrUpdateMukIdentityProvider() {
+  private void createOrUpdateIdentityProviders() {
     List<IdentityProviderRepresentation> identityProviders = new ArrayList<>();
     List<IdentityProviderMapperRepresentation> identityProviderMappers = new ArrayList<>();
-    if (keycloakProperties.citizenRealm().mukIdp().enabled()) {
-      identityProviders.add(getMukIdentityProvider());
-      identityProviderMappers.add(getMukIdentityProviderMapper());
+
+    KeycloakProperties.IdentityProvider mukIdp = keycloakProperties.citizenRealm().mukIdp();
+    if (mukIdp.enabled()) {
+      identityProviders.add(
+          getSAMLIdentityProvider(MUK_IDENTITY_PROVIDER_ALIAS, "Mein Unternehmenskonto", mukIdp));
+      identityProviderMappers.add(
+          getSAMLIdentityProviderMapper(
+              MUK_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.MUK_USER));
     }
+
+    KeycloakProperties.IdentityProvider bundIdIdp = keycloakProperties.citizenRealm().bundIdIdp();
+    if (bundIdIdp.enabled()) {
+      identityProviders.add(
+          getSAMLIdentityProvider(BUND_ID_IDENTITY_PROVIDER_ALIAS, "BundID", bundIdIdp));
+      identityProviderMappers.add(
+          getSAMLIdentityProviderMapper(
+              BUND_ID_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.BUND_ID_USER));
+    }
+
     keycloakClient.createOrUpdateIdentityProviders(identityProviders);
     keycloakClient.createOrUpdateIdentityProviderMappers(identityProviderMappers);
   }
 
-  private static IdentityProviderMapperRepresentation getMukIdentityProviderMapper() {
+  private static IdentityProviderMapperRepresentation getSAMLIdentityProviderMapper(
+      String idpAlias, PermissionRole role) {
     IdentityProviderMapperRepresentation mapper = new IdentityProviderMapperRepresentation();
-    mapper.setIdentityProviderAlias(MUK_IDENTITY_PROVIDER_ALIAS);
-    mapper.setName("Set default role for MUK users");
+    mapper.setIdentityProviderAlias(idpAlias);
+    mapper.setName("Set default role for %s users".formatted(idpAlias));
     mapper.setIdentityProviderMapper("oidc-hardcoded-role-idp-mapper");
-    mapper.setConfig(
-        Map.of(SYNC_MODE, "IMPORT", "role", CitizenPermissionRole.MUK_USER.getKeycloakName()));
+    mapper.setConfig(Map.of(SYNC_MODE, "IMPORT", "role", role.getKeycloakName()));
     return mapper;
   }
 
-  private IdentityProviderRepresentation getMukIdentityProvider() {
+  private IdentityProviderRepresentation getSAMLIdentityProvider(
+      String idpAlias, String idpDisplayName, KeycloakProperties.IdentityProvider idpConfig) {
     IdentityProviderRepresentation identityProvider = new IdentityProviderRepresentation();
-    identityProvider.setAlias(MUK_IDENTITY_PROVIDER_ALIAS);
-    identityProvider.setDisplayName("Mein Unternehmenskonto");
+    identityProvider.setAlias(idpAlias);
+    identityProvider.setDisplayName(idpDisplayName);
     identityProvider.setProviderId("saml");
-    KeycloakProperties.IdentityProvider mukIdp = keycloakProperties.citizenRealm().mukIdp();
     identityProvider.setConfig(
         Map.ofEntries(
             entry("allowCreate", TRUE),
@@ -144,9 +156,9 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
                 "entityId",
                 "%s/realms/%s"
                     .formatted(keycloakProperties.url(), keycloakProperties.citizenRealm().name())),
-            entry("idpEntityId", mukIdp.entityId()),
-            entry("singleSignOnServiceUrl", mukIdp.singleSignOnServiceUrl()),
-            entry("singleLogoutServiceUrl", mukIdp.singleLogoutServiceUrl()),
+            entry("idpEntityId", idpConfig.entityId()),
+            entry("singleSignOnServiceUrl", idpConfig.singleSignOnServiceUrl()),
+            entry("singleLogoutServiceUrl", idpConfig.singleLogoutServiceUrl()),
             entry("backchannelSupported", FALSE),
             entry("nameIDPolicyFormat", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"),
             entry("principalType", "Subject NameID"),
@@ -162,9 +174,9 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
             entry("loginHint", FALSE),
             entry("allowedClockSkew", String.valueOf(0)),
             entry("attributeConsumingServiceIndex", String.valueOf(0)),
-            entry("signingCertificate", mukIdp.signingCertificate()),
-            entry("signatureAlgorithm", mukIdp.signatureAlgorithm()),
-            entry("encryptionAlgorithm", mukIdp.encryptionAlgorithm()),
+            entry("signingCertificate", idpConfig.signingCertificate()),
+            entry("signatureAlgorithm", idpConfig.signatureAlgorithm()),
+            entry("encryptionAlgorithm", idpConfig.encryptionAlgorithm()),
             entry("xmlSigKeyInfoKeyNameTransformer", "KEY_ID"),
             entry("addExtensionsElementWithKeyInfo", FALSE),
             entry(SYNC_MODE, "FORCE")));

@@ -6,7 +6,6 @@
 package de.eshg.lib.procedure.mapping;
 
 import de.eshg.lib.procedure.domain.model.InboxProgressEntryType;
-import de.eshg.lib.procedure.domain.model.KeyDocumentType;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryType;
 import de.eshg.lib.procedure.domain.model.ProcessedInboxProgressEntry;
@@ -15,7 +14,6 @@ import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.model.CreateManualProgressEntryRequest;
 import de.eshg.lib.procedure.model.InboxProgressEntryTypeDto;
-import de.eshg.lib.procedure.model.KeyDocumentTypeDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryHistoryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryTypeDto;
@@ -80,7 +78,7 @@ public class ProgressEntryMapper {
     manualProgressEntryDto.setMessageText(progressEntry.getMessageText());
     manualProgressEntryDto.setNote(progressEntry.getNote());
     manualProgressEntryDto.setCreatedBy(progressEntry.getCreatedBy());
-    manualProgressEntryDto.setKeyDocumentType(toInterfaceType(progressEntry.getKeyDocumentType()));
+    manualProgressEntryDto.setKeyDocumentType(progressEntry.getKeyDocumentType());
     manualProgressEntryDto.setKeyDocumentVersion(progressEntry.getKeyDocumentVersion());
     manualProgressEntryDto.setLocked(progressEntry.isLocked());
     fillGeneralProgressEntry(manualProgressEntryDto, progressEntry);
@@ -140,14 +138,6 @@ public class ProgressEntryMapper {
     };
   }
 
-  private static KeyDocumentTypeDto toInterfaceType(KeyDocumentType keyDocumentType) {
-    return switch (keyDocumentType) {
-      case null -> null;
-      case INVOICE -> KeyDocumentTypeDto.INVOICE;
-      case REPORT -> KeyDocumentTypeDto.REPORT;
-    };
-  }
-
   public static ManualProgressEntry toDomainType(CreateManualProgressEntryRequest createRequest) {
     ManualProgressEntry manualProgressEntry = new ManualProgressEntry();
     manualProgressEntry.setManualProgressEntryType(
@@ -155,16 +145,8 @@ public class ProgressEntryMapper {
     manualProgressEntry.setSubject(createRequest.subject());
     manualProgressEntry.setMessageText(createRequest.messageText());
     manualProgressEntry.setNote(createRequest.note());
-    manualProgressEntry.setKeyDocumentType(toDomainType(createRequest.keyDocumentType()));
+    manualProgressEntry.setKeyDocumentType(createRequest.keyDocumentType());
     return manualProgressEntry;
-  }
-
-  private static KeyDocumentType toDomainType(KeyDocumentTypeDto keyDocumentType) {
-    return switch (keyDocumentType) {
-      case null -> null;
-      case INVOICE -> KeyDocumentType.INVOICE;
-      case REPORT -> KeyDocumentType.REPORT;
-    };
   }
 
   public static ManualProgressEntryHistoryDto toInterfaceType(

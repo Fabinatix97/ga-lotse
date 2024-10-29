@@ -6,6 +6,7 @@
 package de.eshg.stiprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.annotations.ProcedureStatusTransition;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
@@ -14,20 +15,19 @@ import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresResponse;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.StiProtectionProcedureDto;
-import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryRequest;
-import de.eshg.stiprotection.api.medicalhistory.CreateMedicalHistoryResponse;
-import de.eshg.stiprotection.api.medicalhistory.GetMedicalHistoryResponse;
-import de.eshg.stiprotection.api.medicalhistory.MedicalHistoryDto;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
-import de.eshg.stiprotection.mapper.medicalhistory.MedicalHistoryMapper;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
-import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -84,28 +84,6 @@ public class StiProtectionProcedureController {
         procedures.elements().stream().map(StiProtectionProcedureMapper::toOverviewType).toList());
   }
 
-  @PostMapping("/{id}/medical-history")
-  @Operation(summary = "Add medical history item to STI protection procedure.")
-  @Transactional
-  public CreateMedicalHistoryResponse createMedicalHistory(
-      @PathVariable("id") UUID procedureId,
-      @Valid @RequestBody CreateMedicalHistoryRequest request) {
-    MedicalHistory databaseType = MedicalHistoryMapper.toDatabaseType(request.medicalHistory());
-    MedicalHistory medicalHistory =
-        stiProtectionService.createMedicalHistory(procedureId, databaseType);
-    MedicalHistoryDto interfaceType = MedicalHistoryMapper.toInterfaceType(medicalHistory);
-    return new CreateMedicalHistoryResponse(interfaceType);
-  }
-
-  @GetMapping("/{id}/medical-history")
-  @Operation(summary = "Get medical history item.")
-  @Transactional
-  public GetMedicalHistoryResponse getMedicalHistory(@PathVariable("id") UUID procedureId) {
-    MedicalHistory medicalHistory = stiProtectionService.getMedicalHistory(procedureId);
-    MedicalHistoryDto interfaceType = MedicalHistoryMapper.toInterfaceType(medicalHistory);
-    return new GetMedicalHistoryResponse(interfaceType);
-  }
-
   @PutMapping("/{id}/close")
   @Operation(summary = "Close an STI procedure.")
   @Transactional
@@ -124,5 +102,23 @@ public class StiProtectionProcedureController {
     stiProtectionService.reopenProcedure(procedureId);
     return StiProtectionProcedureMapper.toInterfaceType(
         stiProtectionService.getProcedure(procedureId));
+  }
+
+  @PostMapping(path = "/{id}/anon-ident-document")
+  @Operation(summary = "Create an anonymous identification document")
+  @Transactional
+  public ResponseEntity<byte[]> createAnonymousIdentificationDocument(
+      @PathVariable("id") UUID procedureId) {
+    Pdf pdf = stiProtectionService.createAnonymousIdentificationDocument(procedureId);
+    byte[] content = pdf.getFileContent().getContent();
+    return ResponseEntity.ok()
+        .contentType(MediaType.APPLICATION_PDF)
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            ContentDisposition.attachment()
+                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
+                .build()
+                .toString())
+        .body(content);
   }
 }

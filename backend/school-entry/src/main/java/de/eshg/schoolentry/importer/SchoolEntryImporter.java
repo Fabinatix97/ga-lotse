@@ -12,6 +12,7 @@ import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_PREVIOUSLY;
 import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_SUCCESSFULLY;
 import static de.eshg.lib.xlsximport.ImportStatus.INVALID_PROCEDURE_ID;
 import static de.eshg.lib.xlsximport.ImportStatus.MERGED_SUCCESSFULLY;
+import static de.eshg.lib.xlsximport.ImportStatus.MERGE_FAILED;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.GenderDto;
@@ -26,10 +27,6 @@ import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.XlsxColumn;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.schoolentry.SchoolEntryService;
-import de.eshg.schoolentry.business.model.DataOrigin;
-import de.eshg.schoolentry.business.model.ImportChildData;
-import de.eshg.schoolentry.business.model.ImportProcedureData;
-import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
@@ -49,38 +46,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxColumn>
+public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxColumn>
     extends Importer<T, C> {
 
-  private static final Logger log = LoggerFactory.getLogger(SchoolEntryImporter.class);
+  protected static final Logger log = LoggerFactory.getLogger(SchoolEntryImporter.class);
 
-  private final ImportType importType;
-  private final UUID schoolId;
-  private final UUID locationId;
-  private final Year schoolYear;
-  private final SchoolEntryService schoolEntryService;
-  private final SchoolEntryProperties schoolEntryProperties;
-  private final RowValueMapper<T> rowValueMapper;
+  protected final ImportType importType;
+  protected final UUID schoolId;
+  protected final UUID locationId;
+  protected final Year schoolYear;
+  protected final SchoolEntryService schoolEntryService;
+  protected final SchoolEntryProperties schoolEntryProperties;
 
-  public SchoolEntryImporter(
+  protected SchoolEntryImporter(
       XSSFSheet sheet,
-      ImportType importType,
       RowReader<T, C> rowReader,
       FeedbackColumnAccessor feedbackColumnAccessor,
-      RowValueMapper<T> rowValueMapper,
+      ImportType importType,
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
       SchoolEntryService schoolEntryService,
       SchoolEntryProperties schoolEntryProperties) {
     super(sheet, rowReader, feedbackColumnAccessor);
-    this.locationId = locationId;
-    this.schoolEntryService = schoolEntryService;
-    this.schoolEntryProperties = schoolEntryProperties;
     this.importType = importType;
     this.schoolId = schoolId;
+    this.locationId = locationId;
     this.schoolYear = schoolYear;
-    this.rowValueMapper = rowValueMapper;
+    this.schoolEntryService = schoolEntryService;
+    this.schoolEntryProperties = schoolEntryProperties;
   }
 
   @Override
@@ -113,7 +107,7 @@ public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxC
           rowValues.values().stream()
               .filter(row -> row.getProcedureId() == null)
               .filter(SchoolEntryRowValues::isValid)
-              .map(SchoolEntryImporter::getChildKeyAttributes)
+              .map(SchoolEntryRowValues::getChildKeyAttributes)
               .collect(StreamUtil.toLinkedHashSet());
       mergeCandidates = schoolEntryService.searchForMergeCandidates(rowsToSearchFor);
     } else {
@@ -153,20 +147,15 @@ public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxC
     }
   }
 
-  private boolean containsMatchingRow(ValidRows<T> rows, T values) {
+  protected boolean containsMatchingRow(ValidRows<T> rows, T values) {
     return Stream.concat(rows.importableRows().stream(), rows.mergeableRows().stream())
         .anyMatch(row -> row.isDuplicateRow(values));
   }
 
-  private static PersonKeyAttributes getChildKeyAttributes(SchoolEntryRowValues rowValues) {
-    ImportChildData child = rowValues.getChild();
-    return new PersonKeyAttributes(child.firstName(), child.lastName(), child.dateOfBirth());
-  }
-
-  private void evaluateActionWhenMergeIsEnabled(
+  protected void evaluateActionWhenMergeIsEnabled(
       Row row, T value, Map<PersonKeyAttributes, List<ProcedureWithChildData>> mergeCandidates) {
     List<ProcedureWithChildData> procedures =
-        mergeCandidates.getOrDefault(getChildKeyAttributes(value), List.of());
+        mergeCandidates.getOrDefault(value.getChildKeyAttributes(), List.of());
     if (procedures.isEmpty()) {
       validRows.importableRows().add(value);
       stats.countCreated();
@@ -180,13 +169,21 @@ public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxC
           !schoolEntryProperties.isDirectProcedureTypeAssignmentOnImport(),
           "Procedures of a draft type should not exist when direct procedure type assignment is enabled.");
       ProcedureWithChildData procedure = procedures.getFirst();
+      UUID procedureId = procedure.procedure().getExternalId();
       if (mergeCandidateMatchesImportValues(procedure, value)) {
-        value.setProcedureId(procedure.procedure().getExternalId());
-        validRows.mergeableRows().add(value);
-        writeStatusAndProcedureId(row, MERGED_SUCCESSFULLY, procedure.procedure().getExternalId());
-        stats.countMerged();
+        if (validRows.mergeableRows().stream()
+            .anyMatch(mergeableRow -> mergeableRow.getProcedureId().equals(procedureId))) {
+          log.error("Procedure ID {} already found in a previous mergeable row", procedureId);
+          writeStatusAndReferenceId(row, MERGE_FAILED, procedureId);
+          stats.countMergeFailed();
+        } else {
+          value.setProcedureId(procedureId);
+          validRows.mergeableRows().add(value);
+          writeStatusAndProcedureId(row, MERGED_SUCCESSFULLY, procedureId);
+          stats.countMerged();
+        }
       } else {
-        writeStatusAndReferenceId(row, DUPLICATE_IN_ASSET, procedure.procedure().getExternalId());
+        writeStatusAndReferenceId(row, DUPLICATE_IN_ASSET, procedureId);
         stats.countMergeFailed();
       }
     }
@@ -244,18 +241,8 @@ public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxC
   @Override
   protected void createProceduresAndWriteResults() {
     List<T> importableRows = validRows.importableRows();
-    List<ImportProcedureData> importData =
-        importableRows.stream().map(rowValueMapper::mapValuesToImportData).toList();
     try {
-      List<SchoolEntryProcedure> createdProcedures =
-          switch (importType) {
-            case CITIZEN_LIST, SCHOOL_LIST ->
-                schoolEntryService.createProceduresWithBookAppointmentTask(
-                    importData, schoolId, locationId, schoolYear, DataOrigin.DATA_IMPORT);
-            case PAST_PROCEDURE_LIST ->
-                schoolEntryService.createProceduresFromDataImport(
-                    importData, schoolId, locationId, schoolYear);
-          };
+      List<SchoolEntryProcedure> createdProcedures = createProcedures(importableRows);
       writeProcedureIdsInSheet(importableRows, createdProcedures);
     } catch (Exception e) {
       log.error("Failure during creating new procedures.", e);
@@ -263,6 +250,8 @@ public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxC
       stats.correctCreatedToFailed(importableRows.size());
     }
   }
+
+  protected abstract List<SchoolEntryProcedure> createProcedures(List<T> importableRows);
 
   private void writeProcedureIdsInSheet(
       List<T> importableRows, List<SchoolEntryProcedure> createdProcedures) {
@@ -279,13 +268,11 @@ public class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxC
   protected void mergeProceduresAndWriteResults() {
     if (importType.supportsMerge()) {
       List<T> mergeableRows = validRows.mergeableRows();
-      List<MergeProcedureData> mergeData =
-          mergeableRows.stream().map(rowValueMapper::mapValuesToMergeData).toList();
-      List<UUID> failedIds =
-          schoolEntryService.mergeProcedures(
-              mergeData, importType, schoolId, locationId, schoolYear);
-      writeMergedFailedStatusInSheet(mergeableRows, failedIds);
-      stats.correctMergeToFailed(failedIds.size());
+      List<UUID> failedProcedureIds = mergeProceduresAndGetFailedProcedureIds(mergeableRows);
+      writeMergedFailedStatusInSheet(mergeableRows, failedProcedureIds);
+      stats.correctMergeToFailed(failedProcedureIds.size());
     }
   }
+
+  protected abstract List<UUID> mergeProceduresAndGetFailedProcedureIds(List<T> mergeableRows);
 }

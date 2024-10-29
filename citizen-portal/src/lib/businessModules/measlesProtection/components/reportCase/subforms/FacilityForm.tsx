@@ -65,7 +65,7 @@ export function FacilityForm({ onCancel, name, sx }: FacilityFormProps) {
           <Typography level="body-xs">{`* ${t("common.requiredField")}`}</Typography>
         </Grid>
         <Grid xxs={12}>
-          <Alert title={t("facility.info")} color="primary" />
+          <Alert message={t("facility.info")} color="primary" />
         </Grid>
         <Grid xxs={12}>
           <InputField
@@ -78,7 +78,7 @@ export function FacilityForm({ onCancel, name, sx }: FacilityFormProps) {
           <SelectField
             name={fieldName("type")}
             label={t("facility.fields.facilityType")}
-            options={facilityTypeOptions}
+            options={facilityTypeOptions(t)}
             required={t("facility.fields.facilityType_required")}
           />
         </Grid>

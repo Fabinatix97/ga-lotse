@@ -82,6 +82,7 @@ export function activeValueToParamValues(activeValue: FilterValue): string[] {
       return [];
     case "EnumSingle":
     case "Date":
+    case "Year":
       return [activeValue.selectedValue];
     case "Enum":
       return activeValue.selectedValues;
@@ -158,6 +159,7 @@ export function paramValuesToActiveValue(
       return;
     case "Date":
     case "EnumSingle":
+    case "Year":
       return values[0]
         ? {
             type: def.type,

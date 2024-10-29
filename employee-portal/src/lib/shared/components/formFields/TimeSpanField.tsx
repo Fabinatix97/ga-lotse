@@ -57,9 +57,9 @@ export function TimeSpanField(props: TimeSpanFieldProps) {
           onChange={async (event, newValue) => setTimeRange(newValue!)}
         >
           <Option value={1}>Letzter Monat</Option>
-          <Option value={3}>Letzten 3 Monate</Option>
-          <Option value={6}>Letzten 6 Monate</Option>
-          <Option value={12}>Letzten 12 Monate</Option>
+          <Option value={3}>Letzte 3 Monate</Option>
+          <Option value={6}>Letzte 6 Monate</Option>
+          <Option value={12}>Letzte 12 Monate</Option>
         </Select>
       </FormControl>
       <Stack gap={2}>

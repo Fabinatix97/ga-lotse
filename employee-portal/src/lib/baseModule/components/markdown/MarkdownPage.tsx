@@ -63,7 +63,8 @@ export function isValidPageType(type: string): type is PageName {
 
 export async function MarkdownPage({ pageType }: { pageType: PageName }) {
   const filePath = path.join(
-    "./public/markdown",
+    process.cwd(),
+    "markdown",
     pageType === "release-notes" ? "common" : env.MARKDOWN_PAGE_DIRECTORY,
     `${pageType}.md`,
   );

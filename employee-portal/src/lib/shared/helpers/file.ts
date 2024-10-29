@@ -18,8 +18,7 @@ export function fileHasAcceptedExtension(
   acceptedFileExtensions?: string[],
 ) {
   if (acceptedFileExtensions === undefined) return true;
-  const fileExtension = file.name.split(".").pop() ?? "";
-  return acceptedFileExtensions.includes(fileExtension);
+  return acceptedFileExtensions.includes(getExtensionFromFileName(file.name));
 }
 
 export function fileIsTooLarge(file: File, acceptedFileSize?: number) {
@@ -34,4 +33,18 @@ export function formatFileSize(bytes: number) {
   const mega = 1024 * 1024;
   if (bytes < mega) return `${(bytes / kilo).toFixed(1)} KB`;
   return `${(bytes / mega).toFixed(1)} MB`;
+}
+
+export function fileExtensionChanged(file: File, existingFileName: string) {
+  if (existingFileName === undefined) return true;
+
+  const existingFileExtension = getExtensionFromFileName(existingFileName);
+  const fileExtension = getExtensionFromFileName(file.name);
+  return existingFileExtension !== fileExtension;
+}
+
+export function getExtensionFromFileName(fileName: string) {
+  const fileParts = fileName.split(".");
+  if (fileParts.length < 2) return "";
+  return fileParts.pop() ?? "";
 }

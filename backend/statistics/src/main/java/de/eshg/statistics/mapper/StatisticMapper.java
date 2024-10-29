@@ -233,7 +233,8 @@ public class StatisticMapper {
         mapStatisticState(statistic.getState()),
         statistic.getTimeRangeStart(),
         statistic.getTimeRangeEnd(),
-        statistic.getCreatedAt());
+        statistic.getCreatedAt(),
+        statistic.isAnonymized());
   }
 
   public static StatisticStateDto mapStatisticState(AggregationResultState aggregationResultState) {

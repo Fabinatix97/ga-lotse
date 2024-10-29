@@ -8,9 +8,11 @@
 import { ApiCountryCode } from "@eshg/employee-portal-api/base";
 import {
   ApiAppointmentSummary,
+  ApiCreatedByUserType,
   ApiGetVaccinationConsultationDetailsResponse,
   ApiInformationStatement,
   ApiPatient,
+  ApiPersonSync,
   ApiProcedureStatus,
   ApiServicePlanEntry,
   ApiTravelMedicineFeature,
@@ -21,38 +23,18 @@ import { Grid, Stack } from "@mui/joy";
 import { useState } from "react";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
-import { AssignAppointmentValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/AssignAppointmentSidebar";
 import { CloseProcedurePanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/CloseProcedurePanel";
 import { DetailsGrid } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/DetailsGrid";
-import { InformationStatementValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/InformationStatementSidebar";
 import { InformationStatementsTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/InformationStatementsTable";
-import { OtherServiceAppliedValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/OtherServiceAppliedSideBar";
 import { PatientPanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/PatientPanel";
 import { ProcedureDetailsPanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ProcedureDetailsPanel";
-import { ServiceAppliedValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServiceAppliedSideBar";
-import {
-  Mode,
-  ServiceAppointmentValues,
-} from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServiceAppointmentSidebar";
-import { ServiceValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanSidebar";
 import { ServicePlanTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanTable";
-
-export interface VaccinationConsultationSidebarsProps {
-  open: boolean;
-  mode?: Mode;
-  initialValues:
-    | InformationStatementValues
-    | ServiceValues
-    | AssignAppointmentValues
-    | ServiceAppointmentValues
-    | ServiceAppliedValues
-    | OtherServiceAppliedValues;
-}
 
 export interface CreateProcedureValues {
   externalId: string;
   status: ApiProcedureStatus;
   patient: ApiPatient;
+  personSync: ApiPersonSync;
   travelType: ApiTravelType;
   travelDestinations: ApiCountryCode[];
   travelStartDate?: string;
@@ -62,6 +44,7 @@ export interface CreateProcedureValues {
   informationStatements: ApiInformationStatement[];
   templateId?: string;
   initialAppointment: ApiAppointmentSummary;
+  createdByUserType: ApiCreatedByUserType;
 }
 const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
 
@@ -90,6 +73,7 @@ export function VaccinationConsultationDetails(
       status: newData.status,
       patient: newData.patient,
       ...newData.travelInformation,
+      personSync: newData.personSync,
       travelStartDate:
         newData.travelInformation.travelStartDate
           ?.toISOString()
@@ -99,6 +83,7 @@ export function VaccinationConsultationDetails(
       services: newData.servicePlanList,
       informationStatements: newData.informationStatements,
       initialAppointment: newData.initialAppointment,
+      createdByUserType: newData.createdByUserType,
     };
   }
 
@@ -108,6 +93,7 @@ export function VaccinationConsultationDetails(
         <PatientPanel
           procedureId={initialValues.externalId}
           patient={initialValues.patient}
+          person={initialValues.personSync}
           isProcedureClosed={isProcedureClosed}
         />
       </Grid>
@@ -130,6 +116,10 @@ export function VaccinationConsultationDetails(
           data={initialValues.services}
           procedureId={initialValues.externalId ?? ""}
           isProcedureClosed={isProcedureClosed}
+          initialAppointmentProcedureStepId={
+            initialValues.initialAppointment.procedureStepId
+          }
+          createdByUserType={initialValues.createdByUserType}
         ></ServicePlanTable>
       </Grid>
 

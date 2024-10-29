@@ -290,7 +290,7 @@ public class TestPopulateProcedureService {
               .findByExternalId(procedureId)
               .orElseThrow()
               .getCitizenUserId();
-      vaccinationConsultationService.deleteAppointment(citizenUserId, procedureId, stepId);
+      vaccinationConsultationService.cancelAppointment(citizenUserId, procedureId, stepId);
     }
   }
 

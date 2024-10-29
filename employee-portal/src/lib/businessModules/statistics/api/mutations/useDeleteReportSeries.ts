@@ -15,7 +15,7 @@ export function useDeleteReportSeries({
   const api = useReportSeriesApi();
   const mutation = useHandledMutation({
     mutationFn: (seriesId: string) => api.deleteReportSeries(seriesId),
-    onSuccess: () => snackbar.confirmation("Report-Serie gelöscht"),
+    onSuccess: () => snackbar.confirmation("Report-Serie wird gelöscht"),
   });
 
   return (reportId: string) => {

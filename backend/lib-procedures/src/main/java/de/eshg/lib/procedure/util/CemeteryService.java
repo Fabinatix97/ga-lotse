@@ -10,6 +10,7 @@ import de.eshg.domain.model.GenericEntity;
 import de.eshg.lib.procedure.domain.model.Cemetery;
 import de.eshg.lib.procedure.domain.repository.CemeteryRepository;
 import de.eshg.lib.procedure.domain.serialization.SerializationService;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +27,11 @@ public class CemeteryService {
   }
 
   public <T extends GenericEntity<Long>> void writeToCemetery(T entity) {
+    Cemetery cemetery = prepareCemeteryEntity(entity);
+    cemeteryRepository.save(cemetery);
+  }
+
+  private <T extends GenericEntity<Long>> Cemetery prepareCemeteryEntity(T entity) {
     Cemetery cemetery = new Cemetery();
     cemetery.setType(entity.getClass().getTypeName());
     cemetery.setFormerId(entity.getId());
@@ -33,6 +39,11 @@ public class CemeteryService {
       cemetery.setFormerExternalId(entityWithExternalId.getExternalId());
     }
     cemetery.setContent(serializationService.toJson(entity));
-    cemeteryRepository.save(cemetery);
+    return cemetery;
+  }
+
+  public <T extends GenericEntity<Long>> void writeToCemetery(List<T> entities) {
+    List<Cemetery> cemeteryEntities = entities.stream().map(this::prepareCemeteryEntity).toList();
+    cemeteryRepository.saveAll(cemeteryEntities);
   }
 }

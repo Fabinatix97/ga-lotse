@@ -6,8 +6,16 @@
 package de.eshg.stiprotection;
 
 import static de.eshg.stiprotection.api.GetStiProtectionProceduresSortOrderDto.ASC;
+import static de.eshg.stiprotection.pdf.identification.DocumentParameters.mapToDepartment;
+import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toAppointmentTimeRange;
+import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toConsultationAppointment;
+import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toDocumentDate;
 
+import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.document.generator.department.DepartmentClient;
+import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
@@ -26,6 +34,11 @@ import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOrderDto;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.GenderMapper;
+import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocument;
+import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentService;
+import de.eshg.stiprotection.pdf.identification.ConsultationAppointment;
+import de.eshg.stiprotection.pdf.identification.Department;
+import de.eshg.stiprotection.pdf.identification.DocumentSender;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Person;
@@ -34,7 +47,6 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
-import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
@@ -55,16 +67,22 @@ public class StiProtectionProcedureService {
   private final StiProtectionProcedureRepository repository;
   private final Clock clock;
   private final AuditLogger auditLogger;
+  private final AnonymousIdentificationDocumentService documentService;
+  private final DepartmentClient departmentClient;
 
   public StiProtectionProcedureService(
       AppointmentService appointmentService,
       StiProtectionProcedureRepository procedures,
       Clock clock,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      AnonymousIdentificationDocumentService documentService,
+      DepartmentClient departmentClient) {
     this.appointmentService = appointmentService;
     this.repository = procedures;
     this.clock = clock;
     this.auditLogger = auditLogger;
+    this.documentService = documentService;
+    this.departmentClient = departmentClient;
   }
 
   public StiProtectionProcedure createProcedure(CreateProcedureRequest request) {
@@ -184,7 +202,7 @@ public class StiProtectionProcedureService {
     return toProcedureData(findProcedureByExternalId(procedureId));
   }
 
-  private StiProtectionProcedure findProcedureByExternalId(UUID procedureId) {
+  protected StiProtectionProcedure findProcedureByExternalId(UUID procedureId) {
     return repository
         .findByExternalId(procedureId)
         .orElseThrow(
@@ -192,20 +210,6 @@ public class StiProtectionProcedureService {
                 new NotFoundException(
                     "%s with UUID %s not found"
                         .formatted(StiProtectionProcedure.class.getSimpleName(), procedureId)));
-  }
-
-  public MedicalHistory createMedicalHistory(UUID procedureId, MedicalHistory medicalHistory) {
-    StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
-    procedure.setMedicalHistory(medicalHistory);
-    return medicalHistory;
-  }
-
-  public MedicalHistory getMedicalHistory(UUID procedureId) {
-    MedicalHistory medicalHistory = findProcedureByExternalId(procedureId).getMedicalHistory();
-    if (medicalHistory == null) {
-      throw new NotFoundException(procedureId + ": no medical history found");
-    }
-    return medicalHistory;
   }
 
   private void bookAppointment(StiProtectionProcedure procedure, CreateProcedureRequest request) {
@@ -239,9 +243,20 @@ public class StiProtectionProcedureService {
     }
   }
 
-  private static BadRequestException unexpectedProcedureStatus(
+  protected static BadRequestException unexpectedProcedureStatus(
       UUID procedureId, ProcedureStatus procedureStatus) {
     return new BadRequestException(
         "%s: unexpected procedure status: %s".formatted(procedureId, procedureStatus));
+  }
+
+  public Pdf createAnonymousIdentificationDocument(UUID procedureId) {
+    StiProtectionProcedureData procedure = getProcedure(procedureId);
+    TimeRange timeRange = toAppointmentTimeRange(procedure);
+    Department department = mapToDepartment(departmentClient.getDepartmentInfo());
+    String documentDate = toDocumentDate(clock.instant());
+    DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
+    ConsultationAppointment appointment = toConsultationAppointment(department, timeRange);
+    DocumentSender sender = new DocumentSender(department, documentDate, departmentLogo);
+    return documentService.createPdf(new AnonymousIdentificationDocument(sender, appointment));
   }
 }

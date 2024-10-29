@@ -5,4 +5,15 @@
 
 package de.eshg.stiprotection.pdf.identification;
 
-public record DocumentSender(Department department, String documentDate, String referenceNumber) {}
+import de.eshg.lib.document.generator.department.DepartmentLogo;
+
+public record DocumentSender(
+    Department department,
+    String documentDate,
+    DepartmentLogo departmentLogo,
+    String referenceNumber) {
+
+  public DocumentSender(Department department, String documentDate, DepartmentLogo departmentLogo) {
+    this(department, documentDate, departmentLogo, null);
+  }
+}

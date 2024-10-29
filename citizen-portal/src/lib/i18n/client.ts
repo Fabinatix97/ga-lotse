@@ -42,7 +42,6 @@ function createClient(lang: string) {
   void client.init();
   return client;
 }
-
 function useTranslationWrapper(
   ns?: string | string[],
   options?: UseTranslationOptions<undefined>,
@@ -65,5 +64,6 @@ function useTranslationWrapper(
   );
   return { t: tFunction, i18n, ready };
 }
+export type TranslateFn = ReturnType<typeof useTranslationWrapper>["t"];
 
 export { useTranslationWrapper as useTranslation };

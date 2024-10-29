@@ -23,6 +23,24 @@ export function useChatSystemMessages() {
   const { matrixClient } = useChatClientContext();
   const { selectedRoomId } = useChatSearchParams();
 
+  const getMembership = useCallback(
+    (event: MatrixEvent) => {
+      const eventContent = event.getContent();
+      if (eventContent.membership === Membership.Leave) {
+        const sender = event.getSender();
+        const stateKey = event.getStateKey();
+        if (sender !== stateKey) {
+          return Membership.Remove;
+        }
+        if (event.sender === matrixClient.getUserId()) {
+          return Membership.SelfLeave;
+        }
+      }
+      return eventContent.membership as Membership;
+    },
+    [matrixClient],
+  );
+
   const onSystemMessage = useCallback(
     (event: MatrixEvent, room: Room | undefined) => {
       const eventType = event.getType();
@@ -39,17 +57,17 @@ export function useChatSystemMessages() {
 
       switch (eventType) {
         case "m.room.member": {
-          const selfLeave =
-            eventContent.membership === Membership.Leave &&
-            (room.getMyMembership() as Membership) === Membership.Leave;
-
+          const membership = getMembership(event);
+          const senderId = event.getSender();
+          const sender = senderId
+            ? matrixClient.getUser(senderId)?.displayName
+            : senderId;
           return {
             ...newSystemMessage,
-            membership: selfLeave
-              ? Membership.SelfLeave
-              : (eventContent.membership as Membership),
+            membership,
             userName: eventContent.displayname,
             avatarUrl: eventContent.avatar_url,
+            sender,
           };
         }
         case "m.room.name": {
@@ -79,12 +97,19 @@ export function useChatSystemMessages() {
             admin: newAdmins ?? [adminName],
           };
         }
+        case "m.room.avatar": {
+          return {
+            ...newSystemMessage,
+            userName: eventContent.displayname,
+            avatarUrl: eventContent.avatar_url,
+          };
+        }
         default: {
           return;
         }
       }
     },
-    [matrixClient],
+    [getMembership, matrixClient],
   );
 
   const handleSystemMessage = useCallback(

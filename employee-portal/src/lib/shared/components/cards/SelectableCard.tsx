@@ -5,6 +5,7 @@
 
 import { Radio, RadioProps, Sheet, radioClasses } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
+import { useField } from "formik";
 import { PropsWithChildren } from "react";
 
 /**
@@ -17,11 +18,25 @@ export function SelectableCard({
   children,
   sx,
   radioProps,
+  allowDeselection = false,
+  forGroupName,
 }: PropsWithChildren<{
   value?: unknown;
   sx?: SxProps;
   radioProps?: RadioProps;
+  allowDeselection?: boolean;
+  forGroupName?: string;
 }>) {
+  const [field, _, helpers] = useField<string | null>(forGroupName!);
+
+  function handleDeselect(forValue: unknown) {
+    return function () {
+      if (allowDeselection && field.value === forValue) {
+        void helpers.setValue("");
+      }
+    };
+  }
+
   return (
     <Sheet
       component="label"
@@ -51,6 +66,7 @@ export function SelectableCard({
         color="primary"
         sx={{ flexShrink: 0 }}
         {...radioProps}
+        onClick={handleDeselect(value)}
       />
       {children}
     </Sheet>

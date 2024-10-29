@@ -11,6 +11,7 @@ import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
+import de.eshg.statistics.StatisticUserService;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
 import de.eshg.statistics.api.report.AbstractUpdateReportSeriesRequest;
 import de.eshg.statistics.api.report.ActivateAutoReportSeriesRequest;
@@ -47,16 +48,19 @@ public class ReportSeriesService {
   private final ReportSeriesRepository reportSeriesRepository;
   private final StatisticService statisticService;
   private final ReportService reportService;
+  private final StatisticUserService userService;
   private final Clock clock;
 
   public ReportSeriesService(
       ReportSeriesRepository reportSeriesRepository,
       StatisticService statisticService,
       ReportService reportService,
+      StatisticUserService userService,
       Clock clock) {
     this.reportSeriesRepository = reportSeriesRepository;
     this.statisticService = statisticService;
     this.reportService = reportService;
+    this.userService = userService;
     this.clock = clock;
   }
 
@@ -303,7 +307,7 @@ public class ReportSeriesService {
             .toList();
 
     Map<UUID, UserDto> resolvedUsers =
-        statisticService.getResolvedUsers(
+        userService.getResolvedUsers(
             reportSeriesDtos.stream().map(ReportSeriesDto::userId).collect(Collectors.toSet()));
 
     return new GetReportsResponse(

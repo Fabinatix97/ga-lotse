@@ -11,6 +11,7 @@ interface FileTypeDefinition {
 
 export const FileType = {
   Eml: { name: "EML", extensions: ["eml"], mimeType: "message/rfc822" },
+  Csv: { name: "CSV", extensions: ["csv"], mimeType: "text/csv" },
   Jpeg: { name: "JPEG", extensions: ["jpg", "jpeg"], mimeType: "image/jpeg" },
   Pdf: { name: "PDF", extensions: ["pdf"], mimeType: "application/pdf" },
   Png: { name: "PNG", extensions: ["png"], mimeType: "image/png" },

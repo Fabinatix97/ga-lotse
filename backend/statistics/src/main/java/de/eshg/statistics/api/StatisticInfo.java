@@ -17,4 +17,5 @@ public record StatisticInfo(
     @NotNull StatisticStateDto state,
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
-    @NotNull Instant createdAt) {}
+    @NotNull Instant createdAt,
+    @NotNull boolean anonymized) {}

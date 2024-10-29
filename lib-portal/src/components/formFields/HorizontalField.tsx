@@ -22,11 +22,7 @@ export function HorizontalField(props: BaseFieldProps) {
 
   return (
     <StyledFormControl orientation="horizontal" {...formControlProps}>
-      <Stack
-        direction="row"
-        alignContent="center"
-        justifyContent="space-between"
-      >
+      <Stack direction="row" alignContent="center">
         {renderLabel(label)}
         {children}
       </Stack>

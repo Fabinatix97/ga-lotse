@@ -33,7 +33,7 @@ public class AnonymousIdentificationDocumentService {
     this.clock = clock;
   }
 
-  public Pdf createPdf(AnonymousIdentificationDocumentData data) {
+  public Pdf createPdf(AnonymousIdentificationDocument data) {
     byte[] bytes = createPdfFromTemplate(data);
     String fileName = fileName();
     PdfMetaData pdfMetaData = pdfMetaData();
@@ -46,7 +46,7 @@ public class AnonymousIdentificationDocumentService {
         .formatted(ZonedDateTime.now(clock).format(FILENAME_TIMESTAMP_SUFFIX));
   }
 
-  private byte[] createPdfFromTemplate(AnonymousIdentificationDocumentData data) {
+  private byte[] createPdfFromTemplate(AnonymousIdentificationDocument data) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     String template = IDENTIFICATION_TEMPLATES_ROOT + "anon_indent.ftlx";
     reportBuilder.createPdfFromTemplate(new ClassPathResource(template), data, baos);

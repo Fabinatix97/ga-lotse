@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1729084395950-1">
+    <addColumn tableName="evaluation_template">
+      <column name="analysis_count" type="int4"/>
+    </addColumn>
+    <addColumn tableName="evaluation_template">
+      <column name="description" type="text"/>
+    </addColumn>
+
+    <sql>
+      UPDATE evaluation_template et
+      SET analysis_count = (SELECT COUNT(*) FROM analysis_template at WHERE at.evaluation_template_id = et.id)
+      WHERE et.analysis_count IS NULL;
+    </sql>
+
+    <addNotNullConstraint columnDataType="int" columnName="analysis_count" tableName="evaluation_template" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

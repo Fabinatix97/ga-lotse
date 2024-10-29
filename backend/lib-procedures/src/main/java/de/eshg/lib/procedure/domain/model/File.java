@@ -93,6 +93,10 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
   @Column(nullable = false)
   private boolean lockedByMail = false;
 
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+  private FileDeletionApprovalRequest deletionApprovalRequest;
+
   public abstract MetaData getMetaData();
 
   public Instant getCreatedAt() {
@@ -161,6 +165,10 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
 
   public void setDeletable(boolean deletable) {
     this.deletable = deletable;
+  }
+
+  public void setDeletionApprovalRequest(FileDeletionApprovalRequest deletionApprovalRequest) {
+    this.deletionApprovalRequest = deletionApprovalRequest;
   }
 
   @Override

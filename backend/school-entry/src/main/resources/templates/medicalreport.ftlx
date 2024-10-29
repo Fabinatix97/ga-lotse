@@ -154,7 +154,7 @@
     <td valign="top">
     </td>
     <td valign="top">
-      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" alt="logo" style="width: 130px"/>
+      <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}" alt="logo" style="width: 130px; height: 2cm;"/>
     </td>
   </tr>
   <tr class="letterhead">

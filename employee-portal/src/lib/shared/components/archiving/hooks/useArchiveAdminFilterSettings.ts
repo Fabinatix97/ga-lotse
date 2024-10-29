@@ -5,12 +5,12 @@
 
 import { GetRelevantArchivableProceduresRequest } from "@eshg/employee-portal-api/businessProcedures";
 
-import { getFilterDate } from "@/lib/shared/components/archiving/helper";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamFilterSettings } from "@/lib/shared/components/filterSettings/useSearchParamFilterSettings";
 import { getSelectedFilterValues } from "@/lib/shared/components/procedures/helper";
+import { getFilterDate } from "@/lib/shared/helpers/filter";
 
 const FILTER_KEYS = {
   closedAtDay: "closedAtDay",

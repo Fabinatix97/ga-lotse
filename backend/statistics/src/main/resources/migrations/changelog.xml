@@ -38,5 +38,7 @@
     <include file="migrations/0028_add_deleting_aggregation_result_state.xml"/>
     <include file="migrations/0029_execution_date_mandatory.xml"/>
     <include file="migrations/0030_add_attribute_names_to_evaluation_templates.xml"/>
+    <include file="migrations/0031_add_description_and_count_to_evaluation_template.xml"/>
+    <include file="migrations/0032_add_anonymized_flag.xml"/>
 
 </databaseChangeLog>

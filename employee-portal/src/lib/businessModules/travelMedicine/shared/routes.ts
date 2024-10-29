@@ -46,6 +46,12 @@ export const routes = {
       details: (entryId: string) =>
         `${proceduresPath}/${procedureId}/progress-entries/${entryId}/details`,
     }),
+    syncPerson: (
+      procedureId: string,
+      fileStateId: string,
+      personVersion: number,
+    ) =>
+      `${proceduresPath}/${procedureId}/sync-person/${fileStateId}/${personVersion}`,
   },
   proceduresSearch: { index: `${proceduresSearchPath}` },
   appointmentTypes: {

@@ -45,6 +45,9 @@ export function ChatSystemMessage({
           case Membership.SelfLeave: {
             return <LogoutOutlinedIcon {...iconProps} />;
           }
+          case Membership.Remove: {
+            return <PersonRemoveAlt1OutlinedIcon {...iconProps} />;
+          }
           default: {
             return null;
           }
@@ -86,6 +89,9 @@ export function ChatSystemMessage({
           }
           case Membership.SelfLeave: {
             return `Sie haben die Gruppe verlassen und können keine weiteren Nachrichten senden.`;
+          }
+          case Membership.Remove: {
+            return `${systemMessage.sender} hat ${systemMessage.userName} gelöscht.`;
           }
           default: {
             return null;

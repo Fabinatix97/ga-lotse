@@ -43,7 +43,7 @@ public class StatisticExecution {
           .getAggregationResultState(statisticId)
           .equals(AggregationResultState.CREATING)) {
         moduleClientAuthenticator.doWithModuleClientAuthentication(
-            () -> workOnCreatingStatistic(statisticId));
+            () -> workOnStatistic(statisticId));
       }
     } catch (Exception e) {
       log.error("Could not complete statistic", e);
@@ -51,7 +51,7 @@ public class StatisticExecution {
     }
   }
 
-  private void workOnCreatingStatistic(UUID statisticId) {
+  private void workOnStatistic(UUID statisticId) {
     AggregationResultStateInformation stateInformation =
         statisticService.getStateInformation(statisticId);
 
@@ -59,6 +59,7 @@ public class StatisticExecution {
       case DATA_AGGREGATION -> statisticService.aggregateData(statisticId);
       case MIN_MAX_DETERMINATION -> statisticService.minMaxDetermination(statisticId);
       case EVALUATION_CONDUCTION -> evaluationService.evaluationConduction(statisticId);
+      case DIAGRAM_CREATION -> diagramCreationService.diagramRecreation(statisticId);
       default -> {
         // ignore
       }
@@ -94,22 +95,7 @@ public class StatisticExecution {
         .getAggregationResultState(statisticId)
         .equals(AggregationResultState.UPDATING)) {
       moduleClientAuthenticator.doWithModuleClientAuthentication(
-          () -> workOnUpdatingStatistic(statisticId));
-    }
-  }
-
-  private void workOnUpdatingStatistic(UUID statisticId) {
-    AggregationResultStateInformation stateInformation =
-        statisticService.getStateInformation(statisticId);
-
-    switch (stateInformation.pendingState()) {
-      case DATA_AGGREGATION -> statisticService.aggregateData(statisticId);
-      case MIN_MAX_DETERMINATION -> statisticService.minMaxDetermination(statisticId);
-      case EVALUATION_CONDUCTION -> evaluationService.evaluationConduction(statisticId);
-      case DIAGRAM_CREATION -> diagramCreationService.diagramRecreation(statisticId);
-      default -> {
-        // ignore
-      }
+          () -> workOnStatistic(statisticId));
     }
   }
 

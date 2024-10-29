@@ -16,5 +16,6 @@ import java.util.UUID;
 public record GetReportSeriesEntriesOfStatisticResponse(
     @NotNull UUID statisticId,
     @NotBlank String statisticName,
+    @NotNull boolean anonymized,
     @NotNull @Valid List<ReportSeriesDto> reportSeriesEntries,
     @NotNull @Valid Map<UUID, UserDto> resolvedUsers) {}

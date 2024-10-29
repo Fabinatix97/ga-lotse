@@ -13,7 +13,9 @@ export interface SidebarActionsProps {
 export function SidebarActions({ children }: SidebarActionsProps) {
   return (
     <Stack sx={{ paddingTop: 3 }} data-testid="sidebarActions">
-      {children && <Divider sx={{ marginBottom: 3, marginInline: -3 }} />}
+      {children && (
+        <Divider sx={{ marginBottom: 3, marginInline: -3, marginTop: -3 }} />
+      )}
       {children}
     </Stack>
   );

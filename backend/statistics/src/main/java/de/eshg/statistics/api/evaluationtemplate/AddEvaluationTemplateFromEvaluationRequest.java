@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Schema(name = SCHEMA_NAME)
 public record AddEvaluationTemplateFromEvaluationRequest(
-    @NotBlank String name, @NotNull UUID evaluationId)
+    @NotBlank String name, String description, @NotNull UUID evaluationId)
     implements AbstractAddEvaluationTemplateRequest {
   public static final String SCHEMA_NAME = "AddEvaluationTemplateFromEvaluationRequest";
 

@@ -3,24 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
+import { queryOptions } from "@tanstack/react-query";
 
 import { useProcedureStepApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { procedureStepsApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 
-export function useGetProcedureStepServices(
-  procedureStepId: string,
-  open: boolean,
-) {
+export function useGetProcedureStepServicesQuery(procedureStepId: string) {
   const procedureStepApi = useProcedureStepApi();
-  return useHandledBackgroundQuery({
+  return queryOptions({
     queryKey: procedureStepsApiQueryKey([
       "getProcedureStepServices",
       procedureStepId,
     ]),
     queryFn: () => procedureStepApi.getProcedureStepServices(procedureStepId),
-    enabled: procedureStepId.length > 0 && open,
-    gcTime: 60000,
-    staleTime: 60000,
+    select: (response) => response.procedureStepServices ?? [],
   });
 }

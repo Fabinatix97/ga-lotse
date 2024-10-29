@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiPatchAppointmentRequest } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  DeleteAppointmentEpRequest,
+  PatchAppointmentRequest,
+  PatchEarliestDateRequest,
+} from "@eshg/employee-portal-api/travelMedicine";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useProcedureStepApi } from "@/lib/businessModules/travelMedicine/api/clients";
-
-export interface PatchAppointmentRequest {
-  procedureStepId: string;
-  apiPatchAppointmentRequest: ApiPatchAppointmentRequest;
-}
 
 export function usePatchAppointment() {
   const snackbar = useSnackbar();
@@ -20,12 +20,35 @@ export function usePatchAppointment() {
 
   return useHandledMutation({
     mutationFn: (request: PatchAppointmentRequest) =>
-      procedureStepApi.patchAppointment(
-        request.procedureStepId,
-        request.apiPatchAppointmentRequest,
-      ),
+      procedureStepApi.patchAppointmentRaw(request).then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Termin erfolgreich geändert.");
+    },
+  });
+}
+
+export function usePatchEarliestDate() {
+  const snackbar = useSnackbar();
+  const procedureStepApi = useProcedureStepApi();
+
+  return useHandledMutation({
+    mutationFn: (request: PatchEarliestDateRequest) =>
+      procedureStepApi.patchEarliestDateRaw(request).then(unwrapRawResponse),
+    onSuccess: () => {
+      snackbar.confirmation("Buchbar ab erfolgreich geändert.");
+    },
+  });
+}
+
+export function useDeleteAppointmentEp() {
+  const snackbar = useSnackbar();
+  const procedureStepApi = useProcedureStepApi();
+
+  return useHandledMutation({
+    mutationFn: (request: DeleteAppointmentEpRequest) =>
+      procedureStepApi.deleteAppointmentEpRaw(request).then(unwrapRawResponse),
+    onSuccess: () => {
+      snackbar.confirmation("Termin erfolgreich abgesagt.");
     },
   });
 }

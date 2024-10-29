@@ -11,6 +11,7 @@ import {
   EmailSharp,
   Group,
   ListAlt,
+  PermMediaOutlined,
   Policy,
   SpaceDashboard,
   Speed,
@@ -88,6 +89,12 @@ const sideNavigationItems: SideNavigationItem[] = [
     decorator: <ContentPasteSearch />,
     accessCheck: hasUserRole(ApiUserRole.AuditlogAuthorizeAccess),
   },
+  {
+    name: "Open Data",
+    href: routes.opendata.index,
+    decorator: <PermMediaOutlined />,
+    accessCheck: hasUserRole(ApiUserRole.OpenDataAdmin),
+  },
 ];
 
 const inboxNavigationItem: SideNavigationItem[] = [
@@ -101,7 +108,19 @@ const inboxNavigationItem: SideNavigationItem[] = [
 
 export function useSideNavigationItems(): SideNavigationItem[] {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
-  return isInboxEnabled
-    ? sideNavigationItems.concat(inboxNavigationItem)
-    : sideNavigationItems;
+  const isGdprEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Gdpr);
+  const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
+
+  let items = sideNavigationItems;
+  if (isInboxEnabled) {
+    items = items.concat(inboxNavigationItem);
+  }
+  if (!isGdprEnabled) {
+    items = items.filter((item) => item.name !== "DSGVO");
+  }
+  if (!isOpenDataEnabled) {
+    items = items.filter((item) => item.name !== "Open Data");
+  }
+
+  return items;
 }

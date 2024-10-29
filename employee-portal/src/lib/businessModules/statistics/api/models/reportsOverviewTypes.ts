@@ -16,7 +16,7 @@ export type ReportOverviewTableRow =
 
 export type ReportSeriesOverview = Omit<
   ReportSeries,
-  "description" | "subRows"
+  "description" | "subRows" | "status"
 > & { subRows: ReportSeriesItemOverview[] };
 
 export type SingleReportOverview = Omit<

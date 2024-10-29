@@ -113,7 +113,7 @@ public abstract class KeycloakTestProvisioning {
 
     Map<String, List<String>> attributes =
         UserMapper.mapAttributesToDm(
-            new LinkedHashMap<>(), user.phoneNumber(), user.externalChatUsername());
+            new LinkedHashMap<>(), user.phoneNumber(), user.externalChatUsername(), null, null);
     userRepresentation.setAttributes(!attributes.isEmpty() ? attributes : null);
   }
 }

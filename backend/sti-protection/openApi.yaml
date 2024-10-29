@@ -1371,6 +1371,27 @@ paths:
       summary: Get STI protection procedure by id.
       tags:
       - StiProtectionProcedure
+  /sti-procedures/{id}/anon-ident-document:
+    post:
+      operationId: createAnonymousIdentificationDocument
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: byte
+          description: OK
+      summary: Create an anonymous identification document
+      tags:
+      - StiProtectionProcedure
   /sti-procedures/{id}/close:
     put:
       operationId: closeProcedure
@@ -1389,51 +1410,6 @@ paths:
                 $ref: "#/components/schemas/StiProtectionProcedure"
           description: OK
       summary: Close an STI procedure.
-      tags:
-      - StiProtectionProcedure
-  /sti-procedures/{id}/medical-history:
-    get:
-      operationId: getMedicalHistory
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GetMedicalHistoryResponse"
-          description: OK
-      summary: Get medical history item.
-      tags:
-      - StiProtectionProcedure
-    post:
-      operationId: createMedicalHistory
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateMedicalHistoryRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/CreateMedicalHistoryResponse"
-          description: OK
-      summary: Add medical history item to STI protection procedure.
       tags:
       - StiProtectionProcedure
   /sti-procedures/{id}/reopen:
@@ -1456,6 +1432,55 @@ paths:
       summary: Re-open an STI procedure.
       tags:
       - StiProtectionProcedure
+  /sti-procedures/{procedureId}/medical-history:
+    get:
+      operationId: getMedicalHistory
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/SexWorkMedicalHistory"
+                - $ref: "#/components/schemas/StiConsultationMedicalHistory"
+          description: OK
+      summary: Get medical history item.
+      tags:
+      - MedicalHistory
+    post:
+      operationId: createMedicalHistory
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMedicalHistoryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/SexWorkMedicalHistory"
+                - $ref: "#/components/schemas/StiConsultationMedicalHistory"
+          description: OK
+      summary: Add medical history item to STI protection procedure.
+      tags:
+      - MedicalHistory
   /task-metrics:
     get:
       operationId: getTaskMetrics
@@ -2564,7 +2589,7 @@ components:
       type: object
       properties:
         keyDocumentType:
-          $ref: "#/components/schemas/KeyDocumentType"
+          type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
         messageText:
@@ -2576,15 +2601,6 @@ components:
       required:
       - manualProgressEntryType
     CreateMedicalHistoryRequest:
-      type: object
-      properties:
-        medicalHistory:
-          oneOf:
-          - $ref: "#/components/schemas/SexWorkMedicalHistory"
-          - $ref: "#/components/schemas/StiConsultationMedicalHistory"
-      required:
-      - medicalHistory
-    CreateMedicalHistoryResponse:
       type: object
       properties:
         medicalHistory:
@@ -2698,17 +2714,6 @@ components:
           $ref: "#/components/schemas/Task"
       required:
       - task
-    DiseaseType:
-      type: string
-      enum:
-      - CHLAMYDIA
-      - GONORRHEA
-      - HEPATITIS_A
-      - HEPATITIS_B
-      - HEPATITIS_C
-      - HIV
-      - HPV
-      - SYPHILIS
     DomesticAddress:
       type: object
       allOf:
@@ -2765,14 +2770,27 @@ components:
     Examination:
       type: object
       properties:
-        diseaseType:
-          $ref: "#/components/schemas/DiseaseType"
-        examinationDate:
+        chlamydia:
           type: string
           format: date
-      required:
-      - diseaseType
-      - examinationDate
+        gonorrhea:
+          type: string
+          format: date
+        hepA:
+          type: string
+          format: date
+        hepB:
+          type: string
+          format: date
+        hepC:
+          type: string
+          format: date
+        hiv:
+          type: string
+          format: date
+        syphilis:
+          type: string
+          format: date
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -3166,15 +3184,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ManualProgressEntryHistory"
-    GetMedicalHistoryResponse:
-      type: object
-      properties:
-        medicalHistory:
-          oneOf:
-          - $ref: "#/components/schemas/SexWorkMedicalHistory"
-          - $ref: "#/components/schemas/StiConsultationMedicalHistory"
-      required:
-      - medicalHistory
     GetMetaDataHistoryResponse:
       type: object
       properties:
@@ -3567,11 +3576,6 @@ components:
       - FORBIDDEN
       - NOT_FOUND
       - INTERNAL_SERVER_ERROR
-    KeyDocumentType:
-      type: string
-      enum:
-      - INVOICE
-      - REPORT
     Mail:
       type: object
       allOf:
@@ -3649,7 +3653,7 @@ components:
           createdByUserLastName:
             type: string
           keyDocumentType:
-            $ref: "#/components/schemas/KeyDocumentType"
+            type: string
           keyDocumentVersion:
             type: integer
             format: int32
@@ -3735,6 +3739,15 @@ components:
       type: string
       enum:
       - DELETE
+    PartnerRiskFactors:
+      type: string
+      enum:
+      - HOMOSEXUAL
+      - BISEXUAL_MALE
+      - HIV_POSITIVE
+      - STI_POSITIVE
+      - INJECTED_DRUGS
+      - SEX_WORKER
     PatchManualProgressEntryRequest:
       type: object
       properties:
@@ -3962,6 +3975,33 @@ components:
       - country
       - postalCode
       - postbox
+    PreviousIllness:
+      type: object
+      properties:
+        chlamydia:
+          type: boolean
+        gonorrhea:
+          type: boolean
+        hepA:
+          type: boolean
+        hepB:
+          type: boolean
+        hepC:
+          type: boolean
+        hiv:
+          type: boolean
+        otherPreviousIllnesses:
+          type: string
+        syphilis:
+          type: boolean
+      required:
+      - chlamydia
+      - gonorrhea
+      - hepA
+      - hepB
+      - hepC
+      - hiv
+      - syphilis
     Procedure:
       type: object
       properties:
@@ -4159,6 +4199,73 @@ components:
       enum:
       - ASC
       - DESC
+    ProtectionMethod:
+      type: string
+      enum:
+      - CONDOM
+      - DENTAL_DAM
+      - GLOVES
+      - PREP
+      - TASP
+      - OTHER
+    RelationshipModel:
+      type: string
+      enum:
+      - NO_COMMITMENT
+      - MONOGAMOUS
+      - OPEN
+    RiskContact:
+      type: object
+      properties:
+        numberOfSexualPartnersLast12Months:
+          type: integer
+          format: int32
+        partnerRiskFactors:
+          type: array
+          items:
+            $ref: "#/components/schemas/PartnerRiskFactors"
+          uniqueItems: true
+        sexualContacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Gender"
+          uniqueItems: true
+        sexualOrientation:
+          $ref: "#/components/schemas/SexualOrientation"
+    RiskFactors:
+      type: object
+      properties:
+        otherRiskActivities:
+          type: string
+        prepInfoProvided:
+          type: boolean
+        protectionMethodsUsed:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProtectionMethod"
+          uniqueItems: true
+        riskActivityDateAnalIntercourse:
+          type: string
+          format: date
+        riskActivityDateOralIntercourse:
+          type: string
+          format: date
+        riskActivityDateVaginalIntercourse:
+          type: string
+          format: date
+        safeSexPractice:
+          $ref: "#/components/schemas/SafeSexPractice"
+        vaccinations:
+          $ref: "#/components/schemas/Vaccination"
+      required:
+      - prepInfoProvided
+    SafeSexPractice:
+      type: string
+      enum:
+      - ALWAYS
+      - FREQUENTLY
+      - OCCASIONALLY
+      - NEVER
     Salutation:
       type: string
       description: A list of categories for the salutation from which specific salutation
@@ -4186,20 +4293,30 @@ components:
       - $ref: "#/components/schemas/MedicalHistory"
       - type: object
         properties:
+          additionalComments:
+            type: string
+          contactToClarifyDuration:
+            type: string
+            format: date
+          currentSymptoms:
+            type: string
           examinationReason:
             type: string
           examinations:
-            type: array
-            items:
-              $ref: "#/components/schemas/Examination"
-          sexualContact:
-            $ref: "#/components/schemas/Gender"
-          sexualOrientation:
-            $ref: "#/components/schemas/SexualOrientation"
-          vaccinations:
-            type: array
-            items:
-              $ref: "#/components/schemas/Vaccination"
+            $ref: "#/components/schemas/Examination"
+          medications:
+            type: string
+          previousIllnesses:
+            $ref: "#/components/schemas/PreviousIllness"
+          relationshipModel:
+            $ref: "#/components/schemas/RelationshipModel"
+          riskContacts:
+            $ref: "#/components/schemas/RiskContact"
+          riskFactors:
+            $ref: "#/components/schemas/RiskFactors"
+      required:
+      - previousIllnesses
+      - riskFactors
     SexualOrientation:
       type: string
       enum:
@@ -4218,20 +4335,28 @@ components:
       - $ref: "#/components/schemas/MedicalHistory"
       - type: object
         properties:
+          additionalComments:
+            type: string
+          contactToClarifyDuration:
+            type: string
+            format: date
+          currentSymptoms:
+            type: string
           examinationReason:
             type: string
           examinations:
-            type: array
-            items:
-              $ref: "#/components/schemas/Examination"
-          sexualContact:
-            $ref: "#/components/schemas/Gender"
-          sexualOrientation:
-            $ref: "#/components/schemas/SexualOrientation"
-          vaccinations:
-            type: array
-            items:
-              $ref: "#/components/schemas/Vaccination"
+            $ref: "#/components/schemas/Examination"
+          previousIllnesses:
+            $ref: "#/components/schemas/PreviousIllness"
+          relationshipModel:
+            $ref: "#/components/schemas/RelationshipModel"
+          riskContacts:
+            $ref: "#/components/schemas/RiskContact"
+          riskFactors:
+            $ref: "#/components/schemas/RiskFactors"
+      required:
+      - previousIllnesses
+      - riskFactors
     StiProtectionProcedure:
       type: object
       properties:
@@ -4565,14 +4690,15 @@ components:
     Vaccination:
       type: object
       properties:
-        diseaseType:
-          $ref: "#/components/schemas/DiseaseType"
-        vaccinationDate:
+        hepA:
           type: string
           format: date
-      required:
-      - diseaseType
-      - vaccinationDate
+        hepB:
+          type: string
+          format: date
+        hpv:
+          type: string
+          format: date
     ValidateAppointmentBlockGroupResponse:
       type: object
       properties:

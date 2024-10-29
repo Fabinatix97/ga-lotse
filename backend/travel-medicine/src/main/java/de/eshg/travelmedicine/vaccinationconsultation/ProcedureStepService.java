@@ -5,6 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.rest.service.error.BadRequestException;
@@ -15,8 +16,10 @@ import de.eshg.travelmedicine.util.MappingUtil;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetProcedureStepServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchAppointmentRequest;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatchEarliestDateRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostProcedureStepRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ProcedureStepServiceDto;
+import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.CreatedByUserType;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherService;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStepRepository;
@@ -103,6 +106,7 @@ public class ProcedureStepService {
             "The service is already assigned to a different procedure step: "
                 + vcService.getExternalId());
     }
+    validateEarliestDate(vaccinationConsultation, procedureStepRequest.earliestDate());
 
     ProcedureStep procedureStep =
         ProcedureStep.createFollowupProcedureStep(procedureStepRequest.earliestDate());
@@ -110,20 +114,20 @@ public class ProcedureStepService {
     procedureStep.setVaccinationConsultation(vaccinationConsultation);
     procedureStep.setMedicalHistory(createMedicalHistory(true)); // always follow-ups here
     procedureStepRepository.save(procedureStep);
-
-    if (procedureStepRequest.appointmentBookingType()
-        == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
+    AppointmentBookingTypeDto bookingType = procedureStepRequest.appointmentBookingType();
+    if (bookingType == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
       appointmentService.createBlockAppointmentForStep(
           procedureStep,
           procedureStepRequest.appointmentStart(),
           procedureStepRequest.durationInMinutes());
 
-    } else if (procedureStepRequest.appointmentBookingType()
-        == AppointmentBookingTypeDto.USER_DEFINED) {
+    } else if (bookingType == AppointmentBookingTypeDto.USER_DEFINED) {
       appointmentService.createUserDefinedAppointment(
           procedureStep,
           procedureStepRequest.appointmentStart(),
           procedureStepRequest.durationInMinutes());
+    } else if (bookingType == AppointmentBookingTypeDto.CANCELLED) {
+      throw new BadRequestException("Can't create a new step with booking type cancelled");
     }
 
     for (VcService vcService : foundServices) {
@@ -132,6 +136,21 @@ public class ProcedureStepService {
 
     vaccinationConsultation.getProcedureSteps().add(procedureStep);
     return procedureStep.getExternalId();
+  }
+
+  private void validateEarliestDate(
+      VaccinationConsultation vaccinationConsultation, LocalDate earliestDate) {
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.EMPLOYEE) {
+      if (earliestDate != null) {
+        throw new BadRequestException(
+            "earliestDate must not be set in procedures from the employee portal.");
+      }
+    } else {
+      if (earliestDate == null) {
+        throw new BadRequestException(
+            "earliestDate must be set in procedures from the citizen portal.");
+      }
+    }
   }
 
   public GetProcedureStepServicesResponse getProcedureStepServices(UUID procedureStepId) {
@@ -183,11 +202,7 @@ public class ProcedureStepService {
         procedureAccessor.accessProcedureStep(
             procedureStepId, null, ProcedureAccessor.checkNotClosed);
 
-    validatePatchAppointmentRequest(appointmentRequest);
-
-    if (appointmentRequest.earliestDate() != null) {
-      procedureStep.setEarliestDate(appointmentRequest.earliestDate());
-    }
+    validatePatchAppointmentRequest(appointmentRequest, procedureStep);
 
     if (!checkForAppointmentChanges(procedureStep, appointmentRequest)) {
       return;
@@ -198,6 +213,7 @@ public class ProcedureStepService {
 
     procedureStep.setAppointment(null);
     procedureStep.setUserDefinedAppointment(null);
+
     if (appointmentRequest.appointmentBookingType()
         == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
       appointmentService.createBlockAppointmentForStep(
@@ -222,35 +238,33 @@ public class ProcedureStepService {
     }
 
     AppointmentBookingTypeDto currentBookingType = determineBookingType(ps);
+    if (currentBookingType != appointmentRequest.appointmentBookingType()) {
+      return true;
+    }
 
     if (currentBookingType == AppointmentBookingTypeDto.APPOINTMENT_BLOCK
-        && (appointmentRequest.appointmentBookingType()
-                != AppointmentBookingTypeDto.APPOINTMENT_BLOCK
-            || !ps.getAppointment()
-                .getAppointmentStart()
-                .equals(appointmentRequest.appointmentStart()))) {
+        && !ps.getAppointment()
+            .getAppointmentStart()
+            .equals(appointmentRequest.appointmentStart())) {
       return true;
     }
-    if (currentBookingType == AppointmentBookingTypeDto.USER_DEFINED
-        && (appointmentRequest.appointmentBookingType() != AppointmentBookingTypeDto.USER_DEFINED
-            || !ps.getUserDefinedAppointment()
-                .getAppointmentStart()
-                .equals(appointmentRequest.appointmentStart()))) {
-      return true;
-    }
-    return currentBookingType == AppointmentBookingTypeDto.CANCELLED;
+    return currentBookingType == AppointmentBookingTypeDto.USER_DEFINED
+        && !ps.getUserDefinedAppointment()
+            .getAppointmentStart()
+            .equals(appointmentRequest.appointmentStart());
   }
 
-  private void validatePatchAppointmentRequest(PatchAppointmentRequest appointmentRequest) {
-    if (appointmentRequest.appointmentBookingType() == AppointmentBookingTypeDto.SELF_BOOKING
-        && appointmentRequest.earliestDate() == null) {
-      throw new BadRequestException("earliestDate must be set for booking type SELF_BOOKING.");
-    } else {
-      if (appointmentRequest.appointmentStart() == null
-          || appointmentRequest.durationInMinutes() == null) {
-        throw new BadRequestException(
-            "appointmentStart and duration must be set to book a appointment.");
-      }
+  private void validatePatchAppointmentRequest(
+      PatchAppointmentRequest appointmentRequest, ProcedureStep procedureStep) {
+    if (appointmentRequest.appointmentBookingType() != AppointmentBookingTypeDto.APPOINTMENT_BLOCK
+        && appointmentRequest.appointmentBookingType() != AppointmentBookingTypeDto.USER_DEFINED) {
+      throw new BadRequestException(
+          "AppointmentBookingType must be APPOINTMENT_BLOCK or USER_DEFINED");
+    }
+
+    if (procedureStep.getIsFollowUp()
+        && appointmentRequest.appointmentType() == AppointmentTypeDto.CONSULTATION) {
+      throw new BadRequestException("CONSULTATION is not possible for follow up appointment");
     }
   }
 
@@ -258,5 +272,34 @@ public class ProcedureStepService {
     Appointment appointment = procedureStep.getAppointment();
     UserDefinedAppointment userDefinedAppointment = procedureStep.getUserDefinedAppointment();
     return appointmentBookingTypeMapper.mapToInterfaceType(appointment, userDefinedAppointment);
+  }
+
+  public void updateEarliestDate(
+      UUID procedureStepId, PatchEarliestDateRequest patchEarliestDateRequest) {
+    ProcedureStep procedureStep =
+        procedureAccessor.accessProcedureStep(
+            procedureStepId, null, ProcedureAccessor.checkNotClosed);
+    if (!procedureStep.getIsFollowUp()
+        || procedureStep.getVaccinationConsultation().getCreatedBy()
+            == CreatedByUserType.EMPLOYEE) {
+      throw new BadRequestException(
+          "Earliest date can only be set for a follow up step of a procedure created in citizen portal.");
+    }
+    procedureStep.setEarliestDate(patchEarliestDateRequest.earliestDate());
+  }
+
+  public void cancelAppointment(UUID procedureStepId) {
+    ProcedureStep procedureStep =
+        procedureAccessor.accessProcedureStep(
+            procedureStepId, null, List.of(new ProcedureAccessor.CheckNotClosed()));
+    if (procedureStep.getServices().stream().anyMatch(VcService::isAccomplished)) {
+      throw new BadRequestException(
+          "Appointment has accomplished services and cannot be cancelled.");
+    }
+    if (procedureStep.getVaccinationConsultation().getCreatedBy() == CreatedByUserType.EMPLOYEE) {
+      throw new BadRequestException(
+          "It is only possible to cancel appointments of a procedure created in citizen portal.");
+    }
+    appointmentService.cancelAppointment(procedureStep);
   }
 }

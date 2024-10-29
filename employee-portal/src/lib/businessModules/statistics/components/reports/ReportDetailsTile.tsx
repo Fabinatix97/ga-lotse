@@ -102,7 +102,9 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography level="h3">Report-Details</Typography>
+              <Typography level="h3" component="h2">
+                Report-Details
+              </Typography>
               <ActionsMenu
                 actionItems={getReportActionItems(
                   [

@@ -5,7 +5,6 @@
 
 import {
   ApiInboxProgressEntryType,
-  ApiKeyDocumentType,
   ApiManualProgressEntryType,
   ApiProgressEntryClass,
 } from "@eshg/employee-portal-api/businessProcedures";
@@ -88,10 +87,10 @@ export const inboxProgressEntryTitles = {
   [ApiInboxProgressEntryType.PhoneCall]: "Anruf erhalten",
 } satisfies Record<ApiInboxProgressEntryType, string>;
 
-export const manualProgressEntryKeyDocumentTypes = {
-  [ApiKeyDocumentType.Invoice]: "Rechnung",
-  [ApiKeyDocumentType.Report]: "Bericht",
-} satisfies Record<ApiKeyDocumentType, string>;
+export const manualProgressEntryKeyDocumentTypes: Record<string, string> = {
+  INVOICE: "Rechnung",
+  REPORT: "Bericht",
+};
 
 export const progressEntryClassTitles = {
   [ApiProgressEntryClass.ManualProgressEntry]: "Manueller-Verlaufseintrag",

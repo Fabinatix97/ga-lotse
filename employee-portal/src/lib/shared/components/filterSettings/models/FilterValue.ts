@@ -8,6 +8,7 @@ import {
   NumberFilterDraftValue,
   NumberFilterValue,
 } from "@/lib/shared/components/filterSettings/models/NumberFilter";
+import { YearFilterValue } from "@/lib/shared/components/filterSettings/models/YearFilter";
 
 import { DateFilterValue } from "./DateFilter";
 import { DateSpanFilterValue } from "./DateSpanFilter";
@@ -22,11 +23,13 @@ export type FilterValue =
   | DateSpanFilterValue
   | EnumFilterValue
   | EnumSingleFilterValue
-  | NumberFilterValue;
+  | NumberFilterValue
+  | YearFilterValue;
 
 export type FilterDraftValue =
   | DateFilterValue
   | DateSpanFilterValue
   | EnumFilterValue
   | EnumSingleFilterValue
-  | NumberFilterDraftValue;
+  | NumberFilterDraftValue
+  | YearFilterValue;

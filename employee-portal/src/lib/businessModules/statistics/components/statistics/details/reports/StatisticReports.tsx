@@ -14,9 +14,9 @@ import { Add } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
-import { isDefined } from "remeda";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
+import { ReportSeriesState } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import {
   ReportDataType,
   ReportSeries,
@@ -52,6 +52,7 @@ import { useCopy } from "@/lib/shared/hooks/useCopy";
 
 import { AutomateReportSidebar } from "./AutomateReportSidebar/AutomateReportSidebar";
 import { ReportAutomationTile } from "./ReportAutomationTile";
+import { ReportSeriesStateChip } from "./ReportSeriesStateChip";
 
 const columnHelper = createColumnHelper<ReportTableRow>();
 
@@ -100,9 +101,13 @@ function columns(
     columnHelper.accessor("status", {
       header: "Status",
       cell: (props) =>
-        isDefined(props.getValue()) ? (
+        props.row.original.type === ReportDataType.Series ? (
+          <ReportSeriesStateChip
+            value={props.getValue() as ReportSeriesState}
+          />
+        ) : (
           <ReportStateChip value={props.getValue() as ApiReportState} />
-        ) : undefined,
+        ),
       meta: {
         canNavigate: {
           parentRow: true,

@@ -12,19 +12,21 @@ interface ReceiptStatusProps {
   unreadNotifications?: number;
   isRead?: boolean;
   isMessageMine?: boolean;
+  isSent: boolean;
 }
 
 export function ReceiptStatus({
   unreadNotifications,
   isRead,
   isMessageMine,
-}: ReceiptStatusProps) {
+  isSent,
+}: Readonly<ReceiptStatusProps>) {
   const theme = useTheme();
   const {
     userSettings: { showReadConfirmation },
   } = useChat();
 
-  if (!!unreadNotifications) {
+  if (unreadNotifications) {
     return (
       <Box
         component="span"
@@ -45,11 +47,12 @@ export function ReceiptStatus({
     );
   }
 
-  if (!isMessageMine)
+  if (isMessageMine)
     return (
       <ReadingReceipt
         isReadReceiptEnabled={showReadConfirmation}
         isRead={isRead}
+        isSent={isSent}
       />
     );
   else return null;

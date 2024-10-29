@@ -5,7 +5,6 @@
 
 package de.eshg.lib.xlsximport;
 
-import de.cronn.assertions.validationfile.normalization.SimpleRegexReplacement;
 import de.cronn.assertions.validationfile.normalization.ValidationNormalizer;
 import de.cronn.assertions.validationfile.replacements.Replacer;
 import de.eshg.base.spring.ResponseEntityValidationFileAssertionTraits;
@@ -23,8 +22,8 @@ public interface MultipartResponseAssertionTraits
     extends ResponseEntityValidationFileAssertionTraits {
 
   default ValidationNormalizer contentLengthNormalizer() {
-    return new SimpleRegexReplacement("Content-Length: \\[\\d+\\]", "Content-Length: [[MASKED]]")
-        .and(new SimpleRegexReplacement("Content-Length: \\d+", "Content-Length: [MASKED]"));
+    return new Replacer("Content-Length: \\[\\d+\\]", "Content-Length: [[MASKED]]")
+        .and(new Replacer("Content-Length: \\d+", "Content-Length: [MASKED]"));
   }
 
   default void assertMultipartHeadersWithFile(

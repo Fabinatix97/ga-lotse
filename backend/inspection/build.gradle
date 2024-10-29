@@ -11,13 +11,12 @@ dependencies {
     implementation project(':lib-notification')
     implementation project(':lib-document-generator')
     implementation project(':lib-editor')
+    implementation project(':lib-scheduling')
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
 
     implementation 'de.topobyte:osm4j-core:latest.release'
     implementation 'de.topobyte:osm4j-pbf:latest.release'
-    implementation 'net.javacrumbs.shedlock:shedlock-spring:latest.release'
-    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:latest.release'
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
 

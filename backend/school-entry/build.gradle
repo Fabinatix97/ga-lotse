@@ -29,6 +29,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-procedures'))
     testImplementation 'com.google.zxing:javase:latest.release'
     testImplementation testFixtures(project(':lib-document-generator'))
     testImplementation testFixtures(project(':lib-xlsx-import'))

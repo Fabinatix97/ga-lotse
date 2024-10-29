@@ -39,5 +39,9 @@
   <include file="migrations/0029_add_bookings_remaining_to_ps.xml"/>
   <include file="migrations/0030_introduce_procedure_file_type.xml"/>
   <include file="migrations/0031_add_medical_registry_procedure_types.xml"/>
+  <include file="migrations/0032_remove_key_document_type_enum.xml"/>
+  <include file="migrations/0033_set_earliest_date_to_ps.xml"/>
+  <include file="migrations/0034_add_citizen_has_answered_to_infostmt.xml"/>
+  <include file="migrations/0035_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
 
 </databaseChangeLog>

@@ -10,6 +10,7 @@ import { NavigationListCollapsed } from "@/lib/baseModule/components/layout/side
 import {
   headerHeightDesktop,
   headerHeightMobile,
+  sideNavigationWidth,
 } from "@/lib/baseModule/components/layout/sizes";
 import { useSidenav } from "@/lib/shared/components/drawer/useSidenav";
 
@@ -31,7 +32,7 @@ export function SideNavigation({
       {/* In desktop mode, the side navigation is either rendered expanded or collapsed (icons only) */}
       <Box
         sx={{
-          display: { xxs: "none", sm: "flex" },
+          display: { xxs: "none", lg: "flex" },
           position: "fixed",
           height: `calc(100dvh - ${headerHeightDesktop})`,
           zIndex: "sideNavigation",
@@ -55,14 +56,14 @@ export function SideNavigation({
         open={sidenav.isOpen}
         onClose={sidenav.close}
         sx={{
-          display: { xxs: "block", sm: "none" },
+          display: { xxs: "block", lg: "none" },
           zIndex: "sideNavigation",
         }}
         slotProps={{
           content: {
             sx: {
               boxShadow: "none",
-              width: "100vw",
+              width: { xxs: "100vw", sm: sideNavigationWidth },
               top: headerHeightMobile,
             },
           },

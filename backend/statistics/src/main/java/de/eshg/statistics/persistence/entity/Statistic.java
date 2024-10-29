@@ -11,6 +11,7 @@ import de.eshg.lib.common.DataSensitivity;
 import de.eshg.statistics.persistence.entity.report.ReportSeries;
 import de.eshg.statistics.persistence.entity.report.ReportSeries_;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +24,10 @@ import java.util.List;
 @DiscriminatorValue("STATISTIC")
 public class Statistic extends AbstractAggregationResult {
   @DataSensitivity(PUBLIC)
+  @Column(nullable = false)
+  private boolean anonymized;
+
+  @DataSensitivity(PUBLIC)
   @OneToMany(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,
@@ -30,6 +35,14 @@ public class Statistic extends AbstractAggregationResult {
       orphanRemoval = true)
   @OrderBy
   private final List<ReportSeries> reportSeriesList = new ArrayList<>();
+
+  public boolean isAnonymized() {
+    return anonymized;
+  }
+
+  public void setAnonymized(boolean anonymized) {
+    this.anonymized = anonymized;
+  }
 
   public void addReportSeries(ReportSeries reportSeries) {
     reportSeries.setStatistic(this);

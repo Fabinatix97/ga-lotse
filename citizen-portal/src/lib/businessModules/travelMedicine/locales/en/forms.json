@@ -122,10 +122,12 @@
     "onPrevStep": "Zurück",
     "onCancel": "Abbrechen",
     "fields": {
-      "confirmPrivacyPolicy": "Ich akzeptiere den Datenschutzhinweis.",
-      "confirmPrivacyPolicy_required": "Bitte Zustimmung erteilen um fortzufahren.",
-      "confirmPrivacyNotice": "Ich akzeptiere die Datenschutzerklärung.",
-      "confirmPrivacyNotice_required": "Bitte Zustimmung erteilen um fortzufahren."
+      "confirmPrivacyNotice": "Ich akzeptiere den Datenschutzhinweis.",
+      "privacyNotice": "Zum Datenschutzhinweis",
+      "confirmPrivacyNotice_required": "Bitte Zustimmung erteilen um fortzufahren.",
+      "confirmPrivacyPolicy": "Ich akzeptiere die Datenschutzerklärung.",
+      "privacyPolicy": "Zur Datenschutzerklärung",
+      "confirmPrivacyPolicy_required": "Bitte Zustimmung erteilen um fortzufahren."
     }
   }
 }

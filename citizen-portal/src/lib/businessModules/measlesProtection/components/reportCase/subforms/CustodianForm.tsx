@@ -9,6 +9,7 @@ import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { isAdult, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
 import { Add, DeleteOutline } from "@mui/icons-material";
@@ -42,10 +43,6 @@ import {
   FIRST_NAME_MAX_LENGTH,
   LAST_NAME_MAX_LENGTH,
 } from "@/lib/businessModules/measlesProtection/shared/constants";
-import {
-  isAdult,
-  toUtcDate,
-} from "@/lib/businessModules/measlesProtection/shared/helpers";
 import {
   genderOptions,
   salutationOptions,
@@ -84,9 +81,6 @@ export function createEmptyCustodian(): CustodianFormInputs {
   };
 }
 
-const INFO_TEXT =
-  "Die zu meldende Person ist minderjährig. Bitte tragen Sie mindestens eine Sorgeberechtigte Person ein.";
-
 interface CustodianFormProps extends NestedFormProps {
   onCheckAddressMatch?: (checked: boolean) => void;
 }
@@ -106,14 +100,14 @@ export function CustodianForm({
           <SelectField
             name={fieldName("salutation")}
             label={t("common.personalDetails.salutation")}
-            options={salutationOptions}
+            options={salutationOptions(t)}
           />
         </Grid>
         <Grid xxs={12} xs={6}>
           <SelectField
             name={fieldName("title")}
             label={t("common.personalDetails.title")}
-            options={titleOptions}
+            options={titleOptions(t)}
           />
         </Grid>
         <Grid xxs={12} xs={6}>
@@ -136,7 +130,7 @@ export function CustodianForm({
           <SelectField
             name={fieldName("gender")}
             label={t("common.personalDetails.gender")}
-            options={genderOptions}
+            options={genderOptions(t)}
           />
         </Grid>
         <Grid xxs={12} xs={6}>
@@ -151,9 +145,9 @@ export function CustodianForm({
           onCheckAddressMatch={(checked) => {
             if (onCheckAddressMatch) onCheckAddressMatch(checked);
           }}
-          addressMatchLabel={t("custodian.addressMatch")}
+          addressMatchLabel={t("custodian.address_match")}
         />
-        <FormSectionLabel value="Kontaktdaten" />
+        <FormSectionLabel value={t("custodian.contact_info")} />
         <Grid xxs={12} xs={6}>
           <InputField
             type="email"
@@ -249,12 +243,12 @@ export function CustodiansFieldArray({
   return (
     <>
       <Stack component="div" gap={2} rowGap={2} sx={sx}>
-        <FormHeader>Sorgeberechtigte Personen</FormHeader>
+        <FormHeader>{t("common.custodian_other")}</FormHeader>
         <Grid container xxs={12} justifyContent={"flex-end"}>
           <Typography level="body-xs">{`* ${t("common.requiredField")}`}</Typography>
         </Grid>
         <Grid xxs={12}>
-          <Alert title={INFO_TEXT} color="primary" />
+          <Alert message={t("custodian.info")} color="primary" />
         </Grid>
         {!currentAffectedPerson || !isDefined(custodians) ? (
           <Sheet
@@ -279,7 +273,11 @@ export function CustodiansFieldArray({
                       (custodian, custodianIndex) => {
                         // don't include any values in the key, as this would cause the input fields to lose focus
                         const key = `custodians.${custodianIndex}`;
-                        const sectionHeader = `Sorgeberechtigte Person${custodianIndex !== 0 || custodians.length > 1 ? ` ${custodianIndex + 1}` : ""}`;
+                        const personIndex =
+                          custodianIndex !== 0 || custodians.length > 1
+                            ? ` ${custodianIndex + 1}`
+                            : "";
+                        const sectionHeader = `${t("common.custodian_one")} ${personIndex}`;
 
                         return (
                           <Grid key={key} xxs={12} marginBottom={1}>

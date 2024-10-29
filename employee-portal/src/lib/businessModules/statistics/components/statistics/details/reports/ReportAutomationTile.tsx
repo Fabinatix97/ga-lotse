@@ -11,6 +11,7 @@ import { isNonNullish } from "remeda";
 import {
   INTERVAL_TRANSLATION,
   REPORTING_PERIOD_TRANSLATION,
+  ReportSeriesState,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import {
   ActiveSeriesInfo,
@@ -19,10 +20,7 @@ import {
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 
-import {
-  ReportSeriesState,
-  ReportSeriesStateChip,
-} from "./ReportSeriesStateChip";
+import { ReportSeriesStateChip } from "./ReportSeriesStateChip";
 import { UpdateReportSidebarReportInfo } from "./UpdateReportSidebar/UpdateReportSidebar";
 
 export function ReportAutomationTile({

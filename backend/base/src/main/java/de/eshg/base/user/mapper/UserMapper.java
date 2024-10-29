@@ -5,6 +5,7 @@
 
 package de.eshg.base.user.mapper;
 
+import de.eshg.base.SalutationDto;
 import de.eshg.base.calendar.api.DetailedEventWithoutCalendarId;
 import de.eshg.base.keycloak.EmployeeUserAttribute;
 import de.eshg.base.keycloak.KeycloakEventType;
@@ -29,12 +30,7 @@ import de.eshg.keycloak.api.user.model.KeycloakApiUserDto;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.KeycloakRole;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
@@ -52,7 +48,12 @@ public class UserMapper {
     representation.setLastName(user.lastName());
     representation.setGroups(user.groups());
     representation.setAttributes(
-        mapAttributesToDm(new LinkedHashMap<>(), user.phoneNumber(), user.externalChatUsername()));
+        mapAttributesToDm(
+            new LinkedHashMap<>(),
+            user.phoneNumber(),
+            user.externalChatUsername(),
+            user.title(),
+            user.salutation()));
     return representation;
   }
 
@@ -79,6 +80,10 @@ public class UserMapper {
     return new UserProfileDto(
         mapUserToApi(user),
         RealmBoundKeycloakClient.getSelfUserId().equals(user.getId()),
+        getUserAttribute(user.getAttributes(), EmployeeUserAttribute.TITLE).orElse(null),
+        getUserAttribute(user.getAttributes(), EmployeeUserAttribute.SALUTATION)
+            .map(SalutationDto::valueOf)
+            .orElse(null),
         groups.stream().sorted().map(UserGroupDto::new).toList(),
         events);
   }
@@ -263,7 +268,11 @@ public class UserMapper {
   }
 
   public static Map<String, List<String>> mapAttributesToDm(
-      Map<String, List<String>> attributes, String phoneNumber, String externalChatUsername) {
+      Map<String, List<String>> attributes,
+      String phoneNumber,
+      String externalChatUsername,
+      String titel,
+      SalutationDto salutation) {
     if (phoneNumber != null) {
       attributes.put(EmployeeUserAttribute.PHONE_NUMBER.getKey(), List.of(phoneNumber));
     } else {
@@ -274,6 +283,16 @@ public class UserMapper {
           EmployeeUserAttribute.EXTERNAL_CHAT_USERNAME.getKey(), List.of(externalChatUsername));
     } else {
       attributes.remove(EmployeeUserAttribute.EXTERNAL_CHAT_USERNAME.getKey());
+    }
+    if (titel != null) {
+      attributes.put(EmployeeUserAttribute.TITLE.getKey(), List.of(titel));
+    } else {
+      attributes.remove(EmployeeUserAttribute.TITLE.getKey());
+    }
+    if (salutation != null) {
+      attributes.put(EmployeeUserAttribute.SALUTATION.getKey(), List.of(salutation.name()));
+    } else {
+      attributes.remove(EmployeeUserAttribute.SALUTATION.getKey());
     }
     return attributes;
   }

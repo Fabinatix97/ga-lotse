@@ -30,6 +30,24 @@
     "name": "Name",
     "overview": "Overview",
     "person_one": "Person",
-    "person_other": "Persons"
+    "person_other": "Persons",
+    "page_loading": "Page loading…"
+  },
+  "gender": {
+    "not_specified": "Not specified",
+    "male": "Male",
+    "female": "Female",
+    "diverse": "Nonbinary / Diverse"
+  },
+  "salutation": {
+    "not_specified": "Not specified",
+    "neutral": "Neutral",
+    "male": "Mr.",
+    "female": "Ms."
+  },
+  "title": {
+    "dr": "Dr.",
+    "prof": "Prof.",
+    "prof_dr": "Prof. Dr."
   }
 }

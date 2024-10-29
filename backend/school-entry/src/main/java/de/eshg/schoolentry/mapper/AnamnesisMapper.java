@@ -304,7 +304,7 @@ public class AnamnesisMapper {
         || migrationBackground.nationalitySecondParent() != CountryCodeDto.DEU;
   }
 
-  private static CountryCode mapToDomain(CountryCodeDto dto) {
+  public static CountryCode mapToDomain(CountryCodeDto dto) {
     if (dto == null) {
       return null;
     }

@@ -13,21 +13,18 @@ import java.util.Set;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 
-public record AnyRole(Set<String> keycloakRoleNames) implements AuthorizationDefinition {
+public record AnyRole(Set<String> roleNames) implements AuthorizationDefinition {
 
   public AnyRole(PermissionRole... roles) {
-    this(
-        Arrays.stream(roles)
-            .map(PermissionRole::getKeycloakName)
-            .collect(StreamUtil.toLinkedHashSet()));
+    this(Arrays.stream(roles).map(PermissionRole::name).collect(StreamUtil.toLinkedHashSet()));
   }
 
-  public boolean intersects(List<String> keycloakRoleNames) {
-    return keycloakRoleNames().stream().anyMatch(keycloakRoleNames::contains);
+  public boolean intersects(List<String> roleNames) {
+    return roleNames().stream().anyMatch(roleNames::contains);
   }
 
   @Override
   public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl) {
-    authorizedUrl.hasAnyRole(keycloakRoleNames().toArray(String[]::new));
+    authorizedUrl.hasAnyRole(roleNames().toArray(String[]::new));
   }
 }

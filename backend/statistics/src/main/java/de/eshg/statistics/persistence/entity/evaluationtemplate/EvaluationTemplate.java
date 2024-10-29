@@ -44,6 +44,10 @@ public class EvaluationTemplate extends BaseEntityWithExternalId {
   @Column(nullable = false)
   private String name;
 
+  @DataSensitivity(PUBLIC)
+  @Column
+  private String description;
+
   @DataSensitivity(PROTECTED)
   @Column
   private Instant lastUsageAt;
@@ -66,6 +70,10 @@ public class EvaluationTemplate extends BaseEntityWithExternalId {
   @OrderBy
   private final List<AnalysisTemplate> analysisTemplates = new ArrayList<>();
 
+  @DataSensitivity(PUBLIC)
+  @Column(nullable = false)
+  private int analysisCount = 0;
+
   public Instant getCreatedAt() {
     return createdAt;
   }
@@ -80,6 +88,14 @@ public class EvaluationTemplate extends BaseEntityWithExternalId {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public Instant getLastUsageAt() {
@@ -106,5 +122,10 @@ public class EvaluationTemplate extends BaseEntityWithExternalId {
   public void addAnalysisTemplates(List<AnalysisTemplate> analysisTemplates) {
     analysisTemplates.forEach(analysisTemplate -> analysisTemplate.setEvaluationTemplate(this));
     this.analysisTemplates.addAll(analysisTemplates);
+    this.analysisCount = this.analysisTemplates.size();
+  }
+
+  public int getAnalysisCount() {
+    return analysisCount;
   }
 }

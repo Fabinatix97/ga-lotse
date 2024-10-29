@@ -5,6 +5,8 @@
 
 package de.eshg.base.keycloak;
 
+import de.eshg.base.SalutationDto;
+import java.util.Arrays;
 import java.util.List;
 
 public enum EmployeeUserAttribute implements KeycloakUserAttribute {
@@ -23,6 +25,18 @@ public enum EmployeeUserAttribute implements KeycloakUserAttribute {
       KEYCLOAK_VALUE_REF_TEMPLATE.formatted(DEFAULT_ATTRIBUTE_LAST_NAME),
       true,
       Group.DEFAULT),
+  TITLE(
+      "eshg.title",
+      "Titel",
+      new ValidationRule.Length(1, 119),
+      new ValidationRule.Pattern("\\p{ASCII}+")),
+  SALUTATION(
+      "eshg.salutation",
+      "Anrede",
+      new ValidationRule.Length(1, 255),
+      new ValidationRule.Pattern(
+          String.join(
+              "|", Arrays.stream(SalutationDto.values()).map(Enum::name).toArray(String[]::new)))),
   PHONE_NUMBER(
       "eshg.phone_number",
       "Telefon",

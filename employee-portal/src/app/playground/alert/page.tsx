@@ -26,7 +26,7 @@ import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 const DEFAULT_TYPE = "error";
 const TYPES = ["error", "warning", "notification"] as const;
 
-export default function SnackbarPlaygroundPage() {
+export default function AlertPlaygroundPage() {
   const alert = useAlert();
   const [type, setType] = useState<(typeof TYPES)[number]>(DEFAULT_TYPE);
   const [title, setTitle] = useState("Title");

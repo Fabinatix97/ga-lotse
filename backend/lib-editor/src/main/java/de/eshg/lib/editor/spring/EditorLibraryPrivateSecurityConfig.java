@@ -29,7 +29,7 @@ public class EditorLibraryPrivateSecurityConfig {
 
     return auth ->
         auth.requestMatchers(BaseUrls.EditorLibrary.EDITOR_API + "/**")
-            .hasRole(editorAccessRole.getKeycloakName());
+            .hasRole(editorAccessRole.name());
   }
 
   @Bean
@@ -43,6 +43,6 @@ public class EditorLibraryPrivateSecurityConfig {
 
     return auth ->
         auth.requestMatchers(BaseUrls.EditorLibrary.TEXTBLOCK_API + "/**")
-            .hasRole(textblockAccessRole.getKeycloakName());
+            .hasRole(textblockAccessRole.name());
   }
 }

@@ -15,6 +15,7 @@ import { isNonNullish } from "remeda";
 
 import {
   Interval,
+  ReportSeriesState,
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api//models/reportSeriesTypes";
 import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
@@ -91,6 +92,9 @@ function mapSeriesReport(apiReportSeries: ApiReportSeries): ReportSeries {
     description: apiReportSeries.description,
     timeRangeStart: apiReportSeries.timeRangeStart,
     timeRangeEnd: apiReportSeries.timeRangeEnd,
+    status: apiReportSeries.active
+      ? ReportSeriesState.Activated
+      : ReportSeriesState.Deactivated,
     subRows: apiReportSeries.reportInfos.map((reportInfo) => ({
       type: ReportDataType.Child,
       seriesId: apiReportSeries.id,

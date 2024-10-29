@@ -15,7 +15,7 @@ const statusNames = {
 } satisfies Record<ApiReportState, string>;
 
 const statusColors = {
-  [ApiReportState.Completed]: "success",
+  [ApiReportState.Completed]: "primary",
   [ApiReportState.Failed]: "danger",
   [ApiReportState.Creating]: "warning",
   [ApiReportState.Planned]: "warning",

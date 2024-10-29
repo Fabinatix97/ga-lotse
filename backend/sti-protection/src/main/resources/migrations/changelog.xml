@@ -12,5 +12,8 @@
   <include file="migrations/0002_introduce_procedure_file_type.xml"/>
   <include file="migrations/0003_rename_country_code_dto.xml"/>
   <include file="migrations/0004_add_medical_registry_procedure_types.xml"/>
+  <include file="migrations/0005_medical_histories.xml"/>
+  <include file="migrations/0006_remove_key_document_type_enum.xml"/>
+  <include file="migrations/0007_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
 
 </databaseChangeLog>

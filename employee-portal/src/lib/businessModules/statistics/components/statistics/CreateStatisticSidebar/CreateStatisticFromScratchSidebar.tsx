@@ -75,6 +75,7 @@ export function CreateStatisticFromScratchSidebar({
           id: model.dataSource.id,
         },
       ],
+      anonymized: false,
       timeRangeStart: parseISO(model.timeSpan.start),
       timeRangeEnd: parseISO(model.timeSpan.end),
       templateName: model.templateName !== "" ? model.templateName : undefined,

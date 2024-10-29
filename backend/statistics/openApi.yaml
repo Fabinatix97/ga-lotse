@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetEvaluationTemplatesResponse"
+                $ref: "#/components/schemas/GetAllEvaluationTemplatesResponse"
           description: All evaluation templates
       summary: Get all evaluation templates
       tags:
@@ -74,6 +74,45 @@ paths:
                 $ref: "#/components/schemas/EvaluationTemplate"
           description: The added evaluation template
       summary: Add an evaluation template
+      tags:
+      - EvaluationTemplate
+  /evaluation-template/expected-template/{statisticId}:
+    get:
+      operationId: getTemplateInformation
+      parameters:
+      - in: path
+        name: statisticId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpectedEvaluationTemplate"
+          description: The information for a template based on this statistic
+      summary: Get the information for the expected template
+      tags:
+      - EvaluationTemplate
+  /evaluation-template/overview:
+    post:
+      operationId: getEvaluationTemplateOverview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetEvaluationTemplatesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEvaluationTemplatesResponse"
+          description: Evaluation template overview page
+      summary: Get evaluation template entries for the overview page
       tags:
       - EvaluationTemplate
   /evaluation-template/{templateId}:
@@ -109,6 +148,31 @@ paths:
                 $ref: "#/components/schemas/EvaluationTemplate"
           description: The evaluation template
       summary: Get an evaluation template
+      tags:
+      - EvaluationTemplate
+    patch:
+      operationId: updateEvaluationTemplate
+      parameters:
+      - in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEvaluationTemplateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationTemplate"
+          description: The patched evaluation template
+      summary: Change name and description of an evaluation template
       tags:
       - EvaluationTemplate
   /feature-toggles:
@@ -1172,6 +1236,8 @@ components:
       - $ref: "#/components/schemas/AbstractAddEvaluationTemplateRequest"
       - type: object
         properties:
+          description:
+            type: string
           evaluationId:
             type: string
             format: uuid
@@ -1249,6 +1315,8 @@ components:
       - $ref: "#/components/schemas/AbstractAddStatisticRequest"
       - type: object
         properties:
+          anonymized:
+            type: boolean
           dataSources:
             type: array
             items:
@@ -1266,6 +1334,7 @@ components:
             type: string
             format: date-time
       required:
+      - anonymized
       - dataSources
       - name
       - timeRangeEnd
@@ -1276,6 +1345,8 @@ components:
       - $ref: "#/components/schemas/AbstractAddStatisticRequest"
       - type: object
         properties:
+          anonymized:
+            type: boolean
           name:
             type: string
           templateId:
@@ -1288,6 +1359,7 @@ components:
             type: string
             format: date-time
       required:
+      - anonymized
       - name
       - templateId
       - timeRangeEnd
@@ -1337,11 +1409,14 @@ components:
           format: uuid
         name:
           type: string
+        withoutAnonymizationAllowed:
+          type: boolean
       required:
       - attributes
       - businessModule
       - id
       - name
+      - withoutAnonymizationAllowed
     BarChartConfiguration:
       type: object
       allOf:
@@ -1700,12 +1775,15 @@ components:
             $ref: "#/components/schemas/BusinessDataAttributeWithName"
           maxItems: 2147483647
           minItems: 1
+        dataSourceName:
+          type: string
         id:
           type: string
           format: uuid
       required:
       - businessModuleName
       - dataAttributes
+      - dataSourceName
       - id
     DateAttribute:
       type: object
@@ -1919,6 +1997,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DataSourceWithAttributeNames"
+        description:
+          type: string
         id:
           type: string
           format: uuid
@@ -1927,12 +2007,55 @@ components:
           format: date-time
         name:
           type: string
+        userId:
+          type: string
+          format: uuid
       required:
       - analysisInfos
       - createdAt
       - dataSources
       - id
       - name
+      - userId
+    EvaluationTemplateInfo:
+      type: object
+      properties:
+        analysisCount:
+          type: integer
+          format: int32
+          minimum: 0
+        businessModuleNames:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        lastUsageAt:
+          type: string
+          format: date-time
+        name:
+          type: string
+        userId:
+          type: string
+          format: uuid
+      required:
+      - analysisCount
+      - businessModuleNames
+      - createdAt
+      - id
+      - name
+      - userId
+    EvaluationTemplateSortKey:
+      type: string
+      default: CREATED_AT
+      enum:
+      - NAME
+      - ANALYSIS_COUNT
+      - CREATED_AT
     EvaluationWithDiagrams:
       type: object
       properties:
@@ -1962,6 +2085,20 @@ components:
       - diagrams
       - id
       - name
+    ExpectedEvaluationTemplate:
+      type: object
+      properties:
+        analysisInfos:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnalysisInfo"
+        dataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataSourceWithAttributeNames"
+      required:
+      - analysisInfos
+      - dataSources
     FilterTemplate:
       type: object
       properties:
@@ -2075,6 +2212,15 @@ components:
       enum:
       - ACTIVE
       - ARCHIVED
+    GetAllEvaluationTemplatesResponse:
+      type: object
+      properties:
+        evaluationTemplates:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationTemplate"
+      required:
+      - evaluationTemplates
     GetAvailableDataSourcesResponse:
       type: object
       properties:
@@ -2127,15 +2273,43 @@ components:
       - statisticInfo
       - tableColumnHeaders
       - totalNumberOfElements
+    GetEvaluationTemplatesRequest:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+        sortDirection:
+          $ref: "#/components/schemas/SortDirection"
+        sortKey:
+          $ref: "#/components/schemas/EvaluationTemplateSortKey"
     GetEvaluationTemplatesResponse:
       type: object
       properties:
         evaluationTemplates:
           type: array
           items:
-            $ref: "#/components/schemas/EvaluationTemplate"
+            $ref: "#/components/schemas/EvaluationTemplateInfo"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
       required:
       - evaluationTemplates
+      - resolvedUsers
+      - totalNumberOfElements
     GetFilterTemplatesForStatisticResponse:
       type: object
       properties:
@@ -2221,6 +2395,8 @@ components:
     GetReportSeriesEntriesOfStatisticResponse:
       type: object
       properties:
+        anonymized:
+          type: boolean
         reportSeriesEntries:
           type: array
           items:
@@ -2235,6 +2411,7 @@ components:
         statisticName:
           type: string
       required:
+      - anonymized
       - reportSeriesEntries
       - resolvedUsers
       - statisticId
@@ -2839,6 +3016,8 @@ components:
     StatisticInfo:
       type: object
       properties:
+        anonymized:
+          type: boolean
         createdAt:
           type: string
           format: date-time
@@ -2859,6 +3038,7 @@ components:
           type: string
           format: uuid
       required:
+      - anonymized
       - createdAt
       - id
       - name
@@ -2886,6 +3066,7 @@ components:
       enum:
       - REPORTS
       - CLONE_STATISTIC
+      - FAKE_ANONYMIZATION
     TableColumnFilterParameter:
       type: object
       discriminator:
@@ -3043,6 +3224,15 @@ components:
     UpdateEvaluationRequest:
       type: object
       properties:
+        name:
+          type: string
+      required:
+      - name
+    UpdateEvaluationTemplateRequest:
+      type: object
+      properties:
+        description:
+          type: string
         name:
           type: string
       required:

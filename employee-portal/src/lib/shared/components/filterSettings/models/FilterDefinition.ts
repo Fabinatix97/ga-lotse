@@ -6,6 +6,7 @@
 import { DateSpanFilterDefinition } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
 import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 import { NumberFilterDefinition } from "@/lib/shared/components/filterSettings/models/NumberFilter";
+import { YearFilterDefinition } from "@/lib/shared/components/filterSettings/models/YearFilter";
 
 import { DateFilterDefinition } from "./DateFilter";
 import { EnumSingleFilterDefinition } from "./EnumSingleFilter";
@@ -22,4 +23,5 @@ export type FilterDefinition =
   | EnumSingleFilterDefinition
   | DateFilterDefinition
   | DateSpanFilterDefinition
-  | NumberFilterDefinition;
+  | NumberFilterDefinition
+  | YearFilterDefinition;

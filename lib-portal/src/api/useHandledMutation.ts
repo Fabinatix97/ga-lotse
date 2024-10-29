@@ -42,7 +42,7 @@ export function useHandledMutation<
         action: getErrorAction(errorCode),
       });
     }),
-    onSuccess: runBefore(options.onSuccess, () => {
+    onMutate: runBefore(options.onMutate, () => {
       alert.close();
     }),
   });
@@ -52,7 +52,7 @@ function runBefore<const TParams extends unknown[]>(
   handler: ((...params: TParams) => unknown) | undefined,
   beforeHandler: (...params: TParams) => unknown,
 ) {
-  return (...params: TParams) => {
+  return (...params: TParams): undefined => {
     beforeHandler(...params);
     if (handler !== undefined) {
       handler(...params);

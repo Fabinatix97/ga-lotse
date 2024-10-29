@@ -34,7 +34,7 @@ public class ResolverFactory {
   public static DnsAddressResolverGroup useUpstreamDns(String dnsServer) {
     DnsNameResolverBuilder dnsResolverBuilder =
         new DnsNameResolverBuilder()
-            .channelType(
+            .datagramChannelType(
                 Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class);
     List<InetSocketAddress> dnsServers = new ArrayList<>();
     if (!isBlank(dnsServer)) {
@@ -54,7 +54,7 @@ public class ResolverFactory {
     }
     return new DnsAddressResolverGroup(
         new DnsNameResolverBuilder()
-            .channelType(
+            .datagramChannelType(
                 Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class)
             .hostsFileEntriesResolver((inetHost, resolvedAddressTypes) -> resolvedInetAddress)
             .nameServerProvider(new SequentialDnsServerAddressStreamProvider(resolvedAddress)));

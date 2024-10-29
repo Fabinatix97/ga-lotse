@@ -97,6 +97,7 @@ function NavMenuItem({
           }}
         >
           <Typography
+            component="p"
             level="h4"
             fontWeight={selected ? "700" : "500"}
             sx={{

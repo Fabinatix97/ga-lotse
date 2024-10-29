@@ -38,9 +38,15 @@ export enum Membership {
   Leave = "leave",
   Invite = "invite",
   SelfLeave = "self_leave",
+  Remove = "remove",
 }
 
 export enum InfoPanelView {
   RoomInfo = "ROOM_INFO",
   UserInfo = "USER_INFO",
+  AddChatMember = "ADD_CHAT_MEMBER",
+  AssignAdminLevel = "ASSIGN_ADMIN_LEVEL",
+  RenameGroupChat = "RENAME_GROUP_CHAT",
+  AdminSettings = "ADMIN_SETTINGS",
+  RoomAvatar = "ROOM_AVATAR",
 }

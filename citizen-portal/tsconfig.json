@@ -19,7 +19,7 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "vitest.config.ts",
-    ".eslintrc.cjs",
+    "eslint.config.js",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/env/*.js"

@@ -71,7 +71,7 @@ export function DetailsCell({
               level="title-md"
               sx={{
                 width: avoidWrap ? "fit-content" : undefined,
-                textWrap: "pretty",
+                textWrap: "balance",
                 hyphens: "auto",
                 ...valueSx,
               }}

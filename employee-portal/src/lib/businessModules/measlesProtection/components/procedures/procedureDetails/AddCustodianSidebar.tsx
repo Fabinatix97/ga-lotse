@@ -5,6 +5,7 @@
 
 import { ApiDraftMeaslesProcedure } from "@eshg/employee-portal-api/measlesProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { isAdult } from "@eshg/lib-portal/helpers/dateTime";
 import { FormikErrors } from "formik";
 
 import { useAddCustodianMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
@@ -26,12 +27,6 @@ export function AddCustodianSidebar({
   const snackbar = useSnackbar();
   function handleClose() {
     setOpen(false);
-  }
-
-  function isAdult(dateOfBirth: Date) {
-    const eighteenYearsAgo = new Date();
-    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
-    return dateOfBirth <= eighteenYearsAgo;
   }
 
   function validateCustodianAge(person: LegacyPerson) {

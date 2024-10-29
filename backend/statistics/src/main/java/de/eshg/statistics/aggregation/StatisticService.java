@@ -11,9 +11,6 @@ import static de.eshg.statistics.persistence.entity.AggregationResultPendingStat
 import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.TABLE_ROWS_REMOVAL;
 
 import de.eshg.base.SortDirection;
-import de.eshg.base.user.UserApi;
-import de.eshg.base.user.api.GetUsersRequest;
-import de.eshg.base.user.api.GetUsersResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -22,6 +19,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.EvaluationTemplateService;
+import de.eshg.statistics.StatisticUserService;
 import de.eshg.statistics.api.AbstractAddStatisticRequest;
 import de.eshg.statistics.api.AbstractUpdateStatisticRequest;
 import de.eshg.statistics.api.AddStatisticWithDataSourcesRequest;
@@ -63,13 +61,13 @@ import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
+import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
 import de.eshg.statistics.persistence.repository.StatisticRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +90,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StatisticService {
   private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
   private final StatisticRepository statisticRepository;
-  private final UserApi userApiClient;
+  private final StatisticUserService userService;
   private final TableRowRepository tableRowRepository;
   private final EvaluationTemplateService evaluationTemplateService;
   private final DataSourceValidator dataSourceValidator;
@@ -100,13 +98,13 @@ public class StatisticService {
 
   public StatisticService(
       StatisticRepository statisticRepository,
-      UserApi userApiClient,
+      StatisticUserService userService,
       TableRowRepository tableRowRepository,
       EvaluationTemplateService evaluationTemplateService,
       DataSourceValidator dataSourceValidator,
       DataAggregationService dataAggregationService) {
     this.statisticRepository = statisticRepository;
-    this.userApiClient = userApiClient;
+    this.userService = userService;
     this.tableRowRepository = tableRowRepository;
     this.evaluationTemplateService = evaluationTemplateService;
     this.dataSourceValidator = dataSourceValidator;
@@ -127,14 +125,14 @@ public class StatisticService {
                 addStatisticWithTemplateRequest.templateId());
         DataSourceDto dataSourceDto =
             StatisticMapper.mapToDataSourceCode(evaluationTemplate.dataSources().getFirst());
-        dataSourceValidator.validateDataSources(
-            List.of(dataSourceDto),
-            dataSourceValidator.getRelevantAvailableDataSources(List.of(dataSourceDto)));
+        dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(
+            List.of(dataSourceDto));
         yield addStatistic(
             dataSourceDto,
             addStatisticWithTemplateRequest.name(),
             addStatisticWithTemplateRequest.timeRangeStart(),
             addStatisticWithTemplateRequest.timeRangeEnd(),
+            addStatisticWithTemplateRequest.anonymized(),
             addStatisticWithTemplateRequest.templateId());
       }
     };
@@ -143,8 +141,8 @@ public class StatisticService {
   private UUID addStatistic(AddStatisticWithDataSourcesRequest request) {
     UUID templateId = null;
     List<AvailableDataSource> relevantAvailableDataSources =
-        dataSourceValidator.getRelevantAvailableDataSources(request.dataSources());
-    dataSourceValidator.validateDataSources(request.dataSources(), relevantAvailableDataSources);
+        dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(
+            request.dataSources());
 
     if (request.templateName() != null) {
       templateId =
@@ -161,6 +159,7 @@ public class StatisticService {
         request.name(),
         request.timeRangeStart(),
         request.timeRangeEnd(),
+        request.anonymized(),
         templateId);
   }
 
@@ -169,10 +168,24 @@ public class StatisticService {
       String name,
       Instant timeRangeStart,
       Instant timeRangeEnd,
+      boolean anonymized,
       UUID templateId) {
-    return addStatistic(
-        templateId,
-        dataAggregationService.createStatistic(dataSource, name, timeRangeStart, timeRangeEnd));
+    EvaluationTemplate evaluationTemplate = null;
+    if (templateId != null) {
+      evaluationTemplate = evaluationTemplateService.getEvaluationTemplateInternal(templateId);
+    }
+    Statistic statistic =
+        dataAggregationService.createStatistic(
+            dataSource, name, timeRangeStart, timeRangeEnd, anonymized);
+    if (evaluationTemplate != null) {
+      evaluationTemplate
+          .getAnalysisTemplates()
+          .forEach(
+              analysisTemplate ->
+                  EvaluationService.addEvaluationAndDiagramsWithoutData(
+                      statistic, analysisTemplate));
+    }
+    return addStatistic(templateId, statistic);
   }
 
   private UUID addStatistic(UUID templateId, Statistic statistic) {
@@ -246,18 +259,7 @@ public class StatisticService {
         statisticStream
             .map(AbstractAggregationResult::getCreatedByUserId)
             .collect(Collectors.toSet());
-    return getResolvedUsers(userIds);
-  }
-
-  Map<UUID, UserDto> getResolvedUsers(Set<UUID> userIds) {
-    if (userIds.isEmpty()) {
-      return Collections.emptyMap();
-    } else {
-      GetUsersResponse getUsersResponse =
-          userApiClient.getUsersBulk(new GetUsersRequest(userIds, true));
-      return getUsersResponse.users().stream()
-          .collect(Collectors.toMap(UserDto::userId, userDto -> userDto));
-    }
+    return userService.getResolvedUsers(userIds);
   }
 
   @Transactional(readOnly = true)
@@ -443,9 +445,13 @@ public class StatisticService {
         statistic.getReportSeriesList().stream().map(ReportMapper::mapToApi).toList();
     Set<UUID> userIds =
         reportSeriesDtos.stream().map(ReportSeriesDto::userId).collect(Collectors.toSet());
-    Map<UUID, UserDto> resolvedUsers = getResolvedUsers(userIds);
+    Map<UUID, UserDto> resolvedUsers = userService.getResolvedUsers(userIds);
     return new GetReportSeriesEntriesOfStatisticResponse(
-        statistic.getExternalId(), statistic.getName(), reportSeriesDtos, resolvedUsers);
+        statistic.getExternalId(),
+        statistic.getName(),
+        statistic.isAnonymized(),
+        reportSeriesDtos,
+        resolvedUsers);
   }
 
   static boolean hasNoDiagrams(Statistic statistic) {

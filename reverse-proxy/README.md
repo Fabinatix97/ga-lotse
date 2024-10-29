@@ -1,18 +1,6 @@
-## Components
+# Reverse Proxy Architecture
 
-### Current architecture
-
-```mermaid
-flowchart LR
-    B[Browser] -->|HTTPS| F([Frontend Server<br/>with Next Auth])
-    F --> BM(Base Module)
-    F --> FM1(Business Module 1)
-    F --> FM2(Business Module 2)
-    FM1 --> BM
-    FM2 --> BM
-```
-
-### New architecture
+## Component Overview
 
 ```mermaid
 flowchart LR
@@ -27,7 +15,7 @@ flowchart LR
     style AS fill:#aadab4
 ```
 
-### New version (more details)
+## Component Overview with more details
 
 ```mermaid
 flowchart LR
@@ -50,7 +38,7 @@ flowchart LR
     style AS fill:#aadab4
 ```
 
-### New version (communication)
+## Communication
 
 ```mermaid
 flowchart LR
@@ -122,6 +110,7 @@ sequenceDiagram
 ```
 
 ## Backend Access Sequence Diagram
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -139,6 +128,7 @@ sequenceDiagram
 ```
 
 ## Logout
+
 ```mermaid
 sequenceDiagram
     actor B as Browser

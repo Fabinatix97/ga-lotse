@@ -12,7 +12,7 @@ import {
   EditorApiInterface,
 } from "@eshg/employee-portal-api/libEditor";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Grid } from "@mui/joy";
+import { Box } from "@mui/joy";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -198,33 +198,72 @@ export function ContentEditor({
   }, [scrollToElement]);
 
   return (
-    <Grid container m={2} spacing={3} sx={{ overflow: "hidden" }}>
-      <Grid
-        xs={3}
-        sx={{ flexGrow: "1 !important", maxHeight: "100%", overflow: "hidden" }}
+    <Box
+      sx={{
+        maxHeight: "100%",
+        overflow: "hidden",
+        display: "grid",
+        gridTemplateColumns: {
+          xxs: "1fr 1fr",
+          sm: "3fr 1fr",
+          md: "3fr 2fr",
+          lg: "1fr 2fr 1fr",
+        },
+        gridTemplateRows: {
+          xxs: "1fr 2fr",
+          lg: "1fr",
+        },
+        gridTemplateAreas: {
+          xxs: '"display palette" "display property" "display property"',
+          lg: '"palette display property"',
+        },
+      }}
+      padding={2}
+      gap={3}
+    >
+      <Box
+        sx={{
+          maxHeight: "100%",
+          overflow: "hidden",
+          gridArea: "palette",
+        }}
       >
         <ContentElementPalette
           palette={palette}
           onItemAdd={handleAddPaletteItem}
-          sx={{ maxHeight: "100%", overflow: "hidden" }}
+          sx={{
+            maxHeight: "100%",
+            overflow: "auto",
+            padding: { xxs: 2, lg: 3 },
+          }}
         />
-      </Grid>
-      <Grid
-        xs={6}
+      </Box>
+      <Box
         ref={contentDisplay}
-        sx={{ flexGrow: "1 !important", maxHeight: "100%", overflow: "hidden" }}
+        sx={{
+          maxHeight: "100%",
+          overflow: "hidden",
+          gridArea: "display",
+        }}
       >
         <ContentDisplay
           elements={elements}
           selectedElement={selectedElement}
           onElementSelected={setSelectedElement}
-          sx={{ maxHeight: "100%", overflow: "auto" }}
+          sx={{
+            maxHeight: "100%",
+            overflow: "auto",
+            padding: { xxs: 2, lg: 3 },
+          }}
           imagesBasePath={imagesBasePath}
         />
-      </Grid>
-      <Grid
-        xs={3}
-        sx={{ flexGrow: "1 !important", maxHeight: "100%", overflow: "hidden" }}
+      </Box>
+      <Box
+        sx={{
+          maxHeight: "100%",
+          overflow: "hidden",
+          gridArea: "property",
+        }}
       >
         <ContentElementPropertySheet
           element={selectedElement}
@@ -232,10 +271,14 @@ export function ContentEditor({
           onMoveDown={handleMoveDown}
           onDelete={handleDelete}
           onUpdate={handleUpdate}
-          sx={{ maxHeight: "100%", overflow: "auto" }}
+          sx={{
+            maxHeight: "100%",
+            overflow: "auto",
+            padding: { xxs: 2, lg: 3 },
+          }}
         />
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 }
 

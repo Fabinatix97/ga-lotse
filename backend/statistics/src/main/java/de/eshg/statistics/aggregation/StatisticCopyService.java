@@ -96,6 +96,7 @@ public class StatisticCopyService {
     copy.setPendingState(AggregationResultPendingState.COPY_ONGOING);
     copy.setTimeRangeStart(original.getTimeRangeStart());
     copy.setTimeRangeEnd(original.getTimeRangeEnd());
+    copy.setAnonymized(original.isAnonymized());
     copy.setName(cloneStatisticRequest.clonedStatisticName());
     copy.setNumberOfTableRows(original.getNumberOfTableRows());
     copy.addTableColumns(copyTableColumns(original.getTableColumns()));

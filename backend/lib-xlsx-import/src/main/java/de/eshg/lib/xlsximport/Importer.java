@@ -9,7 +9,6 @@ import static de.eshg.lib.xlsximport.ImportStatus.EXCEPTION;
 import static de.eshg.lib.xlsximport.ImportStatus.MERGE_FAILED;
 import static de.eshg.lib.xlsximport.util.XlsxUtil.writeValue;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.io.ByteArrayOutputStream;
@@ -164,15 +163,17 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
     };
   }
 
-  protected void writeMergedFailedStatusInSheet(List<T> mergeableRows, List<UUID> failedIds) {
-    for (UUID uuid : failedIds) {
-      Row row =
-          mergeableRows.stream()
-              .filter(values -> Objects.equals(uuid, values.getProcedureId()))
-              .collect(StreamUtil.toSingleElement())
-              .getRow();
-      deleteProcedureId(row);
-      writeStatusAndReferenceId(row, MERGE_FAILED, uuid);
+  protected void writeMergedFailedStatusInSheet(
+      List<T> mergeableRows, List<UUID> failedProcedureIds) {
+    for (UUID failedProcedureId : failedProcedureIds) {
+      mergeableRows.stream()
+          .filter(rowValues -> Objects.equals(failedProcedureId, rowValues.getProcedureId()))
+          .map(RowValues::getRow)
+          .forEach(
+              row -> {
+                deleteProcedureId(row);
+                writeStatusAndReferenceId(row, MERGE_FAILED, failedProcedureId);
+              });
     }
   }
 

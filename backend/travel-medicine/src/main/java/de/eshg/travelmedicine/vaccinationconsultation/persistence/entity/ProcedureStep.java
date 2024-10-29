@@ -103,16 +103,14 @@ public class ProcedureStep extends GloballyUniqueEntityBase implements EntityWit
 
   public ProcedureStep() {}
 
-  public static ProcedureStep createInitialProcedureStep(
-      AppointmentType appointmentType, LocalDate earliestDate) {
-    return new ProcedureStep(appointmentType, false, earliestDate);
+  public static ProcedureStep createInitialProcedureStep(AppointmentType appointmentType) {
+    return new ProcedureStep(appointmentType, false, null);
   }
 
   public static ProcedureStep createFollowupProcedureStep(LocalDate earliestDate) {
     return new ProcedureStep(AppointmentType.VACCINATION, true, earliestDate);
   }
 
-  // initial procedure step only
   protected ProcedureStep(
       AppointmentType appointmentType, boolean isFollowUp, LocalDate earliestDate) {
     this.appointmentType = appointmentType;

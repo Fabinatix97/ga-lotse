@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1727415210291-1">
+    <addColumn tableName="file">
+      <column name="deletion_approval_request_id" type="int8"/>
+    </addColumn>
+    <sql>
+      update file
+      set deletion_approval_request_id = fdar.id from file_deletion_approval_request fdar
+      where file.id = fdar.file_id;
+    </sql>
+    <addUniqueConstraint columnNames="deletion_approval_request_id"
+      constraintName="file_deletion_approval_request_id_key" tableName="file"/>
+    <addForeignKeyConstraint baseColumnNames="deletion_approval_request_id"
+      baseTableName="file"
+      constraintName="fk_file_file_deletion_approval_request" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+      referencedColumnNames="id"
+      referencedTableName="file_deletion_approval_request" validate="true"/>
+    <dropForeignKeyConstraint baseTableName="file_deletion_approval_request"
+      constraintName="fk_file_deletion_approval_request_file"/>
+    <dropUniqueConstraint
+      constraintName="file_deletion_approval_request_file_id_key"
+      tableName="file_deletion_approval_request"/>
+    <dropColumn columnName="file_id"
+      tableName="file_deletion_approval_request"/>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1727415210291-2">
+    <addColumn tableName="manual_progress_entry">
+      <column name="deletion_approval_request_id" type="int8"/>
+    </addColumn>
+    <sql>
+      update manual_progress_entry
+      set deletion_approval_request_id = mpdar.id from manual_progress_entry_deletion_approval_request mpdar
+      where manual_progress_entry.id = mpdar.manual_progress_entry_id
+    </sql>
+    <addUniqueConstraint columnNames="deletion_approval_request_id"
+      constraintName="manual_progress_entry_deletion_approval_request_id_key"
+      tableName="manual_progress_entry"/>
+    <addForeignKeyConstraint baseColumnNames="deletion_approval_request_id"
+      baseTableName="manual_progress_entry"
+      constraintName="fk_manual_progress_entry_manual_progress_entry_deletion_approval_request"
+      deferrable="false" initiallyDeferred="false" onDelete="NO ACTION"
+      onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="manual_progress_entry_deletion_approval_request"
+      validate="true"/>
+    <dropForeignKeyConstraint
+      baseTableName="manual_progress_entry_deletion_approval_request"
+      constraintName="fk_manual_progress_entry_deletion_approval_request_manual_progr"/>
+    <dropUniqueConstraint
+      constraintName="manual_progress_entry_deletion_app_manual_progress_entry_id_key"
+      tableName="manual_progress_entry_deletion_approval_request"/>
+    <dropColumn columnName="manual_progress_entry_id"
+      tableName="manual_progress_entry_deletion_approval_request"/>
+  </changeSet>
+</databaseChangeLog>

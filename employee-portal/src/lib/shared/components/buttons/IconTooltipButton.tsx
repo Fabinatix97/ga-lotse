@@ -75,7 +75,16 @@ const IconButton = forwardRef<
   }>
 >(function IconButton(props, ref) {
   return (
-    <JoyIconButton color="primary" size="sm" {...props} ref={ref}>
+    <JoyIconButton
+      color="primary"
+      size="sm"
+      sx={{
+        // shift up by the extra padding of the button
+        marginY: -1,
+      }}
+      {...props}
+      ref={ref}
+    >
       {props.children}
     </JoyIconButton>
   );

@@ -11,10 +11,10 @@ When flakiness comes from a high workload on the machine running the test (e.g. 
 
 [source, shell]
 ----
-stress -c 16
+stress --cpu 16
 ----
 
-`-c` denotes the number of CPUs to put under stress. This value is depending on your system. In most cases, the number of CPUs available on your system is a good choice.
+`--cpu` denotes the number of CPUs to put under stress. This value is depending on your system. In most cases, the number of CPUs available on your system is a good choice.
 
 `stress` can also be used to stress your local memory and hard drive. However, stressing the CPU is usually sufficient to reproduce flakiness.
 

@@ -8,6 +8,7 @@ package de.eshg.statistics.aggregation;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.statistics.StatisticUserService;
 import de.eshg.statistics.api.AddDiagramRequest;
 import de.eshg.statistics.api.EvaluationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
@@ -60,7 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportService {
   private final ReportRepository reportRepository;
   private final ReportSeriesRepository reportSeriesRepository;
-  private final StatisticService statisticService;
+  private final StatisticUserService userService;
   private final Clock clock;
   private final DataAggregationService dataAggregationService;
   private final EvaluationService evaluationService;
@@ -70,13 +71,13 @@ public class ReportService {
   public ReportService(
       ReportRepository reportRepository,
       ReportSeriesRepository reportSeriesRepository,
-      StatisticService statisticService,
+      StatisticUserService userService,
       Clock clock,
       DataAggregationService dataAggregationService,
       EvaluationService evaluationService) {
     this.reportRepository = reportRepository;
     this.reportSeriesRepository = reportSeriesRepository;
-    this.statisticService = statisticService;
+    this.userService = userService;
     this.clock = clock;
     this.dataAggregationService = dataAggregationService;
     this.evaluationService = evaluationService;
@@ -116,7 +117,7 @@ public class ReportService {
     Set<UUID> userIds = new HashSet<>();
     userIds.add(reportSeriesUserId);
     userIds.add(report.getCreatedByUserId());
-    Map<UUID, UserDto> resolvedUsers = statisticService.getResolvedUsers(userIds);
+    Map<UUID, UserDto> resolvedUsers = userService.getResolvedUsers(userIds);
     List<EvaluationDto> evaluations = EvaluationMapper.getEvaluations(report.getEvaluations());
 
     return new GetReportDetailPageResponse(

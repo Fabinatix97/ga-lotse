@@ -4,7 +4,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <#-- @ftlvariable name="sender" type="de.eshg.stiprotection.pdf.identification.DocumentSender" -->
-<#-- @ftlvariable name="appointment" type="de.eshg.stiprotection.pdf.identification.Appointment" -->
+<#-- @ftlvariable name="appointment" type="de.eshg.stiprotection.pdf.identification.ConsultationAppointment" -->
 <html xml:lang="de" lang="de">
   <head>
     <link rel="stylesheet" type="text/css" href="anon-ident.css"/>
@@ -18,7 +18,7 @@
 
     <p>Vielen Dank, dass Sie unser anonymes Beratungsangebot in Anspruch nehmen.</p>
 
-    <p>Unten stehend finden Sie Ihre Ticketnummer. Damit können Sie</p>
+    <p>Unten stehend finden Sie Ihren Anmeldecode. Damit können Sie</p>
 
     <ul>
       <li>sich vor Ort bei Mitarbeitenden des Gesundheitsamts anonym bei Ihrer Untersuchung und Ihrem Beratungsgespräch
@@ -28,8 +28,8 @@
       <li>nach der Untersuchung online einsehen, ob Ergebnisse für Ihren Vorgang vorliegen.</li>
     </ul>
 
-    <p>Bewahren Sie die Ticketnummer gut auf und achten Sie darauf, dass dieser nicht in die Hände von unbefugten
-      Personen gelangt. Wenn Sie zu Ihrem Termin erscheinen, bringen Sie bitte Ihre Ticketnummer mit.
+    <p>Bewahren Sie den Anmeldecode gut auf und achten Sie darauf, dass dieser nicht in die Hände von unbefugten
+      Personen gelangt. Wenn Sie zu Ihrem Termin erscheinen, bringen Sie bitte Ihren Anmeldecode mit.
     </p>
 
     <table class="highlight">
@@ -43,7 +43,7 @@
               <td style="width: 300px;">
                 ${appointment.date}
                 <br/>
-                ${appointment.time()} Uhr
+                ${appointment.time} Uhr
                 <br/>
                 <span>Planen Sie für den Termin inkl. Wartezeit bitte etwa ${appointment.durationMinutes} Minuten ein.</span>
               </td>
@@ -52,7 +52,9 @@
                 <br/>
                 ${sender.department.street} ${sender.department.houseNumber}
                 <br/>
-                ${appointment.room()}
+                <#if appointment.location??>
+                  ${appointment.location}
+                </#if>
                 <br/>
                 ${sender.department.postalCode} ${sender.department.city}
               </td>
@@ -65,8 +67,8 @@
               <td style="width: 200px;">
                 <div>URL</div>
                 <div class="officeInfoContent">${appointment.url}</div>
-                <div style="padding-top: 20px;">Ticketnummer</div>
-                <div class="ticket-number">${appointment.ticketNumber}</div>
+                <div style="padding-top: 20px;">Anmeldecode</div>
+                <div class="registration-code">${appointment.registrationCode()}</div>
               </td>
               <td style="width: 300px;">
                 <span>Über die links stehende URL können Sie nach der Untersuchung Informationen erhalten, ob Ergebnisse vorliegen.
@@ -74,7 +76,7 @@
                 <br/>
                 <ol>
                   <li>Scannen Sie mit Ihrem Smartphone den QR&#8209;Code oder rufen Sie die nebenstehende URL auf.</li>
-                  <li>Geben Sie die Ticketnummer und Ihr Passwort ein.</li>
+                  <li>Geben Sie den Anmeldecode und Ihr Passwort ein.</li>
                 </ol>
               </td>
             </tr>
@@ -86,7 +88,7 @@
     <p>
       Wichtig: Um absolute Anonymität zu gewährleisten, fragen wir Sie niemals nach Ihren Kontaktdaten,
       Ausweisdokumenten oder Versicherungskarten. Aus diesem Grund erhalten Sie keine Benachrichtigung, wenn Ergebnisse
-      vorliegen. Bitte rufen Sie proaktiv die genannte Website auf und geben Sie Ihre Ticketnummer ein, um Ihre
+      vorliegen. Bitte rufen Sie proaktiv die genannte Website auf und geben Sie Ihren Anmeldecode ein, um Ihre
       Ergebnisse einzusehen.
     </p>
     <p>

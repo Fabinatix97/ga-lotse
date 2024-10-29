@@ -362,7 +362,7 @@ export function mapToDepartmentName(
   }
 }
 
-export function getDepartmentNameFromUserId(userId?: string) {
+export function getDepartmentNameFromUserId(userId?: string | null) {
   if (!userId) return;
 
   const splittedName = userId.split(":");
@@ -403,8 +403,7 @@ export function getRoomAvatarUrl(
   const homeserverUrl = matrixClient.getHomeserverUrl();
   const roomAvatarUrl = room.getAvatarUrl(homeserverUrl, 40, 40, "scale", true);
 
-  const imageUrl = getImageUrl(matrixClient, roomAvatarUrl);
-  return imageUrl;
+  return getImageUrl(matrixClient, roomAvatarUrl);
 }
 
 export function getMemberAvatarUrl(
@@ -447,26 +446,22 @@ export function allMessagesRead(
 
 export async function reassignAdminRole({
   matrixClient,
-  newAdminId,
-  prevAdminId,
+  users,
   roomId,
 }: {
   matrixClient: MatrixClient;
-  newAdminId: string;
-  prevAdminId: string;
+  users: Record<string, number>;
   roomId: string;
 }) {
-  const powerLevelsContent = {
-    users: {
-      [prevAdminId]: 0,
-      [newAdminId]: 100,
-    },
-  };
-  await matrixClient.sendStateEvent(
+  const powerLevels = await matrixClient.getStateEvent(
     roomId,
     EventType.RoomPowerLevels,
-    powerLevelsContent,
+    "",
   );
+  await matrixClient.sendStateEvent(roomId, EventType.RoomPowerLevels, {
+    ...powerLevels,
+    users,
+  });
 }
 
 export function sortMessages<T extends ChatSystemMessage | Message>(
@@ -543,12 +538,19 @@ export function getReadReceipts(
   );
 }
 
-export function clearLoginToken() {
-  const loginTokenParamName = "loginToken";
+export function clearSearchParam(paramName: string) {
   const url = new URL(window.location.href);
-  const loginTokenParam = url.searchParams.get(loginTokenParamName);
-  if (isNonNullish(loginTokenParam)) {
-    url.searchParams.delete(loginTokenParamName);
+  const searchParam = url.searchParams.get(paramName);
+  if (isNonNullish(searchParam)) {
+    url.searchParams.delete(paramName);
     window.history.replaceState(null, "", url.href);
   }
+}
+
+export function clearLoginToken() {
+  return clearSearchParam("loginToken");
+}
+
+export function clearUserIdParam() {
+  return clearSearchParam("userId");
 }

@@ -7,6 +7,7 @@
 
 import { Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useId } from "react";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useDepartmentApi } from "@/lib/shared/api/clients";
@@ -25,12 +26,13 @@ export default function CitizenHomePage() {
   const { data: departmentInfo } = useSuspenseQuery(
     getDepartmentInfoQuery(departmentApi),
   );
+  const titleId = useId();
 
   return (
     <PageLayout banner="private">
       <PageContent spacing="lg" spaceContentToSide>
-        <section>
-          <Typography component="h2" level="h2" mb={3}>
+        <section aria-labelledby={titleId}>
+          <Typography component="h2" level="h2" mb={3} id={titleId}>
             {t("private_person.landing_page.header")}
           </Typography>
           <Typography>

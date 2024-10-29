@@ -49,15 +49,14 @@ export function ProcedureDetailsTile({
 
   async function startProcedure() {
     if (isNullish(procedure.matterOfConcern)) {
-      alert?.warning({
+      alert.warning({
         message: "Sie müssen ein Anliegen angeben.",
         closeable: true,
       });
     } else {
+      alert.close();
       await changeProcedureStatus
-        .mutateAsync(ApiGdprProcedureStatus.InProgress, {
-          onSuccess: () => alert?.close(),
-        })
+        .mutateAsync(ApiGdprProcedureStatus.InProgress)
         .catch();
     }
   }

@@ -46,7 +46,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
               // Controls the horizontal offset of the main content.
               width: {
                 xxs: "0",
-                sm: collapsed
+                lg: collapsed
                   ? sideNavigationCollapsedWidth
                   : sideNavigationWidth,
               },

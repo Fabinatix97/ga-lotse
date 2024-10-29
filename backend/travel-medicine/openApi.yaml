@@ -452,7 +452,7 @@ paths:
       - CitizenAuth
   /citizen/auth/vaccination-consultations/{procedureId}/procedure-steps/{procedureStepId}/appointment:
     delete:
-      operationId: deleteAppointment
+      operationId: deleteAppointmentCp
       parameters:
       - in: path
         name: procedureId
@@ -469,7 +469,7 @@ paths:
       responses:
         "200":
           description: OK
-      summary: Cancel an appointment.
+      summary: Cancel an appointment from citizen portal.
       tags:
       - CitizenAuth
   /citizen/auth/vaccination-consultations/{procedureId}/procedure-steps/{procedureStepId}/appointments:
@@ -577,6 +577,34 @@ paths:
                 $ref: "#/components/schemas/GetDiseasesResponse"
           description: OK
       summary: Gets all public Diseases
+      tags:
+      - CitizenPublic
+  /citizen/public/documents/privacy-notice:
+    get:
+      operationId: getPrivacyNotice
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the privacy-notice document.
+      tags:
+      - CitizenPublic
+  /citizen/public/documents/privacy-policy:
+    get:
+      operationId: getPrivacyPolicy
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the privacy-policy document.
       tags:
       - CitizenPublic
   /citizen/public/free-appointments:
@@ -1401,6 +1429,28 @@ paths:
       summary: Patches appointment data of an given procedure step
       tags:
       - ProcedureStep
+  /procedure-steps/{id}/earliest-date:
+    patch:
+      operationId: patchEarliestDate
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchEarliestDateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Patches earliest date for self booking of an given procedure step
+      tags:
+      - ProcedureStep
   /procedure-steps/{id}/services:
     get:
       operationId: getProcedureStepServices
@@ -1419,6 +1469,22 @@ paths:
                 $ref: "#/components/schemas/GetProcedureStepServicesResponse"
           description: OK
       summary: Get all services of a procedure step
+      tags:
+      - ProcedureStep
+  /procedure-steps/{procedureStepId}/appointment:
+    delete:
+      operationId: deleteAppointmentEp
+      parameters:
+      - in: path
+        name: procedureStepId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Cancel an appointment from employee portal.
       tags:
       - ProcedureStep
   /procedures:
@@ -2852,6 +2918,28 @@ paths:
         by) the VaccinationConsultation's steps.
       tags:
       - VaccinationConsultation
+  /vaccination-consultations/{procedureId}/sync-person:
+    put:
+      operationId: syncPersonData
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SyncPersonRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Synchronize patient (person) data
+      tags:
+      - VaccinationConsultation
   /vaccination-consultations/{procedureId}/travel-details:
     patch:
       operationId: updateTravelDetails
@@ -3870,7 +3958,7 @@ components:
       type: object
       properties:
         keyDocumentType:
-          $ref: "#/components/schemas/KeyDocumentType"
+          type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
         messageText:
@@ -4883,6 +4971,8 @@ components:
     GetVaccinationConsultationDetailsResponse:
       type: object
       properties:
+        createdByUserType:
+          $ref: "#/components/schemas/CreatedByUserType"
         informationStatements:
           type: array
           items:
@@ -4891,6 +4981,8 @@ components:
           $ref: "#/components/schemas/AppointmentSummary"
         patient:
           $ref: "#/components/schemas/Patient"
+        personSync:
+          $ref: "#/components/schemas/PersonSync"
         procedureId:
           type: string
           format: uuid
@@ -4903,9 +4995,11 @@ components:
         travelInformation:
           $ref: "#/components/schemas/TravelInformation"
       required:
+      - createdByUserType
       - informationStatements
       - initialAppointment
       - patient
+      - personSync
       - procedureId
       - servicePlanList
       - status
@@ -5057,6 +5151,8 @@ components:
     InformationStatement:
       type: object
       properties:
+        citizenHasAnswered:
+          type: boolean
         content:
           type: string
           maxLength: 4000
@@ -5075,6 +5171,7 @@ components:
           maxLength: 200
           minLength: 0
       required:
+      - citizenHasAnswered
       - content
       - createdAt
       - id
@@ -5187,11 +5284,6 @@ components:
       required:
       - id
       - name
-    KeyDocumentType:
-      type: string
-      enum:
-      - INVOICE
-      - REPORT
     Location:
       type: object
       description: Location defined by latitude and longitude.
@@ -5288,7 +5380,7 @@ components:
           createdByUserLastName:
             type: string
           keyDocumentType:
-            $ref: "#/components/schemas/KeyDocumentType"
+            type: string
           keyDocumentVersion:
             type: integer
             format: int32
@@ -5567,12 +5659,19 @@ components:
         durationInMinutes:
           type: integer
           format: int32
+      required:
+      - appointmentBookingType
+      - appointmentStart
+      - appointmentType
+      - durationInMinutes
+    PatchEarliestDateRequest:
+      type: object
+      properties:
         earliestDate:
           type: string
           format: date
       required:
-      - appointmentBookingType
-      - appointmentType
+      - earliestDate
     PatchManualProgressEntryRequest:
       type: object
       properties:
@@ -5882,6 +5981,21 @@ components:
       - phoneNumbers
       - referenceVersion
       - salutation
+    PersonSync:
+      type: object
+      properties:
+        fileStateId:
+          type: string
+          format: uuid
+        outdated:
+          type: boolean
+        version:
+          type: integer
+          format: int64
+      required:
+      - fileStateId
+      - outdated
+      - version
     PersonType:
       type: string
       enum:
@@ -6184,9 +6298,6 @@ components:
         durationInMinutes:
           type: integer
           format: int32
-        earliestDate:
-          type: string
-          format: date
         initialStepAppointmentType:
           $ref: "#/components/schemas/AppointmentType"
         patient:
@@ -6207,6 +6318,8 @@ components:
           $ref: "#/components/schemas/TravelType"
       required:
       - appointmentBookingType
+      - appointmentStart
+      - durationInMinutes
       - initialStepAppointmentType
       - patient
       - travelDestinations
@@ -6617,6 +6730,22 @@ components:
       - appliedServices
       - appointmentDateTime
       - procedureStepId
+    SyncPersonRequest:
+      type: object
+      properties:
+        fileStateId:
+          type: string
+          format: uuid
+        personVersion:
+          type: integer
+          format: int64
+        referenceVersion:
+          type: integer
+          format: int64
+      required:
+      - fileStateId
+      - personVersion
+      - referenceVersion
     SystemProgressEntry:
       type: object
       allOf:

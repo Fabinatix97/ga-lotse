@@ -33,7 +33,9 @@ public interface ResourceRepository
     JOIN FETCH r.versions v
     WHERE LOWER(v.fileName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
     OR LOWER(v.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+    OR LOWER(v.versionName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
     ORDER BY v.publicationDate DESC
     """)
-  List<Resource> findByResourceNameOrVersionDescription(@Param("searchTerm") String searchTerm);
+  List<Resource> findByResourceNameOrVersionNameOrDescription(
+      @Param("searchTerm") String searchTerm);
 }

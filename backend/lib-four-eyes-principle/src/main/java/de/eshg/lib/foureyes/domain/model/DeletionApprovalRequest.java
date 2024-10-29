@@ -12,10 +12,10 @@ import jakarta.persistence.MappedSuperclass;
 public abstract class DeletionApprovalRequest<E extends LockableEntity & EntityWithExternalId>
     extends ApprovalRequest<E> {
 
-  public abstract void setEntity(E entity);
-
   @Override
   public Operation getOperation() {
     return Operation.DELETE;
   }
+
+  public abstract void updateEntity(E entity);
 }

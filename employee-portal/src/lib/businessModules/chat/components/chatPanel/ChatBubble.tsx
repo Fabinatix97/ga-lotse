@@ -122,6 +122,7 @@ export function ChatBubble({
           <ReadingReceipt
             isReadReceiptEnabled={userSettings.showReadConfirmation}
             isRead={hasNoReceipts ? false : isMessageRead}
+            isSent={message.sent}
           />
         )}
       </Box>

@@ -38,4 +38,6 @@ public sealed interface AbstractAddStatisticRequest
   Instant timeRangeStart();
 
   Instant timeRangeEnd();
+
+  boolean anonymized();
 }

@@ -56,11 +56,7 @@ public class KeycloakMapper {
     return roles.stream().map(KeycloakRole::getKeycloakName).toList();
   }
 
-  public static List<ModuleMemberGroup> mapModulesToGroups(List<BusinessModule> modules) {
-    return modules.stream().map(KeycloakMapper::mapModuleToGroup).toList();
-  }
-
-  private static ModuleMemberGroup mapModuleToGroup(BusinessModule module) {
+  public static ModuleMemberGroup mapModuleToGroup(BusinessModule module) {
     return switch (module) {
       case INSPECTION -> ModuleMemberGroup.INSPECTION;
       case SCHOOL_ENTRY -> ModuleMemberGroup.SCHOOL_ENTRY;

@@ -7,10 +7,10 @@
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useGetVaccinationConsultationDetailsQuery } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
-import { calculateAge } from "@/lib/businessModules/travelMedicine/shared/helper";
 import {
   TabNavigationHeader,
   TabNavigationHeaderTypography,

@@ -258,7 +258,7 @@ public class FileStorageService {
     file.lock(true);
 
     FileDeletionApprovalRequest fileDeletionApprovalRequest = new FileDeletionApprovalRequest();
-    fileDeletionApprovalRequest.setFile(file);
+    fileDeletionApprovalRequest.updateEntity(file);
     fileDeletionApprovalRequest.setReason(reason);
 
     userHelper.getUuidsOfModuleLeaders().stream()

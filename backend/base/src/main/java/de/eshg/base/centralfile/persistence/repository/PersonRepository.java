@@ -16,8 +16,10 @@ import java.util.stream.Stream;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface PersonRepository
     extends JpaRepository<Person, UUID>, JpaSpecificationExecutor<Person> {
@@ -83,6 +85,8 @@ public interface PersonRepository
       @Param("firstNameThreshold") double firstNameThreshold,
       @Param("lastNameThreshold") double lastNameThreshold);
 
+  Optional<Person> findByExternalId(UUID externalId);
+
   @Query(
       "select p.externalId from Person p join p.referencePerson ref where ref.id = :referenceId ")
   List<UUID> findAllByReferencePersonIdOrderById(Long referenceId);
@@ -132,4 +136,8 @@ public interface PersonRepository
       and p.referencePerson is not null
       """)
   List<Person> findAllByExternalIdInAndReferencePersonIsNotNull(List<UUID> ids, Pageable pageable);
+
+  @Transactional
+  @Modifying
+  int deleteByDeleteAtBefore(Instant expirationTime);
 }

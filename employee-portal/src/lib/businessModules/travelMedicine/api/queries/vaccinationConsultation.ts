@@ -4,7 +4,6 @@
  */
 
 import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
-import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useVaccinationConsultationApi } from "@/lib/businessModules/travelMedicine/api/clients";
@@ -31,13 +30,9 @@ export function useGetAllProcedureAppointmentSummaries(
   });
 }
 
-export function useGetAllAssignableServices(
-  procedureId: string,
-  open: boolean,
-) {
+export function useGetAllAssignableServicesQuery(procedureId: string) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-
-  return useHandledBackgroundQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "getAllAssignableServices",
       procedureId,
@@ -45,9 +40,6 @@ export function useGetAllAssignableServices(
     queryFn: () =>
       vaccinationConsultationApi.getAllAssignableServices(procedureId),
     select: (response) => response.assignableServices.map(mapAssignableService),
-    enabled: open,
-    gcTime: 60000,
-    staleTime: 60000,
   });
 }
 
@@ -63,12 +55,9 @@ export function useGetVaccinationConsultationDetailsQuery(id: string) {
   });
 }
 
-export function useGetAllAvailableAppointmentsUnsuspended(
-  procedureId: string,
-  open: boolean,
-) {
+export function useGetAllAvailableAppointmentsQuery(procedureId: string) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
-  return useHandledBackgroundQuery({
+  return queryOptions({
     queryKey: vaccinationConsultationApiQueryKey([
       "getAllAvailableAppointments",
       procedureId,
@@ -76,9 +65,6 @@ export function useGetAllAvailableAppointmentsUnsuspended(
     queryFn: () =>
       vaccinationConsultationApi.getAllAvailableAppointments(procedureId),
     select: (response) => response.appointmentSummaryList.map(mapAppointment),
-    enabled: procedureId.length > 0 && open,
-    gcTime: 60000,
-    staleTime: 60000,
   });
 }
 

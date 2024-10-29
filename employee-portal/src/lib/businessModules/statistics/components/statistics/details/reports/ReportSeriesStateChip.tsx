@@ -5,12 +5,7 @@
 
 import { Chip, ChipProps } from "@mui/joy";
 
-export const ReportSeriesState = {
-  Activated: "ACTIVATED",
-  Deactivated: "DEACTIVATED",
-} as const;
-export type ReportSeriesState =
-  (typeof ReportSeriesState)[keyof typeof ReportSeriesState];
+import { ReportSeriesState } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 
 const statusNames = {
   [ReportSeriesState.Activated]: "Aktiv",

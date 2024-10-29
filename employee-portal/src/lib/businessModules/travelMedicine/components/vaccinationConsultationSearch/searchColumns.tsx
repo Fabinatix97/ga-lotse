@@ -5,11 +5,11 @@
 
 import { ApiVaccinationConsultationSearch } from "@eshg/employee-portal-api/travelMedicine";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { calculateAge } from "@eshg/lib-portal/helpers/dateTime";
 import { Chip } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { translateCreatedByUserType } from "@/lib/businessModules/travelMedicine/components/appointmentTypes/translations";
-import { calculateAge } from "@/lib/businessModules/travelMedicine/shared/helper";
 import {
   procedureStatusNames,
   statusColors,

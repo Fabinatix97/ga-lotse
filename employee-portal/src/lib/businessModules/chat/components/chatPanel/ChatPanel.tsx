@@ -44,7 +44,7 @@ export function ChatPanel({
     userSettings: { showTypingNotification },
   } = useChat();
   const { handleUserTyping } = useTyping(showTypingNotification);
-  const { handleSendMessage, messages } = useRoomMessages();
+  const { handleSendMessage } = useRoomMessages();
   const [userList, setUserList] = useState<
     (ApiUser & { department?: string })[] | undefined
   >();
@@ -127,7 +127,7 @@ export function ChatPanel({
   if (roomId && roomWithCommunicationType) {
     return (
       <>
-        <ChatPanelHeader roomId={roomId} />
+        <ChatPanelHeader roomId={roomId} room={roomWithCommunicationType} />
         <Box
           sx={{
             height: `calc(100% - ${chatColumnHeaderHeight})`,
@@ -135,7 +135,7 @@ export function ChatPanel({
             flexDirection: "column",
           }}
         >
-          <ChatMessages room={roomWithCommunicationType} messages={messages} />
+          <ChatMessages room={roomWithCommunicationType} />
           <MessageInput
             handleUserTyping={handleUserTyping}
             selectedRoomId={roomId}

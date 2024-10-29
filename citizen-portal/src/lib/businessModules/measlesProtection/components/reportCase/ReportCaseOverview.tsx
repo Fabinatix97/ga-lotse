@@ -206,20 +206,20 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                       )}
                       <DetailsField
                         label={t("affectedPerson.fields.roleStatus")}
-                        value={
+                        value={t(
                           roleStatusNames[
                             affectedPerson.roleStatus as ApiRoleStatus
-                          ]
-                        }
+                          ],
+                        )}
                       />
                       <DetailsField
                         label={t("affectedPerson.fields.reportingReason")}
-                        value={
+                        value={t(
                           reportingReasonNames[
                             affectedPerson.reportData
                               .reportingReason as ApiReportingReason
-                          ]
-                        }
+                          ],
+                        )}
                       />
                     </Grid>
                   </Sheet>

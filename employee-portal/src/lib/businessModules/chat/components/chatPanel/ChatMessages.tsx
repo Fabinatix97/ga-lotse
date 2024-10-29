@@ -5,7 +5,9 @@
 
 import { Box, Divider, List, ListItem, Typography, useTheme } from "@mui/joy";
 import { isSameDay, startOfDay } from "date-fns";
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { User } from "matrix-js-sdk/lib/matrix";
+import { Fragment, useMemo } from "react";
+import useInfiniteScroll from "react-infinite-scroll-hook";
 import {
   filter,
   find,
@@ -24,10 +26,10 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useChatSystemMessages } from "@/lib/businessModules/chat/shared/hooks/useChatSystemMessages";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
+import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoomMessages";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import {
   MentionedMember,
-  Message,
   RoomWithCommunicationType,
   isChatMessage,
   isSystemMessage,
@@ -36,13 +38,14 @@ import { getDayLabel } from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatMessagesProps {
   room: RoomWithCommunicationType;
-  messages: Message[];
 }
 
-export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
+export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
   const {
     userSettings: { showReadConfirmation },
   } = useChat();
+  const { messages, paginateMessages, isLoading, hasNextPage, error } =
+    useRoomMessages();
   const { matrixClient } = useChatClientContext();
   const loggedInUserId = matrixClient.getUserId() ?? "";
   const { messageReadsPerRoom } = useReadConfirmation(showReadConfirmation);
@@ -63,8 +66,6 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
   const { typingUsersList } = useTyping(showTypingNotification);
   const typingUsers = typingUsersList[room.room.roomId];
   const theme = useTheme();
-  const messagesWrapperRef = useRef<HTMLUListElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const { roomSystemMessages } = useChatSystemMessages();
   const chatAndSystemMessages = useMemo(() => {
     return [...messages, ...roomSystemMessages].sort((a, b) =>
@@ -78,12 +79,13 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
 
   const roomMembers = room.room.getMembers();
 
-  useEffect(() => {
-    wrapperRef.current?.scrollTo(
-      0,
-      messagesWrapperRef.current?.scrollHeight ?? 0,
-    );
-  }, [room]);
+  const [sentryRef, { rootRef }] = useInfiniteScroll({
+    loading: isLoading,
+    hasNextPage,
+    onLoadMore: paginateMessages,
+    disabled: error,
+    rootMargin: "400px 0px 0px 0px",
+  });
 
   if (!loggedInUserId) {
     return <ChatIllustrationBackground />;
@@ -95,10 +97,9 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
         overflowY: "hidden",
         flex: 1,
       }}
-      ref={wrapperRef}
     >
       <List
-        ref={messagesWrapperRef}
+        ref={rootRef}
         sx={{
           display: "flex",
           flexDirection: "column-reverse",
@@ -141,7 +142,7 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
               <ListItem
                 sx={{
                   flexDirection:
-                    "sender" in message &&
+                    message.sender instanceof User &&
                     message.sender?.userId === loggedInUserId
                       ? "row-reverse"
                       : "row",
@@ -187,6 +188,9 @@ export function ChatMessages({ room, messages }: Readonly<ChatMessagesProps>) {
             </Fragment>
           );
         })}
+        {(isLoading || hasNextPage) && (
+          <Box alignItems="center" ref={sentryRef} />
+        )}
       </List>
       {!!typingUsers?.length && (
         <Typography

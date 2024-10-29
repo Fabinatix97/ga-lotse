@@ -11,9 +11,11 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.travelmedicine.util.MappingUtil;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentSummaryDto;
+import de.eshg.travelmedicine.vaccinationconsultation.api.CreatedByUserTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetVaccinationConsultationDetailsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.InformationStatementDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PersonSyncDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ServicePlanEntryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ServiceStatusDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.TravelInformationDto;
@@ -54,6 +56,7 @@ public class VaccinationConsultationDetailsMapper {
   public GetVaccinationConsultationDetailsResponse toInterfaceType(
       VaccinationConsultation vaccinationConsultation,
       PatientDto patientDto,
+      PersonSyncDto personSync,
       ProcedureStep initialProcedureStep,
       List<ServicePlanEntry> servicePlan,
       List<InformationStatement> informationStatements) {
@@ -62,7 +65,9 @@ public class VaccinationConsultationDetailsMapper {
         vaccinationConsultation.getExternalId(),
         MappingUtil.mapEnum(ProcedureStatusDto.class, vaccinationConsultation.getProcedureStatus()),
         patientDto,
+        personSync,
         mapTravelInformationToInterfaceType(vaccinationConsultation),
+        MappingUtil.mapEnum(CreatedByUserTypeDto.class, vaccinationConsultation.getCreatedBy()),
         mapToAppointmentSummaryInterfaceType(initialProcedureStep),
         mapServicePlanToToInterfaceType(servicePlan),
         mapInformationStatementsToInterfaceType(informationStatements));

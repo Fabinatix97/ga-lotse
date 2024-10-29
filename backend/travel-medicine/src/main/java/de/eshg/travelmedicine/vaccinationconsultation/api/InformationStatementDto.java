@@ -16,5 +16,6 @@ public record InformationStatementDto(
     @NotNull UUID id,
     @NotNull @Size(max = 200) String title,
     @NotNull @Size(max = 4000) String content,
+    @NotNull boolean citizenHasAnswered,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt) {}

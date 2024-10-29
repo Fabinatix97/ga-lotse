@@ -128,7 +128,7 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
           <Typography level="body-xs">{`* ${t("common.requiredField")}`}</Typography>
         </Grid>
         <Grid xxs={12}>
-          <Alert title={t("affectedPerson.info")} color="primary" />
+          <Alert message={t("affectedPerson.info")} color="primary" />
         </Grid>
         {!isValidAffectedPerson ? (
           <Loading />
@@ -138,7 +138,7 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
               <SelectField
                 name={`affectedPersons.${currentAffectedPersonIndex}.reportData.reportingReason`}
                 label={t("affectedPerson.fields.reportingReason")}
-                options={reportingReasonOptions}
+                options={reportingReasonOptions(t)}
                 required={t("affectedPerson.fields.reportingReason_required")}
               />
             </Grid>
@@ -159,7 +159,7 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
               <SelectField
                 name={`affectedPersons.${currentAffectedPersonIndex}.roleStatus`}
                 label={t("affectedPerson.fields.roleStatus")}
-                options={roleStatusOptions}
+                options={roleStatusOptions(t)}
                 required={t("affectedPerson.fields.roleStatus_required")}
               />
             </Grid>
@@ -168,14 +168,14 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
               <SelectField
                 name={fieldName("salutation")}
                 label={t("common.personalDetails.salutation")}
-                options={salutationOptions}
+                options={salutationOptions(t)}
               />
             </Grid>
             <Grid xxs={12} xs={6}>
               <SelectField
                 name={fieldName("title")}
                 label={t("common.personalDetails.title")}
-                options={titleOptions}
+                options={titleOptions(t)}
               />
             </Grid>
             <Grid xxs={12} xs={6}>
@@ -198,7 +198,7 @@ export function AffectedPersonForm({ onCancel, sx }: AffectedPersonFormProps) {
               <SelectField
                 name={fieldName("gender")}
                 label={t("common.personalDetails.gender")}
-                options={genderOptions}
+                options={genderOptions(t)}
               />
             </Grid>
             <Grid xxs={12} xs={6}>

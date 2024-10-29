@@ -16,6 +16,7 @@ import de.eshg.statistics.api.geoshape.GeoShapeMetaInfo;
 import de.eshg.statistics.api.geoshape.GeoShapeSortKey;
 import de.eshg.statistics.api.geoshape.GeoShapeStatusDto;
 import de.eshg.statistics.api.geoshape.GetGeoShapesResponse;
+import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.GeoShape;
 import de.eshg.statistics.persistence.entity.GeoShapeStatus;
 import de.eshg.statistics.persistence.entity.GeoShape_;
@@ -69,7 +70,10 @@ public class GeoShapeService {
         PageRequest.of(
             page,
             pageSize,
-            Sort.by(mapSortDirection(sortDirection), mapSortKey(sortKey), BaseEntity_.ID));
+            Sort.by(
+                StatisticMapper.mapSortDirection(sortDirection),
+                mapSortKey(sortKey),
+                BaseEntity_.ID));
     Page<GeoShape> geoShapePage;
     if (onlyActive) {
       geoShapePage = geoShapeRepository.findAllByStatus(GeoShapeStatus.ACTIVE, pageRequest);
@@ -92,13 +96,6 @@ public class GeoShapeService {
 
   private static GeoShapeStatusDto mapStatusDto(GeoShape geoShape) {
     return GeoShapeStatusDto.valueOf(geoShape.getStatus().name());
-  }
-
-  private static Sort.Direction mapSortDirection(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case ASC -> Sort.Direction.ASC;
-      case DESC -> Sort.Direction.DESC;
-    };
   }
 
   private static String mapSortKey(GeoShapeSortKey sortKey) {

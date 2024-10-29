@@ -29,6 +29,7 @@ export interface ChatProviderContextType {
   canAccessChat: boolean;
   isSettingsLoading: boolean;
   isFeatureToggleLoading: boolean;
+  isFeatureToggleSuccess: boolean;
   messagesSidebar: { isOpen: boolean; open: () => void; close: () => void };
 }
 
@@ -50,6 +51,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
   const {
     data: featureToggleChatEnabled,
     isLoading: featureToggleChatEnabledLoading,
+    isSuccess: featureToggleChatEnabledSuccess,
   } = useIsNewFeatureEnabledUnsuspended(ApiChatFeature.ChatBase);
 
   const { data: selfUser } = useGetSelfUser();
@@ -83,6 +85,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
         canAccessChat,
         isSettingsLoading: isLoading,
         isFeatureToggleLoading: featureToggleChatEnabledLoading,
+        isFeatureToggleSuccess: featureToggleChatEnabledSuccess,
         messagesSidebar,
       }}
     >

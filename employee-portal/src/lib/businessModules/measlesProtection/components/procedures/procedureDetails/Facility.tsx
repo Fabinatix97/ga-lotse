@@ -8,17 +8,19 @@ import {
   ApiMeaslesProtectionProcedure,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { SxProps } from "@mui/joy/styles/types";
 
 import { facilityTypeNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
+import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/shared/components/detailsCard/LabeledValue";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 
-import { AddressDetails } from "./AddressDetails";
-import { FacilityContactDetails } from "./ContactDetails";
 import { FacilityContacts } from "./FacilityContact";
+
+const COLUMN_STYLE: SxProps = {
+  flexGrow: 1,
+  maxWidth: (theme) => ({ md: `calc(100%/3 - 2 * ${theme.spacing(2)})` }),
+};
 
 export function Facility({
   procedure,
@@ -35,21 +37,30 @@ export function Facility({
     procedure.facility && (
       <>
         <DetailsCard title="Einrichtung">
-          <ValueList>
-            <LabeledValue label="Name" value={facility.name} />
-            <LabeledValue
+          <CentralFileFacilityDetails
+            facility={{
+              ...procedure.facility,
+              // TODO: The API type here is wrong, these should both be lists
+              emailAddresses: isNonEmptyString(procedure.facility.emailAddress)
+                ? [procedure.facility.emailAddress]
+                : [],
+              phoneNumbers: isNonEmptyString(procedure.facility.phoneNumber)
+                ? [procedure.facility.phoneNumber]
+                : [],
+            }}
+            columnSx={COLUMN_STYLE}
+          >
+            <DetailsCell
+              name="type"
               label="Einrichtungsart"
               value={facilityTypeNames[facility.type]}
             />
-            {isNonEmptyString(facility.otherFacilityTypeInformation) && (
-              <LabeledValue
-                label="Anderer Einrichtungstyp"
-                value={facility.otherFacilityTypeInformation}
-              />
-            )}
-          </ValueList>
-          <AddressDetails address={facility.contactAddress} />
-          <FacilityContactDetails facility={procedure.facility} />
+            <DetailsCell
+              name="extra_type"
+              label="Anderer Einrichtungstyp"
+              value={facility.otherFacilityTypeInformation}
+            />
+          </CentralFileFacilityDetails>
         </DetailsCard>
         <FacilityContacts persons={facility.contactPersons} />
       </>

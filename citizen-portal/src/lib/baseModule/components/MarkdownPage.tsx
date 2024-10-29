@@ -22,7 +22,8 @@ export async function MarkdownPage({
   title: string;
 }) {
   const filePath = path.join(
-    "./public/markdown",
+    process.cwd(),
+    "markdown",
     env.MARKDOWN_PAGE_DIRECTORY,
     `${pageType}.md`,
   );

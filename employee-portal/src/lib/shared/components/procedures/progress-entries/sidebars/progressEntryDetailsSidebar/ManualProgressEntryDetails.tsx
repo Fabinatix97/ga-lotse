@@ -266,9 +266,9 @@ function ManualProgressEntryDetailsTemplate({
               <LabelValueDisplay
                 label="Dokumenttyp"
                 value={
-                  isDefined(entry.keyDocumentType)
-                    ? manualProgressEntryKeyDocumentTypes[entry.keyDocumentType]
-                    : ""
+                  manualProgressEntryKeyDocumentTypes[
+                    entry.keyDocumentType ?? ""
+                  ] ?? ""
                 }
                 endDecorator={
                   entry.keyDocumentVersion ? (

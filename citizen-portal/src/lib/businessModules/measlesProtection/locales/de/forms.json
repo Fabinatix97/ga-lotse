@@ -16,7 +16,8 @@
   "custodian": {
     "title": "Sorgeberechtigte Person",
     "info": "Die zu meldende Person ist minderjährig. Bitte tragen Sie mindestens eine sorgeberechtigte Person ein.",
-    "addressMatch": "Die Adresse entspricht der der zu meldenden Person."
+    "address_match": "Die Adresse entspricht der der zu meldenden Person.",
+    "contact_info": "Kontaktdaten"
   },
   "facility": {
     "title": "Ihre Einrichtung",
@@ -42,7 +43,9 @@
     "returnToMeaslesProtectionHome": "Zurück zur Startseite",
     "message": "{{ casesReported }} $t(common.case, {\"count\": {{ casesReported }} }) erfolgreich gemeldet",
     "reportAdditionalPerson": "Weitere Person melden",
-    "viewOpenCases": "Offenen Fälle ansehen"
+    "viewOpenCases": "Offenen Fälle ansehen",
+    "overview_text": "Ihre Daten wurden erfolgreich an uns übermittelt. Wir werden uns schnellstmöglich um Ihr Anliegen kümmern.",
+    "what_next_q": "Was möchten Sie als nächstes tun?"
   },
   "common": {
     "addressForm": {
@@ -60,6 +63,25 @@
       "postalCode_required": "Bitte eine Postleitzahl angeben.",
       "street": "Straße",
       "street_required": "Bitte eine Straße angeben."
+    },
+    "facility_types": {
+      "school": "Schule",
+      "day_nursery": "Kindertageseinrichtung und Kinderhort",
+      "daycare": "Kindertagespflege",
+      "childrens_home": "Heim",
+      "refugee_accommodation": "Gemeinschaftsunterkunft für Geflüchtete",
+      "hospital": "Krankenhaus",
+      "medical_practice": "Arztpraxis, Zahnarztpraxis oder psychotherapeutische Praxis",
+      "outpatient_surgery": "Einrichtung für ambulantes Operieren",
+      "rehabilitation_centre": "Vorsorge- oder Rehabilitationseinrichtung",
+      "dialysis_centre": "Dialyseeinrichtung",
+      "day_clinic": "Tagesklinik",
+      "maternity_centre": "Entbindungseinrichtung",
+      "other_medical_practice": "Praxis sonstiger humanmedizinischer Heilberufe",
+      "public_health_service": "Einrichtung des öffentlichen Gesundheitsdienstes",
+      "emergency_service": "Rettungsdienst",
+      "civil_protection": "Einrichtung des Zivil- und Katastrophenschutzes",
+      "other": "Andere"
     },
     "personalDetails": {
       "dateOfBirth": "Geburtsdatum",
@@ -81,7 +103,18 @@
       "salutation": "Anrede",
       "title": "Titel"
     },
-    "requiredField": "Pflichtfeld"
+    "reporting_reason": {
+      "first_vaccine": "nur 1. Impfung",
+      "medical_contraindication": "med. Kontraindikation / Attest",
+      "no_proof": "ohne Nachweis",
+      "other": "anderer Grund",
+      "unassessable_proof": "Nachweis nicht beurteilbar (z.B. unleserlich, Fremdsprache)"
+    },
+    "requiredField": "Pflichtfeld",
+    "role_status": {
+      "employee": "Beschäftigte:r",
+      "supervised": "Betreut / Bewohner:in"
+    }
   },
   "data_and_privacy": {
     "information_one": "Um den Fall zu melden, müssen Sie erst folgenden Datenschutzverordnungen zustimmen.",
@@ -91,5 +124,6 @@
     "confirm_privacy_policy": "Ich akzeptiere die Datenschutzerklärung.",
     "privacy_policy": "Zur Datenschutzerklärung",
     "confirm_required": "Bitte Zustimmung erteilen um fortzufahren."
-  }
+  },
+  "reportCaseSuccess": {}
 }

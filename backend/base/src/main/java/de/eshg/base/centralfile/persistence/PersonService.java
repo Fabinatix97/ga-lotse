@@ -32,13 +32,15 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonService {
-
+  private static final Logger log = LoggerFactory.getLogger(PersonService.class);
   public static final String MUTEX_PERSON_WRITE = "PERSON_WRITE";
   private final PersonRepository personRepository;
   private final FuzzySearchHelper fuzzySearchHelper;
@@ -233,6 +235,14 @@ public class PersonService {
 
   private Person updateFileStateAndReferencePersonWhenLocked(
       Person personFileState, Person fileStateUpdate) {
+    if (personFileState.getDataOrigin() != DataOrigin.EXTERNAL
+        && PersonDiffer.isPersonMatch(fileStateUpdate, personFileState)) {
+      log.debug(
+          "Recognized no-op update. Returning original person file state (id={})",
+          personFileState.getId());
+      return personFileState;
+    }
+
     Person referencePerson =
         personRepository
             .findReferencePersonByFileStateId(personFileState.getExternalId())
@@ -370,5 +380,14 @@ public class PersonService {
 
     Person fileState = referencePerson.cloneFromReferencePerson();
     return addPersonFileState(fileState, referencePerson);
+  }
+
+  public int deleteExpiredFileStatesAndReferences(Instant expirationTime) {
+    return mutexService.doWithLockedMutex(
+        MUTEX_PERSON_WRITE, () -> deleteExpiredFileStatesAndReferencesWhenLocked(expirationTime));
+  }
+
+  private int deleteExpiredFileStatesAndReferencesWhenLocked(Instant expirationTime) {
+    return personRepository.deleteByDeleteAtBefore(expirationTime);
   }
 }

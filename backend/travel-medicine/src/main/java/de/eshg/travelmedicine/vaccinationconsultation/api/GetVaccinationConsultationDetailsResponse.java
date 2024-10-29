@@ -15,7 +15,9 @@ public record GetVaccinationConsultationDetailsResponse(
     @NotNull UUID procedureId,
     @NotNull ProcedureStatusDto status,
     @NotNull @Valid PatientDto patient,
+    @NotNull @Valid PersonSyncDto personSync,
     @NotNull @Valid TravelInformationDto travelInformation,
+    @NotNull CreatedByUserTypeDto createdByUserType,
     @NotNull @Valid AppointmentSummaryDto initialAppointment,
     @NotNull @Valid List<ServicePlanEntryDto> servicePlanList,
     @NotNull @Valid List<InformationStatementDto> informationStatements) {}

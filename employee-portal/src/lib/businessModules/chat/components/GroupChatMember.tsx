@@ -8,7 +8,6 @@ import { IconButton, Stack, Typography } from "@mui/joy";
 import { RoomMember } from "matrix-js-sdk";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import {
   getDepartmentNameFromUserId,
   getMemberAvatarUrl,
@@ -20,21 +19,19 @@ interface GroupChatMemberProps {
   member: RoomMember;
   isRoomCreator: boolean;
   isAdmin: boolean;
+  handleKick: (userId: string) => void;
 }
 
 export function GroupChatMember({
   member,
   isRoomCreator,
   isAdmin,
-}: GroupChatMemberProps) {
+  handleKick,
+}: Readonly<GroupChatMemberProps>) {
   const usernameAndOrganisation = getDepartmentNameFromUserId(member.userId);
   const { matrixClient } = useChatClientContext();
-
   const avatarUrl = getMemberAvatarUrl(matrixClient, member);
-
-  function handleRemove() {
-    logger.debug("Remove this user", member.userId);
-  }
+  const canRemove = isAdmin && matrixClient.getUserId() !== member.userId;
 
   return (
     <Stack
@@ -71,8 +68,8 @@ export function GroupChatMember({
           {usernameAndOrganisation?.organisationName}
         </Typography>
       </Stack>
-      {isAdmin && (
-        <IconButton color="primary" onClick={handleRemove}>
+      {canRemove && (
+        <IconButton color="primary" onClick={() => handleKick(member.userId)}>
           <CloseOutlinedIcon />
         </IconButton>
       )}

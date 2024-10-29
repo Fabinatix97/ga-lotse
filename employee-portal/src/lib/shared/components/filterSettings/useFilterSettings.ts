@@ -11,6 +11,7 @@ import { ActiveFilterProps } from "@/lib/shared/components/filterSettings/Active
 import { validateDateSpan } from "@/lib/shared/components/filterSettings/DateSpanFilter";
 import { FilterSettingsProps } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheetProps } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
+import { validateYear } from "@/lib/shared/components/filterSettings/YearFilter";
 import { DateSpanFilterDefinition } from "@/lib/shared/components/filterSettings/models/DateSpanFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import {
@@ -140,6 +141,8 @@ export function useFilterSettings({
           ) as DateSpanFilterDefinition,
           nextDraftValue,
         );
+      case "Year":
+        return validateYear(nextDraftValue);
       default:
         return undefined;
     }

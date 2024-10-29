@@ -16,6 +16,7 @@ import {
   FilterTemplates,
   FilterTemplatesProps,
 } from "@/lib/shared/components/filterSettings/FilterTemplates";
+import { YearFilter } from "@/lib/shared/components/filterSettings/YearFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { FilterDraftValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import { findValueByDefinition } from "@/lib/shared/components/filterSettings/models/findValueByDefinition";
@@ -37,7 +38,7 @@ function mapDefinitionsToSearchableGroups(
     name: definition.name,
     inAccordion: isDefined(definition.inAccordion)
       ? definition.inAccordion
-      : !["EnumSingle", "Date"].includes(definition.type),
+      : !["EnumSingle", "Date", "Year"].includes(definition.type),
     items: [
       {
         key: definition.key,
@@ -132,6 +133,19 @@ export function FilterSettings(props: FilterSettingsProps) {
             case "DateSpan":
               return (
                 <DateSpanFilter
+                  definition={item.filterDefinition}
+                  value={findValueByDefinition(
+                    props.draftValues,
+                    item.filterDefinition,
+                  )}
+                  onChange={(value) =>
+                    props.onDraftValueChange(item.filterDefinition.key, value)
+                  }
+                />
+              );
+            case "Year":
+              return (
+                <YearFilter
                   definition={item.filterDefinition}
                   value={findValueByDefinition(
                     props.draftValues,

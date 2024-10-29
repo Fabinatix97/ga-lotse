@@ -97,7 +97,11 @@ public class DataAggregationService {
   }
 
   public Statistic createStatistic(
-      DataSourceDto dataSource, String name, Instant timeRangeStart, Instant timeRangeEnd) {
+      DataSourceDto dataSource,
+      String name,
+      Instant timeRangeStart,
+      Instant timeRangeEnd,
+      boolean anonymized) {
     GetSpecificDataRequest request =
         new GetSpecificDataRequest(
             timeRangeStart,
@@ -139,6 +143,7 @@ public class DataAggregationService {
     }
 
     Statistic statistic = new Statistic();
+    statistic.setAnonymized(anonymized);
     statistic.setName(name);
     statistic.setTimeRangeStart(timeRangeStart);
     statistic.setTimeRangeEnd(timeRangeEnd);

@@ -7,6 +7,7 @@ import { ApiCountryCode } from "@eshg/employee-portal-api/base";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { isValidEmailString } from "@eshg/lib-portal/helpers/email";
 import { isBlankString, isEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { isValidURL } from "@eshg/lib-portal/helpers/url";
 import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
 import { endOfDay, isPast } from "date-fns";
 import { FormikErrors } from "formik";
@@ -16,11 +17,13 @@ import { isInteger } from "@/lib/shared/helpers/guards";
 
 import { isDateTimeString, isTimeString } from "./dateTime";
 import {
+  fileExtensionChanged,
   fileHasAcceptedExtension,
   fileIsTooLarge,
   fileNameIsTooLong,
   fileNameIsValid,
   formatFileSize,
+  getExtensionFromFileName,
 } from "./file";
 
 export function validateTodayOrFutureDate(value: string) {
@@ -67,6 +70,14 @@ export function validateEmail(value: string) {
   }
 
   return "Bitte eine gültige Email angeben.";
+}
+
+export function validateURL(value: string) {
+  if (value === undefined || isEmptyString(value) || isValidURL(value)) {
+    return undefined;
+  }
+
+  return "Bitte eine gültige URL angeben.";
 }
 
 export function validateGermanZipCode(value: string) {
@@ -177,6 +188,27 @@ export function validateFile(
   }
 
   return validateFile;
+}
+
+export function validateFileName(existingFileName?: string) {
+  function validateFileName(fileName: string) {
+    if (isEmpty(fileName)) return undefined;
+
+    const file = new File([], fileName);
+    if (!fileNameIsValid(file))
+      return "Bitte einen gültigen Dateinamen auswählen.";
+    if (fileNameIsTooLong(file))
+      return "Bitte einen kürzeren Dateinamen auswählen.";
+    if (
+      existingFileName !== undefined &&
+      fileExtensionChanged(file, existingFileName)
+    ) {
+      return `Die ursprüngliche Dateiendung (.${getExtensionFromFileName(existingFileName)}) darf nicht verändert werden.`;
+    }
+    return undefined;
+  }
+
+  return validateFileName;
 }
 
 export function validateMatches(otherValue: string, errorMessage: string) {

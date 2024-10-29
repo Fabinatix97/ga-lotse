@@ -160,7 +160,7 @@ export function InformationStatementTemplateEditor(
               sections={values.sections}
               headSection={
                 <InformationStatementTemplateMetaInfo
-                  allDiseases={allDiseases.diseases}
+                  allDiseases={allDiseases}
                 />
               }
             />

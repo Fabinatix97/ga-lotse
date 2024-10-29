@@ -5,66 +5,76 @@
 
 package de.eshg.stiprotection.persistence.db.medicalhistory;
 
-import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-@Entity
+@Embeddable
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-@Table(indexes = @Index(columnList = "medical_history_id, disease_type", unique = true))
-public class Examination extends BaseEntity {
+public class Examination {
 
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  @Column(nullable = false)
-  @DiseaseTypes({
-    DiseaseType.CHLAMYDIA,
-    DiseaseType.GONORRHEA,
-    DiseaseType.HEPATITIS_A,
-    DiseaseType.HEPATITIS_B,
-    DiseaseType.HEPATITIS_C,
-    DiseaseType.HIV,
-    DiseaseType.SYPHILIS,
-  })
-  private DiseaseType diseaseType;
+  private LocalDate hepA;
+  private LocalDate hepB;
+  private LocalDate hepC;
+  private LocalDate hiv;
+  private LocalDate syphilis;
+  private LocalDate gonorrhea;
+  private LocalDate chlamydia;
 
-  @Column(nullable = false)
-  private LocalDate examinationDate;
-
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "medical_history_id")
-  private MedicalHistory medicalHistory;
-
-  public MedicalHistory getMedicalHistory() {
-    return medicalHistory;
+  public LocalDate getHepA() {
+    return hepA;
   }
 
-  public void setMedicalHistory(MedicalHistory medicalHistory) {
-    this.medicalHistory = medicalHistory;
+  public void setHepA(LocalDate hepA) {
+    this.hepA = hepA;
   }
 
-  public LocalDate getExaminationDate() {
-    return examinationDate;
+  public LocalDate getHepB() {
+    return hepB;
   }
 
-  public void setExaminationDate(LocalDate examinationDate) {
-    this.examinationDate = examinationDate;
+  public void setHepB(LocalDate hepB) {
+    this.hepB = hepB;
   }
 
-  public DiseaseType getDiseaseType() {
-    return diseaseType;
+  public LocalDate getHepC() {
+    return hepC;
   }
 
-  public void setDiseaseType(DiseaseType diseaseType) {
-    this.diseaseType = diseaseType;
+  public void setHepC(LocalDate hepC) {
+    this.hepC = hepC;
+  }
+
+  public LocalDate getHiv() {
+    return hiv;
+  }
+
+  public void setHiv(LocalDate hiv) {
+    this.hiv = hiv;
+  }
+
+  public LocalDate getSyphilis() {
+    return syphilis;
+  }
+
+  public void setSyphilis(LocalDate syphilis) {
+    this.syphilis = syphilis;
+  }
+
+  public LocalDate getGonorrhea() {
+    return gonorrhea;
+  }
+
+  public void setGonorrhea(LocalDate gonorrhea) {
+    this.gonorrhea = gonorrhea;
+  }
+
+  public LocalDate getChlamydia() {
+    return chlamydia;
+  }
+
+  public void setChlamydia(LocalDate chlamydia) {
+    this.chlamydia = chlamydia;
   }
 }

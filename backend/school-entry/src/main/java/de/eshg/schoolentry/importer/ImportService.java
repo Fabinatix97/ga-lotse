@@ -50,11 +50,11 @@ public class ImportService {
                   List<CitizenListColumn> actualColumns =
                       ImportValidator.validateHeaderFormat(
                           CitizenListColumn.values(), normalizedSheet);
-                  yield new SchoolEntryImporter<>(
+                  yield new CitizenOrSchoolListImporter<>(
                       normalizedSheet,
-                      importType,
                       new CitizenListRowReader(normalizedSheet, actualColumns),
                       new FeedbackColumnAccessor(actualColumns),
+                      importType,
                       new CitizenListRowValueMapper(),
                       schoolId,
                       locationId,
@@ -66,11 +66,11 @@ public class ImportService {
                   List<SchoolListColumn> actualColumns =
                       ImportValidator.validateHeaderFormat(
                           SchoolListColumn.values(), normalizedSheet);
-                  yield new SchoolEntryImporter<>(
+                  yield new CitizenOrSchoolListImporter<>(
                       normalizedSheet,
-                      importType,
                       new SchoolListRowReader(normalizedSheet, actualColumns),
                       new FeedbackColumnAccessor(actualColumns),
+                      importType,
                       new SchoolListRowValueMapper(schoolYear, procedureTypeAssignmentHelper),
                       schoolId,
                       locationId,
@@ -82,12 +82,11 @@ public class ImportService {
                   List<PastProcedureListColumn> actualColumns =
                       ImportValidator.validateHeaderFormat(
                           PastProcedureListColumn.values(), normalizedSheet);
-                  yield new SchoolEntryImporter<>(
+                  yield new PastProcedureListImporter(
                       normalizedSheet,
-                      importType,
                       new PastProcedureListRowReader(normalizedSheet, actualColumns),
                       new FeedbackColumnAccessor(actualColumns),
-                      new PastProcedureListRowValueMapper(),
+                      importType,
                       schoolId,
                       locationId,
                       schoolYear,

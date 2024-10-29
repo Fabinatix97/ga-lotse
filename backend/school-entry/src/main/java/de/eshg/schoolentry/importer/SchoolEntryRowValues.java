@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.importer;
 
+import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.xlsximport.RowValues;
 import de.eshg.schoolentry.business.model.ImportChildData;
 
@@ -18,6 +19,10 @@ public abstract class SchoolEntryRowValues extends RowValues {
 
   public void setChild(ImportChildData child) {
     this.child = child;
+  }
+
+  public PersonKeyAttributes getChildKeyAttributes() {
+    return new PersonKeyAttributes(child.firstName(), child.lastName(), child.dateOfBirth());
   }
 
   abstract boolean isDuplicateRow(Object other);

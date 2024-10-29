@@ -237,4 +237,20 @@ public enum CountryCodeDto {
   public Integer getCountryGroupCode() {
     return countryGroupCode;
   }
+
+  public static CountryCodeDto getCountryGroup(int countryGroupCode) {
+    return switch (countryGroupCode) {
+      case 0 -> CountryCodeDto.DEU;
+      case 1 -> CountryCodeDto.G1;
+      case 2 -> CountryCodeDto.G2;
+      case 3 -> CountryCodeDto.G3;
+      case 4 -> CountryCodeDto.G4;
+      case 5 -> CountryCodeDto.G5;
+      case 6 -> CountryCodeDto.G6;
+      case 7 -> CountryCodeDto.G7;
+      case 8 -> CountryCodeDto.G8;
+      case 9 -> CountryCodeDto.G9;
+      default -> throw new IllegalStateException("Unexpected value: " + countryGroupCode);
+    };
+  }
 }

@@ -212,9 +212,8 @@ public class SchoolEntryController {
     SchoolEntryProcedure procedure = child.getProcedure();
     Validator.validateProcedureStatusNotClosed(procedure);
 
-    SchoolEntryProcedure updatedProcedure =
-        schoolEntryService.updateChildData(procedure, child, request);
-    return augmentAndMap(updatedProcedure);
+    schoolEntryService.updateChildData(procedure, child, request);
+    return augmentAndMap(procedure);
   }
 
   @DeleteMapping("/{procedureId}/delete-procedure")
@@ -437,7 +436,7 @@ public class SchoolEntryController {
       responseCode = "200",
       content = @Content(mediaType = MediaType.ALL_VALUE, schema = @Schema(type = "object")))
   @PostMapping(path = "/citizen-list", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @Transactional
+  @TransactionalWithTimeoutForFileImports
   @Operation(summary = "Upload a XLSX file to create multiple procedures.")
   public ResponseEntity<MultiValueMap<String, Object>> importCitizenList(
       @RequestParam(value = "schoolYear") @Min(1900) int schoolYear,
@@ -454,7 +453,7 @@ public class SchoolEntryController {
       responseCode = "200",
       content = @Content(mediaType = MediaType.ALL_VALUE, schema = @Schema(type = "object")))
   @PostMapping(path = "/school-list/{schoolId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @Transactional
+  @TransactionalWithTimeoutForFileImports
   @Operation(summary = "Upload a XLSX file to create multiple procedures.")
   public ResponseEntity<MultiValueMap<String, Object>> importSchoolList(
       @PathVariable("schoolId") UUID schoolId,
@@ -473,7 +472,7 @@ public class SchoolEntryController {
   @PostMapping(
       path = "/past-procedure-list/{schoolId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @Transactional
+  @TransactionalWithTimeoutForFileImports
   @Operation(summary = "Upload a XLSX file to create multiple past procedures.")
   public ResponseEntity<MultiValueMap<String, Object>> importPastProcedureList(
       @PathVariable("schoolId") UUID schoolId,

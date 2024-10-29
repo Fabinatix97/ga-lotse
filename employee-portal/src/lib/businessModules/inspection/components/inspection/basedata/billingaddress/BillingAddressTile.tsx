@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-"use client";
-
 import { ApiAddFacilityFileStateRequestContactAddress } from "@eshg/employee-portal-api/base";
 import { Grid } from "@mui/joy";
-import { isNonNullish } from "remeda";
+import { isDefined, isNonNullish } from "remeda";
 
-import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { BaseAddressDetails } from "@/lib/shared/components/address/BaseAddressDetails";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
 
@@ -46,38 +44,9 @@ export function BillingAddressTile({
             Hinzufügen
           </InfoTileAddButton>
         )}
-        <DetailsCell
-          name="differentName"
-          label="Abweichender Name"
-          value={billingAddress?.differentName}
-        />
-        {billingAddress?.type === "DomesticAddress" && (
-          <DetailsCell
-            name="address"
-            label="Straße und Haus Nr."
-            value={`${billingAddress.street} ${billingAddress.houseNumber}`}
-          />
+        {isDefined(billingAddress) && (
+          <BaseAddressDetails address={billingAddress} />
         )}
-        {billingAddress?.type === "PostboxAddress" && (
-          <DetailsCell
-            name="postbox"
-            label="Postbox"
-            value={billingAddress.postbox}
-          />
-        )}
-        <Grid container direction="row" sx={{ gap: 3 }}>
-          <DetailsCell
-            name="postalCode"
-            label="Postleitzahl"
-            value={billingAddress?.postalCode}
-          />
-          <DetailsCell name="city" label="Ort" value={billingAddress?.city} />
-        </Grid>
-        <DetailsCell
-          name="country"
-          label="Land"
-          value={billingAddress?.country}
-        />
       </Grid>
     </InfoTile>
   );

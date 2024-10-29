@@ -7,11 +7,11 @@ import { ApiCreateMedicalHistoryRequest } from "@eshg/employee-portal-api/stiPro
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { useMutation } from "@tanstack/react-query";
 
-import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
+import { useMedicalHistoryApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionProceduresApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
 export function useCreateMedicalHistory() {
-  const protectionProcedureApi = useStiProtectionProcedureApi();
+  const medicalHistoryApi = useMedicalHistoryApi();
   const snackbar = useSnackbar();
 
   return useMutation({
@@ -21,7 +21,7 @@ export function useCreateMedicalHistory() {
     }: {
       id: string;
       medicalHistory: ApiCreateMedicalHistoryRequest;
-    }) => protectionProcedureApi.createMedicalHistory(id, medicalHistory),
+    }) => medicalHistoryApi.createMedicalHistory(id, medicalHistory),
     onSuccess: () => {
       snackbar.confirmation("Die Anamnese wurde erfolgreich erstellt.");
     },

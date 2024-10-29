@@ -16,6 +16,7 @@ const resourcesPath = "/resources";
 const inventoryPath = "/inventory";
 const usersPath = "/users";
 const metricsPath = "/metrics";
+const opendataPath = "/opendata";
 const gdprPath = "/gdpr";
 
 export const routes = {
@@ -67,6 +68,10 @@ export const routes = {
       grantAccess: (source: string, date: string) =>
         `${auditLogAuthorizePath}/${source}/${date}/grant-access`,
     },
+  },
+  opendata: {
+    index: opendataPath,
+    details: (externalId: string) => `${opendataPath}/${externalId}`,
   },
   measlesProtection: "/measles-protection",
   inbox: "/inbox-procedures",

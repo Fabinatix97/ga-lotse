@@ -102,9 +102,15 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
 
     requestMatchers(POST, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER)
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(PATCH, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(DELETE, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(GET, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/overview/**")
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);

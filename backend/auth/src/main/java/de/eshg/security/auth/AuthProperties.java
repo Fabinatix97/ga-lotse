@@ -32,26 +32,24 @@ public record AuthProperties(
     if (auth.mukUrlPatterns() != null) {
       log.info("MUK URL patterns: {}", auth.mukUrlPatterns());
     }
+    if (auth.bundIdUrlPatterns() != null) {
+      log.info("BundID URL patterns: {}", auth.bundIdUrlPatterns());
+    }
   }
 
   public List<String> getAccessCodeUrlPatterns() {
-    if (auth() == null) {
-      return null;
-    }
     return auth().accessCodeUrlPatterns();
   }
 
   public List<String> getMukUrlPatterns() {
-    if (auth() == null) {
-      return null;
-    }
     return auth().mukUrlPatterns();
   }
 
+  public List<String> getBundIdUrlPatterns() {
+    return auth().bundIdUrlPatterns();
+  }
+
   public List<String> getLanguagePathPrefixes() {
-    if (auth() == null) {
-      return null;
-    }
     return auth().languagePathPrefixes();
   }
 
@@ -59,6 +57,7 @@ public record AuthProperties(
       List<String> languagePathPrefixes,
       List<String> accessCodeUrlPatterns,
       List<String> mukUrlPatterns,
+      List<String> bundIdUrlPatterns,
       @Valid UserAgentFilter userAgentFilter) {}
 
   record Keycloak(@NotNull HavingUrl logout) {}

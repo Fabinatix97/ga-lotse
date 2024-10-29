@@ -17,7 +17,7 @@ export function TimeRangeSelect(props: {
           value: 1,
         }
       : {
-          label: `Letzten ${month} Monate`,
+          label: `Letzte ${month} Monate`,
           value: month,
         },
   );

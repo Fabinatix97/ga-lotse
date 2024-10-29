@@ -22,6 +22,8 @@ import de.eshg.statistics.api.evaluationtemplate.BaseDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.BusinessDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.DataSourceWithAttributeNames;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
+import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateInfoDto;
+import de.eshg.statistics.api.evaluationtemplate.ExpectedEvaluationTemplateDto;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -39,7 +41,9 @@ import de.eshg.statistics.persistence.entity.evaluationtemplate.DataAttribute;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.DataSource;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 
 public class EvaluationTemplateMapper {
@@ -48,10 +52,12 @@ public class EvaluationTemplateMapper {
 
   public static EvaluationTemplate mapToPersistence(
       String name,
+      String description,
       EvaluationTemplateData evaluationTemplateData,
       List<AvailableDataSource> availableDataSources) {
     EvaluationTemplate evaluationTemplate =
         mapToPersistence(name, evaluationTemplateData.dataSources(), availableDataSources);
+    evaluationTemplate.setDescription(description);
     evaluationTemplate.addAnalysisTemplates(
         evaluationTemplateData.analysisTemplateDatas().stream()
             .map(EvaluationTemplateMapper::mapToAnalysisTemplate)
@@ -98,13 +104,7 @@ public class EvaluationTemplateMapper {
   private static DataSource mapToPersistence(
       DataSourceDto dataSourceDto, List<AvailableDataSource> availableDataSources) {
     AvailableDataSource availableDataSource =
-        availableDataSources.stream()
-            .filter(
-                source ->
-                    source.id().equals(dataSourceDto.id())
-                        && source.businessModule().equals(dataSourceDto.businessModuleName()))
-            .findFirst()
-            .orElseThrow(InvalidDataSourceException::new);
+        getAvailableDataSource(dataSourceDto, availableDataSources);
 
     DataSource dataSource = new DataSource();
     dataSource.setBusinessModuleName(dataSourceDto.businessModuleName());
@@ -119,13 +119,21 @@ public class EvaluationTemplateMapper {
     return dataSource;
   }
 
+  private static AvailableDataSource getAvailableDataSource(
+      DataSourceDto dataSourceDto, List<AvailableDataSource> availableDataSources) {
+    return availableDataSources.stream()
+        .filter(
+            source ->
+                source.id().equals(dataSourceDto.id())
+                    && source.businessModule().equals(dataSourceDto.businessModuleName()))
+        .findFirst()
+        .orElseThrow(InvalidDataSourceException::new);
+  }
+
   private static DataAttribute mapToPersistence(
       BusinessDataAttribute businessDataAttribute, AvailableDataSource availableDataSource) {
     BusinessDataSourceAttribute businessDataSourceAttribute =
-        availableDataSource.attributes().stream()
-            .filter(attribute -> attribute.code().equals(businessDataAttribute.code()))
-            .findFirst()
-            .orElseThrow(InvalidDataSourceException::new);
+        getBusinessDataSourceAttribute(businessDataAttribute, availableDataSource);
 
     DataAttribute dataAttribute = new DataAttribute();
     dataAttribute.setCode(businessDataAttribute.code());
@@ -137,18 +145,112 @@ public class EvaluationTemplateMapper {
     return dataAttribute;
   }
 
+  private static BusinessDataSourceAttribute getBusinessDataSourceAttribute(
+      BusinessDataAttribute businessDataAttribute, AvailableDataSource availableDataSource) {
+    return availableDataSource.attributes().stream()
+        .filter(attribute -> attribute.code().equals(businessDataAttribute.code()))
+        .findFirst()
+        .orElseThrow(InvalidDataSourceException::new);
+  }
+
   private static BaseDataAttribute mapToBaseDataAttribute(
       String code, BusinessDataSourceAttribute businessDataSourceAttribute) {
     BaseDataSourceAttribute baseDataSourceAttribute =
-        businessDataSourceAttribute.baseAttributes().stream()
-            .filter(attribute -> attribute.code().equals(code))
-            .findFirst()
-            .orElseThrow(InvalidDataSourceException::new);
+        getBaseDataSourceAttribute(code, businessDataSourceAttribute);
 
     BaseDataAttribute baseDataAttribute = new BaseDataAttribute();
     baseDataAttribute.setCode(code);
     baseDataAttribute.setName(baseDataSourceAttribute.name());
     return baseDataAttribute;
+  }
+
+  private static BaseDataSourceAttribute getBaseDataSourceAttribute(
+      String code, BusinessDataSourceAttribute businessDataSourceAttribute) {
+    return businessDataSourceAttribute.baseAttributes().stream()
+        .filter(attribute -> attribute.code().equals(code))
+        .findFirst()
+        .orElseThrow(InvalidDataSourceException::new);
+  }
+
+  public static ExpectedEvaluationTemplateDto mapToExpectedEvaluationTemplate(
+      EvaluationTemplateData evaluationTemplateData,
+      List<AvailableDataSource> availableDataSources) {
+    List<DataSourceWithAttributeNames> dataSources =
+        evaluationTemplateData.dataSources().stream()
+            .map(
+                dataSourceDto -> {
+                  AvailableDataSource availableDataSource =
+                      getAvailableDataSource(dataSourceDto, availableDataSources);
+                  return new DataSourceWithAttributeNames(
+                      dataSourceDto.businessModuleName(),
+                      dataSourceDto.id(),
+                      availableDataSource.name(),
+                      mapToBusinessDataAttributes(
+                          dataSourceDto.attributeCodes(), availableDataSource));
+                })
+            .toList();
+
+    List<AnalysisInfo> analysisInfos =
+        evaluationTemplateData.analysisTemplateDatas().stream()
+            .sorted(Comparator.comparing(AnalysisTemplateData::name))
+            .map(
+                analysisTemplateData ->
+                    new AnalysisInfo(
+                        analysisTemplateData.name(),
+                        analysisTemplateData.diagramTemplateDatas().stream()
+                            .map(DiagramTemplateData::title)
+                            .toList(),
+                        analysisTemplateData.chartConfiguration().type()))
+            .toList();
+    return new ExpectedEvaluationTemplateDto(dataSources, analysisInfos);
+  }
+
+  private static List<BusinessDataAttributeWithName> mapToBusinessDataAttributes(
+      List<BusinessDataAttribute> businessDataAttributes, AvailableDataSource availableDataSource) {
+    return businessDataAttributes.stream()
+        .map(
+            attribute -> {
+              BusinessDataSourceAttribute businessDataSourceAttribute =
+                  getBusinessDataSourceAttribute(attribute, availableDataSource);
+              return new BusinessDataAttributeWithName(
+                  businessDataSourceAttribute.code(),
+                  businessDataSourceAttribute.name(),
+                  mapToBaseDataAttributes(
+                      attribute.baseAttributeCodes(), businessDataSourceAttribute));
+            })
+        .toList();
+  }
+
+  private static List<BaseDataAttributeWithName> mapToBaseDataAttributes(
+      List<String> codes, BusinessDataSourceAttribute businessDataSourceAttribute) {
+    return codes.stream()
+        .map(
+            code -> {
+              BaseDataSourceAttribute baseDataSourceAttribute =
+                  getBaseDataSourceAttribute(code, businessDataSourceAttribute);
+              return new BaseDataAttributeWithName(
+                  baseDataSourceAttribute.code(), baseDataSourceAttribute.name());
+            })
+        .toList();
+  }
+
+  public static EvaluationTemplateInfoDto mapToInfo(EvaluationTemplate evaluationTemplate) {
+    List<String> businessModuleNames =
+        evaluationTemplate.getDataSources().stream()
+            .map(DataSource::getBusinessModuleName)
+            .collect(Collectors.toSet())
+            .stream()
+            .sorted()
+            .toList();
+
+    return new EvaluationTemplateInfoDto(
+        evaluationTemplate.getExternalId(),
+        evaluationTemplate.getName(),
+        businessModuleNames,
+        evaluationTemplate.getAnalysisCount(),
+        evaluationTemplate.getCreatedByUserId(),
+        evaluationTemplate.getCreatedAt(),
+        evaluationTemplate.getLastUsageAt());
   }
 
   public static EvaluationTemplateDto mapToApi(EvaluationTemplate evaluationTemplate) {
@@ -158,8 +260,10 @@ public class EvaluationTemplateMapper {
     return new EvaluationTemplateDto(
         evaluationTemplate.getExternalId(),
         evaluationTemplate.getName(),
+        evaluationTemplate.getDescription(),
         dataSources,
         mapToAnalysisInfos(evaluationTemplate.getAnalysisTemplates()),
+        evaluationTemplate.getCreatedByUserId(),
         evaluationTemplate.getCreatedAt(),
         evaluationTemplate.getLastUsageAt());
   }
@@ -174,6 +278,7 @@ public class EvaluationTemplateMapper {
     return new DataSourceWithAttributeNames(
         dataSource.getBusinessModuleName(),
         dataSource.getExternalDataSourceId(),
+        dataSource.getDataSourceName(),
         dataSource.getAttributes().stream()
             .map(EvaluationTemplateMapper::mapToBusinessDataAttribute)
             .toList());
@@ -196,6 +301,9 @@ public class EvaluationTemplateMapper {
 
   private static List<AnalysisInfo> mapToAnalysisInfos(List<AnalysisTemplate> analysisTemplates) {
     return analysisTemplates.stream()
+        .sorted(
+            Comparator.comparing(AnalysisTemplate::getName)
+                .thenComparing(Comparator.comparing(AnalysisTemplate::getId).reversed()))
         .map(
             analysisTemplate -> {
               String type =

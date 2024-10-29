@@ -67,6 +67,7 @@ public abstract class Procedure<
   @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true)
   @JoinColumn(nullable = false, name = ProgressEntry_.PROCEDURE_ID)
   @OrderBy
+  @BatchSize(size = 100)
   private final List<ProgressEntry> progressEntries = new ArrayList<>();
 
   @DataSensitivity(SensitivityLevel.PUBLIC)

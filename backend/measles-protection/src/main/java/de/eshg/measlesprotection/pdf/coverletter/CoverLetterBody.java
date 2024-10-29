@@ -15,6 +15,10 @@ public record CoverLetterBody(
     String yourReference,
     String ourReference) {
 
+  public CoverLetterBody(LocalDate deadline, LocalDate date, LocalDate previousLetterDate) {
+    this(deadline, date, previousLetterDate, null, null);
+  }
+
   @SuppressWarnings("unused") // used in Apache FreeMarker templates
   public String deadlineString() {
     return deadline.format(DateTimeConstants.DATE_FORMAT_DE);

@@ -1,0 +1,3 @@
+de.eshg.inspection.common.persistence.MediaFileContent.mediaFiles points to procedure composite: de.eshg.inspection.common.persistence.MediaFile
+de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock.appointments points to procedure composite: de.eshg.lib.appointmentblock.persistence.entity.Appointment
+de.eshg.travelmedicine.certificate.persistence.entity.Certificate.procedureStep points to procedure composite: de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep

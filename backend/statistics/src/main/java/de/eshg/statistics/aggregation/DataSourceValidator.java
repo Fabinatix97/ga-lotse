@@ -34,7 +34,15 @@ public class DataSourceValidator {
     this.dataSourceAggregationService = dataSourceAggregationService;
   }
 
-  public List<AvailableDataSource> getRelevantAvailableDataSources(
+  public List<AvailableDataSource> validateDataSourcesAndGetRelevantAvailableDataSources(
+      List<DataSourceDto> dataSources) {
+    List<AvailableDataSource> relevantAvailableDataSources =
+        getRelevantAvailableDataSources(dataSources);
+    validateDataSources(dataSources, relevantAvailableDataSources);
+    return relevantAvailableDataSources;
+  }
+
+  private List<AvailableDataSource> getRelevantAvailableDataSources(
       List<DataSourceDto> dataSources) {
     Set<String> relevantBusinessModules = getRelevantBusinessModules(dataSources);
     validateBusinessModulesExist(relevantBusinessModules);
@@ -55,7 +63,7 @@ public class DataSourceValidator {
         businessModuleAggregationHelper::validateBusinessModuleIsRegistered);
   }
 
-  public void validateDataSources(
+  private void validateDataSources(
       List<DataSourceDto> dataSources, List<AvailableDataSource> relevantAvailableDataSources) {
     checkForAttributeDuplicates(dataSources);
 

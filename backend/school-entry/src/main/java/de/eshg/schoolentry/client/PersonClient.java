@@ -132,10 +132,10 @@ public class PersonClient {
         personApi.updatePersonFileStateAndReference(
             centralFileStateId, new PutPersonRequest(updateRequest));
     UUID newCentralFileStateId = response.id();
-    Assert.isTrue(
-        !newCentralFileStateId.equals(centralFileStateId),
-        "Updating a person is expected to generate a new file state."
-            + " If this assumption no longer holds, we would need to evict the person cache here.");
+    if (newCentralFileStateId.equals(centralFileStateId)) {
+      log.info(
+          "Updating the person did not generate a new file state ID. There was probably nothing to update.");
+    }
     return newCentralFileStateId;
   }
 
@@ -405,43 +405,123 @@ public class PersonClient {
         fileStateId, PersonMapper.mapToPersonDetailsDto(request));
   }
 
-  public UUID updateChild(
-      SchoolEntryProcedure procedure,
-      String placeOfBirth,
-      CountryCode countryOfBirth,
-      String phoneNumber) {
-
-    UUID existingFileStateId = procedure.getChildIdFromCentralFile();
-    GetPersonFileStateResponse child = getPersonFileState(existingFileStateId);
-
-    if ((placeOfBirth == null || Objects.equals(child.placeOfBirth(), placeOfBirth))
-        && (countryOfBirth == null || Objects.equals(child.countryOfBirth(), countryOfBirth))
-        && (phoneNumber == null || child.phoneNumbers().contains(phoneNumber))) {
-      return existingFileStateId;
+  public List<UUID> updateChildren(List<ChildUpdate> childUpdates) {
+    if (childUpdates.isEmpty()) {
+      return List.of();
     }
 
-    List<String> phoneNumbers = new ArrayList<>(child.phoneNumbers());
-    if (phoneNumber != null && !child.phoneNumbers().contains(phoneNumber)) {
-      phoneNumbers.add(phoneNumber);
+    Map<UUID, AddPersonFileStateResponse> existingFileStates = getPersonFileStates(childUpdates);
+
+    record BulkUpdateRequest(UUID childIdFromCentralFile, PersonDetailsDto update, long version) {}
+
+    List<BulkUpdateRequest> updates = new ArrayList<>();
+    Map<UUID, SchoolEntryProcedure> updatedProceduresByChildId = new LinkedHashMap<>();
+
+    for (ChildUpdate childUpdate : childUpdates) {
+      SchoolEntryProcedure procedure = childUpdate.procedure();
+      UUID childIdFromCentralFile = procedure.getChildIdFromCentralFile();
+      AddPersonFileStateResponse child = existingFileStates.get(childIdFromCentralFile);
+      String placeOfBirth = childUpdate.placeOfBirth();
+      CountryCode countryOfBirth = childUpdate.countryOfBirth();
+      String phoneNumber = childUpdate.phoneNumber();
+
+      if ((placeOfBirth != null && !Objects.equals(child.placeOfBirth(), placeOfBirth))
+          || (countryOfBirth != null && !Objects.equals(child.countryOfBirth(), countryOfBirth))
+          || (phoneNumber != null && !child.phoneNumbers().contains(phoneNumber))) {
+        List<String> phoneNumbers = new ArrayList<>(child.phoneNumbers());
+        if (phoneNumber != null && !child.phoneNumbers().contains(phoneNumber)) {
+          phoneNumbers.add(phoneNumber);
+        }
+
+        PersonDetailsDto updatedChildData =
+            new PersonDetailsDto(
+                child.title(),
+                child.salutation(),
+                child.gender(),
+                child.firstName(),
+                child.lastName(),
+                child.dateOfBirth(),
+                child.nameAtBirth(),
+                Optional.ofNullable(placeOfBirth).orElse(child.placeOfBirth()),
+                Optional.ofNullable(countryOfBirth).orElse(child.countryOfBirth()),
+                child.emailAddresses(),
+                phoneNumbers,
+                child.contactAddress(),
+                child.differentBillingAddress());
+
+        updates.add(
+            new BulkUpdateRequest(
+                childIdFromCentralFile, updatedChildData, child.referenceVersion()));
+        updatedProceduresByChildId.put(childIdFromCentralFile, procedure);
+      }
     }
 
-    PersonDetailsDto updatedChildData =
-        new PersonDetailsDto(
-            child.title(),
-            child.salutation(),
-            child.gender(),
-            child.firstName(),
-            child.lastName(),
-            child.dateOfBirth(),
-            child.nameAtBirth(),
-            Optional.ofNullable(placeOfBirth).orElse(child.placeOfBirth()),
-            Optional.ofNullable(countryOfBirth).orElse(child.countryOfBirth()),
-            child.emailAddresses(),
-            phoneNumbers,
-            child.contactAddress(),
-            child.differentBillingAddress());
+    if (updates.isEmpty()) {
+      return List.of();
+    }
 
-    return updatePersonFileStateAndReference(existingFileStateId, updatedChildData);
+    // TODO ISSUE-5902: Use Bulk Update API
+    record BulkPersonUpdateResult(UUID previousFileStateId, UUID newFileStateId) {}
+    List<BulkPersonUpdateResult> results = new ArrayList<>();
+    List<UUID> failedPersonIds = new ArrayList<>();
+    for (BulkUpdateRequest update : updates) {
+      UUID previousFileStateId = update.childIdFromCentralFile();
+      try {
+        UUID newFileStateId =
+            updatePersonFileStateAndReference(previousFileStateId, update.update());
+        results.add(new BulkPersonUpdateResult(previousFileStateId, newFileStateId));
+      } catch (Exception e) {
+        log.error("Failed to update child {}", previousFileStateId, e);
+        failedPersonIds.add(previousFileStateId);
+      }
+    }
+
+    if (!failedPersonIds.isEmpty()) {
+      log.error(
+          "Failed to update {} person(s): {}",
+          failedPersonIds.size(),
+          shortenForLoggingIfNecessary(failedPersonIds));
+    }
+
+    for (BulkPersonUpdateResult result : results) {
+      UUID previousCentralFileStateId = result.previousFileStateId();
+      UUID newCentralFileStateId = result.newFileStateId();
+      SchoolEntryProcedure procedure = updatedProceduresByChildId.get(previousCentralFileStateId);
+      procedure.getChild().setCentralFileStateId(newCentralFileStateId);
+    }
+
+    return resolveProcedureIds(failedPersonIds, updatedProceduresByChildId);
+  }
+
+  private Map<UUID, AddPersonFileStateResponse> getPersonFileStates(
+      List<ChildUpdate> childUpdates) {
+    List<UUID> childIds =
+        childUpdates.stream()
+            .map(ChildUpdate::procedure)
+            .map(SchoolEntryProcedure::getChildIdFromCentralFile)
+            .toList();
+
+    return personApi
+        .getPersonFileStates(new GetPersonFileStatesRequest(childIds))
+        .personFileStates()
+        .stream()
+        .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id));
+  }
+
+  private static List<UUID> resolveProcedureIds(
+      List<UUID> childIds, Map<UUID, SchoolEntryProcedure> proceduresByChildId) {
+    return childIds.stream()
+        .map(
+            failedPersonId -> {
+              SchoolEntryProcedure procedure = proceduresByChildId.get(failedPersonId);
+              Assert.notNull(
+                  procedure,
+                  () ->
+                      "Failed to find updated procedure for person ID %s"
+                          .formatted(failedPersonId));
+              return procedure.getExternalId();
+            })
+        .toList();
   }
 
   public UUID syncPerson(UUID fileStateId, long referenceVersion) {

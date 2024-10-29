@@ -19,26 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class FileDeletionApprovalRequest extends DeletionApprovalRequest<File>
-    implements NotificationsAware<FileDeletionApprovalRequestNotification> {
+public class FileDeletionApprovalRequest extends DeletionApprovalRequest<File> {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToOne
+  @OneToOne(mappedBy = File_.DELETION_APPROVAL_REQUEST)
   private File file;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @OneToMany(mappedBy = APPROVAL_REQUEST, cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = APPROVAL_REQUEST, cascade = CascadeType.PERSIST, orphanRemoval = true)
   @OrderBy
   private final List<FileDeletionApprovalRequestNotification> notifications = new ArrayList<>();
 
   @Override
   public File getEntity() {
     return getFile();
-  }
-
-  @Override
-  public void setEntity(File entity) {
-    setFile(entity);
   }
 
   public File getFile() {
@@ -49,15 +43,22 @@ public class FileDeletionApprovalRequest extends DeletionApprovalRequest<File>
     this.file = file;
   }
 
-  @Override
-  public List<FileDeletionApprovalRequestNotification> getNotifications() {
-    return notifications;
-  }
-
   public void addNotification(FileDeletionApprovalRequestNotification notification) {
     if (notification != null) {
       notification.setApprovalRequest(this);
       notifications.add(notification);
     }
+  }
+
+  @Override
+  public void updateEntity(File file) {
+    if (file == null) {
+      if (this.file != null) {
+        this.file.setDeletionApprovalRequest(null);
+      }
+    } else {
+      file.setDeletionApprovalRequest(this);
+    }
+    this.file = file;
   }
 }

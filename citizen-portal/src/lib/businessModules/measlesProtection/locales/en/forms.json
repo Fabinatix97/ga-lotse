@@ -15,8 +15,9 @@
   },
   "custodian": {
     "title": "Custodian",
-    "info": "Die zu meldende Person ist minderjährig. Bitte tragen Sie mindestens eine Sorgeberechtigte Person ein.",
-    "addressMatch": "The address is the same as the affected person"
+    "info": "The person to be reported is a minor. Please enter at least one legal guardian.",
+    "address_match": "The address is the same as the affected person",
+    "contact_info": "Contact info"
   },
   "facility": {
     "title": "Your Facility",
@@ -33,7 +34,7 @@
     }
   },
   "overview": {
-    "title": "Persons to be registered",
+    "title": "Persons to be reported",
     "submit_one": "Report case",
     "submit_other": "Report cases",
     "reportAdditionalPerson": "Report additional person"
@@ -42,7 +43,9 @@
     "returnToMeaslesProtectionHome": "Back to homepage",
     "message": "{{ casesReported }} $t(common.case, {\"count\": {{ casesReported }} }) successfully reported",
     "reportAdditionalPerson": "Report additional person",
-    "viewOpenCases": "View open cases"
+    "viewOpenCases": "View open cases",
+    "overview_text": "Your data has been successfully transmitted to us. We will take care of your request as soon as possible.",
+    "what_next_q": "What would you like to do next?"
   },
   "common": {
     "addressForm": {
@@ -60,6 +63,25 @@
       "postalCode_required": "Please enter a postal code",
       "street": "Street",
       "street_required": "Please enter a street"
+    },
+    "facility_types": {
+      "school": "School",
+      "day_nursery": "Day care center (Kindertageseinrichtung) or nursery (Kinderhort)",
+      "daycare": "Day care (Kindertagespflege)",
+      "childrens_home": "Childrens' home (Heim)",
+      "refugee_accommodation": "Refugee Accommodation",
+      "hospital": "Hospital",
+      "medical_practice": "Doctor, dentist or psychotherapy practice",
+      "outpatient_surgery": "Outpatient surgery facility",
+      "rehabilitation_centre": "Preventive care or rehabilitation facility",
+      "dialysis_centre": "Dialysis facility",
+      "day_clinic": "Day clinic",
+      "maternity_centre": "Maternity center",
+      "other_medical_practice": "Practice of other human medical professions",
+      "public_health_service": "Public health service facility",
+      "emergency_service": "Emergency service facility",
+      "civil_protection": "Civil protection and disaster control facility",
+      "other": "Other"
     },
     "personalDetails": {
       "dateOfBirth": "Date of birth",
@@ -81,7 +103,18 @@
       "salutation": "Salutation",
       "title": "Title"
     },
-    "requiredField": "Required field"
+    "reporting_reason": {
+      "first_vaccine": "Only 1st vaccination",
+      "medical_contraindication": "Med. contraindication / certificate",
+      "no_proof": "Without proof",
+      "other": "Other reason",
+      "unassessable_proof": "Non-assessable proof (e.g. unreadable, foreign-language)"
+    },
+    "requiredField": "Required field",
+    "role_status": {
+      "employee": "Employee",
+      "supervised": "Supervised / Resident"
+    }
   },
   "data_and_privacy": {
     "information_one": "To report this case, you must first agree to the following data protection regulations.",

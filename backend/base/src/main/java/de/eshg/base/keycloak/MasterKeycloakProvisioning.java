@@ -10,7 +10,6 @@ import static de.eshg.base.keycloak.KeycloakProvisioning.setAttribute;
 import static de.eshg.base.keycloak.MasterKeycloakProvisioning.BEAN_NAME;
 
 import com.google.common.annotations.VisibleForTesting;
-import de.cronn.commons.lang.StreamUtil;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.List;
@@ -177,10 +176,7 @@ public class MasterKeycloakProvisioning {
   public void initializeSetupAdmin(String username, String emailAddress) {
     RealmResource realm = keycloakClient.getRealm();
 
-    Optional<UserRepresentation> existingUser =
-        realm.users().searchByUsername(username, true).stream()
-            .filter(user -> user.getUsername().equals(username))
-            .collect(StreamUtil.toSingleOptionalElement());
+    Optional<UserRepresentation> existingUser = keycloakClient.getUserByName(username);
 
     UserRepresentation userRepresentation =
         existingUser.orElseGet(() -> createSetupAdmin(username, emailAddress));

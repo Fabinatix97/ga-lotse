@@ -77,7 +77,7 @@ ext {
     listenPort = 8080
     additionalAptPackages = null
     xmx = "512m"
-    jreDockerImage = 'eclipse-temurin:21.0.4_7-jre-jammy@sha256:ea878d7ef79653c16f6bfdfbd3bf20ae80f4f645f66339e9153ae0d481385225'
+    jreDockerImage = 'eclipse-temurin:21.0.5_11-jre-jammy@sha256:5d7781c6aabbc2f8673ec1899f2fdf6851f20c94dcdefeb8a1ca1e37e9c13e92'
 }
 
 tasks.register('createDockerfile', Dockerfile) {

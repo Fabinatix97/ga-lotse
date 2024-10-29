@@ -13,8 +13,11 @@ import de.eshg.base.statistics.api.BaseAvailableDataSource;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
+import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.api.AvailableDataSource;
 import de.eshg.statistics.api.BaseDataSourceAttribute;
 import de.eshg.statistics.api.BusinessDataSourceAttribute;
@@ -79,10 +82,19 @@ public class DataSourceAggregationService {
             dataSource ->
                 new AvailableDataSource(
                     businessModule,
+                    hasPermissionToRetrieveDataWithoutAnonymization(businessModule),
                     dataSource.id(),
                     dataSource.name(),
                     mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources)))
         .toList();
+  }
+
+  private static boolean hasPermissionToRetrieveDataWithoutAnonymization(String businessModule) {
+    // Todo ISSUE-6151: retrieve the required permission from business module
+    if (BusinessModule.SCHOOL_ENTRY.name().equals(businessModule)) {
+      return CurrentUserHelper.currentUserHasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
+    }
+    return false;
   }
 
   private static List<BusinessDataSourceAttribute> mapAndExtendAttributes(

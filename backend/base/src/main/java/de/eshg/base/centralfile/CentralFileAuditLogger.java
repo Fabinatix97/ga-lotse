@@ -37,7 +37,7 @@ public class CentralFileAuditLogger {
 
   private static String getCategory(CentralFileData referenceData) {
     String centralFileType = Hibernate.getClass(referenceData).getSimpleName();
-    return "Zentralkartei %s".formatted(centralFileType);
+    return "Stammdaten-Konverter %s".formatted(centralFileType);
   }
 
   private static String toLogString(DataOrigin dataOrigin) {

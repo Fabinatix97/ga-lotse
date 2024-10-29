@@ -23,11 +23,13 @@ import de.eshg.mutex.MutexService;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -62,9 +64,10 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
   @Override
   public void provisionRealmInternal() {
     createOrUpdateRealm();
-    createOrUpdateEshgClientScope();
 
-    createOrUpdateRoles();
+    EmployeePermissionRole[] permissionRoles = EmployeePermissionRole.values();
+    createOrUpdateRoles(permissionRoles);
+    createOrUpdateEshgClientScope(permissionRoles);
     createOrUpdateDefaultRoleComposites();
     createOrUpdateClients();
     createOrUpdateGroups();
@@ -133,32 +136,24 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
   }
 
   private void createOrUpdateGroups() {
+    validateAllBusinessModulesHaveMemberGroups();
+
     List<GroupRepresentation> systemAdmins = KeycloakMapper.map(AdministrativeGroup.values());
     List<GroupRepresentation> technical = KeycloakMapper.map(TechnicalGroup.values());
-
     List<GroupRepresentation> leaders = KeycloakMapper.map(ModuleLeaderGroup.values());
-    List<GroupRepresentation> modules =
-        KeycloakMapper.map(
-            KeycloakMapper.mapModulesToGroups(List.of(BusinessModule.values()))
-                .toArray(KeycloakGroup[]::new));
-    List<GroupRepresentation> inspection_la_checklists =
-        KeycloakMapper.map(ModuleMemberGroup.INSPECTION_CHECKLISTS);
-    List<GroupRepresentation> inspection_landesamt =
-        KeycloakMapper.map(ModuleMemberGroup.INSPECTION_LANDESAMT);
-    List<GroupRepresentation> statistics = KeycloakMapper.map(ModuleMemberGroup.STATISTICS);
-    List<GroupRepresentation> openData = KeycloakMapper.map(ModuleMemberGroup.OPEN_DATA);
+    List<GroupRepresentation> modules = KeycloakMapper.map(ModuleMemberGroup.values());
 
     keycloakClient.createOrUpdateGroups(
-        CollectionUtils.listUnion(
-            List.of(
-                systemAdmins,
-                technical,
-                leaders,
-                modules,
-                inspection_la_checklists,
-                inspection_landesamt,
-                statistics,
-                openData)));
+        CollectionUtils.listUnion(List.of(systemAdmins, technical, leaders, modules)));
+  }
+
+  private void validateAllBusinessModulesHaveMemberGroups() {
+    Stream.of(BusinessModule.values())
+        .forEach(
+            businessModule ->
+                Assert.notNull(
+                    KeycloakMapper.mapModuleToGroup(businessModule),
+                    "Each business module must have a module member group"));
   }
 
   private void createOrUpdateRoles() {

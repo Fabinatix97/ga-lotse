@@ -213,7 +213,7 @@ public class VcServiceService {
     vaccination.setMfa(patchVaccinationRequest.mfa());
     vaccinationRepository.flush();
 
-    addSystemProgressEntry(
+    addVaccinationSystemProgressEntry(
         vaccination, updateVaccination, isInventoryAlreadyBooked, progressEntryType);
   }
 
@@ -237,7 +237,7 @@ public class VcServiceService {
     }
   }
 
-  private void addSystemProgressEntry(
+  private void addVaccinationSystemProgressEntry(
       Vaccination vaccination,
       boolean updateVaccination,
       boolean isInventoryAlreadyBooked,
@@ -248,13 +248,14 @@ public class VcServiceService {
     ProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType,
-            getProgressEntryNote(vaccination, updateVaccination, isInventoryAlreadyBooked),
+            getVaccinationProgressEntryNote(
+                vaccination, updateVaccination, isInventoryAlreadyBooked),
             TriggerType.SYSTEM_AUTOMATIC);
 
     procedure.addProgressEntry(progressEntry);
   }
 
-  private String getProgressEntryNote(
+  private String getVaccinationProgressEntryNote(
       Vaccination vaccination, boolean updateVaccination, boolean isInventoryAlreadyBooked) {
     String date = vaccination.getAppliedAt().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     StringBuilder note = new StringBuilder(updateVaccination ? "Korrektur: " : "");

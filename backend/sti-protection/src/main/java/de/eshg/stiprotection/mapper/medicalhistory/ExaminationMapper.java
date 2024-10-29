@@ -7,27 +7,38 @@ package de.eshg.stiprotection.mapper.medicalhistory;
 
 import de.eshg.stiprotection.api.medicalhistory.ExaminationDto;
 import de.eshg.stiprotection.persistence.db.medicalhistory.Examination;
-import java.util.List;
 
 public final class ExaminationMapper {
   private ExaminationMapper() {}
 
-  public static List<ExaminationDto> toInterfaceType(List<Examination> examinations) {
-    if (examinations == null) {
+  public static ExaminationDto toInterfaceType(Examination entity) {
+    if (entity == null) {
       return null;
     }
-    return examinations.stream().map(ExaminationMapper::toInterfaceType).toList();
-  }
 
-  private static ExaminationDto toInterfaceType(Examination entity) {
     return new ExaminationDto(
-        DiseaseTypeMapper.toInterfaceType(entity.getDiseaseType()), entity.getExaminationDate());
+        entity.getHepA(),
+        entity.getHepB(),
+        entity.getHepC(),
+        entity.getHiv(),
+        entity.getSyphilis(),
+        entity.getGonorrhea(),
+        entity.getChlamydia());
   }
 
   public static Examination toDatabaseType(ExaminationDto dto) {
+    if (dto == null) {
+      return null;
+    }
+
     Examination examination = new Examination();
-    examination.setDiseaseType(DiseaseTypeMapper.toDatabaseType(dto.diseaseType()));
-    examination.setExaminationDate(dto.examinationDate());
+    examination.setHepA(dto.hepA());
+    examination.setHepB(dto.hepB());
+    examination.setHepC(dto.hepC());
+    examination.setHiv(dto.hiv());
+    examination.setSyphilis(dto.syphilis());
+    examination.setGonorrhea(dto.gonorrhea());
+    examination.setChlamydia(dto.chlamydia());
     return examination;
   }
 }

@@ -5,10 +5,15 @@
 
 "use client";
 
-import { ApiPatient } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  ApiPatient,
+  ApiPersonSync,
+  ApiSalutation,
+} from "@eshg/employee-portal-api/travelMedicine";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
-import { Divider, Grid } from "@mui/joy";
+import { isDefined } from "remeda";
 
+import { PersonDetails } from "@/lib/businessModules/schoolEntry/api/models/Person";
 import { useUpdatePatient } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { PersonSidebar } from "@/lib/businessModules/travelMedicine/components/personSidebar/PersonSidebar";
 import { InitialAppointmentFormValuesProps } from "@/lib/businessModules/travelMedicine/components/personSidebar/appointment/InitialAppointmentForm";
@@ -18,10 +23,14 @@ import {
   mapToApiPatchVaccinationConsultationPatientRequest,
   mapToPersonFormData,
 } from "@/lib/businessModules/travelMedicine/components/personSidebar/personSidebarHelper";
-import { DomesticAddressInfoSection } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/DomesticAddressInfoSection";
-import { EmailAndPhoneNumbersInfoSection } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/EmailAndPhoneNumbersInfoSection";
-import { PersonalInfoSection } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/PersonalInfoSection";
+import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { EditButton } from "@/lib/shared/components/buttons/EditButton";
+import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
+import {
+  SyncBarrier,
+  useSyncBarrier,
+} from "@/lib/shared/components/centralFile/sync/SyncBarrier";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { LegacyPerson } from "@/lib/shared/components/legacyPersonSidebar/form/LegacyPersonForm";
@@ -30,12 +39,14 @@ import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 interface PatientPanelProps {
   procedureId: string;
   patient: ApiPatient;
+  person: ApiPersonSync;
   isProcedureClosed: boolean;
 }
 
 export function PatientPanel({
   procedureId,
   patient,
+  person,
   isProcedureClosed,
 }: Readonly<PatientPanelProps>) {
   const [open, setOpen] = useSearchParam("edit-patient", "boolean");
@@ -43,6 +54,23 @@ export function PatientPanel({
   const updatePatientApi = useUpdatePatient();
 
   const resetAlertContext = useResetAlertContext();
+
+  const syncRoute = routes.procedures.syncPerson(
+    procedureId,
+    person.fileStateId,
+    person.version,
+  );
+
+  const personParams = {
+    fileStateId: person.fileStateId,
+    version: person.version,
+    outdated: person.outdated,
+    salutation: patient.salutation ?? ApiSalutation.NotSpecified,
+  };
+  const { syncBarrier } = useSyncBarrier(
+    syncRoute,
+    personParams as PersonDetails,
+  );
 
   function updateSidebar(sideBarState: boolean) {
     setOpen(sideBarState);
@@ -75,20 +103,32 @@ export function PatientPanel({
         <DetailsSection
           name="patient-card-tile"
           title="Patient"
-          onEdit={() => {
-            updateSidebar(true);
-          }}
-          canEdit={!isProcedureClosed}
+          buttons={
+            !isProcedureClosed && (
+              <SyncBarrier outdated={person.outdated} syncHref={syncRoute}>
+                <EditButton
+                  aria-label="Patient ändern"
+                  onClick={syncBarrier(() => {
+                    updateSidebar(true);
+                  })}
+                />
+              </SyncBarrier>
+            )
+          }
         >
-          <Grid container spacing={3}>
-            <PersonalInfoSection patient={patient} />
-            <Divider orientation="vertical" sx={{ mr: "-1px" }} />
-            <DomesticAddressInfoSection patient={patient} />
-            <Divider orientation="vertical" sx={{ mr: "-1px" }} />
-            <EmailAndPhoneNumbersInfoSection
-              emailAddresses={patient.emailAddresses}
-            />
-          </Grid>
+          <CentralFilePersonDetails
+            showAge
+            person={{
+              ...patient,
+              contactAddress: isDefined(patient.address)
+                ? {
+                    // TODO: Support postbox type
+                    type: "DomesticAddress",
+                    ...patient.address,
+                  }
+                : undefined,
+            }}
+          />
         </DetailsSection>
       </InformationSheet>
       <OverlayBoundary>

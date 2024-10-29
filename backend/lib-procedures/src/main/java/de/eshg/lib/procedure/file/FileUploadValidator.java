@@ -8,7 +8,6 @@ package de.eshg.lib.procedure.file;
 import static de.eshg.lib.procedure.domain.model.ProcedureFileType.EML;
 
 import de.eshg.lib.procedure.domain.model.FileAware;
-import de.eshg.lib.procedure.domain.model.KeyDocumentType;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.repository.ManualProgressEntryRepository;
@@ -54,7 +53,7 @@ public class FileUploadValidator {
 
   private void validateKeyDocumentsUniformFileTypes(
       ManualProgressEntry manualProgressEntry, ProcedureFileType fileType) {
-    KeyDocumentType keyDocumentType = manualProgressEntry.getKeyDocumentType();
+    String keyDocumentType = manualProgressEntry.getKeyDocumentType();
 
     if (keyDocumentType == null) {
       return;

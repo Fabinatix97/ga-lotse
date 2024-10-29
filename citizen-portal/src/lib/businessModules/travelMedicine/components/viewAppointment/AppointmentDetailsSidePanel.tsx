@@ -7,7 +7,7 @@ import { ApiAppointmentBookingType } from "@eshg/citizen-portal-api/travelMedici
 import { Button, Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
-import { useDeleteAppointment } from "@/lib/businessModules/travelMedicine/api/mutations/citizenAuthApi";
+import { useDeleteAppointmentCp } from "@/lib/businessModules/travelMedicine/api/mutations/citizenAuthApi";
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
@@ -27,7 +27,7 @@ export function AppointmentDetailsSidePanel({
   const accessCode = useAccessCodeParam();
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
   const { procedureId, procedureStepId, appointmentDetails } = useIdContext();
-  const deleteAppointment = useDeleteAppointment();
+  const deleteAppointment = useDeleteAppointmentCp();
 
   async function handleDeleteAppointment() {
     await deleteAppointment.mutateAsync({

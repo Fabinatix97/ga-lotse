@@ -7,7 +7,7 @@
 
 ARG keycloakVersion
 
-FROM registry.access.redhat.com/ubi9:9.2-755 AS ubi-micro-build
+FROM registry.access.redhat.com/ubi9:9.4-1214.1726694543@sha256:b00d5990a00937bd1ef7f44547af6c7fd36e3fd410e2c89b5d2dfc1aff69fe99 AS ubi-micro-build
 
 FROM quay.io/keycloak/keycloak:$keycloakVersion AS keycloak-builder
 

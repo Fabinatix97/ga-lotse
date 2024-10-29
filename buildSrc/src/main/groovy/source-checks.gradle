@@ -67,8 +67,8 @@ tasks.register('formatCheck', PnpmTask) {
 }
 
 def eslintConfigFiles = [
-  "${rootDir}/config/eslint.base.cjs",
-  "${projectDir}/.eslintrc.cjs"
+  "${rootDir}/config/eslint.base.js",
+  "${projectDir}/eslint.config.js"
 ]
 
 tasks.register('lint', PnpmTask) {

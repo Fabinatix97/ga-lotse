@@ -4,7 +4,10 @@
  */
 
 import { type ApiGetReferencePersonResponse } from "@eshg/employee-portal-api/base";
-import { ApiAppointmentType } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentType,
+} from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { FormikErrors } from "formik";
 import { ReactNode, useEffect, useRef, useState } from "react";
@@ -169,6 +172,7 @@ export function PersonSidebar({
               initialStepAppointmentType: ApiAppointmentType.Consultation,
               appointmentTypeStandardDuration:
                 consultationStandardDuration as number,
+              bookingType: "" as ApiAppointmentBookingType,
             }}
           />
         </OverlayBoundary>

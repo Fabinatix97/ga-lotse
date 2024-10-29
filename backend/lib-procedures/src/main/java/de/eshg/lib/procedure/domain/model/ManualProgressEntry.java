@@ -10,10 +10,13 @@ import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.foureyes.domain.model.LockableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.annotation.CreatedBy;
 
 @Entity
@@ -39,15 +42,19 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private UUID createdBy;
 
-  @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  private KeyDocumentType keyDocumentType;
+  private String keyDocumentType;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private Integer keyDocumentVersion;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private boolean locked = false;
+
+  @NotAudited
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+  private ManualProgressEntryDeletionApprovalRequest deletionApprovalRequest;
 
   public ManualProgressEntryType getManualProgressEntryType() {
     return manualProgressEntryType;
@@ -99,11 +106,11 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
     return getManualProgressEntryType().supports(fileType);
   }
 
-  public KeyDocumentType getKeyDocumentType() {
+  public String getKeyDocumentType() {
     return keyDocumentType;
   }
 
-  public void setKeyDocumentType(KeyDocumentType keyDocumentType) {
+  public void setKeyDocumentType(String keyDocumentType) {
     this.keyDocumentType = keyDocumentType;
   }
 
@@ -113,6 +120,11 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
 
   public void setKeyDocumentVersion(Integer keyDocumentVersion) {
     this.keyDocumentVersion = keyDocumentVersion;
+  }
+
+  public void setDeletionApprovalRequest(
+      ManualProgressEntryDeletionApprovalRequest deletionApprovalRequest) {
+    this.deletionApprovalRequest = deletionApprovalRequest;
   }
 
   public boolean isLocked() {

@@ -5,10 +5,7 @@
 
 "use client";
 
-import {
-  ApiKeyDocumentType,
-  ApiManualProgressEntryType,
-} from "@eshg/employee-portal-api/businessProcedures";
+import { ApiManualProgressEntryType } from "@eshg/employee-portal-api/businessProcedures";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -48,7 +45,7 @@ export interface CreateProgressEntryFormValues {
   file: File | null;
   documentDescription: string;
   text: string;
-  keyDocumentType: OptionalFieldValue<ApiKeyDocumentType>;
+  keyDocumentType: OptionalFieldValue<string>;
 }
 
 const EMPTY_CREATE_PROGRESS_ENTRY_VALUES: CreateProgressEntryFormValues = {

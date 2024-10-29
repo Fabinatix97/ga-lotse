@@ -241,14 +241,16 @@ public class KeycloakTestClient {
               UserMapper.mapAttributesToDm(
                   new LinkedHashMap<>(),
                   configured.phoneNumber(),
-                  configured.externalChatUsername());
+                  configured.externalChatUsername(),
+                  null,
+                  null);
           representation.setAttributes(attributes);
           representation.setEnabled(true);
         });
   }
 
   public void deleteUser(String username) {
-    Optional<UserResource> userByName = keycloakClient.getUserByName(username);
+    Optional<UserResource> userByName = keycloakClient.getUserResourceByName(username);
     if (userByName.isPresent()) {
       UsersResource usersResource = keycloakClient.getRealm().users();
       usersResource.delete(userByName.get().toRepresentation().getId());
@@ -380,13 +382,13 @@ public class KeycloakTestClient {
 
   private UserResource getUserByNameOrThrow(String username) {
     return keycloakClient
-        .getUserByName(username)
+        .getUserResourceByName(username)
         .orElseThrow(
             () -> new IllegalStateException("Found no user with username '" + username + "'"));
   }
 
   public boolean doesUserExist(String username) {
-    return keycloakClient.getUserByName(username).isPresent();
+    return keycloakClient.getUserResourceByName(username).isPresent();
   }
 
   public void invalidateAllSessions(String clientId) {

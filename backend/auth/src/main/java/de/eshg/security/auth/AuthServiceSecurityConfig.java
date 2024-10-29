@@ -6,6 +6,7 @@
 package de.eshg.security.auth;
 
 import com.google.common.collect.Iterables;
+import de.eshg.lib.common.TimeoutConstants;
 import de.eshg.security.auth.login.LoginMethod;
 import java.time.Clock;
 import java.util.List;
@@ -179,7 +180,11 @@ public class AuthServiceSecurityConfig {
     OAuth2AuthorizedClientProvider authorizedClientProvider =
         OAuth2AuthorizedClientProviderBuilder.builder()
             .authorizationCode()
-            .refreshToken(refreshTokenGrantBuilder -> refreshTokenGrantBuilder.clock(clock))
+            .refreshToken(
+                refreshTokenGrantBuilder ->
+                    refreshTokenGrantBuilder
+                        .clockSkew(TimeoutConstants.LONG_RUNNING_OPERATION_TIMEOUT)
+                        .clock(clock))
             .build();
 
     DefaultOAuth2AuthorizedClientManager authorizedClientManager =

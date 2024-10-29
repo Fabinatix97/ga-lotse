@@ -9,6 +9,7 @@ import static de.eshg.base.keycloak.KeycloakTestProvisioning.TEST_HELPER_CLIENT_
 import static de.eshg.base.keycloak.differ.KeycloakDiffer.toJson;
 import static java.util.function.Function.identity;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.keycloak.KeycloakUserAttribute.ValidationRule;
 import de.eshg.base.keycloak.differ.AuthenticationExecutionRepresentationDiffer;
@@ -757,12 +758,19 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
     }
   }
 
-  public Optional<UserResource> getUserByName(String username) {
+  public Optional<UserResource> getUserResourceByName(String username) {
     RealmResource realm = getRealm();
-    return realm.users().search(username).stream()
-        .filter(userCandidate -> userCandidate.getUsername().equals(username))
-        .collect(StreamUtil.toSingleOptionalElement())
-        .map(user -> realm.users().get(user.getId()));
+    return getUserByName(username).map(user -> realm.users().get(user.getId()));
+  }
+
+  public Optional<UserRepresentation> getUserByName(String username) {
+    return searchUsersByName(username).collect(StreamUtil.toSingleOptionalElement());
+  }
+
+  @VisibleForTesting
+  Stream<UserRepresentation> searchUsersByName(String username) {
+    RealmResource realm = getRealm();
+    return realm.users().searchByUsername(username, true).stream();
   }
 
   public UserResource getSelfUser() {
@@ -873,7 +881,7 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
       ClientScopeRepresentation targetScope, List<ProtocolMapperRepresentation> elementsToAdd) {
     String mapperNames =
         elementsToAdd.stream()
-            .map(ProtocolMapperRepresentation::getProtocolMapper)
+            .map(ProtocolMapperRepresentation::getName)
             .collect(Collectors.joining(", "));
     if (!elementsToAdd.isEmpty()) {
       log.info(
@@ -890,7 +898,7 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
       ClientScopeRepresentation targetScope, ProtocolMapperRepresentation toDelete) {
     log.info(
         "Deleting ProtocolMapper '{}' from ClientScope '{}'",
-        toDelete.getProtocolMapper(),
+        toDelete.getName(),
         targetScope.getName());
     getRealm()
         .clientScopes()
@@ -903,7 +911,7 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
       ClientScopeRepresentation targetScope, ProtocolMapperRepresentation mapper, String diff) {
     log.info(
         "ProtocolMapper '{}' in ClientScope '{}' already exists, but update is required:\n{}",
-        mapper.getProtocolMapper(),
+        mapper.getName(),
         targetScope.getName(),
         diff);
     getRealm()

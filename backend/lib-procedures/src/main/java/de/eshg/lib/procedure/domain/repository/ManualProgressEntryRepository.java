@@ -5,7 +5,6 @@
 
 package de.eshg.lib.procedure.domain.repository;
 
-import de.eshg.lib.procedure.domain.model.KeyDocumentType;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import java.util.List;
@@ -34,7 +33,7 @@ public interface ManualProgressEntryRepository
   List<ManualProgressEntry>
       findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFileAndAttachments(
           @Param("procedureId") Long procedureId,
-          @Param("keyDocumentType") KeyDocumentType keyDocumentType,
+          @Param("keyDocumentType") String keyDocumentType,
           @Param("id") Long id);
 
   @Query(
@@ -42,14 +41,13 @@ public interface ManualProgressEntryRepository
           """
   SELECT count(*) FROM manual_progress_entry mpe
   LEFT JOIN progress_entry pe ON mpe.id = pe.id
-  WHERE pe.procedure_id = :procedureId AND cast(mpe.key_document_type as text) = :#{#keyDocumentType.name()}""",
+  WHERE pe.procedure_id = :procedureId AND mpe.key_document_type = :keyDocumentType""",
       nativeQuery = true)
   Integer countByProcedureIdAndKeyDocumentType(
-      @Param("procedureId") Long procedureId,
-      @Param("keyDocumentType") KeyDocumentType keyDocumentType);
+      @Param("procedureId") Long procedureId, @Param("keyDocumentType") String keyDocumentType);
 
   boolean existsByProcedureIdAndKeyDocumentTypeAndFileFileTypeNot(
-      Long procedureId, KeyDocumentType keyDocumentType, ProcedureFileType fileType);
+      Long procedureId, String keyDocumentType, ProcedureFileType fileType);
 
   Optional<ManualProgressEntry> findByExternalId(UUID externalId);
 }

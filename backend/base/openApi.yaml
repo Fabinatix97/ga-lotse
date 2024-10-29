@@ -4125,6 +4125,14 @@ components:
           description: The phone number of a user
           example: "+491234567890"
           pattern: "[-+0-9() ]{1,23}"
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a user
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 0
         username:
           type: string
           description: The username which is displayed in the application and can
@@ -4327,6 +4335,7 @@ components:
       - STANDARD_CITIZEN
       - ACCESS_CODE_USER
       - MUK_USER
+      - BUND_ID_USER
     Configuration:
       type: object
       properties:
@@ -7900,6 +7909,7 @@ components:
       - NEUTRAL
       - FEMALE
       - MALE
+      example: NOT_SPECIFIED
     SearchContactsResponse:
       type: object
       properties:
@@ -8474,6 +8484,14 @@ components:
           description: The phone number of a user
           example: "+491234567890"
           pattern: "[-+0-9() ]{1,23}"
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a user
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
     User:
       type: object
       properties:
@@ -8582,6 +8600,14 @@ components:
           type: boolean
           description: Shows if user profile belongs to the user which is currently
             active
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a user
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
         user:
           $ref: "#/components/schemas/User"
       required:

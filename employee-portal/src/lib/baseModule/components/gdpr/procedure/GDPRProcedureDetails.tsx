@@ -102,7 +102,7 @@ export function GDPRProcedureDetails({
         {linkedPersons.map((person, index) => (
           <SectionTile key={person.id} id={person.id}>
             <SectionTitle id={person.id}>
-              {index + 1}. Datensatz aus der Zentralkartei
+              {index + 1}. Datensatz aus dem Stammdaten-Konverter
             </SectionTitle>
             <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
           </SectionTile>
@@ -110,7 +110,7 @@ export function GDPRProcedureDetails({
         {linkedFacilities.map((facility, index) => (
           <SectionTile key={facility.id} id={facility.id}>
             <SectionTitle id={facility.id}>
-              {index + 1}. Datensatz aus der Zentralkartei
+              {index + 1}. Datensatz aus dem Stammdaten-Konverter
             </SectionTitle>
             <CentralFileFacilityDetails
               facility={facility}

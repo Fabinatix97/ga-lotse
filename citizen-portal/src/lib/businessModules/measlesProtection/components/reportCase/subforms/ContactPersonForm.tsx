@@ -56,14 +56,14 @@ export function ContactPersonForm(props: NestedFormProps) {
         <SelectField
           name={fieldName("salutation")}
           label={t("common.personalDetails.salutation")}
-          options={salutationOptions}
+          options={salutationOptions(t)}
         />
       </Grid>
       <Grid xxs={12} xs={6}>
         <SelectField
           name={fieldName("title")}
           label={t("common.personalDetails.title")}
-          options={titleOptions}
+          options={titleOptions(t)}
         />
       </Grid>
       <Grid xxs={12}>

@@ -28,6 +28,7 @@ public class InformationStatementMapper {
         informationStatement.getId(),
         informationStatement.getTitle(),
         informationStatement.getContent(),
+        informationStatement.isCitizenHasAnswered(),
         informationStatement.getCreatedAt(),
         informationStatement.getModifiedAt());
   }

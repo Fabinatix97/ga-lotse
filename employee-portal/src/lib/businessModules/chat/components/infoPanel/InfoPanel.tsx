@@ -5,6 +5,11 @@
 
 import { useEffect } from "react";
 
+import { AddChatMember } from "@/lib/businessModules/chat/components/infoPanel/AddChatMember";
+import { AdminSettings } from "@/lib/businessModules/chat/components/infoPanel/AdminSettings";
+import { AssignAdminView } from "@/lib/businessModules/chat/components/infoPanel/AssignAdminView";
+import { RenameChat } from "@/lib/businessModules/chat/components/infoPanel/RenameChat";
+import { RoomAvatar } from "@/lib/businessModules/chat/components/infoPanel/RoomAvatar";
 import { RoomInfoView } from "@/lib/businessModules/chat/components/infoPanel/RoomInfoView";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
@@ -12,7 +17,8 @@ import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { MemberInfoView } from "./MemberInfoView";
 
 export function InfoPanel() {
-  const { closeInfoPanel, infoPanelState } = useInfoPanelContext();
+  const { closeInfoPanel, infoPanelState, setInfoPanelView } =
+    useInfoPanelContext();
 
   useEffect(() => {
     if (!infoPanelState.payload) {
@@ -37,6 +43,59 @@ export function InfoPanel() {
         <MemberInfoView
           userId={infoPanelState.payload}
           onClose={closeInfoPanel}
+        />
+      );
+    case InfoPanelView.AddChatMember:
+      return (
+        <AddChatMember
+          roomId={infoPanelState.payload}
+          onClose={closeInfoPanel}
+          onCancel={() =>
+            setInfoPanelView(InfoPanelView.RoomInfo, infoPanelState.payload)
+          }
+        />
+      );
+    case InfoPanelView.AdminSettings:
+      return (
+        <AdminSettings
+          roomId={infoPanelState.payload}
+          onClose={closeInfoPanel}
+        />
+      );
+    case InfoPanelView.AssignAdminLevel:
+      return (
+        <AssignAdminView
+          roomId={infoPanelState.payload}
+          onClose={closeInfoPanel}
+          onCancel={() =>
+            setInfoPanelView(InfoPanelView.RoomInfo, infoPanelState.payload)
+          }
+        />
+      );
+    case InfoPanelView.RenameGroupChat:
+      return (
+        <RenameChat
+          roomId={infoPanelState.payload}
+          onClose={closeInfoPanel}
+          onCancel={() =>
+            setInfoPanelView(
+              InfoPanelView.AdminSettings,
+              infoPanelState.payload,
+            )
+          }
+        />
+      );
+    case InfoPanelView.RoomAvatar:
+      return (
+        <RoomAvatar
+          roomId={infoPanelState.payload}
+          onClose={closeInfoPanel}
+          onCancel={() =>
+            setInfoPanelView(
+              InfoPanelView.AdminSettings,
+              infoPanelState.payload,
+            )
+          }
         />
       );
     default:

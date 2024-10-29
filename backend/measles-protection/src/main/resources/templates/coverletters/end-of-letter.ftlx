@@ -1,11 +1,11 @@
+<#-- @ftlvariable name="departmentInfo" type="de.eshg.measlesprotection.pdf.coverletter.DepartmentInfo" -->
 <div>
   <p>
-    Die Datenschutz-Information nach DSGVO für die Maßnahmen nach Masernschutzgesetz finden Sie online unter
-    <a href="frankfurt.de/masern-datenschutz">frankfurt.de/masern-datenschutz</a>. Sollten Sie keinen Zugang zur
-    Webseite haben, senden wir Ihnen die vollständigen Datenschutzinformationen gerne nach Aufforderung zu.
+    Die Datenschutz-Information nach DSGVO für die Maßnahmen nach Masernschutzgesetz finden Sie online im Online-Portal.
+    Sollten Sie keinen Zugang zur Webseite haben, senden wir Ihnen die vollständigen Datenschutzinformationen gerne nach Aufforderung zu.
   </p>
   <p>
-    Das Gesundheitsamt Frankfurt berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
+    Das ${departmentInfo.name()} berät Sie auch bei allen Fragen zum Masernschutzgesetz und zur
     Masernschutzimpfung.
   </p>
   <p>Mit freundlichen Grüßen</p>

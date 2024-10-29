@@ -24,7 +24,7 @@ public class AuditLogInternalSecurityConfiguration {
   public AuthorizationCustomizer procedureAuthorizationCustomizer() {
     return auth -> {
       auth.requestMatchers(HttpMethod.POST, AUDIT_LOG_CONTROLLER)
-          .hasRole(EmployeePermissionRole.AUDITLOG_FILE_SEND.getKeycloakName());
+          .hasRole(EmployeePermissionRole.AUDITLOG_FILE_SEND.name());
       auth.requestMatchers(
               HttpMethod.GET,
               "/actuator/health",

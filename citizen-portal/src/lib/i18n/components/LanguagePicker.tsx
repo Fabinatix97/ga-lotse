@@ -55,7 +55,7 @@ export function LanguagePicker() {
     <Dropdown>
       <MenuButton
         ref={toggleButton}
-        data-testId="languagePicker"
+        title={t("select_language_label")}
         {...buttonStyling}
       >
         {currentLanguage.name}

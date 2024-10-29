@@ -13,8 +13,10 @@ import { Button, Divider, Stack } from "@mui/joy";
 import { ReactNode } from "react";
 
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
+import { ChatSettingsButton } from "@/lib/baseModule/components/layout/ChatSettingsSidebar";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
 import { routes } from "@/lib/baseModule/shared/routes";
+import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import {
   UseSidebarResult,
@@ -69,6 +71,10 @@ function MiscLinkButton({ href, label }: { href: string; label: string }) {
 
 function SelfUserSidebar() {
   const { data: selfUser } = useGetSelfUser();
+  const {
+    canAccessChat,
+    userSettings: { chatUsageEnabled },
+  } = useChat();
 
   return (
     <>
@@ -95,6 +101,9 @@ function SelfUserSidebar() {
             >
               Anmeldeprotokoll
             </NavLinkButton>
+
+            {canAccessChat && chatUsageEnabled && <ChatSettingsButton />}
+
             <Divider orientation="horizontal" />
           </Stack>
 

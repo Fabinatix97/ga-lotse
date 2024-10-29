@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiAppointmentBookingType,
   ApiAppointmentSummary,
   ApiDisease,
   ApiInformationStatementTemplate,
@@ -12,7 +13,10 @@ import {
   ApiVaccine,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  formatDate,
+  formatDateTime,
+} from "@eshg/lib-portal/formatters/dateTime";
 import { isEmpty, isNonNullish } from "remeda";
 
 import { AppointmentSummary } from "@/lib/businessModules/travelMedicine/api/models/AppointmentSummary";
@@ -121,11 +125,22 @@ export function createAppointmentOptions(
 }
 
 function getAppointmentLabel(appointment: AppointmentSummary) {
-  if (appointment.start) {
-    return `${formatDateTime(appointment.start)} Uhr`;
-  } else {
-    return "";
+  let label: string;
+  switch (appointment.appointmentBookingType) {
+    case ApiAppointmentBookingType.SelfBooking:
+      label = `${formatDate(appointment.earliestDate)} (buchbar ab)`;
+      break;
+    case ApiAppointmentBookingType.UserDefined:
+    case ApiAppointmentBookingType.AppointmentBlock:
+      label = `${formatDateTime(appointment.start)} Uhr`;
+      break;
+    case ApiAppointmentBookingType.Cancelled:
+      label = `${formatDateTime(appointment.start)} Uhr (abgesagt)`;
+      break;
+    default:
+      label = "";
   }
+  return label;
 }
 
 export function determineInitialUser(
@@ -178,4 +193,23 @@ export function createMedicalAssistantOptions(
   } else {
     return [];
   }
+}
+
+export function determineStartAndDuration(
+  bookingType: ApiAppointmentBookingType | undefined,
+  userDefinedAppointmentDate: string,
+  appointmentBlockDate: string,
+  appointmentTypeStandardDuration: number,
+): { appointmentStart: Date; durationInMinutes: number } {
+  let appointmentStart;
+  let durationInMinutes;
+  if (bookingType === ApiAppointmentBookingType.UserDefined) {
+    appointmentStart = new Date(userDefinedAppointmentDate);
+    durationInMinutes = appointmentTypeStandardDuration;
+  } else {
+    const split = appointmentBlockDate.split(",");
+    appointmentStart = new Date(split.at(0)!);
+    durationInMinutes = Number.parseInt(split.at(1)!);
+  }
+  return { appointmentStart, durationInMinutes };
 }

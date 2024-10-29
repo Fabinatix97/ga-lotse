@@ -4,11 +4,12 @@
  */
 
 import { Direction, EventType, MatrixClient, Room } from "matrix-js-sdk";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { isStrictEqual } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { ChatRoomMember } from "@/lib/businessModules/chat/shared/types";
 import {
   getMemberAvatarUrl,
@@ -23,6 +24,7 @@ export interface RoomInfo {
   communicationType?: CommunicationType;
   avatarUrl: string | null;
   allRoomMembers: ChatRoomMember[];
+  joinedMembers: ChatRoomMember[];
   roomMembers: ChatRoomMember[];
   dmRoomMember: ChatRoomMember | undefined;
   isAdmin: boolean;
@@ -31,13 +33,35 @@ export interface RoomInfo {
 
 export function useRoomInfo(roomId: string): RoomInfo {
   const { matrixClient } = useChatClientContext();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    void (async () => {
+      const userId = matrixClient.getUserId();
+      if (!userId) return;
+      try {
+        const data = await matrixClient.getStateEvent(
+          roomId,
+          EventType.RoomPowerLevels,
+          "",
+        );
+        const powerLevels = ("users" in data ? data.users : data) as Record<
+          string,
+          number
+        >;
+        const userPowerLevel = powerLevels?.[userId] ?? 0;
+        setIsAdmin(userPowerLevel === 100);
+      } catch (error) {
+        logger.error("Daten konnten nicht heruntergeladen werden", error);
+      }
+    })();
+  }, [matrixClient, roomId]);
 
   const room = matrixClient.getRoom(roomId);
   const rct = useMemo(
     () => (room ? getRoomNameAndCommunicationType(room) : undefined),
     [room],
   );
-
   const roomCreator = useMemo(
     () =>
       room
@@ -52,8 +76,10 @@ export function useRoomInfo(roomId: string): RoomInfo {
       member,
       isRoomCreator: isStrictEqual(member.userId, roomCreator),
     })) ?? [];
-
-  const roomMembers = allRoomMembers?.filter(
+  const joinedMembers = allRoomMembers?.filter(
+    (roomMember) => roomMember.member.membership === "join",
+  );
+  const roomMembers = joinedMembers?.filter(
     ({ member }) => !isStrictEqual(member.userId, room?.myUserId),
   );
 
@@ -69,8 +95,6 @@ export function useRoomInfo(roomId: string): RoomInfo {
     [dmRoomMember?.member, matrixClient, rct?.communicationType, room],
   );
 
-  const isAdmin = isStrictEqual(matrixClient.getUserId(), roomCreator);
-
   return {
     room,
     roomCreator,
@@ -78,6 +102,7 @@ export function useRoomInfo(roomId: string): RoomInfo {
     avatarUrl,
     roomMembers,
     allRoomMembers,
+    joinedMembers,
     dmRoomMember,
     isAdmin,
     matrixClient,

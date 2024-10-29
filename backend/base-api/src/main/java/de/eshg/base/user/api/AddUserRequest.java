@@ -6,6 +6,7 @@
 package de.eshg.base.user.api;
 
 import de.eshg.CustomValidations.EmailAddressConstraint;
+import de.eshg.base.SalutationDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -39,6 +40,10 @@ public record AddUserRequest(
         @NotNull
         @Size(min = 2, max = 255)
         String lastName,
+    @Schema(description = "The academic title of a user", example = "Prof. Dr.") @Size(max = 119)
+        String title,
+    @Schema(description = "The salutation of a user", example = "NOT_SPECIFIED")
+        SalutationDto salutation,
     @Schema(description = "The phone number of a user", example = "+491234567890")
         @Pattern(regexp = "[-+0-9() ]{1,23}")
         String phoneNumber,

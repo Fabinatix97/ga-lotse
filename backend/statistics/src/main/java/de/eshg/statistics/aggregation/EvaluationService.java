@@ -20,6 +20,7 @@ import de.eshg.statistics.api.chart.AddChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.BinningModeDto;
 import de.eshg.statistics.api.chart.CalculationDto;
+import de.eshg.statistics.api.chart.ChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
@@ -30,6 +31,7 @@ import de.eshg.statistics.api.diagram.DiagramDto;
 import de.eshg.statistics.api.diagram.UpdateDiagramRequest;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.mapper.EvaluationMapper;
+import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
@@ -41,13 +43,18 @@ import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
+import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
 import de.eshg.statistics.persistence.entity.chart.HistogramBin;
 import de.eshg.statistics.persistence.entity.chart.HistogramChartConfiguration;
+import de.eshg.statistics.persistence.entity.chart.LineChartConfiguration;
+import de.eshg.statistics.persistence.entity.chart.PieChartConfiguration;
+import de.eshg.statistics.persistence.entity.chart.ScatterChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.BarChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.BarGroupData;
 import de.eshg.statistics.persistence.entity.diagramdata.ChoroplethMapData;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPoint;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPointGroup;
+import de.eshg.statistics.persistence.entity.diagramdata.DiagramData;
 import de.eshg.statistics.persistence.entity.diagramdata.HistogramChartData;
 import de.eshg.statistics.persistence.entity.diagramdata.HistogramGroupData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToCount;
@@ -58,6 +65,8 @@ import de.eshg.statistics.persistence.entity.diagramdata.TrendLine;
 import de.eshg.statistics.persistence.entity.entry.BooleanEntry;
 import de.eshg.statistics.persistence.entity.entry.DecimalEntry;
 import de.eshg.statistics.persistence.entity.entry.IntegerEntry;
+import de.eshg.statistics.persistence.entity.evaluationtemplate.AnalysisTemplate;
+import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import de.eshg.statistics.persistence.entity.report.Report;
 import de.eshg.statistics.persistence.repository.DiagramRepository;
 import de.eshg.statistics.persistence.repository.EvaluationRepository;
@@ -120,32 +129,111 @@ public class EvaluationService {
     }
   }
 
+  public static void addEvaluationAndDiagramsWithoutData(
+      Statistic statistic, AnalysisTemplate analysisTemplate) {
+    String analysisName = analysisTemplate.getName();
+    ChartConfigurationDto chartConfigurationDto =
+        EvaluationMapper.mapToChartConfigurationDto(
+            Hibernate.unproxy(analysisTemplate.getChartConfiguration(), ChartConfiguration.class),
+            true);
+    switch (chartConfigurationDto) {
+      case BarChartConfigurationDto barChartConfigurationDto ->
+          validateBarChartConfiguration(barChartConfigurationDto, statistic, analysisName);
+      case ChoroplethMapConfigurationDto choroplethMapConfigurationDto ->
+          validateChoroplethMapConfiguration(
+              EvaluationMapper.mapToAddChoroplethMapConfigurationDto(choroplethMapConfigurationDto),
+              statistic,
+              analysisName);
+      case HistogramChartConfigurationDto histogramChartConfigurationDto ->
+          validateHistogramChartConfiguration(
+              histogramChartConfigurationDto, statistic, analysisName);
+      case LineChartConfigurationDto lineChartConfigurationDto ->
+          validatePointBasedChartConfiguration(
+              lineChartConfigurationDto, statistic, analysisName, "LineChartConfiguration");
+      case PieChartConfigurationDto pieChartConfigurationDto ->
+          validatePieChartConfiguration(pieChartConfigurationDto, statistic, analysisName);
+      case ScatterChartConfigurationDto scatterChartConfigurationDto ->
+          validatePointBasedChartConfiguration(
+              scatterChartConfigurationDto, statistic, analysisName, "ScatterChartConfiguration");
+    }
+
+    ChartConfiguration chartConfiguration =
+        EvaluationMapper.mapToPersistence(chartConfigurationDto);
+    Evaluation evaluation = new Evaluation();
+    statistic.addEvaluation(evaluation);
+    evaluation.setName(analysisName);
+    evaluation.setChartConfiguration(chartConfiguration);
+
+    analysisTemplate
+        .getDiagramTemplates()
+        .forEach(diagramTemplate -> addEmptyDiagram(diagramTemplate, evaluation));
+  }
+
+  private static void addEmptyDiagram(DiagramTemplate diagramTemplate, Evaluation evaluation) {
+    List<TableColumnFilterParameter> filters =
+        FilterParameterMapper.mapToApi(diagramTemplate.getFilters());
+    try {
+      AggregationResultUtil.validateColumnFilters(filters, evaluation.getAggregationResult());
+    } catch (BadRequestException badRequestException) {
+      throw new BadRequestException(
+          "'%s' - '%s': %s"
+              .formatted(
+                  evaluation.getName(),
+                  diagramTemplate.getTitle(),
+                  badRequestException.getMessage()));
+    }
+
+    DiagramData diagramData = getEmptyDiagramData(evaluation);
+
+    EvaluationMapper.mapToPersistence(
+        diagramTemplate.getTitle(),
+        diagramTemplate.getDescription(),
+        filters,
+        diagramData,
+        evaluation);
+  }
+
+  private static DiagramData getEmptyDiagramData(Evaluation evaluation) {
+    DiagramData diagramData =
+        switch (evaluation.getChartConfiguration()) {
+          case ChoroplethMapConfiguration ignored -> new ChoroplethMapData();
+          case HistogramChartConfiguration ignored -> new HistogramChartData();
+          case LineChartConfiguration ignored -> new LineOrScatterChartData();
+          case PieChartConfiguration ignored -> new PieChartData();
+          case ScatterChartConfiguration ignored -> new LineOrScatterChartData();
+          default -> new BarChartData();
+        };
+    diagramData.setEvaluatedDataAmount(0);
+    return diagramData;
+  }
+
   @Transactional
   public EvaluationDto addEvaluation(AddEvaluationRequest addEvaluationRequest) {
     Statistic statistic = statisticService.getStatisticInternal(addEvaluationRequest.statisticId());
     StatisticService.validateStatisticCompleted(statistic);
 
+    String name = addEvaluationRequest.name();
     String geoJson = null;
     List<HistogramBin> histogramBins = null;
     switch (addEvaluationRequest.chartConfiguration()) {
       case BarChartConfigurationDto barChartConfiguration ->
-          validateBarChartConfiguration(barChartConfiguration, statistic);
+          validateBarChartConfiguration(barChartConfiguration, statistic, name);
       case AddChoroplethMapConfigurationDto choroplethMapConfiguration -> {
-        validateChoroplethMapConfiguration(choroplethMapConfiguration, statistic);
+        validateChoroplethMapConfiguration(choroplethMapConfiguration, statistic, name);
         geoJson = geoShapeService.getGeoShape(choroplethMapConfiguration.geoShapeId()).geoJson();
       }
       case HistogramChartConfigurationDto histogramChartConfiguration -> {
-        validateHistogramChartConfiguration(histogramChartConfiguration, statistic);
+        validateHistogramChartConfiguration(histogramChartConfiguration, statistic, name);
         histogramBins = calculateHistogramBins(histogramChartConfiguration, statistic);
       }
       case LineChartConfigurationDto lineChartConfigurationDto ->
           validatePointBasedChartConfiguration(
-              lineChartConfigurationDto, statistic, "LineChartConfiguration");
+              lineChartConfigurationDto, statistic, name, "LineChartConfiguration");
       case PieChartConfigurationDto pieChartConfiguration ->
-          validatePieChartConfiguration(pieChartConfiguration, statistic);
+          validatePieChartConfiguration(pieChartConfiguration, statistic, name);
       case ScatterChartConfigurationDto scatterChartConfigurationDto ->
           validatePointBasedChartConfiguration(
-              scatterChartConfigurationDto, statistic, "ScatterChartConfiguration");
+              scatterChartConfigurationDto, statistic, name, "ScatterChartConfiguration");
     }
 
     Evaluation evaluation =
@@ -155,20 +243,25 @@ public class EvaluationService {
   }
 
   private static void validateBarChartConfiguration(
-      BarChartConfigurationDto barChartConfiguration, AbstractAggregationResult aggregationResult) {
+      BarChartConfigurationDto barChartConfiguration,
+      AbstractAggregationResult aggregationResult,
+      String name) {
     TableColumn tableColumnPrimary =
         AggregationResultUtil.getTableColumn(
             barChartConfiguration.primaryAttribute(), aggregationResult);
 
-    String errorMessage = "BarChartConfigurations require an attribute of type %s or %s as '%s'";
+    String errorMessage =
+        "'%s': BarChartConfigurations require an attribute of type %s or %s as '%s'";
     validateTableColumValueOptionOrBoolean(
         tableColumnPrimary,
-        errorMessage.formatted(ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, PRIMARY_ATTRIBUTE));
+        errorMessage.formatted(
+            name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, PRIMARY_ATTRIBUTE));
 
     if (barChartConfiguration.secondaryAttribute() == null) {
       if (barChartConfiguration.grouping() != null || barChartConfiguration.scaling() != null) {
         throw new BadRequestException(
-            "Grouping and scaling not allowed without secondary attribute given");
+            "'%s': Grouping and scaling not allowed without secondary attribute given"
+                .formatted(name));
       }
     } else {
       TableColumn tableColumnSecondary =
@@ -177,19 +270,20 @@ public class EvaluationService {
       validateTableColumValueOptionOrBoolean(
           tableColumnSecondary,
           errorMessage.formatted(
-              ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
-      validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary);
+              name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
+      validateThatTableColumnsAreDifferent(tableColumnPrimary, tableColumnSecondary, name);
 
       if (barChartConfiguration.grouping() == null || barChartConfiguration.scaling() == null) {
         throw new BadRequestException(
-            "Grouping and scaling are required for a secondary attribute");
+            "'%s': Grouping and scaling are required for a secondary attribute".formatted(name));
       }
     }
   }
 
   private static void validateChoroplethMapConfiguration(
       AddChoroplethMapConfigurationDto choroplethMapConfiguration,
-      AbstractAggregationResult aggregationResult) {
+      AbstractAggregationResult aggregationResult,
+      String name) {
     TableColumn tableColumnPrimary =
         AggregationResultUtil.getTableColumn(
             choroplethMapConfiguration.primaryAttribute(), aggregationResult);
@@ -199,7 +293,7 @@ public class EvaluationService {
     if (choroplethMapConfiguration.secondaryAttribute() == null) {
       if (choroplethMapConfiguration.calculation() != null) {
         throw new BadRequestException(
-            "calculation mode not allowed without secondary attribute given");
+            "'%s': Calculation mode not allowed without secondary attribute given".formatted(name));
       }
     } else {
       TableColumn tableColumnSecondary =
@@ -208,29 +302,32 @@ public class EvaluationService {
       validateChoroplethSecondaryAttribute(tableColumnSecondary);
 
       if (choroplethMapConfiguration.calculation() == null) {
-        throw new BadRequestException("calculation mode required for a secondary attribute");
+        throw new BadRequestException(
+            "'%s': Calculation mode required for a secondary attribute".formatted(name));
       }
     }
   }
 
   private static void validateHistogramChartConfiguration(
       HistogramChartConfigurationDto histogramChartConfiguration,
-      AbstractAggregationResult aggregationResult) {
+      AbstractAggregationResult aggregationResult,
+      String name) {
     TableColumn tableColumnPrimary =
         AggregationResultUtil.getTableColumn(
             histogramChartConfiguration.primaryAttribute(), aggregationResult);
 
     String errorMessage =
-        "HistogramChartConfigurations require an attribute of type %s or %s as '%s'";
+        "'%s': HistogramChartConfigurations require an attribute of type %s or %s as '%s'";
     validateTableColumnDecimalOrInteger(
         tableColumnPrimary,
-        errorMessage.formatted(ValueType.DECIMAL, ValueType.INTEGER, PRIMARY_ATTRIBUTE));
+        errorMessage.formatted(name, ValueType.DECIMAL, ValueType.INTEGER, PRIMARY_ATTRIBUTE));
 
     if (histogramChartConfiguration.secondaryAttribute() == null) {
       if (histogramChartConfiguration.grouping() != null
           || histogramChartConfiguration.scaling() != null) {
         throw new BadRequestException(
-            "Grouping and scaling not allowed without secondary attribute given");
+            "'%s': Grouping and scaling not allowed without secondary attribute given"
+                .formatted(name));
       }
     } else {
       TableColumn tableColumnSecondary =
@@ -239,26 +336,27 @@ public class EvaluationService {
       validateTableColumValueOptionOrBoolean(
           tableColumnSecondary,
           errorMessage.formatted(
-              ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
+              name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
 
       if (histogramChartConfiguration.grouping() == null
           || histogramChartConfiguration.scaling() == null) {
         throw new BadRequestException(
-            "Grouping and scaling are required for a secondary attribute");
+            "'%s': Grouping and scaling are required for a secondary attribute".formatted(name));
       }
     }
 
     if (histogramChartConfiguration.binningMode().equals(BinningModeDto.MANUAL)
         && histogramChartConfiguration.numberOfBins() == null) {
       throw new BadRequestException(
-          "numberOfBins is required for binning mode '%s'".formatted(BinningModeDto.MANUAL.name()));
+          "'%s': numberOfBins is required for binning mode '%s'"
+              .formatted(name, BinningModeDto.MANUAL.name()));
     }
 
     if (histogramChartConfiguration.binningMode().equals(BinningModeDto.AUTO)
         && histogramChartConfiguration.numberOfBins() != null) {
       throw new BadRequestException(
-          "numberOfBins must not be set for binning mode '%s'"
-              .formatted(BinningModeDto.AUTO.name()));
+          "'%s': numberOfBins must not be set for binning mode '%s'"
+              .formatted(name, BinningModeDto.AUTO.name()));
     }
   }
 
@@ -355,35 +453,39 @@ public class EvaluationService {
 
   private static void validatePieChartConfiguration(
       PieChartConfigurationDto pieChartConfigurationDto,
-      AbstractAggregationResult aggregationResult) {
+      AbstractAggregationResult aggregationResult,
+      String name) {
     TableColumn tableColumnPrimary =
         AggregationResultUtil.getTableColumn(
             pieChartConfigurationDto.attribute(), aggregationResult);
 
-    String errorMessage = "PieChartConfigurations require an attribute of type %s or %s";
+    String errorMessage = "'%s': PieChartConfigurations require an attribute of type %s or %s";
     validateTableColumValueOptionOrBoolean(
         tableColumnPrimary,
-        errorMessage.formatted(ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS));
+        errorMessage.formatted(name, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS));
   }
 
-  private void validatePointBasedChartConfiguration(
+  private static void validatePointBasedChartConfiguration(
       PointBasedChartConfiguration chartConfiguration,
       AbstractAggregationResult aggregationResult,
+      String name,
       String configName) {
 
-    String errorMessage = "%ss require an attribute of type %s or %s as '%s'";
+    String errorMessage = "'%s': %ss require an attribute of type %s or %s as '%s'";
 
     TableColumn tableColumnX =
         AggregationResultUtil.getTableColumn(chartConfiguration.xAttribute(), aggregationResult);
     validateTableColumnDecimalOrInteger(
         tableColumnX,
-        errorMessage.formatted(configName, ValueType.DECIMAL, ValueType.INTEGER, "xAttribute"));
+        errorMessage.formatted(
+            name, configName, ValueType.DECIMAL, ValueType.INTEGER, "xAttribute"));
 
     TableColumn tableColumnY =
         AggregationResultUtil.getTableColumn(chartConfiguration.yAttribute(), aggregationResult);
     validateTableColumnDecimalOrInteger(
         tableColumnY,
-        errorMessage.formatted(configName, ValueType.DECIMAL, ValueType.INTEGER, "yAttribute"));
+        errorMessage.formatted(
+            name, configName, ValueType.DECIMAL, ValueType.INTEGER, "yAttribute"));
 
     if (chartConfiguration.secondaryAttribute() != null) {
       TableColumn tableColumnSecondary =
@@ -393,14 +495,19 @@ public class EvaluationService {
       validateTableColumValueOptionOrBoolean(
           tableColumnSecondary,
           errorMessage.formatted(
-              configName, ValueType.BOOLEAN, ValueType.VALUE_WITH_OPTIONS, SECONDARY_ATTRIBUTE));
+              name,
+              configName,
+              ValueType.BOOLEAN,
+              ValueType.VALUE_WITH_OPTIONS,
+              SECONDARY_ATTRIBUTE));
     }
   }
 
   private static void validateThatTableColumnsAreDifferent(
-      TableColumn tableColumnPrimary, TableColumn tableColumnSecondary) {
+      TableColumn tableColumnPrimary, TableColumn tableColumnSecondary, String name) {
     if (tableColumnPrimary.equals(tableColumnSecondary)) {
-      throw new BadRequestException("Primary and secondary attribute must be different");
+      throw new BadRequestException(
+          "'%s': Primary and secondary attribute must be different".formatted(name));
     }
   }
 

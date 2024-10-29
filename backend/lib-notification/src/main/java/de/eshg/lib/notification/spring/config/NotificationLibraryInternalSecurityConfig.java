@@ -28,6 +28,6 @@ public class NotificationLibraryInternalSecurityConfig {
 
     return auth ->
         auth.requestMatchers(NotificationApi.BASE_URL + "/**")
-            .hasRole(notificationAccessRole.getKeycloakName());
+            .hasRole(notificationAccessRole.name());
   }
 }

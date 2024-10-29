@@ -8,9 +8,14 @@ import { Stack, Typography, useTheme } from "@mui/joy";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { OnlineStatus } from "@/lib/businessModules/chat/components/OnlineStatus";
-import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { RoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
-import { getDepartmentNameFromUserId } from "@/lib/businessModules/chat/shared/utils";
+import {
+  getDepartmentNameFromUserId,
+  getMemberAvatarUrl,
+  getRoomAvatarUrl,
+  isDMRoom,
+} from "@/lib/businessModules/chat/shared/utils";
 
 export interface ChatHeaderProps extends Partial<RoomInfo> {
   userId?: string;
@@ -19,7 +24,6 @@ export interface ChatHeaderProps extends Partial<RoomInfo> {
 }
 
 export function ChatHeader({
-  avatarUrl,
   communicationType,
   dmRoomMember,
   userId,
@@ -27,10 +31,14 @@ export function ChatHeader({
   room,
   roomMembers,
   variant = "default",
-}: ChatHeaderProps) {
+}: Readonly<ChatHeaderProps>) {
   const theme = useTheme();
+  const { matrixClient } = useChatClientContext();
   const isSettings = variant === "settings";
   const name = room?.name ?? username;
+  const avatarUrl = isDMRoom(communicationType)
+    ? getMemberAvatarUrl(matrixClient, dmRoomMember?.member)
+    : getRoomAvatarUrl(matrixClient, room ?? null);
 
   // TO DO - finish mute feature
   const muteIndicator = false;
@@ -84,8 +92,7 @@ export function ChatHeader({
           </Stack>
         )}
         {variant === "settings" &&
-          (communicationType === CommunicationType.DirectMessage ||
-            username) && (
+          (isDMRoom(communicationType) || username) && (
             <Typography noWrap sx={{ minWidth: "5ch" }}>
               {
                 getDepartmentNameFromUserId(

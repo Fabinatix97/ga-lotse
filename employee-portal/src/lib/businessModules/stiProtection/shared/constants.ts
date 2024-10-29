@@ -6,12 +6,13 @@
 import {
   ApiAppointmentType,
   ApiConcern,
-  ApiDiseaseType,
+  ApiExamination,
   ApiGender,
   ApiProcedureStatus,
   ApiProcedureType,
   ApiSexualOrientation,
   ApiTaskType,
+  ApiVaccination,
 } from "@eshg/employee-portal-api/stiProtection";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
@@ -74,13 +75,15 @@ export const sexualContactNames: EnumMap<ApiGender> = {
   [ApiGender.NotSpecified]: "Keine Angabe",
 } satisfies Record<ApiGender, string>;
 
-export const diseaseTypeNames: EnumMap<ApiDiseaseType> = {
-  [ApiDiseaseType.Chlamydia]: "Chlamydien",
-  [ApiDiseaseType.Gonorrhea]: "Gonorrhoe (Tripper)",
-  [ApiDiseaseType.HepatitisA]: "Hepatitis A",
-  [ApiDiseaseType.HepatitisB]: "Hepatitis B",
-  [ApiDiseaseType.HepatitisC]: "Hepatitis C",
-  [ApiDiseaseType.Hiv]: "HIV",
-  [ApiDiseaseType.Hpv]: "HPV",
-  [ApiDiseaseType.Syphilis]: "Syphilis (Lues)",
-} satisfies Record<ApiDiseaseType, string>;
+export type DiseaseType = keyof ApiExamination | keyof ApiVaccination;
+
+export const diseaseTypeNames: EnumMap<DiseaseType> = {
+  chlamydia: "Chlamydien",
+  gonorrhea: "Gonorrhoe (Tripper)",
+  hepA: "Hepatitis A",
+  hepB: "Hepatitis B",
+  hepC: "Hepatitis C",
+  hiv: "HIV",
+  hpv: "HPV",
+  syphilis: "Syphilis (Lues)",
+} satisfies Record<DiseaseType, string>;

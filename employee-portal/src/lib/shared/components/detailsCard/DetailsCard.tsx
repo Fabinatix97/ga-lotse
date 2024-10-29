@@ -7,7 +7,7 @@
 
 import { Row } from "@eshg/lib-portal/components/Row";
 import { Sheet, Typography, styled } from "@mui/joy";
-import { PropsWithChildren, ReactElement } from "react";
+import { PropsWithChildren, ReactElement, useId } from "react";
 
 export function DetailsCard({
   title,
@@ -19,10 +19,12 @@ export function DetailsCard({
   fullHeight?: boolean;
   actionButton?: ReactElement;
 }>) {
+  const titleId = useId();
   return (
     <Sheet
       component="section"
       sx={{ padding: 3, height: fullHeight ? "100%" : "auto" }}
+      aria-labelledby={titleId}
     >
       <Row marginBottom={3} minHeight={36} justifyContent="space-between">
         <Typography
@@ -32,6 +34,7 @@ export function DetailsCard({
           fontSize="20px"
           noWrap
           level="body-md"
+          id={titleId}
         >
           {title}
         </Typography>

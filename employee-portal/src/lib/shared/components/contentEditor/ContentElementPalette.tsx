@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { SvgIconComponent } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
 import { IconButton, Sheet, Stack, Tooltip, Typography } from "@mui/joy";
@@ -27,9 +28,15 @@ export function ContentElementPalette({
   sx,
 }: Readonly<ContentElementPaletteProps>) {
   const iconMap = {
-    [PaletteItemType.TEXT]: <TextSnippetOutlined />,
-    [PaletteItemType.TEXTBLOCK]: <TextSnippetOutlined />,
-  } satisfies Record<PaletteItemType, ReactNode>;
+    [PaletteItemType.TEXT]: TextSnippetOutlined,
+    [PaletteItemType.TEXTBLOCK]: TextSnippetOutlined,
+  } satisfies Record<PaletteItemType, SvgIconComponent>;
+
+  function getDecorator(type: PaletteItemType): ReactNode {
+    const Icon = iconMap[type];
+
+    return <Icon sx={{ display: { xxs: "none", lg: "block" } }} />;
+  }
 
   return (
     <InformationSheet sx={sx} dataTestId={"editor-templates"}>
@@ -40,16 +47,23 @@ export function ContentElementPalette({
         {palette.map((item, index) => (
           <Sheet
             key={index}
-            sx={{ paddingBlock: 1 }}
+            sx={{
+              padding: { xxs: 0, lg: 2 },
+              paddingBlock: { xxs: 0, lg: 1 },
+            }}
             data-testid={`editor-template-${index}`}
           >
             <Stack
               direction="row"
-              spacing={2}
-              justifyContent="space-between"
+              spacing={{ xxs: 0, lg: 1 }}
               alignItems="center"
             >
-              <Typography level="body-sm" startDecorator={iconMap[item.type]}>
+              {getDecorator(item.type)}
+              <Typography
+                level="body-sm"
+                sx={{ flex: 1, paddingLeft: { xxs: 1, lg: 0 } }}
+                noWrap
+              >
                 {item.name}
               </Typography>
               <Tooltip title="Element hinzufügen">

@@ -16,7 +16,6 @@ import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
-import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoomMessages";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 
@@ -37,7 +36,6 @@ export function NewDirectChat({
 }: Readonly<NewDirectChatProps>) {
   const { createNewDirectMessage, findExisingRoom } = useCreateNewChat();
   const { sendMessage } = useSendMessage();
-  const { messages } = useRoomMessages();
   const theme = useTheme();
   const { setRoomIdParam } = useChatSearchParams();
 
@@ -129,7 +127,7 @@ export function NewDirectChat({
               </Box>
 
               {isObjectType(existingChat) && existingChat?.room.roomId ? (
-                <ChatMessages room={existingChat} messages={messages} />
+                <ChatMessages room={existingChat} />
               ) : (
                 <ChatIllustrationBackground />
               )}

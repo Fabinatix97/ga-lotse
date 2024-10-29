@@ -6,7 +6,9 @@
 import {
   ApiAppointment,
   ApiMedicalHistoryContent,
+  DeleteAppointmentCpRequest,
 } from "@eshg/citizen-portal-api/travelMedicine";
+import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -38,23 +40,14 @@ export function usePatchCitizenMedicalHistory() {
   });
 }
 
-export interface DeleteAppointmentRequest {
-  procedureId: string;
-  procedureStepId: string;
-}
-
-export function useDeleteAppointment() {
+export function useDeleteAppointmentCp() {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
   const citizenAuthApi = useCitizenAuthApi();
   const snackbar = useSnackbar();
 
   return useHandledMutation({
-    mutationFn: (data: DeleteAppointmentRequest) => {
-      return citizenAuthApi.deleteAppointment(
-        data.procedureId,
-        data.procedureStepId,
-      );
-    },
+    mutationFn: (data: DeleteAppointmentCpRequest) =>
+      citizenAuthApi.deleteAppointmentCpRaw(data).then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation(t("snackbar.cancelAppointmentConfirmation"));
     },

@@ -5,39 +5,47 @@
 
 package de.eshg.medicalregistry;
 
-import static de.eshg.lib.procedure.mapping.FacilityTypeMapper.*;
 import static de.eshg.medicalregistry.mapper.ProfessionalMapper.*;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
+import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.util.SetUtils;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.medicalregistry.api.*;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.registry.MedicalRegistryEntryRepository;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.validation.ValidationUtil;
 import java.time.Clock;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MedicalRegistryService {
 
+  private static final Logger log = LoggerFactory.getLogger(MedicalRegistryService.class);
+
   private final MedicalRegistryEntryRepository medicalRegistryEntryRepository;
+  private final ProcedureDeletionService<MedicalRegistryEntry> procedureDeletionService;
   private final PersonApi personApi;
   private final FacilityApi facilityApi;
   private final AuditLogger auditLogger;
@@ -45,11 +53,13 @@ public class MedicalRegistryService {
 
   public MedicalRegistryService(
       MedicalRegistryEntryRepository medicalRegistryEntryRepository,
+      ProcedureDeletionService<MedicalRegistryEntry> procedureDeletionService,
       PersonApi personApi,
       FacilityApi facilityApi,
       AuditLogger auditLogger,
       Clock clock) {
     this.medicalRegistryEntryRepository = medicalRegistryEntryRepository;
+    this.procedureDeletionService = procedureDeletionService;
     this.personApi = personApi;
     this.facilityApi = facilityApi;
     this.auditLogger = auditLogger;
@@ -60,6 +70,16 @@ public class MedicalRegistryService {
     return medicalRegistryEntryRepository
         .findByExternalId(procedureId)
         .orElseThrow(notFoundException(procedureId));
+  }
+
+  public MedicalRegistryEntry findProcedureByExternalIdForUpdate(UUID procedureId, long version) {
+    MedicalRegistryEntry medicalRegistryEntry =
+        medicalRegistryEntryRepository
+            .findByExternalIdForUpdate(procedureId)
+            .orElseThrow(notFoundException(procedureId));
+    ValidationUtil.validateVersion(version, medicalRegistryEntry);
+
+    return medicalRegistryEntry;
   }
 
   private static Supplier<NotFoundException> notFoundException(UUID procedureId) {
@@ -176,6 +196,31 @@ public class MedicalRegistryService {
         address.street(),
         address.houseNumber(),
         null);
+  }
+
+  public void deleteProcedure(MedicalRegistryEntry medicalRegistryEntry) {
+    UUID professionalId =
+        medicalRegistryEntry.getRelatedPersons().stream()
+            .collect(StreamUtil.toSingleElement())
+            .getExternalId();
+    log.info("Marking central file state {} for deletion", professionalId);
+    personApi.markPersonFileStateForDeletion(
+        new DeleteFileStatesRequest(SetUtils.of(professionalId)));
+    log.info("Marked central file state {} for deletion", professionalId);
+
+    if (medicalRegistryEntry.getRelatedFacilities() != null) {
+      UUID practiceId =
+          medicalRegistryEntry.getRelatedFacilities().stream()
+              .collect(StreamUtil.toSingleElement())
+              .getExternalId();
+      log.info("Marking central file state {} for deletion", practiceId);
+      facilityApi.markFacilityFileStateForDeletion(
+          new DeleteFileStatesRequest(SetUtils.of(practiceId)));
+      log.info("Marked central file state {} for deletion", practiceId);
+    }
+
+    medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+    procedureDeletionService.deleteAndWriteToCemetery(medicalRegistryEntry.getExternalId());
   }
 
   private static List<String> toList(String value) {

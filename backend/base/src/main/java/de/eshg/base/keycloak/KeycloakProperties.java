@@ -40,7 +40,8 @@ public record KeycloakProperties(
     @NotNull Boolean provisionTestUsers,
     @NotNull Boolean allowPasswordsForEmployees,
     String testUsersSecretOverride,
-    @Valid @NotNull MukTestRealm mukTestRealm) {
+    @Valid @NotNull KeycloakProperties.IdpTestRealm mukTestRealm,
+    @Valid @NotNull KeycloakProperties.IdpTestRealm bundIdTestRealm) {
 
   private static final Logger log = LoggerFactory.getLogger(KeycloakProperties.class);
   public static final String CONDITIONAL_NOT_BLANK_ERROR_MESSAGE =
@@ -63,7 +64,8 @@ public record KeycloakProperties(
       Boolean provisionTestUsers,
       Boolean allowPasswordsForEmployees,
       String testUsersSecretOverride,
-      MukTestRealm mukTestRealm) {
+      IdpTestRealm mukTestRealm,
+      IdpTestRealm bundIdTestRealm) {
     this.url = url;
     this.internal = internal;
     this.admin = admin;
@@ -80,7 +82,9 @@ public record KeycloakProperties(
     this.provisionTestUsers = BooleanUtils.isTrue(provisionTestUsers);
     this.allowPasswordsForEmployees = BooleanUtils.isTrue(allowPasswordsForEmployees);
     this.testUsersSecretOverride = testUsersSecretOverride;
-    this.mukTestRealm = mukTestRealm != null ? mukTestRealm : new MukTestRealm(false, null);
+    this.mukTestRealm = mukTestRealm != null ? mukTestRealm : new IdpTestRealm(false, null);
+    this.bundIdTestRealm =
+        bundIdTestRealm != null ? bundIdTestRealm : new IdpTestRealm(false, null);
 
     log.info("Keycloak URL: {}", url);
     log.info("Keycloak internal URL: {}", internal != null ? internal.url() : null);
@@ -123,7 +127,8 @@ public record KeycloakProperties(
       @NotBlank String displayName,
       @NotBlank String authClientSecret,
       @NotNull Boolean sslRequired,
-      @Valid @NotNull IdentityProvider mukIdp)
+      @Valid @NotNull IdentityProvider mukIdp,
+      @Valid @NotNull IdentityProvider bundIdIdp)
       implements Realm {
 
     public CitizenRealm(
@@ -131,22 +136,24 @@ public record KeycloakProperties(
         String displayName,
         String authClientSecret,
         Boolean sslRequired,
-        IdentityProvider mukIdp) {
+        IdentityProvider mukIdp,
+        IdentityProvider bundIdIdp) {
       this.name = name;
       this.displayName = displayName;
       this.authClientSecret = authClientSecret;
       this.sslRequired = !BooleanUtils.isFalse(sslRequired);
       this.mukIdp = mukIdp != null ? mukIdp : new IdentityProvider(false);
+      this.bundIdIdp = bundIdIdp != null ? bundIdIdp : new IdentityProvider(false);
     }
   }
 
-  public record MukTestRealm(@NotNull Boolean enabled, String signatureKey) {
+  public record IdpTestRealm(@NotNull Boolean enabled, String signatureKey) {
 
-    public MukTestRealm {
+    public IdpTestRealm {
       if (BooleanUtils.isTrue(enabled)) {
         Optional<String> validationErrorMessage =
             validateNotBlankAttributeForEnabledConfig(
-                signatureKey, "signatureKey", MukTestRealm.class);
+                signatureKey, "signatureKey", IdpTestRealm.class);
         if (validationErrorMessage.isPresent()) {
           throw new IllegalArgumentException(validationErrorMessage.get());
         }

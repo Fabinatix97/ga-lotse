@@ -5,17 +5,14 @@
 
 package de.eshg.lib.keycloak;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.util.CollectionUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public enum ModuleLeaderGroup implements KeycloakGroup {
   INSPECTION(
       "Begehung",
-      ModuleMemberGroup.INSPECTION,
-      List.of(ModuleMemberGroup.INSPECTION_CHECKLISTS),
+      List.of(ModuleMemberGroup.INSPECTION, ModuleMemberGroup.INSPECTION_CHECKLISTS),
       EmployeePermissionRole.INSPECTION_PROCEDURE_ASSIGN,
       EmployeePermissionRole.INSPECTION_LEADER),
   INSPECTION_LANDESAMT(
@@ -51,39 +48,40 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
 
   private final String keycloakNameWithoutPrefix;
   private final List<EmployeePermissionRole> roles;
-  private final List<ModuleMemberGroup> moduleMemberGroups;
 
   ModuleLeaderGroup(
-      String name,
-      ModuleMemberGroup moduleMemberGroup,
-      List<ModuleMemberGroup> additionalModuleMemberGroups,
-      EmployeePermissionRole... roles) {
+      String name, List<ModuleMemberGroup> moduleMemberGroup, EmployeePermissionRole... roles) {
     this.keycloakNameWithoutPrefix = name + Constants.LEADER_SUFFIX;
 
-    List<EmployeePermissionRole> tempRoles = new ArrayList<>();
-    additionalModuleMemberGroups.stream().map(ModuleMemberGroup::roles).forEach(tempRoles::addAll);
+    List<EmployeePermissionRole> moduleMemberRoles =
+        moduleMemberGroup.stream()
+            .map(ModuleMemberGroup::roles)
+            .flatMap(Collection::stream)
+            .toList();
+
     this.roles =
-        CollectionUtils.listUnion(List.of(moduleMemberGroup.roles(), tempRoles, List.of(roles)))
-            .stream()
+        CollectionUtils.listUnion(List.of(moduleMemberRoles, List.of(roles))).stream()
             .distinct()
             .toList();
-    this.moduleMemberGroups =
-        CollectionUtils.listUnion(
-            List.of(List.of(moduleMemberGroup), additionalModuleMemberGroups));
   }
 
   ModuleLeaderGroup(
       String name, ModuleMemberGroup moduleMemberGroup, EmployeePermissionRole... roles) {
-    this.keycloakNameWithoutPrefix = name + Constants.LEADER_SUFFIX;
-    this.roles = CollectionUtils.listUnion(List.of(moduleMemberGroup.roles(), List.of(roles)));
-    this.moduleMemberGroups = List.of(moduleMemberGroup);
+    this(name, List.of(moduleMemberGroup), roles);
   }
 
   public static ModuleLeaderGroup forModuleMemberGroup(ModuleMemberGroup moduleMemberGroup) {
-    return Arrays.stream(values())
-        .filter(
-            moduleLeaderGroup -> moduleLeaderGroup.moduleMemberGroups.contains(moduleMemberGroup))
-        .collect(StreamUtil.toSingleElement());
+    return switch (moduleMemberGroup) {
+      case INSPECTION, INSPECTION_CHECKLISTS -> ModuleLeaderGroup.INSPECTION;
+      case INSPECTION_LANDESAMT -> ModuleLeaderGroup.INSPECTION_LANDESAMT;
+      case SCHOOL_ENTRY -> ModuleLeaderGroup.SCHOOL_ENTRY;
+      case TRAVEL_MEDICINE -> ModuleLeaderGroup.TRAVEL_MEDICINE;
+      case MEASLES_PROTECTION -> ModuleLeaderGroup.MEASLES_PROTECTION;
+      case STATISTICS -> ModuleLeaderGroup.STATISTICS;
+      case STI_PROTECTION -> ModuleLeaderGroup.STI_PROTECTION;
+      case MEDICAL_REGISTRY -> ModuleLeaderGroup.MEDICAL_REGISTRY;
+      case OPEN_DATA -> ModuleLeaderGroup.OPEN_DATA;
+    };
   }
 
   @Override

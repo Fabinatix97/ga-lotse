@@ -32,6 +32,9 @@ dependencies {
     }
 
     implementation 'com.googlecode.ez-vcard:ez-vcard:latest.release'
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:latest.release'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:latest.release'
+
 
     implementation 'com.opencsv:opencsv:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'

@@ -16,6 +16,8 @@ import jakarta.annotation.PostConstruct;
 import java.net.URI;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Stream;
+import org.apache.commons.collections4.ListUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.resource.ClientsResource;
 import org.keycloak.representations.idm.*;
@@ -41,7 +43,6 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
       SYSTEM_CLIENT_ID_PREFIX + "eshg-auth-service";
   public static final String TRUE = "true";
   public static final String FALSE = "false";
-  private static final String GROUPS_CLAIM_NAME = "groups";
   protected static final String ESHG_CLIENT_SCOPE_NAME = "eshg";
   private static final String OPENID_CONNECT = "openid-connect";
   private static final String ID_TOKEN_CLAIM = "id.token.claim";
@@ -151,6 +152,10 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     realmRepresentation.setBrowserSecurityHeaders(securityHeaders);
   }
 
+  protected void createOrUpdateRoles(PermissionRole... permissionRoles) {
+    keycloakClient.createOrUpdateRoles(List.of(permissionRoles), this::configureRole);
+  }
+
   protected void configureRole(RoleRepresentation roleRepresentation, KeycloakRole role) {
     roleRepresentation.setName(role.getKeycloakName());
     roleRepresentation.setDescription(role.getDescription());
@@ -168,7 +173,7 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     }
   }
 
-  protected void createOrUpdateEshgClientScope() {
+  protected void createOrUpdateEshgClientScope(PermissionRole... permissionRoles) {
     ClientScopeRepresentation clientScope = new ClientScopeRepresentation();
     clientScope.setName(ESHG_CLIENT_SCOPE_NAME);
     clientScope.setDescription(
@@ -176,31 +181,24 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     clientScope.setProtocol(OPENID_CONNECT);
     clientScope.setAttributes(Map.of("include.in.token.scope", FALSE));
 
-    clientScope.setProtocolMappers(List.of(getRolesMapper(), getMembershipMapper()));
+    clientScope.setProtocolMappers(
+        ListUtils.union(List.of(getRolesMapper()), getRoleNameMappers(permissionRoles)));
     keycloakClient.createOrUpdateClientScopes(List.of(clientScope));
   }
 
-  @VisibleForTesting
-  public static ProtocolMapperRepresentation getMembershipMapper() {
-    ProtocolMapperRepresentation groupMembershipMapper = new ProtocolMapperRepresentation();
-    groupMembershipMapper.setName("Group Membership");
-    groupMembershipMapper.setProtocol(OPENID_CONNECT);
-    groupMembershipMapper.setProtocolMapper("oidc-group-membership-mapper");
-    groupMembershipMapper.setConfig(
-        Map.of(
-            "multivalued",
-            TRUE,
-            "full.path",
-            FALSE,
-            ID_TOKEN_CLAIM,
-            FALSE,
-            USERINFO_TOKEN_CLAIM,
-            FALSE,
-            ACCESS_TOKEN_CLAIM,
-            TRUE,
-            CLAIM_NAME,
-            GROUPS_CLAIM_NAME));
-    return groupMembershipMapper;
+  private static List<ProtocolMapperRepresentation> getRoleNameMappers(
+      PermissionRole... permissionRoles) {
+    return Stream.of(permissionRoles).map(KeycloakProvisioning::getRoleNameMapper).toList();
+  }
+
+  private static ProtocolMapperRepresentation getRoleNameMapper(PermissionRole role) {
+    ProtocolMapperRepresentation realmRolesMapper = new ProtocolMapperRepresentation();
+    realmRolesMapper.setName("Realm Role Name: " + role.getKeycloakName());
+    realmRolesMapper.setProtocol(OPENID_CONNECT);
+    realmRolesMapper.setProtocolMapper("oidc-role-name-mapper");
+    realmRolesMapper.setConfig(
+        Map.of("new.role.name", role.name(), "role", role.getKeycloakName()));
+    return realmRolesMapper;
   }
 
   @VisibleForTesting

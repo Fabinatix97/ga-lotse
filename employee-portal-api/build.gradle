@@ -12,6 +12,7 @@ openapiGenerator {
     'libEditor'         : backendDir.file('lib-editor/openApi.yaml'),
     'inspection'        : backendDir.file('inspection/openApi.yaml'),
     'measlesProtection' : backendDir.file('measles-protection/openApi.yaml'),
+    'opendata'          : backendDir.file('opendata/openApi.yaml'),
     'schoolEntry'       : backendDir.file('school-entry/openApi.yaml'),
     'travelMedicine'    : backendDir.file('travel-medicine/openApi.yaml'),
     'statistics'        : backendDir.file('statistics/openApi.yaml'),

@@ -46,6 +46,7 @@ import de.eshg.statistics.api.diagram.PieChartDataDto;
 import de.eshg.statistics.api.diagram.ScatterChartDataCategorizedDto;
 import de.eshg.statistics.api.diagram.ScatterChartDataSimpleDto;
 import de.eshg.statistics.api.diagram.TrendLineDto;
+import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
@@ -120,19 +121,13 @@ public class EvaluationMapper {
     };
   }
 
-  @SuppressWarnings("java:S2637")
   public static ChartConfiguration mapToPersistence(ChartConfigurationDto chartConfiguration) {
     return switch (chartConfiguration) {
       case BarChartConfigurationDto barChartConfigurationDto ->
           mapToBarChartConfiguration(barChartConfigurationDto);
       case ChoroplethMapConfigurationDto choroplethMapConfigurationDto ->
           mapToChoroplethMapConfiguration(
-              new AddChoroplethMapConfigurationDto(
-                  choroplethMapConfigurationDto.primaryAttribute(),
-                  choroplethMapConfigurationDto.secondaryAttribute(),
-                  choroplethMapConfigurationDto.calculation(),
-                  null,
-                  choroplethMapConfigurationDto.colorScheme()),
+              mapToAddChoroplethMapConfigurationDto(choroplethMapConfigurationDto),
               choroplethMapConfigurationDto.geoJson());
       case HistogramChartConfigurationDto histogramChartConfigurationDto ->
           mapToHistogramChartConfiguration(histogramChartConfigurationDto, Collections.emptyList());
@@ -143,6 +138,17 @@ public class EvaluationMapper {
       case ScatterChartConfigurationDto scatterChartConfigurationDto ->
           mapToScatterChartConfiguration(scatterChartConfigurationDto);
     };
+  }
+
+  @SuppressWarnings("java:S2637")
+  public static AddChoroplethMapConfigurationDto mapToAddChoroplethMapConfigurationDto(
+      ChoroplethMapConfigurationDto choroplethMapConfigurationDto) {
+    return new AddChoroplethMapConfigurationDto(
+        choroplethMapConfigurationDto.primaryAttribute(),
+        choroplethMapConfigurationDto.secondaryAttribute(),
+        choroplethMapConfigurationDto.calculation(),
+        null,
+        choroplethMapConfigurationDto.colorScheme());
   }
 
   private static BarChartConfiguration mapToBarChartConfiguration(
@@ -256,16 +262,28 @@ public class EvaluationMapper {
 
   public static Diagram mapToPersistence(
       AddDiagramRequest addDiagramRequest, DiagramData diagramData, Evaluation evaluation) {
+    return mapToPersistence(
+        addDiagramRequest.title(),
+        addDiagramRequest.description(),
+        addDiagramRequest.filters(),
+        diagramData,
+        evaluation);
+  }
+
+  public static Diagram mapToPersistence(
+      String title,
+      String description,
+      List<TableColumnFilterParameter> filters,
+      DiagramData diagramData,
+      Evaluation evaluation) {
     Diagram diagram = new Diagram();
     diagram.setDiagramData(diagramData);
     evaluation.addDiagram(diagram);
-    diagram.setTitle(addDiagramRequest.title());
-    diagram.setDescription(addDiagramRequest.description());
-    if (addDiagramRequest.filters() != null) {
+    diagram.setTitle(title);
+    diagram.setDescription(description);
+    if (filters != null) {
       List<AbstractFilterParameter> filterParameters =
-          addDiagramRequest.filters().stream()
-              .map(FilterParameterMapper::mapToPersistence)
-              .toList();
+          filters.stream().map(FilterParameterMapper::mapToPersistence).toList();
       diagram.addFilters(filterParameters);
     }
     return diagram;
@@ -274,9 +292,8 @@ public class EvaluationMapper {
   public static List<EvaluationDto> getEvaluations(List<Evaluation> evaluations) {
     return evaluations.stream()
         .sorted(
-            Comparator.comparing(Evaluation::getCreatedAt)
-                .reversed()
-                .thenComparing(Evaluation::getName))
+            Comparator.comparing(Evaluation::getName)
+                .thenComparing(Comparator.comparing(Evaluation::getCreatedAt).reversed()))
         .map(EvaluationMapper::mapToApi)
         .toList();
   }

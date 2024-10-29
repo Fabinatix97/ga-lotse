@@ -136,7 +136,11 @@ public class UserController implements UserApi {
                   Objects.requireNonNullElseGet(user.getAttributes(), LinkedHashMap::new);
               Map<String, List<String>> attributes =
                   UserMapper.mapAttributesToDm(
-                      currentAttributes, request.phoneNumber(), request.externalChatUsername());
+                      currentAttributes,
+                      request.phoneNumber(),
+                      request.externalChatUsername(),
+                      request.title(),
+                      request.salutation());
               user.setAttributes(attributes);
             });
     return UserMapper.mapUserToApi(updated);

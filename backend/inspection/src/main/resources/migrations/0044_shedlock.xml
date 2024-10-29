@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1727894988198-1">
+    <!-- see https://github.com/lukas-krecan/ShedLock?tab=readme-ov-file#configure-lockprovider -->
+    <sql>
+      CREATE TABLE IF NOT EXISTS shedlock (
+        name VARCHAR(64) NOT NULL,
+        lock_until TIMESTAMP NOT NULL,
+        locked_at TIMESTAMP NOT NULL,
+        locked_by VARCHAR (255) NOT NULL,
+        PRIMARY KEY (name)
+      );
+    </sql>
+  </changeSet>
+</databaseChangeLog>

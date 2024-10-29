@@ -24,7 +24,7 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
   private String subject;
   private String messageText;
   private String note;
-  private KeyDocumentTypeDto keyDocumentType;
+  private String keyDocumentType;
   private Integer keyDocumentVersion;
   @NotNull private boolean locked;
 
@@ -72,11 +72,11 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
     this.createdBy = createdBy;
   }
 
-  public KeyDocumentTypeDto getKeyDocumentType() {
+  public String getKeyDocumentType() {
     return keyDocumentType;
   }
 
-  public void setKeyDocumentType(KeyDocumentTypeDto keyDocumentType) {
+  public void setKeyDocumentType(String keyDocumentType) {
     this.keyDocumentType = keyDocumentType;
   }
 

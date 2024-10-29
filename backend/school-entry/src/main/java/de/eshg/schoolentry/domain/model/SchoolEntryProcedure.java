@@ -13,8 +13,7 @@ import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
-import de.eshg.lib.procedure.domain.model.Procedure;
-import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.procedure.domain.model.*;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -341,5 +340,15 @@ public class SchoolEntryProcedure
 
   public void setExaminationDate(LocalDate examinationDate) {
     this.examinationDate = examinationDate;
+  }
+
+  public boolean hasBeenClosed() {
+    return getProgressEntries().stream()
+        .anyMatch(
+            progressEntry ->
+                progressEntry instanceof SystemProgressEntry systemProgressEntry
+                    && Objects.equals(
+                        systemProgressEntry.getSystemProgressEntryType(),
+                        BasicSystemProgressEntryType.CLOSED.name()));
   }
 }

@@ -37,8 +37,6 @@ public abstract class AbstractDeletionApprovalRequestDecisionHandler<
     LockableEntity entity = approvalRequest.getEntity();
     entity.lock(false);
     deleteEntity(approvalRequest);
-    log.debug("Deleting approval request {}", approvalRequest.getExternalId());
-    entityManager.remove(approvalRequest);
   }
 
   protected void deleteEntity(T approvalRequest) {
@@ -54,6 +52,7 @@ public abstract class AbstractDeletionApprovalRequestDecisionHandler<
         approvalRequest.getExternalId());
     log(approvalRequest.getEntity(), "Ablehnung einer Löschanfrage");
     approvalRequest.getEntity().lock(false);
+    approvalRequest.updateEntity(null);
     entityManager.remove(approvalRequest);
   }
 

@@ -21,9 +21,3 @@ export function mapToApiPersonAddress(
     street: baseAddress.street,
   };
 }
-
-export function isAdult(dateOfBirth: Date) {
-  const eighteenYearsAgo = new Date();
-  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
-  return dateOfBirth <= eighteenYearsAgo;
-}

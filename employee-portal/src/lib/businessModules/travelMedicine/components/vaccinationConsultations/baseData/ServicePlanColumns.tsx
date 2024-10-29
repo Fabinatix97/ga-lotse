@@ -5,7 +5,6 @@
 
 import {
   ApiAppointmentBookingType,
-  ApiAppointmentType,
   ApiServicePlanEntry,
   ApiServiceStatus,
 } from "@eshg/employee-portal-api/travelMedicine";
@@ -27,7 +26,10 @@ import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { statusColors } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/constants";
 import { STATUS_NAMES } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/translations";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import {
+  ActionsItem,
+  ActionsMenu,
+} from "@/lib/shared/components/buttons/ActionsMenu";
 import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 const columnHelper: ColumnHelper<ApiServicePlanEntry> =
@@ -41,45 +43,153 @@ function formatLatency(latency: number | undefined) {
   return latency ? `+ ${latency} Wochen` : "-";
 }
 
-function formatVaccinationInfo(diseaseName: string, vaccinationNumber: number) {
-  return !vaccinationNumber
-    ? diseaseName + " - Nr. " + vaccinationNumber
-    : diseaseName;
+interface ServicePlanColumnsProps {
+  isProcedureClosed: boolean;
+  isCitizenProcedure: boolean;
+  isCitizenFollowUp: (procedureStepId: string) => boolean;
+  onDeleteService: (serviceId: string) => void;
+  onUnassignService: (serviceId: string) => void;
+  onOpenMedicalHistory: (procedureStepId: string) => void;
+  onOpenCertificatesTab: () => void;
+  onEditServiceAppointment: (procedureStep: ApiServicePlanEntry) => void;
+  onAssignService: (serviceId: string) => void;
+  onServiceApplied: (service: ApiServicePlanEntry) => void;
+  onOtherServiceApplied: (service: ApiServicePlanEntry) => void;
+  onEditEarliestDate: (service: ApiServicePlanEntry) => void;
+  onCancelAppointment: (procedureStepId: string) => void;
 }
 
-export function servicePlanColumns(
-  procedureId: string,
-  isProcedureClosed: boolean,
-  deleteService: (procedureId: string, serviceId: string) => void,
-  unassignStepToService: (procedureId: string, serviceId: string) => void,
-  openAssignAppointment: (serviceId: string) => void,
-  openEditAppointmentSideBar: (
-    procedureStepId: string,
-    appointmentType: ApiAppointmentType,
-    appointment: Date,
-    appointmentBookingType: ApiAppointmentBookingType,
-  ) => void,
-  openServiceAppliedSideBar: (
-    serviceId: string,
-    status: string,
-    vaccinationInfo: string,
-    vaccineName: string,
-    batchIdentifier: string,
-    appliedAt: Date,
-    physician: string,
-    medicalAssistant: string,
-  ) => void,
-  openOtherServiceAppliedSidebar: (
-    serviceId: string,
-    serviceStatus: string,
-    serviceTypeDescription: string,
-    appliedAt: Date,
-    physician: string,
-    medicalAssistant: string,
-  ) => void,
-  openMedicalHistory: (procedureId: string, procedureStepId?: string) => void,
-  navigateToCertificates: (procedureId: string) => void,
-) {
+export function servicePlanColumns({
+  isProcedureClosed,
+  isCitizenProcedure,
+  isCitizenFollowUp,
+  onDeleteService,
+  onUnassignService,
+  onOpenMedicalHistory,
+  onOpenCertificatesTab,
+  onEditServiceAppointment,
+  onAssignService,
+  onServiceApplied,
+  onOtherServiceApplied,
+  onEditEarliestDate,
+  onCancelAppointment,
+}: ServicePlanColumnsProps) {
+  function renderActionButtons(service: ApiServicePlanEntry): ActionsItem[] {
+    const actionItems: ActionsItem[] = [];
+    const procedureStepActions: ActionsItem[] = [];
+
+    if (
+      service.status !== ApiServiceStatus.Accomplished &&
+      isCitizenFollowUp(service.procedureStepId!)
+    ) {
+      procedureStepActions.push({
+        label: "Buchbar ab bearbeiten",
+        disabled: isProcedureClosed,
+        onClick: () => onEditEarliestDate(service),
+        startDecorator: <EditOutlined />,
+      });
+    }
+    if (
+      service.status !== ApiServiceStatus.Accomplished &&
+      isCitizenProcedure &&
+      (service.appointmentBookingType ===
+        ApiAppointmentBookingType.AppointmentBlock ||
+        service.appointmentBookingType ===
+          ApiAppointmentBookingType.UserDefined)
+    ) {
+      procedureStepActions.push({
+        label: "Termin absagen",
+        disabled: isProcedureClosed,
+        onClick: () => onCancelAppointment(service.procedureStepId ?? ""),
+        startDecorator: <HorizontalRuleOutlined />,
+      });
+    }
+
+    switch (service.status) {
+      case ApiServiceStatus.Open: {
+        actionItems.push(
+          {
+            label: "zu Termin hinzufügen",
+            disabled: isProcedureClosed,
+            onClick: () => {
+              onAssignService(service.serviceId);
+            },
+            startDecorator: <AddOutlined />,
+          },
+          {
+            label: "Löschen",
+            disabled: isProcedureClosed,
+            onClick: () => onDeleteService(service.serviceId),
+            color: "danger",
+            startDecorator: <DeleteOutlined color="danger" />,
+          },
+        );
+        return actionItems;
+      }
+      case ApiServiceStatus.Planned: {
+        actionItems.push(
+          {
+            label: "Durchführen",
+            disabled: isProcedureClosed,
+            onClick: () =>
+              service.serviceTypeDescription === "Grundimmunisierung" ||
+              service.serviceTypeDescription === "Auffrischimpfung"
+                ? onServiceApplied(service)
+                : onOtherServiceApplied(service),
+            startDecorator: <VaccinesOutlined />,
+          },
+          {
+            label: "aus Termin entfernen",
+            disabled: isProcedureClosed,
+            onClick: () => onUnassignService(service.serviceId),
+            startDecorator: <HorizontalRuleOutlined />,
+          },
+          {
+            label: "Termin bearbeiten",
+            onClick: () => onEditServiceAppointment(service),
+            startDecorator: <EditOutlined />,
+          },
+          {
+            label: "Anamnese",
+            onClick: () => onOpenMedicalHistory(service.procedureStepId!),
+            startDecorator: <FormatListBulletedOutlined />,
+          },
+          ...procedureStepActions,
+        );
+        return actionItems;
+      }
+      case ApiServiceStatus.Accomplished: {
+        actionItems.push(
+          {
+            label: "Anamnese",
+            onClick: () => onOpenMedicalHistory(service.procedureStepId!),
+            startDecorator: <FormatListBulletedOutlined />,
+          },
+          {
+            label: "Bearbeiten",
+            disabled: isProcedureClosed,
+            onClick: () =>
+              service.serviceTypeDescription === "Grundimmunisierung" ||
+              service.serviceTypeDescription === "Auffrischimpfung"
+                ? onServiceApplied(service)
+                : onOtherServiceApplied(service),
+            startDecorator: <EditOutlined />,
+          },
+          {
+            label: "Bescheinigung erstellen",
+            disabled: isProcedureClosed,
+            onClick: onOpenCertificatesTab,
+            startDecorator: <TextSnippetOutlined />,
+          },
+          ...procedureStepActions,
+        );
+        return actionItems;
+      }
+      default:
+        return actionItems;
+    }
+  }
+
   return [
     columnHelper.accessor("serviceTypeDescription", {
       header: "Leistungsart",
@@ -151,142 +261,7 @@ export function servicePlanColumns(
       header: "Aktionen",
       cell: (props) => (
         <ActionsMenu
-          actionItems={
-            props.row.original.status === ApiServiceStatus.Open
-              ? [
-                  {
-                    label: "zu Termin hinzufügen",
-                    disabled: isProcedureClosed,
-                    onClick: () => {
-                      openAssignAppointment(props.row.original.serviceId);
-                    },
-                    startDecorator: <AddOutlined />,
-                  },
-                  {
-                    label: "Löschen",
-                    disabled: isProcedureClosed,
-                    onClick: () =>
-                      deleteService(procedureId, props.row.original.serviceId),
-                    color: "danger",
-                    startDecorator: <DeleteOutlined color="danger" />,
-                  },
-                ]
-              : props.row.original.status === ApiServiceStatus.Planned
-                ? [
-                    {
-                      label: "Durchführen",
-                      disabled: isProcedureClosed,
-                      onClick: () =>
-                        props.row.original.serviceTypeDescription ===
-                          "Grundimmunisierung" ||
-                        props.row.original.serviceTypeDescription ===
-                          "Auffrischimpfung"
-                          ? openServiceAppliedSideBar(
-                              props.row.original.serviceId,
-                              props.row.original.status,
-                              formatVaccinationInfo(
-                                props.row.original.diseaseName!,
-                                props.row.original.vaccinationNumber!,
-                              ),
-                              props.row.original.vaccineName!,
-                              props.row.original.batchIdentifier!,
-                              props.row.original.appliedAt!,
-                              props.row.original.physician!,
-                              props.row.original.mfa!,
-                            )
-                          : openOtherServiceAppliedSidebar(
-                              props.row.original.serviceId,
-                              props.row.original.status,
-                              props.row.original.serviceTypeDescription,
-                              props.row.original.appliedAt!,
-                              props.row.original.physician!,
-                              props.row.original.mfa!,
-                            ),
-                      startDecorator: <VaccinesOutlined />,
-                    },
-                    {
-                      label: "aus Termin entfernen",
-                      disabled: isProcedureClosed,
-                      onClick: () =>
-                        unassignStepToService(
-                          procedureId,
-                          props.row.original.serviceId,
-                        ),
-                      startDecorator: <HorizontalRuleOutlined />,
-                    },
-                    {
-                      label: "Termin bearbeiten",
-                      disabled: isProcedureClosed,
-                      onClick: () =>
-                        props.row.original.procedureStepId
-                          ? openEditAppointmentSideBar(
-                              props.row.original.procedureStepId,
-                              props.row.original.appointmentType!,
-                              props.row.original.appointment!,
-                              props.row.original.appointmentBookingType!,
-                            )
-                          : "",
-                      startDecorator: <EditOutlined />,
-                    },
-                    {
-                      label: "Anamnese",
-                      onClick: () =>
-                        openMedicalHistory(
-                          procedureId,
-                          props.row.original.procedureStepId,
-                        ),
-                      startDecorator: <FormatListBulletedOutlined />,
-                    },
-                  ]
-                : [
-                    {
-                      label: "Anamnese",
-                      onClick: () =>
-                        openMedicalHistory(
-                          procedureId,
-                          props.row.original.procedureStepId,
-                        ),
-                      startDecorator: <FormatListBulletedOutlined />,
-                    },
-                    {
-                      label: "Bearbeiten",
-                      disabled: isProcedureClosed,
-                      onClick: () =>
-                        props.row.original.serviceTypeDescription ===
-                          "Grundimmunisierung" ||
-                        props.row.original.serviceTypeDescription ===
-                          "Auffrischimpfung"
-                          ? openServiceAppliedSideBar(
-                              props.row.original.serviceId,
-                              props.row.original.status,
-                              formatVaccinationInfo(
-                                props.row.original.diseaseName!,
-                                props.row.original.vaccinationNumber!,
-                              ),
-                              props.row.original.vaccineName!,
-                              props.row.original.batchIdentifier!,
-                              props.row.original.appliedAt!,
-                              props.row.original.physician!,
-                              props.row.original.mfa!,
-                            )
-                          : openOtherServiceAppliedSidebar(
-                              props.row.original.serviceId,
-                              props.row.original.status,
-                              props.row.original.serviceTypeDescription,
-                              props.row.original.appliedAt!,
-                              props.row.original.physician!,
-                              props.row.original.mfa!,
-                            ),
-                      startDecorator: <EditOutlined />,
-                    },
-                    {
-                      label: "Bescheinigung erstellen",
-                      disabled: isProcedureClosed,
-                      onClick: () => navigateToCertificates(procedureId),
-                      startDecorator: <TextSnippetOutlined />,
-                    },
-                  ]
-          }
+          actionItems={renderActionButtons(props.cell.row.original)}
         />
       ),
       meta: {

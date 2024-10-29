@@ -46,6 +46,10 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
   @Query("FROM #{#entityName} p WHERE p.externalId = :externalId")
   Optional<ProcedureT> findByExternalIdForUpdate(@Param("externalId") UUID externalId);
 
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("FROM #{#entityName} p WHERE p.externalId IN :externalIds ORDER BY p.id")
+  Stream<ProcedureT> findByExternalIdsForUpdate(@Param("externalIds") List<UUID> externalIds);
+
   @Query(
       """
     SELECT (p.closedAt - p.createdAt) AS duration FROM #{#entityName} p
@@ -60,7 +64,7 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
       @Param("start") Instant start,
       @Param("end") Instant end);
 
-  @Query("SELECT DISTINCT p.procedureType FROM #{#entityName} p")
+  @Query("SELECT DISTINCT p.procedureType FROM #{#entityName} p ORDER BY p.procedureType")
   Set<ProcedureType> findDistinctProcedureTypes();
 
   @Query(

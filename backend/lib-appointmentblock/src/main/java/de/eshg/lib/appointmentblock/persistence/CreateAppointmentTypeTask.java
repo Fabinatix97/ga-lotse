@@ -63,11 +63,14 @@ public class CreateAppointmentTypeTask {
 
   private static void updateAppointmentTypeConfig(
       AppointmentTypeConfig config, int standardDurationInMinutes) {
-    log.info(
-        "Updated appointment type configuration for type {} from {} to {} minutes",
-        config.getAppointmentType(),
-        config.getStandardDurationInMinutes(),
-        standardDurationInMinutes);
+    int previousStandardDurationInMinutes = config.getStandardDurationInMinutes();
+    if (previousStandardDurationInMinutes != standardDurationInMinutes) {
+      log.info(
+          "Updated appointment type configuration for type {} from {} to {} minutes",
+          config.getAppointmentType(),
+          previousStandardDurationInMinutes,
+          standardDurationInMinutes);
+    }
     config.setStandardDurationInMinutes(standardDurationInMinutes);
   }
 }
