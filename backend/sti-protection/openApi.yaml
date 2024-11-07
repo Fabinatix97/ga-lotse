@@ -546,6 +546,21 @@ paths:
           description: OK
       tags:
       - File
+  /gdpr-validation-tasks:
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
   /inbox-procedures:
     get:
       description: |
@@ -1351,6 +1366,44 @@ paths:
           description: OK
       tags:
       - StiProtectionProcedure
+  /sti-procedures/waiting-room-procedures:
+    get:
+      operationId: getWaitingRoomProcedures
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/WaitingRoomSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetWaitingRoomProceduresResponse"
+          description: OK
+      summary: Get waiting rooms.
+      tags:
+      - WaitingRoom
   /sti-procedures/{id}:
     get:
       operationId: getStiProcedure
@@ -1372,8 +1425,8 @@ paths:
       tags:
       - StiProtectionProcedure
   /sti-procedures/{id}/anon-ident-document:
-    post:
-      operationId: createAnonymousIdentificationDocument
+    get:
+      operationId: getAnonymousIdentificationDocument
       parameters:
       - in: path
         name: id
@@ -1389,7 +1442,7 @@ paths:
                 type: string
                 format: byte
           description: OK
-      summary: Create an anonymous identification document
+      summary: Get an anonymous identification document
       tags:
       - StiProtectionProcedure
   /sti-procedures/{id}/close:
@@ -1481,6 +1534,32 @@ paths:
       summary: Add medical history item to STI protection procedure.
       tags:
       - MedicalHistory
+  /sti-procedures/{procedureId}/waiting-room:
+    put:
+      operationId: updateWaitingRoomDetails
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WaitingRoom"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/WaitingRoom"
+          description: OK
+      summary: Update waiting room details for a procedure.
+      tags:
+      - WaitingRoom
   /task-metrics:
     get:
       operationId: getTaskMetrics
@@ -1692,6 +1771,14 @@ paths:
   /test-helper/audit-log-storage:
     delete:
       operationId: clearAuditLogStorageDirectory
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/notify/overdue-procedures:
+    post:
+      operationId: notifyOfOverdueProcedures
       responses:
         "200":
           description: OK
@@ -1912,6 +1999,17 @@ components:
           minimum: 1
       required:
       - barrierId
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - procedureId
+      - type
     Address:
       type: object
       discriminator:
@@ -2592,11 +2690,7 @@ components:
           type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
         note:
-          type: string
-        subject:
           type: string
       required:
       - manualProgressEntryType
@@ -2927,6 +3021,12 @@ components:
       - PNG
       - PDF
       - EML
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -3298,7 +3398,9 @@ components:
         relatedKeyDocumentProgressEntries:
           type: array
           items:
-            $ref: "#/components/schemas/ManualProgressEntry"
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
       required:
       - progressEntry
       - relatedKeyDocumentProgressEntries
@@ -3424,6 +3526,19 @@ components:
       enum:
       - ASC
       - DESC
+    GetWaitingRoomProceduresResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/WaitingRoomProcedure"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+      required:
+      - elements
+      - totalNumberOfElements
     HttpMethod:
       type: string
       enum:
@@ -3576,6 +3691,20 @@ components:
       - FORBIDDEN
       - NOT_FOUND
       - INTERNAL_SERVER_ERROR
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
     Mail:
       type: object
       allOf:
@@ -3621,13 +3750,19 @@ components:
             type: string
           mailTo:
             type: string
+          messageText:
+            type: string
           sentDate:
             type: string
             format: date-time
+          subject:
+            type: string
       required:
       - mailFrom
       - mailTo
+      - messageText
       - sentDate
+      - subject
     MailMetaDataHistory:
       type: object
       allOf:
@@ -3661,13 +3796,10 @@ components:
             type: boolean
           manualProgressEntryType:
             $ref: "#/components/schemas/ManualProgressEntryType"
-          messageText:
-            type: string
           note:
             type: string
-          subject:
-            type: string
       - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - createdBy
@@ -3753,13 +3885,7 @@ components:
       properties:
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
-          nullable: true
         note:
-          type: string
-          nullable: true
-        subject:
           type: string
           nullable: true
     Pdf:
@@ -4295,6 +4421,12 @@ components:
         properties:
           additionalComments:
             type: string
+          amountAbortions:
+            type: integer
+            format: int32
+          amountPregnancies:
+            type: integer
+            format: int32
           contactToClarifyDuration:
             type: string
             format: date
@@ -4304,6 +4436,14 @@ components:
             type: string
           examinations:
             $ref: "#/components/schemas/Examination"
+          knownOperations:
+            type: string
+          lastCancerScreeningDuration:
+            type: string
+            format: date
+          lastMenstruationDuration:
+            type: string
+            format: date
           medications:
             type: string
           previousIllnesses:
@@ -4374,6 +4514,8 @@ components:
           $ref: "#/components/schemas/Person"
         status:
           $ref: "#/components/schemas/ProcedureStatus"
+        waitingRoom:
+          $ref: "#/components/schemas/WaitingRoom"
       required:
       - appointment
       - concern
@@ -4381,6 +4523,7 @@ components:
       - id
       - person
       - status
+      - waitingRoom
     StiProtectionProcedureOverview:
       type: object
       properties:
@@ -4439,6 +4582,11 @@ components:
         properties:
           changeDescription:
             type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
           systemProgressEntryType:
             type: string
           triggerType:
@@ -4450,6 +4598,7 @@ components:
             type: string
           triggeredByUserLastName:
             type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - modifiedAt
@@ -4715,3 +4864,61 @@ components:
       required:
       - userIdsWithEventConflicts
       - userIdsWithoutEventConflicts
+    WaitingRoom:
+      type: object
+      properties:
+        info:
+          type: string
+          maxLength: 60
+          minLength: 0
+        status:
+          $ref: "#/components/schemas/WaitingStatus"
+    WaitingRoomProcedure:
+      type: object
+      properties:
+        accessCode:
+          type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
+        modifiedAt:
+          type: string
+          format: date-time
+        procedureId:
+          type: string
+          format: uuid
+        waitingRoom:
+          $ref: "#/components/schemas/WaitingRoom"
+        yearOfBirth:
+          type: object
+          properties:
+            leap:
+              type: boolean
+            value:
+              type: integer
+              format: int32
+      required:
+      - accessCode
+      - gender
+      - modifiedAt
+      - procedureId
+      - waitingRoom
+      - yearOfBirth
+    WaitingRoomSortKey:
+      type: string
+      enum:
+      - ID
+      - YEAR_OF_BIRTH
+      - GENDER
+      - STATUS
+      - INFO
+      - MODIFIED_AT
+    WaitingStatus:
+      type: string
+      enum:
+      - WAITING_FOR_CONSULTATION
+      - WAITING_FOR_RESULTS_REVIEW
+      - WAITING_FOR_TESTS
+      - IN_CONSULTATION
+      - IN_TESTING
+      - CANCELLED
+      - DONE

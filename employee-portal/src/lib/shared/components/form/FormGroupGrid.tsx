@@ -7,21 +7,15 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { Grid, GridProps } from "@mui/joy";
 
 interface FormGroupGridProps
-  extends Pick<GridProps, "columns">,
+  extends Pick<GridProps, "columns" | "aria-labelledby" | "component">,
     RequiresChildren {
   "data-testid"?: string;
 }
 
-export function FormGroupGrid(props: FormGroupGridProps) {
+export function FormGroupGrid({ children, ...props }: FormGroupGridProps) {
   return (
-    <Grid
-      container
-      columnSpacing={4}
-      rowSpacing={2}
-      data-testid={props["data-testid"]}
-      columns={props.columns}
-    >
-      {props.children}
+    <Grid container columnSpacing={4} rowSpacing={2} {...props}>
+      {children}
     </Grid>
   );
 }

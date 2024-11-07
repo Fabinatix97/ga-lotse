@@ -7,9 +7,12 @@ package de.eshg.schoolentry.config;
 
 import de.eshg.testhelper.ResettableProperties;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.net.URI;
 import java.time.MonthDay;
 import java.time.Period;
+import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,6 +26,9 @@ public final class SchoolEntryProperties implements ResettableProperties {
   private boolean maxDateOfBirthForRegularSchoolEntryIsInclusive;
   private @NotNull Integer maxNumberOfImportRows = 10_000;
   private boolean directProcedureTypeAssignmentOnImport;
+  private @NotNull URI privacyNoticeLocation;
+  private @NotNull URI privacyPolicyLocation;
+  private @NotNull SchoolEntryProperties.OpeningHours openingHours;
 
   public Period getBulkCreateAppointmentsMinLeadTime() {
     return bulkCreateAppointmentsMinLeadTime;
@@ -75,6 +81,32 @@ public final class SchoolEntryProperties implements ResettableProperties {
     this.directProcedureTypeAssignmentOnImport = directProcedureTypeAssignmentOnImport;
   }
 
+  public URI getPrivacyNoticeLocation() {
+    return privacyNoticeLocation;
+  }
+
+  public void setPrivacyNoticeLocation(URI privacyNoticeLocation) {
+    this.privacyNoticeLocation = privacyNoticeLocation;
+  }
+
+  public URI getPrivacyPolicyLocation() {
+    return privacyPolicyLocation;
+  }
+
+  public void setPrivacyPolicyLocation(URI privacyPolicyLocation) {
+    this.privacyPolicyLocation = privacyPolicyLocation;
+  }
+
   public record Citizens(
       @NotNull Period freeAppointmentsMinLeadTime, @NotNull Period freeAppointmentsMaxLeadTime) {}
+
+  public SchoolEntryProperties.OpeningHours getOpeningHours() {
+    return openingHours;
+  }
+
+  public void setOpeningHours(SchoolEntryProperties.OpeningHours openingHours) {
+    this.openingHours = openingHours;
+  }
+
+  public record OpeningHours(@NotEmpty List<String> de, @NotEmpty List<String> en) {}
 }

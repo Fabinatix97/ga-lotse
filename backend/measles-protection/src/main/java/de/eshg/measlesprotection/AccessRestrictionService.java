@@ -162,8 +162,6 @@ public class AccessRestrictionService {
     CreateManualProgressEntryRequest createManualProgressEntryRequest =
         new CreateManualProgressEntryRequest(
             ManualProgressEntryTypeDto.LETTER,
-            "Betretungsverbot",
-            null,
             "Ein Anschreiben über ein Betretungsverbot wurde %s.".formatted(producedHow),
             null);
 

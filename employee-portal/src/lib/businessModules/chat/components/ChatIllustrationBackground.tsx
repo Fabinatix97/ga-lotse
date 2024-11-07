@@ -12,7 +12,7 @@ export function ChatIllustrationBackground() {
     <Box
       sx={{
         width: "100%",
-        height: "100%",
+        height: "calc(100% - 24px)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

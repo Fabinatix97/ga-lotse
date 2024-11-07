@@ -42,7 +42,7 @@ function useColumns() {
   const invalidateUserSessions = useInvalidateUserSessions();
 
   async function invalidateSession(session: string) {
-    await invalidateUserSessions.mutateAsync([session]).catch();
+    await invalidateUserSessions.mutateAsync([session]);
   }
 
   return [
@@ -137,7 +137,7 @@ export default function AccountSecurityPage() {
       .filter((session) => !session.isCurrent)
       .map((session) => session.sessionId);
     if (sessionsToInvalidate.length > 0) {
-      await invalidateUserSessions.mutateAsync(sessionsToInvalidate).catch();
+      await invalidateUserSessions.mutateAsync(sessionsToInvalidate);
     }
   }
 

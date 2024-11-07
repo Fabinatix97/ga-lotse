@@ -51,16 +51,14 @@ export function InstitutionContactImportForm(props: ContactImportFormProps) {
     useState<ApiImportInstitutionContactResponse>();
 
   async function handleSubmit(file: File) {
-    await importInstitutionContact
-      .mutateAsync(file, {
-        onSuccess: (response) => {
-          setSearchResults(response);
-          if (response.totalNumberOfMatches === 0) {
-            props.onImported(mapImportToCreate(response.vCard));
-          }
-        },
-      })
-      .catch();
+    await importInstitutionContact.mutateAsync(file, {
+      onSuccess: (response) => {
+        setSearchResults(response);
+        if (response.totalNumberOfMatches === 0) {
+          props.onImported(mapImportToCreate(response.vCard));
+        }
+      },
+    });
   }
 
   return (

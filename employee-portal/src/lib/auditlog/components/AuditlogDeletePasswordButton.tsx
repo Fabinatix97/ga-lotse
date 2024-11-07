@@ -14,7 +14,7 @@ export function AuditlogDeletePasswordButton() {
   const deleteEmployeeUserKeys = useDeleteEmployeeUserKeys();
 
   async function handleConfirm() {
-    await deleteEmployeeUserKeys.mutateAsync().catch();
+    await deleteEmployeeUserKeys.mutateAsync();
   }
 
   return (

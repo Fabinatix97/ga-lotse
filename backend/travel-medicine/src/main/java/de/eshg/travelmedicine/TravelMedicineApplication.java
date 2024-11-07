@@ -8,6 +8,7 @@ package de.eshg.travelmedicine;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.security.config.TravelMedicinePublicSecurityConfig;
 import de.eshg.travelmedicine.citizenpublic.DepartmentInfoProperties;
+import de.eshg.travelmedicine.citizenpublic.OpeningHoursProperties;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.notification.NotificationProperties;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties({
   TravelMedicineFeatureToggle.class,
   DepartmentInfoProperties.class,
+  OpeningHoursProperties.class,
   NotificationProperties.class
 })
 public class TravelMedicineApplication {

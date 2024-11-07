@@ -13,7 +13,6 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingType
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentSummaryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.CreatedByUserTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetVaccinationConsultationDetailsResponse;
-import de.eshg.travelmedicine.vaccinationconsultation.api.InformationStatementDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PersonSyncDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ServicePlanEntryDto;
@@ -21,7 +20,6 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.ServiceStatusDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.TravelInformationDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.TravelTimeUnitDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.TravelTypeDto;
-import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.InformationStatement;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherService;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ServicePlanEntry;
@@ -43,13 +41,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class VaccinationConsultationDetailsMapper {
-  private final InformationStatementMapper informationStatementMapper;
   private final AppointmentBookingTypeMapper appointmentBookingTypeMapper;
 
   public VaccinationConsultationDetailsMapper(
-      InformationStatementMapper informationStatementMapper,
       AppointmentBookingTypeMapper appointmentBookingTypeMapper) {
-    this.informationStatementMapper = informationStatementMapper;
     this.appointmentBookingTypeMapper = appointmentBookingTypeMapper;
   }
 
@@ -58,8 +53,7 @@ public class VaccinationConsultationDetailsMapper {
       PatientDto patientDto,
       PersonSyncDto personSync,
       ProcedureStep initialProcedureStep,
-      List<ServicePlanEntry> servicePlan,
-      List<InformationStatement> informationStatements) {
+      List<ServicePlanEntry> servicePlan) {
 
     return new GetVaccinationConsultationDetailsResponse(
         vaccinationConsultation.getExternalId(),
@@ -69,8 +63,7 @@ public class VaccinationConsultationDetailsMapper {
         mapTravelInformationToInterfaceType(vaccinationConsultation),
         MappingUtil.mapEnum(CreatedByUserTypeDto.class, vaccinationConsultation.getCreatedBy()),
         mapToAppointmentSummaryInterfaceType(initialProcedureStep),
-        mapServicePlanToToInterfaceType(servicePlan),
-        mapInformationStatementsToInterfaceType(informationStatements));
+        mapServicePlanToToInterfaceType(servicePlan));
   }
 
   private List<ServicePlanEntryDto> mapServicePlanToToInterfaceType(
@@ -227,11 +220,5 @@ public class VaccinationConsultationDetailsMapper {
         vc.getTravelStartDate(),
         vc.getTravelTimeAmount(),
         MappingUtil.mapEnum(TravelTimeUnitDto.class, vc.getTravelTimeUnit()));
-  }
-
-  private List<InformationStatementDto> mapInformationStatementsToInterfaceType(
-      List<InformationStatement> informationStatements) {
-    return informationStatementMapper.mapInformationStatementsToInterfaceType(
-        informationStatements);
   }
 }

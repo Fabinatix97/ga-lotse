@@ -9,11 +9,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
-import de.eshg.statistics.api.report.AbstractUpdateReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
 import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
+import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,16 +33,25 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(BaseUrls.Statistics.REPORT_SERIES_URL)
 @Tag(name = "ReportSeries")
 public class ReportSeriesController {
+  private final StatisticService statisticService;
   private final ReportSeriesService reportSeriesService;
+  private final StatisticExecutorService statisticExecutorService;
   private final ReportExecution reportExecution;
+  private final ReportSeriesExecution reportSeriesExecution;
   private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public ReportSeriesController(
+      StatisticService statisticService,
       ReportSeriesService reportSeriesService,
+      StatisticExecutorService statisticExecutorService,
       ReportExecution reportExecution,
+      ReportSeriesExecution reportSeriesExecution,
       StatisticsFeatureToggle statisticsFeatureToggle) {
+    this.statisticService = statisticService;
     this.reportSeriesService = reportSeriesService;
+    this.statisticExecutorService = statisticExecutorService;
     this.reportExecution = reportExecution;
+    this.reportSeriesExecution = reportSeriesExecution;
     this.statisticsFeatureToggle = statisticsFeatureToggle;
   }
 
@@ -53,10 +61,11 @@ public class ReportSeriesController {
   public ReportSeriesDto addReportSeries(
       @RequestBody @Valid AbstractAddReportSeriesRequest addReportSeriesRequest) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
+    statisticService.checkPermissionForStatistic(addReportSeriesRequest.statisticId());
 
     ReportSeriesDto reportSeriesDto = reportSeriesService.addReportSeries(addReportSeriesRequest);
     if (addReportSeriesRequest instanceof AddManualReportSeriesRequest) {
-      CompletableFuture.runAsync(
+      statisticExecutorService.submit(
           () -> reportExecution.completeReport(reportSeriesDto.reportInfos().getFirst().id()));
     }
     return reportSeriesDto;
@@ -64,10 +73,10 @@ public class ReportSeriesController {
 
   @PatchExchange(value = "/{reportSeriesId}", accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "The patched report series")
-  @Operation(summary = "Change title and description of a report series or change activation")
+  @Operation(summary = "Change title and description of a report series")
   public ReportSeriesDto updateReportSeries(
       @PathVariable(name = "reportSeriesId") UUID reportSeriesId,
-      @RequestBody @Valid AbstractUpdateReportSeriesRequest updateReportSeriesRequest) {
+      @RequestBody @Valid UpdateReportSeriesRequest updateReportSeriesRequest) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     return reportSeriesService.updateReportSeries(reportSeriesId, updateReportSeriesRequest);
   }
@@ -77,7 +86,20 @@ public class ReportSeriesController {
   @Operation(summary = "Delete a report series with the reports")
   public void deleteReportSeries(@PathVariable(name = "reportSeriesId") UUID reportSeriesId) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
-    reportSeriesService.deleteReportSeries(reportSeriesId);
+    boolean isDeleted =
+        reportSeriesService.deactivateAndDeleteOrFlagReportsForDeletion(reportSeriesId);
+    if (!isDeleted) {
+      statisticExecutorService.submit(
+          () -> reportSeriesExecution.deleteReportSeries(reportSeriesId));
+    }
+  }
+
+  @PatchExchange(value = "/deactivate/{reportSeriesId}", accept = APPLICATION_JSON_VALUE)
+  @ApiResponse(responseCode = "200", description = "Returned when the report series is deactivated")
+  @Operation(summary = "Deactivate a report series")
+  public void deactivateReportSeries(@PathVariable(name = "reportSeriesId") UUID reportSeriesId) {
+    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
+    reportSeriesService.deactivateOrDeleteReportSeries(reportSeriesId);
   }
 
   @PostExchange(value = "/overview", accept = APPLICATION_JSON_VALUE)

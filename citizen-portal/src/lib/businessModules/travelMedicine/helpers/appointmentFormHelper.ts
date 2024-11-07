@@ -74,7 +74,7 @@ function mapToApiTravelInformation(
     travelTimeUnit: mapOptionalValue(travelInformation.travelTimeUnit),
     travelType: !isEmptyString(travelInformation.travelType)
       ? travelInformation.travelType
-      : ApiTravelType.Unspecified,
+      : ApiTravelType.NoTravel,
   };
 }
 

@@ -21,7 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.apache.commons:commons-collections4:latest.release'
-    implementation libs.bundles.keycloak.client
+    implementation libs.keycloak.client.admin.client
     implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'
     implementation 'com.google.guava:guava:latest.release'
     implementation('org.mnode.ical4j:ical4j:latest.release') {

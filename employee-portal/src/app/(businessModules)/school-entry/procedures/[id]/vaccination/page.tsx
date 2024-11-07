@@ -54,9 +54,9 @@ export default function SchoolEntryVaccinationStatusPage(
   const updateVaccinationStatus = useUpdateVaccinationStatus();
 
   async function handleSubmit(values: VaccinationFormValues) {
-    await updateVaccinationStatus
-      .mutateAsync(mapToRequest(procedureId, values, vaccinationStatus.version))
-      .catch();
+    await updateVaccinationStatus.mutateAsync(
+      mapToRequest(procedureId, values, vaccinationStatus.version),
+    );
   }
 
   return (

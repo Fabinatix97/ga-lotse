@@ -5,26 +5,28 @@
 
 package de.eshg.medicalregistry.api;
 
+import de.eshg.CustomValidations.EmailAddressConstraint;
 import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Schema(name = "Professional")
 public record ProfessionalDto(
     @Size(min = 1, max = 119) String title,
-    GenderDto gender,
+    @NotNull GenderDto gender,
     @NotNull @Size(min = 1, max = 80) String firstName,
     @NotNull @Size(min = 1, max = 120) String lastName,
     @NotNull LocalDate dateOfBirth,
-    @Size(min = 1, max = 40) String nameAtBirth,
-    @Size(min = 1, max = 50) String placeOfBirth,
-    @Size(min = 6, max = 254) String emailAddress,
-    @Size(min = 1, max = 23) String phoneNumber,
-    @Valid AddressDto address,
+    @NotNull @Size(min = 1, max = 40) String nameAtBirth,
+    @NotNull @Size(min = 1, max = 50) String placeOfBirth,
+    @NotNull @EmailAddressConstraint String emailAddress,
+    @NotNull @Size(min = 1, max = 23) String phoneNumber,
+    @NotNull @Valid ProfessionalAddressDto address,
     @NotNull ProfessionalTitleDto professionalTitle,
     String fieldOfExpertise,
     String specialistTitle,
@@ -32,31 +34,38 @@ public record ProfessionalDto(
     String qualifications,
     @NotNull LocalDate approbationGrantedOn,
     @NotNull String approbationIssuingAuthority,
-    String lifetimeDoctorNumber,
+    @Pattern(regexp = "\\d{9}") String lifetimeDoctorNumber,
     @NotNull EmploymentTypeDto employmentType,
     @NotNull EmploymentStatusDto employmentStatus,
     @NotNull CountryCode nationality) {
   public ProfessionalDto(
-      @NotNull @Size(min = 1, max = 80) String firstName,
-      @NotNull @Size(min = 1, max = 120) String lastName,
-      @NotNull LocalDate dateOfBirth,
-      @NotNull ProfessionalTitleDto professionalTitle,
-      @NotNull LocalDate approbationGrantedOn,
-      @NotNull String approbationIssuingAuthority,
-      @NotNull EmploymentTypeDto employmentType,
-      @NotNull EmploymentStatusDto employmentStatus,
-      @NotNull CountryCode nationality) {
+      String title,
+      GenderDto gender,
+      String firstName,
+      String lastName,
+      LocalDate dateOfBirth,
+      String nameAtBirth,
+      String placeOfBirth,
+      String emailAddress,
+      String phoneNumber,
+      ProfessionalAddressDto address,
+      ProfessionalTitleDto professionalTitle,
+      LocalDate approbationGrantedOn,
+      String approbationIssuingAuthority,
+      EmploymentTypeDto employmentType,
+      EmploymentStatusDto employmentStatus,
+      CountryCode nationality) {
     this(
-        null,
-        null,
+        title,
+        gender,
         firstName,
         lastName,
         dateOfBirth,
-        null,
-        null,
-        null,
-        null,
-        null,
+        nameAtBirth,
+        placeOfBirth,
+        emailAddress,
+        phoneNumber,
+        address,
         professionalTitle,
         null,
         null,

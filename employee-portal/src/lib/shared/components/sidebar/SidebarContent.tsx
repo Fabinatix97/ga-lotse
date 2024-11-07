@@ -11,8 +11,9 @@ import { isDefined, isNonNullish } from "remeda";
 
 import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
 
-const AlertContainer = styled("div")(({ theme }) => ({
+const AlertContainer = styled(Stack)(({ theme }) => ({
   paddingInline: theme.spacing(sidebarPadding),
+  gap: theme.spacing(2),
 }));
 
 export interface SidebarContentProps {
@@ -81,6 +82,7 @@ export function SidebarContent({
           sx={{
             paddingRight: sidebarPadding,
             paddingLeft: sidebarPadding,
+            paddingBottom: 3,
             flex: 1,
           }}
         >

@@ -26,6 +26,8 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
     // school-entry endpoints?
     requestMatchers(BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER + "/documents/**")
         .permitAll();
+    requestMatchers(BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER + "/opening-hours")
+        .permitAll();
 
     requestMatchers(BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER + "/**")
         .hasRole(CitizenPermissionRole.ACCESS_CODE_USER);

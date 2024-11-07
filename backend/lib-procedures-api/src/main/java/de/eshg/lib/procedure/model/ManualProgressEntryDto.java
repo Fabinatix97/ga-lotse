@@ -17,12 +17,10 @@ import java.util.UUID;
 @Schema(name = ManualProgressEntryDto.SCHEMA_NAME, allOf = ProgressEntryDto.class)
 @JsonTypeName(ManualProgressEntryDto.SCHEMA_NAME)
 public final class ManualProgressEntryDto extends ProgressEntryDto
-    implements ApprovalRequestEntityDto {
+    implements ApprovalRequestEntityDto, KeyDocumentAwareProgressEntryDto {
   public static final String SCHEMA_NAME = "ManualProgressEntry";
 
   @NotNull private ManualProgressEntryTypeDto manualProgressEntryType;
-  private String subject;
-  private String messageText;
   private String note;
   private String keyDocumentType;
   private Integer keyDocumentVersion;
@@ -38,22 +36,6 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
 
   public void setManualProgressEntryType(ManualProgressEntryTypeDto manualProgressEntryType) {
     this.manualProgressEntryType = manualProgressEntryType;
-  }
-
-  public String getSubject() {
-    return subject;
-  }
-
-  public void setSubject(String subject) {
-    this.subject = subject;
-  }
-
-  public String getMessageText() {
-    return messageText;
-  }
-
-  public void setMessageText(String messageText) {
-    this.messageText = messageText;
   }
 
   public String getNote() {
@@ -72,6 +54,7 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
     this.createdBy = createdBy;
   }
 
+  @Override
   public String getKeyDocumentType() {
     return keyDocumentType;
   }
@@ -80,6 +63,7 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
     this.keyDocumentType = keyDocumentType;
   }
 
+  @Override
   public Integer getKeyDocumentVersion() {
     return keyDocumentVersion;
   }

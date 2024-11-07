@@ -100,7 +100,6 @@ export function AppointmentForm() {
               ApiAppointmentBookingType.AppointmentBlock,
             )
           }
-          // eslint-disable-next-line jsx-a11y/aria-props
           aria-description="Termin aus Terminblock wählen"
         >
           <Grid container spacing={3} direction="row">
@@ -139,7 +138,6 @@ export function AppointmentForm() {
               ApiAppointmentBookingType.UserDefined,
             )
           }
-          // eslint-disable-next-line jsx-a11y/aria-props
           aria-description="Frei wählbarer Zeitraum für den Termin"
         >
           <Row>

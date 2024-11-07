@@ -7,9 +7,8 @@ import { Grid } from "@mui/joy";
 import { ReactNode } from "react";
 
 export function DetailsGrid({ children }: Readonly<{ children: ReactNode }>) {
-  const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
   return (
-    <Grid container columnSpacing={2} rowSpacing={SPACING}>
+    <Grid container columnSpacing={2} rowSpacing={2}>
       {children}
     </Grid>
   );

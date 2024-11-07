@@ -30,7 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @Audited
 @Table(indexes = @Index(columnList = ProgressEntry_.PROCEDURE_ID))
-public abstract class ProgressEntry extends SequencedBaseEntityWithExternalId {
+public abstract class ProgressEntry extends SequencedBaseEntityWithExternalId implements FileAware {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)
@@ -59,10 +59,12 @@ public abstract class ProgressEntry extends SequencedBaseEntityWithExternalId {
     return modifiedAt;
   }
 
+  @Override
   public File getFile() {
     return file;
   }
 
+  @Override
   public void setFile(File file) {
     this.file = file;
   }

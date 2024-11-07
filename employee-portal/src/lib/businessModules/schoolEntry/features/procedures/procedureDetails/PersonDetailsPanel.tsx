@@ -54,11 +54,9 @@ export function PersonDetailsPanel({
   const { syncBarrier } = useSyncBarrier(syncRoute, person);
 
   async function handleConfirm() {
-    await removeCustodian
-      .mutateAsync({
-        procedureVersion: procedure.version,
-      })
-      .catch();
+    await removeCustodian.mutateAsync({
+      procedureVersion: procedure.version,
+    });
   }
 
   function handleDelete() {

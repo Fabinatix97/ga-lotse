@@ -79,7 +79,7 @@ function EditTextBlockSidebarWithQueriesAndMutations({
           snackbar.confirmation("Textbaustein wurde erzeugt.");
           handleClose();
         },
-      }).catch();
+      });
     } else {
       await updateTextBlock(
         {
@@ -92,7 +92,7 @@ function EditTextBlockSidebarWithQueriesAndMutations({
             handleClose();
           },
         },
-      ).catch();
+      );
     }
   }
 

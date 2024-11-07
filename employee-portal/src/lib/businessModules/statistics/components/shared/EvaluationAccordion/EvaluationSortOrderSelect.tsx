@@ -11,8 +11,6 @@ import { Select } from "@mui/joy";
 import { Evaluation } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
 
 export const EvaluationSortOrder = {
-  NewestFirst: "NEWEST_FIRST",
-  OldestFirst: "OLDEST_FIRST",
   NameAscending: "NAME_ASCENDING",
   NameDescending: "NAME_DESCENDING",
 } as const;
@@ -20,8 +18,6 @@ export type EvaluationSortOrder =
   (typeof EvaluationSortOrder)[keyof typeof EvaluationSortOrder];
 
 export const evaluationSortOrderOptions: EnumMap<EvaluationSortOrder> = {
-  [EvaluationSortOrder.NewestFirst]: "Neueste zuerst",
-  [EvaluationSortOrder.OldestFirst]: "Älteste zuerst",
   [EvaluationSortOrder.NameAscending]: "Alphabetisch A-Z",
   [EvaluationSortOrder.NameDescending]: "Alphabetisch Z-A",
 };
@@ -31,14 +27,6 @@ export function sortEvaluations(
   sortOrder: EvaluationSortOrder,
 ): Evaluation[] {
   switch (sortOrder) {
-    case EvaluationSortOrder.NewestFirst:
-      return evaluations.toSorted(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-      );
-    case EvaluationSortOrder.OldestFirst:
-      return evaluations.toSorted(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-      );
     case EvaluationSortOrder.NameAscending:
       return evaluations.toSorted((a, b) => a.name.localeCompare(b.name, "de"));
     case EvaluationSortOrder.NameDescending:

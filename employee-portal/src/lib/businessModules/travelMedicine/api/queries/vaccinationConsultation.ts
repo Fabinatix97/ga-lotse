@@ -11,22 +11,15 @@ import { mapAppointment } from "@/lib/businessModules/travelMedicine/api/models/
 import { mapAssignableService } from "@/lib/businessModules/travelMedicine/api/models/AssignableService";
 import { vaccinationConsultationApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/queryKeys";
 
-export function useGetAllProcedureAppointmentSummaries(
-  dateRangeStart: Date,
-  dateRangeEnd: Date,
-) {
+export function useGetAllProcedureAppointmentSummaries(date: Date) {
   const vaccinationConsultationApi = useVaccinationConsultationApi();
   return useQuery({
     queryKey: vaccinationConsultationApiQueryKey([
       "getAllProcedureAppointmentSummaries",
-      dateRangeStart,
-      dateRangeEnd,
+      date,
     ]),
     queryFn: () =>
-      vaccinationConsultationApi.getAllProcedureAppointmentSummaries(
-        dateRangeStart,
-        dateRangeEnd,
-      ),
+      vaccinationConsultationApi.getAllProcedureAppointmentSummaries(date),
   });
 }
 
@@ -76,6 +69,18 @@ export function useGetAllMedicalHistoriesQuery(procedureId: string) {
       procedureId,
     ]),
     queryFn: () => vaccinationConsultationApi.getMedicalHistories(procedureId),
+  });
+}
+
+export function useGetAllInformationStatementsQuery(procedureId: string) {
+  const vaccinationConsultationApi = useVaccinationConsultationApi();
+  return queryOptions({
+    queryKey: vaccinationConsultationApiQueryKey([
+      "getInformationStatements",
+      procedureId,
+    ]),
+    queryFn: () =>
+      vaccinationConsultationApi.getInformationStatements(procedureId),
   });
 }
 

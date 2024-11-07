@@ -7,49 +7,56 @@ package de.eshg.schoolentry.util;
 
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
+import de.eshg.lib.procedure.progressentry.ProgressEntryService;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProgressEntryUtil {
-  private ProgressEntryUtil() {}
+  private final ProgressEntryService<SchoolEntryProcedure> progressEntryService;
 
-  public static void addProgressEntry(
+  public ProgressEntryUtil(ProgressEntryService<SchoolEntryProcedure> progressEntryService) {
+    this.progressEntryService = progressEntryService;
+  }
+
+  public void addProgressEntry(
       SchoolEntryProcedure procedure, SchoolEntrySystemProgressEntryType progressEntryType) {
     addProgressEntry(procedure, progressEntryType, TriggerType.SYSTEM_AUTOMATIC);
   }
 
-  public static void addProgressEntry(
+  public void addProgressEntry(
       SchoolEntryProcedure procedure,
       SchoolEntrySystemProgressEntryType progressEntryType,
       TriggerType triggerType) {
-    ProgressEntry progressEntry =
+    SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(), null, triggerType);
 
-    procedure.addProgressEntry(progressEntry);
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry);
   }
 
-  public static void addProgressEntry(
+  public void addProgressEntry(
       SchoolEntryProcedure procedure,
       SchoolEntrySystemProgressEntryType progressEntryType,
       String changeDescription,
       File file) {
-    ProgressEntry progressEntry =
+    SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(), changeDescription, TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setFile(file);
-    procedure.addProgressEntry(progressEntry);
+
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }
 
-  public static void addProgressEntry(
+  public void addProgressEntry(
       SchoolEntryProcedure procedure,
       SchoolEntrySystemProgressEntryType progressEntryType,
       File file) {
-    ProgressEntry progressEntry =
+    SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(), TriggerType.SYSTEM_AUTOMATIC);
-    progressEntry.setFile(file);
-    procedure.addProgressEntry(progressEntry);
+
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }
 }

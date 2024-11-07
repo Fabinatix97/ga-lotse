@@ -13,6 +13,7 @@ import de.eshg.lib.procedure.domain.model.Cemetery;
 import de.eshg.lib.procedure.domain.repository.CemeteryRepository;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,11 @@ public class CemeteryTestUtils {
         .map(Cemetery::getContent)
         .map(this::prettyJson)
         .collect(Collectors.joining(",\n", "[\n", "\n]"));
+  }
+
+  @Transactional(readOnly = true)
+  public List<Cemetery> cemeteryEntities() {
+    return cemeteryRepository.findAllByOrderById().toList();
   }
 
   private String prettyJson(String source) {

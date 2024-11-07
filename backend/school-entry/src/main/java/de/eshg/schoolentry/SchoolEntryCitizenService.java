@@ -53,6 +53,7 @@ public class SchoolEntryCitizenService {
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final SchoolEntryService schoolEntryService;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final ProgressEntryUtil progressEntryUtil;
   private final DepartmentClient departmentClient;
   private final ContactClient contactClient;
 
@@ -62,6 +63,7 @@ public class SchoolEntryCitizenService {
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       SchoolEntryService schoolEntryService,
       AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      ProgressEntryUtil progressEntryUtil,
       DepartmentClient departmentClient,
       ContactClient contactClient) {
     this.clock = clock;
@@ -69,6 +71,7 @@ public class SchoolEntryCitizenService {
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.schoolEntryService = schoolEntryService;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.progressEntryUtil = progressEntryUtil;
     this.departmentClient = departmentClient;
     this.contactClient = contactClient;
   }
@@ -131,7 +134,7 @@ public class SchoolEntryCitizenService {
     schoolEntryProcedure.setAppointmentChangesByCitizen(
         schoolEntryProcedure.getAppointmentChangesByCitizen() + 1);
 
-    ProgressEntryUtil.addProgressEntry(
+    progressEntryUtil.addProgressEntry(
         schoolEntryProcedure, APPOINTMENT_RESCHEDULED_BY_CITIZEN, TriggerType.CITIZEN);
     schoolEntryProcedure
         .getTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION)
@@ -157,7 +160,7 @@ public class SchoolEntryCitizenService {
     Anamnesis citizenAnamnesisAsDomainModel =
         AnamnesisMapper.mapCitizenAnamnesisToDomain(anamnesis);
     schoolEntryService.copyValues(citizenAnamnesisAsDomainModel, procedure.getAnamnesis());
-    ProgressEntryUtil.addProgressEntry(procedure, ANAMNESIS_ADDED_BY_CITIZEN, TriggerType.CITIZEN);
+    progressEntryUtil.addProgressEntry(procedure, ANAMNESIS_ADDED_BY_CITIZEN, TriggerType.CITIZEN);
   }
 
   public AppointmentAddressDto getAppointmentAddress(SchoolEntryProcedure procedure) {

@@ -10,25 +10,15 @@ import {
   ApiContactSortKey,
   ApiContactType,
 } from "@eshg/employee-portal-api/base";
-import { useState } from "react";
 
 import { useGetContactsOverviewPageQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactsTable } from "@/lib/baseModule/components/contacts/ContactsTable";
-import { AddInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddInstitutionContactSidebar";
-import { AddPersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddPersonContactSidebar";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { useAddInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddInstitutionContactSidebar";
+import { useAddPersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/AddPersonContactSidebar";
 import {
   PaginatedSearchParams,
   SortableSearchParams,
 } from "@/lib/shared/helpers/searchParams";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
-
-interface SidebarState {
-  open: boolean;
-  contactType: "AddInstitutionContactRequest" | "AddPersonContactRequest";
-  flowStep: "IMPORT" | "SEARCH";
-}
 
 export interface ContactOverviewSearchParams
   extends PaginatedSearchParams,
@@ -43,61 +33,35 @@ export function ContactsOverview({
 }: {
   params: ContactOverviewSearchParams;
 }) {
-  const [sidebarState, setSidebarState] = useState<SidebarState>({
-    open: false,
-    contactType: "AddPersonContactRequest",
-    flowStep: "IMPORT",
-  });
-
   const query = useGetContactsOverviewPageQuery(params);
   const response = query.isSuccess ? query.data : undefined;
 
-  const { sidebarFormRef, closeSidebar, handleClose } = useSidebarForm({
-    onClose: () => setSidebarState((state) => ({ ...state, open: false })),
-  });
+  const addInstitutionContactSidebar = useAddInstitutionContactSidebar();
+  const addPersonContactSidebar = useAddPersonContactSidebar();
 
   return (
-    <>
-      <ContactsTable
-        loading={query.isFetching}
-        elements={response?.elements ?? []}
-        totalNumberOfElements={response?.totalNumberOfElements ?? 0}
-        onCreate={(type) =>
-          setSidebarState({
-            contactType: type,
+    <ContactsTable
+      loading={query.isFetching}
+      elements={response?.elements ?? []}
+      totalNumberOfElements={response?.totalNumberOfElements ?? 0}
+      onCreate={(type) => {
+        if (type === "AddInstitutionContactRequest") {
+          addInstitutionContactSidebar.open({
             flowStep: "SEARCH",
-            open: true,
-          })
+          });
+        } else {
+          addPersonContactSidebar.open({ flowStep: "SEARCH" });
         }
-        onImport={(type) =>
-          setSidebarState({
-            contactType: type,
+      }}
+      onImport={(type) => {
+        if (type === "AddInstitutionContactRequest") {
+          addInstitutionContactSidebar.open({
             flowStep: "IMPORT",
-            open: true,
-          })
+          });
+        } else {
+          addPersonContactSidebar.open({ flowStep: "IMPORT" });
         }
-      />
-
-      <OverlayBoundary>
-        <Sidebar open={sidebarState.open} onClose={handleClose}>
-          {sidebarState.open &&
-            (sidebarState.contactType === "AddPersonContactRequest" ? (
-              <AddPersonContactSidebar
-                onClose={handleClose}
-                onSuccess={closeSidebar}
-                flowStep={sidebarState.flowStep}
-                sidebarFormRef={sidebarFormRef}
-              />
-            ) : (
-              <AddInstitutionContactSidebar
-                onClose={handleClose}
-                onSuccess={closeSidebar}
-                flowStep={sidebarState.flowStep}
-                sidebarFormRef={sidebarFormRef}
-              />
-            ))}
-        </Sidebar>
-      </OverlayBoundary>
-    </>
+      }}
+    />
   );
 }

@@ -9,6 +9,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.statistics.aggregation.EvaluationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,15 +29,19 @@ import org.springframework.web.service.annotation.HttpExchange;
 public class DataExportController {
   static final String DIAGRAM_EXPORT_FILENAME = "diagramm-daten-export.xlsx";
   private final DataExportService dataExportService;
+  private final EvaluationService evaluationService;
 
-  public DataExportController(DataExportService dataExportService) {
+  public DataExportController(
+      DataExportService dataExportService, EvaluationService evaluationService) {
     this.dataExportService = dataExportService;
+    this.evaluationService = evaluationService;
   }
 
   @GetExchange(value = "/diagram/{diagramId}", accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "Exported diagram data")
   @Operation(summary = "Export diagram data")
   public ResponseEntity<Resource> exportData(@PathVariable(name = "diagramId") UUID diagramId) {
+    evaluationService.checkPermissionForDiagram(diagramId);
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,

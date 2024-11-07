@@ -5,6 +5,8 @@
 
 package de.eshg.base.user.mapper;
 
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW;
+
 import de.eshg.base.SalutationDto;
 import de.eshg.base.calendar.api.DetailedEventWithoutCalendarId;
 import de.eshg.base.keycloak.EmployeeUserAttribute;
@@ -128,6 +130,7 @@ public class UserMapper {
       case BASE_LABELS_WRITE -> EmployeePermissionRole.BASE_LABELS_WRITE;
       case BASE_CONTACTS_READ -> EmployeePermissionRole.BASE_CONTACTS_READ;
       case BASE_CONTACTS_WRITE -> EmployeePermissionRole.BASE_CONTACTS_WRITE;
+      case BASE_GDPR_PROCEDURE_REVIEW -> BASE_GDPR_PROCEDURE_REVIEW;
       case BASE_GDPR_PROCEDURE_READ -> EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ;
       case BASE_GDPR_PROCEDURE_WRITE -> EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE;
       case BASE_GLOBAL_CALENDARS_WRITE -> EmployeePermissionRole.BASE_GLOBAL_CALENDARS_WRITE;
@@ -157,6 +160,7 @@ public class UserMapper {
           EmployeePermissionRole.INSPECTION_CENTRALREPOSITORY_DELETE;
       case INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS ->
           EmployeePermissionRole.INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS;
+      case INSPECTION_IMPORT -> EmployeePermissionRole.INSPECTION_IMPORT;
       case TRAVEL_MEDICINE_ADMIN -> EmployeePermissionRole.TRAVEL_MEDICINE_ADMIN;
       case MEASLES_PROTECTION_ADMIN -> EmployeePermissionRole.MEASLES_PROTECTION_ADMIN;
       case CHAT_MANAGEMENT_WRITE -> EmployeePermissionRole.CHAT_MANAGEMENT_WRITE;
@@ -208,6 +212,7 @@ public class UserMapper {
       case BASE_LABELS_WRITE -> UserRoleDto.BASE_LABELS_WRITE;
       case BASE_CONTACTS_READ -> UserRoleDto.BASE_CONTACTS_READ;
       case BASE_CONTACTS_WRITE -> UserRoleDto.BASE_CONTACTS_WRITE;
+      case BASE_GDPR_PROCEDURE_REVIEW -> UserRoleDto.BASE_GDPR_PROCEDURE_REVIEW;
       case BASE_GDPR_PROCEDURE_READ -> UserRoleDto.BASE_GDPR_PROCEDURE_READ;
       case BASE_GDPR_PROCEDURE_WRITE -> UserRoleDto.BASE_GDPR_PROCEDURE_WRITE;
       case BASE_MAIL_SEND -> UserRoleDto.BASE_MAIL_SEND;
@@ -240,6 +245,7 @@ public class UserMapper {
       case INSPECTION_CENTRALREPOSITORY_DELETE -> UserRoleDto.INSPECTION_CENTRALREPOSITORY_DELETE;
       case INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS ->
           UserRoleDto.INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS;
+      case INSPECTION_IMPORT -> UserRoleDto.INSPECTION_IMPORT;
       case TRAVEL_MEDICINE_ADMIN -> UserRoleDto.TRAVEL_MEDICINE_ADMIN;
       case MEASLES_PROTECTION_ADMIN -> UserRoleDto.MEASLES_PROTECTION_ADMIN;
       case CHAT_MANAGEMENT_WRITE -> UserRoleDto.CHAT_MANAGEMENT_WRITE;

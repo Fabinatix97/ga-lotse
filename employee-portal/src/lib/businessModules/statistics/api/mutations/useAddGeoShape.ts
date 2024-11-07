@@ -26,8 +26,8 @@ export function useAddGeoShape() {
     param: AddGeoShapeValues,
     options: { onSuccess?: () => void },
   ) => {
-    await addGeoShapeMutation
-      .mutateAsync(param, { onSuccess: options.onSuccess })
-      .catch();
+    await addGeoShapeMutation.mutateAsync(param, {
+      onSuccess: options.onSuccess,
+    });
   };
 }

@@ -20,13 +20,13 @@ import {
   ClientState,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import {
   Message,
   ReadConfirmationsPerUser,
   RoomEventDetails,
   isChatMessageType,
-  isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
 import { sortMessages } from "@/lib/businessModules/chat/shared/utils";
 
@@ -58,16 +58,18 @@ export function useRoomMessages() {
         txnId,
       );
       await matrixClient.sendTyping(selectedRoomId, false, 3000);
-    } catch {}
+    } catch {
+      logger.warn("Sending message failed", error);
+    }
   }
 
   const onMessage = useCallback(
-    async ({ event, room, removed }: RoomEventDetails) => {
+    async ({ event, room }: RoomEventDetails) => {
       if (event.isEncrypted()) {
         await matrixClient.decryptEventIfNeeded(event);
       }
       const messageContent = event.getContent();
-      if (!isMessageTypeWithBody(messageContent)) return;
+      // if (!isMessageTypeWithBody(messageContent)) return;
       const id =
         event.getId() ??
         format(addMilliseconds(new Date(), Math.random() * 1000), "T");
@@ -75,12 +77,13 @@ export function useRoomMessages() {
 
       return {
         sender,
-        content: removed ? "Nachricht gelöscht" : messageContent.body,
+        content: messageContent.body as string,
         timestamp: event.getDate(),
         id,
         roomId: room?.roomId,
         mentions: messageContent["m.mentions"]?.user_ids,
         messageType: MessageTypeEnum.ChatMessage,
+        removed: false,
       };
     },
     [matrixClient],
@@ -94,6 +97,26 @@ export function useRoomMessages() {
       removed: boolean,
     ) {
       const eventType = event.getType();
+      if (eventType === "m.room.redaction") {
+        if (!room) return;
+        const eventContent = event.getContent();
+        const messageId = (eventContent.redacts ||
+          event.event.redacts) as string;
+        setMessages((prevState) => {
+          if (!(room.roomId in prevState)) {
+            return prevState;
+          }
+          const roomMessages = prevState[room.roomId] ?? [];
+          return {
+            ...prevState,
+            [room.roomId]: roomMessages.map((message) =>
+              message.id === messageId
+                ? { ...message, content: "Nachricht gelöscht", removed: true }
+                : message,
+            ),
+          };
+        });
+      }
       if (
         !room ||
         (eventType !== "m.room.message" && eventType !== "m.room.encrypted")
@@ -101,7 +124,7 @@ export function useRoomMessages() {
         return;
       }
       const temporaryId = event.getId();
-      const newMessage = await onMessage({ event, room, removed });
+      const newMessage = await onMessage({ event, room });
       const messageWithSentStatus = {
         ...newMessage,
         sent: event.getSender() !== loggedInUserId,
@@ -189,7 +212,7 @@ export function useRoomMessages() {
               return;
             }
             const readReceipts = room.getReceiptsForEvent(event);
-            const message = await onMessage({ event, room, removed: false });
+            const message = await onMessage({ event, room });
             const readReceiptsObj =
               readReceipts?.reduce<ReadConfirmationsPerUser>(
                 (acc, { userId, data }) => {
@@ -207,8 +230,12 @@ export function useRoomMessages() {
             return { ...message, readReceipts: readReceiptsObj };
           }),
         );
+        const newMessagesWithRemovedMessages = updateMessagesWithRemovalEvents(
+          newRoomMessages,
+          events,
+        );
 
-        const filteredMessages = newRoomMessages
+        const filteredMessages = newMessagesWithRemovedMessages
           .filter(isChatMessageType)
           .filter((item) => !!item);
 
@@ -219,9 +246,7 @@ export function useRoomMessages() {
           if (!filteredMessages.length) {
             return { ...prevState, [roomId]: [] };
           }
-          const sortedMessagesFromRoom = sortMessages(
-            filteredMessages as Message[],
-          );
+          const sortedMessagesFromRoom = sortMessages(filteredMessages);
 
           return {
             ...prevState,
@@ -268,13 +293,17 @@ export function useRoomMessages() {
           ) {
             return;
           }
-          const message = await onMessage({ event, room, removed: false });
+          const message = await onMessage({ event, room });
           return { ...message, sent: true };
         }),
       );
+      const newMessagesWithRemovedMessages = updateMessagesWithRemovalEvents(
+        newMessages,
+        events,
+      );
 
       setMessages((prevState) => {
-        const correctNewMessages = newMessages
+        const correctNewMessages = newMessagesWithRemovedMessages
           .filter(isChatMessageType)
           .filter((item) => !!item);
         if (!correctNewMessages.length) {
@@ -319,4 +348,26 @@ export function useRoomMessages() {
     onMessage,
     error,
   };
+}
+
+function updateMessagesWithRemovalEvents(
+  messages: (Omit<Message, "sent"> | undefined)[],
+  events: MatrixEvent[],
+) {
+  return messages.map((msg) => {
+    if (!msg) return;
+    const removalEvent = events.find(
+      (event) =>
+        event.getType() === "m.room.redaction" &&
+        event.getContent().redacts === msg.id,
+    );
+    if (removalEvent) {
+      return {
+        ...msg,
+        content: "Nachricht gelöscht",
+        removed: true,
+      };
+    }
+    return msg;
+  });
 }

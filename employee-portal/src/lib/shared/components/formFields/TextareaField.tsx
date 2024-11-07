@@ -24,6 +24,7 @@ interface TextareaFieldProps extends ValidationRules<string> {
   minRows?: number;
   untrimmedInput?: boolean;
   disabled?: boolean;
+  "data-testid"?: string;
 }
 
 export function TextareaField(props: TextareaFieldProps) {
@@ -63,6 +64,7 @@ export function TextareaField(props: TextareaFieldProps) {
         readOnly={props.readOnly}
         disabled={disabled}
         slotProps={{ textarea: { disabled } }}
+        data-testid={props["data-testid"]}
       />
     </BaseField>
   );

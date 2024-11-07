@@ -2,6 +2,28 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.2
+
+_04.11.2024_
+
+Dritter Release der Anwendung GA-Lotse.
+
+### Einschulungsuntersuchungen:
+
+* Untersuchungstag
+  * Schließen eines Vorgangs nach Abschluss der Untersuchung
+  * Wiedereröffnung eines geschlossenen Vorgangs
+
+### Begehung:
+
+* Planung
+  * Verwendung von Packlisten um Nichts zu vergessen
+* Ausführung
+  * Unterstützung von Audionotizen in Checklisten
+* Konfiguration
+  * Definition von Packlisten pro Objekttyp
+  * Definition von Audio-Elementen in Definitionen von Checklisten
+
 ## GA-Lotse 1.1
 
 _21.10.2024_

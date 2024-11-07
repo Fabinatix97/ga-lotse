@@ -8,12 +8,13 @@ import {
   ApiMeaslesProtectionProcedure,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { Sheet } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { facilityTypeNames } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 import { FacilityContacts } from "./FacilityContact";
 
@@ -36,32 +37,36 @@ export function Facility({
   return (
     procedure.facility && (
       <>
-        <DetailsCard title="Einrichtung">
-          <CentralFileFacilityDetails
-            facility={{
-              ...procedure.facility,
-              // TODO: The API type here is wrong, these should both be lists
-              emailAddresses: isNonEmptyString(procedure.facility.emailAddress)
-                ? [procedure.facility.emailAddress]
-                : [],
-              phoneNumbers: isNonEmptyString(procedure.facility.phoneNumber)
-                ? [procedure.facility.phoneNumber]
-                : [],
-            }}
-            columnSx={COLUMN_STYLE}
-          >
-            <DetailsCell
-              name="type"
-              label="Einrichtungsart"
-              value={facilityTypeNames[facility.type]}
-            />
-            <DetailsCell
-              name="extra_type"
-              label="Anderer Einrichtungstyp"
-              value={facility.otherFacilityTypeInformation}
-            />
-          </CentralFileFacilityDetails>
-        </DetailsCard>
+        <Sheet>
+          <DetailsSection title="Einrichtung">
+            <CentralFileFacilityDetails
+              facility={{
+                ...procedure.facility,
+                // TODO: The API type here is wrong, these should both be lists
+                emailAddresses: isNonEmptyString(
+                  procedure.facility.emailAddress,
+                )
+                  ? [procedure.facility.emailAddress]
+                  : [],
+                phoneNumbers: isNonEmptyString(procedure.facility.phoneNumber)
+                  ? [procedure.facility.phoneNumber]
+                  : [],
+              }}
+              columnSx={COLUMN_STYLE}
+            >
+              <DetailsCell
+                name="type"
+                label="Einrichtungsart"
+                value={facilityTypeNames[facility.type]}
+              />
+              <DetailsCell
+                name="extra_type"
+                label="Anderer Einrichtungstyp"
+                value={facility.otherFacilityTypeInformation}
+              />
+            </CentralFileFacilityDetails>
+          </DetailsSection>
+        </Sheet>
         <FacilityContacts persons={facility.contactPersons} />
       </>
     )

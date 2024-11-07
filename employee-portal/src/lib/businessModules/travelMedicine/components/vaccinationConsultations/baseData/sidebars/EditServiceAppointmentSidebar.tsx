@@ -72,7 +72,7 @@ function EditServiceAppointmentSidebar(
     const { appointmentStart, durationInMinutes } = determineStartAndDuration(
       values.bookingType,
       values.userDefinedAppointmentDate!,
-      values.appointmentBlockDate!,
+      values.appointmentBlockDate,
       values.appointmentTypeStandardDuration,
     );
     const request: PatchAppointmentRequest = {
@@ -92,13 +92,11 @@ function EditServiceAppointmentSidebar(
   async function handleSubmit(values: EditServiceAppointmentFormValues) {
     const usePatchAppointment = createUsePatchAppointmentRequest(values);
 
-    await patchProcedure
-      .mutateAsync(usePatchAppointment.request, {
-        onSuccess: () => {
-          props.onClose(true);
-        },
-      })
-      .catch();
+    await patchProcedure.mutateAsync(usePatchAppointment.request, {
+      onSuccess: () => {
+        props.onClose(true);
+      },
+    });
   }
 
   function mapProcedureStepToEditAppointmentValues(
@@ -108,7 +106,7 @@ function EditServiceAppointmentSidebar(
       procedureId: props.procedureId,
       procedureStepId: procedureStep.procedureStepId ?? "",
       bookingType: "" as ApiAppointmentBookingType,
-      appointmentBlockDate: "",
+      appointmentBlockDate: undefined,
       appointmentType: procedureStep.appointmentType,
       userDefinedAppointmentDate: mapDateTimeToInput(new Date(), false),
       appointmentTypeStandardDuration: vaccinationStandardDuration as number,

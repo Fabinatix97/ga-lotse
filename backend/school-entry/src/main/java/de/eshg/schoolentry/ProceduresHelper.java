@@ -114,7 +114,7 @@ public class ProceduresHelper {
         new SchoolEntryProcedureSpecification(
             ProcedureStatus.OPEN,
             ProcedureMapper.mapToDomain(filterParameters.procedureTypeFilter()),
-            filterParameters.schoolIdFilter(),
+            contactClient.getContactAliases(filterParameters.schoolIdFilter()),
             ProcedureMapper.mapIntegerToYear(filterParameters.schoolYearFilter()),
             getDayOfAppointmentAsInstant(filterParameters.dayOfAppointmentFilter()),
             filterParameters.hasAppointmentFilter(),

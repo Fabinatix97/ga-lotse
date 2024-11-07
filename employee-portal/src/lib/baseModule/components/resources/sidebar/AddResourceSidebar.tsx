@@ -13,8 +13,10 @@ import {
   ResourceFormValues,
 } from "@/lib/baseModule/components/resources/forms/ResourceForm";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 const emptyValues: ResourceFormValues = {
   type: "",
@@ -24,40 +26,36 @@ const emptyValues: ResourceFormValues = {
   labelNames: [],
 };
 
-interface AddResourceSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface AddResourceSidebarProps extends SidebarWithFormRefProps {
   labels: ApiLabel[];
 }
 
-export function AddResourceSidebar(props: AddResourceSidebarProps) {
+export function useAddResourceSidebar() {
+  return useSidebarWithFormRef({
+    component: AddResourceSidebar,
+  });
+}
+
+function AddResourceSidebar(props: AddResourceSidebarProps) {
   const router = useRouter();
   const createResource = useAddResource();
 
-  const { sidebarFormRef, handleClose } = useSidebarForm({
-    onClose: props.onClose,
-  });
-
   async function handleSubmit(values: ResourceFormValues) {
-    await createResource
-      .mutateAsync(mapAddResourceRequest(values), {
-        onSuccess: ({ id }) => router.push(routes.resources.details(id)),
-      })
-      .catch();
+    await createResource.mutateAsync(mapAddResourceRequest(values), {
+      onSuccess: ({ id }) => router.push(routes.resources.details(id)),
+    });
   }
 
   return (
-    <Sidebar open={props.open} onClose={handleClose}>
-      <ResourceForm
-        initialValues={emptyValues}
-        labels={props.labels}
-        formRef={sidebarFormRef}
-        onCancel={handleClose}
-        onSubmit={handleSubmit}
-        title={"Ressource hinzufügen"}
-        submitLabel={"Hinzufügen"}
-        canChooseType
-      />
-    </Sidebar>
+    <ResourceForm
+      initialValues={emptyValues}
+      labels={props.labels}
+      formRef={props.formRef}
+      onCancel={() => props.onClose(false)}
+      onSubmit={handleSubmit}
+      title={"Ressource hinzufügen"}
+      submitLabel={"Hinzufügen"}
+      canChooseType
+    />
   );
 }

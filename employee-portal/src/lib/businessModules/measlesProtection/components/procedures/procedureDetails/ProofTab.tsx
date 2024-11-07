@@ -16,7 +16,7 @@ import {
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add } from "@mui/icons-material";
-import { Button, Grid, Stack } from "@mui/joy";
+import { Button, Grid, Sheet, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
@@ -38,11 +38,8 @@ import {
   formatName,
   getPersonByIdFromProcedure,
 } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/shared/components/detailsCard/LabeledValue";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AccessRestrictionSidebar } from "./AccessRestrictionSidebar";
@@ -167,39 +164,41 @@ function ProofSubmissionsCard({
   procedureClosed,
 }: Readonly<ProofSubmissionsProps>) {
   return (
-    <DetailsCard title="Nachweisvorlage" fullHeight={true}>
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
-        {proofSubmissions.map((proof) => (
-          <ProofTabEntry key={proof.externalId}>
-            <LabeledValue
-              label="Resultat"
-              value={submissionResultLabels[proof.submissionResult]}
-            />
-            <Row>
-              {proof.submissionResult ===
-              ApiSubmissionResult.TempMedicalAttest ? (
-                <LabeledValue
-                  label="Frist zum medizinischen Attest"
-                  value={formatDate(proof.medicalAttestDeadline)}
-                />
-              ) : null}
-              <LabeledValue
-                label="Vorlagedatum"
-                value={formatDate(proof.submissionDate)}
+    <Sheet sx={{ height: "100%" }}>
+      <DetailsSection title="Nachweisvorlage">
+        <Stack spacing={3} alignItems={"start"} width={"100%"}>
+          {proofSubmissions.map((proof) => (
+            <ProofTabEntry key={proof.externalId}>
+              <DetailsCell
+                label="Resultat"
+                value={submissionResultLabels[proof.submissionResult]}
               />
-            </Row>
-            {proof.proofSubmissionDocumentId && (
-              <ProofTabFileCard fileId={proof.proofSubmissionDocumentId} />
-            )}
-          </ProofTabEntry>
-        ))}
-        {!procedureClosed && (
-          <Button variant="plain" startDecorator={<Add />} onClick={onClick}>
-            Hinzufügen
-          </Button>
-        )}
-      </Stack>
-    </DetailsCard>
+              <Row>
+                {proof.submissionResult ===
+                ApiSubmissionResult.TempMedicalAttest ? (
+                  <DetailsCell
+                    label="Frist zum medizinischen Attest"
+                    value={formatDate(proof.medicalAttestDeadline)}
+                  />
+                ) : null}
+                <DetailsCell
+                  label="Vorlagedatum"
+                  value={formatDate(proof.submissionDate)}
+                />
+              </Row>
+              {proof.proofSubmissionDocumentId && (
+                <ProofTabFileCard fileId={proof.proofSubmissionDocumentId} />
+              )}
+            </ProofTabEntry>
+          ))}
+          {!procedureClosed && (
+            <Button variant="plain" startDecorator={<Add />} onClick={onClick}>
+              Hinzufügen
+            </Button>
+          )}
+        </Stack>
+      </DetailsSection>
+    </Sheet>
   );
 }
 
@@ -215,31 +214,33 @@ function FineCard({
   procedureClosed,
 }: Readonly<FineCardProps>) {
   return (
-    <DetailsCard title="Bußgeld" fullHeight={true}>
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
-        {monetaryFines.length > 0 && (
-          <ValueList style={{ flexBasis: "auto" }}>
-            {monetaryFines.map((fine) => (
-              <LabeledValue
-                key={fine.externalId}
-                label="Erteilungsdatum"
-                value={formatDate(fine.fineIssuedDate)}
-              />
-            ))}
-          </ValueList>
-        )}
-        {!procedureClosed && (
-          <Button
-            variant="plain"
-            startDecorator={<Add />}
-            disabled={procedureClosed}
-            onClick={onClick}
-          >
-            Bußgeld erteilen
-          </Button>
-        )}
-      </Stack>
-    </DetailsCard>
+    <Sheet sx={{ height: "100%" }}>
+      <DetailsSection title="Bußgeld">
+        <Stack spacing={3} alignItems={"start"} width={"100%"}>
+          {monetaryFines.length > 0 && (
+            <Stack gap={1} style={{ flexBasis: "auto" }}>
+              {monetaryFines.map((fine) => (
+                <DetailsCell
+                  key={fine.externalId}
+                  label="Erteilungsdatum"
+                  value={formatDate(fine.fineIssuedDate)}
+                />
+              ))}
+            </Stack>
+          )}
+          {!procedureClosed && (
+            <Button
+              variant="plain"
+              startDecorator={<Add />}
+              disabled={procedureClosed}
+              onClick={onClick}
+            >
+              Bußgeld erteilen
+            </Button>
+          )}
+        </Stack>
+      </DetailsSection>
+    </Sheet>
   );
 }
 
@@ -257,39 +258,41 @@ function ProofRequestLetterCard({
   proofSubmissionLetters,
 }: Readonly<ProofRequestLetterCardProps>) {
   return (
-    <DetailsCard title={"Anschreiben Nachweisvorlage"} fullHeight={true}>
-      <Stack spacing={3} width={"100%"} alignItems={"start"}>
-        {proofSubmissionLetters.map((letter, index) => (
-          <ProofTabEntry rowLayout key={index}>
-            <LabeledValue
-              label="Empfänger"
-              value={formatName(
-                getPersonByIdFromProcedure(letter.recipientId, procedure),
-              )}
-            />
-            <LabeledValue
-              label="Versanddatum"
-              value={formatDate(letter.pdf.createdAt)}
-            />
-            <LabeledValue label="Frist" value={formatDate(letter.deadline)} />
+    <Sheet sx={{ height: "100%" }}>
+      <DetailsSection title={"Anschreiben Nachweisvorlage"}>
+        <Stack spacing={3} width={"100%"} alignItems={"start"}>
+          {proofSubmissionLetters.map((letter, index) => (
+            <ProofTabEntry rowLayout key={index}>
+              <DetailsCell
+                label="Empfänger"
+                value={formatName(
+                  getPersonByIdFromProcedure(letter.recipientId, procedure),
+                )}
+              />
+              <DetailsCell
+                label="Versanddatum"
+                value={formatDate(letter.pdf.createdAt)}
+              />
+              <DetailsCell label="Frist" value={formatDate(letter.deadline)} />
 
-            <ProofTabFileCard
-              fileId={letter.pdf.fileId}
-              fileData={letter.pdf}
-            />
-          </ProofTabEntry>
-        ))}
-        {!procedureClosed && (
-          <Button
-            variant="plain"
-            startDecorator={<Add />}
-            disabled={procedureClosed}
-            onClick={onClick}
-          >
-            Anschreiben erstellen
-          </Button>
-        )}
-      </Stack>
-    </DetailsCard>
+              <ProofTabFileCard
+                fileId={letter.pdf.fileId}
+                fileData={letter.pdf}
+              />
+            </ProofTabEntry>
+          ))}
+          {!procedureClosed && (
+            <Button
+              variant="plain"
+              startDecorator={<Add />}
+              disabled={procedureClosed}
+              onClick={onClick}
+            >
+              Anschreiben erstellen
+            </Button>
+          )}
+        </Stack>
+      </DetailsSection>
+    </Sheet>
   );
 }

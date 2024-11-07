@@ -7,7 +7,7 @@ package de.eshg.statistics.api.evaluationtemplate;
 
 import static de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest.SCHEMA_NAME;
 
-import de.eshg.statistics.api.DataSourceDto;
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

@@ -53,4 +53,10 @@ public class MedicalRegistryTestHelperService extends DefaultTestHelperService {
         medicalRegistryEntryRepository.findByExternalId(procedureId).orElseThrow();
     medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
   }
+
+  public void openProcedure(UUID procedureId) {
+    MedicalRegistryEntry medicalRegistryEntry =
+        medicalRegistryEntryRepository.findByExternalId(procedureId).orElseThrow();
+    medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+  }
 }

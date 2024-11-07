@@ -7,20 +7,25 @@ package de.eshg.testhelper;
 
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariPoolMXBean;
+import de.cronn.commons.lang.StreamUtil;
 import de.cronn.reflection.util.PropertyUtils;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.persistence.EntityManagerFactory;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import liquibase.Scope;
 import liquibase.integration.spring.SpringLiquibase;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.generator.Generator;
@@ -32,14 +37,20 @@ import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @ConditionalOnBean(DataSource.class)
 @ConditionalOnTestHelperEnabled
 public class DatabaseResetHelper {
+
+  private static final String JDBC_URL_PREFIX = "jdbc:";
+  private static final Pattern CREATE_DATABASE_STATEMENT_PATTERN =
+      Pattern.compile("CREATE DATABASE ([a-z0-9_-]+) WITH .+");
 
   private final JdbcConnectionDetails jdbcConnectionDetails;
   private final DataSource dataSource;
@@ -79,16 +90,18 @@ public class DatabaseResetHelper {
         isLiquibaseAvailableAndEnabled(),
         "Liquibase must be available and enabled in order to restore a database snapshot.");
 
-    dropAndRecreateThePublicSchema();
-
-    String filteredSql =
+    List<String> databaseSnapshotLines =
         Arrays.stream(databaseSnapshotSql.split("\\r?\\n"))
             .filter(line -> !line.isBlank())
             .filter(line -> !line.trim().startsWith("--"))
+            .toList();
+
+    dropAndRecreateTheDatabase(databaseSnapshotLines);
+
+    String filteredSql =
+        databaseSnapshotLines.stream()
             .filter(line -> !line.trim().startsWith("\\connect"))
-            .filter(line -> !line.trim().toLowerCase(Locale.ROOT).startsWith("create database"))
-            .filter(
-                line -> !line.trim().toLowerCase(Locale.ROOT).startsWith("create schema public"))
+            .filter(line -> !isCreateDatabaseStatement(line))
             .collect(Collectors.joining("\n"));
     jdbcTemplate.execute(filteredSql);
 
@@ -106,6 +119,10 @@ public class DatabaseResetHelper {
     runLiquibaseMigrations();
   }
 
+  private static boolean isCreateDatabaseStatement(String line) {
+    return CREATE_DATABASE_STATEMENT_PATTERN.matcher(line).matches();
+  }
+
   private void runLiquibaseMigrations() throws Exception {
     // This is a workaround to force Liquibase to clear all internal thread-local caches.
     // If we do not clear them, we observe that Liquibase sometimes incorrectly assumes that no
@@ -119,25 +136,47 @@ public class DatabaseResetHelper {
     return liquibaseProperties != null && liquibaseProperties.isEnabled() && liquibase != null;
   }
 
-  private void dropAndRecreateThePublicSchema() {
-    List<String> extensions =
-        jdbcTemplate.query(
-            """
-            SELECT extname FROM pg_extension
-            WHERE extnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
-            ORDER BY extname""",
-            (rs, rowNum) -> rs.getString(1));
+  private void dropAndRecreateTheDatabase(List<String> databaseSnapshotLines) throws Exception {
+    String createDatabaseStatement =
+        databaseSnapshotLines.stream()
+            .filter(DatabaseResetHelper::isCreateDatabaseStatement)
+            .collect(StreamUtil.toSingleElement());
 
-    jdbcTemplate.execute("drop schema public cascade");
-    jdbcTemplate.execute("create schema public");
+    Matcher databaseNameMatcher =
+        CREATE_DATABASE_STATEMENT_PATTERN.matcher(createDatabaseStatement);
+    Assert.isTrue(
+        databaseNameMatcher.matches(),
+        () -> "Failed to parse database name from '%s'".formatted(createDatabaseStatement));
 
-    if (!extensions.isEmpty()) {
-      String createExtensions =
-          extensions.stream()
-              .map("create extension %s schema public"::formatted)
-              .collect(Collectors.joining(";\n"));
-      jdbcTemplate.execute(createExtensions);
+    String database = databaseNameMatcher.group(1);
+
+    DataSource driverManagerDataSource =
+        new DriverManagerDataSource(
+            getJdbcUrlForPostgresDatabase(jdbcConnectionDetails.getJdbcUrl()),
+            jdbcConnectionDetails.getUsername(),
+            jdbcConnectionDetails.getPassword());
+    try (Connection connection = driverManagerDataSource.getConnection()) {
+      try (PreparedStatement preparedStatement =
+          connection.prepareStatement("drop database " + database + " with (force)")) {
+        preparedStatement.execute();
+      }
+      try (PreparedStatement preparedStatement =
+          connection.prepareStatement(createDatabaseStatement)) {
+        preparedStatement.execute();
+      }
     }
+
+    evictAllConnections();
+  }
+
+  private static String getJdbcUrlForPostgresDatabase(String fullJdbcUrl) {
+    String jdbcUriPart = StringUtils.substringAfter(fullJdbcUrl, JDBC_URL_PREFIX);
+    String replacedJdbcUriPart =
+        UriComponentsBuilder.fromUriString(jdbcUriPart)
+            .replacePath("/postgres")
+            .build()
+            .toUriString();
+    return JDBC_URL_PREFIX + replacedJdbcUriPart;
   }
 
   private void evictAllConnections() throws Exception {
@@ -208,8 +247,7 @@ public class DatabaseResetHelper {
   @Transactional
   public void resetAllSequences() {
     environmentConfig.assertIsNotProduction();
-    List<String> sequenceNamesToReset;
-    sequenceNamesToReset = getSequenceNamesThatNeedToBeReset();
+    List<String> sequenceNamesToReset = getSequenceNamesThatNeedToBeReset();
     for (String sequenceName : sequenceNamesToReset) {
       resetSequence(sequenceName);
     }

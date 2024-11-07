@@ -33,13 +33,12 @@ public interface VaccinationConsultationRepository
       from VaccinationConsultation vc inner join vc.relatedPersons person inner join vc.procedureSteps ps left join ps.appointment a left join ps.userDefinedAppointment uda
       where a.appointmentStart between :startInstant and :endInstant
       or uda.appointmentStart between :startInstant and :endInstant
-      or (ps.earliestDate between :startLocalDate and :endLocalDate and a.appointmentStart is null and uda.appointmentStart is null)
+      or (ps.earliestDate = :startLocalDate and a.appointmentStart is null and uda.appointmentStart is null)
       order by ps.id""")
   List<AppointmentOverviewEntry> findAppointmentOverview(
       @Param("startInstant") Instant startInstant,
       @Param("endInstant") Instant endInstant,
-      @Param("startLocalDate") LocalDate startLocalDate,
-      @Param("endLocalDate") LocalDate endLocalDate);
+      @Param("startLocalDate") LocalDate startLocalDate);
 
   @Query(
       "select new de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultationSearch(v.externalId, person.centralFileStateId, v.travelStartDate, "

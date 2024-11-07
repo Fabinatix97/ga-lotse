@@ -6,7 +6,6 @@
 package de.eshg.inspection.feature;
 
 public enum InspectionFeature {
-  PACKLISTS,
-  CHECKLIST_AUDIOS,
   OFFLINE,
+  IMPORT,
 }

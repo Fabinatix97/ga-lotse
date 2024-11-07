@@ -125,15 +125,16 @@ export function ProcedureMetricsDisplay() {
                   manualSorting: false,
                   initialSorting,
                 }}
-                rowNavRoute={(row) =>
-                  taskMetricsEnabled
-                    ? routes.metrics.details(
-                        row.original.businessModule,
-                        row.original.procedureType,
-                      )
-                    : undefined
-                }
-                focusColumnHeader="Typ"
+                rowNavigation={{
+                  route: (row) =>
+                    taskMetricsEnabled
+                      ? routes.metrics.details(
+                          row.original.businessModule,
+                          row.original.procedureType,
+                        )
+                      : undefined,
+                  focusColumnAccessorKey: "procedureType",
+                }}
               />
             </TableSheet>
           </Stack>

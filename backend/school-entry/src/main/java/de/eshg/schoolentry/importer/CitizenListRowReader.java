@@ -11,6 +11,7 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.xlsximport.ColumnAccessor;
+import de.eshg.lib.xlsximport.ErrorHandler;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.schoolentry.business.model.ImportChildData;
@@ -18,8 +19,6 @@ import de.eshg.schoolentry.business.model.ImportCustodianData;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 public class CitizenListRowReader extends RowReader<CitizenListRowValues, CitizenListColumn> {
@@ -63,7 +62,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
   @Override
   protected CitizenListRowValues read(ColumnAccessor<CitizenListColumn> col) {
     CitizenListRowValues result = new CitizenListRowValues();
-    BiConsumer<Cell, String> errorHandler = createErrorHandler(result);
+    ErrorHandler errorHandler = createErrorHandler(result);
 
     result.setChild(readChildData(col, errorHandler));
     if (col.hasColumn(INFORMATION_BLOCK)) {
@@ -77,7 +76,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
   }
 
   private ImportChildData readChildData(
-      ColumnAccessor<CitizenListColumn> col, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<CitizenListColumn> col, ErrorHandler errorHandler) {
     String lastName = cellAsString(col, LAST_NAME, errorHandler);
     String firstName = cellAsString(col, FIST_NAME, errorHandler);
     AddressData addressData = readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, true);
@@ -90,7 +89,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
   }
 
   private List<ImportCustodianData> readCustodiansData(
-      ColumnAccessor<CitizenListColumn> col, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<CitizenListColumn> col, ErrorHandler errorHandler) {
     List<ImportCustodianData> custodians = new ArrayList<>();
 
     for (CustodianColumns custodian : CUSTODIAN_COLUMNS) {
@@ -114,7 +113,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
   private static boolean anyValueInRange(
       ColumnAccessor<CitizenListColumn> col,
       CustodianColumns custodianColumns,
-      BiConsumer<Cell, String> errorHandler) {
+      ErrorHandler errorHandler) {
     return anyValueInRange(
         col.getRange(custodianColumns.lastName(), custodianColumns.gender()), errorHandler);
   }

@@ -411,6 +411,47 @@ paths:
           description: OK
       tags:
       - Archiving
+  /citizen/auth/information-statements/{informationStatementId}:
+    get:
+      operationId: getCitizenInformationStatement
+      parameters:
+      - in: path
+        name: informationStatementId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentContent"
+          description: OK
+      summary: Gets information statement by id
+      tags:
+      - CitizenAuth
+    patch:
+      operationId: patchCitizenInformationStatement
+      parameters:
+      - in: path
+        name: informationStatementId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentContent"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Updates information statement content
+      tags:
+      - CitizenAuth
   /citizen/auth/procedure-appointments:
     get:
       operationId: getProcedureAppointments
@@ -521,7 +562,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MedicalHistoryContent"
+                $ref: "#/components/schemas/DocumentContent"
           description: OK
       summary: Gets medical history for a procedure step appointment
       tags:
@@ -545,7 +586,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MedicalHistoryContent"
+              $ref: "#/components/schemas/DocumentContent"
         required: true
       responses:
         "200":
@@ -553,6 +594,19 @@ paths:
       summary: Updates medical history content
       tags:
       - CitizenAuth
+  /citizen/public/appointment-types:
+    get:
+      operationId: getAppointmentTypesForCitizen
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAppointmentTypesResponse"
+          description: OK
+      summary: Gets all Appointment Types
+      tags:
+      - CitizenPublic
   /citizen/public/department-info:
     get:
       operationId: getDepartmentInfo
@@ -630,6 +684,19 @@ paths:
                 $ref: "#/components/schemas/GetFreeAppointmentsResponse"
           description: OK
       summary: Get free appointments for an appointment type.
+      tags:
+      - CitizenPublic
+  /citizen/public/opening-hours:
+    get:
+      operationId: getOpeningHours
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOpeningHoursResponse"
+          description: OK
+      summary: Get opening hours.
       tags:
       - CitizenPublic
   /citizen/public/vaccination-consultations:
@@ -890,6 +957,21 @@ paths:
           description: OK
       tags:
       - File
+  /gdpr-validation-tasks:
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
   /inbox-procedures:
     get:
       description: |
@@ -2497,13 +2579,7 @@ paths:
       operationId: getAllProcedureAppointmentSummaries
       parameters:
       - in: query
-        name: dateRangeStart
-        required: true
-        schema:
-          type: string
-          format: date
-      - in: query
-        name: dateRangeEnd
+        name: date
         required: true
         schema:
           type: string
@@ -2544,6 +2620,44 @@ paths:
                 format: uuid
           description: OK
       summary: Add procedure step to vaccination consultation with given id
+      tags:
+      - VaccinationConsultation
+  /vaccination-consultations/{procedureId}:
+    delete:
+      operationId: abortDraftVaccinationConsultation
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Aboard a draft vaccination consultation
+      tags:
+      - VaccinationConsultation
+  /vaccination-consultations/{procedureId}/accept-draft:
+    patch:
+      operationId: acceptDraftVaccinationConsultation
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchAcceptDraftRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Accept a draft vaccination consultation
       tags:
       - VaccinationConsultation
   /vaccination-consultations/{procedureId}/assignable-services:
@@ -2649,6 +2763,25 @@ paths:
       tags:
       - VaccinationConsultation
   /vaccination-consultations/{procedureId}/information-statements:
+    get:
+      operationId: getInformationStatements
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInformationStatementsResponse"
+          description: OK
+      summary: Get information statements for this VaccinationConsultation.
+      tags:
+      - VaccinationConsultation
     post:
       operationId: postInformationStatements
       parameters:
@@ -3156,6 +3289,17 @@ components:
           minimum: 1
       required:
       - barrierId
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - procedureId
+      - type
     Address:
       type: object
       discriminator:
@@ -3961,11 +4105,7 @@ components:
           type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
         note:
-          type: string
-        subject:
           type: string
       required:
       - manualProgressEntryType
@@ -4064,6 +4204,99 @@ components:
       - id
       - name
       - visibleToCitizenPortal
+    DocumentAnamnesisQuestion:
+      type: object
+      properties:
+        answer:
+          type: boolean
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+        subElementMultiSelect:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentSubElementMultiSelect"
+        subElementText:
+          $ref: "#/components/schemas/DocumentSubElementText"
+      required:
+      - questionText
+      - subElementMultiSelect
+    DocumentConfirmation:
+      type: object
+      properties:
+        answer:
+          type: boolean
+        confirmationTextField:
+          type: string
+      required:
+      - confirmationTextField
+    DocumentContent:
+      type: object
+      properties:
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentSection"
+          maxItems: 2147483647
+          minItems: 1
+      required:
+      - sections
+    DocumentSection:
+      type: object
+      properties:
+        sectionElements:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentSectionElement"
+          maxItems: 2147483647
+          minItems: 1
+        sectionTitle:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - sectionElements
+    DocumentSectionElement:
+      type: object
+      properties:
+        anamnesisQuestion:
+          $ref: "#/components/schemas/DocumentAnamnesisQuestion"
+        confirmation:
+          $ref: "#/components/schemas/DocumentConfirmation"
+        textBlock:
+          $ref: "#/components/schemas/DocumentTextBlock"
+    DocumentSubElementMultiSelect:
+      type: object
+      properties:
+        answer:
+          type: boolean
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - questionText
+    DocumentSubElementText:
+      type: object
+      properties:
+        answer:
+          type: string
+          maxLength: 4000
+          minLength: 0
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - questionText
+    DocumentTextBlock:
+      type: object
+      properties:
+        textField:
+          type: string
+      required:
+      - textField
     DomesticAddress:
       type: object
       allOf:
@@ -4253,6 +4486,12 @@ components:
       - PNG
       - PDF
       - EML
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -4379,8 +4618,6 @@ components:
         bookingsRemaining:
           type: integer
           format: int32
-        citizenHasAnswered:
-          type: boolean
         dateOfBirth:
           type: string
           format: date
@@ -4388,20 +4625,27 @@ components:
           type: string
         hasAccomplishedService:
           type: boolean
+        informationStatementSummaries:
+          type: array
+          items:
+            $ref: "#/components/schemas/InformationStatementSummary"
         isMedicalHistoryCompletelyAnswered:
           type: boolean
         lastName:
           type: string
+        medicalHistoryCitizenHasAnswered:
+          type: boolean
         summaryDto:
           $ref: "#/components/schemas/AppointmentSummary"
       required:
       - bookingsRemaining
-      - citizenHasAnswered
       - dateOfBirth
       - firstName
       - hasAccomplishedService
+      - informationStatementSummaries
       - isMedicalHistoryCompletelyAnswered
       - lastName
+      - medicalHistoryCitizenHasAnswered
       - summaryDto
     GetAppointmentOverviewResponse:
       type: object
@@ -4662,6 +4906,19 @@ components:
             $ref: "#/components/schemas/InformationStatementTemplate"
       required:
       - informationStatementTemplates
+    GetInformationStatementsResponse:
+      type: object
+      properties:
+        informationStatements:
+          type: array
+          items:
+            $ref: "#/components/schemas/InformationStatement"
+        procedureId:
+          type: string
+          format: uuid
+      required:
+      - informationStatements
+      - procedureId
     GetInventoryVaccinesWithoutRmbiVaccineResponse:
       type: object
       properties:
@@ -4710,6 +4967,20 @@ components:
             - $ref: "#/components/schemas/ImageMetaDataHistory"
             - $ref: "#/components/schemas/MailMetaDataHistory"
             - $ref: "#/components/schemas/PdfMetaDataHistory"
+    GetOpeningHoursResponse:
+      type: object
+      properties:
+        de:
+          type: array
+          items:
+            type: string
+        en:
+          type: array
+          items:
+            type: string
+      required:
+      - de
+      - en
     GetOtherServiceTemplatesResponse:
       type: object
       properties:
@@ -4832,7 +5103,9 @@ components:
         relatedKeyDocumentProgressEntries:
           type: array
           items:
-            $ref: "#/components/schemas/ManualProgressEntry"
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
       required:
       - progressEntry
       - relatedKeyDocumentProgressEntries
@@ -4973,10 +5246,6 @@ components:
       properties:
         createdByUserType:
           $ref: "#/components/schemas/CreatedByUserType"
-        informationStatements:
-          type: array
-          items:
-            $ref: "#/components/schemas/InformationStatement"
         initialAppointment:
           $ref: "#/components/schemas/AppointmentSummary"
         patient:
@@ -4996,7 +5265,6 @@ components:
           $ref: "#/components/schemas/TravelInformation"
       required:
       - createdByUserType
-      - informationStatements
       - initialAppointment
       - patient
       - personSync
@@ -5154,9 +5422,7 @@ components:
         citizenHasAnswered:
           type: boolean
         content:
-          type: string
-          maxLength: 4000
-          minLength: 0
+          $ref: "#/components/schemas/DocumentContent"
         createdAt:
           type: string
           format: date-time
@@ -5176,6 +5442,35 @@ components:
       - createdAt
       - id
       - modifiedAt
+      - title
+    InformationStatementPopulation:
+      type: object
+      properties:
+        answered:
+          type: boolean
+        key:
+          type: string
+        templateId:
+          type: string
+          format: uuid
+      required:
+      - key
+      - templateId
+    InformationStatementSummary:
+      type: object
+      properties:
+        citizenHasAnswered:
+          type: boolean
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 200
+          minLength: 0
+      required:
+      - citizenHasAnswered
+      - id
       - title
     InformationStatementTemplate:
       type: object
@@ -5284,6 +5579,20 @@ components:
       required:
       - id
       - name
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
     Location:
       type: object
       description: Location defined by latitude and longitude.
@@ -5348,13 +5657,19 @@ components:
             type: string
           mailTo:
             type: string
+          messageText:
+            type: string
           sentDate:
             type: string
             format: date-time
+          subject:
+            type: string
       required:
       - mailFrom
       - mailTo
+      - messageText
       - sentDate
+      - subject
     MailMetaDataHistory:
       type: object
       allOf:
@@ -5388,13 +5703,10 @@ components:
             type: boolean
           manualProgressEntryType:
             $ref: "#/components/schemas/ManualProgressEntryType"
-          messageText:
-            type: string
           note:
             type: string
-          subject:
-            type: string
       - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - createdBy
@@ -5444,7 +5756,7 @@ components:
         isCompletelyAnswered:
           type: boolean
         medicalHistoryContent:
-          $ref: "#/components/schemas/MedicalHistoryContent"
+          $ref: "#/components/schemas/DocumentContent"
         modifiedAt:
           type: string
           format: date-time
@@ -5463,86 +5775,6 @@ components:
       - medicalHistoryContent
       - modifiedAt
       - procedureStepId
-    MedicalHistoryContent:
-      type: object
-      properties:
-        sections:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistorySection"
-          maxItems: 2147483647
-          minItems: 1
-      required:
-      - sections
-    MedicalHistorySection:
-      type: object
-      properties:
-        sectionElements:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistorySectionElement"
-          maxItems: 2147483647
-          minItems: 1
-        sectionTitle:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - sectionElements
-    MedicalHistorySectionElement:
-      type: object
-      properties:
-        elementData:
-          $ref: "#/components/schemas/MedicalHistorySectionElementData"
-        elementType:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - elementData
-      - elementType
-    MedicalHistorySectionElementData:
-      type: object
-      properties:
-        answer:
-          type: boolean
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-        subElementMultiSelect:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalHistorySubElementMultiSelect"
-        subElementText:
-          $ref: "#/components/schemas/MedicalHistorySubElementText"
-      required:
-      - questionText
-      - subElementMultiSelect
-    MedicalHistorySubElementMultiSelect:
-      type: object
-      properties:
-        answer:
-          type: boolean
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - questionText
-    MedicalHistorySubElementText:
-      type: object
-      properties:
-        answer:
-          type: string
-          maxLength: 4000
-          minLength: 0
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - questionText
     MedicalHistoryTemplate:
       type: object
       properties:
@@ -5646,6 +5878,12 @@ components:
       - fee
       - id
       - modifiedAt
+    PatchAcceptDraftRequest:
+      type: object
+      properties:
+        referencePersonId:
+          type: string
+          format: uuid
     PatchAppointmentRequest:
       type: object
       properties:
@@ -5677,20 +5915,14 @@ components:
       properties:
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
-          nullable: true
         note:
-          type: string
-          nullable: true
-        subject:
           type: string
           nullable: true
     PatchMedicalHistoryRequest:
       type: object
       properties:
         medicalHistoryContent:
-          $ref: "#/components/schemas/MedicalHistoryContent"
+          $ref: "#/components/schemas/DocumentContent"
         note:
           type: string
           maxLength: 4000
@@ -6121,7 +6353,9 @@ components:
           items:
             type: string
         informationStatements:
-          $ref: "#/components/schemas/PostInformationStatementsRequest"
+          type: array
+          items:
+            $ref: "#/components/schemas/InformationStatementPopulation"
         initialStep:
           $ref: "#/components/schemas/InitialStepPopulation"
         otherServices:
@@ -6134,7 +6368,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ProcedureStepPopulation"
-        statusChange:
+        targetState:
           $ref: "#/components/schemas/ProcedureStatus"
         vaccinations:
           type: array
@@ -6145,6 +6379,11 @@ components:
       properties:
         credentials:
           $ref: "#/components/schemas/CitizenPortalCredentials"
+        informationStatementsCreated:
+          type: object
+          additionalProperties:
+            type: string
+            format: uuid
         procedureId:
           type: string
           format: uuid
@@ -6159,6 +6398,7 @@ components:
             type: string
             format: uuid
       required:
+      - informationStatementsCreated
       - procedureId
       - procedureStepsCreated
       - servicesCreated
@@ -6754,6 +6994,11 @@ components:
         properties:
           changeDescription:
             type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
           systemProgressEntryType:
             type: string
           triggerType:
@@ -6765,6 +7010,7 @@ components:
             type: string
           triggeredByUserLastName:
             type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - modifiedAt
@@ -6909,6 +7155,29 @@ components:
       - TRAVEL_MEDICINE
       - MEASLES_PROTECTION
       - STI_PROTECTION
+    TemplateAnamnesisQuestion:
+      type: object
+      properties:
+        questionText:
+          type: string
+          maxLength: 200
+          minLength: 0
+        subElementMultiSelect:
+          type: array
+          items:
+            $ref: "#/components/schemas/TemplateSubElementMultiSelect"
+        subElementText:
+          $ref: "#/components/schemas/TemplateSubElementText"
+      required:
+      - questionText
+      - subElementMultiSelect
+    TemplateConfirmation:
+      type: object
+      properties:
+        confirmationTextField:
+          type: string
+      required:
+      - confirmationTextField
     TemplateContent:
       type: object
       properties:
@@ -6938,38 +7207,15 @@ components:
     TemplateSectionElement:
       type: object
       properties:
-        elementData:
-          $ref: "#/components/schemas/TemplateSectionElementData"
-        elementType:
-          type: string
-          maxLength: 200
-          minLength: 0
-      required:
-      - elementData
-      - elementType
-    TemplateSectionElementData:
-      type: object
-      properties:
-        answer:
-          type: boolean
-        questionText:
-          type: string
-          maxLength: 200
-          minLength: 0
-        subElementMultiSelect:
-          type: array
-          items:
-            $ref: "#/components/schemas/TemplateSubElementMultiSelect"
-        subElementText:
-          $ref: "#/components/schemas/TemplateSubElementText"
-      required:
-      - questionText
-      - subElementMultiSelect
+        anamnesisQuestion:
+          $ref: "#/components/schemas/TemplateAnamnesisQuestion"
+        confirmation:
+          $ref: "#/components/schemas/TemplateConfirmation"
+        textBlock:
+          $ref: "#/components/schemas/TemplateTextBlock"
     TemplateSubElementMultiSelect:
       type: object
       properties:
-        answer:
-          type: boolean
         questionText:
           type: string
           maxLength: 200
@@ -6979,16 +7225,19 @@ components:
     TemplateSubElementText:
       type: object
       properties:
-        answer:
-          type: string
-          maxLength: 4000
-          minLength: 0
         questionText:
           type: string
           maxLength: 200
           minLength: 0
       required:
       - questionText
+    TemplateTextBlock:
+      type: object
+      properties:
+        textField:
+          type: string
+      required:
+      - textField
     TestHelperClockSetRequest:
       type: object
       properties:

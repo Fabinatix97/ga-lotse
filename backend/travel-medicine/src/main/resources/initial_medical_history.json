@@ -3,113 +3,84 @@
     {
       "sectionElements": [
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Fühlen Sie sich heute krank?",
-            "answer": null,
-            "subElementMultiSelect": [],
-            "subElementText": null
+            "subElementMultiSelect": []
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Hatten Sie in den letzten Wochen Fieber, eine Operation oder einen Unfall?",
-            "answer": null,
             "subElementMultiSelect": [],
             "subElementText": {
-              "questionText": "Wenn ja, bitte erläutern:",
-              "answer": null
+              "questionText": "Wenn ja, bitte erläutern:"
             }
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Haben Sie in den letzten 4 Wochen Impfungen erhalten?",
-            "answer": null,
             "subElementMultiSelect": [],
             "subElementText": {
-              "questionText": "Wenn ja, welche und wann:",
-              "answer": null
+              "questionText": "Wenn ja, welche und wann:"
             }
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Haben Sie Allergien (Unverträglichkeiten) wie z.B gegen Hühnereiweiß, Impfstoffe oder Medikamente?",
-            "answer": null,
             "subElementMultiSelect": [],
             "subElementText": {
-              "questionText": "Wenn ja, welche:",
-              "answer": null
+              "questionText": "Wenn ja, welche:"
             }
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Hatten Sie schon einmal starke Impfreaktionen oder -komplikationen?",
-            "answer": null,
-            "subElementMultiSelect": [],
-            "subElementText": null
+            "subElementMultiSelect": []
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Haben oder hatten Sie chronische Erkrankungen?",
-            "answer": null,
             "subElementMultiSelect": [
               {
-                "questionText": "Herzerkrankung",
-                "answer": null
+                "questionText": "Herzerkrankung"
               },
               {
-                "questionText": "Lebererkrankung",
-                "answer": null
+                "questionText": "Lebererkrankung"
               },
               {
-                "questionText": "Nierenerkrankung",
-                "answer": null
+                "questionText": "Nierenerkrankung"
               },
               {
-                "questionText": "Krebsleiden",
-                "answer": null
+                "questionText": "Krebsleiden"
               },
               {
-                "questionText": "seelische Erkrankung",
-                "answer": null
+                "questionText": "seelische Erkrankung"
               },
               {
-                "questionText": "Bluthochdruck",
-                "answer": null
+                "questionText": "Bluthochdruck"
               },
               {
-                "questionText": "Diabetes",
-                "answer": null
+                "questionText": "Diabetes"
               },
               {
-                "questionText": "Anfallsleiden (Epilepsie)",
-                "answer": null
+                "questionText": "Anfallsleiden (Epilepsie)"
               }
             ],
             "subElementText": {
-              "questionText": "Folgende Erkrankungen:",
-              "answer": null
+              "questionText": "Folgende Erkrankungen:"
             }
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Nehmen Sie regelmäßig Medikamente ein?",
-            "answer": null,
             "subElementMultiSelect": [],
             "subElementText": {
-              "questionText": "Wenn ja, welche:",
-              "answer": null
+              "questionText": "Wenn ja, welche:"
             }
           }
         }
@@ -118,32 +89,23 @@
     {
       "sectionElements": [
         {
-          "elementType": "option",
-          "elementData": {
-            "questionText": "Haben Sie eine HIV-lnfektion?",
-            "answer": null,
-            "subElementMultiSelect": [],
-            "subElementText": null
+          "anamnesisQuestion": {
+            "questionText": "Haben Sie eine HIV-Infektion?",
+            "subElementMultiSelect": []
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
-            "questionText": "Erhalten Sie oder Erhielten Sie in den letzten Monaten Strahlentherapie oder Chemotherapie (Krebsbehandlung)?",
-            "answer": null,
-            "subElementMultiSelect": [],
-            "subElementText": null
+          "anamnesisQuestion": {
+            "questionText": "Erhalten Sie oder erhielten Sie in den letzten Monaten Strahlentherapie oder Chemotherapie (Krebsbehandlung)?",
+            "subElementMultiSelect": []
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Erhalten Sie oder erhielten Sie in den letzten Monaten immunsupprimierende Medikamente (Medikamente, die die Abwehr gegen Infektionskrankheiten schwächen), wie z. B. Cortison, Antikörper o. a.?",
-            "answer": null,
             "subElementMultiSelect": [],
             "subElementText": {
-              "questionText": "Wenn ja, welche:",
-              "answer": null
+              "questionText": "Wenn ja, welche:"
             }
           }
         }
@@ -152,33 +114,24 @@
     {
       "sectionElements": [
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Sind Sie schwanger?",
-            "answer": null,
             "subElementMultiSelect": [],
             "subElementText": {
-              "questionText": "Wenn ja, in der Woche:",
-              "answer": null
+              "questionText": "Wenn ja, in der Woche:"
             }
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Ist eine eine Schwangerschaft geplant?",
-            "answer": null,
-            "subElementMultiSelect": [],
-            "subElementText": null
+            "subElementMultiSelect": []
           }
         },
         {
-          "elementType": "option",
-          "elementData": {
+          "anamnesisQuestion": {
             "questionText": "Stillen Sie?",
-            "answer": null,
-            "subElementMultiSelect": [],
-            "subElementText": null
+            "subElementMultiSelect": []
           }
         }
       ]

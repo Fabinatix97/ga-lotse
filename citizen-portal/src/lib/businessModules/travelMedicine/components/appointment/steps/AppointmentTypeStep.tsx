@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentType } from "@eshg/citizen-portal-api/travelMedicine";
+import {
+  ApiAppointmentType,
+  ApiAppointmentTypeConfig,
+} from "@eshg/citizen-portal-api/travelMedicine";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { TOptions } from "i18next";
 import { ReactNode, useState } from "react";
 
+import { useGetAllAppointmentTypesForCitizen } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import {
   FormSheet,
@@ -23,9 +27,18 @@ import { useDepartmentContext } from "@/lib/businessModules/travelMedicine/compo
 import { useTranslation } from "@/lib/i18n/client";
 
 function handleModalText(
+  allAppointmentTypesForCitizen: ApiAppointmentTypeConfig[],
   modalTitle: string,
   t: (key: string | string[], tOptions?: TOptions) => string,
 ): ReactNode {
+  const vaccinationStandardDuration = allAppointmentTypesForCitizen.find(
+    (type) => type.appointmentTypeDto == ApiAppointmentType.Vaccination,
+  )!.standardDurationInMinutes;
+
+  const consultationStandardDuration = allAppointmentTypesForCitizen.find(
+    (type) => type.appointmentTypeDto == ApiAppointmentType.Consultation,
+  )!.standardDurationInMinutes;
+
   if (
     modalTitle === t("appointmentTypeFormContent.fields.vaccination.modalTitle")
   ) {
@@ -34,6 +47,7 @@ function handleModalText(
         <Typography>
           {t(
             "appointmentTypeFormContent.fields.vaccination.modalTextParagraph1",
+            { appointmentDuration: vaccinationStandardDuration },
           )}
         </Typography>
         <Typography>
@@ -52,6 +66,7 @@ function handleModalText(
         <Typography>
           {t(
             "appointmentTypeFormContent.fields.consultation.modalTextParagraph1",
+            { appointmentDuration: consultationStandardDuration },
           )}
         </Typography>
         <Typography>
@@ -65,14 +80,9 @@ function handleModalText(
     modalTitle === t("appointmentTypeFormContent.confirmation.modalTitle")
   ) {
     return (
-      <>
-        <Typography>
-          {t("appointmentTypeFormContent.confirmation.modalTextParagraph1")}
-        </Typography>
-        <Typography>
-          {t("appointmentTypeFormContent.confirmation.modalTextParagraph2")}
-        </Typography>
-      </>
+      <Typography>
+        {t("appointmentTypeFormContent.confirmation.modalText")}
+      </Typography>
     );
   }
 }
@@ -92,6 +102,9 @@ export function AppointmentTypeStep() {
   function resetAppointmentBlockDateValue() {
     void setFieldValue("appointmentBlockDate", "");
   }
+
+  const allAppointmentTypesForCitizen =
+    useGetAllAppointmentTypesForCitizen().data;
 
   return (
     <>
@@ -209,7 +222,7 @@ export function AppointmentTypeStep() {
         onClose={() => setIsOpen((isOpen) => !isOpen)}
         open={isOpen}
       >
-        {handleModalText(modalTitle, t)}
+        {handleModalText(allAppointmentTypesForCitizen, modalTitle, t)}
       </InfoModal>
     </>
   );

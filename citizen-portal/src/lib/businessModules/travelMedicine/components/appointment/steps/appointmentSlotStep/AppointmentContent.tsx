@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiAppointmentType } from "@eshg/citizen-portal-api/travelMedicine";
 import { isAfter, isEqual } from "date-fns";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
@@ -21,7 +22,7 @@ export function AppointmentContent() {
   const citizenRoutes = useCitizenRoutes();
 
   const freeAppointments = useGetFreeAppointmentsForCitizen(
-    values.initialStepAppointmentType,
+    values.initialStepAppointmentType as ApiAppointmentType,
   ).data;
 
   const filteredAppointments = freeAppointments.appointments.filter(

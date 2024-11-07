@@ -6,6 +6,8 @@
 import {
   ApproveInspectionRequest,
   FinalizeInspectionRequest,
+  ResolveFacilityDuplicateRequest,
+  ResolveInspectionDuplicateRequest,
   StartInspectionRequest,
   UpdateInspectionRequest,
 } from "@eshg/employee-portal-api/inspection";
@@ -63,6 +65,22 @@ export function useApproveInspection() {
     onSuccess: () => {
       snackbar.confirmation("Begehung freigegeben.");
     },
+  });
+}
+
+export function useResolveFacilityDuplicate() {
+  const inspectionApi = useInspectionApi();
+  return useHandledMutation({
+    mutationFn: (req: ResolveFacilityDuplicateRequest) =>
+      inspectionApi.resolveFacilityDuplicateRaw(req).then(unwrapRawResponse),
+  });
+}
+
+export function useResolveInspectionDuplicate() {
+  const inspectionApi = useInspectionApi();
+  return useHandledMutation({
+    mutationFn: (req: ResolveInspectionDuplicateRequest) =>
+      inspectionApi.resolveInspectionDuplicateRaw(req).then(unwrapRawResponse),
   });
 }
 

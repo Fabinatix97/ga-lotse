@@ -7,31 +7,30 @@
   "appointmentTypeFormContent": {
     "title": "Terminart",
     "infoHeader": "Wichtige Informationen zum Termin",
-    "infoTextListItem1": "Bitte bringen Sie Ihre Impfpass mit.",
+    "infoTextListItem1": "Bitte bringen Sie Ihren Impfpass mit.",
     "infoTextListItem2": "Für größere Gruppen (mehr als 3 Personen) nutzen Sie bitte die telefonische Terminvereinbarung unter {{ phoneNumber }}.",
     "confirmation": {
       "label": "Beglaubigung/Apostille ",
       "subtitle": "(Offene Sprechstunde)",
-      "info": "Nur telefonisch unter {{ phoneNumber }} buchbar:",
+      "info": "Keine Terminbuchung erforderlich für:",
       "iconLabel": "Information zu $t(appointmentTypeFormContent.confirmation.label)",
       "modalTitle": "$t(appointmentTypeFormContent.confirmation.label)",
-      "modalTextParagraph1": "Termindauer für Beratungsgespräche in der Regel ca. 30 Minuten.",
-      "modalTextParagraph2": "Bitte Impfpass mitbringen."
+      "modalText": "Für dieses Anliegen ist keine Terminbuchung erforderlich. Bitte kommen Sie zur offenen Sprechstunde vorbei."
     },
     "fields": {
       "error": "Bitte Terminart auswählen.",
       "vaccination": {
-        "label": "Impfung",
+        "label": "Auffrischungsimpfung",
         "iconLabel": "Information zu $t(appointmentTypeFormContent.fields.vaccination.label)",
         "modalTitle": "$t(appointmentTypeFormContent.fields.vaccination.label)",
-        "modalTextParagraph1": "Termindauer für Impfungen in der Regel ca. 15 Minuten. Auffrischungsimpfungen oder Folgeimpfungen nach erfolgter Erstberatung.",
+        "modalTextParagraph1": "Termindauer für Impfungen in der Regel ca. {{ appointmentDuration }} Minuten.",
         "modalTextParagraph2": "Bitte Impfpass mitbringen."
       },
       "consultation": {
         "label": "Reiseberatung",
         "iconLabel": "Information zu $t(appointmentTypeFormContent.fields.consultation.label)",
         "modalTitle": "$t(appointmentTypeFormContent.fields.consultation.label)",
-        "modalTextParagraph1": "Termindauer für Beratungsgespräche in der Regel ca. 30 Minuten. Reisemedizinische Beratung mit oder ohne anschließenden Impfungen.",
+        "modalTextParagraph1": "Termindauer für Beratungsgespräche in der Regel ca. {{ appointmentDuration }} Minuten. Reisemedizinische Beratung mit oder ohne anschließenden Impfungen.",
         "modalTextParagraph2": "Bitte Impfpass mitbringen."
       }
     }
@@ -89,12 +88,12 @@
   },
   "vaccinationFormContent": {
     "title": "Impfungen",
-    "fields": {}
+    "info": "Diese Impfungen werden angeboten:"
   },
   "appointmentInfoSection": {
     "title": "Informationen zum Termin",
     "alertHeader": "Vorbereitungen zum Termin",
-    "alertMessage": "Bitte bringen Sie ihren Impfpass mit",
+    "alertMessage": "Bitte bringen Sie Ihren Impfpass mit",
     "infoText": "Sie erhalten in <t1>den nächsten Minuten</t1> eine <t1>Terminbestätigung</t1> per E-Mail. Dort sind alle Informationen zum Termin enthalten. Sie haben zudem die Möglichkeit den Termin zu ändern oder zu stornieren",
     "requiredDocumentsHeader": "Notwendige Dokumente, welche Sie bitte zum Termin mitbringen, sind:",
     "listItemIdCard": "Personalausweis",

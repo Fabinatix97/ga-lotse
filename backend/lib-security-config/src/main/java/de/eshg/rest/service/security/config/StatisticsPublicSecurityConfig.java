@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurityConfiguration {
+
+  private static final String OVERVIEW_PATH = "/overview/**";
+
   StatisticsPublicSecurityConfig() {
     super("statistics");
 
@@ -49,8 +52,12 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(POST, BaseUrls.Statistics.STATISTIC_CONTROLLER + OVERVIEW_PATH)
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
 
-    requestMatchers(POST, BaseUrls.Statistics.REPORT_SERIES_URL + "/overview/**")
+    requestMatchers(POST, BaseUrls.Statistics.REPORT_SERIES_URL + OVERVIEW_PATH)
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
@@ -110,7 +117,7 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + "/overview/**")
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER + OVERVIEW_PATH)
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);

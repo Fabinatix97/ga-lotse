@@ -29,7 +29,7 @@ export function InformationStatementTemplateOverviewTable() {
     useDeleteInformationStatementTemplate();
 
   async function deleteEntry(entryId: string) {
-    await deleteInformationStatementTemplate.mutateAsync(entryId).catch();
+    await deleteInformationStatementTemplate.mutateAsync(entryId);
   }
 
   return (
@@ -54,10 +54,11 @@ export function InformationStatementTemplateOverviewTable() {
         <DataTable
           data={allInformationStatementTemplates}
           columns={informationStatementColumns(deleteEntry)}
-          rowNavRoute={(row) =>
-            routes.informationStatementTemplates.details(row.original.id)
-          }
-          focusColumnHeader="name"
+          rowNavigation={{
+            route: (row) =>
+              routes.informationStatementTemplates.details(row.original.id),
+            focusColumnAccessorKey: "name",
+          }}
         />
       </TableSheet>
     </TablePage>

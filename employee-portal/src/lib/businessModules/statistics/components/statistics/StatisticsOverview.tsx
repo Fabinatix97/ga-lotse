@@ -8,10 +8,10 @@
 import {
   ApiAvailableDataSource,
   ApiEvaluationTemplate,
-  ApiGetStatisticsResponse,
 } from "@eshg/employee-portal-api/statistics";
 import { useState } from "react";
 
+import { StatisticOverview } from "@/lib/businessModules/statistics/api/models/statisticOverview";
 import {
   CreateStatisticSidebar,
   OpenSidebarKind,
@@ -20,15 +20,15 @@ import {
 import { StatisticsTable } from "./StatisticsTable";
 
 export interface StatisticsOverviewProps {
-  statisticsResponse: ApiGetStatisticsResponse;
-  isFetchingStatistics: boolean;
+  statisticsOverview: StatisticOverview;
+  isFetchingStatisticsOverview: boolean;
   dataSources: ApiAvailableDataSource[];
   templates: ApiEvaluationTemplate[];
 }
 
 export function StatisticsOverview({
-  statisticsResponse,
-  isFetchingStatistics,
+  statisticsOverview,
+  isFetchingStatisticsOverview,
   dataSources,
   templates,
 }: StatisticsOverviewProps) {
@@ -43,9 +43,8 @@ export function StatisticsOverview({
         setOpenSidebar={setOpenSidebar}
       />
       <StatisticsTable
-        data={statisticsResponse}
-        loading={isFetchingStatistics}
-        onTemplateClick={() => setOpenSidebar("FROM_TEMPLATE")}
+        statisticOverview={statisticsOverview}
+        loading={isFetchingStatisticsOverview}
         onCreateStatisticClick={() => setOpenSidebar("FROM_SCRATCH")}
       />
     </>

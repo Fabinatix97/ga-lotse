@@ -20,14 +20,14 @@ import {
 import { useState } from "react";
 
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
-import { ChatHeader } from "@/lib/businessModules/chat/components/ChatHeader";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
+import { ChatHeader } from "@/lib/businessModules/chat/components/chatPanel/ChatHeader";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
-import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
-import { RoomWithCommunicationType } from "@/lib/businessModules/chat/shared/types";
 import {
+  clearSearchParams,
   isDMRoom,
   isGroupRoom,
   leaveRoom,
@@ -35,17 +35,21 @@ import {
 
 export interface ChatPanelHeaderProps {
   roomId: string;
-  room: RoomWithCommunicationType;
 }
 
-export function ChatPanelHeader({
-  roomId,
-  room,
-}: Readonly<ChatPanelHeaderProps>) {
+export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const roomInfo = useRoomInfo(roomId);
-  const { clearChatParams } = useChatSearchParams();
   const [isOpen, setIsOpen] = useState(false);
+
+  const {
+    getAvatarUrl,
+    getJoinedAndInvitedMembers,
+    exceptMe,
+    communicationType,
+    dmRoomMember,
+    room,
+  } = roomInfo;
 
   function handleRoomInfoClick() {
     setInfoPanelView(InfoPanelView.RoomInfo, roomId);
@@ -53,12 +57,12 @@ export function ChatPanelHeader({
 
   function handleLeaveRoomClick() {
     setIsOpen(false);
-    clearChatParams();
+    clearSearchParams(chatSearchParamNames.userId, chatSearchParamNames.roomId);
     closeInfoPanel();
     void leaveRoom(roomInfo.matrixClient, roomId);
   }
 
-  const roomSettingsItem = isDMRoom(room.communicationType) ? (
+  const roomSettingsItem = isDMRoom(roomInfo.communicationType) ? (
     <>
       <ListItemDecorator>
         <PersonOutlinedIcon />
@@ -87,8 +91,12 @@ export function ChatPanelHeader({
           }}
         >
           <ChatHeader
-            communicationType={room.communicationType}
-            room={room.room}
+            avatarUrl={getAvatarUrl()}
+            communicationType={communicationType}
+            roomId={roomId}
+            roomMembers={exceptMe(getJoinedAndInvitedMembers())}
+            dmRoomMemberUserId={dmRoomMember?.member.userId}
+            roomName={room?.name}
           />
           <Stack
             direction="row"
@@ -110,23 +118,24 @@ export function ChatPanelHeader({
                   {roomSettingsItem}
                 </MenuItem>
                 {/*Display settings button only for admin and only if it's group chat*/}
-                {roomInfo.isAdmin && isGroupRoom(room.communicationType) && (
-                  <MenuItem
-                    onClick={() =>
-                      setInfoPanelView(InfoPanelView.AdminSettings, roomId)
-                    }
-                  >
-                    <ListItemDecorator>
-                      <SettingsOutlinedIcon />
-                    </ListItemDecorator>
-                    Einstellungen
-                  </MenuItem>
-                )}
+                {roomInfo.checkIfAdmin() &&
+                  isGroupRoom(roomInfo.communicationType) && (
+                    <MenuItem
+                      onClick={() =>
+                        setInfoPanelView(InfoPanelView.AdminSettings, roomId)
+                      }
+                    >
+                      <ListItemDecorator>
+                        <SettingsOutlinedIcon />
+                      </ListItemDecorator>
+                      Einstellungen
+                    </MenuItem>
+                  )}
                 <MenuItem onClick={() => setIsOpen(true)}>
                   <ListItemDecorator>
                     <LogoutOutlinedIcon />
                   </ListItemDecorator>
-                  {isDMRoom(room.communicationType)
+                  {isDMRoom(roomInfo.communicationType)
                     ? "Verlassen"
                     : "Gruppe verlassen"}
                 </MenuItem>

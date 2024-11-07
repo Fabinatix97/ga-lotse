@@ -106,12 +106,15 @@ export function OpenDataTable() {
               handleDeleteVersion,
             })}
             getSubRows={(row) => row.subRows}
-            rowNavRoute={(row) => {
-              const { data, type } = row.original;
-              if (type !== "version") {
-                return undefined;
-              }
-              return routes.opendata.details(data.externalId);
+            rowNavigation={{
+              route: (row) => {
+                const { data, type } = row.original;
+                if (type !== "version") {
+                  return undefined;
+                }
+                return routes.opendata.details(data.externalId);
+              },
+              focusColumnAccessorKey: "name",
             }}
           />
         </TableSheet>

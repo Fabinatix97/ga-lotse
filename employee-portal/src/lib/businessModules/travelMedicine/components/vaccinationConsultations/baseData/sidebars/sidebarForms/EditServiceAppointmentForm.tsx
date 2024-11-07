@@ -26,7 +26,7 @@ import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 export interface EditServiceAppointmentFormValues {
   procedureId: string;
   bookingType?: ApiAppointmentBookingType;
-  appointmentBlockDate?: string;
+  appointmentBlockDate?: { start: Date; end: Date };
   userDefinedAppointmentDate?: string;
   procedureStepId: string;
   appointmentType?: ApiAppointmentType;
@@ -53,7 +53,7 @@ export function EditServiceAppointmentForm(
     const errors: FormikErrors<EditServiceAppointmentFormValues> = {};
     if (
       values.bookingType === ApiAppointmentBookingType.AppointmentBlock &&
-      values.appointmentBlockDate === ""
+      values.appointmentBlockDate?.start === undefined
     ) {
       errors.appointmentBlockDate = "Bitte einen Termin auswählen";
     } else if (values.bookingType === ApiAppointmentBookingType.UserDefined) {

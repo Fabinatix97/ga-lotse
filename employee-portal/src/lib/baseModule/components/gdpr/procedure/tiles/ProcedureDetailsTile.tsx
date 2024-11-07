@@ -55,9 +55,9 @@ export function ProcedureDetailsTile({
       });
     } else {
       alert.close();
-      await changeProcedureStatus
-        .mutateAsync(ApiGdprProcedureStatus.InProgress)
-        .catch();
+      await changeProcedureStatus.mutateAsync(
+        ApiGdprProcedureStatus.InProgress,
+      );
     }
   }
 

@@ -37,6 +37,8 @@ export const routes = {
       procedureStepId
         ? `${proceduresPath}/${procedureId}/medical-histories?medical-history=${procedureStepId}`
         : `${proceduresPath}/${procedureId}/medical-histories`,
+    informationStatements: (procedureId: string) =>
+      `${proceduresPath}/${procedureId}/information-statements`,
     certificates: (procedureId: string) =>
       `${proceduresPath}/${procedureId}/certificates`,
     downloadFile: (fileId: string) =>

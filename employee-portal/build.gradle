@@ -1,6 +1,7 @@
 plugins {
   id 'next-app'
   id 'reverse-proxy'
+  id 'next-loading-files'
 }
 
 next {
@@ -9,67 +10,11 @@ next {
   apiProject = ':employee-portal-api'
 }
 
+nextLoadingFiles {
+  includeDirs = ['(baseModule)', '(businessModules)']
+}
+
 reverseProxy {
   serviceName = "employee-portal-reverse-proxy"
   mainConfigFile = "employee-portal.conf"
-}
-
-def cleanLoadingFiles = tasks.register("cleanLoadingFiles") {
-  def appRouterRoot = project.layout.projectDirectory.dir("src/app")
-  def loadingFiles = appRouterRoot
-    .asFileTree
-    .matching {
-      include '(baseModule)/**/loading.tsx'
-      include '(businessModules)/**/loading.tsx'
-    }
-
-  inputs.files(loadingFiles)
-  loadingFiles.each { it.delete() }
-}
-
-def generateLoadingFiles = tasks.register("generateLoadingFiles") { task ->
-  mustRunAfter cleanLoadingFiles
-
-  def appRouterRoot = project.layout.projectDirectory.dir("src/app")
-  def allPages = appRouterRoot
-    .asFileTree
-    .matching {
-      include '(baseModule)/**/page.tsx'
-      include '(businessModules)/**/page.tsx'
-    }
-
-  def loadingTemplate = file("src/app/loading.template.tsx")
-
-  inputs.file(loadingTemplate)
-  inputs.files(allPages)
-
-  def loadingFiles = allPages.collect { file("${it.parent}/loading.tsx") }
-  outputs.files(loadingFiles)
-
-  doFirst {
-    def text = loadingTemplate.getText("UTF-8")
-    loadingFiles.each { File loadingFile ->
-      if (!loadingFile.exists()) {
-        loadingFile.createNewFile()
-      }
-
-      loadingFile.setText(text, "UTF-8")
-    }
-  }
-}
-
-tasks.named("prepareEnvironment") {
-  dependsOn generateLoadingFiles
-}
-
-tasks.named("formatCheck") {
-  dependsOn generateLoadingFiles
-}
-
-tasks.named("lint") {
-  dependsOn generateLoadingFiles
-}
-
-tasks.named("clean") {
-  dependsOn cleanLoadingFiles
 }

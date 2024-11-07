@@ -57,13 +57,11 @@ function EditEarliestDateSidebar(
   async function handleSubmit(values: EditEarliestDateFormValues) {
     const patchAppointmentRequest = createPatchEarliestDateRequest(values);
 
-    await patchEarliestDate
-      .mutateAsync(patchAppointmentRequest.request, {
-        onSuccess: () => {
-          props.onClose(true);
-        },
-      })
-      .catch();
+    await patchEarliestDate.mutateAsync(patchAppointmentRequest.request, {
+      onSuccess: () => {
+        props.onClose(true);
+      },
+    });
   }
 
   function mapProcedureStepToEditEarliestDateValues(

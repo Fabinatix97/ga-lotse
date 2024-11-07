@@ -108,27 +108,32 @@ export function CitizenAnamnesisStepTwo({
         </FieldArray>
       </ToggleableSection>
       <Typography level="h4">{t("additionalInfo.dayCareAndSchool")}</Typography>
-      <Grid container sx={{ flexGrow: 1 }}>
-        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-          <Typography level="body-sm">
-            {t("additionalInfo.dayCareSince")}
-          </Typography>
-          <LocalMonthAndYearFields
-            fieldName={daycareAndSchoolInfo("inDaycareSince")}
-            date={values.daycareAndSchoolInfo.inDaycareSince}
-          />
+      <ToggleableSection
+        name={daycareAndSchoolInfo("wasInDaycare.show")}
+        title={t("additionalInfo.wasInDaycare")}
+      >
+        <Grid container sx={{ flexGrow: 1 }}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+            <Typography level="body-sm">
+              {t("additionalInfo.dayCareSince")}
+            </Typography>
+            <LocalMonthAndYearFields
+              fieldName={daycareAndSchoolInfo("inDaycareSince")}
+              date={values.daycareAndSchoolInfo.inDaycareSince}
+            />
+          </Grid>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+            <InputField
+              name={daycareAndSchoolInfo("daycareName")}
+              label={
+                <Typography level="body-sm" component={FormLabel}>
+                  {t("additionalInfo.dayCareName")}
+                </Typography>
+              }
+            />
+          </Grid>
         </Grid>
-        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-          <InputField
-            name={daycareAndSchoolInfo("daycareName")}
-            label={
-              <Typography level="body-sm" component={FormLabel}>
-                {t("additionalInfo.dayCareName")}
-              </Typography>
-            }
-          />
-        </Grid>
-      </Grid>
+      </ToggleableSection>
       <LocalBooleanRadioField
         label={
           <Typography level="title-md">

@@ -155,7 +155,6 @@ public class ReportService {
   @Transactional
   public UUID getPlannedReportToExecuteSetToPending() {
     LocalDate now = LocalDate.now(clock);
-
     Optional<Report> reportOptional =
         reportRepository.findByExecutionDateLessThanEqualAndState(
             now, AggregationResultState.PLANNED);
@@ -215,19 +214,6 @@ public class ReportService {
 
   private int getNextNumber(Report report) {
     return getNumberOfReport(report).orElse(report.getReportSeries().getReports().size()) + 1;
-  }
-
-  int findNextNumberInReports(List<Report> reports) {
-    int currentHighest = 0;
-    for (Report report : reports) {
-      Optional<Integer> numberOfReport = getNumberOfReport(report);
-      if (numberOfReport.isEmpty()) {
-        return reports.size() + 1;
-      } else if (numberOfReport.get() > currentHighest) {
-        currentHighest = numberOfReport.get();
-      }
-    }
-    return currentHighest + 1;
   }
 
   private Optional<Integer> getNumberOfReport(Report report) {
@@ -516,9 +502,7 @@ public class ReportService {
   @Transactional
   public void setStateToFailed(UUID reportId) {
     Report report = getReportInternal(reportId);
-    if (!report.getState().equals(AggregationResultState.FAILED)) {
-      report.setState(AggregationResultState.FAILED);
-    }
+    report.setState(AggregationResultState.FAILED);
   }
 
   @Transactional
@@ -540,18 +524,17 @@ public class ReportService {
   public boolean deleteReport(UUID reportId) {
     Report report = getReportInternal(reportId);
 
-    dataAggregationService.removeTableRows(report);
-
     if (dataAggregationService.countTableRows(report) <= 0) {
       ReportSeries reportSeries = report.getReportSeries();
-      if (reportSeries.getReportType().equals(ReportType.MANUAL)) {
+      if (reportSeries.getReports().size() <= 1) {
         reportSeriesRepository.delete(reportSeries);
       } else {
-        reportRepository.delete(report);
+        reportSeries.removeReport(report);
       }
       return true;
+    } else {
+      dataAggregationService.removeTableRows(report);
+      return false;
     }
-
-    return false;
   }
 }

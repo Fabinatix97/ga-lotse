@@ -20,7 +20,7 @@ class PdfMetaDataExtractor {
 
   private PdfMetaDataExtractor() {}
 
-  static void extract(byte[] fileContent, PdfMetaData pdfMetaData) throws IOException {
+  static PdfMetaData fromFileContent(byte[] fileContent) throws IOException {
     Metadata metadata = new Metadata();
 
     try (InputStream inputStream = new ByteArrayInputStream(fileContent)) {
@@ -30,7 +30,9 @@ class PdfMetaDataExtractor {
     Instant createdDate =
         getPdfDocInfoCreated(metadata).or(() -> getXmpCreatedDate(metadata)).orElse(null);
 
+    PdfMetaData pdfMetaData = new PdfMetaData();
     pdfMetaData.setCreatedDate(createdDate);
+    return pdfMetaData;
   }
 
   private static Optional<Instant> getPdfDocInfoCreated(Metadata metadata) {

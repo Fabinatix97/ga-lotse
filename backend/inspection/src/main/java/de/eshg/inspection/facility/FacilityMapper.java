@@ -11,11 +11,14 @@ import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.FacilityDetailsDto;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.inspection.facility.api.*;
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.facility.persistence.PendingFacilityView;
+import de.eshg.inspection.inspection.api.FacilityForDuplicateReviewDto;
 import de.eshg.inspection.objecttype.ObjectTypeMapper;
+import de.eshg.inspection.objecttype.api.ObjectTypeDto;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -23,12 +26,9 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.NotFoundException;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FacilityMapper {
@@ -92,21 +92,6 @@ public class FacilityMapper {
     return facility;
   }
 
-  public static Map<UUID, InspFacilityDto> facilitiesFrom(
-      List<Facility> facilities, List<AddFacilityFileStateResponse> baseFacilities) {
-    Map<UUID, AddFacilityFileStateResponse> baseFacilityMap =
-        baseFacilities.stream()
-            .collect(Collectors.toMap(AddFacilityFileStateResponse::id, Function.identity()));
-
-    return facilities.stream()
-        .map(
-            facility ->
-                FacilityMapper.fromAddFacilityResponse(
-                    facility, baseFacilityMap.get(facility.getCentralFileStateId())))
-        .distinct()
-        .collect(Collectors.toMap(InspFacilityDto::id, Function.identity()));
-  }
-
   private static InsPendingFacilityInspectionDto createInspPendingFacilityInspectionDto(
       PendingFacilityView view) {
     if (view.inspection() == null) return null;
@@ -115,7 +100,8 @@ public class FacilityMapper {
         ProcedureMapper.toInterfaceType(view.inspection().getProcedureStatus()),
         view.inspection().getType(),
         view.inspection().getPhase(),
-        view.inspection().getIncidents().size());
+        view.inspection().getIncidents().size(),
+        !view.inspection().getPossibleDuplicates().isEmpty());
   }
 
   static InspPendingFacilityDto createInspPendingFacilityDto(
@@ -140,7 +126,8 @@ public class FacilityMapper {
             domesticAddress.city(),
             plannedFrom,
             objecttype,
-            inspection);
+            inspection,
+            view.facility().hasPossibleDuplicates());
       }
       case PostboxAddressDto postboxAddress -> {
         return new InspPendingFacilityDto(
@@ -155,7 +142,8 @@ public class FacilityMapper {
             postboxAddress.city(),
             plannedFrom,
             objecttype,
-            inspection);
+            inspection,
+            view.facility().hasPossibleDuplicates());
       }
       default ->
           throw new NotFoundException(
@@ -196,5 +184,75 @@ public class FacilityMapper {
             baseFacility.contactPersons(),
             baseFacility.contactAddress(),
             baseFacility.differentBillingAddress()));
+  }
+
+  public static FacilityForDuplicateReviewDto mapToFacilityForDuplicateReviewDto(
+      UUID referenceId, GetFacilityFileStateResponse baseFacility, ObjectTypeDto objectType) {
+    switch (baseFacility.contactAddress()) {
+      case DomesticAddressDto domesticAddress -> {
+        return new FacilityForDuplicateReviewDto(
+            referenceId,
+            new ObjectTypeRefDto(objectType.id(), objectType.name()),
+            baseFacility.name(),
+            domesticAddress.street(),
+            domesticAddress.houseNumber(),
+            domesticAddress.addressAddition(),
+            domesticAddress.postalCode(),
+            domesticAddress.city(),
+            baseFacility.emailAddresses(),
+            baseFacility.phoneNumbers());
+      }
+      case PostboxAddressDto postboxAddress -> {
+        return new FacilityForDuplicateReviewDto(
+            referenceId,
+            new ObjectTypeRefDto(objectType.id(), objectType.name()),
+            baseFacility.name(),
+            "Postfach",
+            postboxAddress.postbox(),
+            null,
+            postboxAddress.postalCode(),
+            postboxAddress.city(),
+            baseFacility.emailAddresses(),
+            baseFacility.phoneNumbers());
+      }
+      default ->
+          throw new NotFoundException(
+              "invalid address of unknown type: " + baseFacility.contactAddress());
+    }
+  }
+
+  public static FacilityForDuplicateReviewDto mapToFacilityForDuplicateReviewDto(
+      GetReferenceFacilityResponse baseFacility) {
+    switch (baseFacility.contactAddress()) {
+      case DomesticAddressDto domesticAddress -> {
+        return new FacilityForDuplicateReviewDto(
+            baseFacility.id(),
+            null,
+            baseFacility.name(),
+            domesticAddress.street(),
+            domesticAddress.houseNumber(),
+            domesticAddress.addressAddition(),
+            domesticAddress.postalCode(),
+            domesticAddress.city(),
+            baseFacility.emailAddresses(),
+            baseFacility.phoneNumbers());
+      }
+      case PostboxAddressDto postboxAddress -> {
+        return new FacilityForDuplicateReviewDto(
+            baseFacility.id(),
+            null,
+            baseFacility.name(),
+            "Postfach",
+            postboxAddress.postbox(),
+            null,
+            postboxAddress.postalCode(),
+            postboxAddress.city(),
+            baseFacility.emailAddresses(),
+            baseFacility.phoneNumbers());
+      }
+      default ->
+          throw new NotFoundException(
+              "invalid address of unknown type: " + baseFacility.contactAddress());
+    }
   }
 }

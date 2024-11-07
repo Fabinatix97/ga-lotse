@@ -30,6 +30,7 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
     editor();
     inspectionTestData();
     features();
+    importer();
 
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT, ModuleLeaderRole.INSPECTION_LEADER);
@@ -100,5 +101,12 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
   private void features() {
     requestMatchers(GET, BaseUrls.Inspection.FEATURE_TOGGLES_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+  }
+
+  private void importer() {
+    requestMatchers(GET, Inspection.INSPECTION_IMPORT_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.INSPECTION_IMPORT);
+    requestMatchers(POST, Inspection.INSPECTION_IMPORT_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.INSPECTION_IMPORT);
   }
 }

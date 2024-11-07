@@ -15,15 +15,5 @@ public interface FileAware {
 
   void setFile(File file);
 
-  UUID getCreatedBy();
-
-  String getSubject();
-
-  void setSubject(String subject);
-
-  String getMessageText();
-
-  void setMessageText(String messageText);
-
   boolean supportsUpload(ProcedureFileType fileType);
 }

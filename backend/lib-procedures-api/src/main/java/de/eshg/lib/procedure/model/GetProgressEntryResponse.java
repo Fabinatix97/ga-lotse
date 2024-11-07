@@ -11,4 +11,4 @@ import java.util.List;
 
 public record GetProgressEntryResponse(
     @NotNull @Valid ProgressEntryDto progressEntry,
-    @NotNull @Valid List<ManualProgressEntryDto> relatedKeyDocumentProgressEntries) {}
+    @NotNull @Valid List<KeyDocumentAwareProgressEntryDto> relatedKeyDocumentProgressEntries) {}

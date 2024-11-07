@@ -135,4 +135,9 @@ public interface ContactApi {
           @RequestParam("file")
           MultipartFile file)
       throws IOException;
+
+  @GetExchange("/{id}/merged-contacts")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Returns the IDs of contacts that were merged into the requested contact")
+  GetMergedContactsResponse getMergedContacts(@PathVariable("id") UUID id);
 }

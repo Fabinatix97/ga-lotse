@@ -266,18 +266,6 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
-
-    // Workaround for bug in gradle
-    // https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/376
-    // https://github.com/gradle/gradle/issues/27947
-    dependencyManagement {
-        applyMavenExclusions(false)
-        dependencies {
-            libs.bundles.keycloak.client.get().each {
-                dependency it.toString()
-            }
-        }
-    }
 }
 
 tasks.register("composeUp") {
@@ -287,7 +275,7 @@ tasks.register("composeUp") {
 // Temporary workaround to solve the race condition between tests in different modules
 // that both use the same 'base' module instance and reset the database in between.
 // We currently work on to get rid of this shared dependency.
-// Please see [internal gitlab link]
+// Please see https://gitlab.com/ga-ffm/ga-lotse/eshg-backend/-/merge_requests/377
 
 def testLimitService = project.gradle.sharedServices
         .registerIfAbsent("testLimitService", TaskExecutionLimitService.class, {spec -> spec.maxParallelUsages = 1})

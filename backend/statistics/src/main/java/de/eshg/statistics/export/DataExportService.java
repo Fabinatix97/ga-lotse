@@ -8,6 +8,7 @@ package de.eshg.statistics.export;
 import static de.eshg.statistics.StatisticsApplication.MODULE_NAME;
 
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
 import de.eshg.statistics.aggregation.EvaluationService;
@@ -16,6 +17,7 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
+import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
 import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
@@ -71,7 +73,13 @@ public class DataExportService {
 
   @Transactional(readOnly = true)
   public Resource exportData(UUID diagramId) {
-    Diagram diagram = evaluationService.getDiagram(diagramId);
+    Diagram diagram = evaluationService.getDiagramInternal(diagramId);
+    AbstractAggregationResult aggregationResult =
+        Hibernate.unproxy(
+            diagram.getEvaluation().getAggregationResult(), AbstractAggregationResult.class);
+    if (aggregationResult instanceof Statistic statistic && !statistic.isAnonymized()) {
+      throw new BadRequestException("Data exports are only allowed for anonymized statistics");
+    }
 
     try (XSSFWorkbook workbook = new XSSFWorkbook();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {

@@ -13,15 +13,13 @@ import de.eshg.base.statistics.api.BaseAvailableDataSource;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
-import de.eshg.lib.common.BusinessModule;
-import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
-import de.eshg.rest.service.security.CurrentUserHelper;
-import de.eshg.statistics.api.AvailableDataSource;
-import de.eshg.statistics.api.BaseDataSourceAttribute;
-import de.eshg.statistics.api.BusinessDataSourceAttribute;
-import de.eshg.statistics.api.GetAvailableDataSourcesResponse;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
+import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
+import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
+import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
+import de.eshg.statistics.config.OriginalDataAccessConfig;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -34,12 +32,15 @@ public class DataSourceAggregationService {
 
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
+  private final OriginalDataAccessConfig originalDataAccessConfig;
 
   public DataSourceAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
-      BaseStatisticsApi baseModuleStatisticsApi) {
+      BaseStatisticsApi baseModuleStatisticsApi,
+      OriginalDataAccessConfig originalDataAccessConfig) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
+    this.originalDataAccessConfig = originalDataAccessConfig;
   }
 
   public GetAvailableDataSourcesResponse getAvailableDataSources() {
@@ -73,7 +74,7 @@ public class DataSourceAggregationService {
         availableDataSources, aggregateErrorResponses(extractedResponses));
   }
 
-  private static List<AvailableDataSource> mapToAvailableDataSources(
+  private List<AvailableDataSource> mapToAvailableDataSources(
       GetDataSourcesResponse response,
       String businessModule,
       List<BaseAvailableDataSource> baseAvailableDataSources) {
@@ -82,19 +83,11 @@ public class DataSourceAggregationService {
             dataSource ->
                 new AvailableDataSource(
                     businessModule,
-                    hasPermissionToRetrieveDataWithoutAnonymization(businessModule),
+                    originalDataAccessConfig.originalDataAllowedForCurrentUser(businessModule),
                     dataSource.id(),
                     dataSource.name(),
                     mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources)))
         .toList();
-  }
-
-  private static boolean hasPermissionToRetrieveDataWithoutAnonymization(String businessModule) {
-    // Todo ISSUE-6151: retrieve the required permission from business module
-    if (BusinessModule.SCHOOL_ENTRY.name().equals(businessModule)) {
-      return CurrentUserHelper.currentUserHasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
-    }
-    return false;
   }
 
   private static List<BusinessDataSourceAttribute> mapAndExtendAttributes(

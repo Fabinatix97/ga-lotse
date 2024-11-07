@@ -18,4 +18,5 @@ public record InsPendingFacilityInspectionDto(
     @NotNull ProcedureStatusDto status,
     @NotNull InspectionType type,
     @NotNull InspectionPhase phase,
-    @NotNull int numberOfIncidents) {}
+    @NotNull int numberOfIncidents,
+    @NotNull boolean possibleInspectionDuplicate) {}

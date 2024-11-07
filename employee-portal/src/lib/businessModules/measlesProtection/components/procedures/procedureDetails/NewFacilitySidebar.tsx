@@ -29,9 +29,7 @@ export function NewFacilitySidebar({
   });
 
   async function handleSaveFacility(facility: MeaslesFacility) {
-    return addFacility
-      .mutateAsync({ procedureId: procedure.id, facility })
-      .catch();
+    return addFacility.mutateAsync({ procedureId: procedure.id, facility });
   }
 
   return (

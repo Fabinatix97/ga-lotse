@@ -12,13 +12,25 @@ import {
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import DateRangeOutlinedIcon from "@mui/icons-material/DateRangeOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { Divider, Stack, Typography } from "@mui/joy";
+import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionGroup,
+  AccordionSummary,
+  Box,
+  Divider,
+  Sheet,
+  Stack,
+  Typography,
+} from "@mui/joy";
 import { PropsWithChildren, ReactNode } from "react";
 import { isDefined } from "remeda";
 
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import { DeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
+import { RelatedProgressEntry } from "@/lib/shared/components/procedures/progress-entries/types";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 type OneOrMoreNodes = ReactNode | ReactNode[];
@@ -26,7 +38,6 @@ type OneOrMoreNodes = ReactNode | ReactNode[];
 interface AdditionalFileElements {
   start?: OneOrMoreNodes;
   end?: OneOrMoreNodes;
-  mail?: OneOrMoreNodes;
 }
 
 interface DetailsContentWrapperProps {
@@ -104,23 +115,31 @@ interface UndeletedFileSectionProps
 
 interface EmailFieldsProps {
   file: ApiMail;
-  additionalElements?: OneOrMoreNodes;
   subject?: string;
   message?: string;
 }
 
-function EmailFields({ file, additionalElements }: EmailFieldsProps) {
+function EmailFields({ file }: EmailFieldsProps) {
   return (
     <>
       <LabelValueDisplay
         label="Absender"
-        value={isDefined(file.metaData) ? file.metaData.mailFrom : ""}
+        value={file.metaData?.mailFrom ?? ""}
       />
       <LabelValueDisplay
         label="Empfänger"
-        value={isDefined(file.metaData) ? file.metaData.mailTo : ""}
+        value={file.metaData?.mailTo ?? ""}
       />
-      {isDefined(additionalElements) && additionalElements}
+      <LabelValueDisplay
+        key="subject"
+        label="Betreff"
+        value={file.metaData?.subject ?? ""}
+      />
+      <LabelValueDisplay
+        key="email-text"
+        label="Email-Text"
+        value={file.metaData?.messageText ?? ""}
+      />
     </>
   );
 }
@@ -136,13 +155,66 @@ function UndeletedFileSection({
       </Typography>
       <FileCardWithActions file={file} />
       {additionalElements?.start}
-      {file.type === "Mail" && (
-        <EmailFields
-          file={file as ApiMail}
-          additionalElements={additionalElements?.mail}
-        />
-      )}
+      {file.type === "Mail" && <EmailFields file={file as ApiMail} />}
       {isDefined(additionalElements?.end) ? additionalElements.end : <></>}
     </>
+  );
+}
+
+export function NewerVersionHint() {
+  return (
+    <Sheet variant="soft" color="neutral">
+      <Typography
+        level="body-sm"
+        startDecorator={<WarningAmberOutlinedIcon color="warning" />}
+      >
+        Es existiert eine neuere Version dieser Datei.
+      </Typography>
+    </Sheet>
+  );
+}
+
+export function AllKeyDocumentVersions({
+  relatedEntries,
+}: {
+  relatedEntries: RelatedProgressEntry[];
+}) {
+  return (
+    <AccordionGroup
+      variant="soft"
+      color="primary"
+      size="sm"
+      sx={{ borderRadius: "md" }}
+    >
+      <Accordion>
+        <AccordionSummary
+          color="primary"
+          sx={{
+            button: {
+              color: "var(--joy-palette-primary-700)",
+              borderRadius: "md",
+            },
+          }}
+        >
+          Alle Versionen anzeigen
+        </AccordionSummary>
+        <AccordionDetails>
+          <Stack gap={1} padding={1}>
+            {relatedEntries.map((entry) => (
+              <Box key={entry.keyDocumentVersion} data-testid="relatedVersion">
+                <Typography
+                  level="body-sm"
+                  fontWeight="500"
+                >{`Version ${entry.keyDocumentVersion}`}</Typography>
+                <FileCardWithActions
+                  detailsProgressEntryId={entry.progressEntryId}
+                  file={entry.fileReference}
+                />
+              </Box>
+            ))}
+          </Stack>
+        </AccordionDetails>
+      </Accordion>
+    </AccordionGroup>
   );
 }

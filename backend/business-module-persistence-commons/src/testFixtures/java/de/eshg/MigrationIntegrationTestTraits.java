@@ -8,12 +8,10 @@ package de.eshg;
 import de.cronn.postgres.snapshot.util.PostgresDump;
 import de.cronn.postgres.snapshot.util.PostgresDumpFormat;
 import de.cronn.postgres.snapshot.util.PostgresDumpOption;
-import de.cronn.postgres.snapshot.util.Schema;
 import de.eshg.testhelper.api.TestHelperDatabaseConnectionDetailsResponse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 public interface MigrationIntegrationTestTraits {
 
@@ -36,7 +34,6 @@ public interface MigrationIntegrationTestTraits {
         databaseConnectionDetails.username(),
         databaseConnectionDetails.password(),
         PostgresDumpFormat.PLAIN_TEXT,
-        List.of(Schema.include("public")),
         PostgresDumpOption.CREATE,
         PostgresDumpOption.INSERTS,
         PostgresDumpOption.NO_OWNER,

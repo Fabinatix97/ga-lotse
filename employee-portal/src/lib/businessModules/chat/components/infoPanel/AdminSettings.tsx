@@ -12,10 +12,13 @@ import { useState } from "react";
 
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
-import { leaveRoom } from "@/lib/businessModules/chat/shared//utils";
+import {
+  clearSearchParams,
+  leaveRoom,
+} from "@/lib/businessModules/chat/shared//utils";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
-import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 
 export interface AdminSettingsProps {
@@ -30,18 +33,17 @@ export function AdminSettings({
   const roomInfo = useRoomInfo(roomId);
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
-  const { clearChatParams } = useChatSearchParams();
 
   function handleLeaveRoomClick() {
     setLeaveModalOpen(false);
-    clearChatParams();
+    clearSearchParams(chatSearchParamNames.userId, chatSearchParamNames.roomId);
     closeInfoPanel();
     void leaveRoom(roomInfo.matrixClient, roomId);
   }
 
   return (
     <>
-      <InfoPanelHeader data={roomInfo} close={onClose} />
+      <InfoPanelHeader close={onClose} {...roomInfo} />
       <Stack gap={2} sx={{ overflowY: "auto", padding: 2, marginTop: 2 }}>
         <ButtonLink
           level="title-md"

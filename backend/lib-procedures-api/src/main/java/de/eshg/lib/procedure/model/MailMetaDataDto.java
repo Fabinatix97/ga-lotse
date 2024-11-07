@@ -16,6 +16,8 @@ public final class MailMetaDataDto extends MetaDataDto {
 
   public static final String SCHEMA_NAME = "MailMetaData";
 
+  private @NotNull String subject;
+  private @NotNull String messageText;
   private @NotNull String mailFrom;
   private @NotNull String mailTo;
   private @NotNull Instant sentDate;
@@ -42,5 +44,21 @@ public final class MailMetaDataDto extends MetaDataDto {
 
   public void setSentDate(Instant sentDate) {
     this.sentDate = sentDate;
+  }
+
+  public @NotNull String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(@NotNull String subject) {
+    this.subject = subject;
+  }
+
+  public @NotNull String getMessageText() {
+    return messageText;
+  }
+
+  public void setMessageText(@NotNull String messageText) {
+    this.messageText = messageText;
   }
 }

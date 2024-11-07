@@ -12,14 +12,7 @@ export function useDeactivateReportSeries() {
   const snackbar = useSnackbar();
   const api = useReportSeriesApi();
   const mutation = useHandledMutation({
-    mutationFn: (seriesId: string) =>
-      // Currently the openAPI generator doesn't map type to @type. This seems to be a bug. The current solution is a quick fix. One potential workaround would be to use an extra endpoint.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      api.updateReportSeries(seriesId, {
-        type: "DeactivateAutoReportSeriesRequest",
-        "@type": "DeactivateAutoReportSeriesRequest",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any),
+    mutationFn: (seriesId: string) => api.deactivateReportSeries(seriesId),
     onSuccess: () => {
       snackbar.confirmation("Automatisierung deaktiviert");
     },

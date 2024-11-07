@@ -21,9 +21,10 @@ const MainContents = styled("main")({
   display: "contents",
 });
 
-const AlertContainer = styled(PageContent)({
+const AlertContainer = styled(PageContent)(({ theme }) => ({
   paddingBlockEnd: 0,
-});
+  gap: theme.spacing(2),
+}));
 
 interface PageLayoutProps extends RequiresChildren {
   banner?: BannerType;

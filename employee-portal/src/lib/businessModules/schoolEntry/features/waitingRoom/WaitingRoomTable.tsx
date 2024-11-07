@@ -63,7 +63,10 @@ export function WaitingRoomTable() {
           columns={COLUMNS}
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
-          rowNavRoute={(row) => routes.procedures.byId(row.original.id).details}
+          rowNavigation={{
+            route: (row) => routes.procedures.byId(row.original.id).details,
+            focusColumnAccessorKey: "child.lastName",
+          }}
           minWidth={1200}
         />
       </TableSheet>

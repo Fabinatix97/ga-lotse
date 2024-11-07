@@ -43,14 +43,12 @@ function AddInventorySidebar(props: AddInventorySidebarProps) {
   const createInventory = useAddInventoryItem();
 
   async function handleSubmit(values: InventoryFormValues) {
-    await createInventory
-      .mutateAsync(mapAddInventoryItemRequest(values), {
-        onSuccess: (item) => {
-          props.onClose(true);
-          router.push(routes.inventory.details(item.id));
-        },
-      })
-      .catch();
+    await createInventory.mutateAsync(mapAddInventoryItemRequest(values), {
+      onSuccess: (item) => {
+        props.onClose(true);
+        router.push(routes.inventory.details(item.id));
+      },
+    });
   }
 
   return (

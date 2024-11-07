@@ -8,7 +8,6 @@ package de.eshg.stiprotection.pdf.identification;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
-import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.file.FileFactory;
 import java.io.ByteArrayOutputStream;
 import java.time.Clock;
@@ -37,8 +36,7 @@ public class AnonymousIdentificationDocumentService {
     byte[] bytes = createPdfFromTemplate(data);
     String fileName = fileName();
     PdfMetaData pdfMetaData = pdfMetaData();
-    return FileFactory.createPdfWithMetaData(
-        fileName, ProcedureFileType.PDF, bytes, pdfMetaData, false);
+    return FileFactory.createPdfWithMetaData(fileName, bytes, pdfMetaData);
   }
 
   private String fileName() {

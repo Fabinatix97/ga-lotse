@@ -8,11 +8,10 @@ package de.eshg.schoolentry.importer;
 import static de.eshg.schoolentry.importer.SchoolListColumn.*;
 
 import de.eshg.lib.xlsximport.ColumnAccessor;
+import de.eshg.lib.xlsximport.ErrorHandler;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.schoolentry.business.model.ImportChildData;
 import java.util.List;
-import java.util.function.BiConsumer;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 public class SchoolListRowReader extends RowReader<SchoolListRowValues, SchoolListColumn> {
@@ -24,7 +23,7 @@ public class SchoolListRowReader extends RowReader<SchoolListRowValues, SchoolLi
   @Override
   protected SchoolListRowValues read(ColumnAccessor<SchoolListColumn> col) {
     SchoolListRowValues result = new SchoolListRowValues();
-    BiConsumer<Cell, String> errorHandler = createErrorHandler(result);
+    ErrorHandler errorHandler = createErrorHandler(result);
 
     result.setChild(readChildData(col, errorHandler));
     result.setStatus(readStatus(col, STATUS, errorHandler));
@@ -36,7 +35,7 @@ public class SchoolListRowReader extends RowReader<SchoolListRowValues, SchoolLi
   }
 
   private ImportChildData readChildData(
-      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     return new ImportChildData(
         cellAsString(col, FIRST_NAME, errorHandler),
         cellAsString(col, LAST_NAME, errorHandler),
@@ -50,18 +49,17 @@ public class SchoolListRowReader extends RowReader<SchoolListRowValues, SchoolLi
         readPhoneNumber(col, errorHandler));
   }
 
-  private String readPhoneNumber(
-      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+  private String readPhoneNumber(ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     return cellAsString(col, PHONE_NUMBER, true, true, errorHandler);
   }
 
   private boolean readEntryLevelFlag(
-      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     return cellAsFlag(col, ENTRY_LEVEL, errorHandler);
   }
 
   private boolean readEarlyExaminationFlag(
-      ColumnAccessor<SchoolListColumn> col, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     return cellAsFlag(col, EARLY_EXAMINATION, errorHandler);
   }
 }

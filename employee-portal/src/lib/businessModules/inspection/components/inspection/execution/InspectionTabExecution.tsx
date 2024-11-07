@@ -124,6 +124,7 @@ export function InspectionTabExecution({
   const currentSelectedNonCoreVersions =
     getCurrentSelectedNonCoreVersions(checklists);
   const { tabs, tabsList } = createTabs(checklists);
+  const hasChecklists = checklists.length > 0;
 
   const lockedByDifferentUser =
     inspection.lockedByUser !== undefined &&
@@ -134,7 +135,9 @@ export function InspectionTabExecution({
     !inspectionIsBeforePhase(inspection.phase, ApiInspectionPhase.Executed);
 
   const [tabState, setTabState] = useState<ActiveTabState>(() => ({
-    tab: InspectionExecutionTabType.CHECKLIST,
+    tab: hasChecklists
+      ? InspectionExecutionTabType.CHECKLIST
+      : InspectionExecutionTabType.INCIDENTS,
     tabId: tabsList[0]!.SidePanelProps.tabId,
     fallbackTabId: tabsList[0]!.fallbackTabId,
   }));

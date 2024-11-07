@@ -34,7 +34,7 @@ export function getApiPatchHandler(
     try {
       return await Promise.race([
         fetch(request.clone()),
-        new Promise<Response>((_, reject) =>
+        new Promise<Response>((_resolve, reject) =>
           setTimeout(
             () => reject(new Error("Request timed out")),
             NETWORK_TIMEOUT_IN_SECONDS * 1000,
@@ -67,7 +67,7 @@ export function getApiDeleteHandler(
     try {
       return await Promise.race([
         fetch(new Request(request, { body: null })),
-        new Promise<Response>((_, reject) =>
+        new Promise<Response>((_resolve, reject) =>
           setTimeout(
             () => reject(new Error("Request timed out")),
             NETWORK_TIMEOUT_IN_SECONDS * 1000,

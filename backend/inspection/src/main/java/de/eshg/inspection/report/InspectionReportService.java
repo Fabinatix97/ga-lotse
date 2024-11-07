@@ -86,7 +86,7 @@ public class InspectionReportService {
     String facilityName = baseResponse.name();
     ChecklistReportMapper.addTopLevelTitle(report, facilityName);
     addInitialParticipants(report, inspection);
-    addDateOfInspection(report, inspection);
+    addDateOfInspection(report, inspection, clock);
 
     for (Checklist checklist : inspection.getChecklists()) {
       ChecklistReportMapper.addChecklist(report, checklist);
@@ -102,7 +102,7 @@ public class InspectionReportService {
     return inspectionReportRepository.saveAndFlush(report);
   }
 
-  private void addDateOfInspection(Report report, Inspection inspection) {
+  public static void addDateOfInspection(Report report, Inspection inspection, Clock clock) {
     Instant appointmentEnd = inspection.getExecutionAppointment().getAppointmentEnd();
     ChecklistReportMapper.addTextBlock(
         report,
@@ -262,8 +262,12 @@ public class InspectionReportService {
     adjustPosition(reportElements, deletedPosition);
   }
 
-  private static void adjustPosition(List<ReportElement> reportElements, int deletedPosition) {
-    for (int i = deletedPosition; i < reportElements.size(); i++) {
+  public static void adjustPositions(Report report) {
+    adjustPosition(report.getReportElements(), 0);
+  }
+
+  private static void adjustPosition(List<ReportElement> reportElements, int fromPosition) {
+    for (int i = fromPosition; i < reportElements.size(); i++) {
       reportElements.get(i).setPosition(i);
     }
   }

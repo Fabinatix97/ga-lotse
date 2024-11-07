@@ -10,10 +10,10 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.travelmedicine.certificate.persistence.entity.Certificate;
 import de.eshg.travelmedicine.certificate.persistence.entity.CertificateRepository;
-import de.eshg.travelmedicine.medicalhistory.persistence.MedicalHistoryRepository;
-import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
-import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.InformationStatement;
-import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.InformationStatementRepository;
+import de.eshg.travelmedicine.document.informationstatement.persistence.InformationStatementRepository;
+import de.eshg.travelmedicine.document.informationstatement.persistence.entity.InformationStatement;
+import de.eshg.travelmedicine.document.medicalhistory.persistence.MedicalHistoryRepository;
+import de.eshg.travelmedicine.document.medicalhistory.persistence.entity.MedicalHistory;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherService;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherServiceRepository;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
@@ -52,6 +52,15 @@ public class ProcedureAccessor {
     }
   }
 
+  public static class CheckIsDraft implements ProcedureCheck {
+    @Override
+    public void applyCheck(VaccinationConsultation vaccinationConsultation)
+        throws BadRequestException {
+      if (vaccinationConsultation.getProcedureStatus() != ProcedureStatus.DRAFT)
+        throw new BadRequestException("The procedure (vaccination consultation) is not draft.");
+    }
+  }
+
   public static class CheckCitizenUserId implements ProcedureCheck {
 
     private final UUID citizenUserId;
@@ -72,6 +81,7 @@ public class ProcedureAccessor {
   // frequently used checker series
   public static final List<ProcedureCheck> noChecks = Collections.emptyList();
   public static final List<ProcedureCheck> checkNotClosed = List.of(new CheckNotClosed());
+  public static final List<ProcedureCheck> checkIsDraft = List.of(new CheckIsDraft());
 
   private final VaccinationConsultationRepository vaccinationConsultationRepository;
   private final ProcedureStepRepository procedureStepRepository;

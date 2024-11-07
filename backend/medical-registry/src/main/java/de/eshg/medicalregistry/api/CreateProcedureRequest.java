@@ -5,9 +5,13 @@
 
 package de.eshg.medicalregistry.api;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(name = "CreateMedicalRegistryProcedureRequest")
-public record CreateProcedureRequest(@Valid @NotNull CreateProcedureDto procedure) {}
+public record CreateProcedureRequest(
+    @NotNull TypeOfChangeDto typeOfChange,
+    @NotNull @Valid ProfessionalDto professional,
+    @Valid PracticeDto practice,
+    @NotNull boolean employeesEmployed,
+    @NotNull boolean consentToPrivacyPolicy,
+    @NotNull boolean requestForWrittenConfirmation) {}

@@ -9,15 +9,15 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.eshg.lib.procedure.audit.AuditService;
 import de.eshg.lib.procedure.domain.serialization.SerializationService;
-import de.eshg.lib.procedure.file.FileAwareResolver;
 import de.eshg.lib.procedure.file.FileController;
 import de.eshg.lib.procedure.file.FileDeletionApprovalRequestNotificationService;
 import de.eshg.lib.procedure.file.FileDeletionRequestApprovalRequestDecisionHandler;
 import de.eshg.lib.procedure.file.FileStorageService;
-import de.eshg.lib.procedure.file.FileUploadService;
-import de.eshg.lib.procedure.file.FileUploadValidator;
+import de.eshg.lib.procedure.gdpr.GdprValidationTaskController;
+import de.eshg.lib.procedure.gdpr.GdprValidationTaskService;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.housekeeping.archiving.ArchivingConfiguration;
+import de.eshg.lib.procedure.housekeeping.cemetery.CemeteryHousekeepingConfiguration;
 import de.eshg.lib.procedure.housekeeping.inbox.InboxProcedureCleanupJob;
 import de.eshg.lib.procedure.inbox.InboxProcedureController;
 import de.eshg.lib.procedure.mapping.ProcedureApprovalRequestMapper;
@@ -81,10 +81,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   FileDeletionRequestApprovalRequestDecisionHandler.class,
   FileDeletionApprovalRequestNotificationService.class,
   InboxProcedureController.class,
-  FileUploadService.class,
-  FileUploadValidator.class,
   FileStorageService.class,
-  FileAwareResolver.class,
   ProcedureController.class,
   ProcedureLibraryEnrichingMapper.class,
   TaskController.class,
@@ -100,10 +97,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   ProcedureDeletionService.class,
   CemeteryService.class,
   SerializationService.class,
+  CemeteryHousekeepingConfiguration.class,
   DefaultProcedureAsSearchableStringFormatter.class,
   ApprovalRequestMailJob.class,
   ApprovalRequestMailService.class,
-  ProcedureLibrarySchedulingConfig.class
+  ProcedureLibrarySchedulingConfig.class,
+  GdprValidationTaskController.class,
+  GdprValidationTaskService.class
 })
 public class ProcedureLibraryAutoConfiguration {
   @Bean

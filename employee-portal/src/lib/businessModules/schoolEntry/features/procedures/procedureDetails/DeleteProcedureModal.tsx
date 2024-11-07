@@ -20,14 +20,13 @@ export function DeleteProcedureModal(props: DeleteProcedureModalProps) {
   const router = useRouter();
 
   async function handleSubmit() {
-    await deleteProcedure
-      .mutateAsync({
-        procedureId: props.procedure.id,
-        apiDeleteProcedureRequest: {
-          version: props.procedure.version,
-        },
-      })
-      .catch();
+    await deleteProcedure.mutateAsync({
+      procedureId: props.procedure.id,
+      apiDeleteProcedureRequest: {
+        version: props.procedure.version,
+      },
+    });
+    // TODO: ISSUE-6052: move onClose and router.push into onSuccess(?)
     props.onClose();
     router.push(routes.procedures.overview);
   }

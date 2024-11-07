@@ -42,17 +42,15 @@ export default function InboxPage() {
   async function onSubmit(values: CreateInboxProcedureValues) {
     await createInboxProcedure(
       values.businessModule as InboxAwareBusinessModule,
-    )
-      .mutateAsync(
-        {
-          request: mapFormValuesToCreateInboxProcedureRequest(values),
-          file: mapValuesToFile(values),
-        },
-        {
-          onSuccess: (response) => setResult(response),
-        },
-      )
-      .catch();
+    ).mutateAsync(
+      {
+        request: mapFormValuesToCreateInboxProcedureRequest(values),
+        file: mapValuesToFile(values),
+      },
+      {
+        onSuccess: (response) => setResult(response),
+      },
+    );
   }
 
   return (

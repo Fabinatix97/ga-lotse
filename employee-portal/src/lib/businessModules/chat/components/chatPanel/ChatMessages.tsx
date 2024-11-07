@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Box, Divider, List, ListItem, Typography, useTheme } from "@mui/joy";
+import { Box, Divider, List, ListItem, Typography } from "@mui/joy";
 import { isSameDay, startOfDay } from "date-fns";
 import { User } from "matrix-js-sdk/lib/matrix";
 import { Fragment, useMemo } from "react";
@@ -19,7 +19,6 @@ import {
   pipe,
 } from "remeda";
 
-import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { ChatBubble } from "@/lib/businessModules/chat/components/chatPanel/ChatBubble";
 import { ChatSystemMessage } from "@/lib/businessModules/chat/components/chatPanel/ChatSystemMessages";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -65,7 +64,6 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
   } = useChat();
   const { typingUsersList } = useTyping(showTypingNotification);
   const typingUsers = typingUsersList[room.room.roomId];
-  const theme = useTheme();
   const { roomSystemMessages } = useChatSystemMessages();
   const chatAndSystemMessages = useMemo(() => {
     return [...messages, ...roomSystemMessages].sort((a, b) =>
@@ -87,23 +85,18 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
     rootMargin: "400px 0px 0px 0px",
   });
 
-  if (!loggedInUserId) {
-    return <ChatIllustrationBackground />;
+  async function removeMessage(messageId: string) {
+    await matrixClient.redactEvent(room.room.roomId, messageId);
   }
 
   return (
-    <Box
-      sx={{
-        overflowY: "hidden",
-        flex: 1,
-      }}
-    >
+    <Box sx={{ overflowY: "hidden", flex: 1 }}>
       <List
         ref={rootRef}
         sx={{
           display: "flex",
           flexDirection: "column-reverse",
-          height: "100%",
+          height: "calc(100% - 2rem)",
           overflowY: "auto",
         }}
       >
@@ -146,7 +139,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                     message.sender?.userId === loggedInUserId
                       ? "row-reverse"
                       : "row",
-                  paddingX: theme.spacing(3),
+                  paddingX: 3,
                   paddingY: 0,
                   marginBottom: isChatMessage(message) ? 3 : 2,
                 }}
@@ -167,6 +160,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                       [...initialReadIndexes, ...lastReadIndexes] as number[]
                     }
                     index={index}
+                    removeMessage={removeMessage}
                   />
                 )}
               </ListItem>
@@ -188,16 +182,13 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
             </Fragment>
           );
         })}
-        {(isLoading || hasNextPage) && (
-          <Box alignItems="center" ref={sentryRef} />
-        )}
+        {(isLoading || hasNextPage) && <Box ref={sentryRef} />}
       </List>
       {!!typingUsers?.length && (
         <Typography
           level="body-sm"
           sx={{
             mx: 2,
-            mb: 1,
             visibility: typingUsers?.length ? "visible" : "hidden",
           }}
         >

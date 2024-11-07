@@ -6,7 +6,6 @@
 package de.eshg.schoolentry.config;
 
 public enum SchoolEntryFeature {
-  CLOSE_PROCEDURE,
-  REOPEN_PROCEDURE,
   IMPORT_PAST_PROCEDURES,
+  BULK_DOWNLOAD_INVITATIONS,
 }

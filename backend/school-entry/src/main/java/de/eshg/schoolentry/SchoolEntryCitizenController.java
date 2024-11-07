@@ -11,21 +11,23 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.schoolentry.api.citizen.AddCitizenAnamnesisRequest;
-import de.eshg.schoolentry.api.citizen.GetCitizenFreeAppointmentsResponse;
-import de.eshg.schoolentry.api.citizen.GetCitizenProcedureResponse;
+import de.eshg.schoolentry.api.citizen.*;
 import de.eshg.schoolentry.api.citizen.GetCitizenProcedureResponse.CitizenChildDto;
-import de.eshg.schoolentry.api.citizen.UpdateCitizenAppointmentRequest;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -47,17 +49,28 @@ public class SchoolEntryCitizenController {
   private final Resource privacyNotice;
   private final Resource privacyPolicy;
 
+  private final SchoolEntryProperties schoolEntryProperties;
+
   public SchoolEntryCitizenController(
       SchoolEntryCitizenService schoolEntryCitizenService,
       PersonApi personApi,
       Validator validator,
-      @Value("${de.eshg.schoolentry.privacy-notice-location}") Resource privacyNotice,
-      @Value("${de.eshg.schoolentry.privacy-policy-location}") Resource privacyPolicy) {
+      SchoolEntryProperties schoolEntryProperties) {
     this.schoolEntryCitizenService = schoolEntryCitizenService;
     this.personApi = personApi;
     this.validator = validator;
-    this.privacyNotice = privacyNotice;
-    this.privacyPolicy = privacyPolicy;
+    this.schoolEntryProperties = schoolEntryProperties;
+    this.privacyNotice = toResource(schoolEntryProperties.getPrivacyNoticeLocation());
+    this.privacyPolicy = toResource(schoolEntryProperties.getPrivacyPolicyLocation());
+  }
+
+  private static Resource toResource(URI documentLocation) {
+    try {
+      UrlResource urlResource = new UrlResource(documentLocation);
+      return urlResource;
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @GetMapping
@@ -138,7 +151,17 @@ public class SchoolEntryCitizenController {
           "submitting citizen anamnesis is not allowed as there were already edits to the anamnesis");
     }
 
+    validator.validateCitizenAnamnesis(request.anamnesis());
+
     schoolEntryCitizenService.addCitizenAnamnesis(schoolEntryProcedure, request.anamnesis());
+  }
+
+  @GetMapping(path = "/opening-hours")
+  @Operation(summary = "Get the official opening hours.")
+  @Transactional(readOnly = true)
+  public GetOpeningHoursResponse getOpeningHours() {
+    SchoolEntryProperties.OpeningHours openingHours = schoolEntryProperties.getOpeningHours();
+    return new GetOpeningHoursResponse(openingHours.de(), openingHours.en());
   }
 
   @GetMapping(path = "/documents/privacy-notice")
@@ -156,19 +179,15 @@ public class SchoolEntryCitizenController {
   }
 
   private static ResponseEntity<Resource> getPrivacyDocument(Resource privacyDocument) {
+    String filename = privacyDocument.getFilename();
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
-            fileAttachment(privacyDocument.getFilename()).toString())
-        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+            ContentDisposition.attachment()
+                .filename(filename, StandardCharsets.UTF_8)
+                .build()
+                .toString())
+        .contentType(MediaType.APPLICATION_PDF)
         .body(privacyDocument);
-  }
-
-  private static ContentDisposition fileAttachment(String filename) {
-    return file(filename, ContentDisposition.attachment());
-  }
-
-  private static ContentDisposition file(String filename, ContentDisposition.Builder builder) {
-    return builder.name("file").filename(filename).build();
   }
 }

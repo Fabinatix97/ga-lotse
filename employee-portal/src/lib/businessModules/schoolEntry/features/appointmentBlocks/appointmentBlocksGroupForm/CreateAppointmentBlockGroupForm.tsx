@@ -143,11 +143,9 @@ export function CreateAppointmentBlockGroupForm() {
   }, [validateAppointmentBlockGroup]);
 
   async function handleSubmit(values: CreateAppointmentBlockGroupValues) {
-    await createDailyAppointmentBlockGroup
-      .mutateAsync(mapFormValues(values), {
-        onSuccess: () => router.push(routes.appointmentBlockGroups.overview),
-      })
-      .catch();
+    await createDailyAppointmentBlockGroup.mutateAsync(mapFormValues(values), {
+      onSuccess: () => router.push(routes.appointmentBlockGroups.overview),
+    });
   }
 
   return (

@@ -11,13 +11,11 @@ import {
 } from "@eshg/employee-portal-api/base";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
-import { useState } from "react";
 
 import { useGetGdprProcedureOverviewQuery } from "@/lib/baseModule/api/queries/gdpr";
 import { TYPE_OPTIONS } from "@/lib/baseModule/components/gdpr/i18n";
-import { CreateGDPRProcedureSidebar } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";
+import { useCreateGDPRProcedureSidebar } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";
 import { columns } from "@/lib/baseModule/components/gdpr/overview/columns";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -33,63 +31,53 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
     serverSideSorting: true,
     sortFieldName: "sortKey",
   });
-  const [open, setOpen] = useState(false);
   const {
     data: { elements, totalNumberOfElements },
     isFetching,
   } = useGetGdprProcedureOverviewQuery(params);
+  const sidebar = useCreateGDPRProcedureSidebar();
 
   return (
-    <>
-      <TablePage
-        data-testid="gdpr-procedures-table"
-        controls={
-          <ButtonBar
-            left={
-              <SingleSelectFilter
-                tableControl={tableControl}
-                placeholder={"Typ"}
-                searchParamName={"type"}
-                options={TYPE_OPTIONS}
-              />
-            }
-            right={
-              hasWritePerms && (
-                <Button
-                  onClick={() => setOpen(true)}
-                  startDecorator={<AddIcon />}
-                >
-                  Vorgang anlegen
-                </Button>
-              )
-            }
+    <TablePage
+      data-testid="gdpr-procedures-table"
+      controls={
+        <ButtonBar
+          left={
+            <SingleSelectFilter
+              tableControl={tableControl}
+              placeholder={"Typ"}
+              searchParamName={"type"}
+              options={TYPE_OPTIONS}
+            />
+          }
+          right={
+            hasWritePerms && (
+              <Button
+                onClick={() => sidebar.open()}
+                startDecorator={<AddIcon />}
+              >
+                Vorgang anlegen
+              </Button>
+            )
+          }
+        />
+      }
+    >
+      <TableSheet
+        loading={isFetching}
+        footer={
+          <Pagination
+            totalCount={totalNumberOfElements}
+            {...tableControl.paginationProps}
           />
         }
       >
-        <TableSheet
-          loading={isFetching}
-          footer={
-            <Pagination
-              totalCount={totalNumberOfElements}
-              {...tableControl.paginationProps}
-            />
-          }
-        >
-          <DataTable
-            data={elements}
-            columns={columns}
-            sorting={tableControl.tableSorting}
-          />
-        </TableSheet>
-      </TablePage>
-      {hasWritePerms && (
-        <OverlayBoundary>
-          <CreateGDPRProcedureSidebar
-            open={open}
-            onClose={() => setOpen(false)}
-          />
-        </OverlayBoundary>
-      )}
-    </>
+        <DataTable
+          data={elements}
+          columns={columns}
+          sorting={tableControl.tableSorting}
+        />
+      </TableSheet>
+    </TablePage>
   );
 }

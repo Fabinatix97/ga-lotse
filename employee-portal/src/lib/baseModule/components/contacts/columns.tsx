@@ -94,7 +94,6 @@ export function contactTableColumns({
       id: "navigationControl",
       cell: (props) => (
         <ActionsMenu
-          disablePortal
           actionItems={[
             {
               label: "Anzeigen",

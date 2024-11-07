@@ -25,4 +25,5 @@ public record GetPendingFacilitiesFilterOptionsDto(
     Set<InspectionType> type,
     Set<InspectionPhase> phase,
     Instant isBefore,
-    Instant isAfter) {}
+    Instant isAfter,
+    Boolean hasDuplicates) {}

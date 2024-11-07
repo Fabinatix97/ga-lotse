@@ -158,12 +158,10 @@ export function useChatRoomList() {
     }
 
     function onRoomAvatar(event: MatrixEvent, room: Room) {
-      const updatedRoomWithCommunicationType =
-        getRoomNameAndCommunicationType(room);
       setRoomList((prevState) =>
         prevState.map((prevRoom) =>
-          prevRoom.room.roomId === updatedRoomWithCommunicationType.room.roomId
-            ? updatedRoomWithCommunicationType
+          prevRoom.room.roomId === room.roomId
+            ? { ...prevRoom, room }
             : prevRoom,
         ),
       );

@@ -17,6 +17,16 @@ export function useGetAllDiseasesCitizen() {
   });
 }
 
+export function useGetAllAppointmentTypesForCitizen() {
+  const citizenPublicApi = useCitizenPublicApi();
+  return useSuspenseQuery({
+    queryKey: citizenPublicApiQueryKey(["getAppointmentTypesForCitizen"]),
+    queryFn: () => citizenPublicApi.getAppointmentTypesForCitizen(),
+    select: (response) => response.appointmentTypeConfigDtos ?? [],
+    refetchOnWindowFocus: false,
+  });
+}
+
 export function useGetFreeAppointmentsForCitizen(
   appointmentType: ApiAppointmentType,
   earliestDate?: Date,
@@ -43,5 +53,14 @@ export function useGetDepartmentInfo() {
   return useSuspenseQuery({
     queryKey: citizenPublicApiQueryKey(["getDepartmentInfo"]),
     queryFn: () => departmentApi.getDepartmentInfo(),
+  });
+}
+
+export function useGetOpeningHours() {
+  const citizenPublicApi = useCitizenPublicApi();
+  return useSuspenseQuery({
+    queryKey: citizenPublicApiQueryKey(["getOpeningHours"]),
+    queryFn: () => citizenPublicApi.getOpeningHours(),
+    refetchOnWindowFocus: false,
   });
 }

@@ -22,6 +22,8 @@ export function useStatisticRoleChecks() {
   return {
     canDelete: isAdminOrOwner,
     canUpdateStatistic: isAdminOrOwner,
+    canUpdateEvaluationTemplate: isAdminOrOwner,
+    canDeleteEvaluationTemplate: isAdminOrOwner,
     canWrite: () => canWrite,
   };
 }

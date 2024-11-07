@@ -127,7 +127,11 @@ export function AppointmentPickerField<T extends Appointment>({
         />
       }
       appointmentList={
-        <FormControl error={field.error} required={field.required}>
+        <FormControl
+          error={field.error}
+          required={field.required}
+          data-testid="appointment-picker-slots"
+        >
           <AppointmentList
             {...listProps}
             field={field}
@@ -153,7 +157,7 @@ function DefaultLayout({
   appointmentList,
 }: AppointmentPickerLayoutProps) {
   return (
-    <Stack sx={sx} className={className}>
+    <Stack sx={sx} className={className} data-testid="appointment-picker">
       {calendar}
       {appointmentList}
     </Stack>

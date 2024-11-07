@@ -1,12 +1,17 @@
 plugins {
   id 'next-app'
   id 'reverse-proxy'
+  id 'next-loading-files'
 }
 
 next {
   port = '3001'
   sonarProjectKey = project.findProperty("sonar-project-key-citizen-portal")
   apiProject = ':citizen-portal-api'
+}
+
+nextLoadingFiles {
+  includeDirs = ['[lang]/(privatpersonen)', '[lang]/(static)']
 }
 
 reverseProxy {

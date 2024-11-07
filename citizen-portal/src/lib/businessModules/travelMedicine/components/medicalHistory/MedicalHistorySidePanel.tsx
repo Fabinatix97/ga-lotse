@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistoryContent } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiDocumentContent } from "@eshg/citizen-portal-api/travelMedicine";
 import { Button } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 
@@ -13,7 +13,7 @@ import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 interface MedicalHistorySidePanel {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  medicalHistory: ApiMedicalHistoryContent;
+  medicalHistory: ApiDocumentContent;
   onRouteBack: () => void;
 }
 

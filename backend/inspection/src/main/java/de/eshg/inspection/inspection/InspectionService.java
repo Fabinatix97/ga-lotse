@@ -253,11 +253,6 @@ public class InspectionService {
     return inspectionMapper.mapToDto(inspection);
   }
 
-  public List<InspectionDto> loadAllInspections() {
-    List<Inspection> inspections = inspectionRepository.findAll();
-    return inspectionMapper.mapToDtos(inspections);
-  }
-
   public Inspection findNewestOpenInspectionForFacility(Facility facility) {
     return inspectionRepository.findNewestOpenInspectionForFacility(facility);
   }
@@ -459,7 +454,6 @@ public class InspectionService {
     if (StringUtils.isNotBlank(progressEntryText)) {
       ManualProgressEntry manualProgressEntry = new ManualProgressEntry();
       manualProgressEntry.setManualProgressEntryType(ManualProgressEntryType.NOTE);
-      manualProgressEntry.setSubject("Anmerkung bei Begehungserstellung");
       manualProgressEntry.setNote(progressEntryText);
       inspection.addProgressEntry(manualProgressEntry);
     }

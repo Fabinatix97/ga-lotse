@@ -10,6 +10,7 @@ import ArrowBackIosOutlined from "@mui/icons-material/ArrowBackIosOutlined";
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
+import { isDefined } from "remeda";
 
 import { PersonCardContent } from "@/lib/baseModule/components/person/PersonCardContent";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
@@ -31,7 +32,7 @@ interface PersonSearchResultsProps {
   onSelectPerson: (person: ApiGetReferencePersonResponse) => void;
   onCreatePerson: () => void;
   onCancel: () => void;
-  onBack: () => void;
+  onBack?: () => void;
   sidebarFormRef: Ref<SidebarFormHandle>;
 }
 
@@ -61,14 +62,16 @@ export function PersonSearchResults(props: PersonSearchResultsProps) {
             header={
               <>
                 <Stack gap={2}>
-                  <Button
-                    variant="plain"
-                    startDecorator={<ArrowBackIosOutlined />}
-                    sx={{ alignSelf: "start", paddingInline: 0 }}
-                    onClick={props.onBack}
-                  >
-                    Eingabe ändern
-                  </Button>
+                  {isDefined(props.onBack) && (
+                    <Button
+                      variant="plain"
+                      startDecorator={<ArrowBackIosOutlined />}
+                      sx={{ alignSelf: "start", paddingInline: 0 }}
+                      onClick={props.onBack}
+                    >
+                      Eingabe ändern
+                    </Button>
+                  )}
                   <Stack>
                     Bereits vorhandene Einträge zur Person:
                     <Typography level={"title-md"}>

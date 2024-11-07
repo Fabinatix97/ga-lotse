@@ -1,0 +1,46 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="GA-Lotse" id="1729858943767-1">
+        <addColumn tableName="mail_meta_data">
+            <column name="message_text" type="text" defaultValue="">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="text" defaultValue="">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="mail_meta_data_aud">
+            <column name="message_text" type="text"/>
+            <column name="subject" type="text"/>
+        </addColumn>
+        <sql>
+        UPDATE mail_meta_data
+        SET subject      = COALESCE(manual_progress_entry.subject, mail_meta_data.subject),
+            message_text = COALESCE(manual_progress_entry.message_text, mail_meta_data.message_text)
+        FROM progress_entry,
+             manual_progress_entry
+        WHERE mail_meta_data.mail_id = progress_entry.file_id
+          AND manual_progress_entry.id = progress_entry.id
+        </sql>
+        <sql>
+        UPDATE mail_meta_data_aud
+        SET subject      = manual_progress_entry_aud.subject,
+            message_text = manual_progress_entry_aud.message_text
+        FROM manual_progress_entry_aud,
+             progress_entry
+        WHERE progress_entry.file_id = mail_meta_data_aud.mail_id
+          AND manual_progress_entry_aud.id = progress_entry.id
+        </sql>
+        <dropDefaultValue tableName="mail_meta_data" columnName="subject"/>
+        <dropDefaultValue tableName="mail_meta_data" columnName="message_text"/>
+        <dropColumn columnName="message_text" tableName="manual_progress_entry"/>
+        <dropColumn columnName="message_text" tableName="manual_progress_entry_aud"/>
+        <dropColumn columnName="subject" tableName="manual_progress_entry"/>
+        <dropColumn columnName="subject" tableName="manual_progress_entry_aud"/>
+    </changeSet>
+</databaseChangeLog>

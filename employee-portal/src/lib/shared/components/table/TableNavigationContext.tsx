@@ -17,7 +17,7 @@ type Router = ReturnType<typeof useRouter>;
 
 interface TableNavigationContext {
   onCellClick: (route: string) => void;
-  focusColumnHeader: string | undefined;
+  focusColumnAccessorKey: string | undefined;
 }
 
 function handleCallToAction(td: Element, router: Router) {
@@ -51,12 +51,12 @@ export const TableNavigationContext = createContext<
 
 export function TableNavigationProvider({
   enabled,
-  focusColumnHeader,
+  focusColumnAccessorKey,
   children,
 }: {
   enabled: boolean;
   children: ReactNode;
-  focusColumnHeader: string | undefined;
+  focusColumnAccessorKey: string | undefined;
 }) {
   const tableRef = useRef<HTMLTableSectionElement>(null);
   const router = useRouter();
@@ -99,7 +99,7 @@ export function TableNavigationProvider({
   return (
     <tbody ref={tableRef}>
       <TableNavigationContext.Provider
-        value={{ onCellClick, focusColumnHeader }}
+        value={{ onCellClick, focusColumnAccessorKey: focusColumnAccessorKey }}
       >
         {children}
       </TableNavigationContext.Provider>

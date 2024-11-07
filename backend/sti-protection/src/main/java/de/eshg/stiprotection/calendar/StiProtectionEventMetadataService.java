@@ -11,8 +11,13 @@ import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockData;
 import de.eshg.lib.appointmentblock.persistence.AppointmentBlockRepository;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
+import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
@@ -22,30 +27,56 @@ public class StiProtectionEventMetadataService implements EventMetadataService {
 
   private final AppointmentBlockRepository appointmentBlockRepository;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
+  private final StiProtectionProcedureRepository procedureRepository;
 
   public StiProtectionEventMetadataService(
       AppointmentBlockRepository appointmentBlockRepository,
-      AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
+      AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      StiProtectionProcedureRepository procedureRepository) {
     this.appointmentBlockRepository = appointmentBlockRepository;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.procedureRepository = procedureRepository;
   }
 
   @Override
   public Stream<EventWithMetaData> findByCalendarEventIds(List<UUID> eventIds) {
     List<AppointmentBlock> appointmentBlocks =
         appointmentBlockRepository.findAllByCalendarEventIdInOrderById(eventIds);
+    Stream<EventWithMetaData> appointmentBlockMetaData =
+        appointmentBlockSlotUtil
+            .augmentAppointmentBlocksWithEventDetails(appointmentBlocks)
+            .values()
+            .stream()
+            .map(StiProtectionEventMetadataService::mapAppointmentBlockToEventWithMetaData);
 
-    return appointmentBlockSlotUtil
-        .augmentAppointmentBlocksWithEventDetails(appointmentBlocks)
-        .values()
-        .stream()
-        .map(StiProtectionEventMetadataService::mapAppointmentBlockToEventWithMetaData);
+    Stream<EventWithMetaData> stiProcedures =
+        procedureRepository.findAllByCalendarEventIdOrderById(eventIds).stream()
+            .map(this::mapStiProcedureAppointmentToEventMetaData);
+
+    return Stream.concat(appointmentBlockMetaData, stiProcedures);
+  }
+
+  private EventWithMetaData mapStiProcedureAppointmentToEventMetaData(
+      StiProtectionProcedure procedure) {
+    Appointment appointment =
+        Objects.requireNonNull(procedure.getAppointment(), "Appointment should not be null.");
+    AppointmentType type =
+        Objects.requireNonNull(
+            getAppointmentType(appointment.getAppointmentBlock()),
+            "AppointmentBlock should not be null.");
+
+    return new EventWithMetaData(
+        procedure.getCalendarEventId(),
+        mapAppointmentTypeToSubjectString(type),
+        null,
+        null,
+        procedure.getExternalId());
   }
 
   private static EventWithMetaData mapAppointmentBlockToEventWithMetaData(
       AppointmentBlockData appointmentBlockData) {
-    AppointmentType type =
-        appointmentBlockData.appointmentBlock().getAppointmentBlockGroup().getType();
+
+    AppointmentType type = getAppointmentType(appointmentBlockData);
     validateAppointmentType(type);
 
     String subject = mapAppointmentTypeToSubjectString(type);
@@ -64,10 +95,25 @@ public class StiProtectionEventMetadataService implements EventMetadataService {
         null);
   }
 
+  private static AppointmentType getAppointmentType(AppointmentBlockData appointmentBlockData) {
+    return getAppointmentType(
+        Objects.requireNonNull(
+            appointmentBlockData.appointmentBlock(), "AppointmentBlock should not be null."));
+  }
+
+  private static AppointmentType getAppointmentType(AppointmentBlock appointmentBlock) {
+    AppointmentBlockGroup appointmentBlockGroup =
+        Objects.requireNonNull(
+            appointmentBlock.getAppointmentBlockGroup(),
+            "AppointmentBlockGroup should not be null.");
+    return Objects.requireNonNull(
+        appointmentBlockGroup.getType(), "AppointmentType should not be null.");
+  }
+
   private static void validateAppointmentType(AppointmentType type) {
-    if (type == null) {
-      throw new NullPointerException("The appointment block type should not be null");
-    } else if (type != AppointmentType.HIV_STI_CONSULTATION
+    Objects.requireNonNull(type, "The AppointmentType should not be null.");
+
+    if (type != AppointmentType.HIV_STI_CONSULTATION
         && type != AppointmentType.SEX_WORK
         && type != AppointmentType.RESULTS_REVIEW) {
       throw new IllegalArgumentException(createIllegalAppointmentTypeMessage(type));

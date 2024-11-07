@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InfoOutlined } from "@mui/icons-material";
-import { Stack, Tooltip, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
+
+import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
 interface FormSectionTitleProps {
   title: string;
@@ -13,11 +14,9 @@ interface FormSectionTitleProps {
 
 export function FormSectionTitle(props: FormSectionTitleProps) {
   return (
-    <Stack gap={1} direction="row">
+    <Stack gap={1} direction="row" alignItems="center">
       <Typography level="title-sm">{props.title}</Typography>
-      <Tooltip title={props.tooltip} color="success" variant="outlined">
-        <InfoOutlined color="primary" size="sm" />
-      </Tooltip>
+      <InfoIconTooltipButton title={props.tooltip} tooltipColor="success" />
     </Stack>
   );
 }

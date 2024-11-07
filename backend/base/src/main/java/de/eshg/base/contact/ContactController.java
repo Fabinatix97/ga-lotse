@@ -269,6 +269,12 @@ public class ContactController implements ContactApi {
         matches.getTotalElements());
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public GetMergedContactsResponse getMergedContacts(UUID id) {
+    return new GetMergedContactsResponse(contactService.findAllMergeSources(id));
+  }
+
   private static void validateVCardFile(MultipartFile file) {
     ParseVCardUtils.validateFileExistsAndHasCorrectType(file);
   }

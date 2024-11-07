@@ -103,9 +103,11 @@ export function VaccinationConsultationsSearchTable() {
           }
           columns={searchColumns()}
           sorting={tableControl.tableSorting}
-          rowNavRoute={(row) =>
-            routes.procedures.baseData(row.original.procedureId)
-          }
+          rowNavigation={{
+            route: (row) =>
+              routes.procedures.baseData(row.original.procedureId),
+            focusColumnAccessorKey: "lastName",
+          }}
         />
       </TableSheet>
     </TablePage>

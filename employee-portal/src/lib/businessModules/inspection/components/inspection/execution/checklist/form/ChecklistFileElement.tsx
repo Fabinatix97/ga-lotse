@@ -180,7 +180,7 @@ function ClFileCard({
       externalId: file.fileID,
       fileName: file.fileName,
       inspectionExternalId,
-    }).catch();
+    });
   }
 
   const fileType = type === "AUDIO" ? CustomFileType.Audio : ApiFileType.Jpeg;

@@ -7,6 +7,7 @@ package de.eshg.statistics.api;
 
 import static de.eshg.statistics.api.AddStatisticWithDataSourcesRequest.SCHEMA_NAME;
 
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

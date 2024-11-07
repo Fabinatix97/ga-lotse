@@ -90,13 +90,11 @@ function AddServicePlanSidebar(props: Readonly<AddServicePlanSidebarProps>) {
   }
 
   async function handleSubmit(values: AddServicePlanFormValues) {
-    await postServicesApi
-      .mutateAsync(createPostServicesRequest(values), {
-        onSuccess: () => {
-          props.onClose(true);
-        },
-      })
-      .catch();
+    await postServicesApi.mutateAsync(createPostServicesRequest(values), {
+      onSuccess: () => {
+        props.onClose(true);
+      },
+    });
   }
 
   const initServicesValues: ServicesRequest = {

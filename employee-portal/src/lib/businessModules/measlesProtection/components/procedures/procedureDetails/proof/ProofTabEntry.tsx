@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Stack } from "@mui/joy";
 import { ReactNode } from "react";
-
-import { ValueList } from "@/lib/shared/components/detailsCard/LabeledValue";
 
 interface ProofTabEntryProps {
   children: ReactNode;
@@ -16,8 +15,9 @@ export function ProofTabEntry({
   rowLayout,
 }: Readonly<ProofTabEntryProps>) {
   return (
-    <ValueList
-      rowLayout={rowLayout}
+    <Stack
+      gap={3}
+      flexDirection={rowLayout ? "row" : "column"}
       sx={(theme) => ({
         flexBasis: "auto",
         background: theme.palette.background.level1,
@@ -26,9 +26,10 @@ export function ProofTabEntry({
           xxs: theme.spacing(2),
         },
         width: "100%",
+        flexWrap: "wrap",
       })}
     >
       {children}
-    </ValueList>
+    </Stack>
   );
 }

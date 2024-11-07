@@ -8,7 +8,6 @@ package de.eshg.measlesprotection.pdf.coverletter;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
-import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.file.FileFactory;
 import java.io.ByteArrayOutputStream;
 import java.time.Clock;
@@ -38,8 +37,7 @@ public class CoverLetterService {
     byte[] bytes = createPdfFromTemplate(data);
     ZonedDateTime now = ZonedDateTime.now(clock);
     String name = name(data);
-    return FileFactory.createPdfWithMetaData(
-        filename(name, now), ProcedureFileType.PDF, bytes, pdfMetaData(now, name), false);
+    return FileFactory.createPdfWithMetaData(filename(name, now), bytes, pdfMetaData(now, name));
   }
 
   private static String name(CoverLetterData data) {

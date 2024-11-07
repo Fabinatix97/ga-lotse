@@ -17,50 +17,39 @@ import {
   PersonContactFormValues,
   isPersonContact,
 } from "@/lib/baseModule/components/contacts/types";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import {
   createEmptyAddress,
   mapApiAddressToForm,
 } from "@/lib/shared/components/form/address/helpers";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface UpdateContactSidebarProps {
-  contact: Contact | undefined;
-  open: boolean;
-  onClose: () => void;
+interface UpdateContactSidebarProps extends SidebarWithFormRefProps {
+  contact: Contact;
 }
 
-export function UpdateContactSidebar(props: UpdateContactSidebarProps) {
-  return (
-    <OverlayBoundary>
-      <UpdateContactSidebarWithinBoundary {...props} />
-    </OverlayBoundary>
-  );
-}
-
-function UpdateContactSidebarWithinBoundary({
-  contact,
-  open,
-  onClose,
-}: UpdateContactSidebarProps) {
-  const { sidebarFormRef, closeSidebar, handleClose } = useSidebarForm({
-    onClose,
+export function useUpdateContactSidebar() {
+  return useSidebarWithFormRef({
+    component: UpdateContactSidebar,
   });
+}
 
+function UpdateContactSidebar({
+  contact,
+  onClose,
+  formRef,
+}: UpdateContactSidebarProps) {
   return (
-    <Sidebar open={open} onClose={handleClose}>
-      {open && isDefined(contact) && (
-        <ContactEntityForm
-          contactId={contact.id}
-          initialValues={mapContactToForm(contact)}
-          onClose={handleClose}
-          onUpdated={closeSidebar}
-          type={contactDiscriminatorToEnum[contact.type]}
-          sidebarFormRef={sidebarFormRef}
-        />
-      )}
-    </Sidebar>
+    <ContactEntityForm
+      contactId={contact.id}
+      initialValues={mapContactToForm(contact)}
+      onClose={() => onClose(false)}
+      onUpdated={() => onClose(true)}
+      type={contactDiscriminatorToEnum[contact.type]}
+      sidebarFormRef={formRef}
+    />
   );
 }
 

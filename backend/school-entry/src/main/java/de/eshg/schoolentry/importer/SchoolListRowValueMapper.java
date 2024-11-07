@@ -11,6 +11,7 @@ import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.mapper.PersonMapper;
 import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import java.time.Year;
+import java.util.List;
 
 public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRowValues> {
 
@@ -43,7 +44,7 @@ public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRowVal
         values.getProcedureId(),
         null,
         null,
-        null,
+        List.of(),
         values.getChild().phoneNumber(),
         values.isEntryLevel(),
         values.isEarlyExamination());

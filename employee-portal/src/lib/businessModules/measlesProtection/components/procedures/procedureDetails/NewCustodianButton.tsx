@@ -10,10 +10,10 @@ import {
   ApiCustodianDetails,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { Add } from "@mui/icons-material";
-import { Button } from "@mui/joy";
+import { Button, Sheet } from "@mui/joy";
 
 import { mapToApiPersonAddress } from "@/lib/businessModules/measlesProtection/shared/helpers";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import {
   LegacyPerson,
   LegacyPersonFormConfig,
@@ -68,14 +68,18 @@ export function mapToAddCustodianRequest(
 export function NewCustodianButton() {
   const [_, setAddCustodianOpen] = useSearchParam("add-custodian", "boolean");
   return (
-    <DetailsCard title={"PSB - Personensorgeberechtigte:r"}>
-      <Button
-        startDecorator={<Add />}
-        variant="plain"
-        onClick={() => setAddCustodianOpen(true)}
-      >
-        Hinzufügen
-      </Button>
-    </DetailsCard>
+    <Sheet>
+      <DetailsSection title={"PSB - Personensorgeberechtigte:r"}>
+        <div>
+          <Button
+            startDecorator={<Add />}
+            variant="plain"
+            onClick={() => setAddCustodianOpen(true)}
+          >
+            Hinzufügen
+          </Button>
+        </div>
+      </DetailsSection>
+    </Sheet>
   );
 }

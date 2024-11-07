@@ -12,7 +12,6 @@ import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
-import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
@@ -211,14 +210,13 @@ public class CertificateService {
       ProcedureStep procedureStep, List<UUID> serviceIds) {
     List<VcService> services = serviceRepository.findAllByIdOrderById(serviceIds);
 
-    UUID patientId =
-        procedureStep.getVaccinationConsultation().getPatientIdsFromCentralFile().getFirst();
-    PatientDto patient = personClient.getPersonFromCentralFile(patientId).patient();
-    VaccinationConsultation consultation = procedureStep.getVaccinationConsultation();
+    VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    UUID patientId = vaccinationConsultation.getPatientIdsFromCentralFile().getFirst();
+    PatientDto patient = personClient.getPatientFromCentralFile(patientId);
 
     HealthInsuranceCertificatePdfParameters pdfParameters =
         collectHealthInsuranceCertificatePdfData(
-            departmentInfoService, consultation, patient, services);
+            departmentInfoService, vaccinationConsultation, patient, services);
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     documentGenerator.createPdfFromTemplate(certificateTemplateResource, pdfParameters, baos);
@@ -228,8 +226,7 @@ public class CertificateService {
     pdfMetaData.setCreatedDate(Instant.now(clock));
     pdfMetaData.setDescription(pdfParameters.getTitle());
 
-    return FileFactory.createPdfWithMetaData(
-        PDF_FILENAME, ProcedureFileType.PDF, bytes, pdfMetaData, false);
+    return FileFactory.createPdfWithMetaData(PDF_FILENAME, bytes, pdfMetaData);
   }
 
   private UUID generateProgressEntry(ProcedureStep procedureStep, List<UUID> serviceIds) {

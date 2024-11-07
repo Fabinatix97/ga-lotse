@@ -63,16 +63,14 @@ export function AccessRestrictionLetterSidebar({ id }: { id: string }) {
       if (!isNullish(data.document)) {
         formData.append("file", data.document);
       }
-      return addAccessRestrictionLetter
-        .mutateAsync({
-          id,
-          data: {
-            recipientId: data.recipientId,
-            sentAt: new Date(data.sentAt),
-          },
-          formData,
-        })
-        .catch();
+      return addAccessRestrictionLetter.mutateAsync({
+        id,
+        data: {
+          recipientId: data.recipientId,
+          sentAt: new Date(data.sentAt),
+        },
+        formData,
+      });
     },
     [addAccessRestrictionLetter, id],
   );

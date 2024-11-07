@@ -11,7 +11,10 @@ import {
 } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 
-import { useGetDepartmentInfo } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
+import {
+  useGetDepartmentInfo,
+  useGetOpeningHours,
+} from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   InfoSection,
@@ -23,10 +26,6 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
-import {
-  TableListing,
-  TableListingRow,
-} from "@/lib/shared/components/tableListing";
 import {
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
@@ -51,7 +50,7 @@ export function LandingpageContent() {
   );
 }
 
-function AddressSection(props: DepartmentInfoProps) {
+function AddressSection(props: Readonly<DepartmentInfoProps>) {
   const { t } = useTranslation(["travelMedicine/landing"]);
 
   return (
@@ -69,37 +68,28 @@ function AddressSection(props: DepartmentInfoProps) {
 }
 
 function OpeningHoursSection() {
-  const { t } = useTranslation(["travelMedicine/landing"]);
+  const { t, i18n } = useTranslation(["travelMedicine/landing"]);
+  const { data: openingHours } = useGetOpeningHours();
+  let openingHoursInSelectedLanguage;
+  if (i18n.language === "de") {
+    openingHoursInSelectedLanguage = openingHours.de;
+  } else {
+    openingHoursInSelectedLanguage = openingHours.en;
+  }
 
   return (
     <InfoSection icon={<AccessTimeOutlined />}>
       <InfoSectionTitle>{t("contact.openingHours")}</InfoSectionTitle>
-      <TableListing>
-        <tr>
-          <td colSpan={2} style={{ paddingBottom: 3 }}>
-            {t("contact.consultationHours")}
-          </td>
-        </tr>
-        <TableListingRow label={t("contact.moDoLabel")}>
-          {t("contact.moDoValue")}
-        </TableListingRow>
-        <tr>
-          <td colSpan={2} style={{ paddingTop: 3, paddingBottom: 3 }}>
-            {t("contact.telephoneBooking")}
-          </td>
-        </tr>
-        <TableListingRow label={t("contact.moMiLabel")}>
-          {t("contact.moMiValue")}
-        </TableListingRow>
-        <TableListingRow label={t("contact.frLabel")}>
-          {t("contact.frValue")}
-        </TableListingRow>
-      </TableListing>
+      {openingHoursInSelectedLanguage.map((openingHour) => (
+        <p style={{ margin: 0 }} key={openingHour}>
+          {openingHour}
+        </p>
+      ))}
     </InfoSection>
   );
 }
 
-function ContactDataSection(props: DepartmentInfoProps) {
+function ContactDataSection(props: Readonly<DepartmentInfoProps>) {
   const { t } = useTranslation(["travelMedicine/landing"]);
 
   return (

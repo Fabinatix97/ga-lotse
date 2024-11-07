@@ -120,8 +120,10 @@ export function InventoryTable({ params }: InventoryTableProps) {
             data={elements}
             minWidth="60rem"
             sorting={tableControl.tableSorting}
-            rowNavRoute={(row) => routes.inventory.details(row.original.id)}
-            focusColumnHeader="Name"
+            rowNavigation={{
+              route: (row) => routes.inventory.details(row.original.id),
+              focusColumnAccessorKey: "name",
+            }}
             columns={inventoryColumns({
               isAdmin,
               onCorrection: (item) =>

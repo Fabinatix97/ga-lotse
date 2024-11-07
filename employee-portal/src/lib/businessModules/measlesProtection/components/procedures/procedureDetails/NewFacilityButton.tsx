@@ -6,23 +6,27 @@
 "use client";
 
 import { Add } from "@mui/icons-material";
-import { Button } from "@mui/joy";
+import { Button, Sheet } from "@mui/joy";
 
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export function NewFacilityButton() {
   const [_open, setOpen] = useSearchParam("new-facility", "boolean");
 
   return (
-    <DetailsCard title="Einrichtung">
-      <Button
-        startDecorator={<Add />}
-        variant="plain"
-        onClick={() => setOpen(true)}
-      >
-        Hinzufügen
-      </Button>
-    </DetailsCard>
+    <Sheet>
+      <DetailsSection title="Einrichtung">
+        <div>
+          <Button
+            startDecorator={<Add />}
+            variant="plain"
+            onClick={() => setOpen(true)}
+          >
+            Hinzufügen
+          </Button>
+        </div>
+      </DetailsSection>
+    </Sheet>
   );
 }

@@ -15,9 +15,9 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import de.eshg.file.common.FileType;
 import de.eshg.file.common.FileTypeDetector;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.ImageMetaData;
+import de.eshg.lib.procedure.domain.model.FileContent;
+import de.eshg.lib.procedure.domain.model.Mail;
 import de.eshg.lib.procedure.domain.model.MailMetaData;
-import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.rest.service.error.BadRequestException;
 import jakarta.mail.Address;
@@ -50,22 +50,25 @@ class EmlParser {
 
   private EmlParser() {}
 
-  static ParsedMail parse(byte[] file, boolean deletable) {
+  static Mail parse(byte[] file) {
     try (InputStream inputStream = new ByteArrayInputStream(file)) {
       Session session = Session.getDefaultInstance(new Properties());
       Message message = new FixedMessageIdMimeMessage(session, inputStream);
 
-      ParsedMail parsedMail = new ParsedMail();
+      Mail parsedMail = new Mail();
       parsedMail.setFileType(ProcedureFileType.EML);
-      parsedMail.setSubject(message.getSubject());
-      parsedMail.setMessageText(extractMessageText(message));
-      parsedMail.setMetaData(extractMetaData(message));
-      parsedMail.setDeletable(deletable);
+      parsedMail.addMetaData(extractMetaData(message));
 
       int removedInvalidAttachments = removeAndCountInvalidAttachments(message);
       parsedMail.setRemovedInvalidAttachments(removedInvalidAttachments);
-      parsedMail.getAttachments().addAll(extractAttachments(message, deletable));
-      parsedMail.setContent(extractContent(message));
+      extractAttachments(message).forEach(parsedMail::addAttachment);
+
+      FileContent fileContent = new FileContent();
+      byte[] content = extractContent(message);
+      fileContent.setContent(content);
+
+      parsedMail.setFileSizeBytes(content.length);
+      parsedMail.setFileContent(fileContent);
 
       return parsedMail;
     } catch (MessagingException | IOException e) {
@@ -102,7 +105,8 @@ class EmlParser {
     return part.getContent().toString().strip();
   }
 
-  private static MailMetaData extractMetaData(Message message) throws MessagingException {
+  private static MailMetaData extractMetaData(Message message)
+      throws MessagingException, IOException {
     Address[] mailFrom = message.getFrom();
     Address[] mailTo = message.getAllRecipients();
     Date sentDate = message.getSentDate();
@@ -112,6 +116,8 @@ class EmlParser {
     }
 
     MailMetaData mailMetaData = new MailMetaData();
+    mailMetaData.setSubject(message.getSubject());
+    mailMetaData.setMessageText(extractMessageText(message));
     mailMetaData.setMailFrom(convertAddressesToString(mailFrom));
     mailMetaData.setMailTo(convertAddressesToString(mailTo));
     mailMetaData.setSentDate(sentDate.toInstant());
@@ -156,7 +162,7 @@ class EmlParser {
     return IOUtils.toByteArray(part.getInputStream());
   }
 
-  private static List<File> extractAttachments(Message message, boolean deletable)
+  private static List<File> extractAttachments(Message message)
       throws MessagingException, IOException {
     if (!(message.getContent() instanceof MimeMultipart content)) {
       return Collections.emptyList();
@@ -168,8 +174,7 @@ class EmlParser {
           createFile(
               bodyPart.getFileName(),
               FileTypeMapper.mapToProcedureFileType(parseFileType(bodyPart)),
-              parseFileContent(bodyPart),
-              deletable);
+              parseFileContent(bodyPart));
       files.add(file);
     }
     return files;
@@ -202,24 +207,15 @@ class EmlParser {
     return fileType != null && VALID_ATTACHMENT_FILE_TYPES.contains(fileType);
   }
 
-  private static File createFile(
-      String fileName, ProcedureFileType fileType, byte[] fileContent, boolean deletable)
+  private static File createFile(String fileName, ProcedureFileType fileType, byte[] fileContent)
       throws IOException {
     return switch (fileType) {
-      case JPEG, PNG -> {
-        ImageMetaData imageMetaData = new ImageMetaData();
-        ImageMetaDataExtractor.extract(fileContent, imageMetaData);
-
-        yield FileFactory.createImageWithMetaData(
-            fileName, fileType, fileContent, imageMetaData, deletable);
-      }
-      case PDF -> {
-        PdfMetaData pdfMetaData = new PdfMetaData();
-        PdfMetaDataExtractor.extract(fileContent, pdfMetaData);
-
-        yield FileFactory.createPdfWithMetaData(
-            fileName, fileType, fileContent, pdfMetaData, deletable);
-      }
+      case JPEG, PNG ->
+          FileFactory.createImageWithMetaData(
+              fileName, fileType, fileContent, ImageMetaDataExtractor.fromFileContent(fileContent));
+      case PDF ->
+          FileFactory.createPdfWithMetaData(
+              fileName, fileContent, PdfMetaDataExtractor.fromFileContent(fileContent));
       default -> throw new IllegalStateException("Unexpected value: " + fileType);
     };
   }

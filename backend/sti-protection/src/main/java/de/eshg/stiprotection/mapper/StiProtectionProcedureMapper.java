@@ -9,6 +9,7 @@ import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.StiProtectionProcedureDto;
 import de.eshg.stiprotection.api.StiProtectionProcedureOverviewDto;
+import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 
@@ -29,7 +30,8 @@ public class StiProtectionProcedureMapper {
         ConcernMapper.toInterfaceType(procedureData.concern()),
         PersonMapper.toInterfaceType(procedureData.person()),
         AppointmentMapper.toInterfaceType(
-            procedureData.appointment(), procedureData.userDefinedAppointment()));
+            procedureData.appointment(), procedureData.userDefinedAppointment()),
+        WaitingRoomMapper.toInterfaceType(procedureData.waitingRoom()));
   }
 
   public static StiProtectionProcedureOverviewDto toOverviewType(

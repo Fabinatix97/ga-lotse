@@ -15,8 +15,7 @@ export function PageGrid({ children }: { children: ReactNode }) {
   return (
     <Grid
       container
-      columnSpacing={{ xxs: 2, xs: 2, sm: 3, md: 4, lg: 4, xl: 4, xxl: 5 }}
-      rowSpacing={{ xxs: 6, xs: 6, sm: 8, md: 9, lg: 12, xl: 12, xxl: 12 }}
+      spacing={{ xxs: 2, xs: 2, sm: 3, md: 4, lg: 4, xl: 4, xxl: 5 }}
     >
       {children}
     </Grid>

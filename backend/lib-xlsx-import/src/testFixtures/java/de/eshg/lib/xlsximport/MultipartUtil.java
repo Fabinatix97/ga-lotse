@@ -15,6 +15,7 @@ import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.util.ByteArrayDataSource;
 import java.nio.file.Path;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +27,16 @@ public class MultipartUtil {
   private MultipartUtil() {}
 
   public static MultiValueMap<String, Object> toMultipartFormDataRequest(Path filePath) {
+    return toMultipartFormDataRequest(new FileSystemResource(filePath));
+  }
+
+  public static MultiValueMap<String, Object> toMultipartFormDataRequest(String classPathResource) {
+    return toMultipartFormDataRequest(new ClassPathResource(classPathResource));
+  }
+
+  public static MultiValueMap<String, Object> toMultipartFormDataRequest(Resource resource) {
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("file", new FileSystemResource(filePath));
+    body.add("file", resource);
     return body;
   }
 

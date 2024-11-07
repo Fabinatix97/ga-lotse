@@ -34,20 +34,18 @@ export function AddAbsenceSidebar({
   const snackbar = useSnackbar();
 
   async function saveEvent(values: EventFormValues) {
-    await submitCalendarEvent
-      .mutateAsync(
-        {
-          request: mapFormToRequestValues(values, "VACATION", userCalendarId),
+    await submitCalendarEvent.mutateAsync(
+      {
+        request: mapFormToRequestValues(values, "VACATION", userCalendarId),
+      },
+      {
+        onSuccess: () => {
+          snackbar.confirmation("Abwesenheit wurde erfolgreich gespeichert");
+          closeSidebar();
+          refetchEvents();
         },
-        {
-          onSuccess: () => {
-            snackbar.confirmation("Abwesenheit wurde erfolgreich gespeichert");
-            closeSidebar();
-            refetchEvents();
-          },
-        },
-      )
-      .catch();
+      },
+    );
   }
 
   return (

@@ -131,12 +131,13 @@ export function InformationStatementTemplateEditor(
   }
 
   async function createNewTemplate(values: TemplateValues) {
-    await createInformationStatementTemplate
-      .mutateAsync(createTemplateRequest(values, newTemplateState), {
+    await createInformationStatementTemplate.mutateAsync(
+      createTemplateRequest(values, newTemplateState),
+      {
         onSuccess: () =>
           router.push(routes.informationStatementTemplates.index),
-      })
-      .catch();
+      },
+    );
   }
 
   return (

@@ -13,9 +13,13 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ImportValidator {
+
+  private static final Logger log = LoggerFactory.getLogger(ImportValidator.class);
 
   private static final String INVALID_FILE_STRUCTURE =
       "Invalid file structure. Headers do not match the expected structure.";
@@ -54,16 +58,17 @@ public class ImportValidator {
         // skip the header
         continue;
       }
-      if (rowHasMoreColumnsThanHeader(row, headerRowNumberOfColumns)) {
+      if (row.getLastCellNum() > headerRowNumberOfColumns) {
+        log.error(
+            "row {} has more data columns than header columns: {} > {}",
+            row.getRowNum(),
+            row.getLastCellNum(),
+            headerRowNumberOfColumns);
         throw new BadRequestException(
             ErrorCode.INVALID_FILE,
             "Invalid file structure. Number of columns in header and data rows does not match.");
       }
     }
-  }
-
-  private static boolean rowHasMoreColumnsThanHeader(Row dataRow, int headerRowNumberOfColumns) {
-    return dataRow.getLastCellNum() > headerRowNumberOfColumns;
   }
 
   public static <T extends XlsxColumn> List<T> validateHeaderFormat(
@@ -105,6 +110,7 @@ public class ImportValidator {
     } else if (column.isOptional()) {
       return false;
     } else {
+      log.error("missing required column \"{}\"", column.getHeader());
       throw new BadRequestException(ErrorCode.INVALID_FILE, INVALID_FILE_STRUCTURE);
     }
   }

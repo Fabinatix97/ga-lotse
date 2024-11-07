@@ -131,6 +131,11 @@ public class BaseTestHelperController extends TestHelperController
   }
 
   @Override
+  public void disableNewFeature(BaseFeature featureToDisable) {
+    baseFeatureToggle.disableNewFeature(featureToDisable);
+  }
+
+  @Override
   public void createSetupAdmin(CreateSetupAdminRequest request) {
     masterKeycloakProvisioning.initializeSetupAdmin(request.username(), request.emailAddress());
   }

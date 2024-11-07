@@ -5,11 +5,15 @@
 
 const basePath = "/medical-registry";
 const proceduresPath = `${basePath}/procedures`;
+const proceduresSearchPath = `${basePath}/search-procedure`;
 
 export const routes = {
   procedures: {
+    index: `${proceduresPath}`,
     byId: (procedureId: string) => ({
       index: `${proceduresPath}/${procedureId}`,
+      details: `${proceduresPath}/${procedureId}/details`,
     }),
   },
+  proceduresSearch: { index: `${proceduresSearchPath}` },
 } as const;

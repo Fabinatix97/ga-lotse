@@ -32,7 +32,6 @@ import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
-import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
@@ -200,9 +199,7 @@ public class InspectionFinalizer {
     pdfMetaData.setCreatedDate(reportDate.toInstant());
     pdfMetaData.setDescription(reportData.inspection().title());
     String filename = reportData.reportInfo().filename();
-    Pdf pdf =
-        FileFactory.createPdfWithMetaData(
-            filename, ProcedureFileType.PDF, bytes, pdfMetaData, false);
+    Pdf pdf = FileFactory.createPdfWithMetaData(filename, bytes, pdfMetaData);
 
     report.setReportFile(pdf);
   }

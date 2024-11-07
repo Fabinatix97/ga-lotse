@@ -64,11 +64,12 @@ export function AuditlogCreatePasswordSidebar({
         }}
         initialValues={{ validForm: "", password: "", repeatedPassword: "" }}
         onSubmit={async ({ password }) => {
-          await addEmployeeSelfUserKeys
-            .mutateAsync(await generateKeyPairs(password), {
+          await addEmployeeSelfUserKeys.mutateAsync(
+            await generateKeyPairs(password),
+            {
               onSuccess: () => router.push(routes.auditlog.index),
-            })
-            .catch();
+            },
+          );
         }}
       >
         {({ isSubmitting, values, errors }) => (

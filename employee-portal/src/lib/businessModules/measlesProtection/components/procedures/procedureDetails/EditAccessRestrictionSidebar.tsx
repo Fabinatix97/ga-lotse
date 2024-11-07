@@ -17,7 +17,7 @@ import { useCallback } from "react";
 
 import { useUpdateAccessRestrictionMutation } from "@/lib/businessModules/measlesProtection/api/mutations/procedures";
 import { DateAndButtonRow } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/DateAndButtonRow";
-import { LabeledValue } from "@/lib/shared/components/detailsCard/LabeledValue";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
@@ -109,11 +109,11 @@ export function EditAccessRestrictionSidebarForm({
       <SidebarForm onSubmit={handleRawSubmit}>
         <SidebarContent title={"Betretungsverbot bearbeiten"}>
           <Stack gap={3}>
-            <LabeledValue
+            <DetailsCell
               label={fields.restrictionIssuedDate.label}
               value={formatDate(accessRestriction.restrictionIssuedDate)}
             />
-            <LabeledValue
+            <DetailsCell
               label={fields.restrictionStartDate.label}
               value={formatDate(accessRestriction.restrictionStartDate)}
             />

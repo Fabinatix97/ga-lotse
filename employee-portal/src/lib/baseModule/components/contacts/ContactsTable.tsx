@@ -32,7 +32,7 @@ import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { ContactsTableTitle } from "@/lib/baseModule/components/contacts/ContactsTableTitle";
 import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergeInstitutionContactSidebar";
 import { useMergePersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergePersonContactSidebar";
-import { UpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
+import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
 import { Contact } from "@/lib/baseModule/components/contacts/types";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
@@ -116,11 +116,7 @@ export function ContactsTable({
 
   const institutionMergeSidebar = useMergeInstitutionContactSidebar();
   const personMergeSidebar = useMergePersonContactSidebar();
-
-  const [editSidebar, setEditSidebar] = useState<{
-    open: boolean;
-    contact?: Contact;
-  }>({ open: false });
+  const updateSidebar = useUpdateContactSidebar();
 
   const { selectedContacts, rowSelection, rowSelectionProps } =
     usePersistentSelectionCache({
@@ -223,25 +219,19 @@ export function ContactsTable({
             data={elements}
             columns={contactTableColumns({
               hasWritePerms,
-              onEdit: (contact) => setEditSidebar({ open: true, contact }),
+              onEdit: (contact) => updateSidebar.open({ contact }),
             })}
             sorting={tableControl.tableSorting}
-            rowNavRoute={(row) => routes.contacts.details(row.original.id)}
-            focusColumnHeader="Name"
+            rowNavigation={{
+              route: (row) => routes.contacts.details(row.original.id),
+              focusColumnAccessorKey: "name",
+            }}
             rowSelectionProps={
               isContactMergeEnabled ? rowSelectionProps : undefined
             }
           />
         </TableSheet>
       </TablePage>
-
-      {hasWritePerms && (
-        <UpdateContactSidebar
-          open={editSidebar.open}
-          contact={editSidebar.contact}
-          onClose={() => setEditSidebar({ open: false })}
-        />
-      )}
     </>
   );
 }

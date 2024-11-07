@@ -9,7 +9,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateManualProgressEntryRequest(
     @NotNull ManualProgressEntryTypeDto manualProgressEntryType,
-    String subject,
-    String messageText,
     String note,
     String keyDocumentType) {}

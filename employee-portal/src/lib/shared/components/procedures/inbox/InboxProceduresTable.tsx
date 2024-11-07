@@ -73,11 +73,13 @@ export function InboxProceduresTable(props: InboxProceduresTableProps) {
           data={inboxProcedures}
           sorting={tableControl.tableSorting}
           columns={inboxProcedureColumns}
-          rowNavRoute={(row) =>
-            buildRoutePreservingSearchParams(
-              props.routes.details(row.original.inboxProcedureId),
-            )
-          }
+          rowNavigation={{
+            route: (row) =>
+              buildRoutePreservingSearchParams(
+                props.routes.details(row.original.inboxProcedureId),
+              ),
+            focusColumnAccessorKey: "inboxProgressEntry.subject",
+          }}
         />
       </TableSheet>
     </TablePage>

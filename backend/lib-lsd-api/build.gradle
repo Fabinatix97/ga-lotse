@@ -7,7 +7,7 @@ dependencies {
     api project(':api-commons')
     api project(':lib-commons')
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    implementation libs.bundles.keycloak.client
+    implementation libs.keycloak.client.admin.client
 
     testImplementation('com.squareup.okhttp3:mockwebserver') {
         exclude group: "junit", module: "junit"

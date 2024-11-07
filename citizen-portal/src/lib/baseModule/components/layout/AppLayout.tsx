@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* eslint @next/next/no-head-element: 0 */
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { PropsWithChildren } from "react";
@@ -32,6 +33,9 @@ export function AppLayout({
           flexDirection: "column",
         }}
       >
+        <noscript>
+          Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
+        </noscript>
         <I18nProvider lang={lang}>
           <ThemeProvider>
             <SnackbarProvider snackbar={CitizenSnackbar}>

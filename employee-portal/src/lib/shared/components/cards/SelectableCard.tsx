@@ -19,12 +19,14 @@ export function SelectableCard({
   sx,
   radioProps,
   allowDeselection = false,
+  changeBackgroundColor = true,
   forGroupName,
 }: PropsWithChildren<{
   value?: unknown;
   sx?: SxProps;
   radioProps?: RadioProps;
   allowDeselection?: boolean;
+  changeBackgroundColor?: boolean;
   forGroupName?: string;
 }>) {
   const [field, _, helpers] = useField<string | null>(forGroupName!);
@@ -47,7 +49,7 @@ export function SelectableCard({
         gap: 2,
         borderRadius: "8px",
         [`:has(> .${radioClasses.checked})`]: {
-          backgroundColor: "primary.100",
+          backgroundColor: changeBackgroundColor ? "primary.100" : "",
           borderColor: "primary.300",
         },
         [`& .${radioClasses.checked}`]: {

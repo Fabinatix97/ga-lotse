@@ -53,7 +53,9 @@ public class SchoolInfoLetterExaminationMapper {
             procedureDetails.child().dateOfBirth().format(DATE_FORMATTER)),
         YEAR_FORMATTER.format(procedureDetails.schoolYear()),
         DATE_FORMATTER.format(
-            procedureDetails.appointment().getAppointmentEnd().atZone(clock.getZone())),
+            procedure.getExaminationDate() != null
+                ? procedure.getExaminationDate()
+                : procedureDetails.appointment().getAppointmentEnd().atZone(clock.getZone())),
         new SchoolInfoLetterExaminationType(
             mapType(procedureDetails.type()),
             List.of(BACK_REGULAR, BACK_ENTRY_LEVEL)

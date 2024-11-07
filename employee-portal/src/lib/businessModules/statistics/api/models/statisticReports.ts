@@ -24,6 +24,7 @@ export interface StatisticReports {
   title: string;
   reports: ReportData[];
   activeSeries?: ActiveSeriesInfo;
+  anonymized: boolean;
 }
 
 export type ReportData = SingleReport | ReportSeries;

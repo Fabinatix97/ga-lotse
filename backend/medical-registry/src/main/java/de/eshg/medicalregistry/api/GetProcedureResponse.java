@@ -5,18 +5,29 @@
 
 package de.eshg.medicalregistry.api;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.List;
 import java.util.UUID;
 
-@Schema(name = "GetMedicalRegistryProcedureResponse")
-public record GetProcedureResponse(
-    @NotNull UUID id,
-    @NotNull long version,
-    @NotNull @Valid ProfessionalDto professional,
-    @Valid List<PracticeDto> practices,
-    @NotNull boolean employeesEmployed,
-    @NotNull boolean consentToPrivacyPolicy,
-    @NotNull boolean requestForWrittenConfirmation) {}
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = GetProcedureDraftResponse.class),
+  @JsonSubTypes.Type(value = GetProcedureConfirmedResponse.class)
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
+public sealed interface GetProcedureResponse
+    permits GetProcedureDraftResponse, GetProcedureConfirmedResponse {
+  UUID id();
+
+  long version();
+
+  ProfessionalDto professional();
+
+  List<PracticeDto> practices();
+
+  boolean employeesEmployed();
+
+  boolean consentToPrivacyPolicy();
+
+  boolean requestForWrittenConfirmation();
+}

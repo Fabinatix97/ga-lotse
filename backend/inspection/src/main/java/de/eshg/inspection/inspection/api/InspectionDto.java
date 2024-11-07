@@ -40,7 +40,9 @@ public record InspectionDto(
     @Valid InspectionFollowupInfoDto followupInfo,
     @Valid List<InspectionIncidentDto> incidents,
     @Valid UserDto assignee,
-    @Valid UserDto lockedByUser) {
+    @Valid UserDto lockedByUser,
+    @NotNull boolean possibleFacilityDuplicate,
+    @NotNull boolean possibleInspectionDuplicate) {
 
   @Schema(name = "ReportInfo")
   public record ReportInfoDto(

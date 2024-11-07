@@ -98,7 +98,14 @@ export function ConfigureHistogramChartStep({
           name={fieldName("binning")}
           label="Bins"
         />
-        {showBins && <SliderField min={1} max={50} name={fieldName("bins")} />}
+        {showBins && (
+          <SliderField
+            min={1}
+            max={50}
+            name={fieldName("bins")}
+            ariaLabel="Anzahl Bins"
+          />
+        )}
       </Stack>
     </Stack>
   );

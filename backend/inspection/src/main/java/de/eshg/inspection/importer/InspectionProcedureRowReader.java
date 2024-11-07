@@ -1,0 +1,176 @@
+/*
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.inspection.importer;
+
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_EMAIL;
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_FIRSTNAME;
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_LASTNAME;
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_PHONENUMBER;
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_ROLE;
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_SALUTATION;
+import static de.eshg.inspection.importer.InspectionListColumn.CONTACT_TITLE;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_CITY;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_EMAIL;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_HOUSENUMBER;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_NAME;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_PHONENUMBER;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_STREET;
+import static de.eshg.inspection.importer.InspectionListColumn.FACILITY_ZIPCODE;
+import static de.eshg.inspection.importer.InspectionListColumn.ID;
+import static de.eshg.inspection.importer.InspectionListColumn.INSPECTED_AT;
+import static de.eshg.inspection.importer.InspectionListColumn.INSPECTION_INCIDENTS;
+import static de.eshg.inspection.importer.InspectionListColumn.INSPECTION_RESULT;
+import static de.eshg.inspection.importer.InspectionListColumn.OBJECTTYPE;
+import static de.eshg.inspection.importer.InspectionListColumn.PROCEDURE_ID;
+import static de.eshg.inspection.importer.InspectionListColumn.STATUS;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import de.eshg.base.GenderDto;
+import de.eshg.base.SalutationDto;
+import de.eshg.base.address.DomesticAddressDto;
+import de.eshg.base.centralfile.api.facility.FacilityContactPersonDto;
+import de.eshg.base.centralfile.api.facility.FacilityDetailsDto;
+import de.eshg.inspection.inspection.api.InspectionResult;
+import de.eshg.inspection.objecttype.persistence.ObjectType;
+import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.xlsximport.ColumnAccessor;
+import de.eshg.lib.xlsximport.ErrorHandler;
+import de.eshg.lib.xlsximport.RowReader;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+
+class InspectionProcedureRowReader
+    extends RowReader<InspectionImporterRowValues, InspectionListColumn> {
+
+  private final ImportPersister importPersister;
+  private final Clock clock;
+
+  public InspectionProcedureRowReader(
+      Sheet sheet,
+      List<InspectionListColumn> actualColumns,
+      ImportPersister importPersister,
+      Clock clock) {
+    super(sheet, actualColumns);
+    this.importPersister = importPersister;
+    this.clock = clock;
+  }
+
+  @Override
+  protected InspectionImporterRowValues read(ColumnAccessor<InspectionListColumn> col) {
+    InspectionImporterRowValues result = new InspectionImporterRowValues();
+    ErrorHandler errorHandler = createErrorHandler(result);
+
+    result.setFacility(readFacilityData(col, errorHandler));
+    result.setInspection(readInspectionData(col, errorHandler));
+    result.setStatus(readStatus(col, STATUS, errorHandler));
+    result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
+
+    return result;
+  }
+
+  private ImportInspectionFacility readFacilityData(
+      ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
+    String importId = cellAsString(col, ID, true, true, errorHandler);
+
+    String objectTypeName = cellAsString(col, OBJECTTYPE, errorHandler);
+    Optional<ObjectType> objectType = importPersister.findObjectType(objectTypeName);
+    if (objectType.isEmpty()) {
+      errorHandler.handleError(col.get(OBJECTTYPE), "Unbekannter Objekttyp");
+    }
+
+    FacilityDetailsDto facilityDetailsDto = readFacilityDetails(col, errorHandler);
+
+    return new ImportInspectionFacility(importId, objectType.orElse(null), facilityDetailsDto);
+  }
+
+  private FacilityDetailsDto readFacilityDetails(
+      ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
+    String name = cellAsString(col, FACILITY_NAME, errorHandler);
+    String zipCode = cellAsString(col, FACILITY_ZIPCODE, false, true, errorHandler);
+    String city = cellAsString(col, FACILITY_CITY, errorHandler);
+    String street = cellAsString(col, FACILITY_STREET, errorHandler);
+    String housenumber = cellAsString(col, FACILITY_HOUSENUMBER, false, true, errorHandler);
+    String email = cellAsString(col, FACILITY_EMAIL, true, false, errorHandler);
+    String phonenumber = cellAsString(col, FACILITY_PHONENUMBER, true, true, errorHandler);
+
+    DomesticAddressDto contactAddress =
+        new DomesticAddressDto(CountryCode.DE, city, zipCode, null, street, housenumber, null);
+
+    FacilityContactPersonDto contactPerson = readFacilityContactPerson(col, errorHandler);
+
+    return new FacilityDetailsDto(
+        name,
+        isBlank(email) ? List.of() : List.of(email),
+        isBlank(phonenumber) ? List.of() : List.of(phonenumber),
+        contactPerson == null ? List.of() : List.of(contactPerson),
+        contactAddress,
+        null);
+  }
+
+  private FacilityContactPersonDto readFacilityContactPerson(
+      ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
+    SalutationDto salutation = cellAsSalutation(col, CONTACT_SALUTATION, errorHandler);
+    String title = cellAsString(col, CONTACT_TITLE, true, false, errorHandler);
+    String role = cellAsString(col, CONTACT_ROLE, true, false, errorHandler);
+    String firstName = cellAsString(col, CONTACT_FIRSTNAME, true, false, errorHandler);
+    String lastName = cellAsString(col, CONTACT_LASTNAME, true, false, errorHandler);
+    String email = cellAsString(col, CONTACT_EMAIL, true, false, errorHandler);
+    String phonenumber = cellAsString(col, CONTACT_PHONENUMBER, true, false, errorHandler);
+
+    if (salutation == null
+        && isBlank(title)
+        && isBlank(role)
+        && isBlank(firstName)
+        && isBlank(lastName)
+        && isBlank(email)
+        && isBlank(phonenumber)) {
+      return null;
+    }
+
+    return new FacilityContactPersonDto(
+        email, phonenumber, role, lastName, firstName, title, salutation, GenderDto.NOT_SPECIFIED);
+  }
+
+  private ImportInspection readInspectionData(
+      ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
+    LocalDateTime inspectedAt = cellAsDateTime(col, INSPECTED_AT, errorHandler);
+    InspectionResult inspectionResult = cellAsInspectionResult(col, errorHandler);
+    String incidents = cellAsString(col, INSPECTION_INCIDENTS, true, true, errorHandler);
+    return new ImportInspection(toInstant(inspectedAt), inspectionResult, incidents);
+  }
+
+  private InspectionResult cellAsInspectionResult(
+      ColumnAccessor<InspectionListColumn> col, ErrorHandler errorHandler) {
+    Cell cell = col.get(INSPECTION_RESULT);
+    String result = cellAsString(col, INSPECTION_RESULT, false, false, errorHandler);
+    return switch (result) {
+      case "Erfolgreich" -> InspectionResult.SUCCESSFUL;
+      case "Erfolgreich mit Beanstandungen" -> InspectionResult.SUCCESSFUL_WITH_INCIDENTS;
+      case "Negativ" -> InspectionResult.FAILED;
+      case null, default -> {
+        errorHandler.handleError(
+            cell,
+            "Ungültiger Wert (Erwartet: \"Erfolgreich\", \"Erfolgreich mit Beanstandungen\", \"Negativ\"; Tatsächlich: \"%s\")"
+                .formatted(result));
+        yield null;
+      }
+    };
+  }
+
+  private Instant toInstant(LocalDateTime dateTime) {
+    if (dateTime == null) return null;
+    if (dateTime.getHour() == 0 && dateTime.getMinute() == 0 && dateTime.getSecond() == 0) {
+      // if the time is 0:00h then there is no time set in the excel-sheet
+      dateTime = dateTime.plusHours(10);
+    }
+    return dateTime.atZone(clock.getZone()).toInstant();
+  }
+}

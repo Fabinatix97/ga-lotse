@@ -433,5 +433,19 @@ export const theme = extendTheme({
         }),
       },
     },
+    JoyToggleButtonGroup: {
+      styleOverrides: {
+        root: ({ ownerState }) => {
+          if (ownerState.color === "primary") {
+            return {
+              ".MuiButton-variantOutlined": {
+                color: "var(--joy-palette-primary-600)",
+              },
+            };
+          }
+          return {};
+        },
+      },
+    },
   },
 });

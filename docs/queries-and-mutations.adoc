@@ -379,8 +379,7 @@ export function CreateProcedureForm(props: CreateProcedureFormProps) {
     await createProcedure
       .mutateAsync(mapFormValues(values), {
         onSuccess: () => router.push(routes.procedures.overview),
-      })
-      .catch();
+      });
   }
 
   return <ProcedureForm onSubmit={handleSubmit} />;
@@ -399,21 +398,24 @@ This should only be necessary in rare cases, so only resort to this hook if the 
 
 Each mutation provides two functions for triggering the mutation: `mutate` and `mutateAsync`.
 
-In general, `mutate` should be preferred over `mutateAsync`, because it internally discards errors caused by the mutation, which avoids triggering the nearest error boundary. `onError` handlers are still executed, of course.
+When passing an `onSumbit` handler to Formik, we need the promise returned by `mutateAsync` to enable Formik to correctly update the submission state of a form.
 
-However, we need the promise returned by `mutateAsync` to enable Formik to correctly update the submission state of a form.
-In this case it's important to catch promise rejections to avoid propagating the error to the nearest error boundary. We can do this by using the following pattern:
+However, the returned Promise should not be used to access mutation response data or errors.
+Callbacks like `onSuccess` and `onError` should be used instead.
+
+In general, `mutate` should be preferred over `mutateAsync` when the mutation is not triggered by a form and there is no need for a Promise.
 
 [,ts]
 ----
+// Use mutateAsync and pass a promise to onSubmit
 async function handleSubmit(values: FormValues) {
-  await sendFormData
-    .mutateAsync(values)
-    .catch();
+  await sendFormData.mutateAsync(values);
 }
-----
+return <Form onSubmit={handleSubmit} />;
 
-Alternatively, a `try-catch` block can be used with an empty `catch` block, which is a little bit more verbose.
+// Use mutate when no Promise is needed
+return <button onClick={() => mutation.mutate(values)} />;
+----
 
 For more details about the difference between both functions refer to link:https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync[Mutate or MutateAsync].
 

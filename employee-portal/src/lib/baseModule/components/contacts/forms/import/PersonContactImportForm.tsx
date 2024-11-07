@@ -52,16 +52,14 @@ export function PersonContactImportForm(props: ContactImportFormProps) {
     useState<ApiImportPersonContactResponse>();
 
   async function handleSubmit(file: File) {
-    await importPersonContact
-      .mutateAsync(file, {
-        onSuccess: (response) => {
-          setSearchResults(response);
-          if (response.totalNumberOfMatches === 0) {
-            props.onImported(mapImportToCreate(response.vCard));
-          }
-        },
-      })
-      .catch();
+    await importPersonContact.mutateAsync(file, {
+      onSuccess: (response) => {
+        setSearchResults(response);
+        if (response.totalNumberOfMatches === 0) {
+          props.onImported(mapImportToCreate(response.vCard));
+        }
+      },
+    });
   }
 
   return (

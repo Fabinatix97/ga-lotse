@@ -8,6 +8,7 @@ package de.eshg.base.keycloak;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.BASIC_CLIENT_SCOPE;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_ID_PREFIX;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_NAME_PREFIX;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.getClientRepresentationAttributes;
 
 import com.google.common.annotations.VisibleForTesting;
 import de.eshg.lib.keycloak.*;
@@ -239,8 +240,10 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     clientRepresentation.setWebOrigins(List.of("+"));
 
     clientRepresentation.setAttributes(
-        Map.of(
-            "post.logout.redirect.uris", redirectUriBuilder.replacePath("/logout").toUriString()));
+        getClientRepresentationAttributes(
+            Map.of(
+                "post.logout.redirect.uris",
+                redirectUriBuilder.replacePath("/logout").toUriString())));
     setEshgClientScopes(clientRepresentation);
     return clientRepresentation;
   }

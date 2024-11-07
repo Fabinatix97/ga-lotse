@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.datatransfer;
 
-import de.eshg.statistics.api.DataSourceDto;
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import java.util.List;
 
 public record EvaluationTemplateData(

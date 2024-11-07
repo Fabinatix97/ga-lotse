@@ -40,4 +40,36 @@ public interface ProgressEntryRepository
   @Override
   @EntityGraph(attributePaths = ProgressEntry_.FILE)
   Page<ProgressEntry> findAll(Specification<ProgressEntry> spec, Pageable pageable);
+
+  @Query(
+      value =
+          """
+            SELECT COUNT(*) FROM ProgressEntry progressEntry
+            WHERE progressEntry.procedureId = :procedureId
+            AND (
+            TREAT(progressEntry as ManualProgressEntry).keyDocumentType = :keyDocumentType
+            OR
+            TREAT(progressEntry as SystemProgressEntry).keyDocumentType = :keyDocumentType
+            )
+            """)
+  Integer countByProcedureIdAndKeyDocumentType(
+      @Param("procedureId") Long procedureId, @Param("keyDocumentType") String keyDocumentType);
+
+  @Query(
+      """
+        SELECT progressEntry FROM ProgressEntry progressEntry
+        LEFT JOIN FETCH progressEntry.file as file
+        LEFT JOIN FETCH file.attachments
+        WHERE progressEntry.procedureId = :procedureId
+        AND progressEntry.id != :id
+        AND (
+        TREAT(progressEntry as ManualProgressEntry).keyDocumentType = :keyDocumentType
+        OR
+        TREAT(progressEntry as SystemProgressEntry).keyDocumentType = :keyDocumentType
+        )
+        """)
+  List<ProgressEntry> findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFileAndAttachments(
+      @Param("procedureId") Long procedureId,
+      @Param("keyDocumentType") String keyDocumentType,
+      @Param("id") Long id);
 }

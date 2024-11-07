@@ -7,12 +7,15 @@ package de.eshg.travelmedicine.citizenpublic;
 
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
+import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.MappingUtil;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
+import de.eshg.lib.appointmentblock.api.GetAppointmentTypesResponse;
 import de.eshg.lib.appointmentblock.api.GetFreeAppointmentsResponse;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.travelmedicine.citizenpublic.api.GetOpeningHoursResponse;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
 import de.eshg.travelmedicine.disease.DiseaseService;
 import de.eshg.travelmedicine.disease.api.GetDiseasesResponse;
@@ -23,6 +26,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,27 +54,33 @@ public class CitizenPublicController {
 
   private final DiseaseService diseaseService;
   private final AppointmentBlockService appointmentBlockService;
+  private final AppointmentTypeService appointmentTypeService;
   private final VaccinationConsultationService vaccinationConsultationService;
   private final TravelMedicineFeatureToggle featureToggle;
   private final DepartmentInfoService departmentInfoService;
   private final Resource privacyNotice;
   private final Resource privacyPolicy;
+  private final OpeningHoursProperties openingHoursProperties;
 
   public CitizenPublicController(
       DiseaseService diseaseService,
       AppointmentBlockService appointmentBlockService,
+      AppointmentTypeService appointmentTypeService,
       VaccinationConsultationService vaccinationConsultationService,
       TravelMedicineFeatureToggle featureToggle,
       DepartmentInfoService departmentInfoService,
       @Value("${de.eshg.travel-medicine.privacy-notice-location}") Resource privacyNotice,
-      @Value("${de.eshg.travel-medicine.privacy-policy-location}") Resource privacyPolicy) {
+      @Value("${de.eshg.travel-medicine.privacy-policy-location}") Resource privacyPolicy,
+      OpeningHoursProperties openingHoursProperties) {
     this.diseaseService = diseaseService;
     this.appointmentBlockService = appointmentBlockService;
+    this.appointmentTypeService = appointmentTypeService;
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.featureToggle = featureToggle;
     this.departmentInfoService = departmentInfoService;
     this.privacyNotice = privacyNotice;
     this.privacyPolicy = privacyPolicy;
+    this.openingHoursProperties = openingHoursProperties;
   }
 
   @GetMapping("/diseases")
@@ -94,6 +104,14 @@ public class CitizenPublicController {
     return new GetFreeAppointmentsResponse(appointments);
   }
 
+  @Operation(summary = "Gets all Appointment Types")
+  @GetMapping("/appointment-types")
+  @Transactional(readOnly = true)
+  public GetAppointmentTypesResponse getAppointmentTypesForCitizen() {
+    featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
+    return appointmentTypeService.getAppointmentTypes();
+  }
+
   @PostMapping("/vaccination-consultations")
   @Operation(summary = "Save a new vaccination consultation")
   @Transactional
@@ -110,6 +128,18 @@ public class CitizenPublicController {
   @Transactional(readOnly = true)
   public GetDepartmentInfoResponse getDepartmentInfo() {
     return departmentInfoService.getDepartmentInfo();
+  }
+
+  @Operation(summary = "Get opening hours.")
+  @GetMapping("/opening-hours")
+  @Transactional(readOnly = true)
+  public GetOpeningHoursResponse getOpeningHours() {
+
+    return new GetOpeningHoursResponse(
+        openingHoursProperties.de() == null ? Collections.emptyList() : openingHoursProperties.de(),
+        openingHoursProperties.en() == null
+            ? Collections.emptyList()
+            : openingHoursProperties.en());
   }
 
   @GetMapping(path = "/documents/privacy-notice")

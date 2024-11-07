@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistoryContent } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiDocumentContent } from "@eshg/citizen-portal-api/travelMedicine";
 import { Alert } from "@eshg/lib-portal/components/Alert";
 import { FormikValues } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -54,7 +54,7 @@ export function MedicalHistoryStepper() {
     const request: PatchMedicalHistoryRequest = {
       procedureId: procedureId!,
       procedureStepId: procedureStepId!,
-      medicalHistory: values as ApiMedicalHistoryContent,
+      medicalHistory: values as ApiDocumentContent,
     };
     await patchCitizenMedicalHistory.mutateAsync(request, {
       onSuccess: () => routeBackToDetails(),

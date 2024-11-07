@@ -31,7 +31,6 @@ export interface ActionsMenuProps extends MenuButtonProps {
   actionDescription?: string;
   sx?: SxProps;
   color?: ColorPaletteProp;
-  disablePortal?: boolean;
   rowHeight?: boolean;
 }
 
@@ -142,22 +141,7 @@ export function ActionsMenu(props: ActionsMenuProps) {
         >
           <MoreVertIcon color={props.color ?? "primary"} />
         </MenuButton>
-        <Menu
-          placement="bottom-end"
-          disablePortal={props.disablePortal}
-          popperOptions={{ strategy: "fixed" }}
-          sx={
-            props.disablePortal
-              ? {
-                  // This allows the menu to work in table cells,
-                  // since it is part of the table cell's content and overflows the cell.
-                  "td:has(&)": {
-                    overflow: "visible",
-                  },
-                }
-              : undefined
-          }
-        >
+        <Menu placement="bottom-end">
           {actionItems.map((item) => createActionsLinkOrButton(item))}
         </Menu>
       </Stack>

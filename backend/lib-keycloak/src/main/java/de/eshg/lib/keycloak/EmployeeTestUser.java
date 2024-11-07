@@ -96,6 +96,14 @@ public enum EmployeeTestUser implements KeycloakUser {
           ModuleLeaderGroup.INSPECTION,
           ModuleMemberGroup.INSPECTION,
           ModuleMemberGroup.INSPECTION_CHECKLISTS)),
+  INSPECTION_GA_IMPORT(
+      "inspection_ga_import",
+      "+49 555 123 459 3",
+      "password",
+      "Max",
+      "Import",
+      List.of(EmployeePermissionRole.INSPECTION_IMPORT),
+      List.of(ModuleMemberGroup.INSPECTION)),
   INSPECTION_LANDESAMT_USER(
       "inspection_la_user",
       "+49 555 123 460",

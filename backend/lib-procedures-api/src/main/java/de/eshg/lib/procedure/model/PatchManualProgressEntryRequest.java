@@ -13,6 +13,4 @@ import org.openapitools.jackson.nullable.JsonNullable;
 public record PatchManualProgressEntryRequest(
     @NotNull @Schema(requiredMode = RequiredMode.NOT_REQUIRED)
         JsonNullable<ManualProgressEntryTypeDto> manualProgressEntryType,
-    @Schema(nullable = true) JsonNullable<String> subject,
-    @Schema(nullable = true) JsonNullable<String> messageText,
     @Schema(nullable = true) JsonNullable<String> note) {}

@@ -4,7 +4,6 @@
  */
 
 import { ApiLabel, ApiResource } from "@eshg/employee-portal-api/base";
-import { Ref } from "react";
 
 import { mapUpdateResourceRequest } from "@/lib/baseModule/api/mapper/resources";
 import { useUpdateResource } from "@/lib/baseModule/api/mutations/resources";
@@ -13,17 +12,23 @@ import {
   ResourceFormValues,
 } from "@/lib/baseModule/components/resources/forms/ResourceForm";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface UpdateResourceSidebarProps {
-  onClose: () => void;
-  onSave: () => void;
+interface UpdateResourceSidebarProps extends SidebarWithFormRefProps {
   labels: ApiLabel[];
   resource: ApiResource;
-  sidebarFormRef: Ref<SidebarFormHandle>;
 }
 
-export function UpdateResourceSidebar(props: UpdateResourceSidebarProps) {
+export function useUpdateResourceSidebar() {
+  return useSidebarWithFormRef({
+    component: UpdateResourceSidebar,
+  });
+}
+
+function UpdateResourceSidebar(props: UpdateResourceSidebarProps) {
   const saveDataOverview = useUpdateResource(props.resource.id);
   const { openConfirmationDialog } = useConfirmationDialog();
 
@@ -31,7 +36,7 @@ export function UpdateResourceSidebar(props: UpdateResourceSidebarProps) {
     openConfirmationDialog({
       onConfirm: () => {
         saveDataOverview.mutate(mapUpdateResourceRequest(values), {
-          onSuccess: props.onSave,
+          onSuccess: () => props.onClose(true),
         });
       },
     });
@@ -40,7 +45,7 @@ export function UpdateResourceSidebar(props: UpdateResourceSidebarProps) {
 
   return (
     <ResourceForm
-      formRef={props.sidebarFormRef}
+      formRef={props.formRef}
       title={"Ressource bearbeiten"}
       submitLabel={"Speichern"}
       labels={props.labels}
@@ -52,7 +57,7 @@ export function UpdateResourceSidebar(props: UpdateResourceSidebarProps) {
         type: props.resource.type,
       }}
       onSubmit={handleSubmit}
-      onCancel={props.onClose}
+      onCancel={() => props.onClose(false)}
     />
   );
 }

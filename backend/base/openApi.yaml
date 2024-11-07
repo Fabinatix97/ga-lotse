@@ -818,6 +818,26 @@ paths:
       summary: Get base contact history step by revision id.
       tags:
       - Contact
+  /contacts/{id}/merged-contacts:
+    get:
+      operationId: getMergedContacts
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetMergedContactsResponse"
+          description: OK
+      summary: Returns the IDs of contacts that were merged into the requested contact
+      tags:
+      - Contact
   /department/info:
     get:
       operationId: getDepartmentInfo
@@ -2893,6 +2913,20 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/disable-new-features/{featureToDisable}:
+    post:
+      operationId: disableNewFeature
+      parameters:
+      - in: path
+        name: featureToDisable
+        required: true
+        schema:
+          $ref: "#/components/schemas/BaseFeature"
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/enabled-new-features/{featureToEnable}:
     post:
       operationId: enableNewFeature
@@ -4225,6 +4259,7 @@ components:
       - VERIFICATION_OF_EXTERNAL_DATA
       - OPEN_DATA
       - GDPR
+      - GDPR_ONLINE_PORTAL
       - CONTACT_MERGE
     BlockingEventsOfCalendar:
       type: object
@@ -6145,6 +6180,20 @@ components:
             $ref: "#/components/schemas/Label"
       required:
       - elements
+    GetMergedContactsResponse:
+      type: object
+      properties:
+        contactIds:
+          type: array
+          description: List of contact IDs that have been merged into the requested
+            contact
+          items:
+            type: string
+            format: uuid
+            description: List of contact IDs that have been merged into the requested
+              contact
+      required:
+      - contactIds
     GetPermissionsResponse:
       type: object
       properties:
@@ -8639,6 +8688,7 @@ components:
       - BASE_LABELS_WRITE
       - BASE_CONTACTS_READ
       - BASE_CONTACTS_WRITE
+      - BASE_GDPR_PROCEDURE_REVIEW
       - BASE_GDPR_PROCEDURE_READ
       - BASE_GDPR_PROCEDURE_WRITE
       - BASE_GLOBAL_CALENDARS_WRITE
@@ -8660,6 +8710,7 @@ components:
       - INSPECTION_CENTRALREPOSITORY_WRITE
       - INSPECTION_CENTRALREPOSITORY_DELETE
       - INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS
+      - INSPECTION_IMPORT
       - TRAVEL_MEDICINE_ADMIN
       - MEASLES_PROTECTION_ADMIN
       - CHAT_MANAGEMENT_WRITE

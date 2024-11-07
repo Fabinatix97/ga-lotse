@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiTemplateSection,
-  ApiTemplateSectionElement,
-} from "@eshg/employee-portal-api/travelMedicine";
+import { ApiTemplateSection } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { CreateNewFolder } from "@mui/icons-material";
 import { Button } from "@mui/joy";
@@ -18,25 +15,9 @@ import { TemplateSection } from "@/lib/businessModules/travelMedicine/shared/tem
 export function createEmptySection() {
   const section: ApiTemplateSection = {
     sectionTitle: "",
-    sectionElements: [createEmptySectionElement()],
+    sectionElements: [],
   };
   return section;
-}
-
-export function createEmptySectionElement() {
-  const sectionElement: ApiTemplateSectionElement = {
-    elementData: createEmptySectionElementData(),
-    elementType: "option",
-  };
-  return sectionElement;
-}
-
-export function createEmptySectionElementData() {
-  return {
-    questionText: "",
-    subElementMultiSelect: [],
-    subElementText: undefined,
-  };
 }
 
 export interface MedicalHistoryTemplateSectionListProp {

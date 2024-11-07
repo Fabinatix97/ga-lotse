@@ -60,7 +60,7 @@ export function AppointmentDetailsSidePanel({
         {!hasAccomplishedService && (
           <>
             <ContentSheetTitle sx={{ paddingBottom: "8px" }}>
-              {t("sidePanel.title")}
+              {t("sidePanel.title", { context: isBooked().toString() })}
             </ContentSheetTitle>
             {bookingsRemaining() && (
               <Button

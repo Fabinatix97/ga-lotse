@@ -207,10 +207,11 @@ export function StiProtectionProceduresTable() {
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           columns={getProceduresColumns({ reopenDialog })}
-          rowNavRoute={({ original: { id: procedureId } }) =>
-            routes.procedures.byId(procedureId).details
-          }
-          focusColumnHeader="id"
+          rowNavigation={{
+            route: ({ original: { id: procedureId } }) =>
+              routes.procedures.byId(procedureId).details,
+            focusColumnAccessorKey: "createdAt",
+          }}
         />
         <ReopenConfirmationDialog
           open={reopenDialog.isRequestingFinalize}

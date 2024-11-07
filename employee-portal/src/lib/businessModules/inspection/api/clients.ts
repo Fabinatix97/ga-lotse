@@ -13,6 +13,7 @@ import {
   EditorApi,
   FacilityApi,
   FileApi,
+  ImporterApi,
   InboxProcedureApi,
   InspectionApi,
   InspectionFeatureTogglesApi,
@@ -145,4 +146,9 @@ export function useInspectionFeatureTogglesApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useImportApi() {
+  const configuration = useConfiguration();
+  return new ImporterApi(configuration);
 }

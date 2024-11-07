@@ -35,7 +35,6 @@ import org.keycloak.representations.userprofile.config.UPAttribute;
 import org.keycloak.representations.userprofile.config.UPAttributePermissions;
 import org.keycloak.representations.userprofile.config.UPConfig;
 import org.keycloak.representations.userprofile.config.UPGroup;
-import org.keycloak.validate.validators.LengthValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -247,16 +246,16 @@ public class KeycloakProvisioning {
   private Map<String, Map<String, Object>> getCertificateValidatorConfig() {
     Map<String, Object> config =
         Map.of(
-            LengthValidator.KEY_MIN,
+            "min",
             "0",
             // we want to increase the limit as certificates are too long
-            LengthValidator.KEY_MAX,
+            "max",
             certificateAttributeMaxCharacters,
             // we don't want values be trimmed before checking the length
-            LengthValidator.KEY_TRIM_DISABLED,
+            "trim-disabled",
             true);
 
-    return Map.of(LengthValidator.ID, config);
+    return Map.of("length", config);
   }
 
   private String getPasswordPolicy() {

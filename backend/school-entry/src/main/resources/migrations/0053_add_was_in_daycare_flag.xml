@@ -1,0 +1,23 @@
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1729689608899-1">
+    <addColumn tableName="anamnesis">
+      <column name="was_in_daycare" type="bool"/>
+    </addColumn>
+  </changeSet>
+  <changeSet id="1730359513772-1" author="GA-Lotse">
+    <sql>
+      UPDATE anamnesis
+      SET was_in_daycare = TRUE
+      WHERE in_daycare_since IS NOT NULL
+         OR daycare_name IS NOT NULL
+    </sql>
+  </changeSet>
+</databaseChangeLog>

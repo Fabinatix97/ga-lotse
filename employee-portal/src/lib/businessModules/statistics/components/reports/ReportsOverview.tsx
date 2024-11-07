@@ -140,11 +140,13 @@ export function ReportsOverview() {
               <NoSearchResults info="Keine Reports vorhanden" />
             </Box>
           )}
-          rowNavRoute={(row) =>
-            row.original.type !== "SERIES"
-              ? routes.reports.details(row.original.reportId).index
-              : undefined
-          }
+          rowNavigation={{
+            route: (row) =>
+              row.original.type !== "SERIES"
+                ? routes.reports.details(row.original.reportId).index
+                : undefined,
+            focusColumnAccessorKey: "name",
+          }}
           getSubRows={getSubRows}
         />
       </TableSheet>

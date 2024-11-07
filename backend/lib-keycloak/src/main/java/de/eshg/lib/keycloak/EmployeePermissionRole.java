@@ -114,6 +114,10 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.BASE,
       BASE_CONTACTS_READ),
 
+  BASE_GDPR_PROCEDURE_REVIEW(
+      "Limitierte Lese- und Schreibberechtigung %s für Module".formatted("DSGVO-Prozesse"),
+      "Kann SachstandsIds zu DSGVO-Prozessen abfragen und DownloadIds anlegen",
+      Module.BASE),
   BASE_GDPR_PROCEDURE_READ(
       READ_PERMISSION_TEMPLATE.formatted("DSGVO-Prozesse"),
       "Kann DSGVO-Prozesse (Löschanfrage, Widerspruch und Datenauskunft) abrufen",
@@ -221,6 +225,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       INSPECTION_CENTRALREPOSITORY_WRITE),
   INSPECTION_CENTRALREPOSITORY_WRITE_CORECHECKLISTS(
       "Kern-Checklisten-Definition in Zentralen Diensten bereitstellen", Module.INSPECTION),
+  INSPECTION_IMPORT("Vorgänge importieren", Module.INSPECTION),
 
   SCHOOL_ENTRY_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Einschulungsuntersuchung"),
@@ -231,7 +236,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_RESOURCES_READ,
       BASE_CALENDAR_BUSINESS_EVENTS_WRITE,
       BASE_CONTACTS_READ,
-      BASE_CONTACTS_WRITE),
+      BASE_CONTACTS_WRITE,
+      BASE_GDPR_PROCEDURE_REVIEW),
 
   STATISTICS_STATISTICS_ADMIN(
       ADMIN_KEYCLOAK_NAME.formatted("Statistik"),
@@ -257,7 +263,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_FACILITIES_WRITE,
       BASE_ACCESS_CODE_USER_ADMIN,
       BASE_RESOURCES_READ,
-      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE,
+      BASE_GDPR_PROCEDURE_REVIEW),
 
   STI_PROTECTION_USER(
       "HIV-STI Benutzer",

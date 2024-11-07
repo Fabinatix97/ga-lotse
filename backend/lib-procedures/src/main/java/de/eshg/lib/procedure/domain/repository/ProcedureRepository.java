@@ -177,6 +177,18 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
 
   @Query(
       """
+   SELECT procedure.externalId from #{#entityName} procedure
+   LEFT JOIN procedure.relatedPersons relatedPerson
+   LEFT JOIN procedure.relatedFacilities relatedFacility
+   WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
+   OR relatedFacility.centralFileStateId IN :centralFileStateIds
+   ORDER BY procedure.createdAt DESC, procedure.id ASC
+   """)
+  List<UUID> findIdsByFileStateIds(
+      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds);
+
+  @Query(
+      """
  SELECT procedure from #{#entityName} procedure
 JOIN procedure.relatedPersons relatedPerson
 WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
@@ -186,20 +198,6 @@ ORDER BY procedure.createdAt DESC, procedure.id ASC
   List<ProcedureT> findByRelatedPersonsCentralFileStateIds(
       @Param("centralFileStateIds") Collection<UUID> centralFileStateIds,
       @Param("personType") PersonType personType);
-
-  @Query(
-      """
-    SELECT procedure from #{#entityName} procedure
-    JOIN procedure.relatedPersons relatedPerson
-    WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
-    AND relatedPerson.personType = :personType
-    AND procedure.procedureStatus = :procedureStatus
-    ORDER BY procedure.createdAt DESC, procedure.id ASC
-    """)
-  List<ProcedureT> findByRelatedPersonsCentralFileStateIds(
-      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds,
-      @Param("personType") PersonType personType,
-      @Param("procedureStatus") ProcedureStatus procedureStatus);
 
   List<ProcedureT> findAllByArchivingRelevance(ArchivingRelevance archivingRelevance);
 

@@ -6,7 +6,7 @@
 "use client";
 
 import { Stack } from "@mui/joy";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useId, useMemo, useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
 
 import { BaseModalProps } from "@/lib/shared/components/BaseModal";
@@ -15,7 +15,7 @@ import { SectionHeader } from "@/lib/shared/components/detailsSection/SectionHea
 export type SimplifiedModalProps = Pick<BaseModalProps, "open" | "onClose">;
 
 interface DetailsSectionProps {
-  name: string;
+  name?: string;
   title: string;
   canEdit?: boolean;
   canDelete?: boolean;
@@ -53,7 +53,8 @@ export function DetailsSection({
     return undefined;
   }, [canEditCallback, canRenderModal, onEdit]);
 
-  const headerId = `${name}-header`;
+  const backupId = useId();
+  const headerId = `${name ?? backupId}-header`;
 
   return (
     <Stack

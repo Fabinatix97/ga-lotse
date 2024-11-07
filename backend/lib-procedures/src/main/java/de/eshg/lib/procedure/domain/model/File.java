@@ -163,7 +163,7 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
     return deletable;
   }
 
-  public void setDeletable(boolean deletable) {
+  public void updateDeletable(boolean deletable) {
     this.deletable = deletable;
   }
 

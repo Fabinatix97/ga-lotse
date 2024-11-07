@@ -30,11 +30,12 @@ import { chatLogin } from "@/lib/businessModules/chat/matrix/login";
 import { restoreKeyBackupWithCache } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { IStoredCredentials } from "@/lib/businessModules/chat/shared/types";
 import {
-  clearLoginToken,
+  clearSearchParams,
   delayed,
   validateChatUsername,
 } from "@/lib/businessModules/chat/shared/utils";
@@ -88,7 +89,7 @@ export function useChatLifecycle(
       logger.error("Error logging into matrix chat:", error);
       setClientState(ClientState.Error);
     }
-    void clearLoginToken();
+    void clearSearchParams(chatSearchParamNames.loginToken);
   }, [baseUrl, selfUser, setClientState]);
 
   /**

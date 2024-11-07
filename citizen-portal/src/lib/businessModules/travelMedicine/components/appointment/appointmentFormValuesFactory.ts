@@ -4,6 +4,7 @@
  */
 
 import {
+  InitialAppointmentFormValues,
   PatientFormValues,
   TravelInformationFormValues,
 } from "@/lib/businessModules/travelMedicine/components/appointment/types";
@@ -28,7 +29,7 @@ export function createInitialTravelInformation(): TravelInformationFormValues {
   };
 }
 
-export const initialValues = {
+export const initialValues: InitialAppointmentFormValues = {
   patient: createInitialPatient(),
   travelInformation: createInitialTravelInformation(),
   initialStepAppointmentType: "",

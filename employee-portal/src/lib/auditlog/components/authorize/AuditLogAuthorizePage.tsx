@@ -66,14 +66,16 @@ export function AuditLogAuthorizePage(
         <DataTable
           data={response.logs}
           columns={auditLogAuthorizeColumns}
-          rowNavRoute={(row) =>
-            buildRoutePreservingSearchParams(
-              routes.auditlog.authorize.grantAccess(
-                row.original.auditLogSource,
-                format(row.original.createdAt, "yyyy-MM-dd"),
+          rowNavigation={{
+            route: (row) =>
+              buildRoutePreservingSearchParams(
+                routes.auditlog.authorize.grantAccess(
+                  row.original.auditLogSource,
+                  format(row.original.createdAt, "yyyy-MM-dd"),
+                ),
               ),
-            )
-          }
+            focusColumnAccessorKey: "auditLogSource",
+          }}
         />
       </TableSheet>
     </TablePage>

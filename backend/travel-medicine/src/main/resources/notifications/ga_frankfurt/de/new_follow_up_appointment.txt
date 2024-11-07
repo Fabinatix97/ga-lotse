@@ -1,0 +1,9 @@
+Sehr geehrte(r) %s %s,
+
+es wurde für Sie ein neuer Folgetermin eingestellt. Bitte buchen Sie einen für Sie passenden Zeitpunkt über das Online-Portal.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Mit freundlichen Grüßen,
+
+%s

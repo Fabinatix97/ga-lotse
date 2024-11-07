@@ -14,4 +14,5 @@ public record PostPopulateProcedureResponse(
     @NotNull UUID procedureId,
     @Valid @NotNull Map<String, UUID> procedureStepsCreated,
     @Valid @NotNull Map<String, UUID> servicesCreated,
+    @Valid @NotNull Map<String, UUID> informationStatementsCreated,
     @Valid CitizenPortalCredentialsDto credentials) {}

@@ -24,12 +24,10 @@ export function FileDeletionRequestModal() {
 
   async function handleSubmit(values: DeletionRequestValues) {
     if (fileIdForDeletion !== null)
-      await requestFileDeletion
-        .mutateAsync(
-          { fileId: fileIdForDeletion, createApprovalRequest: values },
-          { onSuccess: handleClose },
-        )
-        .catch();
+      await requestFileDeletion.mutateAsync(
+        { fileId: fileIdForDeletion, createApprovalRequest: values },
+        { onSuccess: handleClose },
+      );
   }
 
   function handleClose() {

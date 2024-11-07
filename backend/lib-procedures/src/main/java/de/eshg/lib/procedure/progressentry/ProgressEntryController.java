@@ -18,6 +18,7 @@ import de.eshg.lib.foureyes.model.ApprovalRequestDto;
 import de.eshg.lib.foureyes.model.CreateApprovalRequestRequest;
 import de.eshg.lib.procedure.api.ProgressEntryApi;
 import de.eshg.lib.procedure.domain.model.InboxProgressEntryType;
+import de.eshg.lib.procedure.domain.model.KeyDocumentAware;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryType;
@@ -45,6 +46,7 @@ import de.eshg.lib.procedure.model.GetProgressEntriesResponse;
 import de.eshg.lib.procedure.model.GetProgressEntriesSortOptions;
 import de.eshg.lib.procedure.model.GetProgressEntryPaginationOptions;
 import de.eshg.lib.procedure.model.GetProgressEntryResponse;
+import de.eshg.lib.procedure.model.KeyDocumentAwareProgressEntryDto;
 import de.eshg.lib.procedure.model.ManualProgressEntryDto;
 import de.eshg.lib.procedure.model.PatchManualProgressEntryRequest;
 import de.eshg.lib.procedure.model.ProgressEntryClassDto;
@@ -302,31 +304,30 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
   public GetProgressEntryResponse getProgressEntry(UUID procedureId, UUID progressEntryId) {
     ProgressEntry progressEntry =
         progressEntryService.getProgressEntryOrThrow(procedureId, progressEntryId);
-
-    List<ManualProgressEntryDto> relatedKeyDocumentProgressEntries =
-        progressEntry instanceof ManualProgressEntry manualProgressEntry
-            ? getRelatedKeyDocumentProgressEntries(manualProgressEntry)
-            : Collections.emptyList();
-
     return new GetProgressEntryResponse(
-        mapAndEnrichWithFileDetails(progressEntry), relatedKeyDocumentProgressEntries);
+        mapAndEnrichWithFileDetails(progressEntry),
+        getRelatedKeyDocumentProgressEntries(progressEntry));
   }
 
-  private List<ManualProgressEntryDto> getRelatedKeyDocumentProgressEntries(
-      ManualProgressEntry manualProgressEntry) {
-    if (manualProgressEntry.getKeyDocumentType() == null) {
+  private List<KeyDocumentAwareProgressEntryDto> getRelatedKeyDocumentProgressEntries(
+      ProgressEntry progressEntry) {
+    if (!(progressEntry instanceof KeyDocumentAware keyDocumentAware)) {
       return Collections.emptyList();
     }
 
-    return manualProgressEntryRepository
+    if (keyDocumentAware.getKeyDocumentType() == null) {
+      return Collections.emptyList();
+    }
+
+    return progressEntryRepository
         .findAllByProcedureIdAndKeyDocumentTypeAndNotIdFetchingFileAndAttachments(
-            manualProgressEntry.getProcedureId(),
-            manualProgressEntry.getKeyDocumentType(),
-            manualProgressEntry.getId())
+            progressEntry.getProcedureId(),
+            keyDocumentAware.getKeyDocumentType(),
+            progressEntry.getId())
         .stream()
         .map(this::mapAndEnrichWithFileDetails)
-        .filter(ManualProgressEntryDto.class::isInstance)
-        .map(ManualProgressEntryDto.class::cast)
+        .filter(KeyDocumentAwareProgressEntryDto.class::isInstance)
+        .map(KeyDocumentAwareProgressEntryDto.class::cast)
         .toList();
   }
 

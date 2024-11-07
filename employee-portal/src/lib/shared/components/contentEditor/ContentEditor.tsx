@@ -88,7 +88,7 @@ export function ContentEditor({
         editorElement,
         insertAfter,
       },
-    }).catch();
+    });
     return response.element;
   }
 
@@ -146,7 +146,7 @@ export function ContentEditor({
     await deleteEditorElement({
       editorId: editorData.id,
       elementId: selectedElement.id,
-    }).catch();
+    });
     // update local elements
     const updatedElements = elements.filter(
       (el) => el.id !== selectedElement.id,
@@ -172,7 +172,7 @@ export function ContentEditor({
       editorId: editorData.id,
       elementId: selectedElement.id,
       apiUpdateEditorRequest: request,
-    }).catch();
+    });
     return response.element;
   }
 

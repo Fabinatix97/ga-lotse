@@ -47,7 +47,7 @@ export default function CitizenMeaslesProtectionReportCasePage() {
   });
 
   async function handleSubmit(report: ReportMeaslesCase) {
-    await reportCase.mutateAsync(report).catch();
+    await reportCase.mutateAsync(report);
   }
 
   return (

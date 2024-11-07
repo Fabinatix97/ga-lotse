@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1729867011677-1">
+    <createTable tableName="inspection_possible_duplicates">
+      <column name="inspection_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="duplicate_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1729867011677-2">
+    <validCheckSum>9:e6a29080c43fc930a3369a88e6849a4b</validCheckSum>
+    <addColumn tableName="facility">
+      <column name="possible_duplicates" type="bool" valueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1729867011677-3">
+    <addForeignKeyConstraint baseColumnNames="duplicate_id" baseTableName="inspection_possible_duplicates" constraintName="fk_inspection_possible_duplicates_duplicate" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection" validate="true"/>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1729867011677-4">
+    <addForeignKeyConstraint baseColumnNames="inspection_id" baseTableName="inspection_possible_duplicates" constraintName="fk_inspection_possible_duplicates_inspection" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="inspection" validate="true"/>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1729867011677-5">
+    <ext:addPostgresEnumValues enumTypeName="inspectiontype" valuesToAdd="IMPORT"/>
+  </changeSet>
+</databaseChangeLog>

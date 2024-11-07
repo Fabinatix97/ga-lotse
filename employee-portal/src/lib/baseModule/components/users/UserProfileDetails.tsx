@@ -12,15 +12,13 @@ import {
 } from "@eshg/employee-portal-api/base";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
 import { isNullish } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
-import { UserProfileEditSidebar } from "@/lib/baseModule/components/users/UserProfileEditSidebar";
+import { useUserProfileEditSidebar } from "@/lib/baseModule/components/users/userSidebar/UserProfileEditSidebar";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
@@ -28,7 +26,6 @@ import {
   ExternalLinkDetailsCell,
   emailHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
-import { useSidebarForm } from "@/lib/shared/hooks/useSidebarForm";
 
 import { UserAvatar } from "./UserAvatar";
 
@@ -42,10 +39,7 @@ export function UserProfileDetails({
   isSelf: boolean;
 }) {
   const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
-  const [editSidebar, setEditSidebar] = useState(false);
-  const { sidebarFormRef, closeSidebar, handleClose } = useSidebarForm({
-    onClose: () => setEditSidebar(false),
-  });
+  const updateSidebar = useUserProfileEditSidebar();
 
   return (
     <Sheet
@@ -57,17 +51,6 @@ export function UserProfileDetails({
         flexBasis: "500px",
       }}
     >
-      <OverlayBoundary>
-        <UserProfileEditSidebar
-          open={editSidebar}
-          selfUser={user}
-          sidebarFormRef={sidebarFormRef}
-          selfGroups={groups}
-          onClose={handleClose}
-          onSuccess={closeSidebar}
-        />
-      </OverlayBoundary>
-
       <Stack gap={2} flex={1}>
         <Stack direction={"row"} gap={1} justifyContent={"space-between"}>
           <Typography level={"h3"} component={"h2"} id={"user-profiler-header"}>
@@ -76,7 +59,12 @@ export function UserProfileDetails({
           {isSelf && (
             <EditButton
               aria-label={"Profil bearbeiten"}
-              onClick={() => setEditSidebar(true)}
+              onClick={() =>
+                updateSidebar.open({
+                  selfUser: user,
+                  selfGroups: groups,
+                })
+              }
             />
           )}
         </Stack>

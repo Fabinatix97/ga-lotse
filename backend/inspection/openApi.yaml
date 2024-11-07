@@ -874,6 +874,11 @@ paths:
           type: string
           format: date-time
       - in: query
+        name: hasDuplicates
+        required: false
+        schema:
+          type: boolean
+      - in: query
         name: pageNumber
         required: false
         schema:
@@ -1189,25 +1194,6 @@ paths:
       tags:
       - WebSearch
   /facilities/{id}:
-    get:
-      operationId: getFacility
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InspFacility"
-          description: OK
-      summary: Get a facility
-      tags:
-      - Facility
     put:
       operationId: updateFacility
       parameters:
@@ -1380,6 +1366,59 @@ paths:
           description: OK
       tags:
       - File
+  /gdpr-validation-tasks:
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /import:
+    post:
+      operationId: importProcesses
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Start import processes
+      tags:
+      - Importer
+  /import/templates/inspection-import-template:
+    get:
+      operationId: getInspectionImportTemplate
+      responses:
+        "200":
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the XLSX inspection import template
+      tags:
+      - Importer
   /inbox-procedures:
     get:
       description: |
@@ -1543,19 +1582,6 @@ paths:
       summary: Update status of inbox procedure
       tags:
       - InboxProcedure
-  /inspections:
-    get:
-      operationId: getInspections
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetInspectionsResponse"
-          description: OK
-      summary: "Get list of all inspections, sorted by title"
-      tags:
-      - Inspection
   /inspections/geo/reversegeocode:
     get:
       operationId: getReverseGeoCode
@@ -1722,6 +1748,26 @@ paths:
         inspection
       tags:
       - Inspection
+  /inspections/{id}/facility-duplicates:
+    get:
+      operationId: getFacilityDuplicates
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FacilityDuplicateReview"
+          description: OK
+      summary: Get facility duplicates of an inspection
+      tags:
+      - Inspection
   /inspections/{id}/finalize:
     post:
       operationId: finalizeInspection
@@ -1753,6 +1799,26 @@ paths:
                 $ref: "#/components/schemas/Inspection"
           description: OK
       summary: Finalize an inspection
+      tags:
+      - Inspection
+  /inspections/{id}/inspection-duplicates:
+    get:
+      operationId: getInspectionDuplicates
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspectionDuplicateReview"
+          description: OK
+      summary: Get inspection duplicates of an inspection
       tags:
       - Inspection
   /inspections/{id}/inventory:
@@ -1801,6 +1867,53 @@ paths:
           description: OK
       summary: Get available packlist definition revisions to choose from for this
         inspection
+      tags:
+      - Inspection
+  /inspections/{id}/resolve-facility-duplicate:
+    post:
+      operationId: resolveFacilityDuplicate
+      parameters:
+      - description: The id of the inspection
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolveFacilityDuplicateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Resolves a facility duplicate for an inspection by choosing a facility
+      tags:
+      - Inspection
+  /inspections/{id}/resolve-inspection-duplicate:
+    post:
+      operationId: resolveInspectionDuplicate
+      parameters:
+      - description: The id of the inspection
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolveInspectionDuplicateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Resolves an inspection duplicate for an inspection by choosing whether
+        to keep or discard an inspection
       tags:
       - Inspection
   /inspections/{id}/resource:
@@ -3467,6 +3580,17 @@ components:
       required:
       - dataOrigin
       - name
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - procedureId
+      - type
     AddPacklistDefinitionRevisionRequest:
       type: object
       properties:
@@ -4671,11 +4795,7 @@ components:
           type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
         note:
-          type: string
-        subject:
           type: string
       required:
       - manualProgressEntryType
@@ -5218,6 +5338,18 @@ components:
             type: string
       required:
       - name
+    FacilityDuplicateReview:
+      type: object
+      properties:
+        existingFacilities:
+          type: array
+          items:
+            $ref: "#/components/schemas/FacilityForDuplicateReview"
+        importedFacility:
+          $ref: "#/components/schemas/FacilityForDuplicateReview"
+      required:
+      - existingFacilities
+      - importedFacility
     FacilityFileState:
       type: object
       properties:
@@ -5274,6 +5406,42 @@ components:
       - name
       - phoneNumbers
       - referenceVersion
+    FacilityForDuplicateReview:
+      type: object
+      properties:
+        addressAddition:
+          type: string
+        city:
+          type: string
+        emailAddresses:
+          type: array
+          items:
+            type: string
+        houseNo:
+          type: string
+        name:
+          type: string
+        objectType:
+          $ref: "#/components/schemas/ObjectTypeRef"
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+        postalCode:
+          type: string
+        referenceId:
+          type: string
+          format: uuid
+        street:
+          type: string
+      required:
+      - city
+      - emailAddresses
+      - name
+      - phoneNumbers
+      - postalCode
+      - referenceId
+      - street
     FacilityType:
       type: string
       enum:
@@ -5306,6 +5474,12 @@ components:
       enum:
       - REVIEW
       - DOCUMENT_INSPECTION
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -5581,15 +5755,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/InspectionIncident"
-    GetInspectionsResponse:
-      type: object
-      properties:
-        inspections:
-          type: array
-          items:
-            $ref: "#/components/schemas/Inspection"
-      required:
-      - inspections
     GetManualProgressEntryHistoryResponse:
       type: object
       properties:
@@ -5738,7 +5903,9 @@ components:
         relatedKeyDocumentProgressEntries:
           type: array
           items:
-            $ref: "#/components/schemas/ManualProgressEntry"
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
       required:
       - progressEntry
       - relatedKeyDocumentProgressEntries
@@ -5988,6 +6155,40 @@ components:
       required:
       - changedAt
       - changedBy
+    ImportStatistics:
+      type: object
+      properties:
+        created:
+          type: integer
+          format: int32
+          minimum: 0
+        duplicated:
+          type: integer
+          format: int32
+          minimum: 0
+        failed:
+          type: integer
+          format: int32
+          minimum: 0
+        mergeFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        merged:
+          type: integer
+          format: int32
+          minimum: 0
+        total:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - created
+      - duplicated
+      - failed
+      - mergeFailed
+      - merged
+      - total
     InboxProcedure:
       type: object
       properties:
@@ -6175,6 +6376,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/InspPendingFacility"
+        numberOfPossibleDuplicates:
+          type: integer
+          format: int64
         totalNumberOfElements:
           type: integer
           format: int64
@@ -6183,6 +6387,7 @@ components:
           format: int32
       required:
       - elements
+      - numberOfPossibleDuplicates
       - totalNumberOfElements
       - totalPages
     InspPendingFacility:
@@ -6211,6 +6416,8 @@ components:
         plannedFrom:
           type: string
           format: date-time
+        possibleFacilityDuplicate:
+          type: boolean
         postalCode:
           type: string
         street:
@@ -6220,6 +6427,7 @@ components:
       - city
       - id
       - name
+      - possibleFacilityDuplicate
       - postalCode
       - street
     InspPendingFacilityInspection:
@@ -6233,6 +6441,8 @@ components:
           format: int32
         phase:
           $ref: "#/components/schemas/InspectionPhase"
+        possibleInspectionDuplicate:
+          type: boolean
         status:
           $ref: "#/components/schemas/ProcedureStatus"
         type:
@@ -6241,6 +6451,7 @@ components:
       - id
       - numberOfIncidents
       - phase
+      - possibleInspectionDuplicate
       - status
       - type
     InspPendingFacilityKind:
@@ -6300,6 +6511,10 @@ components:
           $ref: "#/components/schemas/InspectionPhase"
         plannedAppointment:
           $ref: "#/components/schemas/InspectionAppointment"
+        possibleFacilityDuplicate:
+          type: boolean
+        possibleInspectionDuplicate:
+          type: boolean
         reportId:
           type: string
           format: uuid
@@ -6333,6 +6548,8 @@ components:
       - facility
       - inventories
       - phase
+      - possibleFacilityDuplicate
+      - possibleInspectionDuplicate
       - resources
       - result
       - selectedChecklistDefinitionVersions
@@ -6423,12 +6640,23 @@ components:
       - name
       - version
       - versionId
+    InspectionDuplicateReview:
+      type: object
+      properties:
+        existingInspections:
+          type: array
+          items:
+            $ref: "#/components/schemas/InspectionForDuplicateReview"
+        importedInspection:
+          $ref: "#/components/schemas/InspectionForDuplicateReview"
+      required:
+      - existingInspections
+      - importedInspection
     InspectionFeature:
       type: string
       enum:
-      - PACKLISTS
-      - CHECKLIST_AUDIOS
       - OFFLINE
+      - IMPORT
     InspectionFollowupInfo:
       type: object
       properties:
@@ -6440,6 +6668,31 @@ components:
           format: uuid
         followupType:
           $ref: "#/components/schemas/FollowupType"
+    InspectionForDuplicateReview:
+      type: object
+      properties:
+        executedTime:
+          type: string
+          format: date-time
+        externalId:
+          type: string
+          format: uuid
+        numberOfIncidents:
+          type: integer
+          format: int32
+        result:
+          $ref: "#/components/schemas/InspectionResult"
+        title:
+          type: string
+        type:
+          $ref: "#/components/schemas/InspectionType"
+      required:
+      - executedTime
+      - externalId
+      - numberOfIncidents
+      - result
+      - title
+      - type
     InspectionIncident:
       type: object
       properties:
@@ -6580,6 +6833,7 @@ components:
       - INITIAL
       - COMPLAINT
       - DOCUMENT_INSPECTION
+      - IMPORT
     InterceptionType:
       type: string
       enum:
@@ -6596,6 +6850,20 @@ components:
       - PROTECTIVE_EQUIPMENT
       - TEST_KIT
       - MISC
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
     Mail:
       type: object
       allOf:
@@ -6641,13 +6909,19 @@ components:
             type: string
           mailTo:
             type: string
+          messageText:
+            type: string
           sentDate:
             type: string
             format: date-time
+          subject:
+            type: string
       required:
       - mailFrom
       - mailTo
+      - messageText
       - sentDate
+      - subject
     MailMetaDataHistory:
       type: object
       allOf:
@@ -6681,13 +6955,10 @@ components:
             type: boolean
           manualProgressEntryType:
             $ref: "#/components/schemas/ManualProgressEntryType"
-          messageText:
-            type: string
           note:
             type: string
-          subject:
-            type: string
       - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - createdBy
@@ -6940,13 +7211,7 @@ components:
       properties:
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
-          nullable: true
         note:
-          type: string
-          nullable: true
-        subject:
           type: string
           nullable: true
     Pdf:
@@ -7375,6 +7640,21 @@ components:
       - fileSize
       - reportDate
       - reportId
+    ResolveFacilityDuplicateRequest:
+      type: object
+      properties:
+        chosenReferenceId:
+          type: string
+          format: uuid
+      required:
+      - chosenReferenceId
+    ResolveInspectionDuplicateRequest:
+      type: object
+      properties:
+        keepInspection:
+          type: boolean
+      required:
+      - keepInspection
     ResourceType:
       type: string
       description: The list of possible types under which Resources can be categorized.
@@ -7445,6 +7725,11 @@ components:
         properties:
           changeDescription:
             type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
           systemProgressEntryType:
             type: string
           triggerType:
@@ -7456,6 +7741,7 @@ components:
             type: string
           triggeredByUserLastName:
             type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - modifiedAt

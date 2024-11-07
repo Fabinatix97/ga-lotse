@@ -43,11 +43,9 @@ export function useUpdateDataBasis({
   });
 
   return async (statisticId: string, timeSpan: TimeSpan) => {
-    return mutation
-      .mutateAsync({
-        statisticId: statisticId,
-        timeSpan: timeSpan,
-      })
-      .catch();
+    return mutation.mutateAsync({
+      statisticId: statisticId,
+      timeSpan: timeSpan,
+    });
   };
 }

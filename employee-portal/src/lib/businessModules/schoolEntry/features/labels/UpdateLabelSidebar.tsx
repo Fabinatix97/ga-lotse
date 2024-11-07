@@ -51,11 +51,12 @@ function UpdateLabelSidebar(props: UpdateLabelProps) {
   async function handleSubmit(labelFormValues: LabelValues) {
     const labelId = props.label.id;
     const labelVersion = props.label.version;
-    await updateLabel
-      .mutateAsync(mapToRequest(labelId, labelFormValues, labelVersion), {
+    await updateLabel.mutateAsync(
+      mapToRequest(labelId, labelFormValues, labelVersion),
+      {
         onSuccess: () => props.onClose(),
-      })
-      .catch();
+      },
+    );
   }
 
   return (

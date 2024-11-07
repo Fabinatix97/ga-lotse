@@ -6,7 +6,7 @@
 import { ApiAppointment } from "@eshg/employee-portal-api/measlesProtection";
 import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
+import { Button, Sheet, Stack } from "@mui/joy";
 
 import { useDeleteAppointmentForProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/appointmentBookingApi";
 import {
@@ -14,11 +14,8 @@ import {
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/shared/components/detailsCard/LabeledValue";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 export interface AppointmentCardProps {
@@ -67,47 +64,51 @@ export function AppointmentCard({
     },
   ];
   return (
-    <DetailsCard
-      title="Termin"
-      fullHeight={true}
-      actionButton={
-        appointment && (
-          <ActionsMenu
-            actionItems={appointmentCardActions}
-            aria-label="Aktionen"
-            sx={{
-              border: (theme) =>
-                `1px solid ${theme.palette.primary.outlinedBorder}`,
-            }}
-          />
-        )
-      }
-    >
-      <Stack spacing={3} alignItems={"start"} width={"100%"}>
-        {appointment ? (
-          <ValueList style={{ flexBasis: "auto" }}>
-            <LabeledValue label="Datum" value={formatDate(appointment.start)} />
-            <LabeledValue
-              label="Zeitraum"
-              value={
-                "Von " +
-                formatTime(appointment.start) +
-                " Uhr bis " +
-                formatTime(appointment.end) +
-                " Uhr"
-              }
+    <Sheet sx={{ height: "100%" }}>
+      <DetailsSection
+        title="Termin"
+        buttons={
+          appointment && (
+            <ActionsMenu
+              actionItems={appointmentCardActions}
+              aria-label="Aktionen"
+              sx={{
+                border: (theme) =>
+                  `1px solid ${theme.palette.primary.outlinedBorder}`,
+              }}
             />
-          </ValueList>
-        ) : !procedureClosed ? (
-          <Button
-            variant="plain"
-            startDecorator={<Add />}
-            onClick={() => setAddingAppointment(true)}
-          >
-            Hinzufügen
-          </Button>
-        ) : null}
-      </Stack>
-    </DetailsCard>
+          )
+        }
+      >
+        <Stack spacing={3} alignItems={"start"} width={"100%"}>
+          {appointment ? (
+            <Stack gap={1} style={{ flexBasis: "auto" }}>
+              <DetailsCell
+                label="Datum"
+                value={formatDate(appointment.start)}
+              />
+              <DetailsCell
+                label="Zeitraum"
+                value={
+                  "Von " +
+                  formatTime(appointment.start) +
+                  " Uhr bis " +
+                  formatTime(appointment.end) +
+                  " Uhr"
+                }
+              />
+            </Stack>
+          ) : !procedureClosed ? (
+            <Button
+              variant="plain"
+              startDecorator={<Add />}
+              onClick={() => setAddingAppointment(true)}
+            >
+              Hinzufügen
+            </Button>
+          ) : null}
+        </Stack>
+      </DetailsSection>
+    </Sheet>
   );
 }

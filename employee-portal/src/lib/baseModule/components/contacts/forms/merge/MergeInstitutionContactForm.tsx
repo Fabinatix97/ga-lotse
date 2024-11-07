@@ -107,17 +107,15 @@ export function MergeInstitutionContactForm({
   const updateContact = useUpdateContactMutation(into.id);
 
   async function handleSubmit(values: MergeInstitutionContactFormValues) {
-    await updateContact
-      .mutateAsync(
-        mapImportMergeContactRequest(
-          values,
-          from.type === "Entity" ? from.data.id : undefined,
-        ),
-        {
-          onSuccess,
-        },
-      )
-      .catch();
+    await updateContact.mutateAsync(
+      mapImportMergeContactRequest(
+        values,
+        from.type === "Entity" ? from.data.id : undefined,
+      ),
+      {
+        onSuccess,
+      },
+    );
   }
 
   return (

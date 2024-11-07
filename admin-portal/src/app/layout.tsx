@@ -107,6 +107,9 @@ export default function RootLayout({
       <body
         style={{ backgroundColor: "var(--joy-palette-neutral-100, #F0F4F8)" }}
       >
+        <noscript>
+          Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
+        </noscript>
         <NonceProvider initialNonce={nonce}>
           <ThemeProvider>
             <ApiProvider>

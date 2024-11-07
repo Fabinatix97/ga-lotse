@@ -4,15 +4,13 @@
  */
 
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
-import { ApiInspectionFeature } from "@eshg/employee-portal-api/inspection";
 import { EmojiTransportation } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
-  SideNavigationItem,
   SideNavigationSubItem,
+  UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import { useIsNewFeatureEnabledUnsuspended as useIsNewInspectionFeatureEnabledUnsuspended } from "@/lib/businessModules/inspection/api/queries/feature";
 import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./routes";
@@ -58,6 +56,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     href: routes.facilities.webSearch.index,
     accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
   },
+  {
+    name: "Packlistendefinitionen",
+    href: routes.packlists.definitions.index,
+    accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
+  },
 ];
 
 const inboxNavigationItem: SideNavigationSubItem = {
@@ -66,31 +69,20 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
 };
 
-const packlistsNavigationItem: SideNavigationSubItem = {
-  name: "Packlistendefinitionen",
-  href: routes.packlists.definitions.index,
-  accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
-};
-
-export function useSideNavigationItems(): SideNavigationItem[] {
+export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Inbox);
-  const { data: isPacklistsEnabled, isError: isPacklistsEnabledError } =
-    useIsNewInspectionFeatureEnabledUnsuspended(ApiInspectionFeature.Packlists);
-
-  const subItemsWithPacklists = isPacklistsEnabled
-    ? [...defaultSubItems, packlistsNavigationItem]
-    : defaultSubItems;
 
   const subItems = isInboxEnabled
-    ? [...subItemsWithPacklists, inboxNavigationItem]
-    : subItemsWithPacklists;
-  return [
-    {
-      ...sideNavigationItem,
-      error: isPacklistsEnabledError
-        ? "Bei der Verbindung zum Begehungsmodul ist ein Fehler aufgetreten."
-        : undefined,
-      subItems,
-    },
-  ];
+    ? [...defaultSubItems, inboxNavigationItem]
+    : defaultSubItems;
+
+  return {
+    isLoading: false,
+    items: [
+      {
+        ...sideNavigationItem,
+        subItems,
+      },
+    ],
+  };
 }

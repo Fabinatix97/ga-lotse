@@ -13,5 +13,6 @@ public enum StatisticStateDto {
   FAILED,
   CREATING,
   UPDATING,
-  COPY_ONGOING
+  COPY_ONGOING,
+  DELETING
 }

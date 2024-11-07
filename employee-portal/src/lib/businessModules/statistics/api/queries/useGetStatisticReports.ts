@@ -141,6 +141,7 @@ export function mapToStatisticReports(
         : mapSingleReport(reportSeriesEntry);
     }),
     activeSeries: mapActiveSeries(response),
+    anonymized: response.anonymized,
   };
 }
 

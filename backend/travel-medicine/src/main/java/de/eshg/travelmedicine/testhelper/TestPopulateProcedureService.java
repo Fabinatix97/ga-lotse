@@ -5,23 +5,27 @@
 
 package de.eshg.travelmedicine.testhelper;
 
+import static de.eshg.lib.procedure.model.ProcedureStatusDto.*;
 import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT;
+import static de.eshg.travelmedicine.testhelper.TestHelperUtil.answerDocumentContent;
 
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.user.UserApi;
 import de.eshg.base.user.api.GetUsersResponse;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.keycloak.TechnicalGroup;
-import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.travelmedicine.certificate.CertificateService;
 import de.eshg.travelmedicine.certificate.api.CertificateTypeDto;
 import de.eshg.travelmedicine.certificate.api.PostPutCertificateRequest;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
+import de.eshg.travelmedicine.document.api.DocumentContentDto;
+import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.testhelper.api.CertificatePopulationDto;
 import de.eshg.travelmedicine.testhelper.api.CitizenPortalCredentialsDto;
+import de.eshg.travelmedicine.testhelper.api.InformationStatementPopulationDto;
 import de.eshg.travelmedicine.testhelper.api.InitialStepPopulationDto;
 import de.eshg.travelmedicine.testhelper.api.OtherServicePopulationDto;
 import de.eshg.travelmedicine.testhelper.api.PostPopulateProcedureRequest;
@@ -31,6 +35,7 @@ import de.eshg.travelmedicine.testhelper.api.VaccinationPopulationDto;
 import de.eshg.travelmedicine.vaccinationconsultation.CitizenAccessCodeUserClient;
 import de.eshg.travelmedicine.vaccinationconsultation.ProcedureStepService;
 import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationService;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatchAcceptDraftRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchOtherServiceRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostInformationStatementsRequest;
@@ -39,11 +44,13 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.PostVaccinationConsult
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStepRepository;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultationRepository;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.security.core.context.SecurityContext;
@@ -61,6 +68,7 @@ public class TestPopulateProcedureService {
   private final ProcedureStepService procedureStepService;
   private final ProcedureStepRepository procedureStepRepository;
   private final CertificateService certificateService;
+  private final InformationStatementService informationStatementService;
 
   private final CitizenAccessCodeUserClient citizenAccessCodeUserClient;
   private final UserApi userApi;
@@ -74,6 +82,7 @@ public class TestPopulateProcedureService {
       ProcedureStepService procedureStepService,
       ProcedureStepRepository procedureStepRepository,
       CertificateService certificateService,
+      InformationStatementService informationStatementService,
       UserApi userApi,
       CitizenAccessCodeUserClient citizenAccessCodeUserClient,
       TravelMedicineFeatureToggle featureToggle) {
@@ -82,6 +91,7 @@ public class TestPopulateProcedureService {
     this.procedureStepService = procedureStepService;
     this.procedureStepRepository = procedureStepRepository;
     this.certificateService = certificateService;
+    this.informationStatementService = informationStatementService;
     this.citizenAccessCodeUserClient = citizenAccessCodeUserClient;
     this.userApi = userApi;
     this.featureToggle = featureToggle;
@@ -95,6 +105,8 @@ public class TestPopulateProcedureService {
     UUID procedureId;
     Map<String, UUID> stepMap = new LinkedHashMap<>();
     Map<String, UUID> serviceMap = new LinkedHashMap<>();
+    Map<String, UUID> informationStatementMap;
+    UUID citizenUserId = null;
     CitizenPortalCredentialsDto citizenPortalCredentials = null;
 
     // 1. check request
@@ -105,17 +117,24 @@ public class TestPopulateProcedureService {
       PostCitizenVaccinationConsultationRequest citizenProcedureRequest =
           populateProcedureRequest.citizenProcedureData();
       procedureId = populateCitizenVaccinationConsultation(citizenProcedureRequest);
-      citizenPortalCredentials = createCredentials(procedureId, citizenProcedureRequest);
+      citizenUserId = getCitizenUserId(procedureId);
+      citizenPortalCredentials = createCredentials(citizenUserId, citizenProcedureRequest);
     } else {
       procedureId =
           populateEmployeeVaccinationConsultation(populateProcedureRequest.procedureData());
     }
 
-    // 3. add services
+    // 3. start procedure
+    if (isCitizenPortal
+        && Arrays.asList(OPEN, CLOSED).contains(populateProcedureRequest.targetState())) {
+      startProcedure(procedureId);
+    }
+
+    // 4. add services
     serviceMap.putAll(populateVaccinations(procedureId, populateProcedureRequest.vaccinations()));
     serviceMap.putAll(populateOtherServices(procedureId, populateProcedureRequest.otherServices()));
 
-    // 4. deal with initial procedure step
+    // 5. deal with initial procedure step
     InitialStepPopulationDto initialStep = populateProcedureRequest.initialStep();
     if (initialStep != null) {
       UUID initialStepId =
@@ -132,27 +151,31 @@ public class TestPopulateProcedureService {
       }
     }
 
-    // 5. populate steps
+    // 6. populate steps
     stepMap.putAll(
         populateSteps(procedureId, populateProcedureRequest.procedureSteps(), serviceMap));
-    // 6. cancel appointments
-    cancelAppointments(procedureId, stepMap, populateProcedureRequest.cancelSteps());
+    // 7. cancel appointments
+    cancelAppointments(procedureId, citizenUserId, stepMap, populateProcedureRequest.cancelSteps());
 
-    // 7. perform services
+    // 8. perform services
     executeVaccinations(procedureId, serviceMap, populateProcedureRequest.executeVaccinations());
     executeOtherServices(procedureId, serviceMap, populateProcedureRequest.executeOtherServices());
 
-    // 8. add certificates
+    // 9. add certificates
     populateCertificates(procedureId, populateProcedureRequest.certificates(), stepMap, serviceMap);
 
-    // 9. add information statements
-    populateInformationStatements(procedureId, populateProcedureRequest.informationStatements());
+    // 10. add information statements
+    informationStatementMap =
+        populateInformationStatements(
+            procedureId, citizenUserId, populateProcedureRequest.informationStatements());
 
-    // 10. close the procedure
-    changeProcedureStatus(procedureId, populateProcedureRequest.statusChange());
+    // 11. close the procedure
+    if (Objects.equals(CLOSED, populateProcedureRequest.targetState())) {
+      closeProcedure(procedureId);
+    }
 
     return new PostPopulateProcedureResponse(
-        procedureId, stepMap, serviceMap, citizenPortalCredentials);
+        procedureId, stepMap, serviceMap, informationStatementMap, citizenPortalCredentials);
   }
 
   private boolean isCitizenPortal(PostPopulateProcedureRequest createProcedureRequest) {
@@ -190,17 +213,25 @@ public class TestPopulateProcedureService {
     }
   }
 
+  private UUID getCitizenUserId(UUID procedureId) {
+    return vaccinationConsultationRepository
+        .findByExternalId(procedureId)
+        .orElseThrow()
+        .getCitizenUserId();
+  }
+
   private CitizenPortalCredentialsDto createCredentials(
-      UUID procedureId, PostCitizenVaccinationConsultationRequest citizenProcedureRequest) {
+      UUID citizenUserId, PostCitizenVaccinationConsultationRequest citizenProcedureRequest) {
     LocalDate dateOfBirth = citizenProcedureRequest.patient().dateOfBirth();
-    UUID citizenUserId =
-        vaccinationConsultationRepository
-            .findByExternalId(procedureId)
-            .orElseThrow()
-            .getCitizenUserId();
+
     CitizenAccessCodeUserDto citizenAccessCode =
         citizenAccessCodeUserClient.getCitizenAccessCode(citizenUserId);
     return new CitizenPortalCredentialsDto(citizenAccessCode.accessCode(), dateOfBirth);
+  }
+
+  private void startProcedure(UUID procedureId) {
+    vaccinationConsultationService.acceptDraftVaccinationConsultation(
+        procedureId, new PatchAcceptDraftRequest(null));
   }
 
   private Map<String, UUID> populateVaccinations(
@@ -213,8 +244,7 @@ public class TestPopulateProcedureService {
               throw new BadRequestException("Series are not supported by test data population");
             UUID vaccinationId =
                 vaccinationConsultationService
-                    .createServices(
-                        procedureId, null, List.of(population.request()), List.of()) // no a
+                    .createServices(procedureId, null, List.of(population.request()), List.of())
                     .getFirst();
             serviceMap.put(population.serviceKey(), vaccinationId);
           });
@@ -276,7 +306,7 @@ public class TestPopulateProcedureService {
   }
 
   private void cancelAppointments(
-      UUID procedureId, Map<String, UUID> stepMap, List<String> stepKeys) {
+      UUID procedureId, UUID citizenUserId, Map<String, UUID> stepMap, List<String> stepKeys) {
     if (stepKeys == null) {
       return;
     }
@@ -285,12 +315,7 @@ public class TestPopulateProcedureService {
       if (stepId == null) {
         throw new IllegalArgumentException("Unknown step key");
       }
-      UUID citizenUserId =
-          vaccinationConsultationRepository
-              .findByExternalId(procedureId)
-              .orElseThrow()
-              .getCitizenUserId();
-      vaccinationConsultationService.cancelAppointment(citizenUserId, procedureId, stepId);
+      vaccinationConsultationService.cancelAppointmentByCitizen(citizenUserId, procedureId, stepId);
     }
   }
 
@@ -348,18 +373,42 @@ public class TestPopulateProcedureService {
     }
   }
 
-  private void populateInformationStatements(
-      UUID procedureId, PostInformationStatementsRequest informationStatements) {
+  private Map<String, UUID> populateInformationStatements(
+      UUID procedureId,
+      UUID citizenUserId,
+      List<InformationStatementPopulationDto> informationStatementPopulations) {
+    Map<String, UUID> informationStatementMap = new LinkedHashMap<>();
     if (featureToggle.isNewFeatureEnabled(CITIZEN_PORTAL_INFORMATION_STATEMENT)
-        && informationStatements != null) {
-      vaccinationConsultationService.addInformationStatements(procedureId, informationStatements);
+        && informationStatementPopulations != null) {
+      informationStatementPopulations.forEach(
+          informationStatementPopulationDto -> {
+            UUID informationStatementId =
+                informationStatementService
+                    .addInformationStatements(
+                        procedureId,
+                        new PostInformationStatementsRequest(
+                            List.of(informationStatementPopulationDto.templateId())))
+                    .getFirst();
+
+            informationStatementMap.put(
+                informationStatementPopulationDto.key(), informationStatementId);
+
+            if (informationStatementPopulationDto.answered() != null
+                && informationStatementPopulationDto.answered()
+                && citizenUserId != null) {
+              DocumentContentDto documentContent =
+                  informationStatementService.getInformationStatementForCitizenPortal(
+                      citizenUserId, informationStatementId);
+              informationStatementService.patchInformationStatementForCitizenPortal(
+                  citizenUserId, informationStatementId, answerDocumentContent(documentContent));
+            }
+          });
     }
+    return informationStatementMap;
   }
 
-  private void changeProcedureStatus(UUID procedureId, ProcedureStatusDto procedureStatusDto) {
-    if (procedureStatusDto != null) {
-      vaccinationConsultationService.updateProcedureStatus(procedureId, procedureStatusDto);
-    }
+  private void closeProcedure(UUID procedureId) {
+    vaccinationConsultationService.updateProcedureStatus(procedureId, CLOSED);
   }
 
   private List<UUID> getPhysicians() {

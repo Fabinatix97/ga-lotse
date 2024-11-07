@@ -15,5 +15,13 @@
   <include file="migrations/0005_medical_histories.xml"/>
   <include file="migrations/0006_remove_key_document_type_enum.xml"/>
   <include file="migrations/0007_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
+  <include file="migrations/0008_add_system_progress_entry_keydocument.xml"/>
+  <include file="migrations/0009_add_calendar_event_id.xml"/>
+  <include file="migrations/0010_cemetery_sequence.xml"/>
+  <include file="migrations/0011_shedlock.xml"/>
+  <include file="migrations/0012_add_waiting_room.xml"/>
+  <include file="migrations/0013_extend_medical_histories.xml"/>
+  <include file="migrations/0014_move_subject_and_message_text_to_mail_metadata.xml"/>
+  <include file="migrations/0015_add_gdpr_validation_task.xml"/>
 
 </databaseChangeLog>

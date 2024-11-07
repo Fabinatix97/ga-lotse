@@ -16,7 +16,7 @@ import { Formik, useFormikContext } from "formik";
 import { PropsWithChildren, useCallback } from "react";
 
 import { WrappedSelectField } from "@/lib/businessModules/measlesProtection/shared/WrappedSelectField";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 import {
   OtherComment,
@@ -102,11 +102,13 @@ export function UpdateProcedureSection({
       initialValues={initialValues}
     >
       <Stack rowGap={3}>
-        <DetailsCard title={title}>
-          <Stack gap={2} width="100%">
-            <UpdateProcedureSectionFields errorMessages={errorMessages} />
-          </Stack>
-        </DetailsCard>
+        <Sheet>
+          <DetailsSection title={title}>
+            <Stack gap={2} width="100%">
+              <UpdateProcedureSectionFields errorMessages={errorMessages} />
+            </Stack>
+          </DetailsSection>
+        </Sheet>
         <EditActions isDraft={isDraft} isOpen={!procedureClosed} />
       </Stack>
     </ProcedureForm>

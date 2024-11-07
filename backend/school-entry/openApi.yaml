@@ -491,6 +491,19 @@ paths:
           description: OK
       tags:
       - SchoolEntryCitizen
+  /citizen/school-entries/opening-hours:
+    get:
+      operationId: getOpeningHours
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetOpeningHoursResponse"
+          description: OK
+      summary: Get the official opening hours.
+      tags:
+      - SchoolEntryCitizen
   /config:
     get:
       operationId: getConfig
@@ -662,6 +675,21 @@ paths:
           description: OK
       tags:
       - File
+  /gdpr-validation-tasks:
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
   /inbox-procedures:
     get:
       description: |
@@ -1568,6 +1596,25 @@ paths:
                 type: object
           description: OK
       summary: Upload a XLSX file to create multiple procedures.
+      tags:
+      - SchoolEntry
+  /school-entries/download/invitations:
+    post:
+      operationId: downloadInvitations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadInvitationsBulkRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
       tags:
       - SchoolEntry
   /school-entries/icd10-codes:
@@ -3078,6 +3125,17 @@ components:
       required:
       - custodian
       - procedureVersion
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - procedureId
+      - type
     AdditionalChildInfo:
       type: object
       properties:
@@ -4036,11 +4094,7 @@ components:
           type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
         note:
-          type: string
-        subject:
           type: string
       required:
       - manualProgressEntryType
@@ -4180,6 +4234,8 @@ components:
           format: date
         schoolName:
           type: string
+        wasInDaycare:
+          type: boolean
     DecibelValue:
       type: string
       description: Decibel value that was audible for the respective ear.
@@ -4356,6 +4412,16 @@ components:
       - country
       - postalCode
       - street
+    DownloadInvitationsBulkRequest:
+      type: object
+      properties:
+        procedureIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - procedureIds
     EvaluationArticulationValue:
       type: string
       enum:
@@ -4674,6 +4740,12 @@ components:
       - PNG
       - PDF
       - EML
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -5047,6 +5119,20 @@ components:
             - $ref: "#/components/schemas/ImageMetaDataHistory"
             - $ref: "#/components/schemas/MailMetaDataHistory"
             - $ref: "#/components/schemas/PdfMetaDataHistory"
+    GetOpeningHoursResponse:
+      type: object
+      properties:
+        de:
+          type: array
+          items:
+            type: string
+        en:
+          type: array
+          items:
+            type: string
+      required:
+      - de
+      - en
     GetProcedureApprovalRequestsResponse:
       type: object
       properties:
@@ -5151,7 +5237,9 @@ components:
         relatedKeyDocumentProgressEntries:
           type: array
           items:
-            $ref: "#/components/schemas/ManualProgressEntry"
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
       required:
       - progressEntry
       - relatedKeyDocumentProgressEntries
@@ -5646,6 +5734,20 @@ components:
           type: boolean
         otherInterests:
           type: string
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
     KnowledgeThinkingExamination:
       type: object
       properties:
@@ -5728,13 +5830,19 @@ components:
             type: string
           mailTo:
             type: string
+          messageText:
+            type: string
           sentDate:
             type: string
             format: date-time
+          subject:
+            type: string
       required:
       - mailFrom
       - mailTo
+      - messageText
       - sentDate
+      - subject
     MailMetaDataHistory:
       type: object
       allOf:
@@ -5768,13 +5876,10 @@ components:
             type: boolean
           manualProgressEntryType:
             $ref: "#/components/schemas/ManualProgressEntryType"
-          messageText:
-            type: string
           note:
             type: string
-          subject:
-            type: string
       - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - createdBy
@@ -5904,13 +6009,7 @@ components:
       properties:
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
-          nullable: true
         note:
-          type: string
-          nullable: true
-        subject:
           type: string
           nullable: true
     Pdf:
@@ -6319,6 +6418,10 @@ components:
         deceased:
           type: string
           format: date
+        hasBeenClosed:
+          type: boolean
+        hasInformationBlock:
+          type: boolean
         id:
           type: string
           format: uuid
@@ -6363,6 +6466,8 @@ components:
       - child
       - createdAt
       - custodians
+      - hasBeenClosed
+      - hasInformationBlock
       - id
       - isDeceased
       - isDeletable
@@ -6893,9 +6998,8 @@ components:
     SchoolEntryFeature:
       type: string
       enum:
-      - CLOSE_PROCEDURE
-      - REOPEN_PROCEDURE
       - IMPORT_PAST_PROCEDURES
+      - BULK_DOWNLOAD_INVITATIONS
     SchoolEntryLabel:
       type: object
       description: Labels can be associated to a procedure. There are predefined labels
@@ -7184,6 +7288,11 @@ components:
         properties:
           changeDescription:
             type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
           systemProgressEntryType:
             type: string
           triggerType:
@@ -7195,6 +7304,7 @@ components:
             type: string
           triggeredByUserLastName:
             type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - modifiedAt

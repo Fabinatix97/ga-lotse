@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 
 @Schema(name = SexWorkMedicalHistoryDto.SCHEMA_NAME)
@@ -17,6 +18,11 @@ public record SexWorkMedicalHistoryDto(
     String currentSymptoms,
     @PastOrPresent LocalDate contactToClarifyDuration,
     RelationshipModelDto relationshipModel,
+    @PastOrPresent LocalDate lastMenstruationDuration,
+    @PastOrPresent LocalDate lastCancerScreeningDuration,
+    @PositiveOrZero Integer amountPregnancies,
+    @PositiveOrZero Integer amountAbortions,
+    String knownOperations,
     String medications,
     @Valid ExaminationDto examinations,
     @NotNull @Valid PreviousIllnessDto previousIllnesses,

@@ -54,8 +54,8 @@ function useTranslationWrapper(
       const ns = nsIndex >= 0 ? firstKey?.slice(0, nsIndex) : undefined;
       if (ns && !i18n.hasLoadedNamespace(ns)) {
         // eslint-disable-next-line @typescript-eslint/only-throw-error
-        throw new Promise((res) => {
-          void i18n.loadNamespaces(ns, res);
+        throw new Promise((resolve) => {
+          void i18n.loadNamespaces(ns, resolve);
         });
       }
       return t(key, tOptions);

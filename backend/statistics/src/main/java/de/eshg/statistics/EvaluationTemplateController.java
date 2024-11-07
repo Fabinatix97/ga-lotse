@@ -11,7 +11,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.aggregation.DataSourceValidator;
 import de.eshg.statistics.aggregation.StatisticService;
-import de.eshg.statistics.api.AvailableDataSource;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.evaluationtemplate.AbstractAddEvaluationTemplateRequest;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateFromEvaluationRequest;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
@@ -136,6 +136,7 @@ public class EvaluationTemplateController {
   @Operation(summary = "Get the information for the expected template")
   public ExpectedEvaluationTemplateDto getTemplateInformation(
       @PathVariable(name = "statisticId") UUID statisticId) {
+    statisticService.checkPermissionForStatistic(statisticId);
     EvaluationTemplateData evaluationTemplateData =
         statisticService.getEvaluationTemplateData(statisticId);
     List<AvailableDataSource> relevantAvailableDataSources =

@@ -11,7 +11,10 @@ import {
   MailOutlineOutlined,
 } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { useSchoolEntryCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { getOpeningHoursQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import {
@@ -24,10 +27,6 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
-import {
-  TableListing,
-  TableListingRow,
-} from "@/lib/shared/components/tableListing";
 import {
   formatPostalCodeAndCity,
   formatStreetAndHouseNumber,
@@ -83,22 +82,22 @@ function AddressSection(props: DepartmentInfoProps) {
 }
 
 function OpeningHoursSection() {
-  const { t } = useTranslation(["schoolEntry/overview"]);
+  const { t, i18n } = useTranslation(["schoolEntry/overview"]);
+  const schoolEntryCitizenApi = useSchoolEntryCitizenApi();
+  const { data: openingHours } = useSuspenseQuery(
+    getOpeningHoursQuery(schoolEntryCitizenApi),
+  );
+
+  const openingHoursInSelectedLanguage =
+    i18n.language === "de" ? openingHours.de : openingHours.en;
   return (
     <InfoSection icon={<AccessTimeOutlined />}>
       <InfoSectionTitle>{t("openingHours.title")}</InfoSectionTitle>
-      <TableListing>
-        <TableListingRow label={t("openingHours.days")}>
-          {t("openingHours.hours")}
-          <br />
-          {t("openingHours.remark")}
-        </TableListingRow>
-        <TableListingRow label={t("openingHours.daysShort")}>
-          {t("openingHours.hoursShort")}
-          <br />
-          {t("openingHours.remarkShort")}
-        </TableListingRow>
-      </TableListing>
+      {openingHoursInSelectedLanguage.map((openingHour) => (
+        <p style={{ margin: 0 }} key={openingHour}>
+          {openingHour}
+        </p>
+      ))}
     </InfoSection>
   );
 }

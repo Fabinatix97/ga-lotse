@@ -5,13 +5,25 @@
 
 "use client";
 
+import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
+
 import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/layout";
+import { useMedicalHistoryQuery } from "@/lib/businessModules/stiProtection/api/queries/medicalHistory";
 import { MedicalHistoryForm } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm";
 
 export default function StiProtectionProcedureAnamnesisPage({
-  params,
+  params: { id: procedureId },
 }: Readonly<{
   params: StiProtectionProcedurePageParams;
 }>) {
-  return <MedicalHistoryForm procedureId={params.id} />;
+  const { data: medicalHistory } = useMedicalHistoryQuery(procedureId);
+
+  return (
+    <DisabledFormProvider disabled={!!medicalHistory}>
+      <MedicalHistoryForm
+        procedureId={procedureId}
+        medicalHistory={medicalHistory}
+      />
+    </DisabledFormProvider>
+  );
 }

@@ -20,7 +20,6 @@ export function useUpdateReport(onSuccess: () => void) {
           props.model.description.trim().length > 0
             ? props.model.description.trim()
             : undefined,
-        type: "UpdateNameAndDescriptionReportSeriesRequest",
       }),
     onSuccess: () => {
       snackbar.confirmation("Report bearbeitet");
@@ -29,12 +28,9 @@ export function useUpdateReport(onSuccess: () => void) {
   });
 
   return async (seriesId: string, model: UpdateReportFormModel) => {
-    return mutation
-      .mutateAsync({
-        seriesId,
-        model: model,
-      })
-      .then(() => void 0)
-      .catch();
+    await mutation.mutateAsync({
+      seriesId,
+      model: model,
+    });
   };
 }

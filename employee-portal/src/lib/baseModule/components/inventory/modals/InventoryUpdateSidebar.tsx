@@ -40,11 +40,9 @@ function InventoryUpdateSidebar({
   const updateInventory = useUpdateInventoryItem(inventory.id);
 
   async function handleSubmit(values: InventoryFormValues) {
-    await updateInventory
-      .mutateAsync(mapUpdateInventoryItemRequest(values), {
-        onSuccess: () => onClose(true),
-      })
-      .catch();
+    await updateInventory.mutateAsync(mapUpdateInventoryItemRequest(values), {
+      onSuccess: () => onClose(true),
+    });
   }
 
   return (

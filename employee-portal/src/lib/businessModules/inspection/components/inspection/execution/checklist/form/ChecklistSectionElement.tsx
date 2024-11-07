@@ -227,7 +227,7 @@ function ElementWrapper({
   // invalid element, the browser tries to scroll to it.
   useEffect(() => {
     if (invalidElementIds.has(elementId)) {
-      void validate().then().catch();
+      void validate();
     }
 
     async function validate() {

@@ -1,0 +1,9 @@
+Sehr geehrte(r) %s %s,
+
+leider müssen wir Ihre Terminbuchung für den %s Uhr absagen.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Mit freundlichen Grüßen,
+
+%s

@@ -25,13 +25,15 @@ import {
 function parseSearchParams(searchParams: SearchParams): GetStatisticsRequest {
   const { pageSize, pageNumber } = parsePageParams(searchParams);
   return {
-    sortKey: parseOptionalEnum(ApiStatisticSortKey, searchParams.sortKey),
-    sortDirection: parseOptionalEnum(
-      ApiSortDirection,
-      searchParams.sortDirection,
-    ),
-    page: pageNumber,
-    pageSize,
+    apiGetStatisticsRequest: {
+      sortKey: parseOptionalEnum(ApiStatisticSortKey, searchParams.sortKey),
+      sortDirection: parseOptionalEnum(
+        ApiSortDirection,
+        searchParams.sortDirection,
+      ),
+      page: pageNumber,
+      pageSize,
+    },
   };
 }
 
@@ -40,8 +42,8 @@ export default function StatisticsOverviewPage(props: {
 }) {
   const params = parseSearchParams(props.searchParams);
   const {
-    statistics,
-    statisticsIsFetching,
+    statisticsOverview,
+    statisticsOverviewIsFetching,
     availableDataSources,
     evaluationTemplates,
   } = useGetStatisticsOverviewPage(params);
@@ -50,8 +52,8 @@ export default function StatisticsOverviewPage(props: {
     <StickyToolbarLayout toolbar={<Toolbar title="Auswertungen" />}>
       <MainContentLayout fullViewportHeight>
         <StatisticsOverview
-          statisticsResponse={statistics}
-          isFetchingStatistics={statisticsIsFetching}
+          statisticsOverview={statisticsOverview}
+          isFetchingStatisticsOverview={statisticsOverviewIsFetching}
           dataSources={availableDataSources}
           templates={evaluationTemplates}
         />

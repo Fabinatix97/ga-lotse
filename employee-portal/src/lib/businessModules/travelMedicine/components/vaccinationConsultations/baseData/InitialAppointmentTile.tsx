@@ -125,7 +125,7 @@ function EditInitialAppointmentSidebar({
         false,
       ),
       isEditInitialAppointmentMode: true,
-      appointmentBlockDate: appointmentBlockDateOption?.value,
+      appointmentBlockDate: undefined,
       appointmentBlockDateOption: appointmentBlockDateOption,
     };
   }
@@ -136,7 +136,7 @@ function EditInitialAppointmentSidebar({
     const { appointmentStart, durationInMinutes } = determineStartAndDuration(
       values.bookingType,
       values.userDefinedAppointmentDate!,
-      values.appointmentBlockDate!,
+      values.appointmentBlockDate,
       values.appointmentTypeStandardDuration,
     );
 

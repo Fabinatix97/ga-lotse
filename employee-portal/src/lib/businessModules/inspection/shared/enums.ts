@@ -82,6 +82,7 @@ export const inspectionTypeNames = {
   [ApiInspectionType.Initial]: "Erstbegehung",
   [ApiInspectionType.Complaint]: "Beschwerde",
   [ApiInspectionType.DocumentInspection]: "Dokumentenprüfung",
+  [ApiInspectionType.Import]: "Import",
 } satisfies Record<ApiInspectionType, string>;
 
 export function translateInspectionType(type: ApiInspectionType) {
@@ -119,3 +120,8 @@ export function translateInspectionAnnouncement(
 ) {
   return inspectionAnnouncementNames[type];
 }
+
+export const inspectionDuplicateFilterNames = {
+  ["true"]: "Ja",
+  ["false"]: "Nein",
+} satisfies Record<string, string>;

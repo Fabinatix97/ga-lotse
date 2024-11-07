@@ -13,6 +13,11 @@ import { useSelfUserSidebar } from "@/lib/baseModule/components/layout/SelfUserS
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
 import { useNotificationsSidebar } from "@/lib/baseModule/components/layout/notificationsSidebar/NotificationsSidebar";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { useGetSelfUserPresence } from "@/lib/businessModules/chat/shared/hooks/useGetSelfUserPresence";
+import {
+  getPresenseLabel,
+  getStatusColor,
+} from "@/lib/businessModules/chat/shared/utils";
 
 import { HeaderMessagesButton } from "./HeaderMessagesButton";
 
@@ -22,6 +27,8 @@ export function HeaderButtons() {
   const userSidebar = useSelfUserSidebar();
   const { data: notificationResponse } = useGetUnreadNotifications();
   const notificationsSidebar = useNotificationsSidebar();
+
+  const { userPresence, sharePresence } = useGetSelfUserPresence();
 
   const notificationsCount = notificationResponse
     ? notificationResponse.notifications.length
@@ -65,14 +72,28 @@ export function HeaderButtons() {
         </Badge>
       </HeaderIconButton>
       {canAccessChat && <HeaderMessagesButton />}
+
       <HeaderIconButton
-        aria-label="Benutzer"
+        aria-label={`Benutzer (${getPresenseLabel(userPresence)})`}
         sx={{
           backgroundColor: "transparent",
         }}
         onClick={toggleUserSidebar}
       >
-        <UserIcon sx={{ color: "background.body" }} />
+        <Badge
+          invisible={!canAccessChat || !sharePresence}
+          size="sm"
+          badgeInset="18%"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          sx={{
+            "& .MuiBadge-badge": {
+              backgroundColor: getStatusColor(userPresence),
+              boxShadow: "0 0 0 1px",
+            },
+          }}
+        >
+          <UserIcon sx={{ color: "background.body" }} />
+        </Badge>
       </HeaderIconButton>
     </Box>
   );

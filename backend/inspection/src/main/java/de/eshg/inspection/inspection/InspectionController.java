@@ -8,6 +8,8 @@ package de.eshg.inspection.inspection;
 import static de.eshg.rest.service.error.ErrorCode.INSUFFICIENT_USER_RIGHTS;
 
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.error.BadRequestException;
@@ -42,9 +44,17 @@ public class InspectionController {
   public static final String BASE_URL = BaseUrls.Inspection.INSPECTION_CONTROLLER;
 
   private final InspectionService inspectionService;
+  private final ReviewService reviewService;
 
-  public InspectionController(InspectionService inspectionService) {
+  private final InspectionFeatureToggle inspectionFeatureToggle;
+
+  public InspectionController(
+      InspectionService inspectionService,
+      ReviewService reviewService,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.inspectionService = inspectionService;
+    this.reviewService = reviewService;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   @PostMapping(path = "/{id}")
@@ -54,13 +64,6 @@ public class InspectionController {
       @PathVariable("id") UUID procedureId, @Valid @RequestBody StartInspectionRequest request) {
     validateAssignmentRole(request.assigneeId());
     return inspectionService.startInspection(procedureId, request);
-  }
-
-  @GetMapping
-  @Operation(summary = "Get list of all inspections, sorted by title")
-  @Transactional(readOnly = true)
-  public GetInspectionsResponse getInspections() {
-    return new GetInspectionsResponse(inspectionService.loadAllInspections());
   }
 
   @GetMapping(path = "/{id}")
@@ -180,6 +183,43 @@ associated reference facility
   public InspectionAvailablePLDRevisionsResponse getAvailablePLDs(
       @PathVariable("id") UUID externalId) {
     return inspectionService.getAvailablePLDs(externalId);
+  }
+
+  @PostMapping(path = "/{id}/resolve-inspection-duplicate")
+  @Operation(
+      summary =
+          "Resolves an inspection duplicate for an inspection by choosing whether to keep or discard an inspection")
+  @Transactional
+  public void resolveInspectionDuplicate(
+      @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
+      @RequestBody @Valid ResolveInspectionDuplicateRequest request) {
+    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
+    reviewService.resolveInspectionDuplicate(id, request.keepInspection());
+  }
+
+  @PostMapping(path = "/{id}/resolve-facility-duplicate")
+  @Operation(summary = "Resolves a facility duplicate for an inspection by choosing a facility")
+  public void resolveFacilityDuplicate(
+      @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id,
+      @RequestBody @Valid ResolveFacilityDuplicateRequest request) {
+    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
+    reviewService.resolveFacilityDuplicate(id, request.chosenReferenceId());
+  }
+
+  @GetMapping(path = "/{id}/inspection-duplicates")
+  @Operation(summary = "Get inspection duplicates of an inspection")
+  @Transactional(readOnly = true)
+  public InspectionDuplicateReviewDto getInspectionDuplicates(@PathVariable("id") UUID externalId) {
+    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
+    return reviewService.reviewInspectionDuplicates(externalId);
+  }
+
+  @GetMapping(path = "/{id}/facility-duplicates")
+  @Operation(summary = "Get facility duplicates of an inspection")
+  @Transactional(readOnly = true)
+  public FacilityDuplicateReviewDto getFacilityDuplicates(@PathVariable("id") UUID externalId) {
+    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
+    return reviewService.reviewFacilityDuplicates(externalId);
   }
 
   private static void validateAssignmentRole(UUID assigneeId) {

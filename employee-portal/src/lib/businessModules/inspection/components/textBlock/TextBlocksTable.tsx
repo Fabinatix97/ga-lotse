@@ -86,7 +86,7 @@ export function TextBlocksTable({
       confirmLabel: "Löschen",
       color: "danger",
       onConfirm: async () => {
-        await deleteTextBlock.mutateAsync(textBlock.id ?? "").catch();
+        await deleteTextBlock.mutateAsync(textBlock.id ?? "");
       },
     });
   }

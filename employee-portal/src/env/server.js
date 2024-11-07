@@ -30,6 +30,7 @@ const schema = object({
   PUBLIC_AUDITLOG_BACKEND_URL: pipe(string(), url()),
   PUBLIC_OPENDATA_BACKEND_URL: pipe(string(), url()),
   PUBLIC_STI_PROTECTION_BACKEND_URL: pipe(string(), url()),
+  PUBLIC_MEDICAL_REGISTRY_BACKEND_URL: pipe(string(), url()),
 
   MARKDOWN_PAGE_DIRECTORY: string(),
 

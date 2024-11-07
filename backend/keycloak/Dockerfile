@@ -12,7 +12,7 @@ FROM registry.access.redhat.com/ubi9:9.4-1214.1726694543@sha256:b00d5990a00937bd
 FROM quay.io/keycloak/keycloak:$keycloakVersion AS keycloak-builder
 
 ENV KC_HEALTH_ENABLED true
-ENV KC_FEATURES_DISABLED impersonation
+ENV KC_FEATURES_DISABLED impersonation,organization
 ENV KC_DB postgres
 ENV KC_CACHE local
 
@@ -34,7 +34,7 @@ COPY --from=ubi-micro-build /usr/lib64/ /usr/lib64/
 COPY --from=ubi-micro-build /usr/bin/curl /usr/bin/
 
 ENV KC_HEALTH_ENABLED true
-ENV KC_FEATURES_DISABLED impersonation
+ENV KC_FEATURES_DISABLED impersonation,organization
 ENV KC_DB postgres
 ENV KC_CACHE local
 

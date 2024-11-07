@@ -4,25 +4,27 @@
  */
 
 import {
-  ApiMedicalHistoryContent,
-  ApiMedicalHistorySection,
+  ApiDocumentContent,
+  ApiDocumentSection,
 } from "@eshg/citizen-portal-api/travelMedicine";
 import { Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 import { ReactNode } from "react";
 
-import { DocumentElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/DocumentElement";
+import { AnamnesisQuestion } from "@/lib/businessModules/travelMedicine/components/shared/components/document/AnamnesisQuestion";
+import { ConfirmationElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/ConfirmationElement";
+import { TextBlock } from "@/lib/businessModules/travelMedicine/components/shared/components/document/TextBlock";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
 interface DocumentProps {
   currentStep: number;
-  documentSection: ApiMedicalHistorySection;
+  documentSection: ApiDocumentSection;
   documentBriefing?: ReactNode;
 }
 
 export function DocumentSection(props: Readonly<DocumentProps>) {
   const { setFieldValue, getFieldProps } =
-    useFormikContext<ApiMedicalHistoryContent>();
+    useFormikContext<ApiDocumentContent>();
 
   return (
     <ContentSheet data-testid={`document-section-${props.currentStep}`}>
@@ -30,13 +32,26 @@ export function DocumentSection(props: Readonly<DocumentProps>) {
       <Stack gap={4}>
         {props.documentSection.sectionElements.map((element, index) => (
           <Stack gap={2} key={index} data-testid={`document-element-${index}`}>
-            <DocumentElement
-              currentStep={props.currentStep}
-              index={index}
-              element={element}
-              setFieldValue={setFieldValue}
-              getFieldProps={getFieldProps}
-            />
+            <>
+              {element.anamnesisQuestion && (
+                <AnamnesisQuestion
+                  currentStep={props.currentStep}
+                  index={index}
+                  anamnesisQuestion={element.anamnesisQuestion}
+                  setFieldValue={setFieldValue}
+                  getFieldProps={getFieldProps}
+                />
+              )}
+              {element.confirmation && (
+                <ConfirmationElement
+                  currentStep={props.currentStep}
+                  index={index}
+                  confirmation={element.confirmation}
+                  setFieldValue={setFieldValue}
+                />
+              )}
+              {element.textBlock && <TextBlock textBlock={element.textBlock} />}
+            </>
           </Stack>
         ))}
       </Stack>

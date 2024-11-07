@@ -79,9 +79,11 @@ export function FilterTemplates(props: FilterTemplatesProps) {
           placeholder="Filter-Vorlagen"
           aria-label="Filter-Vorlagen"
           value={props.selectedFilterTemplateId}
-          onChange={(_, newValue: string | null) =>
-            props.onFilterTemplateIdChanged(newValue)
-          }
+          onChange={(_, newValue: string | null) => {
+            if (newValue !== null) {
+              props.onFilterTemplateIdChanged(newValue);
+            }
+          }}
         >
           {props.templates.map((it) => (
             <Option key={it.id} value={it.id}>

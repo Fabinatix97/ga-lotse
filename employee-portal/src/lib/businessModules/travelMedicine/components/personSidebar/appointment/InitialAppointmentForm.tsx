@@ -36,7 +36,7 @@ export interface InitialAppointmentFormValuesProps {
   selectedPerson?: LegacyPerson;
   initialStepAppointmentType: ApiAppointmentType;
   bookingType?: ApiAppointmentBookingType;
-  appointmentBlockDate?: string;
+  appointmentBlockDate?: { start: Date; end: Date };
   appointmentBlockDateOption?: SelectOption;
   userDefinedAppointmentDate?: string;
   appointmentTypeStandardDuration: number;
@@ -66,7 +66,7 @@ export function InitialAppointmentForm({
 
     if (
       values.bookingType === ApiAppointmentBookingType.AppointmentBlock &&
-      values.appointmentBlockDate === ""
+      values.appointmentBlockDate?.start === undefined
     ) {
       errors.appointmentBlockDate = "Bitte einen Termin auswählen";
     } else if (values.bookingType === ApiAppointmentBookingType.UserDefined) {
@@ -87,7 +87,7 @@ export function InitialAppointmentForm({
     <Formik
       initialValues={{
         ...initialValues,
-        appointmentBlockDate: initialValues.appointmentBlockDate ?? "",
+        appointmentBlockDate: initialValues.appointmentBlockDate ?? undefined,
         userDefinedAppointmentDate:
           initialValues.userDefinedAppointmentDate ??
           format(new Date(), "yyyy-MM-dd'T'HH:mm"),

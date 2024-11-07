@@ -57,7 +57,10 @@ public class AnamnesisMapper {
             anamnesis.getNumberOfSiblings(),
             anamnesis.getSiblingsBirthYears()),
         new DaycareAndSchoolInfoDto(
-            anamnesis.getInDaycareSince(), anamnesis.getDaycareName(), anamnesis.getSchoolName()),
+            anamnesis.getWasInDaycare(),
+            anamnesis.getInDaycareSince(),
+            anamnesis.getDaycareName(),
+            anamnesis.getSchoolName()),
         new FamilyHistoryInfoDto(
             anamnesis.getSpectaclesInFamily(), anamnesis.getChronicIllnessOrDisabilityInFamily()),
         new DevelopmentInfoDto(
@@ -121,6 +124,7 @@ public class AnamnesisMapper {
     anamnesis.setGestationalAge(dto.developmentInfo().gestationalAge());
     anamnesis.setDevelopmentConspicuities(dto.developmentInfo().developmentConspicuities());
     anamnesis.setInfancyConspicuities(dto.developmentInfo().infancyConspicuities());
+    anamnesis.setWasInDaycare(dto.daycareAndSchoolInfo().wasInDaycare());
     anamnesis.setInDaycareSince(dto.daycareAndSchoolInfo().inDaycareSince());
     anamnesis.setDaycareName(dto.daycareAndSchoolInfo().daycareName());
     anamnesis.setSchoolName(dto.daycareAndSchoolInfo().schoolName());
@@ -231,6 +235,7 @@ public class AnamnesisMapper {
             ? null
             : citizenAnamnesisDto.additionalChildInfo().siblingsBirthYears());
 
+    anamnesis.setWasInDaycare(citizenAnamnesisDto.daycareAndSchoolInfo().wasInDaycare());
     anamnesis.setInDaycareSince(citizenAnamnesisDto.daycareAndSchoolInfo().inDaycareSince());
     anamnesis.setDaycareName(citizenAnamnesisDto.daycareAndSchoolInfo().daycareName());
     anamnesis.setSchoolName(citizenAnamnesisDto.daycareAndSchoolInfo().schoolName());

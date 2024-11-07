@@ -14,7 +14,8 @@ public enum InspectionType {
   REVIEW,
   INITIAL,
   COMPLAINT,
-  DOCUMENT_INSPECTION;
+  DOCUMENT_INSPECTION,
+  IMPORT;
 
   public boolean isComplaint() {
     return this == REVIEW || this == COMPLAINT || this == DOCUMENT_INSPECTION;

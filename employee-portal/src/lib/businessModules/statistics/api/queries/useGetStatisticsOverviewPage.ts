@@ -22,7 +22,7 @@ export function useGetStatisticsOverviewPage(
   const dataSourceApi = useDataSourceApi();
   const evaluationTemplateApi = useEvaluationTemplateApi();
   const [
-    { data: statistics, isFetching: statisticsIsFetching },
+    { data: statisticsOverview, isFetching: statisticsOverviewIsFetching },
     { data: availableDataSources },
     { data: evaluationTemplates },
   ] = useSuspenseQueries({
@@ -34,8 +34,8 @@ export function useGetStatisticsOverviewPage(
   });
 
   return {
-    statistics,
-    statisticsIsFetching,
+    statisticsOverview,
+    statisticsOverviewIsFetching,
     availableDataSources,
     evaluationTemplates,
   };

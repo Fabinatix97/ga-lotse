@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiSchoolEntryFeature } from "@eshg/employee-portal-api/schoolEntry";
 import { ReactNode } from "react";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { CloseProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/CloseProcedureModal";
 import { DeleteProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/DeleteProcedureModal";
 import { ReopenProcedureModal } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/ReopenProcedureModal";
@@ -15,16 +13,9 @@ import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 
 export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
-  const closeProcedureEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.CloseProcedure,
-  );
-  const reopenProcedureEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.ReopenProcedure,
-  );
-
   const buttons: ReactNode[] = [];
 
-  if (closeProcedureEnabled && !props.procedure.isClosed) {
+  if (!props.procedure.isClosed) {
     buttons.push(
       <OpenModalButton
         key="closeProcedure"
@@ -37,7 +28,7 @@ export function ProcedureActionsPanel(props: { procedure: ProcedureDetails }) {
     );
   }
 
-  if (reopenProcedureEnabled && props.procedure.isClosed) {
+  if (props.procedure.isClosed) {
     buttons.push(
       <OpenModalButton
         key="reopenProcedure"

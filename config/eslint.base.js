@@ -5,6 +5,7 @@
 
 import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginImport from "eslint-plugin-import";
+import pluginPromise from "eslint-plugin-promise";
 import eslintPluginUnusedImports from "eslint-plugin-unused-imports";
 import tseslint from "typescript-eslint";
 
@@ -16,6 +17,7 @@ export const restrictRelativeImportsPattern = {
 export const eslintBaseConfig = tseslint.config(
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
+  pluginPromise.configs["flat/recommended"],
   eslintConfigPrettier,
   {
     plugins: {
@@ -75,6 +77,12 @@ export const eslintBaseConfig = tseslint.config(
       ],
 
       "import/no-default-export": "error",
+
+      // TODO: These rules are activated by default through the recommended rules of eslint-plugin-promise.
+      // However, there are some errors in the code caused by these rules that cannot be fixed trivially.
+      // Therefore, these rules are disabled for the time being.
+      "promise/catch-or-return": "off",
+      "promise/always-return": "off",
     },
   },
 );

@@ -61,17 +61,15 @@ function OtherServiceAppliedSidebar(
         mfa: values.medicalAssistant,
       },
     };
-    await updateOtherServiceApi
-      .mutateAsync(request, {
-        onSuccess: () => {
-          props.setStoredUsers({
-            physician: values.physician,
-            medicalAssistant: values.medicalAssistant ?? "",
-          });
-          props.onClose(true);
-        },
-      })
-      .catch();
+    await updateOtherServiceApi.mutateAsync(request, {
+      onSuccess: () => {
+        props.setStoredUsers({
+          physician: values.physician,
+          medicalAssistant: values.medicalAssistant ?? "",
+        });
+        props.onClose(true);
+      },
+    });
   }
 
   function mapOtherServiceAppliedValues(

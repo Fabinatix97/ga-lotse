@@ -16,13 +16,14 @@ import { RoomsPanel } from "@/lib/businessModules/chat/components/roomsPanel/Roo
 import { BackupSetupView } from "@/lib/businessModules/chat/components/secureBackup/BackupSetupView";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import {
   ChatPanelView,
   ClientState,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import {
-  clearUserIdParam,
+  clearSearchParams,
   getChatUser,
 } from "@/lib/businessModules/chat/shared/utils";
 
@@ -55,7 +56,7 @@ export function Chat() {
       const isUserExist = user.results.length;
 
       if (!isUserExist) {
-        clearUserIdParam();
+        clearSearchParams(chatSearchParamNames.userId);
         return;
       }
       void createNewDirectMessage({ invite: [userIdForChatStart] });

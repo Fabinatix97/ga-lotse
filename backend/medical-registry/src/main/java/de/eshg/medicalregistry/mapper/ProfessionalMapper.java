@@ -5,8 +5,10 @@
 
 package de.eshg.medicalregistry.mapper;
 
+import static de.eshg.medicalregistry.mapper.AddressMapper.*;
 import static de.eshg.medicalregistry.util.MapperUtils.singleElementOrNull;
 
+import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.medicalregistry.api.*;
 import de.eshg.medicalregistry.domain.model.EmploymentStatus;
@@ -33,7 +35,7 @@ public final class ProfessionalMapper {
         professionalDetails.placeOfBirth(),
         singleElementOrNull(professionalDetails.emailAddresses()),
         singleElementOrNull(professionalDetails.phoneNumbers()),
-        AddressMapper.mapToDto(professionalDetails.contactAddress()),
+        mapToProfessionalAddressDto(professionalDetails.contactAddress()),
         mapToDto(professional.getProfessionalTitle()),
         professional.getFieldOfExpertise(),
         professional.getSpecialistTitle(),
@@ -205,5 +207,30 @@ public final class ProfessionalMapper {
       case FREELANCE -> EmploymentStatus.FREELANCE;
       case EMPLOYEE -> EmploymentStatus.EMPLOYEE;
     };
+  }
+
+  public static ProfessionalAddressDto mapToDto(de.eshg.base.address.AddressDto addressDto) {
+    if (addressDto == null) {
+      return null;
+    }
+
+    if (addressDto instanceof DomesticAddressDto address) {
+      return mapToDto(address);
+    } else {
+      throw new IllegalArgumentException("Unexpected instance of Address");
+    }
+  }
+
+  private static ProfessionalAddressDto mapToDto(DomesticAddressDto addressDto) {
+    if (addressDto == null) {
+      return null;
+    }
+
+    return new ProfessionalAddressDto(
+        addressDto.country(),
+        addressDto.street(),
+        addressDto.houseNumber(),
+        addressDto.postalCode(),
+        addressDto.city());
   }
 }

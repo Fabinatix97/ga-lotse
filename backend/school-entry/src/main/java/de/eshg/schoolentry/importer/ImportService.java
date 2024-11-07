@@ -12,6 +12,8 @@ import de.eshg.lib.xlsximport.XlsxNormalizer;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.schoolentry.SchoolEntryService;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
+import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
+import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
 import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import java.io.IOException;
 import java.time.Year;
@@ -26,14 +28,20 @@ public class ImportService {
   private final SchoolEntryService schoolEntryService;
   private final SchoolEntryProperties schoolEntryProperties;
   private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
+  private final Icd10CodeRepository icd10CodeRepository;
+  private final Icd10GroupRepository icd10GroupRepository;
 
   public ImportService(
       SchoolEntryService schoolEntryService,
       SchoolEntryProperties schoolEntryProperties,
-      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper) {
+      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper,
+      Icd10CodeRepository icd10CodeRepository,
+      Icd10GroupRepository icd10GroupRepository) {
     this.schoolEntryService = schoolEntryService;
     this.schoolEntryProperties = schoolEntryProperties;
     this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
+    this.icd10CodeRepository = icd10CodeRepository;
+    this.icd10GroupRepository = icd10GroupRepository;
   }
 
   public ImportResult processSheetAndPersistProcedures(
@@ -43,7 +51,7 @@ public class ImportService {
     try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
       XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
 
-      SchoolEntryImporter<? extends SchoolEntryRowValues, ? extends XlsxColumn>
+      SchoolEntryImporter<? extends SchoolEntryRowValues, ? extends XlsxColumn, ?>
           schoolEntryImporter =
               switch (importType) {
                 case CITIZEN_LIST -> {
@@ -84,14 +92,15 @@ public class ImportService {
                           PastProcedureListColumn.values(), normalizedSheet);
                   yield new PastProcedureListImporter(
                       normalizedSheet,
-                      new PastProcedureListRowReader(normalizedSheet, actualColumns),
+                      new PastProcedureListRowReader(
+                          normalizedSheet,
+                          actualColumns,
+                          icd10CodeRepository,
+                          icd10GroupRepository),
                       new FeedbackColumnAccessor(actualColumns),
-                      importType,
                       schoolId,
-                      locationId,
                       schoolYear,
-                      schoolEntryService,
-                      schoolEntryProperties);
+                      schoolEntryService);
                 }
               };
 

@@ -52,5 +52,10 @@
   <include file="migrations/0042_remove_key_document_type_enum.xml"/>
   <include file="migrations/0043_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
   <include file="migrations/0044_shedlock.xml"/>
+  <include file="migrations/0045_add_system_progress_entry_keydocument.xml"/>
+  <include file="migrations/0046_cemetery_sequence.xml"/>
+  <include file="migrations/0047_inspection_import_merge.xml"/>
+  <include file="migrations/0048_move_subject_and_message_text_to_mail_metadata.xml"/>
+  <include file="migrations/0049_add_gdpr_validation_task.xml"/>
 
 </databaseChangeLog>

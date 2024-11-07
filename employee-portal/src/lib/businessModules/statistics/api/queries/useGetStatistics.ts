@@ -13,6 +13,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
+import { StatisticOverview } from "@/lib/businessModules/statistics/api/models/statisticOverview";
 
 import { getStatisticsQueryKey } from "./apiQueryKeys";
 
@@ -37,12 +38,15 @@ export function useGetStatistics(statisticsRequest: GetStatisticsRequest) {
 
 function mapGetStatistics(
   apiGetStatisticsResponse: ApiGetStatisticsResponse,
-): ApiGetStatisticsResponse {
+): StatisticOverview {
   return {
-    ...apiGetStatisticsResponse,
-    statistics: apiGetStatisticsResponse.statistics.map((statistic) => ({
+    totalNumberOfElements: apiGetStatisticsResponse.totalNumberOfElements,
+    data: apiGetStatisticsResponse.statistics.map((statistic) => ({
       ...statistic,
       timeRangeEnd: mapTimeRangeEndApiToFrontend(statistic.timeRangeEnd),
+      user: apiGetStatisticsResponse.resolvedUsers[statistic.userId],
+      dataSourceName: statistic.dataSourceNames[0]!,
+      anonymized: statistic.anonymized,
     })),
   };
 }

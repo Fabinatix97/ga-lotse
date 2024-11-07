@@ -387,6 +387,21 @@ paths:
           description: OK
       tags:
       - File
+  /gdpr-validation-tasks:
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
   /inbox-procedures:
     get:
       description: |
@@ -1556,6 +1571,17 @@ components:
           minimum: 1
       required:
       - barrierId
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - procedureId
+      - type
     Address:
       type: object
       discriminator:
@@ -2095,11 +2121,7 @@ components:
           type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
         note:
-          type: string
-        subject:
           type: string
       required:
       - manualProgressEntryType
@@ -2347,6 +2369,12 @@ components:
       - PNG
       - PDF
       - EML
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -2626,7 +2654,9 @@ components:
         relatedKeyDocumentProgressEntries:
           type: array
           items:
-            $ref: "#/components/schemas/ManualProgressEntry"
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
       required:
       - progressEntry
       - relatedKeyDocumentProgressEntries
@@ -2972,6 +3002,20 @@ components:
       - FORBIDDEN
       - NOT_FOUND
       - INTERNAL_SERVER_ERROR
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
     Mail:
       type: object
       allOf:
@@ -3017,13 +3061,19 @@ components:
             type: string
           mailTo:
             type: string
+          messageText:
+            type: string
           sentDate:
             type: string
             format: date-time
+          subject:
+            type: string
       required:
       - mailFrom
       - mailTo
+      - messageText
       - sentDate
+      - subject
     MailMetaDataHistory:
       type: object
       allOf:
@@ -3057,13 +3107,10 @@ components:
             type: boolean
           manualProgressEntryType:
             $ref: "#/components/schemas/ManualProgressEntryType"
-          messageText:
-            type: string
           note:
             type: string
-          subject:
-            type: string
       - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - createdBy
@@ -3131,13 +3178,7 @@ components:
       properties:
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
-          nullable: true
         note:
-          type: string
-          nullable: true
-        subject:
           type: string
           nullable: true
     Pdf:
@@ -3559,6 +3600,11 @@ components:
         properties:
           changeDescription:
             type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
           systemProgressEntryType:
             type: string
           triggerType:
@@ -3570,6 +3616,7 @@ components:
             type: string
           triggeredByUserLastName:
             type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - modifiedAt

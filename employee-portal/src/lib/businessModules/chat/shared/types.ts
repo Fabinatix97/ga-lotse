@@ -37,6 +37,7 @@ export interface Message {
   readReceipts?: ReadConfirmationsPerUser;
   messageType: MessageTypeEnum;
   sent: boolean;
+  removed: boolean;
 }
 
 export function isChatMessageType(data: unknown): data is Message {
@@ -58,7 +59,7 @@ export interface CreateRoomOptions {
   invite: string[];
 }
 
-export type Presence = IPresenceOpts["presence"];
+export type Presence = IPresenceOpts["presence"] | "deactivated";
 export type UsersPresence = Record<string, Presence>;
 
 export type ReadConfirmationsPerUser = Record<
@@ -181,4 +182,8 @@ export interface UserFromDirectory {
 export interface UserDirectoryResponse {
   results: UserFromDirectory[];
   limited: boolean;
+}
+
+export interface UserToInvite extends UserFromDirectory {
+  department?: string;
 }

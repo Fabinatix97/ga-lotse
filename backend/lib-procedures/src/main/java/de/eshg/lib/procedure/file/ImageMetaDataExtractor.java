@@ -25,13 +25,15 @@ class ImageMetaDataExtractor {
 
   private ImageMetaDataExtractor() {}
 
-  static void extract(byte[] file, ImageMetaData imageMetaData) {
+  static ImageMetaData fromFileContent(byte[] file) {
     Metadata metadata = readImageMetaData(file);
 
     Instant createdDate =
         getExifDateOriginal(metadata).or(() -> getIptcDateCreated(metadata)).orElse(null);
 
+    ImageMetaData imageMetaData = new ImageMetaData();
     imageMetaData.setCreatedDate(createdDate);
+    return imageMetaData;
   }
 
   private static Metadata readImageMetaData(byte[] file) {

@@ -10,6 +10,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Person;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
+import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -20,4 +21,5 @@ public record StiProtectionProcedureData(
     Concern concern,
     Person person,
     Appointment appointment,
-    UserDefinedAppointment userDefinedAppointment) {}
+    UserDefinedAppointment userDefinedAppointment,
+    WaitingRoom waitingRoom) {}

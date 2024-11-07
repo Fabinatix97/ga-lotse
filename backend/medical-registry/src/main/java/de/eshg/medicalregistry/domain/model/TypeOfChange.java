@@ -6,7 +6,6 @@
 package de.eshg.medicalregistry.domain.model;
 
 public enum TypeOfChange {
-  TypeOfChange,
   NEW_REGISTRATION,
   SECOND_PRACTICE,
   RE_REGISTRATION,

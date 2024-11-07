@@ -36,3 +36,8 @@ export interface SideNavigationSubItem {
 export type SideNavigationItem =
   | SideNavigationItemWithoutSubItems
   | SideNavigationItemWithSubItems;
+
+export interface UseSideNavigationItemsResult {
+  isLoading: boolean;
+  items: SideNavigationItem[];
+}

@@ -8,6 +8,10 @@ package de.eshg.schoolentry.importer;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.schoolentry.business.model.ImportAnamnesisData;
 import de.eshg.schoolentry.business.model.ImportVaccinationStatusData;
+import de.eshg.schoolentry.domain.model.DevelopmentScreening;
+import de.eshg.schoolentry.domain.model.EyeExaminationResult;
+import de.eshg.schoolentry.domain.model.HearingTestResult;
+import de.eshg.schoolentry.domain.model.SopessExaminationResult;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -20,6 +24,14 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
   private ImportAnamnesisData anamnesisData;
 
   private ImportVaccinationStatusData vaccinationStatusData;
+
+  private EyeExaminationResult eyeExaminationResult;
+
+  private HearingTestResult hearingTestData;
+
+  private SopessExaminationResult sopessExaminationData;
+
+  private DevelopmentScreening developmentScreeningData;
 
   public ProcedureType getProcedureType() {
     return procedureType;
@@ -51,6 +63,38 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
 
   public void setVaccinationStatusData(ImportVaccinationStatusData vaccinationStatusData) {
     this.vaccinationStatusData = vaccinationStatusData;
+  }
+
+  public EyeExaminationResult getEyeExaminationResult() {
+    return eyeExaminationResult;
+  }
+
+  public void setEyeExaminationResult(EyeExaminationResult eyeExaminationResult) {
+    this.eyeExaminationResult = eyeExaminationResult;
+  }
+
+  public HearingTestResult getHearingTestData() {
+    return hearingTestData;
+  }
+
+  public void setHearingTestData(HearingTestResult hearingTestData) {
+    this.hearingTestData = hearingTestData;
+  }
+
+  public SopessExaminationResult getSopessExaminationData() {
+    return sopessExaminationData;
+  }
+
+  public void setSopessExaminationData(SopessExaminationResult sopessExaminationData) {
+    this.sopessExaminationData = sopessExaminationData;
+  }
+
+  public DevelopmentScreening getDevelopmentScreeningData() {
+    return developmentScreeningData;
+  }
+
+  public void setDevelopmentScreeningData(DevelopmentScreening developmentScreeningData) {
+    this.developmentScreeningData = developmentScreeningData;
   }
 
   @Override

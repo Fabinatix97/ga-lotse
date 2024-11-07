@@ -26,12 +26,14 @@ import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.otherservicetemplate.OtherServiceTemplateService;
 import de.eshg.travelmedicine.otherservicetemplate.api.OtherServiceTemplateDto;
 import de.eshg.travelmedicine.otherservicetemplate.api.PostPutOtherServiceTemplateRequest;
+import de.eshg.travelmedicine.template.api.TemplateAnamnesisQuestionDto;
+import de.eshg.travelmedicine.template.api.TemplateConfirmationDto;
 import de.eshg.travelmedicine.template.api.TemplateContentDto;
 import de.eshg.travelmedicine.template.api.TemplateSectionDto;
-import de.eshg.travelmedicine.template.api.TemplateSectionElementDataDto;
 import de.eshg.travelmedicine.template.api.TemplateSectionElementDto;
 import de.eshg.travelmedicine.template.api.TemplateSubElementMultiSelectDto;
 import de.eshg.travelmedicine.template.api.TemplateSubElementTextDto;
+import de.eshg.travelmedicine.template.api.TemplateTextBlockDto;
 import de.eshg.travelmedicine.template.informationstatementtemplate.InformationStatementTemplateService;
 import de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateDto;
 import de.eshg.travelmedicine.template.informationstatementtemplate.api.InformationStatementTemplateRequest;
@@ -383,7 +385,7 @@ public class TestPopulateAdministrativeService {
                   "Empty Template Title",
                   DRAFT,
                   null,
-                  createTemplateContent(false)));
+                  createTemplateContent()));
       InformationStatementTemplateDto standardDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
@@ -394,7 +396,7 @@ public class TestPopulateAdministrativeService {
                       diseases.get(CHOLERA_DISEASE_KEY),
                       diseases.get(MALARIA_DISEASE_KEY),
                       diseases.get(MEASLES_DISEASE_KEY)),
-                  createTemplateContent(false)));
+                  createTemplateContent()));
       InformationStatementTemplateDto choleraFinalDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
@@ -402,7 +404,7 @@ public class TestPopulateAdministrativeService {
                   "Cholera Final Template Title",
                   FINAL,
                   List.of(diseases.get(CHOLERA_DISEASE_KEY)),
-                  createTemplateContent(false)));
+                  createTemplateContent()));
       InformationStatementTemplateDto choleraDraftDto =
           informationStatementTemplateService.createInformationStatementTemplate(
               new InformationStatementTemplateRequest(
@@ -410,7 +412,7 @@ public class TestPopulateAdministrativeService {
                   "Cholera Draft Template Title",
                   DRAFT,
                   List.of(diseases.get(CHOLERA_DISEASE_KEY)),
-                  createTemplateContent(false)));
+                  createTemplateContent()));
 
       Map<String, UUID> informationStatementTemplates = new LinkedHashMap<>();
       informationStatementTemplates.put(EMPTY_IST_KEY, emptyDto.id());
@@ -423,65 +425,58 @@ public class TestPopulateAdministrativeService {
     return Map.of();
   }
 
-  private TemplateContentDto createTemplateContent(boolean answered) {
-    Boolean closedAnswer = answered ? true : null;
-    String openAnswer = answered ? "Antworttext" : null;
+  private TemplateContentDto createTemplateContent() {
     return new TemplateContentDto(
         List.of(
             new TemplateSectionDto(
                 "1. Section Titel",
                 List.of(
                     new TemplateSectionElementDto(
-                        "option",
-                        new TemplateSectionElementDataDto(
-                            "1. Section, 1. Frage, keine Subelemente",
-                            closedAnswer,
-                            List.of(),
-                            null)),
+                        new TemplateAnamnesisQuestionDto(
+                            "1. Section, 1. Frage, keine Subelemente", List.of(), null),
+                        null,
+                        null),
                     new TemplateSectionElementDto(
-                        "option",
-                        new TemplateSectionElementDataDto(
+                        new TemplateAnamnesisQuestionDto(
                             "1. Section, 2. Frage, SubElementMultiSelect",
-                            closedAnswer,
                             List.of(
-                                new TemplateSubElementMultiSelectDto(
-                                    "1. Antwortoption", closedAnswer),
-                                new TemplateSubElementMultiSelectDto(
-                                    "2. Antwortoption", closedAnswer)),
-                            null)),
+                                new TemplateSubElementMultiSelectDto("1. Antwortoption"),
+                                new TemplateSubElementMultiSelectDto("2. Antwortoption")),
+                            null),
+                        null,
+                        null),
                     new TemplateSectionElementDto(
-                        "option",
-                        new TemplateSectionElementDataDto(
+                        new TemplateAnamnesisQuestionDto(
                             "1. Section, 3. Frage, SubElementText",
-                            closedAnswer,
                             List.of(),
-                            new TemplateSubElementTextDto("3. Frage, offene Angabe", openAnswer))),
+                            new TemplateSubElementTextDto("3. Frage, offene Angabe")),
+                        null,
+                        null),
                     new TemplateSectionElementDto(
-                        "option",
-                        new TemplateSectionElementDataDto(
+                        new TemplateAnamnesisQuestionDto(
                             "1. Section, 4. Frage, kombiniert",
-                            closedAnswer,
                             List.of(
-                                new TemplateSubElementMultiSelectDto(
-                                    "1. Antwortoption", closedAnswer),
-                                new TemplateSubElementMultiSelectDto(
-                                    "2. Antwortoption", closedAnswer)),
+                                new TemplateSubElementMultiSelectDto("1. Antwortoption"),
+                                new TemplateSubElementMultiSelectDto("2. Antwortoption")),
                             new TemplateSubElementTextDto(
-                                "4. Frage, offene Angabe in Subelementen", openAnswer))))),
+                                "4. Frage, offene Angabe in Subelementen")),
+                        null,
+                        null),
+                    new TemplateSectionElementDto(
+                        null, new TemplateTextBlockDto("Textfeld\nmit Inhalt"), null),
+                    new TemplateSectionElementDto(
+                        null, null, new TemplateConfirmationDto("1. Section, Bestätigungsfeld")))),
             new TemplateSectionDto(
                 "2. Section Titel",
                 List.of(
                     new TemplateSectionElementDto(
-                        "option",
-                        new TemplateSectionElementDataDto(
+                        new TemplateAnamnesisQuestionDto(
                             "2. Section, 1. Frage",
-                            closedAnswer,
                             List.of(
-                                new TemplateSubElementMultiSelectDto(
-                                    "Eine Antwortoption", closedAnswer),
-                                new TemplateSubElementMultiSelectDto(
-                                    "Noch eine Antwortoption", closedAnswer)),
-                            new TemplateSubElementTextDto(
-                                "Sonstige Antwortoption", openAnswer)))))));
+                                new TemplateSubElementMultiSelectDto("Eine Antwortoption"),
+                                new TemplateSubElementMultiSelectDto("Noch eine Antwortoption")),
+                            new TemplateSubElementTextDto("Sonstige Antwortoption")),
+                        null,
+                        null)))));
   }
 }

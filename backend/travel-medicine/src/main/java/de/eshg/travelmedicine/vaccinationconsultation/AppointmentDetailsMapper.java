@@ -7,10 +7,12 @@ package de.eshg.travelmedicine.vaccinationconsultation;
 
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentSummaryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentDetailsResponse;
+import de.eshg.travelmedicine.vaccinationconsultation.api.InformationStatementSummaryDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VcService;
 import java.time.LocalDate;
+import java.util.List;
 
 public class AppointmentDetailsMapper {
   private AppointmentDetailsMapper() {}
@@ -18,7 +20,8 @@ public class AppointmentDetailsMapper {
   public static GetAppointmentDetailsResponse mapToDetails(
       AppointmentSummaryDto appointmentSummary,
       PatientDto patientDto,
-      ProcedureStep procedureStep) {
+      ProcedureStep procedureStep,
+      List<InformationStatementSummaryDto> informationStatementSummaries) {
     String lastName = patientDto.lastName();
     String firstName = patientDto.firstName();
     LocalDate dateOfBirth = patientDto.dateOfBirth();
@@ -37,6 +40,7 @@ public class AppointmentDetailsMapper {
         firstName,
         dateOfBirth,
         isMedicalHistoryCompletelyAnswered,
-        citizenHasAnswered);
+        citizenHasAnswered,
+        informationStatementSummaries);
   }
 }

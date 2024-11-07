@@ -19,5 +19,4 @@ public record GetVaccinationConsultationDetailsResponse(
     @NotNull @Valid TravelInformationDto travelInformation,
     @NotNull CreatedByUserTypeDto createdByUserType,
     @NotNull @Valid AppointmentSummaryDto initialAppointment,
-    @NotNull @Valid List<ServicePlanEntryDto> servicePlanList,
-    @NotNull @Valid List<InformationStatementDto> informationStatements) {}
+    @NotNull @Valid List<ServicePlanEntryDto> servicePlanList) {}

@@ -18,6 +18,6 @@ export function useGetFilterTemplateFilters() {
   });
 
   return async (filterTemplateId: string) => {
-    return mutation.mutateAsync(filterTemplateId).catch();
+    return mutation.mutateAsync(filterTemplateId);
   };
 }

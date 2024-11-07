@@ -33,6 +33,11 @@ public final class MedicalHistoryMapper {
         entity.getCurrentSymptoms(),
         entity.getContactToClarifyDuration(),
         RelationshipModelMapper.toInterfaceType(entity.getRelationshipModel()),
+        entity.getLastMenstruationDuration(),
+        entity.getLastCancerScreeningDuration(),
+        entity.getAmountPregnancies(),
+        entity.getAmountAbortions(),
+        entity.getKnownOperations(),
         entity.getMedications(),
         ExaminationMapper.toInterfaceType(entity.getExaminations()),
         PreviousIllnessMapper.toInterfaceType(entity.getPreviousIllnesses()),
@@ -63,6 +68,11 @@ public final class MedicalHistoryMapper {
 
   private static MedicalHistory toDatabaseType(SexWorkMedicalHistoryDto dto) {
     SexWorkMedicalHistory sexWorkMedicalHistory = new SexWorkMedicalHistory();
+    sexWorkMedicalHistory.setLastMenstruationDuration(dto.lastMenstruationDuration());
+    sexWorkMedicalHistory.setLastCancerScreeningDuration(dto.lastCancerScreeningDuration());
+    sexWorkMedicalHistory.setAmountPregnancies(dto.amountPregnancies());
+    sexWorkMedicalHistory.setAmountAbortions(dto.amountAbortions());
+    sexWorkMedicalHistory.setKnownOperations(dto.knownOperations());
     sexWorkMedicalHistory.setMedications(dto.medications());
     return updateMedicalHistory(dto, sexWorkMedicalHistory);
   }

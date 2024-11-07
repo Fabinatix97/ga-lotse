@@ -72,6 +72,9 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
   @PostExchange("/enabled-new-features/{featureToEnable}")
   void enableNewFeature(@PathVariable("featureToEnable") BaseFeature featureToEnable);
 
+  @PostExchange("/disable-new-features/{featureToDisable}")
+  void disableNewFeature(@PathVariable("featureToDisable") BaseFeature featureToDisable);
+
   @PostExchange("/setup-admin")
   void createSetupAdmin(@Valid @RequestBody CreateSetupAdminRequest request);
 

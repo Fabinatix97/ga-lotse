@@ -16,24 +16,22 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            version('keycloak', '25.0.6')
-            library('keycloak-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak')
-            library('keycloak-common', 'org.keycloak', 'keycloak-common').versionRef('keycloak')
-            library('keycloak-core', 'org.keycloak', 'keycloak-core').versionRef('keycloak')
-            library('keycloak-server-spi', 'org.keycloak', 'keycloak-server-spi').versionRef('keycloak')
-            library('keycloak-server-spi-private', 'org.keycloak', 'keycloak-server-spi-private').versionRef('keycloak')
-            library('keycloak-services', 'org.keycloak', 'keycloak-services').versionRef('keycloak')
-            bundle('keycloak-client', [
-                'keycloak-admin-client',
-                'keycloak-core',
-                'keycloak-common'
-            ])
+            version('keycloak-client', '26.0.1')
+            version('keycloak-server', '26.0.2')
+
+            library('keycloak-client-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak-client')
+
+            library('keycloak-server-common', 'org.keycloak', 'keycloak-common').versionRef('keycloak-server')
+            library('keycloak-server-core', 'org.keycloak', 'keycloak-core').versionRef('keycloak-server')
+            library('keycloak-server-server-spi', 'org.keycloak', 'keycloak-server-spi').versionRef('keycloak-server')
+            library('keycloak-server-server-spi-private', 'org.keycloak', 'keycloak-server-spi-private').versionRef('keycloak-server')
+            library('keycloak-server-services', 'org.keycloak', 'keycloak-services').versionRef('keycloak-server')
             bundle('keycloak-server', [
-                'keycloak-core',
-                'keycloak-common',
-                'keycloak-server-spi',
-                'keycloak-server-spi-private',
-                'keycloak-services',
+                'keycloak-server-core',
+                'keycloak-server-common',
+                'keycloak-server-server-spi',
+                'keycloak-server-server-spi-private',
+                'keycloak-server-services',
             ])
         }
     }

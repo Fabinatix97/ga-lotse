@@ -8,11 +8,19 @@ import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLay
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
-export default function VaccinationConsultationsOverviewPage() {
+export default function VaccinationConsultationsOverviewPage(
+  props: Readonly<{
+    searchParams?: {
+      date: string;
+    };
+  }>,
+) {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Impfberatung" />}>
       <MainContentLayout>
-        <VaccinationConsultationsOverviewTable />
+        <VaccinationConsultationsOverviewTable
+          date={props.searchParams?.date}
+        />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

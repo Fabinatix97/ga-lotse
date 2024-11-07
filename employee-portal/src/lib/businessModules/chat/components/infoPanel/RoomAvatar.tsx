@@ -14,14 +14,8 @@ import { EventType } from "matrix-js-sdk/lib/matrix";
 import { useState } from "react";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
-import {
-  getMemberAvatarUrl,
-  getRoomAvatarUrl,
-  isDMRoom,
-} from "@/lib/businessModules/chat/shared/utils";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 import { FileLike } from "@/lib/shared/components/formFields/file/validators";
@@ -38,12 +32,10 @@ export function RoomAvatar({
   onCancel,
 }: Readonly<RoomAvatarProps>) {
   const roomInfo = useRoomInfo(roomId);
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, getAvatarUrl } = roomInfo;
   const snackbar = useSnackbar();
-  const initialAvatar = isDMRoom(roomInfo.communicationType)
-    ? getMemberAvatarUrl(matrixClient, roomInfo.dmRoomMember?.member)
-    : getRoomAvatarUrl(matrixClient, roomInfo.room);
-  const [preview, setPreview] = useState<string | null>(initialAvatar);
+
+  const [preview, setPreview] = useState(getAvatarUrl());
 
   async function handleSubmit(values: { avatar: File | undefined }) {
     try {
@@ -72,7 +64,7 @@ export function RoomAvatar({
 
   return (
     <>
-      <InfoPanelHeader data={roomInfo} close={onClose} />
+      <InfoPanelHeader close={onClose} {...roomInfo} />
       <Stack sx={{ p: 3 }}>
         <Typography level="title-lg">Profilbild ändern</Typography>
         <Formik<{ avatar: File | undefined }>

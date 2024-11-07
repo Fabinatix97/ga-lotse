@@ -61,6 +61,7 @@ export function useNewMessages() {
                 mentions: messageContent["m.mentions"]?.user_ids,
                 messageType: MessageTypeEnum.ChatMessage,
                 sent: true,
+                removed: false,
               };
 
               if (sender?.userId !== currentMatrixClient.getUserId()) {

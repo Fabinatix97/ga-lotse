@@ -6,18 +6,8 @@
 package de.eshg.schoolentry.importer;
 
 public enum ImportType {
-  CITIZEN_LIST(true),
-  SCHOOL_LIST(true),
-  PAST_PROCEDURE_LIST(false),
+  CITIZEN_LIST,
+  SCHOOL_LIST,
+  PAST_PROCEDURE_LIST,
   ;
-
-  private final boolean supportsMerge;
-
-  ImportType(boolean supportsMerge) {
-    this.supportsMerge = supportsMerge;
-  }
-
-  public boolean supportsMerge() {
-    return supportsMerge;
-  }
 }

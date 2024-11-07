@@ -47,6 +47,7 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
+import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
@@ -93,6 +94,7 @@ public class StiProtectionProcedureService {
     procedure.addRelatedPerson(createPerson(request));
     procedure.addTask(createTask());
     bookAppointment(procedure, request);
+    procedure.setWaitingRoom(new WaitingRoom());
     return repository.save(procedure);
   }
 
@@ -195,7 +197,8 @@ public class StiProtectionProcedureService {
         procedure.getConcern(),
         procedure.getPerson(),
         procedure.getAppointment(),
-        procedure.getUserDefinedAppointment());
+        procedure.getUserDefinedAppointment(),
+        procedure.getWaitingRoom());
   }
 
   public StiProtectionProcedureData getProcedure(UUID procedureId) {
@@ -249,7 +252,7 @@ public class StiProtectionProcedureService {
         "%s: unexpected procedure status: %s".formatted(procedureId, procedureStatus));
   }
 
-  public Pdf createAnonymousIdentificationDocument(UUID procedureId) {
+  public Pdf getAnonymousIdentificationDocument(UUID procedureId) {
     StiProtectionProcedureData procedure = getProcedure(procedureId);
     TimeRange timeRange = toAppointmentTimeRange(procedure);
     Department department = mapToDepartment(departmentClient.getDepartmentInfo());

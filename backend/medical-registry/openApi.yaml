@@ -387,6 +387,21 @@ paths:
           description: OK
       tags:
       - File
+  /gdpr-validation-tasks:
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
   /inbox-procedures:
     get:
       description: |
@@ -550,6 +565,102 @@ paths:
       summary: Update status of inbox procedure
       tags:
       - InboxProcedure
+  /medical-registry-entries:
+    post:
+      operationId: createProcedure
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                employeeList:
+                  type: string
+                  format: binary
+                identificationDocument:
+                  type: string
+                  format: binary
+                otherRelevantDocuments:
+                  type: string
+                  format: binary
+                procedure:
+                  $ref: "#/components/schemas/CreateProcedureRequest"
+                professionalLicenseCertificate:
+                  type: string
+                  format: binary
+                workPermit:
+                  type: string
+                  format: binary
+              required:
+              - identificationDocument
+              - procedure
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      tags:
+      - MedicalRegistry
+  /medical-registry-entries/procedures:
+    get:
+      operationId: getProcedureOverview
+      parameters:
+      - description: Limit of returned procedures
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      - description: Offset used for pagination
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2000
+          minimum: 0
+      - description: |
+          Filter logic:
+          - In case of `true` only procedures are returned where a certificate was requested.
+          - In case of `false` only procedures are returned where no certificate was requested
+          - If not submitted, no filtering takes place
+        in: query
+        name: certificateRequested
+        required: false
+        schema:
+          type: boolean
+      - description: |
+          Filter logic:
+          - If `procedureStatus` is submitted, only procedures are returned which have one of the submitted statuses.
+          - If not submitted, no filtering takes place
+        in: query
+        name: procedureStatus
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureStatus"
+          uniqueItems: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetMedicalRegistryEntryOverview"
+          description: OK
+      summary: Get paginated and optionally filtered medical registry procedures.
+        Filtering is optional
+      tags:
+      - MedicalRegistry
   /medical-registry-entries/{procedureId}:
     delete:
       operationId: deleteProcedure
@@ -586,7 +697,9 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetMedicalRegistryProcedureResponse"
+                oneOf:
+                - $ref: "#/components/schemas/GetProcedureConfirmedResponse"
+                - $ref: "#/components/schemas/GetProcedureDraftResponse"
           description: OK
       summary: Get medical registry procedure by id.
       tags:
@@ -1402,6 +1515,21 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/medical-registry-entries/{procedureId}/open:
+    post:
+      operationId: openProcedure
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -1599,6 +1727,17 @@ components:
           minimum: 1
       required:
       - barrierId
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - procedureId
+      - type
     Address:
       type: object
       discriminator:
@@ -2138,14 +2277,31 @@ components:
           type: string
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
         note:
-          type: string
-        subject:
           type: string
       required:
       - manualProgressEntryType
+    CreateProcedureRequest:
+      type: object
+      properties:
+        consentToPrivacyPolicy:
+          type: boolean
+        employeesEmployed:
+          type: boolean
+        practice:
+          $ref: "#/components/schemas/Practice"
+        professional:
+          $ref: "#/components/schemas/Professional"
+        requestForWrittenConfirmation:
+          type: boolean
+        typeOfChange:
+          $ref: "#/components/schemas/TypeOfChange"
+      required:
+      - consentToPrivacyPolicy
+      - employeesEmployed
+      - professional
+      - requestForWrittenConfirmation
+      - typeOfChange
     DataOrigin:
       type: string
       description: "A list of possible origins of Persons and Facility in the Central\
@@ -2409,6 +2565,12 @@ components:
       - PNG
       - PDF
       - EML
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -2574,34 +2736,27 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ManualProgressEntryHistory"
-    GetMedicalRegistryProcedureResponse:
+    GetMedicalRegistryEntryOverview:
       type: object
       properties:
-        consentToPrivacyPolicy:
-          type: boolean
-        employeesEmployed:
-          type: boolean
-        id:
-          type: string
-          format: uuid
-        practices:
+        medicalRegistryEntries:
           type: array
           items:
-            $ref: "#/components/schemas/Practice"
-        professional:
-          $ref: "#/components/schemas/Professional"
-        requestForWrittenConfirmation:
-          type: boolean
-        version:
+            $ref: "#/components/schemas/MedicalRegistryEntry"
+          maxItems: 200
+          minItems: 0
+        totalElements:
           type: integer
           format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
       required:
-      - consentToPrivacyPolicy
-      - employeesEmployed
-      - id
-      - professional
-      - requestForWrittenConfirmation
-      - version
+      - medicalRegistryEntries
+      - totalElements
+      - totalPages
     GetMetaDataHistoryResponse:
       type: object
       properties:
@@ -2626,6 +2781,71 @@ components:
       required:
       - approvalRequests
       - resolvedUsers
+    GetProcedureConfirmedResponse:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GetProcedureResponse"
+      - type: object
+        properties:
+          consentToPrivacyPolicy:
+            type: boolean
+          employeesEmployed:
+            type: boolean
+          id:
+            type: string
+            format: uuid
+          practices:
+            type: array
+            items:
+              $ref: "#/components/schemas/Practice"
+          professional:
+            $ref: "#/components/schemas/Professional"
+          requestForWrittenConfirmation:
+            type: boolean
+          version:
+            type: integer
+            format: int64
+      required:
+      - consentToPrivacyPolicy
+      - employeesEmployed
+      - id
+      - professional
+      - requestForWrittenConfirmation
+      - version
+    GetProcedureDraftResponse:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GetProcedureResponse"
+      - type: object
+        properties:
+          consentToPrivacyPolicy:
+            type: boolean
+          employeesEmployed:
+            type: boolean
+          id:
+            type: string
+            format: uuid
+          practices:
+            type: array
+            items:
+              $ref: "#/components/schemas/Practice"
+          professional:
+            $ref: "#/components/schemas/Professional"
+          requestForWrittenConfirmation:
+            type: boolean
+          typeOfChange:
+            $ref: "#/components/schemas/TypeOfChange"
+          version:
+            type: integer
+            format: int64
+      required:
+      - consentToPrivacyPolicy
+      - employeesEmployed
+      - id
+      - professional
+      - requestForWrittenConfirmation
+      - typeOfChange
+      - version
     GetProcedureFileDetailsResponse:
       type: object
       properties:
@@ -2648,6 +2868,15 @@ components:
             $ref: "#/components/schemas/ProcedureMetric"
       required:
       - procedureMetrics
+    GetProcedureResponse:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     GetProceduresResponse:
       type: object
       properties:
@@ -2716,7 +2945,9 @@ components:
         relatedKeyDocumentProgressEntries:
           type: array
           items:
-            $ref: "#/components/schemas/ManualProgressEntry"
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
       required:
       - progressEntry
       - relatedKeyDocumentProgressEntries
@@ -2975,6 +3206,20 @@ components:
       - FORBIDDEN
       - NOT_FOUND
       - INTERNAL_SERVER_ERROR
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
     Mail:
       type: object
       allOf:
@@ -3020,13 +3265,19 @@ components:
             type: string
           mailTo:
             type: string
+          messageText:
+            type: string
           sentDate:
             type: string
             format: date-time
+          subject:
+            type: string
       required:
       - mailFrom
       - mailTo
+      - messageText
       - sentDate
+      - subject
     MailMetaDataHistory:
       type: object
       allOf:
@@ -3060,13 +3311,10 @@ components:
             type: boolean
           manualProgressEntryType:
             $ref: "#/components/schemas/ManualProgressEntryType"
-          messageText:
-            type: string
           note:
             type: string
-          subject:
-            type: string
       - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - createdBy
@@ -3097,22 +3345,36 @@ components:
       - EMAIL
       - IMAGE
       - DOCUMENT
-    MedicalRegistryAddress:
+    MedicalRegistryEntry:
       type: object
       properties:
-        city:
+        address:
+          $ref: "#/components/schemas/ProfessionalAddress"
+        certificateRequested:
+          type: boolean
+        dateOfBirth:
           type: string
-        houseNumber:
+          format: date
+        firstName:
           type: string
-        postalCode:
+        id:
           type: string
-        street:
+          format: uuid
+        lastName:
           type: string
+        status:
+          $ref: "#/components/schemas/ProcedureStatus"
+        type:
+          $ref: "#/components/schemas/ProcedureType"
       required:
-      - city
-      - houseNumber
-      - postalCode
-      - street
+      - address
+      - certificateRequested
+      - dateOfBirth
+      - firstName
+      - id
+      - lastName
+      - status
+      - type
     MetaData:
       type: object
       discriminator:
@@ -3150,13 +3412,7 @@ components:
       properties:
         manualProgressEntryType:
           $ref: "#/components/schemas/ManualProgressEntryType"
-        messageText:
-          type: string
-          nullable: true
         note:
-          type: string
-          nullable: true
-        subject:
           type: string
           nullable: true
     Pdf:
@@ -3356,17 +3612,17 @@ components:
       type: object
       properties:
         address:
-          $ref: "#/components/schemas/MedicalRegistryAddress"
+          $ref: "#/components/schemas/PracticeAddress"
         emailAddress:
           type: string
-          maxLength: 254
-          minLength: 6
         establishmentNumber:
           type: string
+          pattern: \d+
         healthInsuranceAuthorization:
           type: boolean
         institutionIdentifier:
           type: string
+          pattern: \d+
         name:
           type: string
           maxLength: 300
@@ -3382,8 +3638,35 @@ components:
           maxLength: 254
           minLength: 6
       required:
+      - address
+      - emailAddress
       - healthInsuranceAuthorization
       - name
+      - phoneNumber
+    PracticeAddress:
+      type: object
+      properties:
+        city:
+          type: string
+          maxLength: 50
+          minLength: 1
+        houseNumber:
+          type: string
+          maxLength: 11
+          minLength: 1
+        postalCode:
+          type: string
+          maxLength: 20
+          minLength: 1
+        street:
+          type: string
+          maxLength: 55
+          minLength: 1
+      required:
+      - city
+      - houseNumber
+      - postalCode
+      - street
     Procedure:
       type: object
       properties:
@@ -3529,7 +3812,7 @@ components:
       type: object
       properties:
         address:
-          $ref: "#/components/schemas/MedicalRegistryAddress"
+          $ref: "#/components/schemas/ProfessionalAddress"
         approbationGrantedOn:
           type: string
           format: date
@@ -3540,8 +3823,6 @@ components:
           format: date
         emailAddress:
           type: string
-          maxLength: 254
-          minLength: 6
         employmentStatus:
           $ref: "#/components/schemas/EmploymentStatus"
         employmentType:
@@ -3562,6 +3843,7 @@ components:
           minLength: 1
         lifetimeDoctorNumber:
           type: string
+          pattern: "\\d{9}"
         nameAtBirth:
           type: string
           maxLength: 40
@@ -3587,15 +3869,48 @@ components:
           maxLength: 119
           minLength: 1
       required:
+      - address
       - approbationGrantedOn
       - approbationIssuingAuthority
       - dateOfBirth
+      - emailAddress
       - employmentStatus
       - employmentType
       - firstName
+      - gender
       - lastName
+      - nameAtBirth
       - nationality
+      - phoneNumber
+      - placeOfBirth
       - professionalTitle
+    ProfessionalAddress:
+      type: object
+      properties:
+        city:
+          type: string
+          maxLength: 50
+          minLength: 1
+        country:
+          $ref: "#/components/schemas/CountryCode"
+        houseNumber:
+          type: string
+          maxLength: 11
+          minLength: 1
+        postalCode:
+          type: string
+          maxLength: 20
+          minLength: 1
+        street:
+          type: string
+          maxLength: 55
+          minLength: 1
+      required:
+      - city
+      - country
+      - houseNumber
+      - postalCode
+      - street
     ProfessionalTitle:
       type: string
       enum:
@@ -3721,6 +4036,11 @@ components:
         properties:
           changeDescription:
             type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
           systemProgressEntryType:
             type: string
           triggerType:
@@ -3732,6 +4052,7 @@ components:
             type: string
           triggeredByUserLastName:
             type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
       required:
       - createdAt
       - modifiedAt
@@ -3917,6 +4238,17 @@ components:
       - SYSTEM_AUTOMATIC
       - EMPLOYEE
       - CITIZEN
+    TypeOfChange:
+      type: string
+      enum:
+      - NEW_REGISTRATION
+      - SECOND_PRACTICE
+      - RE_REGISTRATION
+      - CHANGE_OF_REGISTRATION
+      - CHANGE_OF_NAME
+      - RELOCATION
+      - DEREGISTRATION
+      - OTHER
     User:
       type: object
       properties:

@@ -61,13 +61,13 @@ public class LsdTestContainerUtil {
     GenericContainer<?> container =
         new GenericContainer<>(DockerImageName.parse(AUTHORIZATION_SERVER_IMAGE))
             .withNetwork(network)
-            .withEnv("KEYCLOAK_ADMIN", KEYCLOAK_ADMIN_NAME)
-            .withEnv("KEYCLOAK_ADMIN_PASSWORD", KEYCLOAK_ADMIN_PASSWORD)
+            .withEnv("KC_BOOTSTRAP_ADMIN_USERNAME", KEYCLOAK_ADMIN_NAME)
+            .withEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", KEYCLOAK_ADMIN_PASSWORD)
             .withEnv("KC_DB", "dev-file")
             .withExposedPorts(port)
             .waitingFor(
                 new LogMessageWaitStrategy()
-                    .withRegEx(".*Added user 'admin' to realm 'master'.*")
+                    .withRegEx(".*\\(main\\) Installed features:.*")
                     .withStartupTimeout(Duration.ofMinutes(3)))
             .withCreateContainerCmdModifier(
                 command -> command.withName(TestContainersUtil.generateName("authorization")))

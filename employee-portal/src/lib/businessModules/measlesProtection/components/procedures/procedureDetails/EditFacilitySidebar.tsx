@@ -45,12 +45,9 @@ export function EditFacilitySidebar({
   const patchFacilityMutation = usePatchFacilityMutation();
 
   function patchFacility(data: MeaslesFacility) {
-    return patchFacilityMutation
-      .mutateAsync({ facility: data })
-      .then(() => {
-        snackbar.confirmation("Einrichtung erfolgreich geändert.");
-      })
-      .catch();
+    return patchFacilityMutation.mutateAsync({ facility: data }).then(() => {
+      snackbar.confirmation("Einrichtung erfolgreich geändert.");
+    });
   }
 
   if (!facility) {

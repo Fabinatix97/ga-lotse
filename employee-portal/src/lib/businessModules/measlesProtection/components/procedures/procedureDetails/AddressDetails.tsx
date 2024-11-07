@@ -8,11 +8,9 @@ import {
   ApiPostboxAddress,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
+import { Stack } from "@mui/joy";
 
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/shared/components/detailsCard/LabeledValue";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { BaseAddress } from "@/lib/shared/helpers/address";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
 
@@ -22,7 +20,7 @@ interface AddressDetailsProps {
 
 export function AddressDetails({ address }: AddressDetailsProps) {
   if (address == null) {
-    return <ValueList></ValueList>;
+    return null;
   }
 
   if (address.type === "PostboxAddress") {
@@ -38,30 +36,30 @@ function streetAndHouseNumber(street: string, houseNumber?: string): string {
 
 function DomesticAddressDetails(address: ApiDomesticAddress) {
   return (
-    <ValueList>
-      <LabeledValue
+    <Stack gap={1}>
+      <DetailsCell
         label="Straße und Haus Nr."
         value={streetAndHouseNumber(address.street, address.houseNumber)}
       />
-      <LabeledValue label="Adresszusatz" value={address.addressAddition} />
+      <DetailsCell label="Adresszusatz" value={address.addressAddition} />
       <Row columnGap={3} justifyContent="start">
-        <LabeledValue label="Postleitzahl" value={address.postalCode} />
-        <LabeledValue label="Ort" value={address.city} />
+        <DetailsCell label="Postleitzahl" value={address.postalCode} />
+        <DetailsCell label="Ort" value={address.city} />
       </Row>
-      <LabeledValue label="Land" value={translateCountry(address.country)} />
-    </ValueList>
+      <DetailsCell label="Land" value={translateCountry(address.country)} />
+    </Stack>
   );
 }
 
 function PostboxAddressDetails(address: ApiPostboxAddress) {
   return (
-    <ValueList>
-      <LabeledValue label="Postfach" value={address.postbox} />
+    <Stack gap={1}>
+      <DetailsCell label="Postfach" value={address.postbox} />
       <Row columnGap={3} justifyContent="start">
-        <LabeledValue label="Postleitzahl" value={address.postalCode} />
-        <LabeledValue label="Ort" value={address.city} />
+        <DetailsCell label="Postleitzahl" value={address.postalCode} />
+        <DetailsCell label="Ort" value={address.city} />
       </Row>
-      <LabeledValue label="Land" value={translateCountry(address.country)} />
-    </ValueList>
+      <DetailsCell label="Land" value={translateCountry(address.country)} />
+    </Stack>
   );
 }

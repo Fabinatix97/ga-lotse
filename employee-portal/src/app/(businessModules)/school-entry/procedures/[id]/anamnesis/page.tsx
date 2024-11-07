@@ -75,9 +75,9 @@ export default function SchoolEntryAnamnesisPage(
   const updateAnamnesis = useUpdateAnamnesis();
 
   async function handleSubmit(values: AnamnesisFormValues) {
-    await updateAnamnesis
-      .mutateAsync(mapToRequest(procedureId, values, anamnesis.version))
-      .catch();
+    await updateAnamnesis.mutateAsync(
+      mapToRequest(procedureId, values, anamnesis.version),
+    );
   }
 
   return (
@@ -190,6 +190,7 @@ function parseDaycareAndSchoolInfo(
   daycareAndSchoolInfo: ApiDaycareAndSchoolInfo,
 ) {
   return {
+    wasInDaycare: parseOptionalValue(daycareAndSchoolInfo.wasInDaycare),
     inDaycareSince: parseMonthAndYear(daycareAndSchoolInfo.inDaycareSince),
     daycareName: parseOptionalValue(daycareAndSchoolInfo.daycareName),
     schoolName: parseOptionalValue(daycareAndSchoolInfo.schoolName),
@@ -389,8 +390,15 @@ function mapAdditionalChildInfo(values: AdditionalChildInfoValues) {
 
 function mapDaycareAndSchoolInfo(values: DaycareAndSchoolInfoValues) {
   return {
-    inDaycareSince: mapMonthAndYear(values.inDaycareSince),
-    daycareName: mapOptionalValue(values.daycareName),
+    wasInDaycare: mapOptionalValue(values.wasInDaycare),
+    inDaycareSince:
+      values.wasInDaycare === true
+        ? mapMonthAndYear(values.inDaycareSince)
+        : undefined,
+    daycareName:
+      values.wasInDaycare === true
+        ? mapOptionalValue(values.daycareName)
+        : undefined,
     schoolName: mapOptionalValue(values.schoolName),
   };
 }

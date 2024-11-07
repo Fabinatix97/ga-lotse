@@ -10,8 +10,6 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
-import de.eshg.statistics.api.BusinessDataAttribute;
-import de.eshg.statistics.api.DataSourceDto;
 import de.eshg.statistics.api.GetStatisticResponse;
 import de.eshg.statistics.api.GetStatisticsResponse;
 import de.eshg.statistics.api.StatisticInfo;
@@ -28,6 +26,8 @@ import de.eshg.statistics.api.attributes.ProcedureIdAttribute;
 import de.eshg.statistics.api.attributes.TextAttribute;
 import de.eshg.statistics.api.attributes.ValueOption;
 import de.eshg.statistics.api.attributes.ValueWithOptionsAttribute;
+import de.eshg.statistics.api.datasource.BusinessDataAttribute;
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.evaluationtemplate.BaseDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.BusinessDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.DataSourceWithAttributeNames;
@@ -230,6 +230,11 @@ public class StatisticMapper {
         statistic.getExternalId(),
         statistic.getCreatedByUserId(),
         statistic.getName(),
+        statistic.getTableColumns().stream()
+            .map(TableColumn::getDataSourceName)
+            .distinct()
+            .sorted()
+            .toList(),
         mapStatisticState(statistic.getState()),
         statistic.getTimeRangeStart(),
         statistic.getTimeRangeEnd(),

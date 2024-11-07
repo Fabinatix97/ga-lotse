@@ -12,6 +12,7 @@ const statusNames = {
   [ApiStatisticState.Creating]: "Wird erstellt",
   [ApiStatisticState.CopyOngoing]: "Wird kopiert",
   [ApiStatisticState.Updating]: "Wird aktualisiert",
+  [ApiStatisticState.Deleting]: "Wird gelöscht",
 } satisfies Record<ApiStatisticState, string>;
 
 const statusColors = {
@@ -20,6 +21,7 @@ const statusColors = {
   [ApiStatisticState.Creating]: "warning",
   [ApiStatisticState.CopyOngoing]: "warning",
   [ApiStatisticState.Updating]: "warning",
+  [ApiStatisticState.Deleting]: "warning",
 } satisfies Record<ApiStatisticState, ChipProps["color"]>;
 
 export function StateChip({ value }: { value: ApiStatisticState }) {

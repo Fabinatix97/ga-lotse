@@ -5,7 +5,8 @@
   },
   "title": "Informationen",
   "sidePanel": {
-    "title": "Sie können den Termin nicht wahrnehmen?",
+    "title_false": "Wählen Sie jetzt Ihren Termin",
+    "title_true": "Sie können den Termin nicht wahrnehmen?",
     "postponeAppointment": "Termin verschieben",
     "bookAppointment": "Termin buchen",
     "cancelAppointment": "Termin absagen",

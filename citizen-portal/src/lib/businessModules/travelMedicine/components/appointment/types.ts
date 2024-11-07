@@ -14,7 +14,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 export interface AppointmentFormValues {
   patient: PatientFormValues;
   travelInformation: TravelInformationFormValues;
-  initialStepAppointmentType: ApiAppointmentType;
+  initialStepAppointmentType: OptionalFieldValue<ApiAppointmentType>;
   appointmentStart: string;
   durationInMinutes: string;
 }

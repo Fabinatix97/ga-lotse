@@ -3,22 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiManualProgressEntry } from "@eshg/employee-portal-api/businessProcedures";
+import {
+  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
+  ApiManualProgressEntry,
+} from "@eshg/employee-portal-api/businessProcedures";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionGroup,
-  AccordionSummary,
-  Box,
-  Button,
-  Chip,
-  Sheet,
-  Stack,
-  Typography,
-} from "@mui/joy";
+import { Button, Chip } from "@mui/joy";
 import { Formik } from "formik";
 import { ReactNode, useContext, useState } from "react";
 import { isDefined } from "remeda";
@@ -26,7 +17,6 @@ import { isDefined } from "remeda";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
-import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
 import {
   ProgressEntriesContext,
   useFilteredAndSortedRelatedEntries,
@@ -34,7 +24,7 @@ import {
   useProgressEntriesConfig,
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
-  manualProgressEntryKeyDocumentTypes,
+  keyDocumentTypes,
   manualProgressEntryTypeNames,
 } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { extractFileDescriptionValue } from "@/lib/shared/components/procedures/progress-entries/helper";
@@ -44,10 +34,13 @@ import {
   mapToPatchRequest,
   mapToUpdateMetaDataRequest,
 } from "@/lib/shared/components/procedures/progress-entries/mapper";
-import { DetailsContentWrapper } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsContentWrapper";
+import {
+  AllKeyDocumentVersions,
+  DetailsContentWrapper,
+  NewerVersionHint,
+} from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsContentWrapper";
 import { DetailsHistory } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/DetailsHistory";
 import { LabelValueDisplay } from "@/lib/shared/components/procedures/progress-entries/sidebars/progressEntryDetailsSidebar/LabelValueDisplay";
-import { RelatedEntry } from "@/lib/shared/components/procedures/progress-entries/types";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 
 type ManualProgressEntryDetailsView = "DETAILS" | "HISTORY";
@@ -58,7 +51,7 @@ export function ManualProgressEntryDetails({
   onClose,
 }: {
   entry: ApiManualProgressEntry;
-  relatedKeyDocumentProgressEntries: ApiManualProgressEntry[];
+  relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   onClose: () => void;
 }) {
   const [currentView, setCurrentView] =
@@ -91,7 +84,7 @@ export function ManualProgressEntryDetails({
 
 export function ManualProgressEntryDetailsView(props: {
   entry: ApiManualProgressEntry;
-  relatedKeyDocumentProgressEntries: ApiManualProgressEntry[];
+  relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   onClose: () => void;
   onHistory: () => void;
 }) {
@@ -140,7 +133,7 @@ function EditableManualProgressEntryDetails({
   onHistory,
 }: {
   entry: ApiManualProgressEntry;
-  relatedKeyDocumentProgressEntries: ApiManualProgressEntry[];
+  relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   onClose: () => void;
   onHistory: () => void;
 }) {
@@ -153,22 +146,20 @@ function EditableManualProgressEntryDetails({
   };
 
   async function handleSubmit(values: ProgressEntryDetailsValues) {
-    await patchProgressEntry
-      .mutateAsync(
-        {
-          entryId: entry.progressEntryId,
-          patchProgressEntryRequest: mapToPatchRequest(values, entry.note),
-          fileId: entry.fileReference?.fileId,
-          updateFileMetaDataRequest: mapToUpdateMetaDataRequest(
-            values,
-            entry.fileReference,
-          ),
-        },
-        {
-          onSuccess: onClose,
-        },
-      )
-      .catch();
+    await patchProgressEntry.mutateAsync(
+      {
+        entryId: entry.progressEntryId,
+        patchProgressEntryRequest: mapToPatchRequest(values, entry.note),
+        fileId: entry.fileReference?.fileId,
+        updateFileMetaDataRequest: mapToUpdateMetaDataRequest(
+          values,
+          entry.fileReference,
+        ),
+      },
+      {
+        onSuccess: onClose,
+      },
+    );
   }
 
   return (
@@ -221,7 +212,7 @@ function isFileLocked(entry: ApiManualProgressEntry) {
 
 interface ManualProgressEntryDetailsTemplateProps {
   entry: ApiManualProgressEntry;
-  relatedKeyDocumentProgressEntries: ApiManualProgressEntry[];
+  relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
   handleClose: () => void;
   elements: {
     submit?: ReactNode;
@@ -265,11 +256,7 @@ function ManualProgressEntryDetailsTemplate({
             <>
               <LabelValueDisplay
                 label="Dokumenttyp"
-                value={
-                  manualProgressEntryKeyDocumentTypes[
-                    entry.keyDocumentType ?? ""
-                  ] ?? ""
-                }
+                value={keyDocumentTypes[entry.keyDocumentType ?? ""] ?? ""}
                 endDecorator={
                   entry.keyDocumentVersion ? (
                     <Chip color="primary">{`Version ${entry.keyDocumentVersion}`}</Chip>
@@ -282,18 +269,6 @@ function ManualProgressEntryDetailsTemplate({
               )}
             </>
           ),
-          mail: [
-            <LabelValueDisplay
-              key="subject"
-              label="Betreff"
-              value={isDefined(entry.subject) ? entry.subject : ""}
-            />,
-            <LabelValueDisplay
-              key="email-text"
-              label="Email-Text"
-              value={isDefined(entry.messageText) ? entry.messageText : ""}
-            />,
-          ],
           end: elements.fileDescription,
         }}
         endSlot={
@@ -333,63 +308,5 @@ function ManualProgressEntryDetailsTemplate({
       </SidebarActions>
       <DeleteProgressEntryModal onSuccessfulDeletion={handleClose} />
     </>
-  );
-}
-
-function AllKeyDocumentVersions({
-  relatedEntries,
-}: {
-  relatedEntries: RelatedEntry[];
-}) {
-  return (
-    <AccordionGroup
-      variant="soft"
-      color="primary"
-      size="sm"
-      sx={{ borderRadius: "md" }}
-    >
-      <Accordion>
-        <AccordionSummary
-          color="primary"
-          sx={{
-            button: {
-              color: "var(--joy-palette-primary-700)",
-              borderRadius: "md",
-            },
-          }}
-        >
-          Alle Versionen anzeigen
-        </AccordionSummary>
-        <AccordionDetails>
-          <Stack gap={1} padding={1}>
-            {relatedEntries.map((entry) => (
-              <Box key={entry.keyDocumentVersion} data-testid="relatedVersion">
-                <Typography
-                  level="body-sm"
-                  fontWeight="500"
-                >{`Version ${entry.keyDocumentVersion}`}</Typography>
-                <FileCardWithActions
-                  detailsProgressEntryId={entry.progressEntryId}
-                  file={entry.fileReference}
-                />
-              </Box>
-            ))}
-          </Stack>
-        </AccordionDetails>
-      </Accordion>
-    </AccordionGroup>
-  );
-}
-
-function NewerVersionHint() {
-  return (
-    <Sheet variant="soft" color="neutral">
-      <Typography
-        level="body-sm"
-        startDecorator={<WarningAmberOutlinedIcon color="warning" />}
-      >
-        Es existiert eine neuere Version dieser Datei.
-      </Typography>
-    </Sheet>
   );
 }

@@ -156,12 +156,12 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
             Sort.by(Sort.Direction.ASC, BaseEntity_.ID)));
   }
 
-  // probably only closed procedures are relevant
-  private Specification<P> getProcedureSpecification(Instant startTimeStamp, Instant endTimeStamp) {
+  protected Specification<P> getProcedureSpecification(
+      Instant startTimestamp, Instant endTimestamp) {
     return (root, query, criteriaBuilder) ->
         criteriaBuilder.and(
-            criteriaBuilder.greaterThanOrEqualTo(root.get(Procedure_.createdAt), startTimeStamp),
-            criteriaBuilder.lessThan(root.get(Procedure_.createdAt), endTimeStamp));
+            criteriaBuilder.greaterThanOrEqualTo(root.get(Procedure_.createdAt), startTimestamp),
+            criteriaBuilder.lessThan(root.get(Procedure_.createdAt), endTimestamp));
   }
 
   private DataRow createDataRow(

@@ -72,6 +72,10 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void gdpr() {
+    requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/fileStateIds")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
+    requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/*/downloads")
+        .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
     requestMatchers(GET, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
         .hasRole(EmployeePermissionRole.BASE_GDPR_PROCEDURE_READ);
     requestMatchers(POST, BaseUrls.Base.GDPR_PROCEDURE_API + "/**")
@@ -239,8 +243,7 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void features() {
-    requestMatchers(GET, BaseUrls.Base.FEATURE_TOGGLES_API + "/**")
-        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+    requestMatchers(GET, BaseUrls.Base.FEATURE_TOGGLES_API).permitAll();
   }
 
   private void config() {

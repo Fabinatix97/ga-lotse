@@ -8,7 +8,7 @@ package de.eshg.statistics;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.statistics.api.AvailableDataSource;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateFromEvaluationRequest;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
@@ -18,9 +18,11 @@ import de.eshg.statistics.api.evaluationtemplate.GetAllEvaluationTemplatesRespon
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesRequest;
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesResponse;
 import de.eshg.statistics.api.evaluationtemplate.UpdateEvaluationTemplateRequest;
+import de.eshg.statistics.config.OriginalDataAccessConfig;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
 import de.eshg.statistics.mapper.EvaluationTemplateMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
+import de.eshg.statistics.persistence.entity.evaluationtemplate.DataSource;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate_;
 import de.eshg.statistics.persistence.repository.EvaluationTemplateRepository;
@@ -28,6 +30,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -41,14 +44,17 @@ public class EvaluationTemplateService {
   private final EvaluationTemplateRepository evaluationTemplateRepository;
   private final StatisticUserService userService;
   private final Clock clock;
+  private final OriginalDataAccessConfig originalDataAccessConfig;
 
   public EvaluationTemplateService(
       EvaluationTemplateRepository evaluationTemplateRepository,
       StatisticUserService userService,
-      Clock clock) {
+      Clock clock,
+      OriginalDataAccessConfig originalDataAccessConfig) {
     this.evaluationTemplateRepository = evaluationTemplateRepository;
     this.userService = userService;
     this.clock = clock;
+    this.originalDataAccessConfig = originalDataAccessConfig;
   }
 
   @Transactional
@@ -63,7 +69,18 @@ public class EvaluationTemplateService {
                 addEvaluationTemplateFromEvaluationRequest.description(),
                 evaluationTemplateData,
                 availableDataSources));
-    return EvaluationTemplateMapper.mapToApi(evaluationTemplate);
+    return EvaluationTemplateMapper.mapToApi(
+        evaluationTemplate, withoutAnonymizationAllowed(evaluationTemplate));
+  }
+
+  private boolean withoutAnonymizationAllowed(EvaluationTemplate evaluationTemplate) {
+    Set<String> businessModules =
+        evaluationTemplate.getDataSources().stream()
+            .map(DataSource::getBusinessModuleName)
+            .collect(Collectors.toSet());
+    return originalDataAccessConfig
+        .getBusinessModulesOriginalDataAllowedForCurrentUser()
+        .containsAll(businessModules);
   }
 
   @Transactional
@@ -76,7 +93,8 @@ public class EvaluationTemplateService {
                 addEvaluationTemplateWithDataSourcesRequest.name(),
                 addEvaluationTemplateWithDataSourcesRequest.dataSources(),
                 availableDataSources));
-    return EvaluationTemplateMapper.mapToApi(evaluationTemplate);
+    return EvaluationTemplateMapper.mapToApi(
+        evaluationTemplate, withoutAnonymizationAllowed(evaluationTemplate));
   }
 
   @Transactional
@@ -85,7 +103,8 @@ public class EvaluationTemplateService {
     EvaluationTemplate evaluationTemplate = getEvaluationTemplateInternal(templateId);
     evaluationTemplate.setName(updateEvaluationTemplateRequest.name());
     evaluationTemplate.setDescription(updateEvaluationTemplateRequest.description());
-    return EvaluationTemplateMapper.mapToApi(evaluationTemplate);
+    return EvaluationTemplateMapper.mapToApi(
+        evaluationTemplate, withoutAnonymizationAllowed(evaluationTemplate));
   }
 
   @Transactional(readOnly = true)
@@ -94,7 +113,12 @@ public class EvaluationTemplateService {
         evaluationTemplateRepository.findAll(Sort.by(Sort.Direction.DESC, BaseEntity_.ID));
 
     return new GetAllEvaluationTemplatesResponse(
-        evaluationTemplates.stream().map(EvaluationTemplateMapper::mapToApi).toList());
+        evaluationTemplates.stream()
+            .map(
+                evaluationTemplate ->
+                    EvaluationTemplateMapper.mapToApi(
+                        evaluationTemplate, withoutAnonymizationAllowed(evaluationTemplate)))
+            .toList());
   }
 
   @Transactional(readOnly = true)
@@ -135,7 +159,8 @@ public class EvaluationTemplateService {
   @Transactional(readOnly = true)
   public EvaluationTemplateDto getEvaluationTemplate(UUID templateId) {
     EvaluationTemplate evaluationTemplate = getEvaluationTemplateInternal(templateId);
-    return EvaluationTemplateMapper.mapToApi(evaluationTemplate);
+    return EvaluationTemplateMapper.mapToApi(
+        evaluationTemplate, withoutAnonymizationAllowed(evaluationTemplate));
   }
 
   @Transactional

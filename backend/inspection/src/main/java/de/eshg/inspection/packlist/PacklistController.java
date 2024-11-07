@@ -5,8 +5,6 @@
 
 package de.eshg.inspection.packlist;
 
-import de.eshg.inspection.feature.InspectionFeature;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.packlist.api.GetPacklistsResponse;
 import de.eshg.inspection.packlist.api.PacklistDto;
@@ -34,12 +32,8 @@ public class PacklistController {
 
   private final InspectionService inspectionService;
 
-  private final InspectionFeatureToggle inspectionFeatureToggle;
-
-  public PacklistController(
-      InspectionService inspectionService, InspectionFeatureToggle inspectionFeatureToggle) {
+  public PacklistController(InspectionService inspectionService) {
     this.inspectionService = inspectionService;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   @GetMapping(path = "/{inspectionExternalId}")
@@ -48,7 +42,6 @@ public class PacklistController {
   @NotNull
   public GetPacklistsResponse getPacklists(
       @PathVariable("inspectionExternalId") UUID inspectionExternalId) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return inspectionService.getPacklists(inspectionExternalId);
   }
 
@@ -61,7 +54,6 @@ public class PacklistController {
       @PathVariable("packlistId") UUID packlistId,
       @PathVariable("packlistElementId") UUID packlistElementId,
       @Valid @RequestBody UpdatePacklistElementRequest request) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return inspectionService.checkPacklistElement(
         inspectionExternalId, packlistId, packlistElementId, request);
   }

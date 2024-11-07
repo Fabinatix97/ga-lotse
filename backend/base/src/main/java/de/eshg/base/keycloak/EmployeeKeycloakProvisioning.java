@@ -13,6 +13,7 @@ import static de.eshg.base.keycloak.RealmBoundKeycloakClient.REALM_MANAGEMENT_CL
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SECURITY_ADMIN_CONSOLE_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_ID_PREFIX;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_NAME_PREFIX;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.getClientRepresentationAttributes;
 
 import com.google.common.annotations.VisibleForTesting;
 import de.cronn.commons.lang.StreamUtil;
@@ -245,11 +246,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     clientRepresentation.setFrontchannelLogout(false);
     clientRepresentation.setRedirectUris(List.of());
     clientRepresentation.setWebOrigins(List.of());
-    // default attributes, set for diffing
-    clientRepresentation.setAttributes(
-        Map.of(
-            "backchannel.logout.revoke.offline.tokens", FALSE,
-            "backchannel.logout.session.required", TRUE));
+    clientRepresentation.setAttributes(getClientRepresentationAttributes(Map.of()));
     clientRepresentation.setDefaultClientScopes(List.of(ESHG_CLIENT_SCOPE_NAME));
     clientRepresentation.setOptionalClientScopes(List.of());
 

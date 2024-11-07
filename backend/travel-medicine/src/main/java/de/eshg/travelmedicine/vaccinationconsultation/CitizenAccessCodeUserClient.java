@@ -28,4 +28,8 @@ public class CitizenAccessCodeUserClient {
   public CitizenAccessCodeUserDto getCitizenAccessCode(UUID citizenUserId) {
     return citizenAccessCodeUserApi.getCitizenAccessCodeUser(citizenUserId);
   }
+
+  public void deleteCitizenAccessCodeUser(UUID citizenUserId) {
+    citizenAccessCodeUserApi.deleteCitizenAccessCodeUser(citizenUserId);
+  }
 }

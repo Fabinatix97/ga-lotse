@@ -1,0 +1,62 @@
+/**
+ * Workaround for a Next.js bug where the loading.tsx is not applied to pages nested within a route group.
+ * It circumvents the bug by generating separate loading.tsx for each included page.
+ *
+ * See https://github.com/vercel/next.js/issues/69625
+ */
+
+interface NextLoadingFilesConfiguration {
+  ListProperty<String> getIncludeDirs()
+}
+
+def nextLoadingFilesExtension = project.extensions.create('nextLoadingFiles', NextLoadingFilesConfiguration)
+
+def appDir = project.layout.projectDirectory.dir('src/app');
+
+def includeFilesByName = (String fileName) -> {
+  return fileTree(appDir) {
+    include nextLoadingFilesExtension.includeDirs.get().collect { "${it}/**/${fileName}" }
+  }
+}
+
+def cleanLoadingFiles = tasks.register('cleanLoadingFiles', Delete) {
+  delete includeFilesByName('loading.tsx')
+}
+
+def generateLoadingFiles = tasks.register('generateLoadingFiles') { task ->
+  def pageFiles = includeFilesByName('page.tsx')
+  def loadingTemplate = file("${appDir}/loading.template.tsx")
+  def loadingFiles = pageFiles.collect { file("${it.parent}/loading.tsx") }
+
+  inputs.files pageFiles
+  inputs.file loadingTemplate
+  outputs.files loadingFiles
+
+  doFirst {
+    delete includeFilesByName('loading.tsx')
+    def text = loadingTemplate.getText('UTF-8')
+    loadingFiles.each { File loadingFile ->
+      if (!loadingFile.exists()) {
+        loadingFile.createNewFile()
+      }
+
+      loadingFile.setText(text, 'UTF-8')
+    }
+  }
+}
+
+tasks.named('prepareEnvironment') {
+  dependsOn generateLoadingFiles
+}
+
+tasks.named("formatCheck") {
+  dependsOn generateLoadingFiles
+}
+
+tasks.named("lint") {
+  dependsOn generateLoadingFiles
+}
+
+tasks.named('clean') {
+  dependsOn cleanLoadingFiles
+}

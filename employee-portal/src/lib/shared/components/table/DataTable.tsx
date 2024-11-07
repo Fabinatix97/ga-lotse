@@ -10,6 +10,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import { visuallyHidden } from "@mui/utils";
 import {
   Cell,
+  DeepKeys,
   Row,
   RowSelectionOptions,
   RowSelectionTableState,
@@ -82,6 +83,15 @@ type SupportedRowSelectionOptions =
   | "enableRowSelection"
   | "onRowSelectionChange";
 
+interface RowNavigation<TData> {
+  route: (row: Row<TData>) => string | undefined;
+  /**
+   * focusColumnAccessorKey should be set to the accessor key of an accessor column containing non-interactive cells.
+   * Background: This is necessary to enable keyboard-based row navigation, which requires a focusable cell in each row. Currently, we expect each table to have at least one accessor column. If not the case, please consider extending this interface to support additional options.
+   */
+  focusColumnAccessorKey: DeepKeys<TData> & string;
+}
+
 export interface DataTableProps<TData> {
   data: TableOptions<TData>["data"];
   columns: TableOptions<TData>["columns"];
@@ -98,8 +108,7 @@ export interface DataTableProps<TData> {
    */
   striped?: boolean;
   noDataComponent?: () => ReactNode;
-  rowNavRoute?: (row: Row<TData>) => string | undefined;
-  focusColumnHeader?: string;
+  rowNavigation?: RowNavigation<TData>;
   /** By default, the (text) content is truncated. Set to true, to break the content into multiple lines. */
   wrapContent?: boolean;
   /** Set to true to break the header text into multiple lines. */
@@ -232,12 +241,15 @@ export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
         )}
 
         <TableNavigationProvider
-          enabled={isDefined(props.rowNavRoute)}
-          focusColumnHeader={props.focusColumnHeader}
+          enabled={isDefined(props.rowNavigation)}
+          focusColumnAccessorKey={props.rowNavigation?.focusColumnAccessorKey}
         >
           {reactTable.getRowModel().rows.map((row) => (
             <Fragment key={row.id}>
-              <TableRow<TData> row={row} rowNavRoute={props.rowNavRoute} />
+              <TableRow<TData>
+                row={row}
+                rowNavigation={props.rowNavigation?.route}
+              />
               {isDefined(props.subRowColumns) && (
                 <TableSubRow<TData>
                   row={row}

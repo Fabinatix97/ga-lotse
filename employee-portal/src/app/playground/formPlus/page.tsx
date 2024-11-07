@@ -49,7 +49,7 @@ export default function PlaygroundFormPlusPage() {
             telephoneNumberExt: "",
           }}
           onSubmit={async () => {
-            await new Promise((res) => setTimeout(res, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             snackbar.confirmation("Toll!");
           }}
         >

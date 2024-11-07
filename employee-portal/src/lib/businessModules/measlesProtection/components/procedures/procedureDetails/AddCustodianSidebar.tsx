@@ -52,12 +52,10 @@ export function AddCustodianSidebar({
       open={open}
       validate={validateCustodianAge}
       onSubmit={(data) =>
-        addCustodian
-          .mutateAsync({
-            procedureId: procedure.id,
-            data: mapToAddCustodianRequest(data),
-          })
-          .catch()
+        addCustodian.mutateAsync({
+          procedureId: procedure.id,
+          data: mapToAddCustodianRequest(data),
+        })
       }
       onClose={handleClose}
     />

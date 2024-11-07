@@ -9,6 +9,7 @@ import static de.eshg.statistics.FilterTemplateController.BASE_URL;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.statistics.aggregation.StatisticService;
 import de.eshg.statistics.api.filtertemplate.AddFilterTemplateRequest;
 import de.eshg.statistics.api.filtertemplate.FilterTemplateDto;
 import de.eshg.statistics.api.filtertemplate.GetFilterTemplatesForStatisticResponse;
@@ -32,9 +33,12 @@ public class FilterTemplateController {
   public static final String BASE_URL = BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER;
 
   private final FilterTemplateService filterTemplateService;
+  private final StatisticService statisticService;
 
-  public FilterTemplateController(FilterTemplateService filterTemplateService) {
+  public FilterTemplateController(
+      FilterTemplateService filterTemplateService, StatisticService statisticService) {
     this.filterTemplateService = filterTemplateService;
+    this.statisticService = statisticService;
   }
 
   @PostExchange(accept = APPLICATION_JSON_VALUE)
@@ -58,6 +62,7 @@ public class FilterTemplateController {
   @Operation(summary = "Get filter templates that can be used on the statistic")
   public GetFilterTemplatesForStatisticResponse findFilterTemplatesForStatistic(
       @PathVariable(name = "statisticId") UUID statisticId) {
+    statisticService.checkPermissionForStatistic(statisticId);
     return filterTemplateService.findFilterTemplatesForStatistic(statisticId);
   }
 

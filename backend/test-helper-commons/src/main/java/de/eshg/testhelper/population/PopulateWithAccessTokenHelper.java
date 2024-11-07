@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @ConditionalOnBean(BaseTestHelperApi.class)
 public class PopulateWithAccessTokenHelper {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private static final Logger log = LoggerFactory.getLogger(PopulateWithAccessTokenHelper.class);
 
   @Value("${eshg.keycloak.test-users-secret-override:}")
   private String testUserPassword;

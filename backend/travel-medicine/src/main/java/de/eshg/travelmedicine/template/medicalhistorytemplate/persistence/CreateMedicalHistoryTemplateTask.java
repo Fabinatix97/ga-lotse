@@ -37,7 +37,7 @@ public class CreateMedicalHistoryTemplateTask {
       return; // A template already exists
     }
 
-    transactionHelper.executeInTransaction(
+    transactionHelper.executeInNewTransaction(
         () -> {
           String content = getInitialMedicalHistoryAsString();
 

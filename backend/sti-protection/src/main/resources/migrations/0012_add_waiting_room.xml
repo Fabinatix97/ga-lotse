@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1730109739993-1">
+    <ext:createPostgresEnumType name="waitingstatus" values="CANCELLED, DONE, IN_CONSULTATION, IN_TESTING, WAITING_FOR_CONSULTATION, WAITING_FOR_RESULTS_REVIEW, WAITING_FOR_TESTS"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1730109739993-2">
+    <createTable tableName="waiting_room">
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="info" type="TEXT"/>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="WAITINGSTATUS"/>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_waiting_room"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1730109739993-3">
+    <addForeignKeyConstraint baseColumnNames="procedure_id" baseTableName="waiting_room" constraintName="fk_waiting_room_sti_protection_procedure" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sti_protection_procedure" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

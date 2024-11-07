@@ -19,7 +19,10 @@ import {
 } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import { SideNavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/types";
+import {
+  SideNavigationItem,
+  UseSideNavigationItemsResult,
+} from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { hasUserRole, noCheck } from "@/lib/shared/helpers/accessControl";
 
 import { routes } from "./shared/routes";
@@ -106,7 +109,7 @@ const inboxNavigationItem: SideNavigationItem[] = [
   },
 ];
 
-export function useSideNavigationItems(): SideNavigationItem[] {
+export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
   const isGdprEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Gdpr);
   const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
@@ -122,5 +125,5 @@ export function useSideNavigationItems(): SideNavigationItem[] {
     items = items.filter((item) => item.name !== "Open Data");
   }
 
-  return items;
+  return { isLoading: false, items };
 }

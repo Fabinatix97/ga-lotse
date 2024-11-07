@@ -101,9 +101,9 @@ public class ReportExecution {
         () -> reportService.setStateToFailed(reportId));
   }
 
-  public void deleteReport(UUID reportId) {
+  public boolean deleteReport(UUID reportId) {
+    AtomicBoolean deletionFinished = new AtomicBoolean(false);
     try {
-      AtomicBoolean deletionFinished = new AtomicBoolean(false);
       while (!deletionFinished.get()) {
         moduleClientAuthenticator.doWithModuleClientAuthentication(
             () -> deletionFinished.set(reportService.deleteReport(reportId)));
@@ -112,5 +112,6 @@ public class ReportExecution {
       log.error("Could not delete report {}", reportId, e);
       setToFailed(reportId);
     }
+    return deletionFinished.get();
   }
 }

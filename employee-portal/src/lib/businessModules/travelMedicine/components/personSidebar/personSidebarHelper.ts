@@ -10,6 +10,7 @@ import {
   ApiPostVaccinationConsultationRequest,
   ApiTravelType,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
@@ -77,14 +78,15 @@ export function mapToApiPostVaccinationConsultationRequest(
 ): ApiPostVaccinationConsultationRequest {
   let appointmentStart;
   let durationInMinutes;
-  // todo needs to be extended when working with citizen portal
   if (data.bookingType == ApiAppointmentBookingType.UserDefined) {
     appointmentStart = new Date(data.userDefinedAppointmentDate!);
     durationInMinutes = data.appointmentTypeStandardDuration;
   } else {
-    const split = data.appointmentBlockDate!.split(",");
-    appointmentStart = new Date(split.at(0)!);
-    durationInMinutes = Number.parseInt(split.at(1)!);
+    appointmentStart = data.appointmentBlockDate!.start;
+    durationInMinutes = durationBetweenDatesInMinutes(
+      data.appointmentBlockDate!.start,
+      data.appointmentBlockDate!.end,
+    );
   }
   return {
     ...data,

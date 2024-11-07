@@ -21,8 +21,8 @@ import { TextareaField } from "@/lib/shared/components/formFields/TextareaField"
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
+  keyDocumentTypes,
   manualProgressEntryFileTypes,
-  manualProgressEntryKeyDocumentTypes,
   manualProgressEntryTypeNames,
 } from "@/lib/shared/components/procedures/progress-entries/constants";
 import {
@@ -138,9 +138,7 @@ function CreateProgressEntrySidebarContent({
                         value: "",
                         label: "",
                       },
-                    ].concat(
-                      buildEnumOptions(manualProgressEntryKeyDocumentTypes),
-                    )}
+                    ].concat(buildEnumOptions(keyDocumentTypes))}
                   />
                 )}
                 <TextareaField name={"text"} label={"Text"} />

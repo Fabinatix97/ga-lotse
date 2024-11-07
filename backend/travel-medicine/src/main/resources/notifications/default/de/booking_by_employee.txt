@@ -1,0 +1,11 @@
+Sehr geehrte(r) %s %s,
+
+wir haben für Sie einen Termin am %s Uhr gebucht.
+
+Für den Fall, dass Sie diesen Termin nicht wahrnehmen können, denken Sie bitte daran, ihn in unserem Online-Service abzusagen oder zu verschieben.  
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Mit freundlichen Grüßen,
+
+%s

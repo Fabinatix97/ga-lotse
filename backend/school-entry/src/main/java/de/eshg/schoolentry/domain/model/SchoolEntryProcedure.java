@@ -351,4 +351,14 @@ public class SchoolEntryProcedure
                         systemProgressEntry.getSystemProgressEntryType(),
                         BasicSystemProgressEntryType.CLOSED.name()));
   }
+
+  public boolean isDeletable() {
+    return getAppointment() == null
+        && !getAnamnesis().hasEdits()
+        && !getVaccinationStatus().hasEdits()
+        && !getEyeExaminationResult().hasEdits()
+        && !getHearingTestResult().hasEdits()
+        && !getSopessExaminationResult().hasEdits()
+        && !getDevelopmentScreeningResult().hasEdits();
+  }
 }

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 public record GetAppointmentDetailsResponse(
     @NotNull @Valid AppointmentSummaryDto summaryDto,
@@ -18,4 +19,5 @@ public record GetAppointmentDetailsResponse(
     @NotBlank String firstName,
     @NotNull LocalDate dateOfBirth,
     @NotNull boolean isMedicalHistoryCompletelyAnswered,
-    @NotNull boolean citizenHasAnswered) {}
+    @NotNull boolean medicalHistoryCitizenHasAnswered,
+    @NotNull @Valid List<InformationStatementSummaryDto> informationStatementSummaries) {}

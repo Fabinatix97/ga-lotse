@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiCLSectionContextElementsInner,
-  ApiInspectionFeature,
-} from "@eshg/employee-portal-api/inspection";
+import { ApiCLSectionContextElementsInner } from "@eshg/employee-portal-api/inspection";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
@@ -22,7 +19,6 @@ import {
 } from "@mui/icons-material";
 import { Box, Chip, Divider, Grid, IconButton, Stack } from "@mui/joy";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { NoteAndHelpTextInput } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/NoteAndHelpTextInput";
 import { ChecklistDefinitionElementInner } from "@/lib/businessModules/inspection/components/checklistDefinition/elements/inner/ChecklistDefinitionElementInner";
 import { CopyDeleteDropdown } from "@/lib/businessModules/inspection/components/checklistDefinition/helpers/CopyDeleteDropdown";
@@ -50,10 +46,6 @@ export function ChecklistDefinitionElement({
   readOnlyMode,
   dragHandleProps,
 }: Readonly<ChecklistDefinitionElementProps>) {
-  const isChecklistAudioFeatureEnabled = useIsNewFeatureEnabled(
-    ApiInspectionFeature.ChecklistAudios,
-  );
-
   const isImage = element.type === "IMAGE" || element.type === "CLImageContext";
   const isAudio = element.type === "AUDIO" || element.type === "CLAudioContext";
   const isSeparator =
@@ -202,19 +194,15 @@ export function ChecklistDefinitionElement({
                     </>
                   ),
                 },
-                ...(isChecklistAudioFeatureEnabled
-                  ? [
-                      {
-                        value: "AUDIO",
-                        label: (
-                          <>
-                            <Audiotrack />
-                            Audio hinzufügen
-                          </>
-                        ),
-                      },
-                    ]
-                  : []),
+                {
+                  value: "AUDIO",
+                  label: (
+                    <>
+                      <Audiotrack />
+                      Audio hinzufügen
+                    </>
+                  ),
+                },
               ]}
             />
             {!isImage && !isAudio && (

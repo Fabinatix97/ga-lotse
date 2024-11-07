@@ -8,6 +8,10 @@ package de.eshg.schoolentry.statistics;
 import static de.eshg.schoolentry.statistics.DevelopmentScreeningStatistics.*;
 import static java.lang.Math.abs;
 
+import de.eshg.lib.appointmentblock.persistence.entity.Appointment_;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.statistics.AbstractStatisticsService;
 import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.util.AttributeInfo;
@@ -19,11 +23,18 @@ import de.eshg.schoolentry.statistics.options.*;
 import de.eshg.schoolentry.statistics.options.BooleanWithUnknown;
 import de.eshg.schoolentry.statistics.options.DoctorLetterValue;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,6 +67,76 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
   @Override
   protected SubjectType getSubjectType(AttributeInfo attributeInfo) {
     return SubjectType.PERSON;
+  }
+
+  @Override
+  protected Specification<SchoolEntryProcedure> getProcedureSpecification(
+      Instant startTimestamp, Instant endTimestamp) {
+    return (root, query, criteriaBuilder) -> {
+      Path<LocalDate> examinationDatePath = root.get(SchoolEntryProcedure_.examinationDate);
+
+      Predicate examinationDateInTimeRange =
+          isInTimeRangeIfPresent(
+              criteriaBuilder,
+              examinationDatePath,
+              toLocalDate(startTimestamp),
+              toLocalDate(endTimestamp));
+
+      Path<Instant> appointmentStartPath =
+          root.join(SchoolEntryProcedure_.appointment, JoinType.LEFT)
+              .get(Appointment_.appointmentStart);
+
+      Predicate appointmentStartInTimeRange =
+          isInTimeRangeIfPresent(
+              criteriaBuilder, appointmentStartPath, startTimestamp, endTimestamp);
+
+      // Paranoia check - this should be true for all closed procedures
+      Predicate examinationDateOrAppointmentStartNotNull =
+          criteriaBuilder.or(
+              criteriaBuilder.isNotNull(examinationDatePath),
+              criteriaBuilder.isNotNull(appointmentStartPath));
+
+      Predicate isClosed =
+          criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.CLOSED);
+
+      Predicate isCanChild =
+          criteriaBuilder.equal(root.get(Procedure_.procedureType), ProcedureType.CAN_CHILD);
+
+      Path<SchoolFeedback> schoolFeedbackPath =
+          root.join(SchoolEntryProcedure_.developmentScreeningResult)
+              .get(DevelopmentScreening_.schoolFeedback);
+
+      Predicate hasNegativeFeedback =
+          criteriaBuilder.and(
+              criteriaBuilder.isNotNull(schoolFeedbackPath),
+              criteriaBuilder.equal(schoolFeedbackPath, SchoolFeedback.NEGATIVE));
+
+      Predicate isNotCanChildWithNegativeFeedback =
+          criteriaBuilder.not(criteriaBuilder.and(isCanChild, hasNegativeFeedback));
+
+      return criteriaBuilder.and(
+          examinationDateInTimeRange,
+          appointmentStartInTimeRange,
+          examinationDateOrAppointmentStartNotNull,
+          isClosed,
+          isNotCanChildWithNegativeFeedback);
+    };
+  }
+
+  private LocalDate toLocalDate(Instant instant) {
+    return instant.atZone(clock.getZone()).toLocalDate();
+  }
+
+  private <T extends Temporal & Comparable<? super T>> Predicate isInTimeRangeIfPresent(
+      CriteriaBuilder criteriaBuilder,
+      Expression<T> temporalPath,
+      T startInclusive,
+      T endExclusive) {
+    return criteriaBuilder.or(
+        criteriaBuilder.isNull(temporalPath),
+        criteriaBuilder.and(
+            criteriaBuilder.greaterThanOrEqualTo(temporalPath, startInclusive),
+            criteriaBuilder.lessThan(temporalPath, endExclusive)));
   }
 
   @Override
@@ -484,15 +565,21 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
         || procedure.getAnamnesis() == null) {
       return null;
     }
+
+    Boolean wasInDaycare = procedure.getAnamnesis().getWasInDaycare();
+    if (Boolean.FALSE.equals(wasInDaycare)) {
+      return Daycare.NO.getValue();
+    }
+
+    LocalDate inDaycareSince = procedure.getAnamnesis().getInDaycareSince();
+    if (wasInDaycare == null || inDaycareSince == null) {
+      return Daycare.UNKNOWN.getValue();
+    }
+
     LocalDate appointmentDate =
         procedure.getAppointment().getAppointmentStart().atZone(clock.getZone()).toLocalDate();
-    LocalDate inDaycareSince = procedure.getAnamnesis().getInDaycareSince();
 
-    if (inDaycareSince == null) {
-      return Daycare.UNKNOWN.getValue();
-    } else {
-      return getDaycareValue(appointmentDate, inDaycareSince);
-    }
+    return getDaycareValue(appointmentDate, inDaycareSince);
   }
 
   public static String getDaycareValue(LocalDate appointmentDate, LocalDate inDaycareSince) {

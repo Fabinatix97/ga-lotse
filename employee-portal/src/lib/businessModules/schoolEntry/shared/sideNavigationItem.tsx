@@ -10,8 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
-  SideNavigationItem,
   SideNavigationSubItem,
+  UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { useConfigApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { getLocationSelectionModeQuery } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
@@ -50,15 +50,18 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.SchoolEntryAdmin),
 };
 
-export function useSideNavigationItems(): SideNavigationItem[] {
+export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
 
   const configApi = useConfigApi();
-  const { data: locationSelectionMode, isError: isLocationModeError } =
-    useQuery({
-      ...getLocationSelectionModeQuery(configApi),
-      throwOnError: false,
-    });
+  const {
+    data: locationSelectionMode,
+    isError: isLocationModeError,
+    isLoading: isLocationModeLoading,
+  } = useQuery({
+    ...getLocationSelectionModeQuery(configApi),
+    throwOnError: false,
+  });
 
   const hasLocationMode =
     locationSelectionMode !== ApiLocationSelectionMode.None;
@@ -78,5 +81,8 @@ export function useSideNavigationItems(): SideNavigationItem[] {
       : undefined,
   };
 
-  return [{ ...sideNavigationItem, subItems }];
+  return {
+    isLoading: isLocationModeLoading,
+    items: [{ ...sideNavigationItem, subItems }],
+  };
 }

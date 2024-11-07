@@ -147,7 +147,6 @@ function AltAppointmentList<T extends Appointment>({
         wrap
         size="sm"
         sx={{ marginBottom: "16px", gap: "8px", padding: 0 }}
-        // eslint-disable-next-line jsx-a11y/aria-props
         aria-description={description}
       >
         {appointments.map((apt) => {

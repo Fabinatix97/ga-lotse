@@ -29,4 +29,7 @@ public interface ContactRepository
 
   @Query("select count(*) from Contact c where c.category = :category")
   long countByCategory(@Param("category") InstitutionContactCategory category);
+
+  @Query("select id from Contact where mergedInto.id = :mergedInto")
+  List<UUID> findAllByMergedInto(@Param("mergedInto") UUID mergedInto);
 }

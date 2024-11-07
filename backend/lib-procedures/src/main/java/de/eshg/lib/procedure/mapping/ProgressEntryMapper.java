@@ -66,6 +66,8 @@ public class ProgressEntryMapper {
     systemProgressEntryDto.setTriggeredBy(progressEntry.getTriggeredBy());
     systemProgressEntryDto.setChangeDescription(progressEntry.getChangeDescription());
     systemProgressEntryDto.setTriggerType(toInterfaceType(progressEntry.getTriggerType()));
+    systemProgressEntryDto.setKeyDocumentType(progressEntry.getKeyDocumentType());
+    systemProgressEntryDto.setKeyDocumentVersion(progressEntry.getKeyDocumentVersion());
     fillGeneralProgressEntry(systemProgressEntryDto, progressEntry);
     return systemProgressEntryDto;
   }
@@ -74,8 +76,6 @@ public class ProgressEntryMapper {
     ManualProgressEntryDto manualProgressEntryDto = new ManualProgressEntryDto();
     manualProgressEntryDto.setManualProgressEntryType(
         toInterfaceType(progressEntry.getManualProgressEntryType()));
-    manualProgressEntryDto.setSubject(progressEntry.getSubject());
-    manualProgressEntryDto.setMessageText(progressEntry.getMessageText());
     manualProgressEntryDto.setNote(progressEntry.getNote());
     manualProgressEntryDto.setCreatedBy(progressEntry.getCreatedBy());
     manualProgressEntryDto.setKeyDocumentType(progressEntry.getKeyDocumentType());
@@ -142,8 +142,6 @@ public class ProgressEntryMapper {
     ManualProgressEntry manualProgressEntry = new ManualProgressEntry();
     manualProgressEntry.setManualProgressEntryType(
         toDomainType(createRequest.manualProgressEntryType()));
-    manualProgressEntry.setSubject(createRequest.subject());
-    manualProgressEntry.setMessageText(createRequest.messageText());
     manualProgressEntry.setNote(createRequest.note());
     manualProgressEntry.setKeyDocumentType(createRequest.keyDocumentType());
     return manualProgressEntry;

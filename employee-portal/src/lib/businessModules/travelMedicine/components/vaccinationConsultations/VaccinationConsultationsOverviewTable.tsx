@@ -34,17 +34,20 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { TextInputClientFilter } from "@/lib/shared/components/tableFilters/TextInputClientFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
-export function VaccinationConsultationsOverviewTable() {
+export function VaccinationConsultationsOverviewTable(
+  props: Readonly<{
+    date?: string;
+  }>,
+) {
   const tableControl = useTableControl({});
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [dayOfAppointmentFilter, setDayOfAppointmentFilter] = useState<Date>(
-    new Date(),
+    props.date ? new Date(props.date) : new Date(),
   );
   const [status, setStatus] = useState<ApiProcedureStatus[]>([]);
   const queryResult = useGetAllProcedureAppointmentSummaries(
-    dayOfAppointmentFilter,
     dayOfAppointmentFilter,
   );
   const allAppointmentOverviewEntries = useMemo(() => {
@@ -71,11 +74,7 @@ export function VaccinationConsultationsOverviewTable() {
   function updateTimeRange(newDate: Date) {
     tableControl.setFilter([
       {
-        name: "dateRangeStart",
-        value: toDateString(newDate),
-      },
-      {
-        name: "dateRangeEnd",
+        name: "date",
         value: toDateString(newDate),
       },
     ]);
@@ -235,10 +234,11 @@ export function VaccinationConsultationsOverviewTable() {
             manualSorting: false,
             initialSorting,
           }}
-          rowNavRoute={(row) =>
-            routes.procedures.baseData(row.original.procedureId)
-          }
-          focusColumnHeader="lastName"
+          rowNavigation={{
+            route: (row) =>
+              routes.procedures.baseData(row.original.procedureId),
+            focusColumnAccessorKey: "lastName",
+          }}
         />
       </TableSheet>
     </TablePage>

@@ -6,21 +6,27 @@
 package de.eshg.lib.procedure.progressentry;
 
 import static de.eshg.lib.procedure.MapperHelper.mapAndSet;
+import static de.eshg.lib.procedure.file.MultipartFileParser.parseFile;
 
+import de.eshg.file.common.PdfAConformanceValidator;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
 import de.eshg.lib.procedure.audit.AuditService;
 import de.eshg.lib.procedure.domain.model.File;
+import de.eshg.lib.procedure.domain.model.KeyDocumentAware;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequestNotification;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryType;
+import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.repository.ManualProgressEntryRepository;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.domain.repository.ProgressEntryRepository;
-import de.eshg.lib.procedure.file.FileUploadService;
+import de.eshg.lib.procedure.file.MultipartFileParser;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.mapping.ProgressEntryMapper;
 import de.eshg.lib.procedure.model.FileMetaDataDto;
@@ -45,11 +51,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import org.apache.commons.lang3.exception.UncheckedException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -61,7 +71,6 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
   private final ProgressEntryRepository progressEntryRepository;
   private final ManualProgressEntryRepository manualProgressEntryRepository;
   private final GenericApprovalRequestRepository approvalRequestRepository;
-  private final FileUploadService fileUploadService;
   private final CemeteryService cemeteryService;
   private final AuditService auditService;
   private final UserHelper userHelper;
@@ -72,7 +81,6 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
       ProgressEntryRepository progressEntryRepository,
       ManualProgressEntryRepository manualProgressEntryRepository,
       GenericApprovalRequestRepository approvalRequestRepository,
-      FileUploadService fileUploadService,
       CemeteryService cemeteryService,
       AuditService auditService,
       UserHelper userHelper,
@@ -82,7 +90,6 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     this.progressEntryRepository = progressEntryRepository;
     this.manualProgressEntryRepository = manualProgressEntryRepository;
     this.approvalRequestRepository = approvalRequestRepository;
-    this.fileUploadService = fileUploadService;
     this.cemeteryService = cemeteryService;
     this.auditService = auditService;
     this.userHelper = userHelper;
@@ -93,6 +100,41 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     return procedureRepository
         .findByExternalId(procedureId)
         .orElseThrow(() -> new NotFoundException("Procedure not found"));
+  }
+
+  @Transactional(propagation = Propagation.MANDATORY)
+  public SystemProgressEntry addSystemProgressEntry(
+      P procedure, SystemProgressEntry systemProgressEntry) {
+    return addSystemProgressEntry(procedure, systemProgressEntry, (File) null);
+  }
+
+  @Transactional(propagation = Propagation.MANDATORY)
+  public SystemProgressEntry addSystemProgressEntry(
+      P procedure, SystemProgressEntry systemProgressEntry, MultipartFile file) throws IOException {
+    return addSystemProgressEntry(procedure, systemProgressEntry, parseFile(file));
+  }
+
+  @Transactional(propagation = Propagation.MANDATORY)
+  public SystemProgressEntry addSystemProgressEntry(
+      P procedure, SystemProgressEntry systemProgressEntry, File file) {
+    validateProcedureIsOpen(procedure, IllegalArgumentException::new);
+    if (file != null) {
+      validateFile(file);
+    } else {
+      validateKeyDocumentTypesAreUnset(systemProgressEntry);
+    }
+
+    procedure.addProgressEntry(systemProgressEntry);
+
+    if (file != null) {
+      systemProgressEntry.setKeyDocumentVersion(
+          getKeyDocumentVersion(procedure, systemProgressEntry));
+      systemProgressEntry.setFile(file);
+
+      auditLogFileAdd(procedure.getExternalId(), systemProgressEntry);
+    }
+
+    return systemProgressEntry;
   }
 
   public ManualProgressEntry addManualProgressEntry(
@@ -109,7 +151,18 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     resolvedProcedure.addProgressEntry(manualProgressEntry);
 
     if (Optional.ofNullable(file).isPresent()) {
-      fileUploadService.handleFile(manualProgressEntry, file, fileMetaData);
+      ProcedureFileType fileType = MultipartFileParser.parseProcedureFileType(file);
+
+      MultipartFileParser.validateProgressEntryTypeSupportsFileType(manualProgressEntry, fileType);
+      validateKeyDocumentsUniformFileTypes(manualProgressEntry, fileType);
+
+      File parsedFile = parseFile(file);
+      Optional.ofNullable(fileMetaData)
+          .map(FileMetaDataDto::getDescription)
+          .ifPresent(parsedFile.getMetaData()::setDescription);
+      parsedFile.updateDeletable(true);
+      manualProgressEntry.setFile(parsedFile);
+
       Integer keyDocumentVersion = getKeyDocumentVersion(resolvedProcedure, manualProgressEntry);
       manualProgressEntry.setKeyDocumentVersion(keyDocumentVersion);
     } else if (Optional.ofNullable(manualProgressEntry.getKeyDocumentType()).isPresent()) {
@@ -117,7 +170,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     }
 
     manualProgressEntryRepository.flush();
-    auditLogFileUpload(manualProgressEntry);
+    auditLogFileUpload(procedureId, manualProgressEntry);
 
     return manualProgressEntry;
   }
@@ -151,8 +204,8 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     }
   }
 
-  private void auditLogFileUpload(ManualProgressEntry savedManualProgressEntry) {
-    File uploadedFile = savedManualProgressEntry.getFile();
+  private void auditLogFileUpload(UUID procedureId, ProgressEntry progressEntry) {
+    File uploadedFile = progressEntry.getFile();
     if (uploadedFile != null) {
       auditLogger.log(
           "Dokumentenmanagement",
@@ -161,9 +214,9 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
               "durch Benutzer",
               CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-"),
               "ID Vorgang",
-              savedManualProgressEntry.getProcedureId().toString(),
+              procedureId.toString(),
               "ID Verlaufseintrag",
-              savedManualProgressEntry.getExternalId().toString(),
+              progressEntry.getExternalId().toString(),
               "ID Datei",
               uploadedFile.getExternalId().toString(),
               "Dateityp",
@@ -171,15 +224,34 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
     }
   }
 
-  private Integer getKeyDocumentVersion(
-      P resolvedProcedure, ManualProgressEntry manualProgressEntry) {
-    String keyDocumentType = manualProgressEntry.getKeyDocumentType();
+  private void auditLogFileAdd(UUID procedureId, ProgressEntry progressEntry) {
+    File uploadedFile = progressEntry.getFile();
+    if (uploadedFile != null) {
+      auditLogger.log(
+          "Dokumentenmanagement",
+          "Hinzufügen Datei",
+          Map.of(
+              "durch Benutzer",
+              CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-"),
+              "ID Vorgang",
+              procedureId.toString(),
+              "ID Verlaufseintrag",
+              progressEntry.getExternalId().toString(),
+              "ID Datei",
+              uploadedFile.getExternalId().toString(),
+              "Dateityp",
+              uploadedFile.getFileType().toString()));
+    }
+  }
+
+  private Integer getKeyDocumentVersion(P resolvedProcedure, KeyDocumentAware keyDocumentAware) {
+    String keyDocumentType = keyDocumentAware.getKeyDocumentType();
 
     if (keyDocumentType == null) {
       return null;
     }
 
-    return manualProgressEntryRepository.countByProcedureIdAndKeyDocumentType(
+    return progressEntryRepository.countByProcedureIdAndKeyDocumentType(
         resolvedProcedure.getId(), keyDocumentType);
   }
 
@@ -195,7 +267,7 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
   }
 
   private void removeProgressEntry(P procedure, ManualProgressEntry progressEntry) {
-    validateProcedureIsOpen(procedure);
+    validateProcedureIsOpen(procedure, BadRequestException::new);
     validateProgressEntryNotLocked(progressEntry);
     auditLogProgressEntryDeletion(progressEntry.getExternalId());
 
@@ -236,8 +308,6 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
         .ifPresent(
             mapAndSet(
                 ProgressEntryMapper::toDomainType, progressEntry::setManualProgressEntryType));
-    patchManualProgressEntryRequest.subject().ifPresent(progressEntry::setSubject);
-    patchManualProgressEntryRequest.messageText().ifPresent(progressEntry::setMessageText);
     patchManualProgressEntryRequest.note().ifPresent(progressEntry::setNote);
 
     manualProgressEntryRepository.flush();
@@ -259,20 +329,6 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
           ProgressEntryMapper.toDomainType(typeJsonNullable.get());
       if (progressEntry.getManualProgressEntryType() != requestedType) {
         updatedFields.add("Typ des Verlaufseintrags");
-      }
-    }
-
-    JsonNullable<String> messageTextJsonNullable = patchManualProgressEntryRequest.messageText();
-    if (messageTextJsonNullable.isPresent()) {
-      if (!Objects.equals(messageTextJsonNullable.get(), progressEntry.getMessageText())) {
-        updatedFields.add("Inhalt");
-      }
-    }
-
-    JsonNullable<String> subjectJsonNullable = patchManualProgressEntryRequest.subject();
-    if (subjectJsonNullable.isPresent()) {
-      if (!Objects.equals(subjectJsonNullable.get(), progressEntry.getSubject())) {
-        updatedFields.add("Betreff");
       }
     }
 
@@ -403,22 +459,56 @@ public class ProgressEntryService<P extends Procedure<P, ?, ?, ?>> {
         .orElseThrow(() -> new NotFoundException("ProgressEntry does not exist for Procedure"));
   }
 
+  private void validateFile(File file) {
+    if (file instanceof Pdf) {
+      PdfAConformanceValidator.validate(
+          file.getFileContent().getContent(), IllegalArgumentException::new);
+    }
+  }
+
   private void validateProgressEntryNotLocked(ManualProgressEntry progressEntry) {
     if (progressEntry.isLocked()) {
       throw new BadRequestException("Progress Entry is locked");
     }
   }
 
-  private void validateProcedureIsOpen(P procedure) {
+  private void validateProcedureIsOpen(
+      P procedure, Function<String, RuntimeException> exceptionConstructor) {
     if (!procedure.getProcedureStatus().isOpen()) {
-      throw new BadRequestException(
+      throw exceptionConstructor.apply(
           "Procedure " + procedure.getExternalId() + " is already closed.");
     }
   }
 
+  private void validateKeyDocumentsUniformFileTypes(
+      ManualProgressEntry manualProgressEntry, ProcedureFileType fileType) {
+    String keyDocumentType = manualProgressEntry.getKeyDocumentType();
+
+    if (keyDocumentType == null) {
+      return;
+    }
+
+    if (manualProgressEntryRepository.existsByProcedureIdAndKeyDocumentTypeAndFileFileTypeNot(
+        manualProgressEntry.getProcedureId(), keyDocumentType, fileType)) {
+      throw new BadRequestException(
+          "Key document type `%s` does not support file type `%s`."
+              .formatted(keyDocumentType, fileType));
+    }
+  }
+
+  private void validateKeyDocumentTypesAreUnset(SystemProgressEntry systemProgressEntry) {
+    Assert.isNull(
+        systemProgressEntry.getKeyDocumentType(),
+        "Key document type can only be set when file is present");
+
+    Assert.isNull(
+        systemProgressEntry.getKeyDocumentVersion(),
+        "Key document version can only be set when file is present");
+  }
+
   private P getOpenProcedureOrThrow(UUID procedureId) {
     P procedure = getProcedureOrThrow(procedureId);
-    validateProcedureIsOpen(procedure);
+    validateProcedureIsOpen(procedure, BadRequestException::new);
     return procedure;
   }
 

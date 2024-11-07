@@ -7,16 +7,16 @@ import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box, Button, Stack, Switch, Typography } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
-import { EventType } from "matrix-js-sdk/lib/matrix";
-import { useEffect, useState } from "react";
-import { filter } from "remeda";
+import { filter, mapToObj } from "remeda";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
-import { reassignAdminRole } from "@/lib/businessModules/chat/shared/utils";
+import {
+  getRoomAdmins,
+  reassignAdminRole,
+} from "@/lib/businessModules/chat/shared/utils";
 import { SwitchField } from "@/lib/shared/components/formFields/SwitchField";
 
 type AdminFormValues = Record<string, boolean>;
@@ -32,80 +32,51 @@ export function AssignAdminView({
   onCancel,
 }: Readonly<AssignAdminProps>) {
   const roomInfo = useRoomInfo(roomId);
-  const { joinedMembers } = roomInfo;
-  const { matrixClient } = useChatClientContext();
-  const roomMembers = matrixClient
-    .getRoom(roomId)
-    ?.getMembers()
-    .filter((roomMember) => roomMember.membership === "join");
-  const roomMembersMap = roomMembers?.map((item) => ({ [item.userId]: false }));
-  const initialFormValues =
-    roomMembersMap?.reduce<AdminFormValues>((acc, value) => {
-      return { ...acc, ...value };
-    }, {}) ?? {};
-  const [initialValues, setInitialValues] =
-    useState<AdminFormValues>(initialFormValues);
   const snackbar = useSnackbar();
-  function isUserTheOnlyAdmin(
-    userId: string,
-    adminFormValues: Record<string, boolean>,
-  ): boolean {
-    const admins = Object.keys(adminFormValues).filter(
-      (id) => adminFormValues[id],
-    );
 
-    return admins.length === 1 && admins[0] === userId;
-  }
+  const { matrixClient, getJoinedMembers, checkIfAdmin, room } = roomInfo;
+
+  const loggedInUserId = matrixClient.getUserId();
+  const isAdmin = checkIfAdmin();
+  const roomMembers = getJoinedMembers();
+  const roomAdmins = getRoomAdmins(room);
+
+  const initialValues = mapToObj(roomMembers, (i) => [
+    i.member.userId,
+    roomAdmins.includes(i.member.userId),
+  ]);
 
   const sortedMembers = [
-    ...filter(joinedMembers, (x) => x.isRoomCreator),
-    ...filter(joinedMembers, (x) => !x.isRoomCreator),
+    ...filter(roomMembers, (x) => x.isRoomCreator),
+    ...filter(roomMembers, (x) => !x.isRoomCreator),
   ];
-
-  useEffect(() => {
-    void (async () => {
-      const room = matrixClient.getRoom(roomId);
-      if (!room) return;
-      const roomMembers = room
-        .getMembers()
-        .filter((roomMember) => roomMember.membership === "join");
-      const data = await matrixClient.getStateEvent(
-        roomId,
-        EventType.RoomPowerLevels,
-        "",
-      );
-      const powerLevels = ("users" in data ? data.users : data) as Record<
-        string,
-        number
-      >;
-      const values = roomMembers.reduce<AdminFormValues>((acc, user) => {
-        const userPowerLevel = Number(powerLevels?.[user.userId] ?? 0);
-        const isAdmin = userPowerLevel === 100;
-        return { ...acc, [user.userId]: isAdmin };
-      }, {});
-      setInitialValues(values);
-    })();
-  }, [matrixClient, roomId]);
 
   async function handleSubmit(
     values: AdminFormValues,
     formikHelpers: FormikHelpers<AdminFormValues>,
   ) {
     try {
-      const loggedInUserId = matrixClient.getUserId() ?? "";
       if (
-        initialValues[loggedInUserId] === true &&
-        isUserTheOnlyAdmin(loggedInUserId, initialValues) &&
+        isAdmin &&
+        roomAdmins.length === 1 &&
+        loggedInUserId &&
         values[loggedInUserId] === false
       ) {
         throw new Error(
           "You can't change settings, because you are the only admin in the chat room",
         );
       }
+
+      if (!room) {
+        throw new Error(
+          "Room is not available. Reassigning admin roles failed",
+        );
+      }
+
       const users = Object.fromEntries(
         Object.entries(values).map(([key, value]) => [key, value ? 100 : 0]),
       );
-      await reassignAdminRole({ matrixClient, roomId, users });
+      await reassignAdminRole(matrixClient, room, users);
       onCancel();
     } catch (error) {
       logger.error("Die Berechtigungen konnten nicht geändert werden", error);
@@ -116,13 +87,14 @@ export function AssignAdminView({
 
   return (
     <>
-      <InfoPanelHeader data={roomInfo} close={onClose} />
-      <Box sx={{ overflowY: "auto" }}>
+      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <Box sx={{ overflowY: "auto", flex: 1 }}>
         <Stack
           spacing={2}
           sx={{
             padding: 3,
             overflowY: "auto",
+            height: "100%",
           }}
         >
           <Typography level="title-lg">Admins bestimmen</Typography>

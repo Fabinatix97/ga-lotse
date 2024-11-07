@@ -5,6 +5,7 @@
 
 package de.eshg.schoolentry.domain.repository;
 
+import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
@@ -71,4 +72,22 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
   @Query(
       "select p.externalId from SchoolEntryProcedure p where p.procedureStatus = de.eshg.lib.procedure.domain.model.ProcedureStatus.CLOSED order by p.id")
   List<UUID> findExternalIdsOfClosedProcedures();
+
+  @Query(
+      """
+      select f from SchoolEntryProcedure p
+      join p.progressEntries pe
+      join pe.file f
+      where p.externalId in :procedureIds
+      and p.appointment is not null
+      and pe.id = (
+        select max(spe.id) from SystemProgressEntry spe
+        where spe.procedureId = p.id
+        and spe.systemProgressEntryType = :systemProgressEntryType
+      )
+      order by f.fileName, f.id
+      """)
+  List<File> findInvitationLettersForProcedures(
+      @Param("procedureIds") List<UUID> procedureIds,
+      @Param("systemProgressEntryType") String systemProgressEntryType);
 }

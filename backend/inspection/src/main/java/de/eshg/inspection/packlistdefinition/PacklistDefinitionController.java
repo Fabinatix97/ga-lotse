@@ -5,8 +5,6 @@
 
 package de.eshg.inspection.packlistdefinition;
 
-import de.eshg.inspection.feature.InspectionFeature;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.packlistdefinition.api.AddPacklistDefinitionRevisionRequest;
 import de.eshg.inspection.packlistdefinition.api.CreateNewPacklistDefinitionRequest;
 import de.eshg.inspection.packlistdefinition.api.PacklistDefinitionDto;
@@ -38,13 +36,8 @@ public class PacklistDefinitionController {
 
   private final PacklistDefinitionService packlistDefinitionService;
 
-  private final InspectionFeatureToggle inspectionFeatureToggle;
-
-  public PacklistDefinitionController(
-      PacklistDefinitionService packlistDefinitionService,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+  public PacklistDefinitionController(PacklistDefinitionService packlistDefinitionService) {
     this.packlistDefinitionService = packlistDefinitionService;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   @GetMapping
@@ -52,7 +45,6 @@ public class PacklistDefinitionController {
   @Transactional(readOnly = true)
   @NotNull
   public PacklistDefinitionsResponse getPacklistDefinitions() {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return this.packlistDefinitionService.getPacklistDefinitions();
   }
 
@@ -61,7 +53,6 @@ public class PacklistDefinitionController {
   @Transactional(readOnly = true)
   @NotNull
   public PacklistDefinitionDto getPacklistDefinitionRevisions(@PathVariable("id") UUID id) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return this.packlistDefinitionService.getPacklistDefinitionRevisions(id);
   }
 
@@ -71,7 +62,6 @@ public class PacklistDefinitionController {
   @NotNull
   public PacklistDefinitionRevisionDto getPacklistDefinitionRevision(
       @PathVariable("revisionId") UUID revisionId) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return packlistDefinitionService.getPacklistDefinitionRevision(revisionId);
   }
 
@@ -85,7 +75,6 @@ public class PacklistDefinitionController {
   @NotNull
   public PacklistDefinitionDto createNewPacklistDefinition(
       @Valid @RequestBody CreateNewPacklistDefinitionRequest request) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return packlistDefinitionService.createNewPacklistDefinition(request);
   }
 
@@ -96,7 +85,6 @@ public class PacklistDefinitionController {
   public PacklistDefinitionRevisionDto addPacklistDefinitionRevision(
       @PathVariable("id") UUID id,
       @Valid @RequestBody AddPacklistDefinitionRevisionRequest request) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.PACKLISTS);
     return packlistDefinitionService.addPacklistDefinitionRevision(id, request);
   }
 }

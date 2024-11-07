@@ -6,6 +6,7 @@
 package de.eshg.base.centralfile.persistence;
 
 import static de.eshg.base.centralfile.FacilityController.FACILITY_REFERENCE_NOT_FOUND;
+import static de.eshg.base.centralfile.persistence.entity.DataOrigin.EXTERNAL;
 import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
 
 import de.cronn.commons.lang.StreamUtil;
@@ -34,10 +35,13 @@ import java.time.Instant;
 import java.util.*;
 import org.apache.commons.lang3.builder.DiffResult;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FacilityService {
+  private static final Logger log = LoggerFactory.getLogger(FacilityService.class);
   public static final String MUTEX_FACILITY_WRITE = "FACILITY_WRITE";
   private final FacilityRepository facilityRepository;
   private final FuzzySearchHelper fuzzySearchHelper;
@@ -189,6 +193,14 @@ public class FacilityService {
 
   private Facility updateFileStateAndReferenceFacilityWhenLocked(
       Facility facilityFileState, Facility fileStateUpdate) {
+    if (facilityFileState.getDataOrigin() != EXTERNAL
+        && FacilityMatcher.isFacilityMatch(fileStateUpdate, facilityFileState)) {
+      log.debug(
+          "Recognized no-op update. Returning original facility file state (id={})",
+          facilityFileState.getId());
+      return facilityFileState;
+    }
+
     Facility referenceFacility =
         facilityRepository
             .findReferenceFacilityByFileStateExternalId(facilityFileState.getExternalId())
@@ -248,13 +260,13 @@ public class FacilityService {
 
   public Facility addFacilityFromExternalSource(Facility facilityFileState) {
     Facility referenceFacility = facilityFileState.cloneFromFileState();
-    referenceFacility.setDataOrigin(DataOrigin.EXTERNAL);
+    referenceFacility.setDataOrigin(EXTERNAL);
     referenceFacility.setDeleteAt(null);
     Facility savedReferenceFacility = facilityRepository.save(referenceFacility);
 
     facilityFileState.setReferenceFacility(savedReferenceFacility);
     facilityFileState.setReferenceVersion(savedReferenceFacility.getVersion());
-    facilityFileState.setDataOrigin(DataOrigin.EXTERNAL);
+    facilityFileState.setDataOrigin(EXTERNAL);
 
     return facilityRepository.save(facilityFileState);
   }

@@ -4,26 +4,33 @@
  */
 
 import {
-  ApiGetStatisticsResponse,
   ApiStatisticInfo,
   ApiStatisticState,
   ApiStatisticsFeature,
-  ApiUser,
 } from "@eshg/employee-portal-api/statistics";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Add } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Edit from "@mui/icons-material/Edit";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import { Box, Button } from "@mui/joy";
+import {
+  Add,
+  Delete,
+  Download,
+  Edit,
+  FileCopy,
+  Menu,
+} from "@mui/icons-material";
+import { Box, Button, ColorPaletteProp } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
-import { isDefined } from "remeda";
+import { doNothing, isDefined, isNonNull, isPlainObject } from "remeda";
 
+import {
+  StatisticOverview,
+  StatisticOverviewTableItem,
+} from "@/lib/businessModules/statistics/api/models/statisticOverview";
 import { getStatisticsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { DuplicateStatisticSidebar } from "@/lib/businessModules/statistics/components/statistics/DuplicateStatisticSidebar/DuplicateStatisticSidebar";
+import { SaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/statistics/SaveAsEvaluationTemplateSidebar/SaveAsEvaluationTemplateSidebar";
 import { StatisticNameChangeModal } from "@/lib/businessModules/statistics/components/statistics/details/StatisticNameChangeModal";
 import { useDeleteStatisticWithConfirmation } from "@/lib/businessModules/statistics/components/statistics/useDeleteStatisticWithConfirmation";
 import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
@@ -42,19 +49,7 @@ import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl
 
 import { StateChip } from "./StateChip";
 
-type StatisticWithUserInfo = ApiStatisticInfo & {
-  user: ApiUser | undefined;
-};
-
-const columnHelper = createColumnHelper<StatisticWithUserInfo>();
-
-function TemplatesButton({ onClick }: { onClick: () => void }) {
-  return (
-    <Button variant="outlined" size="md" onClick={onClick}>
-      Vorlagen
-    </Button>
-  );
-}
+const columnHelper = createColumnHelper<StatisticOverviewTableItem>();
 
 function CreateStatisticsButton({ onClick }: { onClick: () => void }) {
   return (
@@ -69,9 +64,11 @@ function columns(
   canDelete: (creatorUserId: string) => boolean,
   canWrite: (creatorUserId: string) => boolean,
   canUpdateStatistic: (creatorUserId: string) => boolean,
-  onDuplicate: (item: StatisticWithUserInfo) => void,
+  onDuplicate: (item: StatisticOverviewTableItem) => void,
   duplicateStatisticEnabled: boolean,
   onNameChange: (id: string, name: string) => void,
+  onSaveAsTemplate: (item: StatisticOverviewTableItem) => void,
+  exportDataFeatureToggle: boolean,
 ) {
   return [
     columnHelper.accessor("name", {
@@ -80,6 +77,15 @@ function columns(
         canNavigate: {
           parentRow: true,
         },
+      },
+    }),
+    columnHelper.accessor("dataSourceName", {
+      header: "Datenquelle",
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+        width: "8rem",
       },
     }),
     columnHelper.accessor("timeRangeStart", {
@@ -125,58 +131,54 @@ function columns(
       cell: (props) => (
         <ActionsMenu
           actionItems={[
-            {
-              label: "Anzeigen",
-              onClick: routes.statistics.details(props.row.original.id).index,
+            canUpdateStatistic(props.row.original.userId) && {
+              label: "Name ändern",
+              onClick: () =>
+                onNameChange(props.row.original.id, props.row.original.name),
               disabled:
                 props.row.original.state !== ApiStatisticState.Completed,
-              startDecorator: <FullscreenIcon />,
+              startDecorator: <Edit />,
             },
-            ...(canUpdateStatistic(props.row.original.userId)
-              ? [
-                  {
-                    label: "Name ändern",
-                    onClick: () =>
-                      onNameChange(
-                        props.row.original.id,
-                        props.row.original.name,
-                      ),
-                    disabled:
-                      props.row.original.state !== ApiStatisticState.Completed,
-                    startDecorator: <Edit />,
-                  },
-                ]
-              : []),
-            ...(canWrite(props.row.original.userId) && duplicateStatisticEnabled
-              ? [
-                  {
-                    label: "Duplizieren",
-                    onClick: () => {
-                      onDuplicate(props.row.original);
-                    },
-                    disabled:
-                      props.row.original.state !== ApiStatisticState.Completed,
-                    startDecorator: <FileCopyIcon />,
-                  },
-                ]
-              : []),
-            ...(canDelete(props.row.original.userId)
-              ? [
-                  {
-                    label: "Löschen",
-                    onClick: () =>
-                      deleteStatisticWithConfirmation(
-                        props.row.original.id,
-                        props.row.original.name,
-                      ),
-                    disabled:
-                      props.row.original.state ===
-                      ApiStatisticState.CopyOngoing,
-                    startDecorator: <DeleteIcon />,
-                  },
-                ]
-              : []),
-          ]}
+            canWrite(props.row.original.userId) &&
+              duplicateStatisticEnabled && {
+                label: "Duplizieren",
+                onClick: () => {
+                  onDuplicate(props.row.original);
+                },
+                disabled:
+                  props.row.original.state !== ApiStatisticState.Completed,
+                startDecorator: <FileCopy />,
+              },
+            props.row.original.anonymized &&
+              exportDataFeatureToggle && {
+                label: "Daten exportieren",
+                onClick: doNothing,
+                disabled:
+                  props.row.original.state !== ApiStatisticState.Completed,
+                startDecorator: <Download />,
+              },
+            canWrite(props.row.original.userId) && {
+              label: "Als Vorlage speichern",
+              onClick: () => {
+                onSaveAsTemplate(props.row.original);
+              },
+              disabled:
+                props.row.original.state !== ApiStatisticState.Completed,
+              startDecorator: <Menu />,
+            },
+            canDelete(props.row.original.userId) && {
+              label: "Löschen",
+              onClick: () =>
+                deleteStatisticWithConfirmation(
+                  props.row.original.id,
+                  props.row.original.name,
+                ),
+              disabled:
+                props.row.original.state === ApiStatisticState.CopyOngoing,
+              startDecorator: <Delete />,
+              color: "danger" as ColorPaletteProp,
+            },
+          ].filter(isPlainObject)}
         />
       ),
       meta: {
@@ -188,16 +190,15 @@ function columns(
 }
 
 export interface StatisticsTableProps {
-  data: ApiGetStatisticsResponse;
+  statisticOverview: StatisticOverview;
   loading: boolean;
-  onTemplateClick: () => void;
   onCreateStatisticClick: () => void;
 }
 
 export function StatisticsTable({
-  data,
+  statisticOverview,
   loading,
-  onTemplateClick,
+
   onCreateStatisticClick,
 }: StatisticsTableProps) {
   const tableControl = useTableControl({
@@ -211,19 +212,20 @@ export function StatisticsTable({
   const duplicateStatisticEnabled = useIsNewFeatureEnabled(
     ApiStatisticsFeature.CloneStatistic,
   );
+  const exportDataFeatureToggle = useIsNewFeatureEnabled(
+    ApiStatisticsFeature.FakeAnonymization,
+  );
+
   const [duplicateStatisticAction, setDuplicateStatisticAction] =
-    useState<StatisticWithUserInfo>();
+    useState<StatisticOverviewTableItem>();
   const [nameChangeAction, setNameChangeAction] =
     useState<Pick<ApiStatisticInfo, "id" | "name">>();
+  const [
+    saveAsEvaluationTemplateSidebarEvaluationId,
+    setSaveAsEvaluationTemplateSidebarEvaluationId,
+  ] = useState<string | null>(null);
 
   const userPermissions = useStatisticRoleChecks();
-
-  const tableData: StatisticWithUserInfo[] = data.statistics.map(
-    (statistic) => ({
-      ...statistic,
-      user: data.resolvedUsers[statistic.userId],
-    }),
-  );
 
   const deleteStatisticsWithConfirmation = useDeleteStatisticWithConfirmation();
 
@@ -240,12 +242,13 @@ export function StatisticsTable({
                 loading={loading}
                 queryKey={getStatisticsQueryKey([])}
               />,
-              userPermissions.canWrite() && (
-                <TemplatesButton
-                  key="displayTemplates"
-                  onClick={onTemplateClick}
-                />
-              ),
+              <InternalLinkButton
+                key="evaluationTemplatesOverview"
+                variant="outlined"
+                href={routes.statistics.evaluationTemplates.index}
+              >
+                Auswertungsvorlagen
+              </InternalLinkButton>,
               userPermissions.canWrite() && (
                 <CreateStatisticsButton
                   key="createStatistic"
@@ -259,7 +262,7 @@ export function StatisticsTable({
         <TableSheet
           footer={
             <Pagination
-              totalCount={data.totalNumberOfElements}
+              totalCount={statisticOverview.totalNumberOfElements}
               {...tableControl.paginationProps}
             />
           }
@@ -267,7 +270,7 @@ export function StatisticsTable({
           <DataTable
             wrapContent
             minWidth="58rem"
-            data={tableData}
+            data={statisticOverview.data}
             columns={columns(
               deleteStatisticsWithConfirmation,
               userPermissions.canDelete,
@@ -276,14 +279,17 @@ export function StatisticsTable({
               setDuplicateStatisticAction,
               duplicateStatisticEnabled,
               (id, name) => setNameChangeAction({ id, name }),
+              (item) => setSaveAsEvaluationTemplateSidebarEvaluationId(item.id),
+              exportDataFeatureToggle,
             )}
             sorting={tableControl.tableSorting}
-            rowNavRoute={(row) =>
-              row.original.state === ApiStatisticState.Completed
-                ? routes.statistics.details(row.original.id).index
-                : undefined
-            }
-            focusColumnHeader="Name"
+            rowNavigation={{
+              route: (row) =>
+                row.original.state === ApiStatisticState.Completed
+                  ? routes.statistics.details(row.original.id).index
+                  : undefined,
+              focusColumnAccessorKey: "name",
+            }}
             enableSortingRemoval={false}
             noDataComponent={() => (
               <Box flex={1} alignContent="center">
@@ -304,6 +310,15 @@ export function StatisticsTable({
           <DuplicateStatisticSidebar
             onClose={() => setDuplicateStatisticAction(undefined)}
             originalStatistic={duplicateStatisticAction}
+          />
+        </OverlayBoundary>
+      )}
+      {isNonNull(saveAsEvaluationTemplateSidebarEvaluationId) && (
+        <OverlayBoundary>
+          <SaveAsEvaluationTemplateSidebar
+            open={true}
+            onClose={() => setSaveAsEvaluationTemplateSidebarEvaluationId(null)}
+            evaluationId={saveAsEvaluationTemplateSidebarEvaluationId}
           />
         </OverlayBoundary>
       )}

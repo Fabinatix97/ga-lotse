@@ -24,8 +24,8 @@ import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
-import de.eshg.statistics.api.BusinessDataAttribute;
-import de.eshg.statistics.api.DataSourceDto;
+import de.eshg.statistics.api.datasource.BusinessDataAttribute;
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.filter.NumericComparisonDto;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
@@ -71,7 +71,8 @@ import org.springframework.stereotype.Service;
 public class DataAggregationService {
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
-  private final int pageSizeForBusinessModuleDataRequest;
+  private final int businessModuleDataRequestPageSize;
+  private final int tableRowPageSize;
   private final TableRowRepository tableRowRepository;
   private final CellEntryRepository cellEntryRepository;
   private final AuditLogger auditLogger;
@@ -79,20 +80,26 @@ public class DataAggregationService {
   public DataAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       BaseStatisticsApi baseModuleStatisticsApi,
+      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize,
       @Value("${eshg.statistics.businessmodule.pagesize:500}")
-          int pageSizeForBusinessModuleDataRequest,
+          int businessModuleDataRequestPageSize,
       TableRowRepository tableRowRepository,
       CellEntryRepository cellEntryRepository,
       AuditLogger auditLogger) {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
-    this.pageSizeForBusinessModuleDataRequest = pageSizeForBusinessModuleDataRequest;
+    this.businessModuleDataRequestPageSize = businessModuleDataRequestPageSize;
+    this.tableRowPageSize = tableRowPageSize;
     this.tableRowRepository = tableRowRepository;
     this.cellEntryRepository = cellEntryRepository;
     this.auditLogger = auditLogger;
-    if (this.pageSizeForBusinessModuleDataRequest <= 0) {
+    if (this.businessModuleDataRequestPageSize <= 0) {
       throw new IllegalArgumentException(
           "'eshg.statistics.businessmodule.pagesize' must be greater than 0");
+    }
+    if (this.tableRowPageSize <= 0) {
+      throw new IllegalArgumentException(
+          "'eshg.statistics.tablerows.pagesize' must be greater than 0");
     }
   }
 
@@ -354,8 +361,8 @@ public class DataAggregationService {
 
   public void collectTableRows(AbstractAggregationResult aggregationResult) {
     Long tableRowsCount = countTableRows(aggregationResult);
-    int page = (int) (tableRowsCount / pageSizeForBusinessModuleDataRequest);
-    int ignoreTableRowsCount = (int) (tableRowsCount % pageSizeForBusinessModuleDataRequest);
+    int page = (int) (tableRowsCount / businessModuleDataRequestPageSize);
+    int ignoreTableRowsCount = (int) (tableRowsCount % businessModuleDataRequestPageSize);
 
     TableColumn firstTableColumn = aggregationResult.getTableColumns().getFirst();
     List<String> attributeCodes =
@@ -370,7 +377,7 @@ public class DataAggregationService {
             firstTableColumn.getDataSourceId(),
             attributeCodes,
             page,
-            pageSizeForBusinessModuleDataRequest);
+            businessModuleDataRequestPageSize);
 
     GetSpecificDataResponse dataFromBusinessModule =
         getDataFromBusinessModule(request, firstTableColumn.getBusinessModuleName());
@@ -891,8 +898,7 @@ public class DataAggregationService {
   public void removeTableRows(AbstractAggregationResult aggregationResult) {
     tableRowRepository.deleteAll(
         tableRowRepository
-            .findAllByAggregationResult(
-                aggregationResult, Pageable.ofSize(pageSizeForBusinessModuleDataRequest))
+            .findAllByAggregationResult(aggregationResult, Pageable.ofSize(tableRowPageSize))
             .getContent());
   }
 

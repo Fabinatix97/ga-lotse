@@ -9,7 +9,6 @@ import static java.util.Optional.ofNullable;
 
 import de.eshg.base.calendar.CalendarEventApi;
 import de.eshg.base.calendar.api.GetBusinessCaseEventResponse;
-import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.inventory.InventoryApi;
 import de.eshg.base.resource.ResourceApi;
@@ -34,6 +33,7 @@ import de.eshg.inspection.inspection.api.InspectionCLDVersionDto;
 import de.eshg.inspection.inspection.api.InspectionDto;
 import de.eshg.inspection.inspection.api.InspectionDto.ReportInfoDto;
 import de.eshg.inspection.inspection.api.InspectionFollowupInfoDto;
+import de.eshg.inspection.inspection.api.InspectionForDuplicateReviewDto;
 import de.eshg.inspection.inspection.api.InspectionInventoryDto;
 import de.eshg.inspection.inspection.api.InspectionPLDRevisionDto;
 import de.eshg.inspection.inspection.api.InspectionResourceDto;
@@ -57,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -118,7 +117,7 @@ public class InspectionMapper {
     return mapToInspectionTitle(facilityDto.baseFacility().name());
   }
 
-  InspectionDto mapToDto(Inspection inspection) {
+  public InspectionDto mapToDto(Inspection inspection) {
     InspFacilityDto facilityDto =
         mapToDto(inspection.getCentralFileStateId(), inspection.getFacility());
     return mapToDto(inspection, facilityDto);
@@ -183,7 +182,9 @@ public class InspectionMapper {
         mapFollowupInfoToDto(inspection),
         mapIncidents(inspection),
         assignee,
-        lockedByUser);
+        lockedByUser,
+        inspection.getFacility().hasPossibleDuplicates(),
+        !inspection.getPossibleDuplicates().isEmpty());
   }
 
   private List<InspectionInventoryDto> mapInventories(Inspection inspection) {
@@ -250,25 +251,6 @@ public class InspectionMapper {
                 .thenComparing(
                     InspectionIncident::getManualPosition,
                     Comparator.nullsLast(Integer::compareTo)));
-  }
-
-  List<InspectionDto> mapToDtos(List<Inspection> inspections) {
-    if (inspections.isEmpty()) return Collections.emptyList();
-
-    List<UUID> centralFileStateIds =
-        inspections.stream().map(Inspection::getCentralFileStateId).toList();
-    List<Facility> facilities = inspections.stream().map(Inspection::getFacility).toList();
-    List<AddFacilityFileStateResponse> baseFacilities =
-        facilityClient.getFacilityFileStates(centralFileStateIds);
-    Map<UUID, InspFacilityDto> facilityMap =
-        FacilityMapper.facilitiesFrom(facilities, baseFacilities);
-
-    return inspections.stream()
-        .map(
-            inspection ->
-                mapToDto(inspection, facilityMap.get(inspection.getFacility().getExternalId())))
-        .sorted(Comparator.comparing(InspectionDto::title))
-        .toList();
   }
 
   private InspectionAppointmentDto mapAppointment(
@@ -391,5 +373,27 @@ public class InspectionMapper {
     }
     return new InspectionAnnouncementDto(
         inspectionAnnouncement.getDate(), inspectionAnnouncement.getType());
+  }
+
+  public static InspectionForDuplicateReviewDto mapToDtoForDuplicateReview(
+      Inspection inspection, String title) {
+
+    Instant executedTime =
+        Optional.ofNullable(inspection.getExecutionAppointment())
+            .map(InspectionAppointment::getAppointmentStart)
+            .orElse(
+                Optional.ofNullable(inspection.getPlannedAppointment())
+                    .map(InspectionAppointment::getAppointmentStart)
+                    .orElse( // This case should never happen but just in case we handle it without
+                        // throwing an exception
+                        Instant.ofEpochSecond(0)));
+
+    return new InspectionForDuplicateReviewDto(
+        inspection.getExternalId(),
+        title,
+        inspection.getType(),
+        inspection.getResult(),
+        executedTime,
+        inspection.getIncidents().size());
   }
 }

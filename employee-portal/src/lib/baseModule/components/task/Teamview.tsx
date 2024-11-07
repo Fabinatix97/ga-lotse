@@ -7,11 +7,10 @@
 
 import {
   ApiBusinessModule,
-  ApiGetTaskByUserResponse,
   ApiTask,
   ApiUser,
 } from "@eshg/employee-portal-api/businessProcedures";
-import { UseQueryOptions, useSuspenseQueries } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { differenceInDays } from "date-fns";
 import { useState } from "react";
 
@@ -19,6 +18,7 @@ import { useGetUsersByGroupQueryOptions } from "@/lib/baseModule/api/queries/use
 import { teamviewColumns } from "@/lib/baseModule/components/task/teamviewColumns";
 import { useTeamviewFilterSettings } from "@/lib/baseModule/components/task/useTeamviewFilterSettings";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
+import { useFetchTasksForTeamViewOptions } from "@/lib/businessModules/inspection/api/queries/useFetchTasksForTeamViewOptions";
 import { TeamviewFilters } from "@/lib/shared/api/queries/tasks";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
@@ -53,14 +53,6 @@ function memberFilter({ assigneeId }: TeamviewFilters) {
 interface TeamviewPageProps {
   groupName: string;
   businessModule: ApiBusinessModule;
-  useFetchTasksForTeamViewOptions: (
-    teamviewFilters: TeamviewFilters,
-  ) => UseQueryOptions<
-    ApiGetTaskByUserResponse,
-    Error,
-    ApiGetTaskByUserResponse,
-    readonly (string | string[] | Record<string, string>)[]
-  >;
 }
 
 export function Teamview(props: Readonly<TeamviewPageProps>) {
@@ -70,7 +62,7 @@ export function Teamview(props: Readonly<TeamviewPageProps>) {
     useSuspenseQueries({
       queries: [
         useGetUsersByGroupQueryOptions(props.groupName),
-        props.useFetchTasksForTeamViewOptions(filters),
+        useFetchTasksForTeamViewOptions(filters),
       ],
     });
 
@@ -148,14 +140,16 @@ export function Teamview(props: Readonly<TeamviewPageProps>) {
       <TableSheet>
         <DataTable
           data={rows}
-          rowNavRoute={(row) =>
-            row.depth === 0
-              ? undefined
-              : resolveProcedureDetailsRoute({
-                  businessModule: props.businessModule,
-                  procedureId: row.original.procedureId!,
-                })
-          }
+          rowNavigation={{
+            route: (row) =>
+              row.depth === 0
+                ? undefined
+                : resolveProcedureDetailsRoute({
+                    businessModule: props.businessModule,
+                    procedureId: row.original.procedureId!,
+                  }),
+            focusColumnAccessorKey: "dueAtInDays",
+          }}
           columns={teamviewColumns}
           getSubRows={(row) => row.subRows}
         />

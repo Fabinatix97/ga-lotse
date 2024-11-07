@@ -78,4 +78,10 @@ public class Mail extends File {
     super.lock(locked);
     this.attachments.forEach(file -> file.lockByMail(locked));
   }
+
+  @Override
+  public void updateDeletable(boolean deletable) {
+    super.updateDeletable(deletable);
+    this.attachments.forEach(file -> file.updateDeletable(deletable));
+  }
 }

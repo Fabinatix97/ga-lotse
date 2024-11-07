@@ -21,11 +21,8 @@ import {
 import { ReopenProcedureModal } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ReopenProcedureModal";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
-import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/shared/components/detailsCard/LabeledValue";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 
 import { AdditionalInfoUpdateSidebar } from "./AdditionalInfoUpdateSidebar";
@@ -73,36 +70,39 @@ export function AdditionalInfoSection({
 
   return (
     <Stack rowGap={2}>
-      <DetailsCard title={"Zusatzinfos"} actionButton={editAction}>
-        <ValueList>
-          <LabeledValue
-            label="Personenstatus"
-            value={
-              procedure.affectedPerson.roleStatus
-                ? roleStatusNames[procedure.affectedPerson.roleStatus]
-                : "-"
-            }
-          />
-          <LabeledValue
-            label="Meldedatum"
-            value={formatDate(procedure.reportData?.reportingDate)}
-          />
-          <LabeledValue
-            label="Meldegrund"
-            value={
-              procedure.reportData?.reportingReason
-                ? reportingReasonNames[procedure.reportData?.reportingReason]
-                : "-"
-            }
-          />
-          {procedure.reportData?.reportingReason == ApiReportingReason.Other ? (
-            <LabeledValue
-              label="Kommentar zum Meldegrund"
-              value={procedure.reportData?.commentReportingReason}
+      <Sheet>
+        <DetailsSection title={"Zusatzinfos"} buttons={editAction}>
+          <Stack gap={1}>
+            <DetailsCell
+              label="Personenstatus"
+              value={
+                procedure.affectedPerson.roleStatus
+                  ? roleStatusNames[procedure.affectedPerson.roleStatus]
+                  : "-"
+              }
             />
-          ) : null}
-        </ValueList>
-      </DetailsCard>
+            <DetailsCell
+              label="Meldedatum"
+              value={formatDate(procedure.reportData?.reportingDate)}
+            />
+            <DetailsCell
+              label="Meldegrund"
+              value={
+                procedure.reportData?.reportingReason
+                  ? reportingReasonNames[procedure.reportData?.reportingReason]
+                  : "-"
+              }
+            />
+            {procedure.reportData?.reportingReason ==
+            ApiReportingReason.Other ? (
+              <DetailsCell
+                label="Kommentar zum Meldegrund"
+                value={procedure.reportData?.commentReportingReason}
+              />
+            ) : null}
+          </Stack>
+        </DetailsSection>
+      </Sheet>
       <Sheet component="section">
         {!procedure.isOpen ? (
           <Button color="danger" onClick={handleReopenProcedure} fullWidth>

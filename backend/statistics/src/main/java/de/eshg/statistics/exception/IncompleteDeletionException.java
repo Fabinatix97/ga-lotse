@@ -1,0 +1,12 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.statistics.exception;
+
+import java.io.Serial;
+
+public class IncompleteDeletionException extends RuntimeException {
+  @Serial private static final long serialVersionUID = 1L;
+}

@@ -7,10 +7,11 @@ import {
   ApiDraftMeaslesProcedure,
   ApiMeaslesProtectionProcedure,
 } from "@eshg/employee-portal-api/measlesProtection";
+import { Sheet } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
 const COLUMN_STYLE: SxProps = {
   flexGrow: 1,
@@ -29,17 +30,16 @@ export function Custodians({
   const custodians = procedure.custodians ?? [];
 
   return custodians.map((person, index) => (
-    <DetailsCard
-      key={`custodian-${index}`}
-      title="PSB - Personensorgeberechtigte:r"
-    >
-      <CentralFilePersonDetails
-        person={{
-          ...person,
-          contactAddress: person.address,
-        }}
-        columnSx={COLUMN_STYLE}
-      />
-    </DetailsCard>
+    <Sheet key={`custodian-${index}`}>
+      <DetailsSection title="PSB - Personensorgeberechtigte:r">
+        <CentralFilePersonDetails
+          person={{
+            ...person,
+            contactAddress: person.address,
+          }}
+          columnSx={COLUMN_STYLE}
+        />
+      </DetailsSection>
+    </Sheet>
   ));
 }

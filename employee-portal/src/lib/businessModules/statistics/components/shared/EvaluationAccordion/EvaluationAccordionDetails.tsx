@@ -38,6 +38,7 @@ export interface EvaluationAccordionDetailsProps {
   evaluatedDataAmountTotal: number;
   onDiagramCreateClicked?: (evaluationId: string) => void;
   isReport: boolean;
+  anonymized: boolean;
 }
 
 export function EvaluationAccordionDetails(
@@ -107,6 +108,7 @@ export function EvaluationAccordionDetails(
               evaluationDiagram={it}
               evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
               isReport={props.isReport}
+              anonymized={props.anonymized}
             />
           </Stack>
         ))}

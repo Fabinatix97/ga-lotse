@@ -22,6 +22,8 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
+import de.eshg.schoolentry.api.anamnesis.DaycareAndSchoolInfoDto;
+import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
@@ -508,6 +510,12 @@ public class Validator {
 
   public void validateAnamnesis(AnamnesisDto anamnesis) {
     validateDateTodayOrPast(anamnesis.migrationBackground().inGermanySince());
+    validateDayCareInfoConsistency(anamnesis.daycareAndSchoolInfo());
+  }
+
+  public void validateCitizenAnamnesis(CitizenAnamnesisDto anamnesis) {
+    validateDateTodayOrPast(anamnesis.migrationBackground().inGermanySince());
+    validateDayCareInfoConsistency(anamnesis.daycareAndSchoolInfo());
   }
 
   void validateDateTodayOrPast(LocalDate date) {
@@ -516,6 +524,14 @@ public class Validator {
     }
     if (date.isAfter(LocalDate.now(clock))) {
       throw new BadRequestException("The date must be in the past.");
+    }
+  }
+
+  void validateDayCareInfoConsistency(DaycareAndSchoolInfoDto daycareInfo) {
+    if (!Boolean.TRUE.equals(daycareInfo.wasInDaycare())
+        && (daycareInfo.inDaycareSince() != null || daycareInfo.daycareName() != null)) {
+      throw new BadRequestException(
+          "In daycare info provided despite child not having been in daycare");
     }
   }
 

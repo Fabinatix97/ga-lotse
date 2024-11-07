@@ -35,6 +35,20 @@ export function getAvailablePLDRsQueryKey(inspectionId: string) {
   ]);
 }
 
+export function getFacilityDuplicatesQueryKey(inspectionId: string) {
+  return inspectionApiQueryKey([
+    inspectionGettersQueryKey(inspectionId),
+    "getFacilityDuplicates",
+  ]);
+}
+
+export function getInspectionDuplicatesQueryKey(inspectionId: string) {
+  return inspectionApiQueryKey([
+    inspectionGettersQueryKey(inspectionId),
+    "getInspectionDuplicates",
+  ]);
+}
+
 export function useGetInspection(procedureId: string) {
   const inspectionApi = useInspectionApi();
   const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
@@ -99,5 +113,21 @@ export function useGetAvailablePLDRs(inspectionId: string) {
         inspectionId,
         getPreCacheForOfflineModeHeaders(inspectionId),
       ),
+  });
+}
+
+export function useGetFacilityDuplicates(procedureId: string) {
+  const inspectionApi = useInspectionApi();
+  return useSuspenseQuery({
+    queryKey: getFacilityDuplicatesQueryKey(procedureId),
+    queryFn: () => inspectionApi.getFacilityDuplicates(procedureId),
+  });
+}
+
+export function useGetInspectionDuplicates(procedureId: string) {
+  const inspectionApi = useInspectionApi();
+  return useSuspenseQuery({
+    queryKey: getInspectionDuplicatesQueryKey(procedureId),
+    queryFn: () => inspectionApi.getInspectionDuplicates(procedureId),
   });
 }

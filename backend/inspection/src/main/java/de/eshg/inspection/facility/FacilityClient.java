@@ -8,19 +8,25 @@ package de.eshg.inspection.facility;
 import static de.eshg.inspection.facility.FacilityMapper.mapBaseFacilityAddRequest;
 
 import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.GetFileStateIdsResponse;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
+import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.centralfile.api.facility.SearchReferenceFacilitiesResponse;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -45,6 +51,10 @@ public class FacilityClient {
 
   public GetFacilityFileStateResponse getFacilityFileState(UUID id) {
     return doAndForwardErrorCodes(() -> facilityApi.getFacilityFileState(id));
+  }
+
+  public GetReferenceFacilityResponse getReferenceFacility(UUID id) {
+    return doAndForwardErrorCodes(() -> facilityApi.getReferenceFacility(id));
   }
 
   public List<UUID> getFacilityFileStateIdsWithSameReferenceFacility(UUID id) {
@@ -81,17 +91,33 @@ public class FacilityClient {
         });
   }
 
+  public void markFacilityFileStateForDeletion(Collection<UUID> fileStateIds) {
+    doAndForwardErrorCodes(
+        () -> {
+          facilityApi.markFacilityFileStateForDeletion(
+              new DeleteFileStatesRequest(new LinkedHashSet<>(fileStateIds)));
+          return null;
+        });
+  }
+
+  public SearchReferenceFacilitiesResponse searchReferenceFacilities(String name) {
+    return doAndForwardErrorCodes(() -> facilityApi.searchReferenceFacilities(name));
+  }
+
   private <T> T doAndForwardErrorCodes(Supplier<T> action) {
     try {
       return action.get();
     } catch (HttpClientErrorException e) {
-      // We want to forward error codes 1:1 to the frontend.
+      if (e.getStatusCode().isSameCodeAs(HttpStatus.UNAUTHORIZED)) {
+        throw new BadRequestException(ErrorCode.UNAUTHORIZED, "Unauthorized base module call");
+      }
       ErrorResponse errorResponse = e.getResponseBodyAs(ErrorResponse.class);
-      if (errorResponse == null) {
+      if (errorResponse != null) {
+        throw new BadRequestException(errorResponse.errorCode(), errorResponse.message());
+      } else {
         throw new BadRequestException(
             ErrorCode.UNEXPECTED_ERROR, "Could not read error from base module");
       }
-      throw new BadRequestException(errorResponse.errorCode(), errorResponse.message());
     }
   }
 }

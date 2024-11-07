@@ -63,15 +63,9 @@ export default function SchoolEntryDevelopmentScreeningPage(
     useUpdateDevelopmentScreeningResult();
 
   async function handleSubmit(formValues: DevelopmentScreeningFormValues) {
-    await updateDevelopmentScreeningResult
-      .mutateAsync(
-        mapToRequest(
-          procedureId,
-          formValues,
-          developmentScreeningResult.version,
-        ),
-      )
-      .catch();
+    await updateDevelopmentScreeningResult.mutateAsync(
+      mapToRequest(procedureId, formValues, developmentScreeningResult.version),
+    );
   }
 
   return (

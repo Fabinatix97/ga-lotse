@@ -7,8 +7,8 @@ import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
-  SideNavigationItem,
   SideNavigationSubItem,
+  UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { HivOutlined } from "@/lib/shared/components/icons/HivOutlined";
 import { hasUserRole } from "@/lib/shared/helpers/accessControl";
@@ -38,8 +38,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
   },
 ];
 
-export function useSideNavigationItems(): SideNavigationItem[] {
+export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isModuleEnabled = useIsNewFeatureEnabled(ApiBaseFeature.StiProtection);
   const subItems = defaultSubItems;
-  return isModuleEnabled ? [{ ...sideNavigationItem, subItems }] : [];
+  return {
+    isLoading: false,
+    items: isModuleEnabled ? [{ ...sideNavigationItem, subItems }] : [],
+  };
 }

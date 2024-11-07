@@ -57,11 +57,9 @@ function EditMatterOfConcernSidebar({
         date: formatDate(procedure.createdAt),
       }}
       onSubmit={async (values: EditMatterOfConcernFormValues) => {
-        await setMatterOfConcern
-          .mutateAsync(values.matterOfConcern, {
-            onSuccess: () => onClose(true),
-          })
-          .catch();
+        await setMatterOfConcern.mutateAsync(values.matterOfConcern, {
+          onSuccess: () => onClose(true),
+        });
       }}
     >
       {({ isSubmitting }) => (

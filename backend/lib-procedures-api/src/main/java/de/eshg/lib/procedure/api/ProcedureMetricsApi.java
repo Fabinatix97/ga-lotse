@@ -18,7 +18,7 @@ import org.springframework.web.service.annotation.GetExchange;
 
 public interface ProcedureMetricsApi {
 
-  int MAXIMUM_DAYS_METRICS = 366;
+  int MAXIMUM_DAYS_METRICS = 367;
 
   class QueryParameter {
 

@@ -64,7 +64,7 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
   const importData = useImportData();
 
   async function handleSubmit(values: ImportDataValues) {
-    await importData.mutateAsync(values).catch();
+    await importData.mutateAsync(values);
   }
 
   function handleClose() {

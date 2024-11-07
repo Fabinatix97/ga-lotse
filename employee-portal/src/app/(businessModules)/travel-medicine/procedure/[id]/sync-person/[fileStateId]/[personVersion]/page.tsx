@@ -23,18 +23,16 @@ export default function SyncPersonPage({
   const syncPerson = useSyncPerson(params.id);
 
   async function handleSync() {
-    await syncPerson
-      .mutateAsync(
-        {
-          referenceVersion: data.referenceVersion,
-          personVersion: params.personVersion,
-          fileStateId: params.fileStateId,
-        },
-        {
-          onSuccess: () => router.back(),
-        },
-      )
-      .catch();
+    await syncPerson.mutateAsync(
+      {
+        referenceVersion: data.referenceVersion,
+        personVersion: params.personVersion,
+        fileStateId: params.fileStateId,
+      },
+      {
+        onSuccess: () => router.back(),
+      },
+    );
   }
 
   return (

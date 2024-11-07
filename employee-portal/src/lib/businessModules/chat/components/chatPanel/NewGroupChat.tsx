@@ -126,7 +126,7 @@ export function NewGroupChat({
               aria-label="Chat name"
               sx={{
                 "--FormLabel-margin": 0,
-                marginTop: 1,
+                marginTop: 0,
                 ".MuiInput-root": {
                   height: "3.25rem",
                 },

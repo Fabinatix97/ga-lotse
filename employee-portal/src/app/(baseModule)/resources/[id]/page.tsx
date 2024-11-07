@@ -55,7 +55,7 @@ export default function ResourceDetailsPage({
               });
             },
           }}
-          isTodayAvaliable={eventsOfToday.length === 0}
+          isTodayAvailable={eventsOfToday.length === 0}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

@@ -74,7 +74,7 @@ function AddServiceAppointmentSidebar(
     const { appointmentStart, durationInMinutes } = determineStartAndDuration(
       values.bookingType,
       values.userDefinedAppointmentDate!,
-      values.appointmentBlockDate!,
+      values.appointmentBlockDate,
       values.appointmentTypeStandardDuration,
     );
 
@@ -103,20 +103,18 @@ function AddServiceAppointmentSidebar(
 
   async function handleSubmit(values: AddServiceAppointmentFormValues) {
     const useAddProcedureRequest = createUseAddProcedureRequest(values);
-    await addProcedure
-      .mutateAsync(useAddProcedureRequest.request, {
-        onSuccess: () => {
-          props.onClose(true);
-        },
-      })
-      .catch();
+    await addProcedure.mutateAsync(useAddProcedureRequest.request, {
+      onSuccess: () => {
+        props.onClose(true);
+      },
+    });
   }
 
   const initialServiceAppointmentFormValues: AddServiceAppointmentFormValues = {
     procedureId: props.procedureId,
     serviceChecks: [],
     bookingType: "" as ApiAppointmentBookingType,
-    appointmentBlockDate: "",
+    appointmentBlockDate: undefined,
     userDefinedAppointmentDate: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     appointmentTypeStandardDuration: vaccinationStandardDuration as number,
     appointmentType: "" as ApiAppointmentType,

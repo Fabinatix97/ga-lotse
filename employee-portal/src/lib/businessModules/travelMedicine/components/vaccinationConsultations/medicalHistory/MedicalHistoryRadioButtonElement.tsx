@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistorySectionElement } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiDocumentSectionElement } from "@eshg/employee-portal-api/travelMedicine";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { FormLabel, styled } from "@mui/joy";
 
@@ -13,7 +13,7 @@ interface MedicalHistoryRadioButtonElementProps {
   name: string;
   label: string;
   setFieldValue: SetFieldValueHelper;
-  element: ApiMedicalHistorySectionElement;
+  element: ApiDocumentSectionElement;
   sectionIndex: number;
   elementIndex: number;
   readOnly?: boolean;
@@ -42,19 +42,19 @@ export function MedicalHistoryRadioButtonElement({
       ]}
       onChange={async (event) => {
         if (event.target.value === "false" || !event.target.value) {
-          if (element.elementData.subElementText) {
+          if (element.anamnesisQuestion!.subElementText) {
             await setFieldValue(
               "medicalHistoryContent.sections[" +
                 sectionIndex +
                 "].sectionElements[" +
                 elementIndex +
-                "].elementData.subElementText.answer",
+                "].anamnesisQuestion.subElementText.answer",
               "",
             );
           }
           for (
             let i = 0;
-            i < element.elementData.subElementMultiSelect.length;
+            i < element.anamnesisQuestion!.subElementMultiSelect.length;
             i++
           ) {
             await setFieldValue(
@@ -62,7 +62,7 @@ export function MedicalHistoryRadioButtonElement({
                 sectionIndex +
                 "].sectionElements[" +
                 elementIndex +
-                "].elementData.subElementMultiSelect[" +
+                "].anamnesisQuestion.subElementMultiSelect[" +
                 i +
                 "].answer",
               false,
@@ -73,7 +73,7 @@ export function MedicalHistoryRadioButtonElement({
               sectionIndex +
               "].sectionElements[" +
               elementIndex +
-              "].elementData.answer",
+              "].anamnesisQuestion.answer",
             false,
           );
         } else {
@@ -82,7 +82,7 @@ export function MedicalHistoryRadioButtonElement({
               sectionIndex +
               "].sectionElements[" +
               elementIndex +
-              "].elementData.answer",
+              "].anamnesisQuestion.answer",
             true,
           );
         }

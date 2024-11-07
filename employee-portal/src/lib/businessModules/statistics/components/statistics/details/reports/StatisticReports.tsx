@@ -9,9 +9,18 @@ import {
   ApiReportState,
   ApiStatisticState,
 } from "@eshg/employee-portal-api/statistics";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Add } from "@mui/icons-material";
-import { Box, Button, Stack } from "@mui/joy";
+import { Add, NotInterestedOutlined } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Stack,
+  Typography,
+} from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -211,7 +220,7 @@ export function StatisticReports({
     });
   }
 
-  return (
+  return data.anonymized ? (
     <>
       {openCreateReportSidebar && (
         <OverlayBoundary>
@@ -286,12 +295,14 @@ export function StatisticReports({
                     <NoSearchResults info="Keine Reports vorhanden" />
                   </Box>
                 )}
-                rowNavRoute={(row) =>
-                  row.original.type !== "SERIES" &&
-                  row.original.status === ApiStatisticState.Completed
-                    ? routes.reports.details(row.original.reportId).index
-                    : undefined
-                }
+                rowNavigation={{
+                  route: (row) =>
+                    row.original.type !== "SERIES" &&
+                    row.original.status === ApiStatisticState.Completed
+                      ? routes.reports.details(row.original.reportId).index
+                      : undefined,
+                  focusColumnAccessorKey: "name",
+                }}
                 enableSortingRemoval={false}
                 sorting={{
                   manualSorting: false,
@@ -317,5 +328,32 @@ export function StatisticReports({
         </Stack>
       </Stack>
     </>
+  ) : (
+    <Card
+      variant="plain"
+      sx={{
+        alignSelf: "center",
+        borderRadius: "lg",
+        padding: 3,
+        gap: 3,
+        alignItems: "center",
+      }}
+    >
+      <CardContent sx={{ alignItems: "center", gap: 2 }}>
+        <NotInterestedOutlined sx={{ width: 130, height: 130 }} />
+        <Typography level="h1">Reports nicht verfügbar</Typography>
+        <Typography level="body-md">
+          Reports für Auswertungen mit nicht anonymisierten Daten stehen nicht
+          zur Verfügung.
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ padding: 0 }}>
+        <InternalLinkButton
+          href={routes.statistics.details(data.statisticId).index}
+        >
+          Zu den Analysen
+        </InternalLinkButton>
+      </CardActions>
+    </Card>
   );
 }

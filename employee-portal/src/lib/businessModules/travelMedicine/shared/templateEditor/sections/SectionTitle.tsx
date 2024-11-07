@@ -21,7 +21,7 @@ export function SectionTitle({
         name={`${sectionFormikPath}.sectionTitle`}
         placeholder="Sektionstitel eingeben"
         sx={{ flex: 1 }}
-        data-testid="sectionTitle"
+        data-testid="section-title"
       />
       <Stack alignItems="center" paddingTop={"6px"}>
         <IconButton
@@ -30,7 +30,7 @@ export function SectionTitle({
           variant="outlined"
           onClick={sectionDeleteHandler}
           title="Sektion Löschen"
-          data-testid="deleteSection"
+          data-testid="section-delete-button"
         >
           <DeleteOutlineIcon />
         </IconButton>

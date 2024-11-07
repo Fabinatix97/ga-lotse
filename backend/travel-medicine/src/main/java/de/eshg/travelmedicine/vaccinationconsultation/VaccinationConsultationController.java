@@ -10,14 +10,18 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.certificate.CertificateService;
 import de.eshg.travelmedicine.certificate.api.GetCertificatesResponse;
 import de.eshg.travelmedicine.certificate.api.PostPutCertificateRequest;
+import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
+import de.eshg.travelmedicine.document.medicalhistory.MedicalHistoryService;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentOverviewResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAssignableServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAvailableAppointmentsResponse;
+import de.eshg.travelmedicine.vaccinationconsultation.api.GetInformationStatementsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetMedicalHistoriesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetStepsWithAppliedServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetVaccinationConsultationDetailsResponse;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatchAcceptDraftRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchOtherServiceRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchServiceAssignmentRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationConsultationPatientRequest;
@@ -67,6 +71,7 @@ public class VaccinationConsultationController {
   public static final String ASSIGNABLE_SERVICES_URL = "/assignable-services";
   public static final String ASSIGN_STEP_URL = "/assign-step";
   public static final String UNASSIGN_STEP_URL = "/unassign-step";
+  public static final String ACCEPT_DRAFT_URL = "/accept-draft";
   public static final String CERTIFICATES_URL = "/certificates";
   public static final String MEDICAL_HISTORY_URL = "/medical-histories";
   public static final String STEPS_WITH_APPLIED_SERVICES = "/stepsWithAppliedServices";
@@ -77,16 +82,22 @@ public class VaccinationConsultationController {
   private final VaccinationConsultationService vaccinationConsultationService;
   private final ProcedureStepService procedureStepService;
   private final CertificateService certificateService;
+  private final InformationStatementService informationStatementService;
+  private final MedicalHistoryService medicalHistoryService;
 
   public VaccinationConsultationController(
       VaccinationConsultationService vaccinationConsultationService,
       ProcedureStepService procedureStepService,
       CertificateService certificateService,
-      TravelMedicineFeatureToggle featureToggle) {
+      TravelMedicineFeatureToggle featureToggle,
+      InformationStatementService informationStatementService,
+      MedicalHistoryService medicalHistoryService) {
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.procedureStepService = procedureStepService;
     this.certificateService = certificateService;
     this.featureToggle = featureToggle;
+    this.informationStatementService = informationStatementService;
+    this.medicalHistoryService = medicalHistoryService;
   }
 
   @GetMapping(path = APPOINTMENT_OVERVIEW)
@@ -95,10 +106,8 @@ public class VaccinationConsultationController {
           "Get list of all procedure appointment summaries in a time range, sorted by appointment date")
   @Transactional(readOnly = true)
   public GetAppointmentOverviewResponse getAllProcedureAppointmentSummaries(
-      @RequestParam(name = "dateRangeStart") LocalDate dateRangeStart,
-      @RequestParam(name = "dateRangeEnd") LocalDate dateRangeEnd) {
-    return vaccinationConsultationService.getAllProcedureAppointmentSummaries(
-        dateRangeStart, dateRangeEnd);
+      @RequestParam(name = "date") LocalDate date) {
+    return vaccinationConsultationService.getAllProcedureAppointmentSummaries(date);
   }
 
   @PostMapping()
@@ -142,6 +151,23 @@ public class VaccinationConsultationController {
   public GetVaccinationConsultationDetailsResponse getVaccinationConsultationDetails(
       @PathVariable("procedureId") UUID procedureId) {
     return vaccinationConsultationService.getVaccinationConsultationDetails(procedureId);
+  }
+
+  @DeleteMapping(path = "/{procedureId}")
+  @Operation(summary = "Aboard a draft vaccination consultation")
+  @Transactional
+  public void abortDraftVaccinationConsultation(@PathVariable("procedureId") UUID procedureId) {
+    vaccinationConsultationService.abortDraftVaccinationConsultation(procedureId);
+  }
+
+  @PatchMapping(path = "/{procedureId}" + ACCEPT_DRAFT_URL)
+  @Operation(summary = "Accept a draft vaccination consultation")
+  @Transactional
+  public void acceptDraftVaccinationConsultation(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody PatchAcceptDraftRequest acceptDraftRequest) {
+    vaccinationConsultationService.acceptDraftVaccinationConsultation(
+        procedureId, acceptDraftRequest);
   }
 
   @Operation(summary = "Search VaccinationConsultation, max. 50 results.")
@@ -261,7 +287,7 @@ public class VaccinationConsultationController {
   @Transactional
   public GetMedicalHistoriesResponse getMedicalHistories(
       @PathVariable("procedureId") UUID procedureId) {
-    return vaccinationConsultationService.getMedicalHistories(procedureId);
+    return medicalHistoryService.getMedicalHistoriesForEmployeePortal(procedureId);
   }
 
   @GetMapping(path = "/{procedureId}" + STEPS_WITH_APPLIED_SERVICES)
@@ -290,6 +316,16 @@ public class VaccinationConsultationController {
     vaccinationConsultationService.updateProcedureStatus(procedureId, request);
   }
 
+  @GetMapping(path = "/{procedureId}" + INFORMATION_STATEMENT_URL)
+  @Operation(summary = "Get information statements for this VaccinationConsultation.")
+  @Transactional
+  public GetInformationStatementsResponse getInformationStatements(
+      @PathVariable("procedureId") UUID procedureId) {
+    featureToggle.assertNewFeatureIsEnabled(
+        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
+    return informationStatementService.getInformationStatementsForEmployeePortal(procedureId);
+  }
+
   @PostMapping(path = "/{procedureId}" + INFORMATION_STATEMENT_URL)
   @Operation(summary = "Add information statements to a procedure")
   @Transactional
@@ -298,7 +334,7 @@ public class VaccinationConsultationController {
       @Valid @RequestBody PostInformationStatementsRequest request) {
     featureToggle.assertNewFeatureIsEnabled(
         TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
-    vaccinationConsultationService.addInformationStatements(procedureId, request);
+    informationStatementService.addInformationStatements(procedureId, request);
   }
 
   @DeleteMapping(path = "/{procedureId}" + INFORMATION_STATEMENT_URL + "/{informationStatementId}")
@@ -309,7 +345,7 @@ public class VaccinationConsultationController {
       @PathVariable("informationStatementId") UUID informationStatementId) {
     featureToggle.assertNewFeatureIsEnabled(
         TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
-    vaccinationConsultationService.deleteInformationStatement(procedureId, informationStatementId);
+    informationStatementService.deleteInformationStatement(procedureId, informationStatementId);
   }
 
   @PutMapping("/{procedureId}" + SYNC_PERSON_URL)

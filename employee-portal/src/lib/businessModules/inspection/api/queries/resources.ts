@@ -39,37 +39,37 @@ export function useGetResourcesWithEvents(props: {
   const calendarEventApi = useCalendarEventApi();
   return useSuspenseQuery({
     queryKey: resourceApiQueryKey(["getResourcesWithEvents", props]),
-    queryFn: () =>
-      resourceApi
-        // first get all resources for given resourceType
+    queryFn: async () => {
+      // first get all resources for given resourceType
+      const resources = await resourceApi
         .getResourcesRaw({ type: props.resourceType })
         .then(unwrapRawResponse)
-        .then((response) => response.elements)
-        // now determine which resources are free or blocked in [start - end]:
-        .then((resources) => {
-          if (resources.length > 0) {
-            return (
-              calendarEventApi
-                .getBlockingEventsOfResourceCalendarsRaw({
-                  apiGetBlockingEventsOfResourcesRequest: {
-                    resourceIds: resources.map((resource) => resource.id),
-                    timeRangeStart: props.start,
-                    timeRangeEnd: props.end,
-                  },
-                })
-                .then(unwrapRawResponse)
-                // return both resource and calendar response
-                .then((calendarResponse) => ({ resources, calendarResponse }))
-            );
-          } else {
-            return {
-              resources,
-              calendarResponse: {
-                notFoundResourceIds: [],
-                resourcesWithBlockingEvents: [],
-              } satisfies ApiGetBlockingEventsOfResourcesResponse,
-            };
-          }
-        }),
+        .then((response) => response.elements);
+
+      // now determine which resources are free or blocked in [start - end]:
+      if (resources.length > 0) {
+        return (
+          calendarEventApi
+            .getBlockingEventsOfResourceCalendarsRaw({
+              apiGetBlockingEventsOfResourcesRequest: {
+                resourceIds: resources.map((resource) => resource.id),
+                timeRangeStart: props.start,
+                timeRangeEnd: props.end,
+              },
+            })
+            .then(unwrapRawResponse)
+            // return both resource and calendar response
+            .then((calendarResponse) => ({ resources, calendarResponse }))
+        );
+      } else {
+        return {
+          resources,
+          calendarResponse: {
+            notFoundResourceIds: [],
+            resourcesWithBlockingEvents: [],
+          } satisfies ApiGetBlockingEventsOfResourcesResponse,
+        };
+      }
+    },
   });
 }

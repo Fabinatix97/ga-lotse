@@ -119,6 +119,10 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
         // skip the header
         continue;
       }
+      if (RowReader.isEmpty(row)) {
+        // sometimes a row has no cells but still shows up
+        continue;
+      }
       deleteReferenceId(row);
       try {
         rowValues.put(row, rowReader.readRow(row));
@@ -158,7 +162,8 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
   private XSSFCellStyle getCellStyle(ImportStatus importStatus) {
     return switch (importStatus) {
       case IMPORTED_SUCCESSFULLY, MERGED_SUCCESSFULLY -> importedSuccessfullyCellStyle;
-      case ERROR_INPUT_DATA, INVALID_PROCEDURE_ID, EXCEPTION, MERGE_FAILED -> importFailedCellStyle;
+      case ERROR_INPUT_DATA, INVALID_PROCEDURE_ID, EXCEPTION, MERGE_FAILED, BATCH_ERROR ->
+          importFailedCellStyle;
       case IMPORTED_PREVIOUSLY, DUPLICATE_WITHIN_LIST, DUPLICATE_IN_ASSET -> importWarningCellStyle;
     };
   }

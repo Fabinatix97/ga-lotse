@@ -8,7 +8,7 @@
 import { ApiMedicalHistory } from "@eshg/employee-portal-api/travelMedicine";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
-import { Stack } from "@mui/joy";
+import { Box, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { useEffect } from "react";
 
@@ -16,6 +16,7 @@ import {
   PatchMedicalHistoryRequest,
   usePatchMedicalHistory,
 } from "@/lib/businessModules/travelMedicine/api/mutations/medicalHistory";
+import { ConfirmationElement } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/ConfirmationElement";
 import { MedicalHistoryMultiSelectElement } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistoryMultiSelectElement";
 import { MedicalHistoryRadioButtonElement } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistoryRadioButtonElement";
 import { MedicalHistorySection } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/medicalHistory/MedicalHistorySection";
@@ -40,7 +41,7 @@ export function MedicalHistory({
   const patchMedicalHistory = usePatchMedicalHistory();
 
   async function sendUpdateRequest(request: PatchMedicalHistoryRequest) {
-    await patchMedicalHistory.mutateAsync(request).catch();
+    await patchMedicalHistory.mutateAsync(request);
   }
 
   async function handleSubmit(changedContent: ApiMedicalHistory) {
@@ -91,70 +92,93 @@ export function MedicalHistory({
                           dataTestId={"document-element-" + elementIndex}
                         >
                           <>
-                            <MedicalHistoryRadioButtonElement
-                              name={
-                                "medicalHistoryContent.sections[" +
-                                sectionIndex +
-                                "].sectionElements[" +
-                                elementIndex +
-                                "].elementData.answer"
-                              }
-                              label={element.elementData.questionText}
-                              setFieldValue={setFieldValue}
-                              element={element}
-                              elementIndex={elementIndex}
-                              sectionIndex={sectionIndex}
-                              readOnly={readOnly}
-                            ></MedicalHistoryRadioButtonElement>
-                            {(
-                              getFieldProps(
-                                "medicalHistoryContent.sections[" +
-                                  sectionIndex +
-                                  "].sectionElements[" +
-                                  elementIndex +
-                                  "].elementData.answer",
-                              ).value as string
-                            )?.toString() === "true" && (
+                            {element.anamnesisQuestion && (
                               <>
-                                {element.elementData.subElementMultiSelect
-                                  .length > 0 && (
-                                  <MedicalHistoryMultiSelectElement
-                                    element={element}
-                                    elementIndex={elementIndex}
-                                    sectionIndex={sectionIndex}
-                                    name={
-                                      "medicalHistoryContent.sections[" +
+                                <MedicalHistoryRadioButtonElement
+                                  name={
+                                    "medicalHistoryContent.sections[" +
+                                    sectionIndex +
+                                    "].sectionElements[" +
+                                    elementIndex +
+                                    "].anamnesisQuestion.answer"
+                                  }
+                                  label={element.anamnesisQuestion.questionText}
+                                  setFieldValue={setFieldValue}
+                                  element={element}
+                                  elementIndex={elementIndex}
+                                  sectionIndex={sectionIndex}
+                                  readOnly={readOnly}
+                                ></MedicalHistoryRadioButtonElement>
+
+                                {(
+                                  getFieldProps(
+                                    "medicalHistoryContent.sections[" +
                                       sectionIndex +
                                       "].sectionElements[" +
                                       elementIndex +
-                                      "].elementData.subElementMultiSelect"
-                                    }
-                                    readOnly={readOnly}
-                                  />
-                                )}
-                                {element.elementData.subElementText && (
-                                  <Stack
-                                    style={{
-                                      marginLeft: 16,
-                                    }}
-                                  >
-                                    <MedicalHistoryTextareaElement
-                                      name={
-                                        "medicalHistoryContent.sections[" +
-                                        sectionIndex +
-                                        "].sectionElements[" +
-                                        elementIndex +
-                                        "].elementData.subElementText.answer"
-                                      }
-                                      label={
-                                        element.elementData.subElementText
-                                          .questionText
-                                      }
-                                      readOnly={readOnly}
-                                    ></MedicalHistoryTextareaElement>
-                                  </Stack>
+                                      "].anamnesisQuestion.answer",
+                                  ).value as string
+                                )?.toString() === "true" && (
+                                  <>
+                                    {element.anamnesisQuestion
+                                      .subElementMultiSelect.length > 0 && (
+                                      <MedicalHistoryMultiSelectElement
+                                        element={element}
+                                        elementIndex={elementIndex}
+                                        sectionIndex={sectionIndex}
+                                        name={
+                                          "medicalHistoryContent.sections[" +
+                                          sectionIndex +
+                                          "].sectionElements[" +
+                                          elementIndex +
+                                          "].anamnesisQuestion.subElementMultiSelect"
+                                        }
+                                        readOnly={readOnly}
+                                      />
+                                    )}
+
+                                    {element.anamnesisQuestion
+                                      .subElementText && (
+                                      <Stack
+                                        style={{
+                                          marginLeft: 16,
+                                        }}
+                                      >
+                                        <MedicalHistoryTextareaElement
+                                          name={
+                                            "medicalHistoryContent.sections[" +
+                                            sectionIndex +
+                                            "].sectionElements[" +
+                                            elementIndex +
+                                            "].anamnesisQuestion.subElementText.answer"
+                                          }
+                                          label={
+                                            element.anamnesisQuestion
+                                              .subElementText.questionText
+                                          }
+                                          readOnly={readOnly}
+                                        ></MedicalHistoryTextareaElement>
+                                      </Stack>
+                                    )}
+                                  </>
                                 )}
                               </>
+                            )}
+
+                            {element.textBlock && (
+                              <Box sx={{ whiteSpace: "pre-wrap" }}>
+                                {element.textBlock.textField}
+                              </Box>
+                            )}
+
+                            {element.confirmation && (
+                              <ConfirmationElement
+                                confirmation={element.confirmation}
+                                elementIndex={elementIndex}
+                                sectionIndex={sectionIndex}
+                                readOnly={readOnly}
+                                setFieldValue={setFieldValue}
+                              />
                             )}
                           </>
                         </MedicalHistorySectionElement>

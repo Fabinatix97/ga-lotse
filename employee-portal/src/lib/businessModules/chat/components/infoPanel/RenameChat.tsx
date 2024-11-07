@@ -10,7 +10,6 @@ import { Box, Button, Stack, Typography } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 
@@ -26,7 +25,7 @@ export function RenameChat({
   onCancel,
 }: Readonly<RenameChatProps>) {
   const roomInfo = useRoomInfo(roomId);
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient } = roomInfo;
   const snackbar = useSnackbar();
 
   async function handleRenameChat(values: { name: string }) {
@@ -51,7 +50,7 @@ export function RenameChat({
 
   return (
     <>
-      <InfoPanelHeader data={roomInfo} close={onClose} />
+      <InfoPanelHeader close={onClose} {...roomInfo} />
       <Box
         sx={{
           overflowY: "auto",

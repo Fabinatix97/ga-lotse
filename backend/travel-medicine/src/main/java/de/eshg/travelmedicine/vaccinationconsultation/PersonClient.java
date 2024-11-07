@@ -9,16 +9,19 @@ import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
+import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
-import de.eshg.base.centralfile.api.person.GetPersonDiffResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
+import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.PutPersonRequest;
+import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
 import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
+import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -26,6 +29,8 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PersonAddressDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PersonSyncDto;
 import jakarta.validation.Valid;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -113,9 +118,9 @@ public class PersonClient {
     }
   }
 
-  public UUID updatePersonInCentralFile(UUID id, PatientDto patient) {
+  public UUID updatePersonInCentralFile(UUID fileStateId, PatientDto patient) {
     GetPersonFileStatesResponse getPersonFileStatesResponse =
-        personApi.getPersonFileStates(new GetPersonFileStatesRequest(List.of(id)));
+        personApi.getPersonFileStates(new GetPersonFileStatesRequest(List.of(fileStateId)));
 
     AddPersonFileStateResponse personFileStateResponse =
         getPersonFileStatesResponse.personFileStates().getFirst();
@@ -124,13 +129,126 @@ public class PersonClient {
     PutPersonRequest putPersonRequest = createPutPersonRequest(patient, billingAddress);
 
     AddPersonFileStateResponse addPersonFileStateResponse =
-        personApi.updatePersonFileStateAndReference(id, putPersonRequest);
+        personApi.updatePersonFileStateAndReference(fileStateId, putPersonRequest);
     return addPersonFileStateResponse.id();
+  }
+
+  public UUID createInternalReferencePerson(UUID fileStateId) {
+
+    GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(fileStateId);
+
+    PutPersonRequest putPersonRequest = mapToPutPersonRequest(personFromCentralFile);
+
+    AddPersonFileStateResponse addPersonFileStateResponse =
+        personApi.updatePersonFileStateAndReference(fileStateId, putPersonRequest);
+    return addPersonFileStateResponse.id();
+  }
+
+  public UUID updatePersonAndCreateFileState(UUID referencePersonId, UUID oldFileStateId) {
+    GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(oldFileStateId);
+    SearchReferencePersonsResponse searchReferencePersons =
+        personApi.searchReferencePersons(
+            personFromCentralFile.firstName(),
+            personFromCentralFile.lastName(),
+            personFromCentralFile.dateOfBirth());
+    GetReferencePersonResponse referencePerson =
+        searchReferencePersons.persons().stream()
+            .filter(p -> p.id().equals(referencePersonId))
+            .findFirst()
+            .orElseThrow(() -> new BadRequestException("Reference person not found."));
+    boolean dataAdded =
+        addEmailAndPhoneNumberToReferencePerson(referencePerson, personFromCentralFile);
+    PersonDetailsDto personDetailsDto = mapToPersonDetailsDto(referencePerson);
+    AddPersonFileStateResponse addPersonFileStateResponse;
+    if (dataAdded) {
+      UpdateReferencePersonRequest updateReferencePersonRequest =
+          new UpdateReferencePersonRequest(personDetailsDto, referencePerson.version());
+      addPersonFileStateResponse =
+          personApi.updateReferencePerson(referencePersonId, updateReferencePersonRequest);
+    } else {
+      AddPersonFileStateRequest addPersonRequest = mapToAddPeronRequest(referencePerson);
+      addPersonFileStateResponse = personApi.addPersonFileState(addPersonRequest);
+    }
+
+    return addPersonFileStateResponse.id();
+  }
+
+  private AddPersonFileStateRequest mapToAddPeronRequest(
+      GetReferencePersonResponse referencePerson) {
+    return new AddPersonFileStateRequest(
+        referencePerson.id(),
+        referencePerson.title(),
+        referencePerson.salutation(),
+        referencePerson.gender(),
+        referencePerson.firstName().trim(),
+        referencePerson.lastName().trim(),
+        referencePerson.dateOfBirth(),
+        referencePerson.nameAtBirth(),
+        referencePerson.placeOfBirth(),
+        referencePerson.countryOfBirth(),
+        referencePerson.emailAddresses(),
+        referencePerson.phoneNumbers(),
+        referencePerson.contactAddress(),
+        referencePerson.differentBillingAddress(),
+        DataOriginDto.MANUAL);
+  }
+
+  private boolean addEmailAndPhoneNumberToReferencePerson(
+      GetReferencePersonResponse referencePerson,
+      GetPersonFileStateResponse personFromCentralFile) {
+    boolean mailAdded =
+        addEmailsToReferencePerson(referencePerson, personFromCentralFile.emailAddresses());
+    boolean phoneNumberAdded =
+        addPhoneNumbersToReferencePerson(referencePerson, personFromCentralFile.phoneNumbers());
+    return (mailAdded || phoneNumberAdded);
+  }
+
+  private boolean addPhoneNumbersToReferencePerson(
+      GetReferencePersonResponse referencePerson, List<String> phoneNumbers) {
+    boolean phoneNumberAdded = false;
+    HashSet<String> referenceNumbers =
+        referencePerson.phoneNumbers().stream()
+            .map(this::normalizePhoneNumber)
+            .collect(Collectors.toCollection(HashSet::new));
+
+    for (String phoneNumber : phoneNumbers) {
+      String normalizedNumber = normalizePhoneNumber(phoneNumber);
+      if (!referenceNumbers.contains(normalizedNumber)) {
+        referencePerson.phoneNumbers().add(phoneNumber);
+        phoneNumberAdded = true;
+      }
+    }
+    return phoneNumberAdded;
+  }
+
+  private String normalizePhoneNumber(String phoneNumber) {
+
+    phoneNumber = phoneNumber.replaceAll("[^\\d.]", "");
+    if (phoneNumber.startsWith("00")) {
+      phoneNumber = phoneNumber.substring(2);
+    }
+    return phoneNumber;
+  }
+
+  private boolean addEmailsToReferencePerson(
+      GetReferencePersonResponse referencePerson, List<String> emails) {
+    boolean mailsAdded = false;
+    for (String email : emails) {
+      if (!referencePerson.emailAddresses().contains(email)) {
+        referencePerson.emailAddresses().add(email);
+        mailsAdded = true;
+      }
+    }
+    return mailsAdded;
   }
 
   public PatientSync getPersonFromCentralFile(UUID id) {
     GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(id);
     return mapToPatientStatusDto(personFromCentralFile);
+  }
+
+  public PatientDto getPatientFromCentralFile(UUID id) {
+    return getPersonFromCentralFile(id).patient();
   }
 
   public Map<UUID, PatientDto> getPersonsFromCentralFile(List<UUID> ids) {
@@ -149,9 +267,10 @@ public class PersonClient {
         .collect(Collectors.toMap(AddPersonFileStateResponse::id, PersonClient::mapToPatientDto));
   }
 
-  public long getPersonReferenceVersion(UUID fileStateId) {
-    GetPersonDiffResponse personDiff = personApi.getPersonDiff(fileStateId);
-    return personDiff.referenceVersion();
+  public void markExternalPersonForDeletion(UUID fileStateId) {
+    DeleteFileStatesRequest deleteFileStatesRequest =
+        new DeleteFileStatesRequest(new LinkedHashSet<>(List.of(fileStateId)));
+    personApi.markPersonFileStateForDeletion(deleteFileStatesRequest);
   }
 
   private PutPersonRequest createPutPersonRequest(PatientDto patient, AddressDto billingAddress) {
@@ -208,6 +327,44 @@ public class PersonClient {
         addPersonFileStateResponse.title(),
         addPersonFileStateResponse.gender(),
         mapAddressToPerson(addPersonFileStateResponse.contactAddress()));
+  }
+
+  private PutPersonRequest mapToPutPersonRequest(GetPersonFileStateResponse personFromCentralFile) {
+    return new PutPersonRequest(mapToPersonDetailsDto(personFromCentralFile));
+  }
+
+  private PersonDetailsDto mapToPersonDetailsDto(GetPersonFileStateResponse personFromCentralFile) {
+    return new PersonDetailsDto(
+        personFromCentralFile.title(),
+        personFromCentralFile.salutation(),
+        personFromCentralFile.gender(),
+        personFromCentralFile.firstName().trim(),
+        personFromCentralFile.lastName().trim(),
+        personFromCentralFile.dateOfBirth(),
+        personFromCentralFile.nameAtBirth(),
+        personFromCentralFile.placeOfBirth(),
+        personFromCentralFile.countryOfBirth(),
+        personFromCentralFile.emailAddresses(),
+        personFromCentralFile.phoneNumbers(),
+        personFromCentralFile.contactAddress(),
+        personFromCentralFile.differentBillingAddress());
+  }
+
+  private PersonDetailsDto mapToPersonDetailsDto(GetReferencePersonResponse referencePerson) {
+    return new PersonDetailsDto(
+        referencePerson.title(),
+        referencePerson.salutation(),
+        referencePerson.gender(),
+        referencePerson.firstName().trim(),
+        referencePerson.lastName().trim(),
+        referencePerson.dateOfBirth(),
+        referencePerson.nameAtBirth(),
+        referencePerson.placeOfBirth(),
+        referencePerson.countryOfBirth(),
+        referencePerson.emailAddresses(),
+        referencePerson.phoneNumbers(),
+        referencePerson.contactAddress(),
+        referencePerson.differentBillingAddress());
   }
 
   private static PersonAddressDto mapAddressToPerson(de.eshg.base.address.AddressDto address) {

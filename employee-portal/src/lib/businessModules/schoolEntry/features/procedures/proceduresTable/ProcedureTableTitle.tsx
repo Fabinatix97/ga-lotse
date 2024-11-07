@@ -108,14 +108,12 @@ export function ProceduresTableTitle(props: ProcedureTableTitleProps) {
 
   async function handleClickBulkAppointmentButton() {
     bulkAppointmentCreationMessage.close();
-    await createAppointmentsInBulk
-      .mutateAsync(
-        {
-          procedureIds: selectedProcedureIds,
-        },
-        { onSuccess: bulkAppointmentCreationMessage.open },
-      )
-      .catch();
+    await createAppointmentsInBulk.mutateAsync(
+      {
+        procedureIds: selectedProcedureIds,
+      },
+      { onSuccess: bulkAppointmentCreationMessage.open },
+    );
   }
 
   return (

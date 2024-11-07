@@ -8,14 +8,12 @@
 import AddIcon from "@mui/icons-material/Add";
 import LockIcon from "@mui/icons-material/LockOutlined";
 import { Button, Chip, Sheet, Stack } from "@mui/joy";
-import { useState } from "react";
 
 import { useGetUserOverviewPageQuery } from "@/lib/baseModule/api/queries/users";
-import { SuggestNewUserFormSidebar } from "@/lib/baseModule/components/users/SuggestNewUserSidebar";
+import { useSuggestNewUserSidebar } from "@/lib/baseModule/components/users/SuggestNewUserSidebar";
 import { useUserTableColumns } from "@/lib/baseModule/components/users/columns";
 import { businessModuleLeaderRoles } from "@/lib/baseModule/moduleRegister/moduleUserGroupResolver";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -27,12 +25,12 @@ export function UserTable() {
     isFetching,
   } = useGetUserOverviewPageQuery();
 
-  const [open, setOpen] = useState(false);
   const isLeader = useHasUserRolesCheck(businessModuleLeaderRoles).some(
     (b) => b,
   );
 
   const userColumns = useUserTableColumns();
+  const suggestUserSidebar = useSuggestNewUserSidebar();
 
   return (
     <>
@@ -68,7 +66,11 @@ export function UserTable() {
             {isLeader && (
               <Button
                 startDecorator={<AddIcon />}
-                onClick={() => setOpen(true)}
+                onClick={() =>
+                  suggestUserSidebar.open({
+                    availableGroups: selfGroups,
+                  })
+                }
                 sx={{
                   minWidth: "fit-content",
                 }}
@@ -84,21 +86,13 @@ export function UserTable() {
             minWidth="75rem"
             columns={userColumns}
             data={users}
-            rowNavRoute={(row) => routes.users.details(row.original.userId)}
-            focusColumnHeader="Name"
+            rowNavigation={{
+              route: (row) => routes.users.details(row.original.userId),
+              focusColumnAccessorKey: "lastName",
+            }}
           />
         </TableSheet>
       </TablePage>
-
-      {isLeader && (
-        <OverlayBoundary>
-          <SuggestNewUserFormSidebar
-            open={open}
-            onClose={() => setOpen(false)}
-            availableGroups={selfGroups}
-          />
-        </OverlayBoundary>
-      )}
     </>
   );
 }

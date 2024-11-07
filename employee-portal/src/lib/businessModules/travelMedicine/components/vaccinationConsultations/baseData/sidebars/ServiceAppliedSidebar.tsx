@@ -61,17 +61,15 @@ function ServiceAppliedSidebar(props: Readonly<ServiceAppliedSidebarProps>) {
       },
     };
 
-    await updateVaccination
-      .mutateAsync(request, {
-        onSuccess: () => {
-          props.setStoredUsers({
-            physician: values.physician,
-            medicalAssistant: values.medicalAssistant ?? "",
-          });
-          props.onClose(true);
-        },
-      })
-      .catch();
+    await updateVaccination.mutateAsync(request, {
+      onSuccess: () => {
+        props.setStoredUsers({
+          physician: values.physician,
+          medicalAssistant: values.medicalAssistant ?? "",
+        });
+        props.onClose(true);
+      },
+    });
   }
 
   function formatVaccinationInfo(

@@ -3,21 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiTravelType } from "@eshg/citizen-portal-api/travelMedicine";
+import {
+  ApiAppointmentType,
+  ApiTravelType,
+} from "@eshg/citizen-portal-api/travelMedicine";
 import { useFormikContext } from "formik";
 import { useRouter } from "next/navigation";
 
-import { StepKey } from "@/lib/businessModules/travelMedicine/components/appointment/AppointmentStepper";
 import { InitialAppointmentFormValues } from "@/lib/businessModules/travelMedicine/components/appointment/types";
 import { MultiStepFormButtonBar } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormButtonsBar";
 import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 
+import { StepKey } from "./AppointmentStepper";
+
 export function AppointmentFormButtonBar() {
-  const { steps, currentStepIndex, totalSteps, isLastStep, onStepChange } =
-    useStepContext();
-  const { values, validateForm, setTouched, setFieldTouched, setErrors } =
+  const { isLastStep, currentNode, goForward, goBack } = useStepContext();
+  const { values, setTouched, validateForm, setFieldTouched, setErrors } =
     useFormikContext<InitialAppointmentFormValues>();
 
   const { t } = useTranslation(["travelMedicine/forms"]);
@@ -26,7 +29,7 @@ export function AppointmentFormButtonBar() {
 
   function isAppointmentPickerInValid() {
     let isInvalid = false;
-    if (steps[currentStepIndex]!.key === StepKey.AppointmentSlotStep) {
+    if (currentNode?.key === StepKey.AppointmentSlotStep) {
       isInvalid = !values.appointmentBlockDate;
     }
     return isInvalid;
@@ -65,28 +68,43 @@ export function AppointmentFormButtonBar() {
   async function handleNextStep() {
     const errors = await handleValidation();
     if (!errors) {
-      if (
-        steps[currentStepIndex]!.key === StepKey.TravelTypeStep &&
-        values.travelInformation.travelType === ApiTravelType.NoTravel
-      ) {
-        if (currentStepIndex < totalSteps) {
-          onStepChange(currentStepIndex + 2);
-          await setTouched({});
+      await setTouched({});
+      switch (currentNode?.key) {
+        case StepKey.AppointmentSlotStep: {
+          if (
+            values.initialStepAppointmentType === ApiAppointmentType.Vaccination
+          ) {
+            goForward(3);
+          } else goForward();
+          break;
         }
-      } else if (currentStepIndex < totalSteps) {
-        onStepChange(currentStepIndex + 1);
-        await setTouched({});
+        case StepKey.TravelTypeStep: {
+          if (values.travelInformation.travelType === ApiTravelType.NoTravel) {
+            goForward(2);
+          } else goForward();
+          break;
+        }
+        default: {
+          goForward();
+          break;
+        }
       }
     }
   }
 
   function handlePrevStep() {
-    if (
-      steps[currentStepIndex]!.key === StepKey.PersonalDataStep &&
-      values.travelInformation.travelType === ApiTravelType.NoTravel
-    ) {
-      if (currentStepIndex > 0) onStepChange(currentStepIndex - 2);
-    } else if (currentStepIndex > 0) onStepChange(currentStepIndex - 1);
+    if (currentNode?.key === StepKey.PersonalDataStep) {
+      if (
+        values.travelInformation.travelType === ApiTravelType.NoTravel &&
+        values.initialStepAppointmentType === ApiAppointmentType.Consultation
+      ) {
+        goBack(2);
+      } else if (
+        values.initialStepAppointmentType === ApiAppointmentType.Vaccination
+      ) {
+        goBack(3);
+      } else goBack();
+    } else goBack();
   }
 
   return (

@@ -40,9 +40,6 @@ export function useUpdateDiagram(
   });
 
   return async (model: UpdateDiagramFormModel) => {
-    return mutation
-      .mutateAsync(model)
-      .then(() => void 0)
-      .catch();
+    await mutation.mutateAsync(model);
   };
 }

@@ -100,6 +100,7 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
 
   private String responsiblePhysician;
   private LocalDate inDaycareSince;
+  private Boolean wasInDaycare;
   private String daycareName;
   private String schoolName;
   private Boolean spectaclesInFamily;
@@ -631,5 +632,13 @@ public class Anamnesis extends GenericEntity<Long> implements ValidatableEntity 
 
   public void setNumberOfSiblings(Integer numberOfSiblings) {
     this.numberOfSiblings = numberOfSiblings;
+  }
+
+  public Boolean getWasInDaycare() {
+    return wasInDaycare;
+  }
+
+  public void setWasInDaycare(Boolean wasInDaycare) {
+    this.wasInDaycare = wasInDaycare;
   }
 }

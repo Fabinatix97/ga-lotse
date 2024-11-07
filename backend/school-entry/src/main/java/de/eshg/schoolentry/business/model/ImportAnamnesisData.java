@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry.business.model;
 
+import java.time.LocalDate;
+
 public record ImportAnamnesisData(
     int siblings,
     int nationalityChild,
@@ -30,4 +32,5 @@ public record ImportAnamnesisData(
     Boolean u7,
     Boolean u7a,
     Boolean u8,
-    Boolean u9) {}
+    Boolean u9,
+    LocalDate inGermanySince) {}

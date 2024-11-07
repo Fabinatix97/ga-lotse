@@ -6,6 +6,8 @@
 package de.eshg.lib.procedure.inbox;
 
 import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
+import static de.eshg.lib.procedure.file.MultipartFileParser.parseFile;
+import static de.eshg.lib.procedure.file.MultipartFileParser.validateProgressEntryTypeSupportsFileType;
 import static de.eshg.lib.procedure.mapping.InboxProcedureMapper.toInterfaceTypeWithResolvedFile;
 import static de.eshg.lib.procedure.model.GetInboxProceduresSortOrderDto.*;
 
@@ -13,12 +15,14 @@ import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.procedure.api.InboxProcedureApi;
+import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.InboxProcedure;
 import de.eshg.lib.procedure.domain.model.InboxProcedureStatus;
 import de.eshg.lib.procedure.domain.model.InboxProcedure_;
+import de.eshg.lib.procedure.domain.model.InboxProgressEntry;
+import de.eshg.lib.procedure.domain.model.Mail;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.repository.InboxProcedureRepository;
-import de.eshg.lib.procedure.file.FileUploadService;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.mapping.InboxProcedureMapper;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
@@ -60,19 +64,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class InboxProcedureController implements InboxProcedureApi {
 
   private final InboxProcedureRepository inboxProcedureRepository;
-  private final FileUploadService fileUploadService;
   private final Clock clock;
   private final BaseFeatureTogglesApi baseFeatureTogglesApi;
   private final UserHelper userHelper;
 
   public InboxProcedureController(
       InboxProcedureRepository inboxProcedureRepository,
-      FileUploadService fileUploadService,
       Clock clock,
       BaseFeatureTogglesApi baseFeatureTogglesApi,
       UserHelper userHelper) {
     this.inboxProcedureRepository = inboxProcedureRepository;
-    this.fileUploadService = fileUploadService;
     this.clock = clock;
     this.baseFeatureTogglesApi = baseFeatureTogglesApi;
     this.userHelper = userHelper;
@@ -89,15 +90,36 @@ public class InboxProcedureController implements InboxProcedureApi {
     validateContactDetails(createInboxProcedureRequest.contactDetails());
     InboxProcedure inboxProcedure =
         InboxProcedureMapper.createInboxProcedure(createInboxProcedureRequest, clock);
-    InboxProcedure persistedInboxProcedure = inboxProcedureRepository.save(inboxProcedure);
 
     if (Optional.ofNullable(file).isPresent()) {
-      fileUploadService.handleFile(
-          persistedInboxProcedure.getInboxProgressEntry(), file, fileMetaData);
+      InboxProgressEntry inboxProgressEntry = inboxProcedure.getInboxProgressEntry();
+      validateProgressEntryTypeSupportsFileType(inboxProgressEntry, file);
+
+      File parsedFile = parseFile(file);
+      Optional.ofNullable(fileMetaData)
+          .map(FileMetaDataDto::getDescription)
+          .ifPresent(parsedFile.getMetaData()::setDescription);
+
+      copySubjectAndMessageTextFromMailIfNecessary(inboxProgressEntry, parsedFile);
+      inboxProgressEntry.setFile(parsedFile);
     }
 
-    inboxProcedureRepository.flush();
-    return InboxProcedureMapper.toInterfaceType(inboxProcedure);
+    return InboxProcedureMapper.toInterfaceType(inboxProcedureRepository.save(inboxProcedure));
+  }
+
+  private void copySubjectAndMessageTextFromMailIfNecessary(
+      InboxProgressEntry inboxProgressEntry, File file) {
+    if (!(file instanceof Mail mail)) {
+      return;
+    }
+
+    if (inboxProgressEntry.getSubject() != null || inboxProgressEntry.getMessageText() != null) {
+      throw new BadRequestException(
+          "Subject and message text are parsed from eml and should not be given");
+    }
+
+    inboxProgressEntry.setSubject(mail.getMetaData().getSubject());
+    inboxProgressEntry.setMessageText(mail.getMetaData().getMessageText());
   }
 
   @Override

@@ -1,0 +1,9 @@
+Sehr geehrte(r) %s %s,
+
+Ihre Terminbuchung für den %s Uhr wurde von uns auf den %s Uhr umgebucht.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Mit freundlichen Grüßen,
+
+%s

@@ -91,14 +91,15 @@ export function CreateProcedureSidebar() {
     child: ApiCreatePerson,
     type: OptionalFieldValue<ApiSchoolEntryProcedureType>,
   ) {
-    await createProcedure
-      .mutateAsync(mapToCreateProcedureRequest(child, type), {
+    await createProcedure.mutateAsync(
+      mapToCreateProcedureRequest(child, type),
+      {
         onSuccess: (response) => {
           closeSidebar();
           router.push(routes.procedures.byId(response.procedureId).details);
         },
-      })
-      .catch();
+      },
+    );
   }
 
   return (

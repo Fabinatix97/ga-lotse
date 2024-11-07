@@ -17,6 +17,7 @@ import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
+import { durationBetweenDatesInMinutes } from "@eshg/lib-portal/helpers/dateTime";
 import { isEmpty, isNonNullish } from "remeda";
 
 import { AppointmentSummary } from "@/lib/businessModules/travelMedicine/api/models/AppointmentSummary";
@@ -198,7 +199,7 @@ export function createMedicalAssistantOptions(
 export function determineStartAndDuration(
   bookingType: ApiAppointmentBookingType | undefined,
   userDefinedAppointmentDate: string,
-  appointmentBlockDate: string,
+  appointmentBlockDate: { start: Date; end: Date } | undefined,
   appointmentTypeStandardDuration: number,
 ): { appointmentStart: Date; durationInMinutes: number } {
   let appointmentStart;
@@ -207,9 +208,13 @@ export function determineStartAndDuration(
     appointmentStart = new Date(userDefinedAppointmentDate);
     durationInMinutes = appointmentTypeStandardDuration;
   } else {
-    const split = appointmentBlockDate.split(",");
-    appointmentStart = new Date(split.at(0)!);
-    durationInMinutes = Number.parseInt(split.at(1)!);
+    appointmentStart = appointmentBlockDate?.start ?? new Date();
+    durationInMinutes = appointmentBlockDate
+      ? durationBetweenDatesInMinutes(
+          appointmentBlockDate.start,
+          appointmentBlockDate.end,
+        )
+      : appointmentTypeStandardDuration;
   }
   return { appointmentStart, durationInMinutes };
 }

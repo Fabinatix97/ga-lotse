@@ -30,7 +30,7 @@ public class MedicalHistoryTemplateMapper {
       medicalHistoryTemplateContent =
           OBJECT_MAPPER.readValue(medicalHistoryTemplate.getContent(), TemplateContentDto.class);
     } catch (JsonProcessingException e) {
-      throw new BadRequestException("Content does not match required structure");
+      throw new IllegalArgumentException("Content does not match required structure");
     }
     return new MedicalHistoryTemplateDto(
         medicalHistoryTemplate.getId(),

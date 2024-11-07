@@ -5,7 +5,15 @@
 
 "use client";
 
-import { ReactNode, createContext, useContext, useMemo, useState } from "react";
+import {
+  Fragment,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { doNothing, isDefined } from "remeda";
 
 import { Alert, AlertProps } from "../components/Alert";
@@ -13,12 +21,12 @@ import { useUuid } from "../hooks/useUuid";
 import { RequiresChildren } from "../types/react";
 
 interface AlertContextValue {
-  state: AlertState | null;
+  alerts: AlertInstance[];
   open: (alertId: string, props: AlertProps, options?: AlertOptions) => void;
   close: (alertid?: string) => void;
 }
 
-interface AlertState {
+interface AlertInstance {
   alertId: string;
   props: AlertProps;
   options: AlertOptions;
@@ -31,7 +39,7 @@ interface AlertOptions {
 const AlertContext = createContext<AlertContextValue | null>(null);
 
 export function AlertContextProvider(props: RequiresChildren) {
-  const [state, setState] = useState<AlertState | null>(null);
+  const [alerts, setAlerts] = useState<AlertInstance[]>([]);
 
   const contextValue = useMemo(() => {
     function open(
@@ -39,31 +47,53 @@ export function AlertContextProvider(props: RequiresChildren) {
       props: AlertProps,
       options: AlertOptions = {},
     ): void {
-      setState({
-        alertId,
-        props,
-        options,
+      setAlerts((prevAlerts) => {
+        const alertIndex = prevAlerts.findIndex(
+          (alert) => alert.alertId === alertId,
+        );
+        const alertInstance: AlertInstance = {
+          alertId,
+          props,
+          options,
+        };
+
+        if (alertIndex >= 0) {
+          // replace previous alert
+          return prevAlerts.toSpliced(alertIndex, 1, alertInstance);
+        } else {
+          // insert alert at the start
+          return [alertInstance, ...prevAlerts];
+        }
       });
     }
 
     function close(alertId?: string): void {
-      if (state === null) {
+      if (
+        alerts.length === 0 ||
+        (isDefined(alertId) &&
+          alerts.every((alert) => alert.alertId !== alertId))
+      ) {
         return;
       }
 
-      if (isDefined(alertId) && alertId !== state.alertId) {
+      // close all alerts
+      if (alertId === undefined) {
+        setAlerts([]);
         return;
       }
 
-      setState(null);
+      // close specified alert
+      setAlerts((prevAlerts) =>
+        prevAlerts.filter((alert) => alert.alertId !== alertId),
+      );
     }
 
     return {
-      state,
+      alerts,
       open,
       close,
     };
-  }, [state, setState]);
+  }, [alerts, setAlerts]);
 
   return (
     <AlertContext.Provider value={contextValue}>
@@ -94,6 +124,9 @@ interface AlertOpenOptions
   extends Pick<AlertProps, "title" | "message" | "action">,
     AlertOptions {}
 
+/**
+ * Creates an alert instance to open alerts of different types
+ */
 export function useAlert(): UseAlertResult {
   const alertContext = useAlertContext();
   const alertId = useUuid();
@@ -118,12 +151,39 @@ export function useAlert(): UseAlertResult {
   }
 
   return {
-    isOpen: alertContext.state?.alertId === alertId,
+    isOpen: alertContext.alerts.some((alert) => alert.alertId === alertId),
     notification: (options) => openWithColor("primary", options),
     warning: (options) => openWithColor("warning", options),
     error: (options) => openWithColor("danger", options),
     close,
   };
+}
+
+interface UseControlledAlertOptions extends AlertOpenOptions {
+  type: AlertType;
+  open: boolean;
+}
+
+type AlertType = "notification" | "warning" | "error";
+
+/**
+ * Creates a controlled alert instance which automatically opens and closes itself
+ */
+export function useControlledAlert(options: UseControlledAlertOptions): void {
+  const { type, open, ...alertOptions } = options;
+  const alert = useAlert();
+
+  useEffect(() => {
+    if (open === alert.isOpen) {
+      return;
+    }
+
+    if (open) {
+      alert[type](alertOptions);
+    } else {
+      alert.close();
+    }
+  }, [open, type, alertOptions, alert]);
 }
 
 export function useResetAlertContext(): () => void {
@@ -142,30 +202,34 @@ interface AlertSlotProps extends Pick<AlertProps, "sx"> {
 }
 
 export function AlertSlot(props: AlertSlotProps) {
-  const { container: Container, ...alertProps } = props;
+  const { container, ...commonAlertProps } = props;
   const alertContext = useContext(AlertContext);
 
   if (alertContext === null) {
     return null;
   }
 
-  const alertState = alertContext.state ?? null;
+  const alerts = alertContext.alerts ?? [];
 
-  if (alertState === null) {
+  if (alerts.length === 0) {
     return null;
   }
 
-  const { closeable } = alertState.options;
-
-  const alert = (
-    <Alert
-      {...alertProps}
-      {...alertState.props}
-      onClose={
-        closeable ? () => alertContext.close(alertState.alertId) : undefined
-      }
-    />
+  const Container = container ?? Fragment;
+  return (
+    <Container>
+      {alerts.map((alert) => (
+        <Alert
+          {...commonAlertProps}
+          {...alert.props}
+          key={alert.alertId}
+          onClose={
+            alert.options.closeable
+              ? () => alertContext.close(alert.alertId)
+              : undefined
+          }
+        />
+      ))}
+    </Container>
   );
-
-  return isDefined(Container) ? <Container>{alert}</Container> : alert;
 }

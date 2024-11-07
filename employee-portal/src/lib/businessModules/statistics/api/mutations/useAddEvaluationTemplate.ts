@@ -1,0 +1,43 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+
+import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
+import { SaveAsEvaluationTemplateFormModel } from "@/lib/businessModules/statistics/components/statistics/SaveAsEvaluationTemplateSidebar/saveAsEvaluationTemplateFormModel";
+
+export function useAddEvaluationTemplate(onSuccess?: () => void) {
+  const snackbar = useSnackbar();
+  const statisticsApi = useEvaluationTemplateApi();
+
+  const mutation = useHandledMutation({
+    mutationFn: ({
+      evaluationId,
+      model,
+    }: {
+      evaluationId: string;
+      model: SaveAsEvaluationTemplateFormModel;
+    }) =>
+      statisticsApi.addEvaluationTemplate({
+        type: "AddEvaluationTemplateFromEvaluationRequest",
+        evaluationId: evaluationId,
+        name: model.name,
+        description:
+          model.description.length === 0 ? undefined : model.description,
+      }),
+    onSuccess: () => {
+      snackbar.confirmation("Vorlage erstellt");
+      onSuccess?.();
+    },
+  });
+
+  return async (
+    evaluationId: string,
+    model: SaveAsEvaluationTemplateFormModel,
+  ) => {
+    return mutation.mutateAsync({ evaluationId, model });
+  };
+}

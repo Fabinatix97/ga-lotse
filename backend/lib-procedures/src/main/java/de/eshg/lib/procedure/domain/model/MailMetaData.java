@@ -37,6 +37,14 @@ public class MailMetaData extends MetaData {
   @Column(nullable = false)
   private Instant sentDate;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Column(nullable = false)
+  private String subject;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Column(nullable = false)
+  private String messageText;
+
   public String getMailFrom() {
     return mailFrom;
   }
@@ -63,5 +71,21 @@ public class MailMetaData extends MetaData {
 
   public void setSentDate(Instant sentDate) {
     this.sentDate = sentDate;
+  }
+
+  public String getSubject() {
+    return subject;
+  }
+
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
+
+  public String getMessageText() {
+    return messageText;
+  }
+
+  public void setMessageText(String messageText) {
+    this.messageText = messageText;
   }
 }

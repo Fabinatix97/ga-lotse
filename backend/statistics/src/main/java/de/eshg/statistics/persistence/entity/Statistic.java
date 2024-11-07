@@ -49,6 +49,11 @@ public class Statistic extends AbstractAggregationResult {
     reportSeriesList.add(reportSeries);
   }
 
+  public void removeReportSeriesEntries(List<ReportSeries> reportSeriesList) {
+    reportSeriesList.forEach(reportSeries -> reportSeries.setStatistic(null));
+    this.reportSeriesList.removeAll(reportSeriesList);
+  }
+
   public List<ReportSeries> getReportSeriesList() {
     return reportSeriesList;
   }

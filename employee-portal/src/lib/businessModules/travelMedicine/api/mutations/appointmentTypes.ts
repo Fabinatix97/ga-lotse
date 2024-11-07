@@ -19,9 +19,7 @@ export function useUpdateAppointmentType() {
   const appointmentTypeApi = useAppointmentTypeApi();
   return useHandledMutation({
     mutationFn: (wrapper: ApiUpdateAppointmentTypeRequestWrapper) =>
-      appointmentTypeApi
-        .updateAppointmentType(wrapper.id, wrapper.request)
-        .then(),
+      appointmentTypeApi.updateAppointmentType(wrapper.id, wrapper.request),
     onSuccess: () => {
       snackbar.confirmation("Der Termintyp wurde aktualisiert.");
     },

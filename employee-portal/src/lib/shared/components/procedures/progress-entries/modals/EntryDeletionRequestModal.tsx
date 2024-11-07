@@ -35,15 +35,13 @@ export function EntryDeletionRequestModalContent() {
 
   async function handleSubmit(values: DeletionRequestValues) {
     if (entryIdForDeletion !== null)
-      await requestProgressEntryDeletion
-        .mutateAsync(
-          {
-            entryId: entryIdForDeletion,
-            createApprovalRequest: values,
-          },
-          { onSuccess: handleClose },
-        )
-        .catch();
+      await requestProgressEntryDeletion.mutateAsync(
+        {
+          entryId: entryIdForDeletion,
+          createApprovalRequest: values,
+        },
+        { onSuccess: handleClose },
+      );
   }
 
   function handleClose() {

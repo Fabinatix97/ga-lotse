@@ -71,7 +71,7 @@ export function UsersAutocomplete({
           },
           backgroundColor: "background.surface",
           borderColor: "primary.300",
-          height: "3.25rem",
+          minHeight: "3.25rem",
         }}
         renderOption={(props, option) => {
           const apiUser = usersList?.find((user) => user.user_id === option);
@@ -137,16 +137,18 @@ export function UsersAutocomplete({
           })
         }
       />
-      {meta.error && (
-        <FormHelperText
-          sx={{
-            color: (theme) => theme.palette.danger[500],
-            marginLeft: 0,
-          }}
-        >
-          {meta.error}
-        </FormHelperText>
-      )}
+      <Box sx={{ minHeight: "1.25rem" }}>
+        {meta.error && (
+          <FormHelperText
+            sx={{
+              color: (theme) => theme.palette.danger[500],
+              marginLeft: 0,
+            }}
+          >
+            {meta.error}
+          </FormHelperText>
+        )}
+      </Box>
     </Box>
   );
 }

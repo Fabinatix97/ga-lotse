@@ -4,8 +4,8 @@
  */
 
 import {
-  ApiMedicalHistorySectionElement,
-  ApiMedicalHistorySubElementMultiSelect,
+  ApiDocumentSectionElement,
+  ApiDocumentSubElementMultiSelect,
 } from "@eshg/employee-portal-api/travelMedicine";
 import {
   BaseFieldProps,
@@ -16,7 +16,7 @@ import { ChangeEvent } from "react";
 
 interface MedicalHistoryMultiSelectElementProps
   extends Omit<BaseFieldProps, "required" | "children"> {
-  element: ApiMedicalHistorySectionElement;
+  element: ApiDocumentSectionElement;
   sectionIndex: number;
   elementIndex: number;
   name: string;
@@ -30,9 +30,9 @@ export function MedicalHistoryMultiSelectElement({
   readOnly = false,
   ...restProps
 }: Readonly<MedicalHistoryMultiSelectElementProps>) {
-  const { input, helpers } = useBaseField<
-    ApiMedicalHistorySubElementMultiSelect[]
-  >({ ...restProps });
+  const { input, helpers } = useBaseField<ApiDocumentSubElementMultiSelect[]>({
+    ...restProps,
+  });
 
   async function handleCheckboxChange(
     event: ChangeEvent<HTMLInputElement>,
@@ -72,10 +72,10 @@ export function MedicalHistoryMultiSelectElement({
         sx={{ rowGap: 1, marginBlock: "0.5rem" }}
       >
         {(readOnly
-          ? element.elementData.subElementMultiSelect.filter(
+          ? element.anamnesisQuestion!.subElementMultiSelect.filter(
               (element) => element.answer,
             )
-          : element.elementData.subElementMultiSelect
+          : element.anamnesisQuestion!.subElementMultiSelect
         ).map(({ questionText }, index) => (
           <ListItem
             key={"multiselect" + elementIndex + "-" + index}
@@ -92,7 +92,7 @@ export function MedicalHistoryMultiSelectElement({
                 sectionIndex +
                 "].sectionElements[" +
                 elementIndex +
-                "].elementData.subElementMultiSelect[" +
+                "].anamnesisQuestion.subElementMultiSelect[" +
                 index +
                 "].answer"
               }

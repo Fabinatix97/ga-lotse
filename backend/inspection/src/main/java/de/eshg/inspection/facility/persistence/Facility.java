@@ -48,6 +48,9 @@ public class Facility extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private ObjectType objectType;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private boolean possibleDuplicates;
+
   public Facility() {}
 
   public Facility(ObjectType objectType, UUID centralFileStateId) {
@@ -101,5 +104,13 @@ public class Facility extends BaseEntityWithExternalId {
 
   public void setLastInspected(Instant lastInspected) {
     this.lastInspected = lastInspected;
+  }
+
+  public boolean hasPossibleDuplicates() {
+    return possibleDuplicates;
+  }
+
+  public void setPossibleDuplicates(boolean possibleDuplicates) {
+    this.possibleDuplicates = possibleDuplicates;
   }
 }

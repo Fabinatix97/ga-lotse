@@ -399,46 +399,6 @@ paths:
       tags:
       - GeoShape
   /statistic:
-    get:
-      operationId: getStatistics
-      parameters:
-      - in: query
-        name: sortKey
-        required: false
-        schema:
-          $ref: "#/components/schemas/StatisticSortKey"
-      - in: query
-        name: sortDirection
-        required: false
-        schema:
-          $ref: "#/components/schemas/SortDirection"
-      - in: query
-        name: page
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-      - in: query
-        name: pageSize
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 25
-          maximum: 200
-          minimum: 1
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetStatisticsResponse"
-          description: All statistics
-      summary: Get all statistics
-      tags:
-      - Statistic
     post:
       operationId: addStatistic
       requestBody:
@@ -646,6 +606,25 @@ paths:
       summary: Add a diagram to the evaluation
       tags:
       - Evaluation
+  /statistic/overview:
+    post:
+      operationId: getStatistics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetStatisticsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStatisticsResponse"
+          description: All statistics
+      summary: Get all statistics
+      tags:
+      - Statistic
   /statistic/report-series:
     post:
       operationId: addReportSeries
@@ -665,6 +644,22 @@ paths:
                 $ref: "#/components/schemas/ReportSeries"
           description: The added report series
       summary: Add a report series
+      tags:
+      - ReportSeries
+  /statistic/report-series/deactivate/{reportSeriesId}:
+    patch:
+      operationId: deactivateReportSeries
+      parameters:
+      - in: path
+        name: reportSeriesId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the report series is deactivated
+      summary: Deactivate a report series
       tags:
       - ReportSeries
   /statistic/report-series/overview:
@@ -715,10 +710,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-              - $ref: "#/components/schemas/ActivateAutoReportSeriesRequest"
-              - $ref: "#/components/schemas/DeactivateAutoReportSeriesRequest"
-              - $ref: "#/components/schemas/UpdateNameAndDescriptionReportSeriesRequest"
+              $ref: "#/components/schemas/UpdateReportSeriesRequest"
         required: true
       responses:
         "200":
@@ -727,7 +719,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReportSeries"
           description: The patched report series
-      summary: Change title and description of a report series or change activation
+      summary: Change title and description of a report series
       tags:
       - ReportSeries
   /statistic/report/{reportId}:
@@ -1094,15 +1086,6 @@ components:
           type: string
       required:
       - '@type'
-    AbstractUpdateReportSeriesRequest:
-      type: object
-      discriminator:
-        propertyName: '@type'
-      properties:
-        '@type':
-          type: string
-      required:
-      - '@type'
     AbstractUpdateStatisticRequest:
       type: object
       discriminator:
@@ -1112,25 +1095,6 @@ components:
           type: string
       required:
       - '@type'
-    ActivateAutoReportSeriesRequest:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractUpdateReportSeriesRequest"
-      - type: object
-        properties:
-          frequency:
-            $ref: "#/components/schemas/Frequency"
-          reportingPeriod:
-            $ref: "#/components/schemas/ReportingPeriod"
-          startMonth:
-            type: integer
-            format: int32
-            maximum: 12
-            minimum: 1
-      required:
-      - frequency
-      - reportingPeriod
-      - startMonth
     AddAutoReportSeriesRequest:
       type: object
       allOf:
@@ -1802,10 +1766,6 @@ components:
       required:
       - code
       - name
-    DeactivateAutoReportSeriesRequest:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractUpdateReportSeriesRequest"
     DecimalAttribute:
       type: object
       allOf:
@@ -2010,6 +1970,8 @@ components:
         userId:
           type: string
           format: uuid
+        withoutAnonymizationAllowed:
+          type: boolean
       required:
       - analysisInfos
       - createdAt
@@ -2017,6 +1979,7 @@ components:
       - id
       - name
       - userId
+      - withoutAnonymizationAllowed
     EvaluationTemplateInfo:
       type: object
       properties:
@@ -2519,6 +2482,26 @@ components:
       required:
       - disabledOldFeatures
       - enabledNewFeatures
+    GetStatisticsRequest:
+      type: object
+      properties:
+        anonymizationValue:
+          type: boolean
+        page:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+        sortDirection:
+          $ref: "#/components/schemas/SortDirection"
+        sortKey:
+          $ref: "#/components/schemas/StatisticSortKey"
     GetStatisticsResponse:
       type: object
       properties:
@@ -3021,6 +3004,12 @@ components:
         createdAt:
           type: string
           format: date-time
+        dataSourceNames:
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
+          minItems: 1
         id:
           type: string
           format: uuid
@@ -3040,6 +3029,7 @@ components:
       required:
       - anonymized
       - createdAt
+      - dataSourceNames
       - id
       - name
       - state
@@ -3048,6 +3038,7 @@ components:
       - userId
     StatisticSortKey:
       type: string
+      default: CREATED_AT
       enum:
       - NAME
       - CREATED_AT
@@ -3061,6 +3052,7 @@ components:
       - CREATING
       - UPDATING
       - COPY_ONGOING
+      - DELETING
     StatisticsFeature:
       type: string
       enum:
@@ -3237,16 +3229,13 @@ components:
           type: string
       required:
       - name
-    UpdateNameAndDescriptionReportSeriesRequest:
+    UpdateReportSeriesRequest:
       type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractUpdateReportSeriesRequest"
-      - type: object
-        properties:
-          description:
-            type: string
-          name:
-            type: string
+      properties:
+        description:
+          type: string
+        name:
+          type: string
       required:
       - name
     UpdateStatisticNameRequest:

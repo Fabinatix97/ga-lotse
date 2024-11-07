@@ -8,7 +8,6 @@ package de.eshg.lib.procedure.file;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
 import de.eshg.lib.procedure.domain.model.File;
-import de.eshg.lib.procedure.domain.model.FileAware;
 import de.eshg.lib.procedure.domain.model.FileContent;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequestNotification;
@@ -39,7 +38,6 @@ import org.springframework.stereotype.Service;
 public class FileStorageService {
 
   private final FileRepository fileRepository;
-  private final FileAwareResolver fileAwareResolver;
   private final ProcedureRepository<?> procedureRepository;
   private final GenericApprovalRequestRepository approvalRequestRepository;
   private final UserHelper userHelper;
@@ -47,30 +45,15 @@ public class FileStorageService {
 
   public FileStorageService(
       FileRepository fileRepository,
-      FileAwareResolver fileAwareResolver,
       ProcedureRepository<?> procedureRepository,
       GenericApprovalRequestRepository approvalRequestRepository,
       UserHelper userHelper,
       AuditLogger auditLogger) {
     this.fileRepository = fileRepository;
-    this.fileAwareResolver = fileAwareResolver;
     this.procedureRepository = procedureRepository;
     this.approvalRequestRepository = approvalRequestRepository;
     this.userHelper = userHelper;
     this.auditLogger = auditLogger;
-  }
-
-  public void persistFile(File file, FileAware fileAware) {
-    FileAware resolvedFileAware = fileAwareResolver.resolve(fileAware);
-    resolvedFileAware.setFile(file);
-  }
-
-  public void persistFileAndUpdateProgressEntry(
-      Mail mail, String subject, String messageText, FileAware fileAware) {
-    FileAware resolvedFileAware = fileAwareResolver.resolve(fileAware);
-    resolvedFileAware.setFile(mail);
-    resolvedFileAware.setSubject(subject);
-    resolvedFileAware.setMessageText(messageText);
   }
 
   File updateFileMetaData(UUID fileId, MetaData metaData) {

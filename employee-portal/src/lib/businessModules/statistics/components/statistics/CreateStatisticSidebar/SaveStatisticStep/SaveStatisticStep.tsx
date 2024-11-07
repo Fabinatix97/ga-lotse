@@ -11,6 +11,7 @@ import { useState } from "react";
 import { isDefined } from "remeda";
 
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
+import { CollapsableList } from "@/lib/businessModules/statistics/components/shared/CollapsableList";
 import { SaveStatisticStepFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/SaveStatisticStep/saveStatisticStepFormModel";
 import { CreateStatisticFromScratchFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/createStatisticFromScratchFormModel";
 import { CreateStatisticFromTemplateFormModel } from "@/lib/businessModules/statistics/components/statistics/CreateStatisticSidebar/createStatisticFromTemplateFormModel";
@@ -89,16 +90,8 @@ export function SaveStatisticStep() {
       <Stack gap={2}>
         <Typography level="title-md">Fachmodule</Typography>
         <Typography level="body-md">{getBusinessModuleName(values)}</Typography>
-      </Stack>
-      <Stack gap={2}>
         <Typography level="title-md">Attribute</Typography>
-        <Stack gap={1}>
-          {getSelectedAttributeNames(values).map((attributeName, index) => (
-            <Typography key={index} level="body-md">
-              {attributeName}
-            </Typography>
-          ))}
-        </Stack>
+        <CollapsableList items={getSelectedAttributeNames(values)} />
       </Stack>
     </Stack>
   );

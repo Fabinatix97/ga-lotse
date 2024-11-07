@@ -54,22 +54,18 @@ public class InboxProgressEntry extends BaseEntityWithExternalId implements File
     this.inboxProgressEntryType = inboxProgressEntryType;
   }
 
-  @Override
   public String getSubject() {
     return subject;
   }
 
-  @Override
   public void setSubject(String subject) {
     this.subject = subject;
   }
 
-  @Override
   public String getMessageText() {
     return messageText;
   }
 
-  @Override
   public void setMessageText(String messageText) {
     this.messageText = messageText;
   }
@@ -84,7 +80,6 @@ public class InboxProgressEntry extends BaseEntityWithExternalId implements File
     this.file = file;
   }
 
-  @Override
   public UUID getCreatedBy() {
     return getInboxProcedure().getCreatedBy();
   }

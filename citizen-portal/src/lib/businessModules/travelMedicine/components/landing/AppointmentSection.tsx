@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Typography } from "@mui/joy";
+import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -34,23 +34,25 @@ export function AppointmentSection() {
         {t("appointment.bookAppointmentTitle")}
       </ContentSheetTitle>
       <Typography>{t("appointment.bookAppointmentText")}</Typography>
-      <Button
-        type="submit"
-        onClick={() => {
-          handleBookAppointment();
-        }}
-      >
-        {t("appointment.bookAppointment")}
-      </Button>
-      <Button
-        type="submit"
-        variant="outlined"
-        onClick={() => {
-          handleAppointmentLogin();
-        }}
-      >
-        {t("appointment.myAppointment")}
-      </Button>
+      <Stack direction="column" gap={2}>
+        <Button
+          type="submit"
+          onClick={() => {
+            handleBookAppointment();
+          }}
+        >
+          {t("appointment.bookAppointment")}
+        </Button>
+        <Button
+          type="submit"
+          variant="outlined"
+          onClick={() => {
+            handleAppointmentLogin();
+          }}
+        >
+          {t("appointment.myAppointment")}
+        </Button>
+      </Stack>
     </ContentSheet>
   );
 }

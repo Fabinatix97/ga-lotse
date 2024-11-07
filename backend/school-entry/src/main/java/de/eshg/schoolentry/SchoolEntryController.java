@@ -48,6 +48,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -91,6 +92,7 @@ public class SchoolEntryController {
   private final SchoolEntryFeatureToggle featureToggle;
   private final AppointmentBlockProperties appointmentBlockProperties;
   private final SchoolEntryProperties schoolEntryProperties;
+  private final ProgressEntryUtil progressEntryUtil;
 
   public SchoolEntryController(
       SchoolEntryService schoolEntryService,
@@ -103,7 +105,8 @@ public class SchoolEntryController {
       @Value("classpath:templates/import/SchoolListTemplate.xlsx") Resource schoolListTemplate,
       SchoolEntryFeatureToggle featureToggle,
       AppointmentBlockProperties appointmentBlockProperties,
-      SchoolEntryProperties schoolEntryProperties) {
+      SchoolEntryProperties schoolEntryProperties,
+      ProgressEntryUtil progressEntryUtil) {
     this.schoolEntryService = schoolEntryService;
     this.importService = importService;
     this.medicalReportGenerator = medicalReportGenerator;
@@ -115,6 +118,7 @@ public class SchoolEntryController {
     this.featureToggle = featureToggle;
     this.appointmentBlockProperties = appointmentBlockProperties;
     this.schoolEntryProperties = schoolEntryProperties;
+    this.progressEntryUtil = progressEntryUtil;
   }
 
   @PostMapping
@@ -182,8 +186,6 @@ public class SchoolEntryController {
   public ProcedureDetailsDto closeProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody CloseProcedureRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.CLOSE_PROCEDURE);
-
     SchoolEntryProcedure procedure =
         schoolEntryService.findProcedureByExternalIdForUpdate(procedureId, request.version());
     Validator.validateSchoolInfoLetterCreated(procedure);
@@ -197,7 +199,6 @@ public class SchoolEntryController {
   public ProcedureDetailsDto reopenProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody ReopenProcedureRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.REOPEN_PROCEDURE);
     SchoolEntryProcedure procedure =
         schoolEntryService.reopenProcedure(procedureId, request.version());
     return augmentAndMap(procedure);
@@ -584,12 +585,15 @@ public class SchoolEntryController {
     ProcedureDetailsData procedureDetailsData = schoolEntryService.augmentWithDetails(procedure);
 
     Pdf pdf = medicalReportGenerator.generateMedicalReport(procedureDetailsData.child(), request);
-    ProgressEntryUtil.addProgressEntry(procedure, MEDICAL_REPORT_GENERATED, pdf);
+    progressEntryUtil.addProgressEntry(procedure, MEDICAL_REPORT_GENERATED, pdf);
 
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment().filename(pdf.getFileName()).build().toString())
+            ContentDisposition.attachment()
+                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
+                .build()
+                .toString())
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
         .body(new ByteArrayResource(pdf.getFileContent().getContent()));
   }
@@ -607,14 +611,17 @@ public class SchoolEntryController {
     Pdf pdf =
         schoolInfoLetterGenerator.generateSchoolInfoLetter(
             procedure, procedureDetailsData, request);
-    ProgressEntryUtil.addProgressEntry(procedure, SCHOOL_INFO_LETTER_GENERATED, pdf);
+    progressEntryUtil.addProgressEntry(procedure, SCHOOL_INFO_LETTER_GENERATED, pdf);
     procedure.setschoolInfoLetterCreatedAt(Instant.now(clock));
     TaskUtil.closeOptionalTaskOfType(procedure, TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION);
 
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment().filename(pdf.getFileName()).build().toString())
+            ContentDisposition.attachment()
+                .filename(pdf.getFileName(), StandardCharsets.UTF_8)
+                .build()
+                .toString())
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
         .body(new ByteArrayResource(pdf.getFileContent().getContent()));
   }
@@ -667,6 +674,24 @@ public class SchoolEntryController {
     return new GetWaitingRoomProceduresResponse(
         pagedProcedures.stream().map(WaitingRoomMapper::mapWaitingRoomProcedureToDto).toList(),
         pagedProcedures.totalNumberOfProcedures());
+  }
+
+  @PostMapping("/download/invitations")
+  @Transactional(readOnly = true)
+  public ResponseEntity<Resource> downloadInvitations(
+      @Valid @RequestBody DownloadInvitationsBulkRequest request) throws IOException {
+    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.BULK_DOWNLOAD_INVITATIONS);
+    return ResponseEntity.ok()
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            ContentDisposition.attachment()
+                .filename("Einladungen.zip", StandardCharsets.UTF_8)
+                .build()
+                .toString())
+        .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.ZIP_VALUE)
+        .body(
+            new ByteArrayResource(
+                schoolEntryService.zipInvitationsForProcedures(request.procedureIds())));
   }
 
   private void assertLocationModeNotSet() {

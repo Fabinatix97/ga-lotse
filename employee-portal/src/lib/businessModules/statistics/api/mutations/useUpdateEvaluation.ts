@@ -32,6 +32,6 @@ export function useUpdateEvaluation(
   });
 
   return async (model: UpdateEvaluationFormModel) => {
-    await mutation.mutateAsync(model).catch();
+    await mutation.mutateAsync(model);
   };
 }

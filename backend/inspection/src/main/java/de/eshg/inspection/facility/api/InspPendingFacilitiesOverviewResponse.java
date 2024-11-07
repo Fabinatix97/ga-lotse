@@ -15,5 +15,6 @@ import java.util.List;
 public record InspPendingFacilitiesOverviewResponse(
     @NotNull int totalPages,
     @NotNull long totalNumberOfElements,
-    @NotNull @Valid List<InspPendingFacilityDto> elements)
+    @NotNull @Valid List<InspPendingFacilityDto> elements,
+    @NotNull long numberOfPossibleDuplicates)
     implements PagedResponse<InspPendingFacilityDto> {}

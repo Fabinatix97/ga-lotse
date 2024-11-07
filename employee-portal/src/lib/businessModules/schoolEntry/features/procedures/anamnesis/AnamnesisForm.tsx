@@ -10,6 +10,7 @@ import {
   ApiSchoolEntryCountryCode,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
+import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import {
@@ -81,6 +82,7 @@ export interface AdditionalChildInfoValues {
 }
 
 export interface DaycareAndSchoolInfoValues {
+  wasInDaycare: OptionalFieldValue<boolean>;
   inDaycareSince: MonthAndYear;
   daycareName: OptionalFieldValue<string>;
   schoolName: OptionalFieldValue<string>;
@@ -168,21 +170,30 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
             <ConfirmLeaveDirtyFormEffect />
             <Divider />
             <Stack direction="row" gap={4} flexWrap="wrap">
-              <FormLabel sx={{ fontWeight: "bold" }}>
-                in Kindertagesstätte seit
-              </FormLabel>
-              <MonthAndYearFields
-                testId="inDaycareSince"
-                fieldName={daycareAndSchoolInfo("inDaycareSince")}
-                date={values.daycareAndSchoolInfo.inDaycareSince}
-              />
-              <InputField
-                name={daycareAndSchoolInfo("daycareName")}
-                label={<FlexLabel>Name Kindertagesstätte</FlexLabel>}
-                type="text"
+              <BooleanSelectField
                 component={HorizontalField}
-                sx={TEXT_INPUT_STYLE}
+                name={daycareAndSchoolInfo("wasInDaycare")}
+                label={<FormLabel>war im Kindergarten</FormLabel>}
+                allowDeselection
+                sx={{ ...BOOLEAN_SELECT_STYLE }}
               />
+              {values.daycareAndSchoolInfo.wasInDaycare.valueOf() === true && (
+                <>
+                  <FormLabel>seit</FormLabel>
+                  <MonthAndYearFields
+                    testId="inDaycareSince"
+                    fieldName={daycareAndSchoolInfo("inDaycareSince")}
+                    date={values.daycareAndSchoolInfo.inDaycareSince}
+                  />
+                  <InputField
+                    name={daycareAndSchoolInfo("daycareName")}
+                    label={<FlexLabel>Name Kindertagesstätte</FlexLabel>}
+                    type="text"
+                    component={HorizontalField}
+                    sx={TEXT_INPUT_STYLE}
+                  />
+                </>
+              )}
               <SoftRequiredBooleanSelectField
                 name="childLanguageScreening"
                 label={"Kiss"}

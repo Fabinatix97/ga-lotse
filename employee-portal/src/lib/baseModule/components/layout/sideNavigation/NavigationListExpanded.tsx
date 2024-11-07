@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 import { ExpandNavigation } from "@eshg/lib-portal/components/icons/ExpandNavigation";
 import { Button, Stack, Typography } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
@@ -18,10 +19,12 @@ export function NavigationListExpanded({
   setCollapsed,
   showCollapseButton,
   items,
+  isLoading,
 }: {
   setCollapsed?: Dispatch<SetStateAction<boolean>>;
   showCollapseButton: boolean;
   items: SideNavigationItem[];
+  isLoading: boolean;
 }) {
   return (
     <Stack
@@ -64,6 +67,7 @@ export function NavigationListExpanded({
             <NavigationItem key={item.name} item={item} />
           ))}
         </StyledList>
+        {isLoading && <LoadingOverlay />}
       </Stack>
     </Stack>
   );

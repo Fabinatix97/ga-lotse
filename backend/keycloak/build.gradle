@@ -50,7 +50,7 @@ tasks.register('buildDockerImage', DockerBuildImage) {
     dependsOn 'copyFilesToBuildContext'
     inputDir.set(dockerBuildContext)
     dockerFile.set(inputDir.file("Dockerfile"))
-    buildArgs["keycloakVersion"] = libs.versions.keycloak.get()
+    buildArgs["keycloakVersion"] = libs.versions.keycloak.server.get()
 
     if (project.hasProperty("tagName")) {
         images.add(getImageNameWithTag())

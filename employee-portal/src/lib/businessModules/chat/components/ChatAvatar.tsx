@@ -54,7 +54,7 @@ export function ChatAvatar({
   ) : (
     <BadgeAvatar
       size={size}
-      presence={sharePresence ? usersPresence[userId ?? ""] : undefined}
+      presence={sharePresence && userId ? usersPresence[userId] : undefined}
       {...props}
     />
   );

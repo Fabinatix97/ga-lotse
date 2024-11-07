@@ -75,9 +75,6 @@ function UserOption({ user }: { user: ApiUser }) {
       </ListItemDecorator>
       <ListItemContent>
         <Typography level="title-md">{fullName(user)}</Typography>
-        <Typography level={"body-sm"} textColor="text.secondary">
-          Gesundheitsamt Frankfurt
-        </Typography>
       </ListItemContent>
     </>
   );

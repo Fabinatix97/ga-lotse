@@ -19,7 +19,7 @@ export function useAddStatistic({ onSuccess }: { onSuccess: () => void }) {
     onSuccess: () => snackbar.confirmation("Auswertung wird erstellt"),
   });
   return (apiAddStatisticRequest: ApiAddStatisticRequest) =>
-    mutation.mutateAsync(apiAddStatisticRequest, { onSuccess }).catch();
+    mutation.mutateAsync(apiAddStatisticRequest, { onSuccess });
 }
 
 function mapAddStatistic(apiAddStatisticRequest: ApiAddStatisticRequest) {

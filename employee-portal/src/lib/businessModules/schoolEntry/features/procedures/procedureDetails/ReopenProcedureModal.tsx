@@ -19,14 +19,13 @@ interface ReopenProcedureModalProps extends Omit<BaseModalProps, "children"> {
 export function ReopenProcedureModal(props: ReopenProcedureModalProps) {
   const reopenProcedure = useReopenProcedure();
   async function handleSubmit() {
-    await reopenProcedure
-      .mutateAsync({
-        procedureId: props.procedure.id,
-        apiReopenProcedureRequest: {
-          version: props.procedure.version,
-        },
-      })
-      .catch();
+    await reopenProcedure.mutateAsync({
+      procedureId: props.procedure.id,
+      apiReopenProcedureRequest: {
+        version: props.procedure.version,
+      },
+    });
+    // TODO: ISSUE-6052: move onClose into onSuccess(?)
     props.onClose();
   }
 

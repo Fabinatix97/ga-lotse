@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiInspectionFeature } from "@eshg/employee-portal-api/inspection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
 import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
@@ -14,6 +15,7 @@ import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { isEmpty } from "remeda";
 import { Workbox, WorkboxLifecycleEvent } from "workbox-window";
 
+import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/inspection/api/queries/feature";
 import { usePrecacheInspections } from "@/lib/businessModules/inspection/shared/offline/usePrecacheInspections";
 import { useServiceWorkerMessageListeners } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerMessageListeners";
 import { LoadingOverlay } from "@/lib/shared/components/LoadingOverlay";
@@ -38,7 +40,9 @@ export function RegisterServiceWorker({
 }>) {
   const [controlling, setControlling] = useState(false);
   const queryClient = useQueryClient();
-
+  const { data: isOfflineEnabled } = useIsNewFeatureEnabledUnsuspended(
+    ApiInspectionFeature.Offline,
+  );
   useEffect(() => {
     window.workbox?.getSW().then(
       (sw) => {
@@ -50,9 +54,7 @@ export function RegisterServiceWorker({
             setControlling(false);
             break;
           case "activated":
-            window.workbox?.update().catch((reason) => {
-              throw reason;
-            });
+            void window.workbox?.update();
             handleControlling();
             break;
           case "redundant":
@@ -63,7 +65,7 @@ export function RegisterServiceWorker({
       (reason) => {
         setControlling(false);
         // eslint-disable-next-line no-console
-        console.warn("could get workbox service-worker", reason);
+        console.warn("could not get workbox service-worker", reason);
       },
     );
 
@@ -90,13 +92,13 @@ export function RegisterServiceWorker({
   // register service worker
   const hasInspections = !isEmpty(inspectionIds);
   useEffect(() => {
-    if (!workboxRegistered && hasInspections) {
+    if (isOfflineEnabled && !workboxRegistered && hasInspections) {
       window.workbox?.register().catch((reason) => {
         throw reason;
       });
       workboxRegistered = true;
     }
-  }, [hasInspections]);
+  }, [isOfflineEnabled, hasInspections]);
 
   return (
     <>

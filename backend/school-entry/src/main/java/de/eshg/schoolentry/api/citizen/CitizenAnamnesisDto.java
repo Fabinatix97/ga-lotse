@@ -50,4 +50,20 @@ public record CitizenAnamnesisDto(
         new InterestsAndSportsInfoDto(),
         null);
   }
+
+  public CitizenAnamnesisDto(DaycareAndSchoolInfoDto daycareAndSchoolInfo) {
+    this(
+        new CitizenMigrationBackgroundDto(),
+        null,
+        null,
+        new PromotionBeforeSchoolEntryDto(),
+        new CitizenAdditionalChildInfoDto(),
+        daycareAndSchoolInfo,
+        new FamilyHistoryInfoDto(),
+        new DevelopmentInfoDto(),
+        new IllnessAndAccidentInfoDto(),
+        new PromotionTherapyAndAidInfoDto(),
+        new InterestsAndSportsInfoDto(),
+        null);
+  }
 }

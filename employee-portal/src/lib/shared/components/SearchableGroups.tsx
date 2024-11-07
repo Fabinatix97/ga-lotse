@@ -42,7 +42,7 @@ export interface SearchableGroupsProps<
 > {
   groups: SearchableGroup<TItem>[];
   label?: string;
-  placeholder: string;
+  placeholder?: string;
   hideSearch?: boolean;
   renderItem: (item: TItem) => ReactNode;
 }

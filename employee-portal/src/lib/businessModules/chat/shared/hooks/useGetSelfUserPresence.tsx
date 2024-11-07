@@ -14,14 +14,12 @@ export function useGetSelfUserPresence() {
   const chatContext = useContext(ChatClientContext);
 
   const isChatEnabled =
-    canAccessChat &&
-    userSettings.chatUsageEnabled &&
-    chatContext?.matrixClient &&
-    chatContext.usersPresence;
+    canAccessChat && userSettings.chatUsageEnabled && chatContext?.matrixClient;
 
   return useMemo(() => {
     let userId: string | null = null;
     let userPresence: Presence | undefined = undefined;
+    const sharePresence = userSettings.sharePresence;
 
     if (isChatEnabled) {
       userId = chatContext.matrixClient.getUserId();
@@ -33,6 +31,7 @@ export function useGetSelfUserPresence() {
     return {
       userId,
       userPresence,
+      sharePresence: sharePresence && isChatEnabled,
     };
   }, [
     chatContext?.matrixClient,

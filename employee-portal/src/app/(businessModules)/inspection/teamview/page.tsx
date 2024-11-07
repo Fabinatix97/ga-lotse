@@ -8,7 +8,6 @@
 import { ApiBusinessModule, ApiUserRole } from "@eshg/employee-portal-api/base";
 
 import { Teamview } from "@/lib/baseModule/components/task/Teamview";
-import { useFetchTasksForTeamViewOptions } from "@/lib/businessModules/inspection/api/queries/useFetchTasksForTeamViewOptions";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { RestrictedPage } from "@/lib/shared/components/RestrictedPage";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
@@ -23,7 +22,6 @@ export default function InspectionTeamviewPage() {
           <Teamview
             groupName={moduleUserGroup.group}
             businessModule={ApiBusinessModule.Inspection}
-            useFetchTasksForTeamViewOptions={useFetchTasksForTeamViewOptions}
           />
         </RestrictedPage>
       </MainContentLayout>

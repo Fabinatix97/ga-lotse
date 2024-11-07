@@ -36,6 +36,7 @@ export function InspectionTabReportResult({
         m={2}
         spacing={3}
         sx={{
+          flexGrow: "1",
           overflow: { xxs: "auto", lg: "hidden" },
           flexDirection: { xxs: undefined, lg: "row" },
         }}

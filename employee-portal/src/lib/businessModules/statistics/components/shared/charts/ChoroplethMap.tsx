@@ -8,8 +8,8 @@ import { useState } from "react";
 import { isNonNullish, randomString } from "remeda";
 
 import {
+  DiagramCharacteristicParameter,
   DiagramColorScheme,
-  EvaluationChoroplethDiagramConfiguration,
   EvaluationDiagramChoroplethMap,
 } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
 import {
@@ -20,7 +20,8 @@ import { getChoroplethAggregationMethod } from "@/lib/businessModules/statistics
 
 export interface ChoroplethMapProps {
   diagramData: EvaluationDiagramChoroplethMap["data"];
-  configuration: EvaluationChoroplethDiagramConfiguration;
+  colorScheme: DiagramColorScheme;
+  characteristicParameter?: DiagramCharacteristicParameter;
   geoJson: string;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
@@ -71,10 +72,10 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
       min: min * 0.9999999,
       max: max * 1.0000001, //Otherwise the map breaks if min=max
       inRange: {
-        color: getColor(props.configuration.colorScheme),
+        color: getColor(props.colorScheme),
       },
       text: [
-        `${getChoroplethAggregationMethod(props.configuration.characteristicParameter)}\n\n${max}`,
+        `${getChoroplethAggregationMethod(props.characteristicParameter)}\n\n${max}`,
         min.toString(),
       ],
       textGap: 5,
@@ -83,9 +84,7 @@ export function ChoroplethMap(props: ChoroplethMapProps) {
 
     series: [
       {
-        name: getChoroplethAggregationMethod(
-          props.configuration.characteristicParameter,
-        ),
+        name: getChoroplethAggregationMethod(props.characteristicParameter),
         type: "map",
         map: mapId,
         data: props.diagramData,

@@ -130,7 +130,6 @@ export function openDataColumns(options: {
 
         return (
           <ActionsMenu
-            disablePortal
             actionItems={[
               {
                 label: "Neue Version anlegen",

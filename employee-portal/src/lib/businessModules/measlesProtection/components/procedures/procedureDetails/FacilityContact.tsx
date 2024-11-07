@@ -5,13 +5,14 @@
 
 import { ApiFacilityContactPerson } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
-import { Grid } from "@mui/joy";
+import { Grid, Sheet, Stack } from "@mui/joy";
 
-import { DetailsCard } from "@/lib/shared/components/detailsCard/DetailsCard";
+import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import {
-  LabeledValue,
-  ValueList,
-} from "@/lib/shared/components/detailsCard/LabeledValue";
+  ExternalLinkDetailsCell,
+  emailHref,
+} from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
 import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 export function FacilityContact({
@@ -20,29 +21,31 @@ export function FacilityContact({
   person: ApiFacilityContactPerson;
 }) {
   return (
-    <DetailsCard title="Kontaktperson der Einrichtung">
-      <ValueList>
-        <Row>
-          <LabeledValue
-            label="Anrede"
-            value={person.salutation && SALUTATION_VALUES[person.salutation]}
+    <Sheet>
+      <DetailsSection title="Kontaktperson der Einrichtung">
+        <Stack gap={1}>
+          <Row>
+            <DetailsCell
+              label="Anrede"
+              value={person.salutation && SALUTATION_VALUES[person.salutation]}
+            />
+            <DetailsCell label="Titel" value={person.title} />
+          </Row>
+          <Row>
+            <DetailsCell label="Vorname" value={person.firstName} />
+            <DetailsCell label="Name" value={person.lastName} />
+          </Row>
+        </Stack>
+        <Stack gap={1}>
+          <ExternalLinkDetailsCell
+            label="E-Mail-Adresse"
+            value={person.emailAddress}
+            href={emailHref}
           />
-          <LabeledValue label="Titel" value={person.title} />
-        </Row>
-        <Row>
-          <LabeledValue label="Vorname" value={person.firstName} />
-          <LabeledValue label="Name" value={person.lastName} />
-        </Row>
-      </ValueList>
-      <ValueList>
-        <LabeledValue
-          label="E-Mail-Adresse"
-          value={person.emailAddress}
-          href={`mailto:${person.emailAddress}`}
-        />
-        <LabeledValue label="Telefonnummer" value={person.phoneNumber} />
-      </ValueList>
-    </DetailsCard>
+          <DetailsCell label="Telefonnummer" value={person.phoneNumber} />
+        </Stack>
+      </DetailsSection>
+    </Sheet>
   );
 }
 

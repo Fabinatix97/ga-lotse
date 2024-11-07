@@ -226,10 +226,11 @@ export function ProceduresTable() {
               onReopenProcedure: (procedureId) =>
                 openProcedureReopenModal(procedureId),
             })}
-            rowNavRoute={({ original: { id: procedureId } }) =>
-              routes.procedures.details(procedureId).index
-            }
-            focusColumnHeader="affectedPerson.lastName"
+            rowNavigation={{
+              route: ({ original: { id: procedureId } }) =>
+                routes.procedures.details(procedureId).index,
+              focusColumnAccessorKey: "affectedPerson.lastName",
+            }}
           />
         </TableSheet>
       </TablePage>

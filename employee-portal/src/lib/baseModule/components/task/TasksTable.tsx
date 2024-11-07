@@ -108,12 +108,14 @@ export function TasksTable(
         <DataTable
           data={tasksResponse.tasks}
           columns={tasksColumns}
-          rowNavRoute={(row) =>
-            resolveProcedureDetailsRoute({
-              businessModule: row.original.businessModule,
-              procedureId: row.original.procedureId,
-            })
-          }
+          rowNavigation={{
+            route: (row) =>
+              resolveProcedureDetailsRoute({
+                businessModule: row.original.businessModule,
+                procedureId: row.original.procedureId,
+              }),
+            focusColumnAccessorKey: "taskType",
+          }}
           sorting={tableControl.tableSorting}
         />
       </TableSheet>

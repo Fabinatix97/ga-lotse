@@ -39,9 +39,9 @@ function CreateLabelSidebar(props: DrawerProps) {
   const createLabel = useCreateLabel();
 
   async function handleSubmit(data: LabelValues) {
-    await createLabel
-      .mutateAsync(mapToRequest(data), { onSuccess: () => props.onClose() })
-      .catch();
+    await createLabel.mutateAsync(mapToRequest(data), {
+      onSuccess: () => props.onClose(),
+    });
   }
 
   return (

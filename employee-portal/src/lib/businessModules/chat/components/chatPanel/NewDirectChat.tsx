@@ -5,6 +5,7 @@
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Button, Stack, Typography, useTheme } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { isObjectType } from "remeda";
@@ -97,6 +98,7 @@ export function NewDirectChat({
               <Box
                 sx={{
                   padding: 2,
+                  paddingBottom: 0,
                   borderBottom: "1px solid",
                   borderColor: theme.palette.neutral.outlinedBorder,
                 }}
@@ -125,11 +127,32 @@ export function NewDirectChat({
                   multiple={false}
                 />
               </Box>
-
               {isObjectType(existingChat) && existingChat?.room.roomId ? (
                 <ChatMessages room={existingChat} />
               ) : (
-                <ChatIllustrationBackground />
+                <>
+                  <ChatIllustrationBackground />
+                  <Box sx={{ minHeight: "2rem" }}>
+                    {values.invite && !isObjectType(existingChat) && (
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ width: "100%" }}
+                      >
+                        <ChatOutlinedIcon sx={{ color: "neutral.500" }} />
+                        <Typography
+                          level="title-sm"
+                          textColor="neutral.500"
+                          fontWeight="500"
+                        >
+                          Senden Sie eine Nachricht, um einen Chat zu starten!
+                        </Typography>
+                      </Stack>
+                    )}
+                  </Box>
+                </>
               )}
               <InputComponent
                 name="message"

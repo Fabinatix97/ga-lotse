@@ -13,6 +13,7 @@ export interface BusinessModuleInformationCardProps {
   dataSource: string;
   datasetAmount: number;
   attributeLabels: string[];
+  anonymized: boolean;
 }
 
 export function BusinessModuleInformationCard(
@@ -22,6 +23,10 @@ export function BusinessModuleInformationCard(
     {
       label: "Datenquelle",
       value: props.dataSource,
+    },
+    {
+      label: "Anonymisierung der Daten",
+      value: props.anonymized === true ? "Ja" : "Nein",
     },
     {
       label: "Datensätze",

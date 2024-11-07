@@ -8,8 +8,8 @@ import { Coronavirus } from "@mui/icons-material";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
-  SideNavigationItem,
   SideNavigationSubItem,
+  UseSideNavigationItemsResult,
 } from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { hasUserRole } from "@/lib/shared/helpers/accessControl";
 
@@ -39,10 +39,10 @@ const inboxNavigationItem: SideNavigationSubItem = {
   accessCheck: hasUserRole(ApiUserRole.MeaslesProtectionAdmin),
 };
 
-export function useSideNavigationItems(): SideNavigationItem[] {
+export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
   const subItems = isInboxEnabled
     ? [...defaultSubItems, inboxNavigationItem]
     : defaultSubItems;
-  return [{ ...sideNavigationItem, subItems }];
+  return { isLoading: false, items: [{ ...sideNavigationItem, subItems }] };
 }

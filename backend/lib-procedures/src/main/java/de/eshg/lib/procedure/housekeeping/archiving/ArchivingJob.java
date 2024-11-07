@@ -50,7 +50,7 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
     this.clock = clock;
   }
 
-  @Scheduled(cron = "${de.eshg.lib.procedure.housekeeping.archiving.schedule}")
+  @Scheduled(cron = "${de.eshg.lib.procedure.housekeeping.archiving.schedule:@daily}")
   public void run() {
     boolean withinGracePeriod = isWithinGracePeriod();
     logger.info(

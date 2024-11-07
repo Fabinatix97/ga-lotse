@@ -6,9 +6,11 @@
 package de.eshg.base.keycloak;
 
 import static de.eshg.base.keycloak.InitialKeycloakProvisioning.BEAN_NAME;
+import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
 
 import jakarta.ws.rs.NotAuthorizedException;
 import java.util.List;
+import java.util.Map;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
@@ -67,6 +69,7 @@ public class InitialKeycloakProvisioning {
     client.setName("GA-Lotse Base Module Client");
     client.setDescription(
         "Used by the GA-Lotse base module for provisioning and managing this keycloak instance.");
+    client.setAttributes(Map.of("realm_client", FALSE));
 
     return client;
   }

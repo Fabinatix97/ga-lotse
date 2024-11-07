@@ -11,7 +11,7 @@ import {
 } from "@eshg/employee-portal-api/travelMedicine";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { CalendarTodayOutlined } from "@mui/icons-material";
+import { ReceiptOutlined } from "@mui/icons-material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -133,7 +133,7 @@ export function VaccinationConsultationCertificatesTable({
           flex: 1,
         }}
       >
-        <CalendarTodayOutlined sx={{ height: "40px", width: "40px" }} />
+        <ReceiptOutlined sx={{ height: "40px", width: "40px" }} />
         <Typography sx={{ mt: 2, mb: 3 }}>
           Aktuell keine Bescheinigungen vorhanden
         </Typography>

@@ -107,11 +107,9 @@ export function NewPersonButton() {
   });
 
   function createDraftProcedure(person: LegacyPerson) {
-    return createDraftProcedureMutation
-      .mutateAsync({
-        person: mapToApiAffectedPersonDetails(person),
-      })
-      .catch();
+    return createDraftProcedureMutation.mutateAsync({
+      person: mapToApiAffectedPersonDetails(person),
+    });
   }
 
   return (

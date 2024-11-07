@@ -26,4 +26,5 @@ public record InspPendingFacilityDto(
     @NotBlank String city,
     Instant plannedFrom,
     @Valid ObjectTypeRefDto objecttype,
-    @Valid InsPendingFacilityInspectionDto inspection) {}
+    @Valid InsPendingFacilityInspectionDto inspection,
+    @NotNull boolean possibleFacilityDuplicate) {}

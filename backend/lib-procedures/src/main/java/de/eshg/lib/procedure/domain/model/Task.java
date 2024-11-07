@@ -139,6 +139,14 @@ public abstract class Task<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>>
     return currentAssignment.assignedById();
   }
 
+  public Instant getAssignmentDate() {
+    if (currentAssignment == null) {
+      return null;
+    }
+
+    return currentAssignment.assignmentDate();
+  }
+
   public void assign(UUID assigneeId, UUID assignedById, Instant assignmentDate) {
     boolean assigneeHasChanged = !Objects.equals(getAssigneeId(), assigneeId);
 

@@ -4,6 +4,8 @@
  */
 
 import {
+  AbortDraftVaccinationConsultationRequest,
+  AcceptDraftVaccinationConsultationRequest,
   AddProcedureStepRequest,
   ApiPatchVaccinationConsultationPatientRequest,
   ApiPatchVaccinationConsultationTravelDetailsRequest,
@@ -285,5 +287,31 @@ export function useSyncPerson(procedureId: string) {
     mutationFn: (request: ApiSyncPersonRequest) =>
       procedureApi.syncPersonData(procedureId, request),
     onSuccess: () => snackbar.confirmation("Die Änderungen wurden übernommen."),
+  });
+}
+
+export function useAboardDraftVaccinationConsultation() {
+  const snackbar = useSnackbar();
+  const vaccinationConsultationApi = useVaccinationConsultationApi();
+
+  return useHandledMutation({
+    mutationFn: (request: AbortDraftVaccinationConsultationRequest) =>
+      vaccinationConsultationApi.abortDraftVaccinationConsultationRaw(request),
+    onSuccess: () => {
+      snackbar.confirmation("Vorgang erfolgreich abgebrochen.");
+    },
+  });
+}
+
+export function useAcceptDraftVaccinationConsultation() {
+  const snackbar = useSnackbar();
+  const vaccinationConsultationApi = useVaccinationConsultationApi();
+
+  return useHandledMutation({
+    mutationFn: (request: AcceptDraftVaccinationConsultationRequest) =>
+      vaccinationConsultationApi.acceptDraftVaccinationConsultationRaw(request),
+    onSuccess: () => {
+      snackbar.confirmation("Vorgang erfolgreich gestartet.");
+    },
   });
 }

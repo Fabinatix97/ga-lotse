@@ -86,10 +86,11 @@ export function MedicalHistoryTemplateOverviewTable() {
             updateFollowUpFlag,
             deleteEntry,
           )}
-          rowNavRoute={(row) =>
-            routes.medicalHistoryTemplates.details(row.original.id)
-          }
-          focusColumnHeader="title"
+          rowNavigation={{
+            route: (row) =>
+              routes.medicalHistoryTemplates.details(row.original.id),
+            focusColumnAccessorKey: "title",
+          }}
         />
       </TableSheet>
     </TablePage>

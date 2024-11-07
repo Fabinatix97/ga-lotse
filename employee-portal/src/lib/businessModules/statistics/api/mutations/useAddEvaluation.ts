@@ -171,7 +171,7 @@ export function useAddEvaluation(statisticId: string, onClose: () => void) {
           onSuccess: onClose,
         },
       )
-      .then((it) => it.id)
-      .catch();
+      // TODO: ISSUE-6052: don't use response data. Combine multiple API calls into a single one.
+      .then((it) => it.id);
   };
 }

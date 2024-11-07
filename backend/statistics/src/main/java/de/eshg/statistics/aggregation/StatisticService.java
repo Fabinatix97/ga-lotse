@@ -10,7 +10,6 @@ import static de.eshg.statistics.mapper.StatisticMapper.mapSortKey;
 import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.EVALUATION_CONDUCTION;
 import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.TABLE_ROWS_REMOVAL;
 
-import de.eshg.base.SortDirection;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -25,25 +24,26 @@ import de.eshg.statistics.api.AbstractUpdateStatisticRequest;
 import de.eshg.statistics.api.AddStatisticWithDataSourcesRequest;
 import de.eshg.statistics.api.AddStatisticWithTemplateRequest;
 import de.eshg.statistics.api.AttributeSelectionDto;
-import de.eshg.statistics.api.AvailableDataSource;
-import de.eshg.statistics.api.BusinessDataAttribute;
-import de.eshg.statistics.api.DataSourceDto;
 import de.eshg.statistics.api.EvaluationDto;
 import de.eshg.statistics.api.GetDetailPageInformationResponse;
 import de.eshg.statistics.api.GetStatisticRequest;
 import de.eshg.statistics.api.GetStatisticResponse;
+import de.eshg.statistics.api.GetStatisticsRequest;
 import de.eshg.statistics.api.GetStatisticsResponse;
-import de.eshg.statistics.api.StatisticSortKey;
 import de.eshg.statistics.api.UpdateStatisticNameRequest;
 import de.eshg.statistics.api.UpdateStatisticTimeRangeRequest;
 import de.eshg.statistics.api.completeness.CompletenessOfAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBaseAttribute;
 import de.eshg.statistics.api.completeness.CompletenessOfBusinessAttribute;
 import de.eshg.statistics.api.completeness.GetCompletenessDataResponse;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
+import de.eshg.statistics.api.datasource.BusinessDataAttribute;
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
 import de.eshg.statistics.api.report.GetReportSeriesEntriesOfStatisticResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
+import de.eshg.statistics.config.OriginalDataAccessConfig;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -52,6 +52,7 @@ import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AbstractAggregationResult_;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
@@ -59,15 +60,24 @@ import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
 import de.eshg.statistics.persistence.entity.Statistic;
+import de.eshg.statistics.persistence.entity.Statistic_;
 import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumn_;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
+import de.eshg.statistics.persistence.entity.report.ReportSeries;
+import de.eshg.statistics.persistence.entity.report.ReportType;
 import de.eshg.statistics.persistence.repository.StatisticRepository;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +98,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StatisticService {
+  private static final String STATISTIC_WITH_ID_NOT_FOUND = "Statistic with id '%s' not found";
+
   private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
   private final StatisticRepository statisticRepository;
   private final StatisticUserService userService;
@@ -95,6 +107,7 @@ public class StatisticService {
   private final EvaluationTemplateService evaluationTemplateService;
   private final DataSourceValidator dataSourceValidator;
   private final DataAggregationService dataAggregationService;
+  private final OriginalDataAccessConfig originalDataAccessConfig;
 
   public StatisticService(
       StatisticRepository statisticRepository,
@@ -102,13 +115,40 @@ public class StatisticService {
       TableRowRepository tableRowRepository,
       EvaluationTemplateService evaluationTemplateService,
       DataSourceValidator dataSourceValidator,
-      DataAggregationService dataAggregationService) {
+      DataAggregationService dataAggregationService,
+      OriginalDataAccessConfig originalDataAccessConfig) {
     this.statisticRepository = statisticRepository;
     this.userService = userService;
     this.tableRowRepository = tableRowRepository;
     this.evaluationTemplateService = evaluationTemplateService;
     this.dataSourceValidator = dataSourceValidator;
     this.dataAggregationService = dataAggregationService;
+    this.originalDataAccessConfig = originalDataAccessConfig;
+  }
+
+  @Transactional(readOnly = true)
+  public void checkPermissionForStatistic(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    if (accessNotAllowed(statistic)) {
+      throw new NotFoundException(STATISTIC_WITH_ID_NOT_FOUND.formatted(statisticId));
+    }
+  }
+
+  public boolean accessNotAllowed(AbstractAggregationResult aggregationResultProxy) {
+    AbstractAggregationResult aggregationResult =
+        Hibernate.unproxy(aggregationResultProxy, AbstractAggregationResult.class);
+    if (aggregationResult instanceof Statistic statistic && !statistic.isAnonymized()) {
+      Set<String> businessModules =
+          statistic.getTableColumns().stream()
+              .map(TableColumn::getBusinessModuleName)
+              .collect(Collectors.toSet());
+      return businessModules.stream()
+          .anyMatch(
+              businessModule ->
+                  !originalDataAccessConfig.originalDataAllowedForCurrentUser(businessModule));
+    } else {
+      return false;
+    }
   }
 
   @Transactional
@@ -170,6 +210,12 @@ public class StatisticService {
       Instant timeRangeEnd,
       boolean anonymized,
       UUID templateId) {
+    if (!anonymized
+        && !originalDataAccessConfig.originalDataAllowedForCurrentUser(
+            dataSource.businessModuleName())) {
+      throw new BadRequestException(
+          "Only anonymized statistics allowed for data source '%s'".formatted(dataSource.id()));
+    }
     EvaluationTemplate evaluationTemplate = null;
     if (templateId != null) {
       evaluationTemplate = evaluationTemplateService.getEvaluationTemplateInternal(templateId);
@@ -240,17 +286,69 @@ public class StatisticService {
   }
 
   @Transactional(readOnly = true)
-  public GetStatisticsResponse getStatistics(
-      StatisticSortKey sortKey, SortDirection sortDirection, Integer page, Integer pageSize) {
+  public GetStatisticsResponse getStatistics(GetStatisticsRequest getStatisticsRequest) {
+    Specification<Statistic> specification;
+    if (getStatisticsRequest.anonymizationValue() == null) {
+      specification =
+          Specification.anyOf(
+              anonymizedStatistics(),
+              notAnonymizedStatistics(
+                  originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser()));
+    } else {
+      if (Boolean.TRUE.equals(getStatisticsRequest.anonymizationValue())) {
+        specification = anonymizedStatistics();
+      } else {
+        specification =
+            notAnonymizedStatistics(
+                originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser());
+      }
+    }
+
     Page<Statistic> statisticPage =
         statisticRepository.findAll(
+            specification,
             PageRequest.of(
-                page,
-                pageSize,
-                Sort.by(mapSortDirection(sortDirection), mapSortKey(sortKey), BaseEntity_.ID)));
+                getStatisticsRequest.page(),
+                getStatisticsRequest.pageSize(),
+                Sort.by(
+                    mapSortDirection(getStatisticsRequest.sortDirection()),
+                    mapSortKey(getStatisticsRequest.sortKey()),
+                    BaseEntity_.ID)));
 
     Map<UUID, UserDto> resolvedUsers = getResolvedUsers(statisticPage.get());
     return StatisticMapper.mapStatisticPageToResponse(statisticPage, resolvedUsers);
+  }
+
+  private Specification<Statistic> anonymizedStatistics() {
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.isTrue(root.get(Statistic_.ANONYMIZED));
+  }
+
+  private Specification<Statistic> notAnonymizedStatistics(Set<String> allowedBusinessModuleNames) {
+    return (root, query, criteriaBuilder) -> {
+      Predicate notAnonymizedPredicate = criteriaBuilder.isFalse(root.get(Statistic_.ANONYMIZED));
+
+      Subquery<TableColumn> subquery = query.subquery(TableColumn.class);
+      Root<TableColumn> tableColumnRoot = subquery.from(TableColumn.class);
+      subquery.select(tableColumnRoot);
+
+      Expression<Collection<TableColumn>> tableColumnsExpression =
+          root.get(AbstractAggregationResult_.TABLE_COLUMNS);
+      Predicate tableColumnMemberPredicate =
+          criteriaBuilder.isMember(tableColumnRoot, tableColumnsExpression);
+
+      Predicate businessModuleNotAllowedPredicate =
+          criteriaBuilder.not(
+              tableColumnRoot
+                  .get(TableColumn_.BUSINESS_MODULE_NAME)
+                  .in(allowedBusinessModuleNames));
+
+      subquery.where(
+          criteriaBuilder.and(tableColumnMemberPredicate, businessModuleNotAllowedPredicate));
+
+      return criteriaBuilder.and(
+          notAnonymizedPredicate, criteriaBuilder.not(criteriaBuilder.exists(subquery)));
+    };
   }
 
   private Map<UUID, UserDto> getResolvedUsers(
@@ -302,7 +400,7 @@ public class StatisticService {
     return statisticRepository
         .findByExternalId(statisticId)
         .orElseThrow(
-            () -> new NotFoundException("Statistic with id '%s' not found".formatted(statisticId)));
+            () -> new NotFoundException(STATISTIC_WITH_ID_NOT_FOUND.formatted(statisticId)));
   }
 
   public static void validateStatisticCompleted(Statistic statistic) {
@@ -341,10 +439,49 @@ public class StatisticService {
   }
 
   @Transactional
-  public void deleteStatistic(UUID statisticId) {
+  public void prepareStatisticForDeletion(UUID statisticId) {
     Statistic statistic = getStatisticInternal(statisticId);
     validateBelongsToCurrentUserOrIsAdmin(statistic);
     validateCopyProcessIsNotOngoing(statistic);
+
+    statistic.setState(AggregationResultState.DELETING);
+    statistic.setPendingState(TABLE_ROWS_REMOVAL);
+
+    deactivateAndDeleteEmptyAutoReportSeries(statistic);
+    flagAllReportsForDeletion(statistic);
+  }
+
+  private void deactivateAndDeleteEmptyAutoReportSeries(Statistic statistic) {
+    List<ReportSeries> reportSeriesEntriesToDelete = new ArrayList<>();
+    statistic.getReportSeriesList().stream()
+        .filter(reportSeries -> reportSeries.getReportType().equals(ReportType.AUTO))
+        .forEach(
+            reportSeries -> {
+              reportSeries.setActive(false);
+              reportSeries.getReports().stream()
+                  .filter(report -> report.getState().equals(AggregationResultState.PLANNED))
+                  .findFirst()
+                  .ifPresent(reportSeries::removeReport);
+              if (reportSeries.getReports().isEmpty()) {
+                reportSeriesEntriesToDelete.add(reportSeries);
+              }
+            });
+    statistic.removeReportSeriesEntries(reportSeriesEntriesToDelete);
+  }
+
+  private void flagAllReportsForDeletion(Statistic statistic) {
+    statistic
+        .getReportSeriesList()
+        .forEach(
+            reportSeries ->
+                reportSeries
+                    .getReports()
+                    .forEach(report -> report.setState(AggregationResultState.DELETING)));
+  }
+
+  @Transactional
+  public void deleteStatistic(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
     statisticRepository.delete(statistic);
   }
 
@@ -454,6 +591,15 @@ public class StatisticService {
         resolvedUsers);
   }
 
+  @Transactional(readOnly = true)
+  public Set<UUID> getReportSeriesIdsOfStatistic(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+
+    return statistic.getReportSeriesList().stream()
+        .map(ReportSeries::getExternalId)
+        .collect(Collectors.toSet());
+  }
+
   static boolean hasNoDiagrams(Statistic statistic) {
     return statistic.getEvaluations().isEmpty()
         || statistic.getEvaluations().stream()
@@ -491,13 +637,14 @@ public class StatisticService {
   }
 
   @Transactional
-  public void removeTableRows(UUID statisticId) {
+  public void removeTableRows(
+      UUID statisticId, AggregationResultPendingState pendingStateAfterRemoval) {
     Statistic statistic = getStatisticInternal(statisticId);
 
-    dataAggregationService.removeTableRows(statistic);
-
     if (dataAggregationService.countTableRows(statistic) <= 0) {
-      statistic.setPendingState(AggregationResultPendingState.DATA_AGGREGATION);
+      statistic.setPendingState(pendingStateAfterRemoval);
+    } else {
+      dataAggregationService.removeTableRows(statistic);
     }
   }
 
@@ -572,5 +719,11 @@ public class StatisticService {
                     diagram.getDescription(),
                     FilterParameterMapper.mapToApi(diagram.getFilters())))
         .toList();
+  }
+
+  @Transactional
+  public void setStateToFailed(UUID statisticId) {
+    Statistic statistic = getStatisticInternal(statisticId);
+    statistic.setState(AggregationResultState.FAILED);
   }
 }

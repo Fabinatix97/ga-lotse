@@ -96,6 +96,10 @@ public class ContactService {
     return contactRepository.findAllById(ids);
   }
 
+  public List<UUID> findAllMergeSources(UUID id) {
+    return contactRepository.findAllByMergedInto(id);
+  }
+
   public List<RevisionEntryWithChange<Contact>> getContactHistory(
       UUID id, UUID userId, Instant before) {
     AuditReader reader = AuditReaderFactory.get(entityManager);

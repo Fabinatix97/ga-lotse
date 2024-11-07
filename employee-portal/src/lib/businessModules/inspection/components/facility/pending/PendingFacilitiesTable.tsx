@@ -5,17 +5,26 @@
 
 "use client";
 
-import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
+import {
+  ApiInspectionFeature,
+  ApiObjectType,
+} from "@eshg/employee-portal-api/inspection";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { addDays, formatISO } from "date-fns";
 import { useMemo, useState } from "react";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { NewFacilityButton } from "@/lib/businessModules/inspection/components/facility/pending/NewFacilityButton";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
+import { PotentialDuplicatesWarning } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
+import { useReviewFacilityDuplicateSidebar } from "@/lib/businessModules/inspection/components/facility/pending/ReviewFacilityDuplicateSidebar";
+import { useReviewInspectionDuplicateSidebar } from "@/lib/businessModules/inspection/components/facility/pending/ReviewInspectionDuplicateSidebar";
+import { ProcessImportButton } from "@/lib/businessModules/inspection/components/processImport/ProcessImportButton";
 import {
+  inspectionDuplicateFilterNames,
   inspectionPendingFacilityKindNames,
   inspectionPhaseNames,
   inspectionTypeNames,
@@ -53,13 +62,14 @@ const initialUserActivity: UserActivityState = { type: "view-table" };
 
 function createFilterDefinitions(
   objectTypes: ApiObjectType[],
+  isImportFeatureEnabled: boolean,
 ): FilterDefinition[] {
   const objectTypeOptions = objectTypes.map((o) => ({
     label: o.name,
     value: o.id,
   }));
 
-  return [
+  const filterDefinitions: FilterDefinition[] = [
     {
       type: "EnumSingle",
       key: "kind",
@@ -101,15 +111,32 @@ function createFilterDefinitions(
       name: "Begehung nach",
     },
   ];
+
+  if (isImportFeatureEnabled) {
+    filterDefinitions.push({
+      type: "EnumSingle",
+      key: "hasDuplicates",
+      name: "Duplikat",
+      options: optionsFromRecord(inspectionDuplicateFilterNames),
+    });
+  }
+
+  return filterDefinitions;
 }
 
 export function PendingFacilitiesTable(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
   const isOfflineEnabled = useIsOfflineFeatureEnabled();
+  const isImportFeatureEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.Import,
+  );
   const { data: objectTypes } = useGetObjectTypes();
 
-  const filterDefinitions = createFilterDefinitions(objectTypes);
+  const filterDefinitions = createFilterDefinitions(
+    objectTypes,
+    isImportFeatureEnabled,
+  );
   const paramStateProvider = useSearchParamStateProvider(
     filterDefinitions,
     true,
@@ -133,12 +160,31 @@ export function PendingFacilitiesTable(
     filter: props.filter,
   });
 
+  function filterForDuplicates() {
+    filterSettings.filterSettingsProps.activeFilterProps.deleteAllFilterValues();
+    filterSettings.filterSettingsProps.onDraftValueChange("hasDuplicates", {
+      type: "EnumSingle",
+      key: "hasDuplicates",
+      selectedValue: "true",
+    });
+    paramStateProvider.setActiveValues([
+      {
+        type: "EnumSingle",
+        key: "hasDuplicates",
+        selectedValue: "true",
+      },
+    ]);
+  }
+
   const { data: procedures, isFetching } = useGetPendingFacilities(filter);
 
   const tableControl = useTableControl({ serverSideSorting: true });
   const columns = createPendingFacilitiesColumns(
     isOfflineEnabled,
     handleViewIncidentsClick,
+    openReviewFacilityDuplicateSidebar,
+    openReviewInspectionDuplicateSidebar,
+    isImportFeatureEnabled,
   );
 
   const [userActivity, setUserActivity] =
@@ -151,6 +197,18 @@ export function PendingFacilitiesTable(
     onValuesSubmit: (_values) => {},
     showSearch: false,
   });
+
+  const reviewFacilityDuplicateSidebar = useReviewFacilityDuplicateSidebar();
+  const reviewInspectionDuplicateSidebar =
+    useReviewInspectionDuplicateSidebar();
+
+  function openReviewFacilityDuplicateSidebar(inspectionId: string) {
+    reviewFacilityDuplicateSidebar.open({ inspectionId });
+  }
+
+  function openReviewInspectionDuplicateSidebar(inspectionId: string) {
+    reviewInspectionDuplicateSidebar.open({ inspectionId });
+  }
 
   function handleSidebarClosed() {
     setUserActivity(initialUserActivity);
@@ -169,6 +227,13 @@ export function PendingFacilitiesTable(
 
   return (
     <>
+      {isImportFeatureEnabled &&
+        procedures.numberOfPossibleDuplicates !== 0 && (
+          <PotentialDuplicatesWarning
+            numberOfDuplicates={procedures.numberOfPossibleDuplicates}
+            filterForDuplicates={filterForDuplicates}
+          />
+        )}
       <TablePage
         fullHeight
         controls={
@@ -198,7 +263,12 @@ export function PendingFacilitiesTable(
                 />
               </>
             }
-            right={<NewFacilityButton />}
+            right={
+              <>
+                <ProcessImportButton />
+                <NewFacilityButton />
+              </>
+            }
           />
         }
         filterSettings={
@@ -222,8 +292,10 @@ export function PendingFacilitiesTable(
             data={procedures.elements}
             columns={columns}
             sorting={tableControl.tableSorting}
-            rowNavRoute={getPendingFacilityRowRoute}
-            focusColumnHeader={"Name"}
+            rowNavigation={{
+              route: getPendingFacilityRowRoute,
+              focusColumnAccessorKey: "name",
+            }}
             striped
           />
         </TableSheet>

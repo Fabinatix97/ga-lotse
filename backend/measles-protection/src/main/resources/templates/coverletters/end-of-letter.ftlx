@@ -10,6 +10,6 @@
   </p>
   <p>Mit freundlichen Grüßen</p>
   <p>Im Auftrag</p>
-  <p>Gesundheitsamt der Stadt Frankfurt am Main</p>
+  <p>${departmentInfo.name()}</p>
   <p>Dieser Bescheid wurde maschinell erstellt und ist ohne Unterschrift gültig.</p>
 </div>

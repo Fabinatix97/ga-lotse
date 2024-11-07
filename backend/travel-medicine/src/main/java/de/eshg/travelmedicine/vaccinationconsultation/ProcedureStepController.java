@@ -69,6 +69,6 @@ public class ProcedureStepController {
   @Operation(summary = "Cancel an appointment from employee portal.")
   @Transactional
   public void deleteAppointmentEp(@PathVariable("procedureStepId") UUID procedureStepId) {
-    procedureStepService.cancelAppointment(procedureStepId);
+    procedureStepService.cancelAppointmentByEmployee(procedureStepId);
   }
 }

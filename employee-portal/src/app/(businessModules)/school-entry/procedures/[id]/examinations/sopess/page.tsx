@@ -51,11 +51,9 @@ export default function SchoolEntrySopessExaminationPage(
   const updateSopessExaminationResult = useUpdateSopessExaminationResult();
 
   async function handleSubmit(formValues: SopessExaminationFormValues) {
-    await updateSopessExaminationResult
-      .mutateAsync(
-        mapToRequest(procedureId, formValues, sopessExaminationResult.version),
-      )
-      .catch();
+    await updateSopessExaminationResult.mutateAsync(
+      mapToRequest(procedureId, formValues, sopessExaminationResult.version),
+    );
   }
 
   return (

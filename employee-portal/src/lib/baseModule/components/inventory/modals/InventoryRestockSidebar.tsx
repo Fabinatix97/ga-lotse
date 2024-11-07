@@ -38,11 +38,9 @@ function InventoryRestockSidebar({
       formRef={formRef}
       onClose={onClose}
       onSubmit={async (values) => {
-        await restockInventory
-          .mutateAsync(mapRequiredValue(values.count), {
-            onSuccess: () => onClose(true),
-          })
-          .catch();
+        await restockInventory.mutateAsync(mapRequiredValue(values.count), {
+          onSuccess: () => onClose(true),
+        });
       }}
     />
   );

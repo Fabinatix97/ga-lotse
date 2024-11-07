@@ -18,6 +18,7 @@ public enum ImportStatus {
   INVALID_PROCEDURE_ID("Ungültige Vorgangs-ID"),
   DUPLICATE_WITHIN_LIST("Duplikat in der Liste"),
   DUPLICATE_IN_ASSET("Duplikat im Bestand"),
+  BATCH_ERROR("Ignoriert (Fehler in Gruppe)"),
   EXCEPTION("Unbekannter Fehler"),
   ;
 

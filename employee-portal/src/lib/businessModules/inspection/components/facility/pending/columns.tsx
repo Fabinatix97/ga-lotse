@@ -9,10 +9,11 @@ import {
 } from "@eshg/employee-portal-api/inspection";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
-import { Stack } from "@mui/joy";
+import { IconButton, Stack } from "@mui/joy";
 import { ColumnHelper, Row, createColumnHelper } from "@tanstack/react-table";
 
 import { translateProcedureStatus } from "@/lib/baseModule/api/procedures/enums";
+import { DuplicateIcon } from "@/lib/businessModules/inspection/components/icons/DuplicateIcon";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";
 import {
   translateInspectionPhase,
@@ -30,8 +31,46 @@ export function createPendingFacilitiesColumns(
     inspectionId: string,
     facilityName: string,
   ) => void,
+  openReviewFacilityDuplicateSidebar: (inspectionId: string) => void,
+  openInspectionFacilityDuplicateSidebar: (inspectionId: string) => void,
+  isImportFeatureEnabled: boolean,
 ) {
   return [
+    isImportFeatureEnabled && offlineSwitch
+      ? columnHelper.accessor("possibleFacilityDuplicate", {
+          header: "",
+          cell: (ctx) =>
+            (ctx.getValue() && (
+              <IconButton
+                aria-label="Einrichtungsduplikat"
+                sx={{ color: "warning.900" }}
+                onClick={() =>
+                  openReviewFacilityDuplicateSidebar(
+                    ctx.row.original.inspection!.id,
+                  )
+                }
+              >
+                <DuplicateIcon />
+              </IconButton>
+            )) ||
+            (ctx.row.original.inspection!.possibleInspectionDuplicate && (
+              <IconButton
+                aria-label="Vorgangsduplikat"
+                sx={{ color: "warning.900" }}
+                onClick={() =>
+                  openInspectionFacilityDuplicateSidebar(
+                    ctx.row.original.inspection!.id,
+                  )
+                }
+              >
+                <DuplicateIcon />
+              </IconButton>
+            )),
+          meta: {
+            width: 48,
+          },
+        })
+      : null,
     columnHelper.accessor("kind", {
       header: "Art",
       cell: (ctx) => translatePendingFacilityKind(ctx.getValue()),

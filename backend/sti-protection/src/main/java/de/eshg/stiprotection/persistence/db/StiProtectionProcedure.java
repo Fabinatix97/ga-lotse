@@ -12,12 +12,15 @@ import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory_;
+import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
+import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom_;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
+import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.util.Assert;
@@ -51,6 +54,18 @@ public class StiProtectionProcedure
       cascade = CascadeType.PERSIST,
       mappedBy = UserDefinedAppointment_.PROCEDURE)
   private UserDefinedAppointment userDefinedAppointment;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @Column(unique = true)
+  private UUID calendarEventId;
+
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @OneToOne(
+      optional = false,
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = WaitingRoom_.PROCEDURE)
+  private WaitingRoom waitingRoom;
 
   @Transient
   public Person getPerson() {
@@ -102,5 +117,22 @@ public class StiProtectionProcedure
       userDefinedAppointment.setProcedure(this);
     }
     this.userDefinedAppointment = userDefinedAppointment;
+  }
+
+  public UUID getCalendarEventId() {
+    return calendarEventId;
+  }
+
+  public void setCalendarEventId(UUID calendarEventId) {
+    this.calendarEventId = calendarEventId;
+  }
+
+  public WaitingRoom getWaitingRoom() {
+    return waitingRoom;
+  }
+
+  public void setWaitingRoom(WaitingRoom waitingRoom) {
+    this.waitingRoom = waitingRoom;
+    waitingRoom.setProcedure(this);
   }
 }

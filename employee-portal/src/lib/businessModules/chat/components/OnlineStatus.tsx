@@ -18,11 +18,7 @@ export function OnlineStatus({ userId, name }: OnlineStatusProps) {
   const presence = usersPresence[userId];
 
   return (
-    <Stack
-      direction="row"
-      spacing={0.5}
-      sx={{ alignItems: "center", overflow: "hidden" }}
-    >
+    <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
       {presence && (
         <Box
           sx={{
@@ -35,15 +31,7 @@ export function OnlineStatus({ userId, name }: OnlineStatusProps) {
           }}
         />
       )}
-      <Typography
-        noWrap
-        sx={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {name ?? presence}
-      </Typography>
+      <Typography noWrap>{name ?? presence}</Typography>
     </Stack>
   );
 }

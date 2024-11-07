@@ -174,6 +174,8 @@ public final class FileMapper {
     }
 
     MailMetaDataDto metaDataDto = new MailMetaDataDto();
+    metaDataDto.setSubject(metaData.getSubject());
+    metaDataDto.setMessageText(metaData.getMessageText());
     metaDataDto.setMailFrom(metaData.getMailFrom());
     metaDataDto.setMailTo(metaData.getMailTo());
     metaDataDto.setSentDate(metaData.getSentDate());

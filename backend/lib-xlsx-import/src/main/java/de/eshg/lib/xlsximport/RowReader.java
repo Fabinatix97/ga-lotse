@@ -11,11 +11,11 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.util.StringUtils;
@@ -28,7 +28,6 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   private final CellStyle errorCellStyle;
   private final Drawing<?> drawing;
   private final CreationHelper factory;
-  private final ClientAnchor anchor;
 
   protected RowReader(Sheet sheet, List<C> actualColumns) {
     Workbook workbook = sheet.getWorkbook();
@@ -37,7 +36,6 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     errorCellStyle = createErrorStyle(workbook);
     drawing = sheet.createDrawingPatriarch();
     factory = workbook.getCreationHelper();
-    anchor = factory.createClientAnchor();
   }
 
   public T readRow(Row row) {
@@ -50,8 +48,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
 
   protected abstract T read(ColumnAccessor<C> col);
 
-  protected ImportStatus readStatus(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  protected ImportStatus readStatus(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String status = cellAsString(cell, true, false, errorHandler);
     if (!StringUtils.hasLength(status)) {
@@ -61,13 +58,12 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     try {
       return ImportStatus.map(status);
     } catch (NoSuchElementException e) {
-      errorHandler.accept(cell, "Ungültiger Wert");
+      errorHandler.handleError(cell, "Ungültiger Wert");
       return null;
     }
   }
 
-  protected UUID readProcedureId(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  protected UUID readProcedureId(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String uuid = cellAsString(cell, true, false, errorHandler);
     if (!StringUtils.hasLength(uuid)) {
@@ -77,12 +73,12 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     try {
       return UUID.fromString(uuid);
     } catch (IllegalArgumentException e) {
-      errorHandler.accept(cell, "Ungültiges Format");
+      errorHandler.handleError(cell, "Ungültiges Format");
       return null;
     }
   }
 
-  protected BiConsumer<Cell, String> createErrorHandler(RowValues result) {
+  protected ErrorHandler createErrorHandler(RowValues result) {
     return (cell, errorMessage) -> {
       result.foundInvalidData();
       addCellError(cell, errorMessage);
@@ -91,7 +87,9 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
 
   protected void addCellError(Cell cell, String errorMessage) {
     cell.setCellStyle(errorCellStyle);
-    cell.setCellComment(createComment(errorMessage));
+    if (cell.getCellComment() == null) {
+      cell.setCellComment(createComment(cell, errorMessage));
+    }
   }
 
   private CellStyle createErrorStyle(Workbook workbook) {
@@ -102,19 +100,27 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     return errorStyle;
   }
 
-  private Comment createComment(String errorMessage) {
-    Comment comment = drawing.createCellComment(anchor);
+  private Comment createComment(Cell cell, String errorMessage) {
+    Comment comment = drawing.createCellComment(createClientAnchor(cell));
     comment.setString(factory.createRichTextString(errorMessage));
 
     return comment;
   }
 
-  protected String cellAsString(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  private ClientAnchor createClientAnchor(Cell cell) {
+    ClientAnchor clientAnchor = factory.createClientAnchor();
+    clientAnchor.setCol1(cell.getColumnIndex());
+    clientAnchor.setRow1(cell.getRowIndex());
+    clientAnchor.setCol2(cell.getColumnIndex());
+    clientAnchor.setRow2(cell.getRowIndex());
+    return clientAnchor;
+  }
+
+  protected String cellAsString(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     return cellAsString(col.get(column), errorHandler);
   }
 
-  protected static String cellAsString(Cell cell, BiConsumer<Cell, String> errorHandler) {
+  protected static String cellAsString(Cell cell, ErrorHandler errorHandler) {
     return cellAsString(cell, false, false, errorHandler);
   }
 
@@ -123,15 +129,12 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
       C column,
       boolean optional,
       boolean allowCellTypeNumeric,
-      BiConsumer<Cell, String> errorHandler) {
+      ErrorHandler errorHandler) {
     return cellAsString(col.get(column), optional, allowCellTypeNumeric, errorHandler);
   }
 
   private static String cellAsString(
-      Cell cell,
-      boolean optional,
-      boolean allowCellTypeNumeric,
-      BiConsumer<Cell, String> errorHandler) {
+      Cell cell, boolean optional, boolean allowCellTypeNumeric, ErrorHandler errorHandler) {
     List<CellType> expectedTypes =
         allowCellTypeNumeric
             ? List.of(CellType.STRING, CellType.NUMERIC)
@@ -148,20 +151,18 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     }
   }
 
-  protected boolean cellAsFlag(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  protected boolean cellAsFlag(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     return !isOptionalBlank(cell, true)
         && !invalidType(cell, CellType.STRING, errorHandler)
         && !invalidFlag(cell, errorHandler);
   }
 
-  protected boolean cellAsBoolean(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  protected boolean cellAsBoolean(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String booleanString = cellAsString(cell, false, false, errorHandler);
     if (booleanString == null) {
-      errorHandler.accept(
+      errorHandler.handleError(
           cell, "Ungültiger Wert (Erwartet: Ja, Nein, Tatsächlich: %s)".formatted(booleanString));
       return false;
     }
@@ -170,7 +171,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
       case "JA" -> true;
       case "NEIN" -> false;
       default -> {
-        errorHandler.accept(
+        errorHandler.handleError(
             cell, "Ungültiger Wert (Erwartet: Ja, Nein, Tatsächlich: %s)".formatted(booleanString));
         yield false;
       }
@@ -178,7 +179,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   }
 
   protected Boolean cellAsBooleanOrNull(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String booleanString = cellAsString(cell, true, false, errorHandler);
     if (booleanString == null) {
@@ -189,7 +190,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
       case "JA" -> true;
       case "NEIN" -> false;
       default -> {
-        errorHandler.accept(
+        errorHandler.handleError(
             cell,
             "Ungültiger Wert (Erwartet: Ja, Nein oder leere Zelle. Tatsächlich: %s)"
                 .formatted(booleanString));
@@ -198,18 +199,30 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     };
   }
 
-  protected Integer cellAsInt(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  protected Integer cellAsInt(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     if (invalidType(cell, CellType.NUMERIC, errorHandler)) {
-      errorHandler.accept(cell, "Ungültiger Wert");
+      errorHandler.handleError(cell, "Ungültiger Wert");
       return null;
     }
     return (int) cell.getNumericCellValue();
   }
 
+  protected Double cellAsDouble(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
+    Cell cell = col.get(column);
+    if (invalidType(cell, CellType.NUMERIC, errorHandler)) {
+      errorHandler.handleError(cell, "Ungültiger Wert");
+      return null;
+    }
+    return cell.getNumericCellValue();
+  }
+
   private static boolean isOptionalBlank(Cell cell, boolean optional) {
-    return optional && (cell == null || getNormalizedCellType(cell) == CellType.BLANK);
+    return optional && isBlank(cell);
+  }
+
+  private static boolean isBlank(Cell cell) {
+    return cell == null || getNormalizedCellType(cell) == CellType.BLANK;
   }
 
   private static CellType getNormalizedCellType(Cell cell) {
@@ -219,17 +232,30 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     return cell.getCellType();
   }
 
-  protected LocalDate cellAsDate(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  public static boolean isEmpty(Row row) {
+    for (Cell cell : row) {
+      if (!isBlank(cell)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  protected LocalDate cellAsDate(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
+    LocalDateTime localDateTime = cellAsDateTime(col, column, errorHandler);
+    return localDateTime != null ? localDateTime.toLocalDate() : null;
+  }
+
+  protected LocalDateTime cellAsDateTime(
+      ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     if (invalidType(cell, CellType.NUMERIC, errorHandler) || invalidDate(cell, errorHandler)) {
       return null;
     }
-    return cell.getLocalDateTimeCellValue().toLocalDate();
+    return cell.getLocalDateTimeCellValue();
   }
 
-  protected GenderDto cellAsGender(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+  protected GenderDto cellAsGender(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String gender = cellAsString(cell, true, false, errorHandler);
     if (gender == null) {
@@ -242,7 +268,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
       case "D" -> GenderDto.DIVERSE;
       case "U", "" -> GenderDto.NOT_SPECIFIED;
       default -> {
-        errorHandler.accept(
+        errorHandler.handleError(
             cell,
             "Ungültiger Wert (Erwartet: M = Männlich, W = Weiblich, D = Divers, U = Unbekannt, Tatsächlich: %s)"
                 .formatted(gender));
@@ -252,7 +278,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   }
 
   protected SalutationDto cellAsSalutation(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String salutation = cellAsString(cell, true, false, errorHandler);
     if (salutation == null) {
@@ -265,7 +291,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
       case "Neutral" -> SalutationDto.NEUTRAL;
       case "Unbekannt", "" -> SalutationDto.NOT_SPECIFIED;
       default -> {
-        errorHandler.accept(
+        errorHandler.handleError(
             cell,
             "Ungültiger Wert (Erwartet: Herr, Frau, Neutral, Unbekannt, Tatsächlich: %s)"
                 .formatted(salutation));
@@ -275,7 +301,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   }
 
   protected CountryCode cellAsCountryCode(
-      ColumnAccessor<C> col, C column, BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String countryCode = cellAsString(cell, true, false, errorHandler);
     if (countryCode == null) {
@@ -284,7 +310,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     try {
       return CountryCode.valueOf(countryCode);
     } catch (IllegalArgumentException exception) {
-      errorHandler.accept(
+      errorHandler.handleError(
           cell,
           "Ungültiger Wert (Erwartet: Länderkürzel nach ISO 3166-1, Tatsächlich: %s)"
               .formatted(countryCode));
@@ -292,13 +318,12 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     }
   }
 
-  private static boolean invalidType(
-      Cell cell, CellType expectedType, BiConsumer<Cell, String> errorHandler) {
+  private static boolean invalidType(Cell cell, CellType expectedType, ErrorHandler errorHandler) {
     return invalidType(cell, List.of(expectedType), errorHandler);
   }
 
   private static boolean invalidType(
-      Cell cell, List<CellType> expectedTypes, BiConsumer<Cell, String> errorHandler) {
+      Cell cell, List<CellType> expectedTypes, ErrorHandler errorHandler) {
     CellType actualType = getNormalizedCellType(cell);
     if (!expectedTypes.contains(actualType)) {
       String expectedType =
@@ -307,42 +332,39 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
               String.join(",", expectedTypes.stream().map(Enum::name).toList()));
       String errorMessage =
           "Ungültiger Wert (Erwartet: %s, Tatsächlich: %s)".formatted(expectedType, actualType);
-      errorHandler.accept(cell, errorMessage);
+      errorHandler.handleError(cell, errorMessage);
 
       return true;
     }
     return false;
   }
 
-  private static boolean invalidDate(Cell cell, BiConsumer<Cell, String> errorHandler) {
+  private static boolean invalidDate(Cell cell, ErrorHandler errorHandler) {
     if (cell.getLocalDateTimeCellValue() == null) {
-      errorHandler.accept(cell, "Ungültiges Datum");
+      errorHandler.handleError(cell, "Ungültiges Datum");
       return true;
     }
     return false;
   }
 
-  private static boolean invalidFlag(Cell cell, BiConsumer<Cell, String> errorHandler) {
+  private static boolean invalidFlag(Cell cell, ErrorHandler errorHandler) {
     String cellValue = cellAsString(cell, errorHandler);
     if (cellValue != null
         && !cellValue.isBlank()
         && !Objects.equals(cellValue.toLowerCase(), "x")) {
-      errorHandler.accept(cell, "Ungültige Eingabe. Nur 'x' oder 'X' sind erlaubt.");
+      errorHandler.handleError(cell, "Ungültige Eingabe. Nur 'x' oder 'X' sind erlaubt.");
       return true;
     }
     return false;
   }
 
   private boolean anyValueInRange(
-      ColumnAccessor<C> col,
-      AddressColumns<C> addressColumns,
-      BiConsumer<Cell, String> errorHandler) {
+      ColumnAccessor<C> col, AddressColumns<C> addressColumns, ErrorHandler errorHandler) {
     return anyValueInRange(
         col.getRange(addressColumns.street(), addressColumns.addressAddition()), errorHandler);
   }
 
-  protected static boolean anyValueInRange(
-      Stream<Cell> range, BiConsumer<Cell, String> errorHandler) {
+  protected static boolean anyValueInRange(Stream<Cell> range, ErrorHandler errorHandler) {
     return range
         .map(cell -> cellAsString(cell, true, false, errorHandler))
         .anyMatch(org.apache.commons.lang3.StringUtils::isNotBlank);
@@ -351,7 +373,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   protected AddressData readAddressData(
       ColumnAccessor<C> col,
       AddressColumns<C> addressColumns,
-      BiConsumer<Cell, String> errorHandler,
+      ErrorHandler errorHandler,
       boolean mandatoryAddress) {
 
     if (anyValueInRange(col, addressColumns, errorHandler) || mandatoryAddress) {

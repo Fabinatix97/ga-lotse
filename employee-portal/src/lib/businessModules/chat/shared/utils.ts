@@ -17,6 +17,7 @@ import {
 } from "date-fns";
 import { de } from "date-fns/locale";
 import {
+  Direction,
   EventTimeline,
   EventType,
   MatrixClient,
@@ -26,7 +27,17 @@ import {
   RoomMember,
   User,
 } from "matrix-js-sdk/lib/matrix";
-import { isEmpty, isNonNullish, isStrictEqual, isString, last } from "remeda";
+import {
+  forEach,
+  isEmpty,
+  isNonNullish,
+  isStrictEqual,
+  isString,
+  keys,
+  last,
+  pickBy,
+  pipe,
+} from "remeda";
 
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import {
@@ -270,9 +281,24 @@ export function getStatusColor(status: Presence | undefined) {
     case "offline":
       return "danger.plainColor";
     case "unavailable":
+      return "warning.400";
+    case "deactivated":
       return "danger.plainDisabledColor";
     default:
-      return undefined;
+      return "danger.plainColor";
+  }
+}
+
+export function getPresenseLabel(status: Presence | undefined) {
+  switch (status) {
+    case "online":
+      return "Online";
+    case "offline":
+      return "Inaktiv";
+    case "unavailable":
+      return "Unischtbar";
+    default:
+      return "";
   }
 }
 
@@ -444,21 +470,17 @@ export function allMessagesRead(
   });
 }
 
-export async function reassignAdminRole({
-  matrixClient,
-  users,
-  roomId,
-}: {
-  matrixClient: MatrixClient;
-  users: Record<string, number>;
-  roomId: string;
-}) {
-  const powerLevels = await matrixClient.getStateEvent(
-    roomId,
-    EventType.RoomPowerLevels,
-    "",
-  );
-  await matrixClient.sendStateEvent(roomId, EventType.RoomPowerLevels, {
+export async function reassignAdminRole(
+  matrixClient: MatrixClient,
+  room: Room,
+  users: Record<string, number>,
+) {
+  const powerLevels = room
+    ?.getLiveTimeline()
+    .getState(Direction.Forward)
+    ?.getStateEvents(EventType.RoomPowerLevels)?.[0]?.event.content;
+
+  await matrixClient.sendStateEvent(room.roomId, EventType.RoomPowerLevels, {
     ...powerLevels,
     users,
   });
@@ -538,19 +560,43 @@ export function getReadReceipts(
   );
 }
 
-export function clearSearchParam(paramName: string) {
+export function clearSearchParams(...paramNames: string[]) {
   const url = new URL(window.location.href);
-  const searchParam = url.searchParams.get(paramName);
-  if (isNonNullish(searchParam)) {
-    url.searchParams.delete(paramName);
-    window.history.replaceState(null, "", url.href);
-  }
+  forEach(paramNames, (paramName) => {
+    const searchParam = url.searchParams.get(paramName);
+    if (isNonNullish(searchParam)) {
+      url.searchParams.delete(paramName);
+    }
+  });
+  window.history.replaceState(null, "", url.href);
 }
 
-export function clearLoginToken() {
-  return clearSearchParam("loginToken");
+export function getRoomAdmins(room: Room | null) {
+  const eventContent = room
+    ?.getLiveTimeline()
+    .getState(Direction.Forward)
+    ?.getStateEvents(EventType.RoomPowerLevels)[0]
+    ?.getContent<{
+      users?: Record<string, number>;
+    }>();
+
+  return eventContent?.users
+    ? pipe(
+        eventContent.users,
+        pickBy((value) => value === 100),
+        keys(),
+      )
+    : [];
 }
 
-export function clearUserIdParam() {
-  return clearSearchParam("userId");
+export function getRoomCreator(room: Room | null) {
+  const eventContent = room
+    ?.getLiveTimeline()
+    .getState(Direction.Forward)
+    ?.getStateEvents(EventType.RoomCreate)[0]
+    ?.getContent<{
+      creator: string;
+    }>();
+
+  return eventContent?.creator;
 }

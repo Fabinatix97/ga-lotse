@@ -9,6 +9,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.function.Function;
 import org.verapdf.core.EncryptedPdfException;
 import org.verapdf.core.ModelParsingException;
 import org.verapdf.core.ValidationException;
@@ -28,25 +29,30 @@ public class PdfAConformanceValidator {
   }
 
   public static void validate(byte[] fileContent) {
+    validate(fileContent, message -> new BadRequestException(ErrorCode.NONCONFORM_PDF, message));
+  }
+
+  public static void validate(
+      byte[] fileContent, Function<String, RuntimeException> exceptionCreator) {
     try (VeraPDFFoundry foundry = Foundries.defaultInstance();
         PDFAParser parser = foundry.createParser(new ByteArrayInputStream(fileContent));
         PDFAValidator validator = foundry.createValidator(parser.getFlavour(), false)) {
 
       ValidationResult result = validator.validate(parser);
       if (!result.isCompliant()) {
-        throw createPdfAConformanceException();
+        throw createPdfAConformanceException(exceptionCreator);
       }
 
     } catch (IOException
         | ValidationException
         | ModelParsingException
         | EncryptedPdfException exception) {
-      throw createPdfAConformanceException();
+      throw createPdfAConformanceException(exceptionCreator);
     }
   }
 
-  private static BadRequestException createPdfAConformanceException() {
-    return new BadRequestException(
-        ErrorCode.NONCONFORM_PDF, "Uploaded pdf did not pass conformance level check");
+  private static RuntimeException createPdfAConformanceException(
+      Function<String, RuntimeException> exceptionCreator) {
+    return exceptionCreator.apply("Uploaded pdf did not pass conformance level check");
   }
 }

@@ -172,6 +172,16 @@ public class Inspection
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Instant followupDate;
 
+  @NotNull
+  @ManyToMany(fetch = FetchType.LAZY)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @OrderBy
+  @JoinTable(
+      name = "inspection_possible_duplicates",
+      joinColumns = {@JoinColumn(name = "inspection_id")},
+      inverseJoinColumns = {@JoinColumn(name = "duplicate_id")})
+  private final List<Inspection> possibleDuplicates = new ArrayList<>();
+
   public InspectionType getType() {
     return type;
   }
@@ -445,6 +455,10 @@ public class Inspection
 
   public void setFollowupDate(Instant followupDate) {
     this.followupDate = followupDate;
+  }
+
+  public @NotNull List<Inspection> getPossibleDuplicates() {
+    return possibleDuplicates;
   }
 
   private Optional<InspectionTask> getTask(TaskType taskType) {

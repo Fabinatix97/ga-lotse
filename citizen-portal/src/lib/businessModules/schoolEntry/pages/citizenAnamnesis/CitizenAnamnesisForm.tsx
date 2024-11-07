@@ -88,6 +88,7 @@ interface AdditionalChildInfoValues {
 }
 
 interface DaycareAndSchoolInfoValues {
+  wasInDaycare: ToggleableSectionFormValue;
   inDaycareSince: MonthAndYear;
   daycareName: OptionalFieldValue<string>;
   schoolName: OptionalFieldValue<string>;
@@ -190,6 +191,9 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
     },
   },
   daycareAndSchoolInfo: {
+    wasInDaycare: {
+      show: null,
+    },
     inDaycareSince: { month: null, year: "" },
     daycareName: "",
     schoolName: "",
@@ -277,13 +281,11 @@ export function CitizenAnamnesisForm(props: CitizenAnamnesisFormProps) {
   const citizenRoutes = useCitizenRoutes();
 
   async function handleSubmit(values: CitizenAnamnesisFormValues) {
-    await addCitizenAnamnesis
-      .mutateAsync(mapToRequest(values), {
-        onSuccess: () => {
-          void router.push(citizenRoutes.appointment.index(undefined));
-        },
-      })
-      .catch();
+    await addCitizenAnamnesis.mutateAsync(mapToRequest(values), {
+      onSuccess: () => {
+        void router.push(citizenRoutes.appointment.index(undefined));
+      },
+    });
   }
 
   return (
@@ -402,10 +404,17 @@ function mapToRequest(
           : undefined,
       },
       daycareAndSchoolInfo: {
-        inDaycareSince: mapMonthAndYear(
-          values.daycareAndSchoolInfo.inDaycareSince,
+        wasInDaycare: mapNullableValue(
+          values.daycareAndSchoolInfo.wasInDaycare.show,
         ),
-        daycareName: mapOptionalValue(values.daycareAndSchoolInfo.daycareName),
+        inDaycareSince: onlyIfShown(
+          values.daycareAndSchoolInfo.wasInDaycare,
+          mapMonthAndYear(values.daycareAndSchoolInfo.inDaycareSince),
+        ),
+        daycareName: onlyIfShown(
+          values.daycareAndSchoolInfo.wasInDaycare,
+          mapOptionalValue(values.daycareAndSchoolInfo.daycareName),
+        ),
         schoolName: mapOptionalValue(values.daycareAndSchoolInfo.schoolName),
       },
       developmentInfo: {
@@ -524,6 +533,7 @@ function onlyIfShown<TValue>(
 ): TValue | undefined {
   return section.show ? value : undefined;
 }
+
 function fallbackIfExplicitlyHidden<TValue>(
   section: ToggleableSectionFormValue,
   value: TValue,

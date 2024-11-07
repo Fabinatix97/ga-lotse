@@ -39,4 +39,6 @@ public record ProcedureDetailsData(
     Instant createdAt,
     Instant modifiedAt,
     WaitingRoom waitingRoom,
-    Instant schoolInfoLetterCreatedAt) {}
+    Instant schoolInfoLetterCreatedAt,
+    boolean hasInformationBlock,
+    boolean hasBeenClosed) {}

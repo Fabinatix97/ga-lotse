@@ -53,12 +53,11 @@ export function MemberInfoView({ userId, onClose }: MemberInfoViewProps) {
   return (
     <>
       <InfoPanelHeader
-        data={{
-          avatarUrl: user?.avatar_url,
-          userId,
-          username: user?.display_name,
-        }}
+        avatarUrl={user?.avatar_url}
+        userId={userId}
+        displayName={user?.display_name}
         close={onClose}
+        type="memberInfo"
       />
       <Box
         sx={{

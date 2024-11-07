@@ -5,12 +5,9 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
-import static de.eshg.travelmedicine.medicalhistory.MedicalHistoryHelper.isMedicalHistoryCompletelyAnswered;
 import static de.eshg.travelmedicine.util.MappingUtil.mapEnum;
 import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.PERSON_SYNCHRONIZED;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.appointmentblock.AppointmentTypeMapper;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
@@ -27,14 +24,7 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
-import de.eshg.travelmedicine.medicalhistory.MedicalHistoryMapper;
-import de.eshg.travelmedicine.medicalhistory.MedicalHistoryService;
-import de.eshg.travelmedicine.medicalhistory.api.MedicalHistoryContentDto;
-import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
 import de.eshg.travelmedicine.notification.NotificationService;
-import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplate;
-import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplateRepository;
-import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplateState;
 import de.eshg.travelmedicine.util.MappingUtil;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppliedServiceDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
@@ -46,15 +36,15 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentOverview
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAssignableServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAvailableAppointmentsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetCitizenAppointmentOverviewResponse;
-import de.eshg.travelmedicine.vaccinationconsultation.api.GetMedicalHistoriesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetStepsWithAppliedServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetVaccinationConsultationDetailsResponse;
+import de.eshg.travelmedicine.vaccinationconsultation.api.InformationStatementSummaryDto;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatchAcceptDraftRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchOtherServiceRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationConsultationPatientRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationConsultationTravelDetailsRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchVaccinationRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
-import de.eshg.travelmedicine.vaccinationconsultation.api.PostInformationStatementsRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostOtherServiceRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostVaccinationConsultationRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostVaccinationRequest;
@@ -66,7 +56,6 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.TravelTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.VaccinationConsultationSearchDto;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.AppointmentOverviewEntry;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.CreatedByUserType;
-import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.InformationStatement;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherService;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Person;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.PersonRepository;
@@ -97,15 +86,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class VaccinationConsultationService {
+  private static final Logger log = LoggerFactory.getLogger(VaccinationConsultationService.class);
   private final VaccinationConsultationRepository vaccinationConsultationRepository;
   private final ProcedureStepRepository procedureStepRepository;
   private final ProcedureStepService procedureStepService;
-  private final MedicalHistoryService medicalHistoryService;
 
   private final VcServiceService vcServiceService;
   private final ServiceRepository serviceRepository;
@@ -126,7 +118,6 @@ public class VaccinationConsultationService {
   private static final String UPDATE_OUTDATED_PERSON =
       "The patient update failed. Is the person data up-to-date?";
   private final ProcedureAccessor procedureAccessor;
-  private final InformationStatementTemplateRepository informationStatementTemplateRepository;
   private final NotificationService notificationService;
   private final PersonRepository personRepository;
 
@@ -134,7 +125,6 @@ public class VaccinationConsultationService {
       VaccinationConsultationRepository vaccinationConsultationRepository,
       ProcedureStepRepository procedureStepRepository,
       ProcedureStepService procedureStepService,
-      MedicalHistoryService medicalHistoryService,
       VcServiceService vcServiceService,
       ServiceRepository serviceRepository,
       AppointmentService appointmentService,
@@ -147,13 +137,11 @@ public class VaccinationConsultationService {
       Clock clock,
       AuditLogger auditLogger,
       ProcedureAccessor procedureAccessor,
-      InformationStatementTemplateRepository informationStatementTemplateRepository,
       NotificationService notificationService,
       PersonRepository personRepository) {
     this.vaccinationConsultationRepository = vaccinationConsultationRepository;
     this.procedureStepRepository = procedureStepRepository;
     this.procedureStepService = procedureStepService;
-    this.medicalHistoryService = medicalHistoryService;
     this.vcServiceService = vcServiceService;
     this.serviceRepository = serviceRepository;
     this.appointmentService = appointmentService;
@@ -166,9 +154,13 @@ public class VaccinationConsultationService {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.procedureAccessor = procedureAccessor;
-    this.informationStatementTemplateRepository = informationStatementTemplateRepository;
     this.notificationService = notificationService;
     this.personRepository = personRepository;
+  }
+
+  public PatientDto patientOf(VaccinationConsultation vaccinationConsultation) {
+    UUID patientId = vaccinationConsultation.getPatientIdsFromCentralFile().getFirst();
+    return personClient.getPatientFromCentralFile(patientId);
   }
 
   public UUID createProcedure(PostVaccinationConsultationRequest request) {
@@ -228,19 +220,21 @@ public class VaccinationConsultationService {
     vaccinationConsultationRepository.save(vaccinationConsultation);
     procedureStepRepository.save(initialProcedureStep);
 
-    notificationService.onNewCitizenProcedure(
-        citizenAccessCodeUser.accessCode(), request.patient(), initialProcedureStep);
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
+      notificationService.notifyNewCitizenProcedure(
+          request.patient(),
+          initialProcedureStep.getAppointment().getAppointmentStart(),
+          citizenAccessCodeUser.accessCode());
+    }
 
     return vaccinationConsultation.getExternalId();
   }
 
-  public GetAppointmentOverviewResponse getAllProcedureAppointmentSummaries(
-      LocalDate dateRangeStart, LocalDate dateRangeEnd) {
-    Instant start = dateRangeStart.atStartOfDay(clock.getZone()).toInstant();
-    Instant end = dateRangeEnd.atTime(LocalTime.MAX).atZone(clock.getZone()).toInstant();
+  public GetAppointmentOverviewResponse getAllProcedureAppointmentSummaries(LocalDate date) {
+    Instant startOfDay = date.atStartOfDay(clock.getZone()).toInstant();
+    Instant endOfDay = date.atTime(LocalTime.MAX).atZone(clock.getZone()).toInstant();
     List<AppointmentOverviewEntry> appointmentOverview =
-        vaccinationConsultationRepository.findAppointmentOverview(
-            start, end, dateRangeStart, dateRangeEnd);
+        vaccinationConsultationRepository.findAppointmentOverview(startOfDay, endOfDay, date);
     List<UUID> cfsIds =
         appointmentOverview.stream()
             .map(AppointmentOverviewEntry::centralFileStateId)
@@ -257,7 +251,6 @@ public class VaccinationConsultationService {
     if (request.appointmentBookingType() == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
       appointmentService.createBlockAppointmentForStep(
           initialProcedureStep, request.appointmentStart(), request.durationInMinutes());
-
     } else if (request.appointmentBookingType() == AppointmentBookingTypeDto.USER_DEFINED) {
       appointmentService.createUserDefinedAppointment(
           initialProcedureStep, request.appointmentStart(), request.durationInMinutes());
@@ -317,6 +310,9 @@ public class VaccinationConsultationService {
   public void updatePatient(UUID externalId, PatchVaccinationConsultationPatientRequest request) {
     VaccinationConsultation vaccinationConsultation =
         procedureAccessor.accessProcedure(externalId, ProcedureAccessor.checkNotClosed);
+    if (vaccinationConsultation.getProcedureStatus() == ProcedureStatus.DRAFT) {
+      throw new BadRequestException("Can't update person in draft status.");
+    }
 
     try {
       UUID patientIdFromCentralFile =
@@ -364,16 +360,12 @@ public class VaccinationConsultationService {
             .findInitialProcedureStep(externalId)
             .orElseThrow(() -> new IllegalStateException("No initial procedure step available"));
 
-    List<InformationStatement> informationStatements =
-        vaccinationConsultation.getInformationStatements();
-
     return vaccinationConsultationDetailsMapper.toInterfaceType(
         vaccinationConsultation,
         patientFromCentralFile.patient(),
         patientFromCentralFile.personSync(),
         initialProcedureStep,
-        servicePlan,
-        informationStatements);
+        servicePlan);
   }
 
   public GetAvailableAppointmentsResponse getAllAvailableAppointments(UUID procedureId) {
@@ -559,51 +551,6 @@ public class VaccinationConsultationService {
     return null;
   }
 
-  public GetMedicalHistoriesResponse getMedicalHistories(UUID procedureId) {
-    VaccinationConsultation vaccinationConsultation =
-        procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.noChecks);
-
-    return medicalHistoryService.getMedicalHistories(vaccinationConsultation);
-  }
-
-  public void addInformationStatements(UUID procedureId, PostInformationStatementsRequest request) {
-    VaccinationConsultation vaccinationConsultation =
-        procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.checkNotClosed);
-
-    List<InformationStatement> newStatements =
-        request.templateIds().stream()
-            .map(
-                templateID -> {
-                  InformationStatementTemplate template =
-                      informationStatementTemplateRepository
-                          .findById(templateID)
-                          .orElseThrow(
-                              () -> new NotFoundException("No such template: " + templateID));
-                  if (template.getState() != InformationStatementTemplateState.FINAL)
-                    throw new BadRequestException(
-                        "The template can't be used until it's in its FINAL state.");
-                  return template;
-                })
-            .map(
-                template ->
-                    new InformationStatement(template.getTitle(), "content from the template"))
-            .toList();
-
-    vaccinationConsultation.getInformationStatements().addAll(newStatements);
-    newStatements.forEach(s -> s.setVaccinationConsultation(vaccinationConsultation));
-  }
-
-  public void deleteInformationStatement(UUID procedureId, UUID informationStatementId) {
-    InformationStatement informationStatement =
-        procedureAccessor.accessInformationStatement(
-            informationStatementId, procedureId, ProcedureAccessor.checkNotClosed);
-
-    VaccinationConsultation vaccinationConsultation =
-        informationStatement.getVaccinationConsultation();
-
-    vaccinationConsultation.getInformationStatements().remove(informationStatement);
-  }
-
   private static String assembleServiceDescription(VcService service) {
     return switch (service) {
       case Vaccination vaccination ->
@@ -643,7 +590,7 @@ public class VaccinationConsultationService {
 
                   return new StepWithAppliedServicesDto(
                       procedureStep.getId(),
-                      ProcedureStepService.getAppointment(procedureStep),
+                      ProcedureStepService.getStartDateOrEarliestDateFromAppointment(procedureStep),
                       appliedServices);
                 })
             .sorted(Comparator.comparing(StepWithAppliedServicesDto::appointmentDateTime))
@@ -800,51 +747,16 @@ public class VaccinationConsultationService {
     AppointmentSummaryDto summaryDto =
         vaccinationConsultationDetailsMapper.mapToAppointmentSummaryInterfaceType(procedureStep);
 
-    return AppointmentDetailsMapper.mapToDetails(summaryDto, patient, procedureStep);
+    List<InformationStatementSummaryDto> informationStatementSummaries =
+        InformationStatementSummaryMapper.mapToInterfaceType(
+            procedureStep.getVaccinationConsultation().getInformationStatements());
+
+    return AppointmentDetailsMapper.mapToDetails(
+        summaryDto, patient, procedureStep, informationStatementSummaries);
   }
 
-  public MedicalHistoryContentDto getMedicalHistory(
+  public void cancelAppointmentByCitizen(
       UUID citizenUserId, UUID procedureId, UUID procedureStepId) {
-    ProcedureStep procedureStep =
-        procedureAccessor.accessProcedureStep(
-            procedureStepId,
-            procedureId,
-            List.of(
-                new ProcedureAccessor.CheckNotClosed(),
-                new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
-
-    return MedicalHistoryMapper.contentToInterfaceType(procedureStep.getMedicalHistory());
-  }
-
-  public void patchMedicalHistory(
-      UUID citizenUserId,
-      UUID procedureId,
-      UUID procedureStepId,
-      MedicalHistoryContentDto patchMedicalHistoryContent) {
-    ProcedureStep procedureStep =
-        procedureAccessor.accessProcedureStep(
-            procedureStepId,
-            procedureId,
-            List.of(
-                new ProcedureAccessor.CheckNotClosed(),
-                new ProcedureAccessor.CheckCitizenUserId(citizenUserId)));
-    MedicalHistory medicalHistory = procedureStep.getMedicalHistory();
-    if (medicalHistory.isCitizenHasAnswered()) {
-      throw new BadRequestException("Medical history already answered by citizen.");
-    }
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      medicalHistory.setContent(objectMapper.writeValueAsString(patchMedicalHistoryContent));
-    } catch (JsonProcessingException e) {
-      throw new BadRequestException("Content does not match required structure");
-    }
-    medicalHistory.setCompletelyAnswered(
-        isMedicalHistoryCompletelyAnswered(patchMedicalHistoryContent));
-    medicalHistory.setCitizenHasAnswered(true);
-  }
-
-  public void cancelAppointment(UUID citizenUserId, UUID procedureId, UUID procedureStepId) {
     ProcedureStep procedureStep =
         procedureAccessor.accessProcedureStep(
             procedureStepId,
@@ -856,10 +768,17 @@ public class VaccinationConsultationService {
       throw new BadRequestException(
           "Appointment has accomplished services and cannot be cancelled.");
     }
+    Instant cancelledAppointment = ProcedureStepService.getStartDateFromAppointment(procedureStep);
     appointmentService.cancelAppointment(procedureStep);
+
+    VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
+      notificationService.notifyCancelledByCitizen(
+          patientOf(vaccinationConsultation), cancelledAppointment);
+    }
   }
 
-  public void bookCitizenAppointment(
+  public void bookCitizenAppointmentByCitizen(
       UUID citizenUserId, UUID procedureId, UUID procedureStepId, AppointmentDto appointmentDto) {
 
     ProcedureStep procedureStep =
@@ -873,16 +792,20 @@ public class VaccinationConsultationService {
       throw new BadRequestException(
           "Appointment has accomplished services and cannot be rebooked.");
     }
+    Instant newAppointmentStart = appointmentDto.start();
     if (procedureStep.getEarliestDate() != null) {
       if (procedureStep
           .getEarliestDate()
           .atStartOfDay(clock.getZone())
           .toInstant()
-          .isAfter(appointmentDto.start())) {
+          .isAfter(newAppointmentStart)) {
         throw new BadRequestException(
             "Appointment has accomplished services and cannot be rebooked.");
       }
     }
+
+    Instant previousAppointmentStart =
+        ProcedureStepService.getStartDateFromAppointment(procedureStep);
     boolean rebook = false;
     if (procedureStep.getAppointment() != null
         || procedureStep.getUserDefinedAppointment() != null) {
@@ -890,14 +813,13 @@ public class VaccinationConsultationService {
       procedureStep.setAppointment(null);
       procedureStep.setUserDefinedAppointment(null);
     }
-    int remainingBookings = procedureStep.getBookingsRemaining();
 
+    int remainingBookings = procedureStep.getBookingsRemaining();
     if (remainingBookings > 0) {
       appointmentService.createBlockAppointmentForStep(
           procedureStep,
-          appointmentDto.start(),
-          Math.toIntExact(
-              ChronoUnit.MINUTES.between(appointmentDto.start(), appointmentDto.end())));
+          newAppointmentStart,
+          Math.toIntExact(ChronoUnit.MINUTES.between(newAppointmentStart, appointmentDto.end())));
 
     } else {
       throw new BadRequestException("No more bookings available. 2 rebookings max. allowed.");
@@ -905,6 +827,65 @@ public class VaccinationConsultationService {
 
     if (rebook) {
       procedureStep.setBookingsRemaining(remainingBookings - 1);
+    }
+
+    VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
+      if (rebook) {
+        notificationService.notifyRebookedByCitizen(
+            patientOf(vaccinationConsultation), previousAppointmentStart, newAppointmentStart);
+      } else {
+        notificationService.notifyBookedByCitizen(
+            patientOf(vaccinationConsultation), newAppointmentStart);
+      }
+    }
+  }
+
+  public void abortDraftVaccinationConsultation(UUID procedureId) {
+    VaccinationConsultation vaccinationConsultation =
+        procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.checkIsDraft);
+    UUID centralFileStateId =
+        vaccinationConsultation.getRelatedPersons().getFirst().getCentralFileStateId();
+    personClient.markExternalPersonForDeletion(centralFileStateId);
+    if (vaccinationConsultation.getCitizenUserId() != null)
+      try {
+        citizenAccessCodeUserClient.deleteCitizenAccessCodeUser(
+            vaccinationConsultation.getCitizenUserId());
+      } catch (Exception e) {
+        log.warn("Error while deleting citizen access code user.", e);
+      }
+    List<VcService> services =
+        serviceRepository.findAllByVaccinationConsultationExternalIdOrderById(
+            vaccinationConsultation.getExternalId());
+    serviceRepository.deleteAll(services);
+    procedureStepRepository.deleteAll(vaccinationConsultation.getProcedureSteps());
+    vaccinationConsultationRepository.deleteById(vaccinationConsultation.getId());
+  }
+
+  public void acceptDraftVaccinationConsultation(
+      UUID procedureId, PatchAcceptDraftRequest acceptDraftRequest) {
+    VaccinationConsultation vaccinationConsultation =
+        procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.checkIsDraft);
+
+    Person person = vaccinationConsultation.getRelatedPersons().getFirst();
+    UUID newFileState;
+    if (acceptDraftRequest.referencePersonId() == null) {
+      newFileState = createInternalReferencePerson(person.getCentralFileStateId());
+    } else {
+      newFileState =
+          personClient.updatePersonAndCreateFileState(
+              acceptDraftRequest.referencePersonId(), person.getCentralFileStateId());
+    }
+    person.setCentralFileStateId(newFileState);
+    vaccinationConsultation.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+  }
+
+  private UUID createInternalReferencePerson(UUID fileStateId) {
+
+    try {
+      return personClient.createInternalReferencePerson(fileStateId);
+    } catch (HttpClientErrorException.BadRequest e) {
+      throw new BadRequestException(e.getMessage());
     }
   }
 }

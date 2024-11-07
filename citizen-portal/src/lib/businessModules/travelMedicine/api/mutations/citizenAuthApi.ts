@@ -5,7 +5,7 @@
 
 import {
   ApiAppointment,
-  ApiMedicalHistoryContent,
+  ApiDocumentContent,
   DeleteAppointmentCpRequest,
 } from "@eshg/citizen-portal-api/travelMedicine";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
@@ -18,7 +18,7 @@ import { useTranslation } from "@/lib/i18n/client";
 export interface PatchMedicalHistoryRequest {
   procedureId: string;
   procedureStepId: string;
-  medicalHistory: ApiMedicalHistoryContent;
+  medicalHistory: ApiDocumentContent;
 }
 
 export function usePatchCitizenMedicalHistory() {

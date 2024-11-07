@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
+import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Grid, Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -26,7 +27,13 @@ interface ProcedureDetailsProps {
 }
 
 export function ProcedureDetails(props: ProcedureDetailsProps) {
-  const procedure = props.procedure;
+  const { procedure, locationSelectionMode } = props;
+
+  useControlledAlert({
+    type: "error",
+    open: procedure.hasInformationBlock,
+    message: "Für diesen Vorgang wurde eine Auskunftssperre erteilt.",
+  });
 
   return (
     <PageGrid>
@@ -55,7 +62,7 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
         <Stack spacing={SPACING}>
           <ProcedureDetailsSection procedure={procedure} />
           <ProcedureActionsPanel procedure={procedure} />
-          {props.locationSelectionMode === ApiLocationSelectionMode.None &&
+          {locationSelectionMode === ApiLocationSelectionMode.None &&
             !procedure.isClosed &&
             isDefined(procedure.appointment) && (
               <WaitingRoomPanel procedure={procedure} />

@@ -35,6 +35,9 @@ export function PendingFacilitiesOfflineTable() {
   const columns = createPendingFacilitiesColumns(
     false,
     handleViewIncidentsClick,
+    () => undefined,
+    () => undefined,
+    false,
   );
 
   const [userActivity, setUserActivity] =
@@ -63,8 +66,10 @@ export function PendingFacilitiesOfflineTable() {
           columns={columns}
           sorting={tableControl.tableSorting}
           noDataComponent={NoDataHint}
-          rowNavRoute={getPendingFacilityRowRoute}
-          focusColumnHeader={"Name"}
+          rowNavigation={{
+            route: getPendingFacilityRowRoute,
+            focusColumnAccessorKey: "name",
+          }}
           striped
         />
       </TableSheet>

@@ -22,6 +22,6 @@ export function useEditStatisticName(statisticId: string) {
   });
 
   return async (name: string) => {
-    return mutation.mutateAsync(name).catch();
+    return mutation.mutateAsync(name);
   };
 }

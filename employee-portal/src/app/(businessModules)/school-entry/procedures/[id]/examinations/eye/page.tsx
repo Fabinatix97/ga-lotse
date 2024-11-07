@@ -45,11 +45,9 @@ export default function SchoolEntryEyeExaminationPage(
   const updateEyeExaminationResult = useUpdateEyeExaminationResult();
 
   async function handleSubmit(formValues: EyeExaminationFormValues) {
-    await updateEyeExaminationResult
-      .mutateAsync(
-        mapToRequest(procedureId, formValues, eyeExaminationResult.version),
-      )
-      .catch();
+    await updateEyeExaminationResult.mutateAsync(
+      mapToRequest(procedureId, formValues, eyeExaminationResult.version),
+    );
   }
 
   return (

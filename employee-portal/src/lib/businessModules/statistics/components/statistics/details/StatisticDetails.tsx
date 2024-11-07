@@ -9,7 +9,7 @@ import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { Stack } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { isDefined } from "remeda";
+import { isDefined, isNonNull } from "remeda";
 
 import { GeoShapeInfo } from "@/lib/businessModules/statistics/api/models/geoShapesTableView";
 import { StatisticDetailsView } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
@@ -18,6 +18,7 @@ import {
   DuplicateStatisticSidebar,
   OriginalStatistic,
 } from "@/lib/businessModules/statistics/components/statistics/DuplicateStatisticSidebar/DuplicateStatisticSidebar";
+import { SaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/statistics/SaveAsEvaluationTemplateSidebar/SaveAsEvaluationTemplateSidebar";
 import { BusinessModuleInformationCardProps } from "@/lib/businessModules/statistics/components/statistics/details/BusinessModuleInformationCard";
 import { CreateDiagramSidebar } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/CreateDiagramSidebar";
 import { CreateEvaluationSidebar } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/CreateEvaluationSidebar";
@@ -44,6 +45,10 @@ export function StatisticDetails(
   const [createDiagramSidebarState, setCreateDiagramSidebarState] = useState<
     SidebarState<{ evaluationId: string }>
   >({ open: false });
+  const [
+    saveAsEvaluationTemplateSidebarEvaluationId,
+    setSaveAsEvaluationTemplateSidebarEvaluationId,
+  ] = useState<string | null>(null);
 
   const [duplicateStatisticAction, setDuplicateStatisticAction] =
     useState<OriginalStatistic>();
@@ -60,6 +65,7 @@ export function StatisticDetails(
     canDelete: canDelete(props.userId),
     canUpdateStatistic: canUpdateStatistic(props.userId),
     canWrite: canWrite(),
+    canExportData: props.anonymized,
     start: props.start,
     end: props.end,
     createdAt: props.createdAt,
@@ -79,6 +85,9 @@ export function StatisticDetails(
         timeRangeStart: props.start,
         timeRangeEnd: props.end,
       }),
+    onSaveEvaluationTemplateClicked: () =>
+      setSaveAsEvaluationTemplateSidebarEvaluationId(props.statisticId),
+    onDataExport: () => Promise.resolve(),
   };
 
   const businessModuleInformationCardsProps: BusinessModuleInformationCardProps[] =
@@ -88,11 +97,21 @@ export function StatisticDetails(
         dataSource: props.dataSource.name,
         datasetAmount: props.dataSource.datasetAmount,
         attributeLabels: props.dataSource.attributeLabels,
+        anonymized: props.anonymized,
       },
     ];
 
   return (
     <Stack gap={6}>
+      {isNonNull(saveAsEvaluationTemplateSidebarEvaluationId) && (
+        <OverlayBoundary>
+          <SaveAsEvaluationTemplateSidebar
+            open={true}
+            onClose={() => setSaveAsEvaluationTemplateSidebarEvaluationId(null)}
+            evaluationId={saveAsEvaluationTemplateSidebarEvaluationId}
+          />
+        </OverlayBoundary>
+      )}
       {isCreateEvaluationSidebarOpen && (
         <OverlayBoundary>
           <CreateEvaluationSidebar
@@ -162,6 +181,7 @@ export function StatisticDetails(
         onDiagramCreateClicked={(evaluationId) =>
           setCreateDiagramSidebarState({ open: true, data: { evaluationId } })
         }
+        anonymized={props.anonymized}
       />
     </Stack>
   );

@@ -16,10 +16,10 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
-import { InfoOutlined } from "@mui/icons-material";
-import { FormLabel, Stack, Tooltip, Typography } from "@mui/joy";
+import { FormLabel, Stack, Typography } from "@mui/joy";
 
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 import { isInteger } from "@/lib/shared/helpers/guards";
 
 import { AnamnesisFormValues, TEXT_INPUT_STYLE } from "./AnamnesisForm";
@@ -78,17 +78,10 @@ export function BirthDataAndChildInformationForm(
             softRequired
           />
           <FormLabel sx={LABEL_TEXT_STYLE}>in g</FormLabel>
-          <Tooltip
+          <InfoIconTooltipButton
             title="(300 - 6000, 9999 - unbekannt)"
-            color="success"
-            variant="outlined"
-          >
-            <InfoOutlined
-              color="primary"
-              size="sm"
-              sx={{ marginBottom: "auto", marginTop: "auto" }}
-            />
-          </Tooltip>
+            tooltipColor="success"
+          />
         </Stack>
         <BooleanSelectField
           name={developmentInfo("gestationalAge")}

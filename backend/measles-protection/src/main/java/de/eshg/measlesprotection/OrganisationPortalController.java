@@ -15,8 +15,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = OrganisationPortalController.BASE_URL)
@@ -30,8 +33,8 @@ public class OrganisationPortalController {
 
   public OrganisationPortalController(
       OrganisationPortalService publicMeaslesProtectionService,
-      @Value("classpath:templates/documents/privacy_notice.pdf") Resource privacyNotice,
-      @Value("classpath:templates/documents/privacy_policy.pdf") Resource privacyPolicy) {
+      @Value("${de.eshg.measles-protection.privacy-notice-location}") Resource privacyNotice,
+      @Value("${de.eshg.measles-protection.privacy-policy-location}") Resource privacyPolicy) {
     this.publicMeaslesProtectionService = publicMeaslesProtectionService;
     this.privacyNotice = privacyNotice;
     this.privacyPolicy = privacyPolicy;
@@ -47,14 +50,12 @@ public class OrganisationPortalController {
 
   @GetMapping(path = "/documents/privacy-notice")
   @Operation(summary = "Get the privacy-notice document.")
-  @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
     return getPrivacyDocument(privacyNotice);
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
-  @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
     return getPrivacyDocument(privacyPolicy);
   }

@@ -9,11 +9,13 @@ import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.security.config.StiProtectionPublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(StiProtectionPublicSecurityConfig.class)
+@EntityScan("de.eshg")
 public class StiProtectionApplication {
 
   @Bean

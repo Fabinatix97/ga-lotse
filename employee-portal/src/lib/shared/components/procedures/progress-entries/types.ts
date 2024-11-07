@@ -11,15 +11,15 @@ import {
   ApiCreateApprovalRequestRequest,
   ApiCreateManualProgressEntryRequest,
   ApiFileMetaData,
-  ApiGenericFileReference,
   ApiGetDetailedProcedureResponse,
   ApiGetFile200Response,
   ApiGetProcedureApprovalRequestsResponse,
   ApiGetProgressEntriesResponseProgressEntriesInner,
   ApiGetProgressEntryResponse,
-  ApiInboxProgressEntryFileReference,
+  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,
   ApiPatchManualProgressEntryRequest,
+  ApiProgressEntry,
   ApiProgressEntryClass,
   ApiProgressEntryReferenceFilePair,
   ApiUpdateFileMetaDataRequest,
@@ -74,6 +74,7 @@ export interface ProgressEntriesUrlParams {
   params: Readonly<{ id: string; entryId?: string }>;
   searchParams: SearchParams;
 }
+
 interface ProgressEntryApiActions {
   useCreateProgressEntry: () => UseMutationResult<
     ApiManualProgressEntry,
@@ -87,6 +88,7 @@ interface ProgressEntryApiActions {
   >;
   useDeleteFile: () => UseMutationResult<void, Error, string, unknown>;
   useDeleteProgressEntry: () => UseMutationResult<void, Error, string, unknown>;
+
   usePatchProgressEntry(): UseMutationResult<
     {
       entry?: ApiManualProgressEntry;
@@ -101,6 +103,7 @@ interface ProgressEntryApiActions {
     },
     unknown
   >;
+
   useRequestProgressEntryDeletion: () => UseMutationResult<
     ApiApprovalRequest,
     Error,
@@ -180,11 +183,11 @@ export interface ProgressEntriesFilters {
   progressEntryClass?: Set<ApiProgressEntryClass>;
 }
 
-export interface RelatedEntry
-  extends Omit<ApiManualProgressEntry, "fileReference" | "keyDocumentVersion"> {
-  fileReference: Exclude<
-    ApiInboxProgressEntryFileReference,
-    { type: "GenericFileReference" } & ApiGenericFileReference
-  >;
+interface RelatedEntry extends Omit<ApiProgressEntry, "fileReference"> {
+  fileReference: ApiGetFile200Response;
   keyDocumentVersion: number;
 }
+
+export type RelatedProgressEntry =
+  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner &
+    RelatedEntry;

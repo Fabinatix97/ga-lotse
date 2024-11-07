@@ -25,7 +25,7 @@ export function SideNavigation({
   setCollapsed: Dispatch<SetStateAction<boolean>>;
 }) {
   const sidenav = useSidenav();
-  const items = useNavigationItems();
+  const { isLoading, items } = useNavigationItems();
 
   return (
     <>
@@ -45,6 +45,7 @@ export function SideNavigation({
             showCollapseButton
             setCollapsed={setCollapsed}
             items={items}
+            isLoading={isLoading}
           />
         ) : (
           <NavigationListCollapsed setCollapsed={setCollapsed} items={items} />
@@ -76,7 +77,11 @@ export function SideNavigation({
             display: "flex",
           }}
         >
-          <NavigationListExpanded showCollapseButton={false} items={items} />
+          <NavigationListExpanded
+            showCollapseButton={false}
+            items={items}
+            isLoading={isLoading}
+          />
         </Box>
       </Drawer>
     </>

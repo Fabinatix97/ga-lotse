@@ -21,6 +21,10 @@ public class PastProcedureListRowValueMapper {
             false,
             false),
         values.getAnamnesisData(),
-        values.getVaccinationStatusData());
+        values.getVaccinationStatusData(),
+        values.getEyeExaminationResult(),
+        values.getHearingTestData(),
+        values.getSopessExaminationData(),
+        values.getDevelopmentScreeningData());
   }
 }

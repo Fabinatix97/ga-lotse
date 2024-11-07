@@ -64,13 +64,14 @@ export function CreateAppointmentBlockGroupForm({
 
   async function handleSubmit(values: AppointmentBlockGroupValues) {
     const appointmentBlockGroupValues = mapFormValues(values);
-    await createDailyAppointmentBlocksForGroup
-      .mutateAsync(appointmentBlockGroupValues, {
+    await createDailyAppointmentBlocksForGroup.mutateAsync(
+      appointmentBlockGroupValues,
+      {
         onSuccess: () => {
           router.push(routes.appointmentBlockGroups.index);
         },
-      })
-      .catch();
+      },
+    );
   }
 
   return (

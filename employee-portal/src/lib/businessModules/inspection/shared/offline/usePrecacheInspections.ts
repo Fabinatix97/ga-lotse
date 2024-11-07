@@ -15,7 +15,6 @@ import {
 } from "@eshg/employee-portal-api/base";
 import {
   ApiInspection,
-  ApiInspectionFeature,
   ChecklistApi,
   EditorApi,
   FileApi,
@@ -63,7 +62,6 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 import { getChecklistsQueryKey } from "@/lib/businessModules/inspection/api/queries/checklist";
 import { getDepartmentQueryKey } from "@/lib/businessModules/inspection/api/queries/department";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import {
   getAvailableCLDVsQueryKey,
   getAvailablePLDRsQueryKey,
@@ -115,9 +113,6 @@ export function usePrecacheInspections(inspectionIds: string[]) {
   const fetchApprovalRequests = useHasUserRoleCheck(
     ApiUserRole.InspectionLeader,
   );
-  const isPacklistsEnabled = useIsNewFeatureEnabled(
-    ApiInspectionFeature.Packlists,
-  );
 
   const { removeFromPrecache } = useServiceWorker();
   const snackbar = useSnackbar();
@@ -142,7 +137,6 @@ export function usePrecacheInspections(inspectionIds: string[]) {
       procedureApi,
       packlistApi,
       fetchApprovalRequests,
-      isPacklistsEnabled,
     })
       .then((inspectionIdToRemove) => {
         if (inspectionIdToRemove) {
@@ -171,7 +165,6 @@ export function usePrecacheInspections(inspectionIds: string[]) {
     incidentApi,
     inspectionApi,
     inspectionFeatureTogglesApi,
-    isPacklistsEnabled,
     packlistApi,
     procedureApi,
     progressEntryApi,
@@ -201,7 +194,6 @@ async function prefetchAll({
   procedureApi,
   packlistApi,
   fetchApprovalRequests,
-  isPacklistsEnabled,
 }: {
   inspectionIds: string[];
   cacheHeaders: (inspectionId?: string) => RequestInit;
@@ -220,7 +212,6 @@ async function prefetchAll({
   procedureApi: ProcedureApi;
   packlistApi: PacklistApi;
   fetchApprovalRequests: boolean;
-  isPacklistsEnabled: boolean;
 }) {
   // 1. pre-fetch inspection procedure related queries
   for (const inspectionId of inspectionIds) {
@@ -386,21 +377,19 @@ async function prefetchAll({
     }
 
     // 1.9 pre-fetch useGetPacklists()
-    if (isPacklistsEnabled) {
-      inspPromises.push(
-        queryClient.fetchQuery({
-          queryKey: getPacklistsQueryKey(inspectionId),
-          queryFn: () => packlistApi.getPacklists(inspectionId, headers),
-        }),
-      );
-      // 1.9.1 pre-fetch useGetAvailablePLDRs()
-      inspPromises.push(
-        queryClient.fetchQuery({
-          queryKey: getAvailablePLDRsQueryKey(inspectionId),
-          queryFn: () => inspectionApi.getAvailablePLDs(inspectionId, headers),
-        }),
-      );
-    }
+    inspPromises.push(
+      queryClient.fetchQuery({
+        queryKey: getPacklistsQueryKey(inspectionId),
+        queryFn: () => packlistApi.getPacklists(inspectionId, headers),
+      }),
+    );
+    // 1.9.1 pre-fetch useGetAvailablePLDRs()
+    inspPromises.push(
+      queryClient.fetchQuery({
+        queryKey: getAvailablePLDRsQueryKey(inspectionId),
+        queryFn: () => inspectionApi.getAvailablePLDs(inspectionId, headers),
+      }),
+    );
 
     // 1.10 pre-fetch inspection related pages
     const pages = [

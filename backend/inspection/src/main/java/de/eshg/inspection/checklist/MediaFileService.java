@@ -20,7 +20,6 @@ import de.eshg.inspection.checklist.persistence.element.ChecklistImageElement;
 import de.eshg.inspection.checklistdefinition.api.ChecklistElementType;
 import de.eshg.inspection.common.persistence.MediaFile;
 import de.eshg.inspection.common.persistence.MediaFileRepository;
-import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
@@ -90,7 +89,6 @@ public class MediaFileService {
         return List.of(MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG);
       }
       case UpdateChecklistAudioDto ignored -> {
-        inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.CHECKLIST_AUDIOS);
         return List.of(CustomMediaTypes.MEDIA_TYPE_WAV, CustomMediaTypes.MEDIA_TYPE_MP3);
       }
       default ->

@@ -4,13 +4,10 @@
  */
 
 import { Button } from "@mui/joy";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { PropsWithChildren, ReactNode } from "react";
 
 import { ActionButtonProps } from "../components/Alert";
 
-import { useResetAlertContext } from "./AlertContext";
 import { PortalErrorCode } from "./PortalErrorCode";
 
 interface ErrorDescription {
@@ -119,15 +116,14 @@ function renderRetryButton(onReset: (() => void) | undefined) {
 interface ReloadButtonProps extends ActionButtonProps, PropsWithChildren {}
 
 function ReloadButton(props: ReloadButtonProps) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const resetAlertContext = useResetAlertContext();
   const { children, ...buttonProps } = props;
 
   function handleReload() {
-    resetAlertContext();
-    void queryClient.invalidateQueries();
-    router.refresh();
+    /**
+     * Use browser reload instead of Next.js router.reload() to force displaying suspense fallbacks for refetched queries.
+     * Invalidating queries will trigger background refetches, which do not display the suspense fallbacks.
+     */
+    window.location.reload();
   }
 
   return (

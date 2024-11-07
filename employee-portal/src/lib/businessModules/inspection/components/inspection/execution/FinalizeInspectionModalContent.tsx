@@ -98,7 +98,7 @@ export function FinalizeInspectionModalContent({
         id: inspectionId,
         finalizeInspectionRequest: { signer },
         signature,
-      }).catch();
+      });
 
       handleSubmitSuccess(phase);
     }
@@ -108,7 +108,7 @@ export function FinalizeInspectionModalContent({
     const { phase } = await finalizeInspection({
       id: inspectionId,
       finalizeInspectionRequest: {},
-    }).catch();
+    });
     handleSubmitSuccess(phase);
   }
 

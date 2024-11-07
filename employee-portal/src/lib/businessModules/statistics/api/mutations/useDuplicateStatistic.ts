@@ -25,5 +25,5 @@ export function useDuplicateStatistic({
     },
   });
   return (params: ApiCloneStatisticRequest) =>
-    mutation.mutateAsync(params, { onSuccess }).catch();
+    mutation.mutateAsync(params, { onSuccess });
 }

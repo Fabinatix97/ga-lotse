@@ -7,12 +7,12 @@ package de.eshg.statistics.aggregation;
 
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.statistics.api.AvailableDataSource;
-import de.eshg.statistics.api.BaseDataSourceAttribute;
-import de.eshg.statistics.api.BusinessDataAttribute;
-import de.eshg.statistics.api.BusinessDataSourceAttribute;
-import de.eshg.statistics.api.DataSourceDto;
-import de.eshg.statistics.api.GetAvailableDataSourcesResponse;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
+import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
+import de.eshg.statistics.api.datasource.BusinessDataAttribute;
+import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
+import de.eshg.statistics.api.datasource.DataSourceDto;
+import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;

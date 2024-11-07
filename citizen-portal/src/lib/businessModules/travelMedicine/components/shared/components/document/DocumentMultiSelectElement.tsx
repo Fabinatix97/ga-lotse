@@ -4,8 +4,8 @@
  */
 
 import {
-  ApiMedicalHistorySectionElement,
-  ApiMedicalHistorySubElementMultiSelect,
+  ApiDocumentAnamnesisQuestion,
+  ApiDocumentSubElementMultiSelect,
 } from "@eshg/citizen-portal-api/travelMedicine";
 import {
   BaseFieldProps,
@@ -18,22 +18,22 @@ import { useTranslation } from "@/lib/i18n/client";
 
 interface DocumentMultiSelectElementProps
   extends Omit<BaseFieldProps, "required" | "children"> {
-  element: ApiMedicalHistorySectionElement;
+  anamnesisQuestion: ApiDocumentAnamnesisQuestion;
   sectionIndex: number;
   elementIndex: number;
   name: string;
 }
 
 export function DocumentMultiSelectElement({
-  element,
+  anamnesisQuestion,
   sectionIndex,
   elementIndex,
   ...restProps
 }: Readonly<DocumentMultiSelectElementProps>) {
   const { t } = useTranslation(["travelMedicine/document"]);
-  const { input, helpers } = useBaseField<
-    ApiMedicalHistorySubElementMultiSelect[]
-  >({ ...restProps });
+  const { input, helpers } = useBaseField<ApiDocumentSubElementMultiSelect[]>({
+    ...restProps,
+  });
 
   async function handleCheckboxChange(
     event: ChangeEvent<HTMLInputElement>,
@@ -75,7 +75,7 @@ export function DocumentMultiSelectElement({
         aria-labelledby="checkbox-group"
         sx={{ rowGap: 4 }}
       >
-        {element.elementData.subElementMultiSelect.map(
+        {anamnesisQuestion.subElementMultiSelect.map(
           ({ questionText }, index) => (
             <ListItem
               key={"multiselect" + elementIndex + "-" + index}
@@ -92,7 +92,7 @@ export function DocumentMultiSelectElement({
                   sectionIndex +
                   "].sectionElements[" +
                   elementIndex +
-                  "].elementData.subElementMultiSelect[" +
+                  "].anamnesisQuestion.subElementMultiSelect[" +
                   index +
                   "].answer"
                 }

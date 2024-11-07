@@ -13,6 +13,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.*;
+import de.eshg.domain.model.BaseEntity_;
+import de.eshg.domain.model.SequencedBaseEntity_;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesFilterOptionsDto;
 import de.eshg.inspection.facility.api.GetPendingFacilitiesPaginationOptionsDto;
 import de.eshg.inspection.facility.api.InspAddFacilityRequest;
@@ -31,6 +33,8 @@ import de.eshg.inspection.facility.persistence.PendingFacilityView;
 import de.eshg.inspection.facility.websearch.WebSearchService;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntry;
 import de.eshg.inspection.facility.websearch.persistence.WebSearchEntryStatus;
+import de.eshg.inspection.feature.InspectionFeature;
+import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
@@ -40,6 +44,7 @@ import de.eshg.inspection.inspection.persistence.InspectionAppointment;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment_;
 import de.eshg.inspection.inspection.persistence.InspectionRelatedFacility;
 import de.eshg.inspection.inspection.persistence.InspectionRelatedFacility_;
+import de.eshg.inspection.inspection.persistence.InspectionRepository;
 import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
@@ -58,6 +63,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.validation.constraints.NotNull;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -90,6 +96,8 @@ public class FacilityService {
   private final Clock clock;
   private final EntityManager entityManager;
   private final InspectionFinalizer inspectionFinalizer;
+  private final InspectionRepository inspectionRepository;
+  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -98,7 +106,9 @@ public class FacilityService {
       WebSearchService webSearchService,
       Clock clock,
       EntityManager entityManager,
-      InspectionFinalizer inspectionFinalizer) {
+      InspectionFinalizer inspectionFinalizer,
+      InspectionRepository inspectionRepository,
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -106,13 +116,8 @@ public class FacilityService {
     this.clock = clock;
     this.entityManager = entityManager;
     this.inspectionFinalizer = inspectionFinalizer;
-  }
-
-  public InspFacilityDto getFacility(UUID externalId) {
-    Facility facility = loadFacility(externalId);
-    GetFacilityFileStateResponse baseResponse =
-        facilityClient.getFacilityFileState(facility.getCentralFileStateId());
-    return FacilityMapper.fromGetFacilityResponse(facility, baseResponse);
+    this.inspectionRepository = inspectionRepository;
+    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -242,8 +247,21 @@ public class FacilityService {
   public InspPendingFacilitiesOverviewResponse getPendingFacilities(
       GetPendingFacilitiesFilterOptionsDto params,
       GetPendingFacilitiesPaginationOptionsDto pagination) {
+    if (params.hasDuplicates() != null) {
+      inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
+    }
+
     // early validate page request params
     PageRequest pageRequest = pagination.getPageRequest();
+
+    List<Long> facilityIdsWithFacilityDuplicate = facilityRepository.getFacilityIdsWithDuplicates();
+
+    List<Long> inspectionIdsWithInspectionDuplicate =
+        inspectionRepository.getInspectionIdsWithDuplicates();
+
+    long numberOfDuplicates =
+        (long) facilityIdsWithFacilityDuplicate.size()
+            + (long) inspectionIdsWithInspectionDuplicate.size();
 
     List<PendingFacilityView> candidates =
         findPendingFacilities(
@@ -252,7 +270,10 @@ public class FacilityService {
             params.type(),
             params.phase(),
             params.isBefore(),
-            params.isAfter());
+            params.isAfter(),
+            params.hasDuplicates(),
+            facilityIdsWithFacilityDuplicate,
+            inspectionIdsWithInspectionDuplicate);
 
     // fetch centralfile data in a bulk query
     Map<UUID, AddFacilityFileStateResponse> centralFileData = fetchCentralFileData(candidates);
@@ -266,7 +287,9 @@ public class FacilityService {
     List<InspPendingFacilityDto> result = sortAndPageEntries(filteredEntries, pageRequest);
 
     int totalPages = (int) Math.ceil((double) filteredEntries.size() / pageRequest.getPageSize());
-    return new InspPendingFacilitiesOverviewResponse(totalPages, filteredEntries.size(), result);
+
+    return new InspPendingFacilitiesOverviewResponse(
+        totalPages, filteredEntries.size(), result, numberOfDuplicates);
   }
 
   private List<PendingFacilityView> findPendingFacilities(
@@ -275,7 +298,10 @@ public class FacilityService {
       @Nullable Set<InspectionType> type,
       @Nullable Set<InspectionPhase> phase,
       @Nullable Instant isBefore,
-      @Nullable Instant isAfter) {
+      @Nullable Instant isAfter,
+      @Nullable Boolean hasDuplicates,
+      @NotNull List<Long> facilityIds,
+      @NotNull List<Long> inspectionIds) {
     Set<ProcedureStatus> procedureStatus = FacilityMapper.toDomainType(status);
 
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -348,6 +374,15 @@ public class FacilityService {
                   cb.greaterThanOrEqualTo(
                       cb.literal(LocalDate.ofInstant(clock.instant(), ZoneOffset.UTC)),
                       LocalDate.ofInstant(isAfter, ZoneOffset.UTC)))));
+    }
+
+    if (hasDuplicates != null) {
+      Predicate hasDuplicatesPredicate =
+          cb.or(
+              inspectionRoot.get(SequencedBaseEntity_.id).in(inspectionIds),
+              facilityJoin.get(BaseEntity_.id).in(facilityIds));
+
+      predicates.add(hasDuplicates ? hasDuplicatesPredicate : cb.not(hasDuplicatesPredicate));
     }
 
     cq.select(cb.construct(PendingFacilityView.class, facilityJoin, irfJoin, inspectionRoot));

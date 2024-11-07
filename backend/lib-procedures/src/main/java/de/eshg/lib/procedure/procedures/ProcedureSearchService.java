@@ -19,11 +19,15 @@ import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.helper.FacilityFileStateSearchableStringFormatter;
 import de.eshg.lib.procedure.helper.PersonFileStateSearchableStringFormatter;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +46,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.text.similarity.FuzzyScore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -109,8 +116,12 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     return foundProcedures;
   }
 
-  public Map<PersonKeyAttributes, List<ProcedureT>> searchOpenProceduresByPersons(
-      Set<PersonKeyAttributes> searchAttributes, PersonType personType) {
+  public <PersonT extends RelatedPerson<ProcedureT>>
+      Map<PersonKeyAttributes, List<ProcedureT>> searchProceduresByPersons(
+          Set<PersonKeyAttributes> searchAttributes,
+          PersonType personType,
+          Specification<ProcedureT> additionalProcedureSpecification,
+          Class<PersonT> relatedPersonClass) {
     if (searchAttributes.isEmpty()) {
       return Map.of();
     }
@@ -127,9 +138,24 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     List<UUID> allPersonFileStateIds =
         fileStateIdsByPersonAttributes.values().stream().flatMap(Collection::stream).toList();
 
+    Specification<ProcedureT> proceduresByRelatedPersons =
+        (root, query, criteriaBuilder) -> {
+          Subquery<PersonT> relatedPersonSubquery = query.subquery(relatedPersonClass);
+          Root<PersonT> personRoot = relatedPersonSubquery.from(relatedPersonClass);
+
+          relatedPersonSubquery.where(
+              criteriaBuilder.and(
+                  criteriaBuilder.equal(personRoot.get(RelatedPerson_.procedure), root),
+                  personRoot.get(RelatedPerson_.centralFileStateId).in(allPersonFileStateIds),
+                  criteriaBuilder.equal(personRoot.get(RelatedPerson_.personType), personType)));
+          return criteriaBuilder.exists(relatedPersonSubquery);
+        };
+
     List<ProcedureT> allProcedures =
-        procedureRepository.findByRelatedPersonsCentralFileStateIds(
-            allPersonFileStateIds, personType, ProcedureStatus.OPEN);
+        procedureRepository.findAll(
+            proceduresByRelatedPersons.and(additionalProcedureSpecification),
+            Sort.by(Direction.DESC, Procedure_.CREATED_AT)
+                .and(Sort.by(Direction.ASC, Procedure_.ID)));
 
     Map<UUID, List<ProcedureT>> proceduresPerPersonFileStateId = new LinkedHashMap<>();
     for (ProcedureT procedure : allProcedures) {

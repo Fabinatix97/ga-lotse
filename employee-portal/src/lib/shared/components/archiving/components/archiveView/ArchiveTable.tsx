@@ -105,10 +105,11 @@ export function ArchiveTable(props: ArchiveTableProps) {
               sorting={tableControl.tableSorting}
               enableSortingRemoval={false}
               rowSelectionProps={rowSelectionProps}
-              focusColumnHeader="Geschlossen am"
-              rowNavRoute={(row) =>
-                props.procedureDetailsRoute(row.original.procedureId)
-              }
+              rowNavigation={{
+                route: (row) =>
+                  props.procedureDetailsRoute(row.original.procedureId),
+                focusColumnAccessorKey: "closedAt",
+              }}
             />
           </TableSheet>
         </TablePage>

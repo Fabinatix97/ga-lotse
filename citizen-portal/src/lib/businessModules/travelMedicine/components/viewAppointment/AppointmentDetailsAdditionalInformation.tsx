@@ -67,7 +67,9 @@ export function AppointmentDetailsAdditionalInformation(
         </ContentSheetTitle>
         <Box sx={isMobile ? BOX_STYLE_MOBILE : BOX_STYLE}>
           <AppointmentDetailsMedicalHistoryInformation
-            citizenHasAnswered={props.appointmentDetails.citizenHasAnswered}
+            citizenHasAnswered={
+              props.appointmentDetails.medicalHistoryCitizenHasAnswered
+            }
           />
         </Box>
         <InfoSection sx={{ padding: "0 24px 24px 24px" }}>

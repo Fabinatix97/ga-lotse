@@ -16,6 +16,10 @@ import {
   PAGES_CACHE_NAME,
   PAGES_RSC_CACHE_NAME,
 } from "@/serviceWorker/common/common";
+import {
+  UNREGISTER,
+  createUnregisterBroadCastChannelEndpoint,
+} from "@/serviceWorker/common/unregisterBroadCastChannel";
 import { CacheableResponsePlugin } from "@/serviceWorker/sw/CacheableResponsePlugin";
 import { EncryptPlugin } from "@/serviceWorker/sw/EncryptPlugin";
 import { RedirectOnErrorPlugin } from "@/serviceWorker/sw/RedirectOnErrorPlugin";
@@ -190,3 +194,11 @@ getGlobalSelf().addEventListener("message", (event: ExtendableMessageEvent) => {
     );
   }
 });
+
+const unregisterChannel = createUnregisterBroadCastChannelEndpoint();
+
+unregisterChannel.onmessage = async (event: MessageEvent) => {
+  if (event.data === UNREGISTER) {
+    await getGlobalSelf().registration.unregister();
+  }
+};

@@ -12,5 +12,4 @@ import jakarta.validation.constraints.Size;
 
 @Schema(name = "TemplateSubElementMultiSelect")
 public record TemplateSubElementMultiSelectDto(
-    @NotNull @Size(max = 200) @JsonProperty("questionText") String questionText,
-    @JsonProperty("answer") Boolean answer) {}
+    @NotNull @Size(max = 200) @JsonProperty("questionText") String questionText) {}

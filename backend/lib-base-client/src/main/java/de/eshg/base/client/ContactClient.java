@@ -11,6 +11,7 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.rest.service.error.BadRequestException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,6 +39,16 @@ public class ContactClient {
       return List.of();
     }
     return contactApiClient.getBulkContacts(new GetContactsRequest(contactIds)).contactResponses();
+  }
+
+  public ArrayList<UUID> getContactAliases(UUID contactId) {
+    if (contactId == null) {
+      return new ArrayList<>();
+    }
+    List<UUID> mergeSources = contactApiClient.getMergedContacts(contactId).contactIds();
+    ArrayList<UUID> list = new ArrayList<>(mergeSources);
+    list.add(contactId);
+    return list;
   }
 
   public void validateContactIsInstitutionWithCategory(

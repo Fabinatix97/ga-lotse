@@ -9,6 +9,8 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.travelmedicine.document.informationstatement.persistence.entity.InformationStatement;
+import de.eshg.travelmedicine.document.informationstatement.persistence.entity.InformationStatement_;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -77,7 +79,7 @@ public class VaccinationConsultation
   @OneToMany(
       fetch = FetchType.LAZY,
       mappedBy = InformationStatement_.VACCINATION_CONSULTATION,
-      cascade = CascadeType.PERSIST,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
   @OrderBy
   private final List<InformationStatement> informationStatements = new ArrayList<>();

@@ -49,12 +49,14 @@ export function AuditlogAccessibleTableView({
           <DataTable
             data={response.accessibleAuditLogs}
             columns={auditLogAccessibleColumns}
-            rowNavRoute={(row) =>
-              routes.auditlog.access(
-                row.original.auditLog.source,
-                format(row.original.auditLog.date, "yyyy-MM-dd"),
-              )
-            }
+            rowNavigation={{
+              route: (row) =>
+                routes.auditlog.access(
+                  row.original.auditLog.source,
+                  format(row.original.auditLog.date, "yyyy-MM-dd"),
+                ),
+              focusColumnAccessorKey: "auditLog.source",
+            }}
           />
         </TableSheet>
       </TablePage>

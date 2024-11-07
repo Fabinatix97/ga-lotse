@@ -21,18 +21,13 @@ import org.springframework.data.annotation.CreatedBy;
 
 @Entity
 @Audited
-public class ManualProgressEntry extends ProgressEntry implements FileAware, LockableEntity {
+public non-sealed class ManualProgressEntry extends ProgressEntry
+    implements LockableEntity, KeyDocumentAware {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
   private ManualProgressEntryType manualProgressEntryType;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private String subject;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private String messageText;
 
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String note;
@@ -64,26 +59,6 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
     this.manualProgressEntryType = manualProgressEntryType;
   }
 
-  @Override
-  public String getSubject() {
-    return subject;
-  }
-
-  @Override
-  public void setSubject(String subject) {
-    this.subject = subject;
-  }
-
-  @Override
-  public String getMessageText() {
-    return messageText;
-  }
-
-  @Override
-  public void setMessageText(String messageText) {
-    this.messageText = messageText;
-  }
-
   public String getNote() {
     return note;
   }
@@ -92,7 +67,6 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
     this.note = note;
   }
 
-  @Override
   public UUID getCreatedBy() {
     return createdBy;
   }
@@ -106,18 +80,22 @@ public class ManualProgressEntry extends ProgressEntry implements FileAware, Loc
     return getManualProgressEntryType().supports(fileType);
   }
 
+  @Override
   public String getKeyDocumentType() {
     return keyDocumentType;
   }
 
+  @Override
   public void setKeyDocumentType(String keyDocumentType) {
     this.keyDocumentType = keyDocumentType;
   }
 
+  @Override
   public Integer getKeyDocumentVersion() {
     return keyDocumentVersion;
   }
 
+  @Override
   public void setKeyDocumentVersion(Integer keyDocumentVersion) {
     this.keyDocumentVersion = keyDocumentVersion;
   }

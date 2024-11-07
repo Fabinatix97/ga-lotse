@@ -15,7 +15,8 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedBy;
 
 @Entity
-public class SystemProgressEntry extends ProgressEntry {
+public non-sealed class SystemProgressEntry extends ProgressEntry
+    implements KeyDocumentAware, FileAware {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)
@@ -32,6 +33,12 @@ public class SystemProgressEntry extends ProgressEntry {
 
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String changeDescription;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private String keyDocumentType;
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  private Integer keyDocumentVersion;
 
   public String getSystemProgressEntryType() {
     return systemProgressEntryType;
@@ -63,5 +70,30 @@ public class SystemProgressEntry extends ProgressEntry {
 
   public void setChangeDescription(String changeDescription) {
     this.changeDescription = changeDescription;
+  }
+
+  @Override
+  public String getKeyDocumentType() {
+    return keyDocumentType;
+  }
+
+  @Override
+  public void setKeyDocumentType(String keyDocumentType) {
+    this.keyDocumentType = keyDocumentType;
+  }
+
+  @Override
+  public Integer getKeyDocumentVersion() {
+    return keyDocumentVersion;
+  }
+
+  @Override
+  public void setKeyDocumentVersion(Integer keyDocumentVersion) {
+    this.keyDocumentVersion = keyDocumentVersion;
+  }
+
+  @Override
+  public boolean supportsUpload(ProcedureFileType fileType) {
+    return true;
   }
 }

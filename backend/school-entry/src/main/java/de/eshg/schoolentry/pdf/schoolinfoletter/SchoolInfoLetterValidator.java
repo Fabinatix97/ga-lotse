@@ -29,7 +29,8 @@ public class SchoolInfoLetterValidator {
 
     result.put(
         RequiredProcedureData.DETAILS,
-        procedure.getSchoolId() != null && procedure.getAppointment() != null);
+        procedure.getSchoolId() != null
+            && (procedure.getAppointment() != null || procedure.getExaminationDate() != null));
     result.put(RequiredProcedureData.HEARING_TEST, validate(procedure.getHearingTestResult()));
     result.put(
         RequiredProcedureData.EYE_EXAMINATION, validate(procedure.getEyeExaminationResult()));
@@ -270,6 +271,7 @@ public class SchoolInfoLetterValidator {
           anamnesisProperty(Anamnesis::getUnderMedicalTreatmentFor),
           anamnesisProperty(Anamnesis::getVisionImpairment),
           anamnesisProperty(Anamnesis::getVisionSchoolSince),
+          anamnesisProperty(Anamnesis::getWasInDaycare),
           eyeExaminationProperty(EyeExaminationResult::getAmblyopia),
           eyeExaminationProperty(EyeExaminationResult::getAstigmatism),
           eyeExaminationProperty(EyeExaminationResult::getColorVisionDisorder),

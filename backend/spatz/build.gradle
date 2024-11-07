@@ -32,7 +32,7 @@ dependencies {
     }
     testImplementation testFixtures(project(':lib-service-directory-admin-api'))
     testImplementation testFixtures(project(':lib-relay'))
-    testImplementation libs.bundles.keycloak.client
+    testImplementation libs.keycloak.client.admin.client
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'io.fabric8:kubernetes-client:6.10.0'
 }

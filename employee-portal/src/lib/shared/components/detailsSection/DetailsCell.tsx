@@ -10,7 +10,7 @@ import { ReactNode } from "react";
 import { isNonNullish, isString } from "remeda";
 
 export interface DetailsCellProps {
-  name: string;
+  name?: string;
   label: string;
   value?: string | number | ReactNode;
   showIfEmpty?: boolean;
@@ -23,7 +23,7 @@ export interface DetailsCellProps {
 }
 
 export function DetailsCell({
-  name,
+  name: givenName,
   label,
   value,
   children,
@@ -38,6 +38,7 @@ export function DetailsCell({
     isNonNullish(value) && (!isString(value) || isNonEmptyString(value));
   const isRenderable =
     isRenderableValue || showIfEmpty === true || isNonNullish(children);
+  const name = givenName ?? label;
 
   return (
     isRenderable && (

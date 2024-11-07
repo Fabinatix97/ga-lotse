@@ -58,7 +58,12 @@ export function ProgressEntryDetailsSidebar({
           )}
         {isDefined(progressEntry) &&
           progressEntry.type === "SystemProgressEntry" && (
-            <SystemProgressEntryDetails entry={progressEntry} />
+            <SystemProgressEntryDetails
+              entry={progressEntry}
+              relatedKeyDocumentProgressEntries={
+                relatedKeyDocumentProgressEntries
+              }
+            />
           )}
         {isDefined(progressEntry) &&
           progressEntry.type === "ProcessedInboxProgressEntry" && (

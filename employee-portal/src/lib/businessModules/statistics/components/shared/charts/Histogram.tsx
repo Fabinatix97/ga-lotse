@@ -4,17 +4,19 @@
  */
 
 import {
+  DiagramGrouping,
+  DiagramScaling,
   DiagramType,
   EvaluationDiagramBarChart,
   EvaluationDiagramHistogram,
-  EvaluationHistogramDiagramConfiguration,
 } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChartApi } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
 
 interface HistogramProps {
   diagramData: EvaluationDiagramHistogram["data"];
-  configuration: EvaluationHistogramDiagramConfiguration;
+  grouping?: DiagramGrouping;
+  scaling?: DiagramScaling;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
@@ -33,15 +35,13 @@ export function Histogram(props: HistogramProps) {
   const data = mapToBarChartDiagramData(props.diagramData);
   const numAttributes = props.diagramData[0]?.attributes?.length ?? 1;
   const barWidth =
-    props.configuration.grouping === "STACKED"
-      ? "99.8%"
-      : `${99.8 / numAttributes}%`;
+    props.grouping === "STACKED" ? "99.8%" : `${99.8 / numAttributes}%`;
 
   return (
     <BarChart
       filterSetData={data}
-      grouping={props.configuration.grouping}
-      scaling={props.configuration.scaling}
+      grouping={props.grouping}
+      scaling={props.scaling}
       orientation={"VERTICAL"}
       eChartApi={props.eChartApi}
       barGap={0}

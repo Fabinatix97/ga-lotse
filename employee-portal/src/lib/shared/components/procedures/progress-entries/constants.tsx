@@ -87,7 +87,7 @@ export const inboxProgressEntryTitles = {
   [ApiInboxProgressEntryType.PhoneCall]: "Anruf erhalten",
 } satisfies Record<ApiInboxProgressEntryType, string>;
 
-export const manualProgressEntryKeyDocumentTypes: Record<string, string> = {
+export const keyDocumentTypes: Record<string, string> = {
   INVOICE: "Rechnung",
   REPORT: "Bericht",
 };

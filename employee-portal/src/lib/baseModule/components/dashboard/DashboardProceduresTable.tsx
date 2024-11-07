@@ -37,13 +37,15 @@ export function DashboardProceduresTable() {
       <DataTable
         data={procedures}
         columns={proceduresColumns}
-        rowNavRoute={(row) =>
-          resolveProcedureDetailsRoute({
-            businessModule: row.original.businessModule,
-            procedureId: row.original.procedureId,
-            status: row.original.procedureStatus,
-          })
-        }
+        rowNavigation={{
+          route: (row) =>
+            resolveProcedureDetailsRoute({
+              businessModule: row.original.businessModule,
+              procedureId: row.original.procedureId,
+              status: row.original.procedureStatus,
+            }),
+          focusColumnAccessorKey: "procedureType",
+        }}
         sorting={{
           manualSorting: false,
           initialSorting,

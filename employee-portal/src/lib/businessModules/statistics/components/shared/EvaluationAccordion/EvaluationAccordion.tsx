@@ -33,12 +33,13 @@ export interface EvaluationAccordionProps {
   evaluatedDataAmountTotal: number;
   onDiagramCreateClicked?: (evaluationId: string) => void;
   isReport?: boolean;
+  anonymized: boolean;
 }
 
 export function EvaluationAccordion(props: EvaluationAccordionProps) {
   const isReport = props.isReport ?? false;
   const [sortOrder, setSortOrder] = useState<EvaluationSortOrder>(
-    EvaluationSortOrder.NewestFirst,
+    EvaluationSortOrder.NameAscending,
   );
   const [expandedAccordions, setExpandedAccordions] = useState<
     Record<string, boolean>
@@ -93,6 +94,7 @@ export function EvaluationAccordion(props: EvaluationAccordionProps) {
           evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
           onDiagramCreateClicked={props.onDiagramCreateClicked}
           isReport={isReport}
+          anonymized={props.anonymized}
         />
       ))}
     </Stack>
@@ -107,6 +109,7 @@ interface EvaluationAccordionItemProps {
   evaluatedDataAmountTotal: number;
   onDiagramCreateClicked?: (evaluationId: string) => void;
   isReport: boolean;
+  anonymized: boolean;
 }
 
 function EvaluationAccordionItem(props: EvaluationAccordionItemProps) {
@@ -191,6 +194,7 @@ function EvaluationAccordionItem(props: EvaluationAccordionItemProps) {
                 evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
                 onDiagramCreateClicked={props.onDiagramCreateClicked}
                 isReport={props.isReport}
+                anonymized={props.anonymized}
               />
             )}
           </Suspense>

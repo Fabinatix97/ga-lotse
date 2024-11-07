@@ -1,4 +1,5 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
+import groovy.io.FileVisitResult
 import org.jetbrains.gradle.ext.JUnit
 
 buildscript {
@@ -20,7 +21,7 @@ if (project.hasProperty('projectVersion')) {
 }
 
 dockerCompose {
-  projectName = "eshg-frontend"
+  projectName = "frontend"
 }
 
 //CAUTION: run ./gradlew wrapper (twice) after changes to this task!
@@ -30,8 +31,30 @@ wrapper {
   distributionType = Wrapper.DistributionType.ALL
 }
 
+Set<File> collectDataTestDirectoriesToExclude() {
+  def dataTestOutput = java.nio.file.Path.of("data/test/output")
+  def dataTestTmp = java.nio.file.Path.of("data/test/tmp")
+  Set<String> directoriesToSkip = ['node_modules', '.next', '.gradle', 'build', 'out']
+  Set<File> dataTestDirectoriesToExclude = new TreeSet<>()
+  project.file(project.rootDir).traverse(
+    type: groovy.io.FileType.DIRECTORIES,
+    maxDepth: 5,
+    preDir: { dir ->
+      if (directoriesToSkip.contains(dir.name)) {
+        return FileVisitResult.SKIP_SUBTREE
+      }
+    }) { File dir ->
+    def path = dir.toPath()
+    if (path.endsWith(dataTestOutput) || path.endsWith(dataTestTmp)) {
+      dataTestDirectoriesToExclude.add(dir)
+    }
+  }
+  return dataTestDirectoriesToExclude
+}
+
 idea {
   module {
+    excludeDirs = collectDataTestDirectoriesToExclude()
     downloadJavadoc = true
     downloadSources = true
   }
@@ -98,14 +121,14 @@ def installDependencies = tasks.register('installDependencies', PnpmTask) {
   args = ['install', '--frozen-lockfile']
 }
 
-tasks.register('installDependency', PnpmTask) {
+tasks.register('updateLockfile', PnpmTask) {
   description = "Install missing dependencies and update the lock file. Use this to add new dependencies."
   inputs.files depsInputs
   outputs.dir nodeModulesDir
   subprojects {
     outputs.dir "${projectDir}/${nodeModulesDir}"
   }
-  args = ['install']
+  args = ['install', '--recursive']
 }
 
 tasks.register('updateDependencies', PnpmTask) {
@@ -116,6 +139,13 @@ tasks.register('updateDependencies', PnpmTask) {
     outputs.dir "${projectDir}/${nodeModulesDir}"
   }
   args = ['update', '--recursive', '--latest']
+}
+
+tasks.register('outdatedDependencies', PnpmTask) {
+  description = 'List all outdated npm dependencies'
+  inputs.files depsInputs
+  outputs.upToDateWhen { true }
+  args = ['outdated', '--recursive']
 }
 
 tasks.register('testCoverage', PnpmTask) {

@@ -395,8 +395,8 @@ export function usePatchFacilityMutation({
   return useMutation({
     mutationFn: ({ facility }: PatchFacilityParams) => {
       // Todo: call backend to patch the facility
-      return new Promise<MeaslesFacility | undefined>((res) => {
-        setTimeout(() => res(facility), 1000);
+      return new Promise<MeaslesFacility | undefined>((resolve) => {
+        setTimeout(() => resolve(facility), 1000);
       });
     },
     mutationKey: measlesProtectionApiQueryKey(["procedures"]),

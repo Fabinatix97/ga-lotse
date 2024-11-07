@@ -6,11 +6,10 @@
 import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { Divider, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
 import { isDefined, isNonNullish } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import { UpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
+import { useUpdateContactSidebar } from "@/lib/baseModule/components/contacts/modals/UpdateContactSidebar";
 import {
   Contact,
   isInstitutionContact,
@@ -40,7 +39,7 @@ import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 export function ContactDetails({ contact }: { contact: Contact }) {
   const showChatUsername = useIsNewFeatureEnabled(ApiBaseFeature.ChatUsername);
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseContactsWrite);
-  const [editSidebar, setEditSidebar] = useState(false);
+  const updateSidebar = useUpdateContactSidebar();
 
   const showEmailPhoneSection =
     (contact.emailAddresses?.length ?? 0) +
@@ -48,148 +47,129 @@ export function ContactDetails({ contact }: { contact: Contact }) {
     0;
 
   return (
-    <>
-      <ContentPanel dense={false} testId={"contact-details-panel"}>
-        {hasWritePerms && (
-          <EditButton
-            onClick={() => setEditSidebar(true)}
-            sx={{ maxWidth: "fit-content", flex: 0, alignSelf: "flex-end" }}
-          />
-        )}
-        <Stack
-          gap={3}
-          direction={{
-            xxs: "column",
-            md: "row",
-          }}
-          divider={<ResponsiveDivider />}
-        >
-          <DetailsColumn>
-            {isPersonContact(contact) && (
-              <>
-                <DetailsRow>
-                  {isDefined(contact.salutation) && (
-                    <DetailsCell
-                      name={"salutation"}
-                      label={"Anrede"}
-                      value={
-                        contact.salutation !== "NOT_SPECIFIED"
-                          ? SALUTATION_VALUES[contact.salutation]
-                          : undefined
-                      }
-                    />
-                  )}
+    <ContentPanel dense={false} testId={"contact-details-panel"}>
+      {hasWritePerms && (
+        <EditButton
+          onClick={() => updateSidebar.open({ contact })}
+          sx={{ maxWidth: "fit-content", flex: 0, alignSelf: "flex-end" }}
+        />
+      )}
+      <Stack
+        gap={3}
+        direction={{
+          xxs: "column",
+          md: "row",
+        }}
+        divider={<ResponsiveDivider />}
+      >
+        <DetailsColumn>
+          {isPersonContact(contact) && (
+            <>
+              <DetailsRow>
+                {isDefined(contact.salutation) && (
                   <DetailsCell
-                    name={"title"}
-                    label={"Titel"}
-                    value={getOptionalTitle(contact.title)}
-                  />
-                </DetailsRow>
-                <DetailsCell
-                  name={"firstName"}
-                  label={"Vorname"}
-                  value={contact.firstName}
-                />
-                <DetailsCell
-                  name={"name"}
-                  label={"Name"}
-                  value={contact.name}
-                />
-
-                {isDefined(contact.gender) && (
-                  <DetailsCell
-                    name={"gender"}
-                    label={"Geschlecht"}
-                    value={GENDER_VALUES[contact.gender]}
-                  />
-                )}
-
-                {showChatUsername && (
-                  <DetailsCell
-                    name={"externalChatUsername"}
-                    label={"Chat Nutzername"}
+                    name={"salutation"}
+                    label={"Anrede"}
                     value={
-                      isNonNullish(contact.externalChatUsername) ? (
-                        <InternalLink
-                          href={routes.userRoom(contact.externalChatUsername)}
-                        >
-                          {contact.externalChatUsername}
-                        </InternalLink>
-                      ) : undefined
+                      contact.salutation !== "NOT_SPECIFIED"
+                        ? SALUTATION_VALUES[contact.salutation]
+                        : undefined
                     }
                   />
                 )}
-              </>
-            )}
-            {isInstitutionContact(contact) && (
-              <>
                 <DetailsCell
-                  name={"name"}
-                  label={"Name"}
-                  value={contact.name}
+                  name={"title"}
+                  label={"Titel"}
+                  value={getOptionalTitle(contact.title)}
                 />
+              </DetailsRow>
+              <DetailsCell
+                name={"firstName"}
+                label={"Vorname"}
+                value={contact.firstName}
+              />
+              <DetailsCell name={"name"} label={"Name"} value={contact.name} />
+
+              {isDefined(contact.gender) && (
                 <DetailsCell
-                  name={"category"}
-                  label={"Objekttyp"}
+                  name={"gender"}
+                  label={"Geschlecht"}
+                  value={GENDER_VALUES[contact.gender]}
+                />
+              )}
+
+              {showChatUsername && (
+                <DetailsCell
+                  name={"externalChatUsername"}
+                  label={"Chat Nutzername"}
                   value={
-                    isNonNullish(contact.category)
-                      ? contactCategoryNames[contact.category]
-                      : undefined
+                    isNonNullish(contact.externalChatUsername) ? (
+                      <InternalLink
+                        href={routes.userRoom(contact.externalChatUsername)}
+                      >
+                        {contact.externalChatUsername}
+                      </InternalLink>
+                    ) : undefined
                   }
                 />
+              )}
+            </>
+          )}
+          {isInstitutionContact(contact) && (
+            <>
+              <DetailsCell name={"name"} label={"Name"} value={contact.name} />
+              <DetailsCell
+                name={"category"}
+                label={"Objekttyp"}
+                value={
+                  isNonNullish(contact.category)
+                    ? contactCategoryNames[contact.category]
+                    : undefined
+                }
+              />
+            </>
+          )}
+        </DetailsColumn>
+
+        {isDefined(contact.contactAddress) && (
+          <DetailsColumn>
+            <BaseAddressDetails
+              address={contact.contactAddress}
+              sx={{ flex: 1 }}
+            />
+            {isDefined(contact.differentBillingAddress) && (
+              <>
+                <Divider />
+                <Typography level={"title-md"}>Rechnungsadresse</Typography>
+                <BaseAddressDetails address={contact.differentBillingAddress} />
               </>
             )}
           </DetailsColumn>
+        )}
 
-          {isDefined(contact.contactAddress) && (
-            <DetailsColumn>
-              <BaseAddressDetails
-                address={contact.contactAddress}
-                sx={{ flex: 1 }}
+        {showEmailPhoneSection && (
+          <DetailsColumn>
+            {contact.emailAddresses?.map((emailAddress, index) => (
+              <ExternalLinkDetailsCell
+                key={[emailAddress, index].join("-")}
+                name={`emailAddresses.${index}`}
+                label={"E-Mail-Adresse"}
+                value={emailAddress}
+                href={emailHref}
               />
-              {isDefined(contact.differentBillingAddress) && (
-                <>
-                  <Divider />
-                  <Typography level={"title-md"}>Rechnungsadresse</Typography>
-                  <BaseAddressDetails
-                    address={contact.differentBillingAddress}
-                  />
-                </>
-              )}
-            </DetailsColumn>
-          )}
-
-          {showEmailPhoneSection && (
-            <DetailsColumn>
-              {contact.emailAddresses?.map((emailAddress, index) => (
-                <ExternalLinkDetailsCell
-                  key={[emailAddress, index].join("-")}
-                  name={`emailAddresses.${index}`}
-                  label={"E-Mail-Adresse"}
-                  value={emailAddress}
-                  href={emailHref}
-                />
-              ))}
-              {contact.phoneNumbers?.map((phoneNumber, index) => (
-                <ExternalLinkDetailsCell
-                  key={[phoneNumber, index].join("-")}
-                  name={`phoneNumbers.${index}`}
-                  label={"Telefonnummer"}
-                  value={phoneNumber}
-                  href={phoneHref}
-                />
-              ))}
-            </DetailsColumn>
-          )}
-        </Stack>
-      </ContentPanel>
-      {hasWritePerms && (
-        <UpdateContactSidebar
-          contact={contact}
-          open={editSidebar}
-          onClose={() => setEditSidebar(false)}
-        />
-      )}
-    </>
+            ))}
+            {contact.phoneNumbers?.map((phoneNumber, index) => (
+              <ExternalLinkDetailsCell
+                key={[phoneNumber, index].join("-")}
+                name={`phoneNumbers.${index}`}
+                label={"Telefonnummer"}
+                value={phoneNumber}
+                href={phoneHref}
+              />
+            ))}
+          </DetailsColumn>
+        )}
+      </Stack>
+    </ContentPanel>
   );
 }

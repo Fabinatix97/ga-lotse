@@ -2,3 +2,7 @@
 .next
 # Usually, this file is ignored. But we need to make sure it exists in CI when running tsc. See https://github.com/vercel/next.js/discussions/47010.
 # next-env.d.ts
+
+# Generated files
+src/app/\[lang\]/(privatpersonen)/**/loading.tsx
+src/app/\[lang\]/(static)/**/loading.tsx

@@ -25,6 +25,7 @@ export function ReportDetails(props: ReportDetailsView) {
           attributes={props.attributes}
           evaluatedDataAmountTotal={props.dataSource.datasetAmount}
           isReport
+          anonymized
         />
       </Box>
       <ReportDetailsTile {...reportDetailsTileProps} />

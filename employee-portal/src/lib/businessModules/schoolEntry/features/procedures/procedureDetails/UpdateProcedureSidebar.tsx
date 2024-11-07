@@ -75,6 +75,7 @@ export interface UpdateProcedureValues {
   isDeceased: boolean;
   deceased: OptionalFieldValue<string>;
   schoolYear: OptionalFieldValue<number>;
+  hasBeenClosed: boolean;
 }
 
 interface UpdateProcedureSidebarProps extends SidebarWithFormRefProps {
@@ -136,6 +137,7 @@ function useUpdateProcedureForm(
         ? toDateString(procedure.deceased)
         : "",
       schoolYear: parseOptionalValue(procedure.schoolYear),
+      hasBeenClosed: procedure.hasBeenClosed,
     },
     onSubmit: (values) =>
       updateProcedure
@@ -256,6 +258,11 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
                     "Erfassen Sie das Gesundheitsamt, um einen Termin zuweisen und eine Einladung versenden zu können.",
                 },
               )}
+              {displayWarningWhen(values.hasBeenClosed, {
+                title: "Keine Terminauswahl möglich",
+                message:
+                  "Ein neuer Termin kann nicht ausgewählt werden, weil der Vorgang bereits abgeschlossen wurde.",
+              })}
               {values.appointment !== null && (
                 <CheckboxField
                   name="isInvitationSent"

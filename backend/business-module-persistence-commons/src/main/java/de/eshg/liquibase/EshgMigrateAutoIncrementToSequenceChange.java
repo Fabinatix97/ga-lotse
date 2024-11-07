@@ -8,6 +8,8 @@ package de.eshg.liquibase;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import liquibase.change.AbstractChange;
 import liquibase.change.ChangeMetaData;
 import liquibase.change.DatabaseChange;
@@ -31,7 +33,7 @@ public class EshgMigrateAutoIncrementToSequenceChange extends AbstractChange {
   private static final String CREATE_SEQUENCE_SQL =
       """
     create sequence %s
-        start with %d
+        start with 1
         increment by %d
         no minvalue
         no maxvalue
@@ -88,12 +90,22 @@ public class EshgMigrateAutoIncrementToSequenceChange extends AbstractChange {
 
       long nextValue = selectNextValue(jdbcConnection, oldSequenceName);
 
-      return new SqlStatement[] {
-        new RawSqlStatement(
-            CREATE_SEQUENCE_SQL.formatted(newSequenceName, nextValue, ALLOCATION_SIZE)),
-        new RawSqlStatement(
-            "alter table %s alter column id drop identity".formatted(getTableName()))
-      };
+      List<SqlStatement> sqlStatements = new ArrayList<>();
+
+      sqlStatements.add(
+          new RawSqlStatement(CREATE_SEQUENCE_SQL.formatted(newSequenceName, ALLOCATION_SIZE)));
+
+      if (nextValue > 1) {
+        sqlStatements.add(
+            new RawSqlStatement(
+                "alter sequence %s restart with %d".formatted(newSequenceName, nextValue)));
+      }
+
+      sqlStatements.add(
+          new RawSqlStatement(
+              "alter table %s alter column id drop identity".formatted(getTableName())));
+
+      return sqlStatements.toArray(SqlStatement[]::new);
     } catch (DatabaseException | SQLException e) {
       throw new RuntimeException(e);
     }

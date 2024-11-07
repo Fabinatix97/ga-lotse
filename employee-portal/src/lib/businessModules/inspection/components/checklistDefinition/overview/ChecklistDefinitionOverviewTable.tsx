@@ -144,8 +144,10 @@ export function ChecklistDefinitionOverviewTable({
           <DataTable
             data={checklists}
             columns={columns}
-            rowNavRoute={onRowClick}
-            focusColumnHeader={"Name"}
+            rowNavigation={{
+              route: onRowClick,
+              focusColumnAccessorKey: "name",
+            }}
             striped
           />
         </TableSheet>

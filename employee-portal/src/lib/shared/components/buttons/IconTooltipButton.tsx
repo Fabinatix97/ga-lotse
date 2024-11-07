@@ -4,7 +4,11 @@
  */
 
 import { InfoOutlined } from "@mui/icons-material";
-import { IconButton as JoyIconButton, Tooltip } from "@mui/joy";
+import {
+  ColorPaletteProp,
+  IconButton as JoyIconButton,
+  Tooltip,
+} from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
 
@@ -16,12 +20,14 @@ export function InfoIconTooltipButton({
   size,
   iconLabelledBy,
   iconLabel: iconLabelProp,
+  tooltipColor,
 }: Readonly<{
   title: ReactNode;
   sx?: SxProps;
   iconLabel?: string;
   iconLabelledBy?: string;
   size?: "sm" | "md" | "lg";
+  tooltipColor?: ColorPaletteProp;
 }>) {
   const iconLabel =
     !iconLabelledBy && !iconLabelProp ? "Mehr Informationen" : iconLabelProp;
@@ -31,6 +37,7 @@ export function InfoIconTooltipButton({
       iconLabel={iconLabel}
       iconLabelledBy={iconLabelledBy}
       title={title}
+      tooltipColor={tooltipColor}
     />
   );
 }
@@ -40,17 +47,19 @@ export function IconTooltipButton({
   iconLabel,
   iconLabelledBy,
   title,
+  tooltipColor,
 }: Readonly<{
   icon: ReactNode;
   iconLabel?: string;
   iconLabelledBy?: string;
   title: ReactNode;
+  tooltipColor?: ColorPaletteProp;
 }>) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Tooltip arrow variant="outlined" title={title}>
+      <Tooltip arrow color={tooltipColor} variant="outlined" title={title}>
         <IconButton
           aria-label={iconLabel}
           aria-labelledby={iconLabelledBy}

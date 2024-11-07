@@ -1,0 +1,92 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { ApiInspectionForDuplicateReview } from "@eshg/employee-portal-api/inspection";
+import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
+import { Sheet, Stack, Typography } from "@mui/joy";
+
+import { DuplicateTileLine } from "@/lib/businessModules/inspection/components/facility/pending/DuplicateTileLine";
+import {
+  translateInspectionResult,
+  translateInspectionType,
+} from "@/lib/businessModules/inspection/shared/enums";
+
+export interface InspectionDuplicateTileProps {
+  inspection: ApiInspectionForDuplicateReview;
+  importedInspection: ApiInspectionForDuplicateReview;
+  isImportedInspection: boolean;
+}
+
+export function InspectionDuplicateTile({
+  inspection,
+  importedInspection,
+  isImportedInspection,
+}: Readonly<InspectionDuplicateTileProps>) {
+  const badgeText = isImportedInspection ? "Import" : "Stammdaten";
+
+  return (
+    <Sheet
+      sx={{
+        padding: 2,
+        borderRadius: (theme) => theme.radius.lg,
+        border: "1px solid",
+        borderColor: isImportedInspection ? "warning.300" : "divider",
+        backgroundColor: isImportedInspection ? "warning.100" : "transparent",
+      }}
+      aria-label={"Einrichtung"}
+    >
+      <Stack direction="column" gap={2}>
+        <Typography level="h4" component="p">
+          {inspection.title}
+        </Typography>
+        <Stack direction="column" gap={1}>
+          <DuplicateTileLine
+            dataset={inspection}
+            importedDataset={importedInspection}
+            textExtractor={(i) => translateInspectionType(i.type)}
+            suppressExclamationMark={true}
+          />
+          <DuplicateTileLine
+            dataset={inspection}
+            importedDataset={importedInspection}
+            textExtractor={(i) =>
+              " Durchgeführt: " +
+              formatDate(i.executedTime) +
+              ", " +
+              formatTime(i.executedTime)
+            }
+          />
+          <DuplicateTileLine
+            dataset={inspection}
+            importedDataset={importedInspection}
+            textExtractor={(i) =>
+              "Ergebnis: " + translateInspectionResult(i.result)
+            }
+            badgeText={
+              inspection.numberOfIncidents == 0 ? badgeText : undefined
+            }
+          />
+          {inspection.numberOfIncidents != 0 && (
+            <DuplicateTileLine
+              dataset={inspection}
+              importedDataset={importedInspection}
+              textExtractor={(i) =>
+                "" +
+                i.numberOfIncidents +
+                " Vorkommnis" +
+                (i.numberOfIncidents != 1 && "se")
+              }
+              badgeText={
+                inspection.numberOfIncidents != 0 ? badgeText : undefined
+              }
+            />
+          )}
+        </Stack>
+      </Stack>
+    </Sheet>
+  );
+}

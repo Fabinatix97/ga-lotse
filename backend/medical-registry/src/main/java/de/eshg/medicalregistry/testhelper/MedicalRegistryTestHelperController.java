@@ -42,6 +42,12 @@ public class MedicalRegistryTestHelperController extends TestHelperController
     medicalRegistryTestHelperService.closeProcedure(procedureId);
   }
 
+  @Transactional
+  @PostExchange("/medical-registry-entries/{procedureId}/open")
+  public void openProcedure(@PathVariable("procedureId") UUID procedureId) {
+    medicalRegistryTestHelperService.openProcedure(procedureId);
+  }
+
   @Override
   public void clearAuditLogStorageDirectory() throws IOException {
     auditLogTestHelperService.clearAuditLogStorageDirectory();

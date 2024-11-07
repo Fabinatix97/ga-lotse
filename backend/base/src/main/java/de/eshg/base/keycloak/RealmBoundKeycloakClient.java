@@ -5,6 +5,8 @@
 
 package de.eshg.base.keycloak;
 
+import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
+import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 import static de.eshg.base.keycloak.KeycloakTestProvisioning.TEST_HELPER_CLIENT_ID;
 import static de.eshg.base.keycloak.differ.KeycloakDiffer.toJson;
 import static java.util.function.Function.identity;
@@ -70,6 +72,8 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
   private static final String PROFILE_CLIENT_SCOPE = "profile";
   private static final String OFFLINE_ACCESS_CLIENT_SCOPE = "offline_access";
   private static final String MICROPROFILE_JWT_CLIENT_SCOPE = "microprofile-jwt";
+  private static final String ORGANIZATION_CLIENT_SCOPE = "organization";
+  private static final String SAML_ORGANIZATION_CLIENT_SCOPE = "saml_organization";
   private static final String EMAIL_CLIENT_SCOPE = "email";
   public static final String ACCOUNT_CLIENT_ID = "account";
   public static final String ACCOUNT_CONSOLE_CLIENT_ID = "account-console";
@@ -502,7 +506,9 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
         PROFILE_CLIENT_SCOPE,
         OFFLINE_ACCESS_CLIENT_SCOPE,
         MICROPROFILE_JWT_CLIENT_SCOPE,
-        EMAIL_CLIENT_SCOPE);
+        EMAIL_CLIENT_SCOPE,
+        ORGANIZATION_CLIENT_SCOPE,
+        SAML_ORGANIZATION_CLIENT_SCOPE);
   }
 
   List<String> getIgnoredClientIds() {
@@ -1035,6 +1041,16 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
           role.toRepresentation().getName());
       role.deleteComposites(roleCompositesToDelete.stream().map(this::getRoleByName).toList());
     }
+  }
+
+  public static Map<String, String> getClientRepresentationAttributes(
+      Map<String, String> configuredAttributes) {
+    Map<String, String> attributes = new LinkedHashMap<>();
+    attributes.put("backchannel.logout.revoke.offline.tokens", FALSE);
+    attributes.put("backchannel.logout.session.required", TRUE);
+    attributes.put("realm_client", FALSE);
+    attributes.putAll(configuredAttributes);
+    return attributes;
   }
 
   private String getDefaultRoleName() {

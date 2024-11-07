@@ -24,4 +24,8 @@ public record CitizenMigrationBackgroundDto(
     @Schema(description = "Country of birth of the second parent", example = "DEU")
         CountryCodeDto countryOfBirthSecondParent,
     @Schema(description = "Date from which the child lives in Germany", example = "2000-01-01")
-        LocalDate inGermanySince) {}
+        LocalDate inGermanySince) {
+  public CitizenMigrationBackgroundDto() {
+    this(null, null, null, null, null, null, null);
+  }
+}

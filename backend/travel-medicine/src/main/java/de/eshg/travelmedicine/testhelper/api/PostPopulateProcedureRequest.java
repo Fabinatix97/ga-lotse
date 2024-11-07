@@ -7,7 +7,6 @@ package de.eshg.travelmedicine.testhelper.api;
 
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
-import de.eshg.travelmedicine.vaccinationconsultation.api.PostInformationStatementsRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostVaccinationConsultationRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -23,5 +22,5 @@ public record PostPopulateProcedureRequest(
     List<String> executeVaccinations,
     List<String> executeOtherServices,
     @Valid List<CertificatePopulationDto> certificates,
-    @Valid PostInformationStatementsRequest informationStatements,
-    ProcedureStatusDto statusChange) {}
+    @Valid List<InformationStatementPopulationDto> informationStatements,
+    ProcedureStatusDto targetState) {}

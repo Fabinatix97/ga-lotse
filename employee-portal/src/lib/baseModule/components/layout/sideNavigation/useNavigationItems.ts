@@ -7,7 +7,7 @@ import { useResolveSideNavigationItems } from "@/lib/baseModule/moduleRegister/s
 import { AccessCheck } from "@/lib/shared/helpers/accessControl";
 import { useAccessControl } from "@/lib/shared/hooks/useAccessControl";
 
-import { SideNavigationItem } from "./types";
+import { SideNavigationItem, UseSideNavigationItemsResult } from "./types";
 
 export function filterNavigationItemsWithAccess(
   items: SideNavigationItem[],
@@ -44,9 +44,12 @@ export function filterNavigationItemsWithAccess(
   );
 }
 
-export function useNavigationItems() {
+export function useNavigationItems(): UseSideNavigationItemsResult {
   const checkAccess = useAccessControl();
-  const navItems = useResolveSideNavigationItems();
+  const { isLoading, items } = useResolveSideNavigationItems();
 
-  return filterNavigationItemsWithAccess(navItems, checkAccess);
+  return {
+    isLoading,
+    items: filterNavigationItemsWithAccess(items, checkAccess),
+  };
 }

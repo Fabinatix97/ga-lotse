@@ -10,10 +10,9 @@ import { Grid, Stack } from "@mui/joy";
 import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 
 import { AdditionalDataSection } from "./AdditionalDataSection";
+import { AnonIdentityDocumentCard } from "./AnonIdentityDocumentCard";
 import { CloseAndReopenProcedurePanel } from "./CloseProcedurePanel";
 import { PersonDetails } from "./PersonDetails";
-
-const SPACING = { sm: 2, md: 3, xxl: 4 };
 
 export function ProcedureDetails({
   procedureId,
@@ -21,12 +20,17 @@ export function ProcedureDetails({
   const procedure = useStiProcedureQuery(procedureId).data;
 
   return (
-    <Grid container spacing={SPACING}>
-      <Grid xs={8}>
-        <PersonDetails procedure={procedure} />
+    <Grid container spacing={2}>
+      <Grid container spacing={2} xs={12} lg={8}>
+        <Grid xs={12}>
+          <PersonDetails procedure={procedure} />
+        </Grid>
+        <Grid xs={12}>
+          <AnonIdentityDocumentCard />
+        </Grid>
       </Grid>
-      <Grid xs={4}>
-        <Stack spacing={SPACING}>
+      <Grid xs={12} lg={4}>
+        <Stack spacing={2}>
           <AdditionalDataSection procedure={procedure} />
           <CloseAndReopenProcedurePanel procedure={procedure} />
         </Stack>

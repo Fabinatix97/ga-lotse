@@ -89,6 +89,7 @@ public final class BaseUrls {
     public static final String PACKLIST_CONTROLLER = "/packlists";
     public static final String PACKLIST_DEFINITION_CONTROLLER =
         PACKLIST_CONTROLLER + "/definitions";
+    public static final String INSPECTION_IMPORT_CONTROLLER = "/import";
 
     private Inspection() {}
   }
@@ -188,6 +189,7 @@ public final class BaseUrls {
     public static final String TASK_METRICS_API = "/task-metrics";
     public static final String ARCHIVING_API = "/archiving";
     public static final String TASKS_TEAM_VIEW = TASKS_API + "/team-view";
+    public static final String GDPR_VALIDATION_TASK_API = "/gdpr-validation-tasks";
 
     private ProcedureLibrary() {}
   }

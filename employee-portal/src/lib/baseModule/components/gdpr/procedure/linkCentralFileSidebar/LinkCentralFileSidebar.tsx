@@ -119,15 +119,13 @@ function LinkCentralFileSidebar<TMatch extends CentralFileData>({
 
   async function doSubmit() {
     if (isNonNullish(selected)) {
-      await addCentralFileIdToGdprProcedure
-        .mutateAsync(
-          mapAddCentralFileIdToGdprProcedureRequest(
-            selected.id,
-            procedureVersion,
-          ),
-          { onSuccess: onClose },
-        )
-        .catch();
+      await addCentralFileIdToGdprProcedure.mutateAsync(
+        mapAddCentralFileIdToGdprProcedureRequest(
+          selected.id,
+          procedureVersion,
+        ),
+        { onSuccess: onClose },
+      );
     } else {
       onClose();
     }

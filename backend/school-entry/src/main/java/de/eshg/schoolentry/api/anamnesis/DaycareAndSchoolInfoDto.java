@@ -10,8 +10,8 @@ import java.time.LocalDate;
 
 @Schema(name = "DaycareAndSchoolInfo")
 public record DaycareAndSchoolInfoDto(
-    LocalDate inDaycareSince, String daycareName, String schoolName) {
+    Boolean wasInDaycare, LocalDate inDaycareSince, String daycareName, String schoolName) {
   public DaycareAndSchoolInfoDto() {
-    this(null, null, null);
+    this(null, null, null, null);
   }
 }

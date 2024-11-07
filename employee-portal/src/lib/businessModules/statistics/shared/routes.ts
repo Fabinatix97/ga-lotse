@@ -16,6 +16,9 @@ export const routes = {
       reports: `${statisticsPath}/${id}/reports`,
       dataQuality: `${statisticsPath}/${id}/data-quality`,
     }),
+    evaluationTemplates: {
+      index: `${statisticsPath}/evaluation-templates`,
+    },
   },
   reports: {
     index: reportsPath,

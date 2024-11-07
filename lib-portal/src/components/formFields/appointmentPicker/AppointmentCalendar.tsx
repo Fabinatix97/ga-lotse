@@ -38,7 +38,10 @@ export function AppointmentCalendar({
   prevMonthLabel,
 }: AppointmentCalendarProps) {
   return (
-    <div style={{ width: "min-content" }}>
+    <div
+      style={{ width: "min-content" }}
+      data-testid="appointment-picker-calender"
+    >
       <Row justifyContent="space-around">
         <MonthSelection
           currentMonth={currentMonth}

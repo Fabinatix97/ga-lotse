@@ -166,6 +166,10 @@ public abstract class AbstractPublicSecurityConfiguration {
 
     requestMatchers(GET, ProcedureLibrary.ARCHIVING_API + "/config")
         .hasRole(EmployeePermissionRole.PROCEDURE_ARCHIVE);
+    requestMatchers(GET, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/**")
+        .hasRole(procedureAccessRole);
+    requestMatchers(POST, ProcedureLibrary.GDPR_VALIDATION_TASK_API + "/**")
+        .hasRole(procedureAccessRole);
   }
 
   protected void grantAccessToStatistics() {

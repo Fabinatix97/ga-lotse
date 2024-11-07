@@ -71,17 +71,13 @@ export function ContactEntityForm({
 
   async function handleSubmit(values: ContactFormValues) {
     if (isDefined(contactId)) {
-      await updateContact
-        .mutateAsync(mapUpdateContactRequest(values), {
-          onSuccess: () => onUpdated?.(),
-        })
-        .catch();
+      await updateContact.mutateAsync(mapUpdateContactRequest(values), {
+        onSuccess: () => onUpdated?.(),
+      });
     } else {
-      await createContact
-        .mutateAsync(mapAddContactRequest(values), {
-          onSuccess: ({ id }) => router.push(routes.contacts.details(id)),
-        })
-        .catch();
+      await createContact.mutateAsync(mapAddContactRequest(values), {
+        onSuccess: ({ id }) => router.push(routes.contacts.details(id)),
+      });
     }
   }
 

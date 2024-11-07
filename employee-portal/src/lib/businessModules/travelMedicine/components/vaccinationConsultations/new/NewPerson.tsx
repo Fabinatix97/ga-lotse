@@ -37,16 +37,14 @@ export function NewPerson() {
       data as InitialAppointmentFormValuesProps,
     );
 
-    await saveVaccinationConsultation
-      .mutateAsync(request, {
-        onSuccess: (response) => {
-          if (response) {
-            router.push(routes.procedures.baseData(response));
-          }
-          handleClose();
-        },
-      })
-      .catch();
+    await saveVaccinationConsultation.mutateAsync(request, {
+      onSuccess: (response) => {
+        if (response) {
+          router.push(routes.procedures.baseData(response));
+        }
+        handleClose();
+      },
+    });
   }
 
   return (

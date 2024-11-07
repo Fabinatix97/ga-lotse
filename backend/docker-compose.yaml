@@ -116,8 +116,8 @@ services:
         limits:
           memory: 1G
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_DB: dev-file
       KC_PROXY_HEADERS: xforwarded
       KC_HOSTNAME: http://localhost:4003
@@ -146,8 +146,6 @@ services:
 
   inspection:
     image: ga-lotse/inspection
-    env_file:
-      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://inspection-db/inspection
@@ -176,8 +174,6 @@ services:
 
   school-entry:
     image: ga-lotse/school-entry
-    env_file:
-      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://school-entry-db/schoolentry
@@ -229,8 +225,6 @@ services:
 
   travel-medicine:
     image: ga-lotse/travel-medicine
-    env_file:
-      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
@@ -287,8 +281,6 @@ services:
 
   measles-protection:
     image: ga-lotse/measles-protection
-    env_file:
-      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://measles-protection-db/measles_protection
@@ -456,8 +448,6 @@ services:
 
   sti-protection:
     image: ga-lotse/sti-protection
-    env_file:
-      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://sti-protection-db/sti_protection
@@ -511,8 +501,6 @@ services:
 
   medical-registry:
     image: ga-lotse/medical-registry
-    env_file:
-      - 'lib-procedures/src/test/resources/archiving-test.env'
     environment:
       - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
       - spring.datasource.url=jdbc:postgresql://medical-registry-db/medical_registry

@@ -31,11 +31,15 @@ import org.springframework.web.service.annotation.PostExchange;
 @RestController
 @Tag(name = "Evaluation")
 public class EvaluationController {
+  private final StatisticService statisticService;
   private final EvaluationService evaluationService;
   private final DiagramCreationService diagramCreationService;
 
   public EvaluationController(
-      EvaluationService evaluationService, DiagramCreationService diagramCreationService) {
+      StatisticService statisticService,
+      EvaluationService evaluationService,
+      DiagramCreationService diagramCreationService) {
+    this.statisticService = statisticService;
     this.evaluationService = evaluationService;
     this.diagramCreationService = diagramCreationService;
   }
@@ -45,6 +49,7 @@ public class EvaluationController {
   @Operation(summary = "Add an evaluation")
   public EvaluationDto addEvaluation(
       @RequestBody @Valid AddEvaluationRequest addEvaluationRequest) {
+    statisticService.checkPermissionForStatistic(addEvaluationRequest.statisticId());
     return evaluationService.addEvaluation(addEvaluationRequest);
   }
 
@@ -55,6 +60,7 @@ public class EvaluationController {
   @Operation(summary = "Get an evaluation by id")
   public EvaluationWithDiagrams getEvaluation(
       @PathVariable(name = "evaluationId") UUID evaluationId) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.getEvaluation(evaluationId);
   }
 
@@ -66,6 +72,7 @@ public class EvaluationController {
   public EvaluationDto updateEvaluation(
       @PathVariable(name = "evaluationId") UUID evaluationId,
       @RequestBody @Valid UpdateEvaluationRequest updateEvaluationRequest) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.updateEvaluation(evaluationId, updateEvaluationRequest);
   }
 
@@ -75,6 +82,7 @@ public class EvaluationController {
   @ApiResponse(responseCode = "200", description = "Returned when the evaluation is deleted")
   @Operation(summary = "Delete an evaluation")
   public void deleteEvaluation(@PathVariable(name = "evaluationId") UUID evaluationId) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
     evaluationService.deleteEvaluation(evaluationId);
   }
 
@@ -86,6 +94,7 @@ public class EvaluationController {
   public UUID addDiagram(
       @PathVariable(name = "evaluationId") UUID evaluationId,
       @RequestBody @Valid AddDiagramRequest addDiagramRequest) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
     EvaluationDto evaluation = evaluationService.getEvaluationDto(evaluationId);
     return diagramCreationService.createDiagram(evaluation, addDiagramRequest);
   }
@@ -98,6 +107,7 @@ public class EvaluationController {
   public DiagramDto updateDiagram(
       @PathVariable(name = "diagramId") UUID diagramId,
       @RequestBody @Valid UpdateDiagramRequest updateDiagramRequest) {
+    evaluationService.checkPermissionForDiagram(diagramId);
     return evaluationService.updateDiagram(diagramId, updateDiagramRequest);
   }
 
@@ -107,6 +117,7 @@ public class EvaluationController {
   @ApiResponse(responseCode = "200", description = "Returned when the diagram is deleted")
   @Operation(summary = "Delete a diagram")
   public void deleteDiagram(@PathVariable(name = "diagramId") UUID diagramId) {
+    evaluationService.checkPermissionForDiagram(diagramId);
     evaluationService.deleteDiagram(diagramId);
   }
 }

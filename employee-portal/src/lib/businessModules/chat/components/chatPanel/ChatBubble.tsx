@@ -4,10 +4,7 @@
  */
 
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import Box from "@mui/joy/Box";
-import Sheet from "@mui/joy/Sheet";
-import Stack from "@mui/joy/Stack";
-import Typography from "@mui/joy/Typography";
+import { Box, Sheet, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
 import { isEmpty } from "remeda";
 
@@ -32,6 +29,7 @@ interface ChatBubbleProps {
   lastReadMessageIndexes: number[];
   index: number;
   mentions: MentionedMember[];
+  removeMessage: (messageId: string) => Promise<void>;
 }
 
 export function ChatBubble({
@@ -156,10 +154,11 @@ function splitMessageWithNames(
   });
 
   memberIndexes.sort((a, b) => a.start - b.start);
-
   memberIndexes.forEach((member, index) => {
-    if (member.start > 0) {
-      contentParts.push(text.slice(0, member.start));
+    const prevMember = memberIndexes[index - 1];
+    const prevTextStart = prevMember?.end ?? 0;
+    if (member.start > 0 && !prevMember) {
+      contentParts.push(text.slice(prevTextStart, member.start));
     }
 
     contentParts.push(

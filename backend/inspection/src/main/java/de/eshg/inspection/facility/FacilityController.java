@@ -44,13 +44,6 @@ public class FacilityController {
     this.facilityService = facilityService;
   }
 
-  @GetMapping(path = "/{id}")
-  @Operation(summary = "Get a facility")
-  @Transactional(readOnly = true)
-  public InspFacilityDto getFacility(@PathVariable("id") UUID externalId) {
-    return facilityService.getFacility(externalId);
-  }
-
   @PostMapping
   @Operation(summary = "Add a new facility")
   @Transactional

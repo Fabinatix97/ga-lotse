@@ -1,0 +1,9 @@
+Sehr geehrte(r) %s %s,
+
+für Ihren Besuch bei uns steht ein neuer Aufklärungsbogen zum Online-Ausfüllen bereit. Ab jetzt können Sie diesen einmalig ausfüllen und absenden.
+
+Beachten Sie bitte, dass es nicht möglich ist auf diese Email zu antworten.
+
+Mit freundlichen Grüßen,
+
+%s

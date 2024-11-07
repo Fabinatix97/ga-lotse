@@ -71,23 +71,21 @@ export function AuditLogAuthorizeSidebar({
   const userSelection = useRef([] as ApiUser[]);
 
   async function handleAuthorizeConfirmationDialog() {
-    await grantAuditLogAccess
-      .mutateAsync(
-        {
-          source: source,
-          date: date,
-          idsOfGrantedUser: new Set(
-            userSelection.current.map((user) => user.userId),
+    await grantAuditLogAccess.mutateAsync(
+      {
+        source: source,
+        date: date,
+        idsOfGrantedUser: new Set(
+          userSelection.current.map((user) => user.userId),
+        ),
+      },
+      {
+        onSuccess: () =>
+          router.push(
+            buildRoutePreservingSearchParams(routes.auditlog.authorize.index),
           ),
-        },
-        {
-          onSuccess: () =>
-            router.push(
-              buildRoutePreservingSearchParams(routes.auditlog.authorize.index),
-            ),
-        },
-      )
-      .catch();
+      },
+    );
   }
 
   const formRef = useRef<SidebarFormHandle>(null);

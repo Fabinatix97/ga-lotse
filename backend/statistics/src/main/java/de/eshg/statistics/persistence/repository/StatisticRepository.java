@@ -9,8 +9,10 @@ import de.eshg.statistics.persistence.entity.Statistic;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface StatisticRepository extends JpaRepository<Statistic, Long> {
+public interface StatisticRepository
+    extends JpaRepository<Statistic, Long>, JpaSpecificationExecutor<Statistic> {
 
   Optional<Statistic> findByExternalId(UUID externalId);
 }

@@ -79,7 +79,8 @@ public enum ModuleMemberGroup implements KeycloakGroup {
     return List.of(
         EmployeePermissionRole.BASE_TASKS_READ,
         EmployeePermissionRole.BASE_PROCEDURES_READ,
-        EmployeePermissionRole.CHAT_MANAGEMENT_WRITE);
+        EmployeePermissionRole.CHAT_MANAGEMENT_WRITE,
+        EmployeePermissionRole.BASE_GDPR_PROCEDURE_REVIEW);
   }
 
   private static List<EmployeePermissionRole> getStandardInspectionRoles() {

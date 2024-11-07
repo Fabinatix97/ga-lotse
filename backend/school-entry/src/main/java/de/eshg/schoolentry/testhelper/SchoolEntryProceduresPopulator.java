@@ -21,7 +21,6 @@ import de.eshg.schoolentry.LabelController;
 import de.eshg.schoolentry.SchoolEntryController;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.*;
-import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
@@ -53,7 +52,6 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final LabelController labelController;
   private final BaseTestHelperApi baseTestHelperApi;
-  private final SchoolEntryFeatureToggle featureToggle;
   private final ContactApi contactApi;
   private final AppointmentBlockProperties appointmentBlockProperties;
 
@@ -65,7 +63,6 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
       LabelController labelController,
       BaseTestHelperApi baseTestHelperApi,
-      SchoolEntryFeatureToggle featureToggle,
       @SuppressWarnings("unused") // Used to define a dependency
           AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
       EnvironmentConfig environmentConfig,
@@ -82,7 +79,6 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.labelController = labelController;
     this.baseTestHelperApi = baseTestHelperApi;
-    this.featureToggle = featureToggle;
     this.contactApi = contactApi;
     this.appointmentBlockProperties = appointmentBlockProperties;
   }

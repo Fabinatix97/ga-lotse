@@ -5,13 +5,9 @@
 
 import { ApiTemplateSectionElement } from "@eshg/employee-portal-api/travelMedicine";
 
-import { MainQuestion } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/MainQuestion";
-import {
-  SectionDataElement,
-  createEmptySubTextElement,
-} from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/SectionDataElement";
+import { SectionElementComponentFactory } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/SectionElementComponentFactory";
 
-export interface MedicalHistoryTemplateSectionElementProp {
+export interface TemplateSectionElementProp {
   sectionElementsFormikPath: string;
   sectionElements: ApiTemplateSectionElement[];
   sectionElementDeleteHandler: (index: number) => void;
@@ -21,54 +17,11 @@ export interface MedicalHistoryTemplateSectionElementProp {
   ) => void;
 }
 
-export function SectionDataElementList({
-  sectionElementsFormikPath,
-  sectionElements,
-  sectionElementDeleteHandler,
-  replaceSectionElementHandler,
-}: Readonly<MedicalHistoryTemplateSectionElementProp>) {
-  function getElementDataFormikPath(index: number) {
-    return `${sectionElementsFormikPath}[${index}].elementData`;
-  }
+export function SectionDataElementList(
+  props: Readonly<TemplateSectionElementProp>,
+) {
+  const factory = new SectionElementComponentFactory(props);
+  const mappedSectionElements = factory.createSectionElementComponents();
 
-  function addSectionElementSubText(index: number) {
-    const selectedSectionElement = sectionElements[index];
-
-    if (selectedSectionElement) {
-      selectedSectionElement.elementData.subElementText =
-        createEmptySubTextElement();
-      replaceSectionElementHandler(index, selectedSectionElement);
-    }
-  }
-
-  function removeSectionElementSubText(index: number) {
-    const selectedSectionElement = sectionElements[index];
-
-    if (selectedSectionElement) {
-      selectedSectionElement.elementData.subElementText = undefined;
-      replaceSectionElementHandler(index, selectedSectionElement);
-    }
-  }
-
-  return (
-    <>
-      {sectionElements.map((sectionElement, index) => (
-        <SectionDataElement
-          elementDataFormikPath={getElementDataFormikPath(index)}
-          sectionElementData={sectionElement.elementData}
-          addSubElementHandler={() => addSectionElementSubText(index)}
-          removeSubQuestionHandler={() => removeSectionElementSubText(index)}
-          mainQuestion={
-            <MainQuestion
-              elementDataFormikPath={getElementDataFormikPath(index)}
-              sectionElementDeleteHandler={() =>
-                sectionElementDeleteHandler(index)
-              }
-            />
-          }
-          key={index}
-        />
-      ))}
-    </>
-  );
+  return <>{mappedSectionElements}</>;
 }

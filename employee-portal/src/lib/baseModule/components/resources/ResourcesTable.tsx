@@ -11,13 +11,11 @@ import {
 } from "@eshg/employee-portal-api/base";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack } from "@mui/joy";
-import { useState } from "react";
 
 import { useGetResourcesOverviewQuery } from "@/lib/baseModule/api/queries/resources";
 import { useResourcesFilterSettings } from "@/lib/baseModule/components/resources/hooks/useResourcesFilterSettings";
-import { AddResourceSidebar } from "@/lib/baseModule/components/resources/sidebar/AddResourceSidebar";
+import { useAddResourceSidebar } from "@/lib/baseModule/components/resources/sidebar/AddResourceSidebar";
 import { routes } from "@/lib/baseModule/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
@@ -47,7 +45,7 @@ export function ResourcesTable({ params }: ResourcesTableProps) {
     isFetching,
   } = useGetResourcesOverviewQuery(params);
 
-  const [sidebarState, setSidebarState] = useState(false);
+  const addResourceSidebar = useAddResourceSidebar();
 
   const filterSettings = useResourcesFilterSettings({
     tableControl: tableControl,
@@ -87,7 +85,11 @@ export function ResourcesTable({ params }: ResourcesTableProps) {
             </Stack>
             {hasWritePerms && (
               <Button
-                onClick={() => setSidebarState(true)}
+                onClick={() =>
+                  addResourceSidebar.open({
+                    labels: labels.elements,
+                  })
+                }
                 startDecorator={<AddIcon />}
               >
                 Ressource hinzufügen
@@ -109,22 +111,14 @@ export function ResourcesTable({ params }: ResourcesTableProps) {
             data={resources.elements}
             columns={resourceTableColumns}
             sorting={tableControl.tableSorting}
-            rowNavRoute={(row) => routes.resources.details(row.original.id)}
-            focusColumnHeader="Name"
+            rowNavigation={{
+              route: (row) => routes.resources.details(row.original.id),
+              focusColumnAccessorKey: "name",
+            }}
             minWidth="60rem"
           />
         </TableSheet>
       </TablePage>
-
-      {hasWritePerms && (
-        <OverlayBoundary>
-          <AddResourceSidebar
-            open={sidebarState}
-            onClose={() => setSidebarState(false)}
-            labels={labels.elements}
-          />
-        </OverlayBoundary>
-      )}
     </>
   );
 }

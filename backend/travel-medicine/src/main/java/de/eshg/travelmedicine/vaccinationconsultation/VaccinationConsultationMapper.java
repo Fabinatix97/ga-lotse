@@ -54,7 +54,9 @@ public class VaccinationConsultationMapper {
     vaccinationConsultation.setTravelTimeAmount(travelInformation.travelTimeAmount());
     vaccinationConsultation.setTravelTimeUnit(
         MappingUtil.mapEnum(TravelTimeUnit.class, travelInformation.travelTimeUnit()));
-    vaccinationConsultation.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    ProcedureStatus procedureStatus =
+        userType == CreatedByUserType.CITIZEN_PORTAL ? ProcedureStatus.DRAFT : ProcedureStatus.OPEN;
+    vaccinationConsultation.updateProcedureStatus(procedureStatus, clock, auditLogger);
     vaccinationConsultation.setCreatedBy(userType);
 
     VaccinationConsultationTask vaccinationConsultationTask = new VaccinationConsultationTask();

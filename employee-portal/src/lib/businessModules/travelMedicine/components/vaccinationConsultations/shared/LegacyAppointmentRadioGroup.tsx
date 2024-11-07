@@ -8,19 +8,20 @@ import {
   ApiAppointmentType,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
-import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
-import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
+import {
+  AppointmentPickerField,
+  FIELD_LABELS_DE,
+} from "@eshg/lib-portal/components/formFields/appointmentPicker/AppointmentPickerField";
 import { Stack, Typography } from "@mui/joy";
 import { useField } from "formik";
+import { useState } from "react";
 import { isEmpty } from "remeda";
 
-import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { useGetFreeAppointmentsUnsuspended } from "@/lib/businessModules/travelMedicine/api/queries/appointmentBlocks";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
-import { durationBetweenDatesInMinutes } from "@/lib/shared/helpers/dateTime";
 
 interface AppointmentRadioGroupProps {
   type?: ApiAppointmentType;
@@ -42,37 +43,8 @@ export function LegacyAppointmentRadioGroup({
   const freeVaccinationBlockAppointments =
     getAllFreeVaccinationBlockAppointments.data ?? [];
 
-  function createAppointmentOptions(availableBlockAppointments: Appointment[]) {
-    if (availableBlockAppointments) {
-      let needToAddOption = true;
-      const labelOptions: SelectOption[] = availableBlockAppointments.map(
-        (blockAppointment) => {
-          const label = formatDateTime(blockAppointment.start) + " Uhr";
-          if (label == props.appointmentBlockDateOption?.label) {
-            needToAddOption = false;
-          }
-          return {
-            label: label,
-            value:
-              blockAppointment.start.toISOString() +
-              "," +
-              durationBetweenDatesInMinutes(
-                blockAppointment.start,
-                blockAppointment.end,
-              ),
-          };
-        },
-      );
-      if (props.appointmentBlockDateOption && needToAddOption) {
-        labelOptions.push(props.appointmentBlockDateOption);
-      }
-
-      return labelOptions;
-    } else {
-      return [];
-    }
-  }
   const [bookingTypeFieldProps] = useField("bookingType");
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   return (
     <Stack gap={2}>
@@ -89,27 +61,26 @@ export function LegacyAppointmentRadioGroup({
           sx={{ mb: 2 }}
           radioProps={{ overlay: false }}
           allowDeselection={!required}
+          changeBackgroundColor={false}
           forGroupName="bookingType"
         >
-          {props.type == ApiAppointmentType.Consultation ? (
-            <SelectField
-              label="Termin aus Terminblock"
-              name="appointmentBlockDate"
-              options={createAppointmentOptions(
-                freeConsultationBlockAppointments,
-              )}
-              sx={{ flexGrow: 1 }}
+          <Stack gap={2}>
+            <Typography level={"body-sm"} sx={{ fontWeight: "500" }}>
+              Aus Terminblock
+            </Typography>
+            <AppointmentPickerField
+              name={"appointmentBlockDate"}
+              currentMonth={currentMonth}
+              setCurrentMonth={setCurrentMonth}
+              monthAppointments={
+                props.type == ApiAppointmentType.Consultation
+                  ? freeConsultationBlockAppointments
+                  : freeVaccinationBlockAppointments
+              }
+              required={bookingTypeFieldProps.value === "AppointmentBlock"}
+              labels={FIELD_LABELS_DE}
             />
-          ) : (
-            <SelectField
-              label="Termin aus Terminblock"
-              name="appointmentBlockDate"
-              options={createAppointmentOptions(
-                freeVaccinationBlockAppointments,
-              )}
-              sx={{ flexGrow: 1 }}
-            />
-          )}
+          </Stack>
         </SelectableCard>
         <SelectableCard
           key={ApiAppointmentBookingType.UserDefined}
@@ -117,6 +88,7 @@ export function LegacyAppointmentRadioGroup({
           sx={{ mb: 2 }}
           radioProps={{ overlay: false }}
           allowDeselection={!required}
+          changeBackgroundColor={false}
           forGroupName={"bookingType"}
         >
           <Stack gap={2} sx={{ flexGrow: 1 }}>

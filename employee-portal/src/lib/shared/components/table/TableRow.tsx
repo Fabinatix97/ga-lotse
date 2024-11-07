@@ -40,24 +40,28 @@ const StyledCell = styled("td")<{ canNavigate: boolean } & StyledCellProps>(({
 
 function isFocusColumn<TData>(
   cell: Cell<TData, unknown>,
-  focusColumnName: string | undefined,
+  focusColumnAccessorKey: string | undefined,
 ) {
-  return focusColumnName === cell.column.columnDef.header;
+  // column id is sometimes different from the accessor key
+  return (
+    "accessorKey" in cell.column.columnDef &&
+    focusColumnAccessorKey === cell.column.columnDef.accessorKey
+  );
 }
 
 export function TableRow<TData>({
   row,
-  rowNavRoute,
+  rowNavigation,
 }: Readonly<{
   row: Row<TData>;
-  rowNavRoute?: (cell: Row<TData>) => string | undefined;
+  rowNavigation?: (cell: Row<TData>) => string | undefined;
 }>) {
   const navContext = useContext(TableNavigationContext);
   const focusCell = row
     .getVisibleCells()
-    .find((cell) => isFocusColumn(cell, navContext?.focusColumnHeader));
+    .find((cell) => isFocusColumn(cell, navContext?.focusColumnAccessorKey));
   const rowLabel = focusCell ? getAriaLabel(focusCell) : undefined;
-  const navRoute = rowNavRoute?.(row);
+  const navRoute = rowNavigation?.(row);
   const isParentRow = row.depth === 0;
 
   function cellCanNavigate(cell: Cell<TData, unknown>) {

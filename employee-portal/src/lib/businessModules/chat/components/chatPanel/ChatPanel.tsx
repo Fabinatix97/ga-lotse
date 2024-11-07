@@ -127,7 +127,7 @@ export function ChatPanel({
   if (roomId && roomWithCommunicationType) {
     return (
       <>
-        <ChatPanelHeader roomId={roomId} room={roomWithCommunicationType} />
+        <ChatPanelHeader roomId={roomId} />
         <Box
           sx={{
             height: `calc(100% - ${chatColumnHeaderHeight})`,
@@ -135,13 +135,15 @@ export function ChatPanel({
             flexDirection: "column",
           }}
         >
-          <ChatMessages room={roomWithCommunicationType} />
+          <ChatMessages
+            room={roomWithCommunicationType}
+            key={selectedRoom?.roomId}
+          />
           <MessageInput
             handleUserTyping={handleUserTyping}
             selectedRoomId={roomId}
             sendMessage={handleSendMessage}
             roomMembers={roomWithCommunicationType.room.getMembers()}
-            disabled={selectedRoom?.getMyMembership() === "leave"}
           />
         </Box>
       </>

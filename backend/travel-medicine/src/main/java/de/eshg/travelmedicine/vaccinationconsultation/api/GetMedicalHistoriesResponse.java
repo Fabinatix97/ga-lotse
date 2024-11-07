@@ -5,7 +5,7 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.travelmedicine.medicalhistory.api.MedicalHistoryDto;
+import de.eshg.travelmedicine.document.medicalhistory.api.MedicalHistoryDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;

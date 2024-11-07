@@ -11,7 +11,7 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
+import de.eshg.travelmedicine.document.medicalhistory.persistence.entity.MedicalHistory;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

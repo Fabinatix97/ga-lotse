@@ -153,6 +153,7 @@ export function mapToStatisticDetailsView(
     attributes: attributes,
     evaluations: mapEvaluations(result.evaluations, attributes),
     userId: result.user!.userId,
+    anonymized: result.statisticInfo.anonymized,
   } satisfies StatisticDetailsView;
 }
 

@@ -46,11 +46,9 @@ export default function SchoolEntryHearingTestPage(
   const updateHearingTestResult = useUpdateHearingTestResult();
 
   async function handleSubmit(formValues: HearingTestFormValues) {
-    await updateHearingTestResult
-      .mutateAsync(
-        mapToRequest(procedureId, formValues, hearingTestResult.version),
-      )
-      .catch();
+    await updateHearingTestResult.mutateAsync(
+      mapToRequest(procedureId, formValues, hearingTestResult.version),
+    );
   }
 
   return (

@@ -5,7 +5,7 @@
 
 package de.eshg.lib.procedure.domain.model;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
@@ -20,7 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Cemetery extends BaseEntity {
+public class Cemetery extends SequencedBaseEntity {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)

@@ -10,6 +10,7 @@ import { Slider } from "@mui/joy";
 export interface SliderFieldProps extends Omit<FieldProps<number>, "label"> {
   min: number;
   max: number;
+  ariaLabel?: string;
 }
 
 export function SliderField(props: SliderFieldProps) {
@@ -25,6 +26,7 @@ export function SliderField(props: SliderFieldProps) {
       valueLabelDisplay="auto"
       size="lg"
       sx={{ zIndex: 2 }}
+      aria-label={props.ariaLabel}
     />
   );
 }

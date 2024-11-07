@@ -20,7 +20,6 @@ import {
   isGroupRoom,
   leaveRoom,
 } from "@/lib/businessModules/chat/shared//utils";
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
@@ -39,13 +38,16 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
   const [kickUserId, setKickUserId] = useState<string>();
-  const { matrixClient } = useChatClientContext();
   const snackbar = useSnackbar();
 
-  if (!roomInfo) return null;
-
-  const { room, communicationType, allRoomMembers, dmRoomMember, isAdmin } =
-    roomInfo;
+  const {
+    room,
+    communicationType,
+    allRoomMembers,
+    dmRoomMember,
+    checkIfAdmin,
+    matrixClient,
+  } = roomInfo;
 
   const joinedMembers = [
     ...filter(allRoomMembers, (x) => x.isRoomCreator),
@@ -57,12 +59,13 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
   const invitedMembers = [
     ...filter(allRoomMembers, (x) => x.member.membership === "invite"),
   ];
+  const isAdmin = checkIfAdmin();
 
   function handleLeaveRoomClick() {
     setLeaveDialogOpen(false);
     clearChatParams();
     closeInfoPanel();
-    void leaveRoom(roomInfo.matrixClient, room?.roomId);
+    void leaveRoom(matrixClient, room?.roomId);
   }
   async function handleRemoveUser() {
     if (!kickUserId) return;
@@ -80,7 +83,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
 
   return (
     <>
-      <InfoPanelHeader data={roomInfo} close={onClose} />
+      <InfoPanelHeader close={onClose} {...roomInfo} />
       <Box
         sx={{
           overflowY: "auto",
@@ -168,7 +171,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
             gap: 2,
           }}
         >
-          {!isDMRoom(roomInfo.communicationType) && (
+          {!isDMRoom(communicationType) && (
             <ButtonLink
               level="title-md"
               startDecorator={<PersonAddAltIcon />}
@@ -179,7 +182,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
               Mitglieder hinzufügen
             </ButtonLink>
           )}
-          {!isDMRoom(roomInfo.communicationType) && (
+          {!isDMRoom(communicationType) && (
             <ButtonLink
               level="title-md"
               startDecorator={<AdminPanelSettingsOutlinedIcon />}

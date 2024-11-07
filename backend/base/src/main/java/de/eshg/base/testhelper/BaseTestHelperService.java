@@ -33,6 +33,8 @@ import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.interception.TestRequestInterceptor;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -43,9 +45,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -181,17 +181,18 @@ public class BaseTestHelperService extends DefaultTestHelperService {
 
   public AccessToken loginUncached(UsernamePassword usernamePassword, String userAgent) {
     environmentConfig.assertIsNotProduction();
-    try (Keycloak keycloak =
-        KeycloakBuilder.builder()
-            .serverUrl(keycloakProperties.internal().url())
-            .grantType(OAuth2Constants.PASSWORD)
-            .realm(getRealmName(usernamePassword.realm()))
-            .scope(OAuth2Constants.SCOPE_OPENID)
-            .clientId(KeycloakTestProvisioning.TEST_HELPER_CLIENT_ID)
-            .username(usernamePassword.username())
-            .password(usernamePassword.password())
-            .resteasyClient(getResteasyClient(userAgent))
-            .build()) {
+    try (ResteasyClient resteasyClient = getResteasyClient(userAgent);
+        Keycloak keycloak =
+            KeycloakBuilder.builder()
+                .serverUrl(keycloakProperties.internal().url())
+                .grantType(OAuth2Constants.PASSWORD)
+                .realm(getRealmName(usernamePassword.realm()))
+                .scope(OAuth2Constants.SCOPE_OPENID)
+                .clientId(KeycloakTestProvisioning.TEST_HELPER_CLIENT_ID)
+                .username(usernamePassword.username())
+                .password(usernamePassword.password())
+                .resteasyClient(resteasyClient)
+                .build()) {
       AccessTokenResponse accessTokenResponse = keycloak.tokenManager().getAccessToken();
       Assert.isTrue(
           accessTokenResponse.getTokenType().equals("Bearer"),
@@ -208,11 +209,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
   }
 
   private static ResteasyClient getResteasyClient(String userAgent) {
-    return new ResteasyClientBuilderImpl()
-        .httpEngine(
-            new ApacheHttpClient43Engine(
-                HttpClientBuilder.create().setUserAgent(userAgent).build()))
-        .build();
+    return new ResteasyClientBuilderImpl().register(new HttpUserAgentFilter(userAgent)).build();
   }
 
   private String getRealmName(Realm realm) {
@@ -308,5 +305,14 @@ public class BaseTestHelperService extends DefaultTestHelperService {
     ListWithTotalNumber<ContactDto> result =
         healthDepartmentContactPopulator.populate(numberOfEntitiesToPopulate);
     return new SearchContactsResponse(result.entities(), result.totalNumberOfElements());
+  }
+
+  private record HttpUserAgentFilter(String userAgent) implements ClientRequestFilter {
+    @Override
+    public void filter(ClientRequestContext requestContext) {
+      if (userAgent != null) {
+        requestContext.getHeaders().putSingle("User-Agent", userAgent);
+      }
+    }
   }
 }

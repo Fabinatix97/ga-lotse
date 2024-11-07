@@ -99,6 +99,8 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class EvaluationService {
+  private static final String EVALUATION_WITH_ID_NOT_FOUND = "Evaluation with id '%s' not found";
+  private static final String DIAGRAM_WITH_ID_NOT_FOUND = "Diagram with id '%s' not found";
   private static final String PRIMARY_ATTRIBUTE = "primaryAttribute";
   private static final String SECONDARY_ATTRIBUTE = "secondaryAttribute";
 
@@ -126,6 +128,24 @@ public class EvaluationService {
     if (this.pageSizeForCollectionDiagramData <= 0) {
       throw new IllegalArgumentException(
           "'eshg.statistics.diagramdata.pagesize' must be greater than 0");
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public void checkPermissionForEvaluation(UUID evaluationId) {
+    AbstractAggregationResult aggregationResult =
+        getEvaluationInternal(evaluationId).getAggregationResult();
+    if (statisticService.accessNotAllowed(aggregationResult)) {
+      throw new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND.formatted(evaluationId));
+    }
+  }
+
+  @Transactional(readOnly = true)
+  public void checkPermissionForDiagram(UUID diagramId) {
+    AbstractAggregationResult aggregationResult =
+        getDiagramInternal(diagramId).getEvaluation().getAggregationResult();
+    if (statisticService.accessNotAllowed(aggregationResult)) {
+      throw new NotFoundException(DIAGRAM_WITH_ID_NOT_FOUND.formatted(diagramId));
     }
   }
 
@@ -555,8 +575,7 @@ public class EvaluationService {
     return evaluationRepository
         .findByExternalId(evaluationId)
         .orElseThrow(
-            () ->
-                new NotFoundException("Evaluation with id '%s' not found".formatted(evaluationId)));
+            () -> new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND.formatted(evaluationId)));
   }
 
   @Transactional
@@ -1477,7 +1496,7 @@ public class EvaluationService {
 
   @Transactional
   public DiagramDto updateDiagram(UUID diagramId, UpdateDiagramRequest updateDiagramRequest) {
-    Diagram diagram = getDiagram(diagramId);
+    Diagram diagram = getDiagramInternal(diagramId);
     validateEvaluationNotInReport(diagram.getEvaluation());
     diagram.setTitle(updateDiagramRequest.title());
     diagram.setDescription(updateDiagramRequest.description());
@@ -1485,16 +1504,15 @@ public class EvaluationService {
     return EvaluationMapper.mapToApi(diagram);
   }
 
-  public Diagram getDiagram(UUID diagramId) {
+  public Diagram getDiagramInternal(UUID diagramId) {
     return diagramRepository
         .findByExternalId(diagramId)
-        .orElseThrow(
-            () -> new NotFoundException("Diagram with id '%s' not found".formatted(diagramId)));
+        .orElseThrow(() -> new NotFoundException(DIAGRAM_WITH_ID_NOT_FOUND.formatted(diagramId)));
   }
 
   @Transactional
   public void deleteDiagram(UUID diagramId) {
-    Diagram diagram = getDiagram(diagramId);
+    Diagram diagram = getDiagramInternal(diagramId);
     validateEvaluationNotInReport(diagram.getEvaluation());
     diagramRepository.delete(diagram);
   }

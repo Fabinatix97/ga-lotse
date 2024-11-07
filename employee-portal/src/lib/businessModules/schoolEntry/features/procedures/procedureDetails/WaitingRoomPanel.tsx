@@ -42,15 +42,13 @@ export function WaitingRoomPanel(props: { procedure: ProcedureDetails }) {
   const updateWaitingRoomDetails = useUpdateWaitingRoomDetails();
 
   async function handleSubmit(values: WaitingRoomValues) {
-    await updateWaitingRoomDetails
-      .mutateAsync(
-        mapToRequest(
-          props.procedure.id,
-          values,
-          props.procedure.waitingRoom?.version ?? 0,
-        ),
-      )
-      .catch();
+    await updateWaitingRoomDetails.mutateAsync(
+      mapToRequest(
+        props.procedure.id,
+        values,
+        props.procedure.waitingRoom?.version ?? 0,
+      ),
+    );
   }
 
   async function handleReset(setFieldValue: SetFieldValueHelper) {

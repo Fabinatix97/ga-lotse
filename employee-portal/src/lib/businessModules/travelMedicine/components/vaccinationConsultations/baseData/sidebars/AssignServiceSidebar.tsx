@@ -55,13 +55,14 @@ function AssignServiceSidebar(props: Readonly<AssignServiceSidebarProps>) {
   }
 
   async function handleSubmit(values: AssignServiceFormValues) {
-    await assignStepToServiceApi
-      .mutateAsync(createAssignsStepToServiceRequest(values), {
+    await assignStepToServiceApi.mutateAsync(
+      createAssignsStepToServiceRequest(values),
+      {
         onSuccess: () => {
           props.onClose(true);
         },
-      })
-      .catch();
+      },
+    );
   }
 
   return (

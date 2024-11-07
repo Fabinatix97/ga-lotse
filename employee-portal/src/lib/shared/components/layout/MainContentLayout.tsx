@@ -8,8 +8,6 @@
 import { AlertSlot } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { Stack, StackProps, styled } from "@mui/joy";
 
-import { PAGE_ALERT_STYLE } from "@/lib/shared/styles";
-
 export interface MainContentLayoutProps extends StackProps {
   /**
    * If true, the layout will limit it's height to the height of the viewport.
@@ -25,6 +23,11 @@ const LayoutStack = styled(Stack, {
   paddingBlock: theme.spacing(3),
 
   marginInline: theme.spacing(3),
+}));
+
+const AlertContainer = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(2),
+  marginBlockEnd: theme.spacing(3),
 }));
 
 /**
@@ -46,7 +49,7 @@ export function MainContentLayout(props: MainContentLayoutProps) {
       {...stackProps}
       className={props.fullViewportHeight ? "fullViewportHeight" : undefined}
     >
-      <AlertSlot sx={PAGE_ALERT_STYLE} />
+      <AlertSlot container={AlertContainer} />
       {children}
     </LayoutStack>
   );

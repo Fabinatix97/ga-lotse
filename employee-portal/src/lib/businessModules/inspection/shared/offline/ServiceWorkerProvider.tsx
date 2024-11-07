@@ -21,6 +21,7 @@ import {
   deleteAllEncryptedCaches,
   deleteInspectionFromAllCaches,
 } from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
+import { unregisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/unregisterServiceWorker";
 import {
   getInspectionIdsOfProcedureBaseDataRequests,
   useGetPrecachedInspections,
@@ -158,6 +159,11 @@ function ServiceWorkerProviderInner({
 function ServiceWorkerProviderMock({
   children,
 }: Readonly<{ children: ReactNode }>) {
+  // unregister real service worker
+  useEffect(() => {
+    unregisterServiceWorker();
+  }, []);
+
   return (
     <ServiceWorkerContext.Provider value={EMPTY_CONTEXT}>
       {children}

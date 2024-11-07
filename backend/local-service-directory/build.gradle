@@ -10,8 +10,7 @@ dependencies {
 
     implementation 'org.springframework.retry:spring-retry'
 
-    implementation libs.bundles.keycloak.client
-    compileOnly libs.bundles.keycloak.server
+    implementation libs.keycloak.client.admin.client
     implementation 'io.github.java-diff-utils:java-diff-utils:latest.release'
 
     testImplementation project(':lib-service-directory-admin-api')

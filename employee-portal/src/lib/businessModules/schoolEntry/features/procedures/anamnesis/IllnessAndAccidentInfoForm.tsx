@@ -10,11 +10,11 @@ import { HorizontalField } from "@eshg/lib-portal/components/formFields/Horizont
 import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { InfoOutlined } from "@mui/icons-material";
-import { FormLabel, Stack, Tooltip, Typography } from "@mui/joy";
+import { FormLabel, Stack, Typography } from "@mui/joy";
 
 import { FlexLabel } from "@/lib/businessModules/schoolEntry/features/procedures/examinations/FlexLabel";
 import { BOOLEAN_SELECT_STYLE } from "@/lib/businessModules/schoolEntry/features/procedures/styles";
+import { InfoIconTooltipButton } from "@/lib/shared/components/buttons/IconTooltipButton";
 
 export function IllnessAndAccidentInfoForm() {
   const illnessAndAccidentInfo = createFieldNameMapper(
@@ -30,13 +30,10 @@ export function IllnessAndAccidentInfoForm() {
           label={
             <FlexLabel>
               Schwere Infektionskrankheiten
-              <Tooltip
-                title=" z.B. Hirnhautentzündung oder andere schwere Erkrankungen"
-                color="success"
-                variant="outlined"
-              >
-                <InfoOutlined color="primary" />
-              </Tooltip>
+              <InfoIconTooltipButton
+                title="z.B. Hirnhautentzündung oder andere schwere Erkrankungen"
+                tooltipColor="success"
+              />
             </FlexLabel>
           }
           component={HorizontalField}
@@ -61,13 +58,10 @@ export function IllnessAndAccidentInfoForm() {
           label={
             <FlexLabel>
               Regelmäßige Medikamenteneinnahme
-              <Tooltip
+              <InfoIconTooltipButton
                 title="Präparat und Dosierung"
-                color="success"
-                variant="outlined"
-              >
-                <InfoOutlined color="primary" />
-              </Tooltip>
+                tooltipColor="success"
+              />
             </FlexLabel>
           }
           type="text"

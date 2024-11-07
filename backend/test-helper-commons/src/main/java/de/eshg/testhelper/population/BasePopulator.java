@@ -9,7 +9,6 @@ import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.security.AuthenticationFaker;
 import jakarta.annotation.PostConstruct;
 import java.time.Clock;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -163,12 +162,6 @@ public abstract class BasePopulator<R> {
 
   private String getName() {
     return getClass().getSimpleName();
-  }
-
-  protected LocalDate randomDate(Faker faker, int minYears, int maxYears) {
-    return LocalDate.now(clock)
-        .minusYears(faker.number().numberBetween(minYears, maxYears))
-        .minusDays(faker.number().numberBetween(1, 364));
   }
 
   protected class UniqueValueProvider {

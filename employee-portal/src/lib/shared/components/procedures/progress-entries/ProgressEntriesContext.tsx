@@ -6,6 +6,7 @@
 "use client";
 
 import {
+  ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
   ApiManualProgressEntry,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/businessProcedures";
@@ -17,7 +18,7 @@ import { buildName } from "@/lib/shared/components/procedures/progress-entries/h
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
-import { ProgressEntriesConfig, RelatedEntry } from "./types";
+import { ProgressEntriesConfig, RelatedProgressEntry } from "./types";
 
 interface ProgressEntriesContextProps {
   config: ProgressEntriesConfig;
@@ -181,7 +182,7 @@ export function useResolvedUserName(userId: string) {
 }
 
 export function useFilteredAndSortedRelatedEntries(
-  relatedKeyDocumentProgressEntries: ApiManualProgressEntry[],
+  relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[],
 ) {
   return relatedKeyDocumentProgressEntries
     .filter(hasUndeletedFileAndKeyDocumentVersion)
@@ -191,8 +192,8 @@ export function useFilteredAndSortedRelatedEntries(
 }
 
 function hasUndeletedFileAndKeyDocumentVersion(
-  entry: ApiManualProgressEntry,
-): entry is RelatedEntry {
+  entry: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
+): entry is RelatedProgressEntry {
   return (
     isDefined(entry.fileReference) &&
     !entry.fileReference.deleted &&

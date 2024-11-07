@@ -28,6 +28,8 @@ export interface ProcedureDetails extends Procedure {
   readonly waitingRoom?: WaitingRoom;
   readonly isDeletable: boolean;
   readonly schoolInfoLetterCreatedAt?: Date;
+  readonly hasInformationBlock: boolean;
+  readonly hasBeenClosed: boolean;
 }
 
 export function mapProcedureDetails(
@@ -48,5 +50,7 @@ export function mapProcedureDetails(
     waitingRoom: mapOptional(response.waitingRoom, mapWaitingRoom),
     isDeletable: response.isDeletable,
     schoolInfoLetterCreatedAt: response.schoolInfoLetterCreatedAt,
+    hasInformationBlock: response.hasInformationBlock,
+    hasBeenClosed: response.hasBeenClosed,
   };
 }

@@ -7,9 +7,11 @@ package de.eshg.travelmedicine.citizenauth;
 
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.travelmedicine.document.api.DocumentContentDto;
+import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
+import de.eshg.travelmedicine.document.medicalhistory.MedicalHistoryService;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature;
 import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
-import de.eshg.travelmedicine.medicalhistory.api.MedicalHistoryContentDto;
 import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationService;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetAppointmentDetailsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetCitizenAppointmentOverviewResponse;
@@ -42,15 +44,23 @@ public class CitizenAuthController {
   public static final String VACCINATION_CONSULTATION_URL = "/vaccination-consultations";
   public static final String PROCEDURE_STEP_URL = "/procedure-steps";
   public static final String MEDICAL_HISTORY_URL = "/medical-history";
+  public static final String INFORMATION_STATEMENT_URL = "/information-statements";
 
   private final TravelMedicineFeatureToggle featureToggle;
   private final VaccinationConsultationService vaccinationConsultationService;
+  private final InformationStatementService informationStatementService;
+
+  private final MedicalHistoryService medicalHistoryService;
 
   public CitizenAuthController(
       TravelMedicineFeatureToggle featureToggle,
-      VaccinationConsultationService vaccinationConsultationService) {
+      VaccinationConsultationService vaccinationConsultationService,
+      InformationStatementService informationStatementService,
+      MedicalHistoryService medicalHistoryService) {
     this.featureToggle = featureToggle;
     this.vaccinationConsultationService = vaccinationConsultationService;
+    this.informationStatementService = informationStatementService;
+    this.medicalHistoryService = medicalHistoryService;
   }
 
   // Test
@@ -88,7 +98,7 @@ public class CitizenAuthController {
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId) {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
-    vaccinationConsultationService.cancelAppointment(
+    vaccinationConsultationService.cancelAppointmentByCitizen(
         getCitizenUserId(principal), procedureId, procedureStepId);
   }
 
@@ -100,12 +110,12 @@ public class CitizenAuthController {
           + MEDICAL_HISTORY_URL)
   @Operation(summary = "Gets medical history for a procedure step appointment")
   @Transactional(readOnly = true)
-  public MedicalHistoryContentDto getMedicalHistory(
+  public DocumentContentDto getMedicalHistory(
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId) {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
-    return vaccinationConsultationService.getMedicalHistory(
+    return medicalHistoryService.getMedicalHistoryForCitizenPortal(
         getCitizenUserId(principal), procedureId, procedureStepId);
   }
 
@@ -121,9 +131,9 @@ public class CitizenAuthController {
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("procedureId") UUID procedureId,
       @PathVariable("procedureStepId") UUID procedureStepId,
-      @RequestBody @Valid MedicalHistoryContentDto patchMedicalHistoryContent) {
+      @RequestBody @Valid DocumentContentDto patchMedicalHistoryContent) {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
-    vaccinationConsultationService.patchMedicalHistory(
+    medicalHistoryService.patchMedicalHistoryForCitizenPortal(
         getCitizenUserId(principal), procedureId, procedureStepId, patchMedicalHistoryContent);
   }
 
@@ -141,8 +151,33 @@ public class CitizenAuthController {
       @PathVariable("procedureStepId") UUID procedureStepId,
       @RequestBody @Valid AppointmentDto appointmentDto) {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
-    vaccinationConsultationService.bookCitizenAppointment(
+    vaccinationConsultationService.bookCitizenAppointmentByCitizen(
         getCitizenUserId(principal), procedureId, procedureStepId, appointmentDto);
+  }
+
+  @GetMapping(INFORMATION_STATEMENT_URL + "/{informationStatementId}")
+  @Operation(summary = "Gets information statement by id")
+  @Transactional(readOnly = true)
+  public DocumentContentDto getCitizenInformationStatement(
+      @AuthenticationPrincipal Jwt principal,
+      @PathVariable("informationStatementId") UUID informationStatementId) {
+    featureToggle.assertNewFeatureIsEnabled(
+        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
+    return informationStatementService.getInformationStatementForCitizenPortal(
+        getCitizenUserId(principal), informationStatementId);
+  }
+
+  @PatchMapping(INFORMATION_STATEMENT_URL + "/{informationStatementId}")
+  @Operation(summary = "Updates information statement content")
+  @Transactional()
+  public void patchCitizenInformationStatement(
+      @AuthenticationPrincipal Jwt principal,
+      @PathVariable("informationStatementId") UUID informationStatementId,
+      @RequestBody @Valid DocumentContentDto patchInformationStatementContent) {
+    featureToggle.assertNewFeatureIsEnabled(
+        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
+    informationStatementService.patchInformationStatementForCitizenPortal(
+        getCitizenUserId(principal), informationStatementId, patchInformationStatementContent);
   }
 
   private UUID getCitizenUserId(Jwt principal) {

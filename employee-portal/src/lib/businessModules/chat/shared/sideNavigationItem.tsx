@@ -6,7 +6,10 @@
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { Chat } from "@mui/icons-material";
 
-import { SideNavigationItem } from "@/lib/baseModule/components/layout/sideNavigation/types";
+import {
+  SideNavigationItem,
+  UseSideNavigationItemsResult,
+} from "@/lib/baseModule/components/layout/sideNavigation/types";
 import { ChatMessageCounter } from "@/lib/businessModules/chat/components/ChatMessageCounter";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { hasUserRole } from "@/lib/shared/helpers/accessControl";
@@ -21,12 +24,8 @@ export const sideNavigationItem: SideNavigationItem = {
   chip: <ChatMessageCounter />,
 };
 
-export function useSideNavigationItems(): SideNavigationItem[] {
+export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const { canAccessChat } = useChat();
 
-  if (!canAccessChat) {
-    return [];
-  }
-
-  return [sideNavigationItem];
+  return { isLoading: false, items: canAccessChat ? [sideNavigationItem] : [] };
 }

@@ -10,23 +10,19 @@ import {
   ApiAppointmentSummary,
   ApiCreatedByUserType,
   ApiGetVaccinationConsultationDetailsResponse,
-  ApiInformationStatement,
   ApiPatient,
   ApiPersonSync,
   ApiProcedureStatus,
   ApiServicePlanEntry,
-  ApiTravelMedicineFeature,
   ApiTravelTimeUnit,
   ApiTravelType,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { Grid, Stack } from "@mui/joy";
-import { useState } from "react";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/travelMedicine/api/queries/featureToggles";
-import { CloseProcedurePanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/CloseProcedurePanel";
 import { DetailsGrid } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/DetailsGrid";
-import { InformationStatementsTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/InformationStatementsTable";
 import { PatientPanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/PatientPanel";
+import { ProcedureActionsPanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ProcedureActionsPanel";
 import { ProcedureDetailsPanel } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ProcedureDetailsPanel";
 import { ServicePlanTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanTable";
 
@@ -41,7 +37,6 @@ export interface CreateProcedureValues {
   travelTimeAmount?: number;
   travelTimeUnit?: ApiTravelTimeUnit;
   services: ApiServicePlanEntry[];
-  informationStatements: ApiInformationStatement[];
   templateId?: string;
   initialAppointment: ApiAppointmentSummary;
   createdByUserType: ApiCreatedByUserType;
@@ -57,13 +52,8 @@ export function VaccinationConsultationDetails(
 ) {
   const initialValues = createInitialFormValues(props.procedure);
 
-  const [isProcedureClosed, setIsProcedureClosed] = useState<boolean>(
-    props.procedure.status === ApiProcedureStatus.Closed,
-  );
-
-  const isInformationStatementEnabled = useIsNewFeatureEnabled(
-    ApiTravelMedicineFeature.CitizenPortalInformationStatement,
-  );
+  const isProcedureClosed: boolean =
+    props.procedure.status === ApiProcedureStatus.Closed;
 
   function createInitialFormValues(
     newData: ApiGetVaccinationConsultationDetailsResponse,
@@ -81,7 +71,6 @@ export function VaccinationConsultationDetails(
       travelTimeAmount:
         newData.travelInformation.travelTimeAmount ?? ("" as unknown as number),
       services: newData.servicePlanList,
-      informationStatements: newData.informationStatements,
       initialAppointment: newData.initialAppointment,
       createdByUserType: newData.createdByUserType,
     };
@@ -89,12 +78,23 @@ export function VaccinationConsultationDetails(
 
   return (
     <DetailsGrid>
+      <Grid xs={12}>
+        {props.procedure.createdByUserType ===
+          ApiCreatedByUserType.CitizenPortal &&
+          props.procedure.status === ApiProcedureStatus.Draft && (
+            <Alert
+              color="warning"
+              message="Dieser Entwurf kommt aus einer externen Quelle. Bitte kontrollieren Sie die Daten, bevor Sie den Vorgang starten."
+            />
+          )}
+      </Grid>
       <Grid xs={9} display={"flex"} data-testid={"patient"}>
         <PatientPanel
           procedureId={initialValues.externalId}
           patient={initialValues.patient}
           person={initialValues.personSync}
           isProcedureClosed={isProcedureClosed}
+          isProcedureDraft={props.procedure.status === ApiProcedureStatus.Draft}
         />
       </Grid>
       <Grid xs={3}>
@@ -103,10 +103,9 @@ export function VaccinationConsultationDetails(
             initialValues={initialValues}
             procedureClosed={isProcedureClosed}
           />
-          <CloseProcedurePanel
-            procedure={initialValues}
-            dataTestid="button-close-reopen"
-            setIsProcedureClosed={setIsProcedureClosed}
+          <ProcedureActionsPanel
+            procedure={props.procedure}
+            dataTestid="procedure-actions"
           />
         </Stack>
       </Grid>
@@ -121,16 +120,6 @@ export function VaccinationConsultationDetails(
           }
           createdByUserType={initialValues.createdByUserType}
         ></ServicePlanTable>
-      </Grid>
-
-      <Grid xs={12}>
-        {isInformationStatementEnabled && (
-          <InformationStatementsTable
-            data={initialValues.informationStatements}
-            procedureId={initialValues.externalId ?? ""}
-            isProcedureClosed={isProcedureClosed}
-          ></InformationStatementsTable>
-        )}
       </Grid>
     </DetailsGrid>
   );

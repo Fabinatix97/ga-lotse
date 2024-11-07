@@ -65,7 +65,7 @@ function NewFacilityButtonWithinOverlay() {
       {
         onSuccess: afterSave,
       },
-    ).catch();
+    );
   }
 
   async function handleSelectFacility(
@@ -85,7 +85,7 @@ function NewFacilityButtonWithinOverlay() {
           }
         },
       },
-    ).catch();
+    );
   }
 
   return (

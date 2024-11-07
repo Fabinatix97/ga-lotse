@@ -89,9 +89,6 @@ export function useAddAutoReportSeries(onSuccess: () => void) {
   });
 
   return async (statisticId: string, model: AutomateReportFormModel) => {
-    return mutation
-      .mutateAsync({ statisticId, model }, { onSuccess })
-      .then(() => void 0)
-      .catch();
+    await mutation.mutateAsync({ statisticId, model }, { onSuccess });
   };
 }

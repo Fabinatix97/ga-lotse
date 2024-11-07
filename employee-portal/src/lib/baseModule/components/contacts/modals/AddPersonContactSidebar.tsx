@@ -4,7 +4,7 @@
  */
 
 import { ApiPersonContact } from "@eshg/employee-portal-api/base";
-import { Ref, useState } from "react";
+import { useState } from "react";
 
 import { ContactEntityForm } from "@/lib/baseModule/components/contacts/forms/ContactEntityForm";
 import { PersonContactImportForm } from "@/lib/baseModule/components/contacts/forms/import/PersonContactImportForm";
@@ -14,19 +14,19 @@ import {
   AddContactSidebarState,
   PersonContactFormValues,
 } from "@/lib/baseModule/components/contacts/types";
-import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 import { createEmptyAddress } from "@/lib/shared/components/form/address/helpers";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 type AddPersonContactSidebarState = AddContactSidebarState<
   PersonContactFormValues,
   ApiPersonContact
 >;
 
-type CreateContactSidebarProps = AddPersonContactSidebarState & {
-  onClose: () => void;
-  onSuccess: () => void;
-  sidebarFormRef: Ref<SidebarFormHandle>;
-};
+type CreateContactSidebarProps = AddPersonContactSidebarState &
+  SidebarWithFormRefProps;
 
 const initialCreateContactFormValues = {
   type: "AddPersonContactRequest",
@@ -42,10 +42,15 @@ const initialCreateContactFormValues = {
   differentBillingAddress: undefined,
 } as const satisfies PersonContactFormValues;
 
-export function AddPersonContactSidebar({
+export function useAddPersonContactSidebar() {
+  return useSidebarWithFormRef({
+    component: AddPersonContactSidebar,
+  });
+}
+
+function AddPersonContactSidebar({
   onClose,
-  onSuccess,
-  sidebarFormRef,
+  formRef,
   ...initialState
 }: CreateContactSidebarProps) {
   const [formState, setFormState] =
@@ -68,16 +73,16 @@ export function AddPersonContactSidebar({
               into: into,
             })
           }
-          onClose={onClose}
-          sidebarFormRef={sidebarFormRef}
+          onClose={() => onClose(false)}
+          sidebarFormRef={formRef}
         />
       )}
       {formState.flowStep === "CREATE" && (
         <ContactEntityForm
           type={"PERSON"}
           initialValues={formState.initialValues}
-          onClose={onClose}
-          sidebarFormRef={sidebarFormRef}
+          onClose={() => onClose(false)}
+          sidebarFormRef={formRef}
         />
       )}
       {formState.flowStep === "SEARCH" && (
@@ -100,9 +105,9 @@ export function AddPersonContactSidebar({
           from={formState.from}
           intoLabel={"Aktuell"}
           fromLabel={"Importiert"}
-          onCancel={onClose}
-          onSuccess={onSuccess}
-          sidebarFormRef={sidebarFormRef}
+          onCancel={() => onClose(false)}
+          onSuccess={() => onClose(true)}
+          sidebarFormRef={formRef}
         />
       )}
     </>

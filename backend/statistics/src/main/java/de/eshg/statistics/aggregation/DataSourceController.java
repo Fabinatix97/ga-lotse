@@ -8,7 +8,7 @@ package de.eshg.statistics.aggregation;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.statistics.api.GetAvailableDataSourcesResponse;
+import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

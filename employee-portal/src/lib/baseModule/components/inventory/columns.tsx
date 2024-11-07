@@ -86,7 +86,6 @@ export function inventoryColumns({
       enableSorting: false,
       cell: (props) => (
         <ActionsMenu
-          disablePortal
           actionItems={[
             {
               label: "Anzeigen",

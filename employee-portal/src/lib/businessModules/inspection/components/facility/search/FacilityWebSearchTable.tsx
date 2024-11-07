@@ -162,8 +162,10 @@ export function FacilityWebSearchTable({
       <DataTable
         data={data}
         columns={columns}
-        rowNavRoute={getRowRoute}
-        focusColumnHeader={"Name"}
+        rowNavigation={{
+          route: getRowRoute,
+          focusColumnAccessorKey: "name",
+        }}
         striped
       />
     </TableSheet>

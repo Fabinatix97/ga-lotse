@@ -154,7 +154,9 @@ public class AccessCodeForm extends AbstractFormAuthenticator {
     }
     RealmModel realm = context.getRealm();
     if (realm.isBruteForceProtected()) {
-      context.getProtector().failedLogin(realm, user, context.getConnection());
+      context
+          .getProtector()
+          .failedLogin(realm, user, context.getConnection(), context.getUriInfo());
     }
   }
 

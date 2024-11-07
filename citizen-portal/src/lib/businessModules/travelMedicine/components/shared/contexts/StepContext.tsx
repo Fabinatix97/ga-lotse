@@ -3,55 +3,108 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import { isDefined } from "remeda";
 
 interface StepContextProps {
-  steps: JSX.Element[];
   totalSteps: number;
   currentStepIndex: number;
   isFirstStep: boolean;
   isLastStep: boolean;
-  onStepChange: (curStep: number) => void;
   onShowOverviewChange: (showOverview: boolean) => void;
   isShowOverview: boolean;
+  goForward: (numOfPages?: number) => void;
+  goBack: (numOfPages?: number) => void;
+  currentNode?: JSX.Element;
 }
-
-interface StepContextProviderProps extends RequiresChildren {
-  steps: JSX.Element[];
-}
-
 export const StepContext = createContext<StepContextProps | null>(null);
 
-export function StepContextProvider(props: Readonly<StepContextProviderProps>) {
-  const steps = props.steps;
+interface StepContextProviderProps {
+  steps: JSX.Element[];
+  children: (values: StepContextProps) => ReactNode;
+}
+
+export function StepContextProvider({
+  steps,
+  children,
+}: StepContextProviderProps) {
   const totalSteps = steps.length;
 
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(1);
   const [isShowOverview, setIsShowOverview] = useState(true);
-
-  const onStepChange = useCallback((newStep: number) => {
-    setCurrentStepIndex(newStep);
-  }, []);
+  const currentNode = steps[currentStepIndex - 1];
+  if (currentNode === undefined) {
+    throw new Error(
+      `StepFactory[] out of bounds. Tried to access index ${currentStepIndex - 1} but length is ${steps.length}`,
+    );
+  }
 
   const onShowOverviewChange = useCallback((displayOverview: boolean) => {
     setIsShowOverview(displayOverview);
   }, []);
 
+  const goForward = useCallback(
+    function (numOfPages?: number) {
+      if (currentStepIndex < steps.length) {
+        setCurrentStepIndex(
+          (prev) => prev + (isDefined(numOfPages) ? numOfPages : 1),
+        );
+      }
+    },
+    [currentStepIndex, steps, setCurrentStepIndex],
+  );
+
+  const goBack = useCallback(
+    function (numOfPages?: number) {
+      if (currentStepIndex > 1) {
+        setCurrentStepIndex(
+          (prev) => prev - (isDefined(numOfPages) ? numOfPages : 1),
+        );
+      }
+    },
+    [currentStepIndex, setCurrentStepIndex],
+  );
+
+  const isFirstStep = currentStepIndex === 1;
+  const isLastStep = currentStepIndex === totalSteps;
+
+  const contextValue = useMemo(
+    () => ({
+      goForward,
+      goBack,
+      currentStepIndex,
+      totalSteps,
+      isFirstStep,
+      isLastStep,
+      onShowOverviewChange,
+      isShowOverview,
+      currentNode,
+    }),
+    [
+      goForward,
+      goBack,
+      currentStepIndex,
+      totalSteps,
+      onShowOverviewChange,
+      isShowOverview,
+      isFirstStep,
+      isLastStep,
+      currentNode,
+    ],
+  );
+
   return (
-    <StepContext.Provider
-      value={{
-        steps,
-        totalSteps,
-        currentStepIndex,
-        isFirstStep: currentStepIndex === 0,
-        isLastStep: currentStepIndex === totalSteps - 1,
-        onStepChange,
-        onShowOverviewChange,
-        isShowOverview,
-      }}
-    >
-      {props.children}
+    <StepContext.Provider value={contextValue}>
+      {children({
+        ...contextValue,
+      })}
     </StepContext.Provider>
   );
 }

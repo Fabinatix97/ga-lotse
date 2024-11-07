@@ -16,7 +16,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedBy;
 
 @Entity
-public class ProcessedInboxProgressEntry extends ProgressEntry implements FileAware {
+public class ProcessedInboxProgressEntry extends ProgressEntry {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(optional = false)
@@ -54,22 +54,18 @@ public class ProcessedInboxProgressEntry extends ProgressEntry implements FileAw
     this.inboxProgressEntryType = inboxProgressEntryType;
   }
 
-  @Override
   public String getSubject() {
     return subject;
   }
 
-  @Override
   public void setSubject(String subject) {
     this.subject = subject;
   }
 
-  @Override
   public String getMessageText() {
     return messageText;
   }
 
-  @Override
   public void setMessageText(String messageText) {
     this.messageText = messageText;
   }
@@ -79,7 +75,6 @@ public class ProcessedInboxProgressEntry extends ProgressEntry implements FileAw
     return false;
   }
 
-  @Override
   public UUID getCreatedBy() {
     return createdBy;
   }

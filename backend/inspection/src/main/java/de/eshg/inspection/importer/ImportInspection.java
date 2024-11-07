@@ -1,0 +1,13 @@
+/*
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.inspection.importer;
+
+import de.eshg.inspection.inspection.api.InspectionResult;
+import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
+
+record ImportInspection(
+    @NotNull Instant lastInspected, @NotNull InspectionResult result, String incidents) {}

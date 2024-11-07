@@ -41,6 +41,7 @@ interface PatientPanelProps {
   patient: ApiPatient;
   person: ApiPersonSync;
   isProcedureClosed: boolean;
+  isProcedureDraft: boolean;
 }
 
 export function PatientPanel({
@@ -48,6 +49,7 @@ export function PatientPanel({
   patient,
   person,
   isProcedureClosed,
+  isProcedureDraft,
 }: Readonly<PatientPanelProps>) {
   const [open, setOpen] = useSearchParam("edit-patient", "boolean");
 
@@ -94,7 +96,7 @@ export function PatientPanel({
     if (resetAndClose) {
       options = { onSuccess: resetAndClose };
     }
-    await updatePatientApi.mutateAsync(request, options).catch();
+    await updatePatientApi.mutateAsync(request, options);
   }
 
   return (
@@ -104,6 +106,7 @@ export function PatientPanel({
           name="patient-card-tile"
           title="Patient"
           buttons={
+            !isProcedureDraft &&
             !isProcedureClosed && (
               <SyncBarrier outdated={person.outdated} syncHref={syncRoute}>
                 <EditButton

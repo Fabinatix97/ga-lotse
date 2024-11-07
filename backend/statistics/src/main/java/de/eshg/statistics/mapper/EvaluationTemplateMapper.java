@@ -6,17 +6,17 @@
 package de.eshg.statistics.mapper;
 
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.statistics.api.AvailableDataSource;
-import de.eshg.statistics.api.BaseDataSourceAttribute;
-import de.eshg.statistics.api.BusinessDataAttribute;
-import de.eshg.statistics.api.BusinessDataSourceAttribute;
-import de.eshg.statistics.api.DataSourceDto;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
+import de.eshg.statistics.api.datasource.AvailableDataSource;
+import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
+import de.eshg.statistics.api.datasource.BusinessDataAttribute;
+import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
+import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.evaluationtemplate.AnalysisInfo;
 import de.eshg.statistics.api.evaluationtemplate.BaseDataAttributeWithName;
 import de.eshg.statistics.api.evaluationtemplate.BusinessDataAttributeWithName;
@@ -253,7 +253,8 @@ public class EvaluationTemplateMapper {
         evaluationTemplate.getLastUsageAt());
   }
 
-  public static EvaluationTemplateDto mapToApi(EvaluationTemplate evaluationTemplate) {
+  public static EvaluationTemplateDto mapToApi(
+      EvaluationTemplate evaluationTemplate, boolean withoutAnonymizationAllowed) {
     List<DataSourceWithAttributeNames> dataSources =
         mapToDataSourceDtos(evaluationTemplate.getDataSources());
 
@@ -261,6 +262,7 @@ public class EvaluationTemplateMapper {
         evaluationTemplate.getExternalId(),
         evaluationTemplate.getName(),
         evaluationTemplate.getDescription(),
+        withoutAnonymizationAllowed,
         dataSources,
         mapToAnalysisInfos(evaluationTemplate.getAnalysisTemplates()),
         evaluationTemplate.getCreatedByUserId(),

@@ -9,7 +9,9 @@ import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.travelmedicine.medicalhistory.persistence.entity.MedicalHistory;
+import de.eshg.travelmedicine.document.medicalhistory.MedicalHistoryFactory;
+import de.eshg.travelmedicine.document.medicalhistory.persistence.entity.MedicalHistory;
+import de.eshg.travelmedicine.notification.NotificationService;
 import de.eshg.travelmedicine.template.medicalhistorytemplate.persistence.entity.MedicalHistoryTemplate;
 import de.eshg.travelmedicine.template.medicalhistorytemplate.persistence.entity.MedicalHistoryTemplateRepository;
 import de.eshg.travelmedicine.util.MappingUtil;
@@ -17,6 +19,7 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingType
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetProcedureStepServicesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchAppointmentRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatchEarliestDateRequest;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PostProcedureStepRequest;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ProcedureStepServiceDto;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.CreatedByUserType;
@@ -46,6 +49,9 @@ public class ProcedureStepService {
 
   private final ProcedureAccessor procedureAccessor;
   private final AppointmentBookingTypeMapper appointmentBookingTypeMapper;
+  private final MedicalHistoryFactory medicalHistoryFactory;
+  private final NotificationService notificationService;
+  private final PersonClient personClient;
 
   public ProcedureStepService(
       ProcedureStepRepository procedureStepRepository,
@@ -53,13 +59,19 @@ public class ProcedureStepService {
       ServiceRepository serviceRepository,
       AppointmentService appointmentService,
       ProcedureAccessor procedureAccessor,
-      AppointmentBookingTypeMapper appointmentBookingTypeMapper) {
+      AppointmentBookingTypeMapper appointmentBookingTypeMapper,
+      MedicalHistoryFactory medicalHistoryFactory,
+      NotificationService notificationService,
+      PersonClient personClient) {
     this.procedureStepRepository = procedureStepRepository;
     this.medicalHistoryTemplateRepository = medicalHistoryTemplateRepository;
     this.serviceRepository = serviceRepository;
     this.appointmentService = appointmentService;
     this.procedureAccessor = procedureAccessor;
     this.appointmentBookingTypeMapper = appointmentBookingTypeMapper;
+    this.medicalHistoryFactory = medicalHistoryFactory;
+    this.notificationService = notificationService;
+    this.personClient = personClient;
   }
 
   public MedicalHistory createMedicalHistory(boolean followUp) {
@@ -67,17 +79,30 @@ public class ProcedureStepService {
         followUp
             ? medicalHistoryTemplateRepository.findByFollowUpFlagIsTrue()
             : medicalHistoryTemplateRepository.findByMainFlagIsTrue();
-    MedicalHistory medicalHistory = new MedicalHistory();
-    medicalHistory.setContent(template.map(MedicalHistoryTemplate::getContent).orElse("{}"));
-    return medicalHistory;
+    return medicalHistoryFactory.createMedicalHistory(
+        template.orElseThrow(
+            () -> new IllegalStateException("no suitable medical history template found")));
   }
 
-  public static Instant getAppointment(ProcedureStep ps) {
+  public static Instant getStartDateOrEarliestDateFromAppointment(ProcedureStep ps) {
     if (ps.getUserDefinedAppointment() != null) {
       return ps.getUserDefinedAppointment().getAppointmentStart();
     } else if (ps.getAppointment() != null) {
       return ps.getAppointment().getAppointmentStart();
     } else return ps.getEarliestDate().atStartOfDay().toInstant(ZoneOffset.UTC);
+  }
+
+  public static Instant getStartDateFromAppointment(ProcedureStep ps) {
+    if (ps.getUserDefinedAppointment() != null) {
+      return ps.getUserDefinedAppointment().getAppointmentStart();
+    } else if (ps.getAppointment() != null) {
+      return ps.getAppointment().getAppointmentStart();
+    } else return null;
+  }
+
+  public PatientDto patientOf(VaccinationConsultation vaccinationConsultation) {
+    UUID patientId = vaccinationConsultation.getPatientIdsFromCentralFile().getFirst();
+    return personClient.getPatientFromCentralFile(patientId);
   }
 
   // --- end of util methods
@@ -135,6 +160,11 @@ public class ProcedureStepService {
     }
 
     vaccinationConsultation.getProcedureSteps().add(procedureStep);
+
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
+      notificationService.notifyNewFollowUpAppointment(patientOf(vaccinationConsultation));
+    }
+
     return procedureStep.getExternalId();
   }
 
@@ -211,6 +241,7 @@ public class ProcedureStepService {
     procedureStep.setAppointmentType(
         MappingUtil.mapEnum(AppointmentType.class, appointmentRequest.appointmentType()));
 
+    Instant previousAppointment = getStartDateFromAppointment(procedureStep);
     procedureStep.setAppointment(null);
     procedureStep.setUserDefinedAppointment(null);
 
@@ -226,6 +257,18 @@ public class ProcedureStepService {
           procedureStep,
           appointmentRequest.appointmentStart(),
           appointmentRequest.durationInMinutes());
+    }
+
+    Instant newAppointment = getStartDateFromAppointment(procedureStep);
+
+    VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
+      if (previousAppointment != null)
+        notificationService.notifyRebookedByEmployee(
+            patientOf(vaccinationConsultation), previousAppointment, newAppointment);
+      else
+        notificationService.notifyBookedByEmployee(
+            patientOf(vaccinationConsultation), newAppointment);
     }
   }
 
@@ -288,7 +331,7 @@ public class ProcedureStepService {
     procedureStep.setEarliestDate(patchEarliestDateRequest.earliestDate());
   }
 
-  public void cancelAppointment(UUID procedureStepId) {
+  public void cancelAppointmentByEmployee(UUID procedureStepId) {
     ProcedureStep procedureStep =
         procedureAccessor.accessProcedureStep(
             procedureStepId, null, List.of(new ProcedureAccessor.CheckNotClosed()));
@@ -300,6 +343,15 @@ public class ProcedureStepService {
       throw new BadRequestException(
           "It is only possible to cancel appointments of a procedure created in citizen portal.");
     }
+
+    Instant cancelledAppointment =
+        ProcedureStepService.getStartDateOrEarliestDateFromAppointment(procedureStep);
     appointmentService.cancelAppointment(procedureStep);
+
+    VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
+      notificationService.notifyCancelledByEmployee(
+          patientOf(vaccinationConsultation), cancelledAppointment);
+    }
   }
 }

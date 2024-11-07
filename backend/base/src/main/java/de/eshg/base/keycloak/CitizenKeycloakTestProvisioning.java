@@ -23,7 +23,8 @@ import org.springframework.stereotype.Component;
 @Component
 @DependsOn(CitizenKeycloakProvisioning.BEAN_NAME)
 @ConditionalOnTestUserProvisioningEnabled
-public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
+public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
+    implements AutoCloseable {
   public static final String MUK_TEST_REALM_NAME = "muk-test";
   public static final String BUND_ID_TEST_REALM_NAME = "bund-id-test";
   public static final String KEY_PROVIDER_TYPE = "org.keycloak.keys.KeyProvider";
@@ -72,6 +73,12 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning {
           CitizenKeycloakProvisioning.BUND_ID_IDENTITY_PROVIDER_ALIAS, bundIdKeycloakClient);
       addTestUserToBundIdRealm();
     }
+  }
+
+  @Override
+  public void close() {
+    this.mukKeycloakClient.close();
+    this.bundIdKeycloakClient.close();
   }
 
   private void createOrUpdateIdpTestRealmKeys(

@@ -20,7 +20,6 @@ Adding new dependencies can both impact the bundle size and security of our fron
 If after going through above questions you think it's necessary and reasonable to add the new dependency, please approach one of the frontend tech leads.
 The MR introducing the new dependency needs to be approved by a tech lead.
 
-
 == Updating dependencies
 
 === Add a new dependency
@@ -29,25 +28,53 @@ The MR introducing the new dependency needs to be approved by a tech lead.
 
 Add the new dependency to the `package.json` of the subproject, then in the top-level directory run:
 
-`./gradlew installDependency`
+[,bash]
+----
+./gradlew updateLockfile
+----
+
+If the new dependency is needed within multiple subprojects, it can be extracted to one of the catalogs defined in `pnpm-workspace.yaml`. This ensures that all subprojects use the same version of this dependency and eases the management of that dependency.
 
 ==== Backend
 
 See link:../backend/README.md#introducing-new-dependencies[Backend README], chapter "Introducing new dependencies".
 
-=== Updating all dependencies at once
+== Updating pnpm dependencies ==
 
-To manually update *all* dependencies in the project, use the following commands:
+We use link:https://pnpm.io/catalogs[pnpm Catalogs] to define the versions of shared dependencies in a reusable way and simplify dependency updates.
 
-[cols="1,1"]
-|===
-| *Command*                                                | *Description*
-| `./gradlew updateDependencies`                           | Update all pnpm dependencies
-| `+++./gradlew resolveAndLockAll --update-locks '*:*'+++` | Update all Gradle lockfiles
-|===
+To automatically update all dependencies, run
 
+[,bash]
+----
+./gradlew updateDependencies
+----
 
-== Updating gradle ==
+Unfortunately, automatically updating dependencies from catalogs is not yet supported. For these, run
+
+[,bash]
+----
+./gradlew outdatedDependencies
+----
+
+You can now update the outdated dependencies in `pnpm-workspace.yaml`.
+Afterwards, run
+
+[,bash]
+----
+./gradlew updateLockfile
+----
+
+== Updating Gradle dependencies
+
+To update the lockfiles for all Gradle dependencies, run
+
+[,bash]
+----
+./gradlew resolveAndLockAll --update-locks '*:*'
+----
+
+== Updating Gradle ==
 
 The backend should be upgraded first. Depending on whether there were any problems, the backend reference commit needs to updated as well.
 If there were no adjustments necessary, this is optional.

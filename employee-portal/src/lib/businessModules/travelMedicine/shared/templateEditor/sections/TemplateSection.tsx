@@ -5,13 +5,30 @@
 
 import { ApiTemplateSectionElement } from "@eshg/employee-portal-api/travelMedicine";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { Add } from "@mui/icons-material";
-import { Button, Sheet, Stack } from "@mui/joy";
+import { Sheet, Stack } from "@mui/joy";
 import { FieldArray } from "formik";
 import { ReactNode } from "react";
 
-import { createEmptySectionElement } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/TemplateSectionList";
+import { SectionButtonBar } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/SectionButtonBar";
 import { SectionDataElementList } from "@/lib/businessModules/travelMedicine/shared/templateEditor/sections/dataElements/SectionDataElementList";
+
+export function createEmptyAnamnesisQuestionElement(): ApiTemplateSectionElement {
+  return {
+    anamnesisQuestion: {
+      questionText: "",
+      subElementMultiSelect: [],
+      subElementText: undefined,
+    },
+  };
+}
+
+export function createEmptyTextBlockElement(): ApiTemplateSectionElement {
+  return { textBlock: { textField: "" } };
+}
+
+export function createEmptyConfirmationElement(): ApiTemplateSectionElement {
+  return { confirmation: { confirmationTextField: "" } };
+}
 
 export interface MedicalHistoryTemplateSectionProp {
   sectionFormikPath: string;
@@ -69,15 +86,17 @@ export function TemplateSection({
                 }
                 replaceSectionElementHandler={replace}
               />
-
-              <Button
-                startDecorator={<Add />}
-                variant="outlined"
-                color="primary"
-                onClick={() => push(createEmptySectionElement())}
-              >
-                Frage hinzufügen
-              </Button>
+              <SectionButtonBar
+                textBlockButtonAction={() =>
+                  push(createEmptyTextBlockElement())
+                }
+                anamnesisButtonAction={() =>
+                  push(createEmptyAnamnesisQuestionElement())
+                }
+                confirmationButtonAction={() =>
+                  push(createEmptyConfirmationElement())
+                }
+              />
             </Stack>
           </Stack>
         )}

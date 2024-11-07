@@ -16,7 +16,6 @@ import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
-import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.pdf.AbstractGenerator;
@@ -189,7 +188,6 @@ public class InvitationGenerator extends AbstractGenerator {
             .formatted(
                 invitationData.child().name().replace(" ", "_"),
                 now.format(ReportGeneratorConstants.FILENAME_TIMESTAMP_FORMAT));
-    return FileFactory.createPdfWithMetaData(
-        filename, ProcedureFileType.PDF, bytes, pdfMetaData, false);
+    return FileFactory.createPdfWithMetaData(filename, bytes, pdfMetaData);
   }
 }

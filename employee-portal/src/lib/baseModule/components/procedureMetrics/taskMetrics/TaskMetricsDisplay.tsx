@@ -142,14 +142,15 @@ function SlowestAndFastestTable({
         sorting={{
           manualSorting: false,
         }}
-        rowNavRoute={(row) =>
-          resolveProcedureDetailsRoute({
-            businessModule: businessModuleName as ApiBusinessModule,
-            procedureId: row.original.id,
-            status: ApiProcedureStatus.Closed,
-          })
-        }
-        focusColumnHeader="Erstellt am"
+        rowNavigation={{
+          route: (row) =>
+            resolveProcedureDetailsRoute({
+              businessModule: businessModuleName as ApiBusinessModule,
+              procedureId: row.original.id,
+              status: ApiProcedureStatus.Closed,
+            }),
+          focusColumnAccessorKey: "createdAt",
+        }}
       />
     </TableSheet>
   );

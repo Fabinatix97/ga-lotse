@@ -16,7 +16,7 @@ import {
 } from "@mui/joy";
 import { useField, useFormikContext } from "formik";
 import { RoomMember } from "matrix-js-sdk/lib/matrix";
-import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
@@ -58,15 +58,17 @@ export function InputComponent({
 
   const debouncedHandleUserTyping = useDebouncedCallback(
     (isTyping: boolean) => handleUserTyping?.(selectedRoomId ?? "", isTyping),
-    500,
-    { leading: true },
+    250,
   );
+  useEffect(() => {
+    resetForm();
+  }, [resetForm, selectedRoomId]);
 
   async function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { value } = event.target || {};
     await helpers.setValue(value);
 
-    // Check if we are currently mentioning someone
+    // // Check if we are currently mentioning someone
     const mentionIndex = value.lastIndexOf("@");
     if (
       mentionIndex !== -1 &&
@@ -85,7 +87,7 @@ export function InputComponent({
       setSelectedUserIndex(undefined);
     }
 
-    void debouncedHandleUserTyping(false);
+    void debouncedHandleUserTyping(true);
   }
   function handleUserModalClose() {
     setFilteredUsers([]);
@@ -110,7 +112,6 @@ export function InputComponent({
       await handleUserSelect(filteredUsers[selectedUserIndex ?? 0]);
       return;
     }
-
     if (event.key === "Enter" && !event.shiftKey) {
       try {
         event.preventDefault();
@@ -120,7 +121,6 @@ export function InputComponent({
         logger.warn("Sending message failed", error);
       }
     }
-
     if (event.key === "ArrowDown" && filteredUsers.length > 0) {
       event.preventDefault();
       setSelectedUserIndex(
@@ -155,9 +155,10 @@ export function InputComponent({
       inputNode.focus();
     }
   }
+  const isDisabled = disabled ?? !!_meta.error;
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2, pt: 0 }}>
       <ClickAwayListener onClickAway={handleUserModalClose}>
         <Menu
           disablePortal
@@ -219,14 +220,13 @@ export function InputComponent({
         endDecorator={
           <IconButton
             size="sm"
-            color="primary"
+            color={isDisabled ? "neutral" : "primary"}
             type="submit"
-            disabled={disabled}
+            disabled={isDisabled}
           >
             <SendOutlinedIcon />
           </IconButton>
         }
-        disabled={disabled}
       />
     </Box>
   );

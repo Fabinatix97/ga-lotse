@@ -174,8 +174,10 @@ export function ProceduresTable(props: ProceduresTableProps) {
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           rowSelectionProps={rowSelectionProps}
-          rowNavRoute={(row) => routes.procedures.byId(row.original.id).details}
-          focusColumnHeader="Name"
+          rowNavigation={{
+            route: (row) => routes.procedures.byId(row.original.id).details,
+            focusColumnAccessorKey: "child.lastName",
+          }}
           minWidth={1600}
         />
       </TableSheet>

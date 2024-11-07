@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiMedicalHistorySectionElement } from "@eshg/citizen-portal-api/travelMedicine";
+import { ApiDocumentAnamnesisQuestion } from "@eshg/citizen-portal-api/travelMedicine";
 import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
 import { Typography, styled } from "@mui/joy";
 
@@ -14,7 +14,7 @@ interface DocumentRadioButtonElementProps {
   name: string;
   label: string;
   setFieldValue: SetFieldValueHelper;
-  element: ApiMedicalHistorySectionElement;
+  anamnesisQuestion: ApiDocumentAnamnesisQuestion;
   sectionIndex: number;
   elementIndex: number;
 }
@@ -22,7 +22,7 @@ interface DocumentRadioButtonElementProps {
 export function DocumentRadioButtonElement({
   name,
   label,
-  element,
+  anamnesisQuestion,
   setFieldValue,
   sectionIndex,
   elementIndex,
@@ -47,19 +47,19 @@ export function DocumentRadioButtonElement({
       ]}
       onChange={async (event) => {
         if (event.target.value === "false" || !event.target.value) {
-          if (element.elementData.subElementText) {
+          if (anamnesisQuestion.subElementText) {
             await setFieldValue(
               "sections[" +
                 sectionIndex +
                 "].sectionElements[" +
                 elementIndex +
-                "].elementData.subElementText.answer",
+                "].anamnesisQuestion.subElementText.answer",
               "",
             );
           }
           for (
             let i = 0;
-            i < element.elementData.subElementMultiSelect.length;
+            i < anamnesisQuestion.subElementMultiSelect.length;
             i++
           ) {
             await setFieldValue(
@@ -67,7 +67,7 @@ export function DocumentRadioButtonElement({
                 sectionIndex +
                 "].sectionElements[" +
                 elementIndex +
-                "].elementData.subElementMultiSelect[" +
+                "].anamnesisQuestion.subElementMultiSelect[" +
                 i +
                 "].answer",
               false,
@@ -78,7 +78,7 @@ export function DocumentRadioButtonElement({
               sectionIndex +
               "].sectionElements[" +
               elementIndex +
-              "].elementData.answer",
+              "].anamnesisQuestion.answer",
             false,
           );
         } else {
@@ -87,7 +87,7 @@ export function DocumentRadioButtonElement({
               sectionIndex +
               "].sectionElements[" +
               elementIndex +
-              "].elementData.answer",
+              "].anamnesisQuestion.answer",
             true,
           );
         }

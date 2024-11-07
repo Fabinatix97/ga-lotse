@@ -16,7 +16,6 @@ import de.eshg.inspection.checklist.persistence.element.ChecklistElement;
 import de.eshg.inspection.checklistdefinition.persistence.ChecklistDefinitionVersion;
 import de.eshg.inspection.incident.persistence.InspectionIncidentRepository;
 import de.eshg.inspection.inspection.persistence.Inspection;
-import de.eshg.rest.service.error.BadRequestException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -53,9 +52,6 @@ public class ChecklistService {
   }
 
   public GetChecklistsResponse getChecklists(Inspection inspection) {
-    if (inspection.getChecklists() == null || inspection.getChecklists().isEmpty()) {
-      throw new BadRequestException("wrong state", "This inspection doesn't have a checklist yet.");
-    }
     return ChecklistDtoMapper.dtoFrom(inspection.getChecklists());
   }
 

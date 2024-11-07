@@ -8,7 +8,10 @@ package de.eshg.statistics.aggregation;
 import static de.eshg.statistics.persistence.entity.AggregationResultPendingState.TABLE_ROWS_REMOVAL;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
+import de.eshg.statistics.exception.IncompleteDeletionException;
+import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import java.util.Set;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +26,21 @@ public class StatisticExecution {
   private final StatisticService statisticService;
   private final StatisticCopyService statisticCopyService;
   private final ModuleClientAuthenticator moduleClientAuthenticator;
+  private final ReportSeriesExecution reportSeriesExecution;
 
   public StatisticExecution(
       DiagramCreationService diagramCreationService,
       EvaluationService evaluationService,
       StatisticService statisticService,
       StatisticCopyService statisticCopyService,
-      ModuleClientAuthenticator moduleClientAuthenticator) {
+      ModuleClientAuthenticator moduleClientAuthenticator,
+      ReportSeriesExecution reportSeriesExecution) {
     this.diagramCreationService = diagramCreationService;
     this.evaluationService = evaluationService;
     this.statisticService = statisticService;
     this.statisticCopyService = statisticCopyService;
     this.moduleClientAuthenticator = moduleClientAuthenticator;
+    this.reportSeriesExecution = reportSeriesExecution;
   }
 
   public void addStatistic(UUID statisticId) {
@@ -73,7 +79,7 @@ public class StatisticExecution {
 
   public void updateStatistic(UUID statisticId) {
     try {
-      removeStatisticData(statisticId);
+      removeStatisticData(statisticId, AggregationResultPendingState.DATA_AGGREGATION);
       updateStatisticData(statisticId);
     } catch (Exception e) {
       log.error("Could not update statistic", e);
@@ -81,12 +87,12 @@ public class StatisticExecution {
     }
   }
 
-  private void removeStatisticData(UUID statisticId) {
-    while (statisticService
-        .getAggregationResultPendingState(statisticId)
-        .equals(TABLE_ROWS_REMOVAL)) {
+  private void removeStatisticData(
+      UUID statisticId, AggregationResultPendingState pendingStateAfterRemoval) {
+    while (TABLE_ROWS_REMOVAL.equals(
+        statisticService.getAggregationResultPendingState(statisticId))) {
       moduleClientAuthenticator.doWithModuleClientAuthentication(
-          () -> statisticService.removeTableRows(statisticId));
+          () -> statisticService.removeTableRows(statisticId, pendingStateAfterRemoval));
     }
   }
 
@@ -112,5 +118,32 @@ public class StatisticExecution {
       setState(originalId, AggregationResultState.COMPLETED);
       setState(copyId, AggregationResultState.FAILED);
     }
+  }
+
+  public void deleteStatistic(UUID statisticId) {
+    try {
+      deleteAllReportSeries(statisticId);
+      removeStatisticData(statisticId, null);
+      moduleClientAuthenticator.doWithModuleClientAuthentication(
+          () -> statisticService.deleteStatistic(statisticId));
+    } catch (Exception e) {
+      log.error("Could not delete statistic {}", statisticId, e);
+      setFailed(statisticId);
+    }
+  }
+
+  private void deleteAllReportSeries(UUID statisticId) {
+    Set<UUID> ids = statisticService.getReportSeriesIdsOfStatistic(statisticId);
+    ids.forEach(
+        id -> {
+          if (!reportSeriesExecution.deleteReportSeries(id)) {
+            throw new IncompleteDeletionException();
+          }
+        });
+  }
+
+  private void setFailed(UUID statisticId) {
+    moduleClientAuthenticator.doWithModuleClientAuthentication(
+        () -> statisticService.setStateToFailed(statisticId));
   }
 }

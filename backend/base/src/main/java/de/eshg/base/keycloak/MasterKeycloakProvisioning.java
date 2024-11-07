@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 @Component(BEAN_NAME)
 @DependsOn(InitialKeycloakProvisioning.BEAN_NAME)
-public class MasterKeycloakProvisioning {
+public class MasterKeycloakProvisioning implements AutoCloseable {
   public static final String BEAN_NAME = "masterKeycloakProvisioning";
 
   private static final Logger log = LoggerFactory.getLogger(MasterKeycloakProvisioning.class);
@@ -71,8 +71,12 @@ public class MasterKeycloakProvisioning {
     if (this.keycloakProperties.setupAdmin().enabled()) {
       initializeSetupAdmin(
           keycloakProperties.setupAdmin().username(), keycloakProperties.setupAdmin().email());
-      // TODO(ISSUE-3525): Delete default admin user here.
     }
+  }
+
+  @Override
+  public void close() {
+    this.keycloakClient.close();
   }
 
   @VisibleForTesting

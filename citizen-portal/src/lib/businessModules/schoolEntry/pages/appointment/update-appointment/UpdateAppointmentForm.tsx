@@ -36,9 +36,9 @@ export function UpdateAppointmentForm(props: UpdateAppointmentFormProps) {
 
   async function handleSubmit(values: AppointmentFormValues) {
     if (values.newAppointment) {
-      await updateAppointment
-        .mutateAsync({ newAppointment: values.newAppointment })
-        .catch();
+      await updateAppointment.mutateAsync({
+        newAppointment: values.newAppointment,
+      });
       router.push(citizenRoutes.appointment.index(undefined));
     }
   }

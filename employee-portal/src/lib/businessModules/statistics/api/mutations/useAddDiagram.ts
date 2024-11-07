@@ -37,8 +37,8 @@ export function useAddDiagram() {
     param: UseAddDiagramParams,
     options: { onSuccess?: () => void },
   ) => {
-    await addDiagramMutation
-      .mutateAsync(param, { onSuccess: options.onSuccess })
-      .catch();
+    await addDiagramMutation.mutateAsync(param, {
+      onSuccess: options.onSuccess,
+    });
   };
 }

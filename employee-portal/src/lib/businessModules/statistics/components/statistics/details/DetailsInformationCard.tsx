@@ -3,9 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { AddchartOutlined, Delete, Edit, FileCopy } from "@mui/icons-material";
-import { Button, Stack } from "@mui/joy";
+import {
+  AddchartOutlined,
+  Delete,
+  Download,
+  Edit,
+  FileCopy,
+  Menu,
+} from "@mui/icons-material";
+import { Button, ColorPaletteProp, Stack } from "@mui/joy";
 import { isPlainObject } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
@@ -21,6 +29,7 @@ export interface DetailsInformationCardProps {
   canWrite: boolean;
   canDelete: boolean;
   canUpdateStatistic: boolean;
+  canExportData: boolean;
   start: Date;
   end: Date;
   createdAt: Date;
@@ -30,20 +39,29 @@ export interface DetailsInformationCardProps {
   onNameChangeClicked: () => void;
   onStatisticDeleteClicked: () => void;
   onStatisticDuplicateClicked: () => void;
+  onSaveEvaluationTemplateClicked: () => void;
+  onDataExport: () => Promise<void>;
 }
 
 export function DetailsInformationCard(props: DetailsInformationCardProps) {
-  const cloneStatisticFeatureToggle = useIsNewFeatureEnabled("CLONE_STATISTIC");
-
+  const cloneStatisticFeatureToggle = useIsNewFeatureEnabled(
+    ApiStatisticsFeature.CloneStatistic,
+  );
   const canDuplicateStatistic = props.canWrite && cloneStatisticFeatureToggle;
-  const { canDelete, canUpdateStatistic } = props;
+
+  const exportDataFeatureToggle = useIsNewFeatureEnabled(
+    ApiStatisticsFeature.FakeAnonymization,
+  );
+  const canExportData = props.canExportData && exportDataFeatureToggle;
+
+  const { canDelete, canUpdateStatistic, canWrite } = props;
 
   return (
     <InfoTile
       name="aggregation-details"
       title="Details"
       footer={
-        props.canWrite && (
+        canWrite && (
           <Stack
             alignItems={{ md: "start" }}
             marginTop={2}
@@ -69,7 +87,10 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
         )
       }
       controls={
-        (canUpdateStatistic || canDuplicateStatistic || canDelete) && (
+        (canUpdateStatistic ||
+          canDuplicateStatistic ||
+          canDelete ||
+          canWrite) && (
           <ActionsMenu
             actionItems={[
               canUpdateStatistic && {
@@ -77,15 +98,26 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
                 onClick: () => props.onNameChangeClicked(),
                 startDecorator: <Edit />,
               },
+              canWrite && {
+                label: "Als Vorlage speichern",
+                onClick: () => props.onSaveEvaluationTemplateClicked(),
+                startDecorator: <Menu />,
+              },
               canDuplicateStatistic && {
                 label: "Duplizieren",
                 onClick: () => props.onStatisticDuplicateClicked(),
                 startDecorator: <FileCopy />,
               },
+              canExportData && {
+                label: "Daten exportieren",
+                onClick: () => props.onDataExport(),
+                startDecorator: <Download />,
+              },
               canDelete && {
                 label: "Löschen",
                 onClick: () => props.onStatisticDeleteClicked(),
                 startDecorator: <Delete />,
+                color: "danger" as ColorPaletteProp,
               },
             ].filter(isPlainObject)}
           />

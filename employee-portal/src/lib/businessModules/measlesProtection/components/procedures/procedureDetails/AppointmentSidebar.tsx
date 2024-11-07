@@ -37,17 +37,15 @@ export function AddAppointmentSidebar({ id }: { id: string }) {
   const bookAppointmentForProcedure = useBookAppointmentForProcedure();
 
   async function handleSubmit(data: typeof initialValues) {
-    await bookAppointmentForProcedure
-      .mutateAsync(
-        {
-          procedureId: id,
-          apiBookAppointmentRequest: mapRequiredValue(data.appointment),
-        },
-        {
-          onSuccess: handleClose,
-        },
-      )
-      .catch();
+    await bookAppointmentForProcedure.mutateAsync(
+      {
+        procedureId: id,
+        apiBookAppointmentRequest: mapRequiredValue(data.appointment),
+      },
+      {
+        onSuccess: handleClose,
+      },
+    );
   }
 
   function handleClose() {
@@ -72,17 +70,15 @@ export function EditAppointmentSidebar({ id }: { id: string }) {
   }
 
   async function handleSubmit(data: typeof initialValues) {
-    await bookAppointmentForProcedure
-      .mutateAsync(
-        {
-          procedureId: id,
-          apiBookAppointmentRequest: mapRequiredValue(data.appointment),
-        },
-        {
-          onSuccess: handleClose,
-        },
-      )
-      .catch();
+    await bookAppointmentForProcedure.mutateAsync(
+      {
+        procedureId: id,
+        apiBookAppointmentRequest: mapRequiredValue(data.appointment),
+      },
+      {
+        onSuccess: handleClose,
+      },
+    );
   }
 
   function handleClose() {

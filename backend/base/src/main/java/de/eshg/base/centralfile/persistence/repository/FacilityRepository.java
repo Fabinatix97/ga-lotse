@@ -5,6 +5,7 @@
 
 package de.eshg.base.centralfile.persistence.repository;
 
+import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import java.time.Instant;
 import java.util.Collection;
@@ -19,12 +20,13 @@ public interface FacilityRepository
     extends JpaRepository<Facility, UUID>, JpaSpecificationExecutor<Facility> {
 
   default List<Facility> findReferenceFacilityByName(String name) {
-    return findByNameEqualsAndReferenceFacilityIsNull(name);
+    return findByNameEqualsAndDataOriginNotAndReferenceFacilityIsNull(name, DataOrigin.EXTERNAL);
   }
 
   Optional<Facility> findByExternalId(UUID externalId);
 
-  List<Facility> findByNameEqualsAndReferenceFacilityIsNull(String name);
+  List<Facility> findByNameEqualsAndDataOriginNotAndReferenceFacilityIsNull(
+      String name, DataOrigin excludedDataOrigin);
 
   @Query(
       "select f.externalId from Facility f join f.referenceFacility ref where ref.id = :referenceId ")

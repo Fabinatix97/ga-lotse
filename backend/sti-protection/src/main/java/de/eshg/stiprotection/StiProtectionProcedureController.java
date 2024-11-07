@@ -104,12 +104,12 @@ public class StiProtectionProcedureController {
         stiProtectionService.getProcedure(procedureId));
   }
 
-  @PostMapping(path = "/{id}/anon-ident-document")
-  @Operation(summary = "Create an anonymous identification document")
+  @GetMapping(path = "/{id}/anon-ident-document")
+  @Operation(summary = "Get an anonymous identification document")
   @Transactional
-  public ResponseEntity<byte[]> createAnonymousIdentificationDocument(
+  public ResponseEntity<byte[]> getAnonymousIdentificationDocument(
       @PathVariable("id") UUID procedureId) {
-    Pdf pdf = stiProtectionService.createAnonymousIdentificationDocument(procedureId);
+    Pdf pdf = stiProtectionService.getAnonymousIdentificationDocument(procedureId);
     byte[] content = pdf.getFileContent().getContent();
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_PDF)

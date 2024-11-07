@@ -29,9 +29,12 @@ import {
   handleWholeDayChange,
   validateEndAfterStart,
 } from "@/lib/shared/components/formFields/dateOrDateTimeFieldHelper";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import {
+  SidebarWithFormRefProps,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export interface AddServiceFormValues {
   reason: string;
@@ -109,15 +112,19 @@ export function AddServiceForm({
   );
 }
 
-interface AddServiceSidebarProps {
-  open: boolean;
-  onClose: () => void;
+interface AddServiceSidebarProps extends SidebarWithFormRefProps {
   resourceId: string;
   calendarId: string;
   start: string | undefined;
 }
 
-export function AddServiceSidebar(props: AddServiceSidebarProps) {
+export function useAddServiceSidebar() {
+  return useSidebarWithFormRef({
+    component: AddServiceSidebar,
+  });
+}
+
+function AddServiceSidebar(props: AddServiceSidebarProps) {
   const snackbar = useSnackbar();
   const submitCalendarEvent = useSubmitCalendarEvent();
 
@@ -125,54 +132,51 @@ export function AddServiceSidebar(props: AddServiceSidebarProps) {
     values: AddServiceFormValues,
     event: ApiDetailedEventWithoutCalendarId | undefined,
   ) {
-    await submitCalendarEvent
-      .mutateAsync(
-        {
-          eventId: event?.id,
-          request: mapFormToRequestValues(values, props.calendarId),
+    await submitCalendarEvent.mutateAsync(
+      {
+        eventId: event?.id,
+        request: mapFormToRequestValues(values, props.calendarId),
+      },
+      {
+        onSuccess: () => {
+          snackbar.confirmation("Service erfolgreich eingetragen");
+          props.onClose(true);
         },
-        {
-          onSuccess: () => {
-            snackbar.confirmation("Service erfolgreich eingetragen");
-          },
-        },
-      )
-      .then(() => props.onClose())
-      .catch();
+      },
+    );
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onClose}>
-      <AddServiceForm
-        initialValues={
-          isDefined(props.start)
-            ? {
-                start: props.start,
-              }
-            : undefined
-        }
-        onSubmit={async (values) => {
-          await saveService(values, undefined);
-        }}
-      >
-        <SidebarContent title={"Service eintragen"}>
-          <AddServiceFormInputs />
-        </SidebarContent>
-        <SidebarActions>
-          <AddServiceFormActions onCancel={props.onClose} />
-        </SidebarActions>
-      </AddServiceForm>
-    </Sidebar>
+    <AddServiceForm
+      initialValues={
+        isDefined(props.start)
+          ? {
+              start: props.start,
+            }
+          : undefined
+      }
+      onSubmit={async (values) => {
+        await saveService(values, undefined);
+      }}
+    >
+      <SidebarContent title={"Service eintragen"}>
+        <AddServiceFormInputs />
+      </SidebarContent>
+      <SidebarActions>
+        <AddServiceFormActions onCancel={() => props.onClose(false)} />
+      </SidebarActions>
+    </AddServiceForm>
   );
 }
 
-interface EditServiceSidebarProps {
-  open: boolean;
-  onClose: () => void;
-  onCloseWithConfirmation: () => void;
+interface EditServiceSidebarProps extends SidebarWithFormRefProps {
   resourceId: string;
   calendarId: string;
   event: ApiDetailedEventWithoutCalendarId;
+}
+
+export function useEditServiceSidebar() {
+  return useSidebarWithFormRef({ component: EditServiceSidebar });
 }
 
 export function EditServiceSidebar(props: EditServiceSidebarProps) {
@@ -185,20 +189,18 @@ export function EditServiceSidebar(props: EditServiceSidebarProps) {
     values: AddServiceFormValues,
     event: ApiDetailedEventWithoutCalendarId,
   ) {
-    await submitCalendarEvent
-      .mutateAsync(
-        {
-          eventId: event?.id,
-          request: mapFormToRequestValues(values, props.calendarId),
+    await submitCalendarEvent.mutateAsync(
+      {
+        eventId: event?.id,
+        request: mapFormToRequestValues(values, props.calendarId),
+      },
+      {
+        onSuccess: () => {
+          snackbar.confirmation("Service erfolgreich eingetragen");
+          props.onClose(true);
         },
-        {
-          onSuccess: () => {
-            snackbar.confirmation("Service erfolgreich eingetragen");
-          },
-        },
-      )
-      .then(() => props.onClose())
-      .catch();
+      },
+    );
   }
 
   function saveServiceWithConfirmation(
@@ -223,8 +225,7 @@ export function EditServiceSidebar(props: EditServiceSidebarProps) {
           },
         },
       )
-      .then(() => props.onClose())
-      .catch();
+      .then(() => props.onClose());
   }
 
   function deleteServiceWithConfirmation(
@@ -240,28 +241,26 @@ export function EditServiceSidebar(props: EditServiceSidebarProps) {
   }
 
   return (
-    <Sidebar open={props.open} onClose={props.onCloseWithConfirmation}>
-      <AddServiceForm
-        initialValues={mapEventToFormValues(props.event)}
-        onSubmit={(values) => saveServiceWithConfirmation(values, props.event)}
-      >
-        <SidebarContent title={"Service Eintrag bearbeiten"}>
-          <AddServiceFormInputs />
-        </SidebarContent>
-        <SidebarActions>
-          <Stack justifyContent={"space-between"} direction={"row"}>
-            <Button
-              variant="plain"
-              color="danger"
-              startDecorator={<DeleteForever />}
-              onClick={() => deleteServiceWithConfirmation(props.event)}
-            >
-              Löschen
-            </Button>
-            <AddServiceFormActions onCancel={props.onCloseWithConfirmation} />
-          </Stack>
-        </SidebarActions>
-      </AddServiceForm>
-    </Sidebar>
+    <AddServiceForm
+      initialValues={mapEventToFormValues(props.event)}
+      onSubmit={(values) => saveServiceWithConfirmation(values, props.event)}
+    >
+      <SidebarContent title={"Service Eintrag bearbeiten"}>
+        <AddServiceFormInputs />
+      </SidebarContent>
+      <SidebarActions>
+        <Stack justifyContent={"space-between"} direction={"row"}>
+          <Button
+            variant="plain"
+            color="danger"
+            startDecorator={<DeleteForever />}
+            onClick={() => deleteServiceWithConfirmation(props.event)}
+          >
+            Löschen
+          </Button>
+          <AddServiceFormActions onCancel={() => props.onClose(false)} />
+        </Stack>
+      </SidebarActions>
+    </AddServiceForm>
   );
 }

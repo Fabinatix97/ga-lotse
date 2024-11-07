@@ -132,8 +132,10 @@ export function ChecklistDefinitionRepoOverviewTable() {
           <DataTable
             data={repoMetadataList}
             columns={columns}
-            rowNavRoute={getRepoOverviewRowRoute}
-            focusColumnHeader={"Name"}
+            rowNavigation={{
+              route: getRepoOverviewRowRoute,
+              focusColumnAccessorKey: "name",
+            }}
             striped
           />
         </TableSheet>

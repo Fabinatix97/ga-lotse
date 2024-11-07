@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 public interface FacilityRepository
     extends JpaRepository<Facility, Long>, JpaSpecificationExecutor<Facility> {
@@ -19,4 +20,7 @@ public interface FacilityRepository
   Optional<Facility> findByCentralFileStateId(UUID centralFileStatId);
 
   List<Facility> findAllByCentralFileStateIdIn(List<UUID> centralFileStateIds);
+
+  @Query("select id from Facility where possibleDuplicates = true")
+  List<Long> getFacilityIdsWithDuplicates();
 }
