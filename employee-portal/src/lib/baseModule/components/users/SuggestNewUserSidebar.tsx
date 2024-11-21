@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiSalutation } from "@eshg/employee-portal-api/base";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
@@ -22,6 +23,10 @@ import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { EmailField } from "@/lib/shared/components/formFields/EmailField";
 import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
+import {
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+} from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { translateUserGroup } from "@/lib/shared/helpers/users";
@@ -33,6 +38,8 @@ import {
 function initialInputs() {
   return {
     username: "",
+    salutation: ApiSalutation.NotSpecified,
+    title: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -55,6 +62,8 @@ function validateUsernameCharacters(input: string): string | undefined {
 
 interface UserAddFormInputs {
   username: string;
+  salutation: ApiSalutation;
+  title: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -84,6 +93,8 @@ function SuggestNewUserFormSidebar({
     await suggestUser.mutateAsync(
       {
         username: values.username,
+        salutation: mapOptionalValue(values.salutation),
+        title: mapOptionalValue(values.title),
         firstName: values.firstName,
         lastName: values.lastName,
         email: values.email,
@@ -125,6 +136,22 @@ function SuggestNewUserFormSidebar({
                   name={"email"}
                   label={"E-Mail"}
                   required={"Bitte eine E-Mail angeben"}
+                />
+              </Grid>
+              <Grid xxs={6}>
+                <SelectField
+                  name="salutation"
+                  label="Anrede"
+                  options={SALUTATION_OPTIONS}
+                  sx={{ flex: 1 }}
+                />
+              </Grid>
+              <Grid xxs={6}>
+                <SelectField
+                  name="title"
+                  label="Titel"
+                  options={TITLE_OPTIONS}
+                  sx={{ flex: 1 }}
                 />
               </Grid>
               <Grid xxs={12} sm={6}>

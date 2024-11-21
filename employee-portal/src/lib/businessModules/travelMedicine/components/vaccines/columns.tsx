@@ -16,11 +16,17 @@ import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 const columnHelper: ColumnHelper<ApiVaccine> = createColumnHelper<ApiVaccine>();
 
-export function vaccinesColumns(
-  deleteEntry: (entryId: string, vaccineName: string) => void,
-  editEntry: (vaccine: ApiVaccine) => void,
-  defaultBatchIdEnabled: boolean,
-) {
+interface VaccineTableColumnsProps {
+  deleteEntry: (entryId: string, vaccineName: string) => void;
+  editEntry: (vaccine: ApiVaccine) => void;
+  defaultBatchIdEnabled: boolean;
+}
+
+export function columns({
+  deleteEntry,
+  editEntry,
+  defaultBatchIdEnabled,
+}: VaccineTableColumnsProps) {
   return [
     columnHelper.accessor("name", {
       header: "Name",

@@ -31,7 +31,12 @@
     "medicalDocuments": "gegebenenfalls weitere medizinische Unterlagen, evtl. aktuelle Medikation",
     "otherTools": "gegebenenfalls vorhandene Hilfsmittel (Brille, Hörgerät)"
   },
+  "informationStatementPanel": {
+    "notAnswered": "noch nicht vorgelegt",
+    "answered": "erfolgreich übermittelt",
+    "answerNow": "Jetzt ausfüllen"
+  },
   "snackbar": {
-    "cancelAppointmentConfirmation": "Termin erfolgreich abgesagt"
+    "cancelAppointmentConfirmation": "Der Termin wurde abgesagt."
   }
 }

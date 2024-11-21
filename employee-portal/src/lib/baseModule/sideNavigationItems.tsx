@@ -18,7 +18,10 @@ import {
   Warehouse,
 } from "@mui/icons-material";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import {
+  useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled,
+  useIsNewFeatureEnabled,
+} from "@/lib/baseModule/api/queries/feature";
 import {
   SideNavigationItem,
   UseSideNavigationItemsResult,
@@ -111,11 +114,14 @@ const inboxNavigationItem: SideNavigationItem[] = [
 
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
+  const isInspectionInboxEnabled = useIsNewBaseFeatureEnabled(
+    ApiBaseFeature.InspectionInbox,
+  );
   const isGdprEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Gdpr);
   const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
 
   let items = sideNavigationItems;
-  if (isInboxEnabled) {
+  if (isInboxEnabled || isInspectionInboxEnabled) {
     items = items.concat(inboxNavigationItem);
   }
   if (!isGdprEnabled) {

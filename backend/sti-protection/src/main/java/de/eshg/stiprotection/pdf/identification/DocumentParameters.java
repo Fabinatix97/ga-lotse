@@ -41,15 +41,15 @@ public final class DocumentParameters {
   }
 
   public static ConsultationAppointment toConsultationAppointment(
-      Department department, TimeRange timeRange) {
+      Department department, TimeRange timeRange, String accessCode) {
     long durationMinutes = ChronoUnit.MINUTES.between(timeRange.start(), timeRange.end());
     return new ConsultationAppointment(
         department,
         DATE_FORMATTER.format(timeRange.start()),
         TIME_FORMATTER.format(timeRange.start()),
         String.valueOf(durationMinutes),
-        "TODO: appointmentUrl",
-        "TODO: registrationCode");
+        "TODO: appointmentUrl", // TODO: appointmentUrl
+        accessCode);
   }
 
   public static String toDocumentDate(Instant instant) {

@@ -13,15 +13,18 @@ import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
 
 import { useGetGdprProcedureOverviewQuery } from "@/lib/baseModule/api/queries/gdpr";
-import { TYPE_OPTIONS } from "@/lib/baseModule/components/gdpr/i18n";
 import { useCreateGDPRProcedureSidebar } from "@/lib/baseModule/components/gdpr/overview/CreateGDPRProcedureSidebar";
 import { columns } from "@/lib/baseModule/components/gdpr/overview/columns";
+import { useGdprProcedureFilterSettings } from "@/lib/baseModule/components/gdpr/overview/useGdprFilterSettings";
+import { routes } from "@/lib/baseModule/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
+import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
+import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { SingleSelectFilter } from "@/lib/shared/components/tableFilters/SingleSelectFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
@@ -37,26 +40,34 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
   } = useGetGdprProcedureOverviewQuery(params);
   const sidebar = useCreateGDPRProcedureSidebar();
 
+  const filterSettings = useGdprProcedureFilterSettings({
+    typeFilter: params.type,
+    tableControl,
+  });
+
   return (
     <TablePage
+      fullHeight
       data-testid="gdpr-procedures-table"
+      filterSettings={
+        filterSettings.filterSheetVisible && (
+          <FilterSettingsSheet>
+            <FilterSettingsContent
+              {...filterSettings.filterSettingsContentProps}
+            />
+          </FilterSettingsSheet>
+        )
+      }
       controls={
         <ButtonBar
-          left={
-            <SingleSelectFilter
-              tableControl={tableControl}
-              placeholder={"Typ"}
-              searchParamName={"type"}
-              options={TYPE_OPTIONS}
-            />
-          }
+          left={<FilterButton {...filterSettings.filterButtonProps} />}
           right={
             hasWritePerms && (
               <Button
                 onClick={() => sidebar.open()}
                 startDecorator={<AddIcon />}
               >
-                Vorgang anlegen
+                DSGVO Vorgang anlegen
               </Button>
             )
           }
@@ -76,6 +87,11 @@ export function GDPRTable({ params }: { params: GetGdprProceduresRequest }) {
           data={elements}
           columns={columns}
           sorting={tableControl.tableSorting}
+          rowNavigation={{
+            focusColumnAccessorKey: "identificationData",
+            route: (row) => routes.gdpr.details(row.original.id),
+          }}
+          minWidth="65rem"
         />
       </TableSheet>
     </TablePage>

@@ -8,23 +8,15 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useIncidentApi } from "@/lib/businessModules/inspection/api/clients";
 import { incidentsApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 
 export function useGetIncidents(inspectionId: string) {
   const incidentApi = useIncidentApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery(
-    getIncidentsQuery(
-      incidentApi,
-      getPreCacheForOfflineModeHeaders,
-      inspectionId,
-    ),
-  );
+  return useSuspenseQuery(getIncidentsQuery(incidentApi, inspectionId));
 }
 
 export function getIncidentsQuery(
   incidentApi: InspectionIncidentApi,
-  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
   inspectionId: string,
 ) {
   return queryOptions({
@@ -32,7 +24,7 @@ export function getIncidentsQuery(
     queryFn: () =>
       incidentApi.getIncidents(
         inspectionId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
+        getHeadersForOfflineCaching(inspectionId),
       ),
     select: (response) => response.incidents ?? [],
   });

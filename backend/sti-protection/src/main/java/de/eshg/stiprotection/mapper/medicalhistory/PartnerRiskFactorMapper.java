@@ -5,13 +5,12 @@
 
 package de.eshg.stiprotection.mapper.medicalhistory;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.stiprotection.api.medicalhistory.PartnerRiskFactorDto;
 import de.eshg.stiprotection.persistence.db.medicalhistory.PartnerRiskFactor;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class PartnerRiskFactorMapper {
 
@@ -24,7 +23,7 @@ public class PartnerRiskFactorMapper {
     return entities.stream()
         .map(PartnerRiskFactorMapper::toInterfaceType)
         .sorted(Comparator.comparing(PartnerRiskFactorDto::name))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public static PartnerRiskFactorDto toInterfaceType(PartnerRiskFactor entity) {
@@ -49,7 +48,7 @@ public class PartnerRiskFactorMapper {
     return dtos.stream()
         .map(PartnerRiskFactorMapper::toDatabaseType)
         .sorted(Comparator.comparing(PartnerRiskFactor::name))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public static PartnerRiskFactor toDatabaseType(PartnerRiskFactorDto dto) {

@@ -17,22 +17,37 @@ import {
   SelectOption,
   SelectOptions,
 } from "@/lib/components/table/SelectOptions";
-import { EditableEntity, UniqueEntity } from "@/lib/helpers/entities";
+import { Actor } from "@/lib/components/view/actors/ActorTable";
 import { useEditableRow } from "@/lib/helpers/entityFilter";
 import { useCommitDryRun } from "@/lib/hooks/useCommitDryRun";
+import { OrgUnit } from "@/lib/hooks/useOrgUnits";
+import { Rule } from "@/lib/hooks/useRules";
 
-export function EditableEnumCell<TData extends UniqueEntity & EditableEntity>(
-  props: Readonly<
-    CellContext<
-      TData,
-      ApiAdminOrgUnitType | ApiAdminActorType | ApiFederalState
-    >
-  >,
+export function EditableEnumCell(
+  props:
+    | Readonly<
+        CellContext<
+          OrgUnit,
+          ApiAdminOrgUnitType | ApiAdminActorType | ApiFederalState
+        >
+      >
+    | Readonly<
+        CellContext<
+          Actor,
+          ApiAdminOrgUnitType | ApiAdminActorType | ApiFederalState
+        >
+      >
+    | Readonly<
+        CellContext<
+          Rule,
+          ApiAdminOrgUnitType | ApiAdminActorType | ApiFederalState
+        >
+      >,
 ): ReactNode {
   const handleChange = useCallback(
     (_event: unknown, value: string | null) => {
       props.table.options.meta?.api?.update({
-        ...props.row.original,
+        id: props.row.original.id,
         [props.column.id]: value,
       });
     },

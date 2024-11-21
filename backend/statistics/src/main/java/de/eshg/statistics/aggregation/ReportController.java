@@ -28,17 +28,17 @@ public class ReportController {
   private final StatisticsFeatureToggle statisticsFeatureToggle;
   private final ReportService reportService;
   private final ReportExecution reportExecution;
-  private final StatisticExecutorService statisticExecutorService;
+  private final StatisticsExecutorService statisticsExecutorService;
 
   public ReportController(
       StatisticsFeatureToggle statisticsFeatureToggle,
       ReportService reportService,
       ReportExecution reportExecution,
-      StatisticExecutorService statisticExecutorService) {
+      StatisticsExecutorService statisticsExecutorService) {
     this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.reportService = reportService;
     this.reportExecution = reportExecution;
-    this.statisticExecutorService = statisticExecutorService;
+    this.statisticsExecutorService = statisticsExecutorService;
   }
 
   @GetExchange(value = "/{reportId}", accept = APPLICATION_JSON_VALUE)
@@ -57,6 +57,6 @@ public class ReportController {
   public void deleteReport(@PathVariable(name = "reportId") UUID reportId) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     reportService.flagReportForDeletion(reportId);
-    statisticExecutorService.submit(() -> reportExecution.deleteReport(reportId));
+    statisticsExecutorService.submit(() -> reportExecution.deleteReport(reportId));
   }
 }

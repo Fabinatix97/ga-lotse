@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ApiProcedureType } from "@eshg/employee-portal-api/base";
+import {
+  ApiBusinessModule,
+  ApiProcedureType,
+} from "@eshg/employee-portal-api/base";
 
 import { TaskMetricsDisplay } from "@/lib/baseModule/components/procedureMetrics/taskMetrics/TaskMetricsDisplay";
 import { routes } from "@/lib/baseModule/shared/routes";
@@ -16,7 +19,10 @@ import { procedureTypeNames } from "@/lib/shared/components/procedures/constants
 
 export default function TaskMetricsPage(
   props: Readonly<{
-    params: { businessModuleName: string; procedureType: ApiProcedureType };
+    params: {
+      businessModuleName: ApiBusinessModule;
+      procedureType: ApiProcedureType;
+    };
   }>,
 ) {
   return (

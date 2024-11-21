@@ -8,10 +8,10 @@ package de.eshg.schoolentry.mapper;
 import de.eshg.base.SortDirection;
 import de.eshg.lib.appointmentblock.AppointmentMapper;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.schoolentry.ProcedurePageSpec;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.ProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
+import de.eshg.schoolentry.util.ProcedurePageSpec;
 import de.eshg.schoolentry.util.ProcedureSortKey;
 import java.time.Year;
 import org.springframework.data.domain.Sort;
@@ -30,7 +30,7 @@ public final class ProcedureMapper {
         procedureDetailsData.externalId(),
         procedureDetailsData.version(),
         mapTypeToDto(procedureDetailsData.type()),
-        PersonMapper.mapDetailsChildToDto(procedureDetailsData.child()),
+        PersonMapper.mapPersonDetailsToDto(procedureDetailsData.child()),
         PersonMapper.mapCustodiansToDto(procedureDetailsData.custodians()),
         LabelMapper.toDto(procedureDetailsData.labels()),
         AppointmentMapper.mapAppointmentToDto(procedureDetailsData.appointment()),
@@ -48,7 +48,8 @@ public final class ProcedureMapper {
         WaitingRoomMapper.mapToDto(procedureDetailsData.waitingRoom()),
         procedureDetailsData.schoolInfoLetterCreatedAt(),
         procedureDetailsData.hasInformationBlock(),
-        procedureDetailsData.hasBeenClosed());
+        procedureDetailsData.hasBeenClosed(),
+        procedureDetailsData.isPastProcedure());
   }
 
   public static ProcedureDto mapProcedureToDto(ProcedureData procedureData) {

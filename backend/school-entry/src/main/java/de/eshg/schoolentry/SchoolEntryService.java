@@ -5,21 +5,14 @@
 
 package de.eshg.schoolentry;
 
-import static de.eshg.schoolentry.population.CreateLabelsTask.INFORMATION_BLOCK_LABEL_NAME;
 import static de.eshg.schoolentry.population.CreateLabelsTask.SPECIAL_NEEDS_LABEL_NAME;
-import static de.eshg.schoolentry.util.ExceptionUtil.notFoundException;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.*;
 import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-import static java.util.Comparator.nullsLast;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.SortDirection;
-import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
-import de.eshg.base.client.ContactClient;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
@@ -30,44 +23,33 @@ import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.*;
-import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.client.PersonClient;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.domain.repository.*;
-import de.eshg.schoolentry.domain.repository.Icd10CodeRepository.Icd10FuzzySearchResult;
-import de.eshg.schoolentry.importer.ImportType;
 import de.eshg.schoolentry.mapper.*;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
 import de.eshg.schoolentry.pdf.invitation.InvitationGenerator;
-import de.eshg.schoolentry.percentiles.PercentileCalculationService;
 import de.eshg.schoolentry.util.ExceptionUtil;
-import de.eshg.schoolentry.util.ProcedureSortKey;
-import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import de.eshg.schoolentry.util.ProgressEntryUtil;
-import de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType;
+import de.eshg.schoolentry.util.SchoolEntryKeyDocumentType;
 import de.eshg.schoolentry.util.TaskUtil;
 import de.eshg.validation.ValidationUtil;
-import jakarta.persistence.criteria.Path;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.*;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
@@ -78,14 +60,6 @@ public class SchoolEntryService {
   private static final Logger log = LoggerFactory.getLogger(SchoolEntryService.class);
 
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
-  private final PersonRepository personRepository;
-  private final HearingTestResultRepository hearingTestResultRepository;
-  private final EyeExaminationResultRepository eyeExaminationResultRepository;
-  private final SopessExaminationResultRepository sopessExaminationResultRepository;
-  private final DevelopmentScreeningResultRepository developmentScreeningResultRepository;
-  private final Icd10CodeRepository icd10CodeRepository;
-  private final VaccinationStatusRepository vaccinationStatusRepository;
-  private final AnamnesisRepository anamnesisRepository;
   private final WaitingRoomRepository waitingRoomRepository;
   private final PersonClient personClient;
   private final ContactClient contactClient;
@@ -97,26 +71,13 @@ public class SchoolEntryService {
   private final LabelService labelService;
   private final CitizenAccessCodeUserApi citizenAccessCodeUserApi;
   private final InvitationGenerator invitationGenerator;
-  private final PercentileCalculationService percentileCalculationService;
   private final Validator validator;
   private final AuditLogger auditLogger;
-  private final ProcedureSearchService<SchoolEntryProcedure> procedureSearchService;
-  private final ProceduresHelper proceduresHelper;
-  private final ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService;
-  private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
   private final ProgressEntryUtil progressEntryUtil;
   private final TaskUtil taskUtil;
 
   public SchoolEntryService(
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
-      PersonRepository personRepository,
-      HearingTestResultRepository hearingTestResultRepository,
-      EyeExaminationResultRepository eyeExaminationResultRepository,
-      SopessExaminationResultRepository sopessExaminationResultRepository,
-      DevelopmentScreeningResultRepository developmentScreeningResultRepository,
-      Icd10CodeRepository icd10CodeRepository,
-      VaccinationStatusRepository vaccinationStatusRepository,
-      AnamnesisRepository anamnesisRepository,
       WaitingRoomRepository waitingRoomRepository,
       LabelService labelService,
       PersonClient personClient,
@@ -128,24 +89,11 @@ public class SchoolEntryService {
       SchoolEntryProperties schoolEntryProperties,
       CitizenAccessCodeUserApi citizenAccessCodeUserApi,
       InvitationGenerator invitationGenerator,
-      PercentileCalculationService percentileCalculationService,
       Validator validator,
       AuditLogger auditLogger,
-      ProcedureSearchService<SchoolEntryProcedure> procedureSearchService,
-      ProceduresHelper proceduresHelper,
-      ProcedureDeletionService<SchoolEntryProcedure> procedureDeletionService,
-      ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper,
       ProgressEntryUtil progressEntryUtil,
       TaskUtil taskUtil) {
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
-    this.personRepository = personRepository;
-    this.hearingTestResultRepository = hearingTestResultRepository;
-    this.eyeExaminationResultRepository = eyeExaminationResultRepository;
-    this.sopessExaminationResultRepository = sopessExaminationResultRepository;
-    this.developmentScreeningResultRepository = developmentScreeningResultRepository;
-    this.icd10CodeRepository = icd10CodeRepository;
-    this.vaccinationStatusRepository = vaccinationStatusRepository;
-    this.anamnesisRepository = anamnesisRepository;
     this.waitingRoomRepository = waitingRoomRepository;
     this.labelService = labelService;
     this.personClient = personClient;
@@ -157,13 +105,8 @@ public class SchoolEntryService {
     this.schoolEntryProperties = schoolEntryProperties;
     this.citizenAccessCodeUserApi = citizenAccessCodeUserApi;
     this.invitationGenerator = invitationGenerator;
-    this.percentileCalculationService = percentileCalculationService;
     this.validator = validator;
     this.auditLogger = auditLogger;
-    this.procedureSearchService = procedureSearchService;
-    this.proceduresHelper = proceduresHelper;
-    this.procedureDeletionService = procedureDeletionService;
-    this.procedureTypeAssignmentHelper = procedureTypeAssignmentHelper;
     this.progressEntryUtil = progressEntryUtil;
     this.taskUtil = taskUtil;
   }
@@ -211,33 +154,23 @@ public class SchoolEntryService {
       ImportProcedureData procedure = procedureData.get(i);
       ProcedureIds procedureIds = createdIds.get(i);
 
-      ProcedureType procedureType = procedure.procedureType();
-      Anamnesis anamnesis =
-          mapAnamnesisData(pastProcedureData.anamnesisData(), procedure.examinationDate());
-      VaccinationStatus vaccinationStatus =
-          mapVaccinationStatus(pastProcedureData.vaccinationStatusData());
-      EyeExaminationResult eyeExaminationResult = pastProcedureData.eyeExaminationResult();
-      HearingTestResult hearingTestResult = pastProcedureData.hearingTestResult();
-      SopessExaminationResult sopessExaminationResult = pastProcedureData.sopessExaminationData();
-      DevelopmentScreening developmentScreening = pastProcedureData.developmentScreeningData();
-
       SchoolEntryProcedure schoolEntryProcedure =
           saveSchoolEntryProcedure(
               procedureIds.childId(),
               procedureIds.custodianIds(),
-              procedureType,
+              procedure.procedureType(),
               schoolId,
               null,
               schoolYear,
               procedure.isEntryLevel(),
               procedure.examinationDate(),
               ProcedureStatus.CLOSED,
-              anamnesis,
-              vaccinationStatus,
-              eyeExaminationResult,
-              hearingTestResult,
-              sopessExaminationResult,
-              developmentScreening);
+              pastProcedureData.anamnesis(),
+              pastProcedureData.vaccinationStatus(),
+              pastProcedureData.eyeExaminationResult(),
+              pastProcedureData.hearingTestResult(),
+              pastProcedureData.sopessExamination(),
+              pastProcedureData.developmentScreening());
 
       if (procedure.isEarlyExamination()) {
         Assert.notNull(specialNeedsLabel, "specialNeedsLabel must be fetched at this point");
@@ -320,116 +253,6 @@ public class SchoolEntryService {
     return null;
   }
 
-  private Anamnesis mapAnamnesisData(
-      ImportAnamnesisData importAnamnesisData, LocalDate examinationDate) {
-    Anamnesis anamnesis = new Anamnesis();
-    if (importAnamnesisData == null) {
-      return anamnesis;
-    }
-    anamnesis.setNumberOfSiblings(importAnamnesisData.siblings());
-    anamnesis.setNationalityChild(getCountryCode(importAnamnesisData.nationalityChild()));
-    anamnesis.setCountryOfBirthFirstParent(
-        getCountryCode(importAnamnesisData.countryOfBirthFirstParent()));
-    anamnesis.setNationalityFirstParent(
-        getCountryCode(importAnamnesisData.nationalityFirstParent()));
-    anamnesis.setCountryOfBirthSecondParent(
-        getCountryCode(importAnamnesisData.countryOfBirthSecondParent()));
-    anamnesis.setNationalitySecondParent(
-        getCountryCode(importAnamnesisData.nationalitySecondParent()));
-    anamnesis.setHasMigrationBackground(importAnamnesisData.hasMigrationBackground());
-    anamnesis.setWasInDaycare(mapToWasInDaycare(importAnamnesisData.daycareValue()));
-    anamnesis.setInDaycareSince(
-        approximateInDaycareSince(importAnamnesisData.daycareValue(), examinationDate));
-    anamnesis.setPreliminaryCourse(importAnamnesisData.preliminaryCourse());
-    anamnesis.setBirthWeight(importAnamnesisData.birthWeight());
-    anamnesis.setIntegrationPlace(importAnamnesisData.integrationPlace());
-    anamnesis.setEarlySupport(importAnamnesisData.earlySupport());
-    anamnesis.setErgotherapy(importAnamnesisData.ergoTherapy());
-    anamnesis.setSpeechTherapy(importAnamnesisData.speechTherapy());
-    anamnesis.setPhysiotherapy(importAnamnesisData.physioTherapy());
-    anamnesis.setChildLanguageScreening(importAnamnesisData.childLanguageScreening());
-    anamnesis.setU2(mapBooleanOrNull(importAnamnesisData.u2()));
-    anamnesis.setU3(mapBooleanOrNull(importAnamnesisData.u3()));
-    anamnesis.setU4(mapBooleanOrNull(importAnamnesisData.u4()));
-    anamnesis.setU5(mapBooleanOrNull(importAnamnesisData.u5()));
-    anamnesis.setU6(mapBooleanOrNull(importAnamnesisData.u6()));
-    anamnesis.setU7(mapBooleanOrNull(importAnamnesisData.u7()));
-    anamnesis.setU7a(mapBooleanOrNull(importAnamnesisData.u7a()));
-    anamnesis.setU8(mapBooleanOrNull(importAnamnesisData.u8()));
-    anamnesis.setU9(mapBooleanOrNull(importAnamnesisData.u9()));
-    anamnesis.setInGermanySince(importAnamnesisData.inGermanySince());
-    return anamnesis;
-  }
-
-  private VaccinationStatus mapVaccinationStatus(
-      ImportVaccinationStatusData importVaccinationStatusData) {
-    VaccinationStatus vaccinationStatus = new VaccinationStatus();
-    if (importVaccinationStatusData == null) {
-      return vaccinationStatus;
-    }
-
-    vaccinationStatus.setVaccinationScheme(
-        mapVaccinationScheme(importVaccinationStatusData.vaccinationScheme()));
-    vaccinationStatus.setTetanus(importVaccinationStatusData.tetanus());
-    vaccinationStatus.setDiphtheria(importVaccinationStatusData.diphteria());
-    vaccinationStatus.setPertussis(importVaccinationStatusData.pertussis());
-    vaccinationStatus.setPolio(importVaccinationStatusData.polio());
-    vaccinationStatus.setHib(importVaccinationStatusData.hib());
-    vaccinationStatus.setHepatitisB(importVaccinationStatusData.hepatitisB());
-    vaccinationStatus.setMmr(importVaccinationStatusData.mmr());
-    vaccinationStatus.setVaricella(importVaccinationStatusData.varicella());
-    vaccinationStatus.setMeningococcusC(importVaccinationStatusData.meningococcusC());
-    vaccinationStatus.setPneumococcus(importVaccinationStatusData.pneumococcus());
-    vaccinationStatus.setHepatitisA(importVaccinationStatusData.hepatitisA());
-    vaccinationStatus.setTbe(importVaccinationStatusData.tbe());
-    vaccinationStatus.setRota(importVaccinationStatusData.rota());
-    vaccinationStatus.setMeningococcusB(importVaccinationStatusData.meningococcusB());
-    vaccinationStatus.setPerkombiHbv(mapBooleanOrNull(importVaccinationStatusData.perkombiHbv()));
-    return vaccinationStatus;
-  }
-
-  private static CountryCode getCountryCode(int group) {
-    return AnamnesisMapper.mapToDomain(CountryCodeDto.getCountryGroup(group));
-  }
-
-  private static Boolean mapToWasInDaycare(int daycareValue) {
-    return switch (daycareValue) {
-      case 0 -> false;
-      case 1, 2, 3 -> true;
-      default -> null;
-    };
-  }
-
-  private static LocalDate approximateInDaycareSince(int daycareValue, LocalDate examinationDate) {
-    return switch (daycareValue) {
-      case 1 -> examinationDate.minus(Period.ofMonths(9));
-      case 2 -> examinationDate.minus(Period.ofMonths(27));
-      case 3 -> examinationDate.minus(Period.ofMonths(45));
-      default -> null;
-    };
-  }
-
-  private static BooleanWithUnknown mapBooleanOrNull(Boolean uExaminationValue) {
-    if (uExaminationValue == null) {
-      return BooleanWithUnknown.UNKNOWN;
-    } else if (uExaminationValue.equals(Boolean.TRUE)) {
-      return BooleanWithUnknown.TRUE;
-    } else {
-      return BooleanWithUnknown.FALSE;
-    }
-  }
-
-  private static VaccinationSchemeValue mapVaccinationScheme(int vaccinationSchemeValue) {
-    return switch (vaccinationSchemeValue) {
-      case 2 -> VaccinationSchemeValue.SCHEME_2_PLUS_1;
-      case 3 -> VaccinationSchemeValue.SCHEME_3_PLUS_1;
-      case 9 -> VaccinationSchemeValue.UNKNOWN;
-      default ->
-          throw new IllegalArgumentException(
-              "Vaccination scheme value must only be one of 2, 3, 9");
-    };
-  }
-
   private SchoolEntryProcedure saveSchoolEntryProcedure(
       UUID childIdFromCentralFile,
       List<UUID> custodianIdsFromCentralFile,
@@ -477,7 +300,7 @@ public class SchoolEntryService {
     procedure.addRelatedPerson(child);
   }
 
-  private static void buildParent(UUID custodianIdFromCentralFile, SchoolEntryProcedure procedure) {
+  public static void buildParent(UUID custodianIdFromCentralFile, SchoolEntryProcedure procedure) {
     Person parent = buildPerson(custodianIdFromCentralFile, PersonType.PARENT);
     procedure.addRelatedPerson(parent);
   }
@@ -489,15 +312,84 @@ public class SchoolEntryService {
     return person;
   }
 
+  SchoolEntryProcedure findProcedureByExternalIdForUpdate(UUID procedureId, long version) {
+    SchoolEntryProcedure procedure =
+        schoolEntryProcedureRepository
+            .findByExternalIdForUpdate(procedureId)
+            .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+    ValidationUtil.validateVersion(version, procedure);
+    return procedure;
+  }
+
+  public SchoolEntryProcedure findProcedureByExternalId(UUID procedureId) {
+    return schoolEntryProcedureRepository
+        .findByExternalId(procedureId)
+        .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
+  }
+
   ProcedureDetailsData findAndAugmentProcedureByExternalId(UUID procedureId) {
     SchoolEntryProcedure schoolEntryProcedure = findProcedureByExternalId(procedureId);
     return augmentWithDetails(schoolEntryProcedure);
+  }
+
+  ProcedureDetailsData augmentWithDetails(SchoolEntryProcedure procedure) {
+    ProcedureWithPersonDetailsData personDetails = personClient.augmentWithPersonDetails(procedure);
+    SchoolDto school = getSchool(procedure);
+    LocationDto location = getLocation(procedure);
+    return new ProcedureDetailsData(
+        procedure.getId(),
+        procedure.getExternalId(),
+        procedure.getVersion(),
+        procedure.getProcedureType(),
+        personDetails.child(),
+        personDetails.custodians(),
+        procedure.getLabels(),
+        procedure.getAppointment(),
+        school,
+        location,
+        procedure.isEntryLevel(),
+        procedure.isInvitationSent(),
+        procedure.isDeceased(),
+        procedure.getDeceased(),
+        procedure.getSchoolYear(),
+        procedure.getProcedureStatus(),
+        procedure.isDeletable(),
+        procedure.getCreatedAt(),
+        procedure.getModifiedAt(),
+        procedure.getWaitingRoom(),
+        procedure.getSchoolInfoLetterCreatedAt(),
+        procedure.hasInformationBlock(),
+        procedure.hasBeenClosed(),
+        isPastProcedure(procedure));
+  }
+
+  private boolean isPastProcedure(SchoolEntryProcedure procedure) {
+    return procedure.getExaminationDate() != null;
+  }
+
+  private SchoolDto getSchool(SchoolEntryProcedure procedure) {
+    UUID schoolId = procedure.getSchoolId();
+    if (schoolId == null) {
+      return null;
+    }
+    ContactDto contact = contactClient.getContact(schoolId);
+    return new SchoolDto(schoolId, contact.name());
+  }
+
+  private LocationDto getLocation(SchoolEntryProcedure procedure) {
+    UUID locationId = procedure.getLocationId();
+    if (locationId == null) {
+      return null;
+    }
+    ContactDto contact = contactClient.getContact(locationId);
+    return new LocationDto(locationId, contact.name());
   }
 
   public List<AppointmentDto> getFreeAppointmentsForProcedure(
       UUID procedureId,
       ProcedureType requestedProcedureType,
       List<UUID> requestedLabelIds,
+      UUID schoolId,
       UUID locationId) {
     SchoolEntryProcedure procedure = findProcedureByExternalId(procedureId);
     Instant earliestStart = Instant.now(clock);
@@ -511,7 +403,7 @@ public class SchoolEntryService {
       return List.of();
     }
     return getFreeAppointmentsForProcedure(
-        procedure, earliestStart, null, true, appointmentType, locationId);
+        procedure, earliestStart, null, true, appointmentType, schoolId, locationId);
   }
 
   List<AppointmentDto> getFreeAppointmentsForProcedure(
@@ -521,7 +413,13 @@ public class SchoolEntryService {
       boolean returnCurrentAppointment,
       AppointmentType appointmentType) {
     return getFreeAppointmentsForProcedure(
-        procedure, earliestStart, latestStart, returnCurrentAppointment, appointmentType, null);
+        procedure,
+        earliestStart,
+        latestStart,
+        returnCurrentAppointment,
+        appointmentType,
+        null,
+        null);
   }
 
   List<AppointmentDto> getFreeAppointmentsForProcedure(
@@ -530,6 +428,7 @@ public class SchoolEntryService {
       Instant latestStart,
       boolean returnCurrentAppointment,
       AppointmentType appointmentType,
+      UUID schoolId,
       UUID locationId) {
 
     if (procedure.hasBeenClosed()) {
@@ -538,18 +437,16 @@ public class SchoolEntryService {
       return List.of();
     }
 
-    UUID procedureLocationId = getAppointmentLocation(procedure);
+    UUID appointmentLocationId = computeLocationIdForAppointment(procedure, schoolId, locationId);
+
     if (appointmentBlockProperties.getLocationSelectionMode() != LocationSelectionMode.NONE
-        && procedureLocationId == null
-        && locationId == null) {
+        && appointmentLocationId == null) {
       return List.of();
     }
+
     List<AppointmentDto> freeAppointments =
         appointmentBlockService.getFreeAppointments(
-            earliestStart,
-            latestStart,
-            appointmentType,
-            locationId == null ? procedureLocationId : locationId);
+            earliestStart, latestStart, appointmentType, appointmentLocationId);
 
     Appointment persistedAppointment = procedure.getAppointment();
     if (persistedAppointment != null && returnCurrentAppointment) {
@@ -569,6 +466,16 @@ public class SchoolEntryService {
       case NONE -> null;
       case SCHOOL -> procedure.getSchoolId();
       case HEALTH_DEPARTMENT -> procedure.getLocationId();
+    };
+  }
+
+  private UUID computeLocationIdForAppointment(
+      SchoolEntryProcedure procedure, UUID requestedSchoolId, UUID requestedLocationId) {
+    return switch (appointmentBlockProperties.getLocationSelectionMode()) {
+      case NONE -> null;
+      case SCHOOL -> requestedSchoolId == null ? procedure.getSchoolId() : requestedSchoolId;
+      case HEALTH_DEPARTMENT ->
+          requestedLocationId == null ? procedure.getLocationId() : requestedLocationId;
     };
   }
 
@@ -634,7 +541,8 @@ public class SchoolEntryService {
         "Termin %s zu Vorgang zugewiesen"
             .formatted(
                 start.atZone(clock.getZone()).format(ReportGeneratorConstants.DATE_FORMAT_DE)),
-        invitation);
+        invitation,
+        SchoolEntryKeyDocumentType.INVITATION);
 
     TaskUtil.closeSingleTaskOfType(procedure, TaskType.BOOK_APPOINTMENT);
     if (!procedure.hasTaskOfType(TaskType.PERFORM_SCHOOL_ENTRY_EXAMINATION)) {
@@ -655,6 +563,21 @@ public class SchoolEntryService {
         && appointment.getAppointmentEnd().equals(end));
   }
 
+  private CitizenAccessCodeUserDto createOrGetCitizenAccessCodeUser(
+      SchoolEntryProcedure procedure) {
+    if (procedure.getCitizenUserId() != null) {
+      log.debug("Citizen User ID already exists.");
+      return citizenAccessCodeUserApi.getCitizenAccessCodeUser(procedure.getCitizenUserId());
+    }
+
+    CitizenAccessCodeUserDto citizenAccessCodeUser =
+        citizenAccessCodeUserApi.addCitizenAccessCodeUser(
+            new AddCitizenAccessCodeUserRequest(procedure.getChildIdFromCentralFile()));
+    procedure.setCitizenUserId(citizenAccessCodeUser.userId());
+
+    return citizenAccessCodeUser;
+  }
+
   public BulkCreateAppointmentStatistics createAppointmentsInBulk(List<UUID> procedureIds) {
     BulkCreateAppointmentStatistics stats = new BulkCreateAppointmentStatistics();
     for (UUID procedureId : procedureIds) {
@@ -662,7 +585,7 @@ public class SchoolEntryService {
         SchoolEntryProcedure procedure =
             schoolEntryProcedureRepository
                 .findByExternalIdForUpdate(procedureId)
-                .orElseThrow(procedureNotFoundException(procedureId));
+                .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
         Validator.validateProcedureStatusNotClosed(procedure);
         if (procedure.getAppointment() != null) {
           stats.countUnmodified();
@@ -691,60 +614,10 @@ public class SchoolEntryService {
     return stats;
   }
 
-  PagedWaitingRoomProcedures getWaitingRoomProcedures(
-      WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
-    WaitingRoomPageSpec pageSpec = createWaitingRoomPageSpec(paginationAndSortParameters);
-    return proceduresHelper.getWaitingRoomProcedures(pageSpec);
-  }
-
-  private WaitingRoomPageSpec createWaitingRoomPageSpec(
-      WaitingRoomProcedurePaginationAndSortParameters paginationAndSortParameters) {
-
-    return WaitingRoomMapper.mapToPageSpec(
-        paginationAndSortParameters.pageNumberOrFallback(0),
-        paginationAndSortParameters.pageSizeOrFallback(25),
-        paginationAndSortParameters.sortKeyOrFallback(WaitingRoomSortKey.ID),
-        paginationAndSortParameters.sortDirectionOrFallback(SortDirection.DESC));
-  }
-
-  PagedProcedures getProcedures(
-      ProcedureFilterParameters filterParameters,
-      ProcedurePaginationAndSortParameters paginationAndSortParameters,
-      ProcedureSearchParameters searchParameters) {
-    ProcedurePageSpec pageSpec = createPageSpec(paginationAndSortParameters);
-
-    if (filterParameters.schoolYearFilter() != null) {
-      validator.validateSchoolYear(Year.of(filterParameters.schoolYearFilter()));
-    }
-
-    if (Validator.hasNonNullValue(searchParameters)) {
-      List<SchoolEntryProcedure> allProcedures =
-          procedureSearchService.searchProceduresByPerson(
-              searchParameters.searchFirstName(),
-              searchParameters.searchLastName(),
-              searchParameters.searchDateOfBirth(),
-              PersonType.PATIENT);
-
-      int offset = pageSpec.pageNumber() * pageSpec.pageSize();
-
-      List<ProcedureData> sortedAndFilteredProcedures =
-          proceduresHelper
-              .augmentWithChildData(allProcedures)
-              .sorted(procedureSortComparator(pageSpec.sortKey(), pageSpec.direction()))
-              .skip(offset)
-              .limit(pageSpec.pageSize())
-              .toList();
-
-      return new PagedProcedures(sortedAndFilteredProcedures, allProcedures.size());
-    } else {
-      return proceduresHelper.getOpenSchoolEntryProcedures(filterParameters, pageSpec);
-    }
-  }
-
   public byte[] zipInvitationsForProcedures(List<UUID> procedureIds) throws IOException {
     List<File> files =
         schoolEntryProcedureRepository.findInvitationLettersForProcedures(
-            procedureIds, APPOINTMENT_MODIFIED.name());
+            procedureIds, SchoolEntryKeyDocumentType.INVITATION.name());
 
     if (procedureIds.size() != files.size()) {
       throw new BadRequestException(
@@ -763,101 +636,6 @@ public class SchoolEntryService {
       zip.finish();
       return out.toByteArray();
     }
-  }
-
-  private ProcedurePageSpec createPageSpec(
-      ProcedurePaginationAndSortParameters paginationAndSortParameters) {
-    return ProcedureMapper.mapToPageSpec(
-        paginationAndSortParameters.pageNumberOrFallback(0),
-        paginationAndSortParameters.pageSizeOrFallback(25),
-        paginationAndSortParameters.sortKeyOrFallback(SchoolEntryProcedureSortKey.ID),
-        paginationAndSortParameters.sortDirectionOrFallback(SortDirection.DESC));
-  }
-
-  private static Comparator<ProcedureData> procedureSortComparator(
-      ProcedureSortKey sortKey, Sort.Direction sortDirection) {
-    return switch (sortKey) {
-      case ID -> comparingLong(ProcedureData::internalId);
-      case DATE_OF_BIRTH ->
-          comparing(ProcedureData::getDateOfBirthOfChild, nullsComparator(sortDirection));
-      case FIRSTNAME ->
-          comparing(
-              procedureData -> procedureData.child().firstName().toUpperCase(),
-              nullsComparator(sortDirection));
-      case LASTNAME ->
-          comparing(
-              procedureData -> procedureData.child().lastName().toUpperCase(),
-              nullsComparator(sortDirection));
-      case PROCEDURE_TYPE ->
-          comparing(
-              procedureData -> procedureData.type().toString(), nullsComparator(sortDirection));
-      case SCHOOL_YEAR -> comparing(ProcedureData::schoolYear, nullsComparator(sortDirection));
-      case APPOINTMENT_START ->
-          comparing(ProcedureData::appointmentStart, nullsComparator(sortDirection));
-      case CREATED_AT -> comparing(ProcedureData::createdAt, nullsComparator(sortDirection));
-      case MODIFIED_AT -> comparing(ProcedureData::modifiedAt, nullsComparator(sortDirection));
-    };
-  }
-
-  private static <T extends Comparable<T>> Comparator<T> nullsComparator(
-      Sort.Direction sortDirection) {
-    Comparator<T> innerComparator = Comparator.naturalOrder();
-    if (sortDirection.equals(Sort.Direction.DESC)) {
-      innerComparator = innerComparator.reversed();
-    }
-    return nullsLast(innerComparator);
-  }
-
-  ProcedureDetailsData augmentWithDetails(SchoolEntryProcedure procedure) {
-    ProcedureWithPersonDetailsData personDetails = personClient.augmentWithPersonDetails(procedure);
-    SchoolDto school = getSchool(procedure);
-    LocationDto location = getLocation(procedure);
-    return new ProcedureDetailsData(
-        procedure.getId(),
-        procedure.getExternalId(),
-        procedure.getVersion(),
-        procedure.getProcedureType(),
-        personDetails.child(),
-        personDetails.custodians(),
-        procedure.getLabels(),
-        procedure.getAppointment(),
-        school,
-        location,
-        procedure.isEntryLevel(),
-        procedure.isInvitationSent(),
-        procedure.isDeceased(),
-        procedure.getDeceased(),
-        procedure.getSchoolYear(),
-        procedure.getProcedureStatus(),
-        procedure.isDeletable(),
-        procedure.getCreatedAt(),
-        procedure.getModifiedAt(),
-        procedure.getWaitingRoom(),
-        procedure.getschoolInfoLetterCreatedAt(),
-        hasInformationBlock(procedure),
-        procedure.hasBeenClosed());
-  }
-
-  private static boolean hasInformationBlock(SchoolEntryProcedure procedure) {
-    return procedure.hasLabel(INFORMATION_BLOCK_LABEL_NAME);
-  }
-
-  private SchoolDto getSchool(SchoolEntryProcedure procedure) {
-    UUID schoolId = procedure.getSchoolId();
-    if (schoolId == null) {
-      return null;
-    }
-    ContactDto contact = contactClient.getContact(schoolId);
-    return new SchoolDto(schoolId, contact.name());
-  }
-
-  private LocationDto getLocation(SchoolEntryProcedure procedure) {
-    UUID locationId = procedure.getLocationId();
-    if (locationId == null) {
-      return null;
-    }
-    ContactDto contact = contactClient.getContact(locationId);
-    return new LocationDto(locationId, contact.name());
   }
 
   public SchoolEntryProcedure updateProcedure(
@@ -1033,737 +811,13 @@ public class SchoolEntryService {
     return procedure;
   }
 
-  public void deleteProcedure(SchoolEntryProcedure procedure) {
-    markRelatedPersonsForDeletionInCentralFile(List.of(procedure));
-    procedureDeletionService.deleteAndWriteToCemetery(procedure.getExternalId());
-  }
-
-  public void deleteProcedures(List<UUID> procedureIds) {
-    List<SchoolEntryProcedure> procedures =
-        schoolEntryProcedureRepository.findForBatchDeletion(procedureIds);
-    markRelatedPersonsForDeletionInCentralFile(procedures);
-    procedureDeletionService.bulkDeleteAndWriteToCemetery(
-        procedures, SchoolEntryTask.class, Person.class, Facility.class);
-  }
-
-  private void markRelatedPersonsForDeletionInCentralFile(List<SchoolEntryProcedure> procedures) {
-    UUID[] personIds =
-        procedures.stream()
-            .map(Procedure::getRelatedPersons)
-            .flatMap(List::stream)
-            .map(RelatedPerson::getCentralFileStateId)
-            .toArray(UUID[]::new);
-    if (log.isInfoEnabled()) {
-      log.info("Marking central file state(s) {} for deletion", Arrays.toString(personIds));
-    }
-    personClient.markCentralFileStatesForDeletion(personIds);
-    if (log.isInfoEnabled()) {
-      log.info("Marked central file state(s) {} for deletion", Arrays.toString(personIds));
-    }
-  }
-
-  public void updateChildData(
-      SchoolEntryProcedure procedure, Person child, UpdatePersonRequest request) {
-    UUID currentFileStateId = child.getCentralFileStateId();
-    UUID updatedFileStateId = personClient.updateChild(currentFileStateId, request);
-
-    if (!updatedFileStateId.equals(currentFileStateId)) {
-      child.setCentralFileStateId(updatedFileStateId);
-      progressEntryUtil.addProgressEntry(procedure, CHILD_MODIFIED);
-      personRepository.flush();
-    }
-  }
-
-  public SchoolEntryProcedure syncPersonData(
-      SchoolEntryProcedure procedure, Person person, SyncPersonRequest request) {
-    UUID updatedFileStateId =
-        personClient.syncPerson(person.getCentralFileStateId(), request.referenceVersion());
-    person.setCentralFileStateId(updatedFileStateId);
-
-    SchoolEntrySystemProgressEntryType progressEntryType =
-        switch (person.getPersonType()) {
-          case PATIENT -> CHILD_SYNCED_WITH_CENTRAL_FILE;
-          case PARENT -> CUSTODIAN_SYNCED_WITH_CENTRAL_FILE;
-          default -> throw new IllegalStateException("Unknown person type");
-        };
-    progressEntryUtil.addProgressEntry(procedure, progressEntryType);
-
-    personRepository.flush();
-    return procedure;
-  }
-
-  public void addCustodianToProcedure(
-      SchoolEntryProcedure procedure, CreatePersonDto custodianDto) {
-    UUID centralFileId;
-    if (custodianDto.referenceId() != null) {
-      try {
-        centralFileId =
-            personClient
-                .createCentralFileStateForReferenceId(
-                    custodianDto.referenceId(), PersonMapper.mapToPersonDetailsDto(custodianDto))
-                .id();
-      } catch (HttpClientErrorException.NotFound e) {
-        throw new NotFoundException("Custodian not found", e.getResponseBodyAsString());
-      }
-    } else {
-      centralFileId = personClient.createPersonInCentralFile(custodianDto);
-    }
-    buildParent(centralFileId, procedure);
-
-    progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_ADDED);
-    schoolEntryProcedureRepository.flush();
-  }
-
-  public void updateCustodian(UpdatePersonRequest request, UUID centralFileStateId, Person person) {
-    UUID newCentralFileStateId =
-        personClient.updatePersonInCentralFile(request, centralFileStateId);
-
-    if (!newCentralFileStateId.equals(centralFileStateId)) {
-      person.setCentralFileStateId(newCentralFileStateId);
-      progressEntryUtil.addProgressEntry(person.getProcedure(), CUSTODIAN_MODIFIED);
-      schoolEntryProcedureRepository.flush();
-    }
-  }
-
-  public void removeCustodian(UUID centralFileStateId, SchoolEntryProcedure procedure) {
-    log.info("Marking central file state {} for deletion", centralFileStateId);
-    personClient.markCentralFileStatesForDeletion(centralFileStateId);
-    log.info("Marked central file state {} for deletion", centralFileStateId);
-
-    Person person =
-        procedure.getRelatedPersons().stream()
-            .filter(p -> p.getCentralFileStateId().equals(centralFileStateId))
-            .findFirst()
-            .orElseThrow(notFoundException(Person.class, centralFileStateId));
-    procedure.getRelatedPersons().remove(person);
-
-    progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_REMOVED);
-    schoolEntryProcedureRepository.flush();
-  }
-
-  SchoolEntryProcedure findProcedureByExternalIdForUpdate(UUID procedureId, long version) {
-    SchoolEntryProcedure procedure =
-        schoolEntryProcedureRepository
-            .findByExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, procedure);
-    return procedure;
-  }
-
-  Person findChildForUpdate(UUID procedureId, long version) {
-    Person child =
-        personRepository.findByProcedureExternalIdAndTypeForUpdate(procedureId, PersonType.PATIENT);
-    ValidationUtil.validateVersion(version, child);
-    return child;
-  }
-
-  Person findPersonForUpdate(UUID procedureId, UUID fileStateId, long version) {
-    Person person =
-        personRepository.findByProcedureExternalIdAndFileStateIdForUpdate(procedureId, fileStateId);
-    if (person == null) {
-      throw new NotFoundException(
-          "Person with fileStateId %s for procedure %s not found"
-              .formatted(fileStateId, procedureId));
-    }
-    ValidationUtil.validateVersion(version, person);
-    return person;
-  }
-
-  public HearingTestResult findHearingTestResultForUpdate(UUID procedureId, long version) {
-    HearingTestResult hearingTestResult =
-        hearingTestResultRepository
-            .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, hearingTestResult);
-    return hearingTestResult;
-  }
-
-  public HearingTestResult findHearingTestResult(UUID procedureId) {
-    return hearingTestResultRepository
-        .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  public EyeExaminationResult findEyeExaminationResultForUpdate(UUID procedureId, long version) {
-    EyeExaminationResult eyeExaminationResult =
-        eyeExaminationResultRepository
-            .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, eyeExaminationResult);
-    return eyeExaminationResult;
-  }
-
-  public EyeExaminationResult findEyeExaminationResult(UUID procedureId) {
-    return eyeExaminationResultRepository
-        .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  public SopessExaminationResult findSopessExaminationResultForUpdate(
-      UUID procedureId, long version) {
-    SopessExaminationResult sopessExaminationResult =
-        sopessExaminationResultRepository
-            .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, sopessExaminationResult);
-    return sopessExaminationResult;
-  }
-
-  public SopessExaminationResult findSopessExaminationResult(UUID procedureId) {
-    return sopessExaminationResultRepository
-        .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  public DevelopmentScreening findDevelopmentScreeningResultForUpdate(
-      UUID procedureId, long version) {
-    DevelopmentScreening developmentScreeningResult =
-        developmentScreeningResultRepository
-            .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, developmentScreeningResult);
-    return developmentScreeningResult;
-  }
-
-  public DevelopmentScreening findDevelopmentScreeningResult(UUID procedureId) {
-    return developmentScreeningResultRepository
-        .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  public Anamnesis findAnamnesis(UUID procedureId) {
-    return anamnesisRepository
-        .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  public Anamnesis findAnamnesisForUpdate(UUID procedureId, long version) {
-    Anamnesis anamnesis =
-        anamnesisRepository
-            .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, anamnesis);
-    return anamnesis;
-  }
-
-  public List<UUID> collectExistingProcedures(Collection<UUID> externalIds) {
-    if (externalIds.isEmpty()) {
-      return List.of();
-    }
-    return schoolEntryProcedureRepository.collectExistingProceduresByExternalIds(externalIds);
-  }
-
-  public SchoolEntryProcedure findProcedureByExternalId(UUID procedureId) {
-    return schoolEntryProcedureRepository
-        .findByExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  public VaccinationStatus findVaccinationStatusForUpdate(UUID procedureId, Long version) {
-    VaccinationStatus vaccinationStatus =
-        vaccinationStatusRepository
-            .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
-    ValidationUtil.validateVersion(version, vaccinationStatus);
-    return vaccinationStatus;
-  }
-
-  public VaccinationStatus findVaccinationStatus(UUID procedureId) {
-    return vaccinationStatusRepository
-        .findByProcedureExternalId(procedureId)
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
   WaitingRoom findWaitingRoomForUpdate(UUID procedureId, Long version) {
     WaitingRoom waitingRoom =
         waitingRoomRepository
             .findByProcedureExternalIdForUpdate(procedureId)
-            .orElseThrow(procedureNotFoundException(procedureId));
+            .orElseThrow(ExceptionUtil.procedureNotFoundException(procedureId));
     ValidationUtil.validateVersion(version, waitingRoom);
     return waitingRoom;
-  }
-
-  private static Supplier<NotFoundException> procedureNotFoundException(UUID procedureId) {
-    return notFoundException(SchoolEntryProcedure.class, procedureId);
-  }
-
-  Stream<Icd10FuzzySearchResult> searchIcd10Codes(String searchString, List<String> codes) {
-    if (!searchString.isEmpty()) {
-      if (searchString.isBlank()) {
-        return Stream.empty();
-      }
-      return icd10CodeRepository.fuzzySearch(searchString);
-    } else {
-      return icd10CodeRepository.findByCode(codes);
-    }
-  }
-
-  public Map<PersonKeyAttributes, List<ProcedureWithChildData>> searchForMergeCandidates(
-      Set<PersonKeyAttributes> searchAttributes) {
-    Specification<SchoolEntryProcedure> openProcedures =
-        (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN);
-    Map<PersonKeyAttributes, List<SchoolEntryProcedure>> proceduresByPersons =
-        procedureSearchService.searchProceduresByPersons(
-            searchAttributes, PersonType.PATIENT, openProcedures, Person.class);
-    return personClient.augmentWithChildData(proceduresByPersons);
-  }
-
-  public Map<PersonKeyAttributes, List<SchoolEntryProcedure>>
-      searchForMergeCandidatesForPastProcedures(
-          Set<PersonKeyAttributes> searchAttributes, Year schoolYear) {
-    Specification<SchoolEntryProcedure> proceduresWithNoOrEqualSchoolYear =
-        (root, query, criteriaBuilder) -> {
-          Path<Year> schoolYearPath = root.get(SchoolEntryProcedure_.schoolYear);
-          return criteriaBuilder.or(
-              schoolYearPath.isNull(), criteriaBuilder.equal(schoolYearPath, schoolYear));
-        };
-    return procedureSearchService.searchProceduresByPersons(
-        searchAttributes, PersonType.PATIENT, proceduresWithNoOrEqualSchoolYear, Person.class);
-  }
-
-  void updateHearingTestResult(
-      HearingTestResult persistedHearingTestResult, HearingTestResult newHearingTestResult) {
-    copyValues(newHearingTestResult, persistedHearingTestResult);
-
-    progressEntryUtil.addProgressEntry(
-        persistedHearingTestResult.getProcedure(), HEARING_TEST_MODIFIED);
-
-    hearingTestResultRepository.flush();
-  }
-
-  private static void copyValues(HearingTestResult fromResult, HearingTestResult toResult) {
-    toResult.setLeftEar(fromResult.getLeftEar());
-    toResult.setRightEar(fromResult.getRightEar());
-    toResult.setExaminationResult(fromResult.getExaminationResult());
-    toResult.setNote(fromResult.getNote());
-  }
-
-  void updateEyeExaminationResult(
-      EyeExaminationResult persistedEyeExaminationResult,
-      EyeExaminationResult newEyeExaminationResult) {
-    copyValues(newEyeExaminationResult, persistedEyeExaminationResult);
-
-    progressEntryUtil.addProgressEntry(
-        persistedEyeExaminationResult.getProcedure(), EYE_EXAMINATION_MODIFIED);
-
-    eyeExaminationResultRepository.flush();
-  }
-
-  private static void copyValues(EyeExaminationResult fromResult, EyeExaminationResult toResult) {
-    toResult.setLeftEye(fromResult.getLeftEye());
-    toResult.setRightEye(fromResult.getRightEye());
-    toResult.setEyeExamination(fromResult.getEyeExamination());
-    toResult.setLangExamination(fromResult.getLangExamination());
-    toResult.setIshiharaExamination(fromResult.getIshiharaExamination());
-    toResult.setAmblyopia(fromResult.getAmblyopia());
-    toResult.setAstigmatism(fromResult.getAstigmatism());
-    toResult.setColorVisionDisorder(fromResult.getColorVisionDisorder());
-    toResult.setHyperopia(fromResult.getHyperopia());
-    toResult.setMyopia(fromResult.getMyopia());
-    toResult.setStrabismus(fromResult.getStrabismus());
-    toResult.setOtherDiagnosis(fromResult.getOtherDiagnosis());
-    toResult.setNote(fromResult.getNote());
-  }
-
-  void updateSopessExaminationResult(
-      SopessExaminationResult persistedSopessExaminationResult,
-      SopessExaminationResult newSopessExaminationResult) {
-    copyValues(newSopessExaminationResult, persistedSopessExaminationResult);
-
-    progressEntryUtil.addProgressEntry(
-        persistedSopessExaminationResult.getProcedure(), SOPESS_EXAMINATION_MODIFIED);
-
-    sopessExaminationResultRepository.flush();
-  }
-
-  private static void copyValues(
-      SopessExaminationResult fromResult, SopessExaminationResult toResult) {
-    toResult.setJumpCount(fromResult.getJumpCount());
-    toResult.setGrossMotorSkills(fromResult.getGrossMotorSkills());
-    toResult.setDoctorLetterGrossMotorSkills(fromResult.getDoctorLetterGrossMotorSkills());
-    toResult.setVisuoMotor(fromResult.getVisuoMotor());
-    toResult.setFineMotorSkills(fromResult.getFineMotorSkills());
-    toResult.setDoctorLetterFineMotorSkills(fromResult.getDoctorLetterFineMotorSkills());
-    toResult.setHandednessValue(fromResult.getHandednessValue());
-    toResult.setVisualPerceptionPoints(fromResult.getVisualPerceptionPoints());
-    toResult.setVisualPerceptionResult(fromResult.getVisualPerceptionResult());
-    toResult.setPrimaryLanguage(fromResult.getPrimaryLanguage());
-    toResult.setGermanKnowledgePrimaryCarer(fromResult.getGermanKnowledgePrimaryCarer());
-    toResult.setFamilyLanguage(fromResult.getFamilyLanguage());
-    toResult.setGermanKnowledgeChild(fromResult.getGermanKnowledgeChild());
-    toResult.setLettersSAndZPoints(fromResult.getLettersSAndZPoints());
-    toResult.setFormationSchPoints(fromResult.getFormationSchPoints());
-    toResult.setLettersTAndDPoints(fromResult.getLettersTAndDPoints());
-    toResult.setFormationChPoints(fromResult.getFormationChPoints());
-    toResult.setLettersGAndKPoints(fromResult.getLettersGAndKPoints());
-    toResult.setLettersLAndNPoints(fromResult.getLettersLAndNPoints());
-    toResult.setLetterRPoints(fromResult.getLetterRPoints());
-    toResult.setLetterFAndFormationPfPoints(fromResult.getLetterFAndFormationPfPoints());
-    toResult.setLetterBPoints(fromResult.getLetterBPoints());
-    toResult.setFormationsTrDrKrGrPoints(fromResult.getFormationsTrDrKrGrPoints());
-    toResult.setDoctorLetterVisualPerception(fromResult.getDoctorLetterVisualPerception());
-    toResult.setPrepositionPoints(fromResult.getPrepositionPoints());
-    toResult.setPluralPoints(fromResult.getPluralPoints());
-    toResult.setSpeechResult(fromResult.getSpeechResult());
-    toResult.setDoctorLetterSpeech(fromResult.getDoctorLetterSpeech());
-    toResult.setPseudowordPoints(fromResult.getPseudowordPoints());
-    toResult.setAuditiveProcessingResult(fromResult.getAuditiveProcessingResult());
-    toResult.setDoctorLetterAuditiveProcessing(fromResult.getDoctorLetterAuditiveProcessing());
-    toResult.setCountingPoints(fromResult.getCountingPoints());
-    toResult.setQuantityKnowledgePoints(fromResult.getQuantityKnowledgePoints());
-    toResult.setKnowledgeThinkingResult(fromResult.getKnowledgeThinkingResult());
-    toResult.setDoctorLetterKnowledgeThinking(fromResult.getDoctorLetterKnowledgeThinking());
-    toResult.setSelectiveAttentionPoints(fromResult.getSelectiveAttentionPoints());
-    toResult.setPsychologicalBehaviorResult(fromResult.getPsychologicalBehaviorResult());
-    toResult.setDoctorLetterPsychologicalBehavior(
-        fromResult.getDoctorLetterPsychologicalBehavior());
-    toResult.setNote(fromResult.getNote());
-  }
-
-  void updateDevelopmentScreeningResult(
-      DevelopmentScreening persistedDevelopmentScreeningResult,
-      DevelopmentScreening newDevelopmentScreeningResult) {
-    boolean heightOrWeightWasUpdated =
-        heightOrWeightWasUpdated(
-            persistedDevelopmentScreeningResult, newDevelopmentScreeningResult);
-    copyValues(newDevelopmentScreeningResult, persistedDevelopmentScreeningResult);
-    if (heightOrWeightWasUpdated) {
-      PercentilesDto dto =
-          percentileCalculationService.getPercentiles(
-              persistedDevelopmentScreeningResult.getProcedure(),
-              newDevelopmentScreeningResult.getHeight(),
-              newDevelopmentScreeningResult.getWeight());
-      persistedDevelopmentScreeningResult.setHeightPercentile(dto.getHeightPercentile());
-      persistedDevelopmentScreeningResult.setWeightPercentile(dto.getWeightPercentile());
-      persistedDevelopmentScreeningResult.setBmi(dto.getBmi());
-      persistedDevelopmentScreeningResult.setBmiPercentile(dto.getBmiPercentile());
-    }
-
-    progressEntryUtil.addProgressEntry(
-        persistedDevelopmentScreeningResult.getProcedure(), DEVELOPMENT_SCREENING_MODIFIED);
-
-    developmentScreeningResultRepository.flush();
-  }
-
-  private static void copyValues(DevelopmentScreening fromResult, DevelopmentScreening toResult) {
-    toResult.setHeight(fromResult.getHeight());
-    toResult.setWeight(fromResult.getWeight());
-    toResult.setSystole(fromResult.getSystole());
-    toResult.setDiastole(fromResult.getDiastole());
-    toResult.setNutritionalCondition(fromResult.getNutritionalCondition());
-    toResult.setNeurology(fromResult.getNeurology());
-    toResult.setRespiratoryCardiovascular(fromResult.getRespiratoryCardiovascular());
-    toResult.setSkin(fromResult.getSkin());
-    toResult.setMusculatureSkeleton(fromResult.getMusculatureSkeleton());
-    toResult.setMetabolism(fromResult.getMetabolism());
-    toResult.setAbdomen(fromResult.getAbdomen());
-    toResult.setEarNoseThroat(fromResult.getEarNoseThroat());
-    toResult.setPhysicalExaminationNote(fromResult.getPhysicalExaminationNote());
-    toResult.setChronicDisease(fromResult.getChronicDisease());
-    toResult.setDisability(fromResult.getDisability());
-    toResult.setDisabilityType(fromResult.getDisabilityType());
-    toResult.setHandicapNote(fromResult.getHandicapNote());
-    toResult.setFamily(fromResult.getFamily());
-    toResult.setNonCompliance(fromResult.getNonCompliance());
-    toResult.setSocial(fromResult.getSocial());
-    toResult.setMigration(fromResult.getMigration());
-    toResult.setOtherRisk(fromResult.getOtherRisk());
-    toResult.setReIntroduction(fromResult.getReIntroduction());
-    toResult.setSchoolCounselling(fromResult.getSchoolCounselling());
-    toResult.setMotorPromotion(fromResult.getMotorPromotion());
-    toResult.setEducationalAdvice(fromResult.getEducationalAdvice());
-    toResult.setLanguageAdvice(fromResult.getLanguageAdvice());
-    toResult.setNutritionalAdvice(fromResult.getNutritionalAdvice());
-    toResult.setVaccinationAdvice(fromResult.getVaccinationAdvice());
-    toResult.setSocialService(fromResult.getSocialService());
-    toResult.setOtherRisk(fromResult.getOtherRisk());
-    toResult.setOtherSupport(fromResult.getOtherSupport());
-    toResult.setInfoLetter(fromResult.getInfoLetter());
-    toResult.setExtraEffort(fromResult.getExtraEffort());
-    toResult.setSchoolRecommendation(fromResult.getSchoolRecommendation());
-    toResult.setSchoolFeedback(fromResult.getSchoolFeedback());
-  }
-
-  void updateVaccinationStatus(
-      VaccinationStatus persistedVaccinationStatus, VaccinationStatus newVaccinationStatus) {
-    copyValues(newVaccinationStatus, persistedVaccinationStatus);
-
-    progressEntryUtil.addProgressEntry(
-        persistedVaccinationStatus.getProcedure(), VACCINATION_STATUS_MODIFIED);
-
-    vaccinationStatusRepository.flush();
-  }
-
-  private void copyValues(VaccinationStatus fromResult, VaccinationStatus toResult) {
-    toResult.setVaccinationScheme(fromResult.getVaccinationScheme());
-    toResult.setDiphtheria(fromResult.getDiphtheria());
-    toResult.setTetanus(fromResult.getTetanus());
-    toResult.setPertussis(fromResult.getPertussis());
-    toResult.setHib(fromResult.getHib());
-    toResult.setPolio(fromResult.getPolio());
-    toResult.setHepatitisB(fromResult.getHepatitisB());
-    toResult.setPneumococcus(fromResult.getPneumococcus());
-    toResult.setMmr(fromResult.getMmr());
-    toResult.setVaricella(fromResult.getVaricella());
-    toResult.setMeningococcusB(fromResult.getMeningococcusB());
-    toResult.setMeningococcusC(fromResult.getMeningococcusC());
-    toResult.setRota(fromResult.getRota());
-    toResult.setTbe(fromResult.getTbe());
-    toResult.setHepatitisA(fromResult.getHepatitisA());
-    toResult.setOtherVaccinations(fromResult.getOtherVaccinations());
-    toResult.setVaccinationPassPresented(fromResult.getVaccinationPassPresented());
-    toResult.setPerkombiHbv(fromResult.getPerkombiHbv());
-    toResult.setMeaslesContraIndication(fromResult.getMeaslesContraIndication());
-    toResult.setMeaslesContraIndicationIsPermanent(
-        fromResult.getMeaslesContraIndicationIsPermanent());
-    toResult.setMeaslesContraIndicationUntil(fromResult.getMeaslesContraIndicationUntil());
-  }
-
-  void updateAnamnesis(Anamnesis persistedAnamnesis, Anamnesis newAnamnesis) {
-    copyValues(newAnamnesis, persistedAnamnesis);
-
-    progressEntryUtil.addProgressEntry(persistedAnamnesis.getProcedure(), ANAMNESIS_MODIFIED);
-
-    anamnesisRepository.flush();
-  }
-
-  public void copyValues(Anamnesis fromAnamnesis, Anamnesis toAnamnesis) {
-    toAnamnesis.setChildLanguageScreening(fromAnamnesis.getChildLanguageScreening());
-    toAnamnesis.setPreliminaryCourse(fromAnamnesis.getPreliminaryCourse());
-    toAnamnesis.setBirthWeight(fromAnamnesis.getBirthWeight());
-    toAnamnesis.setGestationalAge(fromAnamnesis.getGestationalAge());
-    toAnamnesis.setU2(fromAnamnesis.getU2());
-    toAnamnesis.setU3(fromAnamnesis.getU3());
-    toAnamnesis.setU4(fromAnamnesis.getU4());
-    toAnamnesis.setU5(fromAnamnesis.getU5());
-    toAnamnesis.setU6(fromAnamnesis.getU6());
-    toAnamnesis.setU7(fromAnamnesis.getU7());
-    toAnamnesis.setU7a(fromAnamnesis.getU7a());
-    toAnamnesis.setU8(fromAnamnesis.getU8());
-    toAnamnesis.setU9(fromAnamnesis.getU9());
-    toAnamnesis.setEarlySupport(fromAnamnesis.getEarlySupport());
-    toAnamnesis.setIntegrationPlace(fromAnamnesis.getIntegrationPlace());
-    toAnamnesis.setErgotherapy(fromAnamnesis.getErgotherapy());
-    toAnamnesis.setSpeechTherapy(fromAnamnesis.getSpeechTherapy());
-    toAnamnesis.setPhysiotherapy(fromAnamnesis.getPhysiotherapy());
-    toAnamnesis.setNationalityChild(fromAnamnesis.getNationalityChild());
-    toAnamnesis.setCountryOfBirthChild(fromAnamnesis.getCountryOfBirthChild());
-    toAnamnesis.setNationalityFirstParent(fromAnamnesis.getNationalityFirstParent());
-    toAnamnesis.setCountryOfBirthFirstParent(fromAnamnesis.getCountryOfBirthFirstParent());
-    toAnamnesis.setNationalitySecondParent(fromAnamnesis.getNationalitySecondParent());
-    toAnamnesis.setCountryOfBirthSecondParent(fromAnamnesis.getCountryOfBirthSecondParent());
-    toAnamnesis.setHasMigrationBackground(fromAnamnesis.getHasMigrationBackground());
-    toAnamnesis.setInGermanySince(fromAnamnesis.getInGermanySince());
-    toAnamnesis.setResponsiblePhysician(fromAnamnesis.getResponsiblePhysician());
-    toAnamnesis.setNumberOfSiblings(fromAnamnesis.getNumberOfSiblings());
-    toAnamnesis.setSiblingsBirthYears(fromAnamnesis.getSiblingsBirthYears());
-    toAnamnesis.setWasInDaycare(fromAnamnesis.getWasInDaycare());
-    toAnamnesis.setInDaycareSince(fromAnamnesis.getInDaycareSince());
-    toAnamnesis.setDaycareName(fromAnamnesis.getDaycareName());
-    toAnamnesis.setSchoolName(fromAnamnesis.getSchoolName());
-    toAnamnesis.setSpectaclesInFamily(fromAnamnesis.getSpectaclesInFamily());
-    toAnamnesis.setChronicIllnessOrDisabilityInFamily(
-        fromAnamnesis.getChronicIllnessOrDisabilityInFamily());
-    toAnamnesis.setDevelopmentConspicuities(fromAnamnesis.getDevelopmentConspicuities());
-    toAnamnesis.setInfancyConspicuities(fromAnamnesis.getInfancyConspicuities());
-    toAnamnesis.setSevereIllnesses(fromAnamnesis.getSevereIllnesses());
-    toAnamnesis.setAllergies(fromAnamnesis.getAllergies());
-    toAnamnesis.setHospitalizationsOrOperations(fromAnamnesis.getHospitalizationsOrOperations());
-    toAnamnesis.setUnderMedicalTreatmentFor(fromAnamnesis.getUnderMedicalTreatmentFor());
-    toAnamnesis.setRegularMedication(fromAnamnesis.getRegularMedication());
-    toAnamnesis.setVisionImpairment(fromAnamnesis.getVisionImpairment());
-    toAnamnesis.setHearingImpairment(fromAnamnesis.getHearingImpairment());
-    toAnamnesis.setSpeechImpairment(fromAnamnesis.getSpeechImpairment());
-    toAnamnesis.setSpectaclesSince(fromAnamnesis.getSpectaclesSince());
-    toAnamnesis.setVisionSchoolSince(fromAnamnesis.getVisionSchoolSince());
-    toAnamnesis.setHearingAid(fromAnamnesis.getHearingAid());
-    toAnamnesis.setSpeechTherapyStart(fromAnamnesis.getSpeechTherapyStart());
-    toAnamnesis.setSpeechTherapyEnd(fromAnamnesis.getSpeechTherapyEnd());
-    toAnamnesis.setErgoTherapyStart(fromAnamnesis.getErgoTherapyStart());
-    toAnamnesis.setErgoTherapyEnd(fromAnamnesis.getErgoTherapyEnd());
-    toAnamnesis.setPhysioTherapyStart(fromAnamnesis.getPhysioTherapyStart());
-    toAnamnesis.setPhysioTherapyEnd(fromAnamnesis.getPhysioTherapyEnd());
-    toAnamnesis.setAdditionalTherapies(fromAnamnesis.getAdditionalTherapies());
-    toAnamnesis.setClubSport(fromAnamnesis.getClubSport());
-    toAnamnesis.setOtherInterests(fromAnamnesis.getOtherInterests());
-    toAnamnesis.setCanSwim(fromAnamnesis.getCanSwim());
-    toAnamnesis.setHasSeahorseBadge(fromAnamnesis.getHasSeahorseBadge());
-    toAnamnesis.setPersonalConspicuities(fromAnamnesis.getPersonalConspicuities());
-  }
-
-  private CitizenAccessCodeUserDto createOrGetCitizenAccessCodeUser(
-      SchoolEntryProcedure procedure) {
-    if (procedure.getCitizenUserId() != null) {
-      log.debug("Citizen User ID already exists.");
-      return citizenAccessCodeUserApi.getCitizenAccessCodeUser(procedure.getCitizenUserId());
-    }
-
-    CitizenAccessCodeUserDto citizenAccessCodeUser =
-        citizenAccessCodeUserApi.addCitizenAccessCodeUser(
-            new AddCitizenAccessCodeUserRequest(procedure.getChildIdFromCentralFile()));
-    procedure.setCitizenUserId(citizenAccessCodeUser.userId());
-
-    return citizenAccessCodeUser;
-  }
-
-  private boolean heightOrWeightWasUpdated(
-      DevelopmentScreening existing, DevelopmentScreening updated) {
-    return !Objects.equals(existing.getHeight(), updated.getHeight())
-        || !Objects.equals(existing.getWeight(), updated.getWeight());
-  }
-
-  public List<UUID> mergeProcedures(
-      List<MergeProcedureData> mergeDataList,
-      ImportType importType,
-      UUID schoolId,
-      UUID locationId,
-      Year schoolYear) {
-    if (mergeDataList.isEmpty()) {
-      return List.of();
-    }
-
-    try {
-      List<ResolvedMergeProcedureData> resolvedMergeDataList = resolveMergeData(mergeDataList);
-      List<UUID> failedProcedureIds = personClient.updateChildren(resolvedMergeDataList);
-
-      resolvedMergeDataList.removeIf(
-          mergeData -> failedProcedureIds.contains(mergeData.procedure().getExternalId()));
-
-      createCustodiansInBulk(resolvedMergeDataList);
-
-      for (ResolvedMergeProcedureData mergeData : resolvedMergeDataList) {
-        mergeDataForProcedure(mergeData, schoolId, locationId, schoolYear);
-        updateProcedureTypeWithSuggestion(mergeData.procedure());
-        addProgressEntryForMerge(mergeData.procedure(), importType);
-      }
-
-      schoolEntryProcedureRepository.flush();
-
-      return failedProcedureIds;
-    } catch (Exception e) {
-      log.error("Error during merge of data.", e);
-      return mergeDataList.stream().map(MergeProcedureData::procedureId).toList();
-    }
-  }
-
-  private List<ResolvedMergeProcedureData> resolveMergeData(
-      List<MergeProcedureData> mergeDataList) {
-    List<ResolvedMergeProcedureData> merges;
-    List<UUID> procedureIds = mergeDataList.stream().map(MergeProcedureData::procedureId).toList();
-
-    Assert.isTrue(
-        !StreamUtil.hasDuplicates(procedureIds.stream()),
-        "Merge data contains duplicated procedure IDs");
-
-    Map<UUID, SchoolEntryProcedure> procedures =
-        schoolEntryProcedureRepository
-            .findByExternalIdsForUpdate(procedureIds)
-            .collect(StreamUtil.toLinkedHashMap(SchoolEntryProcedure::getExternalId));
-
-    merges =
-        mergeDataList.stream()
-            .map(
-                mergeProcedureData -> {
-                  SchoolEntryProcedure procedure =
-                      getProcedureOrThrow(procedures, mergeProcedureData.procedureId());
-                  return new ResolvedMergeProcedureData(
-                      procedure,
-                      mergeProcedureData.placeOfBirth(),
-                      mergeProcedureData.countryOfBirth(),
-                      mergeProcedureData.custodians(),
-                      mergeProcedureData.phoneNumber(),
-                      mergeProcedureData.isEntryLevel(),
-                      mergeProcedureData.isEarlyExamination());
-                })
-            .collect(StreamUtil.toModifiableList());
-    return merges;
-  }
-
-  private static List<ImportCustodianDataWithProcedure> collectCustodiansWithProcedure(
-      List<ResolvedMergeProcedureData> merges) {
-    return merges.stream()
-        .flatMap(
-            mergeData ->
-                mergeData.custodians().stream()
-                    .map(
-                        custodian ->
-                            new ImportCustodianDataWithProcedure(custodian, mergeData.procedure())))
-        .toList();
-  }
-
-  private void createCustodiansInBulk(List<ResolvedMergeProcedureData> mergeDataList) {
-    List<ImportCustodianDataWithProcedure> custodiansWithProcedure =
-        collectCustodiansWithProcedure(mergeDataList);
-    if (custodiansWithProcedure.isEmpty()) {
-      return;
-    }
-    List<ImportCustodianData> custodians =
-        custodiansWithProcedure.stream().map(ImportCustodianDataWithProcedure::custodian).toList();
-    List<UUID> custodianIds = personClient.createCustodiansInCentralFile(custodians);
-    Assert.isTrue(
-        custodiansWithProcedure.size() == custodianIds.size(),
-        () ->
-            "Unexpected number of created custodian. Expected %d but got %d"
-                .formatted(custodiansWithProcedure.size(), custodianIds.size()));
-    for (int i = 0; i < custodianIds.size(); i++) {
-      ImportCustodianDataWithProcedure custodian = custodiansWithProcedure.get(i);
-      buildParent(custodianIds.get(i), custodian.procedure());
-    }
-  }
-
-  private static SchoolEntryProcedure getProcedureOrThrow(
-      Map<UUID, SchoolEntryProcedure> procedures, UUID procedureId) {
-    return Optional.ofNullable(procedures.get(procedureId))
-        .orElseThrow(procedureNotFoundException(procedureId));
-  }
-
-  private void addProgressEntryForMerge(SchoolEntryProcedure procedure, ImportType importType) {
-    SchoolEntrySystemProgressEntryType progressEntryType =
-        switch (importType) {
-          case CITIZEN_LIST -> MERGED_DATA_FROM_CITIZEN_LIST;
-          case SCHOOL_LIST -> MERGED_DATA_FROM_SCHOOL_LIST;
-          case PAST_PROCEDURE_LIST -> throw ExceptionUtil.mergeNotSupportedForPastProcedureImport();
-        };
-    progressEntryUtil.addProgressEntry(procedure, progressEntryType);
-  }
-
-  private void mergeDataForProcedure(
-      ResolvedMergeProcedureData mergeData, UUID schoolId, UUID locationId, Year schoolYear) {
-    SchoolEntryProcedure procedure = mergeData.procedure();
-
-    if (mergeData.isEntryLevel() != null) {
-      procedure.setEntryLevel(mergeData.isEntryLevel());
-    }
-
-    if (mergeData.isEarlyExamination() != null && mergeData.isEarlyExamination()) {
-      Label specialNeedsLabel = labelService.getSpecialNeedsLabel();
-
-      List<Label> labels = procedure.getLabels();
-      if (!labels.contains(specialNeedsLabel)) {
-        labels.add(specialNeedsLabel);
-      }
-    }
-
-    if (schoolId != null) {
-      procedure.setSchoolId(schoolId);
-    }
-
-    if (locationId != null) {
-      procedure.setLocationId(locationId);
-    }
-
-    if (schoolYear != null) {
-      procedure.setSchoolYear(schoolYear);
-    }
-  }
-
-  private void updateProcedureTypeWithSuggestion(SchoolEntryProcedure procedure) {
-    procedure.setProcedureType(
-        procedureTypeAssignmentHelper.suggestProcedureType(
-            procedure.isEntryLevel(),
-            personClient.fetchChildData(procedure).dateOfBirth(),
-            procedure.getSchoolYear()));
   }
 
   void updateWaitingRoomDetails(

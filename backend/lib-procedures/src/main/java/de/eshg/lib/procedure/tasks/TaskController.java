@@ -147,7 +147,7 @@ public class TaskController<
     task.assign(assigneeId, CurrentUserHelper.getCurrentUserId(), Instant.now(clock));
     task.updateDueAt(dueAt);
     taskRepository.flush();
-    return enrichingMapper.enrichAndMap(task);
+    return enrichingMapper.enrichAndMapTasks(List.of(task)).getFirst();
   }
 
   private TaskT getTaskForUpdateOrThrow(UUID taskId, Long taskVersion) {

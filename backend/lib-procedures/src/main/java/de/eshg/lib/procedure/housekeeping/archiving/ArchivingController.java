@@ -54,6 +54,7 @@ import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresResponse;
 import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortByDto;
 import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortOptions;
 import de.eshg.lib.procedure.model.GetRelevantArchivableProceduresSortOrderDto;
+import de.eshg.lib.procedure.model.ProcedureDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.nio.charset.StandardCharsets;
@@ -142,10 +143,11 @@ public class ArchivingController<
                 .withPage(paginationOptions.pageNumber())
                 .withSort(mapToSort(sortOptions)));
 
+    List<ProcedureDto> enrichedProcedures =
+        enrichingMapper.enrichAndMapProcedures(procedurePage.stream().toList());
+
     return new GetArchivableProceduresResponse(
-        procedurePage.getTotalPages(),
-        procedurePage.getTotalElements(),
-        procedurePage.stream().map(enrichingMapper::enrichAndMap).toList());
+        procedurePage.getTotalPages(), procedurePage.getTotalElements(), enrichedProcedures);
   }
 
   private Specification<ProcedureT> procedureTypes(Set<ProcedureTypeDto> procedureTypes) {
@@ -277,10 +279,13 @@ public class ArchivingController<
                     .collect(Collectors.toSet()))
             + sumCsvFileSizeEstimate(procedurePage);
 
+    List<ProcedureDto> enrichedProcedures =
+        enrichingMapper.enrichAndMapProcedures(procedurePage.stream().toList());
+
     return new GetRelevantArchivableProceduresResponse(
         procedurePage.getTotalPages(),
         procedurePage.getTotalElements(),
-        procedurePage.stream().map(enrichingMapper::enrichAndMap).toList(),
+        enrichedProcedures,
         fileSizeBytes);
   }
 

@@ -5,17 +5,16 @@
 
 package de.eshg.lib.procedure.housekeeping.archiving;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import jakarta.validation.constraints.NotNull;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.convert.PeriodUnit;
@@ -70,7 +69,7 @@ public record ArchivingProperties(
     return Arrays.stream(ProcedureType.values())
         .filter(
             type -> archivingRelevance.contains(getDefaultArchivingRelevanceOrElseFallback(type)))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public int getGracePeriodMonthsOrDefault() {

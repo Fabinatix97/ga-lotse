@@ -36,11 +36,11 @@ export function CitizenAnamnesisSidePanel({
   return (
     <ContentSheet>
       <InfoSection icon={<PersonOutlined />}>
-        <InfoSectionTitle>{t("result.name")}</InfoSectionTitle>
+        <InfoSectionTitle level={2}>{t("result.name")}</InfoSectionTitle>
         <Typography>{name}</Typography>
       </InfoSection>
       <InfoSection icon={<CakeOutlined />}>
-        <InfoSectionTitle>{t("result.birthday")}</InfoSectionTitle>
+        <InfoSectionTitle level={2}>{t("result.birthday")}</InfoSectionTitle>
         <Typography>{dateOfBirth}</Typography>
       </InfoSection>
       {currentStep < totalSteps && (

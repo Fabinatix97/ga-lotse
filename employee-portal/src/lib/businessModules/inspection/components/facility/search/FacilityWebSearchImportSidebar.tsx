@@ -86,14 +86,18 @@ function FacilityWebSearchImportSidebarWithinBoundary(
         webSearchEntryId,
       },
       {
-        onSuccess: ({ inspectionId, procedureStatus }) => {
+        onSuccess: ({ inspectionId, procedureStatus, isNew }) => {
           if (procedureStatus !== ApiProcedureStatus.Draft) {
             router.push(routes.procedures.details(inspectionId));
+          } else {
+            router.push(routes.procedures.new(inspectionId));
+          }
+          if (isNew) {
+            snackbar.confirmation("Vorgang erfolgreich angelegt.");
+          } else {
             snackbar.notification(
               "Dies ist der neueste Vorgang für diese Einrichtung",
             );
-          } else {
-            router.push(routes.procedures.new(inspectionId));
           }
         },
       },

@@ -22,9 +22,9 @@ import {
   matchingServerActorsFilterFn,
 } from "@/lib/components/table/Filter";
 import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
-import { EditableActiveCell } from "@/lib/components/table/cell/EditableActiveCell";
-import { EditableActorSelectorCell } from "@/lib/components/table/cell/EditableActorSelectorCell";
-import { EditableStringCell } from "@/lib/components/table/cell/EditableStringCell";
+import { ActiveCell } from "@/lib/components/table/cell/ActiveCell";
+import { ActorSelectorCell } from "@/lib/components/table/cell/ActorSelectorCell";
+import { StringCell } from "@/lib/components/table/cell/StringCell";
 import { PageContent } from "@/lib/components/view/PageContent";
 import { useFilterActorBySelector } from "@/lib/helpers/actorSelector";
 import { useAuditedActors } from "@/lib/hooks/useActors";
@@ -58,7 +58,7 @@ const columns = [
   accessor("description", {
     enableColumnFilter: true,
     filterFn: filterFns.includesString,
-    cell: EditableStringCell,
+    cell: StringCell,
     meta: {
       optional: true,
     },
@@ -66,7 +66,7 @@ const columns = [
   accessor("client", {
     enableColumnFilter: true,
     filterFn: getActorSelectorFilterFn("client"),
-    cell: EditableActorSelectorCell,
+    cell: ActorSelectorCell,
   }),
   accessor("_matchingClientActors", {
     enableColumnFilter: true,
@@ -76,7 +76,7 @@ const columns = [
   accessor("server", {
     enableColumnFilter: true,
     filterFn: getActorSelectorFilterFn("server"),
-    cell: EditableActorSelectorCell,
+    cell: ActorSelectorCell,
   }),
   accessor("_matchingServerActors", {
     enableColumnFilter: true,
@@ -86,7 +86,7 @@ const columns = [
   accessor("active", {
     enableColumnFilter: true,
     filterFn: filterFns.equals,
-    cell: EditableActiveCell,
+    cell: ActiveCell,
     meta: {
       options: [false, true],
       stringToValue: (v) => v === "true",
@@ -187,10 +187,10 @@ function useGetSubRows() {
         if (sr.entity) {
           const rule = sr.entity;
           const _matchingClientActors = actors.filter((a) =>
-            filterActorBySelector(rule.client, a),
+            filterActorBySelector(rule.client ?? {}, a),
           );
           const _matchingServerActors = actors.filter((a) =>
-            filterActorBySelector(rule.server, a),
+            filterActorBySelector(rule.server ?? {}, a),
           );
           return {
             ...rule,

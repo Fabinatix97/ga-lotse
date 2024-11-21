@@ -5,7 +5,7 @@
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { CheckCircleOutline, RadioButtonUnchecked } from "@mui/icons-material";
-import { Stack, Typography } from "@mui/joy";
+import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 
 import { OfflinePasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflinePasswordDialog";
@@ -19,9 +19,11 @@ import {
 
 export function OfflineNewPasswordDialog({
   onPassword,
+  onClear,
   waiting,
 }: Readonly<{
   onPassword: (pwd: string) => void;
+  onClear: () => void;
   waiting: boolean;
 }>) {
   function handleSubmit({ password }: { password: string }) {
@@ -35,7 +37,7 @@ export function OfflineNewPasswordDialog({
       title="Offline Passwort"
       description="Bitte erstellen Sie ein Passwort, um die Offline-Funktion zu
             aktivieren. Das Passwort wird genutzt um ihre Daten im Offline-Modus
-            zu verschlüssen."
+            zu verschlüsseln."
     >
       <Formik
         initialValues={{ password: "", passwordConfirmation: "" }}
@@ -65,6 +67,11 @@ export function OfflineNewPasswordDialog({
               <FormButtonBar
                 submitLabel="Passwort erstellen"
                 submitting={isSubmitting}
+                left={
+                  <Button color="danger" variant="plain" onClick={onClear}>
+                    Abbrechen
+                  </Button>
+                }
               />
             </Stack>
           </FormPlus>

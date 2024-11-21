@@ -6,7 +6,9 @@
 package de.eshg.travelmedicine.citizenauth;
 
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.travelmedicine.citizenauth.api.PatchInformationStatementRequest;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
 import de.eshg.travelmedicine.document.medicalhistory.MedicalHistoryService;
@@ -30,7 +32,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(path = CitizenAuthController.BASE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,6 +49,8 @@ public class CitizenAuthController {
   public static final String PROCEDURE_STEP_URL = "/procedure-steps";
   public static final String MEDICAL_HISTORY_URL = "/medical-history";
   public static final String INFORMATION_STATEMENT_URL = "/information-statements";
+
+  private static final long MAX_SIGNATURE_SIZE = 1024L * 1024L;
 
   private final TravelMedicineFeatureToggle featureToggle;
   private final VaccinationConsultationService vaccinationConsultationService;
@@ -167,17 +173,27 @@ public class CitizenAuthController {
         getCitizenUserId(principal), informationStatementId);
   }
 
-  @PatchMapping(INFORMATION_STATEMENT_URL + "/{informationStatementId}")
+  @PatchMapping(
+      path = INFORMATION_STATEMENT_URL + "/{informationStatementId}",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(summary = "Updates information statement content")
   @Transactional()
   public void patchCitizenInformationStatement(
       @AuthenticationPrincipal Jwt principal,
       @PathVariable("informationStatementId") UUID informationStatementId,
-      @RequestBody @Valid DocumentContentDto patchInformationStatementContent) {
+      @RequestPart("patchInformationStatementContent") @Valid
+          PatchInformationStatementRequest patchInformationStatementContent,
+      @RequestPart(name = "signature") MultipartFile signature) {
     featureToggle.assertNewFeatureIsEnabled(
         TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
+    if (signature != null && signature.getSize() > MAX_SIGNATURE_SIZE) {
+      throw new BadRequestException("Size of signature image too large.");
+    }
     informationStatementService.patchInformationStatementForCitizenPortal(
-        getCitizenUserId(principal), informationStatementId, patchInformationStatementContent);
+        getCitizenUserId(principal),
+        informationStatementId,
+        patchInformationStatementContent,
+        signature);
   }
 
   private UUID getCitizenUserId(Jwt principal) {

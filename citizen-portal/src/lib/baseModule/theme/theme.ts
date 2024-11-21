@@ -76,46 +76,27 @@ export const theme = extendTheme({
   },
   typography: {
     h1: {
-      fontSize: "2rem",
-      lineHeight: "1.2",
-      fontWeight: "700",
-      [`@media (min-width:${customBreakpoints.values.md}px)`]: {
-        fontSize: "3rem",
-      },
-    },
-    h2: {
-      fontSize: "1.5rem",
+      fontSize: "1.75rem",
       lineHeight: "1.2",
       fontWeight: "700",
       [`@media (min-width:${customBreakpoints.values.md}px)`]: {
         fontSize: "2.25rem",
       },
     },
+    h2: {
+      fontSize: "1.5rem",
+      lineHeight: "1.2",
+      fontWeight: "700",
+    },
     h3: {
       fontSize: "1.25rem",
       lineHeight: "1.2",
       fontWeight: "700",
-      [`@media (min-width:${customBreakpoints.values.md}px)`]: {
-        fontSize: "1.5rem",
-      },
     },
     h4: {
       fontSize: "1.125rem",
       lineHeight: "1.2",
       fontWeight: "700",
-      [`@media (min-width:${customBreakpoints.values.md}px)`]: {
-        fontSize: "1.25rem",
-      },
-    },
-    "body-lg": {
-      fontSize: "1.125rem",
-      lineHeight: "1.50",
-      fontWeight: "400",
-    },
-    "title-lg": {
-      fontSize: "1.125rem",
-      lineHeight: "1.50",
-      fontWeight: "600",
     },
     "body-md": {
       fontSize: "1rem",

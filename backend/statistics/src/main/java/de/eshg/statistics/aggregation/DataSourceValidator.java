@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.aggregation;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
@@ -18,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -58,9 +58,8 @@ public class DataSourceValidator {
         .toList();
   }
 
-  private void validateBusinessModulesExist(Set<String> businessModuleNames) {
-    businessModuleNames.forEach(
-        businessModuleAggregationHelper::validateBusinessModuleIsRegistered);
+  private void validateBusinessModulesExist(Set<String> businessModules) {
+    businessModules.forEach(businessModuleAggregationHelper::validateBusinessModuleIsRegistered);
   }
 
   private void validateDataSources(
@@ -106,11 +105,13 @@ public class DataSourceValidator {
   }
 
   private Set<String> getRelevantBusinessModules(List<DataSourceDto> dataSources) {
-    return dataSources.stream().map(DataSourceDto::businessModuleName).collect(Collectors.toSet());
+    return dataSources.stream()
+        .map(DataSourceDto::businessModuleName)
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private Set<UUID> getRelevantDataSources(List<DataSourceDto> dataSources) {
-    return dataSources.stream().map(DataSourceDto::id).collect(Collectors.toSet());
+    return dataSources.stream().map(DataSourceDto::id).collect(StreamUtil.toLinkedHashSet());
   }
 
   private void handleErrorResponses(GetAvailableDataSourcesResponse availableDataSources) {
@@ -148,7 +149,7 @@ public class DataSourceValidator {
 
   private boolean compareBusinessModuleNameAndDataSourceId(
       AvailableDataSource availableDataSource, DataSourceDto requestDataSource) {
-    return availableDataSource.businessModule().equals(requestDataSource.businessModuleName())
+    return availableDataSource.businessModuleName().equals(requestDataSource.businessModuleName())
         && availableDataSource.id().equals(requestDataSource.id());
   }
 

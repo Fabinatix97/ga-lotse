@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1730796704184-1">
+    <addColumn tableName="report">
+      <column name="unique_planned" type="int8"/>
+    </addColumn>
+
+    <sql>
+      UPDATE report r
+      SET unique_planned = report_series_id
+      FROM abstract_aggregation_result aar
+      WHERE r.id = aar.id
+        AND aar.state = 'PLANNED';
+    </sql>
+
+    <addUniqueConstraint columnNames="unique_planned" constraintName="report_unique_planned_key" tableName="report"/>
+  </changeSet>
+</databaseChangeLog>

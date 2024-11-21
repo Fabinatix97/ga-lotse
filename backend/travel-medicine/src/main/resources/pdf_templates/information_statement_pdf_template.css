@@ -1,0 +1,198 @@
+/**
+ * Copyright 2024 SCOOP Software GmbH, cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/* styles for A4 page */
+@page {
+  size: A4 portrait;
+  margin: 25mm;
+
+  @bottom-left {
+    content: element(--var-footerRunning);
+    border-top: darkgray solid 1px;
+    vertical-align: top;
+    padding-top: 5px;
+  }
+
+  @bottom-right {
+    content: "Seite " counter(page) " von " counter(pages);
+    font-family: Poppins, serif;
+    font-size: 11px;
+    border-top: darkgray solid 1px;
+    vertical-align: top;
+    padding-top: 5px;
+  }
+}
+
+/* the footer is a running element, which is used in the @bottom-center margin box */
+/* see https://pagedjs.org/documentation/7-generated-content-in-margin-boxes/ */
+footer {
+  position: running(--var-footerRunning);
+  font-size: 9px;
+  font-family: Poppins, serif;
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: auto;
+}
+
+.addressRight {
+  position: absolute;
+  right: 0;
+  top: 70px;
+  font-size: 9px;
+  width: 120px;
+  height: 50px;
+}
+
+.title {
+  font-weight: bold;
+  padding-top: 150px;
+  font-size: 18px;
+  width: auto;
+  height: 40px;
+}
+
+.patientData {
+  margin-top: 40px;
+  border: black solid 1px;
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.patientDataTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.patientDataTable {
+  font-size: 12px;
+  font-weight: 400;
+  border-collapse: collapse;
+}
+
+.patientDataTable td {
+  padding-top: 12px;
+  vertical-align: top;
+}
+
+.patientDataCell {
+  padding-left: 6px;
+}
+
+.element {
+  margin-top: 32px;
+  page-break-inside: avoid;
+}
+
+.firstElement {
+  margin-top: 10px;
+}
+
+.sectionTitle {
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 32px;
+}
+
+.questionText {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.text {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.textMargin {
+  font-size: 12px;
+  font-weight: 400;
+  margin-right: 16px;
+}
+
+.subQuestionText {
+  font-weight: 500;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+.subQuestionAnswer {
+  margin-left: 10px;
+  min-height: 20px;
+  border-bottom: black solid 0.5px;
+}
+
+.square .checkbox {
+  border-radius: 10%;
+}
+
+.checkbox {
+  width: 12px;
+  height: 12px;
+  border: 0.5px solid black;
+  border-radius: 50%;
+  margin-right: 4px;
+  margin-top: 2px;
+}
+
+.checked, .checkedSquare {
+  position: relative;
+}
+
+.checked::before, .checkedSquare::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: black;
+}
+
+.checked::before {
+  border-radius: 50%;
+}
+
+.checkedSquare::before {
+  border-radius: 10%;
+}
+
+.elementTable td {
+  padding-top: 5px;
+  line-height: 18px;
+  vertical-align: top;
+}
+
+.subAnswersTable {
+  margin-left: 10px;
+}
+
+.signature {
+  margin-top: 72px;
+}
+
+.signatureText {
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.signatureLine {
+  width: 50%;
+  border-bottom: 0.5px solid black;
+  vertical-align: bottom;
+}
+
+.gap {
+  padding-left: 16px;
+}
+
+.signatureImage {
+  width: 250px;
+  height: auto;
+}

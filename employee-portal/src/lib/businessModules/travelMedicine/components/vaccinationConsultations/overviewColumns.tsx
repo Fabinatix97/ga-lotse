@@ -35,11 +35,23 @@ function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
     bookingType === ApiAppointmentBookingType.UserDefined ||
     bookingType === ApiAppointmentBookingType.AppointmentBlock
   ) {
-    return <Chip color={"success"}>Gebucht</Chip>;
+    return (
+      <Chip color={"success"} size="md">
+        Gebucht
+      </Chip>
+    );
   } else if (bookingType === ApiAppointmentBookingType.Cancelled) {
-    return <Chip color={"danger"}>Abgesagt</Chip>;
+    return (
+      <Chip color={"danger"} size="md">
+        Abgesagt
+      </Chip>
+    );
   } else {
-    return <Chip color={"warning"}>Noch nicht gebucht</Chip>;
+    return (
+      <Chip color={"warning"} size="md">
+        Noch nicht gebucht
+      </Chip>
+    );
   }
 }
 
@@ -48,6 +60,7 @@ export function appointmentOverviewEntriesColumns() {
     columnHelper.accessor("lastName", {
       header: "Name",
       meta: {
+        width: 150,
         canNavigate: {
           parentRow: true,
         },
@@ -56,6 +69,7 @@ export function appointmentOverviewEntriesColumns() {
     columnHelper.accessor("firstName", {
       header: "Vorname",
       meta: {
+        width: 150,
         canNavigate: {
           parentRow: true,
         },
@@ -65,6 +79,7 @@ export function appointmentOverviewEntriesColumns() {
       header: "Geburtsdatum",
       cell: (props) => formatDate(props.getValue()),
       meta: {
+        width: 120,
         canNavigate: {
           parentRow: true,
         },
@@ -73,6 +88,7 @@ export function appointmentOverviewEntriesColumns() {
     columnHelper.accessor("age", {
       header: "Alter",
       meta: {
+        width: 70,
         canNavigate: {
           parentRow: true,
         },
@@ -82,6 +98,7 @@ export function appointmentOverviewEntriesColumns() {
       header: "Reisebeginn",
       cell: (props) => formatDate(props.getValue()),
       meta: {
+        width: 110,
         canNavigate: {
           parentRow: true,
         },
@@ -91,6 +108,7 @@ export function appointmentOverviewEntriesColumns() {
       header: "Erstellt von",
       cell: (props) => translateCreatedByUserType(props.getValue()),
       meta: {
+        width: 100,
         canNavigate: {
           parentRow: true,
         },
@@ -99,11 +117,12 @@ export function appointmentOverviewEntriesColumns() {
     columnHelper.accessor("status", {
       header: "Status",
       cell: (props) => (
-        <Chip color={statusColors[props.getValue()]}>
+        <Chip color={statusColors[props.getValue()]} size="md">
           {procedureStatusNames[props.getValue()]}
         </Chip>
       ),
       meta: {
+        width: 130,
         canNavigate: {
           parentRow: true,
         },
@@ -113,6 +132,7 @@ export function appointmentOverviewEntriesColumns() {
       header: "Termin",
       cell: (props) => formatDateTime(props.getValue()),
       meta: {
+        width: 140,
         canNavigate: {
           parentRow: true,
         },
@@ -122,6 +142,7 @@ export function appointmentOverviewEntriesColumns() {
       header: "Terminart",
       cell: (props) => translateAppointmentType(props.getValue()),
       meta: {
+        width: 100,
         canNavigate: {
           parentRow: true,
         },
@@ -130,6 +151,12 @@ export function appointmentOverviewEntriesColumns() {
     columnHelper.accessor("appointmentBookingType", {
       header: "Terminstatus",
       cell: (props) => formatBookingType(props.getValue()),
+      meta: {
+        width: 150,
+        canNavigate: {
+          parentRow: true,
+        },
+      },
     }),
   ];
 }

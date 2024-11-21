@@ -41,8 +41,8 @@ public interface AuthenticationTraits {
   default AccessToken login(PermissionRole role) {
     Realm realm =
         switch (role) {
-          case EmployeePermissionRole employeeRole -> Realm.EMPLOYEES;
-          case CitizenPermissionRole citizenRole -> Realm.CITIZENS;
+          case EmployeePermissionRole ignored -> Realm.EMPLOYEES;
+          case CitizenPermissionRole ignored -> Realm.CITIZENS;
         };
     return login(
         new UsernamePassword(

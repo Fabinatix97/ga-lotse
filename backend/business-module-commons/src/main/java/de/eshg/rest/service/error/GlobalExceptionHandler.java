@@ -136,6 +136,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler
+  @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+  void handleException(RateLimitReachedException rateLimitReachedException) {
+    log.error("Rate limit reached.", rateLimitReachedException);
+  }
+
+  @ExceptionHandler
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponse handleConstraintViolation(ConstraintViolationException ex) {
     String affectedFields =

@@ -24,6 +24,7 @@ public record VaccinationDto(
     // fee: not yet available
 
     @Size(max = 200) String batchIdentifier,
+    @Size(max = 200) String defaultBatchIdentifier,
     LocalDate appliedAt,
     @NotNull Instant createdAt,
     @NotNull Instant modifiedAt) {}

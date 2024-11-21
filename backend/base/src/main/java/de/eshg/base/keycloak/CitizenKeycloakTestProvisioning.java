@@ -5,6 +5,7 @@
 
 package de.eshg.base.keycloak;
 
+import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.BPK2_ATTRIBUTE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 
@@ -27,8 +28,10 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     implements AutoCloseable {
   public static final String MUK_TEST_REALM_NAME = "muk-test";
   public static final String BUND_ID_TEST_REALM_NAME = "bund-id-test";
-  public static final String KEY_PROVIDER_TYPE = "org.keycloak.keys.KeyProvider";
-  public static final String KEY_PRIORITY = "100";
+  private static final String KEY_PROVIDER_TYPE = "org.keycloak.keys.KeyProvider";
+  private static final String KEY_PRIORITY = "100";
+  private static final String SAML = "saml";
+  private static final String SAML_ATTRIBUTES = "saml-attributes";
 
   private final CitizenKeycloakClient citizenKeycloakClient;
   private final RealmBoundKeycloakClient mukKeycloakClient;
@@ -69,6 +72,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
           keycloakProperties.bundIdTestRealm(),
           keycloakProperties.citizenRealm().bundIdIdp(),
           bundIdKeycloakClient);
+      createOrUpdateBundIdTestClientScope();
       createOrUpdateSamlClientInIdpTestRealm(
           CitizenKeycloakProvisioning.BUND_ID_IDENTITY_PROVIDER_ALIAS, bundIdKeycloakClient);
       addTestUserToBundIdRealm();
@@ -219,7 +223,7 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     client.setRedirectUris(List.of(brokerEndpoint));
     client.setWebOrigins(List.of("+"));
     client.setFrontchannelLogout(false);
-    client.setDefaultClientScopes(List.of("role_list"));
+    client.setDefaultClientScopes(List.of("role_list", SAML_ATTRIBUTES));
     client.setOptionalClientScopes(List.of());
     Map<String, String> attributes =
         new TreeMap<>(
@@ -404,5 +408,34 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
     public List<KeycloakGroup> groups() {
       return List.of();
     }
+  }
+
+  protected void createOrUpdateBundIdTestClientScope() {
+    ClientScopeRepresentation clientScope = new ClientScopeRepresentation();
+    clientScope.setName(SAML_ATTRIBUTES);
+    clientScope.setDescription("Sets bund-id SAML attributes");
+    clientScope.setProtocol(SAML);
+    clientScope.setAttributes(Map.of("include.in.token.scope", FALSE));
+    clientScope.setProtocolMappers(List.of(getHardcodedBPK2SamlAttributeMapper()));
+
+    bundIdKeycloakClient.createOrUpdateClientScopes(List.of(clientScope));
+  }
+
+  private static ProtocolMapperRepresentation getHardcodedBPK2SamlAttributeMapper() {
+    ProtocolMapperRepresentation realmRolesMapper = new ProtocolMapperRepresentation();
+    realmRolesMapper.setName("Hardcoded bPK2 attribute");
+    realmRolesMapper.setProtocol(SAML);
+    realmRolesMapper.setProtocolMapper("saml-hardcode-attribute-mapper");
+    realmRolesMapper.setConfig(
+        Map.of(
+            "attribute.nameformat",
+            "Basic",
+            "attribute.name",
+            BPK2_ATTRIBUTE,
+            "friendly.name",
+            BPK2_ATTRIBUTE,
+            "attribute.value",
+            "hardcoded-bPK2-value"));
+    return realmRolesMapper;
   }
 }

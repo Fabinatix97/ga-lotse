@@ -5,8 +5,6 @@
 
 package de.eshg.schoolentry.domain.specification;
 
-import static java.util.Comparator.nullsLast;
-
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;

@@ -73,7 +73,9 @@ function IncidentTile({
             </Stack>
           )}
           <Stack>
-            <Typography>{incident.description}</Typography>
+            <Typography whiteSpace="pre-line">
+              {incident.description}
+            </Typography>
           </Stack>
         </Stack>
       </Stack>

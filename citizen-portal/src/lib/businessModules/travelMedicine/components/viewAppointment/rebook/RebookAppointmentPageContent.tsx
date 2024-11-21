@@ -18,7 +18,6 @@ import { useIdContext } from "@/lib/businessModules/travelMedicine/components/sh
 import { RebookAppointment } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointment";
 import { RebookAppointmentSidePanel } from "@/lib/businessModules/travelMedicine/components/viewAppointment/rebook/RebookAppointmentSidePanel";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import {
@@ -26,6 +25,7 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export interface RebookAppointmentFormValues {
   selectedAppointment: string;

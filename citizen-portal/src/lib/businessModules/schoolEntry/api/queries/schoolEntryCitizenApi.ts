@@ -31,12 +31,3 @@ export function getSelfFreeAppointmentsAsCitizenQuery(
     select: (response) => response.freeAppointments.map(mapAppointment),
   });
 }
-
-export function getOpeningHoursQuery(
-  schoolEntryCitizenApi: SchoolEntryCitizenApi,
-) {
-  return queryOptions({
-    queryKey: schoolEntryCitizenApiQueryKey(["getOpeningHours"]),
-    queryFn: () => schoolEntryCitizenApi.getOpeningHours(),
-  });
-}

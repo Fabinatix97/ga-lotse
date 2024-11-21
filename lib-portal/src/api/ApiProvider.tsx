@@ -7,9 +7,13 @@
 
 import { ConfigurationParameters } from "@eshg/employee-portal-api/base";
 import {
+  Mutation,
   MutationCache,
+  Query,
   QueryClient,
   QueryClientProvider,
+  QueryKey,
+  matchQuery,
 } from "@tanstack/react-query";
 import { Suspense, createContext, useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -20,6 +24,29 @@ import { RequiresChildren } from "../types/react";
 
 import { clientOnlyMiddleware } from "./clientOnlyMiddleware";
 import { errorInterceptionMiddleware } from "./errorInterceptionMiddleware";
+
+interface CustomQueryMeta extends Record<string, unknown> {
+  /**
+   * Marks the query as static, disabling automatic invalidation after any mutation.
+   * Note: Only set this property for data which is changed rarely and cannot be changed by user interactions.
+   */
+  static?: true;
+}
+
+interface CustomMutationMeta extends Record<string, unknown> {
+  /**
+   * Relates the mutation to a query, disabling automatic invalidation for the specified query.
+   * Note: The mutation must manually update the query cache on success.
+   */
+  updatesQuery?: QueryKey;
+}
+
+declare module "@tanstack/react-query" {
+  interface Register {
+    queryMeta: CustomQueryMeta;
+    mutationMeta: CustomMutationMeta;
+  }
+}
 
 const isServer = typeof window === "undefined";
 const queryClient = new QueryClient({
@@ -42,13 +69,33 @@ const queryClient = new QueryClient({
     },
   },
   mutationCache: new MutationCache({
-    onSuccess: () => {
+    onSuccess: (_data, _variables, _context, mutation): void => {
       // invalidate active queries after a successful mutation
       // see https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
-      void queryClient.invalidateQueries();
+      void queryClient.invalidateQueries({
+        predicate: (query): boolean =>
+          !(isStaticQuery(query.meta) || matchesUpdatedQuery(query, mutation)),
+      });
     },
   }),
 });
+
+function isStaticQuery(queryMeta: CustomQueryMeta | undefined): boolean {
+  return queryMeta?.static ?? false;
+}
+
+function matchesUpdatedQuery(
+  query: Query<unknown>,
+  mutation: Mutation<unknown, unknown>,
+): boolean {
+  const { updatesQuery } = mutation.meta ?? {};
+
+  if (updatesQuery === undefined) {
+    return false;
+  }
+
+  return matchQuery({ queryKey: updatesQuery }, query);
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ApiConfiguration {}

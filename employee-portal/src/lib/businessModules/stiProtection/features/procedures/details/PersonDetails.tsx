@@ -14,16 +14,29 @@ import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
+
+import { EDIT_PERSONAL_DATA_SEARCH_PARAM } from "./EditPersonalDataSidebar";
 
 export function PersonDetails({
   procedure,
 }: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
+  const [_isOpenEditPersonDetails, setIsOpenEditPersonDetails] = useSearchParam(
+    EDIT_PERSONAL_DATA_SEARCH_PARAM,
+    "boolean",
+  );
   const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
+
   return (
     <Sheet>
       <DetailsSection
         title="Person"
-        buttons={onlyIfOpen(<EditButton aria-label="Person bearbeiten" />)}
+        buttons={onlyIfOpen(
+          <EditButton
+            aria-label="Person bearbeiten"
+            onClick={() => setIsOpenEditPersonDetails(true)}
+          />,
+        )}
       >
         <Stack
           direction={{ md: "row" }}

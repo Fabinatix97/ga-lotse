@@ -4,6 +4,7 @@
  */
 
 import {
+  AnalysisApi,
   Configuration,
   DataExportApi,
   DataSourceApi,
@@ -13,7 +14,6 @@ import {
   GeoShapeApi,
   ReportApi,
   ReportSeriesApi,
-  StatisticApi,
   StatisticsFeatureTogglesApi,
 } from "@eshg/employee-portal-api/statistics";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
@@ -30,7 +30,7 @@ export function useEvaluationTemplateApi() {
 
 export function useStatisticApi() {
   const configuration = useConfiguration();
-  return new StatisticApi(configuration);
+  return new EvaluationApi(configuration);
 }
 
 export function useDataSourceApi() {
@@ -40,7 +40,7 @@ export function useDataSourceApi() {
 
 export function useEvaluationApi() {
   const configuration = useConfiguration();
-  return new EvaluationApi(configuration);
+  return new AnalysisApi(configuration);
 }
 
 export function useDataExportApi() {

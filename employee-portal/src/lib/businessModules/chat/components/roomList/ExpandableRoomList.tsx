@@ -9,10 +9,10 @@ import { useState } from "react";
 
 import { RoomListItem } from "@/lib/businessModules/chat/components/roomList/RoomListItem";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
-import { RoomWithCommunicationType } from "@/lib/businessModules/chat/shared/types";
+import { RoomData } from "@/lib/businessModules/chat/shared/types";
 
 interface ExpandableRoomList {
-  roomList: RoomWithCommunicationType[];
+  roomList: RoomData[];
   setChatPanelView: (viewType: ChatPanelView) => void;
   buttonLabel: string;
   selectedRoomId: string;

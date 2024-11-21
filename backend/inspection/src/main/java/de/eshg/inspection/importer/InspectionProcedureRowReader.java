@@ -26,7 +26,6 @@ import static de.eshg.inspection.importer.InspectionListColumn.INSPECTION_RESULT
 import static de.eshg.inspection.importer.InspectionListColumn.OBJECTTYPE;
 import static de.eshg.inspection.importer.InspectionListColumn.PROCEDURE_ID;
 import static de.eshg.inspection.importer.InspectionListColumn.STATUS;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
@@ -44,6 +43,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -108,8 +108,8 @@ class InspectionProcedureRowReader
 
     return new FacilityDetailsDto(
         name,
-        isBlank(email) ? List.of() : List.of(email),
-        isBlank(phonenumber) ? List.of() : List.of(phonenumber),
+        StringUtils.isBlank(email) ? List.of() : List.of(email),
+        StringUtils.isBlank(phonenumber) ? List.of() : List.of(phonenumber),
         contactPerson == null ? List.of() : List.of(contactPerson),
         contactAddress,
         null);
@@ -125,13 +125,22 @@ class InspectionProcedureRowReader
     String email = cellAsString(col, CONTACT_EMAIL, true, false, errorHandler);
     String phonenumber = cellAsString(col, CONTACT_PHONENUMBER, true, false, errorHandler);
 
+    // If every contact field is empty then don't create a contact
     if (salutation == null
-        && isBlank(title)
-        && isBlank(role)
-        && isBlank(firstName)
-        && isBlank(lastName)
-        && isBlank(email)
-        && isBlank(phonenumber)) {
+        && StringUtils.isBlank(title)
+        && StringUtils.isBlank(role)
+        && StringUtils.isBlank(firstName)
+        && StringUtils.isBlank(lastName)
+        && StringUtils.isBlank(email)
+        && StringUtils.isBlank(phonenumber)) {
+      return null;
+    }
+
+    // Some fields are filled. Ensure that lastName is given.
+    if (StringUtils.isBlank(lastName)) {
+      errorHandler.handleError(
+          col.get(CONTACT_LASTNAME),
+          "Kontakt Name muss festgelegt werden, wenn andere Kontakt-Felder angegeben sind.");
       return null;
     }
 

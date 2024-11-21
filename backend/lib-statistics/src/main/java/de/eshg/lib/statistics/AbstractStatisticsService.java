@@ -98,38 +98,52 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
         getRequestedAttributeInfos(
             getSpecificDataRequest.dataSourceId(), getSpecificDataRequest.attributeCodes());
 
-    DataTableHeader dataTableHeader;
-    List<DataRow> dataRows;
-    long totalNumberOfRows;
     if (requestedAttributeInfos.isEmpty()) {
-      dataTableHeader = new DataTableHeader(Collections.emptyList());
-      dataRows = Collections.emptyList();
-      totalNumberOfRows = 0;
+      return getEmptyResponse(
+          dataSourceName,
+          getSpecificDataRequest.timeRangeStart(),
+          getSpecificDataRequest.timeRangeEnd());
     } else {
-      Page<P> procedurePage = retrieveProcedures(getSpecificDataRequest);
-
-      dataTableHeader =
+      DataTableHeader dataTableHeader =
           new DataTableHeader(requestedAttributeInfos.stream().map(this::mapToAttribute).toList());
-      dataRows =
-          procedurePage
-              .get()
-              .map(
-                  procedure ->
-                      createDataRow(
-                          procedure,
-                          requestedAttributeInfos,
-                          getSpecificDataRequest.dataSourceId()))
-              .toList();
-      totalNumberOfRows = procedurePage.getTotalElements();
-    }
 
+      if (isProcedureBasedDataSource(getSpecificDataRequest.dataSourceId())) {
+        Page<P> procedurePage = retrieveProcedures(getSpecificDataRequest);
+        List<DataRow> dataRows =
+            procedurePage
+                .get()
+                .map(
+                    procedure ->
+                        createDataRow(
+                            procedure,
+                            requestedAttributeInfos,
+                            getSpecificDataRequest.dataSourceId()))
+                .toList();
+        long totalNumberOfRows = procedurePage.getTotalElements();
+
+        return new GetSpecificDataResponse(
+            dataSourceName,
+            getSpecificDataRequest.timeRangeStart(),
+            getSpecificDataRequest.timeRangeEnd(),
+            dataTableHeader,
+            dataRows,
+            totalNumberOfRows);
+      } else {
+        return getSpecificDataResponseNotProcedureBased(
+            dataSourceName, getSpecificDataRequest, requestedAttributeInfos, dataTableHeader);
+      }
+    }
+  }
+
+  private static GetSpecificDataResponse getEmptyResponse(
+      String dataSourceName, Instant timeRangeStart, Instant timeRangeEnd) {
     return new GetSpecificDataResponse(
         dataSourceName,
-        getSpecificDataRequest.timeRangeStart(),
-        getSpecificDataRequest.timeRangeEnd(),
-        dataTableHeader,
-        dataRows,
-        totalNumberOfRows);
+        timeRangeStart,
+        timeRangeEnd,
+        new DataTableHeader(Collections.emptyList()),
+        Collections.emptyList(),
+        0);
   }
 
   private List<AttributeInfo> getRequestedAttributeInfos(
@@ -144,6 +158,11 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
                 .findFirst()
                 .ifPresent(relevantAttributes::add));
     return relevantAttributes;
+  }
+
+  @SuppressWarnings("java:S1172")
+  protected boolean isProcedureBasedDataSource(UUID dataSourceId) {
+    return true;
   }
 
   private Page<P> retrieveProcedures(GetSpecificDataRequest getSpecificDataRequest) {
@@ -174,4 +193,16 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
 
   protected abstract Object getSpecificValue(
       P procedure, AttributeInfo attributeInfo, UUID dataSourceId);
+
+  @SuppressWarnings("java:S1172")
+  protected GetSpecificDataResponse getSpecificDataResponseNotProcedureBased(
+      String dataSourceName,
+      GetSpecificDataRequest getSpecificDataRequest,
+      List<AttributeInfo> requestedAttributeInfos,
+      DataTableHeader dataTableHeader) {
+    return getEmptyResponse(
+        dataSourceName,
+        getSpecificDataRequest.timeRangeStart(),
+        getSpecificDataRequest.timeRangeEnd());
+  }
 }

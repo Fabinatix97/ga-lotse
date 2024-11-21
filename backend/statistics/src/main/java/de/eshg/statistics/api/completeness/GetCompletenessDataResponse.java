@@ -5,11 +5,11 @@
 
 package de.eshg.statistics.api.completeness;
 
-import de.eshg.statistics.api.StatisticInfo;
+import de.eshg.statistics.api.evaluation.EvaluationInfo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record GetCompletenessDataResponse(
-    @NotNull @Valid StatisticInfo statisticInfo,
+    @NotNull @Valid EvaluationInfo evaluationInfo,
     @NotNull @Valid List<CompletenessOfAttribute> completenessOfAttributes) {}

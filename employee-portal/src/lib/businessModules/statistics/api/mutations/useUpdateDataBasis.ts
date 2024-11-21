@@ -29,8 +29,8 @@ export function useUpdateDataBasis({
       statisticId: string;
       timeSpan: TimeSpan;
     }) =>
-      statisticApi.updateStatistic(statisticId, {
-        type: "UpdateStatisticTimeRangeRequest",
+      statisticApi.updateEvaluation(statisticId, {
+        type: "UpdateEvaluationTimeRangeRequest",
         timeRange: {
           start: parseISO(timeSpan.start),
           end: mapTimeRangeEndFrontendToApi(parseISO(timeSpan.end)),

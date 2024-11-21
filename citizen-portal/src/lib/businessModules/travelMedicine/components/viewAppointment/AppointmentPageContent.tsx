@@ -7,11 +7,11 @@ import { useGetProcedureStepAppointmentDetails } from "@/lib/businessModules/tra
 import { useIdContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/IdContext";
 import { AppointmentDetails } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetails";
 import { AppointmentDetailsSidePanel } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsSidePanel";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import {
   OneColumnGrid,
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function AppointmentPageContent() {
   const isMobile = useIsMobile();

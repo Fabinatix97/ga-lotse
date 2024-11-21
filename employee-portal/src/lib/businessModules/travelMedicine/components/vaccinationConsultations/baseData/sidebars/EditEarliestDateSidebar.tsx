@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiServicePlanEntry,
+  ApiServicePlanGroup,
   PatchEarliestDateRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ export function useEditEarliestDateSidebar(): UseSidebarWithFormRefResult<EditEa
 
 interface EditEarliestDateSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
-  service: ApiServicePlanEntry;
+  procedureStep: ApiServicePlanGroup;
 }
 
 function EditEarliestDateSidebar(
@@ -39,12 +39,14 @@ function EditEarliestDateSidebar(
   const patchEarliestDate = usePatchEarliestDate();
 
   const [{ data: procedureStepServices }] = useSuspenseQueries({
-    queries: [useGetProcedureStepServicesQuery(props.service.procedureStepId!)],
+    queries: [
+      useGetProcedureStepServicesQuery(props.procedureStep.procedureStepId!),
+    ],
   });
 
   function createPatchEarliestDateRequest(values: EditEarliestDateFormValues) {
     const request: PatchEarliestDateRequest = {
-      id: props.service.procedureStepId ?? "",
+      id: props.procedureStep.procedureStepId ?? "",
       apiPatchEarliestDateRequest: {
         earliestDate: new Date(values.earliestDate),
       },
@@ -65,7 +67,7 @@ function EditEarliestDateSidebar(
   }
 
   function mapProcedureStepToEditEarliestDateValues(
-    procedureStep: ApiServicePlanEntry,
+    procedureStep: ApiServicePlanGroup,
   ) {
     return {
       earliestDate: procedureStep.earliestDate
@@ -76,7 +78,9 @@ function EditEarliestDateSidebar(
 
   return (
     <EditEarliestDateForm
-      initialValues={mapProcedureStepToEditEarliestDateValues(props.service)}
+      initialValues={mapProcedureStepToEditEarliestDateValues(
+        props.procedureStep,
+      )}
       procedureStepServices={procedureStepServices ?? []}
       formRef={props.formRef}
       onCancel={props.onClose}

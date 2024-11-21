@@ -19,6 +19,7 @@ import {
   ButtonProps,
   IconButton,
   Typography,
+  TypographyProps,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
@@ -100,6 +101,7 @@ export interface AlertProps {
   action?: AlertAction;
   sx?: SxProps;
   onClose?: () => void;
+  messageComponent?: TypographyProps["component"];
 }
 
 export function Alert({
@@ -110,6 +112,7 @@ export function Alert({
   action,
   sx,
   onClose,
+  messageComponent,
 }: AlertProps) {
   return (
     <AlertJoy
@@ -148,6 +151,9 @@ export function Alert({
         )}
         {isDefined(message) && (
           <Typography
+            {...(isDefined(messageComponent)
+              ? { component: messageComponent }
+              : {})}
             color={color}
             variant={variant}
             level="body-md"

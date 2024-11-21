@@ -27,6 +27,11 @@ const defaultSubItems: SideNavigationSubItem[] = [
     accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
   },
   {
+    name: "Wartezimmer",
+    href: routes.waitingRoom.index,
+    accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
+  },
+  {
     name: "Terminblöcke",
     href: routes.appointmentBlockGroups.index,
     accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),

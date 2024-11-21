@@ -147,6 +147,9 @@ export function AddServiceAppointmentForm(
                   }
                 />
               </Stack>
+              <Typography level="body-md" sx={{ fontWeight: "bold", mt: 2 }}>
+                Termin
+              </Typography>
               <AppointmentRadioGroup
                 type={props.initialValues.appointmentType}
                 isCitizenFollowUp={props.isCitizenFollowUp}

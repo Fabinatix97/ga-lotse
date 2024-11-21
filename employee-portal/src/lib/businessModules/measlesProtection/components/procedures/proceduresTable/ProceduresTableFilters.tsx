@@ -12,6 +12,7 @@ import {
   ApiRoleStatus,
   ApiSubmissionResult,
 } from "@eshg/employee-portal-api/measlesProtection";
+import { ifDefined } from "@eshg/lib-portal/helpers/ifDefined";
 import { useMemo } from "react";
 
 import {
@@ -145,15 +146,6 @@ function toSet<T extends string>(
   return new Set(typedList);
 }
 
-function ifDefined<T, K>(
-  a: T,
-  predicate: (t: NonNullable<T>) => K,
-): K | undefined {
-  if (a == null) {
-    return;
-  }
-  return predicate(a);
-}
 type ActualProcedureFilterDefinition = (typeof filterDefinitions)[number];
 type SpecificFilterValue<Key> = FilterValue &
   Pick<ActualProcedureFilterDefinition & { key: Key }, "type" | "key">;

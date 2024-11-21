@@ -8,9 +8,14 @@ package de.eshg.base.keycloak;
 import static de.eshg.base.keycloak.KeycloakProvisioning.configureHttpSecurityHeaders;
 import static de.eshg.base.keycloak.KeycloakProvisioning.setAttribute;
 import static de.eshg.base.keycloak.MasterKeycloakProvisioning.BEAN_NAME;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ACCOUNT_CLIENT_ID;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ADMIN_CLI_CLIENT_ID;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.BROKER_CLIENT_ID;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.assertResponseIs204NoContent;
 
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.PostConstruct;
+import jakarta.ws.rs.core.Response;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserProfileResource;
 import org.keycloak.admin.client.resource.UserResource;
@@ -30,13 +36,14 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 @Component(BEAN_NAME)
-@DependsOn(InitialKeycloakProvisioning.BEAN_NAME)
+@DependsOn(BootstrapKeycloakProvisioning.BEAN_NAME)
 public class MasterKeycloakProvisioning implements AutoCloseable {
   public static final String BEAN_NAME = "masterKeycloakProvisioning";
 
   private static final Logger log = LoggerFactory.getLogger(MasterKeycloakProvisioning.class);
   private final KeycloakProperties keycloakProperties;
-  private RealmBoundKeycloakClient keycloakClient;
+  private final BootstrapKeycloakProvisioning bootstrapKeycloakProvisioning;
+  private final RealmBoundKeycloakClient keycloakClient;
 
   private static final String CUSTOM_MASTER_BROWSER_FLOW_ALIAS = "keycloak admin login flow";
   private static final String PASSWORD_POLICY =
@@ -50,7 +57,9 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
           "specialChars(1)",
           "maxAuthAge(0)");
 
-  public MasterKeycloakProvisioning(KeycloakProperties properties) {
+  public MasterKeycloakProvisioning(
+      BootstrapKeycloakProvisioning bootstrapKeycloakProvisioning, KeycloakProperties properties) {
+    this.bootstrapKeycloakProvisioning = bootstrapKeycloakProvisioning;
     this.keycloakClient = new RealmBoundKeycloakClient(properties, "master");
     this.keycloakProperties = properties;
   }
@@ -61,16 +70,25 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
 
   @PostConstruct
   void provisionMasterRealm() {
+    this.bootstrapKeycloakProvisioning.registerClient(this.keycloakClient);
+    refreshClientAccessToken();
+
     configureRealm();
     refreshClientAccessToken();
+
     configureRequiredActions();
     configureLoginFlow();
     configureDefaultRealmRoles();
     configureUserProfile();
+    configureAdminCliClient();
+    disableUnusedClients();
 
     if (this.keycloakProperties.setupAdmin().enabled()) {
       initializeSetupAdmin(
           keycloakProperties.setupAdmin().username(), keycloakProperties.setupAdmin().email());
+    }
+    if (!this.keycloakProperties.bootstrapAdmin().enabled()) {
+      removeTemporaryAdminUsers();
     }
   }
 
@@ -174,6 +192,56 @@ public class MasterKeycloakProvisioning implements AutoCloseable {
         });
     builder.build(this.keycloakClient);
     keycloakClient.bindBrowserFlow(CUSTOM_MASTER_BROWSER_FLOW_ALIAS);
+  }
+
+  private void configureAdminCliClient() {
+    ClientResource adminCli =
+        this.keycloakClient
+            .getClientByClientId(ADMIN_CLI_CLIENT_ID)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Could not find client '%s' in master realm"
+                            .formatted(ADMIN_CLI_CLIENT_ID)));
+    ClientRepresentation representation = adminCli.toRepresentation();
+    representation.setEnabled(this.keycloakProperties.bootstrapAdmin().enabled());
+    adminCli.update(representation);
+  }
+
+  private void disableUnusedClients() {
+    this.keycloakClient.disableClients(Set.of(BROKER_CLIENT_ID));
+
+    // Account client has to be enabled to access the account management console,
+    // but the standard flow should be disabled.
+    this.keycloakClient
+        .getClientByClientId(ACCOUNT_CLIENT_ID)
+        .ifPresent(
+            account -> {
+              ClientRepresentation representation = account.toRepresentation();
+              if (representation.isStandardFlowEnabled() == Boolean.TRUE) {
+                log.info("Disabling standard flow on '{}' client", ACCOUNT_CLIENT_ID);
+              }
+              representation.setStandardFlowEnabled(false);
+              account.update(representation);
+            });
+  }
+
+  private void removeTemporaryAdminUsers() {
+    List<UserRepresentation> temporaryAdmins = this.keycloakClient.getUsersMarkedAsTemporaryAdmin();
+    for (UserRepresentation temporaryAdmin : temporaryAdmins) {
+      List<String> attributeValues = temporaryAdmin.getAttributes().get("is_temporary_admin");
+      if (attributeValues == null || !attributeValues.contains("true")) {
+        throw new IllegalStateException(
+            "Found unexpected user in attribute query for temporary admin with username '%s'"
+                .formatted(temporaryAdmin.getUsername()));
+      }
+
+      log.info("Deleting temporary admin with username '{}'", temporaryAdmin.getUsername());
+      try (Response response =
+          this.keycloakClient.getRealm().users().delete(temporaryAdmin.getId())) {
+        assertResponseIs204NoContent(response);
+      }
+    }
   }
 
   @VisibleForTesting

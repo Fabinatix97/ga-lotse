@@ -9,7 +9,6 @@ import { IconButton, Stack, Typography } from "@mui/joy";
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { RoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
-import { getDepartmentNameFromUserId } from "@/lib/businessModules/chat/shared/utils";
 
 interface InfoPanelHeaderProps extends Partial<RoomInfo> {
   userId?: string;
@@ -65,17 +64,9 @@ export function InfoPanelHeader({
             size="lg"
             userId={currentUserId}
           />
-          <Stack sx={{ flex: 1, overflow: "hidden" }}>
-            <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
-              <Typography noWrap level="title-md" sx={{ minWidth: "5ch" }}>
-                {name}
-              </Typography>
-            </Stack>
-
-            <Typography noWrap sx={{ minWidth: "5ch" }}>
-              {getDepartmentNameFromUserId(currentUserId)?.username}
-            </Typography>
-          </Stack>
+          <Typography noWrap level="title-md" sx={{ minWidth: "5ch" }}>
+            {name}
+          </Typography>
         </Stack>
         <IconButton
           variant="outlined"

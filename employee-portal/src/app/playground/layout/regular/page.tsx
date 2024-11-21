@@ -28,6 +28,11 @@ const columnHelper = createColumnHelper<TestData>();
 const columns = [
   columnHelper.accessor("name", {
     header: "Name",
+    meta: {
+      canNavigate: {
+        parentRow: true,
+      },
+    },
   }),
 ];
 
@@ -106,7 +111,16 @@ export default function PlaygroundMainContentLayoutPage() {
           }
         >
           <TableSheet>
-            <DataTable data={data} columns={columns} />
+            <DataTable
+              data={data}
+              columns={columns}
+              rowNavigation={{
+                onClick: (row) => {
+                  alert(`Row with name '${row.original.name}' clicked`);
+                },
+                focusColumnAccessorKey: "name",
+              }}
+            />
           </TableSheet>
         </TablePage>
       </MainContentLayout>

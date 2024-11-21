@@ -9,6 +9,110 @@ info:
 servers:
 - url: http://localhost:8087
 paths:
+  /central-repository/evaluation-template:
+    get:
+      operationId: getEvaluationTemplatesFromRepository
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEvaluationTemplatesFromRepositoryResponse"
+          description: Get meta data of uploaded evaluation templates
+      summary: Meta data of uploaded evaluation templates
+      tags:
+      - StatisticsCentralRepository
+    post:
+      operationId: uploadEvaluationTemplateToRepository
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddEvaluationTemplateToRepositoryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationTemplateFromRepository"
+          description: Returns the information about the uploaded evaluation template
+      summary: Upload an evaluation template to the central repository
+      tags:
+      - StatisticsCentralRepository
+  /central-repository/evaluation-template/{id}/{version}:
+    delete:
+      operationId: deleteEvaluationTemplateFromRepository
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Returned when the evaluation template was deleted
+      summary: Delete an evaluation template from the central repository
+      tags:
+      - StatisticsCentralRepository
+    get:
+      operationId: getEvaluationTemplateFromRepository
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationTemplateDetailsFromRepository"
+          description: Get information about an uploaded evaluation template
+      summary: Information about an uploaded evaluation template
+      tags:
+      - StatisticsCentralRepository
+    post:
+      operationId: downloadEvaluationTemplateFromRepository
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The id of the locally stored evaluation template
+      summary: Download an evaluation template from the central repository
+      tags:
+      - StatisticsCentralRepository
   /data-export/diagram/{diagramId}:
     get:
       operationId: exportData
@@ -40,20 +144,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetAvailableDataSourcesResponse"
           description: The aggregated available data sources
-      summary: Get statistics data sources
+      summary: Get available data sources
       tags:
       - DataSource
-  /evaluation-template:
-    get:
-      operationId: getEvaluationTemplates
+  /evaluation:
+    post:
+      operationId: addEvaluation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/AddEvaluationWithDataSourcesRequest"
+              - $ref: "#/components/schemas/AddEvaluationWithTemplateRequest"
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetAllEvaluationTemplatesResponse"
-          description: All evaluation templates
-      summary: Get all evaluation templates
+                type: string
+                format: uuid
+          description: The UUID of the evaluation
+      summary: Add evaluation
+      tags:
+      - Evaluation
+  /evaluation-template:
+    get:
+      operationId: getAllMinimalEvaluationTemplateInfos
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAllMinimalEvaluationTemplateInfosResponse"
+          description: Minimal info to all evaluation templates
+      summary: Get the minimal info of all evaluation templates
       tags:
       - EvaluationTemplate
     post:
@@ -76,12 +202,12 @@ paths:
       summary: Add an evaluation template
       tags:
       - EvaluationTemplate
-  /evaluation-template/expected-template/{statisticId}:
+  /evaluation-template/expected-template/{evaluationId}:
     get:
       operationId: getTemplateInformation
       parameters:
       - in: path
-        name: statisticId
+        name: evaluationId
         required: true
         schema:
           type: string
@@ -92,7 +218,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExpectedEvaluationTemplate"
-          description: The information for a template based on this statistic
+          description: The information for a template based on this evaluation
       summary: Get the information for the expected template
       tags:
       - EvaluationTemplate
@@ -175,6 +301,447 @@ paths:
       summary: Change name and description of an evaluation template
       tags:
       - EvaluationTemplate
+  /evaluation/analysis:
+    post:
+      operationId: addAnalysis
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddAnalysisRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Analysis"
+          description: The added analysis
+      summary: Add an analysis
+      tags:
+      - Analysis
+  /evaluation/analysis/diagram/{diagramId}:
+    delete:
+      operationId: deleteDiagram
+      parameters:
+      - in: path
+        name: diagramId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the diagram is deleted
+      summary: Delete a diagram
+      tags:
+      - Analysis
+    patch:
+      operationId: updateDiagram
+      parameters:
+      - in: path
+        name: diagramId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDiagramRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Diagram"
+          description: The patched diagram
+      summary: Change title and description of a diagram
+      tags:
+      - Analysis
+  /evaluation/analysis/{analysisId}:
+    delete:
+      operationId: deleteAnalysis
+      parameters:
+      - in: path
+        name: analysisId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the analysis is deleted
+      summary: Delete an analysis
+      tags:
+      - Analysis
+    get:
+      operationId: getAnalysis
+      parameters:
+      - in: path
+        name: analysisId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisWithDiagrams"
+          description: The requested analysis
+      summary: Get an analysis by id
+      tags:
+      - Analysis
+    patch:
+      operationId: updateAnalysis
+      parameters:
+      - in: path
+        name: analysisId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAnalysisRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Analysis"
+          description: The patched analysis
+      summary: Change the name of an analysis
+      tags:
+      - Analysis
+    post:
+      operationId: addDiagram
+      parameters:
+      - in: path
+        name: analysisId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddDiagramRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The id of the diagram
+      summary: Add a diagram to the analysis
+      tags:
+      - Analysis
+  /evaluation/clone:
+    post:
+      operationId: cloneEvaluation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloneEvaluationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: The UUID of the cloned evaluation
+      summary: Clone an evaluation
+      tags:
+      - Evaluation
+  /evaluation/completeness/{evaluationId}:
+    get:
+      operationId: getCompletenessInformation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCompletenessDataResponse"
+          description: Completeness of an evaluation
+      summary: Get information about the completeness of the evaluation data
+      tags:
+      - Evaluation
+  /evaluation/overview:
+    post:
+      operationId: getEvaluations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetEvaluationsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEvaluationsResponse"
+          description: All evaluations
+      summary: Get all evaluations
+      tags:
+      - Evaluation
+  /evaluation/report-series:
+    post:
+      operationId: addReportSeries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/AddAutoReportSeriesRequest"
+              - $ref: "#/components/schemas/AddManualReportSeriesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportSeries"
+          description: The added report series
+      summary: Add a report series
+      tags:
+      - ReportSeries
+  /evaluation/report-series/deactivate/{reportSeriesId}:
+    patch:
+      operationId: deactivateReportSeries
+      parameters:
+      - in: path
+        name: reportSeriesId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the report series is deactivated
+      summary: Deactivate a report series
+      tags:
+      - ReportSeries
+  /evaluation/report-series/overview:
+    post:
+      operationId: getReportOverview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetReportsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReportsResponse"
+          description: Report overview page
+      summary: Get report series entries for the overview page
+      tags:
+      - ReportSeries
+  /evaluation/report-series/{reportSeriesId}:
+    delete:
+      operationId: deleteReportSeries
+      parameters:
+      - in: path
+        name: reportSeriesId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the report series is deleted
+      summary: Delete a report series with the reports
+      tags:
+      - ReportSeries
+    patch:
+      operationId: updateReportSeries
+      parameters:
+      - in: path
+        name: reportSeriesId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReportSeriesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportSeries"
+          description: The patched report series
+      summary: Change title and description of a report series
+      tags:
+      - ReportSeries
+  /evaluation/report/{reportId}:
+    delete:
+      operationId: deleteReport
+      parameters:
+      - in: path
+        name: reportId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the report is deleted
+      summary: Delete a report
+      tags:
+      - Report
+    get:
+      operationId: getReportDetailPage
+      parameters:
+      - in: path
+        name: reportId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReportDetailPageResponse"
+          description: The information for the detail page
+      summary: Get the information for the detail page
+      tags:
+      - Report
+  /evaluation/retrieve-data/{evaluationId}:
+    post:
+      operationId: getEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetEvaluationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEvaluationResponse"
+          description: Evaluation with data
+      summary: Get data from one evaluation
+      tags:
+      - Evaluation
+  /evaluation/{evaluationId}:
+    delete:
+      operationId: deleteEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Returned when the evaluation is deleted
+      summary: Delete an evaluation
+      tags:
+      - Evaluation
+    get:
+      operationId: getDetailPageInformation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDetailPageInformationResponse"
+          description: The information for the detail page
+      summary: Get the information for the detail page
+      tags:
+      - Evaluation
+    patch:
+      operationId: updateEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/UpdateEvaluationNameRequest"
+              - $ref: "#/components/schemas/UpdateEvaluationTimeRangeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update evaluation
+      tags:
+      - Evaluation
+  /evaluation/{evaluationId}/report-series:
+    get:
+      operationId: getReportSeriesEntriesOfEvaluation
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReportSeriesEntriesOfEvaluationResponse"
+          description: Report series entries for the evaluation
+      summary: Get report series entries for the evaluation
+      tags:
+      - Evaluation
   /feature-toggles:
     get:
       operationId: getFeatureToggles
@@ -207,12 +774,12 @@ paths:
       summary: Add filter template
       tags:
       - FilterTemplate
-  /filter-template/statistic/{statisticId}:
+  /filter-template/evaluation/{evaluationId}:
     get:
-      operationId: findFilterTemplatesForStatistic
+      operationId: findFilterTemplatesForEvaluation
       parameters:
       - in: path
-        name: statisticId
+        name: evaluationId
         required: true
         schema:
           type: string
@@ -222,9 +789,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetFilterTemplatesForStatisticResponse"
-          description: Fitting filter templates for a statistic
-      summary: Get filter templates that can be used on the statistic
+                $ref: "#/components/schemas/GetFilterTemplatesForEvaluationResponse"
+          description: Fitting filter templates for an evaluation
+      summary: Get filter templates that can be used on the evaluation
       tags:
       - FilterTemplate
   /filter-template/{filterTemplateId}:
@@ -398,469 +965,6 @@ paths:
       summary: Change the geo shape with the id
       tags:
       - GeoShape
-  /statistic:
-    post:
-      operationId: addStatistic
-      requestBody:
-        content:
-          application/json:
-            schema:
-              oneOf:
-              - $ref: "#/components/schemas/AddStatisticWithDataSourcesRequest"
-              - $ref: "#/components/schemas/AddStatisticWithTemplateRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uuid
-          description: The UUID of the statistic
-      summary: Add statistic
-      tags:
-      - Statistic
-  /statistic/clone:
-    post:
-      operationId: cloneStatistic
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CloneStatisticRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uuid
-          description: The UUID of the cloned statistic
-      summary: Clone a statistic
-      tags:
-      - Statistic
-  /statistic/completeness/{statisticId}:
-    get:
-      operationId: getCompletenessInformation
-      parameters:
-      - in: path
-        name: statisticId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetCompletenessDataResponse"
-          description: Completeness of a statistic
-      summary: Get information about the completeness of the statistic data
-      tags:
-      - Statistic
-  /statistic/evaluation:
-    post:
-      operationId: addEvaluation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddEvaluationRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Evaluation"
-          description: The added evaluation
-      summary: Add an evaluation
-      tags:
-      - Evaluation
-  /statistic/evaluation/diagram/{diagramId}:
-    delete:
-      operationId: deleteDiagram
-      parameters:
-      - in: path
-        name: diagramId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the diagram is deleted
-      summary: Delete a diagram
-      tags:
-      - Evaluation
-    patch:
-      operationId: updateDiagram
-      parameters:
-      - in: path
-        name: diagramId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateDiagramRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Diagram"
-          description: The patched diagram
-      summary: Change title and description of a diagram
-      tags:
-      - Evaluation
-  /statistic/evaluation/{evaluationId}:
-    delete:
-      operationId: deleteEvaluation
-      parameters:
-      - in: path
-        name: evaluationId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the evaluation is deleted
-      summary: Delete an evaluation
-      tags:
-      - Evaluation
-    get:
-      operationId: getEvaluation
-      parameters:
-      - in: path
-        name: evaluationId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/EvaluationWithDiagrams"
-          description: The requested evaluation
-      summary: Get an evaluation by id
-      tags:
-      - Evaluation
-    patch:
-      operationId: updateEvaluation
-      parameters:
-      - in: path
-        name: evaluationId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateEvaluationRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Evaluation"
-          description: The patched evaluation
-      summary: Change the name of an evaluation
-      tags:
-      - Evaluation
-    post:
-      operationId: addDiagram
-      parameters:
-      - in: path
-        name: evaluationId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddDiagramRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uuid
-          description: The id of the diagram
-      summary: Add a diagram to the evaluation
-      tags:
-      - Evaluation
-  /statistic/overview:
-    post:
-      operationId: getStatistics
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GetStatisticsRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetStatisticsResponse"
-          description: All statistics
-      summary: Get all statistics
-      tags:
-      - Statistic
-  /statistic/report-series:
-    post:
-      operationId: addReportSeries
-      requestBody:
-        content:
-          application/json:
-            schema:
-              oneOf:
-              - $ref: "#/components/schemas/AddAutoReportSeriesRequest"
-              - $ref: "#/components/schemas/AddManualReportSeriesRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReportSeries"
-          description: The added report series
-      summary: Add a report series
-      tags:
-      - ReportSeries
-  /statistic/report-series/deactivate/{reportSeriesId}:
-    patch:
-      operationId: deactivateReportSeries
-      parameters:
-      - in: path
-        name: reportSeriesId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the report series is deactivated
-      summary: Deactivate a report series
-      tags:
-      - ReportSeries
-  /statistic/report-series/overview:
-    post:
-      operationId: getReportOverview
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GetReportsRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetReportsResponse"
-          description: Report overview page
-      summary: Get report series entries for the overview page
-      tags:
-      - ReportSeries
-  /statistic/report-series/{reportSeriesId}:
-    delete:
-      operationId: deleteReportSeries
-      parameters:
-      - in: path
-        name: reportSeriesId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the report series is deleted
-      summary: Delete a report series with the reports
-      tags:
-      - ReportSeries
-    patch:
-      operationId: updateReportSeries
-      parameters:
-      - in: path
-        name: reportSeriesId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateReportSeriesRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReportSeries"
-          description: The patched report series
-      summary: Change title and description of a report series
-      tags:
-      - ReportSeries
-  /statistic/report/{reportId}:
-    delete:
-      operationId: deleteReport
-      parameters:
-      - in: path
-        name: reportId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the report is deleted
-      summary: Delete a report
-      tags:
-      - Report
-    get:
-      operationId: getReportDetailPage
-      parameters:
-      - in: path
-        name: reportId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetReportDetailPageResponse"
-          description: The information for the detail page
-      summary: Get the information for the detail page
-      tags:
-      - Report
-  /statistic/retrieve-data/{statisticId}:
-    post:
-      operationId: getStatistic
-      parameters:
-      - in: path
-        name: statisticId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GetStatisticRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetStatisticResponse"
-          description: Statistic with data
-      summary: Get data from one statistic
-      tags:
-      - Statistic
-  /statistic/{statisticId}:
-    delete:
-      operationId: deleteStatistic
-      parameters:
-      - in: path
-        name: statisticId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Returned when the statistic is deleted
-      summary: Delete a statistic
-      tags:
-      - Statistic
-    get:
-      operationId: getDetailPageInformation
-      parameters:
-      - in: path
-        name: statisticId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetDetailPageInformationResponse"
-          description: The information for the detail page
-      summary: Get the information for the detail page
-      tags:
-      - Statistic
-    patch:
-      operationId: updateStatistic
-      parameters:
-      - in: path
-        name: statisticId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              oneOf:
-              - $ref: "#/components/schemas/UpdateStatisticNameRequest"
-              - $ref: "#/components/schemas/UpdateStatisticTimeRangeRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-      summary: Update statistic
-      tags:
-      - Statistic
-  /statistic/{statisticId}/report-series:
-    get:
-      operationId: getReportSeriesEntriesOfStatistic
-      parameters:
-      - in: path
-        name: statisticId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GetReportSeriesEntriesOfStatisticResponse"
-          description: Report series entries for the statistic
-      summary: Get report series entries for the statistic
-      tags:
-      - Statistic
   /test-helper/archiving-job:
     post:
       operationId: runArchivingJob
@@ -1032,6 +1136,15 @@ components:
           type: string
       required:
       - '@type'
+    AbstractAddEvaluationRequest:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
     AbstractAddEvaluationTemplateRequest:
       type: object
       discriminator:
@@ -1042,15 +1155,6 @@ components:
       required:
       - '@type'
     AbstractAddReportSeriesRequest:
-      type: object
-      discriminator:
-        propertyName: '@type'
-      properties:
-        '@type':
-          type: string
-      required:
-      - '@type'
-    AbstractAddStatisticRequest:
       type: object
       discriminator:
         propertyName: '@type'
@@ -1086,7 +1190,7 @@ components:
           type: string
       required:
       - '@type'
-    AbstractUpdateStatisticRequest:
+    AbstractUpdateEvaluationRequest:
       type: object
       discriminator:
         propertyName: '@type'
@@ -1095,6 +1199,26 @@ components:
           type: string
       required:
       - '@type'
+    AddAnalysisRequest:
+      type: object
+      properties:
+        chartConfiguration:
+          oneOf:
+          - $ref: "#/components/schemas/AddChoroplethMapConfiguration"
+          - $ref: "#/components/schemas/BarChartConfiguration"
+          - $ref: "#/components/schemas/HistogramChartConfiguration"
+          - $ref: "#/components/schemas/LineChartConfiguration"
+          - $ref: "#/components/schemas/PieChartConfiguration"
+          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        evaluationId:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - chartConfiguration
+      - evaluationId
+      - name
     AddAutoReportSeriesRequest:
       type: object
       allOf:
@@ -1103,6 +1227,9 @@ components:
         properties:
           description:
             type: string
+          evaluationId:
+            type: string
+            format: uuid
           frequency:
             $ref: "#/components/schemas/Frequency"
           name:
@@ -1114,15 +1241,12 @@ components:
             format: int32
             maximum: 12
             minimum: 1
-          statisticId:
-            type: string
-            format: uuid
       required:
+      - evaluationId
       - frequency
       - name
       - reportingPeriod
       - startMonth
-      - statisticId
     AddBarrierTestHelperResponse:
       type: object
       properties:
@@ -1174,26 +1298,6 @@ components:
           type: string
       required:
       - title
-    AddEvaluationRequest:
-      type: object
-      properties:
-        chartConfiguration:
-          oneOf:
-          - $ref: "#/components/schemas/AddChoroplethMapConfiguration"
-          - $ref: "#/components/schemas/BarChartConfiguration"
-          - $ref: "#/components/schemas/HistogramChartConfiguration"
-          - $ref: "#/components/schemas/LineChartConfiguration"
-          - $ref: "#/components/schemas/PieChartConfiguration"
-          - $ref: "#/components/schemas/ScatterChartConfiguration"
-        name:
-          type: string
-        statisticId:
-          type: string
-          format: uuid
-      required:
-      - chartConfiguration
-      - name
-      - statisticId
     AddEvaluationTemplateFromEvaluationRequest:
       type: object
       allOf:
@@ -1210,6 +1314,18 @@ components:
       required:
       - evaluationId
       - name
+    AddEvaluationTemplateToRepositoryRequest:
+      type: object
+      properties:
+        changelog:
+          type: string
+        contact:
+          type: string
+        templateId:
+          type: string
+          format: uuid
+      required:
+      - templateId
     AddEvaluationTemplateWithDataSourcesRequest:
       type: object
       allOf:
@@ -1227,6 +1343,59 @@ components:
       required:
       - dataSources
       - name
+    AddEvaluationWithDataSourcesRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddEvaluationRequest"
+      - type: object
+        properties:
+          anonymized:
+            type: boolean
+          dataSources:
+            type: array
+            items:
+              $ref: "#/components/schemas/DataSource"
+            maxItems: 1
+            minItems: 1
+          name:
+            type: string
+          timeRangeEnd:
+            type: string
+            format: date-time
+          timeRangeStart:
+            type: string
+            format: date-time
+      required:
+      - anonymized
+      - dataSources
+      - name
+      - timeRangeEnd
+      - timeRangeStart
+    AddEvaluationWithTemplateRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractAddEvaluationRequest"
+      - type: object
+        properties:
+          anonymized:
+            type: boolean
+          name:
+            type: string
+          templateId:
+            type: string
+            format: uuid
+          timeRangeEnd:
+            type: string
+            format: date-time
+          timeRangeStart:
+            type: string
+            format: date-time
+      required:
+      - anonymized
+      - name
+      - templateId
+      - timeRangeEnd
+      - timeRangeStart
     AddFilterTemplateRequest:
       type: object
       properties:
@@ -1257,40 +1426,11 @@ components:
         properties:
           description:
             type: string
-          name:
-            type: string
-          statisticId:
+          evaluationId:
             type: string
             format: uuid
-          timeRangeEnd:
-            type: string
-            format: date-time
-          timeRangeStart:
-            type: string
-            format: date-time
-      required:
-      - name
-      - statisticId
-      - timeRangeEnd
-      - timeRangeStart
-    AddStatisticWithDataSourcesRequest:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractAddStatisticRequest"
-      - type: object
-        properties:
-          anonymized:
-            type: boolean
-          dataSources:
-            type: array
-            items:
-              $ref: "#/components/schemas/DataSource"
-            maxItems: 1
-            minItems: 1
           name:
             type: string
-          templateName:
-            type: string
           timeRangeEnd:
             type: string
             format: date-time
@@ -1298,36 +1438,38 @@ components:
             type: string
             format: date-time
       required:
-      - anonymized
-      - dataSources
+      - evaluationId
       - name
       - timeRangeEnd
       - timeRangeStart
-    AddStatisticWithTemplateRequest:
+    Analysis:
       type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractAddStatisticRequest"
-      - type: object
-        properties:
-          anonymized:
-            type: boolean
-          name:
-            type: string
-          templateId:
-            type: string
-            format: uuid
-          timeRangeEnd:
-            type: string
-            format: date-time
-          timeRangeStart:
-            type: string
-            format: date-time
+      properties:
+        chartConfiguration:
+          oneOf:
+          - $ref: "#/components/schemas/BarChartConfiguration"
+          - $ref: "#/components/schemas/ChoroplethMapConfiguration"
+          - $ref: "#/components/schemas/HistogramChartConfiguration"
+          - $ref: "#/components/schemas/LineChartConfiguration"
+          - $ref: "#/components/schemas/PieChartConfiguration"
+          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        createdAt:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        numberOfDiagrams:
+          type: integer
+          format: int32
       required:
-      - anonymized
+      - chartConfiguration
+      - createdAt
+      - id
       - name
-      - templateId
-      - timeRangeEnd
-      - timeRangeStart
+      - numberOfDiagrams
     AnalysisInfo:
       type: object
       properties:
@@ -1342,6 +1484,35 @@ components:
       required:
       - '@type'
       - diagramTitles
+      - name
+    AnalysisWithDiagrams:
+      type: object
+      properties:
+        chartConfiguration:
+          oneOf:
+          - $ref: "#/components/schemas/BarChartConfiguration"
+          - $ref: "#/components/schemas/ChoroplethMapConfiguration"
+          - $ref: "#/components/schemas/HistogramChartConfiguration"
+          - $ref: "#/components/schemas/LineChartConfiguration"
+          - $ref: "#/components/schemas/PieChartConfiguration"
+          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        createdAt:
+          type: string
+          format: date-time
+        diagrams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Diagram"
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - chartConfiguration
+      - createdAt
+      - diagrams
+      - id
       - name
     AttributeSelection:
       type: object
@@ -1366,7 +1537,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/BusinessDataSourceAttribute"
-        businessModule:
+        businessModuleName:
           type: string
         id:
           type: string
@@ -1377,7 +1548,7 @@ components:
           type: boolean
       required:
       - attributes
-      - businessModule
+      - businessModuleName
       - id
       - name
       - withoutAnonymizationAllowed
@@ -1585,17 +1756,17 @@ components:
               $ref: "#/components/schemas/KeyToValue"
       required:
       - keyToValues
-    CloneStatisticRequest:
+    CloneEvaluationRequest:
       type: object
       properties:
-        clonedStatisticName:
+        clonedEvaluationName:
           type: string
-        originalStatisticId:
+        originalEvaluationId:
           type: string
           format: uuid
       required:
-      - clonedStatisticName
-      - originalStatisticId
+      - clonedEvaluationName
+      - originalEvaluationId
     CompletenessOfAttribute:
       type: object
       discriminator:
@@ -1915,34 +2086,63 @@ components:
       required:
       - errorCode
       - errorLocation
-    Evaluation:
+    EvaluationInfo:
       type: object
       properties:
-        chartConfiguration:
-          oneOf:
-          - $ref: "#/components/schemas/BarChartConfiguration"
-          - $ref: "#/components/schemas/ChoroplethMapConfiguration"
-          - $ref: "#/components/schemas/HistogramChartConfiguration"
-          - $ref: "#/components/schemas/LineChartConfiguration"
-          - $ref: "#/components/schemas/PieChartConfiguration"
-          - $ref: "#/components/schemas/ScatterChartConfiguration"
+        anonymized:
+          type: boolean
         createdAt:
           type: string
           format: date-time
+        dataSourceNames:
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
+          minItems: 1
         id:
           type: string
           format: uuid
         name:
           type: string
-        numberOfDiagrams:
-          type: integer
-          format: int32
+        state:
+          $ref: "#/components/schemas/EvaluationState"
+        timeRangeEnd:
+          type: string
+          format: date-time
+        timeRangeStart:
+          type: string
+          format: date-time
+        userId:
+          type: string
+          format: uuid
       required:
-      - chartConfiguration
+      - anonymized
       - createdAt
+      - dataSourceNames
       - id
       - name
-      - numberOfDiagrams
+      - state
+      - timeRangeEnd
+      - timeRangeStart
+      - userId
+    EvaluationSortKey:
+      type: string
+      default: CREATED_AT
+      enum:
+      - NAME
+      - CREATED_AT
+      - TIME_RANGE_START
+      - TIME_RANGE_END
+    EvaluationState:
+      type: string
+      enum:
+      - COMPLETED
+      - FAILED
+      - CREATING
+      - UPDATING
+      - COPY_ONGOING
+      - DELETING
     EvaluationTemplate:
       type: object
       properties:
@@ -1967,9 +2167,8 @@ components:
           format: date-time
         name:
           type: string
-        userId:
-          type: string
-          format: uuid
+        user:
+          $ref: "#/components/schemas/User"
         withoutAnonymizationAllowed:
           type: boolean
       required:
@@ -1978,8 +2177,34 @@ components:
       - dataSources
       - id
       - name
-      - userId
       - withoutAnonymizationAllowed
+    EvaluationTemplateDetailsFromRepository:
+      type: object
+      properties:
+        analysisInfos:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnalysisInfo"
+        dataSources:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataSourceWithAttributeNames"
+        repositoryMetaInfo:
+          $ref: "#/components/schemas/RepositoryMetaInfo"
+      required:
+      - analysisInfos
+      - dataSources
+      - repositoryMetaInfo
+    EvaluationTemplateFromRepository:
+      type: object
+      properties:
+        dataSourceNames:
+          type: string
+        repositoryMetaInfo:
+          $ref: "#/components/schemas/RepositoryMetaInfo"
+      required:
+      - dataSourceNames
+      - repositoryMetaInfo
     EvaluationTemplateInfo:
       type: object
       properties:
@@ -1987,13 +2212,13 @@ components:
           type: integer
           format: int32
           minimum: 0
-        businessModuleNames:
-          type: array
-          items:
-            type: string
         createdAt:
           type: string
           format: date-time
+        dataSourceNames:
+          type: array
+          items:
+            type: string
         id:
           type: string
           format: uuid
@@ -2007,8 +2232,8 @@ components:
           format: uuid
       required:
       - analysisCount
-      - businessModuleNames
       - createdAt
+      - dataSourceNames
       - id
       - name
       - userId
@@ -2019,35 +2244,6 @@ components:
       - NAME
       - ANALYSIS_COUNT
       - CREATED_AT
-    EvaluationWithDiagrams:
-      type: object
-      properties:
-        chartConfiguration:
-          oneOf:
-          - $ref: "#/components/schemas/BarChartConfiguration"
-          - $ref: "#/components/schemas/ChoroplethMapConfiguration"
-          - $ref: "#/components/schemas/HistogramChartConfiguration"
-          - $ref: "#/components/schemas/LineChartConfiguration"
-          - $ref: "#/components/schemas/PieChartConfiguration"
-          - $ref: "#/components/schemas/ScatterChartConfiguration"
-        createdAt:
-          type: string
-          format: date-time
-        diagrams:
-          type: array
-          items:
-            $ref: "#/components/schemas/Diagram"
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-      required:
-      - chartConfiguration
-      - createdAt
-      - diagrams
-      - id
-      - name
     ExpectedEvaluationTemplate:
       type: object
       properties:
@@ -2175,15 +2371,15 @@ components:
       enum:
       - ACTIVE
       - ARCHIVED
-    GetAllEvaluationTemplatesResponse:
+    GetAllMinimalEvaluationTemplateInfosResponse:
       type: object
       properties:
-        evaluationTemplates:
+        minimalEvaluationTemplateInfos:
           type: array
           items:
-            $ref: "#/components/schemas/EvaluationTemplate"
+            $ref: "#/components/schemas/MinimalEvaluationTemplateInfo"
       required:
-      - evaluationTemplates
+      - minimalEvaluationTemplateInfos
     GetAvailableDataSourcesResponse:
       type: object
       properties:
@@ -2207,20 +2403,20 @@ components:
             oneOf:
             - $ref: "#/components/schemas/CompletenessOfBaseAttribute"
             - $ref: "#/components/schemas/CompletenessOfBusinessAttribute"
-        statisticInfo:
-          $ref: "#/components/schemas/StatisticInfo"
+        evaluationInfo:
+          $ref: "#/components/schemas/EvaluationInfo"
       required:
       - completenessOfAttributes
-      - statisticInfo
+      - evaluationInfo
     GetDetailPageInformationResponse:
       type: object
       properties:
-        evaluations:
+        analyses:
           type: array
           items:
-            $ref: "#/components/schemas/Evaluation"
-        statisticInfo:
-          $ref: "#/components/schemas/StatisticInfo"
+            $ref: "#/components/schemas/Analysis"
+        evaluationInfo:
+          $ref: "#/components/schemas/EvaluationInfo"
         tableColumnHeaders:
           type: array
           items:
@@ -2232,10 +2428,70 @@ components:
         user:
           $ref: "#/components/schemas/User"
       required:
-      - evaluations
-      - statisticInfo
+      - analyses
+      - evaluationInfo
       - tableColumnHeaders
       - totalNumberOfElements
+    GetEvaluationRequest:
+      type: object
+      properties:
+        filters:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/BooleanFilterParameter"
+            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
+            - $ref: "#/components/schemas/DecimalValueFilterParameter"
+            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
+            - $ref: "#/components/schemas/IntegerValueFilterParameter"
+            - $ref: "#/components/schemas/NullFilterParameter"
+            - $ref: "#/components/schemas/TextFilterParameter"
+            - $ref: "#/components/schemas/ValueOptionFilterParameter"
+        page:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          default: 25
+          minimum: 1
+        sortAttribute:
+          $ref: "#/components/schemas/AttributeSelection"
+        sortDirection:
+          $ref: "#/components/schemas/SortDirection"
+    GetEvaluationResponse:
+      type: object
+      properties:
+        dataRows:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataRow"
+        evaluationInfo:
+          $ref: "#/components/schemas/EvaluationInfo"
+        tableColumnHeaders:
+          type: array
+          items:
+            $ref: "#/components/schemas/TableColumnHeader"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - dataRows
+      - evaluationInfo
+      - tableColumnHeaders
+      - totalNumberOfElements
+    GetEvaluationTemplatesFromRepositoryResponse:
+      type: object
+      properties:
+        evaluationTemplates:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationTemplateFromRepository"
+      required:
+      - evaluationTemplates
     GetEvaluationTemplatesRequest:
       type: object
       properties:
@@ -2273,7 +2529,46 @@ components:
       - evaluationTemplates
       - resolvedUsers
       - totalNumberOfElements
-    GetFilterTemplatesForStatisticResponse:
+    GetEvaluationsRequest:
+      type: object
+      properties:
+        anonymizationValue:
+          type: boolean
+        page:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+        sortDirection:
+          $ref: "#/components/schemas/SortDirection"
+        sortKey:
+          $ref: "#/components/schemas/EvaluationSortKey"
+    GetEvaluationsResponse:
+      type: object
+      properties:
+        evaluations:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationInfo"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - evaluations
+      - resolvedUsers
+      - totalNumberOfElements
+    GetFilterTemplatesForEvaluationResponse:
       type: object
       properties:
         filterTemplateIdAndNames:
@@ -2299,12 +2594,12 @@ components:
     GetReportDetailPageResponse:
       type: object
       properties:
-        description:
-          type: string
-        evaluation:
+        analyses:
           type: array
           items:
-            $ref: "#/components/schemas/Evaluation"
+            $ref: "#/components/schemas/Analysis"
+        description:
+          type: string
         executionDate:
           type: string
           format: date
@@ -2343,7 +2638,7 @@ components:
         userReportSeries:
           $ref: "#/components/schemas/User"
       required:
-      - evaluation
+      - analyses
       - executionDate
       - id
       - name
@@ -2355,11 +2650,16 @@ components:
       - timeRangeEnd
       - timeRangeStart
       - totalNumberOfElements
-    GetReportSeriesEntriesOfStatisticResponse:
+    GetReportSeriesEntriesOfEvaluationResponse:
       type: object
       properties:
         anonymized:
           type: boolean
+        evaluationId:
+          type: string
+          format: uuid
+        evaluationName:
+          type: string
         reportSeriesEntries:
           type: array
           items:
@@ -2368,17 +2668,12 @@ components:
           type: object
           additionalProperties:
             $ref: "#/components/schemas/User"
-        statisticId:
-          type: string
-          format: uuid
-        statisticName:
-          type: string
       required:
       - anonymized
+      - evaluationId
+      - evaluationName
       - reportSeriesEntries
       - resolvedUsers
-      - statisticId
-      - statisticName
     GetReportsRequest:
       type: object
       properties:
@@ -2415,57 +2710,6 @@ components:
       - reportSeriesList
       - resolvedUsers
       - totalNumberOfElements
-    GetStatisticRequest:
-      type: object
-      properties:
-        filters:
-          type: array
-          items:
-            oneOf:
-            - $ref: "#/components/schemas/BooleanFilterParameter"
-            - $ref: "#/components/schemas/DecimalRangeFilterParameter"
-            - $ref: "#/components/schemas/DecimalValueFilterParameter"
-            - $ref: "#/components/schemas/IntegerRangeFilterParameter"
-            - $ref: "#/components/schemas/IntegerValueFilterParameter"
-            - $ref: "#/components/schemas/NullFilterParameter"
-            - $ref: "#/components/schemas/TextFilterParameter"
-            - $ref: "#/components/schemas/ValueOptionFilterParameter"
-        page:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-        pageSize:
-          type: integer
-          format: int32
-          default: 25
-          minimum: 1
-        sortAttribute:
-          $ref: "#/components/schemas/AttributeSelection"
-        sortDirection:
-          $ref: "#/components/schemas/SortDirection"
-    GetStatisticResponse:
-      type: object
-      properties:
-        dataRows:
-          type: array
-          items:
-            $ref: "#/components/schemas/DataRow"
-        statisticInfo:
-          $ref: "#/components/schemas/StatisticInfo"
-        tableColumnHeaders:
-          type: array
-          items:
-            $ref: "#/components/schemas/TableColumnHeader"
-        totalNumberOfElements:
-          type: integer
-          format: int64
-          minimum: 0
-      required:
-      - dataRows
-      - statisticInfo
-      - tableColumnHeaders
-      - totalNumberOfElements
     GetStatisticsFeatureTogglesResponse:
       type: object
       properties:
@@ -2482,45 +2726,6 @@ components:
       required:
       - disabledOldFeatures
       - enabledNewFeatures
-    GetStatisticsRequest:
-      type: object
-      properties:
-        anonymizationValue:
-          type: boolean
-        page:
-          type: integer
-          format: int32
-          default: 0
-          minimum: 0
-        pageSize:
-          type: integer
-          format: int32
-          default: 25
-          maximum: 200
-          minimum: 1
-        sortDirection:
-          $ref: "#/components/schemas/SortDirection"
-        sortKey:
-          $ref: "#/components/schemas/StatisticSortKey"
-    GetStatisticsResponse:
-      type: object
-      properties:
-        resolvedUsers:
-          type: object
-          additionalProperties:
-            $ref: "#/components/schemas/User"
-        statistics:
-          type: array
-          items:
-            $ref: "#/components/schemas/StatisticInfo"
-        totalNumberOfElements:
-          type: integer
-          format: int64
-          minimum: 0
-      required:
-      - resolvedUsers
-      - statistics
-      - totalNumberOfElements
     Grouping:
       type: string
       enum:
@@ -2765,6 +2970,17 @@ components:
               $ref: "#/components/schemas/DataPoint"
       required:
       - dataPoints
+    MinimalEvaluationTemplateInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
     NullFilterParameter:
       type: object
       allOf:
@@ -2878,8 +3094,17 @@ components:
       properties:
         active:
           type: boolean
+        dataSourceNames:
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
+          minItems: 1
         description:
           type: string
+        evaluationId:
+          type: string
+          format: uuid
         frequency:
           $ref: "#/components/schemas/Frequency"
         id:
@@ -2898,9 +3123,6 @@ components:
         startMonth:
           type: integer
           format: int32
-        statisticId:
-          type: string
-          format: uuid
         timeRangeEnd:
           type: string
           format: date-time
@@ -2911,11 +3133,12 @@ components:
           type: string
           format: uuid
       required:
+      - dataSourceNames
+      - evaluationId
       - id
       - name
       - reportInfos
       - reportType
-      - statisticId
       - userId
     ReportState:
       type: string
@@ -2937,6 +3160,34 @@ components:
       - THREE_MONTHS
       - HALF_YEAR
       - YEAR
+    RepositoryMetaInfo:
+      type: object
+      properties:
+        changeLog:
+          type: string
+        contact:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        description:
+          type: string
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        version:
+          type: integer
+          format: int32
+      required:
+      - createdAt
+      - createdBy
+      - id
+      - name
+      - version
     Scaling:
       type: string
       enum:
@@ -2996,63 +3247,6 @@ components:
       enum:
       - ASC
       - DESC
-    StatisticInfo:
-      type: object
-      properties:
-        anonymized:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        dataSourceNames:
-          type: array
-          items:
-            type: string
-          maxItems: 2147483647
-          minItems: 1
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        state:
-          $ref: "#/components/schemas/StatisticState"
-        timeRangeEnd:
-          type: string
-          format: date-time
-        timeRangeStart:
-          type: string
-          format: date-time
-        userId:
-          type: string
-          format: uuid
-      required:
-      - anonymized
-      - createdAt
-      - dataSourceNames
-      - id
-      - name
-      - state
-      - timeRangeEnd
-      - timeRangeStart
-      - userId
-    StatisticSortKey:
-      type: string
-      default: CREATED_AT
-      enum:
-      - NAME
-      - CREATED_AT
-      - TIME_RANGE_START
-      - TIME_RANGE_END
-    StatisticState:
-      type: string
-      enum:
-      - COMPLETED
-      - FAILED
-      - CREATING
-      - UPDATING
-      - COPY_ONGOING
-      - DELETING
     StatisticsFeature:
       type: string
       enum:
@@ -3204,6 +3398,13 @@ components:
       required:
       - offset
       - slope
+    UpdateAnalysisRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+      - name
     UpdateDiagramRequest:
       type: object
       properties:
@@ -3213,11 +3414,14 @@ components:
           type: string
       required:
       - title
-    UpdateEvaluationRequest:
+    UpdateEvaluationNameRequest:
       type: object
-      properties:
-        name:
-          type: string
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateEvaluationRequest"
+      - type: object
+        properties:
+          name:
+            type: string
       required:
       - name
     UpdateEvaluationTemplateRequest:
@@ -3229,6 +3433,16 @@ components:
           type: string
       required:
       - name
+    UpdateEvaluationTimeRangeRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractUpdateEvaluationRequest"
+      - type: object
+        properties:
+          timeRange:
+            $ref: "#/components/schemas/TimeRange"
+      required:
+      - timeRange
     UpdateReportSeriesRequest:
       type: object
       properties:
@@ -3238,26 +3452,6 @@ components:
           type: string
       required:
       - name
-    UpdateStatisticNameRequest:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractUpdateStatisticRequest"
-      - type: object
-        properties:
-          name:
-            type: string
-      required:
-      - name
-    UpdateStatisticTimeRangeRequest:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/AbstractUpdateStatisticRequest"
-      - type: object
-        properties:
-          timeRange:
-            $ref: "#/components/schemas/TimeRange"
-      required:
-      - timeRange
     User:
       type: object
       properties:

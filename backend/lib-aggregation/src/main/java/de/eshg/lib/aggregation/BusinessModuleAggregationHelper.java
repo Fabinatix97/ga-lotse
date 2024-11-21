@@ -40,18 +40,18 @@ public class BusinessModuleAggregationHelper extends AggregationHelper {
 
   @Override
   protected ErrorResponseWithLocation createErrorResponse(
-      ErrorCode errorCode, String businessModuleName, ExecutionException e) {
+      ErrorCode errorCode, BusinessModule businessModule, ExecutionException e) {
 
     String message =
         switch (errorCode) {
-          case TIMEOUT -> "Timeout for business module: " + businessModuleName;
+          case TIMEOUT -> "Timeout for business module: " + businessModule;
           case INSUFFICIENT_USER_RIGHTS ->
-              "Insufficient user rights for business module: " + businessModuleName;
-          case UNAUTHORIZED -> "Unauthorized access for business module: " + businessModuleName;
-          default -> "Error retrieving data from business module: " + businessModuleName;
+              "Insufficient user rights for business module: " + businessModule;
+          case UNAUTHORIZED -> "Unauthorized access for business module: " + businessModule;
+          default -> "Error retrieving data from business module: " + businessModule;
         };
 
-    return new ErrorResponseWithLocation(errorCode, message, businessModuleName);
+    return new ErrorResponseWithLocation(errorCode, message, businessModule.name());
   }
 
   public static <T> boolean bySetContainingValue(
@@ -63,23 +63,28 @@ public class BusinessModuleAggregationHelper extends AggregationHelper {
     return filteringValues.contains(valueSupplier.get());
   }
 
-  public void validateBusinessModuleIsRegistered(String businessModule) {
+  public void validateBusinessModuleIsRegistered(String businessModuleName) {
     Optional<BusinessModuleClient> businessModuleClientOptional =
         businessModuleClientRegistry.getBusinessModuleClients().stream()
             .filter(
-                businessModuleClient -> businessModuleClient.getLocation().equals(businessModule))
+                businessModuleClient ->
+                    businessModuleClient.getBusinessModule().name().equals(businessModuleName))
             .findFirst();
 
     if (businessModuleClientOptional.isEmpty()) {
-      throw new NotFoundException("BusinessModule '%s' not registered".formatted(businessModule));
+      throw new NotFoundException(
+          "BusinessModule '%s' not registered".formatted(businessModuleName));
     }
   }
 
   public <T> List<ClientResponse<T>> requestFromBusinessModulesClients(
-      Set<String> businessModules, Function<BusinessModuleClient, T> getFromBusinessModule) {
+      Set<String> businessModuleNames, Function<BusinessModuleClient, T> getFromBusinessModule) {
     List<BusinessModuleClient> businessModuleClients =
         businessModuleClientRegistry.getBusinessModuleClients().stream()
-            .filter(client -> bySetContainingValue(businessModules, client::getLocation))
+            .filter(
+                client ->
+                    CollectionUtils.isEmpty(businessModuleNames)
+                        || businessModuleNames.contains(client.getBusinessModule().name()))
             .toList();
     return requestFromClients(businessModuleClients, getFromBusinessModule);
   }

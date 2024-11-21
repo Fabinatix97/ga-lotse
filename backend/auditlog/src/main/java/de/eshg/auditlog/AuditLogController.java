@@ -60,14 +60,11 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -221,7 +218,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   private Map<UUID, UserDto> resolveUsers(List<AuditLogGranteesProjection> grantees) {
     return userApi.getUsersBulk(new GetUsersRequest(getUserIds(grantees), false)).users().stream()
         .sorted(Comparator.comparing(UserDto::lastName))
-        .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
   }
 
   private String resolveUserLastName(
@@ -232,7 +229,7 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   private Set<UUID> getUserIds(List<AuditLogGranteesProjection> grantedAccessProjection) {
     return grantedAccessProjection.stream()
         .map(AuditLogGranteesProjection::getIdOfGrantedUser)
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private Optional<String> getRequestRemoteAddress() {
@@ -438,13 +435,11 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
   private Set<AuditLogSource> getRelevantSources(List<AuditLogDto> truncatedAuditLogs) {
     return truncatedAuditLogs.stream()
         .map(AuditLogDto::source)
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private Set<LocalDate> getRelevantDates(List<AuditLogDto> truncatedAuditLogs) {
-    return truncatedAuditLogs.stream()
-        .map(AuditLogDto::date)
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+    return truncatedAuditLogs.stream().map(AuditLogDto::date).collect(StreamUtil.toLinkedHashSet());
   }
 
   private Integer getValidGrantedAccessCount(

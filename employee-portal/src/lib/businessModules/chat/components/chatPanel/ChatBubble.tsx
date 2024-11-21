@@ -3,13 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { Box, Sheet, Stack, Typography } from "@mui/joy";
-import { ReactNode } from "react";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import {
+  Box,
+  Button,
+  IconButton,
+  Sheet,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/joy";
+import { ReactNode, useState } from "react";
 import { isEmpty } from "remeda";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
+import { DeletedMessage } from "@/lib/businessModules/chat/components/chatPanel/DeletedMessage";
 import { ReadingReceipt } from "@/lib/businessModules/chat/components/chatPanel/ReadingReceipt";
+import { UndecipheredMessage } from "@/lib/businessModules/chat/components/chatPanel/UndecipheredMessage";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
@@ -39,11 +51,13 @@ export function ChatBubble({
   lastReadMessageIndexes = [],
   index,
   mentions,
+  removeMessage,
 }: Readonly<ChatBubbleProps>) {
   const { userSettings } = useChat();
   const { setInfoPanelView } = useInfoPanelContext();
   const isSent = variant === "sent";
   const hasNoReceipts = isEmpty(lastReadMessageIndexes);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Messages are sorted from newest to oldest.
   // Here, we compare the index to check if it is greater than the last read index.
@@ -56,75 +70,157 @@ export function ChatBubble({
     setInfoPanelView(InfoPanelView.UserInfo, userId);
   }
 
-  return (
-    <Stack direction="column" alignItems="flex-start">
-      <Stack
-        direction="row"
-        justifyContent={
-          message.sender?.userId === loggedInUserId ? "end" : "start"
-        }
-        spacing={1}
-        sx={{ mb: 0.25 }}
-        width="100%"
-      >
-        <Typography textColor="text.secondary" sx={{ fontSize: "0.875rem" }}>
-          {message.sender?.userId === loggedInUserId
-            ? ""
-            : message.sender?.displayName}
-        </Typography>
-        {message.timestamp && (
-          <Typography textColor="text.secondary" sx={{ fontSize: "0.875rem" }}>
-            {formatChatDate(message.timestamp)}
-          </Typography>
-        )}
-      </Stack>
-      <Box sx={{ width: "100%", display: "flex", alignItems: "flex-end" }}>
-        {!isSent && (
-          <ChatAvatar
-            name={message.sender?.displayName}
-            userId={message.sender?.userId}
-            avatarUrl={message.sender?.avatarUrl ?? null}
-          />
-        )}
-        <Sheet
-          color={isSent ? "primary" : "neutral"}
-          variant={isSent ? "solid" : "soft"}
-          sx={{
-            p: 1,
-            borderRadius: "md",
-            backgroundColor: isSent ? "primary.500" : "neutral.100",
-            wordBreak: "break-word",
-            marginLeft: 1,
-            marginRight: 1,
+  let content = (
+    <Tooltip
+      disableHoverListener={!isSent}
+      placement="top-end"
+      disablePortal
+      leaveDelay={500}
+      modifiers={[{ name: "offset", options: { offset: [0, 5] } }]}
+      sx={{
+        backgroundColor: "white",
+        "&.MuiTooltip-root": {
+          padding: 0,
+        },
+      }}
+      title={
+        <IconButton
+          size="sm"
+          variant="outlined"
+          onClick={() => {
+            setIsModalOpen(true);
           }}
         >
-          <Typography
-            component="div"
-            level="body-md"
-            sx={{
-              color: isSent ? "background.body" : "text.primary",
-              overflowWrap: "break-word",
-            }}
-          >
-            {mentions.length
-              ? splitMessageWithNames(
-                  message,
-                  mentions,
-                  handleMentionClick,
-                  isSent,
-                )
-              : message.content}
+          <DeleteOutlineIcon sx={{ color: "neutral.500" }} />
+        </IconButton>
+      }
+    >
+      <Sheet
+        color={isSent ? "primary" : "neutral"}
+        variant={isSent ? "solid" : "soft"}
+        sx={{
+          p: 1,
+          borderRadius: "md",
+          backgroundColor: isSent ? "primary.500" : "neutral.100",
+          wordBreak: "break-word",
+          marginLeft: 1,
+          marginRight: 1,
+        }}
+      >
+        <Typography
+          component="div"
+          level="body-md"
+          sx={{
+            color: isSent ? "background.body" : "text.primary",
+            overflowWrap: "break-word",
+          }}
+        >
+          {mentions.length
+            ? splitMessageWithNames(
+                message,
+                mentions,
+                handleMentionClick,
+                isSent,
+              )
+            : message.content}
+        </Typography>
+      </Sheet>
+    </Tooltip>
+  );
+
+  if (message.decrypted) {
+    content = <UndecipheredMessage isSent={isSent} />;
+  }
+
+  if (message.removed) {
+    content = <DeletedMessage isSent={isSent} />;
+  }
+
+  return (
+    <>
+      <Stack direction="column" alignItems="flex-start">
+        <Stack
+          direction="row"
+          justifyContent={
+            message.sender?.userId === loggedInUserId ? "end" : "start"
+          }
+          spacing={1}
+          sx={{ mb: 0.25 }}
+          width="100%"
+        >
+          <Typography textColor="text.secondary" sx={{ fontSize: "0.875rem" }}>
+            {message.sender?.userId === loggedInUserId
+              ? ""
+              : message.sender?.displayName}
           </Typography>
-        </Sheet>
-        {isSent && (
-          <ReadingReceipt
-            isReadReceiptEnabled={userSettings.showReadConfirmation}
-            isRead={hasNoReceipts ? false : isMessageRead}
-            isSent={message.sent}
-          />
-        )}
-      </Box>
-    </Stack>
+          {message.timestamp && (
+            <Typography
+              textColor="text.secondary"
+              sx={{ fontSize: "0.875rem" }}
+            >
+              {formatChatDate(message.timestamp)}
+            </Typography>
+          )}
+        </Stack>
+        <Box sx={{ width: "100%", display: "flex", alignItems: "flex-end" }}>
+          {!isSent && (
+            <ChatAvatar
+              name={message.sender?.displayName}
+              userId={message.sender?.userId}
+              avatarUrl={message.sender?.avatarUrl ?? null}
+            />
+          )}
+
+          {content}
+
+          {isSent && (
+            <ReadingReceipt
+              isReadReceiptEnabled={userSettings.showReadConfirmation}
+              isRead={hasNoReceipts ? false : isMessageRead}
+              isSent={message.sent}
+            />
+          )}
+        </Box>
+      </Stack>
+      <BaseModal
+        modalTitle="Sind Sie sicher?"
+        color="danger"
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <>
+          <Typography>
+            Wenn Sie auf Löschen klicken, wird diese Nachricht bei Ihnen und
+            allen anderen Nutzern endgültig gelöscht!
+          </Typography>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ marginLeft: "auto", paddingTop: 2 }}
+          >
+            <Button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Abbrechen
+            </Button>
+            <Button
+              size="sm"
+              color="danger"
+              loadingPosition={"start"}
+              onClick={async () => {
+                await removeMessage(message.id);
+                setIsModalOpen(false);
+              }}
+            >
+              Löschen
+            </Button>
+          </Stack>
+        </>
+      </BaseModal>
+    </>
   );
 }
 
@@ -163,6 +259,7 @@ function splitMessageWithNames(
 
     contentParts.push(
       <ButtonLink
+        key={member.userId}
         level="title-md"
         textColor={isSent ? "inherit" : undefined}
         sx={{

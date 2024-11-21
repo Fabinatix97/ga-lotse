@@ -11,6 +11,7 @@ import {
 
 import { useAlert } from "../errorHandling/AlertContext";
 import {
+  getCloseable,
   getErrorAction,
   getErrorDescription,
 } from "../errorHandling/errorMappers";
@@ -40,6 +41,7 @@ export function useHandledMutation<
         title,
         message,
         action: getErrorAction(errorCode),
+        closeable: getCloseable(errorCode),
       });
     }),
     onMutate: runBefore(options.onMutate, () => {

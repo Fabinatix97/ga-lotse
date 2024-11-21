@@ -7,12 +7,13 @@
 
 import {
   ApiBaseFeature,
+  ApiSalutation,
   ApiUser,
   ApiUserGroup,
 } from "@eshg/employee-portal-api/base";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { isNullish } from "remeda";
+import { isDefined, isNullish } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
@@ -22,19 +23,25 @@ import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
+import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import {
   ExternalLinkDetailsCell,
   emailHref,
 } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
+import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 import { UserAvatar } from "./UserAvatar";
 
 export function UserProfileDetails({
   user,
+  salutation,
+  title,
   groups,
   isSelf,
 }: {
   user: ApiUser;
+  salutation: ApiSalutation | undefined;
+  title: string | undefined;
   groups: ApiUserGroup[];
   isSelf: boolean;
 }) {
@@ -63,6 +70,8 @@ export function UserProfileDetails({
                 updateSidebar.open({
                   selfUser: user,
                   selfGroups: groups,
+                  selfTitle: title,
+                  selfSalutation: salutation,
                 })
               }
             />
@@ -92,6 +101,20 @@ export function UserProfileDetails({
             divider={<ResponsiveDivider />}
           >
             <DetailsColumn>
+              {isDefined(salutation ?? title) && (
+                <DetailsRow>
+                  {isDefined(salutation) &&
+                    salutation !== ApiSalutation.NotSpecified && (
+                      <DetailsCell
+                        name="salutation"
+                        label="Anrede"
+                        value={SALUTATION_VALUES[salutation]}
+                      />
+                    )}
+                  <DetailsCell name="title" label="Titel" value={title} />
+                </DetailsRow>
+              )}
+
               <DetailsCell
                 name={"firstName"}
                 label={"Vorname"}

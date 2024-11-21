@@ -10,24 +10,22 @@ import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.persistence.entity.InstitutionContactCategory;
 import de.eshg.base.contact.persistence.repository.ContactRepository;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class SchoolContactPopulator extends AbstractContactPopulator {
   protected SchoolContactPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       ContactController contactController,
-      ContactRepository contactRepository,
-      EnvironmentConfig environmentConfig) {
-    super(clock, environment, contactController, contactRepository, environmentConfig);
+      ContactRepository contactRepository) {
+    super(properties, clock, environmentConfig, contactController, contactRepository);
   }
 
   @Override

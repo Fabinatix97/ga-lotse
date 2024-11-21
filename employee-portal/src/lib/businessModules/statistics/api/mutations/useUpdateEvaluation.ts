@@ -7,7 +7,7 @@ import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
-import { UpdateEvaluationFormModel } from "@/lib/businessModules/statistics/components/statistics/details/UpdateEvaluationSidebar/updateEvaluationFormModel";
+import { UpdateEvaluationFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateEvaluationSidebar/updateEvaluationFormModel";
 
 export interface UseUpdateEvaluationParams extends UpdateEvaluationFormModel {
   evaluationId: string;
@@ -22,7 +22,7 @@ export function useUpdateEvaluation(
 
   const mutation = useHandledMutation({
     mutationFn: (model: UpdateEvaluationFormModel) =>
-      api.updateEvaluation(evaluationId, {
+      api.updateAnalysis(evaluationId, {
         name: model.name.trim(),
       }),
     onSuccess: () => {

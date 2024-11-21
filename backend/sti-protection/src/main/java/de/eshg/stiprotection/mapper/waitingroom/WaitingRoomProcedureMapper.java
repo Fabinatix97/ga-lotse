@@ -11,10 +11,11 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 public class WaitingRoomProcedureMapper {
   private WaitingRoomProcedureMapper() {}
 
-  public static WaitingRoomProcedureDto toInterface(StiProtectionProcedure procedure) {
+  public static WaitingRoomProcedureDto toInterface(
+      StiProtectionProcedure procedure, String accessCode) {
     return new WaitingRoomProcedureDto(
         procedure.getExternalId(),
-        "accessCode", // TODO: Map actual accessCode when implemented
+        accessCode,
         procedure.getPerson().getYearOfBirth(),
         procedure.getPerson().getGender(),
         WaitingRoomMapper.toInterfaceType(procedure.getWaitingRoom()),

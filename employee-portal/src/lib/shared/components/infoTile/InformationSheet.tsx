@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Sheet, Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
+import { Sheet, SheetProps, Stack } from "@mui/joy";
 import { PropsWithChildren } from "react";
 
 export function InformationSheet({
   children,
   sx,
   dataTestId,
-}: PropsWithChildren<{ sx?: SxProps; dataTestId?: string }>) {
+  ...props
+}: PropsWithChildren<SheetProps & { dataTestId?: string }>) {
   return (
     <Sheet
       sx={{
@@ -22,6 +22,7 @@ export function InformationSheet({
         ...sx,
       }}
       data-testid={dataTestId}
+      {...props}
     >
       <Stack gap={2} sx={{ flexGrow: 1, width: "100%" }}>
         {children}

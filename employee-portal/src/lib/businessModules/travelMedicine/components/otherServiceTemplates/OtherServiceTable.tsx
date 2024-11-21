@@ -5,35 +5,106 @@
 
 "use client";
 
-import { ApiOtherServiceTemplate } from "@eshg/employee-portal-api/travelMedicine";
+import { ApiPostPutOtherServiceTemplateRequest } from "@eshg/employee-portal-api/travelMedicine";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
+import {
+  useAddOtherServiceTemplate,
+  useDeleteOtherServiceTemplate,
+  useUpdateOtherServiceTemplate,
+} from "@/lib/businessModules/travelMedicine/api/mutations/otherServiceTemplates";
+import { useGetAllOtherServiceTemplatesQuery } from "@/lib/businessModules/travelMedicine/api/queries/otherServiceTemplates";
+import { useOtherServiceSidebar } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/OtherServiceSidebar";
 import { otherServiceTemplatesColumns } from "@/lib/businessModules/travelMedicine/components/otherServiceTemplates/columns";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
-export function OtherServiceTable({
-  data,
-  handleAddEntry,
-  handleDeleteEntry,
-  openCloseVaccinationStepSidebar,
-}: Readonly<{
-  data: ApiOtherServiceTemplate[];
-  handleAddEntry: () => void;
-  handleDeleteEntry: (id: string) => Promise<void>;
-  openCloseVaccinationStepSidebar: (
-    otherServiceTemplateId: ApiOtherServiceTemplate,
-  ) => void;
-}>) {
+export function OtherServiceTable() {
+  const snackbar = useSnackbar();
+  const { openConfirmationDialog } = useConfirmationDialog();
+
+  const createOtherServiceTemplateMutation = useAddOtherServiceTemplate();
+  const updateOtherServiceTemplateMutation = useUpdateOtherServiceTemplate();
+  const deleteOtherServiceTemplateMutation = useDeleteOtherServiceTemplate();
+
+  const otherServiceSidebar = useOtherServiceSidebar();
+
+  const [{ data: allOtherServiceTemplates }] = useSuspenseQueries({
+    queries: [useGetAllOtherServiceTemplatesQuery()],
+  });
+
+  async function createOtherServiceTemplate(
+    request: ApiPostPutOtherServiceTemplateRequest,
+    onSuccess?: () => void,
+  ) {
+    await createOtherServiceTemplateMutation.mutateAsync(request, {
+      onSuccess: () => {
+        snackbar.confirmation("Die Leistung wurde angelegt.");
+        if (onSuccess) {
+          onSuccess();
+        }
+      },
+    });
+  }
+
+  async function updateOtherServiceTemplate(
+    id: string,
+    request: ApiPostPutOtherServiceTemplateRequest,
+    onSuccess?: () => void,
+  ) {
+    await updateOtherServiceTemplateMutation.mutateAsync(
+      { id, request },
+      {
+        onSuccess: () => {
+          snackbar.confirmation("Die Leistung wurde gespeichert.");
+          if (onSuccess) {
+            onSuccess();
+          }
+        },
+      },
+    );
+  }
+
+  async function deleteOtherServiceTemplate(id: string) {
+    await deleteOtherServiceTemplateMutation.mutateAsync(id, {
+      onSuccess: () => {
+        snackbar.confirmation("Die Leistung wurde gelöscht.");
+      },
+    });
+  }
+
+  function deleteEntry(entryId: string) {
+    openConfirmationDialog({
+      title: `Leistung löschen?`,
+      description: `Diese Aktion kann nicht rückgängig gemacht werden.`,
+      confirmLabel: "Löschen",
+      cancelLabel: "Abbrechen",
+      onConfirm: () => deleteOtherServiceTemplate(entryId),
+      color: "danger",
+    });
+  }
+
   return (
     <TablePage
       controls={
         <ButtonBar
           right={
-            <Button startDecorator={<AddIcon />} onClick={handleAddEntry}>
+            <Button
+              startDecorator={<AddIcon />}
+              onClick={() =>
+                otherServiceSidebar.open({
+                  otherService: undefined,
+                  createOtherServiceTemplate: createOtherServiceTemplate,
+                  updateOtherServiceTemplate: updateOtherServiceTemplate,
+                })
+              }
+            >
               Leistung hinzufügen
             </Button>
           }
@@ -42,11 +113,16 @@ export function OtherServiceTable({
     >
       <TableSheet>
         <DataTable
-          data={data}
-          columns={otherServiceTemplatesColumns(
-            openCloseVaccinationStepSidebar,
-            handleDeleteEntry,
-          )}
+          data={allOtherServiceTemplates}
+          columns={otherServiceTemplatesColumns({
+            editEntry: (otherService) =>
+              otherServiceSidebar.open({
+                otherService: otherService,
+                createOtherServiceTemplate: createOtherServiceTemplate,
+                updateOtherServiceTemplate: updateOtherServiceTemplate,
+              }),
+            deleteEntry: deleteEntry,
+          })}
         />
       </TableSheet>
     </TablePage>

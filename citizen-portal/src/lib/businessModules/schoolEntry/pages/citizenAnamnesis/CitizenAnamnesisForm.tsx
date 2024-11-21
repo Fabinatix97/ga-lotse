@@ -83,7 +83,7 @@ interface PromotionBeforeSchoolEntryValues {
 interface AdditionalChildInfoValues {
   responsiblePhysician: OptionalFieldValue<string>;
   siblings: ToggleableSectionFormValue & {
-    birthYears: string[];
+    birthYears: number[];
   };
 }
 
@@ -187,7 +187,7 @@ const INITIAL_VALUES: CitizenAnamnesisFormValues = {
     responsiblePhysician: "",
     siblings: {
       show: null,
-      birthYears: [""],
+      birthYears: [],
     },
   },
   daycareAndSchoolInfo: {
@@ -328,8 +328,9 @@ function StepIndicator({
   const { t } = useTranslation(["schoolEntry/anamnesis"]);
   return (
     <Typography
+      component="span"
       data-testid="multiStepFormIndicator"
-      level="body-lg"
+      level="h4"
       sx={{
         color: theme.palette.text.tertiary,
       }}
@@ -398,9 +399,7 @@ function mapToRequest(
           values.additionalChildInfo.responsiblePhysician,
         ),
         siblingsBirthYears: values.additionalChildInfo.siblings.show
-          ? dropBlankStrings(
-              values.additionalChildInfo.siblings.birthYears,
-            ).map((it) => parseInt(it))
+          ? values.additionalChildInfo.siblings.birthYears
           : undefined,
       },
       daycareAndSchoolInfo: {

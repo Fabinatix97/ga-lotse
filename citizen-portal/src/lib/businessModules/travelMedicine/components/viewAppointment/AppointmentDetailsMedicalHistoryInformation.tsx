@@ -60,6 +60,7 @@ export function AppointmentDetailsMedicalHistoryInformation(
           sx={{ marginTop: 1 }}
           fullWidth
           onClick={navigateToMedicalHistory}
+          data-testid="medical-history-button"
         >
           {t("medicalHistoryPanel.answerNow")}
         </Button>

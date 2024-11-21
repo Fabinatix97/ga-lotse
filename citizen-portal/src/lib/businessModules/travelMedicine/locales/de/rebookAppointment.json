@@ -19,6 +19,6 @@
     "back": "Zurück"
   },
   "snackbar": {
-    "putAppointmentConfirmation": "Termin erfolgreich (um)gebucht"
+    "putAppointmentConfirmation": "Der Termin wurde (um)gebucht."
   }
 }

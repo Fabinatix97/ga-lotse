@@ -19,6 +19,7 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.travelmedicine.certificate.CertificateService;
 import de.eshg.travelmedicine.certificate.api.CertificateTypeDto;
 import de.eshg.travelmedicine.certificate.api.PostPutCertificateRequest;
+import de.eshg.travelmedicine.citizenauth.api.PatchInformationStatementRequest;
 import de.eshg.travelmedicine.citizenpublic.api.PostCitizenVaccinationConsultationRequest;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.informationstatement.InformationStatementService;
@@ -399,8 +400,12 @@ public class TestPopulateProcedureService {
               DocumentContentDto documentContent =
                   informationStatementService.getInformationStatementForCitizenPortal(
                       citizenUserId, informationStatementId);
+              documentContent = answerDocumentContent(documentContent);
               informationStatementService.patchInformationStatementForCitizenPortal(
-                  citizenUserId, informationStatementId, answerDocumentContent(documentContent));
+                  citizenUserId,
+                  informationStatementId,
+                  new PatchInformationStatementRequest(documentContent, "Guido"),
+                  null);
             }
           });
     }

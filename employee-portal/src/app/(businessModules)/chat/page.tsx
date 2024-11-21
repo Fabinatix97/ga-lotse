@@ -14,6 +14,7 @@ import { ChatErrorBoundary } from "@/lib/businessModules/chat/components/ChatErr
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { InfoPanelProvider } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { PresenceProvider } from "@/lib/businessModules/chat/shared/PresenceProvider";
 
 export default function ChatPage() {
   const {
@@ -37,7 +38,9 @@ export default function ChatPage() {
   return userSettings.chatUsageEnabled ? (
     <ChatErrorBoundary>
       <InfoPanelProvider>
-        <Chat />
+        <PresenceProvider>
+          <Chat />
+        </PresenceProvider>
       </InfoPanelProvider>
     </ChatErrorBoundary>
   ) : (

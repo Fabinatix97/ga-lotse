@@ -10,9 +10,14 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 public interface GdprValidationTaskRepository
     extends JpaRepository<GdprValidationTask, Long>, JpaSpecificationExecutor<GdprValidationTask> {
 
-  Optional<GdprValidationTask> findByProcedureId(UUID procedureId);
+  Optional<GdprValidationTask> findByGdprProcedureId(UUID gdprProcedureId);
+
+  @Query(
+      "SELECT COUNT(t) AS count, MIN(t.startedAt) AS oldestStartDate FROM GdprValidationTask t WHERE t.status = de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus.OPEN")
+  OpenTaskSummaryRawData getOpenTaskSummary();
 }

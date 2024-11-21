@@ -9,7 +9,7 @@ import { isDefined, isEmpty, isNullish } from "remeda";
 import { OptionalFieldValue, Validator } from "../types/form";
 
 import { isDateString, isMonthString } from "./dateTime";
-import { isDict, isEmptyString, isInteger } from "./guards";
+import { isDict, isEmptyString, isInteger, isStringOnlyDigits } from "./guards";
 
 export function validatePipe<TValue>(
   ...validators: (Validator<TValue> | undefined)[]
@@ -103,6 +103,14 @@ export function validateInteger(value: OptionalFieldValue<number>) {
   }
 
   return "Bitte eine ganze Zahl angeben.";
+}
+
+export function validateNumber(value: string) {
+  if (isEmptyString(value) || isStringOnlyDigits(value)) {
+    return undefined;
+  }
+
+  return "Bitte eine Nummer angeben.";
 }
 
 export function validateIntegerAnd(

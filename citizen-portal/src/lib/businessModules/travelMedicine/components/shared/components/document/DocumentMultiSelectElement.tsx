@@ -19,15 +19,15 @@ import { useTranslation } from "@/lib/i18n/client";
 interface DocumentMultiSelectElementProps
   extends Omit<BaseFieldProps, "required" | "children"> {
   anamnesisQuestion: ApiDocumentAnamnesisQuestion;
-  sectionIndex: number;
   elementIndex: number;
   name: string;
+  parentPath: string;
 }
 
 export function DocumentMultiSelectElement({
   anamnesisQuestion,
-  sectionIndex,
   elementIndex,
+  parentPath,
   ...restProps
 }: Readonly<DocumentMultiSelectElementProps>) {
   const { t } = useTranslation(["travelMedicine/document"]);
@@ -87,15 +87,7 @@ export function DocumentMultiSelectElement({
             >
               <Checkbox
                 size={"md"}
-                name={
-                  "sections[" +
-                  sectionIndex +
-                  "].sectionElements[" +
-                  elementIndex +
-                  "].anamnesisQuestion.subElementMultiSelect[" +
-                  index +
-                  "].answer"
-                }
+                name={`${parentPath}.subElementMultiSelect[${index}].answer`}
                 checked={
                   input.value.find(
                     (option) => option.questionText === questionText,

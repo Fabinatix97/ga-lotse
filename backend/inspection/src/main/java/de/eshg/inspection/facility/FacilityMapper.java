@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.inspection.facility.api.*;
+import de.eshg.inspection.facility.export.ExportedBannedFacility;
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.facility.persistence.PendingFacilityView;
 import de.eshg.inspection.inspection.api.FacilityForDuplicateReviewDto;
@@ -26,14 +27,19 @@ import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.rest.service.error.NotFoundException;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FacilityMapper {
-
-  private FacilityMapper() {}
 
   public static Facility mapFacility(
       Facility facility,
@@ -45,12 +51,6 @@ public class FacilityMapper {
     // mapping remaining fields from put request
     if (request.banned() != null) {
       facility.setBanned(request.banned());
-    }
-    if (request.suspicious() != null) {
-      facility.setSuspicious(request.suspicious());
-    }
-    if (request.active() != null) {
-      facility.setActive(request.active());
     }
     return facility;
   }
@@ -78,18 +78,67 @@ public class FacilityMapper {
         facility.getExternalId(),
         baseFacility,
         facility.isBanned(),
-        facility.isSuspicious(),
-        facility.isActive(),
         ObjectTypeMapper.toDto(facility.getObjectType()));
   }
 
   static Facility facilityFrom(AddFacilityFileStateResponse baseFacility) {
     Facility facility = new Facility();
     facility.setCentralFileStateId(baseFacility.id());
-    facility.setActive(true);
     facility.setBanned(false);
-    facility.setSuspicious(false);
     return facility;
+  }
+
+  public static List<ExportedBannedFacility> mapFacilitiesToExportedBannedFacility(
+      List<Facility> facilities,
+      Map<UUID, AddFacilityFileStateResponse> baseFacilityMap,
+      ZoneId zoneId) {
+
+    if (facilities.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    return facilities.stream()
+        .map(
+            facility ->
+                mapFacilityToExportedBannedFacility(
+                    facility, baseFacilityMap.get(facility.getCentralFileStateId()), zoneId))
+        .toList();
+  }
+
+  private static ExportedBannedFacility mapFacilityToExportedBannedFacility(
+      Facility facility, AddFacilityFileStateResponse baseFacility, ZoneId zoneId) {
+
+    LocalDate dateOfBanning = LocalDate.ofInstant(facility.getLastInspected(), zoneId);
+
+    String objectType =
+        facility.getObjectType() != null ? facility.getObjectType().getName() : null;
+
+    switch (baseFacility.contactAddress()) {
+      case DomesticAddressDto domesticAddress -> {
+        return new ExportedBannedFacility(
+            baseFacility.name(),
+            dateOfBanning,
+            objectType,
+            domesticAddress.postalCode(),
+            domesticAddress.city(),
+            domesticAddress.street(),
+            domesticAddress.houseNumber(),
+            String.join(", ", baseFacility.phoneNumbers()),
+            String.join(", ", baseFacility.emailAddresses()));
+      }
+      case PostboxAddressDto postboxAddress -> {
+        return new ExportedBannedFacility(
+            baseFacility.name(),
+            dateOfBanning,
+            objectType,
+            postboxAddress.postalCode(),
+            postboxAddress.city(),
+            "Postfach",
+            postboxAddress.postbox(),
+            String.join(", ", baseFacility.phoneNumbers()),
+            String.join(", ", baseFacility.emailAddresses()));
+      }
+    }
   }
 
   private static InsPendingFacilityInspectionDto createInspPendingFacilityInspectionDto(
@@ -101,7 +150,8 @@ public class FacilityMapper {
         view.inspection().getType(),
         view.inspection().getPhase(),
         view.inspection().getIncidents().size(),
-        !view.inspection().getPossibleDuplicates().isEmpty());
+        !view.inspection().getPossibleDuplicates().isEmpty(),
+        view.inspection().getResult());
   }
 
   static InspPendingFacilityDto createInspPendingFacilityDto(
@@ -109,7 +159,8 @@ public class FacilityMapper {
       AddFacilityFileStateResponse facilityDto,
       InspPendingFacilityKind kind,
       Instant plannedFrom,
-      ObjectTypeRefDto objecttype) {
+      ObjectTypeRefDto objecttype,
+      Instant executedFrom) {
     InsPendingFacilityInspectionDto inspection = createInspPendingFacilityInspectionDto(view);
 
     switch (facilityDto.contactAddress()) {
@@ -127,7 +178,8 @@ public class FacilityMapper {
             plannedFrom,
             objecttype,
             inspection,
-            view.facility().hasPossibleDuplicates());
+            view.facility().hasPossibleDuplicates(),
+            executedFrom);
       }
       case PostboxAddressDto postboxAddress -> {
         return new InspPendingFacilityDto(
@@ -143,7 +195,8 @@ public class FacilityMapper {
             plannedFrom,
             objecttype,
             inspection,
-            view.facility().hasPossibleDuplicates());
+            view.facility().hasPossibleDuplicates(),
+            executedFrom);
       }
       default ->
           throw new NotFoundException(

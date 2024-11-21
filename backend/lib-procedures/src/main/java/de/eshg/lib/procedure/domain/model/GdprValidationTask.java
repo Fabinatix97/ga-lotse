@@ -22,7 +22,7 @@ public class GdprValidationTask extends BaseEntity {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false, unique = true)
-  private UUID procedureId;
+  private UUID gdprProcedureId;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
@@ -48,12 +48,16 @@ public class GdprValidationTask extends BaseEntity {
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Instant closedAt;
 
-  public UUID getProcedureId() {
-    return procedureId;
+  @Column(nullable = false)
+  @DataSensitivity(SensitivityLevel.PROTECTED)
+  private Instant startedAt;
+
+  public UUID getGdprProcedureId() {
+    return gdprProcedureId;
   }
 
-  public void setProcedureId(UUID procedureId) {
-    this.procedureId = procedureId;
+  public void setGdprProcedureId(UUID gdprProcedureId) {
+    this.gdprProcedureId = gdprProcedureId;
   }
 
   public GdprValidationTaskStatus getStatus() {
@@ -94,5 +98,13 @@ public class GdprValidationTask extends BaseEntity {
 
   public void setClosedAt(Instant closedAt) {
     this.closedAt = closedAt;
+  }
+
+  public Instant getStartedAt() {
+    return startedAt;
+  }
+
+  public void setStartedAt(Instant startedAt) {
+    this.startedAt = startedAt;
   }
 }

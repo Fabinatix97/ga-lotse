@@ -10,10 +10,12 @@ import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 @Schema(name = "Professional")
 public record ProfessionalDto(
@@ -24,8 +26,8 @@ public record ProfessionalDto(
     @NotNull LocalDate dateOfBirth,
     @NotNull @Size(min = 1, max = 40) String nameAtBirth,
     @NotNull @Size(min = 1, max = 50) String placeOfBirth,
-    @NotNull @EmailAddressConstraint String emailAddress,
-    @NotNull @Size(min = 1, max = 23) String phoneNumber,
+    @NotEmpty List<@EmailAddressConstraint String> emailAddresses,
+    @NotEmpty List<@NotNull @Size(min = 1, max = 23) String> phoneNumbers,
     @NotNull @Valid ProfessionalAddressDto address,
     @NotNull ProfessionalTitleDto professionalTitle,
     String fieldOfExpertise,
@@ -37,45 +39,4 @@ public record ProfessionalDto(
     @Pattern(regexp = "\\d{9}") String lifetimeDoctorNumber,
     @NotNull EmploymentTypeDto employmentType,
     @NotNull EmploymentStatusDto employmentStatus,
-    @NotNull CountryCode nationality) {
-  public ProfessionalDto(
-      String title,
-      GenderDto gender,
-      String firstName,
-      String lastName,
-      LocalDate dateOfBirth,
-      String nameAtBirth,
-      String placeOfBirth,
-      String emailAddress,
-      String phoneNumber,
-      ProfessionalAddressDto address,
-      ProfessionalTitleDto professionalTitle,
-      LocalDate approbationGrantedOn,
-      String approbationIssuingAuthority,
-      EmploymentTypeDto employmentType,
-      EmploymentStatusDto employmentStatus,
-      CountryCode nationality) {
-    this(
-        title,
-        gender,
-        firstName,
-        lastName,
-        dateOfBirth,
-        nameAtBirth,
-        placeOfBirth,
-        emailAddress,
-        phoneNumber,
-        address,
-        professionalTitle,
-        null,
-        null,
-        null,
-        null,
-        approbationGrantedOn,
-        approbationIssuingAuthority,
-        null,
-        employmentType,
-        employmentStatus,
-        nationality);
-  }
-}
+    @NotNull CountryCode nationality) {}

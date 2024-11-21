@@ -13,7 +13,7 @@ export function useDeleteStatistic() {
   const statisticApi = useStatisticApi();
   const mutation = useHandledMutation({
     mutationFn: (statisticId: string) =>
-      statisticApi.deleteStatistic(statisticId),
+      statisticApi.deleteEvaluation(statisticId),
     onSuccess: () => {
       snackbar.confirmation("Auswertung gelöscht");
     },

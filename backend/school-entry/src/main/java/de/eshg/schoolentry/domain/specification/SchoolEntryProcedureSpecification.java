@@ -33,7 +33,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
 
   private final ProcedureStatus procedureStatusFilter;
   private final ProcedureType procedureTypeFilter;
-  private final ArrayList<UUID> schoolIdFilter;
+  private final UUID schoolIdFilter;
   private final Year schoolYearFilter;
   private final Instant dayOfAppointmentFilter;
   private final Boolean hasAppointmentFilter;
@@ -45,7 +45,7 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
   public SchoolEntryProcedureSpecification(
       ProcedureStatus procedureStatusFilter,
       ProcedureType procedureTypeFilter,
-      ArrayList<UUID> schoolIdFilter,
+      UUID schoolIdFilter,
       Year schoolYearFilter,
       Instant dayOfAppointmentFilter,
       Boolean hasAppointmentFilter,
@@ -82,8 +82,9 @@ public class SchoolEntryProcedureSpecification implements Specification<SchoolEn
               root.get(SchoolEntryProcedure_.procedureType), procedureTypeFilter));
     }
 
-    if (schoolIdFilter != null && !schoolIdFilter.isEmpty()) {
-      conjunctions.add(root.get(SchoolEntryProcedure_.schoolId).in(schoolIdFilter));
+    if (schoolIdFilter != null) {
+      conjunctions.add(
+          criteriaBuilder.equal(root.get(SchoolEntryProcedure_.schoolId), schoolIdFilter));
     }
 
     if (schoolYearFilter != null) {

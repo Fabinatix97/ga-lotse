@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
@@ -14,12 +13,11 @@ import {
 } from "@/lib/businessModules/inspection/api/clients";
 import { getChecklistDefinitionVersionQuery } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
 import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
-import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
+import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/editor/EditChecklistDefinition";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 export default function NewChecklistVersion({
   params: { defId, versionId },
@@ -41,10 +39,6 @@ export default function NewChecklistVersion({
     throw new Error("defId does not match");
   }
 
-  const canWrite = useHasUserRoleCheck(
-    ApiUserRole.InspectionChecklistdefinitionsWrite,
-  );
-
   return (
     <StickyToolbarLayout
       toolbar={
@@ -57,7 +51,6 @@ export default function NewChecklistVersion({
       <MainContentLayout>
         <EditChecklistDefinition
           cldVersion={checklistVersion}
-          readonly={!canWrite}
           objectTypes={objectTypes}
         />
       </MainContentLayout>

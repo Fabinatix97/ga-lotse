@@ -5,34 +5,34 @@
 
 import { Switch } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { ChangeEvent, ReactNode, useCallback } from "react";
 
-import { useAdminApi } from "@/lib/api/clients";
 import { Actor } from "@/lib/components/view/actors/ActorTable";
+import { isOneOfStagedEntity } from "@/lib/helpers/entityFilter";
 import { getRowIdentifier } from "@/lib/helpers/table";
 import { useConfirmationDialog } from "@/lib/hooks/useConfirmationDialog";
 import { OrgUnit } from "@/lib/hooks/useOrgUnits";
 import { Rule } from "@/lib/hooks/useRules";
 import { useTranslation } from "@/lib/i18n/client";
 
-function isActor(entity: OrgUnit | Actor | Rule | undefined): entity is Actor {
-  const keys = Object.keys(entity ?? {});
-  return (
-    keys.includes("orgUnitId") ||
-    (!keys.includes("actors") && !keys.includes("client"))
-  );
-}
-
-function isRule(entity: OrgUnit | Actor | Rule | undefined): entity is Rule {
-  const keys = Object.keys(entity ?? {});
-  return keys.includes("client");
-}
-
-export function InteractiveActiveCell<TData extends OrgUnit | Actor | Rule>(
-  props: Readonly<CellContext<TData, boolean>>,
+export function ActiveCell(
+  props:
+    | Readonly<CellContext<OrgUnit, boolean>>
+    | Readonly<CellContext<Actor, boolean>>
+    | Readonly<CellContext<Rule, boolean>>,
 ): ReactNode {
-  const adminApi = useAdminApi();
+  if (!isOneOfStagedEntity(props.row.original)) {
+    return <InteractiveActiveCell {...props} />;
+  }
+  return <EditableActiveCell {...props} />;
+}
 
+function InteractiveActiveCell(
+  props:
+    | Readonly<CellContext<OrgUnit, boolean>>
+    | Readonly<CellContext<Actor, boolean>>
+    | Readonly<CellContext<Rule, boolean>>,
+): ReactNode {
   const { t } = useTranslation();
 
   const labelAction = props.getValue() ? t("deactivate") : t("activate");
@@ -49,39 +49,17 @@ export function InteractiveActiveCell<TData extends OrgUnit | Actor | Rule>(
   );
 
   const id = props.row.original.id;
-  const actor = isActor(props.row.original);
-  const rule = isRule(props.row.original);
-
-  function activate() {
-    if (actor) {
-      return adminApi.activateActorById(id);
-    } else if (rule) {
-      return adminApi.activateRuleById(id);
-    } else {
-      return adminApi.activateOrgUnitById(id);
-    }
-  }
-
-  function deactivate() {
-    if (actor) {
-      return adminApi.deactivateActorById(id);
-    } else if (rule) {
-      return adminApi.deactivateRuleById(id);
-    } else {
-      return adminApi.deactivateOrgUnitById(id);
-    }
-  }
 
   async function switchActive() {
     if (!(await getConfirmation())) {
       return;
     }
 
-    const response = props.getValue() ? await deactivate() : await activate();
-    props.table.options.meta?.updateData({
-      ...props.row.original,
-      ...response,
-    });
+    if (props.getValue()) {
+      props.table.options.meta?.api?.deactivate(id);
+    } else {
+      props.table.options.meta?.api?.activate(id);
+    }
   }
 
   return (
@@ -105,4 +83,29 @@ export function InteractiveActiveCell<TData extends OrgUnit | Actor | Rule>(
 
 export function getActiveLabel<TValue>(flag: TValue): string {
   return flag ? "✅" : "❌";
+}
+
+function EditableActiveCell(
+  props:
+    | Readonly<CellContext<OrgUnit, boolean>>
+    | Readonly<CellContext<Actor, boolean>>
+    | Readonly<CellContext<Rule, boolean>>,
+): ReactNode {
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      props.table.options.meta?.api?.update({
+        id: props.row.original.id,
+        active: event.target.checked,
+      });
+    },
+    [props.row, props.table.options.meta],
+  );
+
+  return (
+    <Switch
+      checked={props.getValue()}
+      onChange={handleChange}
+      onClick={(event) => event.stopPropagation()}
+    />
+  );
 }

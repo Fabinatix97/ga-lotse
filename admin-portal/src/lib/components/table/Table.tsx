@@ -35,7 +35,6 @@ declare module "@tanstack/react-table" {
   }
 
   interface TableMeta<TData> {
-    updateData: (update: TData & UniqueEntity) => void;
     api?: TableApi<TData>;
   }
 }

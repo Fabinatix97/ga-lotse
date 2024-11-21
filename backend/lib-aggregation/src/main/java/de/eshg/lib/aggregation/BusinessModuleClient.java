@@ -8,10 +8,14 @@ package de.eshg.lib.aggregation;
 import de.eshg.calendar.lib.EventMetadataApi;
 import de.eshg.calendar.lib.api.GetMetadataOfEventsRequest;
 import de.eshg.calendar.lib.api.GetMetadataOfEventsResponse;
-import de.eshg.lib.aggregation.spring.BusinessModulesConfigurationProperties;
+import de.eshg.lib.aggregation.spring.BusinessModulesConfigurationProperties.BusinessModuleClientProperties;
+import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.contact.api.ContactEventCallbackApi;
+import de.eshg.lib.contact.model.ContactsMergedEvent;
 import de.eshg.lib.notification.NotificationApi;
 import de.eshg.lib.notification.api.GetNotificationsResponse;
 import de.eshg.lib.notification.api.MarkNotificationsAsReadRequest;
+import de.eshg.lib.procedure.api.GdprValidationTaskApi;
 import de.eshg.lib.procedure.api.ProcedureApi;
 import de.eshg.lib.procedure.api.ProcedureMetricsApi;
 import de.eshg.lib.procedure.api.RecentProcedureApi;
@@ -25,6 +29,10 @@ import de.eshg.lib.procedure.model.GetTasksSortOptions;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import de.eshg.lib.procedure.model.TaskResponse;
+import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
+import de.eshg.lib.procedure.model.gdpr.GetGdprNotificationBannerResponse;
+import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
+import de.eshg.lib.procedure.model.gdpr.GetRelatedBusinessProceduresResponse;
 import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
@@ -41,29 +49,37 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-public class BusinessModuleClient extends ClientWithLocationAndTimeout
+public class BusinessModuleClient
     implements TaskListApi,
         TaskMetricsApi,
         EventMetadataApi,
         NotificationApi,
         StatisticsApi,
         RecentProcedureApi,
-        ProcedureMetricsApi {
+        ProcedureMetricsApi,
+        GdprValidationTaskApi {
 
+  private final BusinessModule businessModule;
+  private final String url;
+  private final Duration clientTimeout;
   private final TaskListApi taskListApiDelegate;
   private final TaskMetricsApi taskMetricsApiDelegate;
   private final ProcedureApi procedureApiDelegate;
   private final EventMetadataApi eventMetadataApiDelegate;
   private final NotificationApi notificationApiDelegate;
   private final StatisticsApi statisticsApiDelegate;
+  private final GdprValidationTaskApi gdprValidationTaskApiDelegate;
+  private final ContactEventCallbackApi contactEventCallbackApiDelegate;
 
   public BusinessModuleClient(
-      String businessModule,
-      RestClient.Builder restClientBuilder,
-      ConversionService conversionService,
+      BusinessModule businessModule,
       String url,
-      Duration clientTimeout) {
-    super(businessModule, url, clientTimeout);
+      Duration clientTimeout,
+      RestClient.Builder restClientBuilder,
+      ConversionService conversionService) {
+    this.businessModule = businessModule;
+    this.url = url;
+    this.clientTimeout = clientTimeout;
 
     HttpServiceProxyFactory httpServiceProxyFactory =
         createHttpServiceProxyFactory(restClientBuilder, conversionService, url);
@@ -74,18 +90,35 @@ public class BusinessModuleClient extends ClientWithLocationAndTimeout
     eventMetadataApiDelegate = httpServiceProxyFactory.createClient(EventMetadataApi.class);
     notificationApiDelegate = httpServiceProxyFactory.createClient(NotificationApi.class);
     statisticsApiDelegate = httpServiceProxyFactory.createClient(StatisticsApi.class);
+    gdprValidationTaskApiDelegate =
+        httpServiceProxyFactory.createClient(GdprValidationTaskApi.class);
+    contactEventCallbackApiDelegate =
+        httpServiceProxyFactory.createClient(ContactEventCallbackApi.class);
   }
 
   public BusinessModuleClient(
-      BusinessModulesConfigurationProperties.BusinessModuleClientProperties clientProperties,
+      BusinessModule businessModule,
+      BusinessModuleClientProperties clientProperties,
       RestClient.Builder restClientBuilder,
       ConversionService conversionService) {
     this(
-        clientProperties.getType(),
+        businessModule,
+        clientProperties.url(),
+        clientProperties.clientTimeout(),
         restClientBuilder,
-        conversionService,
-        clientProperties.getUrl(),
-        clientProperties.getClientTimeout());
+        conversionService);
+  }
+
+  public BusinessModule getBusinessModule() {
+    return businessModule;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public Duration getClientTimeout() {
+    return clientTimeout;
   }
 
   private static HttpServiceProxyFactory createHttpServiceProxyFactory(
@@ -175,5 +208,35 @@ public class BusinessModuleClient extends ClientWithLocationAndTimeout
   @Override
   public GetSpecificDataResponse getSpecificData(GetSpecificDataRequest getSpecificDataRequest) {
     return statisticsApiDelegate.getSpecificData(getSpecificDataRequest);
+  }
+
+  @Override
+  public void addGdprValidationTask(AddGdprValidationTaskRequest addGdprValidationTaskRequest) {
+    gdprValidationTaskApiDelegate.addGdprValidationTask(addGdprValidationTaskRequest);
+  }
+
+  @Override
+  public void addDownloadPackage(UUID gdprProcedureId, UUID businessProcedureId) {
+    gdprValidationTaskApiDelegate.addDownloadPackage(gdprProcedureId, businessProcedureId);
+  }
+
+  @Override
+  public GetGdprNotificationBannerResponse getGdprNotificationBanner() {
+    return gdprValidationTaskApiDelegate.getGdprNotificationBanner();
+  }
+
+  @Override
+  public GetGdprValidationTaskResponse getGdprValidationTask(UUID id) {
+    return gdprValidationTaskApiDelegate.getGdprValidationTask(id);
+  }
+
+  @Override
+  public GetRelatedBusinessProceduresResponse getRelatedBusinessProcedures(UUID gdprProcedureId) {
+    return gdprValidationTaskApiDelegate.getRelatedBusinessProcedures(gdprProcedureId);
+  }
+
+  public void broadcastContactsMergedEvent(UUID mergedFromId, UUID mergedIntoId) {
+    contactEventCallbackApiDelegate.contactsMerged(
+        new ContactsMergedEvent(mergedFromId, mergedIntoId));
   }
 }

@@ -1,0 +1,58 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1726999149283-1">
+    <sql dbms="postgresql">
+      create
+      temp table used_person_address_ids on commit drop
+      as
+      select contact_address_id as id
+      from person
+      where contact_address_id is not null
+      UNION
+      select different_billing_address_id as id
+      from person
+      where different_billing_address_id is not null;
+
+      delete
+      from domestic_person_address
+      where id not in (select id from used_person_address_ids);
+      delete
+      from postbox_person_address
+      where id not in (select id from used_person_address_ids);
+      delete
+      from person_address
+      where id not in (select id from used_person_address_ids);
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1726999149283-2">
+    <sql dbms="postgresql">
+      create
+      temp table used_facility_address_ids on commit drop
+      as
+      select contact_address_id as id
+      from facility
+      where contact_address_id is not null
+      UNION
+      select different_billing_address_id as id
+      from facility
+      where different_billing_address_id is not null;
+
+      delete
+      from domestic_facility_address
+      where id not in (select id from used_facility_address_ids);
+      delete
+      from postbox_facility_address
+      where id not in (select id from used_facility_address_ids);
+      delete
+      from facility_address
+      where id not in (select id from used_facility_address_ids);
+    </sql>
+  </changeSet>
+</databaseChangeLog>

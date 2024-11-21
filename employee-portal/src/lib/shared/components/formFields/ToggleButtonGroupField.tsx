@@ -12,7 +12,7 @@ import { FieldProps } from "@eshg/lib-portal/types/form";
 import { Button, ToggleButtonGroup } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
-interface ToggleButtonGroupFieldProps extends FieldProps<string> {
+export interface ToggleButtonGroupFieldProps extends FieldProps<string> {
   options: SelectOption[];
   sx?: SxProps;
   disabled?: boolean;

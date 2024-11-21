@@ -16,7 +16,7 @@ public record GetPersonFileStatesResponse(
     @ArraySchema(arraySchema = @Schema(description = "A list of person file states"))
         @Valid
         @NotNull
-        List<AddPersonFileStateResponse> personFileStates,
+        List<GetPersonFileStateResponse> personFileStates,
     @ArraySchema(
             arraySchema =
                 @Schema(

@@ -796,6 +796,10 @@ public class InspectionUpdater {
       if (inspection.getLockedBy() == null) {
         inspection.setLockedBy(CurrentUserHelper.getCurrentUserId());
         inspection.setLockedAt(Instant.now(clock));
+      } else if (inspection.getLockedBy().equals(CurrentUserHelper.getCurrentUserId())) {
+        // User tried to lock the inspection which is already locked by him.
+        // That's ok and it is a no-op. We don't even update the modified timestamp.
+        return inspection;
       } else {
         throw new BadRequestException(ErrorCode.LOCKED, "The inspection is already locked.");
       }
@@ -809,6 +813,10 @@ public class InspectionUpdater {
           throw new BadRequestException(
               ErrorCode.LOCKED, "User is not allowed to unlock inspection.");
         }
+      } else {
+        // User tried to unlock an inspection which is not locked.
+        // That's ok and it is a no-op. We don't even update the modified timestamp.
+        return inspection;
       }
     }
     updateModified(inspection);

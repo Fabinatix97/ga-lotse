@@ -9,6 +9,7 @@ import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.VACCIN
 import static de.eshg.travelmedicine.util.TravelMedicineProgressEntryType.VACCINATION_EDIT;
 import static de.eshg.travelmedicine.util.Validators.validateBatchId;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.inventory.InventoryApi;
 import de.eshg.base.inventory.api.BookInventoryItemRequest;
 import de.eshg.base.user.UserApi;
@@ -36,12 +37,10 @@ import de.eshg.travelmedicine.vaccine.persistence.entity.Vaccine;
 import de.eshg.travelmedicine.vaccine.persistence.entity.VaccineRepository;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -230,7 +229,7 @@ public class VcServiceService {
     Set<UUID> groupUserIds =
         userApi.getUsersByGroup(group.getKeycloakName()).users().stream()
             .map(UserDto::userId)
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+            .collect(StreamUtil.toLinkedHashSet());
     if (!groupUserIds.contains(userId)) {
       throw new BadRequestException(
           "UserId does not belong to the technical group " + group.name());
@@ -282,7 +281,7 @@ public class VcServiceService {
       return note.append("\n")
           .append(
               String.format(
-                  "Abbuchung erfolgreich. Der Bestand für Impfstoff %s wurde erfolgreich aktualisiert.",
+                  "Abbuchung ist erfolgt. Der Bestand für Impfstoff %s wurde aktualisiert.",
                   vaccination.getVaccineName()))
           .toString();
     }

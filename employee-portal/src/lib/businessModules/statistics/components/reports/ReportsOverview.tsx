@@ -13,8 +13,8 @@ import { translateReportType } from "@/lib/businessModules/statistics/api/mapper
 import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
+import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -95,6 +95,7 @@ export function ReportsOverview() {
         mapFilterValuesToReportsFilter(filterValues)[0] as ApiReportType,
       );
     },
+    showSearch: false,
   });
 
   const paginationProps = getPaginationProps({
@@ -126,7 +127,6 @@ export function ReportsOverview() {
         <DataTable
           striped={false}
           wrapContent
-          wrapHeader
           columns={getReportsOverviewColumns(
             copy,
             deleteReportWithConfirmation,
@@ -142,7 +142,8 @@ export function ReportsOverview() {
           )}
           rowNavigation={{
             route: (row) =>
-              row.original.type !== "SERIES"
+              // For Reports overview, only completed reports are shown
+              row.original.type !== ReportDataType.Series
                 ? routes.reports.details(row.original.reportId).index
                 : undefined,
             focusColumnAccessorKey: "name",

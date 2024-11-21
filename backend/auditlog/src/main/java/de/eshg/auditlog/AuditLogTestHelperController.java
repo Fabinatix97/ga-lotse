@@ -5,8 +5,6 @@
 
 package de.eshg.auditlog;
 
-import de.eshg.auditlog.feature.AuditLogFeature;
-import de.eshg.auditlog.feature.AuditLogFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogArchiving;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
@@ -28,17 +26,14 @@ public class AuditLogTestHelperController implements AuditLogTestHelperApi {
   private final AuditLogArchiving auditLogArchiving;
   private final AuditLogServiceConfig auditLogServiceConfig;
   private final AuditLogTestHelperService auditLogTestHelperService;
-  private final AuditLogFeatureToggle auditLogFeatureToggle;
 
   public AuditLogTestHelperController(
       AuditLogArchiving auditLogArchiving,
       AuditLogServiceConfig auditLogServiceConfig,
-      AuditLogTestHelperService auditLogTestHelperService,
-      AuditLogFeatureToggle auditLogFeatureToggle) {
+      AuditLogTestHelperService auditLogTestHelperService) {
     this.auditLogArchiving = auditLogArchiving;
     this.auditLogServiceConfig = auditLogServiceConfig;
     this.auditLogTestHelperService = auditLogTestHelperService;
-    this.auditLogFeatureToggle = auditLogFeatureToggle;
   }
 
   @Override
@@ -53,10 +48,5 @@ public class AuditLogTestHelperController implements AuditLogTestHelperApi {
   @Override
   public void runArchivingJob() {
     auditLogArchiving.runArchivingJob();
-  }
-
-  @Override
-  public void enableNewFeature(AuditLogFeature featureToEnable) {
-    auditLogFeatureToggle.enableNewFeature(featureToEnable);
   }
 }

@@ -10,6 +10,7 @@ import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
@@ -71,13 +72,13 @@ public class PersonClient {
       return Stream.empty();
     }
 
-    Map<UUID, AddPersonFileStateResponse> personsById = fetchAllRelatedPersons(procedures);
+    Map<UUID, GetPersonFileStateResponse> personsById = fetchAllRelatedPersons(procedures);
 
     return procedures.stream()
         .map(procedure -> extractRelatedPersonDetailsData(procedure, personsById));
   }
 
-  private Map<UUID, AddPersonFileStateResponse> fetchAllRelatedPersons(
+  private Map<UUID, GetPersonFileStateResponse> fetchAllRelatedPersons(
       List<MeaslesProtectionProcedure> procedures) {
     List<UUID> personIdsToFetch =
         procedures.stream()
@@ -94,19 +95,19 @@ public class PersonClient {
     }
 
     return response.personFileStates().stream()
-        .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id));
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   private static ProcedureWithPersonDetailsData extractRelatedPersonDetailsData(
-      MeaslesProtectionProcedure procedure, Map<UUID, AddPersonFileStateResponse> personsById) {
+      MeaslesProtectionProcedure procedure, Map<UUID, GetPersonFileStateResponse> personsById) {
     UUID patientId = procedure.getPatientIdFromCentralFile();
-    AddPersonFileStateResponse personDto = personsById.get(patientId);
+    GetPersonFileStateResponse personDto = personsById.get(patientId);
     if (personDto == null) {
       throw new NotFoundException(
           "No related person found", "No related person found: " + patientId);
     }
 
-    List<AddPersonFileStateResponse> custodianDtos =
+    List<GetPersonFileStateResponse> custodianDtos =
         procedure.getCustodianIdsFromCentralFile().stream().map(personsById::get).toList();
     return new ProcedureWithPersonDetailsData(procedure, personDto, custodianDtos);
   }

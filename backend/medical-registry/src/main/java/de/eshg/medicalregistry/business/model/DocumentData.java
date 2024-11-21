@@ -5,28 +5,11 @@
 
 package de.eshg.medicalregistry.business.model;
 
+import jakarta.annotation.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
-public class DocumentData {
-  private final String fileName;
-  private final String description;
-  private final MultipartFile file;
-
-  public DocumentData(String fileName, String description, MultipartFile file) {
-    this.fileName = fileName;
-    this.description = description;
-    this.file = file;
-  }
-
-  public String getFileName() {
-    return fileName;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public MultipartFile getFile() {
-    return file;
-  }
-}
+public record DocumentData(
+    String fileName,
+    String description,
+    @Nullable MedicalRegistryKeyDocumentType keyDocumentType,
+    MultipartFile file) {}

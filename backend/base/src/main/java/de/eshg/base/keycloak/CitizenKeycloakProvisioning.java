@@ -6,6 +6,7 @@
 package de.eshg.base.keycloak;
 
 import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.BEAN_NAME;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ACCOUNT_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ACCOUNT_CONSOLE_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ADMIN_CLI_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.BROKER_CLIENT_ID;
@@ -18,6 +19,7 @@ import de.eshg.mutex.MutexService;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
@@ -38,6 +40,11 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
 
   static final String PORTAL_BROWSER_FLOW_ALIAS = "portal browser";
   public static final String SYNC_MODE = "syncMode";
+  public static final String NAMEID_FORMAT_PERSISTENT =
+      "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
+  public static final String NAMEID_FORMAT_TRANSIENT =
+      "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
+  public static final String BPK2_ATTRIBUTE = "bPK2";
 
   public CitizenKeycloakProvisioning(
       CitizenKeycloakClient citizenKeycloakClient,
@@ -85,6 +92,7 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     disableClients(
         Set.of(
             ACCOUNT_CONSOLE_CLIENT_ID,
+            ACCOUNT_CLIENT_ID,
             ADMIN_CLI_CLIENT_ID,
             BROKER_CLIENT_ID,
             SECURITY_ADMIN_CONSOLE_CLIENT_ID,
@@ -114,7 +122,11 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     KeycloakProperties.IdentityProvider mukIdp = keycloakProperties.citizenRealm().mukIdp();
     if (mukIdp.enabled()) {
       identityProviders.add(
-          getSAMLIdentityProvider(MUK_IDENTITY_PROVIDER_ALIAS, "Mein Unternehmenskonto", mukIdp));
+          getSAMLIdentityProvider(
+              MUK_IDENTITY_PROVIDER_ALIAS,
+              "Mein Unternehmenskonto",
+              mukIdp,
+              new NameIdPolicy(NAMEID_FORMAT_PERSISTENT, "Subject NameID", null)));
       identityProviderMappers.add(
           getSAMLIdentityProviderMapper(
               MUK_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.MUK_USER));
@@ -123,7 +135,11 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
     KeycloakProperties.IdentityProvider bundIdIdp = keycloakProperties.citizenRealm().bundIdIdp();
     if (bundIdIdp.enabled()) {
       identityProviders.add(
-          getSAMLIdentityProvider(BUND_ID_IDENTITY_PROVIDER_ALIAS, "BundID", bundIdIdp));
+          getSAMLIdentityProvider(
+              BUND_ID_IDENTITY_PROVIDER_ALIAS,
+              "BundID",
+              bundIdIdp,
+              new NameIdPolicy(NAMEID_FORMAT_TRANSIENT, "ATTRIBUTE", BPK2_ATTRIBUTE)));
       identityProviderMappers.add(
           getSAMLIdentityProviderMapper(
               BUND_ID_IDENTITY_PROVIDER_ALIAS, CitizenPermissionRole.BUND_ID_USER));
@@ -144,7 +160,10 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
   }
 
   private IdentityProviderRepresentation getSAMLIdentityProvider(
-      String idpAlias, String idpDisplayName, KeycloakProperties.IdentityProvider idpConfig) {
+      String idpAlias,
+      String idpDisplayName,
+      KeycloakProperties.IdentityProvider idpConfig,
+      NameIdPolicy nameIdPolicy) {
     IdentityProviderRepresentation identityProvider = new IdentityProviderRepresentation();
     identityProvider.setAlias(idpAlias);
     identityProvider.setDisplayName(idpDisplayName);
@@ -160,8 +179,8 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
             entry("singleSignOnServiceUrl", idpConfig.singleSignOnServiceUrl()),
             entry("singleLogoutServiceUrl", idpConfig.singleLogoutServiceUrl()),
             entry("backchannelSupported", FALSE),
-            entry("nameIDPolicyFormat", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"),
-            entry("principalType", "Subject NameID"),
+            entry("nameIDPolicyFormat", nameIdPolicy.policyFormat()),
+            entry("principalType", nameIdPolicy.principalType()),
             entry("postBindingResponse", TRUE),
             entry("postBindingAuthnRequest", TRUE),
             entry("postBindingLogout", TRUE),
@@ -180,6 +199,15 @@ public class CitizenKeycloakProvisioning extends KeycloakProvisioning<CitizenKey
             entry("xmlSigKeyInfoKeyNameTransformer", "KEY_ID"),
             entry("addExtensionsElementWithKeyInfo", FALSE),
             entry(SYNC_MODE, "FORCE")));
+
+    if (StringUtils.isNotBlank(nameIdPolicy.principalAttribute())) {
+      Map<String, String> config = new LinkedHashMap<>(identityProvider.getConfig());
+      config.put("principalAttribute", nameIdPolicy.principalAttribute());
+      identityProvider.setConfig(config);
+    }
     return identityProvider;
   }
+
+  private record NameIdPolicy(
+      String policyFormat, String principalType, String principalAttribute) {}
 }

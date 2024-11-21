@@ -32,6 +32,7 @@ export function ConfirmationElement({
       name={name}
       onChange={(event) => setFieldValue(name, event.target.checked)}
       disabled={readOnly}
+      data-testid="document-element-type-confirmation"
     />
   );
 }

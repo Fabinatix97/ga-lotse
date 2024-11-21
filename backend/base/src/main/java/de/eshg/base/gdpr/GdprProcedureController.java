@@ -5,7 +5,8 @@
 
 package de.eshg.base.gdpr;
 
-import static de.eshg.base.gdpr.GdprPocedureMapper.*;
+import static de.eshg.base.gdpr.GdprProcedureMapper.*;
+import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.mapper.FacilityMapper;
@@ -22,14 +23,24 @@ import de.eshg.base.gdpr.api.*;
 import de.eshg.base.gdpr.persistence.*;
 import de.eshg.base.pdf.gdpr.GdprRightToObjectLetterGenerator;
 import de.eshg.base.util.PaginationUtil;
+import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
+import de.eshg.lib.aggregation.ClientResponse;
+import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
+import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskStatusDto;
+import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
+import de.eshg.rest.service.error.AggregationException;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -55,6 +66,7 @@ public class GdprProcedureController implements GdprProcedureApi {
   private final FacilityRepository facilityRepository;
   private final GdprRightToObjectLetterGenerator rightToObjectLetterGenerator;
   private final BaseFeatureToggle baseFeatureToggle;
+  private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
 
   public GdprProcedureController(
       GdprProcedureService service,
@@ -63,7 +75,8 @@ public class GdprProcedureController implements GdprProcedureApi {
       PersonRepository personRepository,
       FacilityRepository facilityRepository,
       GdprRightToObjectLetterGenerator rightToObjectLetterGenerator,
-      BaseFeatureToggle baseFeatureToggle) {
+      BaseFeatureToggle baseFeatureToggle,
+      BusinessModuleAggregationHelper businessModuleAggregationHelper) {
     this.service = service;
     this.personService = personService;
     this.facilityService = facilityService;
@@ -71,6 +84,7 @@ public class GdprProcedureController implements GdprProcedureApi {
     this.facilityRepository = facilityRepository;
     this.rightToObjectLetterGenerator = rightToObjectLetterGenerator;
     this.baseFeatureToggle = baseFeatureToggle;
+    this.businessModuleAggregationHelper = businessModuleAggregationHelper;
   }
 
   @Override
@@ -89,8 +103,81 @@ public class GdprProcedureController implements GdprProcedureApi {
     return mapGdprProcedureToApi(getGdprProcedureFromDb(id));
   }
 
+  private static final Set<GdprProcedureType> TYPES_REQUIRING_BROADCAST =
+      Set.of(GdprProcedureType.RIGHT_TO_ERASURE, GdprProcedureType.RIGHT_OF_ACCESS);
+
+  @Override
+  @Transactional
+  public GetGdprProcedureResponse refreshStatus(UUID id) {
+    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
+
+    GdprProcedure gdprProcedureFromDb = service.getGdprProcedureForUpdate(id);
+
+    if (isStatusRefreshRequired(gdprProcedureFromDb)) {
+      List<GetGdprValidationTaskResponse> validationTasks =
+          getValidationTasksFromBusinessModules(id);
+      closeGdprProcedureIfAllValidationTasksClosed(validationTasks, gdprProcedureFromDb);
+    }
+
+    return mapGdprProcedureToApi(gdprProcedureFromDb);
+  }
+
+  private static boolean isStatusRefreshRequired(GdprProcedure gdprProcedureFromDb) {
+    return GdprProcedureStatus.IN_PROGRESS == gdprProcedureFromDb.getStatus()
+        && TYPES_REQUIRING_BROADCAST.contains(gdprProcedureFromDb.getType());
+  }
+
+  private void closeGdprProcedureIfAllValidationTasksClosed(
+      List<GetGdprValidationTaskResponse> validationTasks, GdprProcedure gdprProcedureFromDb) {
+    UUID id = gdprProcedureFromDb.getExternalId();
+    if (isAllClosed(validationTasks)) {
+      log.info("GdpProcedure(id={}) is closed. It has no open validation tasks.", id);
+      service.updateStatus(gdprProcedureFromDb, GdprProcedureStatus.CLOSED);
+    } else {
+      log.info("GdpProcedure(id={}) is not closed. It has open validation tasks.", id);
+    }
+  }
+
+  private static boolean isAllClosed(List<GetGdprValidationTaskResponse> validationTasks) {
+    return validationTasks.stream()
+        .allMatch(task -> GdprValidationTaskStatusDto.CLOSED.equals(task.status()));
+  }
+
   private GdprProcedure getGdprProcedureFromDb(UUID id) {
     return service.findByExternalId(id).orElseThrow(notFound(id));
+  }
+
+  private List<GetGdprValidationTaskResponse> getValidationTasksFromBusinessModules(UUID id) {
+    log.info("Getting GdprValidationTasks for GdprProcedure(id={}) from business modules.", id);
+    List<ClientResponse<GetGdprValidationTaskResponse>> clientResponses = doGetValidationTasks(id);
+    List<ErrorResponseWithLocation> errorResponses = aggregateErrorResponses(clientResponses);
+    if (hasError(errorResponses)) {
+      onBusinessModuleError(errorResponses, "getValidationTasks", id);
+    }
+
+    return clientResponses.stream().map(ClientResponse::response).collect(Collectors.toList());
+  }
+
+  private static boolean hasError(List<ErrorResponseWithLocation> errorResponses) {
+    return !errorResponses.isEmpty();
+  }
+
+  private static void onBusinessModuleError(
+      List<ErrorResponseWithLocation> errorResponses, String operationName, UUID id) {
+    String internalMsg =
+        "Operation %s failed for GdprProcedure(id=%s) in one or more business modules: %s"
+            .formatted(operationName, id, errorResponses);
+    throw new AggregationException(
+        ErrorCode.AGGREGATION_EXCEPTION, "Unexpected error during refresh.", internalMsg);
+  }
+
+  private List<ClientResponse<GetGdprValidationTaskResponse>> doGetValidationTasks(
+      UUID gdprProcedureId) {
+    return businessModuleAggregationHelper.requestFromBusinessModules(
+        null,
+        client -> {
+          return client.getGdprValidationTask(gdprProcedureId);
+        });
   }
 
   @Override
@@ -111,7 +198,7 @@ public class GdprProcedureController implements GdprProcedureApi {
           linkedPersons = List.of(personService.getReferencePerson(procedure.centralFileId()));
         } else if (procedure.status() == GdprProcedureStatusDto.DRAFT) {
           personMatches =
-              personService.fuzzySearch(
+              personService.fuzzySearchIncludingDeleted(
                   person.firstName(), person.lastName(), person.dateOfBirth());
         }
       }
@@ -120,7 +207,8 @@ public class GdprProcedureController implements GdprProcedureApi {
           linkedFacilities =
               List.of(facilityService.getReferenceFacility(procedure.centralFileId()));
         } else if (procedure.status() == GdprProcedureStatusDto.DRAFT) {
-          facilityMatches = facilityService.searchReferenceFacilities(facility.name());
+          facilityMatches =
+              facilityService.searchReferenceFacilitiesIncludingDeleted(facility.name());
         }
       }
     }
@@ -193,40 +281,138 @@ public class GdprProcedureController implements GdprProcedureApi {
   @Override
   @Transactional
   public void setMatterOfConcern(UUID id, SetMatterOfConcernRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
-    GdprProcedure procedure = service.getGdprProcedureForUpdate(id);
-    ValidationUtil.validateVersion(request.version(), procedure);
+    GdprProcedure procedure = getProcedureAndValidateVersion(id, request.version());
     procedure.setMatterOfConcern(request.concern());
   }
 
   @Override
   @Transactional
-  public void changeStatus(UUID id, GdprProcedureChangeStatusRequest request) {
-    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
-    GdprProcedure procedure = service.getGdprProcedureForUpdate(id);
+  public void startProcedure(UUID id, StartGdprProcedureRequest request) {
+    GdprProcedure procedure = getProcedureAndValidateVersion(id, request.version());
 
-    if (procedure.getType() != GdprProcedureType.RIGHT_TO_OBJECT) {
-      throw new BadRequestException(
-          "Changing the status of GDPR procedures with type '"
-              + procedure.getType()
-              + "' is not supported yet.");
+    if (isInvalidStatus(procedure, GdprProcedureStatus.DRAFT)) {
+      throw badStatusTransition(GdprProcedureStatusDto.IN_PROGRESS, procedure.getStatus());
     }
 
-    ValidationUtil.validateVersion(request.version(), procedure);
-
-    if (procedure.getStatus() == GdprProcedureStatus.DRAFT) {
-      if (request.newStatus() != GdprProcedureStatusDto.IN_PROGRESS) {
-        throw badStatusTransition(request.newStatus(), procedure.getStatus());
-      }
-
+    GdprProcedureType currentType = procedure.getType();
+    if (currentType == GdprProcedureType.RIGHT_OF_ACCESS
+        || currentType == GdprProcedureType.RIGHT_TO_ERASURE) {
+      validateGdprProcedureState(procedure);
+      log.info(
+          "Attempting to broadcast ValidationTasks for GdprProcedure(id={}) of type {}",
+          id,
+          currentType);
+      createValidationTasks(procedure);
+    } else {
       if (procedure.getMatterOfConcern() == null) {
         throw new BadRequestException("Cannot start procedure without valid matter of concern.");
       }
-
-      procedure.setStatus(GdprProcedureStatus.IN_PROGRESS);
-    } else {
-      throw badStatusTransition(request.newStatus(), procedure.getStatus());
     }
+
+    changeStatusAndLog(id, procedure, GdprProcedureStatus.IN_PROGRESS);
+  }
+
+  @Override
+  @Transactional
+  public void cancelProcedure(UUID id, CancelGdprProcedureRequest request) {
+    GdprProcedure procedure = getProcedureAndValidateVersion(id, request.version());
+
+    validateType(
+        procedure, GdprProcedureType.RIGHT_TO_OBJECT, GdprProcedureType.RIGHT_TO_RECTIFICATION);
+
+    if (isInvalidStatus(procedure, GdprProcedureStatus.DRAFT, GdprProcedureStatus.IN_PROGRESS)) {
+      throw badStatusTransition(GdprProcedureStatusDto.ABORTED, procedure.getStatus());
+    }
+
+    procedure.setInternalNote(request.internalNote());
+    changeStatusAndLog(id, procedure, GdprProcedureStatus.ABORTED);
+  }
+
+  @Override
+  @Transactional
+  public void closeProcedure(UUID id, CloseGdprProcedureRequest request) {
+    GdprProcedure procedure = getProcedureAndValidateVersion(id, request.version());
+
+    validateType(
+        procedure, GdprProcedureType.RIGHT_TO_OBJECT, GdprProcedureType.RIGHT_TO_RECTIFICATION);
+
+    if (isInvalidStatus(procedure, GdprProcedureStatus.IN_PROGRESS)) {
+      throw badStatusTransition(GdprProcedureStatusDto.CLOSED, procedure.getStatus());
+    }
+
+    procedure.setInternalNote(request.internalNote());
+    changeStatusAndLog(id, procedure, GdprProcedureStatus.CLOSED);
+  }
+
+  private void changeStatusAndLog(UUID id, GdprProcedure procedure, GdprProcedureStatus newStatus) {
+    procedure.setStatus(newStatus);
+    log.info(
+        "Changed status of GdprProcedure(id={}) of type {} from {} to {}",
+        id,
+        procedure.getType(),
+        procedure.getStatus(),
+        newStatus);
+  }
+
+  private GdprProcedure getProcedureAndValidateVersion(UUID id, long version) {
+    baseFeatureToggle.assertNewFeatureIsEnabled(BaseFeature.GDPR);
+    GdprProcedure procedure = service.getGdprProcedureForUpdate(id);
+    ValidationUtil.validateVersion(version, procedure);
+    return procedure;
+  }
+
+  private static void validateType(GdprProcedure procedure, GdprProcedureType... validTypes) {
+    GdprProcedureType currentType = procedure.getType();
+    for (GdprProcedureType validType : validTypes) {
+      if (currentType == validType) {
+        return;
+      }
+    }
+
+    throw new BadRequestException(
+        "Not supported for procedures of type '%s'".formatted(currentType));
+  }
+
+  private static boolean isInvalidStatus(
+      GdprProcedure procedure, GdprProcedureStatus... validStatuses) {
+    GdprProcedureStatus currentStatus = procedure.getStatus();
+    for (GdprProcedureStatus validStatus : validStatuses) {
+      if (currentStatus == validStatus) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private void createValidationTasks(GdprProcedure gdprProcedure) {
+    AddGdprValidationTaskRequest request =
+        new AddGdprValidationTaskRequest(
+            gdprProcedure.getExternalId(),
+            mapToValidationTaskApi(gdprProcedure.getType()),
+            gdprProcedure.getCreatedAt());
+    List<ErrorResponseWithLocation> errorResponses = postValidationTasks(request);
+
+    if (hasError(errorResponses)) {
+      log.error(
+          "Error from one or more Business Modules while creating ValidationTasks for GdprProcedure(id={}): {}",
+          gdprProcedure.getExternalId(),
+          errorResponses);
+      throw new BadRequestException(
+          ErrorCode.UNEXPECTED_ERROR,
+          "Error from one or more Business Modules while creating ValidationTasks");
+    }
+  }
+
+  private List<ErrorResponseWithLocation> postValidationTasks(
+      AddGdprValidationTaskRequest request) {
+    return aggregateErrorResponses(
+        businessModuleAggregationHelper.requestFromBusinessModules(
+            null,
+            client -> {
+              client.addGdprValidationTask(request);
+              return null;
+            }));
   }
 
   @Override

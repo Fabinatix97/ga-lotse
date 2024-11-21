@@ -5,9 +5,7 @@
 
 package de.eshg.inspection.report;
 
-import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.inspection.checklist.persistence.Checklist;
-import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.report.mapper.ChecklistReportMapper;
 import de.eshg.inspection.report.mapper.IncidentReportMapper;
@@ -45,19 +43,16 @@ public class InspectionReportService {
   private final InspectionReportRepository inspectionReportRepository;
   private final InspectionReportElementRepository inspectionReportElementRepository;
   private final UserHelper userHelper;
-  private final FacilityClient facilityClient;
   private final Clock clock;
 
   public InspectionReportService(
       InspectionReportRepository inspectionReportRepository,
       InspectionReportElementRepository inspectionReportElementRepository,
       UserHelper userHelper,
-      FacilityClient facilityClient,
       Clock clock) {
     this.inspectionReportRepository = inspectionReportRepository;
     this.inspectionReportElementRepository = inspectionReportElementRepository;
     this.userHelper = userHelper;
-    this.facilityClient = facilityClient;
     this.clock = clock;
   }
 
@@ -74,17 +69,12 @@ public class InspectionReportService {
    * @return the created report
    */
   public Report createReport(Inspection inspection, InspectionSignature signature) {
-    // call base module to obtain the name of the facility.
-    GetFacilityFileStateResponse baseResponse =
-        facilityClient.getFacilityFileState(inspection.getFacility().getCentralFileStateId());
-
     Report report = new Report();
     report.setSignature(signature);
     report.setInspection(inspection);
     inspection.setReport(report);
 
-    String facilityName = baseResponse.name();
-    ChecklistReportMapper.addTopLevelTitle(report, facilityName);
+    ChecklistReportMapper.addTopLevelTitle(report);
     addInitialParticipants(report, inspection);
     addDateOfInspection(report, inspection, clock);
 

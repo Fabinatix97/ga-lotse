@@ -34,12 +34,16 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.PostVaccinationConsult
 import de.eshg.travelmedicine.vaccinationconsultation.api.SearchVaccinationConsultationResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.SyncPersonRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +81,7 @@ public class VaccinationConsultationController {
   public static final String STEPS_WITH_APPLIED_SERVICES = "/stepsWithAppliedServices";
   public static final String STATUS = "/status";
   public static final String INFORMATION_STATEMENT_URL = "/information-statements";
+  public static final String INFORMATION_STATEMENT_RESET_URL = "/reset";
   public static final String SYNC_PERSON_URL = "/sync-person";
   private final TravelMedicineFeatureToggle featureToggle;
   private final VaccinationConsultationService vaccinationConsultationService;
@@ -290,6 +295,21 @@ public class VaccinationConsultationController {
     return medicalHistoryService.getMedicalHistoriesForEmployeePortal(procedureId);
   }
 
+  @GetMapping(path = "/{procedureId}" + MEDICAL_HISTORY_URL + "/{medicalHistoryId}")
+  @Operation(summary = "Generate medical history pdf.")
+  @Transactional(readOnly = true)
+  @ApiResponse(
+      responseCode = "200",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+              schema = @Schema(format = "binary")))
+  public ResponseEntity<byte[]> getMedicalHistoryPdf(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("medicalHistoryId") UUID medicalHistoryId) {
+    return medicalHistoryService.createMedicalHistoryPdf(procedureId, medicalHistoryId);
+  }
+
   @GetMapping(path = "/{procedureId}" + STEPS_WITH_APPLIED_SERVICES)
   @Operation(
       summary =
@@ -326,6 +346,24 @@ public class VaccinationConsultationController {
     return informationStatementService.getInformationStatementsForEmployeePortal(procedureId);
   }
 
+  @GetMapping(path = "/{procedureId}" + INFORMATION_STATEMENT_URL + "/{informationStatementId}")
+  @Operation(summary = "Generate information statement pdf.")
+  @Transactional(readOnly = true)
+  @ApiResponse(
+      responseCode = "200",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+              schema = @Schema(format = "binary")))
+  public ResponseEntity<byte[]> getInformationStatementPdf(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("informationStatementId") UUID informationStatementId) {
+    featureToggle.assertNewFeatureIsEnabled(
+        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
+    return informationStatementService.createInformationStatementPdf(
+        procedureId, informationStatementId);
+  }
+
   @PostMapping(path = "/{procedureId}" + INFORMATION_STATEMENT_URL)
   @Operation(summary = "Add information statements to a procedure")
   @Transactional
@@ -346,6 +384,22 @@ public class VaccinationConsultationController {
     featureToggle.assertNewFeatureIsEnabled(
         TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
     informationStatementService.deleteInformationStatement(procedureId, informationStatementId);
+  }
+
+  @PutMapping(
+      path =
+          "/{procedureId}"
+              + INFORMATION_STATEMENT_URL
+              + "/{informationStatementId}"
+              + INFORMATION_STATEMENT_RESET_URL)
+  @Operation(summary = "Remove all answers given so far from the sheet and reset the answered flag")
+  @Transactional
+  public void resetInformationStatement(
+      @PathVariable("procedureId") UUID procedureId,
+      @PathVariable("informationStatementId") UUID informationStatementId) {
+    featureToggle.assertNewFeatureIsEnabled(
+        TravelMedicineFeature.CITIZEN_PORTAL_INFORMATION_STATEMENT);
+    informationStatementService.resetInformationStatement(procedureId, informationStatementId);
   }
 
   @PutMapping("/{procedureId}" + SYNC_PERSON_URL)

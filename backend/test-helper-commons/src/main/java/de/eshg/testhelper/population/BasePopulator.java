@@ -20,7 +20,6 @@ import java.util.stream.IntStream;
 import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -30,21 +29,23 @@ public abstract class BasePopulator<R> {
       UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
 
   protected final Logger log = LoggerFactory.getLogger(getClass());
-  private final Environment environment;
+
+  private final PopulationProperties properties;
   protected final Clock clock;
-  private final String entityNameInPropertyKey;
+  private final int defaultNumberOfEntitiesToPopulate;
   private final EnvironmentConfig environmentConfig;
 
   protected BasePopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
       String entityNameInPropertyKey,
       EnvironmentConfig environmentConfig) {
     environmentConfig.assertIsNotProduction();
     log.warn("Creating {}", getClass().getSimpleName());
+    this.properties = properties;
     this.clock = clock;
-    this.environment = environment;
-    this.entityNameInPropertyKey = entityNameInPropertyKey;
+    this.defaultNumberOfEntitiesToPopulate =
+        properties.getDefaultNumberOfEntitiesToPopulate(entityNameInPropertyKey);
     this.environmentConfig = environmentConfig;
   }
 
@@ -142,10 +143,15 @@ public abstract class BasePopulator<R> {
   @PostConstruct
   void automaticPopulationOnStartup() {
     environmentConfig.assertIsNotProduction();
-    int numberOfEntitiesToPopulate = getDefaultNumberOfEntitiesToPopulate();
 
-    if (numberOfEntitiesToPopulate == 0) {
+    if (!isPopulationEnabled()) {
       log.debug("{}: Automatic population is disabled", getName());
+      return;
+    }
+
+    int numberOfEntitiesToPopulate = getDefaultNumberOfEntitiesToPopulate();
+    if (numberOfEntitiesToPopulate == 0) {
+      log.debug("{}: Automatic population is disabled: Got zero entities to populate", getName());
       return;
     }
 
@@ -156,8 +162,12 @@ public abstract class BasePopulator<R> {
     }
   }
 
-  public Integer getDefaultNumberOfEntitiesToPopulate() {
-    return environment.getProperty("eshg.population." + entityNameInPropertyKey, Integer.class, 0);
+  public boolean isPopulationEnabled() {
+    return properties.enabled();
+  }
+
+  public int getDefaultNumberOfEntitiesToPopulate() {
+    return defaultNumberOfEntitiesToPopulate;
   }
 
   private String getName() {

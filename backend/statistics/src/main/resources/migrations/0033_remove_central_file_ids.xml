@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1729676568512-2">
+    <dropColumn columnName="subject_type" tableName="table_column"/>
+    <ext:dropPostgresEnumType name="subjecttype"/>
+
+    <sql>
+      UPDATE cell_entry ce1
+      SET cell_entries_order = cell_entries_order - 1
+      WHERE EXISTS (
+        SELECT 1
+        FROM cell_entry ce2
+               JOIN table_column tc ON ce2.table_column_id = tc.id
+        WHERE ce2.table_row_id = ce1.table_row_id
+          AND tc.value_type = 'CENTRAL_FILE_ID'
+          AND ce1.cell_entries_order > ce2.cell_entries_order
+      );
+    </sql>
+
+    <sql>
+      DELETE FROM cell_entry ce
+      WHERE EXISTS (
+        SELECT 1
+        FROM table_column tc
+        WHERE ce.table_column_id = tc.id
+          AND tc.value_type = 'CENTRAL_FILE_ID'
+      );
+    </sql>
+
+    <sql>
+      UPDATE table_column tc1
+      SET table_columns_order = table_columns_order - 1
+      WHERE EXISTS (
+        SELECT 1
+        FROM table_column tc2
+        WHERE tc2.value_type = 'CENTRAL_FILE_ID'
+          AND tc2.aggregation_result_id = tc1.aggregation_result_id
+          AND tc1.table_columns_order > tc2.table_columns_order
+      );
+    </sql>
+
+    <sql>
+      DELETE FROM table_column
+      WHERE value_type = 'CENTRAL_FILE_ID'
+    </sql>
+  </changeSet>
+</databaseChangeLog>

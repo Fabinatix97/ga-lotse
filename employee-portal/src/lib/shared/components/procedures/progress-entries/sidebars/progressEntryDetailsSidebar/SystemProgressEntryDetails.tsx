@@ -10,11 +10,11 @@ import {
 import { Chip } from "@mui/joy";
 import { isDefined } from "remeda";
 
-import { useFilteredAndSortedRelatedEntries } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
-  keyDocumentTypes,
-  systemProgressEntryTypeTitles,
-} from "@/lib/shared/components/procedures/progress-entries/constants";
+  useFilteredAndSortedRelatedEntries,
+  useProgressEntriesConfig,
+} from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { systemProgressEntryTypeTitles } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { displayTriggerer } from "@/lib/shared/components/procedures/progress-entries/helper";
 import {
   AllKeyDocumentVersions,
@@ -30,6 +30,8 @@ export function SystemProgressEntryDetails({
   entry: ApiSystemProgressEntry;
   relatedKeyDocumentProgressEntries: ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner[];
 }) {
+  const { keyDocumentTypes } = useProgressEntriesConfig();
+
   const titlePrefix = "Details";
   const titleSuffix =
     systemProgressEntryTypeTitles[entry.systemProgressEntryType];
@@ -73,10 +75,7 @@ export function SystemProgressEntryDetails({
         ),
       }}
     >
-      <LabelValueDisplay
-        label="Text"
-        value={entry.changeDescription ?? ""}
-      ></LabelValueDisplay>
+      <LabelValueDisplay label="Text" value={entry.changeDescription ?? ""} />
     </DetailsContentWrapper>
   );
 }

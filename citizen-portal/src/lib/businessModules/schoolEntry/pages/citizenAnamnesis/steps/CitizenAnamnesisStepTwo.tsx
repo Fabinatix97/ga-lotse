@@ -38,7 +38,7 @@ export function CitizenAnamnesisStepTwo({
 
   return (
     <ContentSheet>
-      <Typography level="h3">{t("additionalInfo.title")}</Typography>
+      <Typography level="h2">{t("additionalInfo.title")}</Typography>
       <InputField
         name={additionalChildInfo("responsiblePhysician")}
         label={
@@ -107,7 +107,7 @@ export function CitizenAnamnesisStepTwo({
           )}
         </FieldArray>
       </ToggleableSection>
-      <Typography level="h4">{t("additionalInfo.dayCareAndSchool")}</Typography>
+      <Typography level="h3">{t("additionalInfo.dayCareAndSchool")}</Typography>
       <ToggleableSection
         name={daycareAndSchoolInfo("wasInDaycare.show")}
         title={t("additionalInfo.wasInDaycare")}
@@ -176,9 +176,7 @@ export function CitizenAnamnesisStepTwo({
           label={t("additionalInfo.schoolName")}
         />
       </QuarterWidthGrid>
-      <Typography level="h4" component="h3">
-        {t("additionalInfo.interests")}
-      </Typography>
+      <Typography level="h3">{t("additionalInfo.interests")}</Typography>
       <Typography level="title-md">
         {t("additionalInfo.clubSportAndOther")}
       </Typography>

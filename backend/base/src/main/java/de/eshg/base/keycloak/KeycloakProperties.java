@@ -26,7 +26,7 @@ import org.springframework.validation.annotation.Validated;
 public record KeycloakProperties(
     @NotBlank String url,
     @Valid @NotNull Internal internal,
-    @Valid @NotNull Admin admin,
+    @Valid @NotNull KeycloakProperties.BootstrapAdmin bootstrapAdmin,
     @Valid @NotNull AdminClient adminClient,
     @Valid @NotNull SetupAdmin setupAdmin,
     @Valid @NotNull EmployeeRealm employeeRealm,
@@ -50,7 +50,7 @@ public record KeycloakProperties(
   public KeycloakProperties(
       String url,
       Internal internal,
-      Admin admin,
+      BootstrapAdmin bootstrapAdmin,
       AdminClient adminClient,
       SetupAdmin setupAdmin,
       EmployeeRealm employeeRealm,
@@ -68,7 +68,7 @@ public record KeycloakProperties(
       IdpTestRealm bundIdTestRealm) {
     this.url = url;
     this.internal = internal;
-    this.admin = admin;
+    this.bootstrapAdmin = bootstrapAdmin;
     this.adminClient = adminClient;
     this.setupAdmin = setupAdmin != null ? setupAdmin : new SetupAdmin(null, null, false);
     this.employeeRealm = employeeRealm;
@@ -213,7 +213,8 @@ public record KeycloakProperties(
 
   public record Internal(@NotBlank String url) {}
 
-  public record Admin(@NotBlank String user, @NotBlank String password) {}
+  public record BootstrapAdmin(
+      @NotBlank String user, @NotBlank String password, @NotNull Boolean enabled) {}
 
   public record AdminClient(@NotBlank String clientId, @NotBlank String clientSecret) {
     public String getKeycloakClientId() {

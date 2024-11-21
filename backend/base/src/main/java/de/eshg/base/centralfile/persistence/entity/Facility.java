@@ -8,7 +8,7 @@ package de.eshg.base.centralfile.persistence.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eshg.base.address.persistence.entity.Address;
 import de.eshg.base.centralfile.CentralFileData;
-import de.eshg.domain.model.BaseEntityWithExternalId;
+import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.*;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,7 +26,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(indexes = @Index(columnList = "reference_facility_id"))
 @EntityListeners(AuditingEntityListener.class)
-public class Facility extends BaseEntityWithExternalId implements CentralFileData {
+public class Facility extends SequencedBaseEntityWithExternalId implements CentralFileData {
 
   @DataSensitivity(SensitivityLevel.PROTECTED)
   @Column(nullable = false)
@@ -52,6 +53,7 @@ public class Facility extends BaseEntityWithExternalId implements CentralFileDat
       orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OrderBy
+  @BatchSize(size = 100)
   private final List<FacilityEmailAddress> emailAddresses = new ArrayList<>();
 
   @OneToMany(
@@ -61,6 +63,7 @@ public class Facility extends BaseEntityWithExternalId implements CentralFileDat
       orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OrderBy
+  @BatchSize(size = 100)
   private final List<FacilityPhoneNumber> phoneNumbers = new ArrayList<>();
 
   @OneToMany(
@@ -70,13 +73,14 @@ public class Facility extends BaseEntityWithExternalId implements CentralFileDat
       orphanRemoval = true)
   @OrderBy
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  @BatchSize(size = 100)
   private final List<FacilityContactPerson> contactPersons = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private FacilityAddress contactAddress;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private FacilityAddress differentBillingAddress;
 

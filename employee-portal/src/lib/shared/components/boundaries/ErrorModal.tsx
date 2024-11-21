@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { ErrorAlert } from "@eshg/lib-portal/errorHandling/ErrorAlert";
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { useState } from "react";
-
-import { BaseModal } from "@/lib/shared/components/BaseModal";
 
 interface ErrorModalProps {
   title?: string;

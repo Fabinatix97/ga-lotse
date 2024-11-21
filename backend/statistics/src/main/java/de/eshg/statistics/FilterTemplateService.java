@@ -7,14 +7,14 @@ package de.eshg.statistics;
 
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.statistics.aggregation.StatisticService;
+import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.api.filtertemplate.AddFilterTemplateRequest;
 import de.eshg.statistics.api.filtertemplate.FilterTemplateDto;
 import de.eshg.statistics.api.filtertemplate.FilterTemplateIdAndName;
-import de.eshg.statistics.api.filtertemplate.GetFilterTemplatesForStatisticResponse;
+import de.eshg.statistics.api.filtertemplate.GetFilterTemplatesForEvaluationResponse;
 import de.eshg.statistics.mapper.FilterParameterMapper;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.FilterTemplate;
-import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.repository.FilterTemplateRepository;
 import java.util.List;
@@ -25,12 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class FilterTemplateService {
   private final FilterTemplateRepository filterTemplateRepository;
-  private final StatisticService statisticService;
+  private final EvaluationService evaluationService;
 
   public FilterTemplateService(
-      FilterTemplateRepository filterTemplateRepository, StatisticService statisticService) {
+      FilterTemplateRepository filterTemplateRepository, EvaluationService evaluationService) {
     this.filterTemplateRepository = filterTemplateRepository;
-    this.statisticService = statisticService;
+    this.evaluationService = evaluationService;
   }
 
   @Transactional
@@ -68,15 +68,16 @@ public class FilterTemplateService {
   }
 
   @Transactional(readOnly = true)
-  public GetFilterTemplatesForStatisticResponse findFilterTemplatesForStatistic(UUID statisticId) {
-    Statistic statistic = statisticService.getStatisticInternal(statisticId);
+  public GetFilterTemplatesForEvaluationResponse findFilterTemplatesForEvaluation(
+      UUID evaluationId) {
+    Evaluation evaluation = evaluationService.getEvaluationInternal(evaluationId);
     List<String> allSearchKeys =
-        statistic.getTableColumns().stream().map(TableColumn::getSearchKey).toList();
+        evaluation.getTableColumns().stream().map(TableColumn::getSearchKey).toList();
 
     List<FilterTemplate> filterTemplates =
         filterTemplateRepository.findFilterTemplatesWithAllSearchKeysIn(allSearchKeys);
 
-    return new GetFilterTemplatesForStatisticResponse(
+    return new GetFilterTemplatesForEvaluationResponse(
         filterTemplates.stream()
             .map(
                 filterTemplate ->

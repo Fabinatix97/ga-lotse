@@ -9,6 +9,7 @@ import {
   ApiTemplateSection,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
@@ -41,6 +42,7 @@ export function MedicalHistoryTemplateEditor(
   props: Readonly<{ templateId?: string }>,
 ) {
   const router = useRouter();
+  const snackbar = useSnackbar();
   const postMedicalHistoryTemplate = usePostMedicalHistoryTemplate();
   const putMedicalHistoryTemplate = usePutMedicalHistoryTemplate();
   // useGetOneMedicalHistoryTemplate doesn't call the backend when templateId is an empty string (see enabled flag)
@@ -71,8 +73,20 @@ export function MedicalHistoryTemplateEditor(
     if (editExistingTemplate) {
       await updateOrCreateNewCopyOnServer(props.templateId, values);
     } else {
-      await postTemplate(values);
+      if (hasEmptySectionElements(values)) {
+        snackbar.error(
+          "Der Anamnesebogen muss mindestens eine ausgefüllte Sektion beinhalten.",
+        );
+      } else {
+        await postTemplate(values);
+      }
     }
+  }
+
+  function hasEmptySectionElements(values: FormTemplate) {
+    return values.sections
+      .map((section) => section.sectionElements)
+      .some((sectionElements) => sectionElements.length === 0);
   }
 
   async function updateOrCreateNewCopyOnServer(

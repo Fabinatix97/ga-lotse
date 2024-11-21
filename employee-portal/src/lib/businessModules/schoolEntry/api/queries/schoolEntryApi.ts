@@ -8,16 +8,10 @@ import {
   GetProceduresRequest,
   GetWaitingRoomProceduresRequest,
   SchoolEntryApi,
-  SearchIcd10CodesRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledBackgroundQuery } from "@eshg/lib-portal/api/useHandledBackgroundQuery";
-import {
-  keepPreviousData,
-  queryOptions,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { mapAnamnesis } from "@/lib/businessModules/schoolEntry/api/models/Anamnesis";
@@ -33,9 +27,11 @@ import { mapSopessExaminationResult } from "@/lib/businessModules/schoolEntry/ap
 import { schoolEntryApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
-export function useGetProcedures(request: GetProceduresRequest) {
-  const schoolEntryApi = useSchoolEntryApi();
-  return useSuspenseQuery({
+export function getProceduresQuery(
+  schoolEntryApi: SchoolEntryApi,
+  request: GetProceduresRequest,
+) {
+  return queryOptions({
     queryKey: schoolEntryApiQueryKey(["getProcedures", request]),
     queryFn: () =>
       schoolEntryApi.getProceduresRaw(request).then(unwrapRawResponse),
@@ -73,20 +69,6 @@ export function useGetFreeAppointmentsForProcedureUnsuspended(
         .getFreeAppointmentsForProcedureRaw(request)
         .then(unwrapRawResponse),
     select: (response) => response.appointments.map(mapAppointment),
-  });
-}
-
-export function useSearchIcd10Codes(request: SearchIcd10CodesRequest) {
-  const schoolEntryApi = useSchoolEntryApi();
-  const enabled =
-    (request.searchString?.length ?? 0) >= 1 ||
-    (request.codes?.length ?? 0) > 0;
-  return useQuery({
-    queryKey: schoolEntryApiQueryKey(["searchIcd10Codes", request]),
-    queryFn: () =>
-      schoolEntryApi.searchIcd10CodesRaw(request).then(unwrapRawResponse),
-    placeholderData: enabled ? keepPreviousData : undefined,
-    enabled,
   });
 }
 

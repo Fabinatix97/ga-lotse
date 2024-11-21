@@ -103,11 +103,11 @@ public class Person extends SequencedBaseEntityWithExternalId implements Central
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private Person referencePerson;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private PersonAddress contactAddress;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private PersonAddress differentBillingAddress;
 

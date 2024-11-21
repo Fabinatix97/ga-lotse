@@ -29,7 +29,8 @@ public enum ModuleClient {
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_WRITE)),
   TRAVEL_MEDICINE("travel-medicine", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
   STI_PROTECTION("sti-protection", List.of(BASE_MAIL_SEND)),
-  MEDICAL_REGISTRY("medical-registry", List.of(BASE_MAIL_SEND));
+  MEDICAL_REGISTRY("medical-registry", List.of(BASE_MAIL_SEND)),
+  DENTAL("dental", List.of(BASE_MAIL_SEND));
 
   private final String clientIdWithoutPrefix;
   private final List<EmployeePermissionRole> roles;

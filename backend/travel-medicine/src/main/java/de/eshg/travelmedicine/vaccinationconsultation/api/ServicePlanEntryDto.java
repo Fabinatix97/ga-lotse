@@ -5,12 +5,10 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation.api;
 
-import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -23,14 +21,9 @@ public record ServicePlanEntryDto(
     @Min(1) Integer vaccinationNumber,
     Integer latency,
     String batchIdentifier,
+    String defaultBatchIdentifier,
     LocalDate appliedAt,
     UUID physician,
     UUID mfa,
     @NotNull ServiceStatusDto status,
-    UUID procedureStepId,
-    Instant appointment,
-    AppointmentTypeDto appointmentType,
-    AppointmentBookingTypeDto appointmentBookingType,
-    LocalDate earliestDate,
-    @NotNull BigDecimal fee,
-    Boolean medicalHistoryCompleted) {}
+    @NotNull BigDecimal fee) {}

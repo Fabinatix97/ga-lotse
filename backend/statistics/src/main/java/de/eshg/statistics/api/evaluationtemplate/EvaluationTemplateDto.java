@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.api.evaluationtemplate;
 
+import de.eshg.base.user.api.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +22,6 @@ public record EvaluationTemplateDto(
     @NotNull boolean withoutAnonymizationAllowed,
     @NotNull @Valid List<DataSourceWithAttributeNames> dataSources,
     @NotNull @Valid List<AnalysisInfo> analysisInfos,
-    @NotNull UUID userId,
+    @Valid UserDto user,
     @NotNull Instant createdAt,
     Instant lastUsageAt) {}

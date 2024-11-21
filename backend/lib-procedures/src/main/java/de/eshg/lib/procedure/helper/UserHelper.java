@@ -19,11 +19,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SequencedMap;
-import java.util.SequencedSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +46,14 @@ public class UserHelper {
 
   public Map<UUID, UserFirstAndLastName> resolveUsersFirstNamesAndLastNamesByUserUuids(
       Collection<UUID> uuids) {
-    GetUsersResponse getUsersResponse = userApi.getUsersBulk(new GetUsersRequest(uuids, true));
+
+    if (uuids == null || uuids.isEmpty()) {
+      return Map.of();
+    }
+
+    List<UUID> nonNullUserIds = uuids.stream().filter(Objects::nonNull).toList();
+    GetUsersResponse getUsersResponse =
+        userApi.getUsersBulk(new GetUsersRequest(nonNullUserIds, true));
     return getUsersResponse.users().stream()
         .collect(
             Collectors.toMap(
@@ -67,7 +73,7 @@ public class UserHelper {
 
     for (ProgressEntryDto progressEntry : progressEntries) {
       UUID uuid = progressEntry.getRelatedUserId();
-      if (userFirstNameAndLastNameByUuid.containsKey(uuid)) {
+      if (uuid != null && userFirstNameAndLastNameByUuid.containsKey(uuid)) {
         UserFirstAndLastName userFirstAndLastName = userFirstNameAndLastNameByUuid.get(uuid);
         progressEntry.setRelatedUserFirstName(userFirstAndLastName.firstName());
         progressEntry.setRelatedUserLastName(userFirstAndLastName.lastName());
@@ -78,6 +84,7 @@ public class UserHelper {
   private Set<UUID> collectUsersUuids(List<? extends ProgressEntryDto> progressEntries) {
     return progressEntries.stream()
         .map(ProgressEntryDto::getRelatedUserId)
+        .filter(Objects::nonNull)
         .collect(Collectors.toSet());
   }
 
@@ -96,7 +103,7 @@ public class UserHelper {
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
       SequencedMap<UUID, List<T>> map, boolean ignoreUnknownId) {
-    SequencedSet<UUID> userIds = collectUserIds(map);
+    Set<UUID> userIds = collectUserIds(map);
     return resolveUsers(userIds, ignoreUnknownId);
   }
 
@@ -106,31 +113,35 @@ public class UserHelper {
 
   public <T extends HasResolvableUserIds> Map<UUID, UserDto> resolveUsers(
       List<T> list, boolean ignoreUnknownId) {
-    SequencedSet<UUID> userIds = collectUserIds(list);
+    Set<UUID> userIds = collectUserIds(list);
     return resolveUsers(userIds, ignoreUnknownId);
   }
 
-  public Map<UUID, UserDto> resolveUsers(SequencedSet<UUID> userIds) {
+  public Map<UUID, UserDto> resolveUsers(Set<UUID> userIds) {
     return resolveUsers(userIds, false);
   }
 
-  public Map<UUID, UserDto> resolveUsers(SequencedSet<UUID> userIds, boolean ignoreUnknownId) {
+  public Map<UUID, UserDto> resolveUsers(Set<UUID> userIds, boolean ignoreUnknownId) {
     return userApi.getUsersBulk(new GetUsersRequest(userIds, ignoreUnknownId)).users().stream()
-        .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
   }
 
-  private <T extends HasResolvableUserIds> SequencedSet<UUID> collectUserIds(
+  private <T extends HasResolvableUserIds> Set<UUID> collectUserIds(
       SequencedMap<UUID, List<T>> map) {
-    SequencedSet<UUID> userIds = new LinkedHashSet<>(map.keySet());
-    map.values().stream().map(this::collectUserIds).forEach(userIds::addAll);
+    Set<UUID> userIds = new LinkedHashSet<>(map.keySet());
+    map.values().stream()
+        .map(this::collectUserIds)
+        .filter(Objects::nonNull)
+        .forEach(userIds::addAll);
     return userIds;
   }
 
-  private <T extends HasResolvableUserIds> SequencedSet<UUID> collectUserIds(List<T> list) {
+  private <T extends HasResolvableUserIds> Set<UUID> collectUserIds(List<T> list) {
     return list.stream()
         .map(HasResolvableUserIds::getResolvableUserIds)
         .flatMap(Collection::stream)
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .filter(Objects::nonNull)
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private static UserRoleDto mapModuleLeaderRoleToApi(ModuleLeaderRole moduleLeaderRole) {

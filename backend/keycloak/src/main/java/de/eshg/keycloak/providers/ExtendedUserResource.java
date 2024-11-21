@@ -15,6 +15,7 @@ import de.eshg.keycloak.api.user.model.GetUsersResponse;
 import de.eshg.keycloak.api.user.model.KeycloakApiActiveUserSession;
 import de.eshg.keycloak.api.user.model.KeycloakApiGroupMemberDto;
 import de.eshg.keycloak.api.user.model.KeycloakApiUserDto;
+import de.eshg.keycloak.api.user.model.VerifyPinRequest;
 import de.eshg.keycloak.mappers.KeycloakMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -150,6 +151,20 @@ public class ExtendedUserResource {
             .getUserSessionsStream(realm, user)
             .map(this::getSessionRepresentation)
             .toList());
+  }
+
+  @POST
+  @NoCache
+  @Path("/users/{id}/verify-pin")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void verifyPin(@PathParam("id") String id, @Valid @RequestBody VerifyPinRequest request) {
+    auth.users().requireQuery();
+
+    UserModel user = getUserByIdOrThrow(session.users(), id, false);
+
+    if (!user.credentialManager().isValid(UserCredentialModel.password(request.pin(), true))) {
+      throw new NotAuthorizedException("Invalid PIN");
+    }
   }
 
   private UserRepresentation getRepresentation(UserModel user) {

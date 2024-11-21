@@ -7,7 +7,7 @@ package de.eshg.base.centralfile.persistence.entity;
 
 import de.eshg.base.util.Gender;
 import de.eshg.base.util.Salutation;
-import de.eshg.domain.model.BaseEntityWithExternalId;
+import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
@@ -22,7 +22,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(indexes = @Index(columnList = FacilityContactPerson.FACILITY_ID))
-public class FacilityContactPerson extends BaseEntityWithExternalId {
+public class FacilityContactPerson extends SequencedBaseEntityWithExternalId {
 
   static final String FACILITY_ID = "facility_id";
 

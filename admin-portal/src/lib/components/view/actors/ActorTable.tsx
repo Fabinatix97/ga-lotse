@@ -25,15 +25,15 @@ import {
   orgUnitFilterFn,
 } from "@/lib/components/table/Filter";
 import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
+import { ActiveCell } from "@/lib/components/table/cell/ActiveCell";
 import { BooleanCell } from "@/lib/components/table/cell/BooleanCell";
 import { CertificateCell } from "@/lib/components/table/cell/CertificateCell";
-import { EditableActiveCell } from "@/lib/components/table/cell/EditableActiveCell";
 import { EditableCommonNameCell } from "@/lib/components/table/cell/EditableCommonNameCell";
 import { EditableEnumCell } from "@/lib/components/table/cell/EditableEnumCell";
-import { EditableOrgUnitCell } from "@/lib/components/table/cell/EditableOrgUnitCell";
-import { EditableStringCell } from "@/lib/components/table/cell/EditableStringCell";
 import { RulesCell } from "@/lib/components/table/cell/ForeignKeyCell";
 import { MetadataCell } from "@/lib/components/table/cell/MetadataCell";
+import { OrgUnitCell } from "@/lib/components/table/cell/OrgUnitCell";
+import { StringCell } from "@/lib/components/table/cell/StringCell";
 import { PageContent } from "@/lib/components/view/PageContent";
 import { useFilterActorBySelector } from "@/lib/helpers/actorSelector";
 import { OverridableEntity } from "@/lib/helpers/entities";
@@ -95,12 +95,12 @@ const columns = [
   accessor("readableName", {
     enableColumnFilter: true,
     filterFn: filterFns.includesString,
-    cell: EditableStringCell,
+    cell: StringCell,
   }),
   accessor("_orgUnit", {
     enableColumnFilter: true,
     filterFn: orgUnitFilterFn,
-    cell: EditableOrgUnitCell,
+    cell: OrgUnitCell,
     meta: { linkTo: "org-units" },
   }),
   accessor("type", {
@@ -120,7 +120,7 @@ const columns = [
   accessor("networkId", {
     enableColumnFilter: true,
     filterFn: filterFns.includesString,
-    cell: EditableStringCell,
+    cell: StringCell,
     meta: {
       optional: true,
     },
@@ -128,7 +128,7 @@ const columns = [
   accessor("active", {
     enableColumnFilter: true,
     filterFn: filterFns.equals,
-    cell: EditableActiveCell,
+    cell: ActiveCell,
     meta: {
       options: [false, true],
       stringToValue: (v) => v === "true",
@@ -238,10 +238,10 @@ function useActorsWithStagedSubRows(
         _orgUnit: ou,
         _staged: getStagedActors(orgUnits.stagedActors, a.id),
         _matchingClientRules: rules.filter((r) =>
-          filterActorBySelector(r.client, { ...a, orgUnitId: ou.id }),
+          filterActorBySelector(r.client ?? {}, { ...a, orgUnitId: ou.id }),
         ),
         _matchingServerRules: rules.filter((r) =>
-          filterActorBySelector(r.server, { ...a, orgUnitId: ou.id }),
+          filterActorBySelector(r.server ?? {}, { ...a, orgUnitId: ou.id }),
         ),
         _type: "actor",
       })),
@@ -305,7 +305,7 @@ function useGetSubRows() {
           const isValid = isValidActor(sa.entity);
           const _matchingClientRules = isValid
             ? rules.filter((r) =>
-                filterActorBySelector(r.client, {
+                filterActorBySelector(r.client ?? {}, {
                   id: sa.id,
                   ...sa.entity,
                   orgUnitId: ou?.id,
@@ -314,7 +314,7 @@ function useGetSubRows() {
             : [];
           const _matchingServerRules = isValid
             ? rules.filter((r) =>
-                filterActorBySelector(r.server, {
+                filterActorBySelector(r.server ?? {}, {
                   id: sa.id,
                   ...sa.entity,
                   orgUnitId: ou?.id,

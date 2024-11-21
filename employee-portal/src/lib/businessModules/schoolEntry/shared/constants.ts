@@ -44,3 +44,8 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   MEDICAL_REPORT_GENERATED: "Arztbrief erstellt",
   SCHOOL_INFO_LETTER_GENERATED: "Schulinfobrief erstellt",
 };
+
+export const keyDocumentTypes: Record<string, string> = {
+  INVITATION: "Einladung",
+  SCHOOL_INFO_LETTER: "Schulinfobrief",
+};

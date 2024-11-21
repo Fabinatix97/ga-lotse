@@ -7,36 +7,35 @@ import { useContext, useMemo } from "react";
 
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { usePresence } from "@/lib/businessModules/chat/shared/hooks/usePresence";
 import { Presence } from "@/lib/businessModules/chat/shared/types";
 
 export function useGetSelfUserPresence() {
   const { canAccessChat, userSettings } = useChat();
-  const chatContext = useContext(ChatClientContext);
+  const { matrixClient } = useContext(ChatClientContext) ?? {};
+  const loggedInUserId = matrixClient?.getUserId();
+  const { usersPresence } = usePresence(loggedInUserId ?? undefined);
 
   const isChatEnabled =
-    canAccessChat && userSettings.chatUsageEnabled && chatContext?.matrixClient;
+    canAccessChat && userSettings.chatUsageEnabled && matrixClient;
 
   return useMemo(() => {
-    let userId: string | null = null;
     let userPresence: Presence | undefined = undefined;
     const sharePresence = userSettings.sharePresence;
 
     if (isChatEnabled) {
-      userId = chatContext.matrixClient.getUserId();
-
       if (userSettings.sharePresence) {
-        userPresence = chatContext.usersPresence[userId ?? ""];
+        userPresence = usersPresence[loggedInUserId ?? ""];
       }
     }
     return {
-      userId,
       userPresence,
       sharePresence: sharePresence && isChatEnabled,
     };
   }, [
-    chatContext?.matrixClient,
-    chatContext?.usersPresence,
     isChatEnabled,
+    loggedInUserId,
     userSettings.sharePresence,
+    usersPresence,
   ]);
 }

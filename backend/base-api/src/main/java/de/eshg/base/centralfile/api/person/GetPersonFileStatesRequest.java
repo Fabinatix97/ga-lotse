@@ -19,8 +19,19 @@ public record GetPersonFileStatesRequest(
         @NotNull
         @Size(min = 1)
         List<UUID> fileStateIds,
+    Boolean checkOutdated,
     @Valid GetPersonFileStatesSortParameters sortParameters) {
+
   public GetPersonFileStatesRequest(List<UUID> fileStateIds) {
-    this(fileStateIds, null);
+    this(fileStateIds, false, null);
+  }
+
+  public GetPersonFileStatesRequest(List<UUID> fileStateIds, Boolean checkOutdated) {
+    this(fileStateIds, checkOutdated, null);
+  }
+
+  public GetPersonFileStatesRequest(
+      List<UUID> fileStateIds, GetPersonFileStatesSortParameters sortParameters) {
+    this(fileStateIds, false, sortParameters);
   }
 }

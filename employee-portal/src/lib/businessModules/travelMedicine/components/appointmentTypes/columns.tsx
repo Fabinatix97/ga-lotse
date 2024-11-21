@@ -13,9 +13,11 @@ import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 const columnHelper: ColumnHelper<ApiAppointmentTypeConfig> =
   createColumnHelper<ApiAppointmentTypeConfig>();
 
-export function appointmentTypesColumns(
-  editEntry: (type: ApiAppointmentTypeConfig) => void,
-) {
+interface AppointmentTypesColumnsProps {
+  editEntry: (apiAppointmentTypeConfig: ApiAppointmentTypeConfig) => void;
+}
+
+export function columns(props: AppointmentTypesColumnsProps) {
   return [
     columnHelper.accessor("appointmentTypeDto", {
       header: "Termintyp",
@@ -31,7 +33,7 @@ export function appointmentTypesColumns(
           actionItems={[
             {
               label: "Bearbeiten",
-              onClick: () => editEntry(info.row.original),
+              onClick: () => props.editEntry(info.row.original),
               startDecorator: <Edit />,
             },
           ]}

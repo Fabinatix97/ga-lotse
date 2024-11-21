@@ -41,12 +41,17 @@ import {
   inboxProgressEntryTypeNames,
   titleNames,
 } from "./constants";
+import {
+  UseCreateInboxProcedure,
+  useCreateInboxProcedureDisabled,
+} from "./hooks/useCreateInboxProcedureStatusTemplate";
 
 interface InboxProcedureDetailsSidebarProps {
   inboxProcedureId: string;
   routes: InboxProceduresPageRoutes;
   useFetchInboxProcedure: UseFetchInboxProcedure;
   useCloseInboxProcedure: UseCloseInboxProcedure;
+  useCreateInboxProcedure?: UseCreateInboxProcedure;
 }
 
 export function InboxProcedureDetailsSidebar(
@@ -64,6 +69,7 @@ function InternalInboxProcedureDetailsSidebar({
   routes,
   useFetchInboxProcedure,
   useCloseInboxProcedure,
+  useCreateInboxProcedure = useCreateInboxProcedureDisabled,
 }: InboxProcedureDetailsSidebarProps) {
   const response = useFetchInboxProcedure(inboxProcedureId).data;
   const { inboxProcedure } = response;
@@ -72,6 +78,7 @@ function InternalInboxProcedureDetailsSidebar({
   const router = useRouter();
   const buildRoutePreservingSearchParams =
     useBuildRoutePreservingSearchParams();
+  const createInboxProcedure = useCreateInboxProcedure(inboxProcedureId);
 
   function onClose() {
     router.push(buildRoutePreservingSearchParams(routes.index));
@@ -86,12 +93,25 @@ function InternalInboxProcedureDetailsSidebar({
       <InboxProcedureDetailsSidebarContent {...response} />
       <SidebarActions>
         <ButtonBar
+          left={
+            createInboxProcedure && (
+              <Button
+                variant="plain"
+                onClick={createInboxProcedure}
+                disabled={
+                  inboxProcedure.inboxProcedureStatus ===
+                  ApiInboxProcedureStatus.Closed
+                }
+              >
+                Vorgang anlegen
+              </Button>
+            )
+          }
           right={
             <Button
               onClick={() => {
                 setShowClosureModal(true);
               }}
-              variant="plain"
               color="danger"
               disabled={
                 inboxProcedure.inboxProcedureStatus ===

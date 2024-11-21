@@ -20,8 +20,12 @@ import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlock;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
+import de.eshg.stiprotection.persistence.data.AppointmentData;
+import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
+import de.eshg.stiprotection.persistence.db.AppointmentStatus;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -37,38 +41,86 @@ public class AppointmentService {
   private final CalendarEventApi calendarEventApi;
   private final AppointmentBlockSlotUtil appointmentBlockSlotUtil;
   private final CalendarApi calendarApi;
+  private final Clock clock;
 
   public AppointmentService(
       CalendarApi calendarApi,
       CalendarEventApi calendarEventApi,
-      AppointmentBlockSlotUtil appointmentBlockSlotUtil) {
+      AppointmentBlockSlotUtil appointmentBlockSlotUtil,
+      Clock clock) {
     this.calendarApi = calendarApi;
     this.calendarEventApi = calendarEventApi;
     this.appointmentBlockSlotUtil = appointmentBlockSlotUtil;
+    this.clock = clock;
   }
 
-  public void bookAppointment(
-      StiProtectionProcedure procedure, Instant start, Integer durationInMinutes) {
-    checkExistingAppointment(procedure);
-    AppointmentType appointmentType = AppointmentType.valueOf(procedure.getConcern().name());
-    Instant end = start.plus(Duration.ofMinutes(durationInMinutes));
+  public void createAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
+    finalizeExistingAppointment(procedure);
+    bookAppointment(procedure, appointment);
+    addAppointmentHistoryEntry(procedure, appointment);
+  }
 
-    appointmentBlockSlotUtil.updateAppointment(appointmentType, null, procedure, start, end);
+  public void updateAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
+    bookAppointment(procedure, appointment);
+    updateAppointmentHistoryEntry(procedure, appointment);
+  }
+
+  public void cancelAppointment(StiProtectionProcedure procedure) {
+    if (procedure.getAppointment() == null && procedure.getUserDefinedAppointment() == null) {
+      throw new BadRequestException(
+          "Procedure %s has no outstanding appointment".formatted(procedure.getExternalId()));
+    }
+    deleteAppointmentCalendarEvent(procedure);
+    procedure.setAppointment(null);
+    procedure.setCalendarEventId(null);
+    procedure.setUserDefinedAppointment(null);
+    cancelAppointmentHistoryEntry(procedure);
+  }
+
+  private void bookAppointment(StiProtectionProcedure procedure, AppointmentData appointment) {
+    AppointmentType type = appointment.appointmentType();
+    Instant start = appointment.appointmentStart();
+    Instant end = start.plus(Duration.ofMinutes(appointment.durationInMinutes()));
+    switch (appointment.appointmentBookingType()) {
+      case APPOINTMENT_BLOCK -> bookBlockAppointment(procedure, type, start, end);
+      case USER_DEFINED -> bookUserDefinedAppointment(procedure, start, end);
+      default ->
+          throw new BadRequestException(
+              "Unsupported booking type: " + appointment.appointmentBookingType());
+    }
+  }
+
+  private void bookBlockAppointment(
+      StiProtectionProcedure procedure, AppointmentType type, Instant start, Instant end) {
+    procedure.setUserDefinedAppointment(null);
+    appointmentBlockSlotUtil.updateAppointment(type, null, procedure, start, end);
     createAppointmentCalendarEvent(procedure, start, end);
+  }
+
+  private void bookUserDefinedAppointment(
+      StiProtectionProcedure procedure, Instant start, Instant end) {
+    deleteAppointmentCalendarEvent(procedure);
+    procedure.setAppointment(null);
+    procedure.setCalendarEventId(null);
+    UserDefinedAppointment userDefinedAppointment =
+        Objects.requireNonNullElse(
+            procedure.getUserDefinedAppointment(), new UserDefinedAppointment());
+    userDefinedAppointment.setAppointmentStart(start);
+    userDefinedAppointment.setAppointmentEnd(end);
+    procedure.setUserDefinedAppointment(userDefinedAppointment);
   }
 
   private void createAppointmentCalendarEvent(
       StiProtectionProcedure procedure, Instant start, Instant end) {
     List<UUID> userIds = getUserIdsFromAppointment(procedure.getAppointment());
-
     GetUserCalendarsResponse userCalendarsResponse =
         calendarApi.getUserCalendars(new GetUserCalendarsRequest(userIds));
     List<UUID> calendarIds =
         userCalendarsResponse.userCalendars().stream().map(UserCalendar::calendarId).toList();
-
     DetailedEvent appointmentEventData =
         calendarEventApi.addBusinessCaseEvent(
             new BusinessCaseEventRequest(calendarIds, new EventTimeData(start, end, false)));
+    deleteAppointmentCalendarEvent(procedure);
     procedure.setCalendarEventId(appointmentEventData.id());
   }
 
@@ -91,6 +143,13 @@ public class AppointmentService {
     return userIds;
   }
 
+  private void deleteAppointmentCalendarEvent(StiProtectionProcedure procedure) {
+    if (procedure.getCalendarEventId() != null) {
+      calendarEventApi.deleteBusinessCaseEvent(procedure.getCalendarEventId());
+      procedure.setCalendarEventId(null);
+    }
+  }
+
   private static void validateAppointmentBlockGroup(Appointment appointment) {
     Assert.notNull(appointment, "Appointment should not be null.");
     AppointmentBlock appointmentBlock =
@@ -100,23 +159,45 @@ public class AppointmentService {
         appointmentBlock.getAppointmentBlockGroup(), "AppointmentBlockGroup should not be null.");
   }
 
-  public void bookUserDefinedAppointment(
-      StiProtectionProcedure procedure, Instant start, Integer durationInMinutes) {
-    Instant end = start.plus(Duration.ofMinutes(durationInMinutes));
-    procedure.setUserDefinedAppointment(new UserDefinedAppointment(start, end));
+  private void finalizeExistingAppointment(StiProtectionProcedure procedure) {
+    if (procedure.getUserDefinedAppointment() != null) {
+      AppointmentStatus status =
+          determineAppointmentStatus(procedure.getUserDefinedAppointment().getAppointmentEnd());
+      procedure.getAppointmentHistory().getLast().setAppointmentStatus(status);
+    } else if (procedure.getAppointment() != null) {
+      AppointmentStatus status =
+          determineAppointmentStatus(procedure.getAppointment().getAppointmentEnd());
+      procedure.getAppointmentHistory().getLast().setAppointmentStatus(status);
+      if (status == AppointmentStatus.CANCELLED) {
+        calendarEventApi.deleteBusinessCaseEvent(procedure.getCalendarEventId());
+      }
+    }
   }
 
-  private void checkExistingAppointment(StiProtectionProcedure procedure) {
-    if (procedure.getUserDefinedAppointment() != null) {
-      throw new BadRequestException(
-          String.format(
-              "Procedure %s already has an user defined appointment.", procedure.getId()));
-    }
-    if (procedure.getAppointment() != null) {
-      throw new BadRequestException(
-          String.format(
-              "Procedure %s already has an appointment from appointment block.",
-              procedure.getId()));
-    }
+  private AppointmentStatus determineAppointmentStatus(Instant appointmentEnd) {
+    return clock.instant().isAfter(appointmentEnd)
+        ? AppointmentStatus.CLOSED
+        : AppointmentStatus.CANCELLED;
+  }
+
+  private void addAppointmentHistoryEntry(
+      StiProtectionProcedure procedure, AppointmentData appointment) {
+    AppointmentHistoryEntry appointmentHistoryEntry = new AppointmentHistoryEntry();
+    appointmentHistoryEntry.setAppointmentType(appointment.appointmentType());
+    appointmentHistoryEntry.setAppointmentStart(appointment.appointmentStart());
+    appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.OPEN);
+    procedure.getAppointmentHistory().add(appointmentHistoryEntry);
+  }
+
+  private void updateAppointmentHistoryEntry(
+      StiProtectionProcedure procedure, AppointmentData appointment) {
+    AppointmentHistoryEntry appointmentHistoryEntry = procedure.getAppointmentHistory().getLast();
+    appointmentHistoryEntry.setAppointmentType(appointment.appointmentType());
+    appointmentHistoryEntry.setAppointmentStart(appointment.appointmentStart());
+  }
+
+  private void cancelAppointmentHistoryEntry(StiProtectionProcedure procedure) {
+    AppointmentHistoryEntry appointmentHistoryEntry = procedure.getAppointmentHistory().getLast();
+    appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.CANCELLED);
   }
 }

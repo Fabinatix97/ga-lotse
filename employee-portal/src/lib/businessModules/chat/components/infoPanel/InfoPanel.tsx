@@ -8,13 +8,12 @@ import { useEffect } from "react";
 import { AddChatMember } from "@/lib/businessModules/chat/components/infoPanel/AddChatMember";
 import { AdminSettings } from "@/lib/businessModules/chat/components/infoPanel/AdminSettings";
 import { AssignAdminView } from "@/lib/businessModules/chat/components/infoPanel/AssignAdminView";
+import { MemberInfoView } from "@/lib/businessModules/chat/components/infoPanel/MemberInfoView";
 import { RenameChat } from "@/lib/businessModules/chat/components/infoPanel/RenameChat";
 import { RoomAvatar } from "@/lib/businessModules/chat/components/infoPanel/RoomAvatar";
 import { RoomInfoView } from "@/lib/businessModules/chat/components/infoPanel/RoomInfoView";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
-
-import { MemberInfoView } from "./MemberInfoView";
 
 export function InfoPanel() {
   const { closeInfoPanel, infoPanelState, setInfoPanelView } =

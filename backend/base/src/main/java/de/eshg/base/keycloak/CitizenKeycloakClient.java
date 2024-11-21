@@ -7,9 +7,14 @@ package de.eshg.base.keycloak;
 
 import de.eshg.base.keycloak.differ.IdentityProviderMapperRepresentationDiffer;
 import de.eshg.base.keycloak.differ.IdentityProviderRepresentationDiffer;
+import de.eshg.keycloak.api.user.KeycloakUserApi;
+import de.eshg.keycloak.api.user.model.VerifyPinRequest;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import org.keycloak.admin.client.resource.IdentityProviderResource;
 import org.keycloak.admin.client.resource.IdentityProvidersResource;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
@@ -21,8 +26,13 @@ import org.springframework.stereotype.Component;
 @DependsOn(MasterKeycloakProvisioning.BEAN_NAME)
 public class CitizenKeycloakClient extends RealmBoundKeycloakClient {
 
+  private final KeycloakUserApi keycloakUserApi;
+
   public CitizenKeycloakClient(KeycloakProperties keycloakProperties) {
     super(keycloakProperties, keycloakProperties.citizenRealm().name());
+    String keycloakUrl = keycloakProperties.internal().url();
+    URI target = UriBuilder.fromUri(keycloakUrl).build();
+    keycloakUserApi = keycloak.proxy(KeycloakUserApi.class, target);
   }
 
   public void createOrUpdateIdentityProviders(
@@ -113,5 +123,9 @@ public class CitizenKeycloakClient extends RealmBoundKeycloakClient {
             Comparator.comparing(IdentityProviderMapperRepresentation::getIdentityProviderAlias)
                 .thenComparing(IdentityProviderMapperRepresentation::getIdentityProviderMapper))
         .toList();
+  }
+
+  public void verifyAnonymousUserPin(UUID userId, String pin) {
+    keycloakUserApi.verifyPin(realmName, userId.toString(), new VerifyPinRequest(pin));
   }
 }

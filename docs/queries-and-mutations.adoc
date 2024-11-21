@@ -330,6 +330,27 @@ export function SearchProceduresSidebar(props: SearchProceduresSidebarProps) {
 
 Note that errors do not need to be handled by default, because errors propagate to the nearest error boundary. If this is not intended, set `throwOnError: false` for the query, and add manual error handling to the component.
 
+=== Static queries
+
+We consider static queries to be queries returning data which rarely changes and cannot be modified by users of the application. Typical examples are queries for feature toggles and configuration values. They can safely be cached in the client's memory for longer periods of time without risking inconsistencies in the application.
+
+To enable the defined cache timers to take effect, we need to disable the automatic query invalidation which - by default - occurs after each successful mutation. This is achieved by setting the meta option `static: true` on queries.
+In addition, a `gcTime` and `staleTime` needs to be configured for the query. All relevant options can be consistently applied at once by using `STATIC_QUERY_OPTIONS` from `lib-portal`:
+
+[,ts]
+----
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
+
+function useGetConfig() {
+  const configApi = useConfigApi();
+  return useQuery({
+    ...STATIC_QUERY_OPTIONS,
+    queryKey: ["getConfig"],
+    queryFn: () => configApi.getConfig()
+  });
+}
+----
+
 == Mutations
 
 A mutation is a request which sends data to a backend in order to change the persisted state, optionally returning the new state. Mutations are used to perform actions triggered by user interactions in the frontend.
@@ -428,6 +449,33 @@ The difference is the following:
 > * Do things that are absolutely necessary and logic related (like query invalidation) in the useMutation callbacks.
 > * Do UI related things like redirects or showing toast notifications in mutate callbacks. If the user navigated away from the current screen before the mutation finished, those will purposefully not fire.
 > -- https://tkdodo.eu/blog/mastering-mutations-in-react-query#some-callbacks-might-not-fire
+
+=== Update related query with mutation response
+
+By default, the `ApiProvider` invalidates all active queries upon successful completion of any mutation, triggering background refetches for these queries. This prevents displaying inconsistent data to the user, because a single mutation can affect multiple queries.
+
+When a mutation response contains the updated data of an active query, refetching it is redundant. An example is updating a procedure in a sidebar while its details are displayed on the page.
+
+To avoid refetching the related query, we can set the optional meta property `updatesQuery` to the `queryKey` of this query. This will tell the `ApiProvider` to invalidate all queries except for the one matching the defined query key. In the `onSuccess` handler of the mutation, we then need to manually update the query cache with the response data:
+
+[,ts]
+----
+export function useUpdateProcedure(procedureId: string) {
+  const procedureApi = useProcedureApi();
+  const { queryKey } = getProcedureQuery(procedureApi, procedureId);
+  const queryClient = useQueryClient();
+
+  return useHandledMutation({
+    meta: { updatesQuery: queryKey },
+    mutationFn: (request: UpdateProcedureRequest) => procedureApi.updateProcedure(request),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+    }
+  });
+}
+----
+
+Using this pattern can help avoid flaky tests, because background refetches usually trigger no loading animation which can be awaited before displayed data is updated.
 
 == Suspense and error boundaries
 

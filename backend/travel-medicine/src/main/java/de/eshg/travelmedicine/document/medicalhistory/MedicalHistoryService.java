@@ -9,28 +9,65 @@ import static de.eshg.travelmedicine.document.DocumentDtoHelper.isDocumentConten
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.eshg.lib.document.generator.DocumentGenerator;
+import de.eshg.lib.procedure.domain.model.Pdf;
+import de.eshg.lib.procedure.domain.model.PdfMetaData;
+import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.travelmedicine.citizenpublic.DepartmentInfoService;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.medicalhistory.api.MedicalHistoryDto;
 import de.eshg.travelmedicine.document.medicalhistory.api.PatchMedicalHistoryRequest;
 import de.eshg.travelmedicine.document.medicalhistory.persistence.entity.MedicalHistory;
+import de.eshg.travelmedicine.vaccinationconsultation.PersonClient;
 import de.eshg.travelmedicine.vaccinationconsultation.ProcedureAccessor;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetMedicalHistoriesResponse;
+import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 public class MedicalHistoryService {
+  public static final String MEDICAL_HISTORY_PDF_TEMPLATE =
+      "/pdf_templates/medical_history_pdf_template.ftlx";
 
   private final ProcedureAccessor procedureAccessor;
   private final ObjectMapper objectMapper = new ObjectMapper();
+  private final ClassPathResource medicalHistoryResource;
+  private final PersonClient personClient;
+  private final Clock clock;
+  private final DepartmentInfoService departmentInfoService;
+  private final DocumentGenerator documentGenerator;
 
-  public MedicalHistoryService(ProcedureAccessor procedureAccessor) {
+  public MedicalHistoryService(
+      ProcedureAccessor procedureAccessor,
+      @Value(MEDICAL_HISTORY_PDF_TEMPLATE) ClassPathResource medicalHistoryResource,
+      PersonClient personClient,
+      Clock clock,
+      DepartmentInfoService departmentInfoService,
+      DocumentGenerator documentGenerator) {
+    this.personClient = personClient;
+    this.clock = clock;
+    this.departmentInfoService = departmentInfoService;
+    this.documentGenerator = documentGenerator;
+    Assert.isTrue(medicalHistoryResource.exists(), medicalHistoryResource + " does not exist");
     this.procedureAccessor = procedureAccessor;
+    this.medicalHistoryResource = medicalHistoryResource;
   }
 
   public GetMedicalHistoriesResponse getMedicalHistoriesForEmployeePortal(UUID procedureId) {
@@ -111,5 +148,79 @@ public class MedicalHistoryService {
     } catch (JsonProcessingException e) {
       throw new BadRequestException("Content does not match required structure");
     }
+  }
+
+  public ResponseEntity<byte[]> createMedicalHistoryPdf(UUID procedureId, UUID medicalHistoryId) {
+    VaccinationConsultation vaccinationConsultation =
+        procedureAccessor.accessProcedure(procedureId, ProcedureAccessor.noChecks);
+    MedicalHistory medicalHistory =
+        procedureAccessor.accessMedicalHistory(
+            medicalHistoryId, procedureId, ProcedureAccessor.noChecks);
+
+    Pdf certificateFile = generateMedicalHistoryPdf(medicalHistory, vaccinationConsultation);
+    ContentDisposition contentDisposition =
+        ContentDisposition.attachment()
+            .filename(certificateFile.getFileName(), StandardCharsets.UTF_8)
+            .build();
+
+    return ResponseEntity.ok()
+        .contentType(certificateFile.getFileType().getCommonFileType().getMediaType())
+        .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+        .body(certificateFile.getFileContent().getContent());
+  }
+
+  private Pdf generateMedicalHistoryPdf(
+      MedicalHistory medicalHistory, VaccinationConsultation vaccinationConsultation) {
+    UUID patientId = vaccinationConsultation.getPatientIdsFromCentralFile().getFirst();
+    PatientDto patient = personClient.getPatientFromCentralFile(patientId);
+
+    DocumentContentDto content = MedicalHistoryMapper.contentToInterfaceType(medicalHistory);
+
+    MedicalHistoryPdfParameters pdfParameters =
+        new MedicalHistoryPdfParameters(
+            departmentInfoService.getDepartmentInfo(),
+            departmentInfoService.getDepartmentLogo(),
+            patient.firstName(),
+            patient.lastName(),
+            patient.address() != null && patient.address().street() != null
+                ? patient.address().street()
+                : null,
+            patient.address() != null && patient.address().houseNumber() != null
+                ? patient.address().houseNumber()
+                : null,
+            patient.address() != null && patient.address().postalCode() != null
+                ? patient.address().postalCode()
+                : null,
+            patient.address() != null && patient.address().city() != null
+                ? patient.address().city()
+                : null,
+            patient.dateOfBirth().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+            patient.phoneNumbers() != null ? String.join(", ", patient.phoneNumbers()) : null,
+            patient.emailAddresses() != null ? String.join(", ", patient.emailAddresses()) : null,
+            vaccinationConsultation.getTravelStartDate() != null
+                ? vaccinationConsultation
+                    .getTravelStartDate()
+                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                : null,
+            vaccinationConsultation.getTravelType() != null
+                ? vaccinationConsultation.getTravelType().getName()
+                : null,
+            vaccinationConsultation.getTravelDestinations(),
+            vaccinationConsultation.getTravelTimeAmount() != null
+                ? String.join(
+                    " ",
+                    vaccinationConsultation.getTravelTimeAmount().toString(),
+                    vaccinationConsultation.getTravelTimeUnit().getName())
+                : null,
+            content);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    documentGenerator.createPdfFromTemplate(medicalHistoryResource, pdfParameters, baos);
+    byte[] bytes = baos.toByteArray();
+
+    PdfMetaData pdfMetaData = new PdfMetaData();
+    pdfMetaData.setCreatedDate(Instant.now(clock));
+
+    return FileFactory.createPdfWithMetaData(pdfParameters.getFileName(), bytes, pdfMetaData);
   }
 }

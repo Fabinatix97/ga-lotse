@@ -1,0 +1,12 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(":lib-contact-api")
+    implementation project(":base-api")
+
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    implementation project(':business-module-commons')
+}

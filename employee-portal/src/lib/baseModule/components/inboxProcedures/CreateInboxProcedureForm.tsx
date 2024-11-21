@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  ApiBaseFeature,
+  ApiBusinessModule,
+} from "@eshg/employee-portal-api/base";
 import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
@@ -10,8 +14,10 @@ import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Box, Grid, Typography } from "@mui/joy";
 import { Formik } from "formik";
+import { useMemo } from "react";
 import { isEmpty } from "remeda";
 
+import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
   InboxAwareBusinessModule,
   inboxAwareBusinessModuleNames,
@@ -22,6 +28,7 @@ import {
 } from "@/lib/baseModule/moduleRegister/procedureTypesResolver";
 import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
 import { FormSheet } from "@/lib/shared/components/form/FormSheet";
+import { businessModuleNames } from "@/lib/shared/components/procedures/constants";
 import { buildOptionsFromProcedureTypes } from "@/lib/shared/components/procedures/helper";
 
 import { ContactForm, ContactValues } from "./ContactForm";
@@ -54,47 +61,71 @@ function buildProcedureTypeOptions(
 }
 
 export function CreateInboxProcedureForm(props: CreateInboxProcedureFormProps) {
+  const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
+
+  const businessModuleOptions = useMemo(() => {
+    return isInboxEnabled
+      ? buildEnumOptions(inboxAwareBusinessModuleNames)
+      : [
+          {
+            value: InboxAwareBusinessModule.Inspection,
+            label: businessModuleNames[ApiBusinessModule.Inspection],
+          },
+        ];
+  }, [isInboxEnabled]);
+
+  const initialValues = useMemo(() => {
+    const initialValues = { ...props.initialValues };
+    if (!isInboxEnabled) {
+      initialValues.businessModule = InboxAwareBusinessModule.Inspection;
+      initialValues.procedureType = ApiProcedureType.Inspection;
+    }
+    return initialValues;
+  }, [isInboxEnabled, props.initialValues]);
+
   return (
     <Formik
-      initialValues={props.initialValues}
+      initialValues={initialValues}
       onSubmit={props.onSubmit}
       validate={validateForm}
     >
-      {({ handleSubmit, isSubmitting, values }) => (
-        <FormSheet onSubmit={handleSubmit}>
-          <Typography level="h3" component="h2">
-            Neuen Posteingangsvorgang anlegen
-          </Typography>
-          <Grid container spacing={3} direction="row">
-            <Grid xs={6}>
-              <SelectField
-                name="businessModule"
-                label="Fachmodul"
-                options={buildEnumOptions(inboxAwareBusinessModuleNames)}
-                required="Bitte ein Fachmodul auswählen"
-              />
+      {({ handleSubmit, isSubmitting, values }) => {
+        return (
+          <FormSheet onSubmit={handleSubmit}>
+            <Typography level="h3" component="h2">
+              Neuen Posteingangsvorgang anlegen
+            </Typography>
+            <Grid container spacing={3} direction="row">
+              <Grid xs={6}>
+                <SelectField
+                  name="businessModule"
+                  label="Fachmodul"
+                  options={businessModuleOptions}
+                  required="Bitte ein Fachmodul auswählen"
+                />
+              </Grid>
+              <Grid xs={6}>
+                <SelectField
+                  name="procedureType"
+                  label="Art"
+                  options={buildProcedureTypeOptions(values.businessModule)}
+                />
+              </Grid>
             </Grid>
-            <Grid xs={6}>
-              <SelectField
-                name="procedureType"
-                label="Art"
-                options={buildProcedureTypeOptions(values.businessModule)}
-              />
-            </Grid>
-          </Grid>
-          <FormGroupGrid data-testid="inboxProgressEntryForm">
-            <InboxProgressEntryForm name="inboxProgressEntry" />
-          </FormGroupGrid>
-          <FormGroupGrid data-testid="inboxContactForm">
-            <ContactForm name="contact" />
-          </FormGroupGrid>
-          <Box display="flex" justifyContent="flex-end">
-            <SubmitButton submitting={isSubmitting}>
-              Posteingangsobjekt anlegen
-            </SubmitButton>
-          </Box>
-        </FormSheet>
-      )}
+            <FormGroupGrid data-testid="inboxProgressEntryForm">
+              <InboxProgressEntryForm name="inboxProgressEntry" />
+            </FormGroupGrid>
+            <FormGroupGrid data-testid="inboxContactForm">
+              <ContactForm name="contact" />
+            </FormGroupGrid>
+            <Box display="flex" justifyContent="flex-end">
+              <SubmitButton submitting={isSubmitting}>
+                Posteingangsobjekt anlegen
+              </SubmitButton>
+            </Box>
+          </FormSheet>
+        );
+      }}
     </Formik>
   );
 }

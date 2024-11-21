@@ -25,6 +25,7 @@ export function CountryField(props: CountryFieldProps) {
       validate={(value) => {
         if (
           isEmptyString(value) ||
+          value === null ||
           options.find((opt) => opt.value === value)
         ) {
           return undefined;

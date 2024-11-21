@@ -102,118 +102,118 @@ export function SidebarStepper<T extends FormikValues>({
   }
 
   useEffect(() => {
-    if (open) {
-      formikRef.current?.resetForm();
-    }
+    setStepIndex(0);
+    formikRef.current?.resetForm();
   }, [open]);
 
   return (
     <Sidebar open={open} onClose={handleClose} zIndex={zIndex}>
-      <Formik
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        validate={(model) => {
-          const errors = stepProps(model).validator?.(model);
-          if (errors === undefined) {
-            alert.close();
-          } else {
-            const possibleErrors = Object.values(errors).filter(
-              (it) => typeof it === "string",
-            );
-            if (possibleErrors.length > 0) {
-              alert.error({
-                title: "",
-                message: possibleErrors[0],
-              });
+      {open && (
+        <Formik
+          innerRef={formikRef}
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          validate={(model) => {
+            const errors = stepProps(model).validator?.(model);
+            if (errors === undefined) {
+              alert.close();
+            } else {
+              const possibleErrors = Object.values(errors).filter(
+                (it) => typeof it === "string",
+              );
+              if (possibleErrors.length > 0) {
+                alert.error({
+                  message: possibleErrors[0],
+                });
+              }
             }
-          }
-          return errors;
-        }}
-      >
-        {({
-          validateForm,
-          isSubmitting,
-          handleSubmit,
-          values,
-          setFieldTouched,
-        }) => {
-          const currentStepProps = stepProps(values);
-          const continueOrSubmitIsDisabled =
-            currentStepProps.disableContinue !== undefined &&
-            (isBoolean(currentStepProps.disableContinue)
-              ? currentStepProps.disableContinue
-              : currentStepProps.disableContinue(values));
+            return errors;
+          }}
+        >
+          {({
+            validateForm,
+            isSubmitting,
+            handleSubmit,
+            values,
+            setFieldTouched,
+          }) => {
+            const currentStepProps = stepProps(values);
+            const continueOrSubmitIsDisabled =
+              currentStepProps.disableContinue !== undefined &&
+              (isBoolean(currentStepProps.disableContinue)
+                ? currentStepProps.disableContinue
+                : currentStepProps.disableContinue(values));
 
-          const isDisabledNextStep =
-            stepIndex >= steps.length - 1 || continueOrSubmitIsDisabled;
-          return (
-            <SidebarForm ref={sidebarFormRef}>
-              <SidebarContent
-                header={
-                  <Stack gap={0.5}>
-                    <DialogTitle
-                      sx={{ color: "text.primary" }}
-                      level="h3"
-                      component="h1"
-                    >
-                      {currentStepProps.title}
-                    </DialogTitle>
-                    {steps.length > 1 && (
-                      <Typography level="title-md" textColor="text.secondary">
-                        Schritt {stepIndex + 1} von {steps.length}
-                      </Typography>
-                    )}
-                  </Stack>
-                }
-              >
-                {currentStepProps.content}
-              </SidebarContent>
-              <SidebarActions>
-                <Stack direction="row" justifyContent="space-between">
-                  <Stack direction="row">
-                    <Button variant="plain" onClick={handleClose}>
-                      Abbrechen
-                    </Button>
-                  </Stack>
-                  <Stack direction="row">
-                    {steps.length > 1 && (
-                      <Button
-                        variant="soft"
-                        color="neutral"
-                        sx={{ marginRight: 2 }}
-                        onClick={onPreviousStep}
-                        disabled={isDisabledPreviousStep}
+            const isDisabledNextStep =
+              stepIndex >= steps.length - 1 || continueOrSubmitIsDisabled;
+            return (
+              <SidebarForm ref={sidebarFormRef}>
+                <SidebarContent
+                  header={
+                    <Stack gap={0.5}>
+                      <DialogTitle
+                        sx={{ color: "text.primary" }}
+                        level="h3"
+                        component="h1"
                       >
-                        Zurück
+                        {currentStepProps.title}
+                      </DialogTitle>
+                      {steps.length > 1 && (
+                        <Typography level="title-md" textColor="text.secondary">
+                          Schritt {stepIndex + 1} von {steps.length}
+                        </Typography>
+                      )}
+                    </Stack>
+                  }
+                >
+                  {currentStepProps.content}
+                </SidebarContent>
+                <SidebarActions>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Stack direction="row">
+                      <Button variant="plain" onClick={handleClose}>
+                        Abbrechen
                       </Button>
-                    )}
-                    {stepIndex + 1 < steps.length && (
-                      <Button
-                        onClick={() => {
-                          onNextStep(validateForm, values, setFieldTouched);
-                        }}
-                        disabled={isDisabledNextStep}
-                      >
-                        Weiter
-                      </Button>
-                    )}
-                    {stepIndex + 1 === steps.length && (
-                      <SubmitButton
-                        submitting={isSubmitting}
-                        onClick={() => handleSubmit()}
-                        disabled={continueOrSubmitIsDisabled}
-                      >
-                        {saveLabel}
-                      </SubmitButton>
-                    )}
+                    </Stack>
+                    <Stack direction="row">
+                      {steps.length > 1 && (
+                        <Button
+                          variant="soft"
+                          color="neutral"
+                          sx={{ marginRight: 2 }}
+                          onClick={onPreviousStep}
+                          disabled={isDisabledPreviousStep}
+                        >
+                          Zurück
+                        </Button>
+                      )}
+                      {stepIndex + 1 < steps.length && (
+                        <Button
+                          onClick={() => {
+                            onNextStep(validateForm, values, setFieldTouched);
+                          }}
+                          disabled={isDisabledNextStep}
+                        >
+                          Weiter
+                        </Button>
+                      )}
+                      {stepIndex + 1 === steps.length && (
+                        <SubmitButton
+                          submitting={isSubmitting}
+                          onClick={() => handleSubmit()}
+                          disabled={continueOrSubmitIsDisabled}
+                        >
+                          {saveLabel}
+                        </SubmitButton>
+                      )}
+                    </Stack>
                   </Stack>
-                </Stack>
-              </SidebarActions>
-            </SidebarForm>
-          );
-        }}
-      </Formik>
+                </SidebarActions>
+              </SidebarForm>
+            );
+          }}
+        </Formik>
+      )}
     </Sidebar>
   );
 }

@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiAppointmentBookingType,
   ApiProcedureStatus,
   ApiServiceStatus,
   ApiTravelTimeUnit,
@@ -12,6 +13,15 @@ import {
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
 
 import { AllowedProcedureStatusForSearch } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultationSearch/VaccinationConsultationsSearchFilterSettings";
+
+export enum MedicalHistoryAnswerStatusType {
+  Answered = "ANSWERED",
+  PartiallyAnswered = "PARTIALLY_ANSWERED",
+  NotAnswered = "NOT_ANSWERED",
+}
+
+export type MedicalHistoryAnswerStatus =
+  (typeof MedicalHistoryAnswerStatusType)[keyof typeof MedicalHistoryAnswerStatusType];
 
 export const TRAVEL_TYPES: EnumMap<ApiTravelType> = {
   [ApiTravelType.Unspecified]: "nicht erfasst",
@@ -34,9 +44,23 @@ export const STATUS_NAMES: EnumMap<ApiServiceStatus> = {
   [ApiServiceStatus.Accomplished]: "Erledigt",
 };
 
+export const STATUS_NAMES_APPOINTMENT: EnumMap<ApiAppointmentBookingType> = {
+  [ApiAppointmentBookingType.AppointmentBlock]: "Gebucht",
+  [ApiAppointmentBookingType.UserDefined]: "Gebucht",
+  [ApiAppointmentBookingType.SelfBooking]: "Noch nicht gebucht",
+  [ApiAppointmentBookingType.Cancelled]: "Abgesagt",
+};
+
 export const PROCEDURE_STATUS_NAMES_FOR_SEARCH: EnumMap<AllowedProcedureStatusForSearch> =
   {
     [ApiProcedureStatus.Draft]: "Geplant",
     [ApiProcedureStatus.InProgress]: "In Ausführung",
     [ApiProcedureStatus.Open]: "Offen",
   };
+
+export const STATUS_NAMES_MEDICAL_HISTORY_ANSWER = {
+  [MedicalHistoryAnswerStatusType.Answered]: "Anamnese vollständig beantwortet",
+  [MedicalHistoryAnswerStatusType.PartiallyAnswered]:
+    "Anamnese unvollständig abgesendet",
+  [MedicalHistoryAnswerStatusType.NotAnswered]: "Anamnese nicht beantwortet",
+} satisfies Record<MedicalHistoryAnswerStatus, string>;

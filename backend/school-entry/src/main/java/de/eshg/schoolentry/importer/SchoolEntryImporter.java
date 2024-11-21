@@ -18,7 +18,6 @@ import de.eshg.lib.xlsximport.ImportStatus;
 import de.eshg.lib.xlsximport.Importer;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.XlsxColumn;
-import de.eshg.schoolentry.SchoolEntryService;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.time.Year;
 import java.util.List;
@@ -39,7 +38,7 @@ public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C exte
   private static final Logger log = LoggerFactory.getLogger(SchoolEntryImporter.class);
   protected final UUID schoolId;
   protected final Year schoolYear;
-  protected final SchoolEntryService schoolEntryService;
+  protected final ImportService importService;
 
   protected SchoolEntryImporter(
       XSSFSheet sheet,
@@ -47,11 +46,11 @@ public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C exte
       FeedbackColumnAccessor feedbackColumnAccessor,
       UUID schoolId,
       Year schoolYear,
-      SchoolEntryService schoolEntryService) {
+      ImportService importService) {
     super(sheet, rowReader, feedbackColumnAccessor);
     this.schoolId = schoolId;
     this.schoolYear = schoolYear;
-    this.schoolEntryService = schoolEntryService;
+    this.importService = importService;
   }
 
   @Override
@@ -74,7 +73,7 @@ public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C exte
             .map(SchoolEntryRowValues::getProcedureId)
             .filter(Objects::nonNull)
             .toList();
-    return schoolEntryService.collectExistingProcedures(procedureIds);
+    return importService.collectExistingProcedures(procedureIds);
   }
 
   private Set<PersonKeyAttributes> getChildKeyAttributesOfValidRows(Map<Row, T> rowValues) {

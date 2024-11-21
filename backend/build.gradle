@@ -1,5 +1,4 @@
 import de.eshg.FindUnusedValidationFiles
-import de.eshg.TaskExecutionLimitService
 
 buildscript {
     dependencies {
@@ -270,35 +269,4 @@ subprojects {
 
 tasks.register("composeUp") {
     group 'docker'
-}
-
-// Temporary workaround to solve the race condition between tests in different modules
-// that both use the same 'base' module instance and reset the database in between.
-// We currently work on to get rid of this shared dependency.
-// Please see https://gitlab.com/ga-ffm/ga-lotse/eshg-backend/-/merge_requests/377
-
-def testLimitService = project.gradle.sharedServices
-        .registerIfAbsent("testLimitService", TaskExecutionLimitService.class, {spec -> spec.maxParallelUsages = 1})
-
-def projectsToSequentialize = [
-    project(':inspection'),
-    project(':measles-protection'),
-    project(':school-entry'),
-    project(':travel-medicine'),
-    project(':lib-procedures'),
-    project(':lib-appointmentblock'),
-    project(':auditlog'),
-    project(':chat-management'),
-    project(':sti-protection'),
-    project(':medical-registry'),
-    project(':opendata')
-]
-
-// We do not need to sequentialize when we only execute schema tests
-if (!project.hasProperty("schemaOnly")) {
-    projectsToSequentialize.each { Project project ->
-        project.tasks.named("test").configure {
-            usesService testLimitService
-        }
-    }
 }

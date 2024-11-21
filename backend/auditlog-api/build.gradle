@@ -7,5 +7,5 @@ dependencies {
 
     implementation project(':base-api')
     implementation project(':lib-security-config-urls')
-    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
 }

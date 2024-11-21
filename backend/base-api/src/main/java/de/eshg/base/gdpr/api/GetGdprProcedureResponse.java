@@ -39,4 +39,9 @@ public record GetGdprProcedureResponse(
             description =
                 "The matter of concern for this GDPR procedure, only relevant for right to correction and right to objection.",
             example = "Person requested to stop all related procedures.")
-        String matterOfConcern) {}
+        String matterOfConcern,
+    @Schema(
+            description =
+                "The internal note used to define the result of a procedure when closing or cancelling.",
+            example = "Could not find any datasets to correct, likely already deleted.")
+        String internalNote) {}

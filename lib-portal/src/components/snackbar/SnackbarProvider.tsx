@@ -121,7 +121,7 @@ function BaseSnackbar({
             aria-hidden={true}
             aria-label="Technical test close button"
             data-testid="snackbar-internal-close-button"
-            style={{ opacity: 0 }}
+            sx={{ opacity: 0 }}
             onClick={() => setOpen(false)}
           />
         </>

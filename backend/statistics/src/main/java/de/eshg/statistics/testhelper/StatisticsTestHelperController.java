@@ -8,7 +8,7 @@ package de.eshg.statistics.testhelper;
 import de.eshg.auditlog.SharedAuditLogTestHelperApi;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
 import de.eshg.statistics.aggregation.ReportExecution;
-import de.eshg.statistics.aggregation.StatisticExecutorService;
+import de.eshg.statistics.aggregation.StatisticsExecutorService;
 import de.eshg.statistics.config.StatisticsFeature;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
@@ -27,7 +27,7 @@ public class StatisticsTestHelperController extends TestHelperController
 
   private final StatisticsFeatureToggle statisticsFeatureToggle;
   private final AuditLogTestHelperService auditLogTestHelperService;
-  private final StatisticExecutorService statisticExecutorService;
+  private final StatisticsExecutorService statisticsExecutorService;
   private final ReportExecution reportExecution;
 
   public StatisticsTestHelperController(
@@ -36,12 +36,12 @@ public class StatisticsTestHelperController extends TestHelperController
       AuditLogTestHelperService auditLogTestHelperService,
       ReportExecution reportExecution,
       EnvironmentConfig environmentConfig,
-      StatisticExecutorService statisticExecutorService) {
+      StatisticsExecutorService statisticsExecutorService) {
     super(testHelperService, environmentConfig);
     this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.reportExecution = reportExecution;
-    this.statisticExecutorService = statisticExecutorService;
+    this.statisticsExecutorService = statisticsExecutorService;
   }
 
   @PostExchange("/enabled-new-features/{featureToEnable}")
@@ -51,7 +51,7 @@ public class StatisticsTestHelperController extends TestHelperController
 
   @PostExchange("/finish-auto-reports")
   public void finishAutoReports() {
-    statisticExecutorService.submit(reportExecution::handlePlannedReports);
+    statisticsExecutorService.submit(reportExecution::handlePlannedReports);
   }
 
   @Override

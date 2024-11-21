@@ -22,8 +22,6 @@ import de.eshg.base.centralfile.api.DiffDto;
 import de.eshg.base.centralfile.api.facility.*;
 import de.eshg.base.centralfile.persistence.entity.*;
 import de.eshg.base.util.FacilityContactPersonsDiffWrapper;
-import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.error.ErrorCode;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -276,16 +274,5 @@ public class FacilityMapper {
                             CONTACT_PERSON_FIELD_NAMES, null, mapContactPersonToApi(d)))));
 
     return contactPersonDiffDtos;
-  }
-
-  public static void validateAddFacilityFileStateRequest(AddFacilityFileStateRequest request) {
-    if (isUsePartialMatch(request) && request.contactAddress() == null) {
-      throw new BadRequestException(
-          ErrorCode.BAD_REQUEST, "Partial matching requires a ContactAddress");
-    }
-  }
-
-  public static boolean isUsePartialMatch(AddFacilityFileStateRequest request) {
-    return Boolean.TRUE.equals(request.partialMatch());
   }
 }

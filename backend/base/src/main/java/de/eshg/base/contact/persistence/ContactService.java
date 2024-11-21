@@ -7,7 +7,9 @@ package de.eshg.base.contact.persistence;
 
 import static de.eshg.base.contact.persistence.ContactSearchSpecificationUtil.*;
 import static de.eshg.base.util.PaginationUtil.getPageable;
+import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
@@ -35,16 +37,19 @@ import de.eshg.base.util.MappingUtil;
 import de.eshg.base.util.PaginationUtil.PageSpec;
 import de.eshg.domain.model.BaseRevisionEntity_;
 import de.eshg.domain.model.audit.DefaultRevisionEntity_;
+import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.mapper.AuditMapper;
 import de.eshg.mapper.RevisionEntryWithChange;
+import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.metamodel.SingularAttribute;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,6 +59,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -74,18 +80,28 @@ public class ContactService {
   public static final String TYPE_SORT_KEY = "TYPE";
   public static final String CATEGORY_SORT_KEY = "CATEGORY";
 
+  private static final Set<BusinessModule> BUSINESS_MODULES_REQUIRING_CONTACT_MERGE_CALLBACK =
+      Arrays.stream(BusinessModule.values())
+          .filter(ContactService::requiresContactMergedCallback)
+          .collect(StreamUtil.toLinkedHashSet());
+
   private final ContactRepository contactRepository;
   private final AuditLogger auditLogger;
   private final FuzzySearchHelper fuzzySearchHelper;
-  @PersistenceContext private EntityManager entityManager;
+  private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
+  private final EntityManager entityManager;
 
   public ContactService(
       ContactRepository contactRepository,
       AuditLogger auditLogger,
-      FuzzySearchHelper fuzzySearchHelper) {
+      FuzzySearchHelper fuzzySearchHelper,
+      BusinessModuleAggregationHelper businessModuleAggregationHelper,
+      EntityManager entityManager) {
     this.contactRepository = contactRepository;
     this.auditLogger = auditLogger;
     this.fuzzySearchHelper = fuzzySearchHelper;
+    this.businessModuleAggregationHelper = businessModuleAggregationHelper;
+    this.entityManager = entityManager;
   }
 
   public Optional<Contact> findById(UUID id) {
@@ -411,6 +427,27 @@ public class ContactService {
     source.setMergedInto(target);
     contactRepository.updateMergeRefs(target, source);
     writeAuditLog("Zusammenführen", mapAuditLogForMerge(source, target));
+    broadcastContactsMergedEvent(source, target);
+  }
+
+  private void broadcastContactsMergedEvent(Contact source, Contact target) {
+    List<ErrorResponseWithLocation> errors =
+        aggregateErrorResponses(
+            businessModuleAggregationHelper.requestFromBusinessModules(
+                BUSINESS_MODULES_REQUIRING_CONTACT_MERGE_CALLBACK,
+                client -> {
+                  client.broadcastContactsMergedEvent(
+                      source.getExternalId(), target.getExternalId());
+                  return null;
+                }));
+
+    if (!errors.isEmpty()) {
+      throw new RuntimeException(
+          "Failed to broadcast contacts merged events: "
+              + errors.stream()
+                  .map(ErrorResponseWithLocation::toString)
+                  .collect(Collectors.joining(", ")));
+    }
   }
 
   public void lockAll(List<Contact> contacts) {
@@ -466,5 +503,18 @@ public class ContactService {
     return Map.of(
         "Quelle Kontakt ID", source.getExternalId().toString(),
         "Ziel Kontakt ID", target.getExternalId().toString());
+  }
+
+  private static boolean requiresContactMergedCallback(BusinessModule businessModule) {
+    return switch (businessModule) {
+      case INSPECTION,
+              TRAVEL_MEDICINE,
+              MEASLES_PROTECTION,
+              STI_PROTECTION,
+              MEDICAL_REGISTRY,
+              DENTAL ->
+          false;
+      case SCHOOL_ENTRY -> true;
+    };
   }
 }

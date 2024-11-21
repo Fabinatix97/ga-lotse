@@ -17,7 +17,7 @@ import {
 } from "@mui/joy";
 import { useState } from "react";
 
-import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/statistics/timeRangeHelper";
+import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
 
 export interface TimeSpan {
   start: string;

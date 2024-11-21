@@ -1,15 +1,15 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
     implementation project(':business-module-commons')
     implementation project(':file-commons')
     implementation project(':business-module-persistence-commons')
-    implementation project(':base-api')
     implementation project(':auditlog-api')
     implementation project(':lib-base-client')
-    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
     implementation 'commons-io:commons-io:latest.release'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation project(':test-commons')
@@ -19,17 +19,11 @@ dependencies {
 
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    testImplementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
 }
 
 dockerCompose {
     startedServices = ['opendata', 'opendata-db']
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

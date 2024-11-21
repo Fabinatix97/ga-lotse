@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="de" lang="de">
+    <head>
+        <link rel="stylesheet" type="text/css"
+              href="medical_history_pdf_template.css"/>
+        <link href='https://fonts.googleapis.com/css?family=Poppins'
+              rel='stylesheet'/>
+    </head>
+    <body style="font-family: Poppins, serif;">
+        <img src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}"/>
+
+        <footer>
+            <div>
+            ${departmentInfo.name} &#8226;
+            ${departmentInfo.street} ${departmentInfo.houseNumber} ${departmentInfo.postalCode} ${departmentInfo.city}
+            </div>
+            <div>
+                Webseite: ${departmentInfo.homepage}
+                E-Mail: ${departmentInfo.email}
+            </div>
+        </footer>
+
+        <div class="addressRight">
+        ${departmentInfo.name}
+            <br> ${departmentInfo.street} ${departmentInfo.houseNumber}</br>
+            <br> ${departmentInfo.postalCode} ${departmentInfo.city}</br>
+        </div>
+
+        <div class="title">
+            ${title}
+        </div>
+
+        <div class="generalInformation">
+          <div class="generalInformationTitle">Persönliche Angaben</div>
+          <table class="generalInformationTable">
+            <tr>
+              <td>Name:</td>
+              <td class="generalInformationLine half">${lastName}</td>
+              <td class="gap">Vorname:</td>
+              <td class="generalInformationLine half">${firstName}</td>
+            </tr>
+            <tr>
+              <td>Straße:</td>
+              <td class="generalInformationLine full" colspan="3"><#if street?? && houseNumber??>${street} ${houseNumber}</#if></td>
+            </tr>
+            <tr>
+              <td>PLZ:</td>
+              <td class="generalInformationLine half"><#if postalCode??>${postalCode}</#if></td>
+              <td class="gap">Wohnort:</td>
+              <td class="generalInformationLine half"><#if city??>${city}</#if></td>
+            </tr>
+            <tr>
+              <td>Geburtsdatum:</td>
+              <td class="generalInformationLine half">${dateOfBirth}</td>
+              <td class="gap">Telefon:</td>
+              <td class="generalInformationLine half"><#if phoneNumber??>${phoneNumber}</#if></td>
+            </tr>
+            <tr>
+              <td>E-Mail:</td>
+              <td class="generalInformationLine full" colspan="3"><#if emailAddress??>${emailAddress}</#if></td>
+            </tr>
+          </table>
+          <div class="generalInformationTitle">Angaben zur Reise</div>
+          <table class="generalInformationTable">
+            <tr>
+              <td>Reisebeginn:</td>
+              <td class="generalInformationLine half"><#if travelDate??>${travelDate}</#if></td>
+              <td class="gap">Reisedauer:</td>
+              <td class="generalInformationLine half"><#if travelDuration??>${travelDuration}</#if></td>
+            </tr>
+            <tr>
+              <td>Reiseländer:</td>
+              <td class="generalInformationLine full" colspan="3"><#if travelDestinations??>${travelDestinations}</#if></td>
+            </tr>
+          </table>
+          <table class="generalInformationTable">
+            <tr>
+              <td class="extraPadding" rowspan="2">Reiseart:</td>
+              <td>
+                <div class="checkbox <#if travelType?? && travelType == 'Keine Reise'>checked</#if>"></div>
+              </td>
+              <td class="half">
+                <div>keine Reise</div>
+              </td>
+              <td>
+                <div class="checkbox <#if travelType?? && travelType == 'Geschäftsreise'>checked</#if>"></div>
+              </td>
+              <td class="half">
+                <div>Geschäftsreise</div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="checkbox <#if travelType?? && travelType == 'Urlaubsreise'>checked</#if>"></div>
+              </td>
+              <td class="half">
+                <div>Urlaubsreise</div>
+              </td>
+              <td>
+                <div class="checkbox <#if travelType?? && travelType == 'Rucksackreise'>checked</#if>"></div>
+              </td>
+              <td class="half">
+                <div>Rucksackreise</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <#list documentContent.sections as section>
+          <div class="sectionTitle">
+            <#if section.sectionTitle??>${section.sectionTitle}</#if>
+          </div>
+          <#list section.sectionElements as element>
+            <div class="element <#if element?index == 0> firstElement</#if>">
+              <#if element.anamnesisQuestion??>
+                <div class="questionText">
+                  ${element.anamnesisQuestion.questionText}
+                </div>
+                <table class="elementTable">
+                  <tr>
+                    <td>
+                      <div class="checkbox <#if element.anamnesisQuestion.answer?? && element.anamnesisQuestion.answer == true>checked</#if>"></div>
+                    </td>
+                    <td>
+                      <span class="textMargin">Ja</span>
+                    </td>
+                    <td>
+                      <div class="checkbox <#if element.anamnesisQuestion.answer?? && element.anamnesisQuestion.answer == false>checked</#if>"></div>
+                    </td>
+                    <td>
+                      <span class="text">Nein</span>
+                    </td>
+                  </tr>
+                </table>
+                <#if element.anamnesisQuestion.subElementMultiSelect?size != 0>
+                  <table class="elementTable subAnswersTable">
+                    <tr>
+                      <td class="text subQuestionText" colspan="2">Wenn ja:</td>
+                    </tr>
+                    <#list element.anamnesisQuestion.subElementMultiSelect as subElement>
+                      <tr>
+                        <td class="square">
+                          <div class="checkbox <#if subElement.answer?? && subElement.answer == true>checkedSquare</#if>"></div>
+                        </td>
+                        <td>
+                          <div class="text">${subElement.questionText}</div>
+                        </td>
+                      </tr>
+                    </#list>
+                  </table>
+                </#if>
+                <#if element.anamnesisQuestion.subElementText??>
+                  <div class="text subQuestionText">
+                    ${element.anamnesisQuestion.subElementText.questionText}
+                  </div>
+                  <div class="text subQuestionAnswer">
+                    <#if element.anamnesisQuestion.subElementText.answer??>${element.anamnesisQuestion.subElementText.answer}</#if>
+                  </div>
+                </#if>
+              </#if>
+              <#if element.textBlock??>
+                <div class="text">
+                  ${element.textBlock.textField}
+                </div>
+              </#if><#if element.confirmation??>
+              <table class="elementTable">
+                <tr>
+                  <td class="square">
+                    <div class="checkbox <#if element.confirmation.answer?? && element.confirmation.answer == true>checkedSquare</#if>"></div>
+                  </td>
+                  <td>
+                    <div class="text">${element.confirmation.confirmationTextField}</div>
+                  </td>
+                </tr>
+              </table>
+            </#if>
+            </div>
+          </#list>
+        </#list>
+    </body>
+</html>

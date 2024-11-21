@@ -40,8 +40,14 @@ export async function updateInspectionInCache({
   const inspectionResponse = await getInspection(inspectionId);
   const inspection = inspectionResponse.inspectionResponse;
 
-  // For now, we only support writing the notes.
-  inspection.notes = updateInspectionRequest.notes;
+  // For now, we only support writing notes and executedAppointment.
+  if (updateInspectionRequest.notes != null) {
+    inspection.notes = updateInspectionRequest.notes;
+  }
+  if (updateInspectionRequest.executedAppointment != null) {
+    inspection.executedAppointment =
+      updateInspectionRequest.executedAppointment;
+  }
 
   const getRequestPath = getApiInspectionPath(inspectionId);
   const response = await getFromApiCache(getRequestPath);

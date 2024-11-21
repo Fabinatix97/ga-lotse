@@ -21,7 +21,6 @@ import { TextareaField } from "@/lib/shared/components/formFields/TextareaField"
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
-  keyDocumentTypes,
   manualProgressEntryFileTypes,
   manualProgressEntryTypeNames,
 } from "@/lib/shared/components/procedures/progress-entries/constants";
@@ -70,7 +69,8 @@ function CreateProgressEntrySidebarContent({
   open,
   onClose,
 }: CreateProgressEntrySidebarProps) {
-  const { useCreateProgressEntry } = useProgressEntriesConfig();
+  const { keyDocumentTypes, useCreateProgressEntry } =
+    useProgressEntriesConfig();
   const createProgressEntry = useCreateProgressEntry();
   const { openConfirmationDialog } = useConfirmationDialog();
 

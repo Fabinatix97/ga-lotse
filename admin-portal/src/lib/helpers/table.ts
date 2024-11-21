@@ -5,8 +5,12 @@
 
 import { Row } from "@tanstack/react-table";
 
+import { Actor } from "@/lib/components/view/actors/ActorTable";
+import { OrgUnit } from "@/lib/hooks/useOrgUnits";
+import { Rule } from "@/lib/hooks/useRules";
+
 function getVisibleCellWithColId<TData>(
-  row: Row<TData>,
+  row: Row<TData> | Row<OrgUnit> | Row<Actor> | Row<Rule>,
   colId: string,
 ): string | undefined {
   const colValue: unknown = row
@@ -22,7 +26,9 @@ function getVisibleCellWithColId<TData>(
   return undefined;
 }
 
-export function getRowIdentifier<TData>(row: Row<TData>): string {
+export function getRowIdentifier<TData>(
+  row: Row<TData> | Row<OrgUnit> | Row<Actor> | Row<Rule>,
+): string {
   const idVal = getVisibleCellWithColId(row, "id");
   if (idVal !== undefined) {
     const descVal = getVisibleCellWithColId(row, "description");

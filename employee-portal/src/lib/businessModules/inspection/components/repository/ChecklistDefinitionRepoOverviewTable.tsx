@@ -8,14 +8,13 @@
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiChecklistDefinitionCentralRepoMetadata } from "@eshg/employee-portal-api/inspection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useState } from "react";
 
 import {
   useDeleteCentralRepoChecklistDefinition,
   useSyncCentralRepoChecklistDefinition,
 } from "@/lib/businessModules/inspection/api/mutations/checklistDefinition";
 import { useGetNewestChecklistDefinitionsFromCentralRepo } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
-import { MetadataDetailsSidebar } from "@/lib/businessModules/inspection/components/repository/MetadataDetailsSidebar";
+import { useMetadataDetailsSidebar } from "@/lib/businessModules/inspection/components/repository/MetadataDetailsSidebar";
 import {
   createCldRepoOverviewTableColumns,
   getRepoOverviewRowRoute,
@@ -25,15 +24,6 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
-
-type UserActivityState =
-  | { type: "view-table" }
-  | {
-      type: "view-details";
-      details: ApiChecklistDefinitionCentralRepoMetadata;
-    };
-
-const INITIAL_USER_ACTIVITY: UserActivityState = { type: "view-table" };
 
 export function ChecklistDefinitionRepoOverviewTable() {
   const { data: repoMetadataList, isFetching } =
@@ -46,22 +36,18 @@ export function ChecklistDefinitionRepoOverviewTable() {
     ApiUserRole.InspectionCentralrepositoryDelete,
   ]);
   const snackbar = useSnackbar();
-  const [userActivity, setUserActivity] = useState<UserActivityState>(
-    INITIAL_USER_ACTIVITY,
-  );
+  const metadataDetailsSidebar = useMetadataDetailsSidebar();
   const { mutateAsync: syncCentralRepoChecklistDefinition } =
     useSyncCentralRepoChecklistDefinition();
   const { mutateAsync: deleteCentralRepoChecklistDefinition } =
     useDeleteCentralRepoChecklistDefinition();
 
-  function handleSidebarClosed() {
-    setUserActivity(INITIAL_USER_ACTIVITY);
-  }
-
   function handleDetailsButtonClick(
     metadata: ApiChecklistDefinitionCentralRepoMetadata,
   ) {
-    setUserActivity({ type: "view-details", details: metadata });
+    metadataDetailsSidebar.open({
+      metadata,
+    });
   }
 
   async function handleDownloadButtonClick(
@@ -140,15 +126,6 @@ export function ChecklistDefinitionRepoOverviewTable() {
           />
         </TableSheet>
       </TablePage>
-      <MetadataDetailsSidebar
-        open={userActivity.type === "view-details"}
-        metadata={
-          userActivity.type === "view-details"
-            ? userActivity.details
-            : undefined
-        }
-        onClose={handleSidebarClosed}
-      />
     </>
   );
 }

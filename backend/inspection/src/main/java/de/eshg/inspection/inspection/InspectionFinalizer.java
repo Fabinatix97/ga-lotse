@@ -157,11 +157,13 @@ public class InspectionFinalizer {
     checkApprovalPrerequisites(inspection);
     createReportPdf(inspection);
     addProgressEntryForApproval(inspection);
-    if (inspection.getResult() == InspectionResult.FAILED) {
-      // Facility closed until further notice. No followup
-      InspectionRelatedFacility relatedFacility = inspection.getRelatedFacility();
-      relatedFacility.getFacility().setBanned(true);
-    } else {
+
+    // Banning facility if the result is negative, unbanning it otherwise
+    InspectionRelatedFacility relatedFacility = inspection.getRelatedFacility();
+    relatedFacility.getFacility().setBanned(inspection.getResult() == InspectionResult.FAILED);
+
+    // We only create a followup inspection if the result is not negative
+    if (inspection.getResult() != InspectionResult.FAILED) {
       Inspection followupInspection = createFollowupInspection(inspection);
       inspection.setFollowupInspection(followupInspection);
     }

@@ -14,7 +14,7 @@ import { ReactNode } from "react";
 import { isObjectType } from "remeda";
 
 import { CertificateDialogButton } from "@/lib/components/button/CertificateDialogButton";
-import { formatActorSelector } from "@/lib/components/table/cell/ActorSelectorCell";
+import { formatActorSelector } from "@/lib/components/table/cell/StaticActorSelectorCell";
 
 export function ColoredText<
   TValue extends

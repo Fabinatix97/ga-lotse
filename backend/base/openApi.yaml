@@ -428,6 +428,67 @@ paths:
       summary: Create a new citizen access code user
       tags:
       - CitizenAccessCodeUser
+  /citizen-access-code-users/anonymous:
+    post:
+      operationId: addAnonymousUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddAnonymousUserRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CitizenAccessCodeUser"
+          description: OK
+      summary: Add a new anonymous user identified by an access code
+      tags:
+      - CitizenAccessCodeUser
+  /citizen-access-code-users/anonymous/{id}:
+    delete:
+      operationId: deleteAnonymousUser
+      parameters:
+      - description: Id of the anonymous user
+        example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Delete an anonymous access code user
+      tags:
+      - CitizenAccessCodeUser
+  /citizen-access-code-users/anonymous/{id}/verify:
+    post:
+      operationId: verifyAnonymousUserPin
+      parameters:
+      - description: Id of the anonymous user
+        example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyPinRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Verify anonymous access code user PIN
+      tags:
+      - CitizenAccessCodeUser
   /citizen-access-code-users/{id}:
     get:
       operationId: getCitizenAccessCodeUser
@@ -960,6 +1021,29 @@ paths:
         To delete file states under normal cleanup, use /mark-for-deletion instead.
       tags:
       - Facility
+  /facilities/centralfilestates/bulk-add:
+    post:
+      operationId: addFacilityFileStates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddFacilityFileStatesRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AddFacilityFileStatesResponse"
+          description: OK
+      summary: |
+        Add multiple facility file states in a bulk operation.
+        Each file state is linked to a reference facility whose name and mandatory
+        contact address fields match; other fields are not taken into account here. If
+        no such facility exists, a new one will be created.
+      tags:
+      - Facility
   /facilities/centralfilestates/bulk-get:
     post:
       operationId: getFacilityFileStates
@@ -1346,9 +1430,9 @@ paths:
       summary: Add central file id to GDPR procedure.
       tags:
       - GdprProcedure
-  /gdpr-procedures/{id}/change-status:
+  /gdpr-procedures/{id}/cancel-procedure:
     post:
-      operationId: changeStatus
+      operationId: cancelProcedure
       parameters:
       - in: path
         name: id
@@ -1360,12 +1444,34 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GdprProcedureChangeStatusRequest"
+              $ref: "#/components/schemas/CancelGdprProcedureRequest"
         required: true
       responses:
         "200":
           description: OK
-      summary: Changes the current status of the GDPR procedure.
+      summary: Cancel the GDPR procedure
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/{id}/close-procedure:
+    post:
+      operationId: closeProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloseGdprProcedureRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Close the GDPR procedure
       tags:
       - GdprProcedure
   /gdpr-procedures/{id}/details-page:
@@ -1499,6 +1605,27 @@ paths:
         \ relevant for right to correction and right to objection."
       tags:
       - GdprProcedure
+  /gdpr-procedures/{id}/refresh-status:
+    post:
+      operationId: refreshStatus
+      parameters:
+      - description: The Id of the GDPR procedure.
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprProcedureResponse"
+          description: OK
+      summary: Refresh status of GDPR procedure.
+      tags:
+      - GdprProcedure
   /gdpr-procedures/{id}/report-document:
     get:
       operationId: getReportDocument
@@ -1518,6 +1645,28 @@ paths:
                 format: binary
           description: OK
       summary: Returns the relevant report as PDF for this GDPR Procedure.
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/{id}/start-procedure:
+    post:
+      operationId: startProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartGdprProcedureRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Start the GDPR procedure
       tags:
       - GdprProcedure
   /inventoryItems:
@@ -2119,6 +2268,27 @@ paths:
         and return all file state ids associated with these reference persons.
       tags:
       - Person
+  /persons/centralfilestates/bulk-update:
+    post:
+      operationId: updatePersonFileStatesAndReferences
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePersonsRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UpdatePersonsResponse"
+          description: OK
+      summary: |
+        Perform a consistent update of person file states and their associated
+        reference persons in a bulk operation.
+      tags:
+      - Person
   /persons/centralfilestates/external-source:
     post:
       operationId: addPersonFromExternalSource
@@ -2292,7 +2462,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PutPersonRequest"
+              $ref: "#/components/schemas/UpdatePersonRequest"
         required: true
       responses:
         "200":
@@ -3710,6 +3880,16 @@ components:
       - lastActiveTime
       - sessionId
       - startTime
+    AddAnonymousUserRequest:
+      type: object
+      properties:
+        pin:
+          type: string
+          description: The PIN for anonymous authorization.
+          example: "654321"
+          pattern: "\\d{6}"
+      required:
+      - pin
     AddBarrierTestHelperResponse:
       type: object
       properties:
@@ -3777,14 +3957,6 @@ components:
           example: Example Facility
           maxLength: 300
           minLength: 1
-        partialMatch:
-          type: boolean
-          description: "If only the knowledge factor `name` as well as the address\
-            \ (apart from `addressAddition` and `differentName`) shall be used for\
-            \ establishing a connection to an existing referenceFacility instead of\
-            \ a full match of the complete entity. This is useful for automatic connections,\
-            \ e.g. for imports, where incomplete data is present."
-          example: true
         phoneNumbers:
           type: array
           description: A list of telephone numbers of the Facility.
@@ -3801,6 +3973,29 @@ components:
       required:
       - dataOrigin
       - name
+    AddFacilityFileStatesRequest:
+      type: object
+      description: A list of Facilities that shall be added to the Central Files.
+      properties:
+        facilities:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddFacilityFileStateRequest"
+          maxItems: 10000
+          minItems: 1
+      required:
+      - facilities
+    AddFacilityFileStatesResponse:
+      type: object
+      properties:
+        facilityFileStateIds:
+          type: array
+          description: A list containing the file state IDs of the added facilities
+          items:
+            type: string
+            format: uuid
+      required:
+      - facilityFileStateIds
     AddGdprDownloadsRequest:
       type: object
       properties:
@@ -4255,12 +4450,12 @@ components:
       - CHAT_USERNAME
       - SEARCH_PROCEDURES
       - INBOX
+      - INSPECTION_INBOX
       - STI_PROTECTION
       - VERIFICATION_OF_EXTERNAL_DATA
       - OPEN_DATA
       - GDPR
       - GDPR_ONLINE_PORTAL
-      - CONTACT_MERGE
     BlockingEventsOfCalendar:
       type: object
       properties:
@@ -4322,6 +4517,7 @@ components:
       - MEASLES_PROTECTION
       - STI_PROTECTION
       - MEDICAL_REGISTRY
+      - DENTAL
     Calendar:
       type: object
       properties:
@@ -4347,6 +4543,17 @@ components:
       - GLOBAL
       - RESOURCE
       - USER
+    CancelGdprProcedureRequest:
+      type: object
+      properties:
+        internalNote:
+          type: string
+        version:
+          type: integer
+          format: int64
+      required:
+      - internalNote
+      - version
     CitizenAccessCodeUser:
       type: object
       properties:
@@ -4371,6 +4578,17 @@ components:
       - ACCESS_CODE_USER
       - MUK_USER
       - BUND_ID_USER
+    CloseGdprProcedureRequest:
+      type: object
+      properties:
+        internalNote:
+          type: string
+        version:
+          type: integer
+          format: int64
+      required:
+      - internalNote
+      - version
     Configuration:
       type: object
       properties:
@@ -4782,6 +5000,7 @@ components:
             format: uuid
           maxItems: 2147483647
           minItems: 1
+          uniqueItems: true
       required:
       - fileStateIds
     DeleteGdprDownloadsRequest:
@@ -5494,17 +5713,6 @@ components:
       - dateOfBirth
       - firstName
       - lastName
-    GdprProcedureChangeStatusRequest:
-      type: object
-      properties:
-        newStatus:
-          $ref: "#/components/schemas/GdprProcedureStatus"
-        version:
-          type: integer
-          format: int64
-      required:
-      - newStatus
-      - version
     GdprProcedureSortKey:
       type: string
       enum:
@@ -5525,6 +5733,7 @@ components:
       - RIGHT_OF_ACCESS
       - RIGHT_TO_ERASURE
       - RIGHT_TO_OBJECT
+      - RIGHT_TO_RECTIFICATION
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -6112,6 +6321,11 @@ components:
           oneOf:
           - $ref: "#/components/schemas/GdprFacility"
           - $ref: "#/components/schemas/GdprPerson"
+        internalNote:
+          type: string
+          description: The internal note used to define the result of a procedure
+            when closing or cancelling.
+          example: "Could not find any datasets to correct, likely already deleted."
         matterOfConcern:
           type: string
           description: "The matter of concern for this GDPR procedure, only relevant\
@@ -6299,7 +6513,7 @@ components:
         outdated:
           type: boolean
           description: A flag that signals if a File State differs from the referencePerson
-            it is connected to.
+            it is connected to. Set to 'null' if unchecked.
           example: true
         phoneNumbers:
           type: array
@@ -6336,13 +6550,14 @@ components:
       - gender
       - id
       - lastName
-      - outdated
       - phoneNumbers
       - referenceVersion
       - salutation
     GetPersonFileStatesRequest:
       type: object
       properties:
+        checkOutdated:
+          type: boolean
         fileStateIds:
           type: array
           description: A list of Ids for requested Person File States.
@@ -6370,7 +6585,7 @@ components:
           type: array
           description: A list of person file states
           items:
-            $ref: "#/components/schemas/PersonFileState"
+            $ref: "#/components/schemas/GetPersonFileStateResponse"
       required:
       - notFoundIds
       - personFileStates
@@ -7858,15 +8073,6 @@ components:
           $ref: "#/components/schemas/FacilityDetails"
       required:
       - updatedFacility
-    PutPersonRequest:
-      type: object
-      description: Request used for performing a consistent update of file state and
-        associated reference person
-      properties:
-        updatedPerson:
-          $ref: "#/components/schemas/PersonDetails"
-      required:
-      - updatedPerson
     Realm:
       type: string
       enum:
@@ -8090,6 +8296,14 @@ components:
       enum:
       - ASC
       - DESC
+    StartGdprProcedureRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+      required:
+      - version
     SyncFileStateRequest:
       type: object
       properties:
@@ -8467,6 +8681,77 @@ components:
             minLength: 1
       required:
       - name
+    UpdatePersonInBulkRequest:
+      type: object
+      properties:
+        fileStateId:
+          type: string
+          format: uuid
+          description: Id of the person file state which shall be updated.
+          example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        updatedPerson:
+          $ref: "#/components/schemas/PersonDetails"
+      required:
+      - fileStateId
+      - updatedPerson
+    UpdatePersonInBulkResult:
+      type: object
+      properties:
+        newFileStateId:
+          type: string
+          format: uuid
+          description: The id of the corresponding file state which was created during
+            the update operation and contains the new data
+          example: df384786-9f85-4404-a9fd-33391da2d2b4
+        previousFileStateId:
+          type: string
+          format: uuid
+          description: The id of a person file state for which the update operation
+            was successful
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+      required:
+      - newFileStateId
+      - previousFileStateId
+    UpdatePersonRequest:
+      type: object
+      description: Request used for performing a consistent update of a person file
+        state and its associated reference person
+      properties:
+        updatedPerson:
+          $ref: "#/components/schemas/PersonDetails"
+      required:
+      - updatedPerson
+    UpdatePersonsRequest:
+      type: object
+      description: |
+        Request used for performing the consistent updates of file states and their associated reference persons in a bulk operation
+      properties:
+        updateRequests:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpdatePersonInBulkRequest"
+          maxItems: 10000
+          minItems: 1
+      required:
+      - updateRequests
+    UpdatePersonsResponse:
+      type: object
+      properties:
+        failedPersonIds:
+          type: array
+          description: A list containing the IDs of those person file states for which
+            the update failed during the bulk operation
+          example: "['ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1','df384786-9f85-4404-a9fd-33391da2d2b4','8b93ac7d-a059-437a-9834-e12d1346d088']"
+          items:
+            type: string
+            format: uuid
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpdatePersonInBulkResult"
+      required:
+      - failedPersonIds
+      - results
     UpdateReferenceFacilityRequest:
       type: object
       description: |
@@ -8734,6 +9019,8 @@ components:
       - STI_PROTECTION_LEADER
       - MEDICAL_REGISTRY_LEADER
       - MEDICAL_REGISTRY_ADMIN
+      - DENTAL_LEADER
+      - DENTAL_ADMIN
       - OPEN_DATA_ADMIN
       - OPEN_DATA_LEADER
     VCardAddress:
@@ -8859,3 +9146,13 @@ components:
       - lastName
       - phoneNumbers
       - titles
+    VerifyPinRequest:
+      type: object
+      properties:
+        pin:
+          type: string
+          description: The PIN for verification
+          example: "654321"
+          pattern: "\\d{6}"
+      required:
+      - pin

@@ -21,7 +21,8 @@ export default function UserProfilePage({
   params: { id: string };
 }>) {
   const query = useGetUserProfile(params.id);
-  const { user, groups, isSelf, calendarEvents } = query.data;
+  const { user, groups, title, salutation, isSelf, calendarEvents } =
+    query.data;
 
   return (
     <StickyToolbarLayout toolbar={<Toolbar title={fullName(user)} />}>
@@ -33,7 +34,13 @@ export default function UserProfilePage({
             flexDirection: { md: "row" },
           }}
         >
-          <UserProfileDetails user={user} groups={groups} isSelf={isSelf} />
+          <UserProfileDetails
+            user={user}
+            groups={groups}
+            isSelf={isSelf}
+            title={title}
+            salutation={salutation}
+          />
           <UserAbsence events={calendarEvents} isSelf={isSelf} />
         </Stack>
       </MainContentLayout>

@@ -8,14 +8,13 @@ package de.eshg.libservicedirectoryadminapi.api.rule;
 import de.eshg.libservicedirectoryadminapi.api.staging.StagingStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Schema(name = "AdminPartialRule")
 public record PartialRuleDto(
     UUID id,
     String description,
-    @Valid @NotNull ActorSelectorDto client,
-    @Valid @NotNull ActorSelectorDto server,
+    @Valid ActorSelectorDto client,
+    @Valid ActorSelectorDto server,
     Boolean active,
     StagingStatusDto stagingStatus) {}

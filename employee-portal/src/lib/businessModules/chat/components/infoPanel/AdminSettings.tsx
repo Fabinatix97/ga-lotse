@@ -16,6 +16,7 @@ import {
   clearSearchParams,
   leaveRoom,
 } from "@/lib/businessModules/chat/shared//utils";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
@@ -30,6 +31,7 @@ export function AdminSettings({
   roomId,
   onClose,
 }: Readonly<AdminSettingsProps>) {
+  const { matrixClient } = useChatClientContext();
   const roomInfo = useRoomInfo(roomId);
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
@@ -38,7 +40,7 @@ export function AdminSettings({
     setLeaveModalOpen(false);
     clearSearchParams(chatSearchParamNames.userId, chatSearchParamNames.roomId);
     closeInfoPanel();
-    void leaveRoom(roomInfo.matrixClient, roomId);
+    void leaveRoom(matrixClient, roomId);
   }
 
   return (

@@ -85,6 +85,6 @@ export async function finalizeInspection({
 export async function getInspection(inspectionId: string) {
   const getRequestPath = getApiInspectionInspectionsPath(inspectionId);
   const response = await getFromApiCache(getRequestPath);
-  const inspectionResponse = ApiInspectionFromJSON(await response.json()); // clone?
+  const inspectionResponse = ApiInspectionFromJSON(await response.json());
   return { getRequestPath, response, inspectionResponse };
 }

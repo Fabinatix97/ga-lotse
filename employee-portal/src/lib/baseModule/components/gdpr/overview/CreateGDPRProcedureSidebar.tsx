@@ -89,7 +89,7 @@ function CreateGDPRProcedureSidebar({
     >
       {({ isSubmitting, values }) => (
         <SidebarForm ref={formRef}>
-          <SidebarContent title={"Vorgang anlegen"}>
+          <SidebarContent title="DSGVO Vorgang anlegen">
             <Grid container spacing={3}>
               <Grid xxs={12}>
                 <SelectField

@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
+    api("de.cronn:commons-lang:latest.release")
     implementation("io.swagger.core.v3:swagger-annotations:latest.release")
 }

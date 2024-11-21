@@ -83,7 +83,7 @@ export function UpdateAppointmentContent(props: UpdateAppointmentContentProps) {
                 }}
               >
                 <AccordionSummary>
-                  <Typography level="title-lg" sx={{ p: 1 }}>
+                  <Typography level="title-md" sx={{ p: 1 }}>
                     {format(appointments.at(0)!.start, "EEEE, dd. MMMM", {
                       locale,
                     })}

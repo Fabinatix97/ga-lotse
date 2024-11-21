@@ -18,5 +18,5 @@ public record GetVaccinationConsultationDetailsResponse(
     @NotNull @Valid PersonSyncDto personSync,
     @NotNull @Valid TravelInformationDto travelInformation,
     @NotNull CreatedByUserTypeDto createdByUserType,
-    @NotNull @Valid AppointmentSummaryDto initialAppointment,
-    @NotNull @Valid List<ServicePlanEntryDto> servicePlanList) {}
+    @NotNull UUID initialProcedureStepId,
+    @NotNull @Valid List<ServicePlanGroupDto> servicePlanGroups) {}

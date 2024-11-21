@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.config;
 
-import de.eshg.lib.appointmentblock.AppointmentBlockService;
+import de.eshg.lib.appointmentblock.AppointmentBlockValidator;
 import de.eshg.lib.keycloak.TechnicalGroup;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +13,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SchoolEntryAppointmentBlockConfiguration {
 
-  @Bean(name = AppointmentBlockService.TECHNICAL_GROUP_PHYSICIANS)
+  @Bean(name = AppointmentBlockValidator.TECHNICAL_GROUP_PHYSICIANS)
   TechnicalGroup technicalGroupPhysicians() {
     return TechnicalGroup.SCHOOL_ENTRY_PHYSICIAN;
   }
 
-  @Bean(name = AppointmentBlockService.TECHNICAL_GROUP_MFAS)
+  @Bean(name = AppointmentBlockValidator.TECHNICAL_GROUP_MFAS)
   TechnicalGroup technicalGroupMfas() {
     return TechnicalGroup.SCHOOL_ENTRY_MFA;
   }

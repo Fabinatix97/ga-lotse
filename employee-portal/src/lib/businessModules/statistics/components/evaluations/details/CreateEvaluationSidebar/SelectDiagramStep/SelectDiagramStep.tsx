@@ -1,0 +1,80 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
+import { Stack, Typography } from "@mui/joy";
+import { ReactElement } from "react";
+
+import { DiagramType } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+import { SelectDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateEvaluationSidebar/SelectDiagramStep/selectDiagramStepFormModel";
+import {
+  diagramTypeIcons,
+  diagramTypeNames,
+} from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
+import { SelectableCardsField } from "@/lib/shared/components/formFields/SelectableCardsField";
+
+function DiagramSelectableCard({ diagramType }: { diagramType: DiagramType }) {
+  const DiagramTypeIcon = diagramTypeIcons[diagramType];
+  return (
+    <Stack direction="row" justifyContent="space-between" flex="1">
+      <Typography level="title-md">{diagramTypeNames[diagramType]}</Typography>
+      <DiagramTypeIcon />
+    </Stack>
+  );
+}
+
+export function SelectDiagramStep() {
+  const fieldName = createFieldNameMapper<SelectDiagramStepFormModel>();
+
+  const options: {
+    value: DiagramType;
+    content: ReactElement;
+  }[] = [
+    {
+      value: DiagramType.BAR_CHART,
+      content: <DiagramSelectableCard diagramType={DiagramType.BAR_CHART} />,
+    },
+    {
+      value: DiagramType.CHOROPLETH_CHART,
+      content: (
+        <DiagramSelectableCard diagramType={DiagramType.CHOROPLETH_CHART} />
+      ),
+    },
+    {
+      value: DiagramType.HISTOGRAM_CHART,
+      content: (
+        <DiagramSelectableCard diagramType={DiagramType.HISTOGRAM_CHART} />
+      ),
+    },
+    {
+      value: DiagramType.PIE_CHART,
+      content: <DiagramSelectableCard diagramType={DiagramType.PIE_CHART} />,
+    },
+    {
+      value: DiagramType.LINE_CHART,
+      content: <DiagramSelectableCard diagramType={DiagramType.LINE_CHART} />,
+    },
+    {
+      value: DiagramType.SCATTER_CHART,
+      content: (
+        <DiagramSelectableCard diagramType={DiagramType.SCATTER_CHART} />
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Typography level="body-md" sx={{ paddingBottom: 2 }}>
+        Wie soll die Analyse dargestellt werden?
+      </Typography>
+
+      <SelectableCardsField
+        name={fieldName("diagramType")}
+        required="Bitte Darstellungsform wählen."
+        options={options}
+      />
+    </>
+  );
+}

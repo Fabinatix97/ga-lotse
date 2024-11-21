@@ -5,7 +5,7 @@
 
 package de.eshg.measlesprotection.persistence.centralfile;
 
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.measlesprotection.api.AccessRestrictionDto;
@@ -23,8 +23,8 @@ public record ProcedureDetailsData(
     Instant createdAt,
     ProcedureStatus procedureStatus,
     RoleStatus roleStatus,
-    AddPersonFileStateResponse person,
-    List<AddPersonFileStateResponse> custodians,
+    GetPersonFileStateResponse person,
+    List<GetPersonFileStateResponse> custodians,
     FacilityData facilityData,
     List<ProofSubmissionDto> proofSubmissions,
     ReportDataDto reportDataDto,

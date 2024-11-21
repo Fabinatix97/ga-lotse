@@ -65,5 +65,10 @@
   <include file="migrations/0053_add_was_in_daycare_flag.xml"/>
   <include file="migrations/0054_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0055_add_gdpr_validation_task.xml"/>
+  <include file="/migrations/0056_compute_key_document_versions.xml"/>
+  <include file="migrations/0057_add_started_at.xml"/>
+  <include file="migrations/0058_drop_not_null_constraints.xml"/>
+  <include file="migrations/0059_rename_gdpr_validation_task_procedure_id.xml"/>
+  <include file="migrations/0060_add_download_package_table.xml"/>
 
 </databaseChangeLog>

@@ -6,13 +6,14 @@
 import { ApiProcedureDetails } from "@eshg/employee-portal-api/schoolEntry";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
+import { mapOptional } from "@/lib/shared/api/models/utils";
+
 import { Appointment, mapAppointment } from "./Appointment";
 import { Label, mapLabels } from "./Label";
 import { Location, mapLocation } from "./Location";
 import { PersonDetails, mapPersonDetails } from "./Person";
 import { Procedure, mapProcedure } from "./Procedure";
 import { WaitingRoom, mapWaitingRoom } from "./WaitingRoom";
-import { mapOptional } from "./utils";
 
 export interface ProcedureDetails extends Procedure {
   readonly version: number;
@@ -30,6 +31,7 @@ export interface ProcedureDetails extends Procedure {
   readonly schoolInfoLetterCreatedAt?: Date;
   readonly hasInformationBlock: boolean;
   readonly hasBeenClosed: boolean;
+  readonly isPastProcedure: boolean;
 }
 
 export function mapProcedureDetails(
@@ -52,5 +54,6 @@ export function mapProcedureDetails(
     schoolInfoLetterCreatedAt: response.schoolInfoLetterCreatedAt,
     hasInformationBlock: response.hasInformationBlock,
     hasBeenClosed: response.hasBeenClosed,
+    isPastProcedure: response.isPastProcedure,
   };
 }

@@ -5,7 +5,7 @@
 
 import { Divider } from "@mui/joy";
 
-import { InitialAppointmentTile } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/InitialAppointmentTile";
+import { ProcedureCreatedByTile } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ProcedureCreatedByTile";
 import { TravelDataTile } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/TravelDataTile";
 import { CreateProcedureValues } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/VaccinationConsultationDetails";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
@@ -18,11 +18,10 @@ export function ProcedureDetailsPanel(
 ) {
   return (
     <InformationSheet>
-      <InitialAppointmentTile
+      <ProcedureCreatedByTile
         initialValues={{
-          initialAppointment: props.initialValues.initialAppointment,
+          createdByUserType: props.initialValues.createdByUserType,
         }}
-        isProcedureClosed={props.procedureClosed}
       />
       <Divider orientation="horizontal" />
       <TravelDataTile

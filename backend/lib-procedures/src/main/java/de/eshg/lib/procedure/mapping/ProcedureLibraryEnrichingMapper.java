@@ -15,6 +15,8 @@ import de.eshg.lib.procedure.model.TaskDto;
 import de.eshg.lib.procedure.procedures.SummaryProvider;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ProcedureLibraryEnrichingMapper<
@@ -36,18 +38,30 @@ public class ProcedureLibraryEnrichingMapper<
     this.clock = clock;
   }
 
-  public ProcedureDto enrichAndMap(ProcedureT procedure) {
-    return ProcedureMapper.toInterfaceType(
-        procedure,
-        businessModule,
-        summaryProvider.getProcedureSummary(procedure),
-        archivingProperties.getDefaultArchivingRelevanceOrElseFallback(
-            procedure.getProcedureType()));
+  public List<ProcedureDto> enrichAndMapProcedures(List<ProcedureT> procedures) {
+    Map<Long, String> procedureSummaries = summaryProvider.getProcedureSummaries(procedures);
+
+    return procedures.stream()
+        .map(
+            procedure ->
+                ProcedureMapper.toInterfaceType(
+                    procedure,
+                    businessModule,
+                    procedureSummaries.get(procedure.getId()),
+                    archivingProperties.getDefaultArchivingRelevanceOrElseFallback(
+                        procedure.getProcedureType())))
+        .toList();
   }
 
-  public TaskDto enrichAndMap(TaskT task) {
-    return TaskMapper.toInterfaceType(
-        task, businessModule, summaryProvider.getTaskSummary(task), isOverdue(task));
+  public List<TaskDto> enrichAndMapTasks(List<TaskT> tasks) {
+    Map<Long, String> taskSummaries = summaryProvider.getTaskSummaries(tasks);
+
+    return tasks.stream()
+        .map(
+            task ->
+                TaskMapper.toInterfaceType(
+                    task, businessModule, taskSummaries.get(task.getId()), isOverdue(task)))
+        .toList();
   }
 
   private boolean isOverdue(Task<?> domainModelTask) {

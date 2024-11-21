@@ -11,5 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum GdprProcedureTypeDto {
   RIGHT_OF_ACCESS,
   RIGHT_TO_ERASURE,
-  RIGHT_TO_OBJECT
+  RIGHT_TO_OBJECT,
+  RIGHT_TO_RECTIFICATION,
 }

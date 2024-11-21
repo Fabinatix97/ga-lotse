@@ -15,11 +15,11 @@ import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import CheckIcon from "@mui/icons-material/Check";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { isDefined, isEmpty } from "remeda";
 
 import { buildRouteWithParams } from "@/lib/shared/components/procedures/helper";
-import { DynamicRoute } from "@/lib/shared/components/procedures/progress-entries/types";
+import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { TimelineEntryProps } from "@/lib/shared/components/timeline/TimelineEntry";
 import { TimelineEntryIndicator } from "@/lib/shared/components/timeline/TimelineEntryIndicator";
 
@@ -28,26 +28,42 @@ import {
   inboxProgressEntryTitles,
   manualProgressEntryIndicators,
   manualProgressEntryTitles,
+  systemProgressEntryIndicators,
   systemProgressEntryTypeTitles,
 } from "./constants";
 import { buildName, displayTriggerer, resolveFileId } from "./helper";
 
-export function timelineEntryProps(
+interface ProgressEntryTimelineEntryProps extends TimelineEntryProps {
+  key: string;
+}
+
+export function useTimelineEntryProps(): ProgressEntryTimelineEntryProps[] {
+  const { procedureId, progressEntries, files, routes } =
+    useProgressEntriesConfig();
+  const rawSearchParams = useSearchParams();
+
+  return progressEntries.map((progressEntry) =>
+    timelineEntryPropsOfProgressEntry(
+      progressEntry,
+      files,
+      buildRouteWithParams(
+        routes.entryDetails(procedureId, progressEntry.progressEntryId),
+        rawSearchParams,
+      ),
+    ),
+  );
+}
+
+function timelineEntryPropsOfProgressEntry(
   progressEntry: ApiGetProgressEntriesResponseProgressEntriesInner,
   files: ApiProgressEntryReferenceFilePair[],
-  entryDetailsRoute: DynamicRoute,
-  rawSearchParams: ReadonlyURLSearchParams,
-): TimelineEntryProps {
+  detailsUrl: string,
+): ProgressEntryTimelineEntryProps {
   const progressEntryFilePair =
     isDefined(progressEntry.fileReference) &&
     isDefined(progressEntry.fileReference.fileId)
       ? resolveFileId(progressEntry.fileReference.fileId, files)
       : undefined;
-
-  const detailsUrl = buildRouteWithParams(
-    entryDetailsRoute(progressEntry.progressEntryId),
-    rawSearchParams,
-  );
 
   switch (progressEntry.type) {
     case "SystemProgressEntry":
@@ -87,8 +103,9 @@ function timelineEntryPropsOfSystemProgressEntry(
   systemProgressEntry: ApiSystemProgressEntry,
   progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined,
   detailsUrl: string,
-) {
+): ProgressEntryTimelineEntryProps {
   return {
+    key: systemProgressEntry.progressEntryId,
     title: (
       <Title
         title={
@@ -105,7 +122,9 @@ function timelineEntryPropsOfSystemProgressEntry(
     ),
     indicator: (
       <TimelineEntryIndicator color="success">
-        <CheckIcon />
+        {systemProgressEntryIndicators[
+          systemProgressEntry.systemProgressEntryType
+        ] ?? <CheckIcon />}
       </TimelineEntryIndicator>
     ),
     children: (
@@ -128,9 +147,10 @@ function timelineEntryPropsOfManualProgressEntry(
   manualProgressEntry: ApiManualProgressEntry,
   progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined,
   detailsUrl: string,
-) {
+): ProgressEntryTimelineEntryProps {
   const note = manualProgressEntry.note;
   return {
+    key: manualProgressEntry.progressEntryId,
     title: (
       <Title
         title={
@@ -170,8 +190,9 @@ function timelineEntryPropsOfInboxProgressEntry(
   inboxProgressEntry: ApiProcessedInboxProgressEntry,
   progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined,
   detailsUrl: string,
-) {
+): ProgressEntryTimelineEntryProps {
   return {
+    key: inboxProgressEntry.progressEntryId,
     title: (
       <Title
         title={
@@ -199,6 +220,7 @@ function timelineEntryPropsOfInboxProgressEntry(
     ),
   };
 }
+
 function Title({ title, detailsUrl }: { title: string; detailsUrl: string }) {
   return (
     <Stack direction="row" spacing={0.75}>

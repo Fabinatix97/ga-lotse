@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CalendarMonth } from "@mui/icons-material";
 import { Input, InputProps } from "@mui/joy";
 
 type YearInputProps = Omit<InputProps, "endDecorator" | "placeholder">;
@@ -12,9 +11,9 @@ export function YearInput(props: YearInputProps) {
   const { sx, ...inputProps } = props;
   return (
     <Input
-      endDecorator={<CalendarMonth />}
+      type="number"
       placeholder="JJJJ"
-      sx={{ flexGrow: 1, ...sx }}
+      sx={{ color: "black", flexGrow: 1, ...sx }}
       {...inputProps}
     />
   );

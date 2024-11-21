@@ -19,7 +19,9 @@ import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { isNullish } from "remeda";
 
 import { useChangeProcedureStatus } from "@/lib/baseModule/api/mutations/gdpr";
+import { isGdprPerson } from "@/lib/baseModule/components/gdpr/helpers";
 import {
+  gdprProcedureTypeWithGdprArticle,
   statusTranslation,
   typeTranslation,
 } from "@/lib/baseModule/components/gdpr/i18n";
@@ -47,25 +49,26 @@ export function ProcedureDetailsTile({
     procedure.version,
   );
 
+  const isRectification =
+    procedure.type === ApiGdprProcedureType.ToRectification;
+  const isObjection = procedure.type === ApiGdprProcedureType.ToObject;
+  const requiresMatterOfConcern = isObjection || isRectification;
+  const isDraft = procedure.status === ApiGdprProcedureStatus.Draft;
+  const isEditable =
+    procedure.status === ApiGdprProcedureStatus.Draft ||
+    procedure.status === ApiGdprProcedureStatus.InProgress;
+
   async function startProcedure() {
-    if (isNullish(procedure.matterOfConcern)) {
+    if (isNullish(procedure.matterOfConcern) && requiresMatterOfConcern) {
       alert.warning({
         message: "Sie müssen ein Anliegen angeben.",
         closeable: true,
       });
     } else {
       alert.close();
-      await changeProcedureStatus.mutateAsync(
-        ApiGdprProcedureStatus.InProgress,
-      );
+      await changeProcedureStatus.mutateAsync({ type: "start" });
     }
   }
-
-  const isObjection = procedure.type === ApiGdprProcedureType.ToObject;
-  const isDraft = procedure.status === ApiGdprProcedureStatus.Draft;
-  const isEditable =
-    procedure.status === ApiGdprProcedureStatus.Draft ||
-    procedure.status === ApiGdprProcedureStatus.InProgress;
 
   return (
     <>
@@ -77,7 +80,7 @@ export function ProcedureDetailsTile({
             justifyContent={"space-between"}
           >
             <Typography component={"span"}>Zusatzinfos</Typography>
-            {isObjection && isEditable && (
+            {requiresMatterOfConcern && isEditable && (
               <IconButton
                 size={"sm"}
                 color={"primary"}
@@ -101,7 +104,11 @@ export function ProcedureDetailsTile({
         <DetailsCell
           name={"type"}
           label={"Vorgangsart"}
-          value={typeTranslation[procedure.type]}
+          value={
+            isGdprPerson(procedure.identificationData)
+              ? gdprProcedureTypeWithGdprArticle[procedure.type]
+              : typeTranslation[procedure.type]
+          }
           avoidWrap
         />
         <DetailsCell
@@ -109,7 +116,7 @@ export function ProcedureDetailsTile({
           label={"Status"}
           value={statusTranslation[procedure.status]}
         />
-        {isObjection && (
+        {requiresMatterOfConcern && (
           <DetailsCell
             name={"matterOfConcern"}
             label={"Anliegen"}

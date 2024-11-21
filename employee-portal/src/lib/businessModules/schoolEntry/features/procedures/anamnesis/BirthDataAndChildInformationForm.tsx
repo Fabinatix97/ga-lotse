@@ -128,12 +128,12 @@ export function BirthDataAndChildInformationForm(
           Array.from(Array(numberOfSiblings).keys()).map((index) => (
             <YearField
               name={additionalChildInfo(`siblingsBirthYears.${index}`)}
-              label={`Geburtsjahr Geschwister ${index + 1}`}
+              label={`Geburtsjahr Geschwisterkind ${index + 1}`}
               key={index}
               component={HorizontalField}
               min={1900}
               max={new Date().getFullYear()}
-              sx={{ width: "100px" }}
+              sx={{ width: "90px" }}
             />
           ))}
       </Stack>

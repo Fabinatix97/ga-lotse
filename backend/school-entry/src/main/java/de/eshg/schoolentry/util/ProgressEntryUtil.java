@@ -41,10 +41,12 @@ public class ProgressEntryUtil {
       SchoolEntryProcedure procedure,
       SchoolEntrySystemProgressEntryType progressEntryType,
       String changeDescription,
-      File file) {
+      File file,
+      SchoolEntryKeyDocumentType documentType) {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(), changeDescription, TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setKeyDocumentType(documentType.name());
 
     progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }
@@ -56,6 +58,19 @@ public class ProgressEntryUtil {
     SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             progressEntryType.name(), TriggerType.SYSTEM_AUTOMATIC);
+
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
+  }
+
+  public void addProgressEntry(
+      SchoolEntryProcedure procedure,
+      SchoolEntrySystemProgressEntryType progressEntryType,
+      File file,
+      SchoolEntryKeyDocumentType documentType) {
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            progressEntryType.name(), TriggerType.SYSTEM_AUTOMATIC);
+    progressEntry.setKeyDocumentType(documentType.name());
 
     progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }

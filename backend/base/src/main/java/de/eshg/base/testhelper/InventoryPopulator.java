@@ -14,17 +14,15 @@ import de.eshg.base.inventory.api.InventoryItemTypeDto;
 import de.eshg.base.inventory.persistence.entity.InventoryItem;
 import de.eshg.base.inventory.persistence.entity.InventoryItem_;
 import de.eshg.base.inventory.persistence.repository.InventoryRepository;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import java.util.List;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class InventoryPopulator extends BasePopulator<InventoryItemDto> {
   private final InventoryController inventoryController;
   private final InventoryRepository inventoryRepository;
@@ -32,12 +30,12 @@ public class InventoryPopulator extends BasePopulator<InventoryItemDto> {
       List.of("Begehung", "Masernschutz", "Einschulung", "Impfberatung");
 
   public InventoryPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       InventoryController inventoryController,
-      InventoryRepository inventoryRepository,
-      EnvironmentConfig environmentConfig) {
-    super(clock, environment, getClassNameAsPropertyKey(InventoryItem.class), environmentConfig);
+      InventoryRepository inventoryRepository) {
+    super(properties, clock, getClassNameAsPropertyKey(InventoryItem.class), environmentConfig);
     this.inventoryController = inventoryController;
     this.inventoryRepository = inventoryRepository;
   }

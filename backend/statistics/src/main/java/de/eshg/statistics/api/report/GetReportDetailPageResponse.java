@@ -6,7 +6,7 @@
 package de.eshg.statistics.api.report;
 
 import de.eshg.base.user.api.UserDto;
-import de.eshg.statistics.api.EvaluationDto;
+import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.TableColumnHeader;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -31,5 +31,5 @@ public record GetReportDetailPageResponse(
     @NotNull @Min(0) long totalNumberOfElements,
     @Valid UserDto userReportSeries,
     @Valid UserDto userReport,
-    @NotNull @Valid List<EvaluationDto> evaluation,
+    @NotNull @Valid List<AnalysisDto> analyses,
     @NotNull ReportTypeDto reportType) {}

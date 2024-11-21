@@ -2,6 +2,21 @@ GA-Lotse ist ein Kooperationsprojekt des Gesundheitsamts Frankfurt am Main mit d
 
 Finanziert von der Europäischen Union – NextGenerationEU
 
+## GA-Lotse 1.3
+
+_20.11.2024_
+
+Vierter Release der Anwendung GA-Lotse.
+
+### Grundfunktionen:
+
+* Auditlog
+  * Aufzeichnung in verschlüsselten Logs
+  * Freigabe der Logs nach dem 4-Augen-Prinzip
+  * Entschlüsseln der Logs für Personalratsmitglieder
+* Kontaktmanagement
+  * Zusammenführen von Kontakten
+
 ## GA-Lotse 1.2
 
 _04.11.2024_

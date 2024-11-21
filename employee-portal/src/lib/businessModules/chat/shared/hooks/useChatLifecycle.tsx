@@ -28,7 +28,7 @@ import {
 } from "@/lib/businessModules/chat/matrix/cryptoCallbacks";
 import { chatLogin } from "@/lib/businessModules/chat/matrix/login";
 import { restoreKeyBackupWithCache } from "@/lib/businessModules/chat/matrix/secretStorage";
-import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
+import { deleteCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
@@ -58,7 +58,7 @@ export function useChatLifecycle(
   const restartChat = useCallback(async () => {
     logger.warn("RESTARTING CHAT");
 
-    await clearCachedCredentials();
+    await deleteCachedCredentials();
     await matrixClient.current.clearStores();
 
     wasAuthenticated.current = false;
@@ -139,7 +139,7 @@ export function useChatLifecycle(
     logger.info("START MATRIX CLIENT");
 
     await matrixClient.current.startClient({
-      initialSyncLimit: 10,
+      initialSyncLimit: 20,
       includeArchivedRooms: true,
     });
   }, [baseUrl, credentials, matrixClient, setClientState]);
@@ -179,6 +179,28 @@ export function useChatLifecycle(
     }
   }, [matrixClient, setClientState]);
 
+  const updateMatrixUserDisplayName = useCallback(async () => {
+    if (!matrixClient.current.isLoggedIn() || !credentials?.userId) return;
+
+    try {
+      const profile = await matrixClient.current.getProfileInfo(
+        credentials?.userId,
+      );
+      const selfUserDisplayName = selfUser.firstName + " " + selfUser.lastName;
+      if (selfUserDisplayName !== profile?.displayname) {
+        logger.info("Updating matrix user displayName: " + selfUserDisplayName);
+        await matrixClient.current.setDisplayName(selfUserDisplayName);
+      }
+    } catch (error) {
+      logger.softError("Error updating matrix user displayName: ", error);
+    }
+  }, [
+    credentials?.userId,
+    matrixClient,
+    selfUser.firstName,
+    selfUser.lastName,
+  ]);
+
   const updateSelfUserChatUsername = useCallback(async () => {
     if (!matrixClient.current.isLoggedIn() || !credentials?.userId) return;
 
@@ -204,6 +226,7 @@ export function useChatLifecycle(
         void createChatClient();
         break;
       case ClientState.ReadyForEncryption:
+        void updateMatrixUserDisplayName();
         void updateSelfUserChatUsername();
         void handleChatEncryption();
         break;
@@ -219,6 +242,7 @@ export function useChatLifecycle(
     handleChatEncryption,
     initChat,
     restartChat,
+    updateMatrixUserDisplayName,
     updateSelfUserChatUsername,
   ]);
 

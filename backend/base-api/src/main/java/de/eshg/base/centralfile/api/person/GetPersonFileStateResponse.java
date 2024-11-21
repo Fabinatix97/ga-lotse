@@ -44,9 +44,8 @@ public record GetPersonFileStateResponse(
     @Valid AddressDto differentBillingAddress,
     @Schema(
             description =
-                "A flag that signals if a File State differs from the referencePerson it is connected to.",
+                "A flag that signals if a File State differs from the referencePerson it is connected to. Set to 'null' if unchecked.",
             example = "true")
-        @NotNull
-        boolean outdated,
+        Boolean outdated,
     @NotNull DataOriginDto dataOrigin)
     implements PersonDetails {}

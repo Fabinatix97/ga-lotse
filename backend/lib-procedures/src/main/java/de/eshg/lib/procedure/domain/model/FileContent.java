@@ -32,4 +32,10 @@ public class FileContent extends BaseEntity {
   public File getFile() {
     return file;
   }
+
+  public FileContent copy() {
+    FileContent copy = new FileContent();
+    copy.content = content;
+    return copy;
+  }
 }

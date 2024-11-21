@@ -5,7 +5,10 @@
 
 "use client";
 
-import { useCloseInboxProcedure } from "@/lib/businessModules/inspection/api/mutations/inbox";
+import {
+  useCloseInboxProcedure,
+  useCreateInboxProcedure,
+} from "@/lib/businessModules/inspection/api/mutations/inbox";
 import {
   useFetchInboxProcedure,
   useFetchInboxProcedures,
@@ -21,6 +24,7 @@ export default function InspectionInboxProceduresPage() {
       useFetchInboxProcedures={useFetchInboxProcedures}
       useFetchInboxProcedure={useFetchInboxProcedure}
       useCloseInboxProcedure={useCloseInboxProcedure}
+      useCreateInboxProcedure={useCreateInboxProcedure}
       routes={routes.inbox}
     />
   );

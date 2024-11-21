@@ -5,7 +5,6 @@
 
 package de.eshg.statistics.aggregation;
 
-import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.api.AttributeSelectionDto;
@@ -40,7 +39,6 @@ public class AggregationResultUtil {
     }
     return aggregationResult.getTableColumns().stream()
         .filter(column -> isCorrectColumn(column, attributeSelection))
-        .filter(column -> !column.getValueType().equals(ValueType.CENTRAL_FILE_ID))
         .findFirst()
         .orElseThrow(
             () ->

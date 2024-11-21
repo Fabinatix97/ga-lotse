@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonService {
@@ -156,15 +155,27 @@ public class PersonService {
         .collect(StreamUtil.toLinkedHashSet());
   }
 
-  @Transactional
   public List<Person> fuzzySearch(String firstName, String lastName, LocalDate dateOfBirth) {
+    configureSimilarityThreshold(firstName, lastName);
+    return fuzzySearch(firstName, lastName, dateOfBirth, false);
+  }
+
+  public List<Person> fuzzySearchIncludingDeleted(
+      String firstName, String lastName, LocalDate dateOfBirth) {
+    configureSimilarityThreshold(firstName, lastName);
+    return fuzzySearch(firstName, lastName, dateOfBirth, true);
+  }
+
+  private List<Person> fuzzySearch(
+      String firstName, String lastName, LocalDate dateOfBirth, boolean includeDeleted) {
     configureSimilarityThreshold(firstName, lastName);
     return personRepository.fuzzySearchReferencePersons(
         firstName,
         lastName,
         dateOfBirth,
         getSimilarityThreshold(firstName),
-        getSimilarityThreshold(lastName));
+        getSimilarityThreshold(lastName),
+        includeDeleted);
   }
 
   private void configureSimilarityThreshold(String firstName, String lastName) {
@@ -368,15 +379,23 @@ public class PersonService {
     Person referencePerson = getReferencePerson(referenceDataId);
     ValidationUtil.validateVersion(version, referencePerson);
 
-    if (findMatchingReferencePerson(referencePersonUpdate).isPresent()) {
-      throw new AlreadyExistsException("Matching reference Person already exists");
+    boolean requiresUpdate =
+        referencePerson.getDataOrigin() == DataOrigin.EXTERNAL
+            || !PersonDiffer.isPersonMatch(referencePerson, referencePersonUpdate);
+
+    if (requiresUpdate) {
+      if (findMatchingReferencePerson(referencePersonUpdate).isPresent()) {
+        throw new AlreadyExistsException("Matching reference Person already exists");
+      }
+
+      applyPersonUpdate(referencePersonUpdate, referencePerson);
+
+      personRepository.flush();
+
+      logger.logEditReferenceData(referencePerson);
+    } else {
+      log.debug("Recognized no-op update. Returning a new file state");
     }
-
-    applyPersonUpdate(referencePersonUpdate, referencePerson);
-
-    personRepository.flush();
-
-    logger.logEditReferenceData(referencePerson);
 
     Person fileState = referencePerson.cloneFromReferencePerson();
     return addPersonFileState(fileState, referencePerson);

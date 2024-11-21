@@ -16,7 +16,7 @@ import java.util.UUID;
 @Schema(name = "WaitingRoomProcedure")
 public record WaitingRoomProcedureDto(
     @NotNull UUID procedureId,
-    @NotNull String accessCode,
+    String accessCode,
     @NotNull Year yearOfBirth,
     @NotNull Gender gender,
     @NotNull @Valid WaitingRoomDto waitingRoom,

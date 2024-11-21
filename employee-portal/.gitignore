@@ -5,6 +5,7 @@
 
 # next-pwa
 public/*.js
+public/*.js.map
 
 ## Generated files
 src/app/(baseModule)/**/loading.tsx

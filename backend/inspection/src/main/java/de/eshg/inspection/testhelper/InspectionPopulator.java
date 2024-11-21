@@ -8,20 +8,18 @@ package de.eshg.inspection.testhelper;
 import de.eshg.inspection.facility.persistence.FacilityRepository;
 import de.eshg.inspection.inspection.api.InspectionDto;
 import de.eshg.persistence.TransactionHelper;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import de.eshg.testhelper.population.RequestContextFaker;
 import java.time.Clock;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class InspectionPopulator extends BasePopulator<InspectionDto> {
 
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
@@ -31,17 +29,17 @@ public class InspectionPopulator extends BasePopulator<InspectionDto> {
   private final PlatformTransactionManager platformTransactionManager;
 
   protected InspectionPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       FacilityRepository facilityRepository,
       FacilityTestDataProvider facilityTestDataProvider,
       InspectionTestDataProvider inspectionTestDataProvider,
       @SuppressWarnings("unused") // Used to define a dependency
           ChecklistDefinitionPopulator checklistDefinitionPopulator,
-      PlatformTransactionManager platformTransactionManager,
-      EnvironmentConfig environmentConfig) {
-    super(clock, environment, "inspection", environmentConfig);
+      PlatformTransactionManager platformTransactionManager) {
+    super(properties, clock, "inspection", environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.facilityRepository = facilityRepository;
     this.facilityTestDataProvider = facilityTestDataProvider;

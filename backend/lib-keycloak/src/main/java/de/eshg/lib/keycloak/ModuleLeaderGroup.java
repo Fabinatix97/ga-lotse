@@ -44,6 +44,7 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       "Medizinalkartei",
       ModuleMemberGroup.MEDICAL_REGISTRY,
       EmployeePermissionRole.MEDICAL_REGISTRY_LEADER),
+  DENTAL("Zahnärztlicher Dienst", ModuleMemberGroup.DENTAL, EmployeePermissionRole.DENTAL_LEADER),
   OPEN_DATA("Open Data", ModuleMemberGroup.OPEN_DATA, EmployeePermissionRole.OPEN_DATA_LEADER);
 
   private final String keycloakNameWithoutPrefix;
@@ -80,6 +81,7 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       case STATISTICS -> ModuleLeaderGroup.STATISTICS;
       case STI_PROTECTION -> ModuleLeaderGroup.STI_PROTECTION;
       case MEDICAL_REGISTRY -> ModuleLeaderGroup.MEDICAL_REGISTRY;
+      case DENTAL -> ModuleLeaderGroup.DENTAL;
       case OPEN_DATA -> ModuleLeaderGroup.OPEN_DATA;
     };
   }

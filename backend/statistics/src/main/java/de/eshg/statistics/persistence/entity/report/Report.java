@@ -9,6 +9,7 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AggregationResultState;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -32,6 +33,23 @@ public class Report extends AbstractAggregationResult {
   @DataSensitivity(PUBLIC)
   @Column(nullable = false)
   private LocalDate executionDate;
+
+  @DataSensitivity(PUBLIC)
+  @Column(unique = true)
+  private Long uniquePlanned;
+
+  public void setPlanned(long uniquePlanned) {
+    this.uniquePlanned = uniquePlanned;
+    super.setState(AggregationResultState.PLANNED);
+  }
+
+  @Override
+  public void setState(AggregationResultState state) {
+    if (state != AggregationResultState.PLANNED) {
+      uniquePlanned = null;
+    }
+    super.setState(state);
+  }
 
   void setReportSeries(ReportSeries reportSeries) {
     this.reportSeries = reportSeries;

@@ -8,6 +8,7 @@ package de.eshg.schoolentry.util;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
+import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -17,6 +18,10 @@ public final class ExceptionUtil {
   public static Supplier<NotFoundException> notFoundException(Class<?> clazz, UUID id) {
     return () ->
         new NotFoundException("%s with UUID %s not found".formatted(clazz.getSimpleName(), id));
+  }
+
+  public static Supplier<NotFoundException> procedureNotFoundException(UUID procedureId) {
+    return notFoundException(SchoolEntryProcedure.class, procedureId);
   }
 
   public static BadRequestException badRequestExceptionForbiddenLocationId() {

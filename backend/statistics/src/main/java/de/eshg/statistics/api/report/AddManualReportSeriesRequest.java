@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Schema(name = SCHEMA_NAME)
 public record AddManualReportSeriesRequest(
-    @NotNull UUID statisticId,
+    @NotNull UUID evaluationId,
     @NotBlank String name,
     String description,
     @NotNull Instant timeRangeStart,

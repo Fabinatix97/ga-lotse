@@ -8,7 +8,6 @@ package de.eshg.domain.model.audit;
 import de.eshg.domain.model.BaseRevisionEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import java.util.UUID;
@@ -22,7 +21,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class DefaultRevisionEntity extends BaseRevisionEntity {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = false)
   @CreatedBy
   private UUID createdBy;
 

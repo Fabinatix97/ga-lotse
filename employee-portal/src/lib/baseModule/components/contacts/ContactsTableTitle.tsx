@@ -4,10 +4,10 @@
  */
 
 import MergeIcon from "@mui/icons-material/SchemaOutlined";
-import { Button } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
+import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
 import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
 
 interface ContactsTableTitleProps {
@@ -22,16 +22,13 @@ export function ContactsTableTitle(props: ContactsTableTitleProps) {
       rowSelection={props.rowSelection}
       elementName={{ singular: "Kontakt", plural: "Kontakte" }}
     >
-      <Button
-        variant="plain"
-        color="neutral"
-        size="sm"
+      <RowSelectionTableToolbarButton
         onClick={() => props.onMerge(rowIds)}
-        startDecorator={<MergeIcon />}
+        decorator={<MergeIcon />}
         disabled={rowIds.length !== 2}
       >
         Kontakte Zusammenführen
-      </Button>
+      </RowSelectionTableToolbarButton>
     </RowSelectionTableToolbar>
   );
 }

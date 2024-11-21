@@ -22,12 +22,7 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
     grantAccessToLibProceduresUrls(
         EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, ModuleLeaderRole.SCHOOL_ENTRY_LEADER);
 
-    // TODO: Check if this rule is ok. Maybe a new Controller could be introduced for public
-    // school-entry endpoints?
-    requestMatchers(BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER + "/documents/**")
-        .permitAll();
-    requestMatchers(BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER + "/opening-hours")
-        .permitAll();
+    requestMatchers(GET, BaseUrls.SchoolEntry.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
 
     requestMatchers(BaseUrls.SchoolEntry.SCHOOL_ENTRY_CITIZEN_CONTROLLER + "/**")
         .hasRole(CitizenPermissionRole.ACCESS_CODE_USER);
@@ -37,19 +32,22 @@ public final class SchoolEntryPublicSecurityConfig extends AbstractPublicSecurit
             BaseUrls.SchoolEntry.CONFIG_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
 
+    // Allow read-only access to individual procedures including examination results etc.
+    // for PROCEDURE_ARCHIVE
     requestMatchers(
             GET,
-            BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/*",
+            BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/{procedureId}",
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/{procedureId}/**",
             BaseUrls.SchoolEntry.VALUE_EVALUATOR_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.COUNTRY_CODES_CONTROLLER + "/**")
         .hasAnyRole(
             EmployeePermissionRole.SCHOOL_ENTRY_ADMIN, EmployeePermissionRole.PROCEDURE_ARCHIVE);
+
     requestMatchers(
             BaseUrls.SchoolEntry.SCHOOL_ENTRY_CONTROLLER + "/**",
-            BaseUrls.SchoolEntry.VALUE_EVALUATOR_CONTROLLER + "/**",
             BaseUrls.SchoolEntry.LABEL_CONTROLLER + "/**",
-            BaseUrls.SchoolEntry.COUNTRY_CODES_CONTROLLER + "/**",
+            BaseUrls.SchoolEntry.ICD_10_CODE_CONTROLLER + "/**",
+            BaseUrls.SchoolEntry.IMPORT_CONTROLLER + "/**",
             BaseUrls.EVENT_METADATA_API + "/**")
         .hasRole(EmployeePermissionRole.SCHOOL_ENTRY_ADMIN);
   }

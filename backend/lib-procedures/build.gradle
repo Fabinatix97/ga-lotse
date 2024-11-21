@@ -1,5 +1,6 @@
 plugins {
     id "eshg.java-lib"
+    id "eshg.base-test-dependency"
     id "java-test-fixtures"
 }
 
@@ -67,12 +68,6 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-AaddSuppressWarningsAnnotation=true")
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 ext {

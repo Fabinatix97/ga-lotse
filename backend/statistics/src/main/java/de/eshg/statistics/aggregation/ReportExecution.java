@@ -7,7 +7,7 @@ package de.eshg.statistics.aggregation;
 
 import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.EvaluationDto;
+import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import java.util.Map;
@@ -72,12 +72,12 @@ public class ReportExecution {
               switch (pendingState) {
                 case DATA_AGGREGATION -> reportService.aggregateData(reportId);
                 case MIN_MAX_DETERMINATION -> reportService.minMaxDetermination(reportId);
-                case EVALUATION_CONDUCTION -> reportService.evaluationConduction(reportId);
+                case ANALYSIS_CONDUCTION -> reportService.analysisConduction(reportId);
                 case DIAGRAM_CREATION -> {
-                  Map<EvaluationDto, AddDiagramRequest> map =
+                  Map<AnalysisDto, AddDiagramRequest> map =
                       reportService.findMissingDiagramOrCompleteAutoReport(reportId);
                   if (!map.isEmpty()) {
-                    Map.Entry<EvaluationDto, AddDiagramRequest> entry =
+                    Map.Entry<AnalysisDto, AddDiagramRequest> entry =
                         map.entrySet().iterator().next();
                     diagramCreationService.createDiagram(entry.getKey(), entry.getValue());
                   }

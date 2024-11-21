@@ -10,7 +10,7 @@ import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapFilterValuesToStatisticFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToStatisticFilters";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { mapSaveDiagramFormModelToUpdateDiagramApiModel } from "@/lib/businessModules/statistics/api/mutations/useUpdateDiagram";
-import { CreateDiagramFormModel } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/createDiagramFormModel";
+import { CreateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/createDiagramFormModel";
 
 export interface UseAddDiagramParams extends CreateDiagramFormModel {
   evaluationId: string;

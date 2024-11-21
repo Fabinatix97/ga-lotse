@@ -20,10 +20,10 @@ import { DeleteRow } from "@/lib/components/table/DeleteRow";
 import { EditableTable } from "@/lib/components/table/EditableTable";
 import { actorsFilterFn, getFilterFn } from "@/lib/components/table/Filter";
 import { NewEntityParentRow } from "@/lib/components/table/NewEntityParentRow";
-import { EditableActiveCell } from "@/lib/components/table/cell/EditableActiveCell";
+import { ActiveCell } from "@/lib/components/table/cell/ActiveCell";
 import { EditableEnumCell } from "@/lib/components/table/cell/EditableEnumCell";
-import { EditableStringCell } from "@/lib/components/table/cell/EditableStringCell";
 import { ActorsCell } from "@/lib/components/table/cell/ForeignKeyCell";
+import { StringCell } from "@/lib/components/table/cell/StringCell";
 import { PageContent } from "@/lib/components/view/PageContent";
 import { PartialActorWithId } from "@/lib/components/view/actors/ActorTable";
 import {
@@ -80,12 +80,12 @@ const columns = [
   accessor("readableName", {
     enableColumnFilter: true,
     filterFn: filterFns.includesString,
-    cell: EditableStringCell,
+    cell: StringCell,
   }),
   accessor("active", {
     enableColumnFilter: true,
     filterFn: filterFns.equals,
-    cell: EditableActiveCell,
+    cell: ActiveCell,
     meta: {
       options: [false, true],
       stringToValue: (v) => v === "true",

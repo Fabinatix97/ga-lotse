@@ -12,8 +12,14 @@ import de.eshg.keycloak.api.user.model.GetGroupMembersResponse;
 import de.eshg.keycloak.api.user.model.GetRoleMembersRequest;
 import de.eshg.keycloak.api.user.model.GetRoleMembersResponse;
 import de.eshg.keycloak.api.user.model.GetUsersResponse;
+import de.eshg.keycloak.api.user.model.VerifyPinRequest;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -46,4 +52,12 @@ public interface KeycloakUserApi {
   @Produces(MediaType.APPLICATION_JSON)
   GetActiveSessionResponse getActiveUserSessions(
       @PathParam("realm") String realmName, @PathParam("id") String id);
+
+  @POST
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/users/{id}/verify-pin")
+  @Consumes(MediaType.APPLICATION_JSON)
+  void verifyPin(
+      @PathParam("realm") String realmName,
+      @PathParam("id") String id,
+      @Valid @RequestBody VerifyPinRequest request);
 }

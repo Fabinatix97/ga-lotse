@@ -46,6 +46,7 @@ export function getReportActionItems(
   deleteActions: DeleteReportOrSeries | DeleteReport,
   canWrite: boolean,
   canDelete: boolean,
+  disabled: boolean,
 ) {
   function concatOptionalActionItem(
     itemName: OptionalActionItem["type"],
@@ -59,6 +60,7 @@ export function getReportActionItems(
       ? {
           ...actionsItem,
           onClick: foundItem.action,
+          disabled,
         }
       : undefined;
   }
@@ -102,6 +104,7 @@ export function getReportActionItems(
               );
             },
             startDecorator: <Delete />,
+            disabled,
             color: "danger",
           }
         : {
@@ -112,6 +115,7 @@ export function getReportActionItems(
               );
             },
             startDecorator: <Delete />,
+            disabled,
             color: "danger",
           }
       : undefined,

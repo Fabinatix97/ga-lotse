@@ -145,10 +145,7 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                 <Box sx={{ position: "relative" }}>
                   <AccordionSummary>
                     <Box sx={{ display: "flex" }}>
-                      <Typography
-                        level="title-lg"
-                        sx={{ p: 1, fontWeight: 600 }}
-                      >
+                      <Typography level="h3" sx={{ p: 1, fontWeight: 600 }}>
                         {formatName(affectedPerson)}
                       </Typography>
                     </Box>
@@ -238,7 +235,7 @@ export function ReportCaseOverview({ onCancel, sx }: ReportCaseOverviewProps) {
                           <Grid container xxs={12} rowGap={2}>
                             <Grid xxs={8}>
                               <Typography
-                                level="title-lg"
+                                level="h3"
                                 sx={{ pt: 1, fontWeight: 600 }}
                               >
                                 {`Personensorgeberechtigte ${custodianIndex + 1}`}

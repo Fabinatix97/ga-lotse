@@ -10,6 +10,9 @@ import {
   ArchivingApi,
   Configuration,
   FileApi,
+  GdprValidationTaskApi,
+  Icd10CodeApi,
+  ImportApi,
   InboxProcedureApi,
   LabelApi,
   ProcedureApi,
@@ -52,6 +55,16 @@ export function useAppointmentBlockApi() {
 export function useValueEvaluatorApi() {
   const configuration = useConfiguration();
   return new ValueEvaluatorApi(configuration);
+}
+
+export function useIcd10CodeApi() {
+  const configuration = useConfiguration();
+  return new Icd10CodeApi(configuration);
+}
+
+export function useImportApi() {
+  const configuration = useConfiguration();
+  return new ImportApi(configuration);
 }
 
 export function useLabelApi() {
@@ -97,4 +110,9 @@ export function useAppointmentTypeApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useSchoolEntryGdprValidationTaskApi() {
+  const configuration = useConfiguration();
+  return new GdprValidationTaskApi(configuration);
 }

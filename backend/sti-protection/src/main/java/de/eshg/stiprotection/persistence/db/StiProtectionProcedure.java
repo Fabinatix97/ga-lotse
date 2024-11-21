@@ -15,11 +15,17 @@ import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory_;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom_;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
@@ -51,13 +57,21 @@ public class StiProtectionProcedure
   @OneToOne(
       orphanRemoval = true,
       fetch = FetchType.LAZY,
-      cascade = CascadeType.PERSIST,
+      cascade = CascadeType.ALL,
       mappedBy = UserDefinedAppointment_.PROCEDURE)
   private UserDefinedAppointment userDefinedAppointment;
 
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column(unique = true)
   private UUID calendarEventId;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @ElementCollection
+  @CollectionTable(
+      name = "appointment_history",
+      joinColumns = @JoinColumn(name = "procedure_id", nullable = false))
+  @OrderColumn
+  private final List<AppointmentHistoryEntry> appointmentHistory = new ArrayList<>();
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(
@@ -101,6 +115,11 @@ public class StiProtectionProcedure
   }
 
   public void setAppointment(Appointment appointment) {
+    if (appointment != null) {
+      Assert.isNull(
+          userDefinedAppointment,
+          "You must cancel a user-defined appointment before scheduling a new appointment.");
+    }
     this.appointment = appointment;
   }
 
@@ -109,6 +128,10 @@ public class StiProtectionProcedure
   }
 
   public void setUserDefinedAppointment(UserDefinedAppointment userDefinedAppointment) {
+    if (userDefinedAppointment != null) {
+      Assert.isNull(
+          appointment, "You must cancel an appointment before scheduling a new user-defined one.");
+    }
     if (userDefinedAppointment == null) {
       if (this.userDefinedAppointment != null) {
         this.userDefinedAppointment.setProcedure(null);
@@ -125,6 +148,10 @@ public class StiProtectionProcedure
 
   public void setCalendarEventId(UUID calendarEventId) {
     this.calendarEventId = calendarEventId;
+  }
+
+  public List<AppointmentHistoryEntry> getAppointmentHistory() {
+    return this.appointmentHistory;
   }
 
   public WaitingRoom getWaitingRoom() {

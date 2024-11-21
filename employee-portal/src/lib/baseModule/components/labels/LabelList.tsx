@@ -4,7 +4,7 @@
  */
 
 import { ApiLabel } from "@eshg/employee-portal-api/base";
-import { Chip, Stack } from "@mui/joy";
+import { Chip, ChipProps, Stack } from "@mui/joy";
 
 import { MoreLabelsButton } from "@/lib/baseModule/components/labels/MoreLabelsButton";
 
@@ -12,10 +12,12 @@ export function LabelList({
   labels,
   maxVisible,
   disableWrap,
+  chipSize,
 }: {
   labels: ApiLabel[];
   maxVisible: number;
   disableWrap?: boolean;
+  chipSize?: ChipProps["size"];
 }) {
   const sorted = labels.toSorted((a, b) => a.name.localeCompare(b.name));
   return (
@@ -32,7 +34,7 @@ export function LabelList({
           key={label.id}
           variant={"soft"}
           color={"primary"}
-          size={"sm"}
+          size={chipSize ?? "sm"}
           sx={{ margin: 0 }}
         >
           {label.name}

@@ -20,7 +20,6 @@ import { BillingAddressTile } from "@/lib/businessModules/inspection/components/
 import { ContactPersonTile } from "@/lib/businessModules/inspection/components/inspection/basedata/contactperson/ContactPersonTile";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import {
   LegacyFacilitySidebar,
   Mode,
@@ -38,15 +37,10 @@ export function InspectionTabBasedata({
 }: Readonly<InspectionTabBasedataProps>) {
   const inspectionApi = useInspectionApi();
   const userApi = useUserApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
 
   const [{ data: inspection }, { data: selfUser }] = useSuspenseQueries({
     queries: [
-      getInspectionQuery(
-        inspectionApi,
-        getPreCacheForOfflineModeHeaders,
-        inspectionId,
-      ),
+      getInspectionQuery(inspectionApi, inspectionId),
       getSelfUserQuery(userApi),
     ],
   });

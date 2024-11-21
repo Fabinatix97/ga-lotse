@@ -6,7 +6,6 @@
 package de.eshg.schoolentry.util;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -18,13 +17,9 @@ import org.springframework.stereotype.Component;
 public class ProcedureTypeAssignmentHelper {
 
   private final SchoolEntryProperties schoolEntryProperties;
-  private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
 
-  public ProcedureTypeAssignmentHelper(
-      SchoolEntryProperties schoolEntryProperties,
-      SchoolEntryFeatureToggle schoolEntryFeatureToggle) {
+  public ProcedureTypeAssignmentHelper(SchoolEntryProperties schoolEntryProperties) {
     this.schoolEntryProperties = schoolEntryProperties;
-    this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
   }
 
   public ProcedureType getProcedureTypeForSchoolListImport(

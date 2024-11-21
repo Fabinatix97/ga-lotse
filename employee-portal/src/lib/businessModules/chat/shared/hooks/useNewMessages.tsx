@@ -5,53 +5,46 @@
 
 import { addMilliseconds, format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
-import { last } from "remeda";
 
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { NotificationContext } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import { MessageTypeEnum } from "@/lib/businessModules/chat/shared/enums";
 import {
   Message,
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
+import { findLatestMessage } from "@/lib/businessModules/chat/shared/utils";
 
 export function useNewMessages() {
   const [newMessages, setNewMessages] = useState<Message[]>([]);
   const { canAccessChat, userSettings } = useChat();
-  const chatContext = useContext(ChatClientContext);
+  const { matrixClient } = useContext(ChatClientContext) ?? {};
+  const { unreadNotificationsPerRoom } = useContext(NotificationContext) ?? {};
 
   const isChatEnabled =
-    canAccessChat &&
-    userSettings.chatUsageEnabled &&
-    chatContext?.unreadNotificationsPerRoom &&
-    chatContext.matrixClient;
-
+    canAccessChat && userSettings.chatUsageEnabled && matrixClient;
   useEffect(() => {
-    if (isChatEnabled) {
-      const unreadNotificationsPerRoom = chatContext.unreadNotificationsPerRoom;
-      const currentMatrixClient = chatContext.matrixClient;
+    if (isChatEnabled && unreadNotificationsPerRoom) {
       const lastUnreadMessages: Message[] = [];
       void (async () => {
         for (const [roomId, _] of Object.entries(unreadNotificationsPerRoom)) {
-          const timeline = currentMatrixClient
-            .getRoom(roomId)
-            ?.getLiveTimeline();
-          if (timeline) {
-            const events = timeline.getEvents();
-            const lastEvent = last(events);
+          const room = matrixClient.getRoom(roomId);
+          if (room) {
+            const lastEvent = findLatestMessage(room);
             if (lastEvent) {
               if (lastEvent.isEncrypted()) {
-                await currentMatrixClient.decryptEventIfNeeded(lastEvent);
+                await matrixClient.decryptEventIfNeeded(lastEvent);
               }
               const messageContent = lastEvent.getContent();
+              const isDecrypted = messageContent.msgtype === "m.bad.encrypted";
 
               if (!isMessageTypeWithBody(messageContent)) continue;
-              const sender = currentMatrixClient.getUser(
-                lastEvent.getSender() ?? "",
-              );
+              const sender = matrixClient.getUser(lastEvent.getSender() ?? "");
               const id =
                 lastEvent.getId() ??
                 format(addMilliseconds(new Date(), Math.random() * 1000), "T");
+
               const newMessage = {
                 sender,
                 content: messageContent.body,
@@ -62,9 +55,10 @@ export function useNewMessages() {
                 messageType: MessageTypeEnum.ChatMessage,
                 sent: true,
                 removed: false,
+                decrypted: isDecrypted,
               };
 
-              if (sender?.userId !== currentMatrixClient.getUserId()) {
+              if (sender?.userId !== matrixClient.getUserId()) {
                 lastUnreadMessages.push(newMessage);
               }
             }
@@ -73,11 +67,7 @@ export function useNewMessages() {
         setNewMessages(lastUnreadMessages);
       })();
     }
-  }, [
-    chatContext?.matrixClient,
-    chatContext?.unreadNotificationsPerRoom,
-    isChatEnabled,
-  ]);
+  }, [isChatEnabled, matrixClient, unreadNotificationsPerRoom]);
 
   return { newMessages };
 }

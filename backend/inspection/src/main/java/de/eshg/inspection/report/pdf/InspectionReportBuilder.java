@@ -85,18 +85,17 @@ public class InspectionReportBuilder {
   }
 
   private RepData createReportData(Inspection inspection, ZonedDateTime reportDate) {
-    RepAddress officeAddress = getOfficeAddress();
-
     RepFacility facility = createReportFacility(inspection);
-    String objectType = inspection.getFacility().getObjectType().getName();
-    String title = getReportTitle(inspection, facility);
 
-    RepInspection repInspection =
-        new RepInspection(
-            title, objectType, getExecutingPerson(inspection), createRepContent(inspection));
+    String title = getReportTitle(inspection);
+    String objectType = inspection.getFacility().getObjectType().getName();
+    String executingPerson = getExecutingPerson(inspection);
+    RepContent repContent = new RepContentCreator(inspection, facility).createRepContent();
+    RepInspection repInspection = new RepInspection(title, objectType, executingPerson, repContent);
 
     String reportDateDe = reportDate.format(DATE_FORMATTER_DE);
     String filename = getReportFilename(title, reportDate);
+    RepAddress officeAddress = getOfficeAddress();
     RepInfo reportInfo = new RepInfo(officeAddress.city(), reportDateDe, filename);
 
     DepartmentLogo departmentLogo = getDepartmentLogo();
@@ -154,76 +153,91 @@ public class InspectionReportBuilder {
     return new RepFacility(facilityAddress, contactPerson);
   }
 
-  private RepContent createRepContent(Inspection inspection) {
-    List<RepChecklistElement> elements =
-        inspection.getReport().getReportElements().stream().map(this::mapElement).toList();
-    return new RepContent(elements);
+  private record RepContentCreator(Inspection inspection, RepFacility facility) {
+    public RepContent createRepContent() {
+      List<ReportElement> reportElements = inspection.getReport().getReportElements();
+      List<RepChecklistElement> elements = reportElements.stream().map(this::mapElement).toList();
+      return new RepContent(elements);
+    }
+
+    private RepChecklistElement mapElement(ReportElement element) {
+      return switch (element.getType()) {
+        case TOPLEVEL_TITLE -> mapTopLevelElement((ReportElementTopLevelTitle) element);
+        case CHAPTER -> createChapter(((ReportElementChapter) element).getTitle());
+        case SECTION -> createSection(((ReportElementSection) element).getTitle());
+        case QUESTION_AND_ANSWERS -> mapQAElement((ReportElementQA) element);
+        case TEXT -> createText(((ReportElementText) element).getText());
+        case TEXT_BLOCK ->
+            createTextBlock(
+                ((ReportElementTextBlock) element).getTitle(),
+                ((ReportElementTextBlock) element).getText());
+        case FULL_TEXT_BLOCK ->
+            createFullTextBlock(
+                ((ReportElementFullTextBlock) element).getTitle(),
+                ((ReportElementFullTextBlock) element).getText());
+        case IMAGES -> mapImageElement((ReportElementImages) element);
+        case SEPARATOR -> createSeparator();
+        case AUDIOS -> mapAudioElement((ReportElementAudios) element);
+      };
+    }
+
+    private RepChecklistElement mapTopLevelElement(ReportElementTopLevelTitle element) {
+      String title = element.getTitle();
+      String facilityName = facility.address().name();
+      // special case: if the title does not already end with the facility name,
+      // then we append it, JUST FOR THE PDF REPORT. But it's not stored in the
+      // database (except as file, which gets encrypted eventually).
+      String suffix = " für " + facilityName;
+      if (!title.endsWith(suffix)) {
+        title += suffix;
+      }
+      return createToplevelTitle(title);
+    }
+
+    private RepChecklistElement mapAudioElement(ReportElementAudios element) {
+      int count = element.getAudioChecklistElementIds().size();
+      String text =
+          switch (count) {
+            case 0 -> "Es wurden keine Audioaufnahmen gemacht.";
+            case 1 -> "Es wurde eine Audioaufnahme gemacht.";
+            default -> "Es wurden " + count + " Audioaufnahmen gemacht.";
+          };
+
+      return createTextBlock(element.getTitle(), text);
+    }
+
+    private RepChecklistElement mapQAElement(ReportElementQA element) {
+      return createChoice(
+          element.getTitle(),
+          element.getAnswers().stream()
+              .map(
+                  answer ->
+                      new RepChecklistElement.Choice(
+                          answer.getText(), answer.isSelected(), answer.getExtraText()))
+              .toList());
+    }
+
+    private RepChecklistElement mapImageElement(ReportElementImages element) {
+      // for the time being images are not displayed in the report,
+      // just an informational text block.
+      int count = element.getImageChecklistElementIds().size();
+      String text =
+          switch (count) {
+            case 0 -> "Es wurden keine Aufnahmen gemacht.";
+            case 1 -> "Es wurde eine Aufnahme gemacht.";
+            default -> "Es wurden " + count + " Aufnahmen gemacht.";
+          };
+
+      return createTextBlock(element.getTitle(), text);
+    }
   }
 
-  private RepChecklistElement mapElement(ReportElement element) {
-    return switch (element.getType()) {
-      case TOPLEVEL_TITLE -> createToplevelTitle(((ReportElementTopLevelTitle) element).getTitle());
-      case CHAPTER -> createChapter(((ReportElementChapter) element).getTitle());
-      case SECTION -> createSection(((ReportElementSection) element).getTitle());
-      case QUESTION_AND_ANSWERS -> mapQAElement((ReportElementQA) element);
-      case TEXT -> createText(((ReportElementText) element).getText());
-      case TEXT_BLOCK ->
-          createTextBlock(
-              ((ReportElementTextBlock) element).getTitle(),
-              ((ReportElementTextBlock) element).getText());
-      case FULL_TEXT_BLOCK ->
-          createFullTextBlock(
-              ((ReportElementFullTextBlock) element).getTitle(),
-              ((ReportElementFullTextBlock) element).getText());
-      case IMAGES -> mapImageElement((ReportElementImages) element);
-      case SEPARATOR -> createSeparator();
-      case AUDIOS -> mapAudioElement((ReportElementAudios) element);
-    };
-  }
-
-  private RepChecklistElement mapAudioElement(ReportElementAudios element) {
-    int count = element.getAudioChecklistElementIds().size();
-    String text =
-        switch (count) {
-          case 0 -> "Es wurden keine Audioaufnahmen gemacht.";
-          case 1 -> "Es wurde eine Audioaufnahme gemacht.";
-          default -> "Es wurden " + count + " Audioaufnahmen gemacht.";
-        };
-
-    return createTextBlock(element.getTitle(), text);
-  }
-
-  private static RepChecklistElement mapQAElement(ReportElementQA element) {
-    return createChoice(
-        element.getTitle(),
-        element.getAnswers().stream()
-            .map(
-                answer ->
-                    new RepChecklistElement.Choice(
-                        answer.getText(), answer.isSelected(), answer.getExtraText()))
-            .toList());
-  }
-
-  private static RepChecklistElement mapImageElement(ReportElementImages element) {
-    // for the time being images are not displayed in the report,
-    // just an informational text block.
-    int count = element.getImageChecklistElementIds().size();
-    String text =
-        switch (count) {
-          case 0 -> "Es wurden keine Aufnahmen gemacht.";
-          case 1 -> "Es wurde eine Aufnahme gemacht.";
-          default -> "Es wurden " + count + " Aufnahmen gemacht.";
-        };
-
-    return createTextBlock(element.getTitle(), text);
-  }
-
-  private static String getReportTitle(Inspection inspection, RepFacility facility) {
+  private static String getReportTitle(Inspection inspection) {
     return inspection.getReport().getReportElements().stream()
         .filter(e -> e.getType() == ReportElementType.TOPLEVEL_TITLE)
         .findFirst()
         .map(e -> ((ReportElementTopLevelTitle) e).getTitle())
-        .orElse("Begehung " + facility.address().name());
+        .orElse("Begehungsprotokoll");
   }
 
   private String getExecutingPerson(Inspection inspection) {
@@ -235,7 +249,7 @@ public class InspectionReportBuilder {
   private static String getReportFilename(String title, ZonedDateTime reportDate) {
     String reportDateEn = reportDate.format(DATE_FORMATTER_EN);
     String filename = "%s-%s.pdf".formatted(title, reportDateEn);
-    if (!filename.startsWith("Begehungsprotokoll ")) filename = "Begehungsprotokoll " + filename;
+    if (!filename.startsWith("Begehungsprotokoll-")) filename = "Begehungsprotokoll-" + filename;
     filename = sanitize(filename);
     return filename;
   }

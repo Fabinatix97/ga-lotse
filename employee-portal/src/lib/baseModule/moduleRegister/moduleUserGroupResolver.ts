@@ -5,6 +5,7 @@
 
 import { ApiBusinessModule, ApiUserRole } from "@eshg/employee-portal-api/base";
 
+import { moduleUserGroup as dentalModuleUserGroup } from "@/lib/businessModules/dental/shared/moduleUserGroup";
 import { moduleUserGroup as inspectionModuleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
 import { moduleUserGroup as measlesProtectionModuleUserGroup } from "@/lib/businessModules/measlesProtection/shared/moduleUserGroup";
 import { moduleUserGroup as schoolEntryModuleUserGroup } from "@/lib/businessModules/schoolEntry/shared/moduleUserGroup";
@@ -30,6 +31,7 @@ export const businessModuleUserGroups: ModuleUserGroupConfig[] = [
   statisticsModuleUserGroup,
   travelMedicineModuleUserGroup,
   stiProtectionModuleUserGroup,
+  dentalModuleUserGroup,
 ];
 
 export const businessModuleLeaderRoles = businessModuleUserGroups.map(

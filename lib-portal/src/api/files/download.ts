@@ -4,7 +4,7 @@
  */
 
 import { ApiResponse } from "@eshg/employee-portal-api/base";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { useSnackbar } from "../../components/snackbar/SnackbarProvider";
 import { getErrorMessage } from "../../errorHandling/errorMappers";
@@ -15,6 +15,14 @@ export function useFileDownload<TParams = void>(
 ) {
   const snackbar = useSnackbar();
   const downloadContainerRef = useRef<HTMLDivElement>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  async function downloadWithPendingFn(
+    params: TParams,
+  ): Promise<ApiResponse<Blob>> {
+    setIsPending(true);
+    return await downloadFn(params).finally(() => setIsPending(false));
+  }
 
   async function download(params: TParams): Promise<void> {
     try {
@@ -23,7 +31,7 @@ export function useFileDownload<TParams = void>(
         throw new Error("Download container is not initialized");
       }
 
-      const response = await downloadFn(params);
+      const response = await downloadWithPendingFn(params);
       const file = await parseBlobResponse(response);
       downloadFileAndOpen(file, downloadContainer);
     } catch (error) {
@@ -35,7 +43,7 @@ export function useFileDownload<TParams = void>(
 
   async function preview(params: TParams): Promise<void> {
     try {
-      const response = await downloadFn(params);
+      const response = await downloadWithPendingFn(params);
       const file = await parseBlobResponse(response);
       downloadFileAndPreview(file);
     } catch (error) {
@@ -45,7 +53,7 @@ export function useFileDownload<TParams = void>(
     }
   }
 
-  return { downloadContainerRef, download, preview };
+  return { downloadContainerRef, download, preview, isPending };
 }
 
 export async function parseBlobResponse(

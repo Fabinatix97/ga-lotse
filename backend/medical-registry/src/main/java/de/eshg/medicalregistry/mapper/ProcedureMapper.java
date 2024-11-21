@@ -8,8 +8,14 @@ package de.eshg.medicalregistry.mapper;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.medicalregistry.api.*;
+import de.eshg.medicalregistry.api.ProcedureTypeDto;
+import de.eshg.medicalregistry.api.TypeOfChangeDto;
 import de.eshg.medicalregistry.domain.model.*;
+import de.eshg.medicalregistry.domain.model.TypeOfChange;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,6 +44,8 @@ public final class ProcedureMapper {
     return new GetProcedureDraftResponse(
         medicalRegistryEntry.getExternalId(),
         medicalRegistryEntry.getVersion(),
+        mapStatusToDto(medicalRegistryEntry.getProcedureStatus()),
+        mapProcedureTypeToDto(medicalRegistryEntry.getProcedureType()),
         mapTypeOfChangeToDto(medicalRegistryEntry.getTypeOfChange()),
         mapProfessional(medicalRegistryEntry.getRelatedPersons(), professionalDetails),
         mapPractices(medicalRegistryEntry.getRelatedFacilities(), practiceDetails),
@@ -54,6 +62,8 @@ public final class ProcedureMapper {
     return new GetProcedureConfirmedResponse(
         medicalRegistryEntry.getExternalId(),
         medicalRegistryEntry.getVersion(),
+        mapStatusToDto(medicalRegistryEntry.getProcedureStatus()),
+        mapProcedureTypeToDto(medicalRegistryEntry.getProcedureType()),
         mapProfessional(medicalRegistryEntry.getRelatedPersons(), professionalDetails),
         mapPractices(medicalRegistryEntry.getRelatedFacilities(), practiceDetails),
         medicalRegistryEntry.isEmployeesEmployed(),
@@ -105,6 +115,35 @@ public final class ProcedureMapper {
       case RELOCATION -> TypeOfChangeDto.RELOCATION;
       case DEREGISTRATION -> TypeOfChangeDto.DEREGISTRATION;
       case OTHER -> TypeOfChangeDto.OTHER;
+    };
+  }
+
+  public static ProcedureStatusDto mapStatusToDto(ProcedureStatus procedureStatus) {
+    return de.eshg.lib.procedure.mapping.ProcedureMapper.toInterfaceType(procedureStatus);
+  }
+
+  public static ProcedureTypeDto mapProcedureTypeToDto(ProcedureType procedureType) {
+    return switch (procedureType) {
+      case MEDICAL_REGISTRY_ENTRY -> ProcedureTypeDto.MEDICAL_REGISTRY_ENTRY;
+      case MEDICAL_REGISTRY_CITIZEN_DRAFT -> ProcedureTypeDto.MEDICAL_REGISTRY_CITIZEN_DRAFT;
+      case MEDICAL_REGISTRY_EMPLOYEE_DRAFT -> ProcedureTypeDto.MEDICAL_REGISTRY_EMPLOYEE_DRAFT;
+      default ->
+          throw new IllegalStateException(
+              "Only medical registry entry types can occur on medical registry procedures");
+    };
+  }
+
+  public static MedicalRegistrySystemProgressEntryType mapToSystemProgressEntryType(
+      TypeOfChange typeOfChange) {
+    return switch (typeOfChange) {
+      case NEW_REGISTRATION -> MedicalRegistrySystemProgressEntryType.NEW_REGISTRATION;
+      case SECOND_PRACTICE -> MedicalRegistrySystemProgressEntryType.SECOND_PRACTICE;
+      case RE_REGISTRATION -> MedicalRegistrySystemProgressEntryType.RE_REGISTRATION;
+      case CHANGE_OF_REGISTRATION -> MedicalRegistrySystemProgressEntryType.CHANGE_OF_REGISTRATION;
+      case CHANGE_OF_NAME -> MedicalRegistrySystemProgressEntryType.CHANGE_OF_NAME;
+      case RELOCATION -> MedicalRegistrySystemProgressEntryType.RELOCATION;
+      case DEREGISTRATION -> MedicalRegistrySystemProgressEntryType.DEREGISTRATION;
+      case OTHER -> MedicalRegistrySystemProgressEntryType.OTHER;
     };
   }
 }

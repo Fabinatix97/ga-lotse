@@ -6,7 +6,7 @@
 package de.eshg.statistics.aggregation;
 
 import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.EvaluationDto;
+import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
@@ -14,10 +14,10 @@ import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
 import de.eshg.statistics.api.chart.PointBasedChartConfiguration;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
-import de.eshg.statistics.mapper.EvaluationMapper;
+import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
-import de.eshg.statistics.persistence.entity.Statistic;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,141 +32,133 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DiagramCreationService {
+  private final AnalysisService analysisService;
   private final EvaluationService evaluationService;
-  private final StatisticService statisticService;
 
   public DiagramCreationService(
-      EvaluationService evaluationService, StatisticService statisticService) {
+      AnalysisService analysisService, EvaluationService evaluationService) {
+    this.analysisService = analysisService;
     this.evaluationService = evaluationService;
-    this.statisticService = statisticService;
   }
 
-  public UUID createDiagram(EvaluationDto evaluationDto, AddDiagramRequest addDiagramRequest) {
-    UUID evaluationId = evaluationDto.id();
+  public UUID createDiagram(AnalysisDto analysisDto, AddDiagramRequest addDiagramRequest) {
+    UUID analysisId = analysisDto.id();
 
-    return switch (evaluationDto.chartConfiguration()) {
+    return switch (analysisDto.chartConfiguration()) {
       case BarChartConfigurationDto barChartConfigurationDto ->
-          addBarChartDiagramWithData(evaluationId, addDiagramRequest, barChartConfigurationDto);
+          addBarChartDiagramWithData(analysisId, addDiagramRequest, barChartConfigurationDto);
       case ChoroplethMapConfigurationDto choroplethMapConfigurationDto ->
-          addChoroplethMapWithData(evaluationId, addDiagramRequest, choroplethMapConfigurationDto);
+          addChoroplethMapWithData(analysisId, addDiagramRequest, choroplethMapConfigurationDto);
       case HistogramChartConfigurationDto histogramChartConfigurationDto ->
           addHistogramChartDiagramWithData(
-              evaluationId, addDiagramRequest, histogramChartConfigurationDto);
+              analysisId, addDiagramRequest, histogramChartConfigurationDto);
       case LineChartConfigurationDto lineChartConfigurationDto ->
           addPointBasedChartDiagramWithData(
-              evaluationId, addDiagramRequest, lineChartConfigurationDto);
+              analysisId, addDiagramRequest, lineChartConfigurationDto);
       case PieChartConfigurationDto pieChartConfigurationDto ->
-          addPieChartDiagramWithData(evaluationId, addDiagramRequest, pieChartConfigurationDto);
+          addPieChartDiagramWithData(analysisId, addDiagramRequest, pieChartConfigurationDto);
       case ScatterChartConfigurationDto scatterChartConfigurationDto ->
           addPointBasedChartDiagramWithData(
-              evaluationId, addDiagramRequest, scatterChartConfigurationDto);
+              analysisId, addDiagramRequest, scatterChartConfigurationDto);
     };
   }
 
   private UUID addBarChartDiagramWithData(
-      UUID evaluationId,
+      UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       BarChartConfigurationDto barChartConfigurationDto) {
     Map<String, Map<String, Integer>> chartDataHolder = new HashMap<>();
 
     BiFunction<Map<String, Map<String, Integer>>, Integer, Integer> collectDataFunction =
         (data, page) ->
-            evaluationService.collectBarChartData(
-                data, page, evaluationId, addDiagramRequest.filters(), barChartConfigurationDto);
+            analysisService.collectBarChartData(
+                data, page, analysisId, addDiagramRequest.filters(), barChartConfigurationDto);
 
     Function<Map<String, Map<String, Integer>>, UUID> addDiagramFunction =
         data ->
-            evaluationService.addBarChartDiagram(
-                evaluationId, addDiagramRequest, data, barChartConfigurationDto);
+            analysisService.addBarChartDiagram(
+                analysisId, addDiagramRequest, data, barChartConfigurationDto);
     return collectDiagramDataAndAddDiagram(
         chartDataHolder, collectDataFunction, addDiagramFunction);
   }
 
   private UUID addChoroplethMapWithData(
-      UUID evaluationId,
+      UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       ChoroplethMapConfigurationDto choroplethMapConfigurationDto) {
     Map<String, List<BigDecimal>> chartDataHolder = new TreeMap<>();
 
     BiFunction<Map<String, List<BigDecimal>>, Integer, Integer> collectDataFunction =
         (data, page) ->
-            evaluationService.collectChoroplethMapData(
-                data,
-                page,
-                evaluationId,
-                addDiagramRequest.filters(),
-                choroplethMapConfigurationDto);
+            analysisService.collectChoroplethMapData(
+                data, page, analysisId, addDiagramRequest.filters(), choroplethMapConfigurationDto);
 
     Function<Map<String, List<BigDecimal>>, UUID> addDiagramFunction =
         data ->
-            evaluationService.addChoroplethMapDiagram(
-                evaluationId, addDiagramRequest, data, choroplethMapConfigurationDto);
+            analysisService.addChoroplethMapDiagram(
+                analysisId, addDiagramRequest, data, choroplethMapConfigurationDto);
     return collectDiagramDataAndAddDiagram(
         chartDataHolder, collectDataFunction, addDiagramFunction);
   }
 
   private UUID addHistogramChartDiagramWithData(
-      UUID evaluationId,
+      UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       HistogramChartConfigurationDto histogramChartConfigurationDto) {
     Map<Long, Map<String, Integer>> chartDataHolder = new HashMap<>();
 
     BiFunction<Map<Long, Map<String, Integer>>, Integer, Integer> collectDataFunction =
         (data, page) ->
-            evaluationService.collectHistogramChartData(
+            analysisService.collectHistogramChartData(
                 data,
                 page,
-                evaluationId,
+                analysisId,
                 addDiagramRequest.filters(),
                 histogramChartConfigurationDto);
 
     Function<Map<Long, Map<String, Integer>>, UUID> addDiagramFunction =
         data ->
-            evaluationService.addHistogramChartDiagram(
-                evaluationId, addDiagramRequest, data, histogramChartConfigurationDto);
+            analysisService.addHistogramChartDiagram(
+                analysisId, addDiagramRequest, data, histogramChartConfigurationDto);
     return collectDiagramDataAndAddDiagram(
         chartDataHolder, collectDataFunction, addDiagramFunction);
   }
 
   private UUID addPieChartDiagramWithData(
-      UUID evaluationId,
+      UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       PieChartConfigurationDto pieChartConfigurationDto) {
     Map<String, Integer> chartDataHolder = new HashMap<>();
 
     BiFunction<Map<String, Integer>, Integer, Integer> collectDataFunction =
         (data, page) ->
-            evaluationService.collectPieChartData(
-                data, page, evaluationId, addDiagramRequest.filters(), pieChartConfigurationDto);
+            analysisService.collectPieChartData(
+                data, page, analysisId, addDiagramRequest.filters(), pieChartConfigurationDto);
 
     Function<Map<String, Integer>, UUID> addDiagramFunction =
         data ->
-            evaluationService.addPieChartDiagram(
-                evaluationId, addDiagramRequest, data, pieChartConfigurationDto);
+            analysisService.addPieChartDiagram(
+                analysisId, addDiagramRequest, data, pieChartConfigurationDto);
 
     return collectDiagramDataAndAddDiagram(
         chartDataHolder, collectDataFunction, addDiagramFunction);
   }
 
   private UUID addPointBasedChartDiagramWithData(
-      UUID evaluationId,
+      UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       PointBasedChartConfiguration pointBasedChartConfiguration) {
     List<DataPointHolder> chartDataHolder = new ArrayList<>();
 
     BiFunction<List<DataPointHolder>, Integer, Integer> collectDataFunction =
         (data, page) ->
-            evaluationService.collectPointBasedChartData(
-                data,
-                page,
-                evaluationId,
-                addDiagramRequest.filters(),
-                pointBasedChartConfiguration);
+            analysisService.collectPointBasedChartData(
+                data, page, analysisId, addDiagramRequest.filters(), pointBasedChartConfiguration);
 
     Function<List<DataPointHolder>, UUID> addDiagramFunction =
         data ->
-            evaluationService.addPointBasedChartDiagram(
-                evaluationId, addDiagramRequest, data, pointBasedChartConfiguration);
+            analysisService.addPointBasedChartDiagram(
+                analysisId, addDiagramRequest, data, pointBasedChartConfiguration);
 
     return collectDiagramDataAndAddDiagram(
         chartDataHolder, collectDataFunction, addDiagramFunction);
@@ -190,21 +182,21 @@ public class DiagramCreationService {
   }
 
   @Transactional
-  public void diagramRecreation(UUID statisticId) {
-    Statistic statistic = statisticService.getStatisticInternal(statisticId);
-    recreateDiagrams(statistic);
-    statistic.setPendingState(null);
-    statistic.setState(AggregationResultState.COMPLETED);
+  public void diagramRecreation(UUID evaluationId) {
+    Evaluation evaluation = evaluationService.getEvaluationInternal(evaluationId);
+    recreateDiagrams(evaluation);
+    evaluation.setPendingState(null);
+    evaluation.setState(AggregationResultState.COMPLETED);
   }
 
-  private void recreateDiagrams(Statistic statistic) {
-    statistic
-        .getEvaluations()
+  private void recreateDiagrams(Evaluation evaluation) {
+    evaluation
+        .getAnalyses()
         .forEach(
-            evaluation -> {
-              EvaluationDto evaluationDto = EvaluationMapper.mapToApi(evaluation, true);
+            analysis -> {
+              AnalysisDto analysisDto = AnalysisMapper.mapToApi(analysis, true);
               List<AddDiagramRequest> addDiagramRequests =
-                  evaluation.getDiagrams().stream()
+                  analysis.getDiagrams().stream()
                       .map(
                           diagram ->
                               new AddDiagramRequest(
@@ -212,9 +204,9 @@ public class DiagramCreationService {
                                   diagram.getDescription(),
                                   FilterParameterMapper.mapToApi(diagram.getFilters())))
                       .toList();
-              evaluation.removeDiagrams();
+              analysis.removeDiagrams();
               addDiagramRequests.forEach(
-                  addDiagramRequest -> createDiagram(evaluationDto, addDiagramRequest));
+                  addDiagramRequest -> createDiagram(analysisDto, addDiagramRequest));
             });
   }
 }

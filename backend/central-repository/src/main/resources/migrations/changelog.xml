@@ -9,5 +9,6 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <include file="migrations/0001_initial.xml"/>
+    <include file="migrations/0002_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
 
 </databaseChangeLog>

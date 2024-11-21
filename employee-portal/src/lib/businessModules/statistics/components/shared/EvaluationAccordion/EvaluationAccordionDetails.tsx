@@ -18,7 +18,8 @@ import {
   EvaluationLineDiagramConfiguration,
   EvaluationScatterDiagramConfiguration,
 } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
-import { useGetEvaluation } from "@/lib/businessModules/statistics/api/queries/useGetEvaluation";
+import { useGetAnalysis } from "@/lib/businessModules/statistics/api/queries/useGetAnalysis";
+import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
 import { EvaluationChartDiagram } from "@/lib/businessModules/statistics/components/shared/EvaluationAccordion/EvaluationChartDiagram";
 import {
   axisRangeValueNames,
@@ -29,7 +30,6 @@ import {
   orientationValueNames,
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 
 export interface EvaluationAccordionDetailsProps {
@@ -44,7 +44,7 @@ export interface EvaluationAccordionDetailsProps {
 export function EvaluationAccordionDetails(
   props: EvaluationAccordionDetailsProps,
 ) {
-  const evaluationDiagrams = useGetEvaluation(
+  const evaluationDiagrams = useGetAnalysis(
     props.evaluation.id,
     props.attributes,
   );

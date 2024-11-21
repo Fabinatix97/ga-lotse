@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAddStatisticRequest } from "@eshg/employee-portal-api/statistics";
+import { ApiAddEvaluationRequest } from "@eshg/employee-portal-api/statistics";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -14,15 +14,15 @@ export function useAddStatistic({ onSuccess }: { onSuccess: () => void }) {
   const snackbar = useSnackbar();
   const statisticApi = useStatisticApi();
   const mutation = useHandledMutation({
-    mutationFn: (apiAddStatisticRequest: ApiAddStatisticRequest) =>
-      statisticApi.addStatistic(mapAddStatistic(apiAddStatisticRequest)),
+    mutationFn: (apiAddStatisticRequest: ApiAddEvaluationRequest) =>
+      statisticApi.addEvaluation(mapAddStatistic(apiAddStatisticRequest)),
     onSuccess: () => snackbar.confirmation("Auswertung wird erstellt"),
   });
-  return (apiAddStatisticRequest: ApiAddStatisticRequest) =>
+  return (apiAddStatisticRequest: ApiAddEvaluationRequest) =>
     mutation.mutateAsync(apiAddStatisticRequest, { onSuccess });
 }
 
-function mapAddStatistic(apiAddStatisticRequest: ApiAddStatisticRequest) {
+function mapAddStatistic(apiAddStatisticRequest: ApiAddEvaluationRequest) {
   return {
     ...apiAddStatisticRequest,
     timeRangeEnd: mapTimeRangeEndFrontendToApi(

@@ -25,4 +25,5 @@ public record StiProtectionProcedureOverviewDto(
     @Schema(type = "integer") @NotNull Year yearOfBirth,
     CountryCode countryOfBirth,
     @NotNull GenderDto gender,
-    @NotNull @Valid AppointmentDto appointment) {}
+    @NotNull @Valid AppointmentDto appointment,
+    String accessCode) {}

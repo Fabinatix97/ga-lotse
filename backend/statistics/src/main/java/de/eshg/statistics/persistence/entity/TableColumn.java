@@ -9,7 +9,6 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.DataSensitivity;
-import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,9 +52,6 @@ public class TableColumn extends BaseEntity {
   @Column(nullable = false)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private ValueType valueType;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private SubjectType subjectType;
 
   @Column private String unit;
 
@@ -144,14 +140,6 @@ public class TableColumn extends BaseEntity {
 
   public void setValueType(ValueType valueType) {
     this.valueType = valueType;
-  }
-
-  public SubjectType getSubjectType() {
-    return subjectType;
-  }
-
-  public void setSubjectType(SubjectType subjectType) {
-    this.subjectType = subjectType;
   }
 
   public String getUnit() {

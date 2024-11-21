@@ -4,6 +4,7 @@
  */
 
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -15,6 +16,7 @@ import {
 } from "@/serviceWorker/common/syncBroadCastChannel";
 
 export function useServiceWorkerMessageListeners() {
+  const queryClient = useQueryClient();
   const { error, confirmation } = useSnackbar();
   const [syncing, setSyncing] = useState(false);
 
@@ -38,6 +40,7 @@ export function useServiceWorkerMessageListeners() {
           break;
         case REPLAY_DONE:
           setSyncing(false);
+          void queryClient.invalidateQueries();
           confirmation("Daten mit Server synchronisiert");
           break;
         case DELETE_FILE_FAILED_WITH_404:
@@ -49,7 +52,7 @@ export function useServiceWorkerMessageListeners() {
     return () => {
       syncChannel.close();
     };
-  }, [confirmation, error, errorThrottled]);
+  }, [confirmation, error, errorThrottled, queryClient]);
 
   return syncing;
 }

@@ -8,9 +8,9 @@ package de.eshg.schoolentry.pdf.invitation;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
-import de.eshg.base.client.ContactClient;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -18,6 +18,7 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.business.model.ChildData;
+import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.QrCodeGenerator;
@@ -52,6 +53,7 @@ public class InvitationGenerator extends AbstractGenerator {
   private final DocumentGenerator documentGenerator;
   private final Clock clock;
   private final AppointmentBlockProperties appointmentBlockProperties;
+  private final SchoolEntryProperties schoolEntryProperties;
 
   public InvitationGenerator(
       @Value(INVITATION_TEMPLATE) ClassPathResource invitationTemplate,
@@ -60,9 +62,11 @@ public class InvitationGenerator extends AbstractGenerator {
       DocumentGenerator documentGenerator,
       Clock clock,
       AppointmentBlockProperties appointmentBlockProperties,
-      ContactClient contactClient) {
+      ContactClient contactClient,
+      SchoolEntryProperties schoolEntryProperties) {
     super(departmentClient, contactClient);
     this.appointmentBlockProperties = appointmentBlockProperties;
+    this.schoolEntryProperties = schoolEntryProperties;
     Assert.isTrue(invitationTemplate.exists(), () -> invitationTemplate + " does not exist");
     this.invitationTemplate = invitationTemplate;
     this.citizenPortalUrl = citizenPortalUrl;
@@ -133,7 +137,7 @@ public class InvitationGenerator extends AbstractGenerator {
             examinationExecutionLocation);
     InvitationInfo invitationInfo =
         new InvitationInfo(
-            "Frankfurt am Main",
+            examinationExecutionLocation.city(),
             ZonedDateTime.now(clock).format(ReportGeneratorConstants.DATE_FORMAT_DE),
             buildLandingPageUrl());
     return new InvitationData(
@@ -142,7 +146,7 @@ public class InvitationGenerator extends AbstractGenerator {
         childAddress,
         examination,
         invitationInfo,
-        "#21BBEF",
+        schoolEntryProperties.getPdfDocumentAccentColor(),
         "#EBEBEB");
   }
 

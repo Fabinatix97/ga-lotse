@@ -5,13 +5,12 @@
 
 package de.eshg.stiprotection.mapper.medicalhistory;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.stiprotection.api.medicalhistory.ProtectionMethodDto;
 import de.eshg.stiprotection.persistence.db.medicalhistory.ProtectionMethod;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProtectionMethodMapper {
 
@@ -24,7 +23,7 @@ public class ProtectionMethodMapper {
     return entities.stream()
         .map(ProtectionMethodMapper::toInterfaceType)
         .sorted(Comparator.comparing(ProtectionMethodDto::name))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public static ProtectionMethodDto toInterfaceType(ProtectionMethod entity) {
@@ -49,7 +48,7 @@ public class ProtectionMethodMapper {
     return dtos.stream()
         .map(ProtectionMethodMapper::toDatabaseType)
         .sorted(Comparator.comparing(ProtectionMethod::name))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public static ProtectionMethod toDatabaseType(ProtectionMethodDto dto) {

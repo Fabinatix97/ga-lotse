@@ -108,6 +108,7 @@ export function VaccinationConsultationsSearchTable() {
               routes.procedures.baseData(row.original.procedureId),
             focusColumnAccessorKey: "lastName",
           }}
+          minWidth={1050}
         />
       </TableSheet>
     </TablePage>

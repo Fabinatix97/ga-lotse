@@ -8,6 +8,7 @@ package de.eshg.schoolentry.domain.model;
 import static de.eshg.lib.common.SensitivityLevel.PROTECTED;
 import static de.eshg.lib.common.SensitivityLevel.PSEUDONYMIZED;
 import static de.eshg.lib.common.SensitivityLevel.SENSITIVE;
+import static de.eshg.schoolentry.population.CreateLabelsTask.INFORMATION_BLOCK_LABEL_NAME;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.appointmentblock.EntityWithAppointment;
@@ -229,6 +230,14 @@ public class SchoolEntryProcedure
     this.labels.add(label);
   }
 
+  public boolean hasLabel(String labelName) {
+    return getLabels().stream().anyMatch(label -> labelName.equals(label.getName()));
+  }
+
+  public boolean hasInformationBlock() {
+    return hasLabel(INFORMATION_BLOCK_LABEL_NAME);
+  }
+
   public boolean isEntryLevel() {
     return isEntryLevel;
   }
@@ -255,11 +264,8 @@ public class SchoolEntryProcedure
         .collect(StreamUtil.toSingleElement());
   }
 
-  public List<UUID> getCustodianIdsFromCentralFile() {
-    return getRelatedPersons().stream()
-        .filter(Person::isCustodian)
-        .map(Person::getCentralFileStateId)
-        .toList();
+  public Stream<Person> getCustodians() {
+    return getRelatedPersons().stream().filter(Person::isCustodian);
   }
 
   public boolean hasTaskOfType(TaskType taskType) {
@@ -280,10 +286,6 @@ public class SchoolEntryProcedure
 
   private Stream<SchoolEntryTask> getTasksOfType(TaskType taskType) {
     return getTasks().stream().filter(task -> task.getTaskType() == taskType);
-  }
-
-  public boolean hasLabel(String labelName) {
-    return getLabels().stream().anyMatch(label -> labelName.equals(label.getName()));
   }
 
   public boolean isDeceased() {
@@ -326,11 +328,11 @@ public class SchoolEntryProcedure
     this.locationId = locationId;
   }
 
-  public Instant getschoolInfoLetterCreatedAt() {
+  public Instant getSchoolInfoLetterCreatedAt() {
     return schoolInfoLetterCreatedAt;
   }
 
-  public void setschoolInfoLetterCreatedAt(Instant schoolInfoLetterCreatedAt) {
+  public void setSchoolInfoLetterCreatedAt(Instant schoolInfoLetterCreatedAt) {
     this.schoolInfoLetterCreatedAt = schoolInfoLetterCreatedAt;
   }
 

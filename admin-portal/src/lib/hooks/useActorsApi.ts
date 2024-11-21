@@ -17,6 +17,14 @@ import { ORG_UNITS_QUERY } from "@/lib/hooks/useOrgUnits";
 
 const queryKey = ORG_UNITS_QUERY;
 
+let lock: Promise<void | ApiAdminPartialActor> = Promise.resolve();
+
+function runSequentially(
+  fn: () => Promise<ApiAdminPartialActor>,
+): Promise<ApiAdminPartialActor> {
+  return (lock = lock.then(fn, fn));
+}
+
 export function useActorsApi(): {
   api: TableApi<Actor>;
 } {
@@ -24,19 +32,7 @@ export function useActorsApi(): {
 
   const queryClient = useQueryClient();
 
-  const handleCreateSuccess = useCallback(
-    () => queryClient.invalidateQueries({ queryKey }),
-    [queryClient],
-  );
   const handleUpdateSuccess = useCallback(
-    () => queryClient.invalidateQueries({ queryKey }),
-    [queryClient],
-  );
-  const handleDeleteAuditedSuccess = useCallback(
-    () => queryClient.invalidateQueries({ queryKey }),
-    [queryClient],
-  );
-  const handleDeleteStagedSuccess = useCallback(
     () => queryClient.invalidateQueries({ queryKey }),
     [queryClient],
   );
@@ -49,20 +45,30 @@ export function useActorsApi(): {
         manualCertificate: false,
         stagingStatus: ApiStagingStatus.WorkInProgress,
       }),
-    onSuccess: handleCreateSuccess,
+    onSuccess: handleUpdateSuccess,
   });
   const update = useMutation({
     mutationFn: (apiAdminActorRequest: ApiAdminPartialActor) =>
-      adminApi.updateActor(apiAdminActorRequest),
+      runSequentially(() => adminApi.updateActor(apiAdminActorRequest)),
     onSuccess: handleUpdateSuccess,
   });
   const deleteAudited = useMutation({
     mutationFn: (id: string) => adminApi.deleteActorById(id),
-    onSuccess: handleDeleteAuditedSuccess,
+    onSuccess: handleUpdateSuccess,
   });
   const deleteStaged = useMutation({
     mutationFn: (id: string) => adminApi.deleteStaged(undefined, [id]),
-    onSuccess: handleDeleteStagedSuccess,
+    onSuccess: handleUpdateSuccess,
+  });
+  const activate = useMutation({
+    mutationFn: (id: string) =>
+      runSequentially(() => adminApi.activateActorById(id)),
+    onSuccess: handleUpdateSuccess,
+  });
+  const deactivate = useMutation({
+    mutationFn: (id: string) =>
+      runSequentially(() => adminApi.deactivateActorById(id)),
+    onSuccess: handleUpdateSuccess,
   });
 
   return {
@@ -71,6 +77,8 @@ export function useActorsApi(): {
       update: update.mutate,
       deleteAudited: deleteAudited.mutate,
       deleteStaged: deleteStaged.mutate,
+      activate: activate.mutate,
+      deactivate: deactivate.mutate,
     },
   };
 }

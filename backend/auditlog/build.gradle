@@ -1,5 +1,6 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
@@ -22,14 +23,7 @@ dependencies {
 
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
-}
-
-evaluationDependsOn(':base')
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+    testImplementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
 }
 
 dockerCompose {

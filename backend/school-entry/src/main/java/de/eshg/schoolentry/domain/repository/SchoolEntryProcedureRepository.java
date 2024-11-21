@@ -69,6 +69,12 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
       "update SchoolEntryProcedure p set p.citizenUserId = null where p.externalId = :externalId")
   void clearCitizenUserId(@Param("externalId") UUID externalId);
 
+  @Modifying
+  @Query(
+      "update SchoolEntryProcedure p set p.schoolId = :newSchoolId where p.schoolId = :oldSchoolId")
+  int replaceSchoolId(
+      @Param("oldSchoolId") UUID oldSchoolId, @Param("newSchoolId") UUID newSchoolId);
+
   @Query(
       "select p.externalId from SchoolEntryProcedure p where p.procedureStatus = de.eshg.lib.procedure.domain.model.ProcedureStatus.CLOSED order by p.id")
   List<UUID> findExternalIdsOfClosedProcedures();
@@ -81,13 +87,15 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
       where p.externalId in :procedureIds
       and p.appointment is not null
       and pe.id = (
-        select max(spe.id) from SystemProgressEntry spe
+        select spe.id from SystemProgressEntry spe
         where spe.procedureId = p.id
-        and spe.systemProgressEntryType = :systemProgressEntryType
+        and spe.keyDocumentType = :keyDocumentType
+        order by spe.keyDocumentVersion desc
+        limit 1
       )
       order by f.fileName, f.id
       """)
   List<File> findInvitationLettersForProcedures(
       @Param("procedureIds") List<UUID> procedureIds,
-      @Param("systemProgressEntryType") String systemProgressEntryType);
+      @Param("keyDocumentType") String keyDocumentType);
 }

@@ -36,7 +36,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
         subItems: [
           {
             name: "Auswertungen",
-            href: routes.statistics.index,
+            href: routes.evaluations.index,
             accessCheck: hasAnyUserRoles([
               ApiUserRole.StatisticsStatisticsRead,
               ApiUserRole.StatisticsStatisticsWrite,

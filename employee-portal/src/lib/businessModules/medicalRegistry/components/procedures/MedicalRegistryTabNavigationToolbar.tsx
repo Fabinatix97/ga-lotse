@@ -1,0 +1,70 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
+
+import { useGetProcedure } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
+import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
+import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
+import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
+import {
+  TabNavigationHeader,
+  TabNavigationHeaderTypography,
+} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
+import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
+
+export function MedicalRegistryTabNavigationToolbar({
+  procedureId,
+}: Readonly<{
+  procedureId: string;
+}>) {
+  const hasMedicalRegistryAdminRole = useHasUserRoleCheck(
+    ApiUserRole.MedicalRegistryAdmin,
+  );
+
+  const { data: procedure } = useGetProcedure(procedureId);
+  const headerTitle = formatPersonName(procedure.professional);
+
+  const tabItems: TabNavigationItem[] = [
+    {
+      tabButtonName: "Eintrag-Details",
+      href: routes.procedures.byId(procedureId).details,
+      decorator: <TextSnippetOutlined />,
+    },
+    {
+      tabButtonName: "Verlaufseinträge",
+      href: routes.procedures.byId(procedureId).progressEntries.index,
+      decorator: <TimelineOutlined />,
+    },
+  ];
+
+  return (
+    <TabNavigationToolbar
+      items={tabItems}
+      routeBack={
+        hasMedicalRegistryAdminRole ? routes.procedures.index : undefined
+      }
+      header={
+        <TabNavigationHeader titleAsH1>
+          <TabNavigationHeaderTypography>
+            {headerTitle}
+          </TabNavigationHeaderTypography>
+        </TabNavigationHeader>
+      }
+      afterTabs={
+        <MedicalRegistryProcedureChip
+          status={procedure.status}
+          type={procedure.procedureType}
+          aria-label="Status"
+        />
+      }
+    />
+  );
+}

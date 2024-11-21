@@ -21,7 +21,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import { useDebounce } from "use-debounce";
 
-import { useSearchIcd10Codes } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { useSearchIcd10Codes } from "@/lib/businessModules/schoolEntry/api/queries/icd10Codes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {

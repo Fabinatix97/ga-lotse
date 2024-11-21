@@ -92,13 +92,16 @@ public class RuleMapper {
         actorSelector.actorName());
   }
 
-  public static ActorSelector toPersistence(ActorSelectorDto naturalId) {
+  public static ActorSelector toPersistence(ActorSelectorDto selector) {
+    if (selector == null) {
+      return new ActorSelector(null, null, null, null, null);
+    }
     return new ActorSelector(
-        naturalId.federalState(),
-        naturalId.orgUnitType(),
-        naturalId.orgUnitName(),
-        naturalId.actorType(),
-        naturalId.actorName());
+        selector.federalState(),
+        selector.orgUnitType(),
+        selector.orgUnitName(),
+        selector.actorType(),
+        selector.actorName());
   }
 
   public static void toAudited(AuditedRule auditedRule, StagedRule rule) {

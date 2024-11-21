@@ -1,0 +1,8 @@
+evaluationDependsOn(':central-repository')
+evaluationDependsOn(':service-directory')
+
+tasks.named("test") {
+  dependsOn project(':central-repository').tasks.named("composeUp")
+  inputs.files(project(':central-repository').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+  inputs.files(project(':service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+}

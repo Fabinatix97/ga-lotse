@@ -132,7 +132,7 @@ const offlinePasswordChannel = createOfflinePasswordBroadCastChannelEndpoint();
 offlinePasswordChannel.onmessage = (ev) => {
   if (GET_EXISTING_PASSWORD === ev.data || GET_PASSWORD === ev.data) {
     offlinePasswordChannel.postMessage(
-      createPasswordMessage(";dTW0MgF+2Bm76O^><wP", new ArrayBuffer(16)),
+      createPasswordMessage(";dTW0MgF+2Bm76O^><wP"),
     );
   }
 };

@@ -37,12 +37,6 @@ public class Facility extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private boolean banned;
 
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private boolean suspicious;
-
-  @DataSensitivity(SensitivityLevel.SENSITIVE)
-  private boolean active;
-
   @ManyToOne
   @JoinColumn(name = "object_type_id")
   @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -72,22 +66,6 @@ public class Facility extends BaseEntityWithExternalId {
 
   public void setBanned(boolean banned) {
     this.banned = banned;
-  }
-
-  public boolean isSuspicious() {
-    return suspicious;
-  }
-
-  public void setSuspicious(boolean suspicious) {
-    this.suspicious = suspicious;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
   }
 
   public ObjectType getObjectType() {

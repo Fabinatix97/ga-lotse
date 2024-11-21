@@ -17,7 +17,7 @@ import java.util.UUID;
 public record EvaluationTemplateInfoDto(
     @NotNull UUID id,
     @NotBlank String name,
-    @NotNull List<String> businessModuleNames,
+    @NotNull List<String> dataSourceNames,
     @NotNull @Min(0) int analysisCount,
     @NotNull UUID userId,
     @NotNull Instant createdAt,

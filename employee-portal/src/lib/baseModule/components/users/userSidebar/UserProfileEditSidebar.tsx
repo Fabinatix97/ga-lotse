@@ -5,10 +5,12 @@
 
 import {
   ApiBaseFeature,
+  ApiSalutation,
   ApiUser,
   ApiUserGroup,
 } from "@eshg/employee-portal-api/base";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import {
   createFieldNameMapper,
   mapOptionalValue,
@@ -29,6 +31,10 @@ import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell"
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { PhoneNumberField } from "@/lib/shared/components/formFields/PhoneNumberField";
+import {
+  SALUTATION_OPTIONS,
+  TITLE_OPTIONS,
+} from "@/lib/shared/components/personSidebar/constants";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
@@ -40,11 +46,15 @@ interface UserEditFormInputs {
   email: string;
   phoneNumber: string;
   externalChatUsername: string;
+  salutation: ApiSalutation;
+  title: string;
 }
 
 interface UserProfileEditSidebarProps extends SidebarWithFormRefProps {
   selfUser: ApiUser;
   selfGroups: ApiUserGroup[];
+  selfSalutation: ApiSalutation | undefined;
+  selfTitle: string | undefined;
 }
 
 export function useUserProfileEditSidebar() {
@@ -56,6 +66,8 @@ export function useUserProfileEditSidebar() {
 function UserProfileEditSidebar({
   selfUser,
   selfGroups,
+  selfSalutation,
+  selfTitle,
   formRef,
   onClose,
 }: UserProfileEditSidebarProps) {
@@ -67,6 +79,8 @@ function UserProfileEditSidebar({
       {
         externalChatUsername: mapOptionalValue(values.externalChatUsername),
         phoneNumber: mapOptionalValue(values.phoneNumber),
+        salutation: mapOptionalValue(values.salutation),
+        title: mapOptionalValue(values.title),
       },
       {
         onSuccess: () => onClose(true),
@@ -78,6 +92,8 @@ function UserProfileEditSidebar({
     externalChatUsername: selfUser.externalChatUsername ?? "",
     phoneNumber: selfUser.phoneNumber ?? "",
     email: selfUser.email ?? "",
+    salutation: selfSalutation ?? ApiSalutation.NotSpecified,
+    title: selfTitle ?? "",
   };
 
   const fieldName = createFieldNameMapper<UserEditFormInputs>();
@@ -93,6 +109,22 @@ function UserProfileEditSidebar({
           <SidebarContent header={<UserSidebarHeader selfUser={selfUser} />}>
             <Stack gap={2}>
               <Divider />
+
+              <Stack gap="inherit" direction="row">
+                <SelectField
+                  name={fieldName("salutation")}
+                  label="Anrede"
+                  options={SALUTATION_OPTIONS}
+                  sx={{ flex: 1 }}
+                />
+
+                <SelectField
+                  name={fieldName("title")}
+                  label="Titel"
+                  options={TITLE_OPTIONS}
+                  sx={{ flex: 1 }}
+                />
+              </Stack>
 
               {isDefined(selfUser.email) && (
                 <InputField

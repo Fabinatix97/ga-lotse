@@ -7,6 +7,7 @@ package de.eshg.schoolentry.config;
 
 import de.eshg.testhelper.ResettableProperties;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -29,6 +30,7 @@ public final class SchoolEntryProperties implements ResettableProperties {
   private @NotNull URI privacyNoticeLocation;
   private @NotNull URI privacyPolicyLocation;
   private @NotNull SchoolEntryProperties.OpeningHours openingHours;
+  private @NotBlank String pdfDocumentAccentColor;
 
   public Period getBulkCreateAppointmentsMinLeadTime() {
     return bulkCreateAppointmentsMinLeadTime;
@@ -109,4 +111,12 @@ public final class SchoolEntryProperties implements ResettableProperties {
   }
 
   public record OpeningHours(@NotEmpty List<String> de, @NotEmpty List<String> en) {}
+
+  public String getPdfDocumentAccentColor() {
+    return pdfDocumentAccentColor;
+  }
+
+  public void setPdfDocumentAccentColor(String pdfDocumentAccentColor) {
+    this.pdfDocumentAccentColor = pdfDocumentAccentColor;
+  }
 }

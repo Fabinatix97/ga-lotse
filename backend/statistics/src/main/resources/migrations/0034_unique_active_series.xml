@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1730706193004-1">
+    <addColumn tableName="report_series">
+      <column name="unique_active" type="int8"/>
+    </addColumn>
+
+    <update tableName="report_series">
+      <column name="unique_active" valueComputed="statistic_id"/>
+      <where>active = TRUE</where>
+    </update>
+
+    <dropColumn columnName="active" tableName="report_series"/>
+    <addUniqueConstraint columnNames="unique_active" constraintName="report_series_unique_active_key" tableName="report_series"/>
+  </changeSet>
+</databaseChangeLog>

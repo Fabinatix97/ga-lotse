@@ -11,12 +11,15 @@ import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
-export function otherServiceTemplatesColumns(
-  openCloseVaccinationStepSidebar: (
-    otherServiceTemplateId: ApiOtherServiceTemplate,
-  ) => void,
-  deleteEntry: (entryId: string) => Promise<void>,
-) {
+interface OtherServiceTemplatesColumnsProps {
+  editEntry: (otherServiceTemplateId: ApiOtherServiceTemplate) => void;
+  deleteEntry: (entryId: string) => void;
+}
+
+export function otherServiceTemplatesColumns({
+  editEntry,
+  deleteEntry,
+}: OtherServiceTemplatesColumnsProps) {
   return [
     columnHelper.accessor("description", {
       header: "Name",
@@ -44,7 +47,7 @@ export function otherServiceTemplatesColumns(
           actionItems={[
             {
               label: "Bearbeiten",
-              onClick: () => openCloseVaccinationStepSidebar(info.row.original),
+              onClick: () => editEntry(info.row.original),
               startDecorator: <Edit />,
             },
             {

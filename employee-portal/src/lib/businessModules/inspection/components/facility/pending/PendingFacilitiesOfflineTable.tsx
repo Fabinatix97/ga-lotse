@@ -98,22 +98,20 @@ function NoDataHint() {
 }
 
 export function useInspectionPendingFacilityFromOfflineInspections() {
-  const { actualPrecachedInspectionIds, sendMessageToServiceWorker } =
-    useServiceWorker();
+  const { sendMessageToServiceWorker } = useServiceWorker();
 
   const [facilities, setFacilities] = useState<ApiInspPendingFacility[]>([]);
 
   useEffect(() => {
     getInspectionPendingFacilityFromOfflineInspections(
       sendMessageToServiceWorker,
-      actualPrecachedInspectionIds,
     ).then(
       (facilities) => setFacilities(facilities),
       (reason) => {
         throw reason;
       },
     );
-  }, [actualPrecachedInspectionIds, sendMessageToServiceWorker]);
+  }, [sendMessageToServiceWorker]);
 
   return facilities;
 }

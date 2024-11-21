@@ -6,16 +6,19 @@
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import ForumIcon from "@mui/icons-material/Forum";
 import { Badge } from "@mui/joy";
+import { useContext } from "react";
 
 import { HeaderIconButton } from "@/lib/baseModule/components/layout/header/HeaderIconButton";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { useGetUnreadNotification } from "@/lib/businessModules/chat/shared/hooks/useGetUnreadNotification";
+import { NotificationContext } from "@/lib/businessModules/chat/shared/NotificationProvider";
 
 export function HeaderMessagesButton() {
   const { tryNavigate } = useNavigation();
   const { canAccessChat, userSettings, messagesSidebar } = useChat();
-  const { unreadMessagesCount } = useGetUnreadNotification();
+  const { unreadNotificationsPerRoom } = useContext(NotificationContext) ?? {};
+  const unreadMessagesCount =
+    Object.keys(unreadNotificationsPerRoom ?? {}).length ?? 0;
 
   function toggleMessagesSidebar(): void {
     if (messagesSidebar.isOpen) {

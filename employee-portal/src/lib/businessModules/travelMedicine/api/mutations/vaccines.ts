@@ -22,7 +22,7 @@ export function usePostVaccine() {
     mutationFn: (values: ApiPostPutVaccineRequest) =>
       vaccineApi.postVaccine(values),
     onSuccess: () => {
-      snackbar.confirmation("Erstellung erfolgreich.");
+      snackbar.confirmation("Der Impfstoff wurde erstellt.");
     },
   });
 }
@@ -35,7 +35,7 @@ export function usePutVaccine() {
     mutationFn: (wrapper: PostPutVaccineRequest) =>
       vaccineApi.putVaccine(wrapper.id, wrapper.values),
     onSuccess: () => {
-      snackbar.confirmation("Update erfolgreich.");
+      snackbar.confirmation("Der Impfstoff wurde gespeichert.");
     },
   });
 }
@@ -47,7 +47,7 @@ export function useDeleteVaccine() {
   return useHandledMutation({
     mutationFn: (id: string) => vaccineApi.deleteVaccine(id),
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gelöscht.");
+      snackbar.confirmation("Der Impfstoff wurde gelöscht.");
     },
   });
 }

@@ -29,7 +29,7 @@ import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.feature.BaseFeature;
@@ -110,6 +110,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -191,16 +192,17 @@ public class ProcedureController<
     Set<ProcedureStatus> status = mapEnumSet(procedureStatus, ProcedureMapper::toDomainType);
     Set<ProcedureType> types = mapEnumSet(procedureTypes, ProcedureMapper::toDomainType);
 
-    List<ProcedureDto> recentProcedures =
+    List<ProcedureT> recentProcedures =
         procedureRepository
             .findAll(
                 where(anyTaskIsAssignedToUser(userId)).and(statusIsIn(status)).and(typeIsIn(types)),
                 ofSize(limit).withSort(Direction.DESC, MODIFIED_AT, ID))
             .stream()
-            .map(enrichingMapper::enrichAndMap)
             .toList();
 
-    return new GetRecentProceduresResponse(recentProcedures);
+    List<ProcedureDto> enrichedProcedures =
+        enrichingMapper.enrichAndMapProcedures(recentProcedures);
+    return new GetRecentProceduresResponse(enrichedProcedures);
   }
 
   @Override
@@ -259,9 +261,11 @@ public class ProcedureController<
                 .withPage(paginationOptions.pageNumber())
                 .withSort(mapToSort(sortOptions)));
 
-    List<ProcedureDto> procedures = page.stream().map(enrichingMapper::enrichAndMap).toList();
+    List<ProcedureDto> enrichedProcedures =
+        enrichingMapper.enrichAndMapProcedures(page.stream().toList());
 
-    return new GetProceduresResponse(page.getTotalPages(), page.getTotalElements(), procedures);
+    return new GetProceduresResponse(
+        page.getTotalPages(), page.getTotalElements(), enrichedProcedures);
   }
 
   @Override
@@ -274,12 +278,10 @@ public class ProcedureController<
       throw new IllegalStateException(
           "New feature %s is not enabled".formatted(BaseFeature.SEARCH_PROCEDURES));
     }
-    List<ProcedureDto> searchResult =
-        procedureSearchService.searchProcedures(query).stream()
-            .map(enrichingMapper::enrichAndMap)
-            .toList();
 
-    return new GetProceduresResponse(1, searchResult.size(), searchResult);
+    List<ProcedureDto> enrichedProcedures =
+        enrichingMapper.enrichAndMapProcedures(procedureSearchService.searchProcedures(query));
+    return new GetProceduresResponse(1, enrichedProcedures.size(), enrichedProcedures);
   }
 
   @Override
@@ -548,7 +550,8 @@ public class ProcedureController<
   public GetDetailedProcedureResponse getDetailedProcedure(UUID id) {
     ProcedureT domainProcedure = resolveProcedureByExternalIdOrThrow(id);
 
-    ProcedureDto procedure = enrichingMapper.enrichAndMap(domainProcedure);
+    ProcedureDto procedure =
+        enrichingMapper.enrichAndMapProcedures(List.of(domainProcedure)).getFirst();
 
     List<DetailedPersonDto> persons = createDetailedPersonDtos(domainProcedure.getRelatedPersons());
 
@@ -578,13 +581,17 @@ public class ProcedureController<
   private DetailedTaskDto toDetailedTaskDto(
       TaskT task, Map<UUID, UserFirstAndLastName> firstNameAndLastNameByUserId) {
     return new DetailedTaskDto(
-        enrichingMapper.enrichAndMap(task),
+        enrichingMapper.enrichAndMapTasks(List.of(task)).getFirst(),
         getFullNameIfPresent(firstNameAndLastNameByUserId, task.getAssigneeId()),
         getFullNameIfPresent(firstNameAndLastNameByUserId, task.getAssignedById()));
   }
 
   private String getFullNameIfPresent(
       Map<UUID, UserFirstAndLastName> firstNameAndLastNameByUserId, UUID key) {
+    if (key == null) {
+      return null;
+    }
+
     if (firstNameAndLastNameByUserId.containsKey(key)) {
       return firstNameAndLastNameByUserId.get(key).asFullName();
     }
@@ -596,7 +603,9 @@ public class ProcedureController<
     Stream<UUID> assigneeIds = tasks.stream().map(TaskT::getAssigneeId);
     Stream<UUID> assignedByIds = tasks.stream().map(TaskT::getAssignedById);
 
-    return Stream.concat(assigneeIds, assignedByIds).collect(StreamUtil.toLinkedHashSet());
+    return Stream.concat(assigneeIds, assignedByIds)
+        .filter(Objects::nonNull)
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private List<DetailedPersonDto> createDetailedPersonDtos(
@@ -613,7 +622,7 @@ public class ProcedureController<
 
     List<DetailedPersonDto> result = new ArrayList<>();
 
-    for (AddPersonFileStateResponse personDto : personFileStatesResponse.personFileStates()) {
+    for (GetPersonFileStateResponse personDto : personFileStatesResponse.personFileStates()) {
       PersonType personType = personTypeByCentralFileStateId.get(personDto.id());
       PersonTypeDto personTypeDto = PersonTypeMapper.toInterfaceType(personType);
       result.add(new DetailedPersonDto(personDto, personTypeDto));

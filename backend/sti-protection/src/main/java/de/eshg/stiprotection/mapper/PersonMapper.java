@@ -12,12 +12,13 @@ public class PersonMapper {
 
   private PersonMapper() {}
 
-  public static PersonDto toInterfaceType(Person person) {
+  public static PersonDto toInterfaceType(Person person, String accessCode) {
     return new PersonDto(
         person.getExternalId(),
         GenderMapper.toInterfaceType(person.getGender()),
         person.getYearOfBirth(),
         person.getCountryOfBirth(),
-        person.getInGermanySince());
+        person.getInGermanySince(),
+        accessCode);
   }
 }

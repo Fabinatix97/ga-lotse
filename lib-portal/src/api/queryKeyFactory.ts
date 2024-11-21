@@ -8,7 +8,7 @@ import { QueryKey } from "@tanstack/react-query";
 export function queryKeyFactory<const TBaseQueryKey extends QueryKey>(
   baseQueryKey: TBaseQueryKey,
 ) {
-  return <TQueryKey extends QueryKey>(queryKey: TQueryKey) =>
+  return <const TQueryKey extends QueryKey>(queryKey: TQueryKey) =>
     [...baseQueryKey, ...queryKey] as const;
 }
 export type QueryKeyFactory = ReturnType<typeof queryKeyFactory>;

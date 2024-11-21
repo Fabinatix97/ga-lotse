@@ -2,3 +2,4 @@ de.eshg.testhelper.TestHelperAutoConfiguration
 de.eshg.testhelper.TestHelperControllerAutoConfiguration
 de.eshg.testhelper.ProfileAutoConfiguration
 de.eshg.testhelper.environment.EnvironmentAutoConfiguration
+de.eshg.testhelper.population.PopulatorAutoConfiguration

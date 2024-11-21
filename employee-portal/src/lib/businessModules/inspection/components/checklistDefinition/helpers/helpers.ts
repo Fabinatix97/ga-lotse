@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
   type ApiCLAudioContext,
   type ApiCLCheckboxContext,
@@ -12,10 +13,12 @@ import {
   ApiCLSeparatorContext,
   ApiCLSingleSelectContext,
   type ApiCLTextElementContext,
+  ApiChecklistDefinitionVersion,
 } from "@eshg/employee-portal-api/inspection";
 import { v4 as uuidv4 } from "uuid";
 
 import { ConfirmationDialogProps } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
+import { useHasUserRolesCheck } from "@/lib/shared/hooks/useAccessControl";
 
 function getId(
   partial: Partial<ApiCLSectionContextElementsInner>,
@@ -194,4 +197,47 @@ export function showPublishChecklistDefinitionDialog(
     cancelLabel: "Abbrechen",
     onConfirm: onConfirm,
   });
+}
+
+export function countTextModules(element: {
+  textModuleFalse?: string;
+  textModuleTrue?: string;
+}) {
+  return [element.textModuleFalse, element.textModuleTrue].filter((it) => it)
+    .length;
+}
+
+export function getIsNewestVersion(cldVersion?: ApiChecklistDefinitionVersion) {
+  return (
+    cldVersion === undefined ||
+    (cldVersion?.context.validTo === undefined &&
+      cldVersion?.context.published === true)
+  );
+}
+
+export function useUserCanSaveChecklistDefinition(
+  cldVersion?: ApiChecklistDefinitionVersion,
+) {
+  const [canEditChecklists, canEditCoreChecklists] = useHasUserRolesCheck([
+    ApiUserRole.InspectionChecklistdefinitionsWrite,
+    ApiUserRole.InspectionCorechecklistdefinitionsEdit,
+  ]);
+
+  if (!canEditChecklists) {
+    return false;
+  }
+
+  if (cldVersion?.isCoreChecklist && !canEditCoreChecklists) {
+    return false;
+  }
+
+  if (cldVersion === undefined) {
+    return true;
+  }
+
+  if (!cldVersion?.context.published) {
+    return true;
+  }
+
+  return getIsNewestVersion(cldVersion);
 }

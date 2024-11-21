@@ -881,7 +881,6 @@ public class VaccinationConsultationService {
   }
 
   private UUID createInternalReferencePerson(UUID fileStateId) {
-
     try {
       return personClient.createInternalReferencePerson(fileStateId);
     } catch (HttpClientErrorException.BadRequest e) {

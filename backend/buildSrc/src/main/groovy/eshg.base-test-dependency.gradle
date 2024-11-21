@@ -1,0 +1,21 @@
+import de.eshg.TaskExecutionLimitService
+
+// Workaround to solve the race condition between tests in different modules
+// that both use the same 'base' module instance and reset the database in between.
+// Please see [internal gitlab link]
+// for a potential follow-up improvement.
+def testLimitService = project.gradle.sharedServices
+  .registerIfAbsent("testLimitService", TaskExecutionLimitService.class, {spec -> spec.maxParallelUsages = 1})
+
+evaluationDependsOn(':base')
+evaluationDependsOn(':keycloak')
+
+tasks.named("test") {
+  // We do not need to sequentialize when we only execute schema tests
+  if (!project.hasProperty("schemaOnly")) {
+    usesService testLimitService
+  }
+  dependsOn(project(":base").tasks.named("composeUp"))
+  inputs.files(project(":base").tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
+  inputs.files(project(":keycloak").tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+}

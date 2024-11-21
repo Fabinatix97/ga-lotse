@@ -14,6 +14,7 @@ import {
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useCallback } from "react";
 
 import {
   useInspectionApi,
@@ -42,6 +43,19 @@ export function useUpdateInspection() {
       snackbar.confirmation("Änderung gespeichert.");
     },
   });
+}
+
+export function useLockInspection() {
+  const { mutateAsync: updateInspection } = useUpdateInspection();
+  return useCallback(
+    async (procedureId: string, lockInspection: boolean) => {
+      await updateInspection({
+        id: procedureId,
+        apiUpdateInspectionRequest: { lock: lockInspection },
+      });
+    },
+    [updateInspection],
+  );
 }
 
 export function useFinalizeInspection() {

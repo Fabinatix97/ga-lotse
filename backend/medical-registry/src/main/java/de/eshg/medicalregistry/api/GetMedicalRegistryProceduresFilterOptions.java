@@ -31,7 +31,17 @@ public record GetMedicalRegistryProceduresFilterOptions(
         - If `procedureStatus` is submitted, only procedures are returned which have one of the submitted statuses.
         - If not submitted, no filtering takes place
         """)
-        Set<ProcedureStatusDto> procedureStatus) {
+        Set<ProcedureStatusDto> procedureStatus,
+    @BindParam(PROFESSIONAL_TITLE)
+        @Parameter(
+            description =
+                """
+          Filter logic:
+          - If `professionalTitle` is specified, only procedures associated with professionals in one of the given areas are returned.
+          - If not submitted, no filtering takes place
+          """)
+        Set<ProfessionalTitleDto> professionalTitle) {
   public static final String CERTIFICATE_REQUESTED = "certificateRequested";
   public static final String PROCEDURE_STATUS = "procedureStatus";
+  public static final String PROFESSIONAL_TITLE = "professionalTitle";
 }

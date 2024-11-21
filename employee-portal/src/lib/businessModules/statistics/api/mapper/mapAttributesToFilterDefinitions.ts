@@ -9,7 +9,7 @@ import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatA
 import {
   booleanOptions,
   mapEnumOptions,
-} from "@/lib/businessModules/statistics/components/statistics/details/filter/enumFilterMappings";
+} from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 import { EnumFilterDefinition } from "@/lib/shared/components/filterSettings/models/EnumFilter";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { NumberFilterDefinition } from "@/lib/shared/components/filterSettings/models/NumberFilter";

@@ -5,38 +5,47 @@
 
 "use client";
 
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useRouter } from "next/navigation";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { useCallback, useEffect, useState } from "react";
 
-import { deleteAllEncryptedCaches } from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
+import { useLockInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
+import {
+  clearCaches,
+  clearQueue,
+} from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
 import { OfflineExistingPasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflineExistingPasswordDialog";
 import { OfflineNewPasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflineNewPasswordDialog";
 import { hasQueuedRequests } from "@/lib/businessModules/inspection/shared/offline/password/hasQueuedRequests";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import {
+  SALT,
+  getInspectionOfflineDb,
+} from "@/serviceWorker/common/inspectionOfflineDb";
+import {
   GET_EXISTING_PASSWORD,
   GET_PASSWORD,
-  GET_PASSWORD_FAILED,
+  GET_PASSWORD_ABORTED,
   PASSWORD_ACCEPTED,
   REGISTER_CLIENT,
   createOfflinePasswordBroadCastChannelEndpoint,
   createPasswordMessage,
 } from "@/serviceWorker/common/offlinePasswordBroadCastChannel";
+import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 
 export function OfflinePasswordPrompt() {
   const isOfflineEnabled = useIsOfflineFeatureEnabled();
 
   if (!isOfflineEnabled) return false;
 
-  return <OfflinePasswordPromptInner />;
+  return (
+    <QueryBoundary>
+      <OfflinePasswordPromptInner />
+    </QueryBoundary>
+  );
 }
 
 function OfflinePasswordPromptInner() {
-  const router = useRouter();
-  const snackbar = useSnackbar();
-
   const [passwordChannel, setPasswordChannel] = useState<BroadcastChannel>();
 
   const [state, setState] = useState({
@@ -65,7 +74,7 @@ function OfflinePasswordPromptInner() {
           retry: false,
         });
       } else if (
-        [PASSWORD_ACCEPTED, GET_PASSWORD_FAILED].includes(ev.data as string)
+        [PASSWORD_ACCEPTED, GET_PASSWORD_ABORTED].includes(ev.data as string)
       ) {
         setPasswordChannel(undefined);
         setState({
@@ -83,19 +92,12 @@ function OfflinePasswordPromptInner() {
   const handlePassword = useCallback(
     async (password: string) => {
       setState({ ...state, passwordSent: true });
-      let salt;
-      try {
-        salt = await getSalt(state.getExistingPassword);
-      } catch {
-        snackbar.error("Wiederherstellung fehlgeschlagen (salt lost)");
-        await deleteAllEncryptedCaches();
-        passwordChannel?.postMessage(GET_PASSWORD_FAILED);
-        router.refresh();
-        return;
+      if (state.getExistingPassword) {
+        await transferLegacySalt();
       }
-      passwordChannel?.postMessage(createPasswordMessage(password, salt));
+      passwordChannel?.postMessage(createPasswordMessage(password));
     },
-    [state, passwordChannel, snackbar, router],
+    [state, passwordChannel],
   );
 
   const handleClear = useHandleClear(passwordChannel);
@@ -112,29 +114,43 @@ function OfflinePasswordPromptInner() {
   ) : (
     <OfflineNewPasswordDialog
       onPassword={handlePassword}
+      onClear={handleClear}
       waiting={state.passwordSent}
     />
   );
 }
 
 function useHandleClear(passwordChannel: BroadcastChannel | undefined) {
-  const router = useRouter();
   const { openConfirmationDialog } = useConfirmationDialog();
+  const lockInspection = useLockInspection();
+
   return useCallback(async () => {
     const queuedRequests = await hasQueuedRequests();
 
     async function onConfirm() {
-      await deleteAllEncryptedCaches();
-      passwordChannel?.postMessage(GET_PASSWORD_FAILED);
+      const ids = await precachedInspectionIds.getAll();
+      if (queuedRequests) {
+        await clearQueue();
+      }
+      await precachedInspectionIds.clear();
+      await clearCaches();
+      await Promise.all(
+        ids.map((id) =>
+          lockInspection(id, false).catch(() =>
+            // eslint-disable-next-line no-console
+            console.error("Failed to unlock inspection", id),
+          ),
+        ),
+      );
+      passwordChannel?.postMessage(GET_PASSWORD_ABORTED);
       window.location.reload();
-      router.refresh();
     }
 
     if (queuedRequests) {
       openConfirmationDialog({
         title: "Änderung verwerfen?",
         description:
-          "Es liegen noch nicht synchronisierte Eingaben zu Begehung(en) vor. Beim Fortfahren gehen diese verloren.",
+          "Die Eingaben, die Sie offline gemacht hatten, sind noch nicht gespeichert worden. Wenn Sie jetzt fortfahren, gehen diese Eingaben verloren. Möchten Sie wirklich fortfahren und alle Änderungen verlieren?",
         confirmLabel: "Verwerfen",
         color: "danger",
         onConfirm,
@@ -142,36 +158,26 @@ function useHandleClear(passwordChannel: BroadcastChannel | undefined) {
     } else {
       await onConfirm();
     }
-  }, [openConfirmationDialog, passwordChannel, router]);
+  }, [lockInspection, openConfirmationDialog, passwordChannel]);
 }
 
-async function getSalt(restoreSalt: boolean) {
-  if (restoreSalt) {
-    const base64Salt = localStorage.getItem("offline-password-salt");
-    if (!base64Salt) {
-      return Promise.reject(new Error("Salt lost"));
-    }
-    return base64StringToBytesArrayBuffer(base64Salt);
-  } else {
-    const salt = window.crypto.getRandomValues(new Uint8Array(16));
-    localStorage.setItem(
-      "offline-password-salt",
-      arrayBufferToBase64String(salt),
-    );
-    return Promise.resolve(salt);
+// backwards-compatible restore legacy salt. new salt is stored in the index-db.
+async function transferLegacySalt() {
+  const base64Salt = localStorage.getItem("offline-password-salt");
+  if (base64Salt) {
+    await storeSalt(base64StringToBytesArrayBuffer(base64Salt));
+    localStorage.removeItem("offline-password-salt");
   }
+}
+
+async function storeSalt(salt: ArrayBufferLike): Promise<void> {
+  const db = await getInspectionOfflineDb();
+
+  await db.put(SALT, { id: "offline-password-salt", salt });
 }
 
 function base64StringToBytesArrayBuffer(base64: string): ArrayBufferLike {
   const binString = atob(base64);
   // @ts-expect-error js still hasn't got a proper way to base64decode binary data
   return Uint8Array.from(binString, (m) => m.codePointAt(0));
-}
-
-function arrayBufferToBase64String(buffer: ArrayBufferLike): string {
-  const bytes = new Uint8Array(buffer);
-  const binString = Array.from(bytes, (byte) =>
-    String.fromCodePoint(byte),
-  ).join("");
-  return btoa(binString);
 }

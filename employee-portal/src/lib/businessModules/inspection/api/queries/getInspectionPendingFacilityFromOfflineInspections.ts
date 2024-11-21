@@ -5,17 +5,18 @@
 
 import { ApiInspPendingFacility } from "@eshg/employee-portal-api/inspection";
 
-import { isGetInspectionPendingFacilityFromOfflineInspectionsResponse } from "@/serviceWorker/common/GetInspectionPendingFacilityFromOfflineInspections";
+import {
+  createGetInspectionPendingFacilityFromOfflineInspectionsMessage,
+  isGetInspectionPendingFacilityFromOfflineInspectionsResponse,
+} from "@/serviceWorker/common/GetInspectionPendingFacilityFromOfflineInspections";
 
 // this doesn't send a rest query but fetches the data from the service worker via message
 export async function getInspectionPendingFacilityFromOfflineInspections(
   sendMessageToServiceWorker: (message: object) => Promise<unknown>,
-  inspectionIds: string[],
 ): Promise<ApiInspPendingFacility[]> {
-  const response: unknown = await sendMessageToServiceWorker({
-    type: "getInspectionPendingFacilityFromOfflineInspections",
-    inspectionIds,
-  });
+  const response: unknown = await sendMessageToServiceWorker(
+    createGetInspectionPendingFacilityFromOfflineInspectionsMessage(),
+  );
   if (!isGetInspectionPendingFacilityFromOfflineInspectionsResponse(response)) {
     throw new Error(
       "Unexpected return type for getInspectionPendingFacilityFromOfflineInspections",

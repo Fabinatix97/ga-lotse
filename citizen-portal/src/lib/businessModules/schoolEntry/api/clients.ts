@@ -6,6 +6,7 @@
 import {
   Configuration,
   SchoolEntryCitizenApi,
+  SchoolEntryPublicCitizenApi,
 } from "@eshg/citizen-portal-api/schoolEntry";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
@@ -19,4 +20,9 @@ function useConfiguration() {
 export function useSchoolEntryCitizenApi() {
   const configuration = useConfiguration();
   return new SchoolEntryCitizenApi(configuration);
+}
+
+export function useSchoolEntryPublicCitizenApi() {
+  const configuration = useConfiguration();
+  return new SchoolEntryPublicCitizenApi(configuration);
 }

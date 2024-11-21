@@ -15,55 +15,39 @@ public class AddressMatcher {
   private AddressMatcher() {}
 
   public static boolean isAddressMatch(Address referenceAddress, Address addressFileState) {
-    return isAddressMatch(referenceAddress, addressFileState, true, true);
-  }
-
-  public static boolean isAddressMatch(
-      Address referenceAddress,
-      Address addressFileState,
-      boolean matchDifferentName,
-      boolean matchAddressAddition) {
     return switch (referenceAddress) {
       case null -> addressFileState == null;
       case DomesticAddress domesticAddress ->
-          isDomesticAddressMatch(
-              domesticAddress, addressFileState, matchDifferentName, matchAddressAddition);
-      case PostboxAddress postboxAddress ->
-          isPostboxAddressMatch(postboxAddress, addressFileState, matchDifferentName);
+          isDomesticAddressMatch(domesticAddress, addressFileState);
+      case PostboxAddress postboxAddress -> isPostboxAddressMatch(postboxAddress, addressFileState);
       default -> throw new IllegalArgumentException("Unsupported instance of Address");
     };
   }
 
   private static boolean isCommonAttributesMatch(
-      Address referenceAddress, Address addressFileState, boolean matchDifferentName) {
+      Address referenceAddress, Address addressFileState) {
     return referenceAddress.getCountry() == addressFileState.getCountry()
         && StringUtils.equals(referenceAddress.getCity(), addressFileState.getCity())
         && StringUtils.equals(referenceAddress.getPostalCode(), addressFileState.getPostalCode())
-        && (!matchDifferentName
-            || StringUtils.equals(
-                referenceAddress.getDifferentName(), addressFileState.getDifferentName()));
+        && StringUtils.equals(
+            referenceAddress.getDifferentName(), addressFileState.getDifferentName());
   }
 
   private static boolean isDomesticAddressMatch(
-      DomesticAddress domesticAddress,
-      Address addressFileState,
-      boolean matchDifferentName,
-      boolean matchAddressAddition) {
+      DomesticAddress domesticAddress, Address addressFileState) {
     return addressFileState instanceof DomesticAddress domesticAddressFileState
-        && isCommonAttributesMatch(domesticAddress, domesticAddressFileState, matchDifferentName)
+        && isCommonAttributesMatch(domesticAddress, domesticAddressFileState)
         && StringUtils.equals(domesticAddress.getStreet(), domesticAddressFileState.getStreet())
         && StringUtils.equals(
             domesticAddress.getHouseNumber(), domesticAddressFileState.getHouseNumber())
-        && (!matchAddressAddition
-            || StringUtils.equals(
-                domesticAddress.getAddressAddition(),
-                domesticAddressFileState.getAddressAddition()));
+        && StringUtils.equals(
+            domesticAddress.getAddressAddition(), domesticAddressFileState.getAddressAddition());
   }
 
   private static boolean isPostboxAddressMatch(
-      PostboxAddress postboxAddress, Address addressFileState, boolean matchDifferentName) {
+      PostboxAddress postboxAddress, Address addressFileState) {
     return addressFileState instanceof PostboxAddress postboxAddressFileState
-        && isCommonAttributesMatch(postboxAddress, postboxAddressFileState, matchDifferentName)
+        && isCommonAttributesMatch(postboxAddress, postboxAddressFileState)
         && StringUtils.equals(postboxAddress.getPostbox(), postboxAddressFileState.getPostbox());
   }
 }

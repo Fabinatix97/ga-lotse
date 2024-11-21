@@ -35,7 +35,6 @@ export function VaccinationConsultationTabHeader({
       <TabNavigationHeaderTypography>
         Alter {calculateAge(dateOfBirth)}
       </TabNavigationHeaderTypography>
-      <TabNavigationHeaderTypography>ID {id}</TabNavigationHeaderTypography>
     </TabNavigationHeader>
   );
 }

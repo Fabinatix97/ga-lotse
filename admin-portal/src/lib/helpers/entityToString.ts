@@ -5,7 +5,7 @@
 
 import { ApiAdminActorSelector } from "@eshg/admin-portal-api/serviceDirectory";
 
-import { formatActorSelector } from "@/lib/components/table/cell/ActorSelectorCell";
+import { formatActorSelector } from "@/lib/components/table/cell/StaticActorSelectorCell";
 
 interface Entity {
   id: string;

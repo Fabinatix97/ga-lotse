@@ -33,4 +33,15 @@ public class SystemProgressEntryFactory {
     systemProgressEntry.setChangeDescription(changeDescription);
     return systemProgressEntry;
   }
+
+  public static SystemProgressEntry createSystemProgressEntry(
+      String systemProgressEntryType,
+      String changeDescription,
+      TriggerType triggerType,
+      String keyDocumentType) {
+    SystemProgressEntry systemProgressEntry =
+        createSystemProgressEntry(systemProgressEntryType, changeDescription, triggerType);
+    systemProgressEntry.setKeyDocumentType(keyDocumentType);
+    return systemProgressEntry;
+  }
 }

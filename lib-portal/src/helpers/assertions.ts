@@ -10,3 +10,7 @@ export function assertNonEmptyArray<TItem>(
     throw Error("Array is expected to be non-empty");
   }
 }
+
+export function assertNever(x: never, message = "Unexpected object:"): never {
+  throw new Error(`${message} ${String(x)}`);
+}

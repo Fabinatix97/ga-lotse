@@ -15,6 +15,7 @@
     }
   },
   "include": [
+    "staticSvgImage.d.ts",
     "next.config.js",
     "next-env.d.ts",
     ".next/types/**/*.ts",

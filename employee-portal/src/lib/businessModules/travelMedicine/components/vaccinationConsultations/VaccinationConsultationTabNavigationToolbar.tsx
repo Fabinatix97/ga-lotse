@@ -51,7 +51,11 @@ export function VaccinationConsultationTabNavigationToolbar({
       }
       header={<VaccinationConsultationTabHeader id={id} />}
       afterTabs={
-        <Chip data-testid="tab-procedure-state" color={statusColors[status]}>
+        <Chip
+          data-testid="tab-procedure-state"
+          color={statusColors[status]}
+          size="md"
+        >
           {procedureStatusNames[status]}
         </Chip>
       }

@@ -61,7 +61,7 @@ export function OfflineExistingPasswordDialog({
                 left={
                   !isOffline && (
                     <Button color="danger" variant="plain" onClick={onClear}>
-                      Neues Passwort erstellen
+                      Abbrechen
                     </Button>
                   )
                 }

@@ -376,6 +376,10 @@ public class ServiceDirectoryCommitService {
 
   @Transactional
   public void resetStaged(String author, List<UUID> ids) {
+    resetStagedWithoutTransaction(author, ids);
+  }
+
+  public void resetStagedWithoutTransaction(String author, List<UUID> ids) {
     if (author == null && ids == null) {
       throw new ServiceDirectoryBadRequestException("Either author or ids must be provided");
     }

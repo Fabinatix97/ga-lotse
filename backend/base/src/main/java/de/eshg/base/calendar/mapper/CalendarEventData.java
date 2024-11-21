@@ -5,14 +5,13 @@
 
 package de.eshg.base.calendar.mapper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.persistence.entity.AvailabilityType;
 import de.eshg.base.calendar.persistence.entity.CalendarEvent;
 import de.eshg.base.calendar.persistence.entity.EventType;
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class CalendarEventData {
   private final Long id;
@@ -32,7 +31,7 @@ public class CalendarEventData {
     calendars =
         calendarEvent.getCalendars().stream()
             .map(CalendarData::new)
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+            .collect(StreamUtil.toLinkedHashSet());
     availability = calendarEvent.getAvailability();
     subject = calendarEvent.getSubject();
     eventType = calendarEvent.getEventType();

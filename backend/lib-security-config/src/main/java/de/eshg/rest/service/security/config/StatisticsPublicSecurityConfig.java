@@ -21,38 +21,38 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
     requestMatchers(BaseUrls.Statistics.FEATURE_TOGGLES_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
 
-    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_URL + "/**")
+    requestMatchers(POST, BaseUrls.Statistics.ANALYSIS_URL + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(GET, BaseUrls.Statistics.EVALUATION_URL + "/**")
+    requestMatchers(GET, BaseUrls.Statistics.ANALYSIS_URL + "/**")
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(PATCH, BaseUrls.Statistics.EVALUATION_URL + "/**")
+    requestMatchers(PATCH, BaseUrls.Statistics.ANALYSIS_URL + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(DELETE, BaseUrls.Statistics.EVALUATION_URL + "/**")
+    requestMatchers(DELETE, BaseUrls.Statistics.ANALYSIS_URL + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
 
-    requestMatchers(POST, BaseUrls.Statistics.STATISTIC_CONTROLLER)
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_CONTROLLER)
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(POST, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/clone")
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_CONTROLLER + "/clone")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(GET, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
+    requestMatchers(GET, BaseUrls.Statistics.EVALUATION_CONTROLLER + "/**")
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(PATCH, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
+    requestMatchers(PATCH, BaseUrls.Statistics.EVALUATION_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(DELETE, BaseUrls.Statistics.STATISTIC_CONTROLLER + "/**")
+    requestMatchers(DELETE, BaseUrls.Statistics.EVALUATION_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(
             POST,
-            BaseUrls.Statistics.STATISTIC_CONTROLLER
+            BaseUrls.Statistics.EVALUATION_CONTROLLER
                 + BaseUrls.Statistics.RETRIEVE_DATA_URL
                 + "/**")
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
-    requestMatchers(POST, BaseUrls.Statistics.STATISTIC_CONTROLLER + OVERVIEW_PATH)
+    requestMatchers(POST, BaseUrls.Statistics.EVALUATION_CONTROLLER + OVERVIEW_PATH)
         .hasAnyRole(
             EmployeePermissionRole.STATISTICS_STATISTICS_READ,
             EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
@@ -106,6 +106,15 @@ public final class StatisticsPublicSecurityConfig extends AbstractPublicSecurity
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
     requestMatchers(DELETE, BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+
+    requestMatchers(POST, BaseUrls.Statistics.CENTRAL_REPOSITORY_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(DELETE, BaseUrls.Statistics.CENTRAL_REPOSITORY_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
+    requestMatchers(GET, BaseUrls.Statistics.CENTRAL_REPOSITORY_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.STATISTICS_STATISTICS_READ,
+            EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);
 
     requestMatchers(POST, BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER)
         .hasRole(EmployeePermissionRole.STATISTICS_STATISTICS_WRITE);

@@ -7,13 +7,12 @@
 
 import { ApiCountryCode } from "@eshg/employee-portal-api/base";
 import {
-  ApiAppointmentSummary,
   ApiCreatedByUserType,
   ApiGetVaccinationConsultationDetailsResponse,
   ApiPatient,
   ApiPersonSync,
   ApiProcedureStatus,
-  ApiServicePlanEntry,
+  ApiServicePlanGroup,
   ApiTravelTimeUnit,
   ApiTravelType,
 } from "@eshg/employee-portal-api/travelMedicine";
@@ -36,9 +35,9 @@ export interface CreateProcedureValues {
   travelStartDate?: string;
   travelTimeAmount?: number;
   travelTimeUnit?: ApiTravelTimeUnit;
-  services: ApiServicePlanEntry[];
+  services: ApiServicePlanGroup[];
   templateId?: string;
-  initialAppointment: ApiAppointmentSummary;
+  initialAppointmentProcedureStepId: string;
   createdByUserType: ApiCreatedByUserType;
 }
 const SPACING = { xxs: 2, sm: 3, md: 3, xxl: 3 };
@@ -70,8 +69,8 @@ export function VaccinationConsultationDetails(
           .split("T")[0] ?? "",
       travelTimeAmount:
         newData.travelInformation.travelTimeAmount ?? ("" as unknown as number),
-      services: newData.servicePlanList,
-      initialAppointment: newData.initialAppointment,
+      services: newData.servicePlanGroups,
+      initialAppointmentProcedureStepId: newData.initialProcedureStepId,
       createdByUserType: newData.createdByUserType,
     };
   }
@@ -116,7 +115,7 @@ export function VaccinationConsultationDetails(
           procedureId={initialValues.externalId ?? ""}
           isProcedureClosed={isProcedureClosed}
           initialAppointmentProcedureStepId={
-            initialValues.initialAppointment.procedureStepId
+            initialValues.initialAppointmentProcedureStepId
           }
           createdByUserType={initialValues.createdByUserType}
         ></ServicePlanTable>

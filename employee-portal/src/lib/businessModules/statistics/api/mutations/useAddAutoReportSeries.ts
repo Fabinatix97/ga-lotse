@@ -16,7 +16,7 @@ import {
   Interval,
   ReportingPeriod,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
-import { AutomateReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/AutomateReportSidebar/automateReportFormModel";
+import { AutomateReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AutomateReportSidebar/automateReportFormModel";
 
 function mapToApiStartMonth(startMonth: string) {
   return parseInt(startMonth) + 1;
@@ -51,10 +51,10 @@ function mapToApiReportingPeriod(
 }
 
 export function mapToApiAddAutoReportSeriesRequest({
-  statisticId,
+  evaluationId,
   model,
 }: {
-  statisticId: string;
+  evaluationId: string;
   model: AutomateReportFormModel;
 }): ApiAddReportSeriesRequest {
   return {
@@ -67,7 +67,7 @@ export function mapToApiAddAutoReportSeriesRequest({
     frequency: mapToApiFrequency(model.interval),
     reportingPeriod: mapToApiReportingPeriod(model.reportingPeriod),
     type: "AddAutoReportSeriesRequest",
-    statisticId,
+    evaluationId,
   };
 }
 
@@ -76,19 +76,19 @@ export function useAddAutoReportSeries(onSuccess: () => void) {
   const api = useReportSeriesApi();
   const mutation = useHandledMutation({
     mutationFn: ({
-      statisticId,
+      evaluationId,
       model,
     }: {
-      statisticId: string;
+      evaluationId: string;
       model: AutomateReportFormModel;
     }) =>
       api.addReportSeries(
-        mapToApiAddAutoReportSeriesRequest({ statisticId, model }),
+        mapToApiAddAutoReportSeriesRequest({ evaluationId, model }),
       ),
     onSuccess: () => snackbar.confirmation("Automatisierung gespeichert"),
   });
 
-  return async (statisticId: string, model: AutomateReportFormModel) => {
-    await mutation.mutateAsync({ statisticId, model }, { onSuccess });
+  return async (evaluationId: string, model: AutomateReportFormModel) => {
+    await mutation.mutateAsync({ evaluationId, model }, { onSuccess });
   };
 }

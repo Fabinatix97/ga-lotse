@@ -13,6 +13,7 @@ import {
   PutInformationStatementTemplateRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { Formik } from "formik";
@@ -66,6 +67,7 @@ export function InformationStatementTemplateEditor(
   props: Readonly<CreateTemplateFormProps>,
 ) {
   const router = useRouter();
+  const snackbar = useSnackbar();
   const informationStatementTemplate = useGetOneInformationStatementTemplate(
     props.templateId,
   );
@@ -102,6 +104,22 @@ export function InformationStatementTemplateEditor(
   }
 
   async function handleSubmit(values: TemplateValues) {
+    if (hasEmptySectionElements(values)) {
+      snackbar.error(
+        "Der Aufklärungsbogen muss mindestens eine ausgefüllte Sektion beinhalten.",
+      );
+    } else {
+      await handleBackendCall(values);
+    }
+  }
+
+  function hasEmptySectionElements(values: TemplateValues) {
+    return values.sections
+      .map((section) => section.sectionElements)
+      .some((sectionElements) => sectionElements.length === 0);
+  }
+
+  async function handleBackendCall(values: TemplateValues) {
     if (isExistingTemplate) {
       await updateOrCreateNewCopyOnServer(values);
     } else {

@@ -9,11 +9,12 @@ import {
   ApiSchoolEntryStatusType,
 } from "@eshg/employee-portal-api/schoolEntry";
 
+import { mapOptional } from "@/lib/shared/api/models/utils";
+
 import { BaseEntity, mapBaseEntity } from "./BaseEntity";
 import { Label, mapLabels } from "./Label";
 import { Location, mapLocation } from "./Location";
 import { Person, mapPerson } from "./Person";
-import { mapOptional } from "./utils";
 
 export interface Procedure extends BaseEntity {
   readonly type: ApiSchoolEntryProcedureType;

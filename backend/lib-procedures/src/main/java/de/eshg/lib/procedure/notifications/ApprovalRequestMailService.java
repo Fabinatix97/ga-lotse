@@ -5,6 +5,7 @@
 
 package de.eshg.lib.procedure.notifications;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.mail.MailApi;
 import de.eshg.base.mail.SendEmailNotificationRequest;
 import de.eshg.base.user.api.UserDto;
@@ -20,11 +21,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.SequencedSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -107,10 +107,10 @@ public class ApprovalRequestMailService {
   }
 
   private Map<UUID, UserDto> resolveUsers(List<NotificationWithEmailReminder> notifications) {
-    SequencedSet<UUID> collectedUserIds =
+    Set<UUID> collectedUserIds =
         notifications.stream()
             .map(Notification::getRecipientUserId)
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+            .collect(StreamUtil.toLinkedHashSet());
     return userHelper.resolveUsers(collectedUserIds);
   }
 

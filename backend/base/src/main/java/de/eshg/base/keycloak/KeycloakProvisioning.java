@@ -11,6 +11,7 @@ import static de.eshg.base.keycloak.RealmBoundKeycloakClient.SYSTEM_CLIENT_NAME_
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.getClientRepresentationAttributes;
 
 import com.google.common.annotations.VisibleForTesting;
+import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.keycloak.*;
 import de.eshg.mutex.MutexService;
 import jakarta.annotation.PostConstruct;
@@ -20,7 +21,6 @@ import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.ListUtils;
 import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.resource.ClientsResource;
 import org.keycloak.representations.idm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,16 +78,7 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
   }
 
   protected void disableClients(Set<String> clientIds) {
-    ClientsResource clients = keycloakClient.getRealm().clients();
-    List<ClientRepresentation> realmClients = clients.findAll();
-
-    for (ClientRepresentation client : realmClients) {
-      if (clientIds.contains(client.getClientId()) && client.isEnabled()) {
-        log.info("Disabling default client '{}'", client.getClientId());
-        client.setEnabled(false);
-        clients.get(client.getId()).update(client);
-      }
-    }
+    keycloakClient.disableClients(clientIds);
   }
 
   abstract void provisionRealmInternal();
@@ -101,7 +92,7 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
     realmRepresentation.setDisplayNameHtml(realmProperties.displayName());
     realmRepresentation.setSslRequired(realmProperties.sslRequired() ? "external" : "none");
     realmRepresentation.setInternationalizationEnabled(true);
-    realmRepresentation.setSupportedLocales(new LinkedHashSet<>(List.of("de", "en")));
+    realmRepresentation.setSupportedLocales(SetUtils.orderedSet("de", "en"));
     if (this.keycloakProperties.provisionTestUsers()) {
       log.warn("Using lenient password policy");
       realmRepresentation.setPasswordPolicy(TEST_USER_PASSWORD_POLICY);

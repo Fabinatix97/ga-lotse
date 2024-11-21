@@ -19,6 +19,7 @@
     "@mui/material": "catalog:joy",
     "@tanstack/react-query": "catalog:common",
     "date-fns": "catalog:common",
+    "drauu": "0.4.1",
     "formik": "catalog:common",
     "i18next": "catalog:i18next",
     "i18next-resources-to-backend": "catalog:i18next",

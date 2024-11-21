@@ -10,18 +10,7 @@ import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
-import de.eshg.base.centralfile.api.person.ExternalAddPersonFileStateRequest;
-import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
-import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
-import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
-import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
-import de.eshg.base.centralfile.api.person.PersonDetailsDto;
-import de.eshg.base.centralfile.api.person.PutPersonRequest;
-import de.eshg.base.centralfile.api.person.SearchReferencePersonsResponse;
-import de.eshg.base.centralfile.api.person.SyncFileStateRequest;
-import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
+import de.eshg.base.centralfile.api.person.*;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -30,7 +19,6 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.PersonAddressDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PersonSyncDto;
 import jakarta.validation.Valid;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -122,14 +110,14 @@ public class PersonClient {
     GetPersonFileStatesResponse getPersonFileStatesResponse =
         personApi.getPersonFileStates(new GetPersonFileStatesRequest(List.of(fileStateId)));
 
-    AddPersonFileStateResponse personFileStateResponse =
+    GetPersonFileStateResponse personFileStateResponse =
         getPersonFileStatesResponse.personFileStates().getFirst();
     AddressDto billingAddress = personFileStateResponse.differentBillingAddress();
 
-    PutPersonRequest putPersonRequest = createPutPersonRequest(patient, billingAddress);
+    UpdatePersonRequest updatePersonRequest = createUpdatePersonRequest(patient, billingAddress);
 
     AddPersonFileStateResponse addPersonFileStateResponse =
-        personApi.updatePersonFileStateAndReference(fileStateId, putPersonRequest);
+        personApi.updatePersonFileStateAndReference(fileStateId, updatePersonRequest);
     return addPersonFileStateResponse.id();
   }
 
@@ -137,10 +125,10 @@ public class PersonClient {
 
     GetPersonFileStateResponse personFromCentralFile = personApi.getPersonFileState(fileStateId);
 
-    PutPersonRequest putPersonRequest = mapToPutPersonRequest(personFromCentralFile);
+    UpdatePersonRequest updatePersonRequest = mapToUpdatePersonRequest(personFromCentralFile);
 
     AddPersonFileStateResponse addPersonFileStateResponse =
-        personApi.updatePersonFileStateAndReference(fileStateId, putPersonRequest);
+        personApi.updatePersonFileStateAndReference(fileStateId, updatePersonRequest);
     return addPersonFileStateResponse.id();
   }
 
@@ -258,23 +246,23 @@ public class PersonClient {
 
     GetPersonFileStatesResponse response =
         personApi.getPersonFileStates(new GetPersonFileStatesRequest(ids));
-    List<AddPersonFileStateResponse> personFileStates = response.personFileStates();
+    List<GetPersonFileStateResponse> personFileStates = response.personFileStates();
     if (personFileStates.size() != ids.size()) {
       throw new IllegalStateException("Some patients could not be found in the central file.");
     }
 
     return personFileStates.stream()
-        .collect(Collectors.toMap(AddPersonFileStateResponse::id, PersonClient::mapToPatientDto));
+        .collect(Collectors.toMap(GetPersonFileStateResponse::id, PersonClient::mapToPatientDto));
   }
 
   public void markExternalPersonForDeletion(UUID fileStateId) {
-    DeleteFileStatesRequest deleteFileStatesRequest =
-        new DeleteFileStatesRequest(new LinkedHashSet<>(List.of(fileStateId)));
+    DeleteFileStatesRequest deleteFileStatesRequest = new DeleteFileStatesRequest(fileStateId);
     personApi.markPersonFileStateForDeletion(deleteFileStatesRequest);
   }
 
-  private PutPersonRequest createPutPersonRequest(PatientDto patient, AddressDto billingAddress) {
-    return new PutPersonRequest(
+  private UpdatePersonRequest createUpdatePersonRequest(
+      PatientDto patient, AddressDto billingAddress) {
+    return new UpdatePersonRequest(
         new PersonDetailsDto(
             StringUtils.trimToNull(patient.title()),
             patient.salutation(),
@@ -313,24 +301,25 @@ public class PersonClient {
             getPersonFileStateResponse.outdated()));
   }
 
-  private static PatientDto mapToPatientDto(AddPersonFileStateResponse addPersonFileStateResponse) {
+  private static PatientDto mapToPatientDto(GetPersonFileStateResponse getPersonFileStateResponse) {
     return new PatientDto(
-        addPersonFileStateResponse.salutation(),
-        addPersonFileStateResponse.firstName(),
-        addPersonFileStateResponse.lastName(),
-        addPersonFileStateResponse.dateOfBirth(),
-        addPersonFileStateResponse.emailAddresses(),
-        addPersonFileStateResponse.phoneNumbers(),
-        addPersonFileStateResponse.countryOfBirth(),
-        addPersonFileStateResponse.nameAtBirth(),
-        addPersonFileStateResponse.placeOfBirth(),
-        addPersonFileStateResponse.title(),
-        addPersonFileStateResponse.gender(),
-        mapAddressToPerson(addPersonFileStateResponse.contactAddress()));
+        getPersonFileStateResponse.salutation(),
+        getPersonFileStateResponse.firstName(),
+        getPersonFileStateResponse.lastName(),
+        getPersonFileStateResponse.dateOfBirth(),
+        getPersonFileStateResponse.emailAddresses(),
+        getPersonFileStateResponse.phoneNumbers(),
+        getPersonFileStateResponse.countryOfBirth(),
+        getPersonFileStateResponse.nameAtBirth(),
+        getPersonFileStateResponse.placeOfBirth(),
+        getPersonFileStateResponse.title(),
+        getPersonFileStateResponse.gender(),
+        mapAddressToPerson(getPersonFileStateResponse.contactAddress()));
   }
 
-  private PutPersonRequest mapToPutPersonRequest(GetPersonFileStateResponse personFromCentralFile) {
-    return new PutPersonRequest(mapToPersonDetailsDto(personFromCentralFile));
+  private UpdatePersonRequest mapToUpdatePersonRequest(
+      GetPersonFileStateResponse personFromCentralFile) {
+    return new UpdatePersonRequest(mapToPersonDetailsDto(personFromCentralFile));
   }
 
   private PersonDetailsDto mapToPersonDetailsDto(GetPersonFileStateResponse personFromCentralFile) {

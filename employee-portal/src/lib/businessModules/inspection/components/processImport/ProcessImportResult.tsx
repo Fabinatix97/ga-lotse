@@ -20,6 +20,12 @@ import {
 import { PropsWithChildren, useRef } from "react";
 
 import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutations/processImport";
+import {
+  formatDuplicatedCount,
+  formatFailedCount,
+  formatImportedCount,
+  formatTotalCount,
+} from "@/lib/businessModules/inspection/components/processImport/formatters";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -44,24 +50,24 @@ export function ProcessImportResult({
           </Typography>
           <InfoSheet>
             <InfoText iconComponent={InfoOutlinedIcon} iconColor="primary">
-              {statistics.total} Datensätze
+              {formatTotalCount(statistics.total)}
             </InfoText>
             <InfoText
               iconComponent={ErrorOutlineOutlinedIcon}
               iconColor="danger"
             >
-              {statistics.duplicated} Duplikate in der Datei
+              {formatDuplicatedCount(statistics.duplicated)}
             </InfoText>
             <InfoText
               iconComponent={ErrorOutlineOutlinedIcon}
               iconColor="danger"
             >
-              {statistics.failed} Fehlerhafte Datensätze
+              {formatFailedCount(statistics.failed)}
             </InfoText>
           </InfoSheet>
           <Section title="Vorgänge und Einrichtungen">
             <Alert variant="soft" color="primary">
-              {statistics.created} Vorgänge neu angelegt
+              {formatImportedCount(statistics.created)} neu angelegt
             </Alert>
           </Section>
           <Section title="Bitte laden Sie die Ergebnis-Datei herunter.">

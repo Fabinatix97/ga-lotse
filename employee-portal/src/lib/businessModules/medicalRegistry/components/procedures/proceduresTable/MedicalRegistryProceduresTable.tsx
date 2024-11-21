@@ -13,7 +13,7 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { useGetMedicalRegistryProcedureOverviewQuery } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
-import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/proceduresTable/MedicalRegistryProcedureChip";
+import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -90,7 +90,12 @@ function getProceduresColumns() {
       header: "Status",
       cell: ({ row }) => {
         const procedure = row.original;
-        return <MedicalRegistryProcedureChip procedure={procedure} />;
+        return (
+          <MedicalRegistryProcedureChip
+            status={procedure.status}
+            type={procedure.type}
+          />
+        );
       },
       enableSorting: false,
       meta: {

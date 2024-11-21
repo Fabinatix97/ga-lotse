@@ -1,0 +1,46 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1730898480654-1">
+    <ext:addPostgresEnumValues enumTypeName="aggregationresultpendingstate" valuesToAdd="ANALYSIS_CONDUCTION"/>
+    <renameColumn tableName="evaluation" oldColumnName="original_evaluation_id" newColumnName="original_analysis_id"/>
+
+    <dropIndex tableName="evaluation" indexName="idx_evaluation_aggregation_result_id"/>
+    <dropUniqueConstraint  tableName="evaluation" constraintName="evaluation_external_id_key"/>
+    <dropUniqueConstraint  tableName="evaluation" constraintName="evaluation_chart_configuration_id_key"/>
+    <dropForeignKeyConstraint baseTableName="evaluation" constraintName="fk_evaluation_aggregation_result"/>
+    <dropForeignKeyConstraint baseTableName="evaluation" constraintName="fk_evaluation_chart_configuration"/>
+    <dropForeignKeyConstraint baseTableName="diagram" constraintName="fk_diagram_evaluation"/>
+    <dropPrimaryKey tableName="evaluation" constraintName="pk_evaluation"/>
+
+    <renameTable oldTableName="evaluation" newTableName="analysis"/>
+    <renameSequence oldSequenceName="evaluation_id_seq" newSequenceName="analysis_id_seq"/>
+
+    <addPrimaryKey tableName="analysis" columnNames="id" constraintName="pk_analysis"/>
+    <addUniqueConstraint columnNames="chart_configuration_id" constraintName="analysis_chart_configuration_id_key" tableName="analysis"/>
+    <addUniqueConstraint columnNames="external_id" constraintName="analysis_external_id_key" tableName="analysis"/>
+    <addForeignKeyConstraint baseColumnNames="aggregation_result_id" baseTableName="analysis" constraintName="fk_analysis_abstract_aggregation_result" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstract_aggregation_result" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="chart_configuration_id" baseTableName="analysis" constraintName="fk_analysis_chart_configuration" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="chart_configuration" validate="true"/>
+    <createIndex indexName="idx_analysis_aggregation_result_id" tableName="analysis">
+      <column name="aggregation_result_id"/>
+    </createIndex>
+
+    <dropIndex tableName="diagram" indexName="idx_diagram_evaluation_id"/>
+    <renameColumn tableName="diagram" oldColumnName="evaluation_id" newColumnName="analysis_id"/>
+    <createIndex indexName="idx_diagram_analysis_id" tableName="diagram">
+      <column name="analysis_id"/>
+    </createIndex>
+    <addForeignKeyConstraint baseColumnNames="analysis_id" baseTableName="diagram" constraintName="fk_diagram_analysis" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="analysis" validate="true"/>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="1730898480654-2">
+    <update tableName="abstract_aggregation_result">
+      <column name="pending_state" value="ANALYSIS_CONDUCTION"/>
+      <where>pending_state = 'EVALUATION_CONDUCTION'</where>
+    </update>
+    <ext:modifyPostgresEnumType name="aggregationresultpendingstate" newValues="ANALYSIS_CONDUCTION, COPY_ONGOING, DATA_AGGREGATION, DIAGRAM_CREATION, MIN_MAX_DETERMINATION, TABLE_ROWS_REMOVAL"/>
+  </changeSet>
+</databaseChangeLog>

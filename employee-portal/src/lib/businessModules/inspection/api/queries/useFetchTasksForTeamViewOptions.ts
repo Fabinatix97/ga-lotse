@@ -5,7 +5,7 @@
 
 import { useTaskApi } from "@/lib/businessModules/inspection/api/clients";
 import { progressEntryApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import {
   TeamviewFilters,
   useFetchTasksForTeamViewTemplateOptions,
@@ -14,11 +14,10 @@ import {
 export function useFetchTasksForTeamViewOptions(
   teamviewFilters: TeamviewFilters,
 ) {
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useFetchTasksForTeamViewTemplateOptions({
     useTaskApi,
     queryKeyFactory: progressEntryApiQueryKey,
     teamviewFilters,
-    getInitOverrides: getPreCacheForOfflineModeHeaders,
+    getInitOverrides: getHeadersForOfflineCaching,
   });
 }

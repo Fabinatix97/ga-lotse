@@ -8,7 +8,7 @@ import { registerRoute } from "workbox-routing";
 import { NetworkFirst } from "workbox-strategies";
 
 import {
-  GetInspectionPendingFacilityFromOfflineInspectionsResponse,
+  createGetInspectionPendingFacilityFromOfflineInspectionsResponse,
   isGetInspectionPendingFacilityFromOfflineInspectionsMessage,
 } from "@/serviceWorker/common/GetInspectionPendingFacilityFromOfflineInspections";
 import {
@@ -16,6 +16,7 @@ import {
   PAGES_CACHE_NAME,
   PAGES_RSC_CACHE_NAME,
 } from "@/serviceWorker/common/common";
+import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
 import {
   UNREGISTER,
   createUnregisterBroadCastChannelEndpoint,
@@ -30,6 +31,7 @@ import {
   API_INSPECTION_CHECKLISTS_FILE_UPLOAD_PATH_PATTERN,
   API_INSPECTION_INSPECTIONS_FINALIZE_PATH_PATTERN,
   API_INSPECTION_PACKLISTS_PACKLIST_PATH_PATTERN,
+  CACHE_RETENTION_IN_SECONDS,
   NETWORK_TIMEOUT_IN_SECONDS,
 } from "@/serviceWorker/sw/config";
 import { updateChecklistCache } from "@/serviceWorker/sw/inspection/controller/updateChecklist";
@@ -72,6 +74,7 @@ registerRoute(
       new CacheableResponsePlugin(),
       new ExpirationPlugin({
         maxEntries: 10_000,
+        maxAgeSeconds: CACHE_RETENTION_IN_SECONDS,
       }),
       new RedirectOnErrorPlugin("/~offline"),
     ],
@@ -92,6 +95,7 @@ registerRoute(
       new CacheableResponsePlugin(),
       new ExpirationPlugin({
         maxEntries: 10_000,
+        maxAgeSeconds: CACHE_RETENTION_IN_SECONDS,
       }),
     ],
   }),
@@ -107,6 +111,7 @@ registerRoute(
       new CacheableResponsePlugin(),
       new ExpirationPlugin({
         maxEntries: 10_000,
+        maxAgeSeconds: CACHE_RETENTION_IN_SECONDS,
       }),
       new EncryptPlugin(),
     ],
@@ -178,20 +183,22 @@ registerRoute(
 getGlobalSelf().addEventListener("message", (event: ExtendableMessageEvent) => {
   if (event.origin !== self.origin) return;
   if (isGetInspectionPendingFacilityFromOfflineInspectionsMessage(event.data)) {
-    getFacilities(event.data.inspectionIds).then(
-      (facilities) => {
-        const response: GetInspectionPendingFacilityFromOfflineInspectionsResponse =
-          {
-            type: "getInspectionPendingFacilityFromOfflineInspections",
-            facilities,
-          };
+    precachedInspectionIds
+      .getSuccessful()
+      .then((inspectionIds) => getFacilities(inspectionIds))
+      .then(
+        (facilities) => {
+          const response =
+            createGetInspectionPendingFacilityFromOfflineInspectionsResponse(
+              facilities,
+            );
 
-        event.ports[0]?.postMessage(response);
-      },
-      (reason) => {
-        throw reason;
-      },
-    );
+          event.ports[0]?.postMessage(response);
+        },
+        (reason) => {
+          throw reason;
+        },
+      );
   }
 });
 

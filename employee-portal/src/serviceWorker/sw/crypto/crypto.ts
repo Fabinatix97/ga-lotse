@@ -5,6 +5,7 @@
 
 import { validatePassword } from "@/serviceWorker/common/validatePassword";
 import { getKey } from "@/serviceWorker/sw/crypto/getKey";
+import { createSalt, restoreSalt } from "@/serviceWorker/sw/crypto/saltStore";
 
 /** for AES-GCM an IV length of 96bits is recommended, see https://developer.mozilla.org/en-US/docs/Web/API/AesGcmParams#iv */
 const IV_LENGTH = 96 / 8;
@@ -46,7 +47,17 @@ export async function decryptWithKey(
   );
 }
 
-export async function deriveKey(password: string, salt: ArrayBufferLike) {
+export async function createNewKeyFromPassword(password: string) {
+  const salt = await createSalt();
+  return deriveKey(password, salt);
+}
+
+export async function recreateExistingKeyFromPassword(password: string) {
+  const salt = await restoreSalt();
+  return deriveKey(password, salt);
+}
+
+async function deriveKey(password: string, salt: ArrayBufferLike) {
   if (validatePassword(password) !== undefined) {
     throw new Error("Password to weak");
   }

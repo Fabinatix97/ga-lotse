@@ -50,13 +50,9 @@ public class FacilityController implements FacilityApi {
   @Override
   @Transactional
   public AddFacilityFileStateResponse addFacilityFileState(AddFacilityFileStateRequest request) {
-    FacilityMapper.validateAddFacilityFileStateRequest(request);
-
     Facility savedFacilityFileState =
         facilityService.addFacilityFileState(
-            FacilityMapper.mapFacilityToDm(request),
-            request.referenceFacilityId(),
-            FacilityMapper.isUsePartialMatch(request));
+            FacilityMapper.mapFacilityToDm(request), request.referenceFacilityId());
     return FacilityMapper.mapFacilityFileStateToApi(savedFacilityFileState);
   }
 
@@ -131,6 +127,17 @@ public class FacilityController implements FacilityApi {
 
   @Override
   @Transactional
+  public AddFacilityFileStatesResponse addFacilityFileStates(AddFacilityFileStatesRequest request) {
+    List<Facility> facilitiesToAdd =
+        request.facilities().stream().map(FacilityMapper::mapFacilityToDm).toList();
+
+    List<UUID> facilityFileStateIds = facilityService.addFacilityFileStates(facilitiesToAdd);
+
+    return new AddFacilityFileStatesResponse(facilityFileStateIds);
+  }
+
+  @Override
+  @Transactional
   public void markFacilityFileStateForDeletion(DeleteFileStatesRequest list) {
     facilityService.markAllForDeletionAt(
         list.fileStateIds(), Instant.now(clock).plus(Duration.ofDays(365)));
@@ -194,6 +201,7 @@ public class FacilityController implements FacilityApi {
   }
 
   @Override
+  @Transactional
   public AddFacilityFileStateResponse updateReferenceFacility(
       UUID referenceDataId, UpdateReferenceFacilityRequest request) {
     featureToggle.assertNewFeatureIsEnabled(BaseFeature.VERIFICATION_OF_EXTERNAL_DATA);

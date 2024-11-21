@@ -11,4 +11,5 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record AddPersonFileStatesRequest(
-    @NotNull @Valid @Size(min = 1, max = 10000) List<@NotNull AddPersonFileStateRequest> persons) {}
+    @NotNull @Valid @Size(min = 1, max = 10_000)
+        List<@NotNull AddPersonFileStateRequest> persons) {}

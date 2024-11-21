@@ -51,7 +51,7 @@ export function InfoModal({
           justifyContent={"space-between"}
         >
           {isDefined(modalTitle) && (
-            <DialogTitle color={color} level={"h4"} component={"h4"}>
+            <DialogTitle color={color} level="h3" component="h1">
               {modalTitle}
             </DialogTitle>
           )}

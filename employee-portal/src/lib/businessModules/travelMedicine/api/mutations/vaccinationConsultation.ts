@@ -33,7 +33,7 @@ export function useSaveVaccinationConsultation() {
     mutationFn: (request: ApiPostVaccinationConsultationRequest) =>
       vaccinationConsultationApi.postVaccinationConsultation(request),
     onSuccess: () => {
-      snackbar.confirmation("Vorgang erfolgreich angelegt.");
+      snackbar.confirmation("Der Vorgang wurde angelegt.");
     },
   });
 }
@@ -48,7 +48,7 @@ export function useUpdateVaccination() {
         .patchVaccinationRaw(request)
         .then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation("Impfung wurde erfolgreich durchgeführt");
+      snackbar.confirmation("Die Impfung wurde durchgeführt.");
     },
   });
 }
@@ -63,7 +63,7 @@ export function useAddProcedureStep() {
         .addProcedureStepRaw(request)
         .then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation("Impftermin wurde erstellt");
+      snackbar.confirmation("Der Impftermin wurde erstellt.");
     },
   });
 }
@@ -83,7 +83,7 @@ export function useUpdateVaccinationConsultationTravelDetails() {
         request.apiRequest,
       ),
     onSuccess: () => {
-      snackbar.confirmation("Reisedaten erfolgreich bearbeitet");
+      snackbar.confirmation("Die Reisedaten wurden gespeichert.");
     },
   });
 }
@@ -99,7 +99,7 @@ export function useUpdateOtherService() {
         .then(unwrapRawResponse),
 
     onSuccess: () => {
-      snackbar.confirmation("Leistung wurde erfolgreich durchgeführt");
+      snackbar.confirmation("Die Leistung wurde durchgeführt.");
     },
   });
 }
@@ -116,8 +116,14 @@ export function useUpdatePatient() {
     mutationFn: (request: UseUpdatePatientRequest) =>
       vaccinationConsultationApi
         .updatePatient(request.procedureId, request.apiRequest)
-        .then(() => snackbar.confirmation("Patient erfolgreich bearbeitet."))
-        .catch(() => snackbar.error("Patient konnte nicht bearbeitet werden.")),
+        .then(() =>
+          snackbar.confirmation("Die Patientendaten wurden gespeichert."),
+        )
+        .catch(() =>
+          snackbar.error(
+            "Die Patientendaten konnten nicht gespeichert werden.",
+          ),
+        ),
   });
 }
 
@@ -136,7 +142,7 @@ export function useUpdateTravelDetails() {
         request.apiRequest,
       ),
     onSuccess: () => {
-      snackbar.confirmation("Reisedaten erfolgreich bearbeitet");
+      snackbar.confirmation("Die Reisedaten wurden gespeichert.");
     },
   });
 }
@@ -150,7 +156,7 @@ export function usePostServices() {
       vaccinationConsultationApi
         .postServicesRaw(request)
         .then(unwrapRawResponse),
-    onSuccess: () => snackbar.confirmation("Services wurden hinzugefügt"),
+    onSuccess: () => snackbar.confirmation("Die Services wurden hinzugefügt."),
   });
 }
 
@@ -168,7 +174,7 @@ export function useDeleteService() {
         request.procedureId,
         request.serviceId,
       ),
-    onSuccess: () => snackbar.confirmation("Service wurde entfernt"),
+    onSuccess: () => snackbar.confirmation("Der Service wurde entfernt."),
   });
 }
 
@@ -182,7 +188,7 @@ export function useAssignStepToService() {
         .assignStepToServiceRaw(request)
         .then(unwrapRawResponse),
     onSuccess: () =>
-      snackbar.confirmation("Leistung erfolgreich zu Termin hinzugefügt"),
+      snackbar.confirmation("Die Leistung wurde zu dem Termin hinzugefügt."),
   });
 }
 
@@ -201,9 +207,11 @@ export function useUnassignStepToService() {
         request.serviceId,
       ),
     onSuccess: () =>
-      snackbar.confirmation("Leistung erfolgreich aus Termin entfernt"),
+      snackbar.confirmation("Die Leistung wurde aus dem Termin entfernt."),
     onError: () =>
-      snackbar.error("Leistung konnte nicht aus Termin entfernt werden"),
+      snackbar.error(
+        "Die Leistung konnte nicht aus dem Termin entfernt werden.",
+      ),
   });
 }
 
@@ -221,7 +229,7 @@ export function usePostCertificate() {
         request.procedureId,
         request.apiPostPutCertificateRequest,
       ),
-    onSuccess: () => snackbar.confirmation("Bescheinigung erzeugt"),
+    onSuccess: () => snackbar.confirmation("Die Bescheinigung wurde erzeugt."),
     onError: () =>
       snackbar.error("Die Bescheinigung konnte nicht erzeugt werden."),
   });
@@ -241,9 +249,10 @@ export function usePatchStatus() {
         request.procedureId,
         request.apiProcedureStatus,
       ),
-    onSuccess: () => snackbar.confirmation("Vorgangsstatus geändert"),
+    onSuccess: () =>
+      snackbar.confirmation("Der Vorgangsstatus wurde geändert."),
     onError: () =>
-      snackbar.error("Der Vorgangsstatus konnte nicht verändert werden"),
+      snackbar.error("Der Vorgangsstatus konnte nicht geändert werden."),
   });
 }
 
@@ -257,6 +266,26 @@ export function useCreateInformationStatements() {
         .then(unwrapRawResponse),
     onSuccess: () => {
       snackbar.confirmation("Die Aufklärungsbögen wurden angelegt.");
+    },
+  });
+}
+
+export interface UseResetInformationStatementRequest {
+  procedureId: string;
+  informationStatementId: string;
+}
+
+export function useResetInformationStatement() {
+  const vaccinationConsultationApi = useVaccinationConsultationApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (request: UseResetInformationStatementRequest) =>
+      vaccinationConsultationApi.resetInformationStatement(
+        request.procedureId,
+        request.informationStatementId,
+      ),
+    onSuccess: () => {
+      snackbar.confirmation("Der Aufklärungsbogen wurde zurückgesetzt.");
     },
   });
 }
@@ -298,7 +327,7 @@ export function useAboardDraftVaccinationConsultation() {
     mutationFn: (request: AbortDraftVaccinationConsultationRequest) =>
       vaccinationConsultationApi.abortDraftVaccinationConsultationRaw(request),
     onSuccess: () => {
-      snackbar.confirmation("Vorgang erfolgreich abgebrochen.");
+      snackbar.confirmation("Der Vorgang wurde abgebrochen.");
     },
   });
 }
@@ -311,7 +340,7 @@ export function useAcceptDraftVaccinationConsultation() {
     mutationFn: (request: AcceptDraftVaccinationConsultationRequest) =>
       vaccinationConsultationApi.acceptDraftVaccinationConsultationRaw(request),
     onSuccess: () => {
-      snackbar.confirmation("Vorgang erfolgreich gestartet.");
+      snackbar.confirmation("Der Vorgang wurde gestartet.");
     },
   });
 }

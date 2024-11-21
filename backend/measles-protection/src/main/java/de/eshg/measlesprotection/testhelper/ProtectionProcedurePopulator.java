@@ -30,11 +30,12 @@ import de.eshg.measlesprotection.api.draft.OpenProcedureRequest;
 import de.eshg.measlesprotection.api.draft.OpenProcedureResponse;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedureRepository;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
@@ -42,11 +43,8 @@ import java.util.UUID;
 import net.datafaker.Faker;
 import net.datafaker.providers.base.Address;
 import net.datafaker.providers.base.Name;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureResponse> {
 
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
@@ -54,15 +52,15 @@ public class ProtectionProcedurePopulator extends BasePopulator<OpenProcedureRes
   private final MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository;
 
   public ProtectionProcedurePopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       DraftProtectionProcedureController draftProtectionProcedureController,
-      MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
-      EnvironmentConfig environmentConfig) {
+      MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository) {
     super(
+        properties,
         clock,
-        environment,
         getClassNameAsPropertyKey(MeaslesProtectionProcedure.class),
         environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;

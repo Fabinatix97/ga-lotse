@@ -26,6 +26,7 @@ import {
   parseOptionalDate,
   parseOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { isDefined } from "remeda";
 
@@ -72,7 +73,7 @@ export default function SchoolEntryAnamnesisPage(
         getCountryCodesQuery(countryCodesApi),
       ],
     });
-  const updateAnamnesis = useUpdateAnamnesis();
+  const updateAnamnesis = useUpdateAnamnesis(procedureId);
 
   async function handleSubmit(values: AnamnesisFormValues) {
     await updateAnamnesis.mutateAsync(
@@ -382,7 +383,8 @@ function mapAdditionalChildInfo(values: AdditionalChildInfoValues) {
     responsiblePhysician: mapOptionalValue(values.responsiblePhysician),
     numberOfSiblings: mapOptionalValue(values.numberOfSiblings),
     siblingsBirthYears:
-      values.siblingsBirthYears.length === 0
+      values.siblingsBirthYears.length === 0 ||
+      isEmptyString(values.numberOfSiblings)
         ? undefined
         : values.siblingsBirthYears,
   };

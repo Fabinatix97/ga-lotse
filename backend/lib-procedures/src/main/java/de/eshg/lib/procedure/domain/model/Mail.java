@@ -84,4 +84,26 @@ public class Mail extends File {
     super.updateDeletable(deletable);
     this.attachments.forEach(file -> file.updateDeletable(deletable));
   }
+
+  @Override
+  public Mail copy() {
+    if (getAttachedToMail() != null) {
+      return (Mail) copyWithMail();
+    }
+    Mail copy = new Mail();
+    copy(copy);
+    copy.metaData = metaData.copy();
+    copy.metaData.setMail(copy);
+    copy.attachments.addAll(
+        attachments.stream()
+            .map(
+                attachment -> {
+                  File attachmentCopy = attachment.copy();
+                  attachmentCopy.setAttachedToMail(copy);
+                  return attachmentCopy;
+                })
+            .toList());
+    copy.removedInvalidAttachments = removedInvalidAttachments;
+    return copy;
+  }
 }

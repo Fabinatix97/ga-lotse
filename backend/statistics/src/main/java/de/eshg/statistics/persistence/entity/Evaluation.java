@@ -5,121 +5,56 @@
 
 package de.eshg.statistics.persistence.entity;
 
-import static de.eshg.lib.common.SensitivityLevel.PROTECTED;
 import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
-import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
+import de.eshg.statistics.persistence.entity.report.ReportSeries;
+import de.eshg.statistics.persistence.entity.report.ReportSeries_;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-@Table(indexes = @Index(columnList = "aggregation_result_id"))
-public class Evaluation extends BaseEntityWithExternalId {
-  @DataSensitivity(PUBLIC)
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "aggregation_result_id")
-  private AbstractAggregationResult aggregationResult;
-
+@DiscriminatorValue("EVALUATION")
+public class Evaluation extends AbstractAggregationResult {
   @DataSensitivity(PUBLIC)
   @Column(nullable = false)
-  private String name;
-
-  @DataSensitivity(PROTECTED)
-  @CreatedDate
-  @Column(nullable = false)
-  private Instant createdAt;
-
-  @DataSensitivity(PUBLIC)
-  @OneToOne(
-      cascade = CascadeType.PERSIST,
-      fetch = FetchType.LAZY,
-      optional = false,
-      orphanRemoval = true)
-  private ChartConfiguration chartConfiguration;
+  private boolean anonymized;
 
   @DataSensitivity(PUBLIC)
   @OneToMany(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,
-      mappedBy = Diagram_.EVALUATION,
+      mappedBy = ReportSeries_.EVALUATION,
       orphanRemoval = true)
   @OrderBy
-  private final List<Diagram> diagrams = new ArrayList<>();
+  private final List<ReportSeries> reportSeriesList = new ArrayList<>();
 
-  @DataSensitivity(PUBLIC)
-  @Column
-  private UUID originalEvaluationId;
-
-  public AbstractAggregationResult getAggregationResult() {
-    return aggregationResult;
+  public boolean isAnonymized() {
+    return anonymized;
   }
 
-  void setAggregationResult(AbstractAggregationResult aggregationResult) {
-    this.aggregationResult = aggregationResult;
+  public void setAnonymized(boolean anonymized) {
+    this.anonymized = anonymized;
   }
 
-  public String getName() {
-    return name;
+  public void addReportSeries(ReportSeries reportSeries) {
+    reportSeries.setEvaluation(this);
+    reportSeriesList.add(reportSeries);
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void removeReportSeriesEntries(List<ReportSeries> reportSeriesList) {
+    reportSeriesList.forEach(reportSeries -> reportSeries.setEvaluation(null));
+    this.reportSeriesList.removeAll(reportSeriesList);
   }
 
-  public Instant getCreatedAt() {
-    return createdAt;
-  }
-
-  public ChartConfiguration getChartConfiguration() {
-    return chartConfiguration;
-  }
-
-  public void setChartConfiguration(ChartConfiguration chartConfiguration) {
-    this.chartConfiguration = chartConfiguration;
-  }
-
-  public void addDiagram(Diagram diagram) {
-    diagram.setEvaluation(this);
-    diagrams.add(diagram);
-  }
-
-  public void addDiagrams(Collection<Diagram> diagrams) {
-    diagrams.forEach(this::addDiagram);
-  }
-
-  public List<Diagram> getDiagrams() {
-    return diagrams;
-  }
-
-  public void removeDiagrams() {
-    this.diagrams.forEach(diagram -> diagram.setEvaluation(null));
-    this.diagrams.clear();
-  }
-
-  public UUID getOriginalEvaluationId() {
-    return originalEvaluationId;
-  }
-
-  public void setOriginalEvaluationId(UUID originalEvaluationId) {
-    this.originalEvaluationId = originalEvaluationId;
+  public List<ReportSeries> getReportSeriesList() {
+    return reportSeriesList;
   }
 }

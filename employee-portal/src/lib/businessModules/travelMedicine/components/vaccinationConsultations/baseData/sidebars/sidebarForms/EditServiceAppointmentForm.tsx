@@ -9,7 +9,11 @@ import {
   ApiProcedureStepService,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
+import {
+  formatDate,
+  formatDateTime,
+} from "@eshg/lib-portal/formatters/dateTime";
+import { Chip, List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 import { Ref } from "react";
 
@@ -31,6 +35,8 @@ export interface EditServiceAppointmentFormValues {
   procedureStepId: string;
   appointmentType?: ApiAppointmentType;
   appointmentTypeStandardDuration: number;
+  appointmentDate: Date | undefined;
+  earliestDate: Date | undefined;
 }
 
 interface EditServiceAppointmentFormProps {
@@ -44,6 +50,55 @@ interface EditServiceAppointmentFormProps {
   onSubmit: (values: EditServiceAppointmentFormValues) => Promise<void>;
   title: string;
   submitLabel: string;
+}
+
+function formatAppointmentInfo(
+  earliestDate: Date | undefined,
+  appointmentDate: Date,
+  bookingType: ApiAppointmentBookingType | undefined,
+) {
+  return (
+    <Stack gap={2} data-testid="booking-status">
+      {earliestDate && (
+        <p style={{ margin: 0 }}>
+          Selbstbuchung ab: {formatDate(earliestDate)}
+        </p>
+      )}
+      {bookingType === "SELF_BOOKING" ? (
+        <p style={{ margin: 0 }}>{formatBookingType(bookingType)}</p>
+      ) : (
+        <p style={{ margin: 0 }}>
+          {`${formatDateTime(appointmentDate)} Uhr `}
+          {formatBookingType(bookingType)}
+        </p>
+      )}
+    </Stack>
+  );
+}
+
+function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
+  if (
+    bookingType === ApiAppointmentBookingType.UserDefined ||
+    bookingType === ApiAppointmentBookingType.AppointmentBlock
+  ) {
+    return (
+      <Chip color={"primary"} size="md">
+        Gebucht
+      </Chip>
+    );
+  } else if (bookingType === ApiAppointmentBookingType.Cancelled) {
+    return (
+      <Chip color={"danger"} size="md">
+        Abgesagt
+      </Chip>
+    );
+  } else {
+    return (
+      <Chip color={"neutral"} size="md">
+        Nicht gebucht
+      </Chip>
+    );
+  }
 }
 
 export function EditServiceAppointmentForm(
@@ -122,6 +177,14 @@ export function EditServiceAppointmentForm(
                     sx={{ flexGrow: 1 }}
                   />
                 </Sheet>
+              )}
+              <Typography level="body-md" sx={{ fontWeight: "bold", mt: 2 }}>
+                Termin
+              </Typography>
+              {formatAppointmentInfo(
+                props.initialValues.earliestDate,
+                props.initialValues.appointmentDate!,
+                props.initialValues.bookingType,
               )}
               <AppointmentRadioGroup
                 type={values.appointmentType}

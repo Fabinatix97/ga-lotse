@@ -6,6 +6,7 @@
 package de.eshg.base.keycloak;
 
 import static de.eshg.base.keycloak.EmployeeKeycloakProvisioning.BEAN_NAME;
+import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ACCOUNT_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ACCOUNT_CONSOLE_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.ADMIN_CLI_CLIENT_ID;
 import static de.eshg.base.keycloak.RealmBoundKeycloakClient.BROKER_CLIENT_ID;
@@ -123,6 +124,7 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     disableClients(
         Set.of(
             ACCOUNT_CONSOLE_CLIENT_ID,
+            ACCOUNT_CLIENT_ID,
             ADMIN_CLI_CLIENT_ID,
             BROKER_CLIENT_ID,
             SECURITY_ADMIN_CONSOLE_CLIENT_ID,
@@ -189,14 +191,19 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     clientRepresentation.setWebOrigins(List.of("+"));
     clientRepresentation.setSecret(synapseClientSecret);
     clientRepresentation.setPublicClient(false);
-    // default attributes, set for diffing
     clientRepresentation.setAttributes(
         Map.of(
+            "backchannel.logout.url",
+                UriComponentsBuilder.fromUri(synapseUrl)
+                    .replacePath("_synapse/client/oidc/backchannel_logout")
+                    .toUriString(),
             "backchannel.logout.revoke.offline.tokens", FALSE,
             "backchannel.logout.session.required", TRUE));
-    UriComponentsBuilder redirectUriBuilder = UriComponentsBuilder.fromUri(synapseUrl);
     clientRepresentation.setRedirectUris(
-        List.of(redirectUriBuilder.replacePath("_synapse/client/oidc/callback").toUriString()));
+        List.of(
+            UriComponentsBuilder.fromUri(synapseUrl)
+                .replacePath("_synapse/client/oidc/callback")
+                .toUriString()));
 
     return clientRepresentation;
   }

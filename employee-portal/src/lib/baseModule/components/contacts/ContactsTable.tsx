@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ApiBaseFeature,
-  ApiContactType,
-  ApiUserRole,
-} from "@eshg/employee-portal-api/base";
+import { ApiContactType, ApiUserRole } from "@eshg/employee-portal-api/base";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { buildEnumOptions } from "@eshg/lib-portal/helpers/form";
 import AddIcon from "@mui/icons-material/Add";
@@ -28,7 +24,6 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { ContactsTableTitle } from "@/lib/baseModule/components/contacts/ContactsTableTitle";
 import { useMergeInstitutionContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergeInstitutionContactSidebar";
 import { useMergePersonContactSidebar } from "@/lib/baseModule/components/contacts/modals/MergePersonContactSidebar";
@@ -103,9 +98,6 @@ export function ContactsTable({
   onImport,
   loading,
 }: ContactsTableProps) {
-  const isContactMergeEnabled = useIsNewFeatureEnabled(
-    ApiBaseFeature.ContactMerge,
-  );
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseContactsWrite);
   const snackbar = useSnackbar();
 
@@ -200,8 +192,7 @@ export function ContactsTable({
         <TableSheet
           loading={loading}
           title={
-            hasWritePerms &&
-            isContactMergeEnabled && (
+            hasWritePerms && (
               <ContactsTableTitle
                 rowSelection={rowSelection}
                 onMerge={handleMerge}
@@ -226,9 +217,7 @@ export function ContactsTable({
               route: (row) => routes.contacts.details(row.original.id),
               focusColumnAccessorKey: "name",
             }}
-            rowSelectionProps={
-              isContactMergeEnabled ? rowSelectionProps : undefined
-            }
+            rowSelectionProps={rowSelectionProps}
           />
         </TableSheet>
       </TablePage>

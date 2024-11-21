@@ -34,4 +34,16 @@ public class Image extends File {
     this.metaData = metaData;
     metaData.setImage(this);
   }
+
+  @Override
+  public Image copy() {
+    if (getAttachedToMail() != null) {
+      return (Image) copyWithMail();
+    }
+    Image copy = new Image();
+    copy(copy);
+    copy.metaData = metaData.copy();
+    copy.metaData.setImage(copy);
+    return copy;
+  }
 }

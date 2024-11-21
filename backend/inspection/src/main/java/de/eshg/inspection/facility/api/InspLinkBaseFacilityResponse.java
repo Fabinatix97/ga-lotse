@@ -12,4 +12,6 @@ import java.util.UUID;
 
 @Schema(name = "InspLinkBaseFacilityResponse")
 public record InspLinkBaseFacilityResponse(
-    @NotNull UUID inspectionId, @NotNull ProcedureStatusDto procedureStatus) {}
+    @NotNull UUID inspectionId,
+    @NotNull ProcedureStatusDto procedureStatus,
+    @NotNull boolean isNew) {}

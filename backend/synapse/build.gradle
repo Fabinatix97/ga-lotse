@@ -1,0 +1,52 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+plugins {
+    id "eshg.java-lib"
+    id "com.bmuschko.docker-remote-api"
+    id "docker-compose"
+    id "eshg.image-push-sign"
+}
+
+dependencies {
+}
+
+def dockerBuildContext = file(layout.buildDirectory.dir('docker'))
+
+tasks.register('copyResourcesToBuildContext', Copy) {
+    from layout.projectDirectory
+    include('Dockerfile')
+    include('resources/**')
+    into dockerBuildContext
+}
+
+tasks.register('buildDockerImage', DockerBuildImage) {
+    dependsOn 'copyResourcesToBuildContext'
+    inputDir.set(dockerBuildContext)
+    dockerFile.set(inputDir.file("Dockerfile"))
+
+    if (project.hasProperty("tagName")) {
+        images.add(getImageNameWithTag())
+    } else {
+        images.add(getImageNameWithLatestTag())
+    }
+}
+
+tasks.named('composeBuild') {
+    dependsOn 'buildDockerImage'
+}
+
+// synapse should only start when Keycloak is up and provisioned by base
+tasks.named("composeUp").configure {
+    def baseUp = project(":base").tasks.named("composeUp")
+    dependsOn baseUp
+    mustRunAfter baseUp
+}
+
+dockerCompose {
+    projectName = rootProject.name
+    startedServices = [
+        'synapse',
+        'synapse-db',
+    ]
+}
+

@@ -5,6 +5,7 @@
 
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
+import { Box } from "@mui/joy";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 
@@ -104,20 +105,18 @@ export default function RootLayout({
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body
-        style={{ backgroundColor: "var(--joy-palette-neutral-100, #F0F4F8)" }}
-      >
-        <noscript>
-          Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
-        </noscript>
-        <NonceProvider initialNonce={nonce}>
-          <ThemeProvider>
+      <NonceProvider initialNonce={nonce}>
+        <ThemeProvider>
+          <Box component="body" sx={{ backgroundColor: "neutral.100" }}>
+            <noscript>
+              Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.
+            </noscript>
             <ApiProvider>
               <MainLayoutWithProviders>{children}</MainLayoutWithProviders>
             </ApiProvider>
-          </ThemeProvider>
-        </NonceProvider>
-      </body>
+          </Box>
+        </ThemeProvider>
+      </NonceProvider>
     </html>
   );
 }

@@ -9,13 +9,17 @@ import {
   ApiPersonDetails,
   instanceOfApiGetReferencePersonResponse,
 } from "@eshg/employee-portal-api/base";
+import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import {
   dropBlankStrings,
   mapOptionalValue,
 } from "@eshg/lib-portal/helpers/form";
 import { isDefined } from "remeda";
 
-import { mapBaseAddressToApi } from "@/lib/shared/components/form/address/helpers";
+import {
+  mapApiAddressToForm,
+  mapBaseAddressToApi,
+} from "@/lib/shared/components/form/address/helpers";
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 
 export function normalizeListInputs(input: string[] | undefined): string[] {
@@ -91,4 +95,28 @@ export function mapToPersonUpdateRequest(
     ...mapToPersonAddRequest(person),
     version,
   } satisfies ApiPersonDetails & { version: number };
+}
+
+export function mapReferencePersonToForm(
+  person: Omit<ApiGetReferencePersonResponse, "id">,
+): DefaultPersonFormValues {
+  return {
+    firstName: person.firstName,
+    lastName: person.lastName,
+    dateOfBirth: toDateString(person.dateOfBirth),
+    gender: person.gender ?? "",
+    salutation: person.salutation ?? "",
+    title: person.title ?? "",
+    nameAtBirth: person.nameAtBirth ?? "",
+    placeOfBirth: person.placeOfBirth ?? "",
+    countryOfBirth: person.countryOfBirth ?? "",
+    emailAddresses: person.emailAddresses,
+    phoneNumbers: person.phoneNumbers,
+    contactAddress: isDefined(person.contactAddress)
+      ? mapApiAddressToForm(person.contactAddress)
+      : undefined,
+    differentBillingAddress: isDefined(person.differentBillingAddress)
+      ? mapApiAddressToForm(person.differentBillingAddress)
+      : undefined,
+  };
 }

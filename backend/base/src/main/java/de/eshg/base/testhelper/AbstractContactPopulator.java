@@ -19,13 +19,13 @@ import de.eshg.base.contact.persistence.repository.ContactRepository;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.PopulationProperties;
 import java.time.Clock;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
 
 public abstract class AbstractContactPopulator extends BasePopulator<ContactDto> {
 
@@ -33,12 +33,12 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
   protected final ContactRepository contactRepository;
 
   protected AbstractContactPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       ContactController contactController,
-      ContactRepository contactRepository,
-      EnvironmentConfig environmentConfig) {
-    super(clock, environment, getClassNameAsPropertyKey(Contact.class), environmentConfig);
+      ContactRepository contactRepository) {
+    super(properties, clock, getClassNameAsPropertyKey(Contact.class), environmentConfig);
     this.contactController = contactController;
     this.contactRepository = contactRepository;
   }

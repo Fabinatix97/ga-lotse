@@ -4,7 +4,7 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Sheet, Stack, Typography, TypographyProps } from "@mui/joy";
+import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 
@@ -28,18 +28,14 @@ export function FormSheet(props: FormSheetProps) {
   );
 }
 
-interface FormSheetTitleProps
-  extends Pick<TypographyProps, "component">,
-    RequiresChildren {
+interface FormSheetTitleProps extends RequiresChildren {
   requiredTitle?: string;
 }
 
 export function FormSheetTitle(props: FormSheetTitleProps) {
   return (
     <Stack>
-      <Typography level="h3" component={props.component ?? "h3"}>
-        {props.children}
-      </Typography>
+      <Typography level="h2">{props.children}</Typography>
       {props.requiredTitle && (
         <Typography
           level="body-xs"

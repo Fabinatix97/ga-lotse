@@ -41,6 +41,13 @@ export function getChecklistDefinitionVersionQuery(
   });
 }
 
+export function useGetChecklistDefinitionVersion(versionId: string) {
+  const checklistDefinitionApi = useChecklistDefinitionApi();
+  return useSuspenseQuery(
+    getChecklistDefinitionVersionQuery(checklistDefinitionApi, versionId),
+  );
+}
+
 export function useGetChecklistDefinitionVersions(defId: string) {
   const checklistDefinitionApi = useChecklistDefinitionApi();
   return useSuspenseQuery({
@@ -71,6 +78,22 @@ export function getChecklistDefinitionFromCentralRepoQuery(
         isCoreChecklist,
       ),
   });
+}
+
+export function useGetChecklistDefinitionFromCentralRepo(
+  repositoryID: number,
+  repositoryVersion: number,
+  isCoreChecklist: boolean,
+) {
+  const repoApi = useChecklistDefinitionCentralRepoApi();
+  return useSuspenseQuery(
+    getChecklistDefinitionFromCentralRepoQuery(
+      repoApi,
+      repositoryID,
+      repositoryVersion,
+      isCoreChecklist,
+    ),
+  );
 }
 
 export function useGetNewestChecklistDefinitionsFromCentralRepo() {

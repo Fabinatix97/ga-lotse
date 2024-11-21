@@ -10,13 +10,10 @@ import {
 } from "@eshg/employee-portal-api/schoolEntry";
 
 import {
-  Versioned,
-  mapVersioned,
-} from "@/lib/businessModules/schoolEntry/api/models/Versioned";
-import {
   ExaminationResult,
   mapExaminationResult,
 } from "@/lib/businessModules/schoolEntry/api/models/examinations/ExaminationResult";
+import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface HearingTestResult extends Versioned {
   leftEar: HearingTest;

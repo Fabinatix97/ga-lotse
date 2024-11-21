@@ -4,6 +4,7 @@
  */
 
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
+import { Box } from "@mui/joy";
 import { Table as TanstackTable, flexRender } from "@tanstack/react-table";
 import { Fragment } from "react";
 
@@ -64,15 +65,16 @@ export function TableHead<
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <th
+                  <Box
+                    component="th"
                     role={
                       header.column.id != TOGGLE_EXPAND_ID ? undefined : "none"
                     }
                     key={header.column.id}
-                    style={{ maxWidth: "0" }}
+                    sx={{ maxWidth: "0" }}
                   >
                     <Filter table={props.reactTable} column={header.column} />
-                  </th>
+                  </Box>
                 );
               })}
             </tr>

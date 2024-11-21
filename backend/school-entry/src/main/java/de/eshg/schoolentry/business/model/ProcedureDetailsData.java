@@ -23,8 +23,8 @@ public record ProcedureDetailsData(
     UUID externalId,
     long version,
     ProcedureType type,
-    ChildDetailsData child,
-    List<CustodianDetailsData> custodians,
+    PersonDetailsData child,
+    List<PersonDetailsData> custodians,
     List<Label> labels,
     Appointment appointment,
     SchoolDto school,
@@ -41,4 +41,5 @@ public record ProcedureDetailsData(
     WaitingRoom waitingRoom,
     Instant schoolInfoLetterCreatedAt,
     boolean hasInformationBlock,
-    boolean hasBeenClosed) {}
+    boolean hasBeenClosed,
+    boolean isPastProcedure) {}

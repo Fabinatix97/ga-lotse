@@ -19,7 +19,7 @@ export function usePostCitizenVaccinationConsultation() {
     },
     onSuccess: () => {
       // change when behaviour is defined
-      snackbar.confirmation("Termin erfolgreich gebucht");
+      snackbar.confirmation("Der Termin wurde gebucht.");
     },
   });
 }

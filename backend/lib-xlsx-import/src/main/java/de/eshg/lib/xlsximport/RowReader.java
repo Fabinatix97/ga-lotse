@@ -12,6 +12,7 @@ import de.eshg.lib.xlsximport.model.AddressData;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -78,7 +79,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     }
   }
 
-  protected ErrorHandler createErrorHandler(RowValues result) {
+  public ErrorHandler createErrorHandler(RowValues result) {
     return (cell, errorMessage) -> {
       result.foundInvalidData();
       addCellError(cell, errorMessage);
@@ -133,7 +134,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     return cellAsString(col.get(column), optional, allowCellTypeNumeric, errorHandler);
   }
 
-  private static String cellAsString(
+  protected static String cellAsString(
       Cell cell, boolean optional, boolean allowCellTypeNumeric, ErrorHandler errorHandler) {
     List<CellType> expectedTypes =
         allowCellTypeNumeric
@@ -149,6 +150,20 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     } else {
       return cell.getStringCellValue().trim();
     }
+  }
+
+  protected Cell convertToTextCell(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
+    Cell cell = col.get(column);
+    if (cell == null) {
+      return null;
+    }
+    invalidType(
+        cell, Arrays.asList(CellType.STRING, CellType.BLANK, CellType.NUMERIC), errorHandler);
+    if (cell.getCellType() == CellType.NUMERIC) {
+      String numberAsString = DATA_FORMATTER.formatCellValue(cell).trim();
+      cell.setCellValue(numberAsString);
+    }
+    return cell;
   }
 
   protected boolean cellAsFlag(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
@@ -221,7 +236,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     return optional && isBlank(cell);
   }
 
-  private static boolean isBlank(Cell cell) {
+  protected static boolean isBlank(Cell cell) {
     return cell == null || getNormalizedCellType(cell) == CellType.BLANK;
   }
 

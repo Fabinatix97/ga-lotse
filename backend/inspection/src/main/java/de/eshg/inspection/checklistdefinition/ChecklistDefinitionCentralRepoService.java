@@ -232,10 +232,10 @@ public class ChecklistDefinitionCentralRepoService {
     MultiValueMap<String, Object> parts =
         createMultiValueBody(
             checklistDefinitionDto,
+            tags,
             request.description(),
             request.changeLog(),
-            request.contact(),
-            tags);
+            request.contact());
 
     ResponseEntity<MetadataResponseDto> metadataResponse;
     try {
@@ -279,10 +279,10 @@ public class ChecklistDefinitionCentralRepoService {
     MultiValueMap<String, Object> parts =
         createMultiValueBody(
             checklistDefinitionDto,
+            tags,
             request.description(),
             request.changeLog(),
-            request.contact(),
-            tags);
+            request.contact());
 
     ResponseEntity<MetadataResponseDto> metadataResponse;
     try {
@@ -368,15 +368,15 @@ public class ChecklistDefinitionCentralRepoService {
 
   private MultiValueMap<String, Object> createMultiValueBody(
       ChecklistDefinitionDto checklistDefinitionDto,
+      List<String> tags,
       String description,
-      String contact,
       String changeLog,
-      List<String> tags) {
+      String contact) {
     MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
     try {
       String jsonContent =
           objectMapper.writer(minimalPrettyPrinter).writeValueAsString(checklistDefinitionDto);
-      setMetadata(parts, checklistDefinitionDto, description, contact, changeLog, tags);
+      setMetadata(parts, checklistDefinitionDto, tags, description, changeLog, contact);
       setJsonContent(parts, jsonContent);
     } catch (JsonProcessingException e) {
       throw new IllegalStateException("Failed to convert content to JSON", e);

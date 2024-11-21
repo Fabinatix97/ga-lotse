@@ -11,8 +11,8 @@ import {
   FormSheetTitle,
 } from "@/lib/businessModules/travelMedicine/components/shared/components/FormSheet";
 import { useStepContext } from "@/lib/businessModules/travelMedicine/components/shared/contexts/StepContext";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function AppointmentOverview() {
   const { t } = useTranslation(["travelMedicine/forms"]);

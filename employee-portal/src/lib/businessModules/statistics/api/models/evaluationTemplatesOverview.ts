@@ -16,7 +16,7 @@ export interface EvaluationTemplate {
   analysisCount: number;
   createdAt: Date;
   userId: string;
-  businessModuleName: string;
+  dataSourceName: string;
 }
 
 export interface EvaluationTemplateWithUserInfo extends EvaluationTemplate {

@@ -4,29 +4,35 @@
  */
 
 import { ApiDocumentConfirmation } from "@eshg/citizen-portal-api/travelMedicine";
-import { SetFieldValueHelper } from "@eshg/lib-portal/types/form";
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { Checkbox } from "@mui/joy";
 
 interface ConfirmationElementProps {
-  currentStep: number;
-  index: number;
   confirmation: ApiDocumentConfirmation;
-  setFieldValue: SetFieldValueHelper;
+  parentPath: string;
+  name: string;
 }
 
 export function ConfirmationElement({
-  currentStep,
-  index,
+  parentPath,
   confirmation,
-  setFieldValue,
+  name,
 }: Readonly<ConfirmationElementProps>) {
-  const name = `sections[${currentStep}].sectionElements[${index}].confirmation.answer`;
+  const { input, helpers } = useBaseField<ApiDocumentConfirmation>({ name });
+
+  const checkBoxPath = `${parentPath}.confirmation.answer`;
   return (
     <Checkbox
-      name={name}
-      onChange={async (event) => setFieldValue(name, event.target.checked)}
+      name={checkBoxPath}
+      onChange={async (event) => {
+        const confirmation = { ...input.value };
+        confirmation.answer = !!event.target?.checked;
+        await helpers.setValue(confirmation);
+        input.onChange(event);
+      }}
       label={confirmation.confirmationTextField}
-      checked={confirmation.answer}
+      checked={input.value?.answer ?? false}
+      data-testid="document-element-type-confirmation"
     />
   );
 }

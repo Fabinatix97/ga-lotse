@@ -5,13 +5,12 @@
 
 package de.eshg.stiprotection.mapper;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.GenderDto;
 import de.eshg.stiprotection.persistence.db.Gender;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GenderMapper {
 
@@ -24,7 +23,7 @@ public class GenderMapper {
     return genders.stream()
         .map(GenderMapper::toInterfaceType)
         .sorted(Comparator.comparing(GenderDto::name))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public static GenderDto toInterfaceType(Gender gender) {
@@ -47,7 +46,7 @@ public class GenderMapper {
     return genderDtos.stream()
         .map(GenderMapper::toDatabaseType)
         .sorted(Comparator.comparing(Gender::name))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   public static Gender toDatabaseType(GenderDto gender) {

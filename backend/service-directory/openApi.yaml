@@ -1172,9 +1172,6 @@ components:
           $ref: "#/components/schemas/AdminActorSelector"
         stagingStatus:
           $ref: "#/components/schemas/StagingStatus"
-      required:
-      - client
-      - server
     AdminRevision:
       type: object
       properties:

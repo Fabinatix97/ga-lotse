@@ -9,7 +9,7 @@ import { useState } from "react";
 
 export function CollapsableList({
   items,
-  shownItemsWhileCollapsed = 5,
+  shownItemsWhileCollapsed = 3,
 }: {
   items: string[];
   shownItemsWhileCollapsed?: number;
@@ -21,7 +21,11 @@ export function CollapsableList({
 
   return (
     <Stack>
-      <Typography level="body-md">{resultItems.join(", ")}</Typography>
+      {resultItems.map((it) => (
+        <Typography level="body-md" key={it}>
+          {it}
+        </Typography>
+      ))}
       {shownItemsWhileCollapsed < items.length && (
         <ButtonLink
           sx={{ alignSelf: "flex-start" }}

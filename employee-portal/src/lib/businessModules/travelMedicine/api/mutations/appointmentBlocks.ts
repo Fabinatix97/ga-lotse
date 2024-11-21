@@ -17,7 +17,7 @@ export function useCreateDailyAppointmentBlocksForGroup() {
       return appointmentBlockApi.createDailyAppointmentBlocksForGroup(data);
     },
     onSuccess: () => {
-      snackbar.confirmation("Der Terminblock wurde erfolgreich geplant.");
+      snackbar.confirmation("Der Terminblock wurde angelegt.");
     },
   });
 }

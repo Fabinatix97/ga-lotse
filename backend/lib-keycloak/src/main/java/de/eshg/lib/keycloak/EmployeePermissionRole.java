@@ -36,6 +36,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME,
       LEADER_DESCRIPTION.formatted("Medizinalkartei"),
       Module.MEDICAL_REGISTRY),
+  DENTAL_LEADER(LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("ZAD"), Module.DENTAL),
   OPEN_DATA_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Open Data"), Module.OPEN_DATA),
 
@@ -270,7 +271,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       "HIV-STI Benutzer",
       Module.STI_PROTECTION,
       BASE_PERSONS_READ, // required to access progress entries
-      BASE_CALENDAR_BUSINESS_EVENTS_WRITE),
+      BASE_CALENDAR_BUSINESS_EVENTS_WRITE,
+      BASE_ACCESS_CODE_USER_ADMIN),
   STI_PROTECTION_MFA("HIV-STI MFA", Module.STI_PROTECTION, STI_PROTECTION_USER),
   STI_PROTECTION_CONSULTANT("HIV-STI Berater", Module.STI_PROTECTION, STI_PROTECTION_USER),
   STI_PROTECTION_PHYSICIAN("HIV-STI Arzt", Module.STI_PROTECTION, STI_PROTECTION_USER),
@@ -288,6 +290,8 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_PERSONS_WRITE,
       BASE_FACILITIES_READ,
       BASE_FACILITIES_WRITE),
+
+  DENTAL_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Zahnärztlicher Dienst"), Module.DENTAL),
 
   OPEN_DATA_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Open Data"), Module.OPEN_DATA),
 
@@ -344,6 +348,7 @@ public enum EmployeePermissionRole implements PermissionRole {
     AUDIT_LOG_SERVICE("Audit-Log-Service"),
     STI_PROTECTION("HIV-STI-Service"),
     MEDICAL_REGISTRY("Medizinalkartei"),
+    DENTAL("Zahnärztlicher Dienst"),
     OPEN_DATA("Open Data");
 
     private final String displayName;

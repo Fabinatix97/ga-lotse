@@ -32,7 +32,7 @@ export function AppliedByFields(
         options={createPhysicianOptions(props.allPhysicians)}
       />
       <SingleAutocompleteField
-        label="Arzthilfe"
+        label="MFA"
         name="medicalAssistant"
         options={createMedicalAssistantOptions(props.allMedicalAssistants)}
       />

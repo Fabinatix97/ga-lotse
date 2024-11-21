@@ -14,8 +14,8 @@ export function useEditStatisticName(statisticId: string) {
 
   const mutation = useHandledMutation({
     mutationFn: (name: string) =>
-      statisticApi.updateStatistic(statisticId, {
-        type: "UpdateStatisticNameRequest",
+      statisticApi.updateEvaluation(statisticId, {
+        type: "UpdateEvaluationNameRequest",
         name,
       }),
     onSuccess: () => snackbar.confirmation("Name geändert"),

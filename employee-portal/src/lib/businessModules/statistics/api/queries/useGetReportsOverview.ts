@@ -35,6 +35,7 @@ export function mapSingleReports(
     timeRangeStart: singleReport.timeRangeStart,
     timeRangeEnd: singleReport.timeRangeEnd,
     type: isChild ? ReportDataType.Child : ReportDataType.Single,
+    dataSourceName: reportSeries.dataSourceNames[0]!,
   };
 }
 
@@ -68,6 +69,7 @@ export function mapToReportsOverview(
           timeRangeEnd: reportSeries.timeRangeEnd,
           type: ReportDataType.Series,
           userId: reportSeries.userId,
+          dataSourceName: reportSeries.dataSourceNames[0]!,
         } satisfies ReportSeriesOverview;
     }
   });

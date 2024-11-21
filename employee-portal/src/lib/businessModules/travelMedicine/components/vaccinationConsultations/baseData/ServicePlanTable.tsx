@@ -6,19 +6,28 @@
 "use client";
 
 import {
+  ApiAppointmentBookingType,
+  ApiAppointmentType,
   ApiCreatedByUserType,
   ApiServicePlanEntry,
+  ApiServicePlanGroup,
   ApiServiceStatus,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { AddOutlined } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { useDeleteAppointmentEp } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 import {
   useDeleteService,
   useUnassignStepToService,
 } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
+import {
+  useGetAllMedicalAssistantsQuery,
+  useGetAllPhysiciansQuery,
+} from "@/lib/businessModules/travelMedicine/api/queries/appointmentStaff";
+import { CancelAppointmentModal } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/CancelAppointmentModal";
 import { servicePlanColumns } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanColumns";
 import { TableTitle } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/TableTitle";
 import { useAddServiceAppointmentSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/AddServiceAppointmentSidebar";
@@ -29,10 +38,39 @@ import { useEditServiceAppointmentSidebar } from "@/lib/businessModules/travelMe
 import { useOtherServiceAppliedSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/OtherServiceAppliedSidebar";
 import { useServiceAppliedSidebar } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/sidebars/ServiceAppliedSidebar";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useSessionStorage } from "@/lib/shared/hooks/useSessionStorage";
+
+function getSubRows(servicePlanEntry: ServicePlanEntry) {
+  return servicePlanEntry.subRows;
+}
+
+export interface ServicePlanEntry {
+  appointment?: Date;
+  appointmentBookingType?: ApiAppointmentBookingType;
+  appointmentType?: ApiAppointmentType;
+  earliestDate?: Date;
+  fee: number;
+  medicalHistoryCompleted?: boolean;
+  citizenHasAnswered?: boolean;
+  procedureStepId?: string;
+  appliedAt?: Date;
+  defaultBatchIdentifier?: string;
+  batchIdentifier?: string;
+  diseaseName?: string;
+  latency?: number;
+  mfa?: string;
+  physician?: string;
+  serviceId: string;
+  serviceTypeDescription: string;
+  status?: ApiServiceStatus;
+  vaccinationNumber?: number;
+  vaccineName?: string;
+  subRows?: ServicePlanEntry[];
+}
 
 export function ServicePlanTable({
   procedureId,
@@ -43,7 +81,7 @@ export function ServicePlanTable({
 }: Readonly<{
   procedureId: string;
   isProcedureClosed: boolean;
-  data: ApiServicePlanEntry[];
+  data: ApiServicePlanGroup[];
   initialAppointmentProcedureStepId: string;
   createdByUserType: ApiCreatedByUserType;
 }>) {
@@ -51,10 +89,14 @@ export function ServicePlanTable({
     { physician: "", medicalAssistant: "" },
     "most-recent-users",
   );
+
+  const [cancelModal, setCancelModal] = useState({
+    isOpen: false,
+    procedureStepId: "",
+  });
   const router = useRouter();
 
   const deleteServiceApi = useDeleteService();
-  const cancelAppointmentApi = useDeleteAppointmentEp();
   const unassignStepApi = useUnassignStepToService();
 
   const addServiceAppointmentSidebar = useAddServiceAppointmentSidebar();
@@ -67,10 +109,6 @@ export function ServicePlanTable({
 
   function deleteService(procedureId: string, serviceId: string) {
     return deleteServiceApi.mutate({ procedureId, serviceId });
-  }
-
-  function deleteAppointment(serviceId: string) {
-    return cancelAppointmentApi.mutate({ procedureStepId: serviceId });
   }
 
   function unassignStepToService(procedureId: string, serviceId: string) {
@@ -98,98 +136,167 @@ export function ServicePlanTable({
     return procedureStepId === initialAppointmentProcedureStepId;
   }
 
+  const [{ data: allPhysicians }, { data: allMedicalAssistants }] =
+    useSuspenseQueries({
+      queries: [useGetAllPhysiciansQuery(), useGetAllMedicalAssistantsQuery()],
+    });
+
+  const rows = data.map(toServicePlanEntryGroup);
+
+  function toServicePlanEntryGroup(
+    servicePlanEntryGroup: ApiServicePlanGroup,
+  ): ServicePlanEntry {
+    return {
+      serviceId: "",
+      serviceTypeDescription: "",
+      appointment: servicePlanEntryGroup.appointment,
+      appointmentBookingType: servicePlanEntryGroup.appointmentBookingType,
+      appointmentType: servicePlanEntryGroup.appointmentType,
+      earliestDate: servicePlanEntryGroup.earliestDate,
+      fee: servicePlanEntryGroup.fee,
+      medicalHistoryCompleted: servicePlanEntryGroup.medicalHistoryCompleted,
+      citizenHasAnswered: servicePlanEntryGroup.citizenHasAnswered,
+      procedureStepId: servicePlanEntryGroup.procedureStepId,
+      subRows: servicePlanEntryGroup.servicePlanEntries.map(
+        (servicePlanEntry) => toServicePlanEntry(servicePlanEntry),
+      ),
+    };
+  }
+
+  function toServicePlanEntry(
+    servicePlanEntry: ApiServicePlanEntry,
+  ): ServicePlanEntry {
+    return {
+      appliedAt: servicePlanEntry.appliedAt,
+      defaultBatchIdentifier: servicePlanEntry.defaultBatchIdentifier,
+      batchIdentifier: servicePlanEntry.batchIdentifier,
+      diseaseName: servicePlanEntry.diseaseName,
+      fee: servicePlanEntry.fee,
+      latency: servicePlanEntry.latency,
+      mfa: servicePlanEntry.mfa,
+      physician: servicePlanEntry.physician,
+      serviceId: servicePlanEntry.serviceId,
+      serviceTypeDescription: servicePlanEntry.serviceTypeDescription,
+      status: servicePlanEntry.status,
+      vaccinationNumber: servicePlanEntry.vaccinationNumber,
+      vaccineName: servicePlanEntry.vaccineName,
+    };
+  }
+
+  function hasOpenServices(servicePlan: ApiServicePlanGroup[]) {
+    return servicePlan.some((a) => {
+      return a.servicePlanEntries.some((s) => {
+        return s.status === "OPEN";
+      });
+    });
+  }
+
   return (
-    <TablePage data-testid="vc-service-plan">
-      <TableSheet
-        title={<TableTitle title="Leistungsplan" />}
-        footer={
-          !isProcedureClosed && (
-            <Grid xs={12}>
-              <Button
-                color="primary"
-                variant="plain"
-                startDecorator={<AddOutlined />}
-                onClick={() => {
-                  addServicePlanSidebar.open({ procedureId: procedureId });
-                }}
-                disabled={!procedureId}
-              >
-                Leistung hinzufügen
-              </Button>
-              {data.length > 0 && (
+    <>
+      <TablePage data-testid="vc-service-plan">
+        <TableSheet
+          title={<TableTitle title="Leistungsplan" />}
+          footer={
+            !isProcedureClosed && (
+              <Grid xs={12}>
                 <Button
                   color="primary"
                   variant="plain"
                   startDecorator={<AddOutlined />}
-                  onClick={() =>
-                    addServiceAppointmentSidebar.open({
-                      procedureId: procedureId,
-                      isCitizenFollowUp: isCitizenFollowUp(procedureId),
-                    })
-                  }
-                  disabled={data.every(
-                    (curState) => curState.status !== ApiServiceStatus.Open,
-                  )}
+                  onClick={() => {
+                    addServicePlanSidebar.open({ procedureId: procedureId });
+                  }}
                 >
-                  Impftermin erstellen
+                  Leistung hinzufügen
                 </Button>
-              )}
-            </Grid>
-          )
-        }
-        hideTable={data.length === 0}
-      >
-        <DataTable
-          data={data}
-          columns={servicePlanColumns({
-            isProcedureClosed,
-            isCitizenProcedure:
-              createdByUserType === ApiCreatedByUserType.CitizenPortal,
-            isCitizenFollowUp: (procedureStepId) =>
-              isCitizenFollowUp(procedureStepId),
-            onDeleteService: (serviceId) =>
-              deleteService(procedureId, serviceId),
-            onUnassignService: (serviceId) =>
-              unassignStepToService(procedureId, serviceId),
-            onOpenMedicalHistory: (procedureStepId) =>
-              openMedicalHistory(procedureId, procedureStepId),
-            onOpenCertificatesTab: () => navigateToCertificates(procedureId),
-            onEditServiceAppointment: (procedureStep) =>
-              editServiceAppointmentSidebar.open({
-                procedureId: procedureId,
-                procedureStep: procedureStep,
-                isInitialStep: (procedureStepId) =>
-                  isInitialStep(procedureStepId),
-              }),
-            onAssignService: (serviceId) =>
-              assignServiceSidebar.open({
-                procedureId: procedureId,
-                serviceId: serviceId,
-              }),
-            onServiceApplied: (service) =>
-              serviceAppliedSidebar.open({
-                procedureId: procedureId,
-                storedUsers: currentUsers,
-                setStoredUsers: setCurrentUsers,
-                service: service,
-              }),
-            onOtherServiceApplied: (service) =>
-              otherServiceAppliedSidebar.open({
-                procedureId: procedureId,
-                storedUsers: currentUsers,
-                setStoredUsers: setCurrentUsers,
-                service: service,
-              }),
-            onEditEarliestDate: (service) =>
-              editEarliestDateSidebar.open({
-                procedureId: procedureId,
-                service: service,
-              }),
-            onCancelAppointment: (procedureStepId) =>
-              deleteAppointment(procedureStepId),
-          })}
+                {hasOpenServices(data) && (
+                  <Button
+                    color="primary"
+                    variant="plain"
+                    startDecorator={<AddOutlined />}
+                    onClick={() =>
+                      addServiceAppointmentSidebar.open({
+                        procedureId: procedureId,
+                        isCitizenFollowUp: isCitizenFollowUp(procedureId),
+                      })
+                    }
+                  >
+                    Impftermin erstellen
+                  </Button>
+                )}
+              </Grid>
+            )
+          }
+          hideTable={data.length === 0}
+        >
+          <DataTable
+            data={rows}
+            getSubRows={getSubRows}
+            columns={servicePlanColumns({
+              allPhysicians: allPhysicians,
+              allMedicalAssistants: allMedicalAssistants,
+              isProcedureClosed,
+              isCitizenProcedure:
+                createdByUserType === ApiCreatedByUserType.CitizenPortal,
+              isInitialStep: (procedureStepId) =>
+                isInitialStep(procedureStepId),
+              onDeleteService: (serviceId) =>
+                deleteService(procedureId, serviceId),
+              onUnassignService: (serviceId) =>
+                unassignStepToService(procedureId, serviceId),
+              onOpenMedicalHistory: (procedureStepId) =>
+                openMedicalHistory(procedureId, procedureStepId),
+              onOpenCertificatesTab: () => navigateToCertificates(procedureId),
+              onEditServiceAppointment: (procedureStep) =>
+                editServiceAppointmentSidebar.open({
+                  procedureId: procedureId,
+                  procedureStep: procedureStep,
+                  isInitialStep: (procedureStepId) =>
+                    isInitialStep(procedureStepId),
+                }),
+              onAssignService: (serviceId) =>
+                assignServiceSidebar.open({
+                  procedureId: procedureId,
+                  serviceId: serviceId,
+                }),
+              onServiceApplied: (service) =>
+                serviceAppliedSidebar.open({
+                  procedureId: procedureId,
+                  storedUsers: currentUsers,
+                  setStoredUsers: setCurrentUsers,
+                  service: service,
+                }),
+              onOtherServiceApplied: (service) =>
+                otherServiceAppliedSidebar.open({
+                  procedureId: procedureId,
+                  storedUsers: currentUsers,
+                  setStoredUsers: setCurrentUsers,
+                  service: service,
+                }),
+              onEditEarliestDate: (procedureStep) =>
+                editEarliestDateSidebar.open({
+                  procedureId: procedureId,
+                  procedureStep: procedureStep,
+                }),
+              onCancelAppointment: (procedureStepId) =>
+                setCancelModal({
+                  isOpen: true,
+                  procedureStepId: procedureStepId,
+                }),
+            })}
+            striped={false}
+            initialExpanded={true}
+            minWidth={1700}
+          />
+        </TableSheet>
+      </TablePage>
+      <OverlayBoundary>
+        <CancelAppointmentModal
+          procedureStepId={cancelModal.procedureStepId}
+          open={cancelModal.isOpen}
+          onClose={() => setCancelModal({ isOpen: false, procedureStepId: "" })}
         />
-      </TableSheet>
-    </TablePage>
+      </OverlayBoundary>
+    </>
   );
 }

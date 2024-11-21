@@ -6,8 +6,12 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
 import {
+  ApiInspectionFeature,
+  ApiInspectionPhase,
+} from "@eshg/employee-portal-api/inspection";
+import {
+  History,
   OtherHousesOutlined,
   SubjectOutlined,
   TextSnippetOutlined,
@@ -15,6 +19,7 @@ import {
   TimelineOutlined,
 } from "@mui/icons-material";
 
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabHeader } from "@/lib/businessModules/inspection/components/inspection/InspectionTabHeader";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";
@@ -29,11 +34,18 @@ export function InspectionTabNavigationToolbar({
 }: Readonly<{
   inspectionId: string;
 }>) {
+  const isHistoryEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.FacilityHistory,
+  );
   const hasProcedureEditRole = useHasUserRoleCheck(
     ApiUserRole.InspectionProcedureEdit,
   );
   const { data: inspection } = useGetInspection(inspectionId);
-  const tabItems = createTabItems(inspectionId, inspection.phase);
+  const tabItems = createTabItems(
+    inspectionId,
+    inspection.phase,
+    isHistoryEnabled,
+  );
 
   return (
     <TabNavigationToolbar
@@ -54,6 +66,7 @@ export function InspectionTabNavigationToolbar({
 function createTabItems(
   id: string,
   phase: ApiInspectionPhase,
+  isHistoryEnabled: boolean,
 ): TabNavigationItem[] {
   return [
     {
@@ -89,5 +102,12 @@ function createTabItems(
       href: routes.procedures.progressEntries(id).index,
       decorator: <TimelineOutlined />,
     },
-  ];
+    isHistoryEnabled
+      ? {
+          tabButtonName: "Historie",
+          href: routes.procedures.history(id),
+          decorator: <History />,
+        }
+      : null,
+  ].filter((it) => it !== null);
 }

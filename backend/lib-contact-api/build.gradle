@@ -1,0 +1,8 @@
+plugins {
+    id "eshg.java-lib"
+}
+
+dependencies {
+    api project(':api-commons')
+    api project(':lib-security-config-urls')
+}

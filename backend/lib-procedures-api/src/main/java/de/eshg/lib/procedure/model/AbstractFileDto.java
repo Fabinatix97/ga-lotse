@@ -19,7 +19,7 @@ public abstract sealed class AbstractFileDto extends AbstractFileReferenceDto
   public static final String SCHEMA_NAME = "AbstractFile";
   private @NotNull Instant createdAt;
   private @NotNull Instant modifiedAt;
-  private @NotNull UUID createdBy;
+  private UUID createdBy;
   private @NotNull String fileName;
   private @NotNull FileTypeDto fileType;
   private @NotNull int fileSizeBytes;

@@ -11,11 +11,14 @@ import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.xlsximport.ColumnAccessor;
 import de.eshg.lib.xlsximport.ErrorHandler;
 import de.eshg.lib.xlsximport.RowReader;
+import de.eshg.schoolentry.api.CountryCodeDto;
 import de.eshg.schoolentry.business.model.*;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
 import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
+import de.eshg.schoolentry.mapper.AnamnesisMapper;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -49,71 +52,143 @@ public class PastProcedureListRowReader
 
     result.setChild(readChildData(col, errorHandler));
     result.setProcedureType(readProcedureType(col, errorHandler));
-    result.setExaminationDate(cellAsDate(col, EXAMINATION_DATE, errorHandler));
+    LocalDate examinationDate = cellAsDate(col, EXAMINATION_DATE, errorHandler);
+    result.setExaminationDate(examinationDate);
     result.setStatus(readStatus(col, STATUS, errorHandler));
     result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
-    result.setAnamnesisData(readAnamnesisData(col, errorHandler));
-    result.setVaccinationStatusData(readVaccinationStatusData(col, errorHandler));
-    result.setEyeExaminationResult(readEyeExaminationData(col, errorHandler));
-    result.setHearingTestData(readHearingTestData(col, errorHandler));
-    result.setSopessExaminationData(readSopessExaminationData(col, errorHandler));
-    result.setDevelopmentScreeningData(readDevelopmentScreeningData(col, errorHandler));
+    result.setAnamnesis(readAnamnesis(col, errorHandler, examinationDate));
+    result.setVaccinationStatus(readVaccinationStatus(col, errorHandler));
+    result.setEyeExaminationResult(readEyeExamination(col, errorHandler));
+    result.setHearingTest(readHearingTest(col, errorHandler));
+    result.setSopessExamination(readSopessExamination(col, errorHandler));
+    result.setDevelopmentScreening(readDevelopmentScreening(col, errorHandler));
     return result;
   }
 
-  private ImportAnamnesisData readAnamnesisData(
-      ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
-    return new ImportAnamnesisData(
-        readIntegerInRange(col, SIBLINGS, errorHandler, 0, 15, 99),
-        cellAsInt(col, NATIONALITY_CHILD, errorHandler),
-        cellAsInt(col, NATIONALITY_P1, errorHandler),
-        cellAsInt(col, COUNTRY_OF_BIRTH_P1, errorHandler),
-        cellAsInt(col, NATIONALITY_P2, errorHandler),
-        cellAsInt(col, COUNTRY_OF_BIRTH_P2, errorHandler),
-        cellAsBoolean(col, MIGRATION_BACKGROUND, errorHandler),
-        readIntegerInRange(col, DAYCARE, errorHandler, 0, 3, 9),
-        cellAsBooleanWithFallbackFalse(col, PRELIMINARY_COURSE, errorHandler),
-        readIntegerInRange(col, BIRTH_WEIGHT, errorHandler, 300, 6000, 9999),
-        cellAsBooleanWithFallbackFalse(col, INTEGRATION_PLACE, errorHandler),
-        cellAsBooleanWithFallbackFalse(col, EARLY_SUPPORT, errorHandler),
-        cellAsBooleanWithFallbackFalse(col, ERGO_THERAPY, errorHandler),
-        cellAsBooleanWithFallbackFalse(col, SPEECH_THERAPY, errorHandler),
-        cellAsBooleanWithFallbackFalse(col, PHYSIO_THERAPY, errorHandler),
-        cellAsBooleanWithFallbackFalse(col, CHILD_LANGUAGE_SCREENING, errorHandler),
-        cellAsBooleanOrNull(col, U2, errorHandler),
-        cellAsBooleanOrNull(col, U3, errorHandler),
-        cellAsBooleanOrNull(col, U4, errorHandler),
-        cellAsBooleanOrNull(col, U5, errorHandler),
-        cellAsBooleanOrNull(col, U6, errorHandler),
-        cellAsBooleanOrNull(col, U7, errorHandler),
-        cellAsBooleanOrNull(col, U7A, errorHandler),
-        cellAsBooleanOrNull(col, U8, errorHandler),
-        cellAsBooleanOrNull(col, U9, errorHandler),
-        readInGermanySince(col, errorHandler));
+  private Anamnesis readAnamnesis(
+      ColumnAccessor<PastProcedureListColumn> col,
+      ErrorHandler errorHandler,
+      LocalDate examinationDate) {
+    Anamnesis anamnesis = new Anamnesis();
+    anamnesis.setNumberOfSiblings(readIntegerInRange(col, SIBLINGS, errorHandler, 0, 15, 99));
+    anamnesis.setNationalityChild(readCountryGroupCode(col, NATIONALITY_CHILD, errorHandler));
+    anamnesis.setCountryOfBirthChild(
+        readCountryGroupCode(col, COUNTRY_OF_BIRTH_CHILD, errorHandler));
+    anamnesis.setNationalityFirstParent(readCountryGroupCode(col, NATIONALITY_P1, errorHandler));
+    anamnesis.setCountryOfBirthFirstParent(
+        readCountryGroupCode(col, COUNTRY_OF_BIRTH_P1, errorHandler));
+    anamnesis.setNationalitySecondParent(readCountryGroupCode(col, NATIONALITY_P2, errorHandler));
+    anamnesis.setCountryOfBirthSecondParent(
+        readCountryGroupCode(col, COUNTRY_OF_BIRTH_P2, errorHandler));
+    anamnesis.setHasMigrationBackground(cellAsBoolean(col, MIGRATION_BACKGROUND, errorHandler));
+    Integer daycareValue = readIntegerInRange(col, DAYCARE, errorHandler, 0, 3, 9);
+    anamnesis.setWasInDaycare(mapToWasInDaycare(daycareValue));
+    anamnesis.setInDaycareSince(approximateInDaycareSince(daycareValue, examinationDate));
+    anamnesis.setPreliminaryCourse(
+        cellAsBooleanWithFallbackFalse(col, PRELIMINARY_COURSE, errorHandler));
+    anamnesis.setBirthWeight(readIntegerInRange(col, BIRTH_WEIGHT, errorHandler, 300, 6000, 9999));
+    anamnesis.setIntegrationPlace(
+        cellAsBooleanWithFallbackFalse(col, INTEGRATION_PLACE, errorHandler));
+    anamnesis.setEarlySupport(cellAsBooleanWithFallbackFalse(col, EARLY_SUPPORT, errorHandler));
+    anamnesis.setErgotherapy(cellAsBooleanWithFallbackFalse(col, ERGO_THERAPY, errorHandler));
+    anamnesis.setSpeechTherapy(cellAsBooleanWithFallbackFalse(col, SPEECH_THERAPY, errorHandler));
+    anamnesis.setPhysiotherapy(cellAsBooleanWithFallbackFalse(col, PHYSIO_THERAPY, errorHandler));
+    anamnesis.setChildLanguageScreening(
+        cellAsBooleanWithFallbackFalse(col, CHILD_LANGUAGE_SCREENING, errorHandler));
+    anamnesis.setU2(readBooleanWithUnknown(col, U2, errorHandler));
+    anamnesis.setU3(readBooleanWithUnknown(col, U3, errorHandler));
+    anamnesis.setU4(readBooleanWithUnknown(col, U4, errorHandler));
+    anamnesis.setU5(readBooleanWithUnknown(col, U5, errorHandler));
+    anamnesis.setU6(readBooleanWithUnknown(col, U6, errorHandler));
+    anamnesis.setU7(readBooleanWithUnknown(col, U7, errorHandler));
+    anamnesis.setU7a(readBooleanWithUnknown(col, U7A, errorHandler));
+    anamnesis.setU8(readBooleanWithUnknown(col, U8, errorHandler));
+    anamnesis.setU9(readBooleanWithUnknown(col, U9, errorHandler));
+    anamnesis.setInGermanySince(readInGermanySince(col, errorHandler));
+    return anamnesis;
   }
 
-  private ImportVaccinationStatusData readVaccinationStatusData(
-      ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
-    return new ImportVaccinationStatusData(
-        readVaccinationScheme(col, errorHandler),
-        readNumberOfVaccinations(col, TETANUS, errorHandler),
-        readNumberOfVaccinations(col, DIPHTERIA, errorHandler),
-        readNumberOfVaccinations(col, PERTUSSIS, errorHandler),
-        readNumberOfVaccinations(col, POLIO, errorHandler),
-        readNumberOfVaccinations(col, HIB, errorHandler),
-        readNumberOfVaccinations(col, HEPATITIS_B, errorHandler),
-        readNumberOfVaccinations(col, MMR, errorHandler),
-        readNumberOfVaccinations(col, VARICELLA, errorHandler),
-        readNumberOfVaccinations(col, MENINGOCOCCUS_C, errorHandler),
-        readNumberOfVaccinations(col, PNEUMOCOCCUS, errorHandler),
-        readNumberOfVaccinations(col, HEPATITIS_A, errorHandler),
-        readNumberOfVaccinations(col, TBE, errorHandler),
-        readNumberOfVaccinations(col, ROTA, errorHandler),
-        readNumberOfVaccinations(col, MENINGOCOCCUS_B, errorHandler),
-        cellAsBooleanOrNull(col, PERKOMBI_HBV, errorHandler));
+  private static LocalDate approximateInDaycareSince(
+      Integer daycareValue, LocalDate examinationDate) {
+    if (daycareValue == null || examinationDate == null) {
+      return null;
+    }
+
+    return switch (daycareValue) {
+      case 1 -> examinationDate.minus(Period.ofMonths(9));
+      case 2 -> examinationDate.minus(Period.ofMonths(27));
+      case 3 -> examinationDate.minus(Period.ofMonths(45));
+      default -> null;
+    };
   }
 
-  private EyeExaminationResult readEyeExaminationData(
+  private static Boolean mapToWasInDaycare(Integer daycareValue) {
+    return switch (daycareValue) {
+      case 0 -> false;
+      case 1, 2, 3 -> true;
+      case null, default -> null;
+    };
+  }
+
+  private static BooleanWithUnknown readBooleanWithUnknown(
+      ColumnAccessor<PastProcedureListColumn> col,
+      PastProcedureListColumn column,
+      ErrorHandler errorHandler) {
+    Cell cell = col.get(column);
+    String booleanString = cellAsString(cell, true, false, errorHandler);
+    if (booleanString == null) {
+      return BooleanWithUnknown.UNKNOWN;
+    }
+
+    return switch (booleanString.toUpperCase()) {
+      case "JA" -> BooleanWithUnknown.TRUE;
+      case "NEIN" -> BooleanWithUnknown.FALSE;
+      default -> {
+        errorHandler.handleError(
+            cell,
+            "Ungültiger Wert (Erwartet: Ja, Nein oder leere Zelle. Tatsächlich: %s)"
+                .formatted(booleanString));
+        yield null;
+      }
+    };
+  }
+
+  private CountryCode readCountryGroupCode(
+      ColumnAccessor<PastProcedureListColumn> col,
+      PastProcedureListColumn column,
+      ErrorHandler errorHandler) {
+    Integer groupCode = readIntegerInRange(col, column, errorHandler, 0, 9);
+    if (groupCode == null) {
+      return null;
+    }
+    return AnamnesisMapper.mapToDomain(CountryCodeDto.getCountryGroup(groupCode));
+  }
+
+  private VaccinationStatus readVaccinationStatus(
+      ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
+    VaccinationStatus vaccinationStatus = new VaccinationStatus();
+    vaccinationStatus.setVaccinationScheme(readVaccinationScheme(col, errorHandler));
+    vaccinationStatus.setTetanus(readNumberOfVaccinations(col, TETANUS, errorHandler));
+    vaccinationStatus.setDiphtheria(readNumberOfVaccinations(col, DIPHTERIA, errorHandler));
+    vaccinationStatus.setPertussis(readNumberOfVaccinations(col, PERTUSSIS, errorHandler));
+    vaccinationStatus.setPolio(readNumberOfVaccinations(col, POLIO, errorHandler));
+    vaccinationStatus.setHib(readNumberOfVaccinations(col, HIB, errorHandler));
+    vaccinationStatus.setHepatitisB(readNumberOfVaccinations(col, HEPATITIS_B, errorHandler));
+    vaccinationStatus.setMmr(readNumberOfVaccinations(col, MMR, errorHandler));
+    vaccinationStatus.setVaricella(readNumberOfVaccinations(col, VARICELLA, errorHandler));
+    vaccinationStatus.setMeningococcusC(
+        readNumberOfVaccinations(col, MENINGOCOCCUS_C, errorHandler));
+    vaccinationStatus.setPneumococcus(readNumberOfVaccinations(col, PNEUMOCOCCUS, errorHandler));
+    vaccinationStatus.setHepatitisA(readNumberOfVaccinations(col, HEPATITIS_A, errorHandler));
+    vaccinationStatus.setTbe(readNumberOfVaccinations(col, TBE, errorHandler));
+    vaccinationStatus.setRota(readNumberOfVaccinations(col, ROTA, errorHandler));
+    vaccinationStatus.setMeningococcusB(
+        readNumberOfVaccinations(col, MENINGOCOCCUS_B, errorHandler));
+    vaccinationStatus.setPerkombiHbv(readBooleanWithUnknown(col, PERKOMBI_HBV, errorHandler));
+    return vaccinationStatus;
+  }
+
+  private EyeExaminationResult readEyeExamination(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     EyeExaminationResult eyeExaminationResult = new EyeExaminationResult();
     eyeExaminationResult.setEyeExamination(
@@ -125,14 +200,14 @@ public class PastProcedureListRowReader
     return eyeExaminationResult;
   }
 
-  private HearingTestResult readHearingTestData(
+  private HearingTestResult readHearingTest(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     HearingTestResult hearingTestResult = new HearingTestResult();
     hearingTestResult.setExaminationResult(readExaminationResult(col, HEARING_TEST, errorHandler));
     return hearingTestResult;
   }
 
-  private SopessExaminationResult readSopessExaminationData(
+  private SopessExaminationResult readSopessExamination(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     SopessExaminationResult sopessExaminationResult = new SopessExaminationResult();
 
@@ -246,7 +321,7 @@ public class PastProcedureListRowReader
     }
   }
 
-  private DevelopmentScreening readDevelopmentScreeningData(
+  private DevelopmentScreening readDevelopmentScreening(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     DevelopmentScreening developmentScreening = new DevelopmentScreening();
     developmentScreening.setSystole(readIntegerInRange(col, SYSTOLE, errorHandler, 50, 250, 999));
@@ -338,16 +413,18 @@ public class PastProcedureListRowReader
     return value;
   }
 
-  private Integer readVaccinationScheme(
+  private VaccinationSchemeValue readVaccinationScheme(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     Cell cell = col.get(VACCINATION_SCHEME);
     Integer value = cellAsInt(col, VACCINATION_SCHEME, errorHandler);
     return switch (value) {
-      case 2, 3, 9 -> value;
+      case 2 -> VaccinationSchemeValue.SCHEME_2_PLUS_1;
+      case 3 -> VaccinationSchemeValue.SCHEME_3_PLUS_1;
+      case 9 -> VaccinationSchemeValue.UNKNOWN;
       case null, default -> {
         errorHandler.handleError(
             cell, "Ungültiger Wert (Erwartet: 2, 3 oder 9. Tatsächlich: %s)".formatted(value));
-        yield value;
+        yield null;
       }
     };
   }
@@ -356,15 +433,7 @@ public class PastProcedureListRowReader
       ColumnAccessor<PastProcedureListColumn> col,
       PastProcedureListColumn column,
       ErrorHandler errorHandler) {
-    Cell cell = col.get(column);
-    Integer value = cellAsInt(col, column, errorHandler);
-    Range<Integer> validRange = Range.closed(0, 9);
-    if (value == null || !validRange.contains(value)) {
-      errorHandler.handleError(
-          cell,
-          "Ungültiger Wert (Erwartet: Wert zwischen 0 und 9. Tatsächlich: %s)".formatted(value));
-    }
-    return value;
+    return readIntegerInRange(col, column, errorHandler, 0, 9);
   }
 
   private Integer readIntegerInRange(
@@ -382,6 +451,24 @@ public class PastProcedureListRowReader
           cell,
           "Ungültiger Wert (Erwartet: Wert zwischen %d und %d sowie %d. Tatsächlich: %s)"
               .formatted(min, max, unknownValue, value));
+    }
+    return value;
+  }
+
+  private Integer readIntegerInRange(
+      ColumnAccessor<PastProcedureListColumn> col,
+      PastProcedureListColumn column,
+      ErrorHandler errorHandler,
+      int min,
+      int max) {
+    Cell cell = col.get(column);
+    Integer value = cellAsInt(col, column, errorHandler);
+    Range<Integer> validRange = Range.closed(min, max);
+    if (value == null || !validRange.contains(value)) {
+      errorHandler.handleError(
+          cell,
+          "Ungültiger Wert (Erwartet: Wert zwischen %s und %s. Tatsächlich: %s)"
+              .formatted(min, max, value));
     }
     return value;
   }
@@ -503,12 +590,12 @@ public class PastProcedureListRowReader
   private PrimaryLanguageValue readPrimaryLanguageValue(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     Cell cell = col.get(PRIMARY_LANGUAGE);
-    String value = cellAsInt(col, PRIMARY_LANGUAGE, errorHandler).toString();
+    Integer value = cellAsInt(col, PRIMARY_LANGUAGE, errorHandler);
     return switch (value) {
-      case "1" -> PrimaryLanguageValue.GERMAN;
-      case "2" -> PrimaryLanguageValue.OTHER;
-      case "9" -> PrimaryLanguageValue.UNKNOWN;
-      default -> {
+      case 1 -> PrimaryLanguageValue.GERMAN;
+      case 2 -> PrimaryLanguageValue.OTHER;
+      case 9 -> PrimaryLanguageValue.UNKNOWN;
+      case null, default -> {
         errorHandler.handleError(
             cell, "Ungültiger Wert (Erwartet: 1, 2 oder 9. Tatsächlich: %s)".formatted(value));
         yield null;
@@ -519,13 +606,13 @@ public class PastProcedureListRowReader
   private LanguageKnowledgeValue readLanguageKnowledgeValue(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     Cell cell = col.get(GERMAN_PRIMARY_CARER);
-    String value = cellAsInt(col, GERMAN_PRIMARY_CARER, errorHandler).toString();
+    Integer value = cellAsInt(col, GERMAN_PRIMARY_CARER, errorHandler);
     return switch (value) {
-      case "1" -> LanguageKnowledgeValue.RUDIMENTARY;
-      case "2" -> LanguageKnowledgeValue.FAULTY;
-      case "3" -> LanguageKnowledgeValue.FAULTLESS;
-      case "9" -> LanguageKnowledgeValue.UNKNOWN;
-      default -> {
+      case 1 -> LanguageKnowledgeValue.RUDIMENTARY;
+      case 2 -> LanguageKnowledgeValue.FAULTY;
+      case 3 -> LanguageKnowledgeValue.FAULTLESS;
+      case 9 -> LanguageKnowledgeValue.UNKNOWN;
+      case null, default -> {
         errorHandler.handleError(
             cell,
             "Ungültiger Wert (Erwartet: Wert zwischen 1 und 3 sowie 9. Tatsächlich: %s)"
@@ -538,15 +625,15 @@ public class PastProcedureListRowReader
   private GermanKnowledgeValue readGermanKnowledgeValue(
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     Cell cell = col.get(GERMAN_CHILD);
-    String value = cellAsInt(col, GERMAN_CHILD, errorHandler).toString();
+    Integer value = cellAsInt(col, GERMAN_CHILD, errorHandler);
     return switch (value) {
-      case "1" -> GermanKnowledgeValue.NO_GERMAN;
-      case "2" -> GermanKnowledgeValue.BAD;
-      case "3" -> GermanKnowledgeValue.FLUID_WITH_MAJOR_ERRORS;
-      case "4" -> GermanKnowledgeValue.FLUID_WITH_MINOR_ERRORS;
-      case "5" -> GermanKnowledgeValue.FAULTLESS;
-      case "9" -> GermanKnowledgeValue.UNKNOWN;
-      default -> {
+      case 1 -> GermanKnowledgeValue.NO_GERMAN;
+      case 2 -> GermanKnowledgeValue.BAD;
+      case 3 -> GermanKnowledgeValue.FLUID_WITH_MAJOR_ERRORS;
+      case 4 -> GermanKnowledgeValue.FLUID_WITH_MINOR_ERRORS;
+      case 5 -> GermanKnowledgeValue.FAULTLESS;
+      case 9 -> GermanKnowledgeValue.UNKNOWN;
+      case null, default -> {
         errorHandler.handleError(
             cell,
             "Ungültiger Wert (Erwartet: Wert zwischen 1 und 5 sowie 9. Tatsächlich: %s)"

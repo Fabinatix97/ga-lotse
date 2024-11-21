@@ -31,13 +31,12 @@ import java.util.Objects;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.Assert;
 
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, ProcedureEntityListener.class})
 public abstract class Procedure<
         SELF extends Procedure<SELF, TaskT, RelatedPersonT, FacilityT>,
         TaskT extends Task<SELF>,
@@ -82,7 +81,8 @@ public abstract class Procedure<
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @Column(nullable = false)
-  @CreatedDate
+  // Note: No @CreatedDate here as we set it using ProcedureEntityListener
+  // which allows to set the created timestamp manually
   private Instant createdAt;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
@@ -106,18 +106,22 @@ public abstract class Procedure<
     this(CREATED);
   }
 
+  protected Procedure(TriggerType triggerType) {
+    this(CREATED, triggerType);
+  }
+
   protected Procedure(BasicSystemProgressEntryType initializationDescription) {
+    this(initializationDescription, TriggerType.EMPLOYEE);
+  }
+
+  protected Procedure(
+      BasicSystemProgressEntryType initializationDescription, TriggerType triggerType) {
     Assert.notNull(initializationDescription, "InitializationDescription must not be null");
     Assert.isTrue(
         initializationDescription.isCreated(), "InitializationDescription must be a creating type");
 
-    this.progressEntries.add(
-        createSystemProgressEntry(initializationDescription, TriggerType.EMPLOYEE));
+    this.progressEntries.add(createSystemProgressEntry(initializationDescription, triggerType));
     this.archivingRelevance = ArchivingRelevance.DEFAULT;
-  }
-
-  protected Procedure(TriggerType triggerType) {
-    this.progressEntries.add(createSystemProgressEntry(CREATED, triggerType));
   }
 
   public ProcedureStatus getProcedureStatus() {

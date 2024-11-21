@@ -11,11 +11,11 @@ import static de.eshg.schoolentry.util.ValueEvaluatorUtil.*;
 
 import de.cronn.reflection.util.PropertyUtils;
 import de.cronn.reflection.util.TypedPropertyGetter;
-import de.eshg.base.client.ContactClient;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
+import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.rest.service.error.BadRequestException;
@@ -122,16 +122,6 @@ public class Validator {
     if (childData.address() == null) {
       throw new BadRequestException(
           "Appointment cannot be updated because child address is missing.");
-    }
-  }
-
-  public static void validateIcd10CodeRequestParams(String searchString, List<String> codes) {
-    if (searchString.isEmpty() && codes.isEmpty()) {
-      throw new BadRequestException("No request param for searchString or codes.");
-    }
-    if (!searchString.isEmpty() && !codes.isEmpty()) {
-      throw new BadRequestException(
-          "Only one request param of searchString and codes should be set.");
     }
   }
 
@@ -583,7 +573,7 @@ public class Validator {
   }
 
   static void validateSchoolInfoLetterCreated(SchoolEntryProcedure procedure) {
-    if (procedure.getschoolInfoLetterCreatedAt() == null) {
+    if (procedure.getSchoolInfoLetterCreatedAt() == null) {
       throw new BadRequestException(
           "A school info letter must be created before the procedure can be closed.");
     }

@@ -17,10 +17,7 @@ import {
   Person,
   mapPerson,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
-import {
-  Versioned,
-  mapVersioned,
-} from "@/lib/businessModules/schoolEntry/api/models/Versioned";
+import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface WaitingRoom extends Versioned {
   description?: string;

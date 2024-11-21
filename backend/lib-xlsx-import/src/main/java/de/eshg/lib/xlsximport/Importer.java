@@ -103,6 +103,10 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
 
   protected abstract void mergeProceduresAndWriteResults();
 
+  protected boolean shouldSkipReadingRow(Row row) {
+    return row.getRowNum() == 0;
+  }
+
   private ImportResult mapImportResult() throws IOException {
     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       sheet.getWorkbook().write(outputStream);
@@ -115,8 +119,8 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
   protected Map<Row, T> readRows() {
     Map<Row, T> rowValues = new LinkedHashMap<>();
     for (Row row : sheet) {
-      if (row.getRowNum() == 0) {
-        // skip the header
+      if (shouldSkipReadingRow(row)) {
+        // skip non data rows
         continue;
       }
       if (RowReader.isEmpty(row)) {

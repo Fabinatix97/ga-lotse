@@ -19,7 +19,7 @@ interface GroupChatMemberProps {
   member: RoomMember;
   isRoomCreator: boolean;
   isAdmin: boolean;
-  handleKick: (userId: string) => void;
+  handleKick: () => void;
 }
 
 export function GroupChatMember({
@@ -56,9 +56,6 @@ export function GroupChatMember({
             Admin
           </Typography>
         )}
-        <Typography noWrap level="body-sm">
-          {usernameAndOrganisation?.username}
-        </Typography>
         <Typography
           noWrap
           level="body-sm"
@@ -69,7 +66,7 @@ export function GroupChatMember({
         </Typography>
       </Stack>
       {canRemove && (
-        <IconButton color="primary" onClick={() => handleKick(member.userId)}>
+        <IconButton color="primary" onClick={handleKick}>
           <CloseOutlinedIcon />
         </IconButton>
       )}

@@ -17,6 +17,7 @@ import {
 import { doNothing, isDefined } from "remeda";
 
 import { Alert, AlertProps } from "../components/Alert";
+import { useNavigateEffect } from "../hooks/useNavigateEffect";
 import { useUuid } from "../hooks/useUuid";
 import { RequiresChildren } from "../types/react";
 
@@ -94,6 +95,9 @@ export function AlertContextProvider(props: RequiresChildren) {
       close,
     };
   }, [alerts, setAlerts]);
+
+  // close alert after navigation
+  useNavigateEffect(() => contextValue.close());
 
   return (
     <AlertContext.Provider value={contextValue}>

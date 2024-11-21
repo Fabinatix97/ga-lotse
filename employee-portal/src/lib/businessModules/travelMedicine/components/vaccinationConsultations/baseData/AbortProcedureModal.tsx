@@ -7,12 +7,15 @@ import {
   AbortDraftVaccinationConsultationRequest,
   ApiGetVaccinationConsultationDetailsResponse,
 } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { useAboardDraftVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 interface AbortProcedureModalProps extends Omit<BaseModalProps, "children"> {
   procedure: ApiGetVaccinationConsultationDetailsResponse;

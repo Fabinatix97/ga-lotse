@@ -173,10 +173,14 @@ export function useOpenApprovalRequests() {
   return approvalRequestsResponse?.approvalRequests;
 }
 
-export function useResolvedUserName(userId: string) {
+export function useResolvedUserName(userId?: string) {
   const { approvalRequestsResponse } = useContext(
     ProgressEntriesContext,
   ).config;
+  if (!userId) {
+    return "Unbekanntem Nutzer";
+  }
+
   const user = approvalRequestsResponse?.resolvedUsers?.[userId];
   return buildName(user?.firstName, user?.lastName);
 }

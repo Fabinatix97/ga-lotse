@@ -4,8 +4,8 @@
  */
 
 import {
-  GetStatisticRequest,
-  StatisticApi,
+  EvaluationApi,
+  GetEvaluationRequest,
 } from "@eshg/employee-portal-api/statistics";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -16,18 +16,18 @@ import { mapStatisticToTableView } from "@/lib/businessModules/statistics/api/mo
 import { statisticApiQueryKey } from "./apiQueryKeys";
 
 export function createQueryGetStatistic(
-  statisticApi: StatisticApi,
-  statisticRequest: GetStatisticRequest,
+  statisticApi: EvaluationApi,
+  statisticRequest: GetEvaluationRequest,
 ) {
   return {
     queryKey: statisticApiQueryKey(["getStatistic", statisticRequest]),
     queryFn: () =>
-      statisticApi.getStatisticRaw(statisticRequest).then(unwrapRawResponse),
+      statisticApi.getEvaluationRaw(statisticRequest).then(unwrapRawResponse),
     select: mapStatisticToTableView,
   };
 }
 
-export function useGetStatistic(statisticRequest: GetStatisticRequest) {
+export function useGetStatistic(statisticRequest: GetEvaluationRequest) {
   const statisticApi = useStatisticApi();
   const queryResult = useSuspenseQuery(
     createQueryGetStatistic(statisticApi, statisticRequest),

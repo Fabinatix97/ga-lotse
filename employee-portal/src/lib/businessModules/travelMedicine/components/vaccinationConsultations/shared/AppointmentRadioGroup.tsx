@@ -44,9 +44,6 @@ export function AppointmentRadioGroup({
 
   return (
     <Stack gap={2}>
-      <Typography level="body-md" sx={{ fontWeight: "bold", mt: 2 }}>
-        Termin
-      </Typography>
       <RadioGroupField
         name="bookingType"
         required={required ? "Bitte einen Termintyp auswählen" : undefined}

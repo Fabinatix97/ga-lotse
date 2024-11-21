@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiGetAllEvaluationTemplatesResponse,
+  ApiGetAllMinimalEvaluationTemplateInfosResponse,
   EvaluationTemplateApi,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -18,9 +18,9 @@ export function createQueryGetEvaluationTemplates(
 ) {
   return {
     queryKey: evaluationTemplateApiQueryKey(["getEvaluationTemplates"]),
-    queryFn: () => evaluationTemplateApi.getEvaluationTemplates(),
-    select: (data: ApiGetAllEvaluationTemplatesResponse) =>
-      data.evaluationTemplates,
+    queryFn: () => evaluationTemplateApi.getAllMinimalEvaluationTemplateInfos(),
+    select: (data: ApiGetAllMinimalEvaluationTemplateInfosResponse) =>
+      data.minimalEvaluationTemplateInfos,
   };
 }
 

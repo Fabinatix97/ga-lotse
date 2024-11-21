@@ -22,9 +22,16 @@ public class FacilitySearchSpecification implements Specification<Facility> {
   @Serial private static final long serialVersionUID = 103990L;
 
   private final String nameQuery;
+  private final boolean includeDeleted;
 
   public FacilitySearchSpecification(String nameQuery) {
     this.nameQuery = nameQuery;
+    this.includeDeleted = false;
+  }
+
+  public FacilitySearchSpecification(String nameQuery, boolean includeDeleted) {
+    this.nameQuery = nameQuery;
+    this.includeDeleted = includeDeleted;
   }
 
   @Override
@@ -40,6 +47,10 @@ public class FacilitySearchSpecification implements Specification<Facility> {
 
     Predicate noFileStatePredicate = createNoFileStatePredicate(root, builder);
     conjunctions.add(noFileStatePredicate);
+
+    if (!includeDeleted) {
+      conjunctions.add(builder.isNull(root.get(Facility_.deleteAt)));
+    }
 
     query.orderBy(getSortingExpression(root, builder));
 

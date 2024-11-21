@@ -7,11 +7,13 @@
 
 import {
   ApiGdprProcedureStatus,
+  ApiGdprProcedureType,
   ApiGetGdprProcedureResponse,
   ApiGetReferenceFacilityResponse,
   ApiGetReferencePersonResponse,
   ApiUserRole,
 } from "@eshg/employee-portal-api/base";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 
@@ -27,10 +29,11 @@ import {
   SectionTile,
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
+import { useEditReferencePersonSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
+import { mapReferencePersonToForm } from "@/lib/shared/components/personSidebar/helpers";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 import { GdprFacilityDataTile } from "./tiles/GdprFacilityDataTile";
@@ -57,30 +60,48 @@ export function GDPRProcedureDetails({
 }: GDPRProcedureDetailsProps) {
   const hasWritePerms = useHasUserRoleCheck(ApiUserRole.BaseGdprProcedureWrite);
 
-  const facilitySidebar = useSidebar({
+  const linkFacilitySidebar = useSidebar({
     component: LinkFacilitySidebar,
   });
 
-  const personSidebar = useSidebar({
+  const linkPersonSidebar = useSidebar({
     component: LinkPersonSidebar,
   });
 
+  const editPersonSidebar = useEditReferencePersonSidebar();
+
   const identity = procedure.identificationData;
+  const canEditCentralFile =
+    procedure.status === ApiGdprProcedureStatus.InProgress &&
+    procedure.type === ApiGdprProcedureType.ToRectification;
 
   function openLinkSidebar() {
     if (isGdprPerson(identity)) {
-      personSidebar.open({
+      linkPersonSidebar.open({
         procedureId: procedure.id,
         procedureVersion: procedure.version,
         matches: personMatches,
       });
     } else {
-      facilitySidebar.open({
+      linkFacilitySidebar.open({
         procedureId: procedure.id,
         procedureVersion: procedure.version,
         matches: facilityMatches,
       });
     }
+  }
+
+  function editPerson(person: ApiGetReferencePersonResponse) {
+    editPersonSidebar.open({
+      addressRequired: false,
+      initialValues: {
+        ...mapReferencePersonToForm(person),
+        id: person.id,
+        version: person.version,
+      },
+      submitLabel: "Speichern",
+      title: "Person bearbeiten",
+    });
   }
 
   return (
@@ -101,7 +122,11 @@ export function GDPRProcedureDetails({
         )}
         {linkedPersons.map((person, index) => (
           <SectionTile key={person.id} id={person.id}>
-            <SectionTitle id={person.id}>
+            <SectionTitle
+              id={person.id}
+              canEdit={canEditCentralFile}
+              onEdit={() => editPerson(person)}
+            >
               {index + 1}. Datensatz aus dem Stammdaten-Konverter
             </SectionTitle>
             <CentralFilePersonDetails person={person} columnSx={COLUMN_STYLE} />
@@ -120,9 +145,9 @@ export function GDPRProcedureDetails({
         ))}
       </Stack>
       <Stack gap={3} flexBasis={"50ch"}>
-        <OverlayBoundary>
+        <QueryBoundary>
           <ProcedureDetailsTile procedure={procedure} />
-        </OverlayBoundary>
+        </QueryBoundary>
         {procedure.status === ApiGdprProcedureStatus.Draft && (
           <CentralFileLinkTile
             centralFileId={procedure.centralFileId}

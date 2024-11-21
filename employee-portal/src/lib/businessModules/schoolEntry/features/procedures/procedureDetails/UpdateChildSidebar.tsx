@@ -33,7 +33,7 @@ export function UpdateChildSidebar({
     onClose,
   });
 
-  const updateChild = useUpdateChild();
+  const updateChild = useUpdateChild(procedureId);
 
   async function handleSubmit(values: DefaultPersonFormValues) {
     const request = mapToPersonUpdateRequest(values, child.version);

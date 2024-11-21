@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(indexes = @Index(columnList = "evaluation_id"))
+@Table(indexes = @Index(columnList = "analysis_id"))
 public class Diagram extends BaseEntityWithExternalId {
   @DataSensitivity(PUBLIC)
   @Column(nullable = false)
@@ -39,8 +39,8 @@ public class Diagram extends BaseEntityWithExternalId {
 
   @DataSensitivity(PUBLIC)
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "evaluation_id")
-  private Evaluation evaluation;
+  @JoinColumn(name = "analysis_id")
+  private Analysis analysis;
 
   @DataSensitivity(PUBLIC)
   @OneToMany(
@@ -76,12 +76,12 @@ public class Diagram extends BaseEntityWithExternalId {
     this.description = description;
   }
 
-  void setEvaluation(Evaluation evaluation) {
-    this.evaluation = evaluation;
+  void setAnalysis(Analysis analysis) {
+    this.analysis = analysis;
   }
 
-  public Evaluation getEvaluation() {
-    return evaluation;
+  public Analysis getAnalysis() {
+    return analysis;
   }
 
   public List<AbstractFilterParameter> getFilters() {

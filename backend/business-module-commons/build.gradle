@@ -36,6 +36,6 @@ dependencies {
     testFixturesApi 'org.springframework.security:spring-security-test'
     testFixturesImplementation 'org.springframework.data:spring-data-commons'
 
-    testFixturesApi 'org.springdoc:springdoc-openapi-starter-webmvc-ui:latest.release'
+    testFixturesApi 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
     testFixturesImplementation 'org.openapitools:jackson-databind-nullable:latest.release'
 }

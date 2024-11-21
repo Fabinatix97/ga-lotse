@@ -1,0 +1,42 @@
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="compute-key-document-versions-invitation">
+    <sql>
+      WITH ranked_entries AS (
+        SELECT spe.id,
+               ROW_NUMBER() OVER (PARTITION BY pe.procedure_id ORDER BY pe.id) AS key_document_version
+        FROM system_progress_entry spe
+               JOIN progress_entry pe ON spe.id = pe.id
+        WHERE spe.system_progress_entry_type = 'APPOINTMENT_MODIFIED'
+      )
+      UPDATE system_progress_entry spe
+      SET key_document_type = 'INVITATION',
+          key_document_version = re.key_document_version
+      FROM ranked_entries re
+      WHERE spe.id = re.id
+    </sql>
+  </changeSet>
+  <changeSet author="GA-Lotse" id="compute-key-document-versions-school-info-letter">
+    <sql>
+      WITH ranked_entries AS (
+        SELECT spe.id,
+               ROW_NUMBER() OVER (PARTITION BY pe.procedure_id ORDER BY pe.id) AS key_document_version
+        FROM system_progress_entry spe
+               JOIN progress_entry pe ON spe.id = pe.id
+        WHERE spe.system_progress_entry_type = 'SCHOOL_INFO_LETTER_GENERATED'
+      )
+      UPDATE system_progress_entry spe
+      SET key_document_type = 'SCHOOL_INFO_LETTER',
+          key_document_version = re.key_document_version
+      FROM ranked_entries re
+      WHERE spe.id = re.id
+    </sql>
+  </changeSet>
+</databaseChangeLog>

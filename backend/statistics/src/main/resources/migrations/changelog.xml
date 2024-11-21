@@ -40,5 +40,11 @@
     <include file="migrations/0030_add_attribute_names_to_evaluation_templates.xml"/>
     <include file="migrations/0031_add_description_and_count_to_evaluation_template.xml"/>
     <include file="migrations/0032_add_anonymized_flag.xml"/>
+    <include file="migrations/0033_remove_central_file_ids.xml"/>
+    <include file="migrations/0034_unique_active_series.xml"/>
+    <include file="migrations/0035_unique_planned_report.xml"/>
+    <include file="migrations/0036_rename_evaluation_to_analysis.xml"/>
+    <include file="migrations/0037_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
+    <include file="migrations/0038_rename_statistic_to_evaluation.xml"/>
 
 </databaseChangeLog>

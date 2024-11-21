@@ -13,7 +13,6 @@ import {
   toUtcDate,
 } from "@eshg/lib-portal/helpers/dateTime";
 import {
-  InsertLinkOutlined,
   KeyboardArrowLeftOutlined,
   KeyboardArrowRightOutlined,
 } from "@mui/icons-material";
@@ -141,14 +140,12 @@ export function VaccinationConsultationsOverviewTable(
                 setInputField={setLastName}
                 sx={{ height: "36px" }}
               />
-              <InsertLinkOutlined size="sm" />
               <TextInputClientFilter
                 placeholder={"Vorname"}
                 type={"search"}
                 setInputField={setFirstName}
                 sx={{ height: "36px" }}
               />
-              <InsertLinkOutlined size="sm" />
               <TextInputClientFilter
                 placeholder={"Geburtsdatum"}
                 type={"date"}
@@ -239,6 +236,7 @@ export function VaccinationConsultationsOverviewTable(
               routes.procedures.baseData(row.original.procedureId),
             focusColumnAccessorKey: "lastName",
           }}
+          minWidth={1600}
         />
       </TableSheet>
     </TablePage>

@@ -37,6 +37,7 @@ export function AdditionalDataSection({
           <DetailsCell
             label="Nächster Termin"
             value={formatAppointmentTime(procedure?.appointment?.start)}
+            showIfEmpty
           />
         </DetailsColumn>
       </DetailsSection>

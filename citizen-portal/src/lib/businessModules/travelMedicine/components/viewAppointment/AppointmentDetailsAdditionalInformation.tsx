@@ -10,8 +10,8 @@ import {
 import { Box, styled } from "@mui/joy";
 
 import { theme } from "@/lib/baseModule/theme/theme";
+import { AppointmentDetailsInformationStatementList } from "@/lib/businessModules/travelMedicine/components/viewAppointment/ApointmentDetailsInformationStatementList";
 import { AppointmentDetailsMedicalHistoryInformation } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentDetailsMedicalHistoryInformation";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   InfoSection,
@@ -21,6 +21,7 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 const StyledList = styled("ul")({
   margin: 0,
@@ -69,6 +70,13 @@ export function AppointmentDetailsAdditionalInformation(
           <AppointmentDetailsMedicalHistoryInformation
             citizenHasAnswered={
               props.appointmentDetails.medicalHistoryCitizenHasAnswered
+            }
+          />
+        </Box>
+        <Box sx={isMobile ? BOX_STYLE_MOBILE : BOX_STYLE}>
+          <AppointmentDetailsInformationStatementList
+            informationStatementSummaries={
+              props.appointmentDetails.informationStatementSummaries
             }
           />
         </Box>

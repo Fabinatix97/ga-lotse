@@ -33,7 +33,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import org.apache.commons.lang3.builder.Diff;
 import org.apache.commons.lang3.builder.DiffResult;
 import org.springframework.data.domain.Pageable;
@@ -100,8 +99,8 @@ public class PersonMapper {
         mapDataOriginToApi(person.getDataOrigin()));
   }
 
-  public static GetPersonFileStateResponse mapPersonToGetPersonFileStatesResponse(
-      Person person, boolean outdated) {
+  public static GetPersonFileStateResponse mapPersonToGetPersonFileStateResponse(
+      Person person, Boolean outdated) {
     return new GetPersonFileStateResponse(
         person.getExternalId(),
         person.getTitle(),
@@ -123,10 +122,14 @@ public class PersonMapper {
   }
 
   public static GetPersonFileStatesResponse mapToGetPersonFileStatesResponse(
-      List<UUID> queryIds, List<Person> foundFileStates, Pageable pageable) {
-    Map<UUID, AddPersonFileStateResponse> mappedPersonsById = mapToApiAndGroupById(foundFileStates);
+      List<UUID> queryIds,
+      List<Person> foundFileStates,
+      Pageable pageable,
+      Map<UUID, Boolean> outdatedByFileStateId) {
+    Map<UUID, GetPersonFileStateResponse> mappedPersonsById =
+        mapToApiAndGroupById(foundFileStates, outdatedByFileStateId);
 
-    List<AddPersonFileStateResponse> personResponses = new ArrayList<>(mappedPersonsById.values());
+    List<GetPersonFileStateResponse> personResponses = new ArrayList<>(mappedPersonsById.values());
 
     if (pageable.isUnpaged()) {
       personResponses.sort(
@@ -138,7 +141,7 @@ public class PersonMapper {
               }));
     }
 
-    for (AddPersonFileStateResponse personResponse : personResponses) {
+    for (GetPersonFileStateResponse personResponse : personResponses) {
       Assert.isTrue(
           queryIds.contains(personResponse.id()), "Unexpected response: " + personResponse);
     }
@@ -154,10 +157,14 @@ public class PersonMapper {
     return new GetPersonFileStatesResponse(personResponses, notFoundPersonIds);
   }
 
-  private static Map<UUID, AddPersonFileStateResponse> mapToApiAndGroupById(List<Person> persons) {
+  private static Map<UUID, GetPersonFileStateResponse> mapToApiAndGroupById(
+      List<Person> persons, Map<UUID, Boolean> isOutdated) {
     return persons.stream()
-        .map(PersonMapper::mapPersonFileStateToApi)
-        .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id, Function.identity()));
+        .map(
+            person ->
+                PersonMapper.mapPersonToGetPersonFileStateResponse(
+                    person, isOutdated.getOrDefault(person.getExternalId(), null)))
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   public static DiffDto<PersonDetailsDto> mapToPersonDiffApi(Person person, Person refPerson) {
@@ -179,7 +186,7 @@ public class PersonMapper {
     return mapPersonDetailsToDm(request);
   }
 
-  public static Person mapPersonToDm(PutPersonRequest request) {
+  public static Person mapPersonToDm(UpdatePersonRequest request) {
     return mapPersonDetailsToDm(request.updatedPerson());
   }
 

@@ -5,12 +5,12 @@
 
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { SingleAutocompleteField } from "@eshg/lib-portal/components/formFields/autocomplete/SingleAutocompleteField";
-import { isEmptyString, isInteger } from "@eshg/lib-portal/helpers/guards";
+import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 
-import { COUNTRY_CODE_OPTIONS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
+import { EditPersonalDataForm } from "@/lib/businessModules/stiProtection/features/procedures/details/EditPersonalDataSidebar";
+import { CountryField } from "@/lib/shared/components/formFields/CountryField";
 import { GENDER_OPTIONS } from "@/lib/shared/components/personSidebar/constants";
 
 import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
@@ -37,11 +37,7 @@ export function PersonalDataForm() {
         required="Bitte ein gültiges Jahr eingeben."
         validate={validateYear}
       />
-      <SingleAutocompleteField
-        name="countryOfBirth"
-        label="Geburtsland"
-        options={COUNTRY_CODE_OPTIONS}
-      />
+      <CountryField name="countryOfBirth" label="Geburtsland" />
       <NumberField
         name="inGermanySince"
         label="In Deutschland seit"
@@ -56,8 +52,9 @@ export function createBoundedIntValidator(
   max: number,
   message: string,
 ) {
-  return (value: OptionalFieldValue<number>) => {
-    const isPositiveInteger = isInteger(value) && value >= min && value <= max;
+  return (value: OptionalFieldValue<number | string>) => {
+    const int = typeof value === "string" ? parseInt(value, 10) : value;
+    const isPositiveInteger = int >= min && int <= max;
     if (isEmptyString(value) || isPositiveInteger) {
       return undefined;
     }
@@ -66,7 +63,9 @@ export function createBoundedIntValidator(
   };
 }
 
-export function personalDataFormValidation(form: AddNewProcedureForm) {
+export function personalDataFormValidation(
+  form: AddNewProcedureForm | EditPersonalDataForm,
+) {
   if (!form.yearOfBirth || !form.inGermanySince) {
     return;
   }

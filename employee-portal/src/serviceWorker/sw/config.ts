@@ -7,6 +7,7 @@ import { uuidV4Re } from "@/serviceWorker/common/common";
 
 export const NETWORK_TIMEOUT_IN_SECONDS = 10;
 export const CACHE_RETENTION_IN_MINUTES = 7 * 24 * 60;
+export const CACHE_RETENTION_IN_SECONDS = CACHE_RETENTION_IN_MINUTES * 60;
 export const KEY_TIMEOUT_IN_MS = 10 * 60 * 1000; // 10 minutes
 
 export const API_INSPECTION_INSPECTIONS_FINALIZE_PATH_PATTERN = new RegExp(

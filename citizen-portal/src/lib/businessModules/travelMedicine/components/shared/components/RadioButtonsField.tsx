@@ -29,6 +29,7 @@ interface RadioButtonsFieldProps<T extends SelectOption>
   readOnly?: boolean;
   // Disables the radio buttons
   disabled?: boolean;
+  "data-testid"?: string;
 }
 
 const StyledRadioGroup = styled(RadioGroup)(({ theme }) => ({
@@ -74,6 +75,7 @@ export function RadioButtonsField<T extends SelectOption = SelectOption>(
             marginLeft: "20px",
             marginBottom: 0,
           }}
+          data-testid={props["data-testid"]}
         >
           <RadioButtons
             options={props.options}

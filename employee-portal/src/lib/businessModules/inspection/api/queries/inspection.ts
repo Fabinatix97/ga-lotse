@@ -8,7 +8,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { inspectionApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 
 export function inspectionGettersQueryKey(inspectionId: string) {
   return inspectionApiQueryKey(["inspectionGetters", { inspectionId }]);
@@ -51,19 +51,11 @@ export function getInspectionDuplicatesQueryKey(inspectionId: string) {
 
 export function useGetInspection(procedureId: string) {
   const inspectionApi = useInspectionApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery(
-    getInspectionQuery(
-      inspectionApi,
-      getPreCacheForOfflineModeHeaders,
-      procedureId,
-    ),
-  );
+  return useSuspenseQuery(getInspectionQuery(inspectionApi, procedureId));
 }
 
 export function getInspectionQuery(
   inspectionApi: InspectionApi,
-  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
   procedureId: string,
 ) {
   return queryOptions({
@@ -71,26 +63,18 @@ export function getInspectionQuery(
     queryFn: () =>
       inspectionApi.getInspection(
         procedureId,
-        getPreCacheForOfflineModeHeaders(procedureId),
+        getHeadersForOfflineCaching(procedureId),
       ),
   });
 }
 
 export function useGetAvailableCLDVs(inspectionId: string) {
   const inspectionApi = useInspectionApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-  return useSuspenseQuery(
-    getAvailableCLDVsQuery(
-      inspectionApi,
-      getPreCacheForOfflineModeHeaders,
-      inspectionId,
-    ),
-  );
+  return useSuspenseQuery(getAvailableCLDVsQuery(inspectionApi, inspectionId));
 }
 
 export function getAvailableCLDVsQuery(
   inspectionApi: InspectionApi,
-  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
   inspectionId: string,
 ) {
   return queryOptions({
@@ -98,20 +82,19 @@ export function getAvailableCLDVsQuery(
     queryFn: () =>
       inspectionApi.getAvailableCLDs(
         inspectionId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
+        getHeadersForOfflineCaching(inspectionId),
       ),
   });
 }
 
 export function useGetAvailablePLDRs(inspectionId: string) {
   const inspectionApi = useInspectionApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: getAvailablePLDRsQueryKey(inspectionId),
     queryFn: () =>
       inspectionApi.getAvailablePLDs(
         inspectionId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
+        getHeadersForOfflineCaching(inspectionId),
       ),
   });
 }

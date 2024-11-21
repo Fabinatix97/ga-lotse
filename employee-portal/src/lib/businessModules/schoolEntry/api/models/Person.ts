@@ -11,12 +11,11 @@ import {
 } from "@eshg/employee-portal-api/schoolEntry";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 
+import { mapOptional } from "@/lib/shared/api/models/utils";
 import { mapApiAddressToForm } from "@/lib/shared/components/form/address/helpers";
 import { DefaultPersonFormValues } from "@/lib/shared/components/personSidebar/form/DefaultPersonForm";
 import { normalizeListInputs } from "@/lib/shared/components/personSidebar/helpers";
 import { BaseAddress } from "@/lib/shared/helpers/address";
-
-import { mapOptional } from "./utils";
 
 interface PersonProps {
   firstName: string;

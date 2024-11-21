@@ -94,10 +94,10 @@ public abstract class AbstractAggregationResult extends BaseEntityWithExternalId
   @OneToMany(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,
-      mappedBy = Evaluation_.AGGREGATION_RESULT,
+      mappedBy = Analysis_.AGGREGATION_RESULT,
       orphanRemoval = true)
   @OrderBy
-  private final List<Evaluation> evaluations = new ArrayList<>();
+  private final List<Analysis> analyses = new ArrayList<>();
 
   public Instant getCreatedAt() {
     return createdAt;
@@ -173,16 +173,16 @@ public abstract class AbstractAggregationResult extends BaseEntityWithExternalId
     this.numberOfTableRows = numberOfTableRows;
   }
 
-  public void addEvaluation(Evaluation evaluation) {
-    evaluation.setAggregationResult(this);
-    this.evaluations.add(evaluation);
+  public void addAnalysis(Analysis analysis) {
+    analysis.setAggregationResult(this);
+    this.analyses.add(analysis);
   }
 
-  public void addEvaluations(Collection<Evaluation> evaluations) {
-    evaluations.forEach(this::addEvaluation);
+  public void addAnalyses(Collection<Analysis> analyses) {
+    analyses.forEach(this::addAnalysis);
   }
 
-  public List<Evaluation> getEvaluations() {
-    return evaluations;
+  public List<Analysis> getAnalyses() {
+    return analyses;
   }
 }

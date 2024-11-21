@@ -39,12 +39,12 @@ public final class AuthorizationTestUtil {
   public static final String REQUEST_MAPPING_HANDLER_MAPPING_BEAN_NAME =
       "requestMappingHandlerMapping";
 
-  public static List<PermissionRoleAndAccessToken> getAccessTokensForAllPermissionRoles(
+  static List<PermissionRoleAndAccessToken> getAccessTokensForAllPermissionRoles(
       Function<PermissionRole, AccessToken> loginFunction) {
     return getAccessTokensForPermissionRoles(getAllPermissionRoles(), loginFunction);
   }
 
-  public static List<PermissionRoleAndAccessToken> getAccessTokensForPermissionRoles(
+  static List<PermissionRoleAndAccessToken> getAccessTokensForPermissionRoles(
       Stream<PermissionRole> permissionRoles, Function<PermissionRole, AccessToken> loginFunction) {
     return permissionRoles.map(r -> getPermissionRoleAndAccessToken(r, loginFunction)).toList();
   }
@@ -60,7 +60,7 @@ public final class AuthorizationTestUtil {
     return new PermissionRoleAndAccessToken(role, accessToken.jwt());
   }
 
-  public static String getEndpointAuthorizationMatrixAsMarkdown(
+  static String getEndpointAuthorizationMatrixAsMarkdown(
       TestRestTemplate testRestTemplate,
       RequestMappingHandlerMapping requestMapping,
       List<PermissionRoleAndAccessToken> permissionRolesAndAccessTokens) {

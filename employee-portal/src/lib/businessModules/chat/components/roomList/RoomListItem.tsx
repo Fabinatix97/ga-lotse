@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import NotificationsOffOutlinedIcon from "@mui/icons-material/NotificationsOffOutlined";
 import { Box, Stack, Typography, useTheme } from "@mui/joy";
 import { Room } from "matrix-js-sdk";
@@ -13,6 +14,7 @@ import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { HighlightedText } from "@/lib/businessModules/chat/components/roomList/HighlightedText";
 import { ReceiptStatus } from "@/lib/businessModules/chat/components/roomList/ReceiptStatus";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { useNotificationContext } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
 import { Message } from "@/lib/businessModules/chat/shared/types";
@@ -37,7 +39,8 @@ export function RoomListItem({
   searchQuery,
 }: Readonly<RoomListItemProps>) {
   const theme = useTheme();
-  const { matrixClient, unreadNotificationsPerRoom } = useChatClientContext();
+  const { matrixClient } = useChatClientContext();
+  const { unreadNotificationsPerRoom } = useNotificationContext();
 
   const parsedDate = formatChatDate(latestMessage?.timestamp);
   const unreadNotifications = unreadNotificationsPerRoom[room.roomId];
@@ -92,12 +95,31 @@ export function RoomListItem({
             />
           )}
         </Stack>
-        <Typography noWrap>
-          <HighlightedText
-            searchQuery={searchQuery}
-            text={latestMessage?.content}
-          />
-        </Typography>
+        {latestMessage?.decrypted ? (
+          <Stack direction="row" alignItems="center">
+            <LockOutlinedIcon
+              sx={{
+                opacity: 0.5,
+              }}
+            />
+            <Typography
+              noWrap
+              sx={{
+                paddingLeft: 0.3,
+                opacity: 0.5,
+              }}
+            >
+              Entschlüsselung fehlgeschlagen
+            </Typography>
+          </Stack>
+        ) : (
+          <Typography noWrap>
+            <HighlightedText
+              searchQuery={searchQuery}
+              text={latestMessage?.content}
+            />
+          </Typography>
+        )}
       </Stack>
       <Stack
         sx={{

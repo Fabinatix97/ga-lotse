@@ -81,13 +81,11 @@ export function ContactPersonForm({
       <EmailField
         name={fieldName("emailAddress")}
         label="E-Mail-Adresse"
-        required="Bitte eine E-Mail-Adresse angeben."
         validate={validateLength(6, 254)}
       />
       <PhoneNumberField
         name={fieldName("phoneNumber")}
         label="Telefonnummer"
-        required="Bitte eine Telefonnummer angeben."
         validate={validateLength(1, 23)}
       />
 

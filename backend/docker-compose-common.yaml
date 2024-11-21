@@ -2,6 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 services:
+  eshg-service-base:
+    environment:
+      - DOCKER_HOSTNAME=${DOCKER_HOSTNAME:-localhost}
+      - spring.profiles.active=${ACTIVE_SPRING_PROFILES:-local,test-helper}
+      - eshg.keycloak.internal.url=http://keycloak:8080
+      - eshg.population.enabled=${POPULATION_ENABLED:-true}
+    restart: unless-stopped
+
   eshg-postgres-base:
     image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX:-docker.io}/postgres:16.3@sha256:d0f363f8366fbc3f52d172c6e76bc27151c3d643b870e1062b4e8bfe65baf609
     restart: unless-stopped

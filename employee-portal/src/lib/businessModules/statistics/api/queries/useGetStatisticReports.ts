@@ -5,7 +5,7 @@
 
 import {
   ApiFrequency,
-  ApiGetReportSeriesEntriesOfStatisticResponse,
+  ApiGetReportSeriesEntriesOfEvaluationResponse,
   ApiReportSeries,
   ApiReportState,
   ApiReportingPeriod,
@@ -106,11 +106,14 @@ function mapSeriesReport(apiReportSeries: ApiReportSeries): ReportSeries {
       datasetAmount: reportInfo.totalNumberOfElements,
       status: reportInfo.state,
     })),
+    isAllItemsDeleting: apiReportSeries.reportInfos.every(
+      (reportInfo) => reportInfo.state === ApiReportState.Deleting,
+    ),
   };
 }
 
 function mapActiveSeries(
-  response: ApiGetReportSeriesEntriesOfStatisticResponse,
+  response: ApiGetReportSeriesEntriesOfEvaluationResponse,
 ): ActiveSeriesInfo | undefined {
   const activeReportSeries = response.reportSeriesEntries.find(
     (reportSeriesEntry) => reportSeriesEntry.active,
@@ -130,11 +133,11 @@ function mapActiveSeries(
 }
 
 export function mapToStatisticReports(
-  response: ApiGetReportSeriesEntriesOfStatisticResponse,
+  response: ApiGetReportSeriesEntriesOfEvaluationResponse,
 ): StatisticReports {
   return {
-    statisticId: response.statisticId,
-    title: response.statisticName,
+    statisticId: response.evaluationId,
+    title: response.evaluationName,
     reports: response.reportSeriesEntries.map((reportSeriesEntry) => {
       return reportSeriesEntry.reportType === "AUTO"
         ? mapSeriesReport(reportSeriesEntry)
@@ -149,7 +152,7 @@ export function useGetStatisticReports(statisticId: string) {
   const statisticApi = useStatisticApi();
   const { data, isFetching } = useSuspenseQuery({
     queryKey: getStatisticReportsQueryKey([statisticId]),
-    queryFn: () => statisticApi.getReportSeriesEntriesOfStatistic(statisticId),
+    queryFn: () => statisticApi.getReportSeriesEntriesOfEvaluation(statisticId),
     select: mapToStatisticReports,
   });
   return { data, isFetching };

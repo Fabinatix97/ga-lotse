@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
 
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useDeleteProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 interface DeleteProcedureModalProps extends Omit<BaseModalProps, "children"> {
   procedure: ProcedureDetails;

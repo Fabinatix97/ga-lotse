@@ -39,7 +39,9 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.hibernate.Session;
@@ -89,9 +91,8 @@ public class TaskServiceImpl<
                 .and(sort(sortOptions.sortKey(), sortOptions.sortOrder())),
             PageRequest.ofSize(limit));
 
-    List<TaskDto> tasks = page.stream().map(enrichingMapper::enrichAndMap).toList();
-
-    return new TaskResponse(page.getTotalElements(), tasks);
+    List<TaskDto> enrichedTasks = enrichingMapper.enrichAndMapTasks(page.stream().toList());
+    return new TaskResponse(page.getTotalElements(), enrichedTasks);
   }
 
   private Specification<TaskT> assigneeId(UUID filteringAssigneeId) {

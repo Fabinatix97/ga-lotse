@@ -5,11 +5,11 @@
 
 "use client";
 
+import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
 import { Stack } from "@mui/joy";
 import { ReactNode, useId, useMemo, useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
 
-import { BaseModalProps } from "@/lib/shared/components/BaseModal";
 import { SectionHeader } from "@/lib/shared/components/detailsSection/SectionHeader";
 
 export type SimplifiedModalProps = Pick<BaseModalProps, "open" | "onClose">;

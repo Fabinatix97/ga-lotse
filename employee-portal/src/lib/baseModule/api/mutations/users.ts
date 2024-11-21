@@ -22,10 +22,14 @@ export function useUpdateSelfUser() {
     mutationFn: async ({
       externalChatUsername,
       phoneNumber,
+      title,
+      salutation,
     }: ApiUpdateSelfUserRequest) => {
       await userApi.updateSelfUser({
         phoneNumber,
         externalChatUsername,
+        title,
+        salutation,
       });
     },
     onSuccess: () => {

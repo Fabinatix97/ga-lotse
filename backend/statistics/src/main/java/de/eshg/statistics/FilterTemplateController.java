@@ -9,10 +9,10 @@ import static de.eshg.statistics.FilterTemplateController.BASE_URL;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.statistics.aggregation.StatisticService;
+import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.api.filtertemplate.AddFilterTemplateRequest;
 import de.eshg.statistics.api.filtertemplate.FilterTemplateDto;
-import de.eshg.statistics.api.filtertemplate.GetFilterTemplatesForStatisticResponse;
+import de.eshg.statistics.api.filtertemplate.GetFilterTemplatesForEvaluationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,12 +33,12 @@ public class FilterTemplateController {
   public static final String BASE_URL = BaseUrls.Statistics.FILTER_TEMPLATE_CONTROLLER;
 
   private final FilterTemplateService filterTemplateService;
-  private final StatisticService statisticService;
+  private final EvaluationService evaluationService;
 
   public FilterTemplateController(
-      FilterTemplateService filterTemplateService, StatisticService statisticService) {
+      FilterTemplateService filterTemplateService, EvaluationService evaluationService) {
     this.filterTemplateService = filterTemplateService;
-    this.statisticService = statisticService;
+    this.evaluationService = evaluationService;
   }
 
   @PostExchange(accept = APPLICATION_JSON_VALUE)
@@ -57,13 +57,13 @@ public class FilterTemplateController {
     return filterTemplateService.getFilterTemplate(filterTemplateId);
   }
 
-  @GetExchange(value = "/statistic/{statisticId}", accept = APPLICATION_JSON_VALUE)
-  @ApiResponse(responseCode = "200", description = "Fitting filter templates for a statistic")
-  @Operation(summary = "Get filter templates that can be used on the statistic")
-  public GetFilterTemplatesForStatisticResponse findFilterTemplatesForStatistic(
-      @PathVariable(name = "statisticId") UUID statisticId) {
-    statisticService.checkPermissionForStatistic(statisticId);
-    return filterTemplateService.findFilterTemplatesForStatistic(statisticId);
+  @GetExchange(value = "/evaluation/{evaluationId}", accept = APPLICATION_JSON_VALUE)
+  @ApiResponse(responseCode = "200", description = "Fitting filter templates for an evaluation")
+  @Operation(summary = "Get filter templates that can be used on the evaluation")
+  public GetFilterTemplatesForEvaluationResponse findFilterTemplatesForEvaluation(
+      @PathVariable(name = "evaluationId") UUID evaluationId) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
+    return filterTemplateService.findFilterTemplatesForEvaluation(evaluationId);
   }
 
   @DeleteExchange(value = "/{filterTemplateId}", accept = APPLICATION_JSON_VALUE)

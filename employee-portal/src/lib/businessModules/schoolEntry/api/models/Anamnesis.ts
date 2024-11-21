@@ -17,10 +17,7 @@ import {
   ApiPromotionTherapyAndAidInfo,
 } from "@eshg/employee-portal-api/schoolEntry";
 
-import {
-  Versioned,
-  mapVersioned,
-} from "@/lib/businessModules/schoolEntry/api/models/Versioned";
+import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface Anamnesis extends Versioned {
   childLanguageScreening?: boolean;

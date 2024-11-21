@@ -11,7 +11,7 @@ import {
   shouldSearchForFalse,
   shouldSearchForNull,
   shouldSearchForTrue,
-} from "@/lib/businessModules/statistics/components/statistics/details/filter/enumFilterMappings";
+} from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 import {
   NumberFilterComparisonMode,

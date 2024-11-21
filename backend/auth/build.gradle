@@ -1,5 +1,6 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
@@ -34,12 +35,6 @@ dockerCompose {
         'auth-citizen-portal',
         'auth-cache'
     ]
-}
-
-tasks.named('test').configure {
-    dependsOn ':base:composeUp'
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 // auth should only start when Keycloak is up and provisioned by base

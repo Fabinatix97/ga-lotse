@@ -13,22 +13,22 @@ export const REGISTER_CLIENT = "register-client";
 export const GET_EXISTING_PASSWORD = "get-existing-password";
 export const GET_PASSWORD = "get-password";
 export const PASSWORD_ACCEPTED = "password-accepted";
-export const GET_PASSWORD_FAILED = "get-password-failed";
+export const GET_PASSWORD_ABORTED = "get-password-aborted";
 
-export interface PasswordMessage {
-  type: "password";
-  password: string;
-  salt: ArrayBufferLike;
+enum MessageType {
+  Password = "password",
+  PreemptivePassword = "preemptive-password",
 }
 
-export function createPasswordMessage(
-  password: string,
-  salt: ArrayBufferLike,
-): PasswordMessage {
+export interface PasswordMessage {
+  type: MessageType.Password;
+  password: string;
+}
+
+export function createPasswordMessage(password: string): PasswordMessage {
   return {
-    type: "password",
+    type: MessageType.Password,
     password,
-    salt,
   };
 }
 
@@ -39,14 +39,35 @@ export function isPasswordMessage(
     typeof message === "object" &&
     message !== null &&
     "type" in message &&
-    message.type === "password" &&
+    message.type === MessageType.Password &&
     "password" in message &&
-    isString(message.password) &&
-    "salt" in message &&
-    isArrayBufferLike(message.salt)
+    isString(message.password)
   );
 }
 
-function isArrayBufferLike(value: unknown): value is ArrayBufferLike {
-  return value instanceof ArrayBuffer || ArrayBuffer.isView(value);
+export interface PreemptivePasswordMessage {
+  type: MessageType.PreemptivePassword;
+  password: string;
+}
+
+export function createPreemptivePasswordMessage(
+  password: string,
+): PreemptivePasswordMessage {
+  return {
+    type: MessageType.PreemptivePassword,
+    password,
+  };
+}
+
+export function isPreemptivePasswordMessage(
+  message: unknown,
+): message is PreemptivePasswordMessage {
+  return (
+    typeof message === "object" &&
+    message !== null &&
+    "type" in message &&
+    message.type === MessageType.PreemptivePassword &&
+    "password" in message &&
+    isString(message.password)
+  );
 }

@@ -23,7 +23,7 @@ export function usePostDisease() {
       return diseaseApi.postDisease(data);
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Die Krankheit wurde angelegt.");
     },
   });
 }
@@ -37,7 +37,7 @@ export function usePutDisease() {
       return diseaseApi.putDisease(data.id, data.request);
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Die Krankheit wurde gespeichert.");
     },
   });
 }
@@ -51,7 +51,7 @@ export function useDeleteDisease() {
       return diseaseApi.deleteDisease(id);
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gelöscht.");
+      snackbar.confirmation("Die Krankheit wurde gelöscht.");
     },
   });
 }

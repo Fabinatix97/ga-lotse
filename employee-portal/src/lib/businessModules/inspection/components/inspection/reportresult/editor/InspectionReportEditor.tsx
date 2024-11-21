@@ -19,7 +19,6 @@ import {
   loadEditorQuery,
 } from "@/lib/businessModules/inspection/api/queries/inspectionReport";
 import { ReportDownloadButtons } from "@/lib/businessModules/inspection/components/inspection/reportresult/ReportDownloadButtons";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
 import { ContentEditor } from "@/lib/shared/components/contentEditor/ContentEditor";
 import {
@@ -36,16 +35,10 @@ export function InspectionReportEditor({
 }>) {
   const editorApi = useEditorApi();
   const textBlockApi = useTextBlockApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
 
   const [{ data: editorData }, { data: textBlocks }] = useSuspenseQueries({
     queries: [
-      loadEditorQuery(
-        editorApi,
-        getPreCacheForOfflineModeHeaders,
-        reportId,
-        inspectionId,
-      ),
+      loadEditorQuery(editorApi, reportId, inspectionId),
       getTextBlocksQuery(textBlockApi),
     ],
   });

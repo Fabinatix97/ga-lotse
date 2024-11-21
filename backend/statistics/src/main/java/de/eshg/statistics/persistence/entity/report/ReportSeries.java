@@ -10,7 +10,7 @@ import static de.eshg.lib.common.SensitivityLevel.PUBLIC;
 
 import de.eshg.domain.model.BaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
-import de.eshg.statistics.persistence.entity.Statistic;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,7 +34,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(indexes = @Index(columnList = "statistic_id"))
+@Table(indexes = @Index(columnList = "evaluation_id"))
 public class ReportSeries extends BaseEntityWithExternalId {
 
   @DataSensitivity(PROTECTED)
@@ -69,8 +69,8 @@ public class ReportSeries extends BaseEntityWithExternalId {
   private Instant timeRangeEnd;
 
   @DataSensitivity(PUBLIC)
-  @Column
-  private boolean active;
+  @Column(unique = true)
+  private Long uniqueActive;
 
   @DataSensitivity(PUBLIC)
   @Column
@@ -88,8 +88,8 @@ public class ReportSeries extends BaseEntityWithExternalId {
 
   @DataSensitivity(PUBLIC)
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "statistic_id")
-  private Statistic statistic;
+  @JoinColumn(name = "evaluation_id")
+  private Evaluation evaluation;
 
   @DataSensitivity(PUBLIC)
   @OneToMany(
@@ -149,11 +149,15 @@ public class ReportSeries extends BaseEntityWithExternalId {
   }
 
   public boolean isActive() {
-    return active;
+    return uniqueActive != null;
   }
 
-  public void setActive(boolean active) {
-    this.active = active;
+  public void deactivate() {
+    this.uniqueActive = null;
+  }
+
+  public void setActive(long uniqueActive) {
+    this.uniqueActive = uniqueActive;
   }
 
   public int getStartMonth() {
@@ -180,12 +184,12 @@ public class ReportSeries extends BaseEntityWithExternalId {
     this.period = period;
   }
 
-  public Statistic getStatistic() {
-    return statistic;
+  public Evaluation getEvaluation() {
+    return evaluation;
   }
 
-  public void setStatistic(Statistic statistic) {
-    this.statistic = statistic;
+  public void setEvaluation(Evaluation evaluation) {
+    this.evaluation = evaluation;
   }
 
   public void addReport(Report report) {

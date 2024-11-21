@@ -10,4 +10,4 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record SchoolEntryProcedurePopulationResult(
-    @Valid List<CreateProcedureResponse> procedures, @NotNull long count) {}
+    @NotNull @Valid List<CreateProcedureResponse> procedures, @NotNull long count) {}

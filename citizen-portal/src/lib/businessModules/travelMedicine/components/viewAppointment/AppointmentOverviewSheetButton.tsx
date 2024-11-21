@@ -32,9 +32,9 @@ import {
   AppointmentOverviewSectionTitle,
 } from "@/lib/businessModules/travelMedicine/components/viewAppointment/AppointmentOverviewSection";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 interface AppointmentOverviewSheetButtonProps {
   index: number;

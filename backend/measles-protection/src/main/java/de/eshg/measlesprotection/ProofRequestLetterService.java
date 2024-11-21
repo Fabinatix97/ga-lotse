@@ -18,7 +18,7 @@ import static de.eshg.measlesprotection.pdf.coverletter.DepartmentInfoMapper.toD
 import static de.eshg.measlesprotection.persistence.support.MeaslesProtectionSystemProgressEntryType.PROOF_REQUEST_LETTER_SAVED;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -154,7 +154,7 @@ public class ProofRequestLetterService {
   }
 
   private static CustodianDto findCustodian(ProcedureDetailsData procedure, UUID custodianId) {
-    AddPersonFileStateResponse personFileState =
+    GetPersonFileStateResponse personFileState =
         procedure.custodians().stream()
             .filter(custodian -> custodian.id().equals(custodianId))
             .collect(

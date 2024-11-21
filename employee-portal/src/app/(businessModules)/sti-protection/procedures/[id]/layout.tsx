@@ -6,6 +6,7 @@
 import { ReactNode } from "react";
 
 import { ProcedureToolbar } from "@/lib/businessModules/stiProtection/features/procedures/ProcedureToolbar";
+import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 
 export interface StiProtectionProcedurePageParams {
@@ -14,14 +15,14 @@ export interface StiProtectionProcedurePageParams {
 
 export default function StiProtectionProcedureLayout({
   params,
-  tabs,
+  children,
 }: Readonly<{
   params: StiProtectionProcedurePageParams;
-  tabs: ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <StickyToolbarLayout toolbar={<ProcedureToolbar procedureId={params.id} />}>
-      {tabs}
+      <MainContentLayout fullViewportHeight>{children}</MainContentLayout>
     </StickyToolbarLayout>
   );
 }

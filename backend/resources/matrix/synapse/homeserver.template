@@ -1,0 +1,101 @@
+# For more information on how to configure Synapse, including a complete accounting of
+# each option, go to docs/usage/configuration/config_documentation.md or
+# https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
+
+server_name: "synapse.local.dev"
+public_baseurl: "http://localhost:8008"
+
+pid_file: /data/homeserver.pid
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    resources:
+      - names: [client, federation]
+        compress: false
+
+database:
+  name: psycopg2
+  args:
+    user: $DB_USER
+    password: $DB_PASSWORD
+    database: $DB_NAME
+    host: $DB_HOST
+    port: $DB_PORT
+    cp_min: 5
+    cp_max: 10
+
+log_config: "/data/synapse.log.config"
+
+report_stats: false
+
+registration_shared_secret: "k.@ukx06IL;5RcXHIo=^m4LI7lF*x-BgNegdB367MEyR@oe&~K"
+macaroon_secret_key: "N;bGo,h:OFkx4IFfkB;S^:y;~3DGp*a.z2Nbp;k#Ik.,DcIQ*R"
+form_secret: "uedeOma**;.d~-MyHLTPpL+GiGUf9Sr:29UKDMEvX3jo6Vxk~i"
+signing_key_path: "/data/synapse.local.dev.signing.key"
+trusted_key_servers: []
+
+user_directory:
+  enabled: true
+  search_all_users: true
+  prefer_local_users: true
+  show_locked_users: false
+
+rc_messages_per_second: 200000
+rc_message_burst_count: 100000
+
+rc_login:
+  address:
+    per_second: 100
+    burst_count: 100
+  account:
+    per_second: 100
+    burst_count: 100
+  failed_attempts:
+    per_second: 100
+    burst_count: 100
+
+max_upload_size: "10M"
+max_image_pixels: "32M"
+media_store_path: "/data/media_store"
+uploads_path: "/home/synapse/config/uploads"
+
+sso:
+  client_whitelist: # A list of client URLs which are whitelisted so that the user does not have to confirm giving access to their account to the URL
+    # WARNING: for test env only!
+    - "http://localhost"
+    # WARNING
+  update_profile_information: true
+
+# WARNING: for test env only!
+use_insecure_ssl_client_just_for_testing_do_not_use: true
+# WARNING
+
+oidc_providers:
+  - idp_id: "keycloak"
+    idp_name:  "Keycloak on localhost"
+    issuer: "http://keycloak:8080/realms/eshg"
+
+    discover: true
+    jwks_uri: "http://keycloak:8080/realms/eshg/protocol/openid-connect/certs"
+    token_endpoint: "http://keycloak:8080/realms/eshg/protocol/openid-connect/token"
+
+    client_id: "system-synapse"
+    client_secret: "very-secrety-synapse-client-secret"
+    scopes: [ "openid" ]
+    user_mapping_provider:
+      config:
+        localpart_template: "{{ user.sub }}"
+        display_name_template: "{{ user.sub }}"
+
+    backchannel_logout_enabled: true
+
+    # WARNING: for test env only!
+    skip_verification: true
+    allow_insecure_http: true
+    # WARNING
+
+#templates:
+#  custom_template_directory: "/data/templates/"
+# vim:ft=yaml

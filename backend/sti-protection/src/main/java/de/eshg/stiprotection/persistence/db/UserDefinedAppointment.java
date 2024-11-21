@@ -35,13 +35,6 @@ public class UserDefinedAppointment extends GenericEntity<Long> {
   @Column(nullable = false)
   private Instant appointmentEnd;
 
-  public UserDefinedAppointment() {}
-
-  public UserDefinedAppointment(Instant appointmentStart, Instant appointmentEnd) {
-    this.appointmentStart = appointmentStart;
-    this.appointmentEnd = appointmentEnd;
-  }
-
   @Override
   public Long getId() {
     return id;

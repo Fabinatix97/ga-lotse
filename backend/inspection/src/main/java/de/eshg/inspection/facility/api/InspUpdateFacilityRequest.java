@@ -16,6 +16,4 @@ import java.util.UUID;
 public record InspUpdateFacilityRequest(
     @NotNull UUID procedureId,
     @NotNull @Valid AddFacilityFileStateRequest baseFacility,
-    Boolean banned,
-    Boolean suspicious,
-    Boolean active) {}
+    Boolean banned) {}

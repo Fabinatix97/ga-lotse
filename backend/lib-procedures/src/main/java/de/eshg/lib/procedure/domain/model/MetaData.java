@@ -35,4 +35,10 @@ public abstract class MetaData extends GenericEntity<Long> {
   public Long getId() {
     return this.id;
   }
+
+  public abstract MetaData copy();
+
+  protected void copy(MetaData destination) {
+    destination.description = this.description;
+  }
 }

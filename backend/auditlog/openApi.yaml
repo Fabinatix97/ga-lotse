@@ -235,18 +235,6 @@ paths:
       summary: Get user specific asymmetrically encrypted symmetric key.
       tags:
       - AuditLog
-  /feature-toggles:
-    get:
-      operationId: getFeatureToggles
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GetAuditLogFeatureTogglesResponse"
-          description: OK
-      tags:
-      - AuditLogFeatureToggles
   /test-helper/archiving-job:
     post:
       operationId: runArchivingJob
@@ -258,20 +246,6 @@ paths:
   /test-helper/audit-log-storage:
     delete:
       operationId: clearAuditLogStorageDirectory
-      responses:
-        "200":
-          description: OK
-      tags:
-      - TestHelper
-  /test-helper/enabled-new-features/{featureToEnable}:
-    post:
-      operationId: enableNewFeature
-      parameters:
-      - in: path
-        name: featureToEnable
-        required: true
-        schema:
-          $ref: "#/components/schemas/AuditLogFeature"
       responses:
         "200":
           description: OK
@@ -443,10 +417,6 @@ components:
       required:
       - date
       - source
-    AuditLogFeature:
-      type: string
-      enum:
-      - AUDIT_LOG_ACCESSIBLE_TABLE
     AuditLogGrantedAccessCount:
       type: object
       properties:
@@ -487,22 +457,6 @@ components:
             $ref: "#/components/schemas/AccessibleAuditLog"
       required:
       - accessibleAuditLogs
-    GetAuditLogFeatureTogglesResponse:
-      type: object
-      properties:
-        disabledOldFeatures:
-          type: array
-          items:
-            $ref: "#/components/schemas/AuditLogFeature"
-          uniqueItems: true
-        enabledNewFeatures:
-          type: array
-          items:
-            $ref: "#/components/schemas/AuditLogFeature"
-          uniqueItems: true
-      required:
-      - disabledOldFeatures
-      - enabledNewFeatures
     GetAuditLogGrantedAccessesResponse:
       type: object
       properties:

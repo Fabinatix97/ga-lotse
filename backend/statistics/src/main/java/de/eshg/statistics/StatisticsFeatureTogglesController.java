@@ -6,7 +6,7 @@
 package de.eshg.statistics;
 
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.statistics.api.GetFeatureTogglesResponse;
+import de.eshg.statistics.api.GetStatisticsFeatureTogglesResponse;
 import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +27,8 @@ public class StatisticsFeatureTogglesController {
   }
 
   @GetMapping
-  public GetFeatureTogglesResponse getFeatureToggles() {
-    return new GetFeatureTogglesResponse(
+  public GetStatisticsFeatureTogglesResponse getFeatureToggles() {
+    return new GetStatisticsFeatureTogglesResponse(
         featureToggle.getEnabledNewFeatures(), featureToggle.getDisabledOldFeatures());
   }
 }

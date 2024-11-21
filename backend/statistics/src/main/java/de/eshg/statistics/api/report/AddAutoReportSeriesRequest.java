@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Schema(name = SCHEMA_NAME)
 public record AddAutoReportSeriesRequest(
-    @NotNull UUID statisticId,
+    @NotNull UUID evaluationId,
     @NotBlank String name,
     String description,
     @Min(1) @Max(12) @NotNull int startMonth,

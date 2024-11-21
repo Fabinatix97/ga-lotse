@@ -15,11 +15,13 @@ import {
   ImageOutlined,
   NoteAltOutlined,
   PictureAsPdfOutlined,
+  UploadOutlined,
 } from "@mui/icons-material";
 import { ReactNode } from "react";
 
 import { systemProgressEntryTypeTitles as inspectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { systemProgressEntryTypeTitles as measlesProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
+import { systemProgressEntryTypeTitles as medicalRegistrySystemProgressEntryTypeTitles } from "@/lib/businessModules/medicalRegistry/shared/constants";
 import { systemProgressEntryTypeTitles as schoolEntrySystemProgressEntryTypeTitles } from "@/lib/businessModules/schoolEntry/shared/constants";
 import { systemProgressEntryTypeTitles as travelMedicineSystemProgressEntryTypeTitles } from "@/lib/businessModules/travelMedicine/shared/constants";
 import { FileType } from "@/lib/shared/components/formFields/file/FileType";
@@ -55,6 +57,10 @@ export const manualProgressEntryIndicators = {
   [ApiManualProgressEntryType.Note]: <NoteAltOutlined color={"primary"} />,
 } satisfies Record<ApiManualProgressEntryType, ReactNode>;
 
+export const systemProgressEntryIndicators: Record<string, ReactNode> = {
+  DOCUMENT_UPLOAD: <UploadOutlined />,
+};
+
 export const manualProgressEntryFileTypes = {
   [ApiManualProgressEntryType.Document]: [FileType.Pdf],
   [ApiManualProgressEntryType.Email]: [FileType.Eml],
@@ -79,6 +85,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   ...schoolEntrySystemProgressEntryTypeTitles,
   ...travelMedicineSystemProgressEntryTypeTitles,
   ...measlesProtectionSystemProgressEntryTypeTitles,
+  ...medicalRegistrySystemProgressEntryTypeTitles,
 };
 
 export const inboxProgressEntryTitles = {

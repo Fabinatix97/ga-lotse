@@ -1,11 +1,13 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
     implementation project(':lib-appointmentblock')
     implementation project(':lib-base-client')
     implementation project(':lib-calendar')
+    implementation project(':lib-contact')
     implementation project(":lib-document-generator")
     implementation project(':lib-procedures')
     implementation project(":lib-statistics")
@@ -21,7 +23,7 @@ dependencies {
 
     implementation 'com.google.guava:guava:latest.release'
     implementation 'org.apache.commons:commons-csv:latest.release'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     compileOnly 'org.jetbrains:annotations:latest.release'
@@ -40,12 +42,6 @@ dockerCompose {
         'school-entry',
         'school-entry-db'
     ]
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

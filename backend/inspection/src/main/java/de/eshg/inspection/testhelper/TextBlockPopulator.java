@@ -9,28 +9,26 @@ import de.eshg.inspection.textblock.persistence.TextBlockRepository;
 import de.eshg.lib.editor.TextBlockController;
 import de.eshg.lib.editor.api.model.TextBlockDto;
 import de.eshg.lib.editor.api.model.TextBlockRequest;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class TextBlockPopulator extends BasePopulator<TextBlockDto> {
 
   private final TextBlockController textBlockController;
   private final TextBlockRepository textBlockRepository;
 
   protected TextBlockPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       TextBlockController textBlockController,
-      TextBlockRepository textBlockRepository,
-      EnvironmentConfig environmentConfig) {
-    super(clock, environment, "text_block", environmentConfig);
+      TextBlockRepository textBlockRepository) {
+    super(properties, clock, "text_block", environmentConfig);
     this.textBlockController = textBlockController;
     this.textBlockRepository = textBlockRepository;
   }

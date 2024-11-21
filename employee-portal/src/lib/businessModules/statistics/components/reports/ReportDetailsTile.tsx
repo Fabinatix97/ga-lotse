@@ -13,12 +13,12 @@ import {
   simpleToolbarHeight,
 } from "@/lib/baseModule/components/layout/sizes";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
-import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import {
   UpdateReportSidebar,
   UpdateReportSidebarReportInfo,
-} from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/UpdateReportSidebar";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
+} from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
+import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
+import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
@@ -125,6 +125,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                   } satisfies DeleteReport,
                   canWrite,
                   canDelete,
+                  false,
                 )}
                 slotProps={{ root: { variant: "outlined", color: "primary" } }}
               />

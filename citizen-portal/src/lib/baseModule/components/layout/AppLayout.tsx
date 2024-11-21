@@ -5,6 +5,7 @@
 
 /* eslint @next/next/no-head-element: 0 */
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { PropsWithChildren } from "react";
 
@@ -41,7 +42,9 @@ export function AppLayout({
             <SnackbarProvider snackbar={CitizenSnackbar}>
               <NavigationProvider>
                 <ApiProvider configuration={API_CONFIGURATION}>
-                  <MainLayout>{children}</MainLayout>
+                  <QueryBoundary>
+                    <MainLayout>{children}</MainLayout>
+                  </QueryBoundary>
                 </ApiProvider>
               </NavigationProvider>
             </SnackbarProvider>

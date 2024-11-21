@@ -17,42 +17,31 @@ import {
   useInspectionApi,
 } from "@/lib/businessModules/inspection/api/clients";
 import { editorApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 
 export function loadEditorQuery(
   editorApi: EditorApi,
-  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
   reportId: string,
   inspectionId: string,
 ) {
   return queryOptions({
     queryKey: editorApiQueryKey(["loadEditor", { reportId, inspectionId }]),
     queryFn: () =>
-      editorApi.loadEditor(
-        reportId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
-      ),
+      editorApi.loadEditor(reportId, getHeadersForOfflineCaching(inspectionId)),
   });
 }
 
 export function useGetInspectionAndLoadEditor(inspectionId: string) {
   const inspectionApi = useInspectionApi();
   const editorApi = useEditorApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery(
-    getInspectionAndLoadEditorQuery(
-      inspectionApi,
-      editorApi,
-      getPreCacheForOfflineModeHeaders,
-      inspectionId,
-    ),
+    getInspectionAndLoadEditorQuery(inspectionApi, editorApi, inspectionId),
   );
 }
 
 export function getInspectionAndLoadEditorQuery(
   inspectionApi: InspectionApi,
   editorApi: EditorApi,
-  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
   inspectionId: string,
 ) {
   return queryOptions({
@@ -63,12 +52,12 @@ export function getInspectionAndLoadEditorQuery(
     queryFn: async () => {
       const inspection = await inspectionApi.getInspection(
         inspectionId,
-        getPreCacheForOfflineModeHeaders(inspectionId),
+        getHeadersForOfflineCaching(inspectionId),
       );
 
       const editorData = await editorApi.loadEditor(
         inspection.reportId!,
-        getPreCacheForOfflineModeHeaders(inspectionId),
+        getHeadersForOfflineCaching(inspectionId),
       );
 
       return { inspection, editorData };

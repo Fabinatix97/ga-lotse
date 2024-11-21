@@ -28,13 +28,13 @@ import de.eshg.statistics.api.datasource.BusinessDataAttribute;
 import de.eshg.statistics.api.datasource.DataSourceDto;
 import de.eshg.statistics.api.filter.NumericComparisonDto;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
-import de.eshg.statistics.mapper.StatisticMapper;
+import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.CellEntry;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
-import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
@@ -54,6 +54,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -103,7 +104,7 @@ public class DataAggregationService {
     }
   }
 
-  public Statistic createStatistic(
+  public Evaluation createEvaluation(
       DataSourceDto dataSource,
       String name,
       Instant timeRangeStart,
@@ -142,27 +143,24 @@ public class DataAggregationService {
             dataFromBusinessModule.dataTableHeader().attributes(),
             indexToBaseData,
             indexToBaseReferenceAttribute.keySet());
-    if (tableColumns.stream()
-        .filter(tableColumn -> !tableColumn.getValueType().equals(ValueType.CENTRAL_FILE_ID))
-        .findAny()
-        .isEmpty()) {
-      throw new BadRequestException("Statistic has no valid fields");
+    if (tableColumns.isEmpty()) {
+      throw new BadRequestException("Evaluation has no valid fields");
     }
 
-    Statistic statistic = new Statistic();
-    statistic.setAnonymized(anonymized);
-    statistic.setName(name);
-    statistic.setTimeRangeStart(timeRangeStart);
-    statistic.setTimeRangeEnd(timeRangeEnd);
-    statistic.addTableColumns(tableColumns);
-    statistic.setNumberOfTableRows(0);
-    statistic.setState(AggregationResultState.CREATING);
-    statistic.setPendingState(
+    Evaluation evaluation = new Evaluation();
+    evaluation.setAnonymized(anonymized);
+    evaluation.setName(name);
+    evaluation.setTimeRangeStart(timeRangeStart);
+    evaluation.setTimeRangeEnd(timeRangeEnd);
+    evaluation.addTableColumns(tableColumns);
+    evaluation.setNumberOfTableRows(0);
+    evaluation.setState(AggregationResultState.CREATING);
+    evaluation.setPendingState(
         dataFromBusinessModule.totalNumberOfElements() == 0
             ? AggregationResultPendingState.MIN_MAX_DETERMINATION
             : AggregationResultPendingState.DATA_AGGREGATION);
 
-    return statistic;
+    return evaluation;
   }
 
   private GetSpecificDataResponse getDataFromBusinessModule(
@@ -212,8 +210,8 @@ public class DataAggregationService {
     indexToBaseReferenceAttribute.forEach(
         (key, value) -> {
           List<String> baseAttributeCodes = codeToBaseAttributeCodes.get(value.code());
-          if (baseAttributeCodes != null && value.subjectType() != null) {
-            if (baseAttributeCodes.isEmpty()) {
+          if (value.subjectType() != null) {
+            if (baseAttributeCodes == null || baseAttributeCodes.isEmpty()) {
               indexToDataFromBase.put(
                   key,
                   new BaseStatisticsData(new BaseDataTableHeader(Collections.emptyList()), null));
@@ -271,9 +269,6 @@ public class DataAggregationService {
         .forEach(
             index -> {
               Attribute attribute = businessModuleAttributes.get(index);
-              tableColumns.add(
-                  createTableColumn(
-                      dataSourceName, businessModuleName, dataSourceId, attribute, null));
               if (baseReferenceIndexes.contains(index)) {
                 BaseStatisticsData statisticsDataFromBase = indexToBaseData.get(index);
                 if (statisticsDataFromBase != null) {
@@ -288,6 +283,10 @@ public class DataAggregationService {
                           baseAttributes);
                   tableColumns.addAll(columns);
                 }
+              } else {
+                tableColumns.add(
+                    createTableColumn(
+                        dataSourceName, businessModuleName, dataSourceId, attribute, null));
               }
             });
     return tableColumns;
@@ -308,10 +307,9 @@ public class DataAggregationService {
 
     if (baseModuleAttribute == null) {
       tableColumn.setValueType(businessModuleAttribute.valueType());
-      tableColumn.setSubjectType(businessModuleAttribute.subjectType());
       tableColumn.setUnit(businessModuleAttribute.unit());
       tableColumn.addValueToMeanings(
-          StatisticMapper.mapToPersistence(businessModuleAttribute.valueOptions()));
+          EvaluationMapper.mapToPersistence(businessModuleAttribute.valueOptions()));
       tableColumn.setMandatory(businessModuleAttribute.mandatory());
     } else {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
@@ -319,7 +317,7 @@ public class DataAggregationService {
       tableColumn.setValueType(baseModuleAttribute.valueType());
       tableColumn.setUnit(baseModuleAttribute.unit());
       tableColumn.addValueToMeanings(
-          StatisticMapper.mapToPersistence(baseModuleAttribute.valueOptions()));
+          EvaluationMapper.mapToPersistence(baseModuleAttribute.valueOptions()));
       tableColumn.setMandatory(baseModuleAttribute.mandatory());
     }
 
@@ -365,11 +363,7 @@ public class DataAggregationService {
     int ignoreTableRowsCount = (int) (tableRowsCount % businessModuleDataRequestPageSize);
 
     TableColumn firstTableColumn = aggregationResult.getTableColumns().getFirst();
-    List<String> attributeCodes =
-        aggregationResult.getTableColumns().stream()
-            .filter(tableColumn -> tableColumn.getBaseModuleAttributeCode() == null)
-            .map(TableColumn::getBusinessModuleAttributeCode)
-            .toList();
+    List<String> attributeCodes = getBusinessModuleAttributeCodes(aggregationResult);
     GetSpecificDataRequest request =
         new GetSpecificDataRequest(
             aggregationResult.getTimeRangeStart(),
@@ -440,26 +434,25 @@ public class DataAggregationService {
     return tableRowRepository.countTableRowByAggregationResult(aggregationResult);
   }
 
+  private static List<String> getBusinessModuleAttributeCodes(
+      AbstractAggregationResult aggregationResult) {
+    Set<String> codesAdded = new HashSet<>();
+    return aggregationResult.getTableColumns().stream()
+        .map(TableColumn::getBusinessModuleAttributeCode)
+        .filter(codesAdded::add)
+        .toList();
+  }
+
   private static Map<String, List<String>> getCodeToBaseAttributeCodesMap(
       List<TableColumn> tableColumns) {
-    Set<String> centralFileCodes =
-        tableColumns.stream()
-            .filter(tableColumn -> tableColumn.getValueType().equals(ValueType.CENTRAL_FILE_ID))
-            .map(TableColumn::getBusinessModuleAttributeCode)
-            .collect(Collectors.toSet());
-
     Map<String, List<String>> codeToBaseAttributeCodes = new HashMap<>();
-    centralFileCodes.forEach(
-        code -> {
-          List<String> baseCodes =
-              tableColumns.stream()
-                  .filter(
-                      tableColumn ->
-                          tableColumn.getBusinessModuleAttributeCode().equals(code)
-                              && tableColumn.getBaseModuleAttributeCode() != null)
-                  .map(TableColumn::getBaseModuleAttributeCode)
-                  .toList();
-          codeToBaseAttributeCodes.put(code, baseCodes);
+    tableColumns.forEach(
+        tableColumn -> {
+          if (tableColumn.getBaseModuleAttributeCode() != null) {
+            String code = tableColumn.getBusinessModuleAttributeCode();
+            codeToBaseAttributeCodes.computeIfAbsent(code, k -> new ArrayList<>());
+            codeToBaseAttributeCodes.get(code).add(tableColumn.getBaseModuleAttributeCode());
+          }
         });
     return codeToBaseAttributeCodes;
   }
@@ -495,7 +488,6 @@ public class DataAggregationService {
         || !Objects.equals(
             firstTableColumn.getBaseModuleAttributeCode(),
             secondTableColumn.getBaseModuleAttributeCode())
-        || !Objects.equals(firstTableColumn.getSubjectType(), secondTableColumn.getSubjectType())
         || !Objects.equals(firstTableColumn.getUnit(), secondTableColumn.getUnit())
         || firstTableColumn.isMandatory() != secondTableColumn.isMandatory()) {
       return true;
@@ -603,7 +595,6 @@ public class DataAggregationService {
         .forEach(
             index -> {
               Object value = dataRow.values().get(index);
-              values.add(value);
               if (mergeInformation.baseReferenceIndexes().contains(index)) {
                 Map<UUID, DataRow> uuidDataRowMap = indexToCentralFileIdRows.get(index);
                 UUID uuid = mapToUuid(value);
@@ -612,6 +603,8 @@ public class DataAggregationService {
                 } else {
                   values.addAll(uuidDataRowMap.get(uuid).values());
                 }
+              } else {
+                values.add(value);
               }
             });
 
@@ -640,7 +633,10 @@ public class DataAggregationService {
           case DECIMAL -> createDecimalEntry(value);
           case INTEGER -> createIntegerEntry(value);
           case TEXT, VALUE_WITH_OPTIONS -> createTextEntry(value);
-          case PROCEDURE_ID, CENTRAL_FILE_ID -> createUuidEntry(value);
+          case PROCEDURE_ID -> createUuidEntry(value);
+          case CENTRAL_FILE_ID ->
+              throw new IllegalArgumentException(
+                  "Value type %s not allowed".formatted(ValueType.CENTRAL_FILE_ID.name()));
         };
 
     tableColumn.addCellEntry(cellEntry);
@@ -714,7 +710,7 @@ public class DataAggregationService {
           };
       tableColumn.setMinMaxNullUnknownValues(minMaxNullUnknownValues);
     }
-    aggregationResult.setPendingState(AggregationResultPendingState.EVALUATION_CONDUCTION);
+    aggregationResult.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
   }
 
   private MinMaxNullUnknownValues determineNullValuesBoolean(TableColumn tableColumn) {
@@ -850,9 +846,9 @@ public class DataAggregationService {
     Map<String, String> logData = new HashMap<>();
     String function =
         switch (aggregationResult) {
-          case Statistic statistic -> {
-            logData.put("User-ID", statistic.getCreatedByUserId().toString());
-            yield "Erstellen einer Statistik";
+          case Evaluation evaluation -> {
+            logData.put("User-ID", evaluation.getCreatedByUserId().toString());
+            yield "Erstellen einer Auswertung";
           }
           case Report report -> {
             logData.put("User-ID", report.getReportSeries().getCreatedByUserId().toString());

@@ -14,11 +14,14 @@ import { Formik } from "formik";
 import { User } from "matrix-js-sdk/lib/matrix";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useGetUsersPresence } from "@/lib/businessModules/chat/shared/hooks/useGetUsersPresence";
+import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { usePresence } from "@/lib/businessModules/chat/shared/hooks/usePresence";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { Message, Presence } from "@/lib/businessModules/chat/shared/types";
 import {
+  getRoomNameAndCommunicationType,
   getStatusColor,
+  isDMRoom,
   markAllMessagesAsRead,
 } from "@/lib/businessModules/chat/shared/utils";
 import { formatDateTimeRangeToNow } from "@/lib/shared/helpers/dateTime";
@@ -31,14 +34,13 @@ export function MessageNotification({
   sender: User | null;
 }) {
   const { sendMessage } = useSendMessage();
-  const usersPresence = useGetUsersPresence();
+  usePresence(sender?.userId);
   const { matrixClient } = useChatClientContext();
-  const isPrivateChat =
-    matrixClient
-      .getRoom(message.roomId)
-      ?.getMembers()
-      .filter((member) => member.userId !== matrixClient.getUserId()).length ==
-    1;
+  const room = matrixClient.getRoom(message.roomId)!;
+  const { communicationType } = getRoomNameAndCommunicationType(room);
+  const {
+    userSettings: { sharePresence },
+  } = useChat();
 
   return (
     <Card
@@ -67,7 +69,7 @@ export function MessageNotification({
                 alignItems: "center",
               }}
             >
-              {usersPresence && isPrivateChat && (
+              {sharePresence && isDMRoom(communicationType) && (
                 <Box
                   sx={{
                     width: "0.625rem",
@@ -89,7 +91,7 @@ export function MessageNotification({
                   textOverflow: "ellipsis",
                 }}
               >
-                {isPrivateChat
+                {isDMRoom(communicationType)
                   ? sender?.displayName
                   : matrixClient?.getRoom(message.roomId)?.name}
               </Typography>
@@ -109,7 +111,7 @@ export function MessageNotification({
           </Stack>
           <Box display="flex" flexDirection="row">
             <Typography mb={0.5}>
-              {isPrivateChat
+              {isDMRoom(communicationType)
                 ? message.content
                 : `${sender?.displayName}: ${message.content}`}
               <Typography
@@ -128,7 +130,10 @@ export function MessageNotification({
             initialValues={{ messageValue: "" }}
             onSubmit={({ messageValue }) => {
               if (isNonEmptyString(messageValue)) {
-                return sendMessage(messageValue, message.roomId);
+                return sendMessage({
+                  text: messageValue,
+                  roomId: message.roomId,
+                });
               }
             }}
           >

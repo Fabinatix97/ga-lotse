@@ -5,8 +5,12 @@
 
 package de.eshg.inspection.inspection;
 
+import static java.util.stream.Collectors.toMap;
+
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
+import de.eshg.base.feature.BaseFeature;
+import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.inspection.checklist.ChecklistService;
 import de.eshg.inspection.checklist.api.ChecklistDto;
@@ -51,12 +55,17 @@ import de.eshg.inspection.util.Holder;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.FacilityType;
+import de.eshg.lib.procedure.domain.model.InboxProcedure;
+import de.eshg.lib.procedure.domain.model.InboxProcedureStatus;
+import de.eshg.lib.procedure.domain.model.InboxProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.ProcessedInboxProgressEntry;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
+import de.eshg.lib.procedure.inbox.InboxProcedureService;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.NotFoundException;
@@ -64,6 +73,7 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -94,6 +104,8 @@ public class InspectionService {
   private final AuditLogger auditLogger;
   private final FacilityClient facilityClient;
   private final PacklistService packlistService;
+  private final InboxProcedureService inboxProcedureService;
+  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   public InspectionService(
       InspectionRepository inspectionRepository,
@@ -108,7 +120,9 @@ public class InspectionService {
       Clock clock,
       AuditLogger auditLogger,
       FacilityClient facilityClient,
-      PacklistService packlistService) {
+      PacklistService packlistService,
+      InboxProcedureService inboxProcedureService,
+      BaseFeatureTogglesApi baseFeatureTogglesApi) {
     this.inspectionRepository = inspectionRepository;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.objectTypeRepository = objectTypeRepository;
@@ -122,6 +136,8 @@ public class InspectionService {
     this.auditLogger = auditLogger;
     this.facilityClient = facilityClient;
     this.packlistService = packlistService;
+    this.inboxProcedureService = inboxProcedureService;
+    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
   }
 
   public InspectionDto startInspection(UUID externalId, StartInspectionRequest request) {
@@ -515,5 +531,82 @@ public class InspectionService {
     Instant newEnd = newStart.plus(Duration.ofHours(standardDuration));
     appointment.setAppointmentStart(newStart);
     appointment.setAppointmentEnd(newEnd);
+  }
+
+  public Optional<Facility> findInspectionFacilityForBaseReferenceId(UUID baseFacilityReferenceId) {
+    // Determine all centralFileStateIds for the given baseFacilityReferenceId and find all
+    // associated inspections and their facilities.
+    List<UUID> fileStateIds =
+        facilityClient.getFacilityFileStateIdsAssociatedWithReferenceFacility(
+            baseFacilityReferenceId);
+    List<Inspection> allInspectionsOfReferenceFacility =
+        inspectionRepository.findByCentralFileStateIds(fileStateIds);
+    Collection<Facility> facilities =
+        allInspectionsOfReferenceFacility.stream()
+            .map(Inspection::getFacility)
+            .collect(toMap(Facility::getId, v -> v, (v, w) -> v))
+            .values();
+    return switch (facilities.size()) {
+      case 0 -> Optional.empty();
+      case 1 -> Optional.of(facilities.iterator().next());
+      default -> {
+        Facility first = facilities.iterator().next();
+        log.error(
+            "Found {} inspection facilities for these centralFileStateIds: {}; using the first one with id {}",
+            facilities.size(),
+            fileStateIds,
+            first.getId());
+        yield Optional.of(first);
+      }
+    };
+  }
+
+  public void linkInboxProcedure(UUID inboxProcedureId, Inspection inspection) {
+    if (inboxProcedureId == null) return;
+
+    Set<BaseFeature> features = baseFeatureTogglesApi.getFeatureToggles().enabledNewFeatures();
+    if (!features.contains(BaseFeature.INBOX) && !features.contains(BaseFeature.INSPECTION_INBOX)) {
+      throw new IllegalStateException(
+          "Neither new features %s and %s is enabled"
+              .formatted(BaseFeature.INBOX, BaseFeature.INSPECTION_INBOX));
+    }
+
+    InboxProcedure inboxProcedure;
+    try {
+      inboxProcedure = inboxProcedureService.getInboxProcedureOrThrow(inboxProcedureId);
+    } catch (NotFoundException e) {
+      log.error("Could not find inbox procedure {}", inboxProcedureId, e);
+      throw new BadRequestException("Could not copy inbox procedure info to inspection procedure.");
+    }
+
+    if (inboxProcedure.getInboxProcedureStatus() != InboxProcedureStatus.OPEN) {
+      log.error(
+          "Inbox procedure {} has unexpected status {} (expected OPEN)",
+          inboxProcedureId,
+          inboxProcedure.getInboxProcedureStatus());
+      throw new BadRequestException("Could not copy inbox procedure info to inspection procedure.");
+    }
+
+    ProcessedInboxProgressEntry processedInboxProgressEntry =
+        createProcessedInboxProgressEntry(inboxProcedure, inspection.getId());
+    inspection.addProgressEntry(processedInboxProgressEntry);
+    inboxProcedure.updateInboxProcedureStatus(InboxProcedureStatus.CLOSED, clock);
+  }
+
+  private static ProcessedInboxProgressEntry createProcessedInboxProgressEntry(
+      InboxProcedure inboxProcedure, Long inspectionId) {
+    InboxProgressEntry inboxProgressEntry = inboxProcedure.getInboxProgressEntry();
+
+    ProcessedInboxProgressEntry processedInboxProgressEntry = new ProcessedInboxProgressEntry();
+    processedInboxProgressEntry.setInboxProgressEntryType(
+        inboxProgressEntry.getInboxProgressEntryType());
+    processedInboxProgressEntry.setMessageText(inboxProgressEntry.getMessageText());
+    processedInboxProgressEntry.setSubject(inboxProgressEntry.getSubject());
+    processedInboxProgressEntry.setInboxProcedure(inboxProcedure);
+    processedInboxProgressEntry.setProcedureId(inspectionId);
+    if (inboxProgressEntry.getFile() != null) {
+      processedInboxProgressEntry.setFile(inboxProgressEntry.getFile().copy());
+    }
+    return processedInboxProgressEntry;
   }
 }

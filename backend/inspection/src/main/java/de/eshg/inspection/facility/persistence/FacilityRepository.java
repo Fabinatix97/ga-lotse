@@ -23,4 +23,6 @@ public interface FacilityRepository
 
   @Query("select id from Facility where possibleDuplicates = true")
   List<Long> getFacilityIdsWithDuplicates();
+
+  List<Facility> findAllByBannedTrueOrderByLastInspectedAscIdAsc();
 }

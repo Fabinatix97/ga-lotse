@@ -10,6 +10,7 @@ import {
 } from "@eshg/employee-portal-api/travelMedicine";
 import { toDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { useSuspenseQueries } from "@tanstack/react-query";
+import { isEmpty } from "remeda";
 
 import { useUpdateVaccination } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import {
@@ -93,7 +94,9 @@ function ServiceAppliedSidebar(props: Readonly<ServiceAppliedSidebarProps>) {
             )
           : "",
       vaccineName: service.vaccineName ?? "",
-      batchIdentifier: service.batchIdentifier ?? "",
+      batchIdentifier: isEmpty(service.batchIdentifier)
+        ? (service.defaultBatchIdentifier ?? "")
+        : service.batchIdentifier,
       appliedAt: service.appliedAt
         ? toDateString(service.appliedAt)
         : toDateString(new Date()),

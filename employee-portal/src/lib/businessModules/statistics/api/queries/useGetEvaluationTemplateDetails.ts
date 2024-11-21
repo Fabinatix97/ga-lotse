@@ -1,0 +1,46 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiEvaluationTemplate } from "@eshg/employee-portal-api/statistics";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
+import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
+import { evaluationTemplateApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { mapToAttributeLabels } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetails";
+
+export function mapToEvaluationTemplateDetails(
+  result: ApiEvaluationTemplate,
+): EvaluationTemplateDetails {
+  return {
+    name: result.name,
+    description: result.description,
+    dataSourceName: result.dataSources[0]!.dataSourceName,
+    createdAt: result.createdAt,
+    user: result.user,
+    attributeLabels: mapToAttributeLabels(
+      result.dataSources[0]!.dataAttributes,
+    ),
+    analyses: result.analysisInfos.map((it) => ({
+      name: it.name,
+      diagramTitles: it.diagramTitles,
+    })),
+    withoutAnonymizationAllowed: result.withoutAnonymizationAllowed,
+  };
+}
+
+export function useGetEvaluationTemplateDetails(evaluationTemplateId: string) {
+  const evaluationTemplateApi = useEvaluationTemplateApi();
+  const queryResult = useSuspenseQuery({
+    queryFn: () =>
+      evaluationTemplateApi.getEvaluationTemplate(evaluationTemplateId),
+    select: mapToEvaluationTemplateDetails,
+    queryKey: evaluationTemplateApiQueryKey([
+      "getEvaluationTemplate",
+      evaluationTemplateId,
+    ]),
+  });
+  return queryResult.data;
+}

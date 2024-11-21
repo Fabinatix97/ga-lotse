@@ -16,7 +16,7 @@ import de.eshg.statistics.api.geoshape.GeoShapeMetaInfo;
 import de.eshg.statistics.api.geoshape.GeoShapeSortKey;
 import de.eshg.statistics.api.geoshape.GeoShapeStatusDto;
 import de.eshg.statistics.api.geoshape.GetGeoShapesResponse;
-import de.eshg.statistics.mapper.StatisticMapper;
+import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.GeoShape;
 import de.eshg.statistics.persistence.entity.GeoShapeStatus;
 import de.eshg.statistics.persistence.entity.GeoShape_;
@@ -71,7 +71,7 @@ public class GeoShapeService {
             page,
             pageSize,
             Sort.by(
-                StatisticMapper.mapSortDirection(sortDirection),
+                EvaluationMapper.mapSortDirection(sortDirection),
                 mapSortKey(sortKey),
                 BaseEntity_.ID));
     Page<GeoShape> geoShapePage;

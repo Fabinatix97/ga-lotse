@@ -39,5 +39,6 @@ public record ProcedureDetailsDto(
     @Valid WaitingRoomDto waitingRoom,
     Instant schoolInfoLetterCreatedAt,
     @NotNull boolean hasInformationBlock,
-    @NotNull boolean hasBeenClosed)
+    @NotNull boolean hasBeenClosed,
+    @NotNull boolean isPastProcedure)
     implements ProcedureBaseDto {}

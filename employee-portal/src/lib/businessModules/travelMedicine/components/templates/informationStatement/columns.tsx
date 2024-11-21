@@ -44,7 +44,7 @@ export function informationStatementColumns(
     columnHelper.accessor("state", {
       header: "Status",
       cell: (props) => (
-        <Chip color={templateStatusColors[props.getValue()]}>
+        <Chip size="md" color={templateStatusColors[props.getValue()]}>
           {translateInformationStatementTemplateStateType(props.getValue())}
         </Chip>
       ),
@@ -57,7 +57,9 @@ export function informationStatementColumns(
     columnHelper.accessor("diseases", {
       header: "Krankheiten",
       enableSorting: false,
-      cell: (props) => <LabelList labels={props.getValue()} maxVisible={5} />,
+      cell: (props) => (
+        <LabelList labels={props.getValue()} maxVisible={5} chipSize={"md"} />
+      ),
       meta: {
         canNavigate: {
           parentRow: true,

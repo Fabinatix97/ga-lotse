@@ -35,12 +35,13 @@ public class ReportMapper {
         reportSeries.getDescription(),
         reportSeries.getTimeRangeStart(),
         reportSeries.getTimeRangeEnd(),
-        reportSeries.getStatistic().getExternalId(),
+        reportSeries.getEvaluation().getExternalId(),
         mapToReportTypeDto(reportSeries.getReportType()),
         reportSeries.getReportType().equals(ReportType.AUTO) ? reportSeries.isActive() : null,
         reportSeries.getReportType().equals(ReportType.AUTO) ? reportSeries.getStartMonth() : null,
         mapToFrequencyDto(reportSeries.getFrequency()),
         mapToReportingPeriodDto(reportSeries.getPeriod()),
+        EvaluationMapper.getDataSourceNames(reportSeries.getEvaluation()),
         reportStream.map(ReportMapper::mapToReportInfoDto).toList());
   }
 

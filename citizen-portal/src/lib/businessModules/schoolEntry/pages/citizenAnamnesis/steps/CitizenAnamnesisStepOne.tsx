@@ -29,15 +29,15 @@ export function CitizenAnamnesisStepOne(props: {
   const migrationBackground = createFieldNameMapper("migrationBackground");
   return (
     <ContentSheet>
-      <Typography level="h3">{t("contact.title")}</Typography>
+      <Typography level="h2">{t("contact.title")}</Typography>
       <CitizenAnamnesisInfoAlert />
-      <Typography level="h4">{t("contact.schoolchild")}</Typography>
+      <Typography level="h3">{t("contact.schoolchild")}</Typography>
       <ContactForm
         for="child"
         label={t("contact.child")}
         values={props.values}
       />
-      <Typography level="h4">{t("contact.parent1Title")}</Typography>
+      <Typography level="h3">{t("contact.parent1Title")}</Typography>
       <ContactForm
         for="firstParent"
         label={t("contact.parent1Label")}

@@ -304,9 +304,15 @@ public class ServiceDirectoryAdminService {
       throw new ServiceDirectoryBadRequestException("Null for rule id not allowed");
     }
     StagedRule ruleData = serviceDirectoryReadService.getStagedRule(partialRuleDto.id());
-    ruleData.setDescription(partialRuleDto.description());
-    ruleData.setClient(RuleMapper.toPersistence(partialRuleDto.client()));
-    ruleData.setServer(RuleMapper.toPersistence(partialRuleDto.server()));
+    if (partialRuleDto.description() != null) {
+      ruleData.setDescription(partialRuleDto.description());
+    }
+    if (partialRuleDto.client() != null) {
+      ruleData.setClient(RuleMapper.toPersistence(partialRuleDto.client()));
+    }
+    if (partialRuleDto.server() != null) {
+      ruleData.setServer(RuleMapper.toPersistence(partialRuleDto.server()));
+    }
     if (partialRuleDto.active() != null) {
       ruleData.setActive(partialRuleDto.active());
     }

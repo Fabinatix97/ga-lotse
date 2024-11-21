@@ -6,37 +6,76 @@
 import {
   ApiAppointmentBookingType,
   ApiServicePlanEntry,
+  ApiServicePlanGroup,
   ApiServiceStatus,
+  ApiUser,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import {
-  formatDate,
-  formatDateTime,
-} from "@eshg/lib-portal/formatters/dateTime";
-import {
-  AddOutlined,
-  DeleteOutlined,
+  Cancel,
+  Delete,
   EditOutlined,
+  EventBusy,
   FormatListBulletedOutlined,
-  HorizontalRuleOutlined,
   TextSnippetOutlined,
   VaccinesOutlined,
 } from "@mui/icons-material";
-import { Chip } from "@mui/joy";
+import { Chip, ColorPaletteProp } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
+import { isDefined, isPlainObject } from "remeda";
 
-import { statusColors } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/constants";
-import { STATUS_NAMES } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/translations";
+import { CalendarAddOnIcon } from "@/lib/businessModules/travelMedicine/components/icons/CalendarAddOnIcon";
+import { EditCalendarIcon } from "@/lib/businessModules/travelMedicine/components/icons/EditCalendarIcon";
+import { EventUpcomingIcon } from "@/lib/businessModules/travelMedicine/components/icons/EventUpcomingIcon";
+import { ServicePlanEntry } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/baseData/ServicePlanTable";
+import {
+  statusColors,
+  statusColorsAppointment,
+} from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/constants";
+import {
+  MedicalHistoryAnswerStatusType,
+  STATUS_NAMES,
+  STATUS_NAMES_APPOINTMENT,
+  STATUS_NAMES_MEDICAL_HISTORY_ANSWER,
+} from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/translations";
 import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
+import { formatDateTimeShortenedWeekday } from "@/lib/shared/helpers/dateTime";
 import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
-const columnHelper: ColumnHelper<ApiServicePlanEntry> =
-  createColumnHelper<ApiServicePlanEntry>();
+function getMedicalHistoryAnswerStatus(
+  medicalHistoryCompleted: boolean,
+  citizenHasAnswered: boolean,
+) {
+  if (medicalHistoryCompleted) {
+    return STATUS_NAMES_MEDICAL_HISTORY_ANSWER[
+      MedicalHistoryAnswerStatusType.Answered
+    ];
+  }
+  if (citizenHasAnswered) {
+    return STATUS_NAMES_MEDICAL_HISTORY_ANSWER[
+      MedicalHistoryAnswerStatusType.PartiallyAnswered
+    ];
+  }
+  return STATUS_NAMES_MEDICAL_HISTORY_ANSWER[
+    MedicalHistoryAnswerStatusType.NotAnswered
+  ];
+}
+
+const columnHelper: ColumnHelper<ServicePlanEntry> =
+  createColumnHelper<ServicePlanEntry>();
 
 function formatDiseaseName(diseaseName: string | undefined) {
-  return diseaseName ? <Chip color={"primary"}>{diseaseName}</Chip> : "";
+  return diseaseName ? (
+    <Chip color={"primary"} size="md">
+      {diseaseName}
+    </Chip>
+  ) : (
+    ""
+  );
 }
 
 function formatLatency(latency: number | undefined) {
@@ -44,25 +83,29 @@ function formatLatency(latency: number | undefined) {
 }
 
 interface ServicePlanColumnsProps {
+  allPhysicians: ApiUser[];
+  allMedicalAssistants: ApiUser[];
   isProcedureClosed: boolean;
   isCitizenProcedure: boolean;
-  isCitizenFollowUp: (procedureStepId: string) => boolean;
+  isInitialStep: (procedureStepId: string) => boolean;
   onDeleteService: (serviceId: string) => void;
   onUnassignService: (serviceId: string) => void;
   onOpenMedicalHistory: (procedureStepId: string) => void;
   onOpenCertificatesTab: () => void;
-  onEditServiceAppointment: (procedureStep: ApiServicePlanEntry) => void;
+  onEditServiceAppointment: (procedureStep: ApiServicePlanGroup) => void;
   onAssignService: (serviceId: string) => void;
   onServiceApplied: (service: ApiServicePlanEntry) => void;
   onOtherServiceApplied: (service: ApiServicePlanEntry) => void;
-  onEditEarliestDate: (service: ApiServicePlanEntry) => void;
+  onEditEarliestDate: (procedureStep: ApiServicePlanGroup) => void;
   onCancelAppointment: (procedureStepId: string) => void;
 }
 
 export function servicePlanColumns({
+  allPhysicians,
+  allMedicalAssistants,
   isProcedureClosed,
   isCitizenProcedure,
-  isCitizenFollowUp,
+  isInitialStep,
   onDeleteService,
   onUnassignService,
   onOpenMedicalHistory,
@@ -74,161 +117,214 @@ export function servicePlanColumns({
   onEditEarliestDate,
   onCancelAppointment,
 }: ServicePlanColumnsProps) {
-  function renderActionButtons(service: ApiServicePlanEntry): ActionsItem[] {
-    const actionItems: ActionsItem[] = [];
-    const procedureStepActions: ActionsItem[] = [];
-
-    if (
-      service.status !== ApiServiceStatus.Accomplished &&
-      isCitizenFollowUp(service.procedureStepId!)
-    ) {
-      procedureStepActions.push({
-        label: "Buchbar ab bearbeiten",
-        disabled: isProcedureClosed,
-        onClick: () => onEditEarliestDate(service),
-        startDecorator: <EditOutlined />,
-      });
+  function renderGroupActionButtons(
+    servicePlanGroup: ServicePlanEntry,
+  ): ActionsItem[] {
+    if (!isDefined(servicePlanGroup.procedureStepId)) {
+      return [];
     }
-    if (
-      service.status !== ApiServiceStatus.Accomplished &&
-      isCitizenProcedure &&
-      (service.appointmentBookingType ===
+
+    const someServicesAccomplished = servicePlanGroup.subRows
+      ?.flatMap((el) => el.status)
+      .some((el) => el === ApiServiceStatus.Accomplished);
+
+    const appointmentBooked =
+      servicePlanGroup.appointmentBookingType ===
         ApiAppointmentBookingType.AppointmentBlock ||
-        service.appointmentBookingType ===
-          ApiAppointmentBookingType.UserDefined)
-    ) {
-      procedureStepActions.push({
-        label: "Termin absagen",
-        disabled: isProcedureClosed,
-        onClick: () => onCancelAppointment(service.procedureStepId ?? ""),
-        startDecorator: <HorizontalRuleOutlined />,
-      });
-    }
+      servicePlanGroup.appointmentBookingType ===
+        ApiAppointmentBookingType.UserDefined;
 
-    switch (service.status) {
-      case ApiServiceStatus.Open: {
-        actionItems.push(
-          {
-            label: "zu Termin hinzufügen",
-            disabled: isProcedureClosed,
-            onClick: () => {
-              onAssignService(service.serviceId);
-            },
-            startDecorator: <AddOutlined />,
+    return [
+      {
+        label: "Anamnese",
+        onClick: () => onOpenMedicalHistory(servicePlanGroup.procedureStepId!),
+        startDecorator: <FormatListBulletedOutlined />,
+      },
+      someServicesAccomplished && {
+        label: "Bescheinigung erstellen",
+        onClick: onOpenCertificatesTab,
+        startDecorator: <TextSnippetOutlined />,
+      },
+      !isProcedureClosed &&
+        isCitizenProcedure &&
+        !isInitialStep(servicePlanGroup.procedureStepId) &&
+        !someServicesAccomplished && {
+          label: '"Buchbar ab" bearbeiten',
+          onClick: () =>
+            onEditEarliestDate(
+              servicePlanGroup as unknown as ApiServicePlanGroup,
+            ),
+          startDecorator: <EventUpcomingIcon />,
+        },
+      !isProcedureClosed &&
+        !appointmentBooked && {
+          label: "Termin buchen",
+          onClick: () =>
+            onEditServiceAppointment(
+              servicePlanGroup as unknown as ApiServicePlanGroup,
+            ),
+          startDecorator: <CalendarAddOnIcon />,
+        },
+      !isProcedureClosed &&
+        appointmentBooked &&
+        !someServicesAccomplished && {
+          label: "Termin umbuchen",
+          onClick: () =>
+            onEditServiceAppointment(
+              servicePlanGroup as unknown as ApiServicePlanGroup,
+            ),
+          startDecorator: <EditCalendarIcon />,
+        },
+      !isProcedureClosed &&
+        appointmentBooked &&
+        isCitizenProcedure &&
+        !someServicesAccomplished && {
+          label: "Termin absagen",
+          onClick: () =>
+            onCancelAppointment(servicePlanGroup.procedureStepId ?? ""),
+          startDecorator: <Cancel />,
+        },
+    ].filter(isPlainObject);
+  }
+
+  function renderEntryActionButtons(
+    servicePlanEntry: ServicePlanEntry,
+  ): ActionsItem[] {
+    const serviceAssigned =
+      servicePlanEntry.status === ApiServiceStatus.Planned;
+    const serviceExecuted =
+      servicePlanEntry.status === ApiServiceStatus.Accomplished;
+
+    return [
+      !isProcedureClosed &&
+        !serviceAssigned &&
+        !serviceExecuted && {
+          label: "zu Termin hinzufügen",
+          onClick: () => {
+            onAssignService(servicePlanEntry.serviceId);
           },
-          {
-            label: "Löschen",
-            disabled: isProcedureClosed,
-            onClick: () => onDeleteService(service.serviceId),
-            color: "danger",
-            startDecorator: <DeleteOutlined color="danger" />,
-          },
-        );
-        return actionItems;
-      }
-      case ApiServiceStatus.Planned: {
-        actionItems.push(
-          {
-            label: "Durchführen",
-            disabled: isProcedureClosed,
-            onClick: () =>
-              service.serviceTypeDescription === "Grundimmunisierung" ||
-              service.serviceTypeDescription === "Auffrischimpfung"
-                ? onServiceApplied(service)
-                : onOtherServiceApplied(service),
-            startDecorator: <VaccinesOutlined />,
-          },
-          {
-            label: "aus Termin entfernen",
-            disabled: isProcedureClosed,
-            onClick: () => onUnassignService(service.serviceId),
-            startDecorator: <HorizontalRuleOutlined />,
-          },
-          {
-            label: "Termin bearbeiten",
-            onClick: () => onEditServiceAppointment(service),
-            startDecorator: <EditOutlined />,
-          },
-          {
-            label: "Anamnese",
-            onClick: () => onOpenMedicalHistory(service.procedureStepId!),
-            startDecorator: <FormatListBulletedOutlined />,
-          },
-          ...procedureStepActions,
-        );
-        return actionItems;
-      }
-      case ApiServiceStatus.Accomplished: {
-        actionItems.push(
-          {
-            label: "Anamnese",
-            onClick: () => onOpenMedicalHistory(service.procedureStepId!),
-            startDecorator: <FormatListBulletedOutlined />,
-          },
-          {
-            label: "Bearbeiten",
-            disabled: isProcedureClosed,
-            onClick: () =>
-              service.serviceTypeDescription === "Grundimmunisierung" ||
-              service.serviceTypeDescription === "Auffrischimpfung"
-                ? onServiceApplied(service)
-                : onOtherServiceApplied(service),
-            startDecorator: <EditOutlined />,
-          },
-          {
-            label: "Bescheinigung erstellen",
-            disabled: isProcedureClosed,
-            onClick: onOpenCertificatesTab,
-            startDecorator: <TextSnippetOutlined />,
-          },
-          ...procedureStepActions,
-        );
-        return actionItems;
-      }
-      default:
-        return actionItems;
-    }
+          startDecorator: <EditCalendarIcon />,
+        },
+      !isProcedureClosed &&
+        !serviceAssigned &&
+        !serviceExecuted && {
+          label: "Löschen",
+          onClick: () => onDeleteService(servicePlanEntry.serviceId),
+          color: "danger" as ColorPaletteProp,
+          startDecorator: <Delete color="danger" />,
+        },
+      !isProcedureClosed &&
+        serviceAssigned &&
+        !serviceExecuted && {
+          label: "Durchführen",
+          onClick: () =>
+            servicePlanEntry.serviceTypeDescription === "Grundimmunisierung" ||
+            servicePlanEntry.serviceTypeDescription === "Auffrischimpfung"
+              ? onServiceApplied(
+                  servicePlanEntry as unknown as ApiServicePlanEntry,
+                )
+              : onOtherServiceApplied(
+                  servicePlanEntry as unknown as ApiServicePlanEntry,
+                ),
+          startDecorator: <VaccinesOutlined />,
+        },
+      !isProcedureClosed &&
+        serviceAssigned &&
+        !serviceExecuted && {
+          label: "Aus Termin entfernen",
+          onClick: () => onUnassignService(servicePlanEntry.serviceId),
+          startDecorator: <EventBusy />,
+        },
+      !isProcedureClosed &&
+        serviceExecuted && {
+          label: "Bearbeiten",
+          onClick: () =>
+            servicePlanEntry.serviceTypeDescription === "Grundimmunisierung" ||
+            servicePlanEntry.serviceTypeDescription === "Auffrischimpfung"
+              ? onServiceApplied(
+                  servicePlanEntry as unknown as ApiServicePlanEntry,
+                )
+              : onOtherServiceApplied(
+                  servicePlanEntry as unknown as ApiServicePlanEntry,
+                ),
+          startDecorator: <EditOutlined />,
+        },
+    ].filter(isPlainObject);
   }
 
   return [
     columnHelper.accessor("serviceTypeDescription", {
       header: "Leistungsart",
-      cell: (props) => props.getValue(),
+      cell: (props) => {
+        if (props.row.depth === 0) {
+          const mhStatus = getMedicalHistoryAnswerStatus(
+            props.row.original.medicalHistoryCompleted!,
+            props.row.original.citizenHasAnswered!,
+          );
+          if (
+            !isDefined(props.row.original.appointment) &&
+            !isDefined(props.row.original.earliestDate)
+          ) {
+            return `Ohne Termin, ${mhStatus}`;
+          } else if (
+            !isDefined(props.row.original.appointment) &&
+            isDefined(props.row.original.earliestDate)
+          ) {
+            return `Buchbar ab ${formatDate(props.row.original.earliestDate)}, ${mhStatus}`;
+          }
+          return `${formatDateTimeShortenedWeekday(props.row.original.appointment!)} Uhr, ${mhStatus}`;
+        }
+        return props.getValue();
+      },
+      meta: { spanWhenParentRow: 5, width: 190 },
     }),
     columnHelper.accessor("diseaseName", {
       header: "Impfung",
       cell: (props) => formatDiseaseName(props.getValue()),
+      meta: { skipWhenParentRow: true, width: 120 },
     }),
     columnHelper.accessor("vaccineName", {
       header: "Impfstoff",
       cell: (props) => props.getValue(),
+      meta: { skipWhenParentRow: true, width: 180 },
     }),
     columnHelper.accessor("vaccinationNumber", {
       header: "Nr.",
-      cell: (props) => (props.getValue() ? props.getValue() : "-"),
+      cell: (props) => props.getValue() ?? "-",
+      meta: { skipWhenParentRow: true, width: 40 },
     }),
     columnHelper.accessor("latency", {
       header: "Mindestabstand",
-      cell: (props) => formatLatency(props.getValue()),
+      cell: (props) => {
+        return formatLatency(props.getValue());
+      },
+      meta: { skipWhenParentRow: true, width: 130 },
     }),
     columnHelper.accessor("status", {
       header: "Status",
-      cell: (props) => (
-        <Chip color={statusColors[props.getValue()]}>
-          {STATUS_NAMES[props.getValue()]}
-        </Chip>
-      ),
-    }),
-    columnHelper.accessor("appointment", {
-      header: "Impftermin",
       cell: (props) => {
-        const value = props.getValue();
-        if (typeof value === "undefined") {
-          return "";
-        } else {
-          return formatDateTime(value);
+        const serviceStatus = props.getValue();
+        const appointmentBookingType =
+          props.row.original.appointmentBookingType;
+
+        if (props.row.depth === 0 && appointmentBookingType) {
+          return (
+            <Chip
+              color={statusColorsAppointment[appointmentBookingType]}
+              size="md"
+            >
+              {STATUS_NAMES_APPOINTMENT[appointmentBookingType]}
+            </Chip>
+          );
+        } else if (serviceStatus) {
+          return (
+            <Chip color={statusColors[serviceStatus]} size="md">
+              {STATUS_NAMES[serviceStatus]}
+            </Chip>
+          );
         }
       },
+      meta: { width: 170 },
     }),
     columnHelper.accessor("fee", {
       header: "Preis",
@@ -237,35 +333,57 @@ export function servicePlanColumns({
           localOption: LOCALE_OPTION.manual,
           locale: "de-DE",
         }),
-    }),
-    columnHelper.accessor("medicalHistoryCompleted", {
-      header: "Anamnese",
-      cell: (props) => (props.getValue() ? "Ja" : "Nein"),
+      meta: { width: 80 },
     }),
     columnHelper.accessor("batchIdentifier", {
       header: "Charge",
       cell: (props) => props.getValue(),
+      meta: { skipWhenParentRow: true, width: 150 },
+    }),
+    columnHelper.accessor("physician", {
+      header: "Arzt/Ärztin",
+      cell: (props) =>
+        formatPersonName(
+          allPhysicians.find(
+            (physician) => physician.userId === props.getValue(),
+          ),
+        ),
+      meta: { skipWhenParentRow: true, width: 150 },
+    }),
+    columnHelper.accessor("mfa", {
+      header: "MFA",
+      cell: (props) =>
+        formatPersonName(
+          allMedicalAssistants.find((mfa) => mfa.userId === props.getValue()),
+        ),
+      meta: { skipWhenParentRow: true, width: 150 },
     }),
     columnHelper.accessor("appliedAt", {
       header: "Durchgeführt",
-      cell: (props) => {
-        const value = props.getValue();
-        if (typeof value === "undefined") {
-          return "";
-        } else {
-          return formatDate(value);
-        }
-      },
+      cell: (props) => formatDate(props.getValue()),
+      meta: { skipWhenParentRow: true, width: 100 },
     }),
     columnHelper.display({
+      id: "actions",
       header: "Aktionen",
-      cell: (props) => (
-        <ActionsMenu
-          actionItems={renderActionButtons(props.cell.row.original)}
-        />
-      ),
+      cell: (props) => {
+        if (props.row.depth === 0) {
+          const actionItems = renderGroupActionButtons(props.row.original);
+          if (actionItems.length !== 0) {
+            return <ActionsMenu actionItems={actionItems} rowHeight={true} />;
+          }
+          return;
+        }
+        return (
+          <ActionsMenu
+            actionItems={renderEntryActionButtons(props.row.original)}
+            rowHeight={true}
+          />
+        );
+      },
       meta: {
         width: 96,
+        spanWhenParentRow: 5,
       },
     }),
   ];

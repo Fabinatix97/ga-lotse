@@ -8,6 +8,7 @@ import {
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/base";
 
+import { routes as dentalRoutes } from "@/lib/businessModules/dental/shared/routes";
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { routes as measlesProtectionRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { routes as medicalRegistryRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
@@ -23,7 +24,7 @@ export function resolveProcedureDetailsRoute({
   businessModule: ApiBusinessModule;
   procedureId: string;
   status?: ApiProcedureStatus;
-}) {
+}): string {
   switch (businessModule) {
     case "SCHOOL_ENTRY":
       return schoolEntryRoutes.procedures.byId(procedureId).details;
@@ -40,13 +41,15 @@ export function resolveProcedureDetailsRoute({
       return stiProtectionRoutes.procedures.byId(procedureId).index;
     case "MEDICAL_REGISTRY":
       return medicalRegistryRoutes.procedures.byId(procedureId).index;
+    case "DENTAL":
+      return dentalRoutes.procedures.byId(procedureId).details;
   }
 }
 
 export function resolveProcedureProgressEntriesRoute(
   businessModule: ApiBusinessModule,
   procedureId: string,
-) {
+): string {
   switch (businessModule) {
     case "SCHOOL_ENTRY":
       return schoolEntryRoutes.procedures.byId(procedureId).progressEntries
@@ -62,6 +65,8 @@ export function resolveProcedureProgressEntriesRoute(
       return stiProtectionRoutes.procedures.byId(procedureId).index;
     case "MEDICAL_REGISTRY":
       return medicalRegistryRoutes.procedures.byId(procedureId).index;
+    case "DENTAL":
+      return dentalRoutes.procedures.byId(procedureId).details;
   }
 }
 

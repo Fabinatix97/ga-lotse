@@ -6,7 +6,7 @@
 import { CellContext } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
-import { EditableStringCell } from "@/lib/components/table/cell/EditableStringCell";
+import { StringCell } from "@/lib/components/table/cell/StringCell";
 import { Actor } from "@/lib/components/view/actors/ActorTable";
 
 export function EditableCommonNameCell(
@@ -19,5 +19,5 @@ export function EditableCommonNameCell(
     return props.getValue();
   }
 
-  return <EditableStringCell {...props} />;
+  return <StringCell {...props} />;
 }

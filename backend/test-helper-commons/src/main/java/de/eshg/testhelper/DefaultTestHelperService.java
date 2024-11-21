@@ -165,8 +165,7 @@ public class DefaultTestHelperService implements TestHelperWithDatabaseService {
         populators.stream()
             .map(
                 populator -> {
-                  Integer numberOfEntitiesToPopulate =
-                      populator.getDefaultNumberOfEntitiesToPopulate();
+                  int numberOfEntitiesToPopulate = populator.getDefaultNumberOfEntitiesToPopulate();
                   ListWithTotalNumber<?> populationResult =
                       populator.populate(numberOfEntitiesToPopulate);
                   return new DefaultPopulationResponse.Population(

@@ -10,7 +10,6 @@ import {
   Done,
   Download,
   DownloadDone,
-  Hexagon,
   MenuBook,
   Sync,
   SyncProblem,
@@ -19,6 +18,7 @@ import { ColorPaletteProp, Stack } from "@mui/joy";
 import { CellContext, Row, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
+import { CorechecklistIcon } from "@/lib/businessModules/inspection/components/icons/CorechecklistIcon";
 import {
   isCurrentVersion as _isCurrentVersion,
   isNewVersion as _isNewVersion,
@@ -56,9 +56,10 @@ export function createCldRepoOverviewTableColumns(
     columnHelper.accessor("name", {
       header: "Name",
       cell: (info) => (
-        <Stack direction="row" spacing={0.5}>
+        <Stack direction="row" spacing={1} alignItems="center">
           {info.row.original.isCoreChecklist && (
-            <Hexagon
+            <CorechecklistIcon
+              size="sm"
               aria-hidden={false}
               titleAccess="Kerncheckliste"
               aria-label="Kerncheckliste"

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetStatisticRequest } from "@eshg/employee-portal-api/statistics";
+import { ApiGetEvaluationRequest } from "@eshg/employee-portal-api/statistics";
 
 export type StatisticFilter = NonNullable<
-  ApiGetStatisticRequest["filters"]
+  ApiGetEvaluationRequest["filters"]
 >[number];

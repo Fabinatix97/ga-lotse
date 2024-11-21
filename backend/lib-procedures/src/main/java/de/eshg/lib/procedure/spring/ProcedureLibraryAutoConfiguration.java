@@ -7,6 +7,7 @@ package de.eshg.lib.procedure.spring;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.lib.procedure.audit.AuditService;
 import de.eshg.lib.procedure.domain.serialization.SerializationService;
 import de.eshg.lib.procedure.file.FileController;
@@ -20,6 +21,7 @@ import de.eshg.lib.procedure.housekeeping.archiving.ArchivingConfiguration;
 import de.eshg.lib.procedure.housekeeping.cemetery.CemeteryHousekeepingConfiguration;
 import de.eshg.lib.procedure.housekeeping.inbox.InboxProcedureCleanupJob;
 import de.eshg.lib.procedure.inbox.InboxProcedureController;
+import de.eshg.lib.procedure.inbox.InboxProcedureService;
 import de.eshg.lib.procedure.mapping.ProcedureApprovalRequestMapper;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.model.AbstractFileDto;
@@ -58,6 +60,7 @@ import de.eshg.lib.procedure.util.CemeteryService;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -80,7 +83,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
   FileController.class,
   FileDeletionRequestApprovalRequestDecisionHandler.class,
   FileDeletionApprovalRequestNotificationService.class,
-  InboxProcedureController.class,
+  InboxProcedureService.class,
   FileStorageService.class,
   ProcedureController.class,
   ProcedureLibraryEnrichingMapper.class,
@@ -132,5 +135,14 @@ public class ProcedureLibraryAutoConfiguration {
             MailDto.class,
             PdfDto.class,
             GenericFileDto.class);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public InboxProcedureController inboxProcedureController(
+      InboxProcedureService inboxProcedureService,
+      BaseFeatureTogglesApi baseFeatureTogglesApi,
+      UserHelper userHelper) {
+    return new InboxProcedureController(inboxProcedureService, baseFeatureTogglesApi, userHelper);
   }
 }

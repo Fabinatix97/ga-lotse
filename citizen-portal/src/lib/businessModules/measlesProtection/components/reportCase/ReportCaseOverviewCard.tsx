@@ -104,17 +104,7 @@ export function ReportCaseOverviewCard({
   return (
     <Card sx={reportCaseOverviewCardStyles} variant="plain">
       <CardContent orientation="vertical">
-        <Typography
-          level="h4"
-          sx={{
-            fontSize: byBreakpoint({
-              mobile: "1.125rem",
-              desktop: "1.5rem",
-            }),
-          }}
-        >
-          {t("common.overview")}
-        </Typography>
+        <Typography level="h2">{t("common.overview")}</Typography>
         <Box sx={{ display: "flex", my: 1 }}>
           <Business sx={{ color: iconColor }} />
           <Box sx={{ display: "flex", ml: 2, flexDirection: "column" }}>

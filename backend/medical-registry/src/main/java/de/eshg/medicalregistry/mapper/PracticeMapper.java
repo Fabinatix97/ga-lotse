@@ -6,7 +6,6 @@
 package de.eshg.medicalregistry.mapper;
 
 import static de.eshg.medicalregistry.mapper.AddressMapper.*;
-import static de.eshg.medicalregistry.util.MapperUtils.*;
 
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.medicalregistry.api.PracticeDto;
@@ -20,8 +19,8 @@ public final class PracticeMapper {
 
     return new PracticeDto(
         practiceDetails.name(),
-        singleElementOrNull(practiceDetails.emailAddresses()),
-        singleElementOrNull(practiceDetails.phoneNumbers()),
+        practiceDetails.emailAddresses(),
+        practiceDetails.phoneNumbers(),
         mapToPracticeAddressDto(practiceDetails.contactAddress()),
         practice.getWebsite(),
         practice.getInstitutionIdentifier(),

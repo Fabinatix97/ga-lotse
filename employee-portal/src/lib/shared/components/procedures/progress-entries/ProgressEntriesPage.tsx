@@ -8,7 +8,7 @@
 import { DeleteOutlined } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 import { useGetUsersByGroupQuery } from "@/lib/baseModule/api/queries/users";
@@ -18,6 +18,7 @@ import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSet
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
+import { keyDocumentTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
 import { useProgressEntriesFilterSettings } from "@/lib/shared/components/procedures/progress-entries/hooks/useProgressEntriesFilterSettings";
 import { ApprovalRequestsOverviewSidebar } from "@/lib/shared/components/procedures/progress-entries/sidebars/approvalRequestOverviewSidebar/ApprovalRequestsOverviewSidebar";
@@ -35,7 +36,7 @@ import {
   useUndeletedFilesWithoutOldVersions,
 } from "./ProgressEntriesContext";
 import { SortSelect } from "./SortSelect";
-import { timelineEntryProps } from "./buildTimelineEntryProps";
+import { useTimelineEntryProps } from "./buildTimelineEntryProps";
 import { CreateProgressEntrySidebar } from "./sidebars/CreateProgressEntrySidebar";
 import { FilesSidebar } from "./sidebars/FilesSidebar";
 import { ProgressEntryDetailsSidebar } from "./sidebars/progressEntryDetailsSidebar/ProgressEntryDetailsSidebar";
@@ -45,6 +46,7 @@ export function ProgressEntriesPage({
   useFetchProgressEntries,
   useFetchProgressEntryDetails,
   urlParams,
+  additionalKeyDocumentTypes,
   ...props
 }: ProgressEntriesPageProps) {
   const procedureId = urlParams.params.id;
@@ -74,6 +76,10 @@ export function ProgressEntriesPage({
         detailedProcedure,
         procedureId,
         files,
+        keyDocumentTypes: {
+          ...keyDocumentTypes,
+          ...additionalKeyDocumentTypes,
+        },
         approvalRequestsResponse: approvalRequestsResponse,
         searchParams: urlParams.searchParams,
         filterSettings,
@@ -214,9 +220,8 @@ interface ProgressEntriesInformationSheetProps {
 function ProgressEntriesInformationSheet({
   openApprovalRequestsSidebar,
 }: ProgressEntriesInformationSheetProps) {
-  const { procedureId, searchParams, progressEntries, files, routes } =
-    useProgressEntriesConfig();
-  const rawSearchParams = useSearchParams();
+  const { searchParams } = useProgressEntriesConfig();
+  const timelineEntryProps = useTimelineEntryProps();
 
   const approvalRequests = useOpenApprovalRequests();
   const hasDeletionRights = useHasDeletionRights();
@@ -258,16 +263,11 @@ function ProgressEntriesInformationSheet({
       </Stack>
       <Divider />
       <Timeline>
-        {progressEntries.map((entry) => (
+        {timelineEntryProps.map((entryProps) => (
           <TimelineEntry
+            {...entryProps}
             data-testid="progressEntry"
-            key={entry.progressEntryId}
-            {...timelineEntryProps(
-              entry,
-              files,
-              (entryId) => routes.entryDetails(procedureId, entryId),
-              rawSearchParams,
-            )}
+            key={entryProps.key}
           />
         ))}
       </Timeline>

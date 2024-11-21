@@ -36,6 +36,7 @@ import { getFilenameFromHeader } from "@eshg/lib-portal/api/files/download";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
+import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 import { useMutation } from "@tanstack/react-query";
 import { isNullish } from "remeda";
 
@@ -47,7 +48,6 @@ import {
   useProofSubmissionApi,
   useProtectionProcedureApi,
 } from "@/lib/businessModules/measlesProtection/api/clients";
-import { MutationPassThrough } from "@/lib/businessModules/measlesProtection/api/mutations/types";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 import { ValidUpdateProcedureForm } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
@@ -61,7 +61,7 @@ interface UpdateProcedureParams {
 export function useUpdateProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiGetProcedure200Response, UpdateProcedureParams>) {
+}: MutationPassThrough<UpdateProcedureParams, ApiGetProcedure200Response>) {
   const measlesProtectionApi = useProtectionProcedureApi();
   return useHandledMutation({
     mutationFn: ({ id, data }: UpdateProcedureParams) => {
@@ -81,7 +81,7 @@ interface OpenProcedureParams {
 export function useSubmitDraftProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiOpenProcedureResponse, OpenProcedureParams>) {
+}: MutationPassThrough<OpenProcedureParams, ApiOpenProcedureResponse>) {
   const measlesProtectionApi = useDraftProcedureApi();
   return useHandledMutation({
     mutationFn: ({ id, data }: OpenProcedureParams) => {
@@ -102,7 +102,7 @@ export function useSubmitDraftProcedureMutation({
 export function useCreateDraftProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiCreatePersonResponse, ApiCreatePersonRequest> = {}) {
+}: MutationPassThrough<ApiCreatePersonRequest, ApiCreatePersonResponse> = {}) {
   const api = useDraftProcedureApi();
   return useHandledMutation({
     mutationFn: (data: ApiCreatePersonRequest) => api.createPerson(data),
@@ -120,7 +120,7 @@ interface AddCustodianParams {
 export function useAddCustodianMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiAddCustodianResponse, AddCustodianParams>) {
+}: MutationPassThrough<AddCustodianParams, ApiAddCustodianResponse>) {
   const api = useDraftProcedureApi();
   return useHandledMutation({
     mutationFn: ({ procedureId, data }: AddCustodianParams) =>
@@ -149,7 +149,7 @@ interface AddProofSubmissionParams {
 export function useAddProofMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiProofSubmission, AddProofSubmissionParams>) {
+}: MutationPassThrough<AddProofSubmissionParams, ApiProofSubmission>) {
   const api = useProofSubmissionApi();
   return useHandledMutation({
     mutationFn: ({ id, formData, data }: AddProofSubmissionParams) => {
@@ -190,7 +190,7 @@ interface AddProofRequestLetterParams {
 export function useCreateProofRequestLetterMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<File, AddProofRequestLetterParams>) {
+}: MutationPassThrough<AddProofRequestLetterParams, File>) {
   const api = useProofRequestLetterApi();
   return useHandledMutation({
     mutationFn: async ({ id, data }: AddProofRequestLetterParams) => {
@@ -214,7 +214,7 @@ interface SaveProofRequestLetterParams {
 export function useSaveProofRequestLetterMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<void, SaveProofRequestLetterParams>) {
+}: MutationPassThrough<SaveProofRequestLetterParams, void>) {
   const api = useProofRequestLetterApi();
   return useHandledMutation({
     mutationFn: ({ id, data }: AddProofRequestLetterParams) => {
@@ -239,7 +239,7 @@ interface AddFineParams {
 export function useAddFineMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiMonetaryFine, AddFineParams>) {
+}: MutationPassThrough<AddFineParams, ApiMonetaryFine>) {
   const api = useMonetaryFineApi();
   return useHandledMutation({
     mutationFn: ({ id, data }: AddFineParams) => {
@@ -259,7 +259,7 @@ interface AddAccessRestrictionParams {
 export function useAddAccessRestrictionMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiAccessRestriction, AddAccessRestrictionParams>) {
+}: MutationPassThrough<AddAccessRestrictionParams, ApiAccessRestriction>) {
   const api = useAccessRestrictionApi();
   return useHandledMutation({
     mutationFn: ({ id, data }: AddAccessRestrictionParams) => {
@@ -280,8 +280,8 @@ interface AddAccessRestrictionLetterParams {
 export function useAddAccessRestrictionLetterMutation({
   onSuccess,
 }: MutationPassThrough<
-  ApiAccessRestrictionLetter,
-  AddAccessRestrictionLetterParams
+  AddAccessRestrictionLetterParams,
+  ApiAccessRestrictionLetter
 >) {
   const api = useAccessRestrictionApi();
   return useHandledMutation({
@@ -306,7 +306,7 @@ interface UpdateAccessRestrictionParams {
 export function useUpdateAccessRestrictionMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiAccessRestriction, UpdateAccessRestrictionParams>) {
+}: MutationPassThrough<UpdateAccessRestrictionParams, ApiAccessRestriction>) {
   const api = useAccessRestrictionApi();
   return useHandledMutation({
     mutationFn: ({
@@ -365,7 +365,7 @@ interface AddFacilityParams {
 
 export function useAddFacilityMutation({
   onSuccess,
-}: MutationPassThrough<ApiAddFacilityResponse, AddFacilityParams>) {
+}: MutationPassThrough<AddFacilityParams, ApiAddFacilityResponse>) {
   const api = useDraftProcedureApi();
   return useMutation({
     mutationFn: ({
@@ -388,8 +388,8 @@ export function usePatchFacilityMutation({
   onSuccess,
   onError,
 }: MutationPassThrough<
-  PatchFacilityParams["facility"] | undefined,
-  PatchFacilityParams
+  PatchFacilityParams,
+  PatchFacilityParams["facility"] | undefined
 > = {}) {
   // const api = useDraftProcedureApi();
   return useMutation({
@@ -414,8 +414,8 @@ export function useUpdateCaseStatusMutation({
   onSuccess,
   onError,
 }: MutationPassThrough<
-  ApiGetProcedure200Response,
-  UpdateCaseStatusParams
+  UpdateCaseStatusParams,
+  ApiGetProcedure200Response
 > = {}) {
   const api = useProtectionProcedureApi();
   return useHandledMutation({

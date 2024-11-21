@@ -12,11 +12,14 @@ import {
 import { Row } from "@tanstack/react-table";
 
 import { useEditableTable } from "@/lib/components/table/context/TableEditContext";
-import { StagedActorWithEntityId } from "@/lib/components/view/actors/ActorTable";
+import {
+  Actor,
+  StagedActorWithEntityId,
+} from "@/lib/components/view/actors/ActorTable";
 import { getAdminName } from "@/lib/helpers/adminName";
 import { EditableEntity, UniqueEntity } from "@/lib/helpers/entities";
-import { StagedOrgUnitWithEntityId } from "@/lib/hooks/useOrgUnits";
-import { StagedRuleWithEntityId } from "@/lib/hooks/useRules";
+import { OrgUnit, StagedOrgUnitWithEntityId } from "@/lib/hooks/useOrgUnits";
+import { Rule, StagedRuleWithEntityId } from "@/lib/hooks/useRules";
 
 export type OneOfStagedEntity =
   | StagedOrgUnitWithEntityId
@@ -34,7 +37,7 @@ export function isOneOfStagedEntity(
 }
 
 export function isEditableRow<TData extends UniqueEntity & EditableEntity>(
-  row: Row<TData>,
+  row: Row<TData> | Row<OrgUnit> | Row<Actor> | Row<Rule>,
 ): boolean {
   return (
     isOneOfStagedEntity(row.original) &&
@@ -44,7 +47,7 @@ export function isEditableRow<TData extends UniqueEntity & EditableEntity>(
 }
 
 export function useEditableRow<TData extends UniqueEntity & EditableEntity>(
-  row: Row<TData>,
+  row: Row<TData> | Row<OrgUnit> | Row<Actor> | Row<Rule>,
 ): boolean {
   return useEditableTable() && isEditableRow(row);
 }

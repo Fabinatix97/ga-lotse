@@ -20,6 +20,7 @@ public enum PastProcedureListColumn implements XlsxColumn {
   PROCEDURE_TYPE("Vorgangsart"),
   EXAMINATION_DATE("Untersuchungsdatum"),
   SIBLINGS("KIH"),
+  COUNTRY_OF_BIRTH_CHILD("GEBKI"),
   NATIONALITY_CHILD("STAKI"),
   COUNTRY_OF_BIRTH_P1("GEBET1"),
   NATIONALITY_P1("STAET1"),

@@ -12,5 +12,6 @@
   <include file="migrations/0002_add_statistics_as_audit_log_source_value.xml"/>
   <include file="migrations/0003_add_sti_protection_as_audit_log_source_value.xml"/>
   <include file="migrations/0004_add_medical_registry_as_audit_log_source_value.xml"/>
+  <include file="migrations/0005_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
 
 </databaseChangeLog>

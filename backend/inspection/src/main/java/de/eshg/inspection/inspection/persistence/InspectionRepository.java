@@ -83,13 +83,26 @@ public interface InspectionRepository extends ProcedureRepository<Inspection> {
               where i.id != :excludedInspectionId
               and irf.centralFileStateId in :centralFileStateIds
               and i.executionAppointment.appointmentStart >= :startTime
-              and i.executionAppointment.appointmentStart < :endTime
+              and i.executionAppointment.appointmentEnd < :endTime
               """)
   List<Inspection> findByCentralFileStateIdsAndAppointment(
       List<UUID> centralFileStateIds,
       Instant startTime,
       Instant endTime,
-      Long excludedInspectionId);
+      long excludedInspectionId);
+
+  @Query(
+      """
+              select i
+              from Inspection i
+              join InspectionRelatedFacility irf on irf.procedure = i
+              where (:importId is null or i.id < :importId)
+              and irf.centralFileStateId in :centralFileStateIds
+              and i.executionAppointment.appointmentStart >= :startTime
+              and i.executionAppointment.appointmentEnd < :endTime
+              """)
+  List<Inspection> findByCentralFileStateIdsAndAppointmentAndIdIsLessThan(
+      List<UUID> centralFileStateIds, Instant startTime, Instant endTime, Long importId);
 
   @Query(
       """

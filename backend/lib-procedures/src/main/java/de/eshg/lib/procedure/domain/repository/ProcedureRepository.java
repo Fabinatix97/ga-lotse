@@ -190,6 +190,18 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
   @Query(
       """
  SELECT procedure from #{#entityName} procedure
+ LEFT JOIN procedure.relatedPersons relatedPerson
+ LEFT JOIN procedure.relatedFacilities relatedFacility
+ WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
+ OR relatedFacility.centralFileStateId IN :centralFileStateIds
+ ORDER BY procedure.createdAt DESC, procedure.id ASC
+ """)
+  List<ProcedureT> findByFileStateIds(
+      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds);
+
+  @Query(
+      """
+ SELECT procedure from #{#entityName} procedure
 JOIN procedure.relatedPersons relatedPerson
 WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
 AND relatedPerson.personType = :personType

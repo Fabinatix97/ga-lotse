@@ -13,10 +13,10 @@ import {
   InfoPanelView,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
-import { RoomWithCommunicationType } from "@/lib/businessModules/chat/shared/types";
+import { RoomData } from "@/lib/businessModules/chat/shared/types";
 
 interface RoomListProps {
-  roomList: RoomWithCommunicationType[];
+  roomList: RoomData[];
   setChatPanelView: (viewType: ChatPanelView) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -31,6 +31,7 @@ export function RoomList({
   const { infoPanelState, setInfoPanelView } = useInfoPanelContext();
   const { selectedRoomId, setRoomIdParam } = useChatSearchParams();
   const sortedChats = useMemo(() => {
+    //todo: here?
     return roomList.toSorted((roomA, roomB) => {
       const timestampA = roomA.latestMessage?.timestamp?.getTime() ?? 0;
       const timestampB = roomB.latestMessage?.timestamp?.getTime() ?? 0;

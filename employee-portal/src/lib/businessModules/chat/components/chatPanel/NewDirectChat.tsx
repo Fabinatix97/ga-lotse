@@ -19,6 +19,7 @@ import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/use
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
+import { delayed } from "@/lib/businessModules/chat/shared/utils";
 
 export interface DirectChatFormValues {
   invite: string;
@@ -30,12 +31,13 @@ interface NewDirectChatProps {
   userList: (ApiUser & { department?: string })[] | undefined;
   setChatPanelView: (viewType: ChatPanelView) => void;
 }
+
 export function NewDirectChat({
   cancel,
   userList,
   setChatPanelView,
 }: Readonly<NewDirectChatProps>) {
-  const { createNewDirectMessage, findExisingRoom } = useCreateNewChat();
+  const { createNewChat, findExisingRoom } = useCreateNewChat();
   const { sendMessage } = useSendMessage();
   const theme = useTheme();
   const { setRoomIdParam } = useChatSearchParams();
@@ -44,19 +46,23 @@ export function NewDirectChat({
 
   async function handleStartDirectMessage(values: DirectChatFormValues) {
     try {
-      const newRoomId = await createNewDirectMessage({
+      const newRoomId = await createNewChat({
         invite: [values.invite],
+        is_direct: true,
       });
-      if (!newRoomId) {
-        return;
+      if (newRoomId) {
+        // Sending a message with a delay allows the recipient to treat the first message as unread
+        await delayed(
+          () => sendMessage({ text: values.message, roomId: newRoomId }),
+          100,
+        );
+        setChatPanelView(ChatPanelView.ChatMessages);
       }
-      await sendMessage(values.message, newRoomId);
-      setRoomIdParam(newRoomId);
-      setChatPanelView(ChatPanelView.ChatMessages);
     } catch {
       snackbar.error("Chat konnte nicht erstellt werden");
     }
   }
+
   function validateDMForm(
     values: DirectChatFormValues,
   ): FormikErrors<DirectChatFormValues> {

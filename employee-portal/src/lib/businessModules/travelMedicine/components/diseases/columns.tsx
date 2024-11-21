@@ -13,11 +13,7 @@ import { LOCALE_OPTION, formatCurrency } from "@/lib/shared/helpers/numbers";
 
 const columnHelper: ColumnHelper<ApiDisease> = createColumnHelper<ApiDisease>();
 
-function mapMandatory(visibleToCitizenPortal: boolean) {
-  return visibleToCitizenPortal ? "sichtbar" : "verborgen";
-}
-
-export function diseasesColumns(
+export function columns(
   deleteEntry: (entryId: string, diseaseName: string) => void,
   editEntry: (disease: ApiDisease) => void,
 ) {
@@ -35,7 +31,7 @@ export function diseasesColumns(
     }),
     columnHelper.accessor("visibleToCitizenPortal", {
       header: "Sichtbarkeit im Bürgerportal",
-      cell: (props) => mapMandatory(props.getValue()),
+      cell: (props) => (props.getValue() ? "sichtbar" : "verborgen"),
     }),
     columnHelper.accessor("createdAt", {
       header: "Erstellt am",

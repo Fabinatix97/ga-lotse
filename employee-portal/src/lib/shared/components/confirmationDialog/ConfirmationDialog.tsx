@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 import { ReactNode, useState } from "react";
-
-import { BaseModal } from "@/lib/shared/components/BaseModal";
 
 export interface ConfirmationDialogProps {
   open: boolean;

@@ -25,6 +25,7 @@ import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationSer
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +62,7 @@ public class CitizenPublicController {
   private final Resource privacyNotice;
   private final Resource privacyPolicy;
   private final OpeningHoursProperties openingHoursProperties;
+  private final Clock clock;
 
   public CitizenPublicController(
       DiseaseService diseaseService,
@@ -71,7 +73,8 @@ public class CitizenPublicController {
       DepartmentInfoService departmentInfoService,
       @Value("${de.eshg.travel-medicine.privacy-notice-location}") Resource privacyNotice,
       @Value("${de.eshg.travel-medicine.privacy-policy-location}") Resource privacyPolicy,
-      OpeningHoursProperties openingHoursProperties) {
+      OpeningHoursProperties openingHoursProperties,
+      Clock clock) {
     this.diseaseService = diseaseService;
     this.appointmentBlockService = appointmentBlockService;
     this.appointmentTypeService = appointmentTypeService;
@@ -81,6 +84,7 @@ public class CitizenPublicController {
     this.privacyNotice = privacyNotice;
     this.privacyPolicy = privacyPolicy;
     this.openingHoursProperties = openingHoursProperties;
+    this.clock = clock;
   }
 
   @GetMapping("/diseases")
@@ -97,6 +101,9 @@ public class CitizenPublicController {
       @RequestParam(name = "appointmentType") AppointmentTypeDto appointmentType,
       @RequestParam(name = "earliestDate", required = false) Instant earliestDate) {
     featureToggle.assertNewFeatureIsEnabled(TravelMedicineFeature.CITIZEN_PORTAL_PROCEDURE);
+    if (earliestDate != null && earliestDate.isBefore(Instant.now(clock))) {
+      earliestDate = Instant.now(clock);
+    }
     List<AppointmentDto> appointments =
         appointmentBlockService.getFreeAppointments(
             earliestDate, null, MappingUtil.mapEnum(AppointmentType.class, appointmentType), null);

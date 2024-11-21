@@ -22,7 +22,10 @@ import { useDebouncedCallback } from "use-debounce";
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { getMemberAvatarUrl } from "@/lib/businessModules/chat/shared/utils";
+import {
+  getDepartmentNameFromUserId,
+  getMemberAvatarUrl,
+} from "@/lib/businessModules/chat/shared/utils";
 
 interface MessageFormValues {
   message: string;
@@ -192,8 +195,12 @@ export function InputComponent({
                 />
                 <Typography level="title-md">{user.name}</Typography>
               </Stack>
-              <Typography level="body-md" textColor="neutral.400">
-                {user.userId}
+              <Typography
+                level="body-md"
+                textColor="neutral.400"
+                sx={{ textTransform: "capitalize" }}
+              >
+                {getDepartmentNameFromUserId(user.userId)?.organisationName}
               </Typography>
             </MenuItem>
           ))}

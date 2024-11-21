@@ -254,7 +254,7 @@
       <col style="width:50%"/>
     </colgroup>
     <tr>
-      <td>Frankfurt am Main, den</td>
+      <td>${office.city}, den</td>
       <td>(Stempel)</td>
     </tr>
   </table>

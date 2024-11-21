@@ -10,3 +10,7 @@ const apiQueryKey = queryKeyFactory(["schoolEntry"]);
 export const schoolEntryCitizenApiQueryKey = queryKeyFactory(
   apiQueryKey(["schoolEntryCitizenApi"]),
 );
+
+export const schoolEntryPublicCitizenApiQueryKey = queryKeyFactory(
+  apiQueryKey(["schoolEntryPublicCitizenApi"]),
+);

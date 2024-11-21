@@ -11,6 +11,7 @@ import {
   Typography,
   TypographyProps,
 } from "@mui/joy";
+import { createContext, useContext, useId } from "react";
 
 import { theme } from "@/lib/baseModule/theme/theme";
 import { MobileBreakpoint } from "@/lib/shared/breakpoints";
@@ -19,7 +20,10 @@ interface ContentSheetProps extends Pick<SheetProps, "sx">, RequiresChildren {
   "data-testid"?: string;
 }
 
+const SectionTitleId = createContext<string | undefined>(undefined);
+
 export function ContentSheet(props: ContentSheetProps) {
+  const titleId = useId();
   return (
     <Sheet
       component="section"
@@ -30,19 +34,30 @@ export function ContentSheet(props: ContentSheetProps) {
         ...props.sx,
       }}
       data-testid={props["data-testid"]}
+      aria-labelledby={titleId}
     >
-      <Stack gap={3}>{props.children}</Stack>
+      <SectionTitleId.Provider value={titleId}>
+        <Stack gap={3}>{props.children}</Stack>
+      </SectionTitleId.Provider>
     </Sheet>
   );
 }
 
 interface ContentSheetTitleProps
-  extends Pick<TypographyProps, "component" | "sx">,
-    RequiresChildren {}
+  extends Pick<TypographyProps, "sx">,
+    RequiresChildren {
+  "data-testid"?: string;
+}
 
 export function ContentSheetTitle(props: ContentSheetTitleProps) {
+  const titleId = useContext(SectionTitleId);
   return (
-    <Typography level="h3" component={props.component ?? "h3"} sx={props.sx}>
+    <Typography
+      level="h2"
+      sx={props.sx}
+      data-testid={props["data-testid"]}
+      id={titleId}
+    >
       {props.children}
     </Typography>
   );

@@ -104,6 +104,22 @@ public interface FacilityApi {
   GetFacilityFileStatesResponse getFacilityFileStates(
       @Valid @RequestBody GetFacilityFileStatesRequest request);
 
+  @PostExchange(FILE_STATES_URL + "/bulk-add")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+Add multiple facility file states in a bulk operation.
+Each file state is linked to a reference facility whose name and mandatory
+contact address fields match; other fields are not taken into account here. If
+no such facility exists, a new one will be created.
+""")
+  AddFacilityFileStatesResponse addFacilityFileStates(
+      @Parameter(description = "A list of Facilities that shall be added to the Central Files.")
+          @RequestBody
+          @Valid
+          AddFacilityFileStatesRequest request);
+
   @PostExchange(FILE_STATES_URL + "/mark-for-deletion")
   @ApiResponse(responseCode = "200")
   @Operation(

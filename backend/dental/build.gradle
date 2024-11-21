@@ -1,0 +1,27 @@
+plugins {
+    id "eshg.service"
+    id "eshg.base-test-dependency"
+}
+
+dependencies {
+    implementation project(':lib-base-client')
+    implementation project(':business-module-persistence-commons')
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    testImplementation testFixtures(project(':business-module-persistence-commons'))
+}
+
+dockerCompose {
+    startedServices = [
+        'dental',
+        'dental-db'
+    ]
+}
+
+dependencyTrack {
+    projectId = project.findProperty('dependency-track-project-id-dental') ?: "unspecified"
+}
+
+
+

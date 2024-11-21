@@ -7,12 +7,12 @@ import { useNavigation } from "@eshg/lib-portal/components/navigation/Navigation
 import { OpenInNew } from "@mui/icons-material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Button, Divider, Stack, Switch, Typography } from "@mui/joy";
+import { useContext } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
+import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { useMatrixClient } from "@/lib/businessModules/chat/shared/hooks/useMatrixClient";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
-import { getDepartmentNameFromUserId } from "@/lib/businessModules/chat/shared/utils";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
   UseSidebarResult,
@@ -28,10 +28,14 @@ export function useChatUserSidebar(): UseSidebarResult {
 }
 
 function ChatSettingsSidebar({ onClose }: DrawerProps) {
-  const matrix = useMatrixClient();
+  const { matrixClient } = useContext(ChatClientContext) ?? {};
   const { tryNavigate } = useNavigation();
 
-  const chatUsername = getDepartmentNameFromUserId(matrix?.client.getUserId());
+  const chatUsername = matrixClient?.getUser(
+    matrixClient?.getUserId() ?? "",
+  )?.displayName;
+
+  const chatUserId = matrixClient?.getUserId();
 
   const {
     userSettings: {
@@ -51,22 +55,32 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
       <SidebarContent
         title="Chat Einstellungen"
         header={
-          <Stack>
-            <Typography
-              level="body-sm"
-              textColor="text.secondary"
-              sx={{ mb: 1 }}
-            >
-              Chat
-            </Typography>
-            <Typography level="title-md" textColor="primary.plainColor">
-              {chatUsername?.username}
-            </Typography>
-            <Divider orientation="horizontal" sx={{ mt: 3 }} />
+          <Stack spacing={2}>
+            <Stack>
+              <Typography level="body-sm" textColor="text.secondary">
+                Chat-Benutzername
+              </Typography>
+              {chatUsername && (
+                <Typography level="title-md" textColor="primary.plainColor">
+                  {chatUsername}
+                </Typography>
+              )}
+            </Stack>
+            <Stack>
+              <Typography level="body-sm" textColor="text.secondary">
+                Chat ID
+              </Typography>
+              {chatUsername && (
+                <Typography level="title-md" textColor="primary.plainColor">
+                  {chatUserId}
+                </Typography>
+              )}
+            </Stack>
+            <Divider orientation="horizontal" sx={{ mt: 2 }} />
           </Stack>
         }
       >
-        <Stack gap={2} height="100%">
+        <Stack gap={2} height="100%" sx={{ mt: 1 }}>
           <Typography
             component="label"
             startDecorator={

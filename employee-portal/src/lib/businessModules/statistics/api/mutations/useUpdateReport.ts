@@ -7,7 +7,7 @@ import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
-import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/UpdateReportSidebar/updateReportFormModel";
+import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/updateReportFormModel";
 
 export function useUpdateReport(onSuccess: () => void) {
   const snackbar = useSnackbar();

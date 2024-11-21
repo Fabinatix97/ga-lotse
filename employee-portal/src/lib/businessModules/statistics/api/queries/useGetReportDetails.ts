@@ -46,7 +46,7 @@ export function mapToReportDetailsView(
       attributeLabels: attributes.map((it) => it.name),
       datasetAmount: response.totalNumberOfElements,
     },
-    evaluations: mapEvaluations(response.evaluation, attributes),
+    evaluations: mapEvaluations(response.analyses, attributes),
     attributes: attributes,
     userId: response.userReport?.userId ?? response.userReportSeries!.userId,
     numberInSeries: isReportOfSeries ? response.name : undefined,

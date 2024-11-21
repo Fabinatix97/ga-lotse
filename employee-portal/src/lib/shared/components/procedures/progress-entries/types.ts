@@ -55,6 +55,7 @@ export interface ProgressEntriesPageProps extends ProgressEntryApiMethods {
   leaderRole: ApiUserRole;
   systemProgressEntryTypes: Record<string, string>;
   groupName: string;
+  additionalKeyDocumentTypes?: Record<string, string>;
   getInitOverrides?: (inspectionId?: string) => RequestInit;
 }
 
@@ -67,6 +68,7 @@ export interface ProgressEntriesConfig extends ProgressEntryApiActions {
   filterSettings: UseFilterSettings;
   routes: Routes;
   leaderRole: ApiUserRole;
+  keyDocumentTypes: Record<string, string>;
   approvalRequestsResponse?: ApiGetProcedureApprovalRequestsResponse;
 }
 

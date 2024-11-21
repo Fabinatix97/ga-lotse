@@ -19,7 +19,7 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoomMessages";
+import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import {
@@ -44,7 +44,7 @@ export function ChatPanel({
     userSettings: { showTypingNotification },
   } = useChat();
   const { handleUserTyping } = useTyping(showTypingNotification);
-  const { handleSendMessage } = useRoomMessages();
+  const { sendMessage } = useSendMessage();
   const [userList, setUserList] = useState<
     (ApiUser & { department?: string })[] | undefined
   >();
@@ -142,7 +142,9 @@ export function ChatPanel({
           <MessageInput
             handleUserTyping={handleUserTyping}
             selectedRoomId={roomId}
-            sendMessage={handleSendMessage}
+            sendMessage={(text, mentionedUsers) =>
+              sendMessage({ text, mentionedUsers, roomId })
+            }
             roomMembers={roomWithCommunicationType.room.getMembers()}
           />
         </Box>

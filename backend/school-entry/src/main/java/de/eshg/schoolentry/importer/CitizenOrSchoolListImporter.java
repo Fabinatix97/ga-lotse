@@ -21,8 +21,6 @@ import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.RowReader;
 import de.eshg.lib.xlsximport.XlsxColumn;
 import de.eshg.lib.xlsximport.model.AddressData;
-import de.eshg.schoolentry.SchoolEntryService;
-import de.eshg.schoolentry.business.model.DataOrigin;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
@@ -60,9 +58,9 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues, C exten
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
-      SchoolEntryService schoolEntryService,
+      ImportService importService,
       SchoolEntryProperties schoolEntryProperties) {
-    super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, schoolEntryService);
+    super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, importService);
     Assert.isTrue(
         EnumSet.of(SCHOOL_LIST, CITIZEN_LIST).contains(importType), "Unexpected import type");
     this.importType = importType;
@@ -160,21 +158,20 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues, C exten
   protected List<SchoolEntryProcedure> createProcedures(List<T> importableRows) {
     List<ImportProcedureData> importData =
         importableRows.stream().map(rowValueMapper::mapValuesToImportData).toList();
-    return schoolEntryService.createProceduresWithBookAppointmentTask(
-        importData, schoolId, locationId, schoolYear, DataOrigin.DATA_IMPORT);
+    return importService.createProceduresWithBookAppointmentTask(
+        importData, schoolId, locationId, schoolYear);
   }
 
   @Override
   protected List<UUID> mergeProceduresAndGetFailedProcedureIds(List<T> mergeableRows) {
     List<MergeProcedureData> mergeData =
         mergeableRows.stream().map(rowValueMapper::mapValuesToMergeData).toList();
-    return schoolEntryService.mergeProcedures(
-        mergeData, importType, schoolId, locationId, schoolYear);
+    return importService.mergeProcedures(mergeData, importType, schoolId, locationId, schoolYear);
   }
 
   @Override
   protected Map<PersonKeyAttributes, List<ProcedureWithChildData>> fetchMergeCandidates(
       Set<PersonKeyAttributes> childKeyAttributes) {
-    return schoolEntryService.searchForMergeCandidates(childKeyAttributes);
+    return importService.searchForMergeCandidates(childKeyAttributes);
   }
 }

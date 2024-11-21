@@ -23,10 +23,7 @@ import {
   useIsReadOnly,
   useProgressEntriesConfig,
 } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
-import {
-  keyDocumentTypes,
-  manualProgressEntryTypeNames,
-} from "@/lib/shared/components/procedures/progress-entries/constants";
+import { manualProgressEntryTypeNames } from "@/lib/shared/components/procedures/progress-entries/constants";
 import { extractFileDescriptionValue } from "@/lib/shared/components/procedures/progress-entries/helper";
 import { useDeletionProps } from "@/lib/shared/components/procedures/progress-entries/hooks/useDeletionProps";
 import { useHasEditRights } from "@/lib/shared/components/procedures/progress-entries/hooks/useHasEditRights";
@@ -229,6 +226,8 @@ function ManualProgressEntryDetailsTemplate({
   elements,
   onHistory,
 }: ManualProgressEntryDetailsTemplateProps) {
+  const { keyDocumentTypes } = useProgressEntriesConfig();
+
   const isReadOnly = useIsReadOnly();
   const relatedEntries = useFilteredAndSortedRelatedEntries(
     relatedKeyDocumentProgressEntries,

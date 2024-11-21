@@ -7,7 +7,6 @@ package de.eshg.statistics.config;
 
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.security.CurrentUserHelper;
-import de.eshg.statistics.aggregation.ReportExecution;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +20,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties(prefix = "eshg.statistics.businessmodule")
 public class OriginalDataAccessConfig {
-  private static final Logger log = LoggerFactory.getLogger(ReportExecution.class);
+  private static final Logger log = LoggerFactory.getLogger(OriginalDataAccessConfig.class);
 
   private List<OriginalDataPermission> originalDataPermissions = Collections.emptyList();
 

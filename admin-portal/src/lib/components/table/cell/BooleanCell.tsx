@@ -13,8 +13,8 @@ import { useEditableRow } from "@/lib/helpers/entityFilter";
 import { OrgUnit } from "@/lib/hooks/useOrgUnits";
 import { Rule } from "@/lib/hooks/useRules";
 
-export function BooleanCell<TData extends OrgUnit | Actor | Rule>(
-  props: Readonly<CellContext<TData, boolean>>,
+export function BooleanCell(
+  props: Readonly<CellContext<Actor, boolean>>,
 ): ReactNode {
   if (!useEditableRow(props.row)) {
     return <StaticBooleanCell {...props} />;
@@ -22,13 +22,13 @@ export function BooleanCell<TData extends OrgUnit | Actor | Rule>(
   return <EditableBooleanCell {...props} />;
 }
 
-function EditableBooleanCell<TData extends OrgUnit | Actor | Rule>(
-  props: Readonly<CellContext<TData, boolean>>,
+function EditableBooleanCell(
+  props: Readonly<CellContext<Actor, boolean>>,
 ): ReactNode {
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       props.table.options.meta?.api?.update({
-        ...props.row.original,
+        id: props.row.original.id,
         [props.column.id]: event.target.checked,
       });
     },

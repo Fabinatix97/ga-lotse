@@ -5,6 +5,7 @@
 
 "use client";
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Stack } from "@mui/joy";
@@ -13,7 +14,6 @@ import { useState } from "react";
 import { useReopenProcedure } from "@/lib/businessModules/measlesProtection/api/mutations/statusTransitionApi";
 import { REOPEN_PROCEDURE_SUCCESS_MESSAGE } from "@/lib/businessModules/measlesProtection/components/procedures/procedureDetails/helpers";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
-import { BaseModal } from "@/lib/shared/components/BaseModal";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import {
   DataField,

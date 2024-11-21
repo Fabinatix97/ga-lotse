@@ -33,7 +33,7 @@ public sealed interface AbstractAddReportSeriesRequest
   @JsonProperty("@type")
   String type();
 
-  UUID statisticId();
+  UUID evaluationId();
 
   String name();
 

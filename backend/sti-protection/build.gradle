@@ -1,5 +1,6 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
@@ -11,7 +12,7 @@ dependencies {
     implementation project(":lib-document-generator")
     implementation project(':lib-scheduling')
     implementation project(':rest-oauth-client-commons')
-    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -26,12 +27,6 @@ dockerCompose {
         'sti-protection',
         'sti-protection-db'
     ]
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

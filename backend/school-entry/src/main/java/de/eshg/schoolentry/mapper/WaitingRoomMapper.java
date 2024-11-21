@@ -6,11 +6,11 @@
 package de.eshg.schoolentry.mapper;
 
 import de.eshg.base.SortDirection;
-import de.eshg.schoolentry.WaitingRoomPageSpec;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.business.model.WaitingRoomProcedureData;
 import de.eshg.schoolentry.domain.model.WaitingRoom;
 import de.eshg.schoolentry.domain.model.WaitingStatus;
+import de.eshg.schoolentry.util.WaitingRoomPageSpec;
 import org.springframework.data.domain.Sort;
 
 public final class WaitingRoomMapper {

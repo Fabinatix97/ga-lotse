@@ -5,11 +5,12 @@
 
 package de.eshg.base.centralfile.api;
 
+import de.cronn.commons.lang.SetUtils;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public record DeleteFileStatesRequest(
@@ -18,4 +19,8 @@ public record DeleteFileStatesRequest(
                 @Schema(description = "A list of Ids of File States that shall be deleted."))
         @NotNull
         @Size(min = 1)
-        LinkedHashSet<@NotNull UUID> fileStateIds) {}
+        Set<@NotNull UUID> fileStateIds) {
+  public DeleteFileStatesRequest(UUID... fileStateIds) {
+    this(SetUtils.orderedSet(fileStateIds));
+  }
+}

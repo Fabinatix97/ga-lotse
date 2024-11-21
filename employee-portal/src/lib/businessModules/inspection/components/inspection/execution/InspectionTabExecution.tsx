@@ -43,7 +43,6 @@ import { ChecklistValidationProvider } from "@/lib/businessModules/inspection/co
 import { IncidentsPanel } from "@/lib/businessModules/inspection/components/inspection/execution/incident/IncidentsPanel";
 import { ChecklistSelectSidebar } from "@/lib/businessModules/inspection/components/inspection/planning/checklist/ChecklistSelectSidebar";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
 export enum InspectionExecutionTabType {
@@ -87,7 +86,6 @@ export function InspectionTabExecution({
   const inspectionApi = useInspectionApi();
   const incidentApi = useIncidentApi();
   const userApi = useUserApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
 
   const [
     { data: checklists },
@@ -96,27 +94,11 @@ export function InspectionTabExecution({
     { data: selfUser },
   ] = useSuspenseQueries({
     queries: [
-      getChecklistsQuery(
-        checklistApi,
-        getPreCacheForOfflineModeHeaders,
-        inspectionId,
-      ),
-      getInspectionQuery(
-        inspectionApi,
-        getPreCacheForOfflineModeHeaders,
-        inspectionId,
-      ),
-      getIncidentsQuery(
-        incidentApi,
-        getPreCacheForOfflineModeHeaders,
-        inspectionId,
-      ),
+      getChecklistsQuery(checklistApi, inspectionId),
+      getInspectionQuery(inspectionApi, inspectionId),
+      getIncidentsQuery(incidentApi, inspectionId),
       getSelfUserQuery(userApi),
-      getAvailableCLDVsQuery(
-        inspectionApi,
-        getPreCacheForOfflineModeHeaders,
-        inspectionId,
-      ),
+      getAvailableCLDVsQuery(inspectionApi, inspectionId),
     ],
   });
   const { mutateAsync: updateInspection } = useUpdateInspection();

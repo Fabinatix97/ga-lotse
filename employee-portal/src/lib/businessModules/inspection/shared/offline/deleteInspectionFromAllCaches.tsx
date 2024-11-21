@@ -18,14 +18,7 @@ import {
 
 const queueChannel = createQueueBroadCastChannelEndpoint();
 
-export async function deleteInspectionFromAllCaches(inspectionId: string) {
-  await deleteFromCache(await caches.open(PAGES_CACHE_NAME), inspectionId);
-  await deleteFromCache(await caches.open(PAGES_RSC_CACHE_NAME), inspectionId);
-  await deleteFromCache(await caches.open(API_CACHE_NAME), inspectionId);
-}
-
-export async function deleteAllEncryptedCaches() {
-  await deleteFromCache(await caches.open(API_CACHE_NAME));
+export async function clearQueue() {
   return new Promise<void>((resolve, reject) => {
     queueChannel.onmessage = (event: MessageEvent) => {
       if (event.data === CLEAR_DONE) {
@@ -37,6 +30,18 @@ export async function deleteAllEncryptedCaches() {
     };
     queueChannel.postMessage(CLEAR);
   });
+}
+
+export async function clearCaches() {
+  await caches.delete(PAGES_CACHE_NAME);
+  await caches.delete(PAGES_RSC_CACHE_NAME);
+  await caches.delete(API_CACHE_NAME);
+}
+
+export async function deleteInspectionFromAllCaches(inspectionId: string) {
+  await deleteFromCache(await caches.open(PAGES_CACHE_NAME), inspectionId);
+  await deleteFromCache(await caches.open(PAGES_RSC_CACHE_NAME), inspectionId);
+  await deleteFromCache(await caches.open(API_CACHE_NAME), inspectionId);
 }
 
 async function deleteFromCache(cache: Cache, inspectionId?: string) {

@@ -6,7 +6,6 @@
 import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
-  ApiGdprProcedureStatus,
 } from "@eshg/employee-portal-api/base";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -52,11 +51,37 @@ export function useSetMatterOfConcern(id: string, version: number) {
   });
 }
 
+type StatusTransition =
+  | {
+      type: "start";
+    }
+  | {
+      type: "cancel" | "close";
+      internalNote: string;
+    };
+
 export function useChangeProcedureStatus(id: string, version: number) {
   const gdprProcedureApi = useGdprProcedureApi();
 
   return useHandledMutation({
-    mutationFn: (newStatus: ApiGdprProcedureStatus) =>
-      gdprProcedureApi.changeStatus(id, { version, newStatus }),
+    mutationFn: async (transition: StatusTransition) => {
+      switch (transition.type) {
+        case "start":
+          await gdprProcedureApi.startProcedure(id, { version });
+          break;
+        case "cancel":
+          await gdprProcedureApi.cancelProcedure(id, {
+            version,
+            internalNote: transition.internalNote,
+          });
+          break;
+        case "close":
+          await gdprProcedureApi.closeProcedure(id, {
+            version,
+            internalNote: transition.internalNote,
+          });
+          break;
+      }
+    },
   });
 }

@@ -5,8 +5,6 @@
 
 package de.eshg.schoolentry;
 
-import static de.eshg.schoolentry.util.ValueEvaluatorUtil.*;
-
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.PercentilesDto;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;

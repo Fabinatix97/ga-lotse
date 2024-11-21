@@ -119,4 +119,11 @@ public class GdprProcedureService {
 
     log.info("Deleted downloadIds={} of GdprProcedure(id={})", downloadIdsToDelete, id);
   }
+
+  public GdprProcedure updateStatus(GdprProcedure gdprProcedure, GdprProcedureStatus newStatus) {
+    log.info("Setting status of GdprProcedure(id={}) to {}.", gdprProcedure.getId(), newStatus);
+    gdprProcedure.setStatus(newStatus);
+    repository.flush();
+    return gdprProcedure;
+  }
 }

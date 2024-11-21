@@ -13,6 +13,7 @@ import { AdditionalDataSection } from "./AdditionalDataSection";
 import { AnonIdentityDocumentCard } from "./AnonIdentityDocumentCard";
 import { CloseAndReopenProcedurePanel } from "./CloseProcedurePanel";
 import { PersonDetails } from "./PersonDetails";
+import { WaitingRoomSection } from "./WaitingRoomSection";
 
 export function ProcedureDetails({
   procedureId,
@@ -26,12 +27,13 @@ export function ProcedureDetails({
           <PersonDetails procedure={procedure} />
         </Grid>
         <Grid xs={12}>
-          <AnonIdentityDocumentCard />
+          <AnonIdentityDocumentCard procedure={procedure} />
         </Grid>
       </Grid>
       <Grid xs={12} lg={4}>
         <Stack spacing={2}>
           <AdditionalDataSection procedure={procedure} />
+          <WaitingRoomSection procedure={procedure} />
           <CloseAndReopenProcedurePanel procedure={procedure} />
         </Stack>
       </Grid>

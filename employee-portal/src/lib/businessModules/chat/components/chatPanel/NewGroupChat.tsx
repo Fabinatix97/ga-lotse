@@ -5,6 +5,7 @@
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Button, Stack, Typography, useTheme } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
 
@@ -13,10 +14,10 @@ import { ChatInputField } from "@/lib/businessModules/chat/components/ChatInputF
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/InputComponent";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
-import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
+import { delayed } from "@/lib/businessModules/chat/shared/utils";
 
 export interface DirectChatFormValues {
   invite: string[];
@@ -29,33 +30,36 @@ interface NewGroupChatProps {
   userList: (ApiUser & { department?: string })[] | undefined;
   setChatPanelView: (viewType: ChatPanelView) => void;
 }
+
 export function NewGroupChat({
   cancel,
   userList,
   setChatPanelView,
 }: Readonly<NewGroupChatProps>) {
-  const { createNewChatRoom } = useCreateNewChat();
+  const { createNewChat } = useCreateNewChat();
   const { sendMessage } = useSendMessage();
   const theme = useTheme();
-  const { setRoomIdParam } = useChatSearchParams();
   const snackbar = useSnackbar();
 
   async function handleStartGroupChat(values: DirectChatFormValues) {
     try {
-      const newRoomId = await createNewChatRoom({
+      const newRoomId = await createNewChat({
         invite: values.invite,
         name: values.chatName,
       });
-      if (!newRoomId) {
-        return;
+      if (newRoomId) {
+        // Sending a message with a delay allows the recipient to treat the first message as unread
+        await delayed(
+          () => sendMessage({ text: values.message, roomId: newRoomId }),
+          100,
+        );
+        setChatPanelView(ChatPanelView.ChatMessages);
       }
-      await sendMessage(values.message, newRoomId);
-      setRoomIdParam(newRoomId);
-      setChatPanelView(ChatPanelView.ChatMessages);
     } catch {
       snackbar.error("Chat konnte nicht erstellt werden");
     }
   }
+
   function validateGroupForm(
     values: DirectChatFormValues,
   ): FormikErrors<DirectChatFormValues> {
@@ -80,66 +84,88 @@ export function NewGroupChat({
         onSubmit={handleStartGroupChat}
         validate={validateGroupForm}
       >
-        <FormPlus
-          style={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box
-            sx={{
-              padding: 2,
-              borderBottom: "1px solid",
-              borderColor: theme.palette.neutral.outlinedBorder,
+        {({ values }) => (
+          <FormPlus
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
             }}
           >
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              marginBottom={1}
-              height="2.25rem"
-            >
-              <Typography level="h3">Gruppenchat erstellen</Typography>
-              <Button
-                variant="soft"
-                color="neutral"
-                type="button"
-                onClick={() => cancel()}
-              >
-                Abbrechen
-              </Button>
-            </Stack>
-            <UsersAutocomplete
-              name="invite"
-              placeholder="Empfänger:in auswählen"
-              usersList={userList ?? []}
-              multiple={true}
-            />
-            <ChatInputField
-              type="text"
-              name="chatName"
-              placeholder="Gruppenchat benennen"
-              label=""
-              aria-label="Chat name"
+            <Box
               sx={{
-                "--FormLabel-margin": 0,
-                marginTop: 0,
-                ".MuiInput-root": {
-                  height: "3.25rem",
-                },
+                padding: 2,
+                borderBottom: "1px solid",
+                borderColor: theme.palette.neutral.outlinedBorder,
               }}
+            >
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                marginBottom={1}
+                height="2.25rem"
+              >
+                <Typography level="h3">Gruppenchat erstellen</Typography>
+                <Button
+                  variant="soft"
+                  color="neutral"
+                  type="button"
+                  onClick={() => cancel()}
+                >
+                  Abbrechen
+                </Button>
+              </Stack>
+              <UsersAutocomplete
+                name="invite"
+                placeholder="Empfänger:in auswählen"
+                usersList={userList ?? []}
+                multiple={true}
+              />
+              <ChatInputField
+                type="text"
+                name="chatName"
+                placeholder="Gruppenchat benennen"
+                label=""
+                aria-label="Chat name"
+                sx={{
+                  "--FormLabel-margin": 0,
+                  marginTop: 0,
+                  ".MuiInput-root": {
+                    height: "3.25rem",
+                  },
+                }}
+              />
+            </Box>
+            <ChatIllustrationBackground />
+            <Box sx={{ minHeight: "2rem" }}>
+              {values.invite && values.chatName && (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{ width: "100%" }}
+                >
+                  <ChatOutlinedIcon sx={{ color: "neutral.500" }} />
+                  <Typography
+                    level="title-sm"
+                    textColor="neutral.500"
+                    fontWeight="500"
+                  >
+                    Senden Sie eine Nachricht, um einen Chat zu starten!
+                  </Typography>
+                </Stack>
+              )}
+            </Box>
+            <InputComponent
+              name="message"
+              selectFieldName="mentionedUsers"
+              roomMembers={[]}
             />
-          </Box>
-          <ChatIllustrationBackground />
-          <InputComponent
-            name="message"
-            selectFieldName="mentionedUsers"
-            roomMembers={[]}
-          />
-        </FormPlus>
+          </FormPlus>
+        )}
       </Formik>
     </Box>
   );

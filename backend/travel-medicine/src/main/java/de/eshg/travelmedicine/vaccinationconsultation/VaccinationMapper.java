@@ -27,6 +27,7 @@ public class VaccinationMapper {
     if (vaccinationNumber > 1 && latencies.size() > vaccinationNumber - 2) {
       latency = latencies.get(vaccinationNumber - 2);
     }
+    String defaultBatchIdentifier = vaccine.getCurrentBatchId();
     return new Vaccination(
         vc,
         vaccine.getDisease().getName(),
@@ -35,7 +36,8 @@ public class VaccinationMapper {
         vaccine.getFee(),
         MappingUtil.mapEnum(VaccinationType.class, postVaccinationRequest.vaccinationType()),
         vaccinationNumber,
-        latency);
+        latency,
+        defaultBatchIdentifier);
   }
 
   public VaccinationDto toInterfaceType(Vaccination vaccination) {
@@ -46,6 +48,7 @@ public class VaccinationMapper {
         MappingUtil.mapEnum(VaccinationTypeDto.class, vaccination.getVaccinationType()),
         vaccination.getVaccinationNumber(),
         vaccination.getBatchIdentifier(),
+        vaccination.getDefaultBatchIdentifier(),
         vaccination.getAppliedAt(),
         vaccination.getCreatedAt(),
         vaccination.getModifiedAt());

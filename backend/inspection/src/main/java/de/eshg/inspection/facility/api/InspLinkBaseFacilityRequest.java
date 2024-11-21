@@ -14,4 +14,6 @@ import java.util.UUID;
 @Schema(name = "InspLinkBaseFacilityRequest")
 @Valid
 public record InspLinkBaseFacilityRequest(
-    @NotNull @Valid GetReferenceFacilityResponse facility, UUID webSearchEntryId) {}
+    @NotNull @Valid GetReferenceFacilityResponse facility,
+    UUID webSearchEntryId,
+    UUID inboxProcedureId) {}

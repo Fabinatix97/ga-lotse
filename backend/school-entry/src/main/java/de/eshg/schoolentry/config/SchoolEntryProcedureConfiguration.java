@@ -5,11 +5,15 @@
 
 package de.eshg.schoolentry.config;
 
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.ModuleMemberGroup;
 import de.eshg.lib.procedure.procedures.SummaryProvider;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryTask;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,13 +34,18 @@ public class SchoolEntryProcedureConfiguration {
   SummaryProvider<SchoolEntryTask, SchoolEntryProcedure> summaryProvider() {
     return new SummaryProvider<>() {
       @Override
-      public String getTaskSummary(SchoolEntryTask task) {
-        return "Einschulungsuntersuchung";
+      public Map<Long, String> getTaskSummaries(List<SchoolEntryTask> tasks) {
+        return tasks.stream()
+            .collect(
+                Collectors.toMap(SequencedBaseEntity::getId, task -> "Einschulungsuntersuchung"));
       }
 
       @Override
-      public String getProcedureSummary(SchoolEntryProcedure procedure) {
-        return "Einschulungsuntersuchung";
+      public Map<Long, String> getProcedureSummaries(List<SchoolEntryProcedure> procedures) {
+        return procedures.stream()
+            .collect(
+                Collectors.toMap(
+                    SequencedBaseEntity::getId, procedure -> "Einschulungsuntersuchung"));
       }
     };
   }

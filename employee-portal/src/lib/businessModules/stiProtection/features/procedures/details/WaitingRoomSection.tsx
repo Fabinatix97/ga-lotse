@@ -1,0 +1,116 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  ApiStiProtectionProcedure,
+  ApiWaitingRoom,
+  ApiWaitingStatus,
+  UpdateWaitingRoomDetailsRequest,
+} from "@eshg/employee-portal-api/stiProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { Button, Sheet } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+
+import { useUpdateWaitingRoomDetails } from "@/lib/businessModules/stiProtection/api/mutations/waitingRoomApi";
+import { WAITING_STATUS_OPTIONS } from "@/lib/businessModules/stiProtection/features/procedures/translations";
+import {
+  createOnlyIfProcedureOpen,
+  isProcedureOpen,
+} from "@/lib/businessModules/stiProtection/shared/helpers";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+
+interface WaitingRoomDetails {
+  info: string;
+  status: ApiWaitingStatus | null;
+}
+
+function initialValues(val: ApiWaitingRoom): WaitingRoomDetails {
+  return {
+    info: val.info ?? "",
+    status: val.status ?? null,
+  };
+}
+
+export function WaitingRoomSection({
+  procedure,
+}: {
+  procedure: ApiStiProtectionProcedure;
+}) {
+  const snackbar = useSnackbar();
+  const api = useUpdateWaitingRoomDetails({
+    onSuccess: () => {
+      snackbar.confirmation("Wartezimmerdaten aktualisiert");
+    },
+  });
+  function updateWaitingStatus(values: UpdateWaitingRoomDetailsRequest) {
+    api.mutate(values);
+  }
+
+  const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
+  const isOpen = isProcedureOpen(procedure);
+
+  return (
+    <Sheet>
+      <DetailsSection title="Wartezimmer" name="">
+        <Formik
+          enableReinitialize
+          initialValues={initialValues(procedure.waitingRoom)}
+          onSubmit={(form) =>
+            updateWaitingStatus(transformToValid(form, procedure))
+          }
+        >
+          <FormPlus style={{ display: "contents" }}>
+            <InputField
+              label="Zusätzliche Info"
+              name="info"
+              disabled={!isOpen}
+            />
+            <SelectField
+              label="Status"
+              name="status"
+              disabled={!isOpen}
+              options={WAITING_STATUS_OPTIONS}
+            />
+            {onlyIfOpen(<FormButtons isSubmitting={api.isPending} />)}
+          </FormPlus>
+        </Formik>
+      </DetailsSection>
+    </Sheet>
+  );
+}
+
+function FormButtons({ isSubmitting }: { isSubmitting: boolean }) {
+  const { setValues } = useFormikContext<WaitingRoomDetails>();
+  return (
+    <Row justifyContent="right">
+      <Button
+        variant="plain"
+        onClick={() => setValues({ info: "", status: null })}
+        aria-disabled={isSubmitting}
+      >
+        Zurücksetzen
+      </Button>
+      <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
+    </Row>
+  );
+}
+
+function transformToValid(
+  details: WaitingRoomDetails,
+  procedure: ApiStiProtectionProcedure,
+): UpdateWaitingRoomDetailsRequest {
+  return {
+    procedureId: procedure.id,
+    apiWaitingRoom: {
+      info: details.info ? details.info : undefined,
+      status: details.status ?? undefined,
+    },
+  };
+}

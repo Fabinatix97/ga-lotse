@@ -7,11 +7,13 @@ package de.eshg.lib.procedure.procedures;
 
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Task;
+import java.util.List;
+import java.util.Map;
 
 public interface SummaryProvider<
     TaskT extends Task<ProcedureT>, ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>> {
 
-  String getTaskSummary(TaskT task);
+  Map<Long, String> getTaskSummaries(List<TaskT> tasks);
 
-  String getProcedureSummary(ProcedureT procedure);
+  Map<Long, String> getProcedureSummaries(List<ProcedureT> procedures);
 }

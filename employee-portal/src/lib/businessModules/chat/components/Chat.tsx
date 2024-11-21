@@ -8,7 +8,7 @@
 import { LoadingIndicator } from "@eshg/lib-portal/components/LoadingIndicator";
 import { Stack, useTheme } from "@mui/joy";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ChatPanel } from "@/lib/businessModules/chat/components/chatPanel/ChatPanel";
 import { InfoPanel } from "@/lib/businessModules/chat/components/infoPanel/InfoPanel";
@@ -31,10 +31,11 @@ export function Chat() {
   const searchParams = useSearchParams();
   const roomId = searchParams.get("roomId");
   const userIdForChatStart = searchParams.get("userId");
+  const lastUserIdForChatStart = useRef("");
   const theme = useTheme();
   const { clientState, matrixClient } = useChatClientContext();
   const { infoPanelState } = useInfoPanelContext();
-  const { createNewDirectMessage } = useCreateNewChat();
+  const { createNewChat } = useCreateNewChat();
   const [chatPanelView, setChatPanelView] = useState<ChatPanelView>(
     roomId ? ChatPanelView.ChatMessages : ChatPanelView.NoChatSelected,
   );
@@ -47,21 +48,26 @@ export function Chat() {
   // should either create a new chat with the user identified by that ID,
   // or open an existing chat with that user if one exists.
   useEffect(() => {
-    void (async () => {
-      if (!userIdForChatStart || clientState !== ClientState.Prepared) {
-        return;
-      }
-
-      const user = await getChatUser(matrixClient, userIdForChatStart);
+    async function createDMChat(dmUserId: string) {
+      const user = await getChatUser(matrixClient, dmUserId);
       const isUserExist = user.results.length;
 
       if (!isUserExist) {
         clearSearchParams(chatSearchParamNames.userId);
         return;
       }
-      void createNewDirectMessage({ invite: [userIdForChatStart] });
-    })();
-  }, [clientState, userIdForChatStart, createNewDirectMessage, matrixClient]);
+      void createNewChat({ invite: [dmUserId], is_direct: true });
+    }
+
+    if (
+      userIdForChatStart &&
+      clientState === ClientState.Prepared &&
+      lastUserIdForChatStart.current !== userIdForChatStart
+    ) {
+      void createDMChat(userIdForChatStart);
+      lastUserIdForChatStart.current = userIdForChatStart;
+    }
+  }, [clientState, userIdForChatStart, matrixClient, createNewChat]);
 
   if (
     clientState === ClientState.CreateBackupKey ||

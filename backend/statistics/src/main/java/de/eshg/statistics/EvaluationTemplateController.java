@@ -10,14 +10,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.aggregation.DataSourceValidator;
-import de.eshg.statistics.aggregation.StatisticService;
+import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.evaluationtemplate.AbstractAddEvaluationTemplateRequest;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateFromEvaluationRequest;
 import de.eshg.statistics.api.evaluationtemplate.AddEvaluationTemplateWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
 import de.eshg.statistics.api.evaluationtemplate.ExpectedEvaluationTemplateDto;
-import de.eshg.statistics.api.evaluationtemplate.GetAllEvaluationTemplatesResponse;
+import de.eshg.statistics.api.evaluationtemplate.GetAllMinimalEvaluationTemplateInfosResponse;
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesRequest;
 import de.eshg.statistics.api.evaluationtemplate.GetEvaluationTemplatesResponse;
 import de.eshg.statistics.api.evaluationtemplate.UpdateEvaluationTemplateRequest;
@@ -45,15 +45,15 @@ public class EvaluationTemplateController {
   public static final String BASE_URL = BaseUrls.Statistics.EVALUATION_TEMPLATE_CONTROLLER;
 
   private final EvaluationTemplateService evaluationTemplateService;
-  private final StatisticService statisticService;
+  private final EvaluationService evaluationService;
   private final DataSourceValidator dataSourceValidator;
 
   public EvaluationTemplateController(
       EvaluationTemplateService evaluationTemplateService,
-      StatisticService statisticService,
+      EvaluationService evaluationService,
       DataSourceValidator dataSourceValidator) {
     this.evaluationTemplateService = evaluationTemplateService;
-    this.statisticService = statisticService;
+    this.evaluationService = evaluationService;
     this.dataSourceValidator = dataSourceValidator;
   }
 
@@ -67,12 +67,13 @@ public class EvaluationTemplateController {
               addEvaluationTemplateFromEvaluationRequest -> {
         UUID evaluationId = addEvaluationTemplateFromEvaluationRequest.evaluationId();
         EvaluationTemplateData evaluationTemplateData =
-            statisticService.getEvaluationTemplateData(evaluationId);
+            evaluationService.getEvaluationTemplateData(evaluationId);
         List<AvailableDataSource> relevantAvailableDataSources =
             dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(
                 evaluationTemplateData.dataSources());
         yield evaluationTemplateService.addEvaluationTemplate(
-            addEvaluationTemplateFromEvaluationRequest,
+            addEvaluationTemplateFromEvaluationRequest.name(),
+            addEvaluationTemplateFromEvaluationRequest.description(),
             evaluationTemplateData,
             relevantAvailableDataSources);
       }
@@ -98,9 +99,9 @@ public class EvaluationTemplateController {
   }
 
   @GetExchange(accept = APPLICATION_JSON_VALUE)
-  @ApiResponse(responseCode = "200", description = "All evaluation templates")
-  @Operation(summary = "Get all evaluation templates")
-  public GetAllEvaluationTemplatesResponse getEvaluationTemplates() {
+  @ApiResponse(responseCode = "200", description = "Minimal info to all evaluation templates")
+  @Operation(summary = "Get the minimal info of all evaluation templates")
+  public GetAllMinimalEvaluationTemplateInfosResponse getAllMinimalEvaluationTemplateInfos() {
     return evaluationTemplateService.getAllEvaluationTemplates();
   }
 
@@ -129,16 +130,16 @@ public class EvaluationTemplateController {
     evaluationTemplateService.deleteEvaluationTemplate(templateId);
   }
 
-  @GetExchange(value = "/expected-template/{statisticId}", accept = APPLICATION_JSON_VALUE)
+  @GetExchange(value = "/expected-template/{evaluationId}", accept = APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "200",
-      description = "The information for a template based on this statistic")
+      description = "The information for a template based on this evaluation")
   @Operation(summary = "Get the information for the expected template")
   public ExpectedEvaluationTemplateDto getTemplateInformation(
-      @PathVariable(name = "statisticId") UUID statisticId) {
-    statisticService.checkPermissionForStatistic(statisticId);
+      @PathVariable(name = "evaluationId") UUID evaluationId) {
+    evaluationService.checkPermissionForEvaluation(evaluationId);
     EvaluationTemplateData evaluationTemplateData =
-        statisticService.getEvaluationTemplateData(statisticId);
+        evaluationService.getEvaluationTemplateData(evaluationId);
     List<AvailableDataSource> relevantAvailableDataSources =
         dataSourceValidator.validateDataSourcesAndGetRelevantAvailableDataSources(
             evaluationTemplateData.dataSources());

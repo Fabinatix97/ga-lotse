@@ -14,6 +14,7 @@ import { EventType } from "matrix-js-sdk/lib/matrix";
 import { useState } from "react";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
@@ -31,8 +32,9 @@ export function RoomAvatar({
   onClose,
   onCancel,
 }: Readonly<RoomAvatarProps>) {
+  const { matrixClient } = useChatClientContext();
   const roomInfo = useRoomInfo(roomId);
-  const { matrixClient, getAvatarUrl } = roomInfo;
+  const { getAvatarUrl } = roomInfo;
   const snackbar = useSnackbar();
 
   const [preview, setPreview] = useState(getAvatarUrl());

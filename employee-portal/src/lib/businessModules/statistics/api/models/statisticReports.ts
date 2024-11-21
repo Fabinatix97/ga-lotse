@@ -58,6 +58,7 @@ export interface ReportSeries {
   description?: string;
   userId: string;
   status: ReportSeriesState;
+  isAllItemsDeleting: boolean;
 }
 
 export interface ReportSeriesItem extends ReportBase {

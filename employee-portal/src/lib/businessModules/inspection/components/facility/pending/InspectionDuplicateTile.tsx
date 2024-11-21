@@ -10,6 +10,7 @@ import { formatDate, formatTime } from "@eshg/lib-portal/formatters/dateTime";
 import { Sheet, Stack, Typography } from "@mui/joy";
 
 import { DuplicateTileLine } from "@/lib/businessModules/inspection/components/facility/pending/DuplicateTileLine";
+import { formatIncidentCount } from "@/lib/businessModules/inspection/components/processImport/formatters";
 import {
   translateInspectionResult,
   translateInspectionType,
@@ -74,12 +75,7 @@ export function InspectionDuplicateTile({
             <DuplicateTileLine
               dataset={inspection}
               importedDataset={importedInspection}
-              textExtractor={(i) =>
-                "" +
-                i.numberOfIncidents +
-                " Vorkommnis" +
-                (i.numberOfIncidents != 1 && "se")
-              }
+              textExtractor={(i) => formatIncidentCount(i.numberOfIncidents)}
               badgeText={
                 inspection.numberOfIncidents != 0 ? badgeText : undefined
               }

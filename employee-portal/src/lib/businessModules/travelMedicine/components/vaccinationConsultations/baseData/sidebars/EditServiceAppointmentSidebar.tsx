@@ -4,9 +4,8 @@
  */
 
 import {
-  ApiAppointmentBookingType,
   ApiAppointmentType,
-  ApiServicePlanEntry,
+  ApiServicePlanGroup,
   PatchAppointmentRequest,
 } from "@eshg/employee-portal-api/travelMedicine";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -35,7 +34,7 @@ export function useEditServiceAppointmentSidebar(): UseSidebarWithFormRefResult<
 
 interface EditServiceAppointmentSidebarProps extends SidebarWithFormRefProps {
   procedureId: string;
-  procedureStep: ApiServicePlanEntry;
+  procedureStep: ApiServicePlanGroup;
   isInitialStep: (procedureStepId: string) => boolean;
 }
 
@@ -100,16 +99,18 @@ function EditServiceAppointmentSidebar(
   }
 
   function mapProcedureStepToEditAppointmentValues(
-    procedureStep: ApiServicePlanEntry,
+    procedureStep: ApiServicePlanGroup,
   ) {
     return {
       procedureId: props.procedureId,
       procedureStepId: procedureStep.procedureStepId ?? "",
-      bookingType: "" as ApiAppointmentBookingType,
+      bookingType: procedureStep.appointmentBookingType,
       appointmentBlockDate: undefined,
       appointmentType: procedureStep.appointmentType,
       userDefinedAppointmentDate: mapDateTimeToInput(new Date(), false),
       appointmentTypeStandardDuration: vaccinationStandardDuration as number,
+      appointmentDate: procedureStep.appointment,
+      earliestDate: procedureStep.earliestDate,
     };
   }
 

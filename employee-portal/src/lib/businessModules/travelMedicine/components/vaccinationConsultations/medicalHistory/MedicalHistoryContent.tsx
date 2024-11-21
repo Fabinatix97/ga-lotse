@@ -9,14 +9,17 @@ import {
   ApiMedicalHistory,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/travelMedicine";
+import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { useResetAlertContext } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { DownloadOutlined } from "@mui/icons-material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { Button, Stack } from "@mui/joy";
+import { Button, IconButton, Stack } from "@mui/joy";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
+import { useDownloadMedicalHistoryPdf } from "@/lib/businessModules/travelMedicine/api/download/files";
 import {
   useGetAllMedicalHistoriesQuery,
   useGetStatusQuery,
@@ -35,6 +38,8 @@ export function MedicalHistoriesContent({
   const [medicalHistory, setMedicalHistory] = useState<ApiMedicalHistory>();
 
   const resetAlertContext = useResetAlertContext();
+  const downloadMedicalHistoryPdf = useDownloadMedicalHistoryPdf();
+  const hiddenLinkContainer = useRef<HTMLDivElement>(null);
 
   const [{ data: allMedicalHistories }, { data: status }] = useSuspenseQueries({
     queries: [
@@ -45,6 +50,31 @@ export function MedicalHistoriesContent({
 
   function isProcedureClosed() {
     return status === ApiProcedureStatus.Closed;
+  }
+
+  function downloadAction(medicalHistoryId: string): ReactNode {
+    return (
+      !editMode && (
+        <IconButton
+          color="primary"
+          variant="outlined"
+          onClick={() => getMedicalHistoryPdf(medicalHistoryId)}
+          aria-label={"Anamnese herunterladen"}
+        >
+          <DownloadOutlined />
+        </IconButton>
+      )
+    );
+  }
+
+  async function getMedicalHistoryPdf(medicalHistoryId: string) {
+    const downloadedFile = await downloadMedicalHistoryPdf(
+      procedureId,
+      medicalHistoryId,
+    );
+    if (hiddenLinkContainer.current !== null) {
+      downloadFileAndOpen(downloadedFile, hiddenLinkContainer.current);
+    }
   }
 
   useEffect(() => {
@@ -86,6 +116,7 @@ export function MedicalHistoriesContent({
                 setEditMode(!editMode);
               }}
               canEdit={!editMode && !isProcedureClosed()}
+              buttons={downloadAction(medicalHistory.id)}
             >
               <MedicalHistory
                 medicalHistory={medicalHistory}
@@ -139,6 +170,7 @@ export function MedicalHistoriesContent({
           </SidePanelNav>
         </SidePanel>
       </Stack>
+      <div ref={hiddenLinkContainer} style={{ display: "hidden" }}></div>
     </Stack>
   );
 }

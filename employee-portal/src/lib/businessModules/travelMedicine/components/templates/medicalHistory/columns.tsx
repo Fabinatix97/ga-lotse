@@ -41,7 +41,7 @@ export function medicalHistoryColumns(
     columnHelper.accessor("state", {
       header: "Status",
       cell: (props) => (
-        <Chip color={templateStatusColors[props.getValue()]}>
+        <Chip size="md" color={templateStatusColors[props.getValue()]}>
           {translateMedicalHistoryTemplateStateType(props.getValue())}
         </Chip>
       ),

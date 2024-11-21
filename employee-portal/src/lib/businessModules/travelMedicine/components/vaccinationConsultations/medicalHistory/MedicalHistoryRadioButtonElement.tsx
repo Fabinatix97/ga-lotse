@@ -36,6 +36,7 @@ export function MedicalHistoryRadioButtonElement({
     <RadioButtonsField
       name={name}
       label={<StyledLabelComponent>{label}</StyledLabelComponent>}
+      data-testid="document-element-type-question"
       options={[
         { value: "true", label: "Ja" },
         { value: "false", label: "Nein" },

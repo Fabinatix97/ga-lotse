@@ -98,10 +98,13 @@ public final class BaseUrls {
     public static final String SCHOOL_ENTRY_CONTROLLER = "/school-entries";
     public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
     public static final String CONFIG_CONTROLLER = "/config";
-    public static final String SCHOOL_ENTRY_CITIZEN_CONTROLLER = "/citizen/school-entries";
+    public static final String SCHOOL_ENTRY_CITIZEN_CONTROLLER = "/citizen/auth";
+    public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
     public static final String VALUE_EVALUATOR_CONTROLLER = "/value-evaluation";
     public static final String LABEL_CONTROLLER = "/school-entry-labels";
     public static final String COUNTRY_CODES_CONTROLLER = "/country-codes";
+    public static final String ICD_10_CODE_CONTROLLER = "/icd10-codes";
+    public static final String IMPORT_CONTROLLER = "/import";
 
     private SchoolEntry() {}
   }
@@ -141,16 +144,23 @@ public final class BaseUrls {
 
   public static final class MedicalRegistry {
     public static final String MEDICAL_REGISTRY_CONTROLLER = "/medical-registry-entries";
+    public static final String CITIZEN_PORTAL_ENDPOINT = "/public";
 
     private MedicalRegistry() {}
   }
 
+  public static final class Dental {
+    public static final String DENTAL_CONTROLLER = "/dental";
+
+    private Dental() {}
+  }
+
   public static final class Statistics {
-    public static final String STATISTIC_CONTROLLER = "/statistic";
+    public static final String EVALUATION_CONTROLLER = "/evaluation";
     public static final String RETRIEVE_DATA_URL = "/retrieve-data";
-    public static final String EVALUATION_URL = STATISTIC_CONTROLLER + "/evaluation";
-    public static final String REPORT_URL = STATISTIC_CONTROLLER + "/report";
-    public static final String REPORT_SERIES_URL = STATISTIC_CONTROLLER + "/report-series";
+    public static final String ANALYSIS_URL = EVALUATION_CONTROLLER + "/analysis";
+    public static final String REPORT_URL = EVALUATION_CONTROLLER + "/report";
+    public static final String REPORT_SERIES_URL = EVALUATION_CONTROLLER + "/report-series";
 
     public static final String DATA_EXPORT_CONTROLLER = "/data-export";
     public static final String DATA_SOURCE_CONTROLLER = "/data-source";
@@ -158,14 +168,13 @@ public final class BaseUrls {
     public static final String GEO_SHAPE_CONTROLLER = "/geo-shape";
     public static final String EVALUATION_TEMPLATE_CONTROLLER = "/evaluation-template";
     public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
+    public static final String CENTRAL_REPOSITORY_CONTROLLER = "/central-repository";
 
     private Statistics() {}
   }
 
   public static final class AuditLog {
     public static final String AUDIT_LOG_CONTROLLER = "/auditlog";
-
-    public static final String FEATURE_TOGGLES_CONTROLLER = "/feature-toggles";
 
     private AuditLog() {}
   }
@@ -192,6 +201,12 @@ public final class BaseUrls {
     public static final String GDPR_VALIDATION_TASK_API = "/gdpr-validation-tasks";
 
     private ProcedureLibrary() {}
+  }
+
+  public static final class ContactLibrary {
+    public static final String CONTACT_EVENT_CALLBACK_API = "/contact-events";
+
+    private ContactLibrary() {}
   }
 
   public static final class FourEyesLibrary {

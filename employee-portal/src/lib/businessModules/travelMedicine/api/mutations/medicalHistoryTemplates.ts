@@ -31,7 +31,7 @@ export function usePostMedicalHistoryTemplate() {
       return medicalHistoryTemplateApi.postMedicalHistoryTemplate(data);
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Der Anamnesebogen wurde gespeichert.");
     },
   });
 }
@@ -48,7 +48,7 @@ export function usePutMedicalHistoryTemplate() {
       );
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Die Anamnesevorlage wurde gespeichert.");
     },
   });
 }
@@ -62,7 +62,7 @@ export function useDeleteMedicalHistoryTemplateById() {
       return medicalHistoryTemplateApi.deleteMedicalHistoryTemplateById(id);
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gelöscht.");
+      snackbar.confirmation("Die Anamnesevorlage wurde gelöscht.");
     },
   });
 }
@@ -79,7 +79,7 @@ export function usePatchMedicalHistoryTemplateMainFlag() {
       );
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Die Anamnesevorlage wurde gespeichert.");
     },
   });
 }
@@ -96,7 +96,7 @@ export function usePatchMedicalHistoryTemplateFollowUpFlag() {
       );
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Die Anamnesevorlage wurde gespeichert.");
     },
   });
 }

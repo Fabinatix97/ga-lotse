@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MatrixClient, Room } from "matrix-js-sdk";
+import { Room } from "matrix-js-sdk";
 import { useCallback, useMemo } from "react";
 import { filter, find, isStrictEqual } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import { useChatRoomList } from "@/lib/businessModules/chat/shared/hooks/useChatRoomList";
 import { ChatRoomMember } from "@/lib/businessModules/chat/shared/types";
 import {
   getMemberAvatarUrl,
   getRoomAdmins,
   getRoomAvatarUrl,
   getRoomCreator,
-  getRoomNameAndCommunicationType,
   isDMRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
@@ -25,7 +25,6 @@ export interface RoomInfo {
   communicationType?: CommunicationType;
   allRoomMembers: ChatRoomMember[];
   dmRoomMember: ChatRoomMember | undefined;
-  matrixClient: MatrixClient;
   checkIfAdmin: () => boolean;
   getAvatarUrl: () => string | null;
   getJoinedMembers: () => ChatRoomMember[];
@@ -35,15 +34,13 @@ export interface RoomInfo {
 
 export function useRoomInfo(roomId: string): RoomInfo {
   const { matrixClient } = useChatClientContext();
-
-  const room = matrixClient.getRoom(roomId);
-  const loggedInUserId = matrixClient.getUserId();
-
+  const { roomList } = useChatRoomList();
   const rct = useMemo(
-    () => (room ? getRoomNameAndCommunicationType(room) : undefined),
-    [room],
+    () => roomList.find((roomCT) => roomCT.room.roomId === roomId),
+    [roomId, roomList],
   );
-
+  const room = useMemo(() => rct?.room ?? null, [rct?.room]);
+  const loggedInUserId = matrixClient.getUserId();
   const roomCreator = useMemo(() => getRoomCreator(room), [room]);
 
   const exceptMe = useCallback(
@@ -100,7 +97,6 @@ export function useRoomInfo(roomId: string): RoomInfo {
     communicationType: rct?.communicationType,
     allRoomMembers,
     dmRoomMember,
-    matrixClient,
     getAvatarUrl,
     getJoinedMembers,
     getJoinedAndInvitedMembers,

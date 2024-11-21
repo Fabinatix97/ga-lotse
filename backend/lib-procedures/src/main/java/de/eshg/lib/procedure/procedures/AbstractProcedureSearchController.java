@@ -86,8 +86,7 @@ public abstract class AbstractProcedureSearchController<
 
   private Map<UUID, GetReferencePersonResponse> toPersonByIdMap(
       List<GetReferencePersonResponse> persons) {
-    return persons.stream()
-        .collect(StreamUtil.toLinkedHashMap(GetReferencePersonResponse::id, Function.identity()));
+    return persons.stream().collect(StreamUtil.toLinkedHashMap(GetReferencePersonResponse::id));
   }
 
   private void validateFeatureSearchProceduresEnabled() {

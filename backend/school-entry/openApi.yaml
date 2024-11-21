@@ -411,19 +411,7 @@ paths:
           description: OK
       tags:
       - Archiving
-  /citizen/school-entries:
-    get:
-      operationId: getSelfProcedureAsCitizen
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GetCitizenProcedureResponse"
-          description: OK
-      tags:
-      - SchoolEntryCitizen
-  /citizen/school-entries/anamnesis:
+  /citizen/auth/anamnesis:
     put:
       operationId: addAnamnesisAsCitizen
       requestBody:
@@ -437,7 +425,7 @@ paths:
           description: OK
       tags:
       - SchoolEntryCitizen
-  /citizen/school-entries/appointment:
+  /citizen/auth/appointment:
     put:
       operationId: updateAppointmentAsCitizen
       requestBody:
@@ -451,7 +439,31 @@ paths:
           description: OK
       tags:
       - SchoolEntryCitizen
-  /citizen/school-entries/documents/privacy-notice:
+  /citizen/auth/free-appointments:
+    get:
+      operationId: getSelfFreeAppointmentsAsCitizen
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCitizenFreeAppointmentsResponse"
+          description: OK
+      tags:
+      - SchoolEntryCitizen
+  /citizen/auth/procedure:
+    get:
+      operationId: getSelfProcedureAsCitizen
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCitizenProcedureResponse"
+          description: OK
+      tags:
+      - SchoolEntryCitizen
+  /citizen/public/documents/privacy-notice:
     get:
       operationId: getPrivacyNotice
       responses:
@@ -464,8 +476,8 @@ paths:
           description: OK
       summary: Get the privacy-notice document.
       tags:
-      - SchoolEntryCitizen
-  /citizen/school-entries/documents/privacy-policy:
+      - SchoolEntryPublicCitizen
+  /citizen/public/documents/privacy-policy:
     get:
       operationId: getPrivacyPolicy
       responses:
@@ -478,20 +490,8 @@ paths:
           description: OK
       summary: Get the privacy-policy document.
       tags:
-      - SchoolEntryCitizen
-  /citizen/school-entries/free-appointments:
-    get:
-      operationId: getSelfFreeAppointmentsAsCitizen
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GetCitizenFreeAppointmentsResponse"
-          description: OK
-      tags:
-      - SchoolEntryCitizen
-  /citizen/school-entries/opening-hours:
+      - SchoolEntryPublicCitizen
+  /citizen/public/opening-hours:
     get:
       operationId: getOpeningHours
       responses:
@@ -503,7 +503,7 @@ paths:
           description: OK
       summary: Get the official opening hours.
       tags:
-      - SchoolEntryCitizen
+      - SchoolEntryPublicCitizen
   /config:
     get:
       operationId: getConfig
@@ -690,6 +690,270 @@ paths:
       summary: Add a GDPR validation task
       tags:
       - GdprValidationTask
+  /gdpr-validation-tasks/notification-banner:
+    get:
+      operationId: getGdprNotificationBanner
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprNotificationBannerResponse"
+          description: OK
+      summary: Get data for GDPR notification banner
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}:
+    get:
+      operationId: getGdprValidationTask
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprValidationTaskResponse"
+          description: OK
+      summary: Get Gdpr Validation Task by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures:
+    get:
+      operationId: getRelatedBusinessProcedures
+      parameters:
+      - description: The Id of the GDPR procedure.
+        in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetRelatedBusinessProceduresResponse"
+          description: OK
+      summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
+    post:
+      operationId: addDownloadPackage
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Creates a downloadPackage for validationTask with gdprProcedureId with
+        the data from the procedure with businessProcedureId
+      tags:
+      - GdprValidationTask
+  /icd10-codes:
+    get:
+      operationId: searchIcd10Codes
+      parameters:
+      - description: "Search for a string within the ICD-10 codes, groups and their\
+          \ title. The search supports a fuzzy search mechanism."
+        in: query
+        name: searchString
+        required: false
+        schema:
+          type: string
+          description: "Search for a string within the ICD-10 codes, groups and their\
+            \ title. The search supports a fuzzy search mechanism."
+      - in: query
+        name: codes
+        required: false
+        schema:
+          type: array
+          default: []
+          items:
+            type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SearchIcd10CodesResponse"
+          description: OK
+      summary: Search in the ICD-10 catalogue.
+      tags:
+      - Icd10Code
+  /import/citizen-list:
+    post:
+      operationId: importCitizenList
+      parameters:
+      - in: query
+        name: schoolYear
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1900
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Upload a XLSX file to create multiple procedures.
+      tags:
+      - Import
+  /import/past-procedure-list/{schoolId}:
+    post:
+      operationId: importPastProcedureList
+      parameters:
+      - in: path
+        name: schoolId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: schoolYear
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1900
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Upload a XLSX file to create multiple past procedures.
+      tags:
+      - Import
+  /import/school-list/{schoolId}:
+    post:
+      operationId: importSchoolList
+      parameters:
+      - in: path
+        name: schoolId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: locationId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: schoolYear
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1900
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Upload a XLSX file to create multiple procedures.
+      tags:
+      - Import
+  /import/templates/citizen-list:
+    get:
+      operationId: getCitizenListTemplate
+      responses:
+        "200":
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the XLSX citizen list template.
+      tags:
+      - Import
+  /import/templates/past-procedure-list:
+    get:
+      operationId: getPastProcedureListTemplate
+      responses:
+        "200":
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the XLSX past procedures list template.
+      tags:
+      - Import
+  /import/templates/school-list:
+    get:
+      operationId: getSchoolListTemplate
+      responses:
+        "200":
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the XLSX school list template.
+      tags:
+      - Import
   /inbox-procedures:
     get:
       description: |
@@ -1566,38 +1830,6 @@ paths:
           description: OK
       tags:
       - SchoolEntry
-  /school-entries/citizen-list:
-    post:
-      operationId: importCitizenList
-      parameters:
-      - in: query
-        name: schoolYear
-        required: true
-        schema:
-          type: integer
-          format: int32
-          minimum: 1900
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-              required:
-              - file
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: OK
-      summary: Upload a XLSX file to create multiple procedures.
-      tags:
-      - SchoolEntry
   /school-entries/download/invitations:
     post:
       operationId: downloadInvitations
@@ -1615,147 +1847,6 @@ paths:
                 type: string
                 format: binary
           description: OK
-      tags:
-      - SchoolEntry
-  /school-entries/icd10-codes:
-    get:
-      operationId: searchIcd10Codes
-      parameters:
-      - description: "Search for a string within the ICD-10 codes, groups and their\
-          \ title. The search supports a fuzzy search mechanism."
-        in: query
-        name: searchString
-        required: false
-        schema:
-          type: string
-          description: "Search for a string within the ICD-10 codes, groups and their\
-            \ title. The search supports a fuzzy search mechanism."
-      - in: query
-        name: codes
-        required: false
-        schema:
-          type: array
-          default: []
-          items:
-            type: string
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/SearchIcd10CodesResponse"
-          description: OK
-      summary: Search in the ICD-10 catalogue.
-      tags:
-      - SchoolEntry
-  /school-entries/past-procedure-list/{schoolId}:
-    post:
-      operationId: importPastProcedureList
-      parameters:
-      - in: path
-        name: schoolId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: schoolYear
-        required: true
-        schema:
-          type: integer
-          format: int32
-          minimum: 1900
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-              required:
-              - file
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: OK
-      summary: Upload a XLSX file to create multiple past procedures.
-      tags:
-      - SchoolEntry
-  /school-entries/school-list/{schoolId}:
-    post:
-      operationId: importSchoolList
-      parameters:
-      - in: path
-        name: schoolId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: locationId
-        required: false
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: schoolYear
-        required: true
-        schema:
-          type: integer
-          format: int32
-          minimum: 1900
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-              required:
-              - file
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: OK
-      summary: Upload a XLSX file to create multiple procedures.
-      tags:
-      - SchoolEntry
-  /school-entries/templates/citizen-list-template:
-    get:
-      operationId: getCitizenListTemplate
-      responses:
-        "200":
-          content:
-            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema:
-                type: string
-                format: binary
-          description: OK
-      summary: Get the XLSX citizen list template.
-      tags:
-      - SchoolEntry
-  /school-entries/templates/school-list-template:
-    get:
-      operationId: getSchoolListTemplate
-      responses:
-        "200":
-          content:
-            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
-              schema:
-                type: string
-                format: binary
-          description: OK
-      summary: Get the XLSX school list template.
       tags:
       - SchoolEntry
   /school-entries/waiting-room-procedures:
@@ -2154,6 +2245,12 @@ paths:
           items:
             type: string
             format: uuid
+      - in: query
+        name: schoolId
+        required: false
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: locationId
         required: false
@@ -3069,7 +3166,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -3128,13 +3224,17 @@ components:
     AddGdprValidationTaskRequest:
       type: object
       properties:
-        procedureId:
+        gdprProcedureId:
           type: string
           format: uuid
+        startedAt:
+          type: string
+          format: date-time
         type:
           $ref: "#/components/schemas/GdprProcedureType"
       required:
-      - procedureId
+      - gdprProcedureId
+      - startedAt
       - type
     AdditionalChildInfo:
       type: object
@@ -3452,6 +3552,22 @@ components:
       - MEASLES_PROTECTION
       - STI_PROTECTION
       - MEDICAL_REGISTRY
+      - DENTAL
+    BusinessProcedureInclusionStatus:
+      type: string
+      enum:
+      - INCLUDED
+      - UNDECIDED
+    BusinessProcedureWithInclusionStatus:
+      type: object
+      properties:
+        businessProcedure:
+          $ref: "#/components/schemas/Procedure"
+        inclusionStatus:
+          $ref: "#/components/schemas/BusinessProcedureInclusionStatus"
+      required:
+      - businessProcedure
+      - inclusionStatus
     CheckUps:
       type: object
       properties:
@@ -3637,7 +3753,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -4281,7 +4396,7 @@ components:
       type: object
       properties:
         person:
-          $ref: "#/components/schemas/PersonFileState"
+          $ref: "#/components/schemas/GetPersonFileStateResponse"
         personType:
           $ref: "#/components/schemas/PersonType"
       required:
@@ -4746,6 +4861,11 @@ components:
       enum:
       - RIGHT_OF_ACCESS
       - RIGHT_TO_ERASURE
+    GdprValidationTaskStatus:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -4767,7 +4887,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -5058,6 +5177,23 @@ components:
             $ref: "#/components/schemas/Appointment"
       required:
       - appointments
+    GetGdprNotificationBannerResponse:
+      type: object
+      properties:
+        earliestDueDate:
+          type: string
+          format: date
+        openValidationTasksCount:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - openValidationTasksCount
+    GetGdprValidationTaskResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
     GetInboxProcedureResponse:
       type: object
       properties:
@@ -5133,6 +5269,100 @@ components:
       required:
       - de
       - en
+    GetPersonFileStateResponse:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        countryOfBirth:
+          $ref: "#/components/schemas/CountryCode"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        dateOfBirth:
+          type: string
+          format: date
+          description: The date of birth of the Person.
+          example: 2000-01-01
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          description: A list of email addresses of the Person.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
+          items:
+            type: string
+        firstName:
+          type: string
+          description: The given name(s) of the Person.
+          example: John
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        id:
+          type: string
+          format: uuid
+          description: Id of the Person.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        lastName:
+          type: string
+          description: The last name of the Person.
+          example: Doe
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          description: The last name at birth of the Person.
+          example: Smith
+          maxLength: 40
+          minLength: 1
+        outdated:
+          type: boolean
+          description: A flag that signals if a File State differs from the referencePerson
+            it is connected to. Set to 'null' if unchecked.
+          example: true
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Person.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+        placeOfBirth:
+          type: string
+          description: The place of birth (without country) of the Person.
+          example: Berlin
+          maxLength: 50
+          minLength: 1
+        referenceVersion:
+          type: integer
+          format: int64
+          description: The version of referenceData that was present when the FileState
+            was created. Can be increased if a newer version is irrelevant for the
+            Procedure and the outdated flag shall be suppressed.
+          example: 1
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a Person.
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
+      required:
+      - dataOrigin
+      - dateOfBirth
+      - emailAddresses
+      - firstName
+      - gender
+      - id
+      - lastName
+      - phoneNumbers
+      - referenceVersion
+      - salutation
     GetProcedureApprovalRequestsResponse:
       type: object
       properties:
@@ -5252,6 +5482,18 @@ components:
             $ref: "#/components/schemas/Procedure"
       required:
       - procedures
+    GetRelatedBusinessProceduresResponse:
+      type: object
+      properties:
+        proceduresWithStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
+        validationTask:
+          $ref: "#/components/schemas/GetGdprValidationTaskResponse"
+      required:
+      - proceduresWithStatus
+      - validationTask
     GetRelevantArchivableProceduresResponse:
       type: object
       properties:
@@ -5563,7 +5805,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -5591,7 +5832,6 @@ components:
             $ref: "#/components/schemas/ImageMetaData"
       required:
       - changedAt
-      - changedBy
     ImportStatistics:
       type: object
       properties:
@@ -5810,7 +6050,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -5853,7 +6092,6 @@ components:
             $ref: "#/components/schemas/MailMetaData"
       required:
       - changedAt
-      - changedBy
     ManualProgressEntry:
       type: object
       allOf:
@@ -5893,14 +6131,10 @@ components:
         changedAt:
           type: string
           format: date-time
-        changedBy:
-          type: string
-          format: uuid
         manualProgressEntry:
           $ref: "#/components/schemas/ManualProgressEntry"
       required:
       - changedAt
-      - changedBy
     ManualProgressEntryType:
       type: string
       enum:
@@ -5953,13 +6187,9 @@ components:
         changedAt:
           type: string
           format: date-time
-        changedBy:
-          type: string
-          format: uuid
       required:
       - '@type'
       - changedAt
-      - changedBy
     MigrationBackground:
       type: object
       properties:
@@ -6027,7 +6257,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -6055,7 +6284,6 @@ components:
             $ref: "#/components/schemas/PdfMetaData"
       required:
       - changedAt
-      - changedBy
     PercentageValue:
       type: string
       description: Percentage value of visibility
@@ -6166,95 +6394,6 @@ components:
       - phoneNumbers
       - salutation
       - version
-    PersonFileState:
-      type: object
-      properties:
-        contactAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        countryOfBirth:
-          $ref: "#/components/schemas/CountryCode"
-        dataOrigin:
-          $ref: "#/components/schemas/DataOrigin"
-        dateOfBirth:
-          type: string
-          format: date
-          description: The date of birth of the Person.
-          example: 2000-01-01
-        differentBillingAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        emailAddresses:
-          type: array
-          description: A list of email addresses of the Person.
-          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
-          items:
-            type: string
-        firstName:
-          type: string
-          description: The given name(s) of the Person.
-          example: John
-          maxLength: 80
-          minLength: 1
-        gender:
-          $ref: "#/components/schemas/Gender"
-        id:
-          type: string
-          format: uuid
-          description: Id of the Person.
-          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        lastName:
-          type: string
-          description: The last name of the Person.
-          example: Doe
-          maxLength: 120
-          minLength: 1
-        nameAtBirth:
-          type: string
-          description: The last name at birth of the Person.
-          example: Smith
-          maxLength: 40
-          minLength: 1
-        phoneNumbers:
-          type: array
-          description: A list of telephone numbers of the Person.
-          example: "['+4912345678901','+4912345678902','+4912345678903']"
-          items:
-            type: string
-        placeOfBirth:
-          type: string
-          description: The place of birth (without country) of the Person.
-          example: Berlin
-          maxLength: 50
-          minLength: 1
-        referenceVersion:
-          type: integer
-          format: int64
-          description: The version of referenceData that was present when the FileState
-            was created. Can be increased if a newer version is irrelevant for the
-            Procedure and the outdated flag shall be suppressed.
-          example: 1
-        salutation:
-          $ref: "#/components/schemas/Salutation"
-        title:
-          type: string
-          description: The academic title of a Person.
-          example: Prof. Dr.
-          maxLength: 119
-          minLength: 1
-      required:
-      - dataOrigin
-      - dateOfBirth
-      - emailAddresses
-      - firstName
-      - gender
-      - id
-      - lastName
-      - phoneNumbers
-      - referenceVersion
-      - salutation
     PersonType:
       type: string
       enum:
@@ -6435,6 +6574,8 @@ components:
           type: boolean
         isInvitationSent:
           type: boolean
+        isPastProcedure:
+          type: boolean
         labels:
           type: array
           items:
@@ -6473,6 +6614,7 @@ components:
       - isDeletable
       - isEntryLevel
       - isInvitationSent
+      - isPastProcedure
       - labels
       - modifiedAt
       - status
@@ -6771,6 +6913,7 @@ components:
           type: integer
           format: int64
       required:
+      - appointmentBlockGroups
       - count
     SchoolEntryCountryCode:
       type: string
@@ -7087,6 +7230,7 @@ components:
             $ref: "#/components/schemas/CreateProcedureResponse"
       required:
       - count
+      - procedures
     SchoolEntryProcedureSortKey:
       type: string
       enum:

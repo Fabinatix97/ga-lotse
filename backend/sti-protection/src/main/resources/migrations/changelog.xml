@@ -23,5 +23,11 @@
   <include file="migrations/0013_extend_medical_histories.xml"/>
   <include file="migrations/0014_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0015_add_gdpr_validation_task.xml"/>
+  <include file="migrations/0016_add_started_at.xml"/>
+  <include file="migrations/0017_drop_not_null_constraints.xml"/>
+  <include file="migrations/0018_rename_gdpr_validation_task_procedure_id.xml"/>
+  <include file="migrations/0019_add_download_package_table.xml"/>
+  <include file="migrations/0020_add_anonymous_user_id.xml"/>
+  <include file="migrations/0021_add_appointment_history.xml"/>
 
 </databaseChangeLog>

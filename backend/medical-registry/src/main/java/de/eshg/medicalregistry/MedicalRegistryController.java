@@ -5,33 +5,51 @@
 
 package de.eshg.medicalregistry;
 
-import static de.eshg.medicalregistry.mapper.ProcedureMapper.*;
+import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.EMPLOYEE_LIST;
+import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.IDENTIFICATION_DOCUMENT;
+import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.PROFESSIONAL_LICENSE_CERTIFICATE;
+import static de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType.WORK_PERMIT;
+import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapToDto;
+import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
+import de.eshg.base.user.UserApi;
 import de.eshg.file.common.FileType;
+import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.model.GetProceduresPaginationOptions;
+import de.eshg.lib.procedure.util.FileValidator;
+import de.eshg.medicalregistry.api.ConfirmProcedureRequest;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.DeleteProcedureRequest;
 import de.eshg.medicalregistry.api.GetMedicalRegistryEntryOverview;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresFilterOptions;
 import de.eshg.medicalregistry.api.GetProcedureResponse;
+import de.eshg.medicalregistry.api.ProcedureReferenceDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
+import de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Professional;
+import de.eshg.medicalregistry.domain.model.TypeOfChange;
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,51 +68,252 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "MedicalRegistry")
 public class MedicalRegistryController {
 
-  public static final String BASE_URL = BaseUrls.MedicalRegistry.MEDICAL_REGISTRY_CONTROLLER;
+  static final String BASE_URL = BaseUrls.MedicalRegistry.MEDICAL_REGISTRY_CONTROLLER;
+
+  static final int MAX_OTHER_RELEVANT_DOCUMENTS = 3;
+
+  private static final String REQUEST_PARAM_NAME_PROCEDURE = "procedure";
+  private static final String REQUEST_PARAM_NAME_PROFESSIONAL_LICENSE_CERTIFICATE =
+      "professionalLicenseCertificate";
+  private static final String REQUEST_PARAM_NAME_IDENTIFICATION_DOCUMENT = "identificationDocument";
+  private static final String REQUEST_PARAM_NAME_WORK_PERMIT = "workPermit";
+  private static final String REQUEST_PARAM_NAME_EMPLOYEE_LIST = "employeeList";
+  private static final String REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS =
+      "otherRelevantDocuments";
 
   private final MedicalRegistryService medicalRegistryService;
+  private final MedicalRegistryGuard medicalRegistryGuard;
+  private final Validator validator;
+  private final AuditLogger auditLogger;
+  private final UserApi userApi;
 
-  public MedicalRegistryController(MedicalRegistryService medicalRegistryService) {
+  public MedicalRegistryController(
+      MedicalRegistryService medicalRegistryService,
+      MedicalRegistryGuard medicalRegistryGuard,
+      Validator validator,
+      AuditLogger auditLogger,
+      UserApi userApi) {
     this.medicalRegistryService = medicalRegistryService;
+    this.medicalRegistryGuard = medicalRegistryGuard;
+    this.validator = validator;
+    this.auditLogger = auditLogger;
+    this.userApi = userApi;
+  }
+
+  @PostMapping("/{procedureId}/confirm")
+  @Transactional
+  public UUID confirmProcedure(
+      @PathVariable("procedureId") UUID procedureId,
+      @RequestBody @Valid ConfirmProcedureRequest confirmProcedureRequest) {
+    MedicalRegistryEntry sourceMedicalRegistryEntry =
+        medicalRegistryService
+            .findProcedureByExternalIdForUpdate(procedureId, confirmProcedureRequest.version())
+            .orElseThrow(notFoundException(procedureId));
+
+    MedicalRegistryEntryChange sourceMedicalRegistryChange =
+        Validator.validateIsMedicalRegistryEntryChange(sourceMedicalRegistryEntry);
+    Validator.validateIsDraft(sourceMedicalRegistryChange);
+
+    if (confirmProcedureRequest.practiceReferenceFacility() != null) {
+      Validator.validateHasPractice(sourceMedicalRegistryChange);
+    }
+
+    MedicalRegistryEntry mergeTarget =
+        findAndValidateMergeTargetByReferenceIfPresent(confirmProcedureRequest);
+
+    auditLogProcedureConfirmation(
+        procedureId, confirmProcedureRequest, sourceMedicalRegistryChange.getTypeOfChange());
+
+    return medicalRegistryService
+        .confirmProcedure(
+            sourceMedicalRegistryChange,
+            confirmProcedureRequest.professionalReferencePerson(),
+            confirmProcedureRequest.practiceReferenceFacility(),
+            mergeTarget)
+        .getExternalId();
+  }
+
+  private void auditLogProcedureConfirmation(
+      UUID procedureId,
+      ConfirmProcedureRequest confirmProcedureRequest,
+      TypeOfChange typeOfChange) {
+
+    Map<String, String> additionalData =
+        Map.of(
+            "Benutzer",
+            userApi.getSelfUser().userId().toString(),
+            "ID des Draft-Vorgangs",
+            procedureId.toString(),
+            "ID des Ziel-Vorgangs",
+            Optional.ofNullable(confirmProcedureRequest.target())
+                .map(ProcedureReferenceDto::id)
+                .map(UUID::toString)
+                .orElse("-"),
+            "Art der Änderung",
+            typeOfChange.name());
+
+    auditLogger.log("Vorgangsbearbeitung", "Eintrag erstellen / ändern", additionalData);
+  }
+
+  private MedicalRegistryEntry findAndValidateMergeTargetByReferenceIfPresent(
+      ConfirmProcedureRequest confirmProcedureRequest) {
+    if (confirmProcedureRequest.target() == null) {
+      return null;
+    }
+
+    ProcedureReferenceDto targetReference = confirmProcedureRequest.target();
+    MedicalRegistryEntry mergeTarget =
+        medicalRegistryService
+            .findProcedureByExternalIdForUpdate(targetReference.id(), targetReference.version())
+            .orElseThrow(
+                () -> new BadRequestException(makeProcedureNotFoundMessage(targetReference.id())));
+
+    validator.validateMergeTarget(
+        mergeTarget, confirmProcedureRequest.professionalReferencePerson());
+
+    return mergeTarget;
+  }
+
+  @PostMapping(path = CITIZEN_PORTAL_ENDPOINT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Transactional
+  public UUID createProcedureFromCitizenPortal(
+      @RequestPart(name = REQUEST_PARAM_NAME_PROCEDURE) @Valid CreateProcedureRequest request,
+      @RequestPart(name = REQUEST_PARAM_NAME_PROFESSIONAL_LICENSE_CERTIFICATE, required = false)
+          MultipartFile professionalLicenseCertificate,
+      @RequestPart(name = REQUEST_PARAM_NAME_IDENTIFICATION_DOCUMENT)
+          MultipartFile identificationDocument,
+      @RequestPart(name = REQUEST_PARAM_NAME_WORK_PERMIT, required = false)
+          MultipartFile workPermit,
+      @RequestPart(name = REQUEST_PARAM_NAME_EMPLOYEE_LIST, required = false)
+          MultipartFile employeeList,
+      @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
+          @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
+          List<MultipartFile> otherRelevantDocuments)
+      throws IOException {
+
+    medicalRegistryGuard.guard();
+
+    return createProcedureCommon(
+        request,
+        professionalLicenseCertificate,
+        identificationDocument,
+        workPermit,
+        employeeList,
+        otherRelevantDocuments,
+        TriggerType.CITIZEN,
+        ProcedureType.MEDICAL_REGISTRY_CITIZEN_DRAFT);
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Transactional
   public UUID createProcedure(
-      @RequestPart(name = "procedure") @Valid CreateProcedureRequest request,
-      @RequestPart(name = "professionalLicenseCertificate", required = false)
+      @RequestPart(name = REQUEST_PARAM_NAME_PROCEDURE) @Valid CreateProcedureRequest request,
+      @RequestPart(name = REQUEST_PARAM_NAME_PROFESSIONAL_LICENSE_CERTIFICATE, required = false)
           MultipartFile professionalLicenseCertificate,
-      @RequestPart(name = "identificationDocument") MultipartFile identificationDocument,
-      @RequestPart(name = "workPermit", required = false) MultipartFile workPermit,
-      @RequestPart(name = "employeeList", required = false) MultipartFile employeeList,
-      @RequestPart(name = "otherRelevantDocuments", required = false)
-          MultipartFile otherRelevantDocuments)
+      @RequestPart(name = REQUEST_PARAM_NAME_IDENTIFICATION_DOCUMENT)
+          MultipartFile identificationDocument,
+      @RequestPart(name = REQUEST_PARAM_NAME_WORK_PERMIT, required = false)
+          MultipartFile workPermit,
+      @RequestPart(name = REQUEST_PARAM_NAME_EMPLOYEE_LIST, required = false)
+          MultipartFile employeeList,
+      @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
+          @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
+          List<MultipartFile> otherRelevantDocuments)
       throws IOException {
 
+    return createProcedureCommon(
+        request,
+        professionalLicenseCertificate,
+        identificationDocument,
+        workPermit,
+        employeeList,
+        otherRelevantDocuments,
+        TriggerType.EMPLOYEE,
+        ProcedureType.MEDICAL_REGISTRY_EMPLOYEE_DRAFT);
+  }
+
+  private UUID createProcedureCommon(
+      CreateProcedureRequest request,
+      MultipartFile professionalLicenseCertificate,
+      MultipartFile identificationDocument,
+      MultipartFile workPermit,
+      MultipartFile employeeList,
+      List<MultipartFile> otherRelevantDocuments,
+      TriggerType triggerType,
+      ProcedureType procedureType)
+      throws IOException {
+
+    Validator.validateEmployeesEmployed(request.employeesEmployed(), employeeList);
+
     List<DocumentData> providedDocuments =
-        Stream.of(
-                new DocumentData(
-                    "Berufserlaubnisurkunde",
-                    "Upload Berufserlaubnisurkunde",
-                    professionalLicenseCertificate),
-                new DocumentData("Ausweis_Pass", "Upload Ausweis/Pass", identificationDocument),
-                new DocumentData("Arbeitserlaubnis", "Upload Arbeitserlaubnis", workPermit),
-                new DocumentData("Mitarbeiter_Liste", "Upload Mitarbeiter-Liste", employeeList),
-                new DocumentData(
-                    "Weitere_relevante_Dokumente",
-                    "Upload weiterer relevanter Dokumente",
-                    otherRelevantDocuments))
-            .filter(d -> d.getFile() != null)
-            .toList();
+        getProvidedDocuments(
+            professionalLicenseCertificate,
+            identificationDocument,
+            workPermit,
+            employeeList,
+            otherRelevantDocuments);
 
     for (DocumentData document : providedDocuments) {
-      Validator.validateFileType(document.getFile(), FileType.JPEG);
+      FileValidator.validate(document.file());
+      Validator.validateFileType(document.file(), FileType.JPEG);
     }
 
     MedicalRegistryEntryChange procedure =
-        medicalRegistryService.createProcedure(request, providedDocuments);
+        medicalRegistryService.createProcedure(
+            request, providedDocuments, triggerType, procedureType);
 
     return procedure.getExternalId();
+  }
+
+  private static List<DocumentData> getProvidedDocuments(
+      MultipartFile professionalLicenseCertificate,
+      MultipartFile identificationDocument,
+      MultipartFile workPermit,
+      MultipartFile employeeList,
+      List<MultipartFile> otherRelevantDocuments) {
+
+    List<DocumentData> providedDocuments = new ArrayList<>();
+
+    addIfProvided(
+        professionalLicenseCertificate,
+        addJpgExtension("Berufserlaubnisurkunde"),
+        "Upload Berufserlaubnisurkunde",
+        PROFESSIONAL_LICENSE_CERTIFICATE,
+        providedDocuments);
+
+    addIfProvided(
+        identificationDocument,
+        addJpgExtension("Ausweis_Pass"),
+        "Upload Ausweis/Pass",
+        IDENTIFICATION_DOCUMENT,
+        providedDocuments);
+
+    addIfProvided(
+        workPermit,
+        addJpgExtension("Arbeitserlaubnis"),
+        "Upload Arbeitserlaubnis",
+        WORK_PERMIT,
+        providedDocuments);
+
+    addIfProvided(
+        employeeList,
+        addJpgExtension("Mitarbeiter_Liste"),
+        "Upload Mitarbeiter-Liste",
+        EMPLOYEE_LIST,
+        providedDocuments);
+
+    if (otherRelevantDocuments != null) {
+      otherRelevantDocuments.forEach(
+          otherRelevantDocument ->
+              addIfProvided(
+                  otherRelevantDocument,
+                  otherRelevantDocument.getOriginalFilename(),
+                  "Upload weiterer relevanter Dokumente",
+                  null,
+                  providedDocuments));
+    }
+
+    return providedDocuments;
   }
 
   @GetMapping("/{procedureId}")
@@ -102,10 +321,11 @@ public class MedicalRegistryController {
   @Operation(summary = "Get medical registry procedure by id.")
   public GetProcedureResponse getProcedure(@PathVariable("procedureId") UUID procedureId) {
     MedicalRegistryEntry medicalRegistryEntry =
-        medicalRegistryService.findProcedureByExternalId(procedureId);
+        medicalRegistryService
+            .findProcedureByExternalId(procedureId)
+            .orElseThrow(notFoundException(procedureId));
 
-    Professional professional =
-        medicalRegistryEntry.getRelatedPersons().stream().collect(StreamUtil.toSingleElement());
+    Professional professional = medicalRegistryEntry.getProfessional();
     GetPersonFileStateResponse professionalDetails =
         medicalRegistryService.findProfessionalDetails(professional.getCentralFileStateId());
 
@@ -114,7 +334,17 @@ public class MedicalRegistryController {
             .map(f -> medicalRegistryService.findPracticeDetails(f.getCentralFileStateId()))
             .collect(Collectors.toMap(GetFacilityFileStateResponse::id, facility -> facility));
 
+    auditLogProcedureDetailAccess(procedureId);
+
     return mapToDto(medicalRegistryEntry, professionalDetails, practiceDetails);
+  }
+
+  private void auditLogProcedureDetailAccess(UUID procedureId) {
+    Map<String, String> additionalData =
+        Map.of(
+            "Benutzer", userApi.getSelfUser().userId().toString(),
+            "ID des Vorgangs", procedureId.toString());
+    auditLogger.log("Vorgangsbearbeitung", "Abfrage Vorgangs-Details", additionalData);
   }
 
   @DeleteMapping("/{procedureId}")
@@ -124,11 +354,15 @@ public class MedicalRegistryController {
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody DeleteProcedureRequest request) {
     MedicalRegistryEntry medicalRegistryEntry =
-        medicalRegistryService.findProcedureByExternalIdForUpdate(procedureId, request.version());
+        medicalRegistryService
+            .findProcedureByExternalIdForUpdate(procedureId, request.version())
+            .orElseThrow(notFoundException(procedureId));
+    MedicalRegistryEntryChange medicalRegistryEntryChange =
+        Validator.validateIsMedicalRegistryEntryChange(medicalRegistryEntry);
 
-    Validator.validateIsDraft(medicalRegistryEntry);
+    Validator.validateIsDraft(medicalRegistryEntryChange);
 
-    medicalRegistryService.deleteProcedure(medicalRegistryEntry);
+    medicalRegistryService.deleteProcedure(medicalRegistryEntryChange);
   }
 
   @GetMapping("/procedures")
@@ -143,5 +377,30 @@ public class MedicalRegistryController {
           GetMedicalRegistryProceduresFilterOptions filterOptions) {
 
     return medicalRegistryService.getProceduresOverview(paginationOptions, filterOptions);
+  }
+
+  private static void addIfProvided(
+      MultipartFile multipartFile,
+      String filename,
+      String description,
+      MedicalRegistryKeyDocumentType keyDocumentType,
+      List<DocumentData> providedDocuments) {
+    if (multipartFile != null) {
+      providedDocuments.add(
+          new DocumentData(filename, description, keyDocumentType, multipartFile));
+    }
+  }
+
+  private static String addJpgExtension(String filename) {
+    return String.format("%s.%s", filename, FileType.JPEG.getDefaultFileExtension().getValue());
+  }
+
+  private static Supplier<NotFoundException> notFoundException(UUID procedureId) {
+    return () -> new NotFoundException(makeProcedureNotFoundMessage(procedureId));
+  }
+
+  private static String makeProcedureNotFoundMessage(UUID procedureId) {
+    return "%s with UUID %s not found"
+        .formatted(MedicalRegistryEntry.class.getSimpleName(), procedureId);
   }
 }

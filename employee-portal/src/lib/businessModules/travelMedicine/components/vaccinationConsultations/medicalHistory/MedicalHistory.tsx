@@ -166,7 +166,10 @@ export function MedicalHistory({
                             )}
 
                             {element.textBlock && (
-                              <Box sx={{ whiteSpace: "pre-wrap" }}>
+                              <Box
+                                sx={{ whiteSpace: "pre-wrap" }}
+                                data-testid="document-element-type-textblock"
+                              >
                                 {element.textBlock.textField}
                               </Box>
                             )}

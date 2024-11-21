@@ -19,16 +19,15 @@ import de.eshg.base.centralfile.persistence.entity.BirthDetails_;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.entity.Person_;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
-import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,6 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "Person")
 public class PersonController implements PersonApi {
+
+  private static final Logger log = LoggerFactory.getLogger(PersonController.class);
 
   private static final String PERSON_FILE_STATE_NOT_FOUND = "PersonFileState not found";
   public static final String REFERENCE_PERSON_NOT_FOUND = "ReferencePerson not found";
@@ -160,11 +161,30 @@ public class PersonController implements PersonApi {
     List<UUID> queryIds = request.fileStateIds().stream().distinct().toList();
 
     Pageable pageable = toPageableForGetPersonFileStates(request);
+    List<Person> personFileStates;
+    Map<UUID, Boolean> outdatedByFileStateId = Collections.emptyMap();
 
-    List<Person> personFileStates =
-        personRepository.findAllByExternalIdInAndReferencePersonIsNotNull(queryIds, pageable);
+    if (Boolean.TRUE.equals(request.checkOutdated())) {
+      personFileStates =
+          personRepository.findAllByExternalIdInAndReferencePersonIsNotNull(
+              new HashSet<>(queryIds), pageable);
 
-    return PersonMapper.mapToGetPersonFileStatesResponse(queryIds, personFileStates, pageable);
+      outdatedByFileStateId =
+          personFileStates.stream()
+              .collect(
+                  Collectors.toMap(
+                      Person::getExternalId,
+                      personFileState ->
+                          PersonService.isPersonFileStateOutdated(
+                              personFileState, personFileState.getReferencePerson())));
+    } else {
+      personFileStates =
+          personRepository.findAllFetchingReferenceByExternalIdInAndReferencePersonIsNotNull(
+              queryIds, pageable);
+    }
+
+    return PersonMapper.mapToGetPersonFileStatesResponse(
+        queryIds, personFileStates, pageable, outdatedByFileStateId);
   }
 
   private static Pageable toPageableForGetPersonFileStates(GetPersonFileStatesRequest request) {
@@ -217,7 +237,7 @@ public class PersonController implements PersonApi {
   @Override
   @Transactional
   public AddPersonFileStateResponse updatePersonFileStateAndReference(
-      UUID id, PutPersonRequest request) {
+      UUID id, UpdatePersonRequest request) {
     Person fileState =
         personRepository
             .findFileStateByExternalId(id)
@@ -275,10 +295,36 @@ public class PersonController implements PersonApi {
   }
 
   @Override
+  @Transactional
+  public UpdatePersonsResponse updatePersonFileStatesAndReferences(UpdatePersonsRequest request) {
+    /*
+     * ⚠ This is a naïve implementation to update persons in bulk ⚠
+     *
+     * It will be further optimized in the context of ISSUE-5608
+     */
+    List<UpdatePersonInBulkResult> results = new ArrayList<>();
+    List<UUID> failedPersonIds = new ArrayList<>();
+
+    for (UpdatePersonInBulkRequest updateRequest : request.updateRequests()) {
+      UUID personFileStateId = updateRequest.fileStateId();
+      try {
+        AddPersonFileStateResponse response =
+            updatePersonFileStateAndReference(
+                personFileStateId, new UpdatePersonRequest(updateRequest.updatedPerson()));
+        results.add(new UpdatePersonInBulkResult(personFileStateId, response.id()));
+      } catch (Exception e) {
+        log.error("Failed to update person", e);
+        failedPersonIds.add(personFileStateId);
+      }
+    }
+
+    return new UpdatePersonsResponse(results, failedPersonIds);
+  }
+
+  @Override
+  @Transactional
   public AddPersonFileStateResponse updateReferencePerson(
       UUID referenceDataId, UpdateReferencePersonRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.VERIFICATION_OF_EXTERNAL_DATA);
-
     Person referencePersonUpdate = PersonMapper.mapPersonToDm(request);
 
     Person updatedPersonFileState =
@@ -298,11 +344,11 @@ public class PersonController implements PersonApi {
                         .formatted(id)));
   }
 
-  private static GetPersonFileStateResponse mapPersonToGetPersonFileStateResponse(
+  public static GetPersonFileStateResponse mapPersonToGetPersonFileStateResponse(
       Person personFileState) {
     boolean outdated =
         PersonService.isPersonFileStateOutdated(
             personFileState, personFileState.getReferencePerson());
-    return PersonMapper.mapPersonToGetPersonFileStatesResponse(personFileState, outdated);
+    return PersonMapper.mapPersonToGetPersonFileStateResponse(personFileState, outdated);
   }
 }

@@ -20,9 +20,7 @@ export function useCreateInformationStatementTemplate() {
     mutationFn: (request: ApiInformationStatementTemplateRequest) =>
       informationStatementTemplateApi.postInformationStatementTemplate(request),
     onSuccess: () => {
-      snackbar.confirmation(
-        "Die Aufklärungsbogenvorlage wurde erfolgreich angelegt.",
-      );
+      snackbar.confirmation("Die Aufklärungsbogenvorlage wurde angelegt.");
     },
   });
 }
@@ -36,9 +34,7 @@ export function useUpdateInformationStatementTemplate() {
         .putInformationStatementTemplateRaw(request)
         .then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation(
-        "Die Aufklärungsbogenvorlage wurde erfolgreich bearbeitet.",
-      );
+      snackbar.confirmation("Die Aufklärungsbogenvorlage wurde gespeichert.");
     },
   });
 }
@@ -52,9 +48,7 @@ export function useDeleteInformationStatementTemplate() {
         id,
       ),
     onSuccess: () => {
-      snackbar.confirmation(
-        "Die Aufklärungsbogenvorlage wurde erfolgreich gelöscht.",
-      );
+      snackbar.confirmation("Die Aufklärungsbogenvorlage wurde gelöscht.");
     },
   });
 }

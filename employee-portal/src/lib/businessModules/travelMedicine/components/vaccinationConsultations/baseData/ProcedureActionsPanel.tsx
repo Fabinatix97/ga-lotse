@@ -42,8 +42,8 @@ export function ProcedureActionsPanel(
     useAcceptDraftVaccinationConsultation();
 
   function procedureHasPlannedServices() {
-    return props.procedure.servicePlanList.some(
-      (s) => s.status === ApiServiceStatus.Planned,
+    return props.procedure.servicePlanGroups.some((g) =>
+      g.servicePlanEntries.some((s) => s.status === ApiServiceStatus.Planned),
     );
   }
   async function handleCloseProcedure() {

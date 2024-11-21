@@ -5,41 +5,40 @@
 
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { EventType, MsgType } from "matrix-js-sdk/lib/matrix";
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 
-import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { markAllMessagesAsRead } from "@/lib/businessModules/chat/shared/utils";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 export function useSendMessage() {
-  const { canAccessChat, userSettings } = useChat();
-  const chatContext = useContext(ChatClientContext);
+  const { matrixClient } = useChatClientContext();
   const snackbar = useSnackbar();
-
-  const isChatEnabled =
-    canAccessChat && userSettings.chatUsageEnabled && chatContext?.matrixClient;
-
   const sendMessage = useCallback(
-    async (text: string, roomId: string) => {
-      if (isChatEnabled) {
-        const currentMatrixClient = chatContext.matrixClient;
-        try {
-          await currentMatrixClient.sendEvent(roomId, EventType.RoomMessage, {
-            body: text,
-            msgtype: MsgType.Text,
-            format: "org.matrix.custom.html",
-          });
-          await markAllMessagesAsRead({
-            matrixClient: currentMatrixClient,
-            roomId,
-          });
-          // snackbar.confirmation("Nachricht gesendet");
-        } catch {
-          snackbar.error("Die Nachricht konnte nicht gesendet werden");
-        }
+    async ({
+      text,
+      roomId,
+      mentionedUsers,
+    }: {
+      text: string;
+      roomId: string;
+      mentionedUsers?: string[];
+    }) => {
+      try {
+        await matrixClient.sendEvent(roomId, EventType.RoomMessage, {
+          body: text,
+          msgtype: MsgType.Text,
+          format: "org.matrix.custom.html",
+          ...(mentionedUsers && {
+            ["m.mentions"]: { ["user_ids"]: mentionedUsers },
+          }),
+        });
+        await matrixClient.sendTyping(roomId, false, 3000);
+      } catch (e) {
+        snackbar.error("Die Nachricht konnte nicht gesendet werden");
+        logger.warn(e);
       }
     },
-    [chatContext?.matrixClient, isChatEnabled, snackbar],
+    [matrixClient, snackbar],
   );
 
   return { sendMessage };

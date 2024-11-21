@@ -5,16 +5,13 @@
 
 package de.eshg.schoolentry.business.model;
 
-import de.eshg.schoolentry.domain.model.DevelopmentScreening;
-import de.eshg.schoolentry.domain.model.EyeExaminationResult;
-import de.eshg.schoolentry.domain.model.HearingTestResult;
-import de.eshg.schoolentry.domain.model.SopessExaminationResult;
+import de.eshg.schoolentry.domain.model.*;
 
 public record ImportPastProcedureData(
     ImportProcedureData procedureData,
-    ImportAnamnesisData anamnesisData,
-    ImportVaccinationStatusData vaccinationStatusData,
+    Anamnesis anamnesis,
+    VaccinationStatus vaccinationStatus,
     EyeExaminationResult eyeExaminationResult,
     HearingTestResult hearingTestResult,
-    SopessExaminationResult sopessExaminationData,
-    DevelopmentScreening developmentScreeningData) {}
+    SopessExaminationResult sopessExamination,
+    DevelopmentScreening developmentScreening) {}

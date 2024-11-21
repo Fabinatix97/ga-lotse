@@ -88,4 +88,16 @@ public class MailMetaData extends MetaData {
   public void setMessageText(String messageText) {
     this.messageText = messageText;
   }
+
+  @Override
+  public MailMetaData copy() {
+    MailMetaData copy = new MailMetaData();
+    copy(copy);
+    copy.mailFrom = mailFrom;
+    copy.mailTo = mailTo;
+    copy.sentDate = sentDate;
+    copy.subject = subject;
+    copy.messageText = messageText;
+    return copy;
+  }
 }

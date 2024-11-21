@@ -69,6 +69,7 @@ public interface PersonRepository
           """
         select * from person p
         where p.reference_person_id is null
+        and   (:includeDeleted = true or p.delete_at is null)
         and   p.data_origin <> 'EXTERNAL'::DataOrigin
         and   p.date_of_birth = :dateOfBirth
         and   normalize_text(p.first_name) % normalize_text(:firstName)
@@ -83,7 +84,8 @@ public interface PersonRepository
       @Param("lastName") String lastName,
       @Param("dateOfBirth") LocalDate dateOfBirth,
       @Param("firstNameThreshold") double firstNameThreshold,
-      @Param("lastNameThreshold") double lastNameThreshold);
+      @Param("lastNameThreshold") double lastNameThreshold,
+      @Param("includeDeleted") boolean includeDeleted);
 
   Optional<Person> findByExternalId(UUID externalId);
 
@@ -129,13 +131,28 @@ public interface PersonRepository
 
   @Query(
       """
-      select p from Person p
-      left join fetch p.contactAddress
-      left join fetch p.differentBillingAddress
-      where p.externalId in :ids
-      and p.referencePerson is not null
-      """)
-  List<Person> findAllByExternalIdInAndReferencePersonIsNotNull(List<UUID> ids, Pageable pageable);
+    select p from Person p
+    left join fetch p.contactAddress
+    left join fetch p.differentBillingAddress
+    where p.externalId in :ids
+    and p.referencePerson is not null
+    """)
+  List<Person> findAllFetchingReferenceByExternalIdInAndReferencePersonIsNotNull(
+      List<UUID> ids, Pageable pageable);
+
+  @Query(
+      """
+  select p from Person p
+  left join fetch p.contactAddress
+  left join fetch p.differentBillingAddress
+  left join fetch p.referencePerson
+  left join fetch p.referencePerson.contactAddress
+  left join fetch p.referencePerson.differentBillingAddress
+  where p.externalId in :ids
+  and p.referencePerson is not null
+  order by p.id
+  """)
+  List<Person> findAllByExternalIdInAndReferencePersonIsNotNull(Set<UUID> ids, Pageable pageable);
 
   @Transactional
   @Modifying

@@ -73,18 +73,18 @@ public final class CentralRepositoryMapper {
   public static void setMetadata(
       MultiValueMap<String, Object> parts,
       ChecklistDefinitionDto checklistDefinitionDto,
+      List<String> tags,
       String description,
-      String contact,
       String changeLog,
-      List<String> tags) {
+      String contact) {
     MetadataRequestDto metadataRequest =
         new MetadataRequestDto(
             checklistDefinitionDto.objectType().name(),
             checklistDefinitionDto.name(),
             tags,
             description,
-            contact,
-            changeLog);
+            changeLog,
+            contact);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     parts.add("metadata", new HttpEntity<>(metadataRequest, headers));

@@ -6,6 +6,7 @@
 import {
   ApiAppointment,
   ApiDocumentContent,
+  ApiPatchInformationStatementRequest,
   DeleteAppointmentCpRequest,
 } from "@eshg/citizen-portal-api/travelMedicine";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
@@ -19,6 +20,12 @@ export interface PatchMedicalHistoryRequest {
   procedureId: string;
   procedureStepId: string;
   medicalHistory: ApiDocumentContent;
+}
+
+export interface PatchInformationStatementRequest {
+  statementId: string;
+  request: ApiPatchInformationStatementRequest;
+  signature: Blob;
 }
 
 export function usePatchCitizenMedicalHistory() {
@@ -75,6 +82,27 @@ export function usePutAppointment() {
     },
     onSuccess: () => {
       snackbar.confirmation(t("snackbar.putAppointmentConfirmation"));
+    },
+  });
+}
+
+export function usePatchCitizenInformationStatement() {
+  const { t } = useTranslation(["travelMedicine/informationStatements"]);
+  const citizenAuthApi = useCitizenAuthApi();
+  const snackbar = useSnackbar();
+
+  return useHandledMutation({
+    mutationFn: (request: PatchInformationStatementRequest) => {
+      return citizenAuthApi.patchCitizenInformationStatement(
+        request.statementId,
+        request.request,
+        request.signature,
+      );
+    },
+    onSuccess: () => {
+      snackbar.confirmation(
+        t("snackbar.patchInformationStatementConfirmation"),
+      );
     },
   });
 }

@@ -6,12 +6,7 @@
 package de.eshg.schoolentry.importer;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.schoolentry.business.model.ImportAnamnesisData;
-import de.eshg.schoolentry.business.model.ImportVaccinationStatusData;
-import de.eshg.schoolentry.domain.model.DevelopmentScreening;
-import de.eshg.schoolentry.domain.model.EyeExaminationResult;
-import de.eshg.schoolentry.domain.model.HearingTestResult;
-import de.eshg.schoolentry.domain.model.SopessExaminationResult;
+import de.eshg.schoolentry.domain.model.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -21,17 +16,17 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
 
   private LocalDate examinationDate;
 
-  private ImportAnamnesisData anamnesisData;
+  private Anamnesis anamnesis;
 
-  private ImportVaccinationStatusData vaccinationStatusData;
+  private VaccinationStatus vaccinationStatus;
 
   private EyeExaminationResult eyeExaminationResult;
 
-  private HearingTestResult hearingTestData;
+  private HearingTestResult hearingTest;
 
-  private SopessExaminationResult sopessExaminationData;
+  private SopessExaminationResult sopessExamination;
 
-  private DevelopmentScreening developmentScreeningData;
+  private DevelopmentScreening developmentScreening;
 
   public ProcedureType getProcedureType() {
     return procedureType;
@@ -49,20 +44,20 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
     this.examinationDate = examinationDate;
   }
 
-  public ImportAnamnesisData getAnamnesisData() {
-    return anamnesisData;
+  public Anamnesis getAnamnesis() {
+    return anamnesis;
   }
 
-  public void setAnamnesisData(ImportAnamnesisData anamnesisData) {
-    this.anamnesisData = anamnesisData;
+  public void setAnamnesis(Anamnesis anamnesis) {
+    this.anamnesis = anamnesis;
   }
 
-  public ImportVaccinationStatusData getVaccinationStatusData() {
-    return vaccinationStatusData;
+  public VaccinationStatus getVaccinationStatus() {
+    return vaccinationStatus;
   }
 
-  public void setVaccinationStatusData(ImportVaccinationStatusData vaccinationStatusData) {
-    this.vaccinationStatusData = vaccinationStatusData;
+  public void setVaccinationStatus(VaccinationStatus vaccinationStatus) {
+    this.vaccinationStatus = vaccinationStatus;
   }
 
   public EyeExaminationResult getEyeExaminationResult() {
@@ -73,28 +68,28 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
     this.eyeExaminationResult = eyeExaminationResult;
   }
 
-  public HearingTestResult getHearingTestData() {
-    return hearingTestData;
+  public HearingTestResult getHearingTest() {
+    return hearingTest;
   }
 
-  public void setHearingTestData(HearingTestResult hearingTestData) {
-    this.hearingTestData = hearingTestData;
+  public void setHearingTest(HearingTestResult hearingTest) {
+    this.hearingTest = hearingTest;
   }
 
-  public SopessExaminationResult getSopessExaminationData() {
-    return sopessExaminationData;
+  public SopessExaminationResult getSopessExamination() {
+    return sopessExamination;
   }
 
-  public void setSopessExaminationData(SopessExaminationResult sopessExaminationData) {
-    this.sopessExaminationData = sopessExaminationData;
+  public void setSopessExamination(SopessExaminationResult sopessExamination) {
+    this.sopessExamination = sopessExamination;
   }
 
-  public DevelopmentScreening getDevelopmentScreeningData() {
-    return developmentScreeningData;
+  public DevelopmentScreening getDevelopmentScreening() {
+    return developmentScreening;
   }
 
-  public void setDevelopmentScreeningData(DevelopmentScreening developmentScreeningData) {
-    this.developmentScreeningData = developmentScreeningData;
+  public void setDevelopmentScreening(DevelopmentScreening developmentScreening) {
+    this.developmentScreening = developmentScreening;
   }
 
   @Override

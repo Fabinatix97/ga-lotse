@@ -17,43 +17,49 @@ import { TextBlock } from "@/lib/businessModules/travelMedicine/components/share
 import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 
 interface DocumentProps {
-  currentStep: number;
+  sectionIndex: number;
   documentSection: ApiDocumentSection;
-  documentBriefing?: ReactNode;
+  documentHeader?: ReactNode;
+  signatureSection?: ReactNode;
+  parentPath?: string;
 }
 
 export function DocumentSection(props: Readonly<DocumentProps>) {
   const { setFieldValue, getFieldProps } =
     useFormikContext<ApiDocumentContent>();
 
+  const parentpath = props.parentPath ? `${props.parentPath}.` : "";
+  const sectionsPath = `${parentpath}sections[${props.sectionIndex}]`;
+
   return (
-    <ContentSheet data-testid={`document-section-${props.currentStep}`}>
-      {props.currentStep === 0 && props.documentBriefing}
+    <ContentSheet data-testid={`document-section-${props.sectionIndex}`}>
+      {props.documentHeader}
       <Stack gap={4}>
         {props.documentSection.sectionElements.map((element, index) => (
           <Stack gap={2} key={index} data-testid={`document-element-${index}`}>
             <>
               {element.anamnesisQuestion && (
                 <AnamnesisQuestion
-                  currentStep={props.currentStep}
-                  index={index}
+                  sectionIndex={props.sectionIndex}
+                  sectionElementIndex={index}
                   anamnesisQuestion={element.anamnesisQuestion}
                   setFieldValue={setFieldValue}
                   getFieldProps={getFieldProps}
+                  parentPath={`${sectionsPath}.sectionElements[${index}]`}
                 />
               )}
               {element.confirmation && (
                 <ConfirmationElement
-                  currentStep={props.currentStep}
-                  index={index}
                   confirmation={element.confirmation}
-                  setFieldValue={setFieldValue}
+                  name={`${sectionsPath}.sectionElements[${index}].confirmation`}
+                  parentPath={`${sectionsPath}.sectionElements[${index}]`}
                 />
               )}
               {element.textBlock && <TextBlock textBlock={element.textBlock} />}
             </>
           </Stack>
         ))}
+        {props.signatureSection}
       </Stack>
     </ContentSheet>
   );

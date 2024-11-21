@@ -47,6 +47,9 @@ public class Vaccination extends VcService {
   @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
   private String batchIdentifier;
 
+  @DataSensitivity(SensitivityLevel.HIGHLY_SENSITIVE)
+  private String defaultBatchIdentifier;
+
   @DataSensitivity(SensitivityLevel.PROTECTED)
   private Long bookingId;
 
@@ -60,7 +63,8 @@ public class Vaccination extends VcService {
       BigDecimal fee,
       VaccinationType vaccinationType,
       int vaccinationNumber,
-      Integer latency) {
+      Integer latency,
+      String defaultBatchIdentifier) {
     super(vaccinationConsultation, fee);
     this.diseaseName = diseaseName;
     this.vaccineName = vaccineName;
@@ -70,6 +74,7 @@ public class Vaccination extends VcService {
     this.batchIdentifier = null;
     this.bookingId = null;
     this.latency = latency;
+    this.defaultBatchIdentifier = defaultBatchIdentifier;
   }
 
   public String getDiseaseName() {
@@ -126,6 +131,14 @@ public class Vaccination extends VcService {
 
   public void setBatchIdentifier(String batchIdentifier) {
     this.batchIdentifier = batchIdentifier;
+  }
+
+  public String getDefaultBatchIdentifier() {
+    return defaultBatchIdentifier;
+  }
+
+  public void setDefaultBatchIdentifier(String defaultBatchIdentifier) {
+    this.defaultBatchIdentifier = defaultBatchIdentifier;
   }
 
   public Long getBookingId() {

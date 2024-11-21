@@ -9,6 +9,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
 import { facilityApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
 
 export function useGetPendingFacilities(filters: PendingFacilitiesFilters) {
@@ -20,6 +21,25 @@ export function useGetPendingFacilities(filters: PendingFacilitiesFilters) {
     queryKey: facilityApiQueryKey(["getPendingFacilities", { req }]),
     queryFn: () =>
       facilityApi.getPendingFacilitiesRaw(req).then(unwrapRawResponse),
+  });
+}
+
+export function useGetFacilityHistory(
+  inspectionId: string,
+  facilityId: string,
+) {
+  const facilityApi = useFacilityApi();
+
+  return useSuspenseQuery({
+    queryKey: facilityApiQueryKey([
+      "getFacilityHistory",
+      { inspectionId, facilityId },
+    ]),
+    queryFn: () =>
+      facilityApi.getFacilityHistory(
+        facilityId,
+        getHeadersForOfflineCaching(inspectionId),
+      ),
   });
 }
 

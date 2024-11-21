@@ -73,7 +73,7 @@ const COLUMNS = [
   columnHelper.accessor("numberOfFreeAppointments", {
     header: "Verfügbar",
     cell: (props) => (
-      <Chip size="sm" color="primary">
+      <Chip size="md" color="primary">
         {props.getValue()}
       </Chip>
     ),
@@ -82,7 +82,7 @@ const COLUMNS = [
   columnHelper.accessor("numberOfBookedAppointments", {
     header: "Gebucht",
     cell: (props) => (
-      <Chip size="sm" color="success">
+      <Chip size="md" color="success">
         {props.getValue()}
       </Chip>
     ),

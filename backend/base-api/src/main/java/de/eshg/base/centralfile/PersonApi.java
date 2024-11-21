@@ -168,7 +168,7 @@ public interface PersonApi {
   associated reference person
   """)
   AddPersonFileStateResponse updatePersonFileStateAndReference(
-      @PathVariable("id") UUID id, @RequestBody @Valid PutPersonRequest request);
+      @PathVariable("id") UUID id, @RequestBody @Valid UpdatePersonRequest request);
 
   @PostExchange(FILE_STATES_URL + "/{id}/sync-file-state")
   @ApiResponse(responseCode = "200")
@@ -189,6 +189,17 @@ associated reference person
 Get the difference between the requested file state and its associated reference person.
 """)
   GetPersonDiffResponse getPersonDiff(@PathVariable("id") UUID id);
+
+  @PostExchange(FILE_STATES_URL + "/bulk-update")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary =
+          """
+       Perform a consistent update of person file states and their associated
+       reference persons in a bulk operation.
+       """)
+  UpdatePersonsResponse updatePersonFileStatesAndReferences(
+      @RequestBody @Valid UpdatePersonsRequest request);
 
   @PostExchange(FILE_STATES_URL + BaseUrls.Base.PERSON_EXTERNAL_DATA_SOURCE_URL)
   @ApiResponse(responseCode = "200")

@@ -10,6 +10,7 @@ import static de.eshg.lsd.keycloak.PermissionRole.LSD_WRITE_TECH_USER;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.keycloak.KeycloakRole;
 import de.eshg.lib.keycloak.UsernamePassword;
 import de.eshg.lsd.keycloak.properties.LsdInternalKeycloakProperties;
@@ -23,6 +24,8 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.resource.ClientResource;
+import org.keycloak.admin.client.resource.ClientsResource;
 import org.keycloak.admin.client.resource.UserProfileResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -129,6 +132,7 @@ public class KeycloakProvisioning {
   @PostConstruct
   void provisionRealm() {
     configureRealm();
+    disableUnusedClients();
 
     boolean isNew =
         keycloakClient.getRealm().clients().findByClientId(keycloakClient.getClientId()).isEmpty();
@@ -146,6 +150,19 @@ public class KeycloakProvisioning {
       }
     }
     importFile.ifPresent(this::importFromFile);
+  }
+
+  private void disableUnusedClients() {
+    Set<String> disabledClients = Set.of("admin-cli", "account", "account-console", "broker");
+
+    ClientsResource clients = keycloakClient.getRealm().clients();
+    for (ClientRepresentation client : clients.findAll()) {
+      if (disabledClients.contains(client.getClientId())) {
+        client.setEnabled(false);
+        ClientResource resource = clients.get(client.getId());
+        resource.update(client);
+      }
+    }
   }
 
   void importFromFile(String importFile) {
@@ -179,7 +196,7 @@ public class KeycloakProvisioning {
     realmRepresentation.setDisplayName(realmDisplayName);
     realmRepresentation.setDisplayNameHtml(realmDisplayName);
     realmRepresentation.setInternationalizationEnabled(true);
-    realmRepresentation.setSupportedLocales(new LinkedHashSet<>(List.of("de", "en")));
+    realmRepresentation.setSupportedLocales(SetUtils.orderedSet("de", "en"));
     realmRepresentation.setPasswordPolicy(getPasswordPolicy());
     realmRepresentation.setDefaultLocale("de");
     realmRepresentation.setAdminEventsEnabled(true);

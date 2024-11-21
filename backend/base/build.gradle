@@ -17,6 +17,7 @@ dependencies {
     implementation project(':lib-service-directory-api')
     implementation project(':lib-mutex')
     implementation project(':file-commons')
+    implementation project(':lib-aggregation')
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -42,6 +43,7 @@ dependencies {
 
     testImplementation project(':lib-service-directory-admin-api')
 
+    testImplementation project(':lib-contact-api')
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-service-directory-admin-api'))
     testImplementation testFixtures(project(":base-api"))

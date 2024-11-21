@@ -7,6 +7,7 @@ import { ChecklistApi } from "@eshg/employee-portal-api/inspection";
 import { queryOptions } from "@tanstack/react-query";
 
 import { checklistApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 
 export function getChecklistsQueryKey(inspectionId: string) {
   return checklistApiQueryKey(["getChecklists", { inspectionId }]);
@@ -14,14 +15,13 @@ export function getChecklistsQueryKey(inspectionId: string) {
 
 export function getChecklistsQuery(
   checklistApi: ChecklistApi,
-  getPreCacheForOfflineModeHeaders: (inspectionId?: string) => RequestInit,
   inspectionId: string,
 ) {
   return queryOptions({
     queryKey: getChecklistsQueryKey(inspectionId),
     queryFn: ({ signal }) => {
       return checklistApi.getChecklists(inspectionId, {
-        ...getPreCacheForOfflineModeHeaders(inspectionId),
+        ...getHeadersForOfflineCaching(inspectionId),
         signal,
       });
     },

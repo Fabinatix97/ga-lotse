@@ -31,7 +31,7 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
 import { ReactNode, useEffect } from "react";
-import { doNothing, isDefined } from "remeda";
+import { isDefined } from "remeda";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { Location } from "@/lib/businessModules/schoolEntry/api/models/Location";
@@ -123,7 +123,7 @@ function useUpdateProcedureForm(
   procedure: ProcedureDetails,
   onSuccess: () => void,
 ) {
-  const updateProcedure = useUpdateProcedure();
+  const updateProcedure = useUpdateProcedure(procedure.id);
   return useFormik<UpdateProcedureValues>({
     initialValues: {
       procedureType: procedure.type,
@@ -140,11 +140,9 @@ function useUpdateProcedureForm(
       hasBeenClosed: procedure.hasBeenClosed,
     },
     onSubmit: (values) =>
-      updateProcedure
-        .mutateAsync(mapValues(values, procedure), {
-          onSuccess,
-        })
-        .catch(doNothing),
+      updateProcedure.mutateAsync(mapValues(values, procedure), {
+        onSuccess,
+      }),
   });
 }
 
@@ -165,8 +163,8 @@ function UpdateProcedureSidebar(props: UpdateProcedureSidebarProps) {
     procedureId: procedure.id,
     procedureType: values.procedureType,
     labelIds: resolveLabelIds(values.labels),
-    // TODO ISSUE-6050: Explicitly pass school as separate parameter
-    locationId: resolveLocationId(locationSelectionMode, values),
+    schoolId: values.school?.id,
+    locationId: values.location?.id,
   });
   const freeAppointments = getFreeAppointments.data ?? [];
   const hasNoFreeAppointments = freeAppointments.length === 0;
@@ -327,19 +325,4 @@ function resolveLabelIds(labels: Label[]): string[] | undefined {
   }
 
   return labels.map(getId);
-}
-
-function resolveLocationId(
-  locationSelectionMode: ApiLocationSelectionMode,
-  values: Pick<UpdateProcedureValues, "school" | "location">,
-): string | undefined {
-  if (isSchoolSelectionMode(locationSelectionMode)) {
-    return values.school?.id;
-  }
-
-  if (isHealthDepartmentSelectionMode(locationSelectionMode)) {
-    return values.location?.id;
-  }
-
-  return undefined;
 }

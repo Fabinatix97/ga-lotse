@@ -28,7 +28,10 @@ import {
   useFetchProgressEntryDetails,
   useGetManualProgressEntryHistory,
 } from "@/lib/businessModules/schoolEntry/api/queries/progressEntries";
-import { systemProgressEntryTypeTitles } from "@/lib/businessModules/schoolEntry/shared/constants";
+import {
+  keyDocumentTypes,
+  systemProgressEntryTypeTitles,
+} from "@/lib/businessModules/schoolEntry/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/schoolEntry/shared/moduleUserGroup";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
@@ -62,6 +65,7 @@ export default function SchoolEntryProgressEntriesPage(
           routes.procedures.byId(procedureId).progressEntries.index,
       }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
+      additionalKeyDocumentTypes={keyDocumentTypes}
       groupName={moduleUserGroup.group}
     />
   );

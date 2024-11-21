@@ -4,6 +4,7 @@
  */
 
 import { AlertProps } from "@eshg/lib-portal/components/Alert";
+import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
 import { FormikErrors } from "formik";
 import {
   IPresenceOpts,
@@ -19,12 +20,14 @@ import {
   Membership,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
-import { BaseModalProps } from "@/lib/shared/components/BaseModal";
+
+export interface RoomData extends RoomWithCommunicationType {
+  latestMessage?: Message;
+}
 
 export interface RoomWithCommunicationType {
   room: Room;
   communicationType: CommunicationType;
-  latestMessage?: Message;
 }
 
 export interface Message {
@@ -38,12 +41,13 @@ export interface Message {
   messageType: MessageTypeEnum;
   sent: boolean;
   removed: boolean;
+  decrypted?: boolean;
 }
 
 export function isChatMessageType(data: unknown): data is Message {
   if (!isObjectType(data)) return false;
   return (
-    "id" in data && "content" in data && "timestamp" in data && "sender" in data
+    "messageType" in data && data.messageType === MessageTypeEnum.ChatMessage
   );
 }
 export interface RoomEventDetails {

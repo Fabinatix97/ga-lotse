@@ -51,10 +51,8 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
-import de.eshg.rest.service.error.BadRequestException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -104,19 +102,6 @@ public class InspectionMapper {
     return "Begehung für %s".formatted(facilityName);
   }
 
-  public String getInspectionTaskSummary(InspectionTask task) {
-    GetFacilityFileStateResponse baseFacility =
-        facilityClient.getFacilityFileState(
-            task.getProcedure().getRelatedFacility().getCentralFileStateId());
-    return mapToTaskSummary(baseFacility.name(), task.getTaskType());
-  }
-
-  public String getInspectionTitle(Inspection inspection) {
-    InspFacilityDto facilityDto =
-        mapToDto(inspection.getCentralFileStateId(), inspection.getFacility());
-    return mapToInspectionTitle(facilityDto.baseFacility().name());
-  }
-
   public InspectionDto mapToDto(Inspection inspection) {
     InspFacilityDto facilityDto =
         mapToDto(inspection.getCentralFileStateId(), inspection.getFacility());
@@ -124,27 +109,10 @@ public class InspectionMapper {
   }
 
   InspectionDto mapToDto(Inspection inspection, InspFacilityDto facility) {
-    List<InspectionCLDVersionDto> selectedCLDVersions;
-    try {
-      selectedCLDVersions = mapChecklistsToInspectionCLDVersionDto(inspection.getChecklists());
-    } catch (BadRequestException exception) {
-      log.error(
-          "Failed to load checklists for inspection with ID {}",
-          inspection.getExternalId(),
-          exception);
-      selectedCLDVersions = Collections.emptyList();
-    }
-
-    List<InspectionPLDRevisionDto> selectedPLDRevisions;
-    try {
-      selectedPLDRevisions = mapPacklistsToInspectionPLDRevisionDto(inspection.getPacklists());
-    } catch (BadRequestException exception) {
-      log.error(
-          "Failed to load packlists for inspection with ID {}",
-          inspection.getExternalId(),
-          exception);
-      selectedPLDRevisions = Collections.emptyList();
-    }
+    List<InspectionCLDVersionDto> selectedCLDVersions =
+        mapChecklistsToInspectionCLDVersionDto(inspection.getChecklists());
+    List<InspectionPLDRevisionDto> selectedPLDRevisions =
+        mapPacklistsToInspectionPLDRevisionDto(inspection.getPacklists());
 
     UUID assigneeId = inspection.getPlanningTask().map(Task::getAssigneeId).orElse(null);
     UserDto assignee = null;
@@ -361,7 +329,7 @@ public class InspectionMapper {
         r.getRevision());
   }
 
-  InspFacilityDto mapToDto(UUID centralFileStateId, Facility facility) {
+  public InspFacilityDto mapToDto(UUID centralFileStateId, Facility facility) {
     GetFacilityFileStateResponse baseFacility =
         facilityClient.getFacilityFileState(centralFileStateId);
     return FacilityMapper.fromGetFacilityResponse(facility, baseFacility);

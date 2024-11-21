@@ -4,7 +4,9 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 /* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
 /**
  * Retrieves the IndexedDB factory object.
@@ -14,7 +16,7 @@ export function getIDBFactory(): IDBFactory | undefined {
 }
 
 let idb: IDBDatabase | null = null;
-const dbName = "matrix-react-sdk";
+const dbName = "matrix-account";
 
 /**
  * Loads an item from an IndexedDB table within the underlying `matrix-react-sdk` database.
@@ -148,24 +150,64 @@ export async function idbClearTable(table: string): Promise<void> {
 }
 
 export async function idbDeleteDb(): Promise<void> {
-  if (!getIDBFactory()) {
-    throw new Error("IndexedDB not available");
+  let indexedDB: IDBFactory | undefined;
+  try {
+    indexedDB = getIDBFactory();
+    if (!indexedDB) return;
+  } catch {
+    return;
   }
 
-  return new Promise((resolve, reject) => {
+  const prom = new Promise((resolve) => {
     if (idb) {
       idb.close();
     }
-    const request = getIDBFactory()!.deleteDatabase(dbName);
+    const request = indexedDB.deleteDatabase(dbName);
     request.onerror = (): void => {
-      reject(request.error);
+      resolve(0);
+      logger.info("Account DB deletion failed");
     };
     request.onsuccess = (): void => {
       idb = null;
-      resolve();
+      resolve(0);
+      logger.info("Account DB deleted");
     };
     request.onblocked = (): void => {
-      reject(request.error);
+      request.result.close();
+      logger.info("Account DB is blocked");
     };
   });
+  await prom;
+}
+
+export async function deleteRustSdkStore(): Promise<void> {
+  let indexedDB: IDBFactory | undefined;
+  try {
+    indexedDB = getIDBFactory();
+    if (!indexedDB) return;
+  } catch {
+    return;
+  }
+
+  for (const dbName of [
+    `matrix-js-sdk::matrix-sdk-crypto`,
+    `matrix-js-sdk::matrix-sdk-crypto-meta`,
+  ]) {
+    const prom = new Promise((resolve) => {
+      const req = indexedDB.deleteDatabase(dbName);
+      req.onsuccess = (): void => {
+        resolve(0);
+        logger.info("Crypto DB deleted");
+      };
+      req.onerror = (): void => {
+        resolve(0);
+        logger.info("Crypto DB deletion failed");
+      };
+      req.onblocked = (): void => {
+        req.result.close();
+        logger.info("Crypto DB is blocked");
+      };
+    });
+    await prom;
+  }
 }

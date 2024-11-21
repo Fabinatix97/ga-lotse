@@ -16,18 +16,18 @@ export type ReportOverviewTableRow =
 
 export type ReportSeriesOverview = Omit<
   ReportSeries,
-  "description" | "subRows" | "status"
-> & { subRows: ReportSeriesItemOverview[] };
+  "description" | "subRows" | "status" | "isAllItemsDeleting"
+> & { dataSourceName: string; subRows: ReportSeriesItemOverview[] };
 
 export type SingleReportOverview = Omit<
   SingleReport,
   "description" | "datasetAmount" | "status"
->;
+> & { dataSourceName: string };
 
 export type ReportSeriesItemOverview = Omit<
   ReportSeriesItem,
   "datasetAmount" | "status"
->;
+> & { dataSourceName: string };
 
 export interface ReportsOverview {
   totalNumberOfElements: number;

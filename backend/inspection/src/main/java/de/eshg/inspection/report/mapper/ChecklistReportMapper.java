@@ -171,10 +171,10 @@ public class ChecklistReportMapper {
     }
   }
 
-  public static void addTopLevelTitle(Report report, String facilityName) {
+  public static void addTopLevelTitle(Report report) {
     ReportElementTopLevelTitle topLevelTitle = new ReportElementTopLevelTitle();
     topLevelTitle.setEditable(false);
-    topLevelTitle.setTitle(String.format("Begehungsprotokoll %s", facilityName));
+    topLevelTitle.setTitle("Begehungsprotokoll");
     report.getReportElements().add(topLevelTitle);
   }
 

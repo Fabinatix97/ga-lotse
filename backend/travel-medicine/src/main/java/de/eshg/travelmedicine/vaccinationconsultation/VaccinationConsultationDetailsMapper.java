@@ -5,9 +5,12 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import static de.eshg.travelmedicine.featuretoggle.TravelMedicineFeature.DEFAULT_BATCH_ID;
+
 import de.eshg.lib.appointmentblock.api.AppointmentTypeDto;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.travelmedicine.featuretoggle.TravelMedicineFeatureToggle;
 import de.eshg.travelmedicine.util.MappingUtil;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentBookingTypeDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.AppointmentSummaryDto;
@@ -16,6 +19,7 @@ import de.eshg.travelmedicine.vaccinationconsultation.api.GetVaccinationConsulta
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PersonSyncDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ServicePlanEntryDto;
+import de.eshg.travelmedicine.vaccinationconsultation.api.ServicePlanGroupDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.ServiceStatusDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.TravelInformationDto;
 import de.eshg.travelmedicine.vaccinationconsultation.api.TravelTimeUnitDto;
@@ -36,16 +40,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VaccinationConsultationDetailsMapper {
   private final AppointmentBookingTypeMapper appointmentBookingTypeMapper;
+  private final TravelMedicineFeatureToggle travelMedicineFeatureToggle;
 
   public VaccinationConsultationDetailsMapper(
-      AppointmentBookingTypeMapper appointmentBookingTypeMapper) {
+      AppointmentBookingTypeMapper appointmentBookingTypeMapper,
+      TravelMedicineFeatureToggle travelMedicineFeatureToggle) {
     this.appointmentBookingTypeMapper = appointmentBookingTypeMapper;
+    this.travelMedicineFeatureToggle = travelMedicineFeatureToggle;
   }
 
   public GetVaccinationConsultationDetailsResponse toInterfaceType(
@@ -62,19 +72,114 @@ public class VaccinationConsultationDetailsMapper {
         personSync,
         mapTravelInformationToInterfaceType(vaccinationConsultation),
         MappingUtil.mapEnum(CreatedByUserTypeDto.class, vaccinationConsultation.getCreatedBy()),
-        mapToAppointmentSummaryInterfaceType(initialProcedureStep),
-        mapServicePlanToToInterfaceType(servicePlan));
+        initialProcedureStep.getId(),
+        mapServicePlanToToInterfaceType(servicePlan, initialProcedureStep));
   }
 
-  private List<ServicePlanEntryDto> mapServicePlanToToInterfaceType(
-      List<ServicePlanEntry> servicePlan) {
-    return servicePlan.stream()
-        .map(this::mapServicePlanRowToInterfaceType)
+  private List<ServicePlanGroupDto> mapServicePlanToToInterfaceType(
+      List<ServicePlanEntry> servicePlan, ProcedureStep initialProcedureStep) {
+    Map<ProcedureStep, List<ServicePlanEntry>> groups =
+        servicePlan.stream().collect(groupingByWithNullKeys(ServicePlanEntry::procedureStep));
+    List<ServicePlanGroupDto> groupDtos = new ArrayList<>();
+    for (Map.Entry<ProcedureStep, List<ServicePlanEntry>> entry : groups.entrySet()) {
+      ProcedureStep step = entry.getKey();
+      List<ServicePlanEntry> servicePlanEntries = entry.getValue();
+      Instant appointment =
+          step == null
+              ? null
+              : getAppointmentStartDate(step.getAppointment(), step.getUserDefinedAppointment());
+      LocalDate earliestDate = step == null ? null : step.getEarliestDate();
+      AppointmentTypeDto appointmentType = getAppointmentType(step);
+      AppointmentBookingTypeDto appointmentBookingType =
+          step == null
+              ? null
+              : appointmentBookingTypeMapper.mapToInterfaceType(
+                  step.getAppointment(), step.getUserDefinedAppointment());
+      BigDecimal groupFee = BigDecimal.ZERO;
+      for (ServicePlanEntry spEntry : servicePlanEntries) {
+        groupFee = groupFee.add(spEntry.service().getFee());
+      }
+      Boolean medicalHistoryCompleted =
+          step == null ? null : step.getMedicalHistory().isCompletelyAnswered();
+      Boolean citizenHasAnswered =
+          step == null ? null : step.getMedicalHistory().isCitizenHasAnswered();
+      groupDtos.add(
+          new ServicePlanGroupDto(
+              mapServicePlanEntriesToInterfaceType(servicePlanEntries),
+              step == null ? null : step.getExternalId(),
+              appointment,
+              appointmentType,
+              appointmentBookingType,
+              earliestDate,
+              groupFee,
+              medicalHistoryCompleted,
+              citizenHasAnswered));
+    }
+    addInitialStepIfNotAlreadyInList(groupDtos, initialProcedureStep);
+
+    return groupDtos.stream()
         .sorted(
             Comparator.comparing(
-                    ServicePlanEntryDto::appointment,
+                    ServicePlanGroupDto::earliestDate,
                     Comparator.nullsFirst(Comparator.naturalOrder()))
-                .thenComparing(ServicePlanEntryDto::serviceTypeDescription)
+                .thenComparing(
+                    ServicePlanGroupDto::appointment,
+                    Comparator.nullsFirst(Comparator.naturalOrder())))
+        .toList();
+  }
+
+  private void addInitialStepIfNotAlreadyInList(
+      List<ServicePlanGroupDto> groupDtos, ProcedureStep initialProcedureStep) {
+    if (groupDtos.stream()
+        .map(ServicePlanGroupDto::procedureStepId)
+        .anyMatch(stepId -> initialProcedureStep.getId().equals(stepId))) {
+      return;
+    }
+    // This only happens when initial step has no services
+    Instant appointment =
+        getAppointmentStartDate(
+            initialProcedureStep.getAppointment(),
+            initialProcedureStep.getUserDefinedAppointment());
+    LocalDate earliestDate = initialProcedureStep.getEarliestDate();
+    AppointmentTypeDto appointmentType = getAppointmentType(initialProcedureStep);
+    AppointmentBookingTypeDto appointmentBookingType =
+        appointmentBookingTypeMapper.mapToInterfaceType(
+            initialProcedureStep.getAppointment(),
+            initialProcedureStep.getUserDefinedAppointment());
+    boolean completelyAnswered = initialProcedureStep.getMedicalHistory().isCompletelyAnswered();
+    boolean citizenHasAnswered = initialProcedureStep.getMedicalHistory().isCitizenHasAnswered();
+    groupDtos.add(
+        new ServicePlanGroupDto(
+            Collections.emptyList(),
+            initialProcedureStep.getId(),
+            appointment,
+            appointmentType,
+            appointmentBookingType,
+            earliestDate,
+            BigDecimal.ZERO,
+            completelyAnswered,
+            citizenHasAnswered));
+  }
+
+  public static <T, A> Collector<T, ?, Map<A, List<T>>> groupingByWithNullKeys(
+      Function<? super T, ? extends A> classifier) {
+    return Collectors.toMap(
+        classifier,
+        Collections::singletonList,
+        (List<T> oldList, List<T> newEl) -> {
+          List<T> newList = new ArrayList<>(oldList.size() + 1);
+          newList.addAll(oldList);
+          newList.addAll(newEl);
+          return newList;
+        });
+  }
+
+  private List<ServicePlanEntryDto> mapServicePlanEntriesToInterfaceType(
+      List<ServicePlanEntry> entries) {
+    return entries.stream()
+        .map(this::mapServicePlanEntryToInterfaceType)
+        .sorted(
+            Comparator.comparing(ServicePlanEntryDto::serviceTypeDescription)
                 .thenComparing(
                     ServicePlanEntryDto::diseaseName,
                     Comparator.nullsFirst(Comparator.naturalOrder()))
@@ -87,32 +192,18 @@ public class VaccinationConsultationDetailsMapper {
         .toList();
   }
 
-  private ServicePlanEntryDto mapServicePlanRowToInterfaceType(ServicePlanEntry servicePlanEntry) {
+  private ServicePlanEntryDto mapServicePlanEntryToInterfaceType(
+      ServicePlanEntry servicePlanEntry) {
     VcService service = servicePlanEntry.service();
     String serviceDescription;
     String diseaseName = null;
     String vaccineName = null;
     Integer vaccinationNumber = null;
     String batchIdentifier = null;
+    String defaultBatchIdentifier = null;
     Integer latency = null;
-    Instant appointment =
-        getAppointmentStartDate(
-            servicePlanEntry.appointment(), servicePlanEntry.userDefinedAppointment());
-    LocalDate earliestDate =
-        service.getProcedureStep() == null ? null : service.getProcedureStep().getEarliestDate();
-    AppointmentTypeDto appointmentType = getAppointmentType(service.getProcedureStep());
     ServiceStatusDto status =
         MappingUtil.mapEnum(ServiceStatusDto.class, service.getServiceStatus());
-    UUID procedureStepId =
-        servicePlanEntry.procedureStep() == null ? null : servicePlanEntry.procedureStep().getId();
-    AppointmentBookingTypeDto appointmentBookingType =
-        procedureStepId == null
-            ? null
-            : appointmentBookingTypeMapper.mapToInterfaceType(
-                servicePlanEntry.appointment(), servicePlanEntry.userDefinedAppointment());
-    BigDecimal fee = service.getFee();
-    Boolean medicalHistoryCompleted = servicePlanEntry.isMedicalHistoryAnswered();
-    LocalDate appliedAt = service.getAppliedAt();
     if (service instanceof OtherService os) {
       serviceDescription = os.getDescription();
     } else if (service instanceof Vaccination vac) {
@@ -124,11 +215,14 @@ public class VaccinationConsultationDetailsMapper {
       vaccineName = vac.getVaccineName();
       vaccinationNumber = vac.getVaccinationNumber();
       batchIdentifier = vac.getBatchIdentifier();
+      defaultBatchIdentifier =
+          (travelMedicineFeatureToggle.isNewFeatureEnabled(DEFAULT_BATCH_ID)
+              ? vac.getDefaultBatchIdentifier()
+              : null);
       latency = vac.getLatency();
     } else {
       throw new UnexpectedTypeException("ServiceType unknown");
     }
-
     return new ServicePlanEntryDto(
         service.getId(),
         serviceDescription,
@@ -137,17 +231,12 @@ public class VaccinationConsultationDetailsMapper {
         vaccinationNumber,
         latency,
         batchIdentifier,
-        appliedAt,
+        defaultBatchIdentifier,
+        service.getAppliedAt(),
         service.getPhysician(),
         service.getMfa(),
         status,
-        procedureStepId,
-        appointment,
-        appointmentType,
-        appointmentBookingType,
-        earliestDate,
-        fee,
-        medicalHistoryCompleted);
+        service.getFee());
   }
 
   private AppointmentTypeDto getAppointmentType(ProcedureStep procedureStep) {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCloneStatisticRequest } from "@eshg/employee-portal-api/statistics";
+import { ApiCloneEvaluationRequest } from "@eshg/employee-portal-api/statistics";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -17,13 +17,13 @@ export function useDuplicateStatistic({
   const snackbar = useSnackbar();
   const statisticApi = useStatisticApi();
   const mutation = useHandledMutation({
-    mutationFn: (params: ApiCloneStatisticRequest) =>
-      statisticApi.cloneStatistic(params),
+    mutationFn: (params: ApiCloneEvaluationRequest) =>
+      statisticApi.cloneEvaluation(params),
     onSuccess: () => {
       onSuccess();
       snackbar.confirmation("Auswertung wird dupliziert");
     },
   });
-  return (params: ApiCloneStatisticRequest) =>
+  return (params: ApiCloneEvaluationRequest) =>
     mutation.mutateAsync(params, { onSuccess });
 }

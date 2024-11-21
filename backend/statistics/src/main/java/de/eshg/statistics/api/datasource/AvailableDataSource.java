@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record AvailableDataSource(
-    @NotNull String businessModule,
+    @NotNull String businessModuleName,
     @NotNull boolean withoutAnonymizationAllowed,
     @NotNull UUID id,
     @NotBlank String name,

@@ -5,11 +5,10 @@
 
 package de.eshg.base.street;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.CountryCode;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +37,7 @@ public class StreetService {
 
     return streetDirectoryData.stream()
         .map(newAdministrativeData(municipalityDirectoryData))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private static Function<StreetDirectory.AdministrativeData, AdministrativeData>

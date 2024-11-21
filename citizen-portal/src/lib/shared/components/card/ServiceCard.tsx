@@ -43,7 +43,7 @@ export function ServiceCard(props: ServiceCardProps) {
           <GradientIcon
             style={{ width: "153px", height: "153px" }}
             iconClass={props.icon}
-          ></GradientIcon>
+          />
         </div>
         <CardContent>
           <div
@@ -54,8 +54,7 @@ export function ServiceCard(props: ServiceCardProps) {
             }}
           >
             <Typography
-              component="p"
-              level="h4"
+              level="title-md"
               textAlign="center"
               style={{
                 width: "248px",

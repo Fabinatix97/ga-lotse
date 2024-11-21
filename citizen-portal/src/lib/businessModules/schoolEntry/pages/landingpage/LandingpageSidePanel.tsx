@@ -10,7 +10,7 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
-import { useSchoolEntryCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { useSchoolEntryPublicCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { useCitizenRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { useTranslation } from "@/lib/i18n/client";
 import { ConfirmationCheckboxField } from "@/lib/shared/components/form/ConfirmationCheckboxField";
@@ -55,12 +55,12 @@ const INITIAL_VALUES: PrivacyPolicyConfirmationFormValues = {
 
 function PrivacyPolicyConfirmationForm() {
   const { t } = useTranslation(["schoolEntry/overview"]);
-  const schoolEntryCitizenApi = useSchoolEntryCitizenApi();
+  const publicCitizenApi = useSchoolEntryPublicCitizenApi();
   const privacyNoticeFile = useFileDownload(() =>
-    schoolEntryCitizenApi.getPrivacyNoticeRaw(),
+    publicCitizenApi.getPrivacyNoticeRaw(),
   );
   const privacyPolicyFile = useFileDownload(() =>
-    schoolEntryCitizenApi.getPrivacyPolicyRaw(),
+    publicCitizenApi.getPrivacyPolicyRaw(),
   );
 
   return (

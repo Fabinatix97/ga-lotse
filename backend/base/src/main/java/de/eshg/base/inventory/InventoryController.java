@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,7 +128,7 @@ public class InventoryController implements InventoryApi {
     List<UUID> userIds = history.stream().map(InventoryItemBooking::getBookedBy).toList();
     Map<UUID, UserDto> resolvedUsers =
         userService.getUsers(userIds, true).stream()
-            .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+            .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
     return new InventoryItemBookingHistory(
         InventoryMapper.mapInventoryItemToApi(item),
         history.stream().map(InventoryMapper::mapInventoryBookingToApi).toList(),

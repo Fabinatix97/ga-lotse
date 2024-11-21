@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
+
 export interface EvaluationDetails {
-  businessModule: string;
+  dataSourceName: string;
   attributeLabels: string[];
-  analyses: {
-    name: string;
-    diagramTitles: string[];
-  }[];
+  analyses: Analysis[];
 }

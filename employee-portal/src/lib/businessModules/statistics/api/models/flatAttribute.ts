@@ -11,7 +11,7 @@ import {
 
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
-import { getAttributeLabel } from "@/lib/businessModules/statistics/components/statistics/getAttributeLabel";
+import { getAttributeLabel } from "@/lib/businessModules/statistics/components/evaluations/getAttributeLabel";
 
 type ApiAttribute = ApiTableColumnHeader["attribute"];
 

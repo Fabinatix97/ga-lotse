@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/*
+ * Please see backend/business-module-persistence-commons/src/testFixtures/resources/MIGRATION_TEST_README.md for the concept of migration tests.
+ */
 public interface MigrationIntegrationTestTraits {
 
   /*

@@ -4,20 +4,20 @@
  */
 
 const basePath = "/statistics";
-const statisticsPath = `${basePath}/statistics`;
+const evaluationsPath = `${basePath}/evaluations`;
 const reportsPath = `${basePath}/reports`;
 
 export const routes = {
-  statistics: {
-    index: statisticsPath,
+  evaluations: {
+    index: evaluationsPath,
     details: (id: string) => ({
-      index: `${statisticsPath}/${id}`,
-      table: `${statisticsPath}/${id}/table`,
-      reports: `${statisticsPath}/${id}/reports`,
-      dataQuality: `${statisticsPath}/${id}/data-quality`,
+      index: `${evaluationsPath}/${id}`,
+      table: `${evaluationsPath}/${id}/table`,
+      reports: `${evaluationsPath}/${id}/reports`,
+      dataQuality: `${evaluationsPath}/${id}/data-quality`,
     }),
-    evaluationTemplates: {
-      index: `${statisticsPath}/evaluation-templates`,
+    templates: {
+      index: `${evaluationsPath}/templates`,
     },
   },
   reports: {

@@ -17,6 +17,7 @@ import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
 import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
+import { ExportBannedFacilitiesButton } from "@/lib/businessModules/inspection/components/facility/pending/ExportBannedFacilitiesButton";
 import { NewFacilityButton } from "@/lib/businessModules/inspection/components/facility/pending/NewFacilityButton";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
 import { PotentialDuplicatesWarning } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
@@ -24,6 +25,7 @@ import { useReviewFacilityDuplicateSidebar } from "@/lib/businessModules/inspect
 import { useReviewInspectionDuplicateSidebar } from "@/lib/businessModules/inspection/components/facility/pending/ReviewInspectionDuplicateSidebar";
 import { ProcessImportButton } from "@/lib/businessModules/inspection/components/processImport/ProcessImportButton";
 import {
+  inspectionBannedFacilityFilterNames,
   inspectionDuplicateFilterNames,
   inspectionPendingFacilityKindNames,
   inspectionPhaseNames,
@@ -63,6 +65,7 @@ const initialUserActivity: UserActivityState = { type: "view-table" };
 function createFilterDefinitions(
   objectTypes: ApiObjectType[],
   isImportFeatureEnabled: boolean,
+  isBannedFacilitiesExportFeatureEnabled: boolean,
 ): FilterDefinition[] {
   const objectTypeOptions = objectTypes.map((o) => ({
     label: o.name,
@@ -121,6 +124,15 @@ function createFilterDefinitions(
     });
   }
 
+  if (isBannedFacilitiesExportFeatureEnabled) {
+    filterDefinitions.push({
+      type: "EnumSingle",
+      key: "banned",
+      name: "Untersagte Einrichtung",
+      options: optionsFromRecord(inspectionBannedFacilityFilterNames),
+    });
+  }
+
   return filterDefinitions;
 }
 
@@ -131,11 +143,15 @@ export function PendingFacilitiesTable(
   const isImportFeatureEnabled = useIsNewFeatureEnabled(
     ApiInspectionFeature.Import,
   );
+  const isBannedFacilitiesExportFeatureEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.BannedFacilitiesExport,
+  );
   const { data: objectTypes } = useGetObjectTypes();
 
   const filterDefinitions = createFilterDefinitions(
     objectTypes,
     isImportFeatureEnabled,
+    isBannedFacilitiesExportFeatureEnabled,
   );
   const paramStateProvider = useSearchParamStateProvider(
     filterDefinitions,
@@ -265,6 +281,7 @@ export function PendingFacilitiesTable(
             }
             right={
               <>
+                <ExportBannedFacilitiesButton />
                 <ProcessImportButton />
                 <NewFacilityButton />
               </>

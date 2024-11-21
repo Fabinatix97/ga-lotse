@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @ConditionalOnTestHelperEnabled
@@ -59,6 +60,7 @@ public class ServiceDirectoryTestHelperService extends DefaultTestHelperService 
     this.serviceDirectoryReadService = serviceDirectoryReadService;
   }
 
+  @Transactional
   public OrgUnitPopulationResponse populateOrgUnits(
       int numberOfEntitiesToPopulate, boolean generateCertificates) {
     environmentConfig.assertIsNotProduction();

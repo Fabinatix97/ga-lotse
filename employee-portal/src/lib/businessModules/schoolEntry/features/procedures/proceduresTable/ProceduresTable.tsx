@@ -5,12 +5,14 @@
 
 "use client";
 
+import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
 import { ApiSchoolEntryProcedureSortKey } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
   formatDateTime,
 } from "@eshg/lib-portal/formatters/dateTime";
 import { Chip, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import {
   ColumnSort,
   TableOptions,
@@ -19,8 +21,14 @@ import {
 import { ReactNode, useReducer } from "react";
 import { isNullish } from "remeda";
 
+import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import {
+  useSchoolEntryApi,
+  useSchoolEntryGdprValidationTaskApi,
+} from "@/lib/businessModules/schoolEntry/api/clients";
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
-import { useGetProcedures } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
+import { gdprValidationTaskApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
+import { getProceduresQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
 import { formatSchoolYear } from "@/lib/businessModules/schoolEntry/features/procedures/formatters";
 import { ProceduresTableTitle } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/ProcedureTableTitle";
@@ -29,9 +37,11 @@ import {
   PROCEDURE_TYPES,
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { getGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   PersonSearchForm,
@@ -95,7 +105,16 @@ export function ProceduresTable(props: ProceduresTableProps) {
       personSearch.reset();
     },
   });
-  const procedures = useGetProcedures({
+
+  const schoolEntryApi = useSchoolEntryApi();
+  const gdprValidationTaskApi = useSchoolEntryGdprValidationTaskApi();
+  const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
+  const gdprBannerQuery = getGdprValidationBannerQuery(
+    gdprValidationTaskApi,
+    gdprValidationTaskApiQueryKey,
+    isGdprFeatureEnabled,
+  );
+  const proceduresQuery = getProceduresQuery(schoolEntryApi, {
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
     ...filterValues,
@@ -103,6 +122,15 @@ export function ProceduresTable(props: ProceduresTableProps) {
     ...personSearch.searchParams,
     sortKey: getSortKey(tableControl.tableSorting),
     sortDirection: getSortDirection(tableControl.tableSorting),
+  });
+
+  const [procedures, gdprBanner] = useSuspenseQueries({
+    queries: [proceduresQuery, gdprBannerQuery],
+  });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    overviewRoute: routes.procedures.gdprValidationTasks,
   });
 
   useSyncRowSelection(rowSelectionProps, procedures.data.elements);
@@ -160,7 +188,12 @@ export function ProceduresTable(props: ProceduresTableProps) {
     >
       <TableSheet
         loading={procedures.isFetching}
-        title={<ProceduresTableTitle rowSelection={rowSelection} />}
+        title={
+          <ProceduresTableTitle
+            procedures={procedures.data.elements}
+            rowSelection={rowSelection}
+          />
+        }
         footer={
           <Pagination
             totalCount={procedures.data.totalNumberOfElements}

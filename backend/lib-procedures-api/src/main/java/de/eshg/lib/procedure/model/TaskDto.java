@@ -6,14 +6,13 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.model.HasResolvableUserIds;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,6 +35,6 @@ public record TaskDto(
   @Override
   @JsonIgnore
   public Set<UUID> getResolvableUserIds() {
-    return new LinkedHashSet<>(List.of(assigneeId, assignedById));
+    return SetUtils.orderedSet(assigneeId, assignedById);
   }
 }

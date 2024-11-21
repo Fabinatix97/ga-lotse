@@ -13,28 +13,32 @@ public final class PersonMapper {
 
   private PersonMapper() {}
 
-  public static PersonDetailsDto mapDetailsChildToDto(ChildDetailsData childData) {
-    if (childData == null) {
+  public static List<PersonDetailsDto> mapCustodiansToDto(List<PersonDetailsData> custodiansData) {
+    return custodiansData.stream().map(PersonMapper::mapPersonDetailsToDto).toList();
+  }
+
+  public static PersonDetailsDto mapPersonDetailsToDto(PersonDetailsData detailsData) {
+    if (detailsData == null) {
       return null;
     }
 
     return new PersonDetailsDto(
-        childData.version(),
-        childData.fileStateId(),
-        childData.fileStateOutdated(),
-        childData.title(),
-        childData.salutation(),
-        childData.gender(),
-        childData.firstName(),
-        childData.lastName(),
-        childData.dateOfBirth(),
-        childData.nameAtBirth(),
-        childData.placeOfBirth(),
-        childData.countryOfBirth(),
-        childData.emailAddresses(),
-        childData.phoneNumbers(),
-        childData.contactAddress(),
-        childData.differentBillingAddress());
+        detailsData.version(),
+        detailsData.fileStateId(),
+        detailsData.fileStateOutdated(),
+        detailsData.title(),
+        detailsData.salutation(),
+        detailsData.gender(),
+        detailsData.firstName(),
+        detailsData.lastName(),
+        detailsData.dateOfBirth(),
+        detailsData.nameAtBirth(),
+        detailsData.placeOfBirth(),
+        detailsData.countryOfBirth(),
+        detailsData.emailAddresses(),
+        detailsData.phoneNumbers(),
+        detailsData.contactAddress(),
+        detailsData.differentBillingAddress());
   }
 
   public static CreatePersonDto mapImportChildDataToCreatePersonDto(ImportChildData childData) {
@@ -60,35 +64,6 @@ public final class PersonMapper {
 
     return new ChildDto(
         childData.firstName(), childData.lastName(), childData.dateOfBirth(), childData.gender());
-  }
-
-  public static List<PersonDetailsDto> mapCustodiansToDto(
-      List<CustodianDetailsData> custodiansData) {
-    return custodiansData.stream().map(PersonMapper::mapCustodianToDto).toList();
-  }
-
-  public static PersonDetailsDto mapCustodianToDto(CustodianDetailsData custodianData) {
-    if (custodianData == null) {
-      return null;
-    }
-
-    return new PersonDetailsDto(
-        custodianData.version(),
-        custodianData.fileStateId(),
-        custodianData.fileStateOutdated(),
-        custodianData.title(),
-        custodianData.salutation(),
-        custodianData.gender(),
-        custodianData.firstName(),
-        custodianData.lastName(),
-        custodianData.dateOfBirth(),
-        custodianData.nameAtBirth(),
-        custodianData.placeOfBirth(),
-        custodianData.countryOfBirth(),
-        custodianData.emailAddresses(),
-        custodianData.phoneNumbers(),
-        custodianData.contactAddress(),
-        custodianData.differentBillingAddress());
   }
 
   public static de.eshg.base.centralfile.api.person.PersonDetailsDto mapToPersonDetailsDto(

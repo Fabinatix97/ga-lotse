@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiServiceStatus } from "@eshg/employee-portal-api/travelMedicine";
+import {
+  ApiAppointmentBookingType,
+  ApiServiceStatus,
+} from "@eshg/employee-portal-api/travelMedicine";
 import { ChipProps } from "@mui/joy";
 
 export const statusColors = {
@@ -11,3 +14,10 @@ export const statusColors = {
   [ApiServiceStatus.Planned]: "warning",
   [ApiServiceStatus.Accomplished]: "success",
 } satisfies Record<ApiServiceStatus, ChipProps["color"]>;
+
+export const statusColorsAppointment = {
+  [ApiAppointmentBookingType.UserDefined]: "primary",
+  [ApiAppointmentBookingType.AppointmentBlock]: "primary",
+  [ApiAppointmentBookingType.SelfBooking]: "neutral",
+  [ApiAppointmentBookingType.Cancelled]: "danger",
+} satisfies Record<ApiAppointmentBookingType, ChipProps["color"]>;

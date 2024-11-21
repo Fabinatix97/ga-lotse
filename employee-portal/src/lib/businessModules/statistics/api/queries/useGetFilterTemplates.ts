@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiGetFilterTemplatesForStatisticResponse,
+  ApiGetFilterTemplatesForEvaluationResponse,
   FilterTemplateApi,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -19,11 +19,11 @@ export function createQueryGetFilterTemplates(
 ) {
   return {
     queryKey: filterTemplateApiQueryKey([
-      api.findFilterTemplatesForStatistic.name,
+      api.findFilterTemplatesForEvaluation.name,
       statisticId,
     ]),
-    queryFn: () => api.findFilterTemplatesForStatistic(statisticId),
-    select: (result: ApiGetFilterTemplatesForStatisticResponse) =>
+    queryFn: () => api.findFilterTemplatesForEvaluation(statisticId),
+    select: (result: ApiGetFilterTemplatesForEvaluationResponse) =>
       result.filterTemplateIdAndNames.map(
         (it) =>
           ({

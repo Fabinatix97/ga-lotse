@@ -5,8 +5,6 @@
 
 package de.eshg.schoolentry.icd10.parser;
 
-import de.eshg.schoolentry.domain.model.Icd10Code;
-import de.eshg.schoolentry.domain.model.Icd10Group;
 import java.util.List;
 
 public record Icd10Data(List<Icd10Group> groups, List<Icd10Code> codes) {

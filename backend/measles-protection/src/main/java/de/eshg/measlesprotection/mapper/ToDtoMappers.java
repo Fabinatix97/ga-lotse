@@ -7,7 +7,7 @@ package de.eshg.measlesprotection.mapper;
 
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.FacilityDetails;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.measlesprotection.api.AffectedPersonDto;
@@ -26,7 +26,7 @@ public final class ToDtoMappers {
   private ToDtoMappers() {}
 
   public static AffectedPersonDto toAffectedPersonDto(ProcedureDetailsData procedureDetailsData) {
-    AddPersonFileStateResponse person = procedureDetailsData.person();
+    GetPersonFileStateResponse person = procedureDetailsData.person();
     return new AffectedPersonDto(
         person.id(),
         person.firstName(),
@@ -44,7 +44,7 @@ public final class ToDtoMappers {
         person.contactAddress());
   }
 
-  public static CustodianDto toCustodianDto(AddPersonFileStateResponse person) {
+  public static CustodianDto toCustodianDto(GetPersonFileStateResponse person) {
     de.eshg.base.address.AddressDto address = person.contactAddress();
 
     return new CustodianDto(

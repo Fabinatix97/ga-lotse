@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Box } from "@mui/joy";
+
 import { Row } from "../../Row";
 
 import { Day, DaysGrid } from "./Day";
@@ -38,8 +40,8 @@ export function AppointmentCalendar({
   prevMonthLabel,
 }: AppointmentCalendarProps) {
   return (
-    <div
-      style={{ width: "min-content" }}
+    <Box
+      sx={{ width: "min-content" }}
       data-testid="appointment-picker-calender"
     >
       <Row justifyContent="space-around">
@@ -57,7 +59,7 @@ export function AppointmentCalendar({
           appointments={appointments}
         />
       </Row>
-    </div>
+    </Box>
   );
 }
 

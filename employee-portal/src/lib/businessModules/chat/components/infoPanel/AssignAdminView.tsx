@@ -7,12 +7,14 @@ import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Box, Button, Stack, Switch, Typography } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
-import { filter, mapToObj } from "remeda";
+import { mapToObj } from "remeda";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import {
   getRoomAdmins,
   reassignAdminRole,
@@ -31,25 +33,21 @@ export function AssignAdminView({
   onClose,
   onCancel,
 }: Readonly<AssignAdminProps>) {
+  const { matrixClient } = useChatClientContext();
   const roomInfo = useRoomInfo(roomId);
   const snackbar = useSnackbar();
+  const { joinedMembers } = useRoomMembers(roomId);
 
-  const { matrixClient, getJoinedMembers, checkIfAdmin, room } = roomInfo;
+  const { checkIfAdmin, room } = roomInfo;
 
   const loggedInUserId = matrixClient.getUserId();
   const isAdmin = checkIfAdmin();
-  const roomMembers = getJoinedMembers();
   const roomAdmins = getRoomAdmins(room);
 
-  const initialValues = mapToObj(roomMembers, (i) => [
+  const initialValues = mapToObj(joinedMembers, (i) => [
     i.member.userId,
     roomAdmins.includes(i.member.userId),
   ]);
-
-  const sortedMembers = [
-    ...filter(roomMembers, (x) => x.isRoomCreator),
-    ...filter(roomMembers, (x) => !x.isRoomCreator),
-  ];
 
   async function handleSubmit(
     values: AdminFormValues,
@@ -104,7 +102,7 @@ export function AssignAdminView({
             enableReinitialize={true}
           >
             <FormPlus>
-              {sortedMembers.map(({ member }) => {
+              {joinedMembers.map(({ member }) => {
                 return (
                   <Stack
                     key={`['${member.userId}']`}

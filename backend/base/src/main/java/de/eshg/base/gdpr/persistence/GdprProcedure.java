@@ -24,10 +24,6 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   private UUID centralFileId;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private GdprProcedureResult result;
-
-  @JdbcType(PostgreSQLEnumJdbcType.class)
   @Column(nullable = false)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private GdprProcedureStatus status;
@@ -58,6 +54,9 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String matterOfConcern;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private String internalNote;
+
   @OneToMany(
       fetch = FetchType.LAZY,
       mappedBy = GdprDownload_.GDPR_PROCEDURE,
@@ -73,14 +72,6 @@ public class GdprProcedure extends BaseEntityWithExternalId {
 
   public void setCentralFileId(UUID centralFileId) {
     this.centralFileId = centralFileId;
-  }
-
-  public GdprProcedureResult getResult() {
-    return result;
-  }
-
-  public void setResult(GdprProcedureResult result) {
-    this.result = result;
   }
 
   public GdprProcedureStatus getStatus() {
@@ -133,6 +124,14 @@ public class GdprProcedure extends BaseEntityWithExternalId {
 
   public void setMatterOfConcern(String matterOfConcern) {
     this.matterOfConcern = matterOfConcern;
+  }
+
+  public String getInternalNote() {
+    return internalNote;
+  }
+
+  public void setInternalNote(String internalNote) {
+    this.internalNote = internalNote;
   }
 
   public Collection<GdprDownload> getDownloads() {

@@ -7,7 +7,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { usePacklistApi } from "@/lib/businessModules/inspection/api/clients";
 import { packlistApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 
 export function getPacklistsQueryKey(inspectionId: string) {
   return packlistApiQueryKey(["getPacklists", { inspectionId }]);
@@ -15,12 +15,11 @@ export function getPacklistsQueryKey(inspectionId: string) {
 
 export function useGetPacklists(inspectionId: string) {
   const packlistApi = usePacklistApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   return useSuspenseQuery({
     queryKey: getPacklistsQueryKey(inspectionId),
     queryFn: ({ signal }) =>
       packlistApi.getPacklists(inspectionId, {
-        ...getPreCacheForOfflineModeHeaders(inspectionId),
+        ...getHeadersForOfflineCaching(inspectionId),
         signal,
       }),
     select: (response) => response.packlists,

@@ -6,13 +6,15 @@
 import { ApiAdminCertificate } from "@eshg/admin-portal-api/serviceDirectory";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { Add, AddModerator } from "@mui/icons-material";
-import { IconButton } from "@mui/joy";
+import { IconButton, styled } from "@mui/joy";
 import { CellContext } from "@tanstack/react-table";
 import { ChangeEvent, ReactNode, useCallback, useMemo, useRef } from "react";
 
 import { Actor } from "@/lib/components/view/actors/ActorTable";
 import { getCommonName } from "@/lib/helpers/crypto";
 import { useTranslation } from "@/lib/i18n/client";
+
+const HiddenInput = styled("input")({ display: "hidden" });
 
 export function EditableCertificateCell(
   props: Readonly<CellContext<Actor, ApiAdminCertificate>>,
@@ -59,7 +61,7 @@ export function EditableCertificateCell(
           return;
         }
         props.table.options.meta?.api?.update({
-          ...props.row.original,
+          id: props.row.original.id,
           commonName,
           [props.column.id]: {
             signature: "",
@@ -90,10 +92,9 @@ export function EditableCertificateCell(
       >
         {props.getValue() ? <AddModerator size="sm" /> : <Add size="sm" />}
       </IconButton>
-      <input
+      <HiddenInput
         ref={fileInputRef}
         type="file"
-        style={{ display: "none" }}
         accept="application/pem-certificate-chain"
         onChange={handleChange}
       />

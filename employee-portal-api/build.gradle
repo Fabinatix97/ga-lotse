@@ -18,6 +18,7 @@ openapiGenerator {
     'statistics'        : backendDir.file('statistics/openApi.yaml'),
     'chatManagement'    : backendDir.file('chat-management/openApi.yaml'),
     'stiProtection'     : backendDir.file('sti-protection/openApi.yaml'),
-    'medicalRegistry'   : backendDir.file('medical-registry/openApi.yaml')
+    'medicalRegistry'   : backendDir.file('medical-registry/openApi.yaml'),
+    'dental'            : backendDir.file('dental/openApi.yaml')
   ]
 }

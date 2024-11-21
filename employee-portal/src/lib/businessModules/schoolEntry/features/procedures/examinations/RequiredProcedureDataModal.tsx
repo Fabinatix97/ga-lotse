@@ -4,10 +4,13 @@
  */
 
 import { ApiRequiredProcedureData } from "@eshg/employee-portal-api/schoolEntry";
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { Typography } from "@mui/joy";
 
 import { REQUIRED_PROCEDURE_DATA } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 interface IncompleteAreasModalProps {
   requiredProcedureData: ApiRequiredProcedureData[];

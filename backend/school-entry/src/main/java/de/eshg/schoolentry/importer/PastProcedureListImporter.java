@@ -11,7 +11,6 @@ import static de.eshg.lib.xlsximport.ImportStatus.MERGED_SUCCESSFULLY;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.RowReader;
-import de.eshg.schoolentry.SchoolEntryService;
 import de.eshg.schoolentry.business.model.ImportPastProcedureData;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.time.Year;
@@ -22,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -38,10 +38,35 @@ public class PastProcedureListImporter
       FeedbackColumnAccessor feedbackColumnAccessor,
       UUID schoolId,
       Year schoolYear,
-      SchoolEntryService schoolEntryService) {
-    super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, schoolEntryService);
+      ImportService importService) {
+    super(sheet, rowReader, feedbackColumnAccessor, schoolId, schoolYear, importService);
     this.rowValueMapper = new PastProcedureListRowValueMapper();
     this.mergeCandidatesToBeDeleted = new ArrayList<>();
+  }
+
+  @Override
+  protected boolean shouldSkipReadingRow(Row row) {
+    if (row.getRowNum() == 0) {
+      return true;
+    }
+    return row.getRowNum() == 1 && isDataFormatHintRow(row);
+  }
+
+  private boolean isDataFormatHintRow(Row row) {
+    return isEmptyCell(row.getCell(0))
+        && isEmptyCell(row.getCell(1))
+        && nullSafeEquals(row.getCell(2), "TT.MM.JJJJ")
+        && nullSafeEquals(row.getCell(3), "M; W; D")
+        && isEmptyCell(row.getCell(4))
+        && isEmptyCell(row.getCell(5));
+  }
+
+  private boolean isEmptyCell(Cell cell) {
+    return cell == null || cell.getStringCellValue().isEmpty();
+  }
+
+  private boolean nullSafeEquals(Cell cell, String content) {
+    return cell != null && cell.getStringCellValue().equals(content);
   }
 
   @Override
@@ -81,14 +106,14 @@ public class PastProcedureListImporter
 
     List<ImportPastProcedureData> importData =
         importableRows.stream().map(rowValueMapper::mapValuesToImportData).toList();
-    return schoolEntryService.createProceduresFromDataImport(importData, schoolId, schoolYear);
+    return importService.createProceduresFromDataImport(importData, schoolId, schoolYear);
   }
 
   @Override
   protected List<UUID> mergeProceduresAndGetFailedProcedureIds(
       List<PastProcedureListRowValues> mergeableRows) {
     if (!mergeCandidatesToBeDeleted.isEmpty()) {
-      schoolEntryService.deleteProcedures(mergeCandidatesToBeDeleted);
+      importService.deleteProcedures(mergeCandidatesToBeDeleted);
     }
     List<SchoolEntryProcedure> createdProcedures = createProcedures(mergeableRows);
     writeProcedureIdsInSheet(mergeableRows, createdProcedures, MERGED_SUCCESSFULLY);
@@ -98,7 +123,6 @@ public class PastProcedureListImporter
   @Override
   protected Map<PersonKeyAttributes, List<SchoolEntryProcedure>> fetchMergeCandidates(
       Set<PersonKeyAttributes> childKeyAttributes) {
-    return schoolEntryService.searchForMergeCandidatesForPastProcedures(
-        childKeyAttributes, schoolYear);
+    return importService.searchForMergeCandidatesForPastProcedures(childKeyAttributes, schoolYear);
   }
 }

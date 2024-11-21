@@ -58,7 +58,7 @@ export function Footer(props: DepartmentInfoProps) {
       }}
     >
       <ResponsiveContainer>
-        <Typography level="title-lg" sx={{ color: "white" }}>
+        <Typography fontSize="1.125rem" sx={{ color: "white" }}>
           © {props.department.name} {new Date().getFullYear()}
         </Typography>
         <Stack

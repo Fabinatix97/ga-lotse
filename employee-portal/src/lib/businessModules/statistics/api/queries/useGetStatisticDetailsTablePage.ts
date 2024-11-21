@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { GetStatisticRequest } from "@eshg/employee-portal-api/statistics";
+import { GetEvaluationRequest } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQueries } from "@tanstack/react-query";
 
 import {
@@ -14,7 +14,7 @@ import { createQueryGetFilterTemplates } from "@/lib/businessModules/statistics/
 import { createQueryGetStatistic } from "@/lib/businessModules/statistics/api/queries/useGetStatistic";
 
 export function useGetStatisticDetailsTablePage(
-  statisticRequest: GetStatisticRequest,
+  statisticRequest: GetEvaluationRequest,
   statisticId: string,
 ) {
   const statisticApi = useStatisticApi();

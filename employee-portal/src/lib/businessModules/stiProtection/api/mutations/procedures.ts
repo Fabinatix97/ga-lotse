@@ -7,21 +7,21 @@ import {
   ApiCreateProcedureRequest,
   ApiCreateProcedureResponse,
   ApiStiProtectionProcedure,
+  ApiUpdatePersonDetailsRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
-
-import { MutationPassThrough } from "./types";
 
 export function useCreateStiProcedureMutation({
   onSuccess,
   onError,
 }: MutationPassThrough<
-  ApiCreateProcedureResponse,
-  ApiCreateProcedureRequest
+  ApiCreateProcedureRequest,
+  ApiCreateProcedureResponse
 > = {}) {
   const api = useStiProtectionProcedureApi();
   return useHandledMutation({
@@ -35,7 +35,7 @@ export function useCreateStiProcedureMutation({
 export function useCloseProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiStiProtectionProcedure, string> = {}) {
+}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
   const api = useStiProtectionProcedureApi();
   return useHandledMutation({
     mutationFn: (id: string) => api.closeProcedure(id),
@@ -48,7 +48,7 @@ export function useCloseProcedureMutation({
 export function useCloseProcedure({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiStiProtectionProcedure, string> = {}) {
+}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
   const snackbar = useSnackbar();
   return useCloseProcedureMutation({
     onSuccess(data, variables, context) {
@@ -62,7 +62,7 @@ export function useCloseProcedure({
 export function useReopenProcedureMutation({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiStiProtectionProcedure, string> = {}) {
+}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
   const api = useStiProtectionProcedureApi();
   return useHandledMutation({
     mutationFn: (id: string) => api.reopenProcedure(id),
@@ -75,12 +75,50 @@ export function useReopenProcedureMutation({
 export function useReopenProcedure({
   onSuccess,
   onError,
-}: MutationPassThrough<ApiStiProtectionProcedure, string> = {}) {
+}: MutationPassThrough<string, ApiStiProtectionProcedure> = {}) {
   const snackbar = useSnackbar();
   return useReopenProcedureMutation({
     onSuccess(data, variables, context) {
       onSuccess?.(data, variables, context);
       snackbar.confirmation("Vorgang wird wieder geöffnet");
+    },
+    onError,
+  });
+}
+
+interface UpdatePersonDetailsParams {
+  id: string;
+  data: ApiUpdatePersonDetailsRequest;
+}
+
+export function useUpdatePersonDetailsMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<
+  UpdatePersonDetailsParams,
+  ApiStiProtectionProcedure
+> = {}) {
+  const api = useStiProtectionProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: ({ id, data }: UpdatePersonDetailsParams) =>
+      api.updatePersonDetails(id, data),
+    mutationKey: stiProtectionApiQueryKey(["procedures"]),
+    onSuccess,
+    onError,
+  });
+}
+
+export function useUpdatePersonDetails({
+  onSuccess,
+  onError,
+}: MutationPassThrough<
+  UpdatePersonDetailsParams,
+  ApiStiProtectionProcedure
+> = {}) {
+  return useUpdatePersonDetailsMutation({
+    onSuccess(data, variables, context) {
+      onSuccess?.(data, variables, context);
     },
     onError,
   });

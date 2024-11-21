@@ -71,10 +71,14 @@ const inboxNavigationItem: SideNavigationSubItem = {
 
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
   const isInboxEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Inbox);
+  const isInspectionInboxEnabled = useIsNewBaseFeatureEnabled(
+    ApiBaseFeature.InspectionInbox,
+  );
 
-  const subItems = isInboxEnabled
-    ? [...defaultSubItems, inboxNavigationItem]
-    : defaultSubItems;
+  const subItems =
+    isInboxEnabled || isInspectionInboxEnabled
+      ? [...defaultSubItems, inboxNavigationItem]
+      : defaultSubItems;
 
   return {
     isLoading: false,

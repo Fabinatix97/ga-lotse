@@ -10,6 +10,7 @@ import {
 } from "matrix-js-sdk/lib/crypto/aes";
 
 import {
+  deleteRustSdkStore,
   idbClearTable,
   idbDeleteDb,
   idbLoad,
@@ -73,7 +74,7 @@ export async function clearCachedCredentials() {
 export async function deleteCachedCredentials() {
   try {
     clearLocalStorage();
-    await idbDeleteDb();
+    await Promise.all([idbDeleteDb, deleteRustSdkStore]);
   } catch {
     // eslint-disable-next-line no-console
     console.warn("Cached credentials were not cleared");

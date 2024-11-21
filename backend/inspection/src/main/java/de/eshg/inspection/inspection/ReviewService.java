@@ -5,6 +5,8 @@
 
 package de.eshg.inspection.inspection;
 
+import static de.eshg.inspection.inspection.InspectionMapper.mapToDtoForDuplicateReview;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toMap;
 
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
@@ -20,6 +22,7 @@ import de.eshg.inspection.inspection.api.FacilityDuplicateReviewDto;
 import de.eshg.inspection.inspection.api.FacilityForDuplicateReviewDto;
 import de.eshg.inspection.inspection.api.InspectionDto;
 import de.eshg.inspection.inspection.api.InspectionDuplicateReviewDto;
+import de.eshg.inspection.inspection.api.InspectionForDuplicateReviewDto;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
@@ -33,20 +36,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReviewService {
-
-  private static final Logger log = LoggerFactory.getLogger(ReviewService.class);
 
   private final InspectionService inspectionService;
   private final FacilityClient facilityClient;
@@ -73,16 +73,36 @@ public class ReviewService {
   public InspectionDuplicateReviewDto reviewInspectionDuplicates(UUID inspectionId) {
     Inspection inspection = inspectionService.loadInspection(inspectionId);
 
-    GetFacilityFileStateResponse facilityFileState =
-        facilityClient.getFacilityFileState(inspection.getFacility().getCentralFileStateId());
-
-    String title = facilityFileState.name();
-
-    return new InspectionDuplicateReviewDto(
-        InspectionMapper.mapToDtoForDuplicateReview(inspection, title),
+    Set<UUID> fileStateIds =
         inspection.getPossibleDuplicates().stream()
-            .map(i -> InspectionMapper.mapToDtoForDuplicateReview(i, title))
-            .toList());
+            .map(Inspection::getCentralFileStateId)
+            .collect(toCollection(HashSet::new));
+    fileStateIds.add(inspection.getCentralFileStateId());
+
+    // fetch all facility names in a bulk request
+    Map<UUID, String> mapIdToName =
+        facilityClient.getFacilityFileStates(fileStateIds.stream().toList()).stream()
+            .collect(
+                toMap(
+                    AddFacilityFileStateResponse::id,
+                    AddFacilityFileStateResponse::name,
+                    (v1, v2) -> v1));
+
+    String inspectionTitle = mapIdToName.getOrDefault(inspection.getCentralFileStateId(), "");
+
+    InspectionForDuplicateReviewDto importedInspection =
+        mapToDtoForDuplicateReview(inspection, inspectionTitle);
+
+    List<InspectionForDuplicateReviewDto> existingInspections =
+        inspection.getPossibleDuplicates().stream()
+            .map(
+                i -> {
+                  String title = mapIdToName.getOrDefault(i.getCentralFileStateId(), "");
+                  return mapToDtoForDuplicateReview(i, title);
+                })
+            .toList();
+
+    return new InspectionDuplicateReviewDto(importedInspection, existingInspections);
   }
 
   public FacilityDuplicateReviewDto reviewFacilityDuplicates(UUID inspectionId) {
@@ -166,34 +186,11 @@ public class ReviewService {
             return;
           }
 
-          // Otherwise determine all centralFileStateIds for that chosenReferenceId and find all
-          // associated inspections and their facilities.
-          List<UUID> centralFileStateIdsOfChosenFacility =
-              facilityClient.getFacilityFileStateIdsAssociatedWithReferenceFacility(
-                  chosenReferenceId);
-          List<Inspection> allInspectionsOfReferenceFacility =
-              inspectionRepository.findByCentralFileStateIds(centralFileStateIdsOfChosenFacility);
-          Collection<Facility> facilities =
-              allInspectionsOfReferenceFacility.stream()
-                  .map(Inspection::getFacility)
-                  .collect(toMap(Facility::getId, v -> v, (v, w) -> v))
-                  .values();
-
-          // determine the "target inspection facility" (the one that remains)
+          // Otherwise determine if we already have a facility for the chosenReferenceId.
           Facility targetFacility =
-              switch (facilities.size()) {
-                case 0 -> inspectionFacility;
-                case 1 -> facilities.iterator().next();
-                default -> {
-                  Facility first = facilities.iterator().next();
-                  log.error(
-                      "Found {} inspection facilities for these centralFileStateIds: {}; using the first one with id {}",
-                      facilities.size(),
-                      centralFileStateIdsOfChosenFacility,
-                      first.getId());
-                  yield first;
-                }
-              };
+              inspectionService
+                  .findInspectionFacilityForBaseReferenceId(chosenReferenceId)
+                  .orElse(inspectionFacility);
 
           if (targetFacility == inspectionFacility) {
             inspectionFacility.setPossibleDuplicates(false);
@@ -292,8 +289,7 @@ public class ReviewService {
                 previousFileState.contactPersons(),
                 previousFileState.contactAddress(),
                 previousFileState.differentBillingAddress(),
-                previousFileState.dataOrigin(),
-                null));
+                previousFileState.dataOrigin()));
     return newFileState.id();
   }
 

@@ -33,7 +33,7 @@ export function OfflinePasswordDialog({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         sx={{
-          width: { xxs: "calc(100vw - 3rem)", sm: 520 },
+          width: { xxs: "calc(100vw - 3rem)", sm: 530 },
           gap: 3,
           overflowY: "scroll",
         }}

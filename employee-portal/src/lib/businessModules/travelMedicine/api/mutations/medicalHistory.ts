@@ -26,7 +26,7 @@ export function usePatchMedicalHistory() {
       );
     },
     onSuccess: () => {
-      snackbar.confirmation("Erfolgreich gespeichert.");
+      snackbar.confirmation("Der Anamnesebogen wurde gespeichert.");
     },
   });
 }

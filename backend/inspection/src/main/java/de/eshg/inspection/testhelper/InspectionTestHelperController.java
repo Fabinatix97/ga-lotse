@@ -6,6 +6,7 @@
 package de.eshg.inspection.testhelper;
 
 import de.eshg.auditlog.SharedAuditLogTestHelperApi;
+import de.eshg.inspection.checklist.persistence.ChecklistRepository;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
@@ -13,6 +14,7 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.io.IOException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
@@ -25,15 +27,18 @@ public class InspectionTestHelperController extends TestHelperController
 
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final InspectionFeatureToggle inspectionFeatureToggle;
+  private final ChecklistRepository checklistRepository;
 
   public InspectionTestHelperController(
       InspectionTestHelperService inspectionTestHelperService,
       AuditLogTestHelperService auditLogTestHelperService,
       InspectionFeatureToggle inspectionFeatureToggle,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ChecklistRepository checklistRepository) {
     super(inspectionTestHelperService, environmentConfig);
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
+    this.checklistRepository = checklistRepository;
   }
 
   @Override
@@ -55,5 +60,11 @@ public class InspectionTestHelperController extends TestHelperController
   public void disableNewFeature(
       @PathVariable("featureToDisable") InspectionFeature featureToDisable) {
     inspectionFeatureToggle.disableNewFeature(featureToDisable);
+  }
+
+  @PostExchange("/checklists/make-corrupt")
+  @Transactional
+  public void makeChecklistsCorrupt() {
+    checklistRepository.makeChecklistsCorruptForTestHelper();
   }
 }

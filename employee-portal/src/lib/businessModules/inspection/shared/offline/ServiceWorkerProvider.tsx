@@ -5,37 +5,21 @@
 
 "use client";
 
+import { LoadingOverlay } from "@eshg/lib-portal/components/LoadingOverlay";
 import {
   ReactNode,
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from "react";
-import { isEmpty } from "remeda";
 
-import { RegisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/RegisterServiceWorker";
-import {
-  deleteAllEncryptedCaches,
-  deleteInspectionFromAllCaches,
-} from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
 import { unregisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/unregisterServiceWorker";
-import {
-  getInspectionIdsOfProcedureBaseDataRequests,
-  useGetPrecachedInspections,
-} from "@/lib/businessModules/inspection/shared/offline/useGetPrecachedInspections";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
-import { LoadingOverlay } from "@/lib/shared/components/LoadingOverlay";
+import { useServiceWorkerMessageListeners } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerMessageListeners";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
-import { PAGES_CACHE_NAME } from "@/serviceWorker/common/common";
 
 export interface ServiceWorker {
-  desiredPrecachedInspectionIds: string[];
-  actualPrecachedInspectionIds: string[];
-  addToPrecache: (inspectionId: string) => void;
-  removeFromPrecache: (inspectionId: string) => void;
   isOffline: boolean;
   sendMessageToServiceWorker: (message: object) => Promise<unknown>;
 }
@@ -69,88 +53,19 @@ function ServiceWorkerProviderInner({
 }: Readonly<{ children: ReactNode }>) {
   const isOffline = useIsOffline();
 
-  const [desiredPrecachedInspectionIds, setDesiredPrecachedInspectionIds] =
-    useState<string[] | undefined>(undefined);
-
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    if ("caches" in window) {
-      caches
-        .open(PAGES_CACHE_NAME)
-        .then((cache) => cache.keys())
-        .then((pageRequest) =>
-          setDesiredPrecachedInspectionIds(
-            getInspectionIdsOfProcedureBaseDataRequests(pageRequest),
-          ),
-        )
-        .catch((reason) => {
-          throw reason;
-        });
-    }
-  }, []);
-
-  const actualPrecachedInspectionIds = useGetPrecachedInspections();
-
-  useEffect(() => {
-    if (!desiredPrecachedInspectionIds || !actualPrecachedInspectionIds) return;
-    const remove = actualPrecachedInspectionIds.filter(
-      (id) => !desiredPrecachedInspectionIds.includes(id),
-    );
-    if (remove.length > 0) {
-      setDeleting(true);
-      deleteFromCache(remove, isEmpty(desiredPrecachedInspectionIds))
-        .catch((reason) => {
-          throw reason;
-        })
-        .finally(() => setDeleting(false));
-    }
-  }, [actualPrecachedInspectionIds, desiredPrecachedInspectionIds]);
-
-  const addToPrecache = useCallback((inspectionId: string) => {
-    setDesiredPrecachedInspectionIds((oldIds) => {
-      if (!oldIds || oldIds.includes(inspectionId)) {
-        return oldIds;
-      }
-      return [...oldIds, inspectionId];
-    });
-  }, []);
-
-  const removeFromPrecache = useCallback((inspectionId: string) => {
-    setDesiredPrecachedInspectionIds((oldIds) => {
-      const index = oldIds?.indexOf(inspectionId);
-      if (index == null || index < 0) {
-        return oldIds;
-      }
-      return [...oldIds!.slice(0, index), ...oldIds!.slice(index + 1)];
-    });
-  }, []);
-
   const contextValue: ServiceWorker = useMemo(
     () => ({
-      desiredPrecachedInspectionIds: desiredPrecachedInspectionIds ?? [],
-      actualPrecachedInspectionIds: actualPrecachedInspectionIds ?? [],
-      addToPrecache,
-      removeFromPrecache,
       isOffline,
       sendMessageToServiceWorker,
     }),
-    [
-      actualPrecachedInspectionIds,
-      addToPrecache,
-      desiredPrecachedInspectionIds,
-      removeFromPrecache,
-      isOffline,
-    ],
+    [isOffline],
   );
+
+  const syncing = useServiceWorkerMessageListeners();
 
   return (
     <ServiceWorkerContext.Provider value={contextValue}>
-      <RegisterServiceWorker
-        inspectionIds={desiredPrecachedInspectionIds ?? []}
-        isOffline={isOffline}
-      />
-      {deleting && <LoadingOverlay />}
+      {syncing && <LoadingOverlay />}
       {children}
     </ServiceWorkerContext.Provider>
   );
@@ -172,14 +87,6 @@ function ServiceWorkerProviderMock({
 }
 
 const EMPTY_CONTEXT: ServiceWorker = {
-  desiredPrecachedInspectionIds: [],
-  actualPrecachedInspectionIds: [],
-  addToPrecache: (_) => {
-    /* empty */
-  },
-  removeFromPrecache: (_) => {
-    /* empty */
-  },
   isOffline: false,
   sendMessageToServiceWorker: async (_) => {
     /* empty */
@@ -188,11 +95,4 @@ const EMPTY_CONTEXT: ServiceWorker = {
 
 async function sendMessageToServiceWorker(message: object) {
   return (await window.workbox?.messageSW(message)) as unknown;
-}
-
-async function deleteFromCache(remove: string[], removeAll: boolean) {
-  await Promise.all(remove.map(deleteInspectionFromAllCaches));
-  if (removeAll) {
-    await deleteAllEncryptedCaches();
-  }
 }

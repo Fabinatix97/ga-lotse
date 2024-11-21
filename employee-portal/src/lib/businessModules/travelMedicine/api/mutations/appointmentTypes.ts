@@ -21,7 +21,7 @@ export function useUpdateAppointmentType() {
     mutationFn: (wrapper: ApiUpdateAppointmentTypeRequestWrapper) =>
       appointmentTypeApi.updateAppointmentType(wrapper.id, wrapper.request),
     onSuccess: () => {
-      snackbar.confirmation("Der Termintyp wurde aktualisiert.");
+      snackbar.confirmation("Der Termintyp wurde gespeichert.");
     },
   });
 }

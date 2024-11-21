@@ -14,17 +14,15 @@ import de.eshg.base.resource.api.ResourceTypeDto;
 import de.eshg.base.resource.persistence.entity.Resource;
 import de.eshg.base.resource.persistence.entity.Resource_;
 import de.eshg.base.resource.persistence.repository.ResourceRepository;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import java.util.List;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class ResourcePopulator extends BasePopulator<ResourceDto> {
 
   private final ResourceController resourceController;
@@ -33,12 +31,12 @@ public class ResourcePopulator extends BasePopulator<ResourceDto> {
       List.of("Begehung", "Masernschutz", "Einschulung", "Impfberatung");
 
   public ResourcePopulator(
-      ResourceRepository resourceRepository,
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
-      ResourceController resourceController,
-      EnvironmentConfig environmentConfig) {
-    super(clock, environment, getClassNameAsPropertyKey(Resource.class), environmentConfig);
+      EnvironmentConfig environmentConfig,
+      ResourceRepository resourceRepository,
+      ResourceController resourceController) {
+    super(properties, clock, getClassNameAsPropertyKey(Resource.class), environmentConfig);
     this.resourceRepository = resourceRepository;
     this.resourceController = resourceController;
   }

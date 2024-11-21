@@ -15,10 +15,7 @@ import { TileDivider } from "@/lib/businessModules/inspection/components/inspect
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddButton";
-import {
-  SALUTATION_VALUES,
-  TITLE_VALUES,
-} from "@/lib/shared/components/personSidebar/constants";
+import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 export interface ContactPersonTileProps {
   contactPerson?: ApiFacilityContactPerson;
@@ -56,51 +53,60 @@ export function ContactPersonTile({
         <Grid xs={6}>
           <Grid container direction="column" sx={{ gap: 2 }}>
             <Grid container direction="row" sx={{ gap: 3 }}>
-              {contactPerson?.gender !== "NOT_SPECIFIED" && (
-                <DetailsCell
-                  name="salutation"
-                  label="Anrede"
-                  value={
-                    isNonNullish(contactPerson?.salutation)
-                      ? SALUTATION_VALUES[contactPerson.salutation]
-                      : undefined
-                  }
-                />
-              )}
-              {contactPerson?.title !== "NOT_SPECIFIED" && (
-                <DetailsCell
-                  name="title"
-                  label="Titel"
-                  value={
-                    isNonNullish(contactPerson?.title)
-                      ? TITLE_VALUES[contactPerson.title]
-                      : undefined
-                  }
-                />
-              )}
+              {isNonNullish(contactPerson?.salutation) &&
+                contactPerson.salutation !== "NOT_SPECIFIED" && (
+                  <DetailsCell
+                    name="salutation"
+                    label="Anrede"
+                    value={SALUTATION_VALUES[contactPerson.salutation]}
+                  />
+                )}
+              {isNonNullish(contactPerson?.title) &&
+                contactPerson.title !== "Keine Angabe" && (
+                  <DetailsCell
+                    name="title"
+                    label="Titel"
+                    value={contactPerson.title}
+                  />
+                )}
             </Grid>
-            <DetailsCell
-              name="name"
-              label="Vorname"
-              value={contactPerson?.firstName}
-            />
-            <DetailsCell
-              name="surname"
-              label="Name"
-              value={contactPerson?.lastName}
-            />
+            {isNonNullish(contactPerson?.role) && (
+              <DetailsCell
+                name="role"
+                label="Role"
+                value={contactPerson.role}
+              />
+            )}
+            {isNonNullish(contactPerson?.firstName) && (
+              <DetailsCell
+                name="name"
+                label="Vorname"
+                value={contactPerson.firstName}
+              />
+            )}
+            {isNonNullish(contactPerson?.lastName) && (
+              <DetailsCell
+                name="surname"
+                label="Name"
+                value={contactPerson.lastName}
+              />
+            )}
           </Grid>
         </Grid>
         {(isNonNullish(contactPerson?.emailAddress) ||
-          isNonNullish(contactPerson?.phoneNumber)) && <TileDivider />}
-        <Grid xs={6}>
-          {isNonNullish(contactPerson?.emailAddress) && (
-            <EmailSection emailAddress={contactPerson?.emailAddress} />
-          )}
-          {isNonNullish(contactPerson?.phoneNumber) && (
-            <PhoneNumberSection phoneNumber={contactPerson?.phoneNumber} />
-          )}
-        </Grid>
+          isNonNullish(contactPerson?.phoneNumber)) && (
+          <>
+            <TileDivider />
+            <Grid xs={6} paddingInlineStart={{ xs: 2 }}>
+              {isNonNullish(contactPerson?.emailAddress) && (
+                <EmailSection emailAddress={contactPerson.emailAddress} />
+              )}
+              {isNonNullish(contactPerson?.phoneNumber) && (
+                <PhoneNumberSection phoneNumber={contactPerson.phoneNumber} />
+              )}
+            </Grid>
+          </>
+        )}
       </Grid>
     </InfoTile>
   );

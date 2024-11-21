@@ -8,9 +8,9 @@ package de.eshg.lib.procedure.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.foureyes.model.ApprovalRequestEntityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +23,11 @@ public abstract sealed class ConcreteFileDto extends AbstractFileDto
   @Override
   @JsonIgnore
   public Set<UUID> getResolvableUserIds() {
-    return new LinkedHashSet<>(Set.of(getCreatedBy()));
+    UUID createdBy = getCreatedBy();
+    if (createdBy == null) {
+      return Set.of();
+    }
+
+    return SetUtils.orderedSet(createdBy);
   }
 }

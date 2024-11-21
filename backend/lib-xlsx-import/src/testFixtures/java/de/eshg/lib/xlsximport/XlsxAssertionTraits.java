@@ -45,6 +45,10 @@ public interface XlsxAssertionTraits extends JUnit5ValidationFileAssertions {
     assertXlsxWithFile(response.file(), new UuidNormalizer(), suffix);
   }
 
+  default void assertXlsxWithFile(Resource xlsx) throws Exception {
+    assertXlsxWithFile(xlsx, new UuidNormalizer(), "xlsx");
+  }
+
   default void assertXlsxWithFile(
       Resource xlsx, ValidationNormalizer validationNormalizer, String suffix) throws Exception {
     byte[] content = xlsx.getContentAsByteArray();

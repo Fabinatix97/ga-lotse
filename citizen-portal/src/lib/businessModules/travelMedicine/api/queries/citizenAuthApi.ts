@@ -50,3 +50,15 @@ export function useGetMedicalHistory(
       citizenAuthApi.getMedicalHistory(procedureId, procedureStepId),
   });
 }
+
+export function useGetInformationStatement(informationStatementId: string) {
+  const citizenAuthApi = useCitizenAuthApi();
+  return useSuspenseQuery({
+    queryKey: citizenAuthApiQueryKey([
+      "getInformationStatement",
+      informationStatementId,
+    ]),
+    queryFn: () =>
+      citizenAuthApi.getCitizenInformationStatement(informationStatementId),
+  });
+}

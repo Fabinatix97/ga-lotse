@@ -14,6 +14,5 @@ public final class RevisionHistoryMapper {
 
   static void mapCommonFields(AbstractHistoryDto historyDto, DefaultRevisionEntity revision) {
     historyDto.setChangedAt(revision.getCreatedAt());
-    historyDto.setChangedBy(revision.getCreatedBy());
   }
 }

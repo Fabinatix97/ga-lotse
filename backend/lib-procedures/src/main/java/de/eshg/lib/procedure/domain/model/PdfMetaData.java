@@ -40,4 +40,12 @@ public class PdfMetaData extends MetaData {
   public void setCreatedDate(Instant createdDate) {
     this.createdDate = createdDate;
   }
+
+  @Override
+  public PdfMetaData copy() {
+    PdfMetaData copy = new PdfMetaData();
+    copy(copy);
+    copy.createdDate = createdDate;
+    return copy;
+  }
 }

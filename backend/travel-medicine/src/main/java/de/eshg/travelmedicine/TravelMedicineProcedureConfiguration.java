@@ -5,11 +5,15 @@
 
 package de.eshg.travelmedicine;
 
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.ModuleMemberGroup;
 import de.eshg.lib.procedure.procedures.SummaryProvider;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultationTask;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,13 +34,16 @@ public class TravelMedicineProcedureConfiguration {
   SummaryProvider<VaccinationConsultationTask, VaccinationConsultation> summaryProvider() {
     return new SummaryProvider<>() {
       @Override
-      public String getTaskSummary(VaccinationConsultationTask vaccinationConsultationTask) {
-        return "Impfberatung";
+      public Map<Long, String> getTaskSummaries(List<VaccinationConsultationTask> tasks) {
+        return tasks.stream()
+            .collect(Collectors.toMap(SequencedBaseEntity::getId, task -> "Impfberatung"));
       }
 
       @Override
-      public String getProcedureSummary(VaccinationConsultation vaccinationConsultation) {
-        return "Impfberatungsvorgang";
+      public Map<Long, String> getProcedureSummaries(List<VaccinationConsultation> procedures) {
+        return procedures.stream()
+            .collect(
+                Collectors.toMap(SequencedBaseEntity::getId, procedure -> "Impfberatungsvorgang"));
       }
     };
   }

@@ -26,5 +26,9 @@ export function CitizenHasAnsweredStatusChip({
 }: {
   value: AnswerStatus;
 }) {
-  return <Chip color={statusColors[value]}>{statusNames[value]}</Chip>;
+  return (
+    <Chip color={statusColors[value]} size="md">
+      {statusNames[value]}
+    </Chip>
+  );
 }

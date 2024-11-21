@@ -29,7 +29,7 @@ const withPwa = nextPwa({
   dest: "public",
   customWorkerSrc: "src/serviceWorker/sw",
   register: false,
-  reloadOnOnline: true,
+  reloadOnOnline: false,
   workboxOptions: {
     additionalManifestEntries: [
       { url: "/manifest.json", revision: getHash("src/app/manifest.json") },

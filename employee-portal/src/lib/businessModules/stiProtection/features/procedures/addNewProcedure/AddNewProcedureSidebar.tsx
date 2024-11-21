@@ -52,7 +52,8 @@ export const CONCERN_OPTIONS = Object.entries(CONCERN_VALUES).map(
 
 const steps = [
   {
-    subTitle: "Anliegen auswählen",
+    title: "Neuen Vorgang anlegen",
+    subTitle: "Schritt 1 von 4",
     fields: () => (
       <SelectableCardsField
         name="concern"
@@ -62,16 +63,19 @@ const steps = [
     ),
   },
   {
-    subTitle: "Termin wählen",
+    title: "Termin wählen",
+    subTitle: "Schritt 2 von 4",
     fields: () => <AppointmentForm />,
   },
   {
-    subTitle: "Persönliche Daten erfassen",
+    title: "Angaben zur Person",
+    subTitle: "Schritt 3 von 4",
     fields: () => <PersonalDataForm />,
     validate: personalDataFormValidation,
   },
   {
-    subTitle: "Überprüfen und bestätigen",
+    title: "Zusammenfassung",
+    subTitle: "Schritt 4 von 4",
     fields: (props: SummaryFormProps) => <SummaryForm {...props} />,
   },
 ];
@@ -99,7 +103,7 @@ export interface AddNewProcedureForm {
   customAppointmentDuration: string;
 
   gender: ApiGender | "";
-  countryOfBirth?: ApiCountryCode | "";
+  countryOfBirth?: ApiCountryCode | "" | null;
   inGermanySince?: string;
   yearOfBirth?: string;
 }
@@ -155,10 +159,7 @@ export function AddNewProcedureSidebar() {
         validate={step.validate}
       >
         <SidebarForm ref={sidebarFormRef}>
-          <SidebarContent
-            title="Neuen Vorgang anlegen"
-            subtitle={step.subTitle}
-          >
+          <SidebarContent title={step.title} subtitle={step.subTitle}>
             <Fields
               jumpToAppointmentSelection={() => {
                 changeToStep(1);

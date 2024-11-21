@@ -9,7 +9,7 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { Box, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
-import { filter } from "remeda";
+import { find } from "remeda";
 
 import { GroupChatMember } from "@/lib/businessModules/chat/components/GroupChatMember";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
@@ -20,11 +20,13 @@ import {
   isGroupRoom,
   leaveRoom,
 } from "@/lib/businessModules/chat/shared//utils";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
 
 export interface RoomInfoViewProps {
@@ -33,6 +35,7 @@ export interface RoomInfoViewProps {
 }
 
 export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
+  const { matrixClient } = useChatClientContext();
   const roomInfo = useRoomInfo(roomId);
   const { clearChatParams } = useChatSearchParams();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
@@ -40,25 +43,10 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
   const [kickUserId, setKickUserId] = useState<string>();
   const snackbar = useSnackbar();
 
-  const {
-    room,
-    communicationType,
-    allRoomMembers,
-    dmRoomMember,
-    checkIfAdmin,
-    matrixClient,
-  } = roomInfo;
+  const { room, communicationType, dmRoomMember, checkIfAdmin } = roomInfo;
+  const { invitedMembers, joinedMembers, allRoomMembers } =
+    useRoomMembers(roomId);
 
-  const joinedMembers = [
-    ...filter(allRoomMembers, (x) => x.isRoomCreator),
-    ...filter(
-      allRoomMembers,
-      (x) => !x.isRoomCreator && x.member.membership === "join",
-    ),
-  ];
-  const invitedMembers = [
-    ...filter(allRoomMembers, (x) => x.member.membership === "invite"),
-  ];
   const isAdmin = checkIfAdmin();
 
   function handleLeaveRoomClick() {
@@ -74,12 +62,15 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
       await matrixClient.kick(roomId, kickUserId);
       setKickUserId(undefined);
     } catch (error) {
-      logger.error("Benutzer konnte nicht gelöscht werden", error);
+      logger.error("Removing the user failed", error);
       snackbar.error("Benutzer konnte nicht gelöscht werden");
     }
   }
 
-  const userToRemove = kickUserId && matrixClient.getUser(kickUserId);
+  const userToRemove = find(
+    allRoomMembers,
+    ({ member }) => member.userId === kickUserId,
+  )?.member;
 
   return (
     <>
@@ -127,7 +118,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
                     member={member}
                     isRoomCreator={isRoomCreator}
                     isAdmin={isAdmin}
-                    handleKick={(userId: string) => setKickUserId(userId)}
+                    handleKick={() => setKickUserId(member.userId)}
                   />
                 );
               })}
@@ -140,9 +131,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
                   overflowY: "auto",
                 }}
               >
-                <Typography level="title-lg">
-                  Offene Beitrittsanfragen
-                </Typography>
+                <Typography level="title-lg">Ausstehende Mitglieder</Typography>
                 {invitedMembers.map(({ member, isRoomCreator }) => {
                   return (
                     <GroupChatMember
@@ -150,7 +139,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
                       member={member}
                       isRoomCreator={isRoomCreator}
                       isAdmin={isAdmin}
-                      handleKick={(userId: string) => setKickUserId(userId)}
+                      handleKick={() => setKickUserId(member.userId)}
                     />
                   );
                 })}
@@ -206,11 +195,15 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
         onConfirm={handleRemoveUser}
         color="danger"
         title={
-          userToRemove && userToRemove?.displayName
-            ? `${userToRemove.displayName} aus Gruppe entfernen?`
+          userToRemove?.name
+            ? `${userToRemove.name} aus Gruppe entfernen?`
             : "Benutzer aus der Gruppe entfernen?"
         }
-        description="Andere Gruppenmitglieder werden darüber informiert, dass Marlon Peter aus der Gruppe entfernt wurde."
+        description={
+          userToRemove?.name
+            ? `Andere Gruppenmitglieder werden darüber informiert, dass ${userToRemove.name} aus der Gruppe entfernt wurde.`
+            : `Andere Gruppenmitglieder werden darüber informiert, dass Benutzer aus der Gruppe entfernt wurde.`
+        }
         key="kick-user-dialog"
         confirmLabel="Entfernen"
       />

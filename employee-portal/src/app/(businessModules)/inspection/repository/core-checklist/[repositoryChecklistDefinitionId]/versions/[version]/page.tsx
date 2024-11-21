@@ -5,16 +5,9 @@
 
 "use client";
 
-import { useSuspenseQueries } from "@tanstack/react-query";
-
-import {
-  useChecklistDefinitionCentralRepoApi,
-  useObjectTypeApi,
-} from "@/lib/businessModules/inspection/api/clients";
-import { getChecklistDefinitionFromCentralRepoQuery } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
-import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
-import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
-import { RepoChecklistDefinitionHeaderRow } from "@/lib/businessModules/inspection/components/repository/RepoChecklistDefinitionHeaderRow";
+import { useGetChecklistDefinitionFromCentralRepo } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { ReadOnlyCLDPage } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDPage";
+import { RepoCLDInfoCard } from "@/lib/businessModules/inspection/components/repository/RepoCLDInfoCard";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
@@ -28,25 +21,9 @@ export default function InspectionRepositoryPage({
   const repoCldId = parseInt(params.repositoryChecklistDefinitionId);
   const repoVersion = parseInt(params.version);
 
-  const repoApi = useChecklistDefinitionCentralRepoApi();
-  const objectTypeApi = useObjectTypeApi();
-
-  const [
-    {
-      data: { checklistDefinition, ...metadata },
-    },
-    { data: objectTypes },
-  ] = useSuspenseQueries({
-    queries: [
-      getChecklistDefinitionFromCentralRepoQuery(
-        repoApi,
-        repoCldId,
-        repoVersion,
-        true,
-      ),
-      getObjectTypesQuery(objectTypeApi),
-    ],
-  });
+  const {
+    data: { checklistDefinition, ...metadata },
+  } = useGetChecklistDefinitionFromCentralRepo(repoCldId, repoVersion, true);
 
   return (
     <StickyToolbarLayout
@@ -57,20 +34,18 @@ export default function InspectionRepositoryPage({
         />
       }
     >
-      <MainContentLayout fullViewportHeight>
-        <EditChecklistDefinition
-          cldVersion={checklistDefinition.versions[0]}
-          readonly
-          headerRow={
-            <RepoChecklistDefinitionHeaderRow
-              repositoryChecklistDefinitionId={repoCldId}
+      <MainContentLayout>
+        <ReadOnlyCLDPage
+          cldVersion={checklistDefinition.versions[0]!}
+          infoCard={
+            <RepoCLDInfoCard
+              centralRepoId={repoCldId}
               centralRepoVersion={repoVersion}
               isCoreChecklist={true}
-              version={checklistDefinition.versions[0]!}
+              cldVersion={checklistDefinition.versions[0]!}
               metadata={metadata}
             />
           }
-          objectTypes={objectTypes}
         />
       </MainContentLayout>
     </StickyToolbarLayout>

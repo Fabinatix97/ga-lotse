@@ -8,13 +8,13 @@ package de.eshg.lib.procedure.helper;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Function;
 
 public class PersonFileStateSearchableStringFormatter
-    extends AbstractSearchableStringFormatter<AddPersonFileStateResponse> {
+    extends AbstractSearchableStringFormatter<GetPersonFileStateResponse> {
 
   private final PostboxAddressDtoSearchableStringFormatter
       postboxAddressDtoSearchableStringFormatter = new PostboxAddressDtoSearchableStringFormatter();
@@ -23,29 +23,29 @@ public class PersonFileStateSearchableStringFormatter
           new DomesticAddressDtoSearchableStringFormatter();
 
   @Override
-  protected Class<AddPersonFileStateResponse> getClazz() {
-    return AddPersonFileStateResponse.class;
+  protected Class<GetPersonFileStateResponse> getClazz() {
+    return GetPersonFileStateResponse.class;
   }
 
   @Override
-  protected List<TypedPropertyFormatter<AddPersonFileStateResponse, ?>> getPropertyFormatters() {
+  protected List<TypedPropertyFormatter<GetPersonFileStateResponse, ?>> getPropertyFormatters() {
     return List.of(
-        new TypedPropertyFormatter<>(AddPersonFileStateResponse::title, Function.identity()),
-        new TypedPropertyFormatter<>(AddPersonFileStateResponse::firstName, Function.identity()),
-        new TypedPropertyFormatter<>(AddPersonFileStateResponse::lastName, Function.identity()),
+        new TypedPropertyFormatter<>(GetPersonFileStateResponse::title, Function.identity()),
+        new TypedPropertyFormatter<>(GetPersonFileStateResponse::firstName, Function.identity()),
+        new TypedPropertyFormatter<>(GetPersonFileStateResponse::lastName, Function.identity()),
         new TypedPropertyFormatter<>(
-            AddPersonFileStateResponse::contactAddress, this::formatAddress),
+            GetPersonFileStateResponse::contactAddress, this::formatAddress),
         new TypedPropertyFormatter<>(
-            AddPersonFileStateResponse::dateOfBirth,
+            GetPersonFileStateResponse::dateOfBirth,
             date -> date.format(DateTimeFormatter.ISO_LOCAL_DATE)),
         new TypedPropertyFormatter<>(
-            AddPersonFileStateResponse::differentBillingAddress, this::formatAddress),
+            GetPersonFileStateResponse::differentBillingAddress, this::formatAddress),
         new TypedPropertyFormatter<>(
-            AddPersonFileStateResponse::emailAddresses, this::formatListOfStringsByConcatenation),
-        new TypedPropertyFormatter<>(AddPersonFileStateResponse::nameAtBirth, Function.identity()),
-        new TypedPropertyFormatter<>(AddPersonFileStateResponse::placeOfBirth, Function.identity()),
+            GetPersonFileStateResponse::emailAddresses, this::formatListOfStringsByConcatenation),
+        new TypedPropertyFormatter<>(GetPersonFileStateResponse::nameAtBirth, Function.identity()),
+        new TypedPropertyFormatter<>(GetPersonFileStateResponse::placeOfBirth, Function.identity()),
         new TypedPropertyFormatter<>(
-            AddPersonFileStateResponse::phoneNumbers, this::formatListOfStringsByConcatenation));
+            GetPersonFileStateResponse::phoneNumbers, this::formatListOfStringsByConcatenation));
   }
 
   private String formatAddress(AddressDto addressDto) {

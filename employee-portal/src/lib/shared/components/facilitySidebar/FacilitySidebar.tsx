@@ -167,7 +167,7 @@ export function EmbeddedFacilitySidebar<
           onSubmit={(values) => {
             return props.onCreateNew({
               searchInputs: state.searchState,
-              createInputs: values,
+              createInputs: normalizeValues(values),
             });
           }}
         />
@@ -208,4 +208,14 @@ function LoadingStage(props: { title: string; onCancel: () => void }) {
       </SidebarActions>
     </>
   );
+}
+
+function normalizeValues(
+  values: DefaultFacilityFormValues,
+): DefaultFacilityFormValues {
+  return {
+    ...values,
+    emailAddresses: values.emailAddresses.filter((s) => s.length > 0),
+    phoneNumbers: values.phoneNumbers.filter((s) => s.length > 0),
+  };
 }

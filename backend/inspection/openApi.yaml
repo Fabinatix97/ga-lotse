@@ -799,6 +799,20 @@ paths:
         of the base module
       tags:
       - Facility
+  /facilities/export-banned:
+    get:
+      operationId: exportBannedFacilities
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Exported banned facilities
+      summary: Export banned facilities
+      tags:
+      - Facility
   /facilities/pending:
     get:
       operationId: getPendingFacilities
@@ -875,6 +889,11 @@ paths:
           format: date-time
       - in: query
         name: hasDuplicates
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: banned
         required: false
         schema:
           type: boolean
@@ -1219,6 +1238,26 @@ paths:
       summary: Updates a facility
       tags:
       - Facility
+  /facilities/{id}/history:
+    get:
+      operationId: getFacilityHistory
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InspPendingFacilitiesOverviewResponse"
+          description: OK
+      summary: get history of inspections for the current facility
+      tags:
+      - Facility
   /feature-toggles:
     get:
       operationId: getFeatureToggles
@@ -1379,6 +1418,83 @@ paths:
         "200":
           description: Add a GDPR validation task
       summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/notification-banner:
+    get:
+      operationId: getGdprNotificationBanner
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprNotificationBannerResponse"
+          description: OK
+      summary: Get data for GDPR notification banner
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}:
+    get:
+      operationId: getGdprValidationTask
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprValidationTaskResponse"
+          description: OK
+      summary: Get Gdpr Validation Task by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures:
+    get:
+      operationId: getRelatedBusinessProcedures
+      parameters:
+      - description: The Id of the GDPR procedure.
+        in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetRelatedBusinessProceduresResponse"
+          description: OK
+      summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
+    post:
+      operationId: addDownloadPackage
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Creates a downloadPackage for validationTask with gdprProcedureId with
+        the data from the procedure with businessProcedureId
       tags:
       - GdprValidationTask
   /import:
@@ -3179,6 +3295,14 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/checklists/make-corrupt:
+    post:
+      operationId: makeChecklistsCorrupt
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/enabled-new-features/{featureToDisable}:
     delete:
       operationId: disableNewFeature
@@ -3488,7 +3612,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -3556,14 +3679,6 @@ components:
           example: Example Facility
           maxLength: 300
           minLength: 1
-        partialMatch:
-          type: boolean
-          description: "If only the knowledge factor `name` as well as the address\
-            \ (apart from `addressAddition` and `differentName`) shall be used for\
-            \ establishing a connection to an existing referenceFacility instead of\
-            \ a full match of the complete entity. This is useful for automatic connections,\
-            \ e.g. for imports, where incomplete data is present."
-          example: true
         phoneNumbers:
           type: array
           description: A list of telephone numbers of the Facility.
@@ -3583,13 +3698,17 @@ components:
     AddGdprValidationTaskRequest:
       type: object
       properties:
-        procedureId:
+        gdprProcedureId:
           type: string
           format: uuid
+        startedAt:
+          type: string
+          format: date-time
         type:
           $ref: "#/components/schemas/GdprProcedureType"
       required:
-      - procedureId
+      - gdprProcedureId
+      - startedAt
       - type
     AddPacklistDefinitionRevisionRequest:
       type: object
@@ -3759,6 +3878,22 @@ components:
       - MEASLES_PROTECTION
       - STI_PROTECTION
       - MEDICAL_REGISTRY
+      - DENTAL
+    BusinessProcedureInclusionStatus:
+      type: string
+      enum:
+      - INCLUDED
+      - UNDECIDED
+    BusinessProcedureWithInclusionStatus:
+      type: object
+      properties:
+        businessProcedure:
+          $ref: "#/components/schemas/Procedure"
+        inclusionStatus:
+          $ref: "#/components/schemas/BusinessProcedureInclusionStatus"
+      required:
+      - businessProcedure
+      - inclusionStatus
     CLAudioContext:
       type: object
       allOf:
@@ -4437,7 +4572,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -4890,7 +5024,7 @@ components:
       type: object
       properties:
         person:
-          $ref: "#/components/schemas/PersonFileState"
+          $ref: "#/components/schemas/GetPersonFileStateResponse"
         personType:
           $ref: "#/components/schemas/PersonType"
       required:
@@ -5480,6 +5614,11 @@ components:
       enum:
       - RIGHT_OF_ACCESS
       - RIGHT_TO_ERASURE
+    GdprValidationTaskStatus:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
     Gender:
       type: string
       description: The list of genders as specified in the German Personenstandsgesetz.
@@ -5501,7 +5640,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -5688,6 +5826,23 @@ components:
       - outdated
       - phoneNumbers
       - referenceVersion
+    GetGdprNotificationBannerResponse:
+      type: object
+      properties:
+        earliestDueDate:
+          type: string
+          format: date
+        openValidationTasksCount:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - openValidationTasksCount
+    GetGdprValidationTaskResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
     GetInboxProcedureResponse:
       type: object
       properties:
@@ -5799,6 +5954,100 @@ components:
             $ref: "#/components/schemas/Packlist"
       required:
       - packlists
+    GetPersonFileStateResponse:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        countryOfBirth:
+          $ref: "#/components/schemas/CountryCode"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        dateOfBirth:
+          type: string
+          format: date
+          description: The date of birth of the Person.
+          example: 2000-01-01
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          description: A list of email addresses of the Person.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
+          items:
+            type: string
+        firstName:
+          type: string
+          description: The given name(s) of the Person.
+          example: John
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        id:
+          type: string
+          format: uuid
+          description: Id of the Person.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        lastName:
+          type: string
+          description: The last name of the Person.
+          example: Doe
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          description: The last name at birth of the Person.
+          example: Smith
+          maxLength: 40
+          minLength: 1
+        outdated:
+          type: boolean
+          description: A flag that signals if a File State differs from the referencePerson
+            it is connected to. Set to 'null' if unchecked.
+          example: true
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Person.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+        placeOfBirth:
+          type: string
+          description: The place of birth (without country) of the Person.
+          example: Berlin
+          maxLength: 50
+          minLength: 1
+        referenceVersion:
+          type: integer
+          format: int64
+          description: The version of referenceData that was present when the FileState
+            was created. Can be increased if a newer version is irrelevant for the
+            Procedure and the outdated flag shall be suppressed.
+          example: 1
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a Person.
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
+      required:
+      - dataOrigin
+      - dateOfBirth
+      - emailAddresses
+      - firstName
+      - gender
+      - id
+      - lastName
+      - phoneNumbers
+      - referenceVersion
+      - salutation
     GetProcedureApprovalRequestsResponse:
       type: object
       properties:
@@ -5973,6 +6222,18 @@ components:
       - name
       - phoneNumbers
       - version
+    GetRelatedBusinessProceduresResponse:
+      type: object
+      properties:
+        proceduresWithStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
+        validationTask:
+          $ref: "#/components/schemas/GetGdprValidationTaskResponse"
+      required:
+      - proceduresWithStatus
+      - validationTask
     GetRelevantArchivableProceduresResponse:
       type: object
       properties:
@@ -6126,7 +6387,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -6154,7 +6414,6 @@ components:
             $ref: "#/components/schemas/ImageMetaData"
       required:
       - changedAt
-      - changedBy
     ImportStatistics:
       type: object
       properties:
@@ -6308,6 +6567,9 @@ components:
       properties:
         baseFacility:
           $ref: "#/components/schemas/AddFacilityFileStateRequest"
+        inboxProcedureId:
+          type: string
+          format: uuid
         webSearchEntryId:
           type: string
           format: uuid
@@ -6318,19 +6580,20 @@ components:
       properties:
         facility:
           $ref: "#/components/schemas/InspFacility"
+        isNew:
+          type: boolean
         procedureId:
           type: string
           format: uuid
         procedureStatus:
           $ref: "#/components/schemas/ProcedureStatus"
       required:
+      - isNew
       - procedureId
       - procedureStatus
     InspFacility:
       type: object
       properties:
-        active:
-          type: boolean
         banned:
           type: boolean
         baseFacility:
@@ -6340,19 +6603,18 @@ components:
           format: uuid
         objectType:
           $ref: "#/components/schemas/ObjectType"
-        suspicious:
-          type: boolean
       required:
-      - active
       - banned
       - baseFacility
       - id
-      - suspicious
     InspLinkBaseFacilityRequest:
       type: object
       properties:
         facility:
           $ref: "#/components/schemas/GetReferenceFacilityResponse"
+        inboxProcedureId:
+          type: string
+          format: uuid
         webSearchEntryId:
           type: string
           format: uuid
@@ -6364,10 +6626,13 @@ components:
         inspectionId:
           type: string
           format: uuid
+        isNew:
+          type: boolean
         procedureStatus:
           $ref: "#/components/schemas/ProcedureStatus"
       required:
       - inspectionId
+      - isNew
       - procedureStatus
     InspPendingFacilitiesOverviewResponse:
       type: object
@@ -6400,6 +6665,9 @@ components:
           format: uuid
         city:
           type: string
+        executedFrom:
+          type: string
+          format: date-time
         houseNo:
           type: string
         id:
@@ -6443,6 +6711,8 @@ components:
           $ref: "#/components/schemas/InspectionPhase"
         possibleInspectionDuplicate:
           type: boolean
+        result:
+          $ref: "#/components/schemas/InspectionResult"
         status:
           $ref: "#/components/schemas/ProcedureStatus"
         type:
@@ -6463,8 +6733,6 @@ components:
     InspUpdateFacilityRequest:
       type: object
       properties:
-        active:
-          type: boolean
         banned:
           type: boolean
         baseFacility:
@@ -6472,8 +6740,6 @@ components:
         procedureId:
           type: string
           format: uuid
-        suspicious:
-          type: boolean
       required:
       - baseFacility
       - procedureId
@@ -6657,6 +6923,8 @@ components:
       enum:
       - OFFLINE
       - IMPORT
+      - BANNED_FACILITIES_EXPORT
+      - FACILITY_HISTORY
     InspectionFollowupInfo:
       type: object
       properties:
@@ -6889,7 +7157,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -6932,7 +7199,6 @@ components:
             $ref: "#/components/schemas/MailMetaData"
       required:
       - changedAt
-      - changedBy
     ManualProgressEntry:
       type: object
       allOf:
@@ -6972,14 +7238,10 @@ components:
         changedAt:
           type: string
           format: date-time
-        changedBy:
-          type: string
-          format: uuid
         manualProgressEntry:
           $ref: "#/components/schemas/ManualProgressEntry"
       required:
       - changedAt
-      - changedBy
     ManualProgressEntryType:
       type: string
       enum:
@@ -7010,13 +7272,9 @@ components:
         changedAt:
           type: string
           format: date-time
-        changedBy:
-          type: string
-          format: uuid
       required:
       - '@type'
       - changedAt
-      - changedBy
     ModifyEditorElementResponse:
       type: object
       properties:
@@ -7229,7 +7487,6 @@ components:
       required:
       - '@type'
       - createdAt
-      - createdBy
       - deletable
       - deleted
       - fileId
@@ -7257,96 +7514,6 @@ components:
             $ref: "#/components/schemas/PdfMetaData"
       required:
       - changedAt
-      - changedBy
-    PersonFileState:
-      type: object
-      properties:
-        contactAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        countryOfBirth:
-          $ref: "#/components/schemas/CountryCode"
-        dataOrigin:
-          $ref: "#/components/schemas/DataOrigin"
-        dateOfBirth:
-          type: string
-          format: date
-          description: The date of birth of the Person.
-          example: 2000-01-01
-        differentBillingAddress:
-          oneOf:
-          - $ref: "#/components/schemas/DomesticAddress"
-          - $ref: "#/components/schemas/PostboxAddress"
-        emailAddresses:
-          type: array
-          description: A list of email addresses of the Person.
-          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
-          items:
-            type: string
-        firstName:
-          type: string
-          description: The given name(s) of the Person.
-          example: John
-          maxLength: 80
-          minLength: 1
-        gender:
-          $ref: "#/components/schemas/Gender"
-        id:
-          type: string
-          format: uuid
-          description: Id of the Person.
-          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-        lastName:
-          type: string
-          description: The last name of the Person.
-          example: Doe
-          maxLength: 120
-          minLength: 1
-        nameAtBirth:
-          type: string
-          description: The last name at birth of the Person.
-          example: Smith
-          maxLength: 40
-          minLength: 1
-        phoneNumbers:
-          type: array
-          description: A list of telephone numbers of the Person.
-          example: "['+4912345678901','+4912345678902','+4912345678903']"
-          items:
-            type: string
-        placeOfBirth:
-          type: string
-          description: The place of birth (without country) of the Person.
-          example: Berlin
-          maxLength: 50
-          minLength: 1
-        referenceVersion:
-          type: integer
-          format: int64
-          description: The version of referenceData that was present when the FileState
-            was created. Can be increased if a newer version is irrelevant for the
-            Procedure and the outdated flag shall be suppressed.
-          example: 1
-        salutation:
-          $ref: "#/components/schemas/Salutation"
-        title:
-          type: string
-          description: The academic title of a Person.
-          example: Prof. Dr.
-          maxLength: 119
-          minLength: 1
-      required:
-      - dataOrigin
-      - dateOfBirth
-      - emailAddresses
-      - firstName
-      - gender
-      - id
-      - lastName
-      - phoneNumbers
-      - referenceVersion
-      - salutation
     PersonType:
       type: string
       enum:

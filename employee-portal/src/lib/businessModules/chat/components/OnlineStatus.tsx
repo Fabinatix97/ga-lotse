@@ -5,7 +5,7 @@
 
 import { Box, Stack, Typography } from "@mui/joy";
 
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { usePresenceContext } from "@/lib/businessModules/chat/shared/PresenceProvider";
 import { getStatusColor } from "@/lib/businessModules/chat/shared/utils";
 
 interface OnlineStatusProps {
@@ -14,7 +14,7 @@ interface OnlineStatusProps {
 }
 
 export function OnlineStatus({ userId, name }: OnlineStatusProps) {
-  const { usersPresence } = useChatClientContext();
+  const { usersPresence } = usePresenceContext();
   const presence = usersPresence[userId];
 
   return (

@@ -40,35 +40,26 @@ public class FacilityTestDataProvider {
 
   public static final int NUMBER_OF_DEFINED_FACILITIES = 6;
 
+  private static final List<String> facilityNames =
+      List.of("Indira Nails", "Lalesen", "Mena's Studio", "My Nails", "Nails", "Oh, my Nails!");
+
   private static final List<DomesticAddressDto> domesticAddressList =
       List.of(
           new DomesticAddressDto(
-              CountryCode.DE,
-              "Frankfurt am Main",
-              "65933",
-              "Indira Nails",
-              "Elektronstraße",
-              "27",
-              null),
+              CountryCode.DE, "Frankfurt am Main", "65933", null, "Elektronstraße", "27", null),
           new DomesticAddressDto(
-              CountryCode.DE, "Frankfurt am Main", "60311", "Lalesen", "Hasengasse", "3", null),
+              CountryCode.DE, "Frankfurt am Main", "60311", null, "Hasengasse", "3", null),
           new DomesticAddressDto(
-              CountryCode.DE,
-              "Frankfurt am Main",
-              "60431",
-              "Mena's Studio",
-              "Raimundstraße",
-              "22",
-              null),
+              CountryCode.DE, "Frankfurt am Main", "60431", null, "Raimundstraße", "22", null),
           new DomesticAddressDto(
-              CountryCode.DE, "Frankfurt am Main", "60313", "My Nails", "Alte Gasse", "51", null),
+              CountryCode.DE, "Frankfurt am Main", "60313", null, "Alte Gasse", "51", null),
           new DomesticAddressDto(
-              CountryCode.DE, "Frankfurt am Main", "60329", "Nails", "Taunusstraße", "18", null),
+              CountryCode.DE, "Frankfurt am Main", "60329", null, "Taunusstraße", "18", null),
           new DomesticAddressDto(
               CountryCode.DE,
               "Frankfurt am Main",
               "60320",
-              "Oh, my Nails!",
+              null,
               "Eschersheimer Landstraße",
               "312",
               null));
@@ -174,8 +165,7 @@ public class FacilityTestDataProvider {
   }
 
   public static String getNameOfFacility(int index) {
-    return domesticAddressList.get(index % NUMBER_OF_DEFINED_FACILITIES).differentName()
-        + getNameSuffix(index);
+    return facilityNames.get(index % NUMBER_OF_DEFINED_FACILITIES) + getNameSuffix(index);
   }
 
   public static String getNameSuffix(int index) {
@@ -228,6 +218,6 @@ public class FacilityTestDataProvider {
   }
 
   private InspAddFacilityRequest createAddFacilityRequest(int index) {
-    return new InspAddFacilityRequest(createAddBaseFacilityRequest(index), null);
+    return new InspAddFacilityRequest(createAddBaseFacilityRequest(index), null, null);
   }
 }

@@ -4,9 +4,9 @@
  */
 
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { MutationPassThrough } from "@eshg/lib-portal/types/query";
 
 import { useStatusTransitionApi } from "@/lib/businessModules/measlesProtection/api/clients";
-import { MutationPassThrough } from "@/lib/businessModules/measlesProtection/api/mutations/types";
 import { measlesProtectionApiQueryKey } from "@/lib/businessModules/measlesProtection/api/queries/apiQueryKeys";
 
 export interface UseCloseProcedureRequest {
@@ -20,7 +20,7 @@ export interface UseReopenProcedureRequest {
 export function useCloseProcedure({
   onSuccess,
   onError,
-}: MutationPassThrough<void, UseCloseProcedureRequest> = {}) {
+}: MutationPassThrough<UseCloseProcedureRequest, void> = {}) {
   const statusTransitionApi = useStatusTransitionApi();
 
   return useHandledMutation({
@@ -35,7 +35,7 @@ export function useCloseProcedure({
 export function useReopenProcedure({
   onSuccess,
   onError,
-}: MutationPassThrough<void, UseReopenProcedureRequest> = {}) {
+}: MutationPassThrough<UseReopenProcedureRequest, void> = {}) {
   const statusTransitionApi = useStatusTransitionApi();
 
   return useHandledMutation({

@@ -16,6 +16,7 @@ import de.eshg.stiprotection.api.waitingroom.WaitingRoomSortKey;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomProcedureMapper;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingStatusMapper;
+import de.eshg.stiprotection.persistence.anonymoususer.AnonymousUserClient;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
@@ -31,12 +32,15 @@ public class WaitingRoomService {
 
   private final StiProtectionProcedureService stiProtectionProcedureService;
   private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
+  private final AnonymousUserClient anonymousUserClient;
 
   public WaitingRoomService(
       StiProtectionProcedureService stiProtectionProcedureService,
-      StiProtectionProcedureRepository stiProtectionProcedureRepository) {
+      StiProtectionProcedureRepository stiProtectionProcedureRepository,
+      AnonymousUserClient anonymousUserClient) {
     this.stiProtectionProcedureService = stiProtectionProcedureService;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
+    this.anonymousUserClient = anonymousUserClient;
   }
 
   public WaitingRoomDto updateWaitingRoomDetails(UUID procedureId, @Valid WaitingRoomDto request) {
@@ -72,7 +76,15 @@ public class WaitingRoomService {
         stiProtectionProcedureRepository.findAll(specification, pageable);
 
     return new GetWaitingRoomProceduresResponse(
-        results.stream().map(WaitingRoomProcedureMapper::toInterface).toList(),
+        results.stream()
+            .map(
+                procedure ->
+                    WaitingRoomProcedureMapper.toInterface(procedure, getAccessCode(procedure)))
+            .toList(),
         results.getNumberOfElements());
+  }
+
+  private String getAccessCode(StiProtectionProcedure procedure) {
+    return anonymousUserClient.getAccessCode(procedure.getPerson().getAnonymousUserId());
   }
 }

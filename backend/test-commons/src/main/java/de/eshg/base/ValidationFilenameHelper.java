@@ -20,8 +20,12 @@ final class ValidationFilenameHelper {
   }
 
   String getTestName() {
+    return getTestClassName() + "/" + getTestMethod().getName();
+  }
+
+  String getTestClassName() {
     List<String> classes = ValidationFilenameHelper.classHierarchy(getTestClass());
-    return String.join("/", classes) + "/" + getTestMethod().getName();
+    return String.join("/", classes);
   }
 
   private static List<String> classHierarchy(Class<?> aClass) {

@@ -1,5 +1,7 @@
 plugins {
-    id("eshg.service")
+    id "eshg.service"
+    id "eshg.base-test-dependency"
+    id "eshg.central-repository-test-dependency"
 }
 
 dependencies {
@@ -7,6 +9,7 @@ dependencies {
     implementation project(':lib-aggregation')
     implementation project(':lib-auditlog')
     implementation project(':lib-base-client')
+    implementation project(':lib-central-repository-client')
     implementation project(':lib-statistics-api')
     implementation project(':rest-oauth-client-commons')
     implementation project(':file-commons')
@@ -26,12 +29,6 @@ dockerCompose {
         "statistics",
         "statistics-db"
     ]
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

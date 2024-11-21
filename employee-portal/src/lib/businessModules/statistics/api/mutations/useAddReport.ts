@@ -8,17 +8,17 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { endOfDay, parseISO } from "date-fns";
 
 import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
-import { AddReportFormModel } from "@/lib/businessModules/statistics/components/statistics/details/reports/AddReportSidebar/addReportFormModel";
+import { AddReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/addReportFormModel";
 
 export function useAddReport(onSuccess: () => void) {
   const snackbar = useSnackbar();
   const api = useReportSeriesApi();
   const mutation = useHandledMutation({
     mutationFn: ({
-      statisticId,
+      evaluationId,
       model,
     }: {
-      statisticId: string;
+      evaluationId: string;
       model: AddReportFormModel;
     }) =>
       api.addReportSeries({
@@ -30,7 +30,7 @@ export function useAddReport(onSuccess: () => void) {
         timeRangeStart: parseISO(model.timeSpan.start),
         timeRangeEnd: endOfDay(parseISO(model.timeSpan.end)),
         type: "AddManualReportSeriesRequest",
-        statisticId: statisticId,
+        evaluationId: evaluationId,
       }),
     onSuccess: () => {
       snackbar.confirmation("Report erstellt");
@@ -40,7 +40,7 @@ export function useAddReport(onSuccess: () => void) {
 
   return async (statisticId: string, model: AddReportFormModel) => {
     await mutation.mutateAsync({
-      statisticId: statisticId,
+      evaluationId: statisticId,
       model: model,
     });
   };

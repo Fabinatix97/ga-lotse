@@ -11,13 +11,13 @@ import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.statistics.aggregation.AggregationResultUtil;
-import de.eshg.statistics.aggregation.EvaluationService;
+import de.eshg.statistics.aggregation.AnalysisService;
 import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
-import de.eshg.statistics.persistence.entity.Statistic;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
 import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
@@ -63,22 +63,22 @@ public class DataExportService {
       DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneOffset.UTC);
   private static final String UNEXPECTED_VALUE = "Unexpected value: %s";
   static final int FIRST_COLUMN_WIDTH = 16 * 256;
-  private final EvaluationService evaluationService;
+  private final AnalysisService analysisService;
   private final AuditLogger auditLogger;
 
-  public DataExportService(EvaluationService evaluationService, AuditLogger auditLogger) {
-    this.evaluationService = evaluationService;
+  public DataExportService(AnalysisService analysisService, AuditLogger auditLogger) {
+    this.analysisService = analysisService;
     this.auditLogger = auditLogger;
   }
 
   @Transactional(readOnly = true)
   public Resource exportData(UUID diagramId) {
-    Diagram diagram = evaluationService.getDiagramInternal(diagramId);
+    Diagram diagram = analysisService.getDiagramInternal(diagramId);
     AbstractAggregationResult aggregationResult =
         Hibernate.unproxy(
-            diagram.getEvaluation().getAggregationResult(), AbstractAggregationResult.class);
-    if (aggregationResult instanceof Statistic statistic && !statistic.isAnonymized()) {
-      throw new BadRequestException("Data exports are only allowed for anonymized statistics");
+            diagram.getAnalysis().getAggregationResult(), AbstractAggregationResult.class);
+    if (aggregationResult instanceof Evaluation evaluation && !evaluation.isAnonymized()) {
+      throw new BadRequestException("Data exports are only allowed for anonymized evaluations");
     }
 
     try (XSSFWorkbook workbook = new XSSFWorkbook();
@@ -89,7 +89,7 @@ public class DataExportService {
 
       ChartConfiguration chartConfiguration =
           Hibernate.unproxy(
-              diagram.getEvaluation().getChartConfiguration(), ChartConfiguration.class);
+              diagram.getAnalysis().getChartConfiguration(), ChartConfiguration.class);
 
       CellStyle cellStyle = workbook.createCellStyle();
       cellStyle.setAlignment(HorizontalAlignment.LEFT);
@@ -110,7 +110,7 @@ public class DataExportService {
       AtomicInteger rowCounter,
       Diagram diagram,
       ChartConfiguration chartConfiguration) {
-    AbstractAggregationResult aggregationResult = diagram.getEvaluation().getAggregationResult();
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
     addMetadataRow(sheet, cellStyle, rowCounter.getAndIncrement(), "Name", diagram.getTitle());
     addMetadataRow(
         sheet, cellStyle, rowCounter.getAndIncrement(), "Beschreibung", diagram.getDescription());
@@ -289,7 +289,7 @@ public class DataExportService {
   private AuditLoggingData getAuditLoggingData(
       ChartConfiguration chartConfiguration, Diagram diagram) {
     int evaluatedDataAmount = diagram.getDiagramData().getEvaluatedDataAmount();
-    AbstractAggregationResult aggregationResult = diagram.getEvaluation().getAggregationResult();
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
     List<String> attributeNames = new ArrayList<>();
     return switch (chartConfiguration) {
       case BarChartConfiguration barChartConfiguration -> {

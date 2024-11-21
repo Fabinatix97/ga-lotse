@@ -184,6 +184,8 @@ public class UserMapper {
       case STI_PROTECTION_LEADER -> EmployeePermissionRole.STI_PROTECTION_LEADER;
       case MEDICAL_REGISTRY_LEADER -> EmployeePermissionRole.MEDICAL_REGISTRY_LEADER;
       case MEDICAL_REGISTRY_ADMIN -> EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN;
+      case DENTAL_LEADER -> EmployeePermissionRole.DENTAL_LEADER;
+      case DENTAL_ADMIN -> EmployeePermissionRole.DENTAL_ADMIN;
       case OPEN_DATA_ADMIN -> EmployeePermissionRole.OPEN_DATA_ADMIN;
       case OPEN_DATA_LEADER -> EmployeePermissionRole.OPEN_DATA_LEADER;
     };
@@ -261,6 +263,8 @@ public class UserMapper {
       case STI_PROTECTION_LEADER -> UserRoleDto.STI_PROTECTION_LEADER;
       case MEDICAL_REGISTRY_LEADER -> UserRoleDto.MEDICAL_REGISTRY_LEADER;
       case MEDICAL_REGISTRY_ADMIN -> UserRoleDto.MEDICAL_REGISTRY_ADMIN;
+      case DENTAL_LEADER -> UserRoleDto.DENTAL_LEADER;
+      case DENTAL_ADMIN -> UserRoleDto.DENTAL_ADMIN;
       case OPEN_DATA_ADMIN -> UserRoleDto.OPEN_DATA_ADMIN;
       case OPEN_DATA_LEADER -> UserRoleDto.OPEN_DATA_LEADER;
     };

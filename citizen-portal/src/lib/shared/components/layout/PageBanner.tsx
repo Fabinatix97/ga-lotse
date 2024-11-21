@@ -65,67 +65,42 @@ export function PageBanner(props: PageBannerProps) {
         />
       </BannerPicture>
       <PageContent>
-        <Box
-          sx={{
-            display: "flex",
-            [theme.breakpoints.down(MobileBreakpoint.Down)]: {
-              justifyContent: "center",
-            },
-          }}
-        >
-          <h1
-            style={{
-              flexBasis: "content",
-              display: "flex",
-              flexDirection: "column",
-              margin: "0",
+        <Box marginInline={3}>
+          <Typography
+            sx={{
+              backgroundImage:
+                props.type === "general"
+                  ? `linear-gradient(93.08deg, rgba(128, 120, 255, 0.9) 0.43%, rgba(11, 107, 203, 0.9) 33.45%, rgba(51, 154, 254, 0.9) 57.18%, rgba(28, 224, 253, 0.9) 84.52%)`
+                  : `linear-gradient(89.95deg, #0B9DA6 0.09%, #00B8EC 50.5%, #7FC078 99.91%)`,
+              backgroundSize: "100%",
+              backgroundRepeat: "repeat",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
             }}
+            fontSize={byBreakpoint({
+              mobile: "2rem",
+              desktop: "6.25rem",
+            })}
+            fontWeight="900"
+            lineHeight="0.8"
+            textTransform="uppercase"
           >
-            <Typography
-              sx={{
-                backgroundImage:
-                  props.type === "general"
-                    ? `linear-gradient(93.08deg, rgba(128, 120, 255, 0.9) 0.43%, rgba(11, 107, 203, 0.9) 33.45%, rgba(51, 154, 254, 0.9) 57.18%, rgba(28, 224, 253, 0.9) 84.52%)`
-                    : `linear-gradient(89.95deg, #0B9DA6 0.09%, #00B8EC 50.5%, #7FC078 99.91%)`,
-                backgroundSize: "100%",
-                backgroundRepeat: "repeat",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-              fontSize={byBreakpoint({
-                mobile: "2rem",
-                desktop: "6.25rem",
-              })}
-              fontWeight="900"
-              lineHeight="0.8"
-              component="span"
-              textTransform="uppercase"
-            >
-              {t("health_department_title")}&nbsp;
-            </Typography>
-            <Box display="flex">
-              <Box />
-              <Typography
-                component="span"
-                sx={{
-                  textAlign: "right",
-                }}
-                fontSize={byBreakpoint({
-                  mobile: "1.75rem",
-                  desktop: "3rem",
-                })}
-                fontWeight="700"
-                lineHeight={byBreakpoint({
-                  mobile: "1.2",
-                  desktop: "1.33",
-                })}
-                textAlign="right"
-              >
-                {department.city}
-              </Typography>
-            </Box>
-          </h1>
+            {t("health_department_title")}&nbsp;
+          </Typography>
+          <Typography
+            fontWeight="700"
+            fontSize={byBreakpoint({
+              mobile: "1.75rem",
+              desktop: "3rem",
+            })}
+            lineHeight={byBreakpoint({
+              mobile: "1.2",
+              desktop: "1.33",
+            })}
+          >
+            {department.city}
+          </Typography>
         </Box>
       </PageContent>
     </Box>

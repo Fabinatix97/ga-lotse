@@ -29,7 +29,7 @@
     "title": "Weitere Angaben zum Kind",
     "pediatrician": "Kinderarzt:in oder Hausarzt:in",
     "siblings": "Gibt es Geschwister / Kinder im gleichen Haushalt?",
-    "siblingBirthYear": "Geburtsjahr Geschwister {{index}}",
+    "siblingBirthYear": "Geburtsjahr Geschwisterkind {{index}}",
     "removeSibling": "entfernen",
     "addSibling": "Weitere Geschwister hinzufügen",
     "wasInDaycare": "War im Kindergarten",
@@ -48,7 +48,7 @@
     "canSwim": "Kann Ihr Kind schwimmen?",
     "seahorseBadge": "Hat Ihr Kind das Seepferdchenabzeichen?",
     "personalCharacteristics": "Persönliche Besonderheiten",
-    "personalCharacteristicsDescription": "werden in einem persönlichen Gespräch vertraulich erörtert, z.B. Bewegungsunruhe, Konzentrationsschwäche, Ängstlichkeit, Bewegungsunruhe, Ungeschicklichkeit, Verzögerte Entwicklung, Einnässen, Einkoten"
+    "personalCharacteristicsDescription": "werden in einem persönlichen Gespräch vertraulich erörtert, z.B. Bewegungsunruhe, Konzentrationsschwäche, Ängstlichkeit, Bewegungsunruhe, Ungeschicklichkeit, verzögerte Entwicklung, Einnässen, Einkoten"
   },
   "health": {
     "title": "Gesundheit und Entwicklung",
@@ -70,7 +70,7 @@
     "familyHistory": {
       "title": "Familienvorgeschichte",
       "description": "Treten folgende Beeinträchtigungen bei den Eltern, Personensorgeberechtigten und Geschwistern auf?",
-      "glasses": "Brillen- bzw. kontaktlinsenträger",
+      "glasses": "Brillen- bzw. Kontaktlinsenträger",
       "chronicalIllnessTitle": "Chron. Erkrankungen bzw. Behinderungen",
       "chronicalIllnessDescription": "Wenn ja, welche?",
       "chronicalIllness": "Chronische Erkrankungen oder Behinderungen in Familie",

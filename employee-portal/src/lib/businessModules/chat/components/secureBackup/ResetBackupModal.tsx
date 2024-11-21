@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 import { logger } from "matrix-js-sdk/lib/logger";
 
 import { deleteBackup } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 export function ResetBackupModal(props: Omit<BaseModalProps, "children">) {
   const { matrixClient, setClientState } = useChatClientContext();

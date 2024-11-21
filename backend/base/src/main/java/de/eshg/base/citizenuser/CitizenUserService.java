@@ -19,7 +19,12 @@ import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -211,5 +216,59 @@ public class CitizenUserService {
     if (attributes == null || attributes.get(KeycloakAttributes.ACCESS_CODE_ATTRIBUTE).isEmpty()) {
       throw new BadRequestException("Requested user is no access code user");
     }
+  }
+
+  public UserRepresentation addAnonymousUser(String pin) {
+    return mutexService.doWithLockedMutex(
+        MUTEX_ACCESS_CODE_USER_WRITE, () -> addAnonymousUserWhenLocked(pin));
+  }
+
+  private UserRepresentation addAnonymousUserWhenLocked(String pin) {
+    UserResource user = citizenKeycloakClient.createUser(getAnonymousUserRepresentation(pin));
+    user.roles().realmLevel().add(List.of(getAccessCodeUserRole()));
+
+    UserRepresentation representation = user.toRepresentation(true);
+    auditLogger.log(
+        "Benutzerverwaltung Zugangscode",
+        "Hinzufügen anonymer Benutzer",
+        Map.of(
+            "Benutzer ID", representation.getId(),
+            "durch Benutzer", CurrentUserHelper.getCurrentUserIdAsStringGracefully().orElse("-")));
+    return representation;
+  }
+
+  private UserRepresentation getAnonymousUserRepresentation(String pin) {
+    CredentialRepresentation passwordCredentials = new CredentialRepresentation();
+    passwordCredentials.setType(CredentialRepresentation.PASSWORD);
+    passwordCredentials.setValue(pin);
+    passwordCredentials.setTemporary(false);
+
+    String accessCode = getUniqueAccessCode();
+    UserRepresentation rep =
+        new UserRepresentation()
+            .singleAttribute(KeycloakAttributes.ANONYMOUS_USER_ATTRIBUTE, "true")
+            .singleAttribute(KeycloakAttributes.ACCESS_CODE_ATTRIBUTE, accessCode);
+    rep.setUsername(accessCode);
+    rep.setEnabled(true);
+    rep.setEmailVerified(true);
+    rep.setCredentials(List.of(passwordCredentials));
+    return rep;
+  }
+
+  public void deleteAnonymousUser(UUID userId) {
+    try {
+      UserResource user = citizenKeycloakClient.getUserResource(userId.toString());
+      UserRepresentation rep = user.toRepresentation();
+      if (Boolean.parseBoolean(rep.firstAttribute(KeycloakAttributes.ANONYMOUS_USER_ATTRIBUTE))) {
+        throw new BadRequestException("Requested user is not anonymous");
+      }
+      user.remove();
+    } catch (jakarta.ws.rs.NotFoundException e) {
+      throw new NotFoundException("Anonymous access code user not found");
+    }
+  }
+
+  public void verifyAnonymousUserPin(UUID userId, String pin) {
+    citizenKeycloakClient.verifyAnonymousUserPin(userId, pin);
   }
 }

@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { ArrowForward } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/joy";
@@ -12,7 +16,6 @@ import { isDefined } from "remeda";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useCloseProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 interface CloseProcedureModalProps extends Omit<BaseModalProps, "children"> {
   procedure: ProcedureDetails;

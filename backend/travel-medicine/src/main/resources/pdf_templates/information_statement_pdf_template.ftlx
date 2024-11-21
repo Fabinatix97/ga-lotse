@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="de" lang="de">
+    <head>
+        <link rel="stylesheet" type="text/css"
+              href="information_statement_pdf_template.css"/>
+        <link href='https://fonts.googleapis.com/css?family=Poppins'
+              rel='stylesheet'/>
+    </head>
+    <body style="font-family: Poppins, serif;">
+        <img class="logo" src="data:${departmentLogo.contentType};base64,${departmentLogo.contentAsBase64}"/>
+
+        <footer>
+            <div>
+            ${departmentInfo.name} &#8226;
+            ${departmentInfo.street} ${departmentInfo.houseNumber} ${departmentInfo.postalCode} ${departmentInfo.city}
+            </div>
+            <div>
+                Webseite: ${departmentInfo.homepage}
+                E-Mail: ${departmentInfo.email}
+            </div>
+        </footer>
+
+        <div class="addressRight">
+        ${departmentInfo.name}
+            <br> ${departmentInfo.street} ${departmentInfo.houseNumber}</br>
+            <br> ${departmentInfo.postalCode} ${departmentInfo.city}</br>
+        </div>
+
+        <div class="title">
+            ${title}
+        </div>
+
+        <div class="patientData">
+            <div class="patientDataTitle">Persönliche Angaben</div>
+            <table class="patientDataTable">
+                <tr>
+                    <td>Vorname:</td>
+                    <td class="patientDataCell">${firstName}</td>
+                </tr>
+                <tr>
+                    <td>Nachname:</td>
+                    <td class="patientDataCell">${lastName}</td>
+                </tr>
+                <tr>
+                    <td>Geburtsdatum:</td>
+                    <td class="patientDataCell">
+                        <#if dateOfBirth??>${dateOfBirth}<#else><hr class="signature-line"/></#if>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <#list documentContent.sections as section>
+          <div class="sectionTitle">
+            <#if section.sectionTitle??>${section.sectionTitle}</#if>
+          </div>
+          <#list section.sectionElements as element>
+            <div class="element <#if element?index == 0> firstElement</#if>">
+              <#if element.anamnesisQuestion??>
+                <div class="questionText">
+                  ${element.anamnesisQuestion.questionText}
+                </div>
+                <table class="elementTable">
+                  <tr>
+                    <td>
+                      <div class="checkbox <#if element.anamnesisQuestion.answer?? && element.anamnesisQuestion.answer == true>checked</#if>"></div>
+                    </td>
+                    <td>
+                      <span class="textMargin">Ja</span>
+                    </td>
+                    <td>
+                      <div class="checkbox <#if element.anamnesisQuestion.answer?? && element.anamnesisQuestion.answer == false>checked</#if>"></div>
+                    </td>
+                    <td>
+                      <span class="text">Nein</span>
+                    </td>
+                  </tr>
+                </table>
+                <#if element.anamnesisQuestion.subElementMultiSelect?size != 0>
+                  <table class="elementTable subAnswersTable">
+                    <tr>
+                      <td class="text subQuestionText" colspan="2">Wenn ja:</td>
+                    </tr>
+                    <#list element.anamnesisQuestion.subElementMultiSelect as subElement>
+                      <tr>
+                        <td class="square">
+                          <div class="checkbox <#if subElement.answer?? && subElement.answer == true>checkedSquare</#if>"></div>
+                        </td>
+                        <td>
+                          <div class="text">${subElement.questionText}</div>
+                        </td>
+                      </tr>
+                    </#list>
+                  </table>
+                </#if>
+                <#if element.anamnesisQuestion.subElementText??>
+                  <div class="text subQuestionText">
+                    ${element.anamnesisQuestion.subElementText.questionText}
+                  </div>
+                  <div class="text subQuestionAnswer">
+                    <#if element.anamnesisQuestion.subElementText.answer??>${element.anamnesisQuestion.subElementText.answer}</#if>
+                  </div>
+                </#if>
+              </#if>
+              <#if element.textBlock??>
+                <div class="text">
+                  ${element.textBlock.textField}
+                </div>
+              </#if><#if element.confirmation??>
+              <table class="elementTable">
+                <tr>
+                  <td class="square">
+                    <div class="checkbox <#if element.confirmation.answer?? && element.confirmation.answer == true>checkedSquare</#if>"></div>
+                  </td>
+                  <td>
+                    <div class="text">${element.confirmation.confirmationTextField}</div>
+                  </td>
+                </tr>
+              </table>
+            </#if>
+            </div>
+          </#list>
+        </#list>
+
+        <table class="signature text">
+            <tr>
+                <td class="signatureText">Datum</td>
+                <td class="signatureLine"><#if signatureCreatedAt??>${signatureCreatedAt}</#if></td>
+                <td class="signatureText gap">Unterschrift Patient:in</td>
+                <td class="signatureLine"><#if signature??><img class="signatureImage" src="data:image/png;base64,${signature}"/></#if></td>
+            </tr>
+        </table>
+    </body>
+</html>

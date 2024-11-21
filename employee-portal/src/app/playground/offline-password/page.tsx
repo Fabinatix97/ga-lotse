@@ -64,6 +64,9 @@ export default function PlaygroundOfflinePasswordPage() {
             onPassword={() => {
               setOpenNewPasswordDialog(false);
             }}
+            onClear={() => {
+              setOpenExistingPasswordDialog(false);
+            }}
             waiting={waiting}
           />
         )}

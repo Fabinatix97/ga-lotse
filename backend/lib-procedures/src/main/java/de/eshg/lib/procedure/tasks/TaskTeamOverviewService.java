@@ -62,9 +62,12 @@ public class TaskTeamOverviewService<
   public GetTaskByUserResponse getTasksByAssignee(Set<UUID> assigneeIdFilter) {
     Set<UUID> assigneeIds = getAssigneeIdsToFilterFor(assigneeIdFilter);
 
+    List<TaskDto> taskDtos =
+        enrichingMapper.enrichAndMapTasks(
+            taskRepository.findAllByTaskStatusOpenAndAssigneeIdIn(assigneeIds));
+
     SequencedMap<UUID, List<TaskDto>> tasksByAssignee =
-        taskRepository.findAllByTaskStatusOpenAndAssigneeIdIn(assigneeIds).stream()
-            .map(enrichingMapper::enrichAndMap)
+        taskDtos.stream()
             .collect(
                 Collectors.groupingBy(
                     TaskDto::assigneeId, LinkedHashMap::new, Collectors.toList()));

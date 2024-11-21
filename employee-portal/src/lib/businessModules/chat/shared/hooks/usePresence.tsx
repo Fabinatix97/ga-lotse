@@ -3,15 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  ClientEvent,
-  MatrixClient,
-  MatrixEvent,
-  SetPresence,
-  SyncState,
-} from "matrix-js-sdk/lib/matrix";
-import { useEffect, useState } from "react";
+import { ClientEvent, MatrixEvent } from "matrix-js-sdk/lib/matrix";
+import { useContext, useEffect, useState } from "react";
 
+import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
 import {
@@ -19,47 +14,38 @@ import {
   UsersPresence,
 } from "@/lib/businessModules/chat/shared/types";
 
-export function usePresence(
-  matrixClient: MatrixClient,
-  clientState: ClientState,
-) {
+export function usePresence(userId?: string) {
   const {
     userSettings: { sharePresence },
   } = useChat();
+  const chatContext = useContext(ChatClientContext);
+  const { matrixClient, clientState } = chatContext ?? {};
   const [usersPresence, setUsersPresence] = useState<UsersPresence>({});
+
+  // Get initial users presence
   useEffect(() => {
-    matrixClient.once(ClientEvent.Sync, function (state) {
-      if (state === SyncState.Prepared) {
-        const users = matrixClient.getUsers();
-        const statuses = Object.fromEntries(
-          users.map((user) => [user.userId, user.presence]),
-        ) as UsersPresence;
-        setUsersPresence(statuses);
-      }
-    });
-  }, [matrixClient]);
+    if (!matrixClient) return;
+    if (clientState !== ClientState.Prepared) return;
+    if (userId) {
+      const user = matrixClient.getUser(userId);
+      setUsersPresence({ [userId]: user?.presence } as UsersPresence);
+    } else {
+      const users = matrixClient.getUsers();
+      const statuses = Object.fromEntries(
+        users.map((user) => [user.userId, user.presence]),
+      ) as UsersPresence;
+      setUsersPresence(statuses);
+    }
+  }, [clientState, matrixClient, userId]);
 
   useEffect(() => {
-    void (async () => {
-      if (clientState !== ClientState.Prepared) {
-        return;
-      }
+    if (clientState !== ClientState.Prepared) return;
 
-      if (!sharePresence) {
-        await matrixClient.setSyncPresence(SetPresence.Offline);
-        await matrixClient.setPresence({ presence: "offline" });
-      } else {
-        await matrixClient.setSyncPresence(SetPresence.Online);
-        await matrixClient.setPresence({ presence: "online" });
-      }
-    })();
-  }, [clientState, matrixClient, sharePresence]);
-
-  useEffect(() => {
     function handleUserPresence(event: MatrixEvent) {
       const eventType = event.getType();
       if (eventType === "m.presence") {
         const sender = event.event.sender;
+        if (userId && sender !== userId) return;
         const status = event.event.content?.presence as Presence;
         if (!sender || !status) {
           return;
@@ -76,11 +62,11 @@ export function usePresence(
       }
     }
 
-    matrixClient.on(ClientEvent.Event, handleUserPresence);
+    matrixClient?.on(ClientEvent.Event, handleUserPresence);
 
     return () => {
-      matrixClient.removeListener(ClientEvent.Event, handleUserPresence);
+      matrixClient?.removeListener(ClientEvent.Event, handleUserPresence);
     };
-  }, [matrixClient, sharePresence, usersPresence]);
-  return { usersPresence };
+  }, [clientState, matrixClient, sharePresence, userId, usersPresence]);
+  return { usersPresence: sharePresence ? usersPresence : {} };
 }

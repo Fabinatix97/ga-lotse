@@ -11,4 +11,4 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record MeaslesProtectionProcedurePopulationResult(
-    @Valid List<OpenProcedureResponse> procedures, @NotNull long count) {}
+    @NotNull @Valid List<OpenProcedureResponse> procedures, @NotNull long count) {}

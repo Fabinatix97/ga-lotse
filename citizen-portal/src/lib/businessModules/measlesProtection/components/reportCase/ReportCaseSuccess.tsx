@@ -137,16 +137,7 @@ export function ReportCaseSuccessActionsCard() {
   return (
     <Card sx={reportCaseOverviewCardStyles} variant="plain">
       <CardContent orientation="vertical">
-        <Typography
-          level="h4"
-          sx={{
-            fontSize: byBreakpoint({
-              mobile: "1.125rem",
-              desktop: "1.5rem",
-            }),
-            mb: 2,
-          }}
-        >
+        <Typography level="h2" sx={{ mb: 2 }}>
           {t("success.what_next_q")}
         </Typography>
         <Stack gap={2}>

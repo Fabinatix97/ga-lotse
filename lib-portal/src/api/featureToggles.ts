@@ -10,6 +10,8 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
+import { STATIC_QUERY_OPTIONS } from "./queryOptions";
+
 interface FeatureToggles<TName extends string> {
   enabledNewFeatures: Set<TName>;
   disabledOldFeatures: Set<TName>;
@@ -36,14 +38,15 @@ export function selectDisabledOldFeature<TName extends string>(name: TName) {
     featureToggles.disabledOldFeatures.has(name);
 }
 
-const CACHE_DURATION = 86_400_000; // 1 day
-
 export function useGetFeatureToggle<
   TName extends string,
   TValue,
   TResponse extends FeatureToggles<TName>,
 >(options: FeatureToggleQueryOptions<TName, TValue, TResponse>): TValue {
-  const { data } = useSuspenseQuery(getFeatureToggleQuery(options));
+  const { data } = useSuspenseQuery({
+    ...STATIC_QUERY_OPTIONS,
+    ...options,
+  });
   return data;
 }
 
@@ -54,17 +57,9 @@ export function useGetFeatureToggleUnsuspended<
 >(
   options: FeatureToggleQueryOptions<TName, TValue, TResponse>,
 ): UseQueryResult<TValue> {
-  return useQuery(getFeatureToggleQuery({ throwOnError: false, ...options }));
-}
-
-function getFeatureToggleQuery<
-  TName extends string,
-  TResponse extends FeatureToggles<TName>,
-  TValue,
->(options: FeatureToggleQueryOptions<TName, TValue, TResponse>) {
-  return {
+  return useQuery({
+    throwOnError: false,
+    ...STATIC_QUERY_OPTIONS,
     ...options,
-    gcTime: CACHE_DURATION,
-    staleTime: CACHE_DURATION,
-  };
+  });
 }

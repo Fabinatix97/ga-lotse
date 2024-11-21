@@ -76,7 +76,6 @@ bootJar {
 ext {
     listenPort = 8080
     additionalAptPackages = null
-    xmx = "512m"
     jreDockerImage = 'eclipse-temurin:21.0.5_11-jre-jammy@sha256:5d7781c6aabbc2f8673ec1899f2fdf6851f20c94dcdefeb8a1ca1e37e9c13e92'
 }
 
@@ -113,6 +112,7 @@ tasks.register('createDockerfile', Dockerfile) {
     }
 
     environmentVariable('TZ', 'Europe/Berlin')
+    environmentVariable('JAVA_TOOL_OPTIONS', '-Xmx512m')
 
     copyFile(new Dockerfile.CopyFile("application/spring-boot-loader/", "./").withChown("${userName}:${groupName}").withStage("build"))
     copyFile(new Dockerfile.CopyFile("application/common-deps/", "./").withChown("${userName}:${groupName}").withStage("build"))
@@ -124,7 +124,6 @@ tasks.register('createDockerfile', Dockerfile) {
     defaultCommand(
         "-Dserver.port=${listenPort}",
         '-Djava.security.egd=file:/dev/urandom',
-        "-Xmx${xmx}",
         "-XX:+ExitOnOutOfMemoryError",
         'org.springframework.boot.loader.launch.JarLauncher')
 }
@@ -181,6 +180,11 @@ dockerCompose {
 
     if (project.hasProperty("preview-features") || project.hasProperty("previewFeatures")) {
         environment.put "ACTIVE_SPRING_PROFILES", activeSpringProfiles
+    }
+
+    if (project.hasProperty("disablePopulation")) {
+        assert activeSpringProfiles.contains("test-helper")
+        environment.put "POPULATION_ENABLED", "false"
     }
 }
 

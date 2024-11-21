@@ -23,6 +23,7 @@ export function searchColumns() {
     columnHelper.accessor("lastName", {
       header: "Nachname",
       meta: {
+        width: 150,
         canNavigate: {
           parentRow: true,
         },
@@ -31,6 +32,7 @@ export function searchColumns() {
     columnHelper.accessor("firstName", {
       header: "Vorname",
       meta: {
+        width: 150,
         canNavigate: {
           parentRow: true,
         },
@@ -41,6 +43,7 @@ export function searchColumns() {
       header: "Geburtsdatum",
       cell: (props) => formatDate(props.getValue()),
       meta: {
+        width: 120,
         canNavigate: {
           parentRow: true,
         },
@@ -51,6 +54,7 @@ export function searchColumns() {
       header: "Alter",
       cell: (props) => calculateAge(props.getValue()),
       meta: {
+        width: 70,
         canNavigate: {
           parentRow: true,
         },
@@ -60,6 +64,7 @@ export function searchColumns() {
       header: "Reisebeginn",
       cell: (props) => formatDate(props.getValue()),
       meta: {
+        width: 110,
         canNavigate: {
           parentRow: true,
         },
@@ -69,6 +74,7 @@ export function searchColumns() {
       header: "Erstellt von",
       cell: (props) => translateCreatedByUserType(props.getValue()),
       meta: {
+        width: 100,
         canNavigate: {
           parentRow: true,
         },
@@ -77,11 +83,12 @@ export function searchColumns() {
     columnHelper.accessor("status", {
       header: "Status",
       cell: (props) => (
-        <Chip color={statusColors[props.getValue()]}>
+        <Chip color={statusColors[props.getValue()]} size="md">
           {procedureStatusNames[props.getValue()]}
         </Chip>
       ),
       meta: {
+        width: 130,
         canNavigate: {
           parentRow: true,
         },

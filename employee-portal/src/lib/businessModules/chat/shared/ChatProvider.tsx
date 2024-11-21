@@ -17,11 +17,11 @@ import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/chat/ap
 import { useGetUserSettings } from "@/lib/businessModules/chat/api/queries/userSettingsApi";
 import { MessageTeaserProvider } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { ChatClientProvider } from "@/lib/businessModules/chat/shared/ChatClientProvider";
+import { NotificationProvider } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import { ChatConfiguration } from "@/lib/businessModules/chat/shared/config";
+import { ChatUserSettings } from "@/lib/businessModules/chat/shared/types";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
-
-import { ChatUserSettings } from "./types";
 
 export interface ChatProviderContextType {
   configuration: ChatConfiguration;
@@ -91,7 +91,9 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
     >
       {userSettings.chatUsageEnabled ? (
         <MessageTeaserProvider>
-          <ChatClientProvider>{children}</ChatClientProvider>
+          <ChatClientProvider>
+            <NotificationProvider>{children}</NotificationProvider>
+          </ChatClientProvider>
         </MessageTeaserProvider>
       ) : (
         children

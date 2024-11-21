@@ -38,6 +38,7 @@ import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
+import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.inspection.api.InspectionType;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
@@ -49,6 +50,7 @@ import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectType_;
+import de.eshg.lib.foureyes.spring.FourEyesPrincipleAutoConfiguration;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
@@ -98,6 +100,7 @@ public class FacilityService {
   private final InspectionFinalizer inspectionFinalizer;
   private final InspectionRepository inspectionRepository;
   private final InspectionFeatureToggle inspectionFeatureToggle;
+  private final FourEyesPrincipleAutoConfiguration fourEyesPrincipleAutoConfiguration;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -108,7 +111,8 @@ public class FacilityService {
       EntityManager entityManager,
       InspectionFinalizer inspectionFinalizer,
       InspectionRepository inspectionRepository,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      InspectionFeatureToggle inspectionFeatureToggle,
+      FourEyesPrincipleAutoConfiguration fourEyesPrincipleAutoConfiguration) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -118,6 +122,7 @@ public class FacilityService {
     this.inspectionFinalizer = inspectionFinalizer;
     this.inspectionRepository = inspectionRepository;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
+    this.fourEyesPrincipleAutoConfiguration = fourEyesPrincipleAutoConfiguration;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -141,32 +146,31 @@ public class FacilityService {
     InspFacilityDto facilityDTO =
         FacilityMapper.fromAddFacilityResponse(savedFacility, baseResponse);
 
-    UUID inspectionId = null;
-    ProcedureStatus procedureStatus = null;
+    Inspection inspection;
+    boolean isNew = false;
 
     if (matchedInspFacility.isEmpty()) {
       log.info("addFacility: saved new facility {}", savedFacility.getId());
+
+      // create draft inspection
+      isNew = true;
+      inspection = inspectionService.createDraftInspection(savedFacility);
     } else {
       log.info("addFacility: matched existing facility {}", savedFacility.getId());
 
       // If we have an inspection for the matched facility, we want to provide the ID, so the
       // frontend can route to it.
-      Inspection inspection = inspectionService.findNewestOpenInspectionForFacility(savedFacility);
-      inspectionId = inspection.getExternalId();
-      procedureStatus = inspection.getProcedureStatus();
-    }
-
-    // create draft inspection
-    if (inspectionId == null) {
-      Inspection inspection = inspectionService.createDraftInspection(savedFacility);
-      inspectionId = inspection.getExternalId();
-      procedureStatus = inspection.getProcedureStatus();
+      inspection = inspectionService.findNewestOpenInspectionForFacility(savedFacility);
     }
 
     linkWebSearchFacility(request.webSearchEntryId(), baseResponse.id());
 
+    inspectionService.linkInboxProcedure(request.inboxProcedureId(), inspection);
+
+    UUID inspectionId = inspection.getExternalId();
+    ProcedureStatus procedureStatus = inspection.getProcedureStatus();
     return new InspAddFacilityResponse(
-        facilityDTO, inspectionId, ProcedureMapper.toInterfaceType(procedureStatus));
+        facilityDTO, inspectionId, ProcedureMapper.toInterfaceType(procedureStatus), isNew);
   }
 
   InspLinkBaseFacilityResponse linkBaseFacility(InspLinkBaseFacilityRequest request) {
@@ -180,6 +184,7 @@ public class FacilityService {
 
     Inspection newestInspection;
     UUID centralFileStateId;
+    boolean isNew = false;
 
     if (matchedInspFacility.isEmpty()) {
       AddFacilityFileStateRequest addRequest =
@@ -191,12 +196,14 @@ public class FacilityService {
       Facility facility = FacilityMapper.facilityFrom(baseFacilityResponse);
       Facility savedFacility = facilityRepository.save(facility);
       log.info("linkBaseFacility: saved new inspection facility {}", savedFacility.getId());
+      isNew = true;
       newestInspection = inspectionService.createDraftInspection(savedFacility);
     } else {
       Facility inspFacility = matchedInspFacility.get();
       centralFileStateId = inspFacility.getCentralFileStateId();
       newestInspection = inspectionService.findNewestOpenInspectionForFacility(inspFacility);
       if (newestInspection == null) {
+        isNew = true;
         newestInspection =
             inspectionFinalizer.createFollowupInspection(
                 inspectionService.findNewestClosedInspectionForFacility(inspFacility));
@@ -205,9 +212,12 @@ public class FacilityService {
 
     linkWebSearchFacility(request.webSearchEntryId(), centralFileStateId);
 
+    inspectionService.linkInboxProcedure(request.inboxProcedureId(), newestInspection);
+
     return new InspLinkBaseFacilityResponse(
         newestInspection.getExternalId(),
-        ProcedureMapper.toInterfaceType(newestInspection.getProcedureStatus()));
+        ProcedureMapper.toInterfaceType(newestInspection.getProcedureStatus()),
+        isNew);
   }
 
   public InspFacilityDto updateFacility(UUID externalId, InspUpdateFacilityRequest request) {
@@ -250,6 +260,9 @@ public class FacilityService {
     if (params.hasDuplicates() != null) {
       inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     }
+    if (params.banned() != null) {
+      inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.BANNED_FACILITIES_EXPORT);
+    }
 
     // early validate page request params
     PageRequest pageRequest = pagination.getPageRequest();
@@ -272,11 +285,14 @@ public class FacilityService {
             params.isBefore(),
             params.isAfter(),
             params.hasDuplicates(),
+            params.banned(),
             facilityIdsWithFacilityDuplicate,
-            inspectionIdsWithInspectionDuplicate);
+            inspectionIdsWithInspectionDuplicate,
+            null);
 
     // fetch centralfile data in a bulk query
-    Map<UUID, AddFacilityFileStateResponse> centralFileData = fetchCentralFileData(candidates);
+    Map<UUID, AddFacilityFileStateResponse> centralFileData =
+        fetchCentralFileData(extractCentralFileStateIds(candidates));
 
     // map to dto
     Stream<InspPendingFacilityDto> entries =
@@ -300,8 +316,10 @@ public class FacilityService {
       @Nullable Instant isBefore,
       @Nullable Instant isAfter,
       @Nullable Boolean hasDuplicates,
-      @NotNull List<Long> facilityIds,
-      @NotNull List<Long> inspectionIds) {
+      @Nullable Boolean banned,
+      @NotNull List<Long> facilityIdsWithFacilityDuplicate,
+      @NotNull List<Long> inspectionIds,
+      @Nullable UUID facilityExternalId) {
     Set<ProcedureStatus> procedureStatus = FacilityMapper.toDomainType(status);
 
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -375,14 +393,21 @@ public class FacilityService {
                       cb.literal(LocalDate.ofInstant(clock.instant(), ZoneOffset.UTC)),
                       LocalDate.ofInstant(isAfter, ZoneOffset.UTC)))));
     }
+    if (facilityExternalId != null) {
+      predicates.add(facilityJoin.get(Facility_.externalId).in(facilityExternalId));
+    }
 
     if (hasDuplicates != null) {
       Predicate hasDuplicatesPredicate =
           cb.or(
               inspectionRoot.get(SequencedBaseEntity_.id).in(inspectionIds),
-              facilityJoin.get(BaseEntity_.id).in(facilityIds));
+              facilityJoin.get(BaseEntity_.id).in(facilityIdsWithFacilityDuplicate));
 
       predicates.add(hasDuplicates ? hasDuplicatesPredicate : cb.not(hasDuplicatesPredicate));
+    }
+
+    if (banned != null) {
+      predicates.add(cb.equal(facilityJoin.get(Facility_.BANNED), cb.literal(banned)));
     }
 
     cq.select(cb.construct(PendingFacilityView.class, facilityJoin, irfJoin, inspectionRoot));
@@ -397,10 +422,8 @@ public class FacilityService {
         .orElseThrow(() -> new NotFoundException("Facility not found"));
   }
 
-  private Map<UUID, AddFacilityFileStateResponse> fetchCentralFileData(
-      List<PendingFacilityView> list) {
-    if (list.isEmpty()) return Map.of();
-    List<UUID> centralFileStateIds = extractCentralFileStateIds(list);
+  public Map<UUID, AddFacilityFileStateResponse> fetchCentralFileData(
+      List<UUID> centralFileStateIds) {
     if (centralFileStateIds.isEmpty()) return Map.of();
     return facilityClient.getFacilityFileStates(centralFileStateIds).stream()
         .collect(toUnmodifiableMap(AddFacilityFileStateResponse::id, facility -> facility));
@@ -436,9 +459,12 @@ public class FacilityService {
     ObjectType objectType = view.facility().getObjectType();
     ObjectTypeRefDto objecttype =
         objectType != null ? new ObjectTypeRefDto(objectType.getId(), objectType.getName()) : null;
+    InspectionAppointment executionAppointment = getExecutionAppointment(view);
+    Instant executionFrom =
+        executionAppointment == null ? null : executionAppointment.getAppointmentStart();
 
     return FacilityMapper.createInspPendingFacilityDto(
-        view, facilityDto, kind, plannedFrom, objecttype);
+        view, facilityDto, kind, plannedFrom, objecttype, executionFrom);
   }
 
   private InspPendingFacilityKind determineInspPendingFacilityKind(
@@ -476,6 +502,18 @@ public class FacilityService {
   private static InspectionAppointment getPlannedAppointment(PendingFacilityView view) {
     return view.inspection() != null && view.inspection().getPlannedAppointment() != null
         ? view.inspection().getPlannedAppointment()
+        : null;
+  }
+
+  private static InspectionAppointment getExecutionAppointment(PendingFacilityView view) {
+    return view.inspection() != null && view.inspection().getExecutionAppointment() != null
+        ? view.inspection().getExecutionAppointment()
+        : null;
+  }
+
+  private static InspectionResult getInspectionResult(PendingFacilityView view) {
+    return view.inspection() != null && view.inspection().getResult() != null
+        ? view.inspection().getResult()
         : null;
   }
 
@@ -576,5 +614,27 @@ public class FacilityService {
     if (contactAddressGetter.apply(facility) == null) {
       throw new BadRequestException(ErrorCode.BAD_REQUEST, "Contact address is required");
     }
+  }
+
+  public InspPendingFacilitiesOverviewResponse getFacilityHistory(UUID externalId) {
+    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.FACILITY_HISTORY);
+
+    List<PendingFacilityView> candidates =
+        findPendingFacilities(
+            null, null, null, null, null, null, null, null, List.of(), List.of(), externalId);
+
+    if (candidates.isEmpty())
+      throw new BadRequestException(
+          "Could not find inspection matching the current facility ID " + externalId);
+
+    // fetch centralfile data in a bulk query, could be multiple because changes to the facility
+    Map<UUID, AddFacilityFileStateResponse> centralFileData =
+        fetchCentralFileData(extractCentralFileStateIds(candidates));
+
+    // map to dto
+    List<InspPendingFacilityDto> result =
+        candidates.stream().map(e -> createInspPendingFacilityDto(e, centralFileData)).toList();
+
+    return new InspPendingFacilitiesOverviewResponse(1, result.size(), result, 0);
   }
 }

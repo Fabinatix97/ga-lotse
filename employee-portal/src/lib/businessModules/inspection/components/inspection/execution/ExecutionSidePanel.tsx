@@ -180,7 +180,7 @@ export function ExecutionSidePanel({
         label="Tatsächlicher Begehungstermin"
         value={executedDateAndTime}
       >
-        {!readOnly && !isOffline && (
+        {!readOnly && (
           <IconButton
             aria-label={`Termin ändern`}
             color="primary"

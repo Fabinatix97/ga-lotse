@@ -5,7 +5,7 @@
 
 package de.eshg.medicalregistry.mapper;
 
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
@@ -18,8 +18,8 @@ public class EntryMapper {
   private EntryMapper() {}
 
   public static MedicalRegistryEntryDto mapToDto(
-      MedicalRegistryEntry entry, Map<UUID, AddPersonFileStateResponse> relatedPersons) {
-    AddPersonFileStateResponse relatedPerson = getRelatedPersonOrThrow(entry, relatedPersons);
+      MedicalRegistryEntry entry, Map<UUID, GetPersonFileStateResponse> relatedPersons) {
+    GetPersonFileStateResponse relatedPerson = getRelatedPersonOrThrow(entry, relatedPersons);
     return new MedicalRegistryEntryDto(
         entry.getExternalId(),
         relatedPerson.lastName(),
@@ -31,8 +31,8 @@ public class EntryMapper {
         ProcedureMapper.toInterfaceType(entry.getProcedureType()));
   }
 
-  private static AddPersonFileStateResponse getRelatedPersonOrThrow(
-      MedicalRegistryEntry entry, Map<UUID, AddPersonFileStateResponse> personMap) {
+  private static GetPersonFileStateResponse getRelatedPersonOrThrow(
+      MedicalRegistryEntry entry, Map<UUID, GetPersonFileStateResponse> personMap) {
 
     UUID relatedPersonId = entry.getRelatedPersons().getFirst().getCentralFileStateId();
 

@@ -6,9 +6,9 @@
 package de.eshg.lib.appointmentblock.testhelper;
 
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
-import static de.eshg.lib.appointmentblock.AppointmentBlockService.TECHNICAL_GROUP_CONSULTANTS;
-import static de.eshg.lib.appointmentblock.AppointmentBlockService.TECHNICAL_GROUP_MFAS;
-import static de.eshg.lib.appointmentblock.AppointmentBlockService.TECHNICAL_GROUP_PHYSICIANS;
+import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_CONSULTANTS;
+import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_MFAS;
+import static de.eshg.lib.appointmentblock.AppointmentBlockValidator.TECHNICAL_GROUP_PHYSICIANS;
 
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.api.*;
@@ -25,26 +25,23 @@ import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.lib.appointmentblock.persistence.entity.AppointmentBlockGroup;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.keycloak.TechnicalGroup;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import de.eshg.testhelper.population.RequestContextFaker;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class AppointmentBlockGroupsPopulator
     extends BasePopulator<CreateAppointmentBlockGroupResponse> {
 
@@ -60,8 +57,9 @@ public class AppointmentBlockGroupsPopulator
   private final BaseTestHelperApi baseTestHelperApi;
 
   public AppointmentBlockGroupsPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       AppointmentBlockController appointmentBlockController,
       AppointmentBlockGroupRepository appointmentBlockGroupRepository,
@@ -72,12 +70,11 @@ public class AppointmentBlockGroupsPopulator
       @SuppressWarnings("unused") // Used as dependency
           CreateAppointmentTypeTask createAppointmentTypeTask,
       UserApi userApi,
-      EnvironmentConfig environmentConfig,
       ContactApi contactApi,
       BaseTestHelperApi baseTestHelperApi) {
     super(
+        properties,
         clock,
-        environment,
         getClassNameAsPropertyKey(AppointmentBlockGroup.class),
         environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
@@ -153,7 +150,7 @@ public class AppointmentBlockGroupsPopulator
     return technicalGroup.stream()
         .map(group -> userApi.getUsers(new UserFilterParameters(null, group.name())))
         .map(users -> randomElement(faker, users.users()).userId())
-        .collect(Collectors.toUnmodifiableList());
+        .toList();
   }
 
   @Override

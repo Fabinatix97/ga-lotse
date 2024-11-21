@@ -5,6 +5,7 @@
 
 package de.eshg.base.user;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.calendar.CalendarEventService;
 import de.eshg.base.calendar.CalendarService;
 import de.eshg.base.calendar.api.GetEventsOfCalendarResponse;
@@ -29,7 +30,6 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -196,7 +196,7 @@ public class UserController implements UserApi {
             .map(ModuleMemberGroup::fromValueGracefullyOrNull)
             .filter(Objects::nonNull)
             .map(ModuleLeaderGroup::forModuleMemberGroup)
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+            .collect(StreamUtil.toLinkedHashSet());
 
     return new GetUsersResponse(
         userService.getTeamLeadersByGroups(relevantModuleLeaderGroups).stream()

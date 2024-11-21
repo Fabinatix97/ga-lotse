@@ -6,7 +6,7 @@
 import { Box, Divider, List, ListItem, Typography } from "@mui/joy";
 import { isSameDay, startOfDay } from "date-fns";
 import { User } from "matrix-js-sdk/lib/matrix";
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import {
   filter,
@@ -23,14 +23,14 @@ import { ChatBubble } from "@/lib/businessModules/chat/components/chatPanel/Chat
 import { ChatSystemMessage } from "@/lib/businessModules/chat/components/chatPanel/ChatSystemMessages";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { useChatSystemMessages } from "@/lib/businessModules/chat/shared/hooks/useChatSystemMessages";
 import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
-import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoomMessages";
+import { useRoomTimeline } from "@/lib/businessModules/chat/shared/hooks/useRoomTimeline";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import {
   MentionedMember,
   RoomWithCommunicationType,
   isChatMessage,
+  isChatMessageType,
   isSystemMessage,
 } from "@/lib/businessModules/chat/shared/types";
 import { getDayLabel } from "@/lib/businessModules/chat/shared/utils";
@@ -44,7 +44,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
     userSettings: { showReadConfirmation },
   } = useChat();
   const { messages, paginateMessages, isLoading, hasNextPage, error } =
-    useRoomMessages();
+    useRoomTimeline(room.room.roomId);
   const { matrixClient } = useChatClientContext();
   const loggedInUserId = matrixClient.getUserId() ?? "";
   const { messageReadsPerRoom } = useReadConfirmation(showReadConfirmation);
@@ -55,25 +55,21 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
     )
     .filter((item) => isNonNullish(item));
   const initialReadIndexes = messages
-    .map(({ readReceipts }, index) =>
-      readReceipts && !isEmpty(readReceipts) ? index : undefined,
-    )
+    .map((message, index) => {
+      const readReceipts = isChatMessageType(message)
+        ? message.readReceipts
+        : undefined;
+      if (!readReceipts) return;
+      if (!isEmpty(readReceipts)) {
+        return index;
+      }
+    })
     .filter((item) => isNonNullish(item));
   const {
     userSettings: { showTypingNotification },
   } = useChat();
   const { typingUsersList } = useTyping(showTypingNotification);
   const typingUsers = typingUsersList[room.room.roomId];
-  const { roomSystemMessages } = useChatSystemMessages();
-  const chatAndSystemMessages = useMemo(() => {
-    return [...messages, ...roomSystemMessages].sort((a, b) =>
-      !a?.timestamp
-        ? 1
-        : !b?.timestamp
-          ? -1
-          : new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-    );
-  }, [messages, roomSystemMessages]);
 
   const roomMembers = room.room.getMembers();
 
@@ -82,7 +78,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
     hasNextPage,
     onLoadMore: paginateMessages,
     disabled: error,
-    rootMargin: "400px 0px 0px 0px",
+    rootMargin: "100px 0px 0px 0px",
   });
 
   async function removeMessage(messageId: string) {
@@ -100,11 +96,11 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
           overflowY: "auto",
         }}
       >
-        {chatAndSystemMessages?.map((message, index: number) => {
+        {messages?.map((message, index: number) => {
           if (!message) return null;
           const nextMessage = messages[index + 1];
           const shouldShowDivider =
-            index !== chatAndSystemMessages.length - 1 &&
+            index !== messages.length - 1 &&
             message.timestamp &&
             nextMessage?.timestamp &&
             nextMessage &&
@@ -182,7 +178,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
             </Fragment>
           );
         })}
-        {(isLoading || hasNextPage) && <Box ref={sentryRef} />}
+        {hasNextPage && <Box ref={sentryRef} />}
       </List>
       {!!typingUsers?.length && (
         <Typography

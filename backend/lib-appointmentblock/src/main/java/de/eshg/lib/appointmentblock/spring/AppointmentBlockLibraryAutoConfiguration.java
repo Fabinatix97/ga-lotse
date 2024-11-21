@@ -5,10 +5,11 @@
 
 package de.eshg.lib.appointmentblock.spring;
 
-import de.eshg.base.client.ContactClient;
 import de.eshg.lib.appointmentblock.AppointmentBlockController;
+import de.eshg.lib.appointmentblock.AppointmentBlockLibraryContactsMergedHandler;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
+import de.eshg.lib.appointmentblock.AppointmentBlockValidator;
 import de.eshg.lib.appointmentblock.AppointmentTypeController;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
@@ -32,11 +33,12 @@ import org.springframework.context.annotation.Import;
   AppointmentBlockController.class,
   AppointmentBlockService.class,
   AppointmentBlockSlotUtil.class,
+  AppointmentBlockValidator.class,
   AppointmentTypeController.class,
   AppointmentTypeService.class,
   CalendarClient.class,
-  ContactClient.class,
   CreateAppointmentTypeTask.class,
-  AppointmentBlockGroupsPopulator.class
+  AppointmentBlockGroupsPopulator.class,
+  AppointmentBlockLibraryContactsMergedHandler.class
 })
 public class AppointmentBlockLibraryAutoConfiguration {}

@@ -8,9 +8,9 @@ package de.eshg.statistics.aggregation;
 import de.eshg.base.user.api.UserDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
-import de.eshg.statistics.StatisticUserService;
+import de.eshg.statistics.StatisticsUserService;
 import de.eshg.statistics.api.AddDiagramRequest;
-import de.eshg.statistics.api.EvaluationDto;
+import de.eshg.statistics.api.AnalysisDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
@@ -22,16 +22,16 @@ import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
+import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.mapper.ReportMapper;
-import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
+import de.eshg.statistics.persistence.entity.Analysis;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
 import de.eshg.statistics.persistence.entity.Evaluation;
-import de.eshg.statistics.persistence.entity.Statistic;
 import de.eshg.statistics.persistence.entity.chart.HistogramChartConfiguration;
 import de.eshg.statistics.persistence.entity.report.Frequency;
 import de.eshg.statistics.persistence.entity.report.Report;
@@ -61,26 +61,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportService {
   private final ReportRepository reportRepository;
   private final ReportSeriesRepository reportSeriesRepository;
-  private final StatisticUserService userService;
+  private final StatisticsUserService userService;
   private final Clock clock;
   private final DataAggregationService dataAggregationService;
-  private final EvaluationService evaluationService;
+  private final AnalysisService analysisService;
 
   private static final Logger log = LoggerFactory.getLogger(ReportService.class);
 
   public ReportService(
       ReportRepository reportRepository,
       ReportSeriesRepository reportSeriesRepository,
-      StatisticUserService userService,
+      StatisticsUserService userService,
       Clock clock,
       DataAggregationService dataAggregationService,
-      EvaluationService evaluationService) {
+      AnalysisService analysisService) {
     this.reportRepository = reportRepository;
     this.reportSeriesRepository = reportSeriesRepository;
     this.userService = userService;
     this.clock = clock;
     this.dataAggregationService = dataAggregationService;
-    this.evaluationService = evaluationService;
+    this.analysisService = analysisService;
   }
 
   static Report createReport(
@@ -88,13 +88,17 @@ public class ReportService {
       Instant timeRangeStart,
       Instant timeRangeEnd,
       AggregationResultState state,
+      Long uniquePlanned,
       LocalDate executionDate,
-      Statistic statistic) {
+      Evaluation evaluation) {
     Report report = new Report();
     report.setName(name);
     report.setTimeRangeStart(timeRangeStart);
     report.setTimeRangeEnd(timeRangeEnd);
     report.setNumberOfTableRows(0);
+    if (uniquePlanned != null) {
+      report.setPlanned(uniquePlanned);
+    }
     report.setState(state);
     report.setPendingState(
         state.equals(AggregationResultState.CREATING)
@@ -103,8 +107,8 @@ public class ReportService {
     report.setExecutionDate(executionDate);
 
     report.addTableColumns(
-        statistic.getTableColumns().stream()
-            .map(StatisticCopyService::copyTableColumnWithoutCellEntriesWithoutMinMaxValues)
+        evaluation.getTableColumns().stream()
+            .map(EvaluationCopyService::copyTableColumnWithoutCellEntriesWithoutMinMaxValues)
             .toList());
     return report;
   }
@@ -118,7 +122,7 @@ public class ReportService {
     userIds.add(reportSeriesUserId);
     userIds.add(report.getCreatedByUserId());
     Map<UUID, UserDto> resolvedUsers = userService.getResolvedUsers(userIds);
-    List<EvaluationDto> evaluations = EvaluationMapper.getEvaluations(report.getEvaluations());
+    List<AnalysisDto> analyses = AnalysisMapper.getAnalyses(report.getAnalyses());
 
     return new GetReportDetailPageResponse(
         report.getExternalId(),
@@ -130,11 +134,11 @@ public class ReportService {
         report.getTimeRangeStart(),
         report.getTimeRangeEnd(),
         report.getExecutionDate(),
-        StatisticMapper.mapToApi(report.getTableColumns()),
+        EvaluationMapper.mapToApi(report.getTableColumns()),
         report.getNumberOfTableRows(),
         resolvedUsers.get(reportSeriesUserId),
         resolvedUsers.get(report.getCreatedByUserId()),
-        evaluations,
+        analyses,
         ReportMapper.mapToReportTypeDto(report.getReportSeries().getReportType()));
   }
 
@@ -187,8 +191,9 @@ public class ReportService {
             dateStart.atStartOfDay(clock.getZone()).toInstant(),
             executionAndEndDate.atStartOfDay(clock.getZone()).toInstant(),
             AggregationResultState.PLANNED,
+            reportSeries.getId(),
             executionAndEndDate,
-            reportSeries.getStatistic()));
+            reportSeries.getEvaluation()));
 
     report.setExecutionDate(LocalDate.now(clock));
   }
@@ -259,108 +264,106 @@ public class ReportService {
     }
 
     dataAggregationService.determineMinMaxNullUnknownValues(report);
-    report.setPendingState(AggregationResultPendingState.EVALUATION_CONDUCTION);
+    report.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
   }
 
   @Transactional
-  public void evaluationConduction(UUID reportId) {
+  public void analysisConduction(UUID reportId) {
     Report report = getReportInternal(reportId);
     if (wrongConstellationForMethod(
-        report, AggregationResultPendingState.EVALUATION_CONDUCTION, "evaluationConduction")) {
+        report, AggregationResultPendingState.ANALYSIS_CONDUCTION, "analysisConduction")) {
       return;
     }
 
-    Statistic statistic = report.getReportSeries().getStatistic();
-    if (StatisticService.hasNoDiagrams(statistic)) {
+    Evaluation evaluation = report.getReportSeries().getEvaluation();
+    if (EvaluationService.hasNoDiagrams(evaluation)) {
       finishReport(report);
     } else {
-      copyEvaluationsWithoutDiagrams(report, statistic);
+      copyAnalysesWithoutDiagrams(report, evaluation);
       report.setPendingState(AggregationResultPendingState.DIAGRAM_CREATION);
     }
   }
 
-  private void copyEvaluationsWithoutDiagrams(Report report, Statistic statistic) {
-    statistic.getEvaluations().stream()
-        .filter(evaluation -> !evaluation.getDiagrams().isEmpty())
-        .forEach(
-            evaluation -> report.addEvaluation(copyEvaluationWithoutDiagrams(evaluation, report)));
+  private void copyAnalysesWithoutDiagrams(Report report, Evaluation evaluation) {
+    evaluation.getAnalyses().stream()
+        .filter(analysis -> !analysis.getDiagrams().isEmpty())
+        .forEach(analysis -> report.addAnalysis(copyAnalysisWithoutDiagrams(analysis, report)));
   }
 
-  private Evaluation copyEvaluationWithoutDiagrams(Evaluation original, Report report) {
+  private Analysis copyAnalysisWithoutDiagrams(Analysis original, Report report) {
     ChartConfiguration originalChartConfiguration =
         Hibernate.unproxy(original.getChartConfiguration(), ChartConfiguration.class);
     ChartConfiguration chartConfiguration =
-        StatisticCopyService.copyChartConfiguration(originalChartConfiguration, false);
+        EvaluationCopyService.copyChartConfiguration(originalChartConfiguration, false);
 
     if (chartConfiguration instanceof HistogramChartConfiguration histogramChartConfiguration) {
       HistogramChartConfigurationDto chartConfigurationDto =
-          EvaluationMapper.mapToHistogramChartConfigurationDto(histogramChartConfiguration);
+          AnalysisMapper.mapToHistogramChartConfigurationDto(histogramChartConfiguration);
       histogramChartConfiguration.addBins(
-          evaluationService.calculateHistogramBins(chartConfigurationDto, report));
+          analysisService.calculateHistogramBins(chartConfigurationDto, report));
     }
 
-    Evaluation evaluation = new Evaluation();
-    evaluation.setOriginalEvaluationId(original.getExternalId());
-    evaluation.setName(original.getName());
-    evaluation.setChartConfiguration(chartConfiguration);
-    return evaluation;
+    Analysis analysis = new Analysis();
+    analysis.setOriginalAnalysisId(original.getExternalId());
+    analysis.setName(original.getName());
+    analysis.setChartConfiguration(chartConfiguration);
+    return analysis;
   }
 
   @Transactional
-  public Map<EvaluationDto, AddDiagramRequest> findMissingDiagramOrCompleteAutoReport(
-      UUID reportId) {
+  public Map<AnalysisDto, AddDiagramRequest> findMissingDiagramOrCompleteAutoReport(UUID reportId) {
     Report report = getReportInternal(reportId);
     return findMissingDiagramOrComplete(report);
   }
 
-  Map<EvaluationDto, AddDiagramRequest> findMissingDiagramOrComplete(Report report) {
+  Map<AnalysisDto, AddDiagramRequest> findMissingDiagramOrComplete(Report report) {
     if (wrongConstellationForMethod(
         report, AggregationResultPendingState.DIAGRAM_CREATION, "findMissingDiagramOrComplete")) {
       return Collections.emptyMap();
     }
 
-    Optional<Evaluation> firstUnfinishedEvaluation =
-        report.getEvaluations().stream()
-            .filter(evaluation -> evaluation.getOriginalEvaluationId() != null)
+    Optional<Analysis> firstUnfinishedAnalysis =
+        report.getAnalyses().stream()
+            .filter(analysis -> analysis.getOriginalAnalysisId() != null)
             .findFirst();
-    if (firstUnfinishedEvaluation.isEmpty()) {
+    if (firstUnfinishedAnalysis.isEmpty()) {
       finishReport(report);
       return Collections.emptyMap();
     }
 
-    Evaluation evaluationToComplete = firstUnfinishedEvaluation.get();
+    Analysis analysisToComplete = firstUnfinishedAnalysis.get();
 
     Optional<Diagram> diagramToCopyOptional = Optional.empty();
     try {
-      Evaluation originalEvaluation =
-          evaluationService.getEvaluationInternal(evaluationToComplete.getOriginalEvaluationId());
+      Analysis originalAnalysis =
+          analysisService.getAnalysisInternal(analysisToComplete.getOriginalAnalysisId());
       diagramToCopyOptional =
-          originalEvaluation.getDiagrams().stream()
-              .filter(diagram -> notAlreadyCopied(evaluationToComplete, diagram))
+          originalAnalysis.getDiagrams().stream()
+              .filter(diagram -> notAlreadyCopied(analysisToComplete, diagram))
               .findFirst();
     } catch (NotFoundException e) {
-      // Evaluation deleted
+      // Analysis deleted
       log.warn(
-          "Could not finish diagrams for report %s, evaluation %s: %s"
+          "Could not finish diagrams for report %s, analysis %s: %s"
               .formatted(
-                  report.getExternalId(), evaluationToComplete.getExternalId(), e.getMessage()));
+                  report.getExternalId(), analysisToComplete.getExternalId(), e.getMessage()));
     }
     if (diagramToCopyOptional.isEmpty()) {
-      evaluationToComplete.setOriginalEvaluationId(null);
+      analysisToComplete.setOriginalAnalysisId(null);
       return Collections.emptyMap();
     }
 
     Diagram diagramToCopy = diagramToCopyOptional.get();
     return Map.of(
-        EvaluationMapper.mapToApi(evaluationToComplete, true),
+        AnalysisMapper.mapToApi(analysisToComplete, true),
         new AddDiagramRequest(
             diagramToCopy.getTitle(),
             diagramToCopy.getDescription(),
             FilterParameterMapper.mapToApi(diagramToCopy.getFilters())));
   }
 
-  private boolean notAlreadyCopied(Evaluation evaluationToComplete, Diagram diagram) {
-    return evaluationToComplete.getDiagrams().stream()
+  private boolean notAlreadyCopied(Analysis analysisToComplete, Diagram diagram) {
+    return analysisToComplete.getDiagrams().stream()
         .noneMatch(copiedDiagram -> isIdentical(copiedDiagram, diagram));
   }
 

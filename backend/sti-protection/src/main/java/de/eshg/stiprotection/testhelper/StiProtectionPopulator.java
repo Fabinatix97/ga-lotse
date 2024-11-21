@@ -10,48 +10,52 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 import de.eshg.base.GenderDto;
 import de.eshg.lib.common.CountryCode;
 import de.eshg.stiprotection.StiProtectionProcedureController;
+import de.eshg.stiprotection.WaitingRoomController;
 import de.eshg.stiprotection.api.AppointmentBookingTypeDto;
 import de.eshg.stiprotection.api.ConcernDto;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.CreateProcedureResponse;
+import de.eshg.stiprotection.api.waitingroom.WaitingRoomDto;
+import de.eshg.stiprotection.api.waitingroom.WaitingStatusDto;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import net.datafaker.Faker;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class StiProtectionPopulator extends BasePopulator<CreateProcedureResponse> {
 
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
   private final StiProtectionProcedureController stiProtectionProcedureController;
+  private final WaitingRoomController waitingRoomController;
   private final StiProtectionProcedureRepository stiProtectionProcedureRepository;
 
   public StiProtectionPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       StiProtectionProcedureController stiProtectionProcedureController,
       StiProtectionProcedureRepository stiProtectionProcedureRepository,
-      EnvironmentConfig environmentConfig) {
+      WaitingRoomController waitingRoomController) {
     super(
+        properties,
         clock,
-        environment,
         getClassNameAsPropertyKey(StiProtectionProcedure.class),
         environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.stiProtectionProcedureController = stiProtectionProcedureController;
+    this.waitingRoomController = waitingRoomController;
     this.stiProtectionProcedureRepository = stiProtectionProcedureRepository;
   }
 
@@ -79,7 +83,17 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
             appointmentStart(faker, clock),
             durationInMinutes(faker));
 
-    return stiProtectionProcedureController.createProcedure(createProcedureRequest);
+    CreateProcedureResponse resp =
+        stiProtectionProcedureController.createProcedure(createProcedureRequest);
+
+    // Move into waiting room
+    if (faker.bool().bool()) {
+      waitingRoomController.updateWaitingRoomDetails(
+          resp.procedureId(),
+          new WaitingRoomDto(faker.simpsons().location(), waitingStatus(faker)));
+    }
+
+    return resp;
   }
 
   @Override
@@ -93,6 +107,10 @@ public class StiProtectionPopulator extends BasePopulator<CreateProcedureRespons
 
   private static GenderDto gender(Faker faker) {
     return BasePopulator.randomElement(faker, GenderDto.values());
+  }
+
+  private static WaitingStatusDto waitingStatus(Faker faker) {
+    return BasePopulator.randomElement(faker, WaitingStatusDto.values());
   }
 
   private static int age(Faker faker) {

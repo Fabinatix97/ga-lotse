@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VaccinationConsultationCertificatesForm } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/VaccinationConsultationCertificatesForm";
+import { CertificatesTable } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/certificates/CertificatesTable";
 
 export default function VaccinationConsultationCertificatesPage({
   params,
 }: Readonly<{ params: { id: string } }>) {
-  return <VaccinationConsultationCertificatesForm procedureId={params.id} />;
+  return <CertificatesTable procedureId={params.id}></CertificatesTable>;
 }

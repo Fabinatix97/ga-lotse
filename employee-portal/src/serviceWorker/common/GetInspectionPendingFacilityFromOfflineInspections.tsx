@@ -7,7 +7,12 @@ import { ApiInspPendingFacility } from "@eshg/employee-portal-api/inspection";
 
 export interface GetInspectionPendingFacilityFromOfflineInspectionsMessage {
   type: "getInspectionPendingFacilityFromOfflineInspections";
-  inspectionIds: string[];
+}
+
+export function createGetInspectionPendingFacilityFromOfflineInspectionsMessage() {
+  return {
+    type: "getInspectionPendingFacilityFromOfflineInspections",
+  };
 }
 
 export function isGetInspectionPendingFacilityFromOfflineInspectionsMessage(
@@ -16,14 +21,22 @@ export function isGetInspectionPendingFacilityFromOfflineInspectionsMessage(
   if (!obj || typeof obj !== "object") return false;
   return (
     "type" in obj &&
-    obj.type === "getInspectionPendingFacilityFromOfflineInspections" &&
-    "inspectionIds" in obj
+    obj.type === "getInspectionPendingFacilityFromOfflineInspections"
   );
 }
 
 export interface GetInspectionPendingFacilityFromOfflineInspectionsResponse {
   type: "getInspectionPendingFacilityFromOfflineInspections";
   facilities: ApiInspPendingFacility[];
+}
+
+export function createGetInspectionPendingFacilityFromOfflineInspectionsResponse(
+  facilities: ApiInspPendingFacility[],
+) {
+  return {
+    type: "getInspectionPendingFacilityFromOfflineInspections",
+    facilities,
+  };
 }
 
 export function isGetInspectionPendingFacilityFromOfflineInspectionsResponse(

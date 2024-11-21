@@ -32,7 +32,7 @@ export default function CitizenHomePage() {
     <PageLayout banner="private">
       <PageContent spacing="lg" spaceContentToSide>
         <section aria-labelledby={titleId}>
-          <Typography component="h2" level="h2" mb={3} id={titleId}>
+          <Typography level="h1" mb={3} id={titleId}>
             {t("private_person.landing_page.header")}
           </Typography>
           <Typography>

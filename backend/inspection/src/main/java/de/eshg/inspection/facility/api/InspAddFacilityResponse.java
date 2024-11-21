@@ -15,4 +15,5 @@ import java.util.UUID;
 public record InspAddFacilityResponse(
     @Valid InspFacilityDto facility,
     @NotNull UUID procedureId,
-    @NotNull ProcedureStatusDto procedureStatus) {}
+    @NotNull ProcedureStatusDto procedureStatus,
+    @NotNull boolean isNew) {}

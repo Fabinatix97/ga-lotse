@@ -98,7 +98,7 @@ function NavMenuItem({
         >
           <Typography
             component="p"
-            level="h4"
+            level="h3"
             fontWeight={selected ? "700" : "500"}
             sx={{
               color: (theme) =>
@@ -146,14 +146,13 @@ function NavMenuItem({
                 </ListItemDecorator>
                 <Box display={"flex"} flexDirection={"column"}>
                   <Typography
-                    level="body-md"
-                    fontWeight="bold"
+                    level="title-md"
                     color={selected ? "primary" : undefined}
                   >
                     {subItem.name}
                   </Typography>
                   <Typography
-                    level="body-sm"
+                    level="body-md"
                     sx={{
                       color: (theme) =>
                         selected

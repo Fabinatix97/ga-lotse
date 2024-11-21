@@ -9,6 +9,4 @@ import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.util.List;
 
 public record ProcedureWithPersonDetailsData(
-    SchoolEntryProcedure procedure,
-    ChildDetailsData child,
-    List<CustodianDetailsData> custodians) {}
+    SchoolEntryProcedure procedure, PersonDetailsData child, List<PersonDetailsData> custodians) {}

@@ -31,7 +31,7 @@ public class DataSourceController {
 
   @GetExchange(accept = APPLICATION_JSON_VALUE)
   @ApiResponse(responseCode = "200", description = "The aggregated available data sources")
-  @Operation(summary = "Get statistics data sources")
+  @Operation(summary = "Get available data sources")
   GetAvailableDataSourcesResponse getAvailableDataSources() {
     return dataSourceAggregationService.getAvailableDataSources();
   }

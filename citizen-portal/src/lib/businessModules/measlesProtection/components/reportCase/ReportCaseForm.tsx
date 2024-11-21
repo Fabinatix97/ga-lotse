@@ -38,18 +38,7 @@ import { AffectedPersonFormInputs, ReportMeaslesCase } from "./types";
 export function FormHeader({ children }: { children: string }) {
   return (
     <Grid xxs={12}>
-      <Typography
-        component="h3"
-        level="h4"
-        sx={{
-          fontSize: byBreakpoint({
-            mobile: "1.125rem",
-            desktop: "1.5rem",
-          }),
-        }}
-      >
-        {children}
-      </Typography>
+      <Typography level="h2">{children}</Typography>
     </Grid>
   );
 }
@@ -57,9 +46,7 @@ export function FormHeader({ children }: { children: string }) {
 export function FormSectionLabel({ value }: { value: string }) {
   return (
     <Grid xxs={12}>
-      <Typography level="body-md" sx={{ fontWeight: "bold" }}>
-        {value}
-      </Typography>
+      <Typography level="h3">{value}</Typography>
     </Grid>
   );
 }

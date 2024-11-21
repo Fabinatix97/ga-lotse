@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { InfoOutlined } from "@mui/icons-material";
 import {
   ColorPaletteProp,
@@ -11,8 +12,6 @@ import {
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
-
-import { BaseModal } from "@/lib/shared/components/BaseModal";
 
 export function InfoIconTooltipButton({
   title,

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Schema(name = "StiProtectionProcedure")
@@ -21,5 +22,6 @@ public record StiProtectionProcedureDto(
     @NotNull ProcedureStatusDto status,
     @NotNull ConcernDto concern,
     @NotNull @Valid PersonDto person,
-    @NotNull @Valid AppointmentDto appointment,
+    @Valid AppointmentDto appointment,
+    @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,
     @NotNull @Valid WaitingRoomDto waitingRoom) {}

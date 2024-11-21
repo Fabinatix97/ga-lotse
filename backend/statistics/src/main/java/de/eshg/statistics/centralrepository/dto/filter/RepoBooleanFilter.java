@@ -1,0 +1,24 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package de.eshg.statistics.centralrepository.dto.filter;
+
+import de.eshg.statistics.centralrepository.dto.RepoAttributeSelection;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+public record RepoBooleanFilter(
+    @NotNull @Valid RepoAttributeSelection attribute,
+    @NotNull boolean searchForTrue,
+    @NotNull boolean searchForFalse,
+    @NotNull boolean searchForNull)
+    implements RepoFilter {
+  static final String SCHEMA_NAME = "RepoBooleanFilter";
+
+  @Override
+  public String type() {
+    return SCHEMA_NAME;
+  }
+}

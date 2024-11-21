@@ -51,4 +51,9 @@ public record DomesticAddressDto(
   public DomesticAddressDto(CountryCode country, String city, String postalCode, String street) {
     this(country, city, postalCode, null, street, null, null);
   }
+
+  public DomesticAddressDto(
+      CountryCode country, String city, String postalCode, String street, String houseNumber) {
+    this(country, city, postalCode, null, street, houseNumber, null);
+  }
 }

@@ -18,7 +18,6 @@ import { MedicalHistorySidePanel } from "@/lib/businessModules/travelMedicine/co
 import { DocumentSection } from "@/lib/businessModules/travelMedicine/components/shared/components/document/DocumentSection";
 import { MultiStepFormWrapper } from "@/lib/businessModules/travelMedicine/components/shared/components/multiStepForm/MultiStepFormWrapper";
 import { useCitizenRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
 import { ContentSheetTitle } from "@/lib/shared/components/layout/contentSheet";
 import {
@@ -26,6 +25,7 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { useAccessCodeParam } from "@/lib/shared/helpers/accessCode";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function MedicalHistoryStepper() {
   const { t } = useTranslation(["travelMedicine/medicalHistories"]);
@@ -78,17 +78,21 @@ export function MedicalHistoryStepper() {
           contentCenter={
             <>
               <DocumentSection
-                currentStep={currentStep}
+                sectionIndex={currentStep}
                 documentSection={medicalHistory.sections.at(currentStep)!}
-                documentBriefing={
-                  <>
-                    <ContentSheetTitle>{t("briefing.title")}</ContentSheetTitle>
-                    <Alert
-                      title={t("briefing.infoText")}
-                      color="primary"
-                      sx={{ padding: "16px" }}
-                    />
-                  </>
+                documentHeader={
+                  currentStep === 0 && (
+                    <>
+                      <ContentSheetTitle>
+                        {t("briefing.title")}
+                      </ContentSheetTitle>
+                      <Alert
+                        title={t("briefing.infoText")}
+                        color="primary"
+                        sx={{ padding: "16px" }}
+                      />
+                    </>
+                  )
                 }
               />
               <MedicalHistorySidePanel
@@ -105,17 +109,19 @@ export function MedicalHistoryStepper() {
         <TwoColumnGrid
           content={
             <DocumentSection
-              currentStep={currentStep}
+              sectionIndex={currentStep}
               documentSection={medicalHistory.sections.at(currentStep)!}
-              documentBriefing={
-                <>
-                  <ContentSheetTitle>{t("briefing.title")}</ContentSheetTitle>
-                  <Alert
-                    title={t("briefing.infoText")}
-                    color="primary"
-                    sx={{ padding: "16px" }}
-                  />
-                </>
+              documentHeader={
+                currentStep === 0 && (
+                  <>
+                    <ContentSheetTitle>{t("briefing.title")}</ContentSheetTitle>
+                    <Alert
+                      title={t("briefing.infoText")}
+                      color="primary"
+                      sx={{ padding: "16px" }}
+                    />
+                  </>
+                )
               }
             />
           }

@@ -38,4 +38,12 @@ public class ImageMetaData extends MetaData {
   public void setCreatedDate(Instant createdDate) {
     this.createdDate = createdDate;
   }
+
+  @Override
+  public ImageMetaData copy() {
+    ImageMetaData copy = new ImageMetaData();
+    copy(copy);
+    copy.createdDate = createdDate;
+    return copy;
+  }
 }

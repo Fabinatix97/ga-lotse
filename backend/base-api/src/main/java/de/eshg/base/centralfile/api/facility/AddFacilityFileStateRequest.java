@@ -28,12 +28,7 @@ public record AddFacilityFileStateRequest(
     @Valid List<FacilityContactPersonDto> contactPersons,
     @Valid AddressDto contactAddress,
     @Valid AddressDto differentBillingAddress,
-    @NotNull DataOriginDto dataOrigin,
-    @Schema(
-            description =
-                "If only the knowledge factor `name` as well as the address (apart from `addressAddition` and `differentName`) shall be used for establishing a connection to an existing referenceFacility instead of a full match of the complete entity. This is useful for automatic connections, e.g. for imports, where incomplete data is present.",
-            example = "true")
-        Boolean partialMatch)
+    @NotNull DataOriginDto dataOrigin)
     implements FacilityDetails {
 
   public AddFacilityFileStateRequest(FacilityDetailsDto facilityDetails, DataOriginDto dataOrigin) {
@@ -45,25 +40,7 @@ public record AddFacilityFileStateRequest(
         facilityDetails.contactPersons(),
         facilityDetails.contactAddress(),
         facilityDetails.differentBillingAddress(),
-        dataOrigin,
-        null);
-  }
-
-  public AddFacilityFileStateRequest(
-      UUID referenceFacilityId,
-      FacilityDetailsDto facilityDetails,
-      DataOriginDto dataOrigin,
-      Boolean partialMatch) {
-    this(
-        referenceFacilityId,
-        facilityDetails.name(),
-        facilityDetails.emailAddresses(),
-        facilityDetails.phoneNumbers(),
-        facilityDetails.contactPersons(),
-        facilityDetails.contactAddress(),
-        facilityDetails.differentBillingAddress(),
-        dataOrigin,
-        partialMatch);
+        dataOrigin);
   }
 
   public AddFacilityFileStateRequest(
@@ -76,8 +53,7 @@ public record AddFacilityFileStateRequest(
         facilityDetails.contactPersons(),
         facilityDetails.contactAddress(),
         facilityDetails.differentBillingAddress(),
-        dataOrigin,
-        null);
+        dataOrigin);
   }
 
   public AddFacilityFileStateRequest(
@@ -96,8 +72,7 @@ public record AddFacilityFileStateRequest(
         contactPersons,
         contactAddress,
         differentBillingAddress,
-        dataOrigin,
-        null);
+        dataOrigin);
   }
 
   public AddFacilityFileStateRequest(
@@ -110,7 +85,6 @@ public record AddFacilityFileStateRequest(
         referenceFacility.contactPersons(),
         referenceFacility.contactAddress(),
         referenceFacility.differentBillingAddress(),
-        dataOrigin,
-        null);
+        dataOrigin);
   }
 }

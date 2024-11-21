@@ -13,54 +13,40 @@ import { DocumentRadioButtonElement } from "@/lib/businessModules/travelMedicine
 import { DocumentTextareaElement } from "@/lib/businessModules/travelMedicine/components/shared/components/document/DocumentTextareaElement";
 
 interface AnamnesisQuestionProps {
-  currentStep: number;
-  index: number;
+  sectionIndex: number;
+  sectionElementIndex: number;
   anamnesisQuestion: ApiDocumentAnamnesisQuestion;
   setFieldValue: SetFieldValueHelper;
   getFieldProps: <Value>(
     props: string | FieldConfig<Value>,
   ) => FieldInputProps<Value>;
+  parentPath: string;
 }
 
 export function AnamnesisQuestion(props: Readonly<AnamnesisQuestionProps>) {
+  const anamnesisPath = `${props.parentPath}.anamnesisQuestion`;
   return (
     <>
       <DocumentRadioButtonElement
-        name={
-          "sections[" +
-          props.currentStep +
-          "].sectionElements[" +
-          props.index +
-          "].anamnesisQuestion.answer"
-        }
+        name={`${anamnesisPath}.answer`}
+        anamnesisPath={anamnesisPath}
         label={props.anamnesisQuestion.questionText}
         setFieldValue={props.setFieldValue}
         anamnesisQuestion={props.anamnesisQuestion}
-        elementIndex={props.index}
-        sectionIndex={props.currentStep}
+        elementIndex={props.sectionElementIndex}
+        sectionIndex={props.sectionIndex}
+        data-testid="document-element-type-question"
       />
       {(
-        props.getFieldProps(
-          "sections[" +
-            props.currentStep +
-            "].sectionElements[" +
-            props.index +
-            "].anamnesisQuestion.answer",
-        ).value as string
+        props.getFieldProps(`${anamnesisPath}.answer`).value as string
       )?.toString() === "true" && (
         <>
           {props.anamnesisQuestion.subElementMultiSelect.length > 0 && (
             <DocumentMultiSelectElement
               anamnesisQuestion={props.anamnesisQuestion}
-              elementIndex={props.index}
-              sectionIndex={props.currentStep}
-              name={
-                "sections[" +
-                props.currentStep +
-                "].sectionElements[" +
-                props.index +
-                "].anamnesisQuestion.subElementMultiSelect"
-              }
+              elementIndex={props.sectionElementIndex}
+              name={`${anamnesisPath}.subElementMultiSelect`}
+              parentPath={`${anamnesisPath}`}
             />
           )}
           {props.anamnesisQuestion.subElementText && (
@@ -71,13 +57,7 @@ export function AnamnesisQuestion(props: Readonly<AnamnesisQuestionProps>) {
               }}
             >
               <DocumentTextareaElement
-                name={
-                  "sections[" +
-                  props.currentStep +
-                  "].sectionElements[" +
-                  props.index +
-                  "].anamnesisQuestion.subElementText.answer"
-                }
+                name={`${anamnesisPath}.subElementText.answer`}
                 label={props.anamnesisQuestion.subElementText.questionText}
               ></DocumentTextareaElement>
             </Stack>

@@ -78,6 +78,8 @@ export const routes = {
       details: (entryId: string) =>
         `${routes.procedures.progressEntries(procedureId).index}/${entryId}/details`,
     }),
+    history: (procedureId: string) =>
+      `${proceduresPath}/${procedureId}/history`,
     new: (procedureId: string) => `${proceduresPath}/new/${procedureId}`,
   },
   textBlocks: {
@@ -97,5 +99,7 @@ export const routes = {
     index: inboxPath,
     details: (inboxProcedureId: string) =>
       `${inboxPath}/${inboxProcedureId}/details`,
+    create: (inboxProcedureId: string) =>
+      `${inboxPath}/${inboxProcedureId}/create`,
   },
 } as const;

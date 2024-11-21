@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.mapper;
 
+import de.eshg.base.user.api.UserDto;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
@@ -24,6 +25,7 @@ import de.eshg.statistics.api.evaluationtemplate.DataSourceWithAttributeNames;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateInfoDto;
 import de.eshg.statistics.api.evaluationtemplate.ExpectedEvaluationTemplateDto;
+import de.eshg.statistics.api.evaluationtemplate.MinimalEvaluationTemplateInfo;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -69,7 +71,7 @@ public class EvaluationTemplateMapper {
     AnalysisTemplate analysisTemplate = new AnalysisTemplate();
     analysisTemplate.setName(analysisTemplateData.name());
     analysisTemplate.setChartConfiguration(
-        EvaluationMapper.mapToPersistence(analysisTemplateData.chartConfiguration()));
+        AnalysisMapper.mapToPersistence(analysisTemplateData.chartConfiguration()));
     analysisTemplate.addDiagramTemplates(
         analysisTemplateData.diagramTemplateDatas().stream()
             .map(EvaluationTemplateMapper::mapToDiagramTemplate)
@@ -125,7 +127,7 @@ public class EvaluationTemplateMapper {
         .filter(
             source ->
                 source.id().equals(dataSourceDto.id())
-                    && source.businessModule().equals(dataSourceDto.businessModuleName()))
+                    && source.businessModuleName().equals(dataSourceDto.businessModuleName()))
         .findFirst()
         .orElseThrow(InvalidDataSourceException::new);
   }
@@ -235,9 +237,9 @@ public class EvaluationTemplateMapper {
   }
 
   public static EvaluationTemplateInfoDto mapToInfo(EvaluationTemplate evaluationTemplate) {
-    List<String> businessModuleNames =
+    List<String> dataSourceNames =
         evaluationTemplate.getDataSources().stream()
-            .map(DataSource::getBusinessModuleName)
+            .map(DataSource::getDataSourceName)
             .collect(Collectors.toSet())
             .stream()
             .sorted()
@@ -246,17 +248,23 @@ public class EvaluationTemplateMapper {
     return new EvaluationTemplateInfoDto(
         evaluationTemplate.getExternalId(),
         evaluationTemplate.getName(),
-        businessModuleNames,
+        dataSourceNames,
         evaluationTemplate.getAnalysisCount(),
         evaluationTemplate.getCreatedByUserId(),
         evaluationTemplate.getCreatedAt(),
         evaluationTemplate.getLastUsageAt());
   }
 
+  public static MinimalEvaluationTemplateInfo mapToMinimalInfo(
+      EvaluationTemplate evaluationTemplate) {
+    return new MinimalEvaluationTemplateInfo(
+        evaluationTemplate.getExternalId(), evaluationTemplate.getName());
+  }
+
   public static EvaluationTemplateDto mapToApi(
-      EvaluationTemplate evaluationTemplate, boolean withoutAnonymizationAllowed) {
+      EvaluationTemplate evaluationTemplate, boolean withoutAnonymizationAllowed, UserDto user) {
     List<DataSourceWithAttributeNames> dataSources =
-        mapToDataSourceDtos(evaluationTemplate.getDataSources());
+        mapToAttributesWithNames(evaluationTemplate.getDataSources());
 
     return new EvaluationTemplateDto(
         evaluationTemplate.getExternalId(),
@@ -265,18 +273,17 @@ public class EvaluationTemplateMapper {
         withoutAnonymizationAllowed,
         dataSources,
         mapToAnalysisInfos(evaluationTemplate.getAnalysisTemplates()),
-        evaluationTemplate.getCreatedByUserId(),
+        user,
         evaluationTemplate.getCreatedAt(),
         evaluationTemplate.getLastUsageAt());
   }
 
-  private static List<DataSourceWithAttributeNames> mapToDataSourceDtos(
+  private static List<DataSourceWithAttributeNames> mapToAttributesWithNames(
       List<DataSource> dataSources) {
-    return dataSources.stream().map(EvaluationTemplateMapper::mapToDataSourceDto).toList();
+    return dataSources.stream().map(EvaluationTemplateMapper::mapToAttributeWithNames).toList();
   }
 
-  private static DataSourceWithAttributeNames mapToDataSourceDto(DataSource dataSource) {
-
+  private static DataSourceWithAttributeNames mapToAttributeWithNames(DataSource dataSource) {
     return new DataSourceWithAttributeNames(
         dataSource.getBusinessModuleName(),
         dataSource.getExternalDataSourceId(),
@@ -332,5 +339,20 @@ public class EvaluationTemplateMapper {
       case ScatterChartConfiguration ignored -> ScatterChartConfigurationDto.SCHEMA_NAME;
       default -> throw new BadRequestException("Unexpected class");
     };
+  }
+
+  public static DataSourceDto mapToDataSourceDto(DataSource dataSource) {
+    return new DataSourceDto(
+        dataSource.getBusinessModuleName(),
+        dataSource.getExternalDataSourceId(),
+        dataSource.getAttributes().stream()
+            .map(EvaluationTemplateMapper::mapToBusinessDataAttributeCode)
+            .toList());
+  }
+
+  private static BusinessDataAttribute mapToBusinessDataAttributeCode(DataAttribute dataAttribute) {
+    return new BusinessDataAttribute(
+        dataAttribute.getCode(),
+        dataAttribute.getBaseAttributes().stream().map(BaseDataAttribute::getCode).toList());
   }
 }

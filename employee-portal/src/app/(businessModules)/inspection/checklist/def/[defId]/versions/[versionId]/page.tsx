@@ -5,15 +5,8 @@
 
 "use client";
 
-import { useSuspenseQueries } from "@tanstack/react-query";
-
-import {
-  useChecklistDefinitionApi,
-  useObjectTypeApi,
-} from "@/lib/businessModules/inspection/api/clients";
-import { getChecklistDefinitionVersionQuery } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
-import { getObjectTypesQuery } from "@/lib/businessModules/inspection/api/queries/objectTypes";
-import { EditChecklistDefinition } from "@/lib/businessModules/inspection/components/checklistDefinition/EditChecklistDefinition";
+import { useGetChecklistDefinitionVersion } from "@/lib/businessModules/inspection/api/queries/checklistDefinition";
+import { ReadOnlyCLDPage } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/ReadOnlyCLDPage";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
@@ -24,16 +17,8 @@ export default function ViewChecklistVersion({
 }: Readonly<{
   params: { defId: string; versionId: string };
 }>) {
-  const objectTypeApi = useObjectTypeApi();
-  const checklistDefinitionApi = useChecklistDefinitionApi();
-
-  const [{ data: objectTypes }, { data: checklistVersion }] =
-    useSuspenseQueries({
-      queries: [
-        getObjectTypesQuery(objectTypeApi),
-        getChecklistDefinitionVersionQuery(checklistDefinitionApi, versionId),
-      ],
-    });
+  const { data: checklistVersion } =
+    useGetChecklistDefinitionVersion(versionId);
 
   if (checklistVersion.context.defId !== defId) {
     throw new Error("defId does not match");
@@ -49,11 +34,7 @@ export default function ViewChecklistVersion({
       }
     >
       <MainContentLayout>
-        <EditChecklistDefinition
-          cldVersion={checklistVersion}
-          readonly
-          objectTypes={objectTypes}
-        />
+        <ReadOnlyCLDPage cldVersion={checklistVersion} />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

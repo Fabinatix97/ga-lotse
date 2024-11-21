@@ -23,7 +23,7 @@
   "noAppointments": {
     "upcomingAppointments": "Anstehende Termine",
     "pastAppointments": "Vergangene Termine",
-    "noUpcomingAppointments": "Keine anstehende Termine",
-    "noPastAppointments": "Keine vergangene Termine"
+    "noUpcomingAppointments": "Keine anstehenden Termine",
+    "noPastAppointments": "Keine vergangenen Termine"
   }
 }

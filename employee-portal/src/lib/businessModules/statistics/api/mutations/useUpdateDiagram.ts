@@ -8,8 +8,8 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
-import { SaveDiagramStepFormModel } from "@/lib/businessModules/statistics/components/statistics/details/CreateDiagramSidebar/SaveDiagramStep/saveDiagramStepFormModel";
-import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/statistics/details/UpdateDiagramSidebar/updateDiagramFormModel";
+import { SaveDiagramStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateDiagramSidebar/SaveDiagramStep/saveDiagramStepFormModel";
+import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/updateDiagramFormModel";
 
 export function mapSaveDiagramFormModelToUpdateDiagramApiModel(
   model: SaveDiagramStepFormModel,

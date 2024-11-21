@@ -10,7 +10,3 @@ const apiQueryKey = queryKeyFactory(["auditlog"]);
 export const auditLogApiQueryKey = queryKeyFactory(
   apiQueryKey(["auditLogApi"]),
 );
-
-export const auditLogFeatureTogglesApiQueryKey = queryKeyFactory(
-  apiQueryKey(["auditLogFeatureTogglesApi"]),
-);

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useStiProtectionProcedureApi } from "@/lib/businessModules/stiProtection/api/clients";
@@ -42,4 +43,11 @@ export function useStiProceduresQuery(page: PageRequest) {
 
     queryKey: stiProtectionProceduresApiQueryKey([page]),
   });
+}
+
+export function useAnonymousIdentificationDocumentQuery(procedureId: string) {
+  const stiProtectionApi = useStiProtectionProcedureApi();
+  return useFileDownload(() =>
+    stiProtectionApi.getAnonymousIdentificationDocumentRaw({ id: procedureId }),
+  );
 }

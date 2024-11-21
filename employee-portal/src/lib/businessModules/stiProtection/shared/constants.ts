@@ -33,7 +33,7 @@ export const PROCEDURE_TYPES = [ApiProcedureType.StiProtection];
 export const TASK_TYPES = [ApiTaskType.StiProtection];
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
-  // Todo: fill with translations
+  PERSON_DETAILS_UPDATED: "Die Angaben zur Person wurden aktualisiert",
 };
 
 export const CONCERN_VALUES: EnumMap<ApiConcern> = {

@@ -182,3 +182,4 @@ This is a https://nextjs.org/[Next.js] project bootstrapped with https://github.
 - link:../reverse-proxy/README.md[Reverse Proxy]
 - link:content-security-policy-header.adoc[Content Security Policy (CSP) Header]
 - link:forms.adoc[Forms]
+- link:styling.adoc[Styling]

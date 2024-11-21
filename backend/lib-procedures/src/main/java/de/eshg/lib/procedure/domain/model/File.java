@@ -49,7 +49,6 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @CreatedBy
-  @Column(nullable = false)
   private UUID createdBy;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
@@ -186,5 +185,25 @@ public abstract class File extends BaseEntityWithExternalId implements LockableE
 
   public void lockByMail(boolean lockedByMail) {
     this.lockedByMail = lockedByMail;
+  }
+
+  public abstract File copy();
+
+  protected File copyWithMail() {
+    Mail mailCopy = attachedToMail.copy();
+    int index = attachedToMail.getAttachments().indexOf(this);
+    return mailCopy.getAttachments().get(index);
+  }
+
+  protected void copy(File destination) {
+    destination.fileContent = fileContent.copy();
+    destination.fileName = fileName;
+    destination.fileType = fileType;
+    destination.fileSizeBytes = fileSizeBytes;
+    if (attachedToMail != null) {
+      destination.attachedToMail = attachedToMail.copy();
+      destination.attachedToMail.addAttachment(destination);
+    }
+    destination.deleted = deleted;
   }
 }

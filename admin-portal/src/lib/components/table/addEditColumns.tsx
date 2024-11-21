@@ -127,7 +127,9 @@ export function StagedRowButtons({
     (event: ChangeEvent<HTMLInputElement>) => {
       const ready = event.target.checked;
       api?.update({
-        ...row,
+        id: row.id,
+        author: row.author,
+        stagedEntityType: row.stagedEntityType,
         stagingStatus: ready
           ? ApiStagingStatus.ReadyForReview
           : ApiStagingStatus.WorkInProgress,

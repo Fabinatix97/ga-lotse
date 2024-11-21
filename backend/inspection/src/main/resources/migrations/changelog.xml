@@ -57,5 +57,10 @@
   <include file="migrations/0047_inspection_import_merge.xml"/>
   <include file="migrations/0048_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0049_add_gdpr_validation_task.xml"/>
+  <include file="migrations/0050_add_started_at.xml"/>
+  <include file="migrations/0051_drop_not_null_constraints.xml"/>
+  <include file="migrations/0052_remove_facility_values.xml"/>
+  <include file="migrations/0053_rename_gdpr_validation_task_procedure_id.xml"/>
+  <include file="migrations/0054_add_download_package_table.xml"/>
 
 </databaseChangeLog>

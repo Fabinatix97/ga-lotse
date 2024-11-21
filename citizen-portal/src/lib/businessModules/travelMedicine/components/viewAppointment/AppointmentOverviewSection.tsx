@@ -4,12 +4,12 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { Grid, Stack, Typography, TypographyProps } from "@mui/joy";
+import { Grid, Stack, Typography } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { Children, ReactNode } from "react";
 
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { byBreakpoint } from "@/lib/shared/breakpoints";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export function AppointmentOverviewSectionGrid(
   props: Readonly<RequiresChildren>,
@@ -47,9 +47,7 @@ export function AppointmentOverviewSection(
   );
 }
 
-interface AppointmentOverviewSectionTitleProps
-  extends Pick<TypographyProps, "component">,
-    RequiresChildren {
+interface AppointmentOverviewSectionTitleProps extends RequiresChildren {
   "data-testid"?: string;
 }
 
@@ -58,7 +56,6 @@ export function AppointmentOverviewSectionTitle(
 ) {
   return (
     <Typography
-      component={props.component ?? "h4"}
       level="title-md"
       sx={{ textAlign: "left" }}
       data-testid={props["data-testid"]}

@@ -5,12 +5,13 @@
 
 import { ApiArchivingRelevance } from "@eshg/employee-portal-api/businessProcedures";
 import { DeleteOutlined, Inventory2Outlined } from "@mui/icons-material";
-import { Button, Divider, Typography } from "@mui/joy";
+import { Divider, Typography } from "@mui/joy";
 import { RowSelectionState } from "@tanstack/react-table";
 
 import { ArchiveTableProps } from "@/lib/shared/components/archiving/components/archiveView/ArchiveTable";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { RowSelectionTableToolbar } from "@/lib/shared/components/table/RowSelectionTableToolbar";
+import { RowSelectionTableToolbarButton } from "@/lib/shared/components/table/RowSelectionTableToolbarButton";
 import { mapToRowIds } from "@/lib/shared/hooks/table/useRowSelection";
 
 interface ArchiveTableTitleProps extends ArchiveTableProps {
@@ -82,29 +83,23 @@ export function ArchiveTableTitle(props: ArchiveTableTitleProps) {
       )}
       {selectedProcedureIds.length > 0 && (
         <>
-          <Button
+          <RowSelectionTableToolbarButton
             data-testid="archiveButton"
-            startDecorator={<Inventory2Outlined />}
-            variant="plain"
-            color="neutral"
-            size="sm"
+            decorator={<Inventory2Outlined />}
             disabled={isUpdatePending}
             onClick={handleBulkArchiveAction}
           >
             Archivieren
-          </Button>
+          </RowSelectionTableToolbarButton>
           <Divider orientation="vertical" sx={{ marginY: 1 }} />
-          <Button
+          <RowSelectionTableToolbarButton
             data-testid="deleteButton"
-            startDecorator={<DeleteOutlined />}
-            variant="plain"
-            color="neutral"
-            size="sm"
+            decorator={<DeleteOutlined />}
             disabled={isUpdatePending}
             onClick={handleBulkDeleteAction}
           >
             Löschen
-          </Button>
+          </RowSelectionTableToolbarButton>
         </>
       )}
     </RowSelectionTableToolbar>

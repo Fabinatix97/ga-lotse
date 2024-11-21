@@ -27,7 +27,7 @@ export function mapToEvaluationTemplatesToTableView(
   const templates = response.evaluationTemplates.map((template) => {
     return {
       analysisCount: template.analysisCount,
-      businessModuleName: template.businessModuleNames[0]!,
+      dataSourceName: template.dataSourceNames[0]!,
       createdAt: template.createdAt,
       id: template.id,
       name: template.name,

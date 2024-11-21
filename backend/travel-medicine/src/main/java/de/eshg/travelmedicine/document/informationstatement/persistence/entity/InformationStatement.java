@@ -8,7 +8,9 @@ package de.eshg.travelmedicine.document.informationstatement.persistence.entity;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.travelmedicine.signature.persistence.entity.TravelMedicineSignature;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -16,6 +18,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -42,6 +45,13 @@ public class InformationStatement extends GloballyUniqueEntityBase {
   @NotNull
   @Column
   boolean citizenHasAnswered;
+
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      orphanRemoval = true)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private TravelMedicineSignature signature;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -98,6 +108,14 @@ public class InformationStatement extends GloballyUniqueEntityBase {
 
   public void setVaccinationConsultation(VaccinationConsultation vaccinationConsultation) {
     this.vaccinationConsultation = vaccinationConsultation;
+  }
+
+  public TravelMedicineSignature getSignature() {
+    return signature;
+  }
+
+  public void setSignature(TravelMedicineSignature signature) {
+    this.signature = signature;
   }
 
   public Instant getCreatedAt() {

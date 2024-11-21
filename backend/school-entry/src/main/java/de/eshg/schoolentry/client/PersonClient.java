@@ -17,6 +17,7 @@ import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponse;
@@ -29,7 +30,6 @@ import de.eshg.schoolentry.mapper.PersonMapper;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
@@ -130,7 +130,8 @@ public class PersonClient {
       UUID centralFileStateId, PersonDetailsDto updateRequest) {
     AddPersonFileStateResponse response =
         personApi.updatePersonFileStateAndReference(
-            centralFileStateId, new PutPersonRequest(updateRequest));
+            centralFileStateId,
+            new de.eshg.base.centralfile.api.person.UpdatePersonRequest(updateRequest));
     UUID newCentralFileStateId = response.id();
     if (newCentralFileStateId.equals(centralFileStateId)) {
       log.info(
@@ -146,9 +147,7 @@ public class PersonClient {
   }
 
   public void markCentralFileStatesForDeletion(UUID... centralFileStates) {
-    personApi.markPersonFileStateForDeletion(
-        new DeleteFileStatesRequest(
-            new LinkedHashSet<>(Arrays.stream(centralFileStates).collect(Collectors.toSet()))));
+    personApi.markPersonFileStateForDeletion(new DeleteFileStatesRequest(centralFileStates));
   }
 
   private static List<AddPersonFileStateRequest> mapToFlatRequestList(
@@ -208,12 +207,56 @@ public class PersonClient {
   }
 
   public ProcedureWithPersonDetailsData augmentWithPersonDetails(SchoolEntryProcedure procedure) {
-    ChildDetailsData childDetailsData = fetchChildDetailsData(procedure);
-    Map<UUID, GetPersonFileStateResponse> custodianFileStates =
-        fetchPersonsSingleRequests(procedure.getCustodianIdsFromCentralFile());
-    List<CustodianDetailsData> custodianData =
-        extractCustodianDetailsData(procedure, custodianFileStates);
-    return new ProcedureWithPersonDetailsData(procedure, childDetailsData, custodianData);
+    List<UUID> fileStateIds =
+        procedure.getRelatedPersons().stream().map(RelatedPerson::getCentralFileStateId).toList();
+
+    GetPersonFileStatesResponse response =
+        personApi.getPersonFileStates(new GetPersonFileStatesRequest(fileStateIds, true));
+
+    if (response.personFileStates().size() != fileStateIds.size()) {
+      throw new IllegalStateException("Some persons were not found in the central file.");
+    }
+
+    Map<UUID, GetPersonFileStateResponse> fileStatesById =
+        response.personFileStates().stream()
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
+
+    List<PersonDetailsData> custodianDetails =
+        procedure
+            .getCustodians()
+            .map(custodian -> extractDetails(custodian, fileStatesById))
+            .toList();
+
+    PersonDetailsData childDetails = extractDetails(procedure.getChild(), fileStatesById);
+
+    return new ProcedureWithPersonDetailsData(procedure, childDetails, custodianDetails);
+  }
+
+  PersonDetailsData extractDetails(
+      Person person, Map<UUID, GetPersonFileStateResponse> fileStatesById) {
+    GetPersonFileStateResponse fileState = fileStatesById.get(person.getCentralFileStateId());
+    return mapFileStateToPersonDetailsData(person, fileState);
+  }
+
+  private static PersonDetailsData mapFileStateToPersonDetailsData(
+      Person person, GetPersonFileStateResponse response) {
+    return new PersonDetailsData(
+        person.getVersion(),
+        response.id(),
+        response.outdated(),
+        response.title(),
+        response.salutation(),
+        response.gender(),
+        response.firstName(),
+        response.lastName(),
+        response.dateOfBirth(),
+        response.nameAtBirth(),
+        response.placeOfBirth(),
+        response.countryOfBirth(),
+        response.emailAddresses(),
+        response.phoneNumbers(),
+        response.contactAddress(),
+        response.differentBillingAddress());
   }
 
   public Map<PersonKeyAttributes, List<ProcedureWithChildData>> augmentWithChildData(
@@ -228,9 +271,9 @@ public class PersonClient {
             .map(SchoolEntryProcedure::getChildIdFromCentralFile)
             .toList();
 
-    Map<UUID, AddPersonFileStateResponse> personsById =
+    Map<UUID, GetPersonFileStateResponse> personsById =
         fetchPersonsBulk(personIdsToFetch, null, null, null, null).stream()
-            .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id));
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
 
     Map<PersonKeyAttributes, List<ProcedureWithChildData>> result = new LinkedHashMap<>();
     for (Entry<PersonKeyAttributes, List<SchoolEntryProcedure>> entry :
@@ -253,9 +296,9 @@ public class PersonClient {
     List<UUID> personIdsToFetch =
         procedures.stream().map(SchoolEntryProcedure::getChildIdFromCentralFile).toList();
 
-    Map<UUID, AddPersonFileStateResponse> personsById =
+    Map<UUID, GetPersonFileStateResponse> personsById =
         fetchPersonsBulk(personIdsToFetch, null, null, null, null).stream()
-            .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id));
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
 
     return procedures.stream().map(procedure -> extractChildData(procedure, personsById));
   }
@@ -277,30 +320,7 @@ public class PersonClient {
     return personCache.computeIfAbsent(id, personApi::getPersonFileState);
   }
 
-  public ChildDetailsData fetchChildDetailsData(SchoolEntryProcedure procedure) {
-    Person child = procedure.getChild();
-    UUID childIdFromCentralFile = child.getCentralFileStateId();
-    GetPersonFileStateResponse response = getPersonFileState(childIdFromCentralFile);
-    return new ChildDetailsData(
-        child.getVersion(),
-        childIdFromCentralFile,
-        response.outdated(),
-        response.title(),
-        response.salutation(),
-        response.gender(),
-        response.firstName(),
-        response.lastName(),
-        response.dateOfBirth(),
-        response.nameAtBirth(),
-        response.placeOfBirth(),
-        response.countryOfBirth(),
-        response.emailAddresses(),
-        response.phoneNumbers(),
-        response.contactAddress(),
-        response.differentBillingAddress());
-  }
-
-  public List<AddPersonFileStateResponse> fetchPersonsBulk(
+  public List<GetPersonFileStateResponse> fetchPersonsBulk(
       List<UUID> personIdsToFetch,
       GetPersonsSortKey sortKey,
       Sort.Direction direction,
@@ -339,27 +359,9 @@ public class PersonClient {
         pageSize);
   }
 
-  private Map<UUID, GetPersonFileStateResponse> fetchPersonsSingleRequests(
-      List<UUID> personIdsToFetch) {
-    if (personIdsToFetch.isEmpty()) {
-      return Map.of();
-    }
-
-    Map<UUID, GetPersonFileStateResponse> responseMap =
-        personIdsToFetch.stream()
-            .map(this::getPersonFileState)
-            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
-
-    if (responseMap.size() != personIdsToFetch.size()) {
-      throw new IllegalStateException("Some persons were not found in the central file.");
-    }
-
-    return responseMap;
-  }
-
   private static ProcedureWithChildData extractChildData(
-      SchoolEntryProcedure procedure, Map<UUID, AddPersonFileStateResponse> personsById) {
-    AddPersonFileStateResponse child = personsById.get(procedure.getChildIdFromCentralFile());
+      SchoolEntryProcedure procedure, Map<UUID, GetPersonFileStateResponse> personsById) {
+    GetPersonFileStateResponse child = personsById.get(procedure.getChildIdFromCentralFile());
     ChildData childData =
         new ChildData(
             child.firstName(),
@@ -372,32 +374,6 @@ public class PersonClient {
             child.phoneNumbers());
 
     return new ProcedureWithChildData(procedure, childData);
-  }
-
-  private static List<CustodianDetailsData> extractCustodianDetailsData(
-      SchoolEntryProcedure procedure, Map<UUID, GetPersonFileStateResponse> personsById) {
-    return procedure.getCustodianIdsFromCentralFile().stream()
-        .map(personsById::get)
-        .map(
-            custodian ->
-                new CustodianDetailsData(
-                    custodian.referenceVersion(),
-                    custodian.id(),
-                    custodian.outdated(),
-                    custodian.title(),
-                    custodian.salutation(),
-                    custodian.gender(),
-                    custodian.firstName(),
-                    custodian.lastName(),
-                    custodian.dateOfBirth(),
-                    custodian.nameAtBirth(),
-                    custodian.placeOfBirth(),
-                    custodian.countryOfBirth(),
-                    custodian.emailAddresses(),
-                    custodian.phoneNumbers(),
-                    custodian.contactAddress(),
-                    custodian.differentBillingAddress()))
-        .toList();
   }
 
   public UUID updateChild(UUID fileStateId, UpdatePersonRequest request) {
@@ -415,17 +391,15 @@ public class PersonClient {
             .map(ResolvedMergeProcedureData::procedure)
             .map(SchoolEntryProcedure::getChildIdFromCentralFile)
             .toList();
-    Map<UUID, AddPersonFileStateResponse> existingFileStates = getPersonFileStates(childIds);
+    Map<UUID, GetPersonFileStateResponse> existingFileStates = getPersonFileStates(childIds);
 
-    record BulkUpdateRequest(UUID childIdFromCentralFile, PersonDetailsDto update, long version) {}
-
-    List<BulkUpdateRequest> updates = new ArrayList<>();
+    List<UpdatePersonInBulkRequest> updates = new ArrayList<>();
     Map<UUID, SchoolEntryProcedure> updatedProceduresByChildId = new LinkedHashMap<>();
 
     for (ResolvedMergeProcedureData childUpdate : mergeDataList) {
       SchoolEntryProcedure procedure = childUpdate.procedure();
       UUID childIdFromCentralFile = procedure.getChildIdFromCentralFile();
-      AddPersonFileStateResponse child = existingFileStates.get(childIdFromCentralFile);
+      GetPersonFileStateResponse child = existingFileStates.get(childIdFromCentralFile);
       String placeOfBirth = childUpdate.placeOfBirth();
       CountryCode countryOfBirth = childUpdate.countryOfBirth();
       String phoneNumber = childUpdate.phoneNumber();
@@ -454,9 +428,7 @@ public class PersonClient {
                 child.contactAddress(),
                 child.differentBillingAddress());
 
-        updates.add(
-            new BulkUpdateRequest(
-                childIdFromCentralFile, updatedChildData, child.referenceVersion()));
+        updates.add(new UpdatePersonInBulkRequest(childIdFromCentralFile, updatedChildData));
         updatedProceduresByChildId.put(childIdFromCentralFile, procedure);
       }
     }
@@ -465,21 +437,9 @@ public class PersonClient {
       return List.of();
     }
 
-    // TODO ISSUE-5902: Use Bulk Update API
-    record BulkPersonUpdateResult(UUID previousFileStateId, UUID newFileStateId) {}
-    List<BulkPersonUpdateResult> results = new ArrayList<>();
-    List<UUID> failedPersonIds = new ArrayList<>();
-    for (BulkUpdateRequest update : updates) {
-      UUID previousFileStateId = update.childIdFromCentralFile();
-      try {
-        UUID newFileStateId =
-            updatePersonFileStateAndReference(previousFileStateId, update.update());
-        results.add(new BulkPersonUpdateResult(previousFileStateId, newFileStateId));
-      } catch (Exception e) {
-        log.error("Failed to update child {}", previousFileStateId, e);
-        failedPersonIds.add(previousFileStateId);
-      }
-    }
+    UpdatePersonsResponse response =
+        personApi.updatePersonFileStatesAndReferences(new UpdatePersonsRequest(updates));
+    List<UUID> failedPersonIds = response.failedPersonIds();
 
     if (!failedPersonIds.isEmpty()) {
       log.error(
@@ -488,7 +448,7 @@ public class PersonClient {
           shortenForLoggingIfNecessary(failedPersonIds));
     }
 
-    for (BulkPersonUpdateResult result : results) {
+    for (UpdatePersonInBulkResult result : response.results()) {
       UUID previousCentralFileStateId = result.previousFileStateId();
       UUID newCentralFileStateId = result.newFileStateId();
       SchoolEntryProcedure procedure = updatedProceduresByChildId.get(previousCentralFileStateId);
@@ -498,12 +458,12 @@ public class PersonClient {
     return resolveProcedureIds(failedPersonIds, updatedProceduresByChildId);
   }
 
-  private Map<UUID, AddPersonFileStateResponse> getPersonFileStates(List<UUID> personFileStateIds) {
+  private Map<UUID, GetPersonFileStateResponse> getPersonFileStates(List<UUID> personFileStateIds) {
     return personApi
         .getPersonFileStates(new GetPersonFileStatesRequest(personFileStateIds))
         .personFileStates()
         .stream()
-        .collect(StreamUtil.toLinkedHashMap(AddPersonFileStateResponse::id));
+        .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
   }
 
   private static List<UUID> resolveProcedureIds(

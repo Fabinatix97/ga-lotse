@@ -17,12 +17,14 @@ import {
   getAppointmentDate,
 } from "./AddNewProcedureSidebar";
 
-const germanDateFormater = Intl.DateTimeFormat("de-DE", {
+const germanDateFormatter = Intl.DateTimeFormat("de-DE", {
   day: "2-digit",
   month: "2-digit",
   year: "numeric",
 });
-const germanTimeFormater = Intl.DateTimeFormat("de-DE", { timeStyle: "short" });
+const germanTimeFormatter = Intl.DateTimeFormat("de-DE", {
+  timeStyle: "short",
+});
 export interface SummaryFormProps {
   jumpToAppointmentSelection: () => void;
   jumpToPersonalData: () => void;
@@ -33,7 +35,7 @@ function formatAppointmentDate(form: AddNewProcedureForm) {
   if (!date) {
     return;
   }
-  return `${germanDateFormater.format(date)}, ${germanTimeFormater.format(date)} Uhr`;
+  return `${germanDateFormatter.format(date)}, ${germanTimeFormatter.format(date)} Uhr`;
 }
 
 export function SummaryForm({
@@ -96,7 +98,7 @@ function LabelValuePair({
   value,
 }: {
   label: string;
-  value: string | undefined;
+  value: string | undefined | null;
 }) {
   const labelId = useId();
   return (

@@ -115,8 +115,8 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
         builder
             .grantType(OAuth2Constants.PASSWORD)
             .clientId(ADMIN_CLI_CLIENT_ID)
-            .username(keycloakProperties.admin().user())
-            .password(keycloakProperties.admin().password());
+            .username(keycloakProperties.bootstrapAdmin().user())
+            .password(keycloakProperties.bootstrapAdmin().password());
       }
 
       keycloak = builder.build();
@@ -173,6 +173,13 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
   static void assertResponseIs201Created(Response response) {
     HttpStatus responseStatus = HttpStatus.valueOf(response.getStatus());
     if (responseStatus != HttpStatus.CREATED) {
+      throw new KeycloakException("Keycloak REST call failed: " + responseStatus);
+    }
+  }
+
+  static void assertResponseIs204NoContent(Response response) {
+    HttpStatus responseStatus = HttpStatus.valueOf(response.getStatus());
+    if (responseStatus != HttpStatus.NO_CONTENT) {
       throw new KeycloakException("Keycloak REST call failed: " + responseStatus);
     }
   }
@@ -805,6 +812,18 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
         .map(id -> getRealm().clients().get(id));
   }
 
+  void disableClients(Set<String> clientIds) {
+    ClientsResource clientsResource = getRealm().clients();
+    List<ClientRepresentation> clients = clientsResource.findAll();
+    for (ClientRepresentation client : clients) {
+      if (clientIds.contains(client.getClientId()) && client.isEnabled() == Boolean.TRUE) {
+        log.info("Disabling default client '{}'", client.getClientId());
+        client.setEnabled(false);
+        clientsResource.get(client.getId()).update(client);
+      }
+    }
+  }
+
   void createOrUpdateClientScopes(List<ClientScopeRepresentation> clientScopes) {
     List<ClientScopeRepresentation> existingClientScopes =
         getRealm().clientScopes().findAll().stream()
@@ -856,6 +875,10 @@ public class RealmBoundKeycloakClient implements AutoCloseable {
   public List<UserRepresentation> getUsers(int maxResults) {
     // getRealm().users().list() only returns 100 users per default
     return getRealm().users().list(null, maxResults);
+  }
+
+  public List<UserRepresentation> getUsersMarkedAsTemporaryAdmin() {
+    return getRealm().users().searchByAttributes("is_temporary_admin:true");
   }
 
   private static ClientScopeRepresentation findSourceScope(

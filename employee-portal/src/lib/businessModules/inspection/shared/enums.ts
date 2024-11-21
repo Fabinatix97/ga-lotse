@@ -12,6 +12,7 @@ import {
   ApiInspectionType,
   ApiWebSearchEntryStatus,
 } from "@eshg/employee-portal-api/inspection";
+import { ChipProps } from "@mui/joy";
 
 export const webSearchStatusNames = {
   [ApiWebSearchEntryStatus.New]: "Neu",
@@ -101,6 +102,13 @@ export function translateInspectionResult(result: ApiInspectionResult) {
   return inspectionResultNames[result];
 }
 
+export const inspectionResultColors = {
+  [ApiInspectionResult.Open]: "warning",
+  [ApiInspectionResult.Successful]: "success",
+  [ApiInspectionResult.Failed]: "danger",
+  [ApiInspectionResult.SuccessfulWithIncidents]: "primary",
+} satisfies Record<ApiInspectionResult, ChipProps["color"]>;
+
 export const followupTypeNames = {
   [ApiFollowupType.Review]: "Überprüfung",
   [ApiFollowupType.DocumentInspection]: "Dokumentenprüfung",
@@ -122,6 +130,11 @@ export function translateInspectionAnnouncement(
 }
 
 export const inspectionDuplicateFilterNames = {
+  ["true"]: "Ja",
+  ["false"]: "Nein",
+} satisfies Record<string, string>;
+
+export const inspectionBannedFacilityFilterNames = {
   ["true"]: "Ja",
   ["false"]: "Nein",
 } satisfies Record<string, string>;

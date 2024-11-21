@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { Block, Done } from "@mui/icons-material";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 
 import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 type ChatConsentModalProps = Omit<BaseModalProps, "children"> & {
   chatUsageEnabled: boolean;

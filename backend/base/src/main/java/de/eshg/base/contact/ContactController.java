@@ -35,7 +35,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.data.domain.Page;
@@ -288,7 +287,7 @@ public class ContactController implements ContactApi {
   private Map<UUID, UserDto> getAuditUsers(List<ContactHistoryEntryDto> history) {
     List<UUID> userIds = history.stream().map(HistoryEntry::modifiedBy).toList();
     return userService.getUsers(userIds, true).stream()
-        .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
   }
 
   private UserRepresentation getAuditUser(RevisionPair<?> revisionChanges) {

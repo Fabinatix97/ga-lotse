@@ -10,6 +10,7 @@ dependencies {
     api project(':lib-statistics-api')
     api project(':lib-procedures-api')
     api project(':lib-calendar-api')
+    api project(':lib-contact-api')
     api project(':lib-notification-api')
 
     testFixturesApi(project(":test-commons"))

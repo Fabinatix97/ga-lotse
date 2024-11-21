@@ -14,6 +14,7 @@ import {
   ProcedureApi,
   ProgressEntryApi,
   StiProtectionProcedureApi,
+  WaitingRoomApi,
 } from "@eshg/employee-portal-api/stiProtection";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
@@ -67,4 +68,9 @@ export function useAppointmentTypeApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
+}
+
+export function useWaitingRoomApi() {
+  const config = useConfiguration();
+  return new WaitingRoomApi(config);
 }

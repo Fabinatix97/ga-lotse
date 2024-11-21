@@ -5,7 +5,7 @@
 
 package de.eshg.schoolentry.pdf.medicalreport;
 
-import de.eshg.base.client.ContactClient;
+import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.DocumentGenerator;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -13,7 +13,7 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.schoolentry.api.CreateMedicalReportRequest;
-import de.eshg.schoolentry.business.model.ChildDetailsData;
+import de.eshg.schoolentry.business.model.PersonDetailsData;
 import de.eshg.schoolentry.pdf.AbstractGenerator;
 import de.eshg.schoolentry.pdf.Address;
 import de.eshg.schoolentry.pdf.ReportGeneratorConstants;
@@ -50,7 +50,7 @@ public class MedicalReportGenerator extends AbstractGenerator {
 
   @VisibleForTesting
   MedicalReportData buildMedicalReportData(
-      ChildDetailsData child, CreateMedicalReportRequest request) {
+      PersonDetailsData child, CreateMedicalReportRequest request) {
     Address departmentAddress = getDepartmentAddress();
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
 
@@ -66,7 +66,8 @@ public class MedicalReportGenerator extends AbstractGenerator {
     return String.join(" ", strings);
   }
 
-  public Pdf generateMedicalReport(ChildDetailsData childData, CreateMedicalReportRequest request) {
+  public Pdf generateMedicalReport(
+      PersonDetailsData childData, CreateMedicalReportRequest request) {
     MedicalReportData medicalReportData = buildMedicalReportData(childData, request);
     return generateMedicalReport(medicalReportData);
   }

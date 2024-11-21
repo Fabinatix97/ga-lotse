@@ -6,31 +6,15 @@
 package de.eshg.lib.procedure.procedures;
 
 import de.eshg.lib.procedure.domain.model.Procedure;
-import de.eshg.lib.procedure.domain.model.Procedure_;
-import de.eshg.lib.procedure.domain.model.ProgressEntry;
-import de.eshg.lib.procedure.domain.model.ProgressEntry_;
-import de.eshg.lib.procedure.domain.model.RelatedFacility;
-import de.eshg.lib.procedure.domain.model.RelatedFacility_;
-import de.eshg.lib.procedure.domain.model.RelatedPerson;
-import de.eshg.lib.procedure.domain.model.RelatedPerson_;
-import de.eshg.lib.procedure.domain.model.Task;
-import de.eshg.lib.procedure.domain.model.Task_;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.util.CemeteryService;
 import de.eshg.rest.service.error.NotFoundException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaDelete;
-import jakarta.persistence.criteria.Root;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
@@ -39,9 +23,8 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
 
   private static final Logger log = LoggerFactory.getLogger(ProcedureDeletionService.class);
 
-  private final ProcedureRepository<ProcedureT> procedureRepository;
-  private final CemeteryService cemeteryService;
-  @PersistenceContext private EntityManager entityManager;
+  protected final ProcedureRepository<ProcedureT> procedureRepository;
+  protected final CemeteryService cemeteryService;
 
   public ProcedureDeletionService(
       ProcedureRepository<ProcedureT> procedureRepository, CemeteryService cemeteryService) {
@@ -74,8 +57,14 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
    */
   @Transactional
   public void deleteAndWriteToCemetery(UUID procedureId) {
-    log.info("Attempting to write to cemetery and then delete procedure {}", procedureId);
-    ProcedureT procedure = find(procedureId);
+    deleteAndWriteToCemetery(find(procedureId));
+  }
+
+  /** See {@link #deleteAndWriteToCemetery(UUID procedureId)} */
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void deleteAndWriteToCemetery(ProcedureT procedure) {
+    log.info(
+        "Attempting to write to cemetery and then delete procedure {}", procedure.getExternalId());
     writeToCemetery(procedure);
     delete(procedure);
   }
@@ -122,65 +111,5 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
   private void delete(ProcedureT procedure) {
     procedureRepository.delete(procedure);
     log.info("Procedure {} deleted", procedure.getExternalId());
-  }
-
-  @Transactional
-  public <
-          TaskT extends Task<ProcedureT>,
-          PersonT extends RelatedPerson<ProcedureT>,
-          FacilityT extends RelatedFacility<ProcedureT>>
-      void bulkDeleteAndWriteToCemetery(
-          List<ProcedureT> procedures,
-          Class<TaskT> taskClass,
-          Class<PersonT> personClass,
-          Class<FacilityT> facilityTClass) {
-
-    List<Long> internalIds = procedures.stream().map(Procedure::getId).toList();
-    if (log.isInfoEnabled()) {
-      String idString = internalIds.stream().map(String::valueOf).collect(Collectors.joining(", "));
-      log.info("Attempting to write to cemetery and then delete procedures {}", idString);
-    }
-
-    cemeteryService.writeToCemetery(procedures);
-
-    deleteDependentEntitiesForProcedures(taskClass, Task_.PROCEDURE, internalIds);
-    deleteDependentEntitiesForProcedures(personClass, RelatedPerson_.PROCEDURE, internalIds);
-    deleteDependentEntitiesForProcedures(facilityTClass, RelatedFacility_.PROCEDURE, internalIds);
-    deleteProgressEntries(internalIds);
-
-    deleteAdditionalDependentEntitiesForProcedures(internalIds);
-
-    procedureRepository.deleteAllInBatch(procedures);
-  }
-
-  protected <T> void deleteDependentEntitiesForProcedures(
-      Class<T> dependentEntityClass,
-      String procedureAttributeName,
-      List<Long> internalProcedureIds) {
-    delete(
-        dependentEntityClass,
-        (delete, root) ->
-            delete.where(
-                root.join(procedureAttributeName).get(Procedure_.ID).in(internalProcedureIds)));
-  }
-
-  private void deleteProgressEntries(List<Long> internalProcedureIds) {
-    delete(
-        ProgressEntry.class,
-        (delete, root) ->
-            delete.where(root.get(ProgressEntry_.PROCEDURE_ID).in(internalProcedureIds)));
-  }
-
-  private <T> void delete(
-      Class<T> dependentEntityClass, BiConsumer<CriteriaDelete<T>, Root<T>> whereClause) {
-    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-    CriteriaDelete<T> delete = cb.createCriteriaDelete(dependentEntityClass);
-    Root<T> root = delete.from(dependentEntityClass);
-    whereClause.accept(delete, root);
-    entityManager.createQuery(delete).executeUpdate();
-  }
-
-  protected void deleteAdditionalDependentEntitiesForProcedures(List<Long> internalIds) {
-    // Extension point for subclasses
   }
 }

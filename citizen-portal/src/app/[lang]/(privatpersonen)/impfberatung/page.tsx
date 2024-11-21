@@ -12,7 +12,6 @@ import { AppointmentSection } from "@/lib/businessModules/travelMedicine/compone
 import { LandingpageContent } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageContent";
 import { LandingpageSidePanel } from "@/lib/businessModules/travelMedicine/components/landing/LandingpageSidePanel";
 import { VaccineOverviewSection } from "@/lib/businessModules/travelMedicine/components/landing/VaccineOverviewSection";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
 import { useTranslation } from "@/lib/i18n/client";
 import { PageContent } from "@/lib/shared/components/layout/PageContent";
 import {
@@ -20,6 +19,7 @@ import {
   TwoColumnGrid,
 } from "@/lib/shared/components/layout/grid";
 import { PageLayout, PageTitle } from "@/lib/shared/components/layout/page";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export default function CitizenTravelMedicineEntryPage() {
   const { t } = useTranslation(["travelMedicine/landing"]);

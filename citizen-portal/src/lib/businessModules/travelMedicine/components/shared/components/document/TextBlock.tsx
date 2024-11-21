@@ -10,5 +10,12 @@ interface TextBlockProps {
   textBlock: ApiDocumentTextBlock;
 }
 export function TextBlock(props: Readonly<TextBlockProps>) {
-  return <Box sx={{ whiteSpace: "pre-wrap" }}>{props.textBlock.textField}</Box>;
+  return (
+    <Box
+      sx={{ whiteSpace: "pre-wrap" }}
+      data-testid="document-element-type-textblock"
+    >
+      {props.textBlock.textField}
+    </Box>
+  );
 }

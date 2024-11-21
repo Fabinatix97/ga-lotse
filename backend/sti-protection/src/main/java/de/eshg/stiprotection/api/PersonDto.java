@@ -18,4 +18,5 @@ public record PersonDto(
     @NotNull GenderDto gender,
     @Schema(type = "integer") @NotNull Year yearOfBirth,
     CountryCode countryOfBirth,
-    @Schema(type = "integer") Year inGermanySince) {}
+    @Schema(type = "integer") Year inGermanySince,
+    String accessCode) {}

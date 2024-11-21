@@ -4,23 +4,66 @@
  */
 
 import { ApiInformationStatement } from "@eshg/employee-portal-api/travelMedicine";
-import { DeleteOutlined, TextSnippetOutlined } from "@mui/icons-material";
+import {
+  DeleteOutlined,
+  Replay,
+  TextSnippetOutlined,
+} from "@mui/icons-material";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
 
 import { CitizenHasAnsweredStatusChip } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/informationStatements/CitizenHasAnsweredChip";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import {
+  ActionsItem,
+  ActionsMenu,
+} from "@/lib/shared/components/buttons/ActionsMenu";
 
 const columnHelper: ColumnHelper<ApiInformationStatement> =
   createColumnHelper<ApiInformationStatement>();
 
 export function informationStatementsColumns({
   isProcedureClosed,
+  onResetInformationStatement,
   onDeleteInformationStatement,
+  onGetInformationStatementPdf,
 }: Readonly<{
   isProcedureClosed: boolean;
+  onResetInformationStatement: (informationStatementId: string) => void;
   onDeleteInformationStatement: (informationStatementId: string) => void;
+  onGetInformationStatementPdf: (
+    informationStatementId: string,
+  ) => Promise<void>;
 }>) {
-  const columns = [
+  function renderActionButtons(informationStatement: ApiInformationStatement) {
+    const actionItems: ActionsItem[] = [];
+
+    actionItems.push({
+      label: "PDF herunterladen",
+      startDecorator: <TextSnippetOutlined />,
+      onClick: async () =>
+        await onGetInformationStatementPdf(informationStatement.id),
+    });
+
+    if (!isProcedureClosed && informationStatement.citizenHasAnswered) {
+      actionItems.push({
+        label: "Aufklärungsbogen zurücksetzen",
+        startDecorator: <Replay />,
+        onClick: () => onResetInformationStatement(informationStatement.id),
+      });
+    }
+
+    if (!isProcedureClosed) {
+      actionItems.push({
+        label: "Löschen",
+        color: "danger",
+        startDecorator: <DeleteOutlined color="danger" />,
+        onClick: () => onDeleteInformationStatement(informationStatement.id),
+      });
+    }
+
+    return actionItems;
+  }
+
+  return [
     columnHelper.accessor("title", {
       header: "Titel",
       cell: (props) => props.getValue(),
@@ -33,40 +76,16 @@ export function informationStatementsColumns({
         />
       ),
     }),
+    columnHelper.display({
+      header: "Aktionen",
+      cell: (props) => (
+        <ActionsMenu
+          actionItems={renderActionButtons(props.cell.row.original)}
+        />
+      ),
+      meta: {
+        width: 96,
+      },
+    }),
   ];
-
-  if (!isProcedureClosed) {
-    return [
-      ...columns,
-      columnHelper.display({
-        header: "Aktionen",
-        cell: (props) => (
-          <ActionsMenu
-            actionItems={[
-              {
-                label: "PDF anzeigen",
-                startDecorator: <TextSnippetOutlined />,
-                onClick: () => {
-                  //TODO implementation in PDF story
-                },
-              },
-              {
-                label: "Löschen",
-                disabled: isProcedureClosed,
-                color: "danger",
-                startDecorator: <DeleteOutlined color="danger" />,
-                onClick: () =>
-                  onDeleteInformationStatement(props.row.original.id),
-              },
-            ]}
-          />
-        ),
-        meta: {
-          width: 96,
-        },
-      }),
-    ];
-  }
-
-  return columns;
 }

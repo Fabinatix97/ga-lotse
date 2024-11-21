@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiContactCategory } from "@eshg/employee-portal-api/base";
+import {
+  ApiContactCategory,
+  ApiResponse,
+} from "@eshg/employee-portal-api/base";
 import { ApiLocationSelectionMode } from "@eshg/employee-portal-api/schoolEntry";
 import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
@@ -18,7 +21,7 @@ import Radio from "@mui/joy/Radio";
 import { FormikErrors, FormikTouched } from "formik";
 
 import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
-import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
 import { SchoolYearField } from "@/lib/businessModules/schoolEntry/features/procedures/shared/schoolYear";
@@ -52,13 +55,20 @@ const DOWNLOAD_TEMPLATE_LINK_TEXT: EnumMap<ImportListType> = {
 
 function DownloadListTemplateButton(props: DownloadListTemplateButtonProps) {
   const linkText = DOWNLOAD_TEMPLATE_LINK_TEXT[props.listType];
-  const schoolEntryApi = useSchoolEntryApi();
-  // Todo ISSUE-5911: Switch to correct download endpoint for past procedure list
-  const templateFile = useFileDownload(
-    props.listType === ImportListType.CitizenList
-      ? () => schoolEntryApi.getCitizenListTemplateRaw()
-      : () => schoolEntryApi.getSchoolListTemplateRaw(),
-  );
+  const importApi = useImportApi();
+  let downloadFn: () => Promise<ApiResponse<Blob>>;
+  switch (props.listType) {
+    case ImportListType.SchoolList:
+      downloadFn = () => importApi.getSchoolListTemplateRaw();
+      break;
+    case ImportListType.CitizenList:
+      downloadFn = () => importApi.getCitizenListTemplateRaw();
+      break;
+    case ImportListType.PastProcedureList:
+      downloadFn = () => importApi.getPastProcedureListTemplateRaw();
+      break;
+  }
+  const templateFile = useFileDownload(downloadFn);
 
   return (
     <DownloadLink

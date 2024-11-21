@@ -6,15 +6,14 @@
 import { useParams } from "next/navigation";
 
 import { useFileApi } from "@/lib/businessModules/inspection/api/clients";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { useDownloadFile } from "@/lib/shared/api/download/files";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
 export function useDownloadInspectionFile() {
   const fileApi = useFileApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   const { id } = useParams<ProgressEntriesUrlParams["params"]>();
   return useDownloadFile((fileId: string) =>
-    fileApi.downloadFileRaw({ fileId }, getPreCacheForOfflineModeHeaders(id)),
+    fileApi.downloadFileRaw({ fileId }, getHeadersForOfflineCaching(id)),
   );
 }

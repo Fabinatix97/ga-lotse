@@ -39,5 +39,9 @@
   <include file="migrations/0029_cemetery_sequence.xml"/>
   <include file="migrations/0030_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0031_add_gdpr_validation_task.xml"/>
+  <include file="migrations/0032_add_started_at.xml"/>
+  <include file="migrations/0033_drop_not_null_constraints.xml"/>
+  <include file="migrations/0034_rename_gdpr_validation_task_procedure_id.xml"/>
+  <include file="migrations/0035_add_download_package_table.xml"/>
 
 </databaseChangeLog>

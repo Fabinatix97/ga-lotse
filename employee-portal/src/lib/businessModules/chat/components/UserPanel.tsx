@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   Avatar,
@@ -18,7 +19,6 @@ import { useState } from "react";
 
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
-import { BaseModal } from "@/lib/shared/components/BaseModal";
 
 interface UserPanelProps {
   loggedInUser: User;

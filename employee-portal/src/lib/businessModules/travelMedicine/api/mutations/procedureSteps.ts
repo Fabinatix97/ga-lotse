@@ -22,7 +22,7 @@ export function usePatchAppointment() {
     mutationFn: (request: PatchAppointmentRequest) =>
       procedureStepApi.patchAppointmentRaw(request).then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation("Termin erfolgreich geändert.");
+      snackbar.confirmation("Der Termin wurde geändert.");
     },
   });
 }
@@ -35,7 +35,7 @@ export function usePatchEarliestDate() {
     mutationFn: (request: PatchEarliestDateRequest) =>
       procedureStepApi.patchEarliestDateRaw(request).then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation("Buchbar ab erfolgreich geändert.");
+      snackbar.confirmation("'Buchbar ab' wurde gespeichert.");
     },
   });
 }
@@ -48,7 +48,7 @@ export function useDeleteAppointmentEp() {
     mutationFn: (request: DeleteAppointmentEpRequest) =>
       procedureStepApi.deleteAppointmentEpRaw(request).then(unwrapRawResponse),
     onSuccess: () => {
-      snackbar.confirmation("Termin erfolgreich abgesagt.");
+      snackbar.confirmation("Der Termin wurde abgesagt.");
     },
   });
 }

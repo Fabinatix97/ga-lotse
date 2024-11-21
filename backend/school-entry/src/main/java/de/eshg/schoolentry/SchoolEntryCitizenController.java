@@ -13,22 +13,11 @@ import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.schoolentry.api.citizen.*;
 import de.eshg.schoolentry.api.citizen.GetCitizenProcedureResponse.CitizenChildDto;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,34 +35,16 @@ public class SchoolEntryCitizenController {
   private final PersonApi personApi;
   private final Validator validator;
 
-  private final Resource privacyNotice;
-  private final Resource privacyPolicy;
-
-  private final SchoolEntryProperties schoolEntryProperties;
-
   public SchoolEntryCitizenController(
       SchoolEntryCitizenService schoolEntryCitizenService,
       PersonApi personApi,
-      Validator validator,
-      SchoolEntryProperties schoolEntryProperties) {
+      Validator validator) {
     this.schoolEntryCitizenService = schoolEntryCitizenService;
     this.personApi = personApi;
     this.validator = validator;
-    this.schoolEntryProperties = schoolEntryProperties;
-    this.privacyNotice = toResource(schoolEntryProperties.getPrivacyNoticeLocation());
-    this.privacyPolicy = toResource(schoolEntryProperties.getPrivacyPolicyLocation());
   }
 
-  private static Resource toResource(URI documentLocation) {
-    try {
-      UrlResource urlResource = new UrlResource(documentLocation);
-      return urlResource;
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @GetMapping
+  @GetMapping("/procedure")
   @Transactional(readOnly = true)
   public GetCitizenProcedureResponse getSelfProcedureAsCitizen(
       @AuthenticationPrincipal Jwt principal) {
@@ -154,40 +125,5 @@ public class SchoolEntryCitizenController {
     validator.validateCitizenAnamnesis(request.anamnesis());
 
     schoolEntryCitizenService.addCitizenAnamnesis(schoolEntryProcedure, request.anamnesis());
-  }
-
-  @GetMapping(path = "/opening-hours")
-  @Operation(summary = "Get the official opening hours.")
-  @Transactional(readOnly = true)
-  public GetOpeningHoursResponse getOpeningHours() {
-    SchoolEntryProperties.OpeningHours openingHours = schoolEntryProperties.getOpeningHours();
-    return new GetOpeningHoursResponse(openingHours.de(), openingHours.en());
-  }
-
-  @GetMapping(path = "/documents/privacy-notice")
-  @Operation(summary = "Get the privacy-notice document.")
-  @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getPrivacyNotice() {
-    return getPrivacyDocument(privacyNotice);
-  }
-
-  @GetMapping(path = "/documents/privacy-policy")
-  @Operation(summary = "Get the privacy-policy document.")
-  @Transactional(readOnly = true)
-  public ResponseEntity<Resource> getPrivacyPolicy() {
-    return getPrivacyDocument(privacyPolicy);
-  }
-
-  private static ResponseEntity<Resource> getPrivacyDocument(Resource privacyDocument) {
-    String filename = privacyDocument.getFilename();
-    return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment()
-                .filename(filename, StandardCharsets.UTF_8)
-                .build()
-                .toString())
-        .contentType(MediaType.APPLICATION_PDF)
-        .body(privacyDocument);
   }
 }

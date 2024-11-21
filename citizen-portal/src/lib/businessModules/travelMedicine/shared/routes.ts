@@ -23,6 +23,9 @@ export function citizenRoutes(locale: SupportedLanguage | undefined) {
           details: defineRoutes(appointmentPath("/details"), (detailsPath) => ({
             index: accessCodeRoute(detailsPath("/")),
             medicalHistory: accessCodeRoute(detailsPath("/anamnese")),
+            informationStatement: accessCodeRoute(
+              detailsPath("/aufklaerungsbogen"),
+            ),
             rebook: accessCodeRoute(detailsPath("/buchen")),
           })),
         }),

@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiProcedureType } from "@eshg/employee-portal-api/base";
+import {
+  ApiBusinessModule,
+  ApiProcedureType,
+} from "@eshg/employee-portal-api/base";
 import { isDefined } from "remeda";
 
 const accountPath = "/account";
@@ -56,8 +59,10 @@ export const routes = {
   },
   metrics: {
     index: metricsPath,
-    details: (businessModuleName: string, procedureType: ApiProcedureType) =>
-      `${metricsPath}/${businessModuleName}/${procedureType}`,
+    details: (
+      businessModuleName: ApiBusinessModule,
+      procedureType: ApiProcedureType,
+    ) => `${metricsPath}/${businessModuleName}/${procedureType}`,
   },
   auditlog: {
     index: auditLogPath,

@@ -28,8 +28,8 @@ export function CitizenAnamnesisStepThree() {
 
   return (
     <ContentSheet>
-      <Typography level="h3">{t("health.title")}</Typography>
-      <Typography level="h4">{t("health.development")}</Typography>
+      <Typography level="h2">{t("health.title")}</Typography>
+      <Typography level="h3">{t("health.development")}</Typography>
       <LocalBooleanRadioField
         name={developmentInfo("developmentConspicuities")}
         label={
@@ -66,7 +66,7 @@ export function CitizenAnamnesisStepThree() {
         }
         allowDeselection
       />
-      <Typography level="h4">{t("health.illnesses")}</Typography>
+      <Typography level="h3">{t("health.illnesses")}</Typography>
       <LocalBooleanRadioField
         name={illnessAndAccidentInfo("severeIllnesses")}
         label={
@@ -129,7 +129,7 @@ export function CitizenAnamnesisStepThree() {
         </Grid>
       </Grid>
       <Stack>
-        <Typography level="h4">{t("health.familyHistory.title")}</Typography>
+        <Typography level="h3">{t("health.familyHistory.title")}</Typography>
         <Typography level="body-md">
           {t("health.familyHistory.description")}
         </Typography>

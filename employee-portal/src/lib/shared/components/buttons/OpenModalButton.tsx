@@ -5,10 +5,9 @@
 
 "use client";
 
+import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
 import { Button, ButtonProps } from "@mui/joy";
 import { ReactElement, useState } from "react";
-
-import { BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 type ModalProps = Pick<BaseModalProps, "open" | "onClose">;
 

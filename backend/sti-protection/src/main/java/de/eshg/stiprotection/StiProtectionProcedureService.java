@@ -10,28 +10,33 @@ import static de.eshg.stiprotection.pdf.identification.DocumentParameters.mapToD
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toAppointmentTimeRange;
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toConsultationAppointment;
 import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toDocumentDate;
+import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
 
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
+import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TaskStatus;
 import de.eshg.lib.procedure.domain.model.TaskType;
+import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
-import de.eshg.stiprotection.api.AppointmentBookingTypeDto;
 import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortByDto;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOrderDto;
+import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
+import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.ConcernMapper;
 import de.eshg.stiprotection.mapper.GenderMapper;
 import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocument;
@@ -39,6 +44,7 @@ import de.eshg.stiprotection.pdf.identification.AnonymousIdentificationDocumentS
 import de.eshg.stiprotection.pdf.identification.ConsultationAppointment;
 import de.eshg.stiprotection.pdf.identification.Department;
 import de.eshg.stiprotection.pdf.identification.DocumentSender;
+import de.eshg.stiprotection.persistence.anonymoususer.AnonymousUserClient;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
 import de.eshg.stiprotection.persistence.db.Person;
@@ -52,6 +58,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
+import jakarta.validation.Valid;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -60,6 +67,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class StiProtectionProcedureService {
@@ -70,6 +78,7 @@ public class StiProtectionProcedureService {
   private final AuditLogger auditLogger;
   private final AnonymousIdentificationDocumentService documentService;
   private final DepartmentClient departmentClient;
+  private final AnonymousUserClient anonymousUserClient;
 
   public StiProtectionProcedureService(
       AppointmentService appointmentService,
@@ -77,13 +86,15 @@ public class StiProtectionProcedureService {
       Clock clock,
       AuditLogger auditLogger,
       AnonymousIdentificationDocumentService documentService,
-      DepartmentClient departmentClient) {
+      DepartmentClient departmentClient,
+      AnonymousUserClient anonymousUserClient) {
     this.appointmentService = appointmentService;
     this.repository = procedures;
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.documentService = documentService;
     this.departmentClient = departmentClient;
+    this.anonymousUserClient = anonymousUserClient;
   }
 
   public StiProtectionProcedure createProcedure(CreateProcedureRequest request) {
@@ -93,8 +104,10 @@ public class StiProtectionProcedureService {
     procedure.setConcern(ConcernMapper.toDatabaseType(request.concern()));
     procedure.addRelatedPerson(createPerson(request));
     procedure.addTask(createTask());
-    bookAppointment(procedure, request);
     procedure.setWaitingRoom(new WaitingRoom());
+
+    appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
+
     return repository.save(procedure);
   }
 
@@ -190,6 +203,7 @@ public class StiProtectionProcedureService {
   }
 
   private StiProtectionProcedureData toProcedureData(StiProtectionProcedure procedure) {
+    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
     return new StiProtectionProcedureData(
         procedure.getExternalId(),
         procedure.getCreatedAt(),
@@ -198,7 +212,9 @@ public class StiProtectionProcedureService {
         procedure.getPerson(),
         procedure.getAppointment(),
         procedure.getUserDefinedAppointment(),
-        procedure.getWaitingRoom());
+        procedure.getAppointmentHistory(),
+        procedure.getWaitingRoom(),
+        anonymousUserClient.getAccessCode(anonymousUserId));
   }
 
   public StiProtectionProcedureData getProcedure(UUID procedureId) {
@@ -215,14 +231,24 @@ public class StiProtectionProcedureService {
                         .formatted(StiProtectionProcedure.class.getSimpleName(), procedureId)));
   }
 
-  private void bookAppointment(StiProtectionProcedure procedure, CreateProcedureRequest request) {
-    if (request.appointmentBookingType() == AppointmentBookingTypeDto.APPOINTMENT_BLOCK) {
-      appointmentService.bookAppointment(
-          procedure, request.appointmentStart(), request.durationInMinutes());
+  public void updatePersonDetails(UUID procedureId, @Valid UpdatePersonDetailsRequest request) {
+    StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
+    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+    if (procedureStatus.isOpen()) {
+      Person person = procedure.getPerson();
+      person.setGender(GenderMapper.toDatabaseType(request.gender()));
+      person.setYearOfBirth(request.yearOfBirth());
+      person.setCountryOfBirth(request.countryOfBirth());
+      person.setInGermanySince(request.inGermanySince());
 
-    } else if (request.appointmentBookingType() == AppointmentBookingTypeDto.USER_DEFINED) {
-      appointmentService.bookUserDefinedAppointment(
-          procedure, request.appointmentStart(), request.durationInMinutes());
+      SystemProgressEntry progressEntry =
+          SystemProgressEntryFactory.createSystemProgressEntry(
+              PERSON_DETAILS_UPDATED.name(),
+              "Die Angaben zur Person wurden aktualisiert",
+              TriggerType.SYSTEM_AUTOMATIC);
+      procedure.addProgressEntry(progressEntry);
+    } else {
+      throw unexpectedProcedureStatus(procedureId, procedureStatus);
     }
   }
 
@@ -258,8 +284,22 @@ public class StiProtectionProcedureService {
     Department department = mapToDepartment(departmentClient.getDepartmentInfo());
     String documentDate = toDocumentDate(clock.instant());
     DepartmentLogo departmentLogo = departmentClient.getDepartmentLogo();
-    ConsultationAppointment appointment = toConsultationAppointment(department, timeRange);
+    String accessCode = getAccessCode(procedure);
+    ConsultationAppointment appointment =
+        toConsultationAppointment(department, timeRange, accessCode);
     DocumentSender sender = new DocumentSender(department, documentDate, departmentLogo);
     return documentService.createPdf(new AnonymousIdentificationDocument(sender, appointment));
+  }
+
+  private String getAccessCode(StiProtectionProcedureData procedure) {
+    UUID anonymousUserId = procedure.person().getAnonymousUserId();
+    if (anonymousUserId == null) {
+      throw new BadRequestException("Anonymous user not registered");
+    }
+    String accessCode = anonymousUserClient.getAccessCode(anonymousUserId);
+    if (!StringUtils.hasText(accessCode)) {
+      throw new BadRequestException("Access code cannot be null or blank");
+    }
+    return accessCode;
   }
 }

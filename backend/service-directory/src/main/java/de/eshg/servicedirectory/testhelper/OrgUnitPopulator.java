@@ -26,11 +26,12 @@ import de.eshg.servicedirectory.common.AdminNameHolder;
 import de.eshg.servicedirectory.common.exception.ChangesNotFoundException;
 import de.eshg.servicedirectory.orgunit.persistence.entity.OrgUnitType;
 import de.eshg.servicedirectory.util.X509Utils;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperClock;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import de.eshg.x509.CertificateTestUtil;
 import de.eshg.x509.KeyStoreInfo;
 import java.io.IOException;
@@ -49,11 +50,8 @@ import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
 
   private static final List<PartialOrgUnit> ORG_UNITS =
@@ -77,15 +75,15 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
   private final ServiceDirectoryService serviceDirectoryService;
 
   protected OrgUnitPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       ServiceDirectoryAdminService serviceDirectoryAdminService,
       ServiceDirectoryCommitService serviceDirectoryCommitService,
       ServiceDirectoryReadService serviceDirectoryReadService,
       Optional<TestHelperClock> testHelperClock,
-      EnvironmentConfig environmentConfig,
       ServiceDirectoryService serviceDirectoryService) {
-    super(clock, environment, "org-unit", environmentConfig);
+    super(properties, clock, "org-unit", environmentConfig);
     this.serviceDirectoryAdminService = serviceDirectoryAdminService;
     this.serviceDirectoryCommitService = serviceDirectoryCommitService;
     this.serviceDirectoryReadService = serviceDirectoryReadService;
@@ -104,8 +102,18 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
       Faker faker,
       BasePopulator<OrgUnitDto>.UniqueValueProvider uniqueValueProvider,
       boolean generateCertificates) {
-    resetChanges(false);
     PartialOrgUnit orgUnit = getOrgUnit(index, faker, uniqueValueProvider);
+
+    Optional<OrgUnitDto> existingOrgUnit =
+        serviceDirectoryReadService.getAllOrgUnits().orgUnits().stream()
+            .filter(ou -> ou.readableName().equalsIgnoreCase(orgUnit.name))
+            .findAny();
+    if (existingOrgUnit.isPresent()) {
+      logger.warn("org unit #{}: {} exists", index, orgUnit.name);
+      return existingOrgUnit.get();
+    }
+
+    resetChanges(false);
     try {
       switch (orgUnit.type) {
         case GA -> createHealthDepartment(orgUnit.name, generateCertificates);
@@ -115,26 +123,12 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
     } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
       throw new RuntimeException(e);
     }
-    try {
-      CommitResponseDto commitResponseDto = commitStaged();
-      setSelfSignedCertificates(commitResponseDto);
-      OrgUnitDto result = commitResponseDto.orgUnits().values().stream().findAny().orElseThrow();
-      logger.info(
-          "populated #{}: {} with {} actors",
-          index,
-          orgUnit.name,
-          commitResponseDto.actors().size());
-      return result;
-    } catch (RuntimeException e) {
-      resetChanges(true);
-      OrgUnitDto existingOrgUnit =
-          serviceDirectoryReadService.getAllOrgUnits().orgUnits().stream()
-              .filter(ou -> ou.readableName().equalsIgnoreCase(orgUnit.name))
-              .findAny()
-              .orElseThrow(() -> e);
-      logger.warn("failed to populate #{}: {}:", index, orgUnit.name, e);
-      return existingOrgUnit;
-    }
+    CommitResponseDto commitResponseDto = commitStaged();
+    setSelfSignedCertificates(commitResponseDto);
+    OrgUnitDto result = commitResponseDto.orgUnits().values().stream().findAny().orElseThrow();
+    logger.info(
+        "populated #{}: {} with {} actors", index, orgUnit.name, commitResponseDto.actors().size());
+    return result;
   }
 
   private void setSelfSignedCertificates(CommitResponseDto commitResponseDto) {
@@ -203,7 +197,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
   private void resetChanges(boolean quiet) {
     var user = AdminNameHolder.getAdminName();
     try {
-      serviceDirectoryCommitService.resetStaged(user, null);
+      serviceDirectoryCommitService.resetStagedWithoutTransaction(user, null);
     } catch (ChangesNotFoundException ignored) {
       return;
     }

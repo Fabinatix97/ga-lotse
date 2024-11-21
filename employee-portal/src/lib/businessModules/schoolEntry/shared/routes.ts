@@ -10,6 +10,7 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
     schoolEntryPath("/procedures"),
     (proceduresPath) => ({
       overview: proceduresPath("/"),
+      gdprValidationTasks: proceduresPath("/gdpr-validation-tasks"),
       byId: (procedureId: string) =>
         defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
           details: procedurePath("/details"),

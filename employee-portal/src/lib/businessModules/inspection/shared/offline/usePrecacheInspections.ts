@@ -6,7 +6,6 @@
 "use client";
 
 import {
-  ApiErrorCode,
   ApiUserRole,
   BaseFeatureTogglesApi,
   ConfigApi,
@@ -14,9 +13,10 @@ import {
   UserApi,
 } from "@eshg/employee-portal-api/base";
 import {
-  ApiInspection,
+  ApiInspectionFeature,
   ChecklistApi,
   EditorApi,
+  FacilityApi,
   FileApi,
   InspectionApi,
   InspectionFeatureTogglesApi,
@@ -26,10 +26,8 @@ import {
   ProgressEntryApi,
 } from "@eshg/employee-portal-api/inspection";
 import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
-import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback } from "react";
 import { isNonNullish } from "remeda";
 
 import {
@@ -46,6 +44,7 @@ import {
 import {
   useChecklistApi,
   useEditorApi,
+  useFacilityApi,
   useFileApi,
   useIncidentApi,
   useInspectionApi,
@@ -56,12 +55,14 @@ import {
 } from "@/lib/businessModules/inspection/api/clients";
 import {
   editorApiQueryKey,
+  facilityApiQueryKey,
   incidentsApiQueryKey,
   inspectionFeatureTogglesApiQueryKey,
   progressEntryApiQueryKey,
 } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 import { getChecklistsQueryKey } from "@/lib/businessModules/inspection/api/queries/checklist";
 import { getDepartmentQueryKey } from "@/lib/businessModules/inspection/api/queries/department";
+import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import {
   getAvailableCLDVsQueryKey,
   getAvailablePLDRsQueryKey,
@@ -69,14 +70,13 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { getPacklistsQueryKey } from "@/lib/businessModules/inspection/api/queries/packlist";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
-import { useServiceWorker } from "@/lib/businessModules/inspection/shared/offline/ServiceWorkerProvider";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { chunkArray } from "@/lib/businessModules/inspection/shared/offline/password/chunkArray";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 /**
- * This hook fetches all pages and API calls needed for inspection offline mode.
+ * This hook fetches all pages and API calls needed for one inspection  in offline mode.
  *
  * It contains a long list of `fetch` calls, executed by `queryClient.fetchQuery()`.
  * The `fetchQuery()` calls use the same _query keys_ as in the use hooks of the
@@ -90,11 +90,9 @@ import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
  * The promises are executed in chunks of 8 in parallel, to avoid server rate
  * limiting issues.
  *
- * @param inspectionIds the list of inspection IDs to cache
  */
-export function usePrecacheInspections(inspectionIds: string[]) {
+export function usePrecacheInspections() {
   const queryClient = useQueryClient();
-  const cacheHeaders = useGetHeadersForOfflineCaching();
 
   const configApi = useConfigApi();
   const departmentApi = useDepartmentApi();
@@ -109,76 +107,65 @@ export function usePrecacheInspections(inspectionIds: string[]) {
   const progressEntryApi = useProgressEntryApi();
   const procedureApi = useProcedureApi();
   const packlistApi = usePacklistApi();
+  const facilityApi = useFacilityApi();
 
   const fetchApprovalRequests = useHasUserRoleCheck(
     ApiUserRole.InspectionLeader,
   );
 
-  const { removeFromPrecache } = useServiceWorker();
-  const snackbar = useSnackbar();
+  const isHistoryEnabled = useIsNewFeatureEnabled(
+    ApiInspectionFeature.FacilityHistory,
+  );
 
   // execute async call in this synchronous hook
-  useMemo(() => {
-    prefetchAll({
-      inspectionIds,
-      cacheHeaders,
-      queryClient,
+  return useCallback(
+    (inspectionId: string) => {
+      return prefetchAll({
+        inspectionIds: [inspectionId],
+        queryClient,
+        configApi,
+        departmentApi,
+        userApi,
+        baseFeatureTogglesApi,
+        inspectionFeatureTogglesApi,
+        inspectionApi,
+        checklistApi,
+        incidentApi,
+        editorApi,
+        fileApi,
+        progressEntryApi,
+        procedureApi,
+        packlistApi,
+        facilityApi,
+        fetchApprovalRequests,
+        isHistoryEnabled,
+      });
+    },
+    [
+      baseFeatureTogglesApi,
+      checklistApi,
       configApi,
       departmentApi,
-      userApi,
-      baseFeatureTogglesApi,
-      inspectionFeatureTogglesApi,
-      inspectionApi,
-      checklistApi,
-      incidentApi,
       editorApi,
-      fileApi,
-      progressEntryApi,
-      procedureApi,
-      packlistApi,
       fetchApprovalRequests,
-    })
-      .then((inspectionIdToRemove) => {
-        if (inspectionIdToRemove) {
-          snackbar.error(
-            "Begehung " +
-              inspectionIdToRemove +
-              " existiert nicht. Wird aus dem Offline-Cache entfernt.",
-          );
-          removeFromPrecache(inspectionIdToRemove);
-        }
-      })
-      .catch((reason) => {
-        // eslint-disable-next-line no-console
-        console.error("error pre-fetching offline data", reason);
-        throw reason; // will be caught by the ErrorBoundary in RegisterServiceWorker.tsx
-      });
-  }, [
-    baseFeatureTogglesApi,
-    cacheHeaders,
-    checklistApi,
-    configApi,
-    departmentApi,
-    editorApi,
-    fetchApprovalRequests,
-    fileApi,
-    incidentApi,
-    inspectionApi,
-    inspectionFeatureTogglesApi,
-    packlistApi,
-    procedureApi,
-    progressEntryApi,
-    queryClient,
-    removeFromPrecache,
-    snackbar,
-    userApi,
-    inspectionIds,
-  ]);
+      fileApi,
+      incidentApi,
+      inspectionApi,
+      inspectionFeatureTogglesApi,
+      packlistApi,
+      facilityApi,
+      procedureApi,
+      progressEntryApi,
+      queryClient,
+      // snackbar,
+      userApi,
+      isHistoryEnabled,
+    ],
+  );
 }
 
 async function prefetchAll({
   inspectionIds,
-  cacheHeaders,
   queryClient,
   configApi,
   departmentApi,
@@ -193,10 +180,11 @@ async function prefetchAll({
   progressEntryApi,
   procedureApi,
   packlistApi,
+  facilityApi,
   fetchApprovalRequests,
+  isHistoryEnabled,
 }: {
   inspectionIds: string[];
-  cacheHeaders: (inspectionId?: string) => RequestInit;
   queryClient: QueryClient;
   configApi: ConfigApi;
   departmentApi: DepartmentApi;
@@ -211,28 +199,21 @@ async function prefetchAll({
   progressEntryApi: ProgressEntryApi;
   procedureApi: ProcedureApi;
   packlistApi: PacklistApi;
+  facilityApi: FacilityApi;
   fetchApprovalRequests: boolean;
+  isHistoryEnabled: boolean;
 }) {
   // 1. pre-fetch inspection procedure related queries
   for (const inspectionId of inspectionIds) {
     const inspPromises: Promise<unknown>[] = [];
-    const headers = cacheHeaders(inspectionId);
+    const headers = getHeadersForOfflineCaching(inspectionId);
 
     // 1.1 pre-fetch useGetInspection()
     //     this gets executed immediately because we need the response
-    let inspection: ApiInspection;
-    try {
-      inspection = await queryClient.fetchQuery({
-        queryKey: getInspectionQueryKey(inspectionId),
-        queryFn: () => inspectionApi.getInspection(inspectionId, headers),
-      });
-    } catch (error) {
-      const { originalErrorCode } = resolveError(error);
-      if (originalErrorCode === ApiErrorCode.NotFound) {
-        return inspectionId;
-      }
-      throw error;
-    }
+    const inspection = await queryClient.fetchQuery({
+      queryKey: getInspectionQueryKey(inspectionId),
+      queryFn: () => inspectionApi.getInspection(inspectionId, headers),
+    });
 
     // 1.2 pre-fetch useGetChecklists()
     //     this gets executed immediately because we need the response
@@ -399,12 +380,30 @@ async function prefetchAll({
       inspectionRoutes.procedures.reportResult,
       (id: string) => inspectionRoutes.procedures.progressEntries(id).index,
       inspectionRoutes.procedures.details,
+      inspectionRoutes.procedures.history,
     ];
     pages.forEach((page) => {
       inspPromises.push(...precachePage(page(inspectionId), headers));
     });
 
-    // 1.11 execute all inspection related promises
+    // 1.11 pre-fetch useGetFacilityHistory()
+    if (isHistoryEnabled) {
+      inspPromises.push(
+        queryClient.fetchQuery({
+          queryKey: facilityApiQueryKey([
+            "getFacilityHistory",
+            {
+              inspectionId: inspection.externalId,
+              facilityId: inspection.facility.id,
+            },
+          ]),
+          queryFn: () =>
+            facilityApi.getFacilityHistory(inspection.facility.id, headers),
+        }),
+      );
+    }
+
+    // 1.12 execute all inspection related promises
     await executeInChunks(inspPromises);
   }
 
@@ -415,14 +414,15 @@ async function prefetchAll({
   promises.push(
     queryClient.fetchQuery({
       queryKey: configApiQueryKey(["getConfig"]),
-      queryFn: () => configApi.getConfigRaw(cacheHeaders()),
+      queryFn: () => configApi.getConfigRaw(getHeadersForOfflineCaching()),
     }),
   );
   // 2.2 pre-fetch useGetDepartment()
   promises.push(
     queryClient.fetchQuery({
       queryKey: getDepartmentQueryKey(),
-      queryFn: () => departmentApi.getDepartmentInfo(cacheHeaders()),
+      queryFn: () =>
+        departmentApi.getDepartmentInfo(getHeadersForOfflineCaching()),
     }),
   );
   // 2.3 pre-fetch useGetUsersByGroupQuery(moduleUserGroup.group)
@@ -430,28 +430,33 @@ async function prefetchAll({
     queryClient.fetchQuery({
       queryKey: userApiQueryKey(["getUsersByGroup", moduleUserGroup.group]),
       queryFn: () =>
-        userApi.getUsersByGroup(moduleUserGroup.group, cacheHeaders()),
+        userApi.getUsersByGroup(
+          moduleUserGroup.group,
+          getHeadersForOfflineCaching(),
+        ),
     }),
   );
   // 2.4 pre-fetch useGetSelfUser
   promises.push(
     queryClient.fetchQuery({
       queryKey: userApiQueryKey(["getSelfUser"]),
-      queryFn: () => userApi.getSelfUser(cacheHeaders()),
+      queryFn: () => userApi.getSelfUser(getHeadersForOfflineCaching()),
     }),
   );
   // 2.5 pre-fetch getSelfUserPermissions
   promises.push(
     queryClient.fetchQuery({
       queryKey: userApiQueryKey(["getSelfUserPermissions"]),
-      queryFn: () => userApi.getSelfUserPermissions(cacheHeaders()),
+      queryFn: () =>
+        userApi.getSelfUserPermissions(getHeadersForOfflineCaching()),
     }),
   );
   // 2.6 pre-fetch useGetBaseFeatureToggle
   promises.push(
     queryClient.fetchQuery({
       queryKey: baseFeatureTogglesApiQueryKey(["getFeatureToggles"]),
-      queryFn: () => baseFeatureTogglesApi.getFeatureToggles(cacheHeaders()),
+      queryFn: () =>
+        baseFeatureTogglesApi.getFeatureToggles(getHeadersForOfflineCaching()),
     }),
   );
   // 2.7 pre-fetch inspection's useFeatureToggleQuery
@@ -459,19 +464,21 @@ async function prefetchAll({
     queryClient.fetchQuery({
       queryKey: inspectionFeatureTogglesApiQueryKey(["getFeatureToggles"]),
       queryFn: () =>
-        inspectionFeatureTogglesApi.getFeatureToggles(cacheHeaders()),
+        inspectionFeatureTogglesApi.getFeatureToggles(
+          getHeadersForOfflineCaching(),
+        ),
     }),
   );
 
   // 3. pre-fetch general pages
   const procedureIndexUrl = inspectionRoutes.procedures.index;
-  promises.push(...precachePage(procedureIndexUrl, cacheHeaders()));
-  promises.push(...precachePage("/~offline", cacheHeaders()));
+  promises.push(
+    ...precachePage(procedureIndexUrl, getHeadersForOfflineCaching()),
+  );
+  promises.push(...precachePage("/~offline", getHeadersForOfflineCaching()));
 
   // 4. execute all promises for general requests
   await executeInChunks(promises);
-
-  return undefined;
 }
 
 function precachePage(url: string, preCacheForOfflineModeHeaders: RequestInit) {

@@ -166,7 +166,7 @@ export function PersonSidebar({
         <OverlayBoundary>
           <InitialAppointmentForm
             onSubmit={submitPersonAndAppointment}
-            onCancel={handleCancel}
+            onCancel={resetAndCloseForm}
             initialValues={{
               selectedPerson: selectedPerson!,
               initialStepAppointmentType: ApiAppointmentType.Consultation,
@@ -182,7 +182,7 @@ export function PersonSidebar({
           sidebarFormRef={sidebarPersonFormRef}
           title={personFormTitle}
           person={selectedPerson ?? createNewPerson(person)}
-          onCancel={handleCancel}
+          onCancel={resetAndCloseForm}
           config={pConfig}
           validate={validate}
           onSubmit={(data) =>
@@ -197,7 +197,7 @@ export function PersonSidebar({
             sidebarFormRef={sidebarSearchFormRef}
             onSelectPerson={handleSelectPerson}
             onCreatePerson={handleCreatePerson}
-            onCancel={handleCancel}
+            onCancel={resetAndCloseForm}
             title={searchTitle}
             personSearchFormAdditionalFields={personSearchFormAdditionalFields}
             personSearchFormInitialValues={personSearchFormInitialValues}

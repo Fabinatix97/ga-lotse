@@ -1,5 +1,6 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
@@ -22,15 +23,14 @@ dockerCompose {
     startedServices = [
         'chat-management',
         'chat-management-db',
-        'synapse',
-        'synapse-db',
     ]
 }
 
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
+// chat-management should only start when Synapse is up
+tasks.named("composeUp").configure {
+    def synapseUp = project(":synapse").tasks.named("composeUp")
+    dependsOn synapseUp
+    mustRunAfter synapseUp
 }
 
 dependencyTrack {

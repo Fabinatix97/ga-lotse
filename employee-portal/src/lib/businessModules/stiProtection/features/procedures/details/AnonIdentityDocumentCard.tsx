@@ -3,16 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
 import { DownloadLink } from "@eshg/lib-portal/api/files/DownloadLink";
 import { Sheet, Stack } from "@mui/joy";
-import { useRef } from "react";
 
+import { useAnonymousIdentificationDocumentQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
-export function AnonIdentityDocumentCard() {
-  const downloadContainerRef = useRef<HTMLDivElement>(null);
+export function AnonIdentityDocumentCard({
+  procedure,
+}: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
+  const anonymousIdentificationDocument =
+    useAnonymousIdentificationDocumentQuery(procedure.id);
 
   return (
     <Sheet>
@@ -25,13 +29,17 @@ export function AnonIdentityDocumentCard() {
             value={
               <Stack direction="row" gap={1}>
                 <DownloadLink
-                  downloadContainerRef={downloadContainerRef}
-                  onDownload={() => Promise.resolve()}
+                  downloadContainerRef={
+                    anonymousIdentificationDocument.downloadContainerRef
+                  }
+                  onDownload={() => anonymousIdentificationDocument.download()}
                 >
                   PDF auf Deutsch
                 </DownloadLink>
                 <DownloadLink
-                  downloadContainerRef={downloadContainerRef}
+                  downloadContainerRef={
+                    anonymousIdentificationDocument.downloadContainerRef
+                  }
                   onDownload={() => Promise.resolve()}
                 >
                   PDF auf Englisch

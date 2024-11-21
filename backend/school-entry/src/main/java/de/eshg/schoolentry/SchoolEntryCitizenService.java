@@ -10,7 +10,6 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.APPOIN
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.DomesticAddressDto;
-import de.eshg.base.client.ContactClient;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.department.GetDepartmentInfoResponse;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
@@ -18,6 +17,7 @@ import de.eshg.lib.appointmentblock.api.AppointmentDto;
 import de.eshg.lib.appointmentblock.model.AppointmentBlockSlot;
 import de.eshg.lib.appointmentblock.persistence.AppointmentType;
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
+import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.procedure.domain.model.TaskType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
@@ -159,7 +159,7 @@ public class SchoolEntryCitizenService {
   void addCitizenAnamnesis(SchoolEntryProcedure procedure, CitizenAnamnesisDto anamnesis) {
     Anamnesis citizenAnamnesisAsDomainModel =
         AnamnesisMapper.mapCitizenAnamnesisToDomain(anamnesis);
-    schoolEntryService.copyValues(citizenAnamnesisAsDomainModel, procedure.getAnamnesis());
+    ExaminationResultService.copyValues(citizenAnamnesisAsDomainModel, procedure.getAnamnesis());
     progressEntryUtil.addProgressEntry(procedure, ANAMNESIS_ADDED_BY_CITIZEN, TriggerType.CITIZEN);
   }
 

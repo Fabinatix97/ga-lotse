@@ -35,6 +35,12 @@ export function ProcedureDetails(props: ProcedureDetailsProps) {
     message: "Für diesen Vorgang wurde eine Auskunftssperre erteilt.",
   });
 
+  useControlledAlert({
+    type: "notification",
+    open: procedure.isPastProcedure,
+    message: "Dieser Vorgang wurde aus dem Altdatenbestand importiert.",
+  });
+
   return (
     <PageGrid>
       <Grid xs={8}>

@@ -64,6 +64,7 @@ export function ChecklistLabel(props: Readonly<ChecklistLabelProps>) {
                 ? theme.palette.danger[500]
                 : theme.palette.text.primary,
           }}
+          data-testid="checklist-label-note"
         >
           {props.note}
         </FormHelperText>

@@ -1,5 +1,6 @@
 plugins {
     id "eshg.java-lib"
+    id "eshg.base-test-dependency"
 }
 
 dependencies {
@@ -25,9 +26,6 @@ dependencies {
 }
 
 tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
     dependsOn project(':auditlog').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
     inputs.files(project(':auditlog').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }

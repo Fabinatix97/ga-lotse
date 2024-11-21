@@ -99,6 +99,15 @@ export function getErrorAction(
   }
 }
 
+export function getCloseable(errorCode: PortalErrorCode): boolean {
+  switch (errorCode) {
+    case PortalErrorCode.Locked:
+      return true;
+    default:
+      return false;
+  }
+}
+
 function renderRetryButton(onReset: (() => void) | undefined) {
   if (onReset === undefined) {
     return undefined;

@@ -4,7 +4,7 @@
  */
 
 import {
-  ApiStatisticState,
+  ApiEvaluationState,
   ApiUser,
 } from "@eshg/employee-portal-api/statistics";
 
@@ -13,7 +13,7 @@ export interface StatisticOverviewTableItem {
   id: string;
   name: string;
   dataSourceName: string;
-  state: ApiStatisticState;
+  state: ApiEvaluationState;
   timeRangeEnd: Date;
   timeRangeStart: Date;
   userId: string;

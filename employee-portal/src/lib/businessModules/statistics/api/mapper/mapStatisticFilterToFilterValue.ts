@@ -9,7 +9,7 @@ import {
   ENUM_EMPTY_FIELDS_VALUE,
   ENUM_FALSE_VALUE,
   ENUM_TRUE_VALUE,
-} from "@/lib/businessModules/statistics/components/statistics/details/filter/enumFilterMappings";
+} from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 
 import { SuppertedStatisticsFilterValues } from "./suppertedStatisticsFilterValues";
 

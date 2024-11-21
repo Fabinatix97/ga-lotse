@@ -10,9 +10,7 @@ import de.eshg.lib.centralrepository.api.MetadataListResponseDto;
 import de.eshg.lib.centralrepository.api.MetadataResponseDto;
 import de.eshg.lib.centralrepository.api.VersionFilterType;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -27,9 +25,6 @@ public class CentralRepositoryRestClient {
 
   public ResponseEntity<MetadataResponseDto> createEntry(
       String moduleName, String objectName, MultiValueMap<String, Object> parts) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
     return restClient
         .method(HttpMethod.POST)
         .uri(VersionedEntryApi.BASE_URL + "/{moduleName}/{objectName}", moduleName, objectName)
@@ -44,9 +39,6 @@ public class CentralRepositoryRestClient {
       long id,
       int basedOnVersion,
       MultiValueMap<String, Object> parts) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
     return restClient
         .method(HttpMethod.POST)
         .uri(
@@ -62,12 +54,6 @@ public class CentralRepositoryRestClient {
 
   public ResponseEntity<MetadataResponseDto> getMetadataOfOneVersion(
       String moduleName, String objectName, long id, int version) {
-    return getMetadataOfOneVersion(moduleName, objectName, id, version, MetadataResponseDto.class);
-  }
-
-  public <T> ResponseEntity<T> getMetadataOfOneVersion(
-      String moduleName, String objectName, long id, int version, Class<T> responseEntity) {
-
     return restClient
         .method(HttpMethod.GET)
         .uri(
@@ -77,7 +63,7 @@ public class CentralRepositoryRestClient {
             id,
             version)
         .retrieve()
-        .toEntity(responseEntity);
+        .toEntity(MetadataResponseDto.class);
   }
 
   public <T> ResponseEntity<T> getContentOfOneVersion(

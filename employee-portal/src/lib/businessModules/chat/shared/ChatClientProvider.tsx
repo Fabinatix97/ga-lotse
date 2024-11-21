@@ -9,11 +9,12 @@ import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   MatrixClient,
   MatrixEvent,
-  MatrixEventEvent,
   Room,
   RoomEvent,
+  SetPresence,
   createClient,
 } from "matrix-js-sdk/lib/matrix";
+import { KnownMembership, Membership } from "matrix-js-sdk/lib/types";
 import {
   Dispatch,
   SetStateAction,
@@ -24,27 +25,28 @@ import {
   useRef,
   useState,
 } from "react";
-import { isNullish, omit } from "remeda";
+import { isNullish } from "remeda";
 
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useChatLifecycle } from "@/lib/businessModules/chat/shared/hooks/useChatLifecycle";
-import { usePresence } from "@/lib/businessModules/chat/shared/hooks/usePresence";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import {
   RoomEventDetails,
-  UsersPresence,
   isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
-import { shouldShowMessageTeaser } from "@/lib/businessModules/chat/shared/utils";
+import {
+  getRoomNameAndCommunicationType,
+  isGroupRoom,
+  shouldShowMessageTeaser,
+} from "@/lib/businessModules/chat/shared/utils";
 
 export interface ChatClientContextType {
   matrixClient: MatrixClient;
   clientState: ClientState;
   setClientState: Dispatch<SetStateAction<ClientState>>;
-  unreadNotificationsPerRoom: Record<string, number>;
-  usersPresence: UsersPresence;
 }
 
 export const ChatClientContext = createContext<ChatClientContextType | null>(
@@ -53,89 +55,30 @@ export const ChatClientContext = createContext<ChatClientContextType | null>(
 
 export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
   const showMessageTeaser = useMessageTeaser();
-  const { configuration } = useChat();
+  const { configuration, userSettings } = useChat();
   const baseUrl = configuration.MATRIX_SERVER_URL;
 
   const matrixClient = useRef<MatrixClient>(createClient({ baseUrl }));
 
   const [clientState, setClientState] = useState<ClientState>(ClientState.Idle);
-  const [unreadNotificationsPerRoom, setUnreadNotificationsPerRoom] = useState<
-    Record<string, number>
-  >({});
 
   // CHAT INIT
   useChatLifecycle(matrixClient, clientState, setClientState);
 
-  const { usersPresence } = usePresence(matrixClient.current, clientState);
-
   useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
-    //Set initial notification count
-    const rooms = matrixClient.current.getRooms();
-    const joinedRooms = rooms.filter(
-      (room) => room.getMyMembership() === "join",
-    );
-    const initialNotifications = joinedRooms?.reduce<Record<string, number>>(
-      (acc, room) => {
-        if (!room) return acc;
-        const unreadMessagesCount = room.getUnreadNotificationCount();
-        if (!unreadMessagesCount) return acc;
-        return { ...acc, [room.roomId]: unreadMessagesCount };
-      },
-      {},
-    );
-    setUnreadNotificationsPerRoom(initialNotifications);
-  }, [clientState]);
+    void (async () => {
+      if (!matrixClient) return;
+      if (clientState !== ClientState.Prepared) return;
 
-  // Handle unread messages notification
-  useEffect(() => {
-    if (clientState !== ClientState.Prepared) return;
-    const currentMatrixClient = matrixClient.current;
-
-    function setUnreadNotification(event: MatrixEvent, room?: Room | Error) {
-      let eventRoom = room instanceof Error ? undefined : room;
-      let roomId = eventRoom?.roomId;
-      if (!eventRoom || !roomId) {
-        roomId = event?.getRoomId();
-        if (!roomId) return;
-        eventRoom = currentMatrixClient.getRoom(roomId) ?? undefined;
+      if (!userSettings.sharePresence) {
+        await matrixClient.current.setSyncPresence(SetPresence.Offline);
+        await matrixClient.current.setPresence({ presence: "offline" });
+      } else {
+        await matrixClient.current.setSyncPresence(SetPresence.Online);
+        await matrixClient.current.setPresence({ presence: "online" });
       }
-      if (!eventRoom) return;
-
-      const unreadMessages = eventRoom.getUnreadNotificationCount();
-      setUnreadNotificationsPerRoom((prevState) => {
-        let state = { ...prevState, [roomId]: unreadMessages };
-        if (unreadMessages === 0) {
-          state = omit(state, [roomId]);
-        }
-        return state;
-      });
-    }
-
-    currentMatrixClient.on(RoomEvent.Timeline, setUnreadNotification);
-    currentMatrixClient.on(RoomEvent.Receipt, setUnreadNotification);
-    currentMatrixClient.on(RoomEvent.Redaction, setUnreadNotification);
-    currentMatrixClient.on(MatrixEventEvent.Decrypted, setUnreadNotification);
-
-    return () => {
-      currentMatrixClient.removeListener(
-        RoomEvent.Timeline,
-        setUnreadNotification,
-      );
-      currentMatrixClient.removeListener(
-        RoomEvent.Receipt,
-        setUnreadNotification,
-      );
-      currentMatrixClient.removeListener(
-        RoomEvent.Redaction,
-        setUnreadNotification,
-      );
-      currentMatrixClient.removeListener(
-        MatrixEventEvent.Decrypted,
-        setUnreadNotification,
-      );
-    };
-  }, [clientState]);
+    })();
+  }, [clientState, matrixClient, userSettings.sharePresence]);
 
   // Handle chat message teaser
   useEffect(() => {
@@ -153,13 +96,8 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       if (!isMessageTypeWithBody(messageContent)) return;
 
       const { roomId } = room;
-      const guestCount = room
-        .getMembers()
-        .filter(
-          (member) => member.userId !== currentMatrixClient.getUserId(),
-        ).length;
-
       const sender = currentMatrixClient.getUser(event.getSender() ?? "");
+      const { communicationType } = getRoomNameAndCommunicationType(room);
 
       if (
         shouldShowMessageTeaser({
@@ -171,12 +109,13 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       ) {
         showMessageTeaser({
           title: room.name,
-          text:
-            guestCount > 1
-              ? `${sender.displayName}: ${messageContent.body}`
-              : messageContent.body,
+          text: isGroupRoom(communicationType)
+            ? `${sender.displayName}: ${messageContent.body}`
+            : messageContent.body,
           link: routes.chatRoom(roomId),
-          userPresence: guestCount > 1 ? "" : sender.presence.toString(),
+          userPresence: isGroupRoom(communicationType)
+            ? ""
+            : sender.presence.toString(),
         });
       }
     }
@@ -198,6 +137,10 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     };
   }, [clientState, showMessageTeaser]);
 
+  /**
+   * It notifies the user when they're not on the chat page
+   * that they need to complete the encryption process to use the chat.
+   */
   useEffect(() => {
     if (
       clientState === ClientState.CreateBackupKey ||
@@ -214,15 +157,38 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
     }
   }, [clientState, showMessageTeaser]);
 
+  /**
+   * Automatically join rooms when invited
+   */
+  useEffect(() => {
+    if (clientState !== ClientState.Prepared) return;
+    const currentMatrixClient = matrixClient.current;
+
+    function onMyMembership(room: Room, membership: Membership) {
+      if (membership === KnownMembership.Invite.toString()) {
+        currentMatrixClient.joinRoom(room.roomId).catch((e) => {
+          logger.error("Joining room failed", e);
+        });
+      }
+    }
+
+    currentMatrixClient.on(RoomEvent.MyMembership, onMyMembership);
+
+    return () => {
+      currentMatrixClient.removeListener(
+        RoomEvent.MyMembership,
+        onMyMembership,
+      );
+    };
+  }, [clientState]);
+
   const contextValues = useMemo<ChatClientContextType>(
     () => ({
       clientState,
       setClientState,
       matrixClient: matrixClient.current,
-      unreadNotificationsPerRoom,
-      usersPresence,
     }),
-    [clientState, unreadNotificationsPerRoom, usersPresence],
+    [clientState],
   );
 
   return (

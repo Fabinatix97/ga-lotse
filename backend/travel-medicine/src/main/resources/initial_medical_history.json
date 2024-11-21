@@ -28,7 +28,7 @@
         },
         {
           "anamnesisQuestion": {
-            "questionText": "Haben Sie Allergien (Unverträglichkeiten) wie z.B gegen Hühnereiweiß, Impfstoffe oder Medikamente?",
+            "questionText": "Haben Sie Allergien (Unverträglichkeiten) wie z.B. gegen Hühnereiweiß, Impfstoffe oder Medikamente?",
             "subElementMultiSelect": [],
             "subElementText": {
               "questionText": "Wenn ja, welche:"
@@ -124,7 +124,7 @@
         },
         {
           "anamnesisQuestion": {
-            "questionText": "Ist eine eine Schwangerschaft geplant?",
+            "questionText": "Ist eine Schwangerschaft geplant?",
             "subElementMultiSelect": []
           }
         },

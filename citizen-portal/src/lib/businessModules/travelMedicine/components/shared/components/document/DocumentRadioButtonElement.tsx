@@ -12,20 +12,24 @@ import { useTranslation } from "@/lib/i18n/client";
 
 interface DocumentRadioButtonElementProps {
   name: string;
+  anamnesisPath: string;
   label: string;
   setFieldValue: SetFieldValueHelper;
   anamnesisQuestion: ApiDocumentAnamnesisQuestion;
   sectionIndex: number;
   elementIndex: number;
+  "data-testid"?: string;
 }
 
 export function DocumentRadioButtonElement({
   name,
+  anamnesisPath,
   label,
   anamnesisQuestion,
   setFieldValue,
   sectionIndex,
   elementIndex,
+  "data-testid": dataTestId,
 }: Readonly<DocumentRadioButtonElementProps>) {
   const { t } = useTranslation(["travelMedicine/document"]);
   const StyledLabelComponent = styled(Typography)(({ theme }) => ({
@@ -41,6 +45,7 @@ export function DocumentRadioButtonElement({
           {sectionIndex + 1}.{elementIndex + 1}. {label}
         </StyledLabelComponent>
       }
+      data-testid={dataTestId}
       options={[
         { value: "true", label: t("radioButtonYes") },
         { value: "false", label: t("radioButtonNo") },
@@ -48,14 +53,7 @@ export function DocumentRadioButtonElement({
       onChange={async (event) => {
         if (event.target.value === "false" || !event.target.value) {
           if (anamnesisQuestion.subElementText) {
-            await setFieldValue(
-              "sections[" +
-                sectionIndex +
-                "].sectionElements[" +
-                elementIndex +
-                "].anamnesisQuestion.subElementText.answer",
-              "",
-            );
+            await setFieldValue(`${anamnesisPath}.subElementText.answer`, "");
           }
           for (
             let i = 0;
@@ -63,33 +61,13 @@ export function DocumentRadioButtonElement({
             i++
           ) {
             await setFieldValue(
-              "sections[" +
-                sectionIndex +
-                "].sectionElements[" +
-                elementIndex +
-                "].anamnesisQuestion.subElementMultiSelect[" +
-                i +
-                "].answer",
+              `${anamnesisPath}.subElementMultiSelect[${i}].answer`,
               false,
             );
           }
-          await setFieldValue(
-            "sections[" +
-              sectionIndex +
-              "].sectionElements[" +
-              elementIndex +
-              "].anamnesisQuestion.answer",
-            false,
-          );
+          await setFieldValue(name, false);
         } else {
-          await setFieldValue(
-            "sections[" +
-              sectionIndex +
-              "].sectionElements[" +
-              elementIndex +
-              "].anamnesisQuestion.answer",
-            true,
-          );
+          await setFieldValue(name, true);
         }
       }}
     />

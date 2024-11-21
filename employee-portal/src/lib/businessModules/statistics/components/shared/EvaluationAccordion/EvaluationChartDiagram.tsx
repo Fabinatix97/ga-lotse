@@ -4,6 +4,7 @@
  */
 
 import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import {
   Delete,
   Download,
@@ -28,6 +29,8 @@ import {
 import { useDeleteDiagram } from "@/lib/businessModules/statistics/api/mutations/useDeleteDiagram";
 import { useExportDiagramData } from "@/lib/businessModules/statistics/api/mutations/useExportDiagramData";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
+import { UpdateDiagramSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/UpdateDiagramSidebar";
+import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
 import { EvaluationDiagramBox } from "@/lib/businessModules/statistics/components/shared/EvaluationAccordion/EvaluationDiagramBox";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChoroplethMap } from "@/lib/businessModules/statistics/components/shared/charts/ChoroplethMap";
@@ -37,9 +40,6 @@ import { LineChart } from "@/lib/businessModules/statistics/components/shared/ch
 import { PieChart } from "@/lib/businessModules/statistics/components/shared/charts/PieChart";
 import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
 import { ImageType } from "@/lib/businessModules/statistics/components/shared/charts/types";
-import { UpdateDiagramSidebar } from "@/lib/businessModules/statistics/components/statistics/details/UpdateDiagramSidebar/UpdateDiagramSidebar";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/statistics/useStatisticRoleChecks";
-import { BaseModal } from "@/lib/shared/components/BaseModal";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";

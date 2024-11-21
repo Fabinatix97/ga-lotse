@@ -74,6 +74,7 @@ The set of all preview features is defined in the `application-preview-features.
 | sti-protection-db       | 5432          | 5445          |
 | opendata-db             | 5432          | 5446          |
 | medical-registry-db     | 5432          | 5447          |
+| dental-db               | 5432          | 5448          |
 | synapse                 | 8008          | 8008          |
 | base                    | 8080          | 8080          |
 | inspection              | 8080          | 8081          |
@@ -86,6 +87,7 @@ The set of all preview features is defined in the `application-preview-features.
 | sti-protection          | 8080          | 8095          |
 | opendata                | 8080          | 8096          |
 | medical-registry        | 8080          | 8097          |
+| dental                  | 8080          | 8098          |
 | chat-management         | 8080          | 8088          |
 | local-service-directory | 8080          | 8089          |
 | central-repository      | 8080          | 8091          |

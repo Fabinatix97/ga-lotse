@@ -3,23 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { addMilliseconds, format } from "date-fns";
 import {
   EventStatus,
   MatrixEvent,
   MatrixEventEvent,
   Room,
   RoomEvent,
-  RoomMember,
   RoomMemberEvent,
 } from "matrix-js-sdk/lib/matrix";
+import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { useCallback, useEffect, useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { ClientState } from "@/lib/businessModules/chat/shared/enums";
-import { useRoomMessages } from "@/lib/businessModules/chat/shared/hooks/useRoomMessages";
 import {
+  ClientState,
+  MessageTypeEnum,
+} from "@/lib/businessModules/chat/shared/enums";
+import {
+  RoomData,
   RoomEventDetails,
-  RoomWithCommunicationType,
   isChatMessageType,
 } from "@/lib/businessModules/chat/shared/types";
 import {
@@ -30,8 +33,32 @@ import {
 
 export function useChatRoomList() {
   const { matrixClient, clientState } = useChatClientContext();
-  const [roomList, setRoomList] = useState<RoomWithCommunicationType[]>([]);
-  const { onMessage } = useRoomMessages();
+  const [roomList, setRoomList] = useState<RoomData[]>([]);
+
+  const onMessage = useCallback(
+    async ({ event, room }: RoomEventDetails) => {
+      if (event.isEncrypted()) {
+        await matrixClient.decryptEventIfNeeded(event);
+      }
+      const messageContent = event.getContent();
+      const id =
+        event.getId() ??
+        format(addMilliseconds(new Date(), Math.random() * 1000), "T");
+      const sender = matrixClient.getUser(event.getSender() ?? "");
+
+      return {
+        sender,
+        content: messageContent.body as string,
+        timestamp: event.getDate(),
+        id,
+        roomId: room?.roomId,
+        mentions: messageContent["m.mentions"]?.user_ids,
+        messageType: MessageTypeEnum.ChatMessage,
+        removed: false,
+      };
+    },
+    [matrixClient],
+  );
 
   const getLatestMessage = useCallback(
     async (room: Room) => {
@@ -57,7 +84,7 @@ export function useChatRoomList() {
       await matrixClient.syncLeftRooms();
       const rooms = matrixClient.getRooms();
       const joinedRooms = rooms.filter(
-        (room) => room.getMyMembership() === "join",
+        (room) => room.getMyMembership() === KnownMembership.Join.toString(),
       );
       const roomsWithType = await Promise.all(
         joinedRooms.map(async (room) => {
@@ -97,13 +124,43 @@ export function useChatRoomList() {
         return prevState;
       });
     }
+
     function handleMembership(room: Room, membership: string) {
       void onMyMembership(room, membership);
     }
+
     matrixClient.on(RoomEvent.MyMembership, handleMembership);
 
     return () => {
       matrixClient.removeListener(RoomEvent.MyMembership, handleMembership);
+    };
+  }, [getLatestMessage, matrixClient]);
+
+  useEffect(() => {
+    async function onMembership(event: MatrixEvent) {
+      const roomId = event.getContent()?.roomId as string;
+      if (!roomId) return;
+      const room = matrixClient.getRoom(roomId);
+      if (!room) return;
+      const latestMessage = await getLatestMessage(room);
+      const roomWithType = getRoomNameAndCommunicationType(room);
+      setRoomList((prevState) =>
+        prevState.map((prevRoom) =>
+          prevRoom.room.roomId === room.roomId
+            ? { ...roomWithType, latestMessage }
+            : prevRoom,
+        ),
+      );
+    }
+
+    function handleMembership(event: MatrixEvent) {
+      void onMembership(event);
+    }
+
+    matrixClient.on(RoomMemberEvent.Membership, handleMembership);
+
+    return () => {
+      matrixClient.removeListener(RoomMemberEvent.Membership, handleMembership);
     };
   }, [getLatestMessage, matrixClient]);
 
@@ -167,16 +224,15 @@ export function useChatRoomList() {
       );
     }
 
-    async function joinRoomWhenInvited(
-      _: MatrixEvent,
-      member: RoomMember,
-    ): Promise<void> {
-      const loggedInUserId = matrixClient.getUserId();
-      if (member.membership === "invite" && member.userId === loggedInUserId) {
-        try {
-          await matrixClient.joinRoom(member.roomId);
-        } catch {}
-      }
+    function onRoomTimelineSync(event: MatrixEvent, room: Room) {
+      const updatedRoom = getRoomNameAndCommunicationType(room);
+      setRoomList((prevState) =>
+        prevState.map((prevRoom) =>
+          prevRoom.room.roomId === room.roomId
+            ? { ...prevRoom, updatedRoom }
+            : prevRoom,
+        ),
+      );
     }
 
     function onRoomTimeline(
@@ -197,7 +253,11 @@ export function useChatRoomList() {
         void onMembership({ event, room, removed });
       }
       // new message - add latest message to room object
-      if (eventType === "m.room.message" || eventType === "m.room.encrypted") {
+      if (
+        eventType === "m.room.message" ||
+        eventType === "m.room.encrypted" ||
+        eventType === "m.room.redaction"
+      ) {
         const isSentByCurrentUser =
           event.getSender() === matrixClient.getUserId();
         void onRoomMessage({ event, room, isSent: !isSentByCurrentUser });
@@ -208,14 +268,12 @@ export function useChatRoomList() {
           }
         });
       }
-    }
-
-    function handleMembership(event: MatrixEvent, member: RoomMember) {
-      void joinRoomWhenInvited(event, member);
+      if (eventType === "m.room.name" || eventType === "m.room.power_levels") {
+        onRoomTimelineSync(event, room);
+      }
     }
 
     matrixClient.on(RoomEvent.Timeline, onRoomTimeline);
-    matrixClient.on(RoomMemberEvent.Membership, handleMembership);
 
     return () => {
       matrixClient.removeListener(RoomEvent.Timeline, onRoomTimeline);

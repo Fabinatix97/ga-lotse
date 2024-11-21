@@ -22,10 +22,12 @@ import { useState } from "react";
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
 import { ChatHeader } from "@/lib/businessModules/chat/components/chatPanel/ChatHeader";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import {
   clearSearchParams,
   isDMRoom,
@@ -38,18 +40,13 @@ export interface ChatPanelHeaderProps {
 }
 
 export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
+  const { matrixClient } = useChatClientContext();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const roomInfo = useRoomInfo(roomId);
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    getAvatarUrl,
-    getJoinedAndInvitedMembers,
-    exceptMe,
-    communicationType,
-    dmRoomMember,
-    room,
-  } = roomInfo;
+  const { getAvatarUrl, communicationType, dmRoomMember, room } = roomInfo;
+  const { joinedAndInvitedMembersWithoutMe } = useRoomMembers(roomId);
 
   function handleRoomInfoClick() {
     setInfoPanelView(InfoPanelView.RoomInfo, roomId);
@@ -59,7 +56,7 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
     setIsOpen(false);
     clearSearchParams(chatSearchParamNames.userId, chatSearchParamNames.roomId);
     closeInfoPanel();
-    void leaveRoom(roomInfo.matrixClient, roomId);
+    void leaveRoom(matrixClient, roomId);
   }
 
   const roomSettingsItem = isDMRoom(roomInfo.communicationType) ? (
@@ -94,7 +91,7 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
             avatarUrl={getAvatarUrl()}
             communicationType={communicationType}
             roomId={roomId}
-            roomMembers={exceptMe(getJoinedAndInvitedMembers())}
+            roomMembers={joinedAndInvitedMembersWithoutMe}
             dmRoomMemberUserId={dmRoomMember?.member.userId}
             roomName={room?.name}
           />

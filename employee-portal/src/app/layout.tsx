@@ -5,6 +5,7 @@
 
 import { ApiProvider } from "@eshg/lib-portal/api/ApiProvider";
 import { NonceProvider } from "@eshg/lib-portal/components/NonceProvider";
+import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { SnackbarProvider } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { getNonceFromHeader } from "@eshg/lib-portal/next/contentSecurityPolicyHeaderMiddleware";
 import { ReactNode } from "react";
@@ -69,13 +70,15 @@ export default function RootLayout({
                 <ConfirmNavigationProvider>
                   <DrawerProvider>
                     <ApiProvider configuration={API_CONFIGURATION}>
-                      <OfflinePasswordPrompt />
-                      <ServiceWorkerProvider>
-                        <ChatProvider configuration={CHAT_CONFIGURATION}>
-                          <MainLayout>{children}</MainLayout>
-                        </ChatProvider>
-                        {modal}
-                      </ServiceWorkerProvider>
+                      <QueryBoundary>
+                        <OfflinePasswordPrompt />
+                        <ServiceWorkerProvider>
+                          <ChatProvider configuration={CHAT_CONFIGURATION}>
+                            <MainLayout>{children}</MainLayout>
+                          </ChatProvider>
+                          {modal}
+                        </ServiceWorkerProvider>
+                      </QueryBoundary>
                     </ApiProvider>
                   </DrawerProvider>
                 </ConfirmNavigationProvider>

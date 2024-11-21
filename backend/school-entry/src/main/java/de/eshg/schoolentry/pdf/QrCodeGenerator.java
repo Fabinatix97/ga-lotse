@@ -24,7 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.svggen.SVGSyntax;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
@@ -57,7 +57,7 @@ public final class QrCodeGenerator {
     int height = enclosingRectangle[3];
 
     DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-    Document document = domImpl.createDocument(null, SVGSyntax.SVG_SVG_TAG, null);
+    Document document = domImpl.createDocument(null, SVGConstants.SVG_SVG_TAG, null);
     SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
     // We need to add an extra pixel to workaround a glitch in openhtmltopdf
     svgGenerator.setSVGCanvasSize(new Dimension(width + 1, height + 1));

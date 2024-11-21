@@ -14,10 +14,7 @@ import {
   ApiSocioEducationalPerformance,
 } from "@eshg/employee-portal-api/schoolEntry";
 
-import {
-  Versioned,
-  mapVersioned,
-} from "@/lib/businessModules/schoolEntry/api/models/Versioned";
+import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 import { Percentiles, mapPercentiles } from "./Percentiles";
 

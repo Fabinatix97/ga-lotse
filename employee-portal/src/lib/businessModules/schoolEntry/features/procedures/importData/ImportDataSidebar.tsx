@@ -11,7 +11,7 @@ import { CircularProgress, Stack, Typography, styled } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
 
-import { useImportData } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useImportData } from "@/lib/businessModules/schoolEntry/api/mutations/importApi";
 import {
   useGetLocationSelectionMode,
   useIsDirectProcedureTypeAssignmentOnImport,
@@ -83,7 +83,13 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
           handleSubmit,
         }) => (
           <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
-            <SidebarContent title="Daten importieren">
+            <SidebarContent
+              title={
+                values.listType === ImportListType.PastProcedureList
+                  ? "Abgeschlossene Untersuchungen importieren"
+                  : "Daten importieren"
+              }
+            >
               {importData.isSuccess ? (
                 <ImportResult
                   file={importData.data.file}

@@ -19,7 +19,6 @@ import {
   getSelfUserQuery,
 } from "@/lib/businessModules/inspection/api/queries/users";
 import { AddInspectionTiles } from "@/lib/businessModules/inspection/components/inspection/new/AddInspectionTiles";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
@@ -33,7 +32,6 @@ export default function NewInspectionProcedurePage({
   const inspectionApi = useInspectionApi();
   const objectTypeApi = useObjectTypeApi();
   const userApi = useUserApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
 
   const [
     { data: inspection },
@@ -42,11 +40,7 @@ export default function NewInspectionProcedurePage({
     { data: allAssignableUsers },
   ] = useSuspenseQueries({
     queries: [
-      getInspectionQuery(
-        inspectionApi,
-        getPreCacheForOfflineModeHeaders,
-        params.procedureId,
-      ),
+      getInspectionQuery(inspectionApi, params.procedureId),
       getObjectTypesQuery(objectTypeApi),
       getSelfUserQuery(userApi),
       getAllAssignableUsersQuery(userApi),

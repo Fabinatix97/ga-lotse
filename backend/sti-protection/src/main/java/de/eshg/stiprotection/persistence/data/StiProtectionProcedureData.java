@@ -7,11 +7,13 @@ package de.eshg.stiprotection.persistence.data;
 
 import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.Person;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public record StiProtectionProcedureData(
@@ -22,4 +24,6 @@ public record StiProtectionProcedureData(
     Person person,
     Appointment appointment,
     UserDefinedAppointment userDefinedAppointment,
-    WaitingRoom waitingRoom) {}
+    List<AppointmentHistoryEntry> appointmentHistory,
+    WaitingRoom waitingRoom,
+    String accessCode) {}

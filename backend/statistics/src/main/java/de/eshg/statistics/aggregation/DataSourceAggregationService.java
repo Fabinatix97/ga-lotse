@@ -62,11 +62,11 @@ public class DataSourceAggregationService {
                 clientResponse ->
                     mapToAvailableDataSources(
                         clientResponse.response(),
-                        clientResponse.location(),
+                        clientResponse.businessModule().name(),
                         baseAvailableDataSources))
             .flatMap(Collection::stream)
             .sorted(
-                Comparator.comparing(AvailableDataSource::businessModule)
+                Comparator.comparing(AvailableDataSource::businessModuleName)
                     .thenComparing(AvailableDataSource::name))
             .toList();
 

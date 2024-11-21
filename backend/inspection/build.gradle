@@ -1,5 +1,7 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
+    id "eshg.central-repository-test-dependency"
 }
 
 dependencies {
@@ -18,8 +20,10 @@ dependencies {
 
     implementation 'de.topobyte:osm4j-core:latest.release'
     implementation 'de.topobyte:osm4j-pbf:latest.release'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
     implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
+    implementation 'org.apache.poi:poi:latest.release'
+    implementation 'org.apache.poi:poi-ooxml:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -33,16 +37,6 @@ dependencies {
 
 dockerCompose {
     startedServices = ['inspection', 'inspection-db']
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    dependsOn project(':central-repository').tasks.named("composeUp")
-
-    inputs.files(project(':central-repository').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':service-directory').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

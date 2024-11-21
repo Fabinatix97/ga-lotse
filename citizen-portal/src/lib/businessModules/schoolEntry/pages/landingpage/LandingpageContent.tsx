@@ -13,8 +13,8 @@ import {
 import { Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { useSchoolEntryCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { getOpeningHoursQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryCitizenApi";
+import { useSchoolEntryPublicCitizenApi } from "@/lib/businessModules/schoolEntry/api/clients";
+import { getOpeningHoursQuery } from "@/lib/businessModules/schoolEntry/api/queries/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
 import {
@@ -83,9 +83,9 @@ function AddressSection(props: DepartmentInfoProps) {
 
 function OpeningHoursSection() {
   const { t, i18n } = useTranslation(["schoolEntry/overview"]);
-  const schoolEntryCitizenApi = useSchoolEntryCitizenApi();
+  const publicCitizenApi = useSchoolEntryPublicCitizenApi();
   const { data: openingHours } = useSuspenseQuery(
-    getOpeningHoursQuery(schoolEntryCitizenApi),
+    getOpeningHoursQuery(publicCitizenApi),
   );
 
   const openingHoursInSelectedLanguage =

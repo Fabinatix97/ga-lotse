@@ -6,11 +6,10 @@
 package de.eshg.lib.procedure.model;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import de.cronn.commons.lang.SetUtils;
 import de.eshg.lib.foureyes.model.ApprovalRequestEntityDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -113,6 +112,6 @@ public final class ManualProgressEntryDto extends ProgressEntryDto
 
   @Override
   public Set<UUID> getResolvableUserIds() {
-    return new LinkedHashSet<>(List.of(getRelatedUserId()));
+    return SetUtils.orderedSet(getRelatedUserId());
   }
 }

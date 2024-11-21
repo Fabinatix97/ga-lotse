@@ -18,7 +18,7 @@ export function EmailSection({
   index?: number;
 }>) {
   return (
-    <Grid xs={12} padding={1}>
+    <Grid xs={12} paddingInline={0}>
       <ExternalLinkDetailsCell
         key={[emailAddress, index].join("-")}
         name={`emailAddresses.${index}`}

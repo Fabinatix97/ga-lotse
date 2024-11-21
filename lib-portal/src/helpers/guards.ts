@@ -15,6 +15,10 @@ export function isInteger(value: unknown): value is number {
   return Number.isInteger(value);
 }
 
+export function isStringOnlyDigits(value: unknown): value is string {
+  return typeof value === "string" && /^\d*$/.test(value);
+}
+
 export function ensureArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }

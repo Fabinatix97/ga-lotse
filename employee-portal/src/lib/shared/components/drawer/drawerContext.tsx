@@ -6,8 +6,8 @@
 "use client";
 
 import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
+import { useNavigateEffect } from "@eshg/lib-portal/hooks/useNavigateEffect";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import { usePathname } from "next/navigation";
 import {
   ReactNode,
   createContext,
@@ -226,15 +226,4 @@ function usePendingEffect(
       void onChange();
     }
   }, [isPending, isPendingChanged, onChange]);
-}
-
-function useNavigateEffect(onNavigate: () => void | Promise<boolean>): void {
-  const pathname = usePathname();
-  const pathnameChanged = useHasChanged(pathname);
-
-  useEffect(() => {
-    if (pathnameChanged) {
-      void onNavigate();
-    }
-  }, [pathnameChanged, onNavigate]);
 }

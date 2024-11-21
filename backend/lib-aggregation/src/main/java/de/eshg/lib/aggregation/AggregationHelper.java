@@ -6,6 +6,7 @@
 package de.eshg.lib.aggregation;
 
 import de.cronn.commons.lang.StreamUtil;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import java.time.Duration;
@@ -39,19 +40,19 @@ public abstract class AggregationHelper {
   protected abstract Logger logger();
 
   protected abstract ErrorResponseWithLocation createErrorResponse(
-      ErrorCode errorCode, String location, ExecutionException e);
+      ErrorCode errorCode, BusinessModule businessModule, ExecutionException e);
 
-  <R, C extends ClientWithLocationAndTimeout> List<ClientResponse<R>> requestFromClients(
+  <R, C extends BusinessModuleClient> List<ClientResponse<R>> requestFromClients(
       List<C> clients, Function<C, R> getFromClient) {
     try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
       Executor executor =
           new CorrelationIdAwareExecutor(new DelegatingSecurityContextExecutor(executorService));
 
-      Map<String, Future<R>> futures =
+      Map<BusinessModule, Future<R>> futures =
           clients.stream()
               .collect(
                   StreamUtil.toLinkedHashMap(
-                      ClientWithLocationAndTimeout::getLocation,
+                      BusinessModuleClient::getBusinessModule,
                       client ->
                           getAsyncOrTimout(
                               () -> getFromClient.apply(client),
@@ -62,6 +63,7 @@ public abstract class AggregationHelper {
         return futures.entrySet().stream()
             .map(entry -> extractResponse(entry.getValue(), entry.getKey()))
             .filter(Objects::nonNull)
+            .sorted(Comparator.comparing(ClientResponse::businessModule))
             .toList();
       } finally {
         // Note: We do not care about any belated responses to cancel all pending futures
@@ -76,36 +78,36 @@ public abstract class AggregationHelper {
         .orTimeout(clientTimeout.toMillis(), TimeUnit.MILLISECONDS);
   }
 
-  private <R> ClientResponse<R> extractResponse(Future<R> future, String location) {
+  private <R> ClientResponse<R> extractResponse(Future<R> future, BusinessModule businessModule) {
     try {
       R successfulResponse = future.get();
-      return new ClientResponse<>(location, successfulResponse, null);
+      return new ClientResponse<>(businessModule, successfulResponse, null);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       return null;
     } catch (ExecutionException e) {
       ErrorResponseWithLocation errorResponseWithLocation =
-          getErrorResponseWithLocation(location, e);
+          getErrorResponseWithLocation(businessModule, e);
 
-      return new ClientResponse<>(location, null, errorResponseWithLocation);
+      return new ClientResponse<>(businessModule, null, errorResponseWithLocation);
     }
   }
 
   private ErrorResponseWithLocation getErrorResponseWithLocation(
-      String location, ExecutionException e) {
+      BusinessModule businessModule, ExecutionException e) {
     ErrorCode errorCode = EXPECTED_EXCEPTIONS.get(e.getCause().getClass());
     if (errorCode != null) {
       logger()
           .error(
               "Exception occurred during aggregation from {} (caused by {})",
-              location,
+              businessModule,
               e.getCause().getClass().getName());
 
-      return createErrorResponse(errorCode, location, e);
+      return createErrorResponse(errorCode, businessModule, e);
     }
 
-    logger().error("Exception occurred during aggregation from {}", location, e);
-    return createErrorResponse(ErrorCode.AGGREGATION_EXCEPTION, location, e);
+    logger().error("Exception occurred during aggregation from {}", businessModule, e);
+    return createErrorResponse(ErrorCode.AGGREGATION_EXCEPTION, businessModule, e);
   }
 
   public static <R> List<ErrorResponseWithLocation> aggregateErrorResponses(

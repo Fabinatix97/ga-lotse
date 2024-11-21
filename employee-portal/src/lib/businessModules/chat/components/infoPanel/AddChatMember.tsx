@@ -19,8 +19,10 @@ import {
 
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import { UserToInvite } from "@/lib/businessModules/chat/shared/types";
 import {
   getChatUserDirectory,
@@ -38,8 +40,9 @@ export function AddChatMember({
   onClose,
   onCancel,
 }: Readonly<AddChatMemberProps>) {
+  const { matrixClient } = useChatClientContext();
   const roomInfo = useRoomInfo(roomId);
-  const { matrixClient, getJoinedAndInvitedMembers } = roomInfo;
+  const { joinedAndInvitedMembersWithoutMe } = useRoomMembers(roomId);
   const snackbar = useSnackbar();
 
   const [userList, setUserList] = useState<UserToInvite[]>([]);
@@ -49,7 +52,7 @@ export function AddChatMember({
     const loggedInUserId = matrixClient.getUserId();
 
     if (data.results.length) {
-      const roomMembers = getJoinedAndInvitedMembers();
+      const roomMembers = joinedAndInvitedMembersWithoutMe;
 
       const usersToInvite = pipe(
         data.results,
@@ -75,7 +78,7 @@ export function AddChatMember({
     }
 
     return [];
-  }, [getJoinedAndInvitedMembers, matrixClient]);
+  }, [joinedAndInvitedMembersWithoutMe, matrixClient]);
 
   useEffect(() => {
     getMembersToInvite()

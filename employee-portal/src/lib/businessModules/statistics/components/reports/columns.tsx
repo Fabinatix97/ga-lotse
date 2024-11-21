@@ -7,12 +7,12 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
-import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import {
-  ReportSeries,
-  ReportSeriesItem,
-  SingleReport,
-} from "@/lib/businessModules/statistics/api/models/statisticReports";
+  ReportOverviewTableRow,
+  ReportSeriesItemOverview,
+  ReportSeriesOverview,
+  SingleReportOverview,
+} from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 
 import {
@@ -44,6 +44,11 @@ export function getReportsOverviewColumns(
       enableSorting: false,
       meta,
     }),
+    columnHelper.accessor("dataSourceName", {
+      header: "Datenquelle",
+      meta,
+      enableSorting: false,
+    }),
     columnHelper.accessor("timeRangeStart", {
       header: "Start",
       cell: (props) => formatDate(props.getValue(), "DE"),
@@ -74,8 +79,11 @@ export function getReportsOverviewColumns(
                 action: async () =>
                   await share(
                     getSharedURL(
-                      (props.row.original as SingleReport | ReportSeriesItem)
-                        .reportId,
+                      (
+                        props.row.original as
+                          | SingleReportOverview
+                          | ReportSeriesItemOverview
+                      ).reportId,
                     ),
                   ),
               },
@@ -85,12 +93,16 @@ export function getReportsOverviewColumns(
               deleteReportWithConfirmation: deleteReportWithConfirmation,
               deleteReportSeriesWithConfirmation:
                 deleteReportSeriesWithConfirmation,
-              seriesId: (props.row.original as ReportSeries).seriesId,
-              reportId: (props.row.original as SingleReport | ReportSeriesItem)
-                .reportId,
+              seriesId: (props.row.original as ReportSeriesOverview).seriesId,
+              reportId: (
+                props.row.original as
+                  | SingleReportOverview
+                  | ReportSeriesItemOverview
+              ).reportId,
             } satisfies DeleteReportOrSeries,
             canWrite,
             canDelete(props.row.original.userId),
+            false,
           )}
         />
       ),

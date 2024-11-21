@@ -20,6 +20,7 @@ WORKDIR /opt/keycloak
 
 COPY ./keycloak-api-plain.jar ./providers/
 COPY ./eshg-keycloak-plugin.jar ./providers/
+COPY ./keycloak-extension-bundid.jar ./providers/
 COPY ./resources/themes ./themes/
 
 RUN /opt/keycloak/bin/kc.sh build

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiGetStatisticResponse } from "@eshg/employee-portal-api/statistics";
+import { ApiGetEvaluationResponse } from "@eshg/employee-portal-api/statistics";
 
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
 import {
@@ -25,17 +25,17 @@ export interface StatisticDetailsTableView {
 }
 
 export function mapStatisticToTableView(
-  statistic: ApiGetStatisticResponse,
+  statistic: ApiGetEvaluationResponse,
 ): StatisticDetailsTableView {
   const attributes = mapTableColumnHeadersToFlatAttributes(
     statistic.tableColumnHeaders,
   );
 
   return {
-    statisticName: statistic.statisticInfo.name,
-    timeRangeStart: statistic.statisticInfo.timeRangeStart,
+    statisticName: statistic.evaluationInfo.name,
+    timeRangeStart: statistic.evaluationInfo.timeRangeStart,
     timeRangeEnd: mapTimeRangeEndApiToFrontend(
-      statistic.statisticInfo.timeRangeEnd,
+      statistic.evaluationInfo.timeRangeEnd,
     ),
     attributes,
     tableData: mapTableData(statistic.dataRows, attributes),

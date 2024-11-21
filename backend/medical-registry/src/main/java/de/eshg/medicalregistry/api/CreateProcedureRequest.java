@@ -10,8 +10,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateProcedureRequest(
     @NotNull TypeOfChangeDto typeOfChange,
-    @NotNull @Valid ProfessionalDto professional,
-    @Valid PracticeDto practice,
+    @NotNull @Valid CreateProfessionalDto professional,
+    @Valid CreatePracticeDto practice,
     @NotNull boolean employeesEmployed,
     @NotNull boolean consentToPrivacyPolicy,
     @NotNull boolean requestForWrittenConfirmation) {}

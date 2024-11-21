@@ -50,9 +50,7 @@ queueChannel.onmessage = (event: MessageEvent) => {
       },
     );
   } else if (event.data === SYNC) {
-    synchronizedOnSync({ queue }).catch((reason) => {
-      throw reason;
-    });
+    void synchronizedOnSync({ queue });
   }
 };
 
@@ -90,17 +88,11 @@ async function onSync({ queue }: { queue: Queue }) {
 }
 
 let lock = Promise.resolve();
+function runSequentially(fn: () => Promise<void>): Promise<void> {
+  return (lock = lock.then(fn, fn));
+}
 async function synchronizedOnSync(onSyncCallbackOptions: { queue: Queue }) {
-  await lock;
-  lock = new Promise((resolve) => {
-    onSync(onSyncCallbackOptions).then(
-      () => resolve(),
-      (reason) => {
-        resolve();
-        throw reason;
-      },
-    );
-  });
+  return runSequentially(() => onSync(onSyncCallbackOptions));
 }
 
 const queue = new Queue("inspection-request-queue", {

@@ -250,7 +250,7 @@ public enum CountryCodeDto {
       case 7 -> CountryCodeDto.G7;
       case 8 -> CountryCodeDto.G8;
       case 9 -> CountryCodeDto.G9;
-      default -> throw new IllegalStateException("Unexpected value: " + countryGroupCode);
+      default -> null;
     };
   }
 }

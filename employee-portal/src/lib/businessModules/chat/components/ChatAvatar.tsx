@@ -6,8 +6,7 @@
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import { Avatar, Badge } from "@mui/joy";
 
-import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { usePresenceContext } from "@/lib/businessModules/chat/shared/PresenceProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
 import { Presence } from "@/lib/businessModules/chat/shared/types";
 import {
@@ -36,11 +35,7 @@ export function ChatAvatar({
   userId,
   ...props
 }: ChatAvatarProps) {
-  const { usersPresence } = useChatClientContext();
-
-  const {
-    userSettings: { sharePresence },
-  } = useChat();
+  const { usersPresence } = usePresenceContext();
 
   return isGroupRoom(communicationType) ? (
     <Avatar
@@ -54,7 +49,7 @@ export function ChatAvatar({
   ) : (
     <BadgeAvatar
       size={size}
-      presence={sharePresence && userId ? usersPresence[userId] : undefined}
+      presence={userId ? usersPresence[userId] : undefined}
       {...props}
     />
   );

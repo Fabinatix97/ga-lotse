@@ -34,4 +34,16 @@ public class Pdf extends File {
     this.metaData = metaData;
     metaData.setPdf(this);
   }
+
+  @Override
+  public Pdf copy() {
+    if (getAttachedToMail() != null) {
+      return (Pdf) copyWithMail();
+    }
+    Pdf copy = new Pdf();
+    copy(copy);
+    copy.metaData = metaData.copy();
+    copy.metaData.setPdf(copy);
+    return copy;
+  }
 }

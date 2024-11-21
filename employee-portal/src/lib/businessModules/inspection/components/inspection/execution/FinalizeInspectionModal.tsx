@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 
 import { FinalizeInspectionModalContent } from "@/lib/businessModules/inspection/components/inspection/execution/FinalizeInspectionModalContent";
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 
 export type FinalizeInspectionModalProps = {
   inspectionId: string;

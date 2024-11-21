@@ -7,6 +7,8 @@ package de.eshg.statistics.aggregation;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
@@ -21,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,23 +36,23 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(BaseUrls.Statistics.REPORT_SERIES_URL)
 @Tag(name = "ReportSeries")
 public class ReportSeriesController {
-  private final StatisticService statisticService;
+  private final EvaluationService evaluationService;
   private final ReportSeriesService reportSeriesService;
-  private final StatisticExecutorService statisticExecutorService;
+  private final StatisticsExecutorService statisticsExecutorService;
   private final ReportExecution reportExecution;
   private final ReportSeriesExecution reportSeriesExecution;
   private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public ReportSeriesController(
-      StatisticService statisticService,
+      EvaluationService evaluationService,
       ReportSeriesService reportSeriesService,
-      StatisticExecutorService statisticExecutorService,
+      StatisticsExecutorService statisticsExecutorService,
       ReportExecution reportExecution,
       ReportSeriesExecution reportSeriesExecution,
       StatisticsFeatureToggle statisticsFeatureToggle) {
-    this.statisticService = statisticService;
+    this.evaluationService = evaluationService;
     this.reportSeriesService = reportSeriesService;
-    this.statisticExecutorService = statisticExecutorService;
+    this.statisticsExecutorService = statisticsExecutorService;
     this.reportExecution = reportExecution;
     this.reportSeriesExecution = reportSeriesExecution;
     this.statisticsFeatureToggle = statisticsFeatureToggle;
@@ -61,14 +64,25 @@ public class ReportSeriesController {
   public ReportSeriesDto addReportSeries(
       @RequestBody @Valid AbstractAddReportSeriesRequest addReportSeriesRequest) {
     statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
-    statisticService.checkPermissionForStatistic(addReportSeriesRequest.statisticId());
+    evaluationService.checkPermissionForEvaluation(addReportSeriesRequest.evaluationId());
 
-    ReportSeriesDto reportSeriesDto = reportSeriesService.addReportSeries(addReportSeriesRequest);
     if (addReportSeriesRequest instanceof AddManualReportSeriesRequest) {
-      statisticExecutorService.submit(
+      ReportSeriesDto reportSeriesDto = reportSeriesService.addReportSeries(addReportSeriesRequest);
+      statisticsExecutorService.submit(
           () -> reportExecution.completeReport(reportSeriesDto.reportInfos().getFirst().id()));
+      return reportSeriesDto;
+    } else {
+      try {
+        return reportSeriesService.addReportSeries(addReportSeriesRequest);
+      } catch (DataIntegrityViolationException e) {
+        if (reportSeriesService.hasActiveReportSeries(addReportSeriesRequest.evaluationId())) {
+          String uniqueErrorMessage = "Only one active auto report series allowed";
+          throw new BadRequestException(ErrorCode.CONFLICT, uniqueErrorMessage);
+        } else {
+          throw e;
+        }
+      }
     }
-    return reportSeriesDto;
   }
 
   @PatchExchange(value = "/{reportSeriesId}", accept = APPLICATION_JSON_VALUE)
@@ -89,7 +103,7 @@ public class ReportSeriesController {
     boolean isDeleted =
         reportSeriesService.deactivateAndDeleteOrFlagReportsForDeletion(reportSeriesId);
     if (!isDeleted) {
-      statisticExecutorService.submit(
+      statisticsExecutorService.submit(
           () -> reportSeriesExecution.deleteReportSeries(reportSeriesId));
     }
   }

@@ -11,10 +11,10 @@ import { Stack, Typography } from "@mui/joy";
 import { Formik, FormikHelpers, FormikValues } from "formik";
 
 import { theme } from "@/lib/baseModule/theme/theme";
-import { LogoutButton } from "@/lib/businessModules/travelMedicine/components/shared/components/LogoutButton";
-import { LogoutButtonWithText } from "@/lib/businessModules/travelMedicine/components/shared/components/LogoutButtonWithText";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
+import { useTranslation } from "@/lib/i18n/client";
+import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageTitle } from "@/lib/shared/components/layout/page";
+import { useIsMobile } from "@/lib/shared/hooks/useIsMobile";
 
 export interface MultiStepFormProps
   extends RequiresChildren,
@@ -54,6 +54,7 @@ export interface MultiStepFormTitleProps extends StepCounterProps {
 function StepCounter(props: Readonly<StepCounterProps>) {
   return (
     <Typography
+      component="span"
       level="h4"
       sx={{
         color: theme.palette.text.tertiary,
@@ -72,14 +73,14 @@ export function MultiStepFormTitle({
   withLogoutButton,
 }: Readonly<MultiStepFormTitleProps>) {
   const isMobile = useIsMobile();
+  const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
 
   return (
     <PageTitle
       toolbar={
         <>
           {!isMobile && <StepCounter stepperTitle={stepperTitle} />}
-          {withLogoutButton &&
-            (isMobile ? <LogoutButton /> : <LogoutButtonWithText />)}
+          {withLogoutButton && <LogoutButton text={t("header.logout")} />}
         </>
       }
     >

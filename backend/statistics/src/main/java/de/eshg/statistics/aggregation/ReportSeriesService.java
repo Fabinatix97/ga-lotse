@@ -11,7 +11,7 @@ import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
-import de.eshg.statistics.StatisticUserService;
+import de.eshg.statistics.StatisticsUserService;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
 import de.eshg.statistics.api.report.AddAutoReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
@@ -19,10 +19,10 @@ import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
+import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.ReportMapper;
-import de.eshg.statistics.mapper.StatisticMapper;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
-import de.eshg.statistics.persistence.entity.Statistic;
+import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.report.Report;
 import de.eshg.statistics.persistence.entity.report.ReportSeries;
 import de.eshg.statistics.persistence.entity.report.ReportType;
@@ -44,60 +44,66 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReportSeriesService {
   private final ReportSeriesRepository reportSeriesRepository;
-  private final StatisticService statisticService;
-  private final StatisticUserService userService;
+  private final EvaluationService evaluationService;
+  private final StatisticsUserService userService;
   private final Clock clock;
 
   public ReportSeriesService(
       ReportSeriesRepository reportSeriesRepository,
-      StatisticService statisticService,
-      StatisticUserService userService,
+      EvaluationService evaluationService,
+      StatisticsUserService userService,
       Clock clock) {
     this.reportSeriesRepository = reportSeriesRepository;
-    this.statisticService = statisticService;
+    this.evaluationService = evaluationService;
     this.userService = userService;
     this.clock = clock;
   }
 
+  @Transactional(readOnly = true)
+  public boolean hasActiveReportSeries(UUID evaluationId) {
+    return evaluationService.getEvaluationInternal(evaluationId).getReportSeriesList().stream()
+        .anyMatch(ReportSeries::isActive);
+  }
+
   @Transactional
   public ReportSeriesDto addReportSeries(AbstractAddReportSeriesRequest addReportSeriesRequest) {
-    Statistic statistic =
-        statisticService.getStatisticInternal(addReportSeriesRequest.statisticId());
-    if (!statistic.isAnonymized()) {
-      throw new BadRequestException("Reports are only allowed for anonymized statistics");
+    Evaluation evaluation =
+        evaluationService.getEvaluationInternal(addReportSeriesRequest.evaluationId());
+    if (!evaluation.isAnonymized()) {
+      throw new BadRequestException("Reports are only allowed for anonymized evaluations");
     }
-    validateHasDiagrams(statistic);
-    validateIsNotDeleting(statistic);
+    validateHasDiagrams(evaluation);
+    validateIsNotDeleting(evaluation);
 
     ReportSeries reportSeries =
         switch (addReportSeriesRequest) {
           case AddManualReportSeriesRequest addManualReportSeriesRequest ->
-              createManualReportSeries(statistic, addManualReportSeriesRequest);
+              createManualReportSeries(evaluation, addManualReportSeriesRequest);
           case AddAutoReportSeriesRequest addAutoReportSeriesRequest ->
-              createAutoReportSeries(statistic, addAutoReportSeriesRequest);
+              createAutoReportSeries(evaluation, addAutoReportSeriesRequest);
         };
 
-    statistic.addReportSeries(reportSeries);
+    evaluation.addReportSeries(reportSeries);
 
     reportSeriesRepository.flush();
     return ReportMapper.mapToApi(reportSeries);
   }
 
-  private void validateHasDiagrams(Statistic statistic) {
-    if (StatisticService.hasNoDiagrams(statistic)) {
+  private void validateHasDiagrams(Evaluation evaluation) {
+    if (EvaluationService.hasNoDiagrams(evaluation)) {
       throw new BadRequestException("Report creation is only possible with existing diagrams");
     }
   }
 
-  private void validateIsNotDeleting(Statistic statistic) {
-    if (AggregationResultState.DELETING.equals(statistic.getState())) {
+  private void validateIsNotDeleting(Evaluation evaluation) {
+    if (AggregationResultState.DELETING.equals(evaluation.getState())) {
       throw new BadRequestException(
-          "Statistic %s is in the process of being deleted".formatted(statistic.getExternalId()));
+          "Evaluation %s is in the process of being deleted".formatted(evaluation.getExternalId()));
     }
   }
 
   private ReportSeries createManualReportSeries(
-      Statistic statistic, AddManualReportSeriesRequest addManualReportSeriesRequest) {
+      Evaluation evaluation, AddManualReportSeriesRequest addManualReportSeriesRequest) {
     AggregationResultUtil.validateTimeRange(
         addManualReportSeriesRequest.timeRangeStart(), addManualReportSeriesRequest.timeRangeEnd());
 
@@ -114,16 +120,17 @@ public class ReportSeriesService {
             addManualReportSeriesRequest.timeRangeStart(),
             addManualReportSeriesRequest.timeRangeEnd(),
             AggregationResultState.CREATING,
+            null,
             LocalDate.now(clock),
-            statistic));
+            evaluation));
 
     return reportSeries;
   }
 
   private ReportSeries createAutoReportSeries(
-      Statistic statistic, AddAutoReportSeriesRequest addAutoReportSeriesRequest) {
+      Evaluation evaluation, AddAutoReportSeriesRequest addAutoReportSeriesRequest) {
     ReportSeries reportSeries = new ReportSeries();
-    reportSeries.setActive(true);
+    reportSeries.setActive(evaluation.getId());
     reportSeries.setName(addAutoReportSeriesRequest.name());
     reportSeries.setDescription(addAutoReportSeriesRequest.description());
     reportSeries.setReportType(ReportType.AUTO);
@@ -133,13 +140,13 @@ public class ReportSeriesService {
         ReportMapper.mapToReportingPeriod(addAutoReportSeriesRequest.reportingPeriod()));
 
     addInitialPlannedReportToSeries(
-        reportSeries, addAutoReportSeriesRequest.startMonth(), statistic);
+        reportSeries, addAutoReportSeriesRequest.startMonth(), evaluation);
 
     return reportSeries;
   }
 
   private void addInitialPlannedReportToSeries(
-      ReportSeries reportSeries, int startMonth, Statistic statistic) {
+      ReportSeries reportSeries, int startMonth, Evaluation evaluation) {
     LocalDate executionAndEndDate = calculateExecutionDate(startMonth);
     LocalDate dateStart =
         ReportService.calculateStartDate(reportSeries.getPeriod(), executionAndEndDate);
@@ -150,8 +157,9 @@ public class ReportSeriesService {
             dateStart.atStartOfDay(clock.getZone()).toInstant(),
             executionAndEndDate.atStartOfDay(clock.getZone()).toInstant(),
             AggregationResultState.PLANNED,
+            null,
             executionAndEndDate,
-            statistic));
+            evaluation));
   }
 
   private LocalDate calculateExecutionDate(int startMonth) {
@@ -216,7 +224,7 @@ public class ReportSeriesService {
         reportSeriesRepository.delete(reportSeries);
         return true;
       } else {
-        reportSeries.setActive(false);
+        reportSeries.deactivate();
         Report plannedReport = getPlannedReport(reportSeries);
         if (plannedReport != null) {
           reportSeries.removeReport(plannedReport);
@@ -278,7 +286,7 @@ public class ReportSeriesService {
             getReportsRequest.page(),
             getReportsRequest.pageSize(),
             Sort.by(
-                StatisticMapper.mapSortDirection(getReportsRequest.sortDirection()),
+                EvaluationMapper.mapSortDirection(getReportsRequest.sortDirection()),
                 BaseEntity_.ID));
 
     Page<ReportSeries> relevantReportSeriesPage;

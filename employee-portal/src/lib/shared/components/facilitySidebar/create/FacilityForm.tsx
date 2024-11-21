@@ -146,7 +146,6 @@ export function FacilityForm(props: FacilityFormProps) {
                   fieldComponent={EmailField}
                   label={"E-Mail-Adresse"}
                   validateEach={validateLength(6, 254)}
-                  required={"Bitte eine E-Mail-Adresse angeben"}
                 />
               </Box>
 
@@ -161,7 +160,6 @@ export function FacilityForm(props: FacilityFormProps) {
                   fieldComponent={PhoneNumberField}
                   label={"Telefonnummer"}
                   validateEach={validateLength(1, 23)}
-                  required={"Bitte eine Telefonnummer angeben"}
                 />
               </Box>
 

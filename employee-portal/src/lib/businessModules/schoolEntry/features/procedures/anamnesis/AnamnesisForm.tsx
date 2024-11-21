@@ -20,7 +20,7 @@ import {
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider, FormLabel, Stack } from "@mui/joy";
-import { Formik, FormikHelpers } from "formik";
+import { Formik } from "formik";
 
 import { CountryCodes } from "@/lib/businessModules/schoolEntry/api/models/CountryCodes";
 import { BirthDataAndChildInformationForm } from "@/lib/businessModules/schoolEntry/features/procedures/anamnesis/BirthDataAndChildInformationForm";
@@ -154,16 +154,12 @@ interface AnamnesisFormProps extends FormProps<AnamnesisFormValues> {
 export function AnamnesisForm(props: AnamnesisFormProps) {
   const daycareAndSchoolInfo = createFieldNameMapper("daycareAndSchoolInfo");
 
-  async function handleSubmit(
-    formValues: AnamnesisFormValues,
-    helpers: FormikHelpers<AnamnesisFormValues>,
-  ) {
-    await props.onSubmit(formValues);
-    helpers.resetForm({ values: formValues });
-  }
-
   return (
-    <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={props.initialValues}
+      onSubmit={props.onSubmit}
+      enableReinitialize
+    >
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => {
         return (
           <FormStack onSubmit={handleSubmit}>

@@ -4,8 +4,8 @@
  */
 
 import {
-  ApiAddEvaluationRequest,
-  ApiAddEvaluationRequestChartConfiguration,
+  ApiAddAnalysisRequest,
+  ApiAddAnalysisRequestChartConfiguration,
 } from "@eshg/employee-portal-api/statistics";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -14,7 +14,7 @@ import { isNonNullish } from "remeda";
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapKeyToAttributeSelection } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { DiagramType } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
-import { CreateEvaluationFormModel } from "@/lib/businessModules/statistics/components/statistics/details/CreateEvaluationSidebar/createEvaluationFormModel";
+import { CreateEvaluationFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateEvaluationSidebar/createEvaluationFormModel";
 
 function mapSelectionKeyToBoolean(selectionKey: string | null) {
   if (isNonNullish(selectionKey) && selectionKey !== "") {
@@ -25,7 +25,7 @@ function mapSelectionKeyToBoolean(selectionKey: string | null) {
 
 export function mapModelToChartConfiguration(
   model: CreateEvaluationFormModel,
-): ApiAddEvaluationRequestChartConfiguration {
+): ApiAddAnalysisRequestChartConfiguration {
   switch (model.diagramType) {
     case DiagramType.BAR_CHART: {
       const hasSecondaryAttribute = mapSelectionKeyToBoolean(
@@ -154,8 +154,8 @@ export function useAddEvaluation(statisticId: string, onClose: () => void) {
   const evaluationApi = useEvaluationApi();
 
   const mutation = useHandledMutation({
-    mutationFn: (apiAddEvaluationRequest: ApiAddEvaluationRequest) =>
-      evaluationApi.addEvaluation(apiAddEvaluationRequest),
+    mutationFn: (ApiAddAnalysisRequest: ApiAddAnalysisRequest) =>
+      evaluationApi.addAnalysis(ApiAddAnalysisRequest),
     onSuccess: () => snackbar.confirmation("Analyse erstellt"),
   });
 
@@ -163,7 +163,7 @@ export function useAddEvaluation(statisticId: string, onClose: () => void) {
     return await mutation
       .mutateAsync(
         {
-          statisticId: statisticId,
+          evaluationId: statisticId,
           name: model.name.trim(),
           chartConfiguration: mapModelToChartConfiguration(model),
         },

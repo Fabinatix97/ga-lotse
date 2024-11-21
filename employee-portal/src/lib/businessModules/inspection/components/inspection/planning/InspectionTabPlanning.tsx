@@ -28,7 +28,6 @@ import { PacklistTile } from "@/lib/businessModules/inspection/components/inspec
 import { ResourceTile } from "@/lib/businessModules/inspection/components/inspection/planning/resource/ResourceTile";
 import { TravelTimeTile } from "@/lib/businessModules/inspection/components/inspection/planning/traveltime/TravelTimeTile";
 import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 interface InspectionTabPlanningProps {
@@ -40,22 +39,13 @@ export function InspectionTabPlanning({
 }: Readonly<InspectionTabPlanningProps>) {
   const inspectionApi = useInspectionApi();
   const userApi = useUserApi();
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
 
   const [{ data: inspection }, { data: selfUser }, { data: availableCldvs }] =
     useSuspenseQueries({
       queries: [
-        getInspectionQuery(
-          inspectionApi,
-          getPreCacheForOfflineModeHeaders,
-          inspectionId,
-        ),
+        getInspectionQuery(inspectionApi, inspectionId),
         getSelfUserQuery(userApi),
-        getAvailableCLDVsQuery(
-          inspectionApi,
-          getPreCacheForOfflineModeHeaders,
-          inspectionId,
-        ),
+        getAvailableCLDVsQuery(inspectionApi, inspectionId),
       ],
     });
 

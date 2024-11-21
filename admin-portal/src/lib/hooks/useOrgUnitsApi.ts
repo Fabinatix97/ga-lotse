@@ -16,6 +16,14 @@ import { ORG_UNITS_QUERY, OrgUnit } from "@/lib/hooks/useOrgUnits";
 
 const queryKey = ORG_UNITS_QUERY;
 
+let lock: Promise<void | ApiAdminPartialOrgUnit> = Promise.resolve();
+
+function runSequentially(
+  fn: () => Promise<ApiAdminPartialOrgUnit>,
+): Promise<ApiAdminPartialOrgUnit> {
+  return (lock = lock.then(fn, fn));
+}
+
 export function useOrgUnitsApi(): {
   api: TableApi<OrgUnit>;
 } {
@@ -23,19 +31,7 @@ export function useOrgUnitsApi(): {
 
   const queryClient = useQueryClient();
 
-  const handleCreateSuccess = useCallback(
-    () => queryClient.invalidateQueries({ queryKey }),
-    [queryClient],
-  );
   const handleUpdateSuccess = useCallback(
-    () => queryClient.invalidateQueries({ queryKey }),
-    [queryClient],
-  );
-  const handleDeleteAuditedSuccess = useCallback(
-    () => queryClient.invalidateQueries({ queryKey }),
-    [queryClient],
-  );
-  const handleDeleteStagedSuccess = useCallback(
     () => queryClient.invalidateQueries({ queryKey }),
     [queryClient],
   );
@@ -46,24 +42,34 @@ export function useOrgUnitsApi(): {
         active: false,
         stagingStatus: ApiStagingStatus.WorkInProgress,
       }),
-    onSuccess: handleCreateSuccess,
+    onSuccess: handleUpdateSuccess,
   });
   const update = useMutation({
-    mutationFn: (apiAdminOrgUnitRequest: ApiAdminPartialOrgUnit) =>
-      adminApi.updateOrgUnit(apiAdminOrgUnitRequest),
+    mutationFn: async (apiAdminOrgUnitRequest: ApiAdminPartialOrgUnit) =>
+      runSequentially(() => adminApi.updateOrgUnit(apiAdminOrgUnitRequest)),
     onSuccess: handleUpdateSuccess,
   });
   const deleteAudited = useMutation({
     mutationFn: (id: string) => {
       return adminApi.deleteOrgUnitById(id);
     },
-    onSuccess: handleDeleteAuditedSuccess,
+    onSuccess: handleUpdateSuccess,
   });
   const deleteStated = useMutation({
     mutationFn: (id: string) => {
       return adminApi.deleteStaged(undefined, [id]);
     },
-    onSuccess: handleDeleteStagedSuccess,
+    onSuccess: handleUpdateSuccess,
+  });
+  const activate = useMutation({
+    mutationFn: (id: string) =>
+      runSequentially(() => adminApi.activateOrgUnitById(id)),
+    onSuccess: handleUpdateSuccess,
+  });
+  const deactivate = useMutation({
+    mutationFn: (id: string) =>
+      runSequentially(() => adminApi.deactivateOrgUnitById(id)),
+    onSuccess: handleUpdateSuccess,
   });
 
   return {
@@ -72,6 +78,8 @@ export function useOrgUnitsApi(): {
       update: update.mutate,
       deleteAudited: deleteAudited.mutate,
       deleteStaged: deleteStated.mutate,
+      activate: activate.mutate,
+      deactivate: deactivate.mutate,
     },
   };
 }

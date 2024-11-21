@@ -11,8 +11,8 @@ import de.eshg.base.centralfile.FacilityApi;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
-import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateIdsByKeyAttributesRequest;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStatesRequest;
 import de.eshg.base.centralfile.api.person.GetReferencePersonResponse;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
@@ -89,7 +89,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   List<ProcedureT> searchProcedures(String query) {
     StopWatch stopWatch = new StopWatch("search procedures");
 
-    Map<UUID, AddPersonFileStateResponse> personFileStatesById = collectPersonFileStates(stopWatch);
+    Map<UUID, GetPersonFileStateResponse> personFileStatesById = collectPersonFileStates(stopWatch);
     Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById =
         collectFacilityFileStates(stopWatch);
 
@@ -204,7 +204,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   }
 
   private Function<ProcedureT, SearchableProcedure<ProcedureT>> formatAsSearchable(
-      Map<UUID, AddPersonFileStateResponse> personFileStatesById,
+      Map<UUID, GetPersonFileStateResponse> personFileStatesById,
       Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById) {
     return procedure ->
         new SearchableProcedure<>(
@@ -235,18 +235,18 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     return facilityFileStatesById;
   }
 
-  private Map<UUID, AddPersonFileStateResponse> collectPersonFileStates(StopWatch stopWatch) {
+  private Map<UUID, GetPersonFileStateResponse> collectPersonFileStates(StopWatch stopWatch) {
     stopWatch.start("resolve person file states");
 
     List<UUID> relatedPersonFileStateIds =
         procedureRepository.findAllRelatedPersonFileStateIdsByProcedureStatus(RELEVANT_STATUS);
 
-    Map<UUID, AddPersonFileStateResponse> personFileStatesById =
+    Map<UUID, GetPersonFileStateResponse> personFileStatesById =
         personApi
             .getPersonFileStates(new GetPersonFileStatesRequest(relatedPersonFileStateIds))
             .personFileStates()
             .stream()
-            .collect(toMap(AddPersonFileStateResponse::id, Function.identity()));
+            .collect(toMap(GetPersonFileStateResponse::id, Function.identity()));
 
     stopWatch.stop();
     return personFileStatesById;
@@ -254,10 +254,10 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
 
   private String formatAsSearchable(
       ProcedureT procedure,
-      Map<UUID, AddPersonFileStateResponse> personFileStatesById,
+      Map<UUID, GetPersonFileStateResponse> personFileStatesById,
       Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById) {
 
-    List<AddPersonFileStateResponse> personFileStates =
+    List<GetPersonFileStateResponse> personFileStates =
         procedure.getRelatedPersons().stream()
             .map(RelatedPerson::getCentralFileStateId)
             .map(personFileStatesById::get)
@@ -301,8 +301,8 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
   }
 
   private String formatPersonFileStatesAsString(
-      List<AddPersonFileStateResponse> addPersonFileStateResponses) {
-    return addPersonFileStateResponses.stream()
+      List<GetPersonFileStateResponse> getPersonFileStateResponses) {
+    return getPersonFileStateResponses.stream()
         .map(personFileStateSearchableStringFormatter::formatAsSearchable)
         .collect(Collectors.joining(System.lineSeparator()));
   }

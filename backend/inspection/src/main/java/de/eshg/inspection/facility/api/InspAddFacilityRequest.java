@@ -14,4 +14,6 @@ import java.util.UUID;
 @Schema(name = "InspAddFacilityRequest")
 @Valid
 public record InspAddFacilityRequest(
-    @NotNull @Valid AddFacilityFileStateRequest baseFacility, UUID webSearchEntryId) {}
+    @NotNull @Valid AddFacilityFileStateRequest baseFacility,
+    UUID webSearchEntryId,
+    UUID inboxProcedureId) {}

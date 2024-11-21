@@ -60,7 +60,7 @@ export function PageTitle(props: PageTitleProps) {
       }}
     >
       <Typography
-        level="h2"
+        level="h1"
         flexGrow={1}
         sx={{ hyphens: "auto", overflowWrap: "break-word" }}
       >

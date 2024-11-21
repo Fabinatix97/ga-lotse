@@ -30,7 +30,7 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/progressEntries";
 import { systemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { moduleUserGroup } from "@/lib/businessModules/inspection/shared/moduleUserGroup";
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
@@ -38,8 +38,6 @@ import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/pro
 export default function InspectionProgressEntriesPage(
   props: ProgressEntriesUrlParams,
 ) {
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-
   return (
     <ProgressEntriesPage
       useCreateProgressEntry={useCreateProgressEntry}
@@ -65,7 +63,7 @@ export default function InspectionProgressEntriesPage(
       }}
       systemProgressEntryTypes={systemProgressEntryTypeTitles}
       groupName={moduleUserGroup.group}
-      getInitOverrides={getPreCacheForOfflineModeHeaders}
+      getInitOverrides={getHeadersForOfflineCaching}
     />
   );
 }

@@ -11,6 +11,7 @@ import {
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/inspection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -50,12 +51,15 @@ function NewFacilityButtonWithinOverlay() {
     // If we get an inspection that is not in draft status, we should route to that inspection and not to the new inspection dialog.
     if (addFacilityResponse.procedureStatus !== ApiProcedureStatus.Draft) {
       router.push(routes.procedures.details(addFacilityResponse.procedureId));
+    } else {
+      router.push(routes.procedures.new(addFacilityResponse.procedureId));
+    }
+    if (addFacilityResponse.isNew) {
+      snackbar.confirmation("Einrichtung erfolgreich gespeichert.");
+    } else {
       snackbar.notification(
         "Dies ist der neueste Vorgang für diese Einrichtung",
       );
-    } else {
-      snackbar.confirmation("Einrichtung erfolgreich gespeichert.");
-      router.push(routes.procedures.new(addFacilityResponse.procedureId));
     }
   }
 
@@ -74,14 +78,18 @@ function NewFacilityButtonWithinOverlay() {
     await linkBaseFacility(
       { facility },
       {
-        onSuccess: ({ inspectionId, procedureStatus }) => {
+        onSuccess: ({ inspectionId, procedureStatus, isNew }) => {
           if (procedureStatus !== ApiProcedureStatus.Draft) {
             router.push(routes.procedures.details(inspectionId));
+          } else {
+            router.push(routes.procedures.new(inspectionId));
+          }
+          if (isNew) {
+            snackbar.confirmation("Vorgang erfolgreich angelegt.");
+          } else {
             snackbar.notification(
               "Dies ist der neueste Vorgang für diese Einrichtung",
             );
-          } else {
-            router.push(routes.procedures.new(inspectionId));
           }
         },
       },
@@ -90,7 +98,7 @@ function NewFacilityButtonWithinOverlay() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} startDecorator={<Add />}>
         Neue Erstbesichtigung anlegen
       </Button>
 

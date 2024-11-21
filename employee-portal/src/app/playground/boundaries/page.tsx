@@ -6,10 +6,13 @@
 "use client";
 
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import {
+  BaseModal,
+  BaseModalProps,
+} from "@eshg/lib-portal/components/BaseModal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 import { Button, Stack } from "@mui/joy";
 
-import { BaseModal, BaseModalProps } from "@/lib/shared/components/BaseModal";
 import { OpenModalButton } from "@/lib/shared/components/buttons/OpenModalButton";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";

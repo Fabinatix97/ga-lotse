@@ -5,12 +5,12 @@
 
 package de.eshg.lib.procedure.housekeeping.inbox;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.procedure.domain.model.view.IdView;
 import de.eshg.lib.procedure.domain.repository.InboxProcedureRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class InboxProcedureCleanupJob {
 
     return inboxProcedureRepository.findByClosedAtBefore(retentionExpirationDay).stream()
         .map(IdView::getId)
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .collect(StreamUtil.toLinkedHashSet());
   }
 
   private int validateRetentionTime(int retentionTime) {

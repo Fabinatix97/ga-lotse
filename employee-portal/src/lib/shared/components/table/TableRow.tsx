@@ -5,10 +5,10 @@
 
 import { styled } from "@mui/joy";
 import { Cell, Row, flexRender } from "@tanstack/react-table";
-import { useContext } from "react";
-import { isDefined } from "remeda";
+import { useRouter } from "next/navigation";
+import { doNothing, isDefined } from "remeda";
 
-import { TableNavigationContext } from "@/lib/shared/components/table/TableNavigationContext";
+import { RowNavigation } from "@/lib/shared/components/table/DataTable";
 
 import { StyledCellProps, getRowCellStyles } from "./cellStyles";
 
@@ -49,72 +49,148 @@ function isFocusColumn<TData>(
   );
 }
 
+function getRowAriaLabel<TData>({ row, rowNavigation }: TableRowProps<TData>) {
+  const focusCell = row
+    .getVisibleCells()
+    .find((cell) => isFocusColumn(cell, rowNavigation?.focusColumnAccessorKey));
+
+  return isDefined(focusCell)
+    ? `${String(focusCell.getValue())} (Klicken zum Navigieren)`
+    : undefined;
+}
+
+function isParentRow<TData>(row: Row<TData>) {
+  return row.depth === 0;
+}
+
+function canNavigate<TData>(row: Row<TData>, cell: Cell<TData, unknown>) {
+  const { meta } = cell.column.columnDef;
+  if (isParentRow(row)) {
+    return meta?.canNavigate?.parentRow === true;
+  }
+  return meta?.canNavigate?.subRow === true;
+}
+
+function useRowNavigation<TData>({
+  row,
+  rowNavigation,
+}: TableRowProps<TData>): {
+  rowNavigationRoute: string | undefined;
+  handleNavigate: () => void;
+  cellCanNavigate: (cell: Cell<TData, unknown>) => boolean;
+} {
+  const router = useRouter();
+
+  if (rowNavigation === undefined) {
+    return {
+      rowNavigationRoute: undefined,
+      handleNavigate: doNothing,
+      cellCanNavigate: () => false,
+    };
+  }
+
+  if ("onClick" in rowNavigation) {
+    return {
+      rowNavigationRoute: undefined,
+      handleNavigate: () => {
+        rowNavigation.onClick(row);
+      },
+      cellCanNavigate: (cell) => canNavigate(row, cell),
+    };
+  }
+
+  const rowNavigationRoute = rowNavigation.route(row);
+  return {
+    rowNavigationRoute: rowNavigationRoute,
+    handleNavigate: () => {
+      if (isDefined(rowNavigationRoute)) {
+        router.push(rowNavigationRoute);
+      }
+    },
+    cellCanNavigate: (cell) =>
+      isDefined(rowNavigationRoute) && canNavigate(row, cell),
+  };
+}
+
+interface TableRowProps<TData> {
+  row: Row<TData>;
+  rowNavigation?: RowNavigation<TData>;
+  "data-testid"?: string;
+}
+
 export function TableRow<TData>({
   row,
   rowNavigation,
-}: Readonly<{
-  row: Row<TData>;
-  rowNavigation?: (cell: Row<TData>) => string | undefined;
-}>) {
-  const navContext = useContext(TableNavigationContext);
-  const focusCell = row
-    .getVisibleCells()
-    .find((cell) => isFocusColumn(cell, navContext?.focusColumnAccessorKey));
-  const rowLabel = focusCell ? getAriaLabel(focusCell) : undefined;
-  const navRoute = rowNavigation?.(row);
-  const isParentRow = row.depth === 0;
-
-  function cellCanNavigate(cell: Cell<TData, unknown>) {
-    const { meta } = cell.column.columnDef;
-    return (
-      isDefined(navRoute) &&
-      ((isParentRow && meta?.canNavigate?.parentRow === true) ||
-        (!isParentRow && meta?.canNavigate?.subRow === true))
-    );
-  }
+  ...props
+}: TableRowProps<TData>) {
+  const rowLabel = getRowAriaLabel({ row, rowNavigation });
+  const { rowNavigationRoute, handleNavigate, cellCanNavigate } =
+    useRowNavigation({
+      row,
+      rowNavigation,
+    });
 
   return (
     <StyledRow
-      subRow={!isParentRow}
+      data-testid={props["data-testid"]}
+      subRow={!isParentRow(row)}
       tabIndex={isDefined(rowLabel) ? 0 : undefined}
       aria-label={rowLabel}
-      data-targetroute={navRoute}
-    >
-      {row.getVisibleCells().map((cell) => {
-        const canNavigate = cellCanNavigate(cell);
-
-        function handleNavigate() {
-          const route = navRoute;
-          if (isDefined(route)) {
-            navContext?.onCellClick?.(route);
+      data-targetroute={rowNavigationRoute}
+      onKeyDown={(event) => {
+        switch (event.key) {
+          case "Enter": {
+            handleNavigate();
+            break;
+          }
+          case "ArrowDown": {
+            event.preventDefault();
+            const nextRow = event.currentTarget.nextElementSibling;
+            if (nextRow instanceof HTMLElement) {
+              nextRow.focus();
+            }
+            break;
+          }
+          case "ArrowUp": {
+            event.preventDefault();
+            const previousRow = event.currentTarget.previousElementSibling;
+            if (previousRow instanceof HTMLElement) {
+              previousRow.focus();
+            }
+            break;
           }
         }
+      }}
+    >
+      {row
+        .getVisibleCells()
+        .filter((cell) => {
+          return !(
+            isParentRow(row) &&
+            cell.column.columnDef.meta?.skipWhenParentRow === true
+          );
+        })
+        .map((cell) => {
+          const canNavigate = cellCanNavigate(cell);
 
-        return (
-          <StyledCell
-            canNavigate={canNavigate}
-            key={cell.id}
-            meta={cell.column.columnDef.meta}
-            className={canNavigate ? "cellCanNavigate" : undefined}
-            onClick={canNavigate ? handleNavigate : undefined}
-            onKeyDown={
-              canNavigate
-                ? (e) => {
-                    if (e.code === "Enter") {
-                      handleNavigate();
-                    }
-                  }
-                : undefined
-            }
-          >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </StyledCell>
-        );
-      })}
+          return (
+            <StyledCell
+              colSpan={
+                isParentRow(row) &&
+                isDefined(cell.column.columnDef.meta?.spanWhenParentRow)
+                  ? cell.column.columnDef.meta.spanWhenParentRow
+                  : undefined
+              }
+              canNavigate={canNavigate}
+              key={cell.id}
+              meta={cell.column.columnDef.meta}
+              className={canNavigate ? "cellCanNavigate" : undefined}
+              onClick={canNavigate ? handleNavigate : undefined}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </StyledCell>
+          );
+        })}
     </StyledRow>
   );
-}
-
-function getAriaLabel<TData>(cell: Cell<TData, unknown>) {
-  return `${String(cell.getValue())} (Klicken zum Navigieren)`;
 }

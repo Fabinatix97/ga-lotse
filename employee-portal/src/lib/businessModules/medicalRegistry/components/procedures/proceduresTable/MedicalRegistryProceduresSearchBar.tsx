@@ -10,14 +10,12 @@ import { NavigationLink } from "@eshg/lib-portal/components/navigation/Navigatio
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
-import { useSearchParamLink } from "@/lib/shared/hooks/searchParams/useSearchParam";
+import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 
 export function MedicalRegistryProceduresSearchBar() {
-  const openNewProcedureSidebarLink = useSearchParamLink("add-procedure", true);
-
   return (
     <Row justifyContent="flex-end">
-      <NavigationLink href={openNewProcedureSidebarLink} passHref>
+      <NavigationLink href={routes.procedures.create} passHref>
         <Button startDecorator={<Add />}>Eintrag erstellen</Button>
       </NavigationLink>
     </Row>

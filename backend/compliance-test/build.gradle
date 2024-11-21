@@ -7,7 +7,7 @@ dependencies {
 
     testImplementation 'com.tngtech.archunit:archunit:latest.release'
     testImplementation 'org.reflections:reflections:latest.release'
-    testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    testImplementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
     testImplementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     testImplementation 'com.google.guava:guava:latest.release'
 

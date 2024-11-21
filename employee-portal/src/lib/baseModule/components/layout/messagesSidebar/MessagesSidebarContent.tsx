@@ -5,14 +5,15 @@
 
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import { Divider, Stack, Typography } from "@mui/joy";
+import { useContext, useMemo } from "react";
 
 import { MessageInformation } from "@/lib/baseModule/components/layout/messagesSidebar/MessageInformation";
 import { MessageNotification } from "@/lib/baseModule/components/layout/messagesSidebar/MessageNotification";
 import { NoMessagesIllustration } from "@/lib/businessModules/chat/assets/NoMessagesIllustration";
 import { ChatNoAccessAlert } from "@/lib/businessModules/chat/components/ChatNoAccessAlert";
+import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
-import { useMatrixClient } from "@/lib/businessModules/chat/shared/hooks/useMatrixClient";
 import { useNewMessages } from "@/lib/businessModules/chat/shared/hooks/useNewMessages";
 import { allMessagesRead } from "@/lib/businessModules/chat/shared/utils";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -30,8 +31,15 @@ const title = "Ungelesene Chats";
 
 export function MessagesSidebarContent() {
   const { userSettings } = useChat();
+  const { matrixClient, clientState } = useContext(ChatClientContext) ?? {};
   const { newMessages } = useNewMessages();
-  const matrix = useMatrixClient();
+  const sortedMessages = useMemo(() => {
+    return newMessages.toSorted((messageA, messageB) => {
+      const timestampA = messageA.timestamp?.getTime() ?? 0;
+      const timestampB = messageB.timestamp?.getTime() ?? 0;
+      return timestampB - timestampA;
+    });
+  }, [newMessages]);
 
   if (!userSettings.chatUsageEnabled) {
     return (
@@ -42,17 +50,17 @@ export function MessagesSidebarContent() {
   }
 
   if (
-    matrix?.state === ClientState.CreateBackupKey ||
-    matrix?.state === ClientState.RestoreBackupKey
+    clientState === ClientState.CreateBackupKey ||
+    clientState === ClientState.RestoreBackupKey
   ) {
     return (
       <SidebarContent title={title}>
-        <MessageInformation clientState={matrix.state} />
+        <MessageInformation clientState={clientState} />
       </SidebarContent>
     );
   }
 
-  if (!newMessages.length) {
+  if (!sortedMessages.length) {
     return (
       <SidebarContent title={title}>
         <NoMessagesInfo />
@@ -68,8 +76,8 @@ export function MessagesSidebarContent() {
           <ButtonLink
             level="title-md"
             onClick={() => {
-              if (matrix) {
-                allMessagesRead(matrix.client, newMessages);
+              if (matrixClient) {
+                allMessagesRead(matrixClient, sortedMessages);
               }
             }}
           >
@@ -93,7 +101,7 @@ export function MessagesSidebarContent() {
           marginBottom: 3,
         }}
       >
-        {newMessages.map((notification) => (
+        {sortedMessages.map((notification) => (
           <MessageNotification
             key={notification.id}
             message={notification}

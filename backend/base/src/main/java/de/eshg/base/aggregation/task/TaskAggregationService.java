@@ -92,7 +92,7 @@ public class TaskAggregationService {
                 .toList(),
             false)
         .stream()
-        .collect(StreamUtil.toLinkedHashMap(UserDto::userId, Function.identity()));
+        .collect(StreamUtil.toLinkedHashMap(UserDto::userId));
   }
 
   private static List<TaskDto> aggregateTasks(

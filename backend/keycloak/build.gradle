@@ -1,5 +1,4 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 
 plugins {
     id "eshg.java-lib"
@@ -16,11 +15,18 @@ jar {
     archiveClassifier.set('')
 }
 
+configurations {
+    keycloakProviders
+}
+
 dependencies {
     compileOnly libs.bundles.keycloak.server
     compileOnly 'jakarta.validation:jakarta.validation-api'
     compileOnly 'io.quarkus.resteasy.reactive:resteasy-reactive-common:latest.release'
     implementation(project(':keycloak-api')) {
+        transitive = false
+    }
+    keycloakProviders('de.arbeitsagentur.opdt:keycloak-extension-bundid:1.0.0-25.0') {
         transitive = false
     }
 }
@@ -39,6 +45,8 @@ tasks.register('copyJarsToBuildContext', Copy) {
     dependsOn jar
     from jars
     from apiJar.outputs.files
+    from configurations.keycloakProviders
+    rename 'keycloak-extension-bundid-[-.0-9]+\\.jar', 'keycloak-extension-bundid.jar'
     into dockerBuildContext
 }
 

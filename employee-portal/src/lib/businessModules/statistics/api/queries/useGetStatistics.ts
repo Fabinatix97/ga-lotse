@@ -4,9 +4,9 @@
  */
 
 import {
-  ApiGetStatisticsResponse,
-  GetStatisticsRequest,
-  StatisticApi,
+  ApiGetEvaluationsResponse,
+  EvaluationApi,
+  GetEvaluationsRequest,
 } from "@eshg/employee-portal-api/statistics";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -18,18 +18,18 @@ import { StatisticOverview } from "@/lib/businessModules/statistics/api/models/s
 import { getStatisticsQueryKey } from "./apiQueryKeys";
 
 export function createQueryGetStatistics(
-  statisticApi: StatisticApi,
-  statisticsRequest: GetStatisticsRequest,
+  statisticApi: EvaluationApi,
+  statisticsRequest: GetEvaluationsRequest,
 ) {
   return {
     queryKey: getStatisticsQueryKey([statisticsRequest]),
     queryFn: () =>
-      statisticApi.getStatisticsRaw(statisticsRequest).then(unwrapRawResponse),
+      statisticApi.getEvaluationsRaw(statisticsRequest).then(unwrapRawResponse),
     select: mapGetStatistics,
   };
 }
 
-export function useGetStatistics(statisticsRequest: GetStatisticsRequest) {
+export function useGetStatistics(statisticsRequest: GetEvaluationsRequest) {
   const statisticApi = useStatisticApi();
   return useSuspenseQuery(
     createQueryGetStatistics(statisticApi, statisticsRequest),
@@ -37,11 +37,11 @@ export function useGetStatistics(statisticsRequest: GetStatisticsRequest) {
 }
 
 function mapGetStatistics(
-  apiGetStatisticsResponse: ApiGetStatisticsResponse,
+  apiGetStatisticsResponse: ApiGetEvaluationsResponse,
 ): StatisticOverview {
   return {
     totalNumberOfElements: apiGetStatisticsResponse.totalNumberOfElements,
-    data: apiGetStatisticsResponse.statistics.map((statistic) => ({
+    data: apiGetStatisticsResponse.evaluations.map((statistic) => ({
       ...statistic,
       timeRangeEnd: mapTimeRangeEndApiToFrontend(statistic.timeRangeEnd),
       user: apiGetStatisticsResponse.resolvedUsers[statistic.userId],

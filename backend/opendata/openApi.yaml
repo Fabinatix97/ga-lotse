@@ -305,6 +305,7 @@ components:
       - MEASLES_PROTECTION
       - STI_PROTECTION
       - MEDICAL_REGISTRY
+      - DENTAL
     DefaultPopulationResponse:
       type: object
       properties:

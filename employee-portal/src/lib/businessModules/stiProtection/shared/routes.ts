@@ -5,6 +5,7 @@
 
 const basePath = "/sti-protection";
 const proceduresPath = `${basePath}/procedures`;
+const waitingRoomPath = `${basePath}/waiting-room`;
 const appointmentBlockPath = `${basePath}/appointment-block-groups`;
 
 export const routes = {
@@ -23,6 +24,9 @@ export const routes = {
           `${proceduresPath}/${procedureId}/progress-entries/${entryId}/details`,
       },
     }),
+  },
+  waitingRoom: {
+    index: waitingRoomPath,
   },
   appointmentBlockGroups: {
     index: `${appointmentBlockPath}`,

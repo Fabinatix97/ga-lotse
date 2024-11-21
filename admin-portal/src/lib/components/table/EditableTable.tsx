@@ -50,15 +50,29 @@ export interface EditableTableProps<
 
 export interface TableApi<TData> {
   create: (orgUnitId?: string) => void;
-  update: (entity: TData) => void;
+  update: (
+    entity: Partial<
+      Omit<
+        TData,
+        | "actors"
+        | "_staged"
+        | "_matchingClientRules"
+        | "_matchingServerRules"
+        | "_matchingClientActors"
+        | "_matchingServerActors"
+        | "_type"
+      >
+    >,
+  ) => void;
   deleteAudited: (id: string) => void;
   deleteStaged: (id: string) => void;
+  activate: (id: string) => void;
+  deactivate: (id: string) => void;
 }
 
 export function EditableTable<
   TData extends UniqueEntity & OverridableEntity<TData> & EditableEntity,
 >(props: Readonly<EditableTableProps<TData>>) {
-  const [data, setData] = useState(props.data);
   const { columnFilters, onColumnFiltersChange } = useColumnFilters(
     props.columns,
   );
@@ -71,16 +85,12 @@ export function EditableTable<
   );
   const enableColumnFilter = props.columns.some((c) => c.enableColumnFilter);
 
-  useEffect(() => {
-    setData(props.data);
-  }, [props.data]);
-
   const columns: ColumnDef<TData>[] = addEditColumns(
     addFeatureColumns(props.columns, { toggleExpand: true }),
   );
 
   const tableConfig: TableOptions<TData> = {
-    data: data,
+    data: props.data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -101,9 +111,6 @@ export function EditableTable<
       globalFilter,
     },
     meta: {
-      updateData: (update) => {
-        setData((ps) => ps.map((dat) => (dat.id === update.id ? update : dat)));
-      },
       api: props.api,
     },
   };
@@ -164,7 +171,7 @@ export function EditableTable<
             <tbody>
               {
                 <EmptyTableHint
-                  empty={!data.length}
+                  empty={!props.data.length}
                   allFiltered={!rows.length}
                   columns={reactTable.getAllColumns().length}
                 />

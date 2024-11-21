@@ -4,11 +4,11 @@
  */
 
 import {
+  ApiAnalysis,
+  ApiAnalysisChartConfiguration,
   ApiAttributeSelection,
-  ApiEvaluation,
-  ApiEvaluationChartConfiguration,
   ApiGetDetailPageInformationResponse,
-  StatisticApi,
+  EvaluationApi,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -32,7 +32,7 @@ import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 function mapConfiguration(
   attributes: Map<string, FlatAttribute>,
-  diagramConfiguration: ApiEvaluationChartConfiguration,
+  diagramConfiguration: ApiAnalysisChartConfiguration,
 ): EvaluationDiagramConfiguration {
   function getApiAttribute(
     selectionKey: ApiAttributeSelection | undefined,
@@ -113,7 +113,7 @@ function mapConfiguration(
 }
 
 export function mapEvaluations(
-  evaluations: ApiEvaluation[],
+  evaluations: ApiAnalysis[],
   attributes: FlatAttribute[],
 ): Evaluation[] {
   const attributeMap = new Map<string, FlatAttribute>();
@@ -134,11 +134,11 @@ export function mapToStatisticDetailsView(
     result.tableColumnHeaders,
   );
   return {
-    statisticId: result.statisticInfo.id,
-    title: result.statisticInfo.name,
-    start: result.statisticInfo.timeRangeStart,
-    end: mapTimeRangeEndApiToFrontend(result.statisticInfo.timeRangeEnd),
-    createdAt: result.statisticInfo.createdAt,
+    statisticId: result.evaluationInfo.id,
+    title: result.evaluationInfo.name,
+    start: result.evaluationInfo.timeRangeStart,
+    end: mapTimeRangeEndApiToFrontend(result.evaluationInfo.timeRangeEnd),
+    createdAt: result.evaluationInfo.createdAt,
     createdBy: fullName(result.user),
     dataSource: {
       // We only have one datasource currently. If this changes the data structure changes and thus
@@ -151,14 +151,14 @@ export function mapToStatisticDetailsView(
       datasetAmount: result.totalNumberOfElements,
     },
     attributes: attributes,
-    evaluations: mapEvaluations(result.evaluations, attributes),
+    evaluations: mapEvaluations(result.analyses, attributes),
     userId: result.user!.userId,
-    anonymized: result.statisticInfo.anonymized,
+    anonymized: result.evaluationInfo.anonymized,
   } satisfies StatisticDetailsView;
 }
 
 export function createQueryGetDetailPageInformation(
-  statisticApi: StatisticApi,
+  statisticApi: EvaluationApi,
   statisticId: string,
 ) {
   return {

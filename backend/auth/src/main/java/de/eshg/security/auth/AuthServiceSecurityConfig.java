@@ -47,6 +47,7 @@ public class AuthServiceSecurityConfig {
       AUTHORIZATION_ENDPOINT_BASE_URL + "/login";
 
   static final String LOGOUT_URL = "/logout";
+  private static final String LOGIN_ERROR_URL = "/login-error";
 
   private static final AntPathRequestMatcher LOGOUT_REQUEST_MATCHER =
       new AntPathRequestMatcher(LOGOUT_URL, HttpMethod.GET.name());
@@ -101,6 +102,7 @@ public class AuthServiceSecurityConfig {
                       "/actuator/health/readiness")
                   .permitAll();
               auth.requestMatchers(HttpMethod.GET, "/browser_update_required.html").permitAll();
+              auth.requestMatchers(HttpMethod.GET, "/login_error.html").permitAll();
 
               auth.requestMatchers(HttpMethod.GET, LogoutController.INITIATE_LOGOUT_URL)
                   .authenticated();
@@ -114,6 +116,7 @@ public class AuthServiceSecurityConfig {
                 oauth2
                     .successHandler(oauthLoginSuccessHandler)
                     .loginProcessingUrl(LOGIN_PROCESSING_BASE_URL + "/*")
+                    .failureUrl(LOGIN_ERROR_URL)
                     .authorizationEndpoint(
                         authorizationEndpointConfig ->
                             authorizationEndpointConfig

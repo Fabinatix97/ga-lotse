@@ -6,11 +6,20 @@
 package de.eshg.base.gdpr;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.base.gdpr.api.AddCentralFileIdToGdprProcedureRequest;
+import de.eshg.base.gdpr.api.AddGdprDownloadsRequest;
 import de.eshg.base.gdpr.api.AddGdprProcedureRequest;
-import de.eshg.base.gdpr.api.GdprProcedureChangeStatusRequest;
+import de.eshg.base.gdpr.api.CancelGdprProcedureRequest;
+import de.eshg.base.gdpr.api.CloseGdprProcedureRequest;
+import de.eshg.base.gdpr.api.DeleteGdprDownloadsRequest;
+import de.eshg.base.gdpr.api.GdprProcedureFilterParameters;
+import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureDetailsPageResponse;
+import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureResponse;
+import de.eshg.base.gdpr.api.GetGdprProceduresResponse;
 import de.eshg.base.gdpr.api.SetMatterOfConcernRequest;
+import de.eshg.base.gdpr.api.StartGdprProcedureRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +36,7 @@ import org.springframework.web.service.annotation.*;
 @HttpExchange(url = GdprProcedureApi.BASE_URL)
 public interface GdprProcedureApi {
   String BASE_URL = BaseUrls.Base.GDPR_PROCEDURE_API;
+  String REFRESH_URL_SUFFIX = "/{id}/refresh-status";
 
   @PostExchange
   @ApiResponse(responseCode = "200")
@@ -37,6 +47,12 @@ public interface GdprProcedureApi {
   @ApiResponse(responseCode = "200")
   @Operation(summary = "Get GDPR procedure by id")
   GetGdprProcedureResponse getGdprProcedure(
+      @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id);
+
+  @PostExchange(REFRESH_URL_SUFFIX)
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Refresh status of GDPR procedure.")
+  GetGdprProcedureResponse refreshStatus(
       @Parameter(description = "The Id of the GDPR procedure.") @PathVariable("id") UUID id);
 
   @GetExchange("/{id}/details-page")
@@ -70,11 +86,23 @@ public interface GdprProcedureApi {
   void setMatterOfConcern(
       @PathVariable("id") UUID id, @RequestBody @Valid SetMatterOfConcernRequest request);
 
-  @PostExchange("/{id}/change-status")
+  @PostExchange("/{id}/start-procedure")
   @ApiResponse(responseCode = "200")
-  @Operation(summary = "Changes the current status of the GDPR procedure.")
-  void changeStatus(
-      @PathVariable("id") UUID id, @RequestBody @Valid GdprProcedureChangeStatusRequest request);
+  @Operation(summary = "Start the GDPR procedure")
+  void startProcedure(
+      @PathVariable("id") UUID id, @RequestBody @Valid StartGdprProcedureRequest request);
+
+  @PostExchange("/{id}/cancel-procedure")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Cancel the GDPR procedure")
+  void cancelProcedure(
+      @PathVariable("id") UUID id, @RequestBody @Valid CancelGdprProcedureRequest request);
+
+  @PostExchange("/{id}/close-procedure")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Close the GDPR procedure")
+  void closeProcedure(
+      @PathVariable("id") UUID id, @RequestBody @Valid CloseGdprProcedureRequest request);
 
   @GetExchange("/{id}/fileStateIds")
   @ApiResponse(responseCode = "200")

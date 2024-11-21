@@ -14,7 +14,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { isDefined, reverse } from "remeda";
 
-import { useGetHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/useGetHeadersForOfflineCaching";
+import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import {
   HistoryItem,
@@ -44,8 +44,6 @@ export function useFetchProgressEntriesTemplate(
       ? ApiGetProceduresSortOrder.Asc
       : ApiGetProceduresSortOrder.Desc;
 
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
-
   return useSuspenseQuery({
     queryKey: queryKeyFactory([
       "fetchProgressEntries",
@@ -58,7 +56,7 @@ export function useFetchProgressEntriesTemplate(
     ]),
     queryFn: async () => {
       const initOverrides = preCache
-        ? getPreCacheForOfflineModeHeaders(procedureId)
+        ? getHeadersForOfflineCaching(procedureId)
         : undefined;
       const [
         progressEntries,
@@ -101,7 +99,6 @@ export function useFetchProgressEntryDetailsTemplate(
   entryId: string,
   preCache?: boolean,
 ) {
-  const getPreCacheForOfflineModeHeaders = useGetHeadersForOfflineCaching();
   const progressEntryApi = useProgressEntryApi();
 
   return useSuspenseQuery({
@@ -113,7 +110,7 @@ export function useFetchProgressEntryDetailsTemplate(
     ]),
     queryFn: async () => {
       const initOverrides = preCache
-        ? getPreCacheForOfflineModeHeaders(procedureId)
+        ? getHeadersForOfflineCaching(procedureId)
         : undefined;
 
       return await progressEntryApi.getProgressEntry(

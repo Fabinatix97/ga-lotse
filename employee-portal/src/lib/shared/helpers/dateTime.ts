@@ -210,6 +210,18 @@ export function formatDateToFullReadableStringWithShortenedWeekday(date: Date) {
   }).format(date);
 }
 
+export function formatDateTimeShortenedWeekday(date: Date) {
+  return new Intl.DateTimeFormat("de-DE", {
+    weekday: "short",
+    year: "numeric",
+
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "numeric",
+  }).format(date);
+}
+
 export function formatDateToFullReadableString(date: Date) {
   return new Intl.DateTimeFormat("de-DE", {
     dateStyle: "full",

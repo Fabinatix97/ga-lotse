@@ -5,14 +5,13 @@
 
 package de.eshg.auditlog;
 
-import de.eshg.auditlog.feature.AuditLogFeatureToggle;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@EnableConfigurationProperties({AuditLogServiceConfig.class, AuditLogFeatureToggle.class})
+@EnableConfigurationProperties(AuditLogServiceConfig.class)
 public class AuditLogApplication {
 
   @Bean

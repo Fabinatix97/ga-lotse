@@ -54,6 +54,7 @@ public enum ModuleMemberGroup implements KeycloakGroup {
       "Medizinalkartei",
       getStandardRoles(),
       List.of(EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN)),
+  DENTAL("Zahnärztlicher Dienst", getStandardRoles(), List.of(EmployeePermissionRole.DENTAL_ADMIN)),
   OPEN_DATA("Open Data", EmployeePermissionRole.OPEN_DATA_ADMIN);
 
   private final String keycloakNameWithoutPrefix;

@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LogoutButton } from "@/lib/businessModules/travelMedicine/components/shared/components/LogoutButton";
-import { LogoutButtonWithText } from "@/lib/businessModules/travelMedicine/components/shared/components/LogoutButtonWithText";
-import { useIsMobile } from "@/lib/businessModules/travelMedicine/shared/useIsMobile";
+import { useTranslation } from "@/lib/i18n/client";
+import { LogoutButton } from "@/lib/shared/components/buttons/LogoutButton";
 import { PageTitle } from "@/lib/shared/components/layout/page";
 
 interface AppointmentPageTitleProps {
@@ -15,9 +14,10 @@ interface AppointmentPageTitleProps {
 export function AppointmentPageTitle(
   props: Readonly<AppointmentPageTitleProps>,
 ) {
-  const isMobile = useIsMobile();
+  const { t } = useTranslation(["travelMedicine/appointmentOverview"]);
+
   return (
-    <PageTitle toolbar={isMobile ? <LogoutButton /> : <LogoutButtonWithText />}>
+    <PageTitle toolbar={<LogoutButton text={t("header.logout")} />}>
       {props.title}
     </PageTitle>
   );

@@ -5,7 +5,8 @@
 
 package de.eshg.lib.aggregation;
 
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 
 public record ClientResponse<R>(
-    String location, R response, ErrorResponseWithLocation errorResponse) {}
+    BusinessModule businessModule, R response, ErrorResponseWithLocation errorResponse) {}

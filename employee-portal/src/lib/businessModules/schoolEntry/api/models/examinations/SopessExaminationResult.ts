@@ -13,10 +13,7 @@ import {
   ApiSpeechEvaluationExamination,
 } from "@eshg/employee-portal-api/schoolEntry";
 
-import {
-  Versioned,
-  mapVersioned,
-} from "@/lib/businessModules/schoolEntry/api/models/Versioned";
+import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface SopessExaminationResult extends Versioned {
   grossMotorSkills: ApiScoredEvaluationExamination;

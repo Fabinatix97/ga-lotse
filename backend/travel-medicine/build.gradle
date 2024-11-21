@@ -1,6 +1,8 @@
 plugins {
     id "eshg.service"
+    id "eshg.base-test-dependency"
 }
+
 dependencies {
     implementation project(':lib-base-client')
     implementation project(':lib-procedures')
@@ -10,6 +12,8 @@ dependencies {
     implementation project(':lib-document-generator')
     implementation project(':rest-oauth-client-commons')
     implementation project(':file-commons')
+
+    implementation 'org.bouncycastle:bcprov-jdk18on:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -24,12 +28,6 @@ dockerCompose {
         'travel-medicine',
         'travel-medicine-db'
     ]
-}
-
-tasks.named("test").configure {
-    dependsOn project(':base').tasks.named("composeUp")
-    inputs.files(project(':base').tasks.named("bootJar")).withNormalizer(ClasspathNormalizer.class)
-    inputs.files(project(':keycloak').tasks.named("jar")).withNormalizer(ClasspathNormalizer.class)
 }
 
 dependencyTrack {

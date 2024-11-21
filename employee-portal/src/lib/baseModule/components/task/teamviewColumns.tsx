@@ -28,7 +28,7 @@ export const teamviewColumns = [
       );
     },
     meta: {
-      width: 48,
+      width: "3rem",
       canNavigate: {
         subRow: true,
       },
@@ -37,6 +37,7 @@ export const teamviewColumns = [
   columnHelper.accessor("name", {
     header: "Name",
     meta: {
+      width: "15rem",
       canNavigate: {
         subRow: true,
       },
@@ -74,7 +75,7 @@ export const teamviewColumns = [
       return props.getValue();
     },
     meta: {
-      width: "35%",
+      width: "30rem",
       canNavigate: {
         subRow: true,
       },
@@ -95,6 +96,7 @@ export const teamviewColumns = [
       );
     },
     meta: {
+      width: "10rem",
       canNavigate: {
         subRow: true,
       },
@@ -103,6 +105,7 @@ export const teamviewColumns = [
   columnHelper.accessor("assignedBy", {
     header: "Zugewiesen von",
     meta: {
+      width: "15rem",
       canNavigate: {
         subRow: true,
       },
@@ -115,6 +118,7 @@ export const teamviewColumns = [
       return value ? formatDate(new Date(value), "de") : undefined;
     },
     meta: {
+      width: "10rem",
       canNavigate: {
         subRow: true,
       },

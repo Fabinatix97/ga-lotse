@@ -9,16 +9,11 @@ import {
   ApiCreateMedicalReportRequest,
   ApiCreateProcedureRequest,
   ApiCreateSchoolInfoLetterRequest,
-  ApiImportStatistics,
   ApiRemoveCustodianRequest,
-  ApiResponse,
   ApiSyncPersonRequest,
   ApiUpdatePersonRequest,
   CloseProcedureRequest,
   DeleteProcedureRequest,
-  ImportCitizenListRequest,
-  ImportPastProcedureListRequest,
-  ImportSchoolListRequest,
   ReopenProcedureRequest,
   UpdateAnamnesisRequest,
   UpdateChildDataRequest,
@@ -33,86 +28,13 @@ import {
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import {
-  mapOptionalValue,
-  mapRequiredValue,
-} from "@eshg/lib-portal/helpers/form";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
-import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-
-interface ImportDataResult {
-  file: File;
-  statistics: ApiImportStatistics;
-}
-
-export function useImportData() {
-  const schoolEntryApi = useSchoolEntryApi();
-  return useHandledMutation({
-    mutationFn: (values: ImportDataValues) =>
-      values.listType === ImportListType.SchoolList
-        ? schoolEntryApi
-            .importSchoolListRaw(mapSchoolFormValues(values))
-            .then(parseImportResult)
-        : values.listType === ImportListType.CitizenList
-          ? schoolEntryApi
-              .importCitizenListRaw(mapCitizenFormValues(values))
-              .then(parseImportResult)
-          : schoolEntryApi
-              .importPastProcedureListRaw(mapPastProcedureFormValues(values))
-              .then(parseImportResult),
-  });
-}
-
-function mapCitizenFormValues(
-  values: ImportDataValues,
-): ImportCitizenListRequest {
-  return {
-    file: mapRequiredValue(values.file),
-    schoolYear: mapRequiredValue(values.schoolYear),
-  };
-}
-
-function mapSchoolFormValues(
-  values: ImportDataValues,
-): ImportSchoolListRequest {
-  return {
-    ...mapCitizenFormValues(values),
-    schoolId: mapRequiredValue(values.schoolId),
-    locationId: mapOptionalValue(values.locationId),
-  };
-}
-
-function mapPastProcedureFormValues(
-  values: ImportDataValues,
-): ImportPastProcedureListRequest {
-  return {
-    ...mapCitizenFormValues(values),
-    schoolId: mapRequiredValue(values.schoolId),
-  };
-}
-
-/**
- * We parse the response manually, because it was not possible to strictly type the multipart-part content
- */
-async function parseImportResult(
-  response: ApiResponse<object>,
-): Promise<ImportDataResult> {
-  const formData = await response.raw.formData();
-  const file = formData.get("file");
-  const statisticsJson = formData.get("statistics");
-
-  if (!(file instanceof File && typeof statisticsJson === "string")) {
-    throw new Error("Response contains invalid import result.");
-  }
-
-  const statistics = JSON.parse(statisticsJson) as ApiImportStatistics;
-  return {
-    file,
-    statistics,
-  };
-}
+import {
+  getAnamnesisQuery,
+  getProcedureQuery,
+} from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 
 export function useCreateAppointmentsInBulk() {
   const schoolEntryApi = useSchoolEntryApi();
@@ -123,13 +45,18 @@ export function useCreateAppointmentsInBulk() {
   });
 }
 
-export function useUpdateProcedure() {
+export function useUpdateProcedure(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
+
   return useHandledMutation({
+    meta: { updatesQuery: queryKey },
     mutationFn: (values: UpdateProcedureRequest) =>
       schoolEntryApi.updateProcedureRaw(values).then(unwrapRawResponse),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation("Die Zusatzinfos wurden erfolgreich geändert.");
     },
   });
@@ -209,13 +136,17 @@ export function useUpdateVaccinationStatus() {
   });
 }
 
-export function useUpdateAnamnesis() {
+export function useUpdateAnamnesis(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
+  const { queryKey } = getAnamnesisQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   return useHandledMutation({
+    meta: { updatesQuery: queryKey },
     mutationFn: (request: UpdateAnamnesisRequest) =>
       schoolEntryApi.updateAnamnesisRaw(request).then(unwrapRawResponse),
-    onSuccess: () => {
+    onSuccess: (updatedApiAnamnesis) => {
+      queryClient.setQueryData(queryKey, updatedApiAnamnesis);
       snackbar.confirmation("Die Anamnese wurde erfolgreich gespeichert.");
     },
   });
@@ -233,16 +164,22 @@ export function useCreateProcedure() {
   });
 }
 
-export function useUpdateChild() {
+export function useUpdateChild(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
+
   return useHandledMutation({
+    meta: { updatesQuery: queryKey },
     mutationFn: (request: UpdateChildDataRequest) =>
       schoolEntryApi.updateChildDataRaw(request).then(unwrapRawResponse),
-    onSuccess: () =>
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
       snackbar.confirmation(
         "Die Änderungen zum Kind wurden erfolgreich gespeichert.",
-      ),
+      );
+    },
   });
 }
 
@@ -347,6 +284,7 @@ export function useCreateMedicalReport(procedureId: string) {
       }),
   });
 }
+
 export function useCreateSchoolInfoLetter(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
   return useHandledMutation({

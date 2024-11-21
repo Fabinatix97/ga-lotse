@@ -7,6 +7,7 @@ package de.eshg.medicalregistry.api;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,10 @@ public sealed interface GetProcedureResponse
   UUID id();
 
   long version();
+
+  ProcedureStatusDto status();
+
+  ProcedureTypeDto procedureType();
 
   ProfessionalDto professional();
 

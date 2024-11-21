@@ -5,8 +5,10 @@
 
 package de.eshg.base.citizenuser;
 
+import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
 import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.base.citizenuser.api.VerifyPinRequest;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,4 +51,30 @@ public interface CitizenAccessCodeUserApi {
               example = "ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
           @PathVariable("id")
           UUID userId);
+
+  @PostExchange("/anonymous")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Add a new anonymous user identified by an access code")
+  CitizenAccessCodeUserDto addAnonymousUser(@Valid @RequestBody AddAnonymousUserRequest request);
+
+  @DeleteExchange("/anonymous/{id}")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Delete an anonymous access code user")
+  void deleteAnonymousUser(
+      @Parameter(
+              description = "Id of the anonymous user",
+              example = "ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
+          @PathVariable("id")
+          UUID userId);
+
+  @PostExchange("/anonymous/{id}/verify")
+  @ApiResponse(responseCode = "200")
+  @Operation(summary = "Verify anonymous access code user PIN")
+  void verifyAnonymousUserPin(
+      @Parameter(
+              description = "Id of the anonymous user",
+              example = "ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1")
+          @PathVariable("id")
+          UUID userId,
+      @Valid @RequestBody VerifyPinRequest request);
 }

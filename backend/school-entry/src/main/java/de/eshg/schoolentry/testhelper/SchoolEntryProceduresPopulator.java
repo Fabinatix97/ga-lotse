@@ -17,18 +17,20 @@ import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.schoolentry.Icd10CodeController;
 import de.eshg.schoolentry.LabelController;
 import de.eshg.schoolentry.SchoolEntryController;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.*;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
-import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.api.PopulationRequest;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
+import de.eshg.testhelper.population.PopulationProperties;
+import de.eshg.testhelper.population.PopulatorComponent;
 import de.eshg.testhelper.population.RequestContextFaker;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -40,24 +42,23 @@ import java.util.stream.Stream;
 import net.datafaker.Faker;
 import net.datafaker.providers.base.Address;
 import net.datafaker.providers.base.Name;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnTestHelperEnabled
+@PopulatorComponent
 public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedureResponse> {
 
   private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
   private final SchoolEntryController schoolEntryController;
   private final SchoolEntryProcedureRepository schoolEntryProcedureRepository;
   private final LabelController labelController;
+  private final Icd10CodeController icd10CodeController;
   private final BaseTestHelperApi baseTestHelperApi;
   private final ContactApi contactApi;
   private final AppointmentBlockProperties appointmentBlockProperties;
 
   public SchoolEntryProceduresPopulator(
+      PopulationProperties properties,
       Clock clock,
-      Environment environment,
+      EnvironmentConfig environmentConfig,
       PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       SchoolEntryController schoolEntryController,
       SchoolEntryProcedureRepository schoolEntryProcedureRepository,
@@ -65,12 +66,12 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
       BaseTestHelperApi baseTestHelperApi,
       @SuppressWarnings("unused") // Used to define a dependency
           AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
-      EnvironmentConfig environmentConfig,
+      Icd10CodeController icd10CodeController,
       ContactApi contactApi,
       AppointmentBlockProperties appointmentBlockProperties) {
     super(
+        properties,
         clock,
-        environment,
         getClassNameAsPropertyKey(SchoolEntryProcedure.class),
         environmentConfig);
     this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
@@ -79,6 +80,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
     this.labelController = labelController;
     this.baseTestHelperApi = baseTestHelperApi;
+    this.icd10CodeController = icd10CodeController;
     this.contactApi = contactApi;
     this.appointmentBlockProperties = appointmentBlockProperties;
   }
@@ -471,7 +473,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
         .flatMap(
             searchString -> {
               SearchIcd10CodesResponse searchResponse =
-                  schoolEntryController.searchIcd10Codes(searchString, List.of());
+                  icd10CodeController.searchIcd10Codes(searchString, List.of());
               return searchResponse.codes().stream();
             })
         .map(Icd10CodeDto::code)
@@ -543,21 +545,24 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   /* anamnesis */
 
   private static AnamnesisDto randomAnamnesis(Faker faker) {
+    PromotionBeforeSchoolEntryDto promotionBeforeSchoolEntry =
+        randomPromotionBeforeSchoolEntryDto(faker);
+
     return new AnamnesisDto(
         0L,
         faker.bool().bool(),
         faker.bool().bool(),
         randomCheckUpsDto(faker),
-        randomPromotionBeforeSchoolEntryDto(faker),
+        promotionBeforeSchoolEntry,
         randomMigrationBackgroundDto(faker),
-        new AdditionalChildInfoDto(),
-        new DaycareAndSchoolInfoDto(),
-        new FamilyHistoryInfoDto(),
-        new DevelopmentInfoDto(),
-        new IllnessAndAccidentInfoDto(),
-        new PromotionTherapyAndAidInfoDto(),
-        new InterestsAndSportsInfoDto(),
-        null);
+        randomAdditionalChildInfoDto(faker),
+        randomDaycareAndSchoolInfoDto(faker),
+        randomFamilyHistoryInfoDto(faker),
+        randomDevelopmentInfoDto(faker),
+        randomIllnessAndAccidentInfoDto(faker),
+        randomPromotionTherapyAndAidInfoDto(faker, promotionBeforeSchoolEntry),
+        randomInterestsAndSportsInfoDto(faker),
+        faker.bool().bool());
   }
 
   private static CheckUpsDto randomCheckUpsDto(Faker faker) {
@@ -598,6 +603,77 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
 
   private static de.eshg.schoolentry.api.CountryCodeDto randomCountrySchoolEntry(Faker faker) {
     return randomElement(faker, de.eshg.schoolentry.api.CountryCodeDto.values());
+  }
+
+  private static AdditionalChildInfoDto randomAdditionalChildInfoDto(Faker faker) {
+    Integer numberOfSiblings = faker.random().nextInt(0, 15);
+    List<Integer> birthYears = new ArrayList<>();
+
+    for (int i = 0; i < numberOfSiblings; i++) {
+      birthYears.add(faker.random().nextInt(2000, 2024));
+    }
+    return new AdditionalChildInfoDto(faker.name().name(), numberOfSiblings, birthYears);
+  }
+
+  private static DaycareAndSchoolInfoDto randomDaycareAndSchoolInfoDto(Faker faker) {
+    boolean wasInDaycare = faker.bool().bool();
+    LocalDate inDaycareSince =
+        wasInDaycare ? LocalDate.now().minusMonths(faker.random().nextInt(50)) : null;
+
+    String daycareName = wasInDaycare ? faker.university().name() : null;
+    return new DaycareAndSchoolInfoDto(
+        wasInDaycare, inDaycareSince, daycareName, faker.university().name());
+  }
+
+  private static FamilyHistoryInfoDto randomFamilyHistoryInfoDto(Faker faker) {
+    return new FamilyHistoryInfoDto(faker.bool().bool(), faker.medicalProcedure().icd10());
+  }
+
+  private static DevelopmentInfoDto randomDevelopmentInfoDto(Faker faker) {
+    return new DevelopmentInfoDto(
+        faker.bool().bool(),
+        faker.bool().bool(),
+        faker.bool().bool(),
+        faker.random().nextInt(500, 3500));
+  }
+
+  private static PromotionTherapyAndAidInfoDto randomPromotionTherapyAndAidInfoDto(
+      Faker faker, PromotionBeforeSchoolEntryDto promotionBeforeSchoolEntry) {
+    boolean speechTherapy = promotionBeforeSchoolEntry.speechTherapy();
+    boolean ergoTherapy = promotionBeforeSchoolEntry.ergotherapy();
+    boolean physiotherapy = promotionBeforeSchoolEntry.physiotherapy();
+
+    return new PromotionTherapyAndAidInfoDto(
+        faker.bool().bool(),
+        faker.bool().bool(),
+        faker.bool().bool(),
+        LocalDate.now().minusMonths(faker.random().nextInt(50)),
+        LocalDate.now().minusMonths(faker.random().nextInt(50)),
+        faker.medication().drugName(),
+        speechTherapy ? LocalDate.now().minusMonths(faker.random().nextInt(50)) : null,
+        speechTherapy ? LocalDate.now().minusDays(faker.random().nextInt(27)) : null,
+        ergoTherapy ? LocalDate.now().minusMonths(faker.random().nextInt(50)) : null,
+        ergoTherapy ? LocalDate.now().minusDays(faker.random().nextInt(27)) : null,
+        physiotherapy ? LocalDate.now().minusMonths(faker.random().nextInt(50)) : null,
+        physiotherapy ? LocalDate.now().minusDays(faker.random().nextInt(27)) : null,
+        faker.medication().drugName());
+  }
+
+  private static IllnessAndAccidentInfoDto randomIllnessAndAccidentInfoDto(Faker faker) {
+    return new IllnessAndAccidentInfoDto(
+        faker.bool().bool(),
+        List.of(faker.medication().drugName()),
+        faker.bool().bool(),
+        faker.medicalProcedure().icd10(),
+        faker.medication().drugName());
+  }
+
+  private static InterestsAndSportsInfoDto randomInterestsAndSportsInfoDto(Faker faker) {
+    return new InterestsAndSportsInfoDto(
+        faker.olympicSport().summerOlympics(),
+        faker.olympicSport().summerOlympics(),
+        faker.bool().bool(),
+        faker.bool().bool());
   }
 
   /* vaccination status */

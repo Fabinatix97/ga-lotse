@@ -11,4 +11,5 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record SchoolEntryAppointmentBlockPopulationResult(
-    @Valid List<CreateAppointmentBlockGroupResponse> appointmentBlockGroups, @NotNull long count) {}
+    @NotNull @Valid List<CreateAppointmentBlockGroupResponse> appointmentBlockGroups,
+    @NotNull long count) {}

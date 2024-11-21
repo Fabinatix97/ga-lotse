@@ -27,8 +27,8 @@ export function CitizenAnamnesisStepFour() {
 
   return (
     <ContentSheet>
-      <Typography level="h3">{t("support.title")}</Typography>
-      <Typography level="h4">{t("support.description")}</Typography>
+      <Typography level="h2">{t("support.title")}</Typography>
+      <Typography level="h3">{t("support.description")}</Typography>
       <LocalBooleanRadioField
         name={promotionTherapyAndAidInfo("visionImpairment")}
         label={
@@ -56,7 +56,7 @@ export function CitizenAnamnesisStepFour() {
         }
         allowDeselection
       />
-      <Typography level="h4">{t("support.aid")}</Typography>
+      <Typography level="h3">{t("support.aid")}</Typography>
       <ToggleableSection
         name={promotionTherapyAndAidInfo("spectacles.show")}
         title={t("support.spectacles.title")}
@@ -105,7 +105,7 @@ export function CitizenAnamnesisStepFour() {
           name={promotionTherapyAndAidInfo("hearingAid.which")}
         />
       </ToggleableSection>
-      <Typography level="h4">{t("support.therapy.title")}</Typography>
+      <Typography level="h3">{t("support.therapy.title")}</Typography>
       <ToggleableSection
         name={promotionBeforeSchoolEntry("speechTherapy")}
         title={t("support.therapy.speechTherapy")}
