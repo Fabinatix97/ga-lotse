@@ -21,4 +21,5 @@ public record ReportInfoDto(
     @NotNull Instant timeRangeEnd,
     @NotNull ReportStateDto state,
     @NotNull LocalDate executionDate,
-    @Min(0) Long totalNumberOfElements) {}
+    @Min(0) Long totalNumberOfElements,
+    @NotNull boolean exportable) {}

@@ -48,6 +48,8 @@ declare module "@tanstack/react-table" {
 
     skipWhenParentRow?: boolean;
     spanWhenParentRow?: number;
+    // to ensure accessibility for hidden header labels, set isHeaderLabelHidden to true and provide a headerLabel
+    isHeaderLabelHidden?: boolean;
   }
 }
 
@@ -237,7 +239,9 @@ export function DataTable<TData>(props: Readonly<DataTableProps<TData>>) {
                       isSorted={header.column.getIsSorted()}
                       onSort={header.column.getToggleSortingHandler()}
                     >
-                      {columnDef.header === "" && meta?.cellStyle === "icon" ? (
+                      {(columnDef.header === "" &&
+                        meta?.cellStyle === "icon") ||
+                      meta?.isHeaderLabelHidden ? (
                         <Typography sx={visuallyHidden}>
                           {meta?.headerLabel}
                         </Typography>

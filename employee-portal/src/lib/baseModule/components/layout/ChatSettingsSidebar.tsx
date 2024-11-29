@@ -10,6 +10,7 @@ import { Button, Divider, Stack, Switch, Typography } from "@mui/joy";
 import { useContext } from "react";
 
 import { routes } from "@/lib/baseModule/shared/routes";
+import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
@@ -18,6 +19,7 @@ import {
   UseSidebarResult,
   useSidebar,
 } from "@/lib/shared/components/drawer/useSidebar";
+import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
@@ -30,10 +32,6 @@ export function useChatUserSidebar(): UseSidebarResult {
 function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const { matrixClient } = useContext(ChatClientContext) ?? {};
   const { tryNavigate } = useNavigation();
-
-  const chatUsername = matrixClient?.getUser(
-    matrixClient?.getUserId() ?? "",
-  )?.displayName;
 
   const chatUserId = matrixClient?.getUserId();
 
@@ -55,27 +53,8 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
       <SidebarContent
         title="Chat Einstellungen"
         header={
-          <Stack spacing={2}>
-            <Stack>
-              <Typography level="body-sm" textColor="text.secondary">
-                Chat-Benutzername
-              </Typography>
-              {chatUsername && (
-                <Typography level="title-md" textColor="primary.plainColor">
-                  {chatUsername}
-                </Typography>
-              )}
-            </Stack>
-            <Stack>
-              <Typography level="body-sm" textColor="text.secondary">
-                Chat ID
-              </Typography>
-              {chatUsername && (
-                <Typography level="title-md" textColor="primary.plainColor">
-                  {chatUserId}
-                </Typography>
-              )}
-            </Stack>
+          <Stack spacing={2} sx={{ paddingRight: sidebarPadding }}>
+            <ChatUserId userId={chatUserId} />
             <Divider orientation="horizontal" sx={{ mt: 2 }} />
           </Stack>
         }

@@ -12,10 +12,5 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @EnableConfigurationProperties(ArchivingProperties.class)
-@Import({
-  ArchivingJob.class,
-  ArchivingJobService.class,
-  ArchivableProceduresSpecification.class,
-  ArchivingController.class
-})
+@Import({ArchivingJob.class, ArchivableProceduresSpecification.class, ArchivingController.class})
 public class ArchivingConfiguration {}

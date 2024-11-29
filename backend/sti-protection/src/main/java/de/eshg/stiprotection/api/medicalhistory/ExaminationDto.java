@@ -11,10 +11,17 @@ import java.time.LocalDate;
 
 @Schema(name = "Examination")
 public record ExaminationDto(
-    @PastOrPresent LocalDate hepA,
-    @PastOrPresent LocalDate hepB,
-    @PastOrPresent LocalDate hepC,
-    @PastOrPresent LocalDate hiv,
-    @PastOrPresent LocalDate syphilis,
-    @PastOrPresent LocalDate gonorrhea,
-    @PastOrPresent LocalDate chlamydia) {}
+    Boolean hepA,
+    Boolean hepB,
+    Boolean hepC,
+    Boolean hiv,
+    Boolean syphilis,
+    Boolean gonorrhea,
+    Boolean chlamydia,
+    @PastOrPresent LocalDate hepADate,
+    @PastOrPresent LocalDate hepBDate,
+    @PastOrPresent LocalDate hepCDate,
+    @PastOrPresent LocalDate hivDate,
+    @PastOrPresent LocalDate syphilisDate,
+    @PastOrPresent LocalDate gonorrheaDate,
+    @PastOrPresent LocalDate chlamydiaDate) {}

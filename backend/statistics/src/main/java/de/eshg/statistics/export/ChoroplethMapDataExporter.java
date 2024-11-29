@@ -5,22 +5,20 @@
 
 package de.eshg.statistics.export;
 
-import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.chart.Calculation;
 import de.eshg.statistics.persistence.entity.chart.ChoroplethMapConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.ChoroplethMapData;
 import de.eshg.statistics.persistence.entity.diagramdata.KeyToValue;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 public class ChoroplethMapDataExporter {
   private ChoroplethMapDataExporter() {}
 
   static void addData(
-      XSSFSheet sheet,
+      Sheet sheet,
       AtomicInteger rowCounter,
       ChoroplethMapData choroplethMapData,
       ChoroplethMapConfiguration choroplethMapConfiguration) {
@@ -43,36 +41,16 @@ public class ChoroplethMapDataExporter {
     };
   }
 
-  private static void addDataHeader(XSSFSheet sheet, int rowNumber, String columnTitle) {
-    XSSFRow row = sheet.createRow(rowNumber);
+  private static void addDataHeader(Sheet sheet, int rowNumber, String columnTitle) {
+    Row row = sheet.createRow(rowNumber);
     row.createCell(1, CellType.STRING).setCellValue(columnTitle);
   }
 
-  private static void addDataRow(XSSFSheet sheet, int rowNumber, KeyToValue keyToValue) {
-    XSSFRow row = sheet.createRow(rowNumber);
+  private static void addDataRow(Sheet sheet, int rowNumber, KeyToValue keyToValue) {
+    Row row = sheet.createRow(rowNumber);
     row.createCell(0, CellType.STRING).setCellValue(keyToValue.getKey());
     if (keyToValue.getValue() != null) {
       row.createCell(1, CellType.NUMERIC).setCellValue(keyToValue.getValue().doubleValue());
     }
-  }
-
-  static void addAttributesInformation(
-      XSSFSheet sheet,
-      CellStyle cellStyle,
-      AtomicInteger rowCounter,
-      ChoroplethMapConfiguration choroplethMapConfiguration,
-      AbstractAggregationResult aggregationResult) {
-    DataExportService.getAttributeName(
-            choroplethMapConfiguration.getPrimaryAttributeSelection(), aggregationResult)
-        .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet, cellStyle, rowCounter.getAndIncrement(), "Zeilen", attributeName));
-    DataExportService.getAttributeName(
-            choroplethMapConfiguration.getSecondaryAttributeSelection(), aggregationResult)
-        .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet, cellStyle, rowCounter.getAndIncrement(), "Spalten", attributeName));
   }
 }

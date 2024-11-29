@@ -49,19 +49,21 @@ export function Header() {
         zIndex: "header",
       }}
     >
-      <HeaderIconButton
-        aria-label={sidenav.isOpen ? "navigation-close" : "navigation-open"}
-        sx={{
-          display: { xxs: "flex", lg: "none" },
-        }}
-        onClick={toggleSidenav}
-      >
-        {sidenav.isOpen ? (
-          <CloseIcon sx={{ color: "background.body" }} />
-        ) : (
-          <MenuIcon sx={{ color: "background.body" }} />
-        )}
-      </HeaderIconButton>
+      {!isOffline && (
+        <HeaderIconButton
+          aria-label={sidenav.isOpen ? "navigation-close" : "navigation-open"}
+          sx={{
+            display: { xxs: "flex", lg: "none" },
+          }}
+          onClick={toggleSidenav}
+        >
+          {sidenav.isOpen ? (
+            <CloseIcon sx={{ color: "background.body" }} />
+          ) : (
+            <MenuIcon sx={{ color: "background.body" }} />
+          )}
+        </HeaderIconButton>
+      )}
       <Typography
         level="h2"
         textColor="background.body"

@@ -5,16 +5,12 @@
 
 package de.eshg.medicalregistry.domain.model;
 
-import de.eshg.lib.common.DataSensitivity;
-import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.TriggerType;
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import jakarta.persistence.MappedSuperclass;
 
-@Entity
-public class MedicalRegistryEntryChange extends MedicalRegistryEntry {
+@MappedSuperclass
+public abstract sealed class MedicalRegistryEntryChange extends MedicalRegistryProcedure
+    permits Deregistration, FullProcedureChange {
 
   protected MedicalRegistryEntryChange() {}
 
@@ -22,16 +18,5 @@ public class MedicalRegistryEntryChange extends MedicalRegistryEntry {
     super(triggerType);
   }
 
-  @NotNull
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  private TypeOfChange typeOfChange;
-
-  public TypeOfChange getTypeOfChange() {
-    return typeOfChange;
-  }
-
-  public void setTypeOfChange(TypeOfChange typeOfChange) {
-    this.typeOfChange = typeOfChange;
-  }
+  public abstract TypeOfChange getTypeOfChange();
 }

@@ -38,7 +38,6 @@ import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionFinalizer;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
-import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.inspection.api.InspectionType;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionAppointment;
@@ -50,7 +49,6 @@ import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectType_;
-import de.eshg.lib.foureyes.spring.FourEyesPrincipleAutoConfiguration;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
@@ -100,7 +98,6 @@ public class FacilityService {
   private final InspectionFinalizer inspectionFinalizer;
   private final InspectionRepository inspectionRepository;
   private final InspectionFeatureToggle inspectionFeatureToggle;
-  private final FourEyesPrincipleAutoConfiguration fourEyesPrincipleAutoConfiguration;
 
   public FacilityService(
       FacilityRepository facilityRepository,
@@ -111,8 +108,7 @@ public class FacilityService {
       EntityManager entityManager,
       InspectionFinalizer inspectionFinalizer,
       InspectionRepository inspectionRepository,
-      InspectionFeatureToggle inspectionFeatureToggle,
-      FourEyesPrincipleAutoConfiguration fourEyesPrincipleAutoConfiguration) {
+      InspectionFeatureToggle inspectionFeatureToggle) {
     this.facilityRepository = facilityRepository;
     this.facilityClient = facilityClient;
     this.inspectionService = inspectionService;
@@ -122,7 +118,6 @@ public class FacilityService {
     this.inspectionFinalizer = inspectionFinalizer;
     this.inspectionRepository = inspectionRepository;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
-    this.fourEyesPrincipleAutoConfiguration = fourEyesPrincipleAutoConfiguration;
   }
 
   public InspAddFacilityResponse addFacility(InspAddFacilityRequest request) {
@@ -508,12 +503,6 @@ public class FacilityService {
   private static InspectionAppointment getExecutionAppointment(PendingFacilityView view) {
     return view.inspection() != null && view.inspection().getExecutionAppointment() != null
         ? view.inspection().getExecutionAppointment()
-        : null;
-  }
-
-  private static InspectionResult getInspectionResult(PendingFacilityView view) {
-    return view.inspection() != null && view.inspection().getResult() != null
-        ? view.inspection().getResult()
         : null;
   }
 

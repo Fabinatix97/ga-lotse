@@ -62,7 +62,7 @@ export function AppointmentStaffField(
       };
     } else {
       return {
-        title: "Es wurde noch nicht auf  Personalverfügbarkeit geprüft.",
+        title: "Es wurde noch nicht auf Personalverfügbarkeit geprüft.",
         color: "neutral",
       };
     }

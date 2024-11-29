@@ -66,10 +66,10 @@ export default function RootLayout({
         <NonceProvider initialNonce={nonce}>
           <ThemeProvider>
             <SnackbarProvider snackbar={EmployeeSnackbar}>
-              <ConfirmationDialogProvider>
-                <ConfirmNavigationProvider>
-                  <DrawerProvider>
-                    <ApiProvider configuration={API_CONFIGURATION}>
+              <DrawerProvider>
+                <ApiProvider configuration={API_CONFIGURATION}>
+                  <ConfirmationDialogProvider>
+                    <ConfirmNavigationProvider>
                       <QueryBoundary>
                         <OfflinePasswordPrompt />
                         <ServiceWorkerProvider>
@@ -79,10 +79,10 @@ export default function RootLayout({
                           {modal}
                         </ServiceWorkerProvider>
                       </QueryBoundary>
-                    </ApiProvider>
-                  </DrawerProvider>
-                </ConfirmNavigationProvider>
-              </ConfirmationDialogProvider>
+                    </ConfirmNavigationProvider>
+                  </ConfirmationDialogProvider>
+                </ApiProvider>
+              </DrawerProvider>
             </SnackbarProvider>
           </ThemeProvider>
         </NonceProvider>

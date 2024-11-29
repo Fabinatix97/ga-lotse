@@ -5,7 +5,7 @@
 
 import { EChartsOption } from "echarts";
 
-import { EvaluationDiagramPieChart } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+import { AnalysisDiagramPieChart } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -13,7 +13,7 @@ import {
 import { chartLegend } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 
 interface PieChartProps {
-  filterSetData: EvaluationDiagramPieChart["data"];
+  filterSetData: AnalysisDiagramPieChart["data"];
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
@@ -28,6 +28,7 @@ export function PieChart({ filterSetData, eChartApi }: PieChartProps) {
     series: [
       {
         type: "pie",
+        top: 50,
         data: portions.map((portion) =>
           portion.value === 0
             ? { ...portion, label: { show: false } }
@@ -36,7 +37,7 @@ export function PieChart({ filterSetData, eChartApi }: PieChartProps) {
         label: {
           color: "#171A1C", // text.primary
         },
-        center: ["50%", "55%"],
+        center: ["50%", "50%"],
       },
     ],
   };

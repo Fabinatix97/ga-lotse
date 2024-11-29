@@ -8,10 +8,10 @@ import {
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/base";
 
-import { routes as dentalRoutes } from "@/lib/businessModules/dental/shared/routes";
 import { routes as inspectionRoutes } from "@/lib/businessModules/inspection/shared/routes";
 import { routes as measlesProtectionRoutes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { routes as medicalRegistryRoutes } from "@/lib/businessModules/medicalRegistry/shared/routes";
+import { routes as officialMedicalServiceRoutes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { routes as schoolEntryRoutes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { routes as stiProtectionRoutes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { routes as travelMedicineRoutes } from "@/lib/businessModules/travelMedicine/shared/routes";
@@ -42,7 +42,9 @@ export function resolveProcedureDetailsRoute({
     case "MEDICAL_REGISTRY":
       return medicalRegistryRoutes.procedures.byId(procedureId).index;
     case "DENTAL":
-      return dentalRoutes.procedures.byId(procedureId).details;
+      throw new Error("TODO ISSUE-5952");
+    case "OFFICIAL_MEDICAL_SERVICE":
+      return officialMedicalServiceRoutes.procedures.byId(procedureId).index;
   }
 }
 
@@ -66,7 +68,9 @@ export function resolveProcedureProgressEntriesRoute(
     case "MEDICAL_REGISTRY":
       return medicalRegistryRoutes.procedures.byId(procedureId).index;
     case "DENTAL":
-      return dentalRoutes.procedures.byId(procedureId).details;
+      throw new Error("TODO ISSUE-5952");
+    case "OFFICIAL_MEDICAL_SERVICE":
+      return officialMedicalServiceRoutes.procedures.byId(procedureId).index;
   }
 }
 

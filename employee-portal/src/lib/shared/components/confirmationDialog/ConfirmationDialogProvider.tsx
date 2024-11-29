@@ -17,6 +17,8 @@ import {
 } from "react";
 import { isDefined } from "remeda";
 
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+
 import {
   ConfirmationDialog,
   ConfirmationDialogProps,
@@ -41,7 +43,11 @@ export function ConfirmationDialogProvider({
     <ConfirmationDialogContext.Provider
       value={{ confirmationDialog, setConfirmationDialog }}
     >
-      {confirmationDialog && <ConfirmationDialog {...confirmationDialog} />}
+      {confirmationDialog && (
+        <OverlayBoundary>
+          <ConfirmationDialog {...confirmationDialog} />
+        </OverlayBoundary>
+      )}
       {children}
     </ConfirmationDialogContext.Provider>
   );

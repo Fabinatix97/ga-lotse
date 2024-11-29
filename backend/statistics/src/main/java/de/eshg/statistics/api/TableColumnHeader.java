@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record TableColumnHeader(
+    @NotBlank String displayName,
     @NotBlank String businessModule,
     @NotNull UUID dataSourceId,
     @NotBlank String dataSourceName,

@@ -12,7 +12,7 @@ import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBound
 import { SignDocumentModalContent } from "@/lib/businessModules/travelMedicine/components/informationStatement/SignDocumentModalContent";
 import { useTranslation } from "@/lib/i18n/client";
 
-type SignDocumentModalProps = Omit<BaseModalProps, "children">;
+type SignDocumentModalProps = Omit<BaseModalProps, "children" | "modalTitle">;
 
 export function SignDocumentModal({
   sx,

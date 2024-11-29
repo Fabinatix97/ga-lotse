@@ -9,14 +9,14 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 
 export function useDeleteEvaluation() {
-  const api = useEvaluationApi();
   const snackbar = useSnackbar();
+  const evaluationApi = useEvaluationApi();
   const mutation = useHandledMutation({
-    mutationFn: (evaluationId: string) => api.deleteAnalysis(evaluationId),
-    onSuccess: () => snackbar.confirmation("Analyse gelöscht"),
+    mutationFn: (evaluationId: string) =>
+      evaluationApi.deleteEvaluation(evaluationId),
+    onSuccess: () => {
+      snackbar.confirmation("Auswertung gelöscht");
+    },
   });
-
-  return (evaluationId: string) => {
-    mutation.mutate(evaluationId);
-  };
+  return (evaluationId: string) => mutation.mutate(evaluationId);
 }

@@ -80,11 +80,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -93,33 +93,49 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EvaluationService {
+public class EvaluationService extends AbstractAggregationResultService {
   private static final String EVALUATION_WITH_ID_NOT_FOUND = "Evaluation with id '%s' not found";
 
-  private static final Logger log = LoggerFactory.getLogger(EvaluationService.class);
   private final EvaluationRepository evaluationRepository;
   private final StatisticsUserService userService;
-  private final TableRowRepository tableRowRepository;
   private final EvaluationTemplateService evaluationTemplateService;
   private final DataSourceValidator dataSourceValidator;
-  private final DataAggregationService dataAggregationService;
   private final OriginalDataAccessConfig originalDataAccessConfig;
 
   public EvaluationService(
+      DataAggregationService dataAggregationService,
+      TableRowRepository tableRowRepository,
+      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize,
       EvaluationRepository evaluationRepository,
       StatisticsUserService userService,
-      TableRowRepository tableRowRepository,
       EvaluationTemplateService evaluationTemplateService,
       DataSourceValidator dataSourceValidator,
-      DataAggregationService dataAggregationService,
       OriginalDataAccessConfig originalDataAccessConfig) {
+    super(dataAggregationService, tableRowRepository, tableRowPageSize);
     this.evaluationRepository = evaluationRepository;
     this.userService = userService;
-    this.tableRowRepository = tableRowRepository;
     this.evaluationTemplateService = evaluationTemplateService;
     this.dataSourceValidator = dataSourceValidator;
-    this.dataAggregationService = dataAggregationService;
     this.originalDataAccessConfig = originalDataAccessConfig;
+  }
+
+  public static Function<Evaluation, Boolean> isEvaluationExportableFunction() {
+    return evaluation ->
+        evaluation.getState().equals(AggregationResultState.COMPLETED)
+            && evaluation.isAnonymized()
+            && evaluation.getNumberOfTableRows() < getMaxDataRowExportable();
+  }
+
+  @Override
+  public AbstractAggregationResult getAbstractAggregationResultInternal(UUID id) {
+    return getEvaluationInternal(id);
+  }
+
+  public Evaluation getEvaluationInternal(UUID evaluationId) {
+    return evaluationRepository
+        .findByExternalId(evaluationId)
+        .orElseThrow(
+            () -> new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND.formatted(evaluationId)));
   }
 
   @Transactional(readOnly = true)
@@ -289,7 +305,10 @@ public class EvaluationService {
                     BaseEntity_.ID)));
 
     Map<UUID, UserDto> resolvedUsers = getResolvedUsers(evaluationPage.get());
-    return EvaluationMapper.mapEvaluationPageToResponse(evaluationPage, resolvedUsers);
+    return EvaluationMapper.mapEvaluationPageToResponse(
+        evaluationPage,
+        resolvedUsers,
+        evaluation -> isEvaluationExportableFunction().apply(evaluation));
   }
 
   private Specification<Evaluation> anonymizedEvaluations() {
@@ -367,17 +386,13 @@ public class EvaluationService {
             PageRequest.of(getEvaluationRequest.page(), getEvaluationRequest.pageSize()));
 
     return EvaluationMapper.mapToApi(
-        evaluation, tableRowPage.get().toList(), tableRowPage.getTotalElements());
+        evaluation,
+        tableRowPage.get().toList(),
+        tableRowPage.getTotalElements(),
+        isEvaluationExportableFunction().apply(evaluation));
   }
 
-  public Evaluation getEvaluationInternal(UUID evaluationId) {
-    return evaluationRepository
-        .findByExternalId(evaluationId)
-        .orElseThrow(
-            () -> new NotFoundException(EVALUATION_WITH_ID_NOT_FOUND.formatted(evaluationId)));
-  }
-
-  public static void validateEvaluationCompleted(Evaluation evaluation) {
+  static void validateEvaluationCompleted(Evaluation evaluation) {
     if (!evaluation.getState().equals(AggregationResultState.COMPLETED)) {
       throw new BadRequestException(
           "Evaluation %s is not in state COMPLETED".formatted(evaluation.getExternalId()));
@@ -401,7 +416,8 @@ public class EvaluationService {
     List<AnalysisDto> analyses = AnalysisMapper.getAnalyses(evaluation.getAnalyses());
 
     return new GetDetailPageInformationResponse(
-        EvaluationMapper.mapToEvaluationInfo(evaluation),
+        EvaluationMapper.mapToEvaluationInfo(
+            evaluation, isEvaluationExportableFunction().apply(evaluation)),
         EvaluationMapper.mapToApi(evaluation.getTableColumns()),
         evaluation.getNumberOfTableRows(),
         resolvedUsers.get(evaluation.getCreatedByUserId()),
@@ -488,7 +504,9 @@ public class EvaluationService {
             .toList();
 
     return new GetCompletenessDataResponse(
-        EvaluationMapper.mapToEvaluationInfo(evaluation), completenessOfAttributes);
+        EvaluationMapper.mapToEvaluationInfo(
+            evaluation, isEvaluationExportableFunction().apply(evaluation)),
+        completenessOfAttributes);
   }
 
   private CompletenessOfAttribute getCompletenessOfAttribute(
@@ -546,7 +564,13 @@ public class EvaluationService {
     Evaluation evaluation = getEvaluationInternal(evaluationId);
 
     List<ReportSeriesDto> reportSeriesDtos =
-        evaluation.getReportSeriesList().stream().map(ReportMapper::mapToApi).toList();
+        evaluation.getReportSeriesList().stream()
+            .map(
+                reportSeries ->
+                    ReportMapper.mapToApi(
+                        reportSeries,
+                        report -> ReportService.isReportExportableFunction().apply(report)))
+            .toList();
     Set<UUID> userIds =
         reportSeriesDtos.stream().map(ReportSeriesDto::userId).collect(Collectors.toSet());
     Map<UUID, UserDto> resolvedUsers = userService.getResolvedUsers(userIds);
@@ -578,40 +602,15 @@ public class EvaluationService {
     evaluation.setState(state);
   }
 
-  @Transactional(readOnly = true)
-  public AggregationResultStateInformation getStateInformation(UUID evaluationId) {
-    Evaluation evaluation = getEvaluationInternal(evaluationId);
-    return new AggregationResultStateInformation(
-        evaluation.getState(), evaluation.getPendingState());
-  }
-
-  @Transactional
-  public void aggregateData(UUID evaluationId) {
-    Evaluation evaluation = getEvaluationInternal(evaluationId);
-    try {
-      dataAggregationService.collectTableRows(evaluation);
-    } catch (Exception exception) {
-      log.error("Error while collecting table rows", exception);
-      evaluation.setState(AggregationResultState.FAILED);
-    }
-  }
-
-  @Transactional
-  public void minMaxDetermination(UUID evaluationId) {
-    Evaluation evaluation = getEvaluationInternal(evaluationId);
-    dataAggregationService.determineMinMaxNullUnknownValues(evaluation);
-    evaluation.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
-  }
-
   @Transactional
   public void removeTableRows(
       UUID evaluationId, AggregationResultPendingState pendingStateAfterRemoval) {
     Evaluation evaluation = getEvaluationInternal(evaluationId);
 
-    if (dataAggregationService.countTableRows(evaluation) <= 0) {
+    if (countTableRows(evaluation) <= 0) {
       evaluation.setPendingState(pendingStateAfterRemoval);
     } else {
-      dataAggregationService.removeTableRows(evaluation);
+      removeTableRows(evaluation);
     }
   }
 
@@ -682,11 +681,5 @@ public class EvaluationService {
                     diagram.getDescription(),
                     FilterParameterMapper.mapToApi(diagram.getFilters())))
         .toList();
-  }
-
-  @Transactional
-  public void setStateToFailed(UUID evaluationId) {
-    Evaluation evaluation = getEvaluationInternal(evaluationId);
-    evaluation.setState(AggregationResultState.FAILED);
   }
 }

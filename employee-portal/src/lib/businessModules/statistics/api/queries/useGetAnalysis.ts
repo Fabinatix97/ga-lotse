@@ -12,14 +12,14 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isNonNullish } from "remeda";
 
-import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
+import { useAnalysisApi } from "@/lib/businessModules/statistics/api/clients";
 import { getActiveFilterLabels } from "@/lib/businessModules/statistics/api/mapper/getActiveFilterLabels";
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapAttributesToFilterDefinitions } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToFilterDefinitions";
-import { mapStatisticFilterToFilterValue } from "@/lib/businessModules/statistics/api/mapper/mapStatisticFilterToFilterValue";
+import { mapEvaluationFilterToFilterValue } from "@/lib/businessModules/statistics/api/mapper/mapEvaluationFilterToFilterValue";
+import { AnalysisDiagram } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import { EvaluationDiagram } from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
-import { evaluationApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { analysisApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 
 interface ConfigurationAttributeKeys {
   primaryAttribute?: string;
@@ -110,7 +110,7 @@ function mapDiagramData(
   diagramData: ApiDiagramDiagramData,
   attributes: FlatAttribute[],
   chartConfiguration: ApiAnalysisChartConfiguration,
-): EvaluationDiagram["data"] {
+): AnalysisDiagram["data"] {
   const configurationAttributeKeys =
     mapConfigurationToAttributeKeys(chartConfiguration);
   const configurationAttributes = getConfigurationAttributesFromKeys(
@@ -208,7 +208,7 @@ function mapDiagramData(
   }
 }
 
-export function mapToEvaluationDiagram(
+export function mapToAnalysisDiagram(
   result: ApiAnalysisWithDiagrams,
   attributes: FlatAttribute[],
 ) {
@@ -216,7 +216,7 @@ export function mapToEvaluationDiagram(
 
   return result.diagrams.map((it) => {
     const filterValues = it.filters?.map((flt) =>
-      mapStatisticFilterToFilterValue(flt),
+      mapEvaluationFilterToFilterValue(flt),
     );
     return {
       diagramId: it.id,
@@ -233,7 +233,7 @@ export function mapToEvaluationDiagram(
         attributes,
         result.chartConfiguration,
       ),
-    } as EvaluationDiagram;
+    } as AnalysisDiagram;
   });
 }
 
@@ -241,12 +241,12 @@ export function useGetAnalysis(
   analysisId: string,
   attributes: FlatAttribute[],
 ) {
-  const evaluationApi = useEvaluationApi();
+  const analysisApi = useAnalysisApi();
 
   const queryResult = useSuspenseQuery({
-    queryKey: evaluationApiQueryKey(["getAnalysis", analysisId]),
-    queryFn: () => evaluationApi.getAnalysis(analysisId),
-    select: (result) => mapToEvaluationDiagram(result, attributes),
+    queryKey: analysisApiQueryKey(["getAnalysis", analysisId]),
+    queryFn: () => analysisApi.getAnalysis(analysisId),
+    select: (result) => mapToAnalysisDiagram(result, attributes),
   });
   return queryResult.data;
 }

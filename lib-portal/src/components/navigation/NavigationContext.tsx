@@ -14,10 +14,15 @@ import {
   useState,
 } from "react";
 
-const NavigationContext = createContext<{
+import { MutationBundle } from "../../types/query";
+
+interface NavigationContextValue {
   tryNavigate: (href: string) => void;
   setCanNavigate: (canNavigate: boolean) => void;
-}>({
+  setOnSaveMutation: (onSaveMutation?: MutationBundle) => void;
+}
+
+const NavigationContext = createContext<NavigationContextValue>({
   tryNavigate: () => {
     throw new Error(
       "Trying to use NavigationContext#tryNavigate without using NavigationContextProvider",
@@ -28,17 +33,31 @@ const NavigationContext = createContext<{
       "Trying to use NavigationContext#setCanNavigate without using NavigationContextProvider",
     );
   },
+  setOnSaveMutation: () => {
+    throw new Error(
+      "Trying to use NavigationContext#setOnSaveMutation without using NavigationContextProvider",
+    );
+  },
 });
 
 export function NavigationContextProvider({
   children,
   onBeforeNavigate,
-}: PropsWithChildren<{ onBeforeNavigate: (onConfirm: () => void) => void }>) {
+}: PropsWithChildren<{
+  onBeforeNavigate: (
+    onNavigate: () => Promise<void> | void,
+    onSaveMutation?: MutationBundle,
+  ) => void;
+}>) {
   const [canNavigate, setCanNavigate] = useState(true);
+  const [onSaveMutation, setOnSaveMutation] = useState<
+    MutationBundle | undefined
+  >(undefined);
   const router = useRouter();
 
-  const contextValue = useMemo(
+  const contextValue: NavigationContextValue = useMemo(
     () => ({
+      setOnSaveMutation,
       setCanNavigate,
       tryNavigate(href: string) {
         if (canNavigate) {
@@ -47,11 +66,18 @@ export function NavigationContextProvider({
           onBeforeNavigate(() => {
             setCanNavigate(true);
             router.push(href);
-          });
+          }, onSaveMutation);
         }
       },
     }),
-    [canNavigate, setCanNavigate, router, onBeforeNavigate],
+    [
+      canNavigate,
+      setCanNavigate,
+      router,
+      onBeforeNavigate,
+      onSaveMutation,
+      setOnSaveMutation,
+    ],
   );
 
   return (

@@ -5,6 +5,7 @@
 
 package de.eshg.inspection.inspection.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.eshg.inspection.checklist.persistence.Checklist;
 import de.eshg.inspection.checklist.persistence.Checklist_;
 import de.eshg.inspection.facility.persistence.Facility;
@@ -38,6 +39,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
+@JsonIgnoreProperties({"precedingInspection", "followupInspection"})
 public class Inspection
     extends Procedure<Inspection, InspectionTask, InspectionPerson, InspectionRelatedFacility> {
 
@@ -162,6 +164,10 @@ public class Inspection
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Inspection followupInspection;
+
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = Inspection_.FOLLOWUP_INSPECTION)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private Inspection precedingInspection;
 
   @Column
   @JdbcType(PostgreSQLEnumJdbcType.class)
@@ -483,5 +489,13 @@ public class Inspection
       throw new BadRequestException(
           ErrorCode.CORRUPT, "Checklist validation failed. At least one checklist is corrupt");
     }
+  }
+
+  public Inspection getPrecedingInspection() {
+    return precedingInspection;
+  }
+
+  public void setPrecedingInspection(Inspection precedingInspection) {
+    this.precedingInspection = precedingInspection;
   }
 }

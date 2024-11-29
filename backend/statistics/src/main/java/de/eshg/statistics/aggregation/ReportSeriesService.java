@@ -86,7 +86,8 @@ public class ReportSeriesService {
     evaluation.addReportSeries(reportSeries);
 
     reportSeriesRepository.flush();
-    return ReportMapper.mapToApi(reportSeries);
+    return ReportMapper.mapToApi(
+        reportSeries, report -> ReportService.isReportExportableFunction().apply(report));
   }
 
   private void validateHasDiagrams(Evaluation evaluation) {
@@ -196,7 +197,8 @@ public class ReportSeriesService {
       reportSeries.getReports().getFirst().setName(updateReportSeriesRequest.name());
     }
 
-    return ReportMapper.mapToApi(reportSeries);
+    return ReportMapper.mapToApi(
+        reportSeries, report -> ReportService.isReportExportableFunction().apply(report));
   }
 
   private static void validateNotPendingManualReport(ReportSeries reportSeries) {
@@ -299,10 +301,7 @@ public class ReportSeriesService {
               ReportMapper.mapToReportType(getReportsRequest.reportTypeFilter()), pageRequest);
     }
     List<ReportSeriesDto> reportSeriesDtos =
-        relevantReportSeriesPage
-            .get()
-            .map(ReportSeriesService::mapReportSeriesForOverview)
-            .toList();
+        relevantReportSeriesPage.get().map(this::mapReportSeriesForOverview).toList();
 
     Map<UUID, UserDto> resolvedUsers =
         userService.getResolvedUsers(
@@ -312,11 +311,14 @@ public class ReportSeriesService {
         reportSeriesDtos, resolvedUsers, relevantReportSeriesPage.getTotalElements());
   }
 
-  private static ReportSeriesDto mapReportSeriesForOverview(ReportSeries reportSeries) {
+  private ReportSeriesDto mapReportSeriesForOverview(ReportSeries reportSeries) {
     Stream<Report> reportStream =
         reportSeries.getReports().stream()
             .filter(report -> report.getState().equals(AggregationResultState.COMPLETED));
-    return ReportMapper.mapToApi(reportSeries, reportStream);
+    return ReportMapper.mapToApi(
+        reportSeries,
+        reportStream,
+        report -> ReportService.isReportExportableFunction().apply(report));
   }
 
   @Transactional(readOnly = true)

@@ -13,12 +13,16 @@ export interface EvaluationTemplateTableView {
 export interface EvaluationTemplate {
   id: string;
   name: string;
-  analysisCount: number;
   createdAt: Date;
-  userId: string;
   dataSourceName: string;
 }
 
 export interface EvaluationTemplateWithUserInfo extends EvaluationTemplate {
+  userId: string;
+  analysisCount: number;
   user: ApiUser | undefined;
+}
+
+export interface EvaluationTemplateFromRepository extends EvaluationTemplate {
+  origin: string;
 }

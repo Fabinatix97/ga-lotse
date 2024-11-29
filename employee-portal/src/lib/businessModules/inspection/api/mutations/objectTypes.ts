@@ -11,7 +11,7 @@ import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { useObjectTypeApi } from "@/lib/businessModules/inspection/api/clients";
 import { EditableObjectType } from "@/lib/businessModules/inspection/components/objectType/EditObjectTypeSidebar";
 
-export function useUpdateObjectType() {
+export function useUpdateObjectType({ onSuccess }: { onSuccess?: () => void }) {
   const objectTypeApi = useObjectTypeApi();
   const snackbar = useSnackbar();
 
@@ -23,6 +23,7 @@ export function useUpdateObjectType() {
     },
     onSuccess: () => {
       snackbar.confirmation("Erfolgreich gespeichert!");
+      onSuccess?.();
     },
   });
 }

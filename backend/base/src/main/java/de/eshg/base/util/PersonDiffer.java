@@ -39,7 +39,11 @@ public class PersonDiffer extends AbstractDiffer {
         left.getBirthDetails() == null ? new BirthDetails(null) : left.getBirthDetails();
     BirthDetails rightBirthDetails =
         right.getBirthDetails() == null ? new BirthDetails(null) : right.getBirthDetails();
-    return new DiffBuilder<>(left, right, ToStringStyle.SHORT_PREFIX_STYLE)
+    return new DiffBuilder.Builder<Person>()
+        .setLeft(left)
+        .setRight(right)
+        .setStyle(ToStringStyle.SHORT_PREFIX_STYLE)
+        .build()
         .append("title", trim(left.getTitle()), trim(right.getTitle()))
         .append("salutation", left.getSalutation(), right.getSalutation())
         .append("gender", left.getGender(), right.getGender())

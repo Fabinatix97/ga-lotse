@@ -4,7 +4,10 @@
  */
 
 import { ApiInstitutionContact } from "@eshg/employee-portal-api/base";
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Box, Divider, Stack } from "@mui/joy";
 import { Formik } from "formik";
@@ -199,14 +202,14 @@ export function MergeInstitutionContactForm({
                 <Box component={"section"} aria-label={"E-Mail-Adressen"}>
                   <InputArrayField
                     name={fieldName("emailAddresses")}
-                    label={"E-Mail-Adresse"}
+                    label={(index) => getIndexLabel("E-Mail-Adresse", index)}
                     addMoreLabel={"E-Mail-Adresse hinzufügen"}
                   />
                 </Box>
                 <Box component={"section"} aria-label={"Telefonnummern"}>
                   <InputArrayField
                     name={fieldName("phoneNumbers")}
-                    label={"Telefonnummer"}
+                    label={(index) => getIndexLabel("Telefonnummer", index)}
                     addMoreLabel={"Telefonnummer hinzufügen"}
                   />
                 </Box>

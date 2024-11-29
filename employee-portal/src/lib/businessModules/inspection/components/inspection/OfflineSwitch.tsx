@@ -17,7 +17,10 @@ import {
   clearCaches,
   deleteInspectionFromAllCaches,
 } from "@/lib/businessModules/inspection/shared/offline/deleteInspectionFromAllCaches";
-import { registerServiceWorker } from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
+import {
+  isServiceWorkerRegistered,
+  registerServiceWorker,
+} from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
 import { useInspectionPrecacheState } from "@/lib/businessModules/inspection/shared/offline/useInspectionPrecacheState";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { usePrecacheInspections } from "@/lib/businessModules/inspection/shared/offline/usePrecacheInspections";
@@ -128,8 +131,17 @@ function useInspectionOffline(procedureId: string) {
     } catch (error) {
       await setState("idle");
       errorSnackbar(error);
+      return;
     }
-    const password = await getPassword();
+
+    let password;
+    try {
+      password = await askForNewPassword();
+    } catch {
+      await cleanup(false);
+      return;
+    }
+
     try {
       await registerServiceWorker();
       if (password) {
@@ -137,24 +149,31 @@ function useInspectionOffline(procedureId: string) {
       }
       await precacheInspection(procedureId);
     } catch (error) {
-      await handleOnline();
+      await cleanup(true);
       errorSnackbar(
         error,
         "Fehler bei der Zwischenspeicherung der Offline-Daten",
       );
+      return;
     }
     await setState("success");
   }
 
   async function handleOnline() {
+    await cleanup(true);
+  }
+
+  async function cleanup(clearCachedInspection: boolean) {
     await setState("deleting");
     await lockInspection(procedureId, false).catch(() =>
       // eslint-disable-next-line no-console
       console.error("Failed to unlock inspection", procedureId),
     );
-    await deleteInspectionFromAllCaches(procedureId);
-    if ((await precachedInspectionIds.size()) === 0) {
-      await clearCaches();
+    if (clearCachedInspection) {
+      await deleteInspectionFromAllCaches(procedureId);
+      if ((await precachedInspectionIds.size()) === 0) {
+        await clearCaches();
+      }
     }
     await setState("idle");
   }
@@ -166,9 +185,12 @@ function useInspectionOffline(procedureId: string) {
   };
 }
 
-async function getPassword() {
-  const serviceWorkerRegistered = await workboxPrecacheExists();
-  if (serviceWorkerRegistered) return undefined;
+async function askForNewPassword() {
+  const serviceWorkerRegistered = await isServiceWorkerRegistered();
+  if (serviceWorkerRegistered) {
+    // no need to post GET_PASSWORD message -- service worker will ask for it
+    return undefined;
+  }
   const offlinePasswordChannel =
     createOfflinePasswordBroadCastChannelEndpoint();
   return new Promise<string>((resolve, reject) => {
@@ -185,10 +207,4 @@ async function getPassword() {
     };
     offlinePasswordChannel.postMessage(GET_PASSWORD);
   });
-}
-
-async function workboxPrecacheExists() {
-  return (await caches.keys()).some((key) =>
-    key.startsWith("workbox-precache-"),
-  );
 }

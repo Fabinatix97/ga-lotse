@@ -7,20 +7,20 @@ import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
 const apiQueryKey = queryKeyFactory(["statistics"]);
 
-export const statisticApiQueryKey = queryKeyFactory(
-  apiQueryKey(["statisticApi"]),
-);
-
-export const getStatisticsQueryKey = queryKeyFactory(
-  statisticApiQueryKey(["getStatistics"]),
-);
-
-export const getStatisticReportsQueryKey = queryKeyFactory(
-  statisticApiQueryKey(["getStatisticReports"]),
-);
-
 export const evaluationApiQueryKey = queryKeyFactory(
   apiQueryKey(["evaluationApi"]),
+);
+
+export const getEvaluationsQueryKey = queryKeyFactory(
+  evaluationApiQueryKey(["getEvaluations"]),
+);
+
+export const getEvaluationReportsQueryKey = queryKeyFactory(
+  evaluationApiQueryKey(["getEvaluationReports"]),
+);
+
+export const analysisApiQueryKey = queryKeyFactory(
+  apiQueryKey(["analysisApi"]),
 );
 
 export const dataSourceApiQueryKey = queryKeyFactory(
@@ -44,3 +44,7 @@ export const statisticsFeatureTogglesApiQueryKey = queryKeyFactory(
 );
 
 export const reportApiQueryKey = queryKeyFactory(apiQueryKey(["reportApi"]));
+
+export const statisticsCentralRepositoryApiQueryKey = queryKeyFactory(
+  apiQueryKey(["statisticsCentralRepositoryApi"]),
+);

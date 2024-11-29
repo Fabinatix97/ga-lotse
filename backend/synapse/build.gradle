@@ -37,9 +37,7 @@ tasks.named('composeBuild') {
 
 // synapse should only start when Keycloak is up and provisioned by base
 tasks.named("composeUp").configure {
-    def baseUp = project(":base").tasks.named("composeUp")
-    dependsOn baseUp
-    mustRunAfter baseUp
+    dependsOn project(":base").tasks.named("composeUp")
 }
 
 dockerCompose {

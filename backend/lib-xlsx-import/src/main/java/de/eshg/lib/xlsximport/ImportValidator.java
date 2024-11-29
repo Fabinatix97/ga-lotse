@@ -43,6 +43,14 @@ public class ImportValidator {
     }
   }
 
+  public static void validateNumberOfRows(Sheet sheet, int maxNumberOfImportRows) {
+    if (sheet.getPhysicalNumberOfRows() > maxNumberOfImportRows) {
+      throw new BadRequestException(
+          ErrorCode.INVALID_FILE,
+          "Invalid file structure. At most %s rows are allowed.".formatted(maxNumberOfImportRows));
+    }
+  }
+
   public static void validateHeaderExists(Sheet sheet) {
     Row headerRow = sheet.getRow(0);
     if (headerRow == null) {

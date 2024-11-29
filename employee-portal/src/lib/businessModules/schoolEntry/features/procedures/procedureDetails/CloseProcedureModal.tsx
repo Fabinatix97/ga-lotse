@@ -17,7 +17,8 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { useCloseProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
-interface CloseProcedureModalProps extends Omit<BaseModalProps, "children"> {
+interface CloseProcedureModalProps
+  extends Omit<BaseModalProps, "children" | "modalTitle"> {
   procedure: ProcedureDetails;
 }
 

@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class AttributeSelectionMapper {
+  public static final String SEARCH_KEY_DELIMITER = "~";
+
   private AttributeSelectionMapper() {}
 
   static AttributeSelection mapToPersistence(AttributeSelectionDto attributeSelectionDto) {
@@ -39,14 +41,18 @@ public class AttributeSelectionMapper {
       String businessModuleName,
       String baseModulAttributeCode) {
     if (baseModulAttributeCode == null) {
-      return "%s~%s~%s".formatted(businessModuleAttributeCode, dataSourceId, businessModuleName);
+      return java.lang.String.join(
+          SEARCH_KEY_DELIMITER,
+          businessModuleAttributeCode,
+          dataSourceId.toString(),
+          businessModuleName);
     } else {
-      return "%s~%s~%s~%s"
-          .formatted(
-              businessModuleAttributeCode,
-              dataSourceId,
-              businessModuleName,
-              baseModulAttributeCode);
+      return java.lang.String.join(
+          SEARCH_KEY_DELIMITER,
+          businessModuleAttributeCode,
+          dataSourceId.toString(),
+          businessModuleName,
+          baseModulAttributeCode);
     }
   }
 

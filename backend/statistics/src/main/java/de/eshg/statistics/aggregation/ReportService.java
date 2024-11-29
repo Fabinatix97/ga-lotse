@@ -26,6 +26,7 @@ import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
 import de.eshg.statistics.mapper.ReportMapper;
+import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.Analysis;
@@ -40,6 +41,7 @@ import de.eshg.statistics.persistence.entity.report.ReportType;
 import de.eshg.statistics.persistence.entity.report.ReportingPeriod;
 import de.eshg.statistics.persistence.repository.ReportRepository;
 import de.eshg.statistics.persistence.repository.ReportSeriesRepository;
+import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -51,36 +53,57 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ReportService {
+public class ReportService extends AbstractAggregationResultService {
   private final ReportRepository reportRepository;
   private final ReportSeriesRepository reportSeriesRepository;
   private final StatisticsUserService userService;
   private final Clock clock;
-  private final DataAggregationService dataAggregationService;
   private final AnalysisService analysisService;
 
   private static final Logger log = LoggerFactory.getLogger(ReportService.class);
 
   public ReportService(
+      DataAggregationService dataAggregationService,
+      TableRowRepository tableRowRepository,
+      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize,
       ReportRepository reportRepository,
       ReportSeriesRepository reportSeriesRepository,
       StatisticsUserService userService,
       Clock clock,
-      DataAggregationService dataAggregationService,
       AnalysisService analysisService) {
+    super(dataAggregationService, tableRowRepository, tableRowPageSize);
     this.reportRepository = reportRepository;
     this.reportSeriesRepository = reportSeriesRepository;
     this.userService = userService;
     this.clock = clock;
-    this.dataAggregationService = dataAggregationService;
     this.analysisService = analysisService;
+  }
+
+  public static Function<Report, Boolean> isReportExportableFunction() {
+    return report ->
+        report.getState().equals(AggregationResultState.COMPLETED)
+            && report.getNumberOfTableRows() < getMaxDataRowExportable();
+  }
+
+  @Override
+  public AbstractAggregationResult getAbstractAggregationResultInternal(UUID id) {
+    return getReportInternal(id);
+  }
+
+  public Report getReportInternal(UUID reportId) {
+    return reportRepository
+        .findByExternalId(reportId)
+        .orElseThrow(
+            () -> new NotFoundException("Report with id '%s' not found".formatted(reportId)));
   }
 
   static Report createReport(
@@ -142,14 +165,7 @@ public class ReportService {
         ReportMapper.mapToReportTypeDto(report.getReportSeries().getReportType()));
   }
 
-  private Report getReportInternal(UUID reportId) {
-    return reportRepository
-        .findByExternalId(reportId)
-        .orElseThrow(
-            () -> new NotFoundException("Report with id '%s' not found".formatted(reportId)));
-  }
-
-  private void validateReportCompleted(Report report) {
+  private static void validateReportCompleted(Report report) {
     if (!report.getState().equals(AggregationResultState.COMPLETED)) {
       throw new BadRequestException(
           "Report %s is not in state COMPLETED".formatted(report.getExternalId()));
@@ -233,47 +249,9 @@ public class ReportService {
     }
   }
 
-  @Transactional(readOnly = true)
-  public AggregationResultStateInformation getReportStateInformation(UUID reportId) {
-    Report report = getReportInternal(reportId);
-    return new AggregationResultStateInformation(report.getState(), report.getPendingState());
-  }
-
-  @Transactional
-  public void aggregateData(UUID reportId) {
-    Report report = getReportInternal(reportId);
-    if (wrongConstellationForMethod(
-        report, AggregationResultPendingState.DATA_AGGREGATION, "aggregateData")) {
-      return;
-    }
-
-    try {
-      dataAggregationService.collectTableRows(report);
-    } catch (Exception exception) {
-      log.error("Error while collecting table rows", exception);
-      report.setState(AggregationResultState.FAILED);
-    }
-  }
-
-  @Transactional
-  public void minMaxDetermination(UUID reportId) {
-    Report report = getReportInternal(reportId);
-    if (wrongConstellationForMethod(
-        report, AggregationResultPendingState.MIN_MAX_DETERMINATION, "minMaxDetermination")) {
-      return;
-    }
-
-    dataAggregationService.determineMinMaxNullUnknownValues(report);
-    report.setPendingState(AggregationResultPendingState.ANALYSIS_CONDUCTION);
-  }
-
   @Transactional
   public void analysisConduction(UUID reportId) {
     Report report = getReportInternal(reportId);
-    if (wrongConstellationForMethod(
-        report, AggregationResultPendingState.ANALYSIS_CONDUCTION, "analysisConduction")) {
-      return;
-    }
 
     Evaluation evaluation = report.getReportSeries().getEvaluation();
     if (EvaluationService.hasNoDiagrams(evaluation)) {
@@ -316,12 +294,7 @@ public class ReportService {
     return findMissingDiagramOrComplete(report);
   }
 
-  Map<AnalysisDto, AddDiagramRequest> findMissingDiagramOrComplete(Report report) {
-    if (wrongConstellationForMethod(
-        report, AggregationResultPendingState.DIAGRAM_CREATION, "findMissingDiagramOrComplete")) {
-      return Collections.emptyMap();
-    }
-
+  private Map<AnalysisDto, AddDiagramRequest> findMissingDiagramOrComplete(Report report) {
     Optional<Analysis> firstUnfinishedAnalysis =
         report.getAnalyses().stream()
             .filter(analysis -> analysis.getOriginalAnalysisId() != null)
@@ -476,22 +449,6 @@ public class ReportService {
     };
   }
 
-  private static boolean wrongConstellationForMethod(
-      Report report, AggregationResultPendingState expectedPendingState, String method) {
-    if (!report.getState().equals(AggregationResultState.CREATING)
-        || !report.getPendingState().equals(expectedPendingState)) {
-
-      log.error(
-          "'{}' called for wrong constellation {} {}",
-          method,
-          report.getState(),
-          report.getPendingState());
-      report.setState(AggregationResultState.FAILED);
-      return true;
-    }
-    return false;
-  }
-
   private static void finishReport(Report report) {
     report.setPendingState(null);
     report.setState(AggregationResultState.COMPLETED);
@@ -500,12 +457,6 @@ public class ReportService {
       reportSeries.setTimeRangeStart(report.getTimeRangeStart());
       reportSeries.setTimeRangeEnd(report.getTimeRangeEnd());
     }
-  }
-
-  @Transactional
-  public void setStateToFailed(UUID reportId) {
-    Report report = getReportInternal(reportId);
-    report.setState(AggregationResultState.FAILED);
   }
 
   @Transactional
@@ -527,7 +478,7 @@ public class ReportService {
   public boolean deleteReport(UUID reportId) {
     Report report = getReportInternal(reportId);
 
-    if (dataAggregationService.countTableRows(report) <= 0) {
+    if (countTableRows(report) <= 0) {
       ReportSeries reportSeries = report.getReportSeries();
       if (reportSeries.getReports().size() <= 1) {
         reportSeriesRepository.delete(reportSeries);
@@ -536,7 +487,7 @@ public class ReportService {
       }
       return true;
     } else {
-      dataAggregationService.removeTableRows(report);
+      removeTableRows(report);
       return false;
     }
   }

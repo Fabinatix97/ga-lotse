@@ -16,9 +16,13 @@ import { useFormikContext } from "formik";
 import { useEffect, useId, useState } from "react";
 
 import { useGetFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
+import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
-import { validateTodayOrFutureDate } from "@/lib/shared/helpers/validators";
+import {
+  validateNonNegativeInteger,
+  validateTodayOrFutureDate,
+} from "@/lib/shared/helpers/validators";
 
 import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
 
@@ -56,19 +60,22 @@ function ConnectedAppointmentPicker({
 
 export function AppointmentForm() {
   const appointmentBlockDescriptionlId = useId();
-  const { values, setFieldValue } = useFormikContext<AddNewProcedureForm>();
+  const { values, setFieldValue } = useFormikContext<
+    AddNewProcedureForm | CreateAppointmentForm
+  >();
 
   const blockSectionSelected =
-    values.appointmentType === ApiAppointmentBookingType.AppointmentBlock;
+    values.appointmentBookingType ===
+    ApiAppointmentBookingType.AppointmentBlock;
   const customSectionSelected =
-    values.appointmentType === ApiAppointmentBookingType.UserDefined;
+    values.appointmentBookingType === ApiAppointmentBookingType.UserDefined;
 
   useEffect(() => {
     if (!values.blockAppointment) {
       return;
     }
     void setFieldValue(
-      "appointmentType",
+      "appointmentBookingType",
       ApiAppointmentBookingType.AppointmentBlock,
     );
   }, [values.blockAppointment, setFieldValue]);
@@ -77,7 +84,7 @@ export function AppointmentForm() {
       return;
     }
     void setFieldValue(
-      "appointmentType",
+      "appointmentBookingType",
       ApiAppointmentBookingType.UserDefined,
     );
   }, [
@@ -88,15 +95,15 @@ export function AppointmentForm() {
 
   return (
     <RadioGroupField
-      name="appointmentType"
-      required="Bitte ein Termin anliegen"
+      name="appointmentBookingType"
+      required="Bitte eine Buchungsart auswählen"
     >
       <Stack gap={2}>
         <Sheet
           aria-current={blockSectionSelected}
           onClick={() =>
             setFieldValue(
-              "appointmentType",
+              "appointmentBookingType",
               ApiAppointmentBookingType.AppointmentBlock,
             )
           }
@@ -106,7 +113,7 @@ export function AppointmentForm() {
             <Grid>
               <Radio
                 sx={{ flexBasis: "max-content" }}
-                name="appointmentType"
+                name="appointmentBookingType"
                 value={ApiAppointmentBookingType.AppointmentBlock}
               />
             </Grid>
@@ -134,7 +141,7 @@ export function AppointmentForm() {
           aria-current={customSectionSelected}
           onClick={() =>
             setFieldValue(
-              "appointmentType",
+              "appointmentBookingType",
               ApiAppointmentBookingType.UserDefined,
             )
           }
@@ -143,7 +150,7 @@ export function AppointmentForm() {
           <Row>
             <Radio
               id="appointmentTypeCustom"
-              name="appointmentType"
+              name="appointmentBookingType"
               value={ApiAppointmentBookingType.UserDefined}
             />
             <Stack gap={1}>
@@ -160,6 +167,8 @@ export function AppointmentForm() {
               <NumberField
                 label="Termin Dauer in Min."
                 name="customAppointmentDuration"
+                min={0}
+                validate={validateNonNegativeInteger}
                 required={
                   customSectionSelected ? "Bitte ein Dauer eingeben" : undefined
                 }

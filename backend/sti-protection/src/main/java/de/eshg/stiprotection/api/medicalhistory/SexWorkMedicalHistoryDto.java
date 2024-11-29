@@ -7,7 +7,6 @@ package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
@@ -16,18 +15,21 @@ import java.time.LocalDate;
 public record SexWorkMedicalHistoryDto(
     String examinationReason,
     String currentSymptoms,
-    @PastOrPresent LocalDate contactToClarifyDuration,
+    @PastOrPresent LocalDate contactToClarifyDate,
     RelationshipModelDto relationshipModel,
-    @PastOrPresent LocalDate lastMenstruationDuration,
-    @PastOrPresent LocalDate lastCancerScreeningDuration,
+    @PastOrPresent LocalDate lastMenstruationDate,
+    @PastOrPresent LocalDate lastCancerScreeningDate,
+    Boolean previouslyPregnant,
     @PositiveOrZero Integer amountPregnancies,
     @PositiveOrZero Integer amountAbortions,
     String knownOperations,
     String medications,
     @Valid ExaminationDto examinations,
-    @NotNull @Valid PreviousIllnessDto previousIllnesses,
+    @Valid PreviousIllnessDto previousIllnesses,
     @Valid RiskContactDto riskContacts,
-    @NotNull @Valid RiskFactorDto riskFactors,
+    @Valid SexWorkRiskContactDto sexWorkRiskContacts,
+    @Valid PreventionDto prevention,
+    @Valid RiskFactorDto riskFactors,
     String additionalComments)
     implements MedicalHistoryDto {
 

@@ -26,21 +26,22 @@ const columnHelper: ColumnHelper<ApiInspPendingFacility> =
   createColumnHelper<ApiInspPendingFacility>();
 
 export function createPendingFacilitiesColumns(
-  offlineSwitch: boolean,
   handleViewIncidentsClick: (
     inspectionId: string,
     facilityName: string,
   ) => void,
   openReviewFacilityDuplicateSidebar: (inspectionId: string) => void,
   openInspectionFacilityDuplicateSidebar: (inspectionId: string) => void,
+  showOfflineColumn: boolean,
   isImportFeatureEnabled: boolean,
 ) {
   return [
-    isImportFeatureEnabled && offlineSwitch
-      ? columnHelper.accessor("possibleFacilityDuplicate", {
+    isImportFeatureEnabled
+      ? columnHelper.display({
+          id: "possibleDuplicate",
           header: "",
           cell: (ctx) =>
-            (ctx.getValue() && (
+            (ctx.row.original.possibleFacilityDuplicate && (
               <IconButton
                 aria-label="Einrichtungsduplikat"
                 sx={{ color: "warning.900" }}
@@ -68,6 +69,8 @@ export function createPendingFacilitiesColumns(
             )),
           meta: {
             width: 48,
+            cellStyle: "icon",
+            headerLabel: "Mögliche Duplikate",
           },
         })
       : null,
@@ -195,7 +198,7 @@ export function createPendingFacilitiesColumns(
         width: 70,
       },
     }),
-    offlineSwitch
+    showOfflineColumn
       ? columnHelper.display({
           header: "Offline",
           cell: (ctx) => {

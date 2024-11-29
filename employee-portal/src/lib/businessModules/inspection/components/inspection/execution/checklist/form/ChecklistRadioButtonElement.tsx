@@ -47,7 +47,7 @@ export function ChecklistRadioButtonElement({
       </ChecklistLabel>
       <RadioButtonsField
         name={name}
-        direction="column"
+        orientation="vertical"
         required={requiredText}
         options={
           element.context.items?.map((item) => {

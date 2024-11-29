@@ -7,7 +7,6 @@ import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/medicalReg
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
-import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
 import {
@@ -26,11 +25,6 @@ import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSh
 import { PERSON_FIELD_NAME } from "@/lib/shared/components/personSidebar/constants";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
-
-const COLUMN_STYLE: SxProps = {
-  flexGrow: 1,
-  maxWidth: (theme) => ({ md: `calc(100% / 3 - 2 * ${theme.spacing(2)})` }),
-};
 
 const PROFESSIONAL_FIELD_NAME = {
   ...PERSON_FIELD_NAME,
@@ -55,9 +49,11 @@ const fieldName = createFieldNameMapper<typeof PROFESSIONAL_FIELD_NAME>();
 
 export function ProfessionalDetailsSection({
   procedure,
-}: Readonly<{ procedure: ApiGetProcedure200Response }>) {
-  const { professional } = procedure;
-  const { address, emailAddresses, phoneNumbers } = professional;
+}: Readonly<{
+  procedure: ApiGetProcedure200Response;
+}>) {
+  const { applicant, professionInformation } = procedure;
+  const { address, emailAddresses, phoneNumbers } = applicant;
 
   const hasContactData =
     isDefined(address) || emailAddresses.length > 0 || phoneNumbers.length > 0;
@@ -70,62 +66,62 @@ export function ProfessionalDetailsSection({
           gap={3}
           divider={<ResponsiveDivider breakpoint="md" />}
         >
-          <DetailsColumn sx={COLUMN_STYLE}>
+          <DetailsColumn>
             <DetailsRow>
-              {isDefined(professional.title) && (
+              {isDefined(applicant.title) && (
                 <DetailsCell
                   name={fieldName("title")}
                   label={PROFESSIONAL_FIELD_NAME.title}
-                  value={professional.title}
+                  value={applicant.title}
                 />
               )}
               <DetailsCell
                 name={fieldName("firstName")}
                 label={PROFESSIONAL_FIELD_NAME.firstName}
-                value={professional.firstName}
+                value={applicant.firstName}
               />
               <DetailsCell
                 name={fieldName("lastName")}
                 label={PROFESSIONAL_FIELD_NAME.lastName}
-                value={professional.lastName}
+                value={applicant.lastName}
               />
             </DetailsRow>
-            {isDefined(professional.nameAtBirth) && (
+            {isDefined(applicant.nameAtBirth) && (
               <DetailsCell
                 name={fieldName("nameAtBirth")}
                 label={PROFESSIONAL_FIELD_NAME.nameAtBirth}
-                value={professional.nameAtBirth}
+                value={applicant.nameAtBirth}
               />
             )}
             <DetailsRow>
               <DetailsCell
                 name={fieldName("dateOfBirth")}
                 label={PROFESSIONAL_FIELD_NAME.dateOfBirth}
-                value={formatDate(professional.dateOfBirth)}
+                value={formatDate(applicant.dateOfBirth)}
               />
-              {isDefined(professional.placeOfBirth) && (
+              {isDefined(applicant.placeOfBirth) && (
                 <DetailsCell
                   name={fieldName("placeOfBirth")}
                   label={PROFESSIONAL_FIELD_NAME.placeOfBirth}
-                  value={professional.placeOfBirth}
+                  value={applicant.placeOfBirth}
                 />
               )}
             </DetailsRow>
-            {isDefined(professional.gender) && (
+            {isDefined(applicant.gender) && (
               <DetailsCell
                 name={fieldName("gender")}
                 label={PROFESSIONAL_FIELD_NAME.gender}
-                value={GENDER_VALUES[professional.gender]}
+                value={GENDER_VALUES[applicant.gender]}
               />
             )}
             <DetailsCell
               name={fieldName("nationality")}
               label={PROFESSIONAL_FIELD_NAME.nationality}
-              value={translateCountry(professional.nationality)}
+              value={translateCountry(applicant.nationality)}
             />
           </DetailsColumn>
           {hasContactData && (
-            <DetailsColumn sx={COLUMN_STYLE}>
+            <DetailsColumn>
               {isDefined(address) && (
                 <>
                   <DetailsCell
@@ -172,67 +168,88 @@ export function ProfessionalDetailsSection({
               ))}
             </DetailsColumn>
           )}
-          <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsRow>
+          {isDefined(professionInformation) && (
+            <DetailsColumn>
+              {(isDefined(professionInformation.professionalTitle) ||
+                isDefined(professionInformation.fieldOfExpertise)) && (
+                <DetailsRow>
+                  <DetailsCell
+                    name={fieldName("professionalTitle")}
+                    label={PROFESSIONAL_FIELD_NAME.professionalTitle}
+                    value={
+                      professionInformation.professionalTitle &&
+                      professionalTitleNames[
+                        professionInformation.professionalTitle
+                      ]
+                    }
+                  />
+                  <DetailsCell
+                    name={fieldName("fieldOfExpertise")}
+                    label={PROFESSIONAL_FIELD_NAME.fieldOfExpertise}
+                    value={professionInformation.fieldOfExpertise}
+                  />
+                </DetailsRow>
+              )}
+              {(isDefined(professionInformation.specialistTitle) ||
+                isDefined(professionInformation.furtherTraining)) && (
+                <DetailsRow>
+                  <DetailsCell
+                    name={fieldName("specialistTitle")}
+                    label={PROFESSIONAL_FIELD_NAME.specialistTitle}
+                    value={professionInformation.specialistTitle}
+                  />
+                  <DetailsCell
+                    name={fieldName("furtherTraining")}
+                    label={PROFESSIONAL_FIELD_NAME.furtherTraining}
+                    value={professionInformation.furtherTraining}
+                  />
+                </DetailsRow>
+              )}
               <DetailsCell
-                name={fieldName("professionalTitle")}
-                label={PROFESSIONAL_FIELD_NAME.professionalTitle}
-                value={professionalTitleNames[professional.professionalTitle]}
+                name={fieldName("qualifications")}
+                label={PROFESSIONAL_FIELD_NAME.qualifications}
+                value={professionInformation.qualifications}
               />
               <DetailsCell
-                name={fieldName("fieldOfExpertise")}
-                label={PROFESSIONAL_FIELD_NAME.fieldOfExpertise}
-                value={professional.fieldOfExpertise}
+                name={fieldName("lifetimeDoctorNumber")}
+                label={PROFESSIONAL_FIELD_NAME.lifetimeDoctorNumber}
+                value={professionInformation.lifetimeDoctorNumber}
               />
-            </DetailsRow>
-            {(isDefined(professional.specialistTitle) ||
-              isDefined(professional.furtherTraining)) && (
-              <DetailsRow>
-                <DetailsCell
-                  name={fieldName("specialistTitle")}
-                  label={PROFESSIONAL_FIELD_NAME.specialistTitle}
-                  value={professional.specialistTitle}
-                />
-                <DetailsCell
-                  name={fieldName("furtherTraining")}
-                  label={PROFESSIONAL_FIELD_NAME.furtherTraining}
-                  value={professional.furtherTraining}
-                />
-              </DetailsRow>
-            )}
-            <DetailsCell
-              name={fieldName("qualifications")}
-              label={PROFESSIONAL_FIELD_NAME.qualifications}
-              value={professional.qualifications}
-            />
-            <DetailsCell
-              name={fieldName("lifetimeDoctorNumber")}
-              label={PROFESSIONAL_FIELD_NAME.lifetimeDoctorNumber}
-              value={professional.lifetimeDoctorNumber}
-            />
-            <DetailsRow>
+              {(isDefined(professionInformation.employmentType) ||
+                isDefined(professionInformation.employmentStatus)) && (
+                <DetailsRow>
+                  <DetailsCell
+                    name={fieldName("employmentType")}
+                    label={PROFESSIONAL_FIELD_NAME.employmentType}
+                    value={
+                      professionInformation.employmentType &&
+                      employmentTypeNames[professionInformation.employmentType]
+                    }
+                  />
+                  <DetailsCell
+                    name={fieldName("employmentStatus")}
+                    label={PROFESSIONAL_FIELD_NAME.employmentStatus}
+                    value={
+                      professionInformation.employmentStatus &&
+                      employmentStatusNames[
+                        professionInformation.employmentStatus
+                      ]
+                    }
+                  />
+                </DetailsRow>
+              )}
               <DetailsCell
-                name={fieldName("employmentType")}
-                label={PROFESSIONAL_FIELD_NAME.employmentType}
-                value={employmentTypeNames[professional.employmentType]}
+                name={fieldName("approbationGrantedOn")}
+                label={PROFESSIONAL_FIELD_NAME.approbationGrantedOn}
+                value={formatDate(professionInformation.approbationGrantedOn)}
               />
               <DetailsCell
-                name={fieldName("employmentStatus")}
-                label={PROFESSIONAL_FIELD_NAME.employmentStatus}
-                value={employmentStatusNames[professional.employmentStatus]}
+                name={fieldName("approbationIssuingAuthority")}
+                label={PROFESSIONAL_FIELD_NAME.approbationIssuingAuthority}
+                value={professionInformation.approbationIssuingAuthority}
               />
-            </DetailsRow>
-            <DetailsCell
-              name={fieldName("approbationGrantedOn")}
-              label={PROFESSIONAL_FIELD_NAME.approbationGrantedOn}
-              value={formatDate(professional.approbationGrantedOn)}
-            />
-            <DetailsCell
-              name={fieldName("approbationIssuingAuthority")}
-              label={PROFESSIONAL_FIELD_NAME.approbationIssuingAuthority}
-              value={professional.approbationIssuingAuthority}
-            />
-          </DetailsColumn>
+            </DetailsColumn>
+          )}
         </Stack>
       </DetailsSection>
     </InformationSheet>

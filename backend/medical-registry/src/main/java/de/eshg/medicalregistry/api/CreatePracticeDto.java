@@ -13,16 +13,34 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Schema(name = "CreatePractice")
-public record CreatePracticeDto(
-    @NotNull @Size(min = 1, max = 300) String name,
-    @NotNull @EmailAddressConstraint String emailAddress,
-    @NotNull @Size(min = 1, max = 23) String phoneNumber,
-    @NotNull @Valid PracticeAddressDto address,
-    @Size(min = 6, max = 254) String website,
-    @Pattern(regexp = "\\d+") String institutionIdentifier,
-    @Pattern(regexp = "\\d+") String establishmentNumber,
-    @NotNull boolean healthInsuranceAuthorization,
-    String openingHours) {
+public class CreatePracticeDto {
+
+  @NotNull
+  @Size(min = 1, max = 300)
+  private String name;
+
+  @NotNull @EmailAddressConstraint private String emailAddress;
+
+  @NotNull
+  @Size(min = 1, max = 23)
+  private String phoneNumber;
+
+  @NotNull @Valid private PracticeAddressDto address;
+
+  @Size(min = 6, max = 254)
+  private String website;
+
+  @Pattern(regexp = "\\d+")
+  private String institutionIdentifier;
+
+  @Pattern(regexp = "\\d+")
+  private String establishmentNumber;
+
+  @NotNull Boolean healthInsuranceAuthorization;
+  private String openingHours;
+
+  public CreatePracticeDto() {}
+
   public CreatePracticeDto(
       String name,
       String emailAddress,
@@ -39,5 +57,98 @@ public record CreatePracticeDto(
         null,
         healthInsuranceAuthorization,
         null);
+  }
+
+  public CreatePracticeDto(
+      String name,
+      String emailAddress,
+      String phoneNumber,
+      PracticeAddressDto address,
+      String website,
+      String institutionIdentifier,
+      String establishmentNumber,
+      boolean healthInsuranceAuthorization,
+      String openingHours) {
+    this.name = name;
+    this.emailAddress = emailAddress;
+    this.phoneNumber = phoneNumber;
+    this.address = address;
+    this.website = website;
+    this.institutionIdentifier = institutionIdentifier;
+    this.establishmentNumber = establishmentNumber;
+    this.healthInsuranceAuthorization = healthInsuranceAuthorization;
+    this.openingHours = openingHours;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getEmailAddress() {
+    return emailAddress;
+  }
+
+  public void setEmailAddress(String emailAddress) {
+    this.emailAddress = emailAddress;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
+
+  public PracticeAddressDto getAddress() {
+    return address;
+  }
+
+  public void setAddress(PracticeAddressDto address) {
+    this.address = address;
+  }
+
+  public String getWebsite() {
+    return website;
+  }
+
+  public void setWebsite(String website) {
+    this.website = website;
+  }
+
+  public String getInstitutionIdentifier() {
+    return institutionIdentifier;
+  }
+
+  public void setInstitutionIdentifier(String institutionIdentifier) {
+    this.institutionIdentifier = institutionIdentifier;
+  }
+
+  public String getEstablishmentNumber() {
+    return establishmentNumber;
+  }
+
+  public void setEstablishmentNumber(String establishmentNumber) {
+    this.establishmentNumber = establishmentNumber;
+  }
+
+  public Boolean getHealthInsuranceAuthorization() {
+    return healthInsuranceAuthorization;
+  }
+
+  public void setHealthInsuranceAuthorization(Boolean healthInsuranceAuthorization) {
+    this.healthInsuranceAuthorization = healthInsuranceAuthorization;
+  }
+
+  public String getOpeningHours() {
+    return openingHours;
+  }
+
+  public void setOpeningHours(String openingHours) {
+    this.openingHours = openingHours;
   }
 }

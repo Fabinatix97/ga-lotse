@@ -14,7 +14,7 @@ public interface XlsxColumn {
   String REFERENCE_COLUMN_HEADER = "Referenz-ID";
 
   int STATUS_COLUMN_HEADER_WIDTH = 20;
-  int PROCEDURE_COLUMN_WIDTH = 36;
+  int UUID_COLUMN_WIDTH = 36;
 
   enum Necessity {
     REQUIRED,

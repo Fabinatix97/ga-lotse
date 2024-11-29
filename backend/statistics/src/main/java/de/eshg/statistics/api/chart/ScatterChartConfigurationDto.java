@@ -19,7 +19,7 @@ public record ScatterChartConfigurationDto(
     @Valid AttributeSelectionDto secondaryAttribute,
     @NotNull RangeDto range,
     @NotNull boolean trendLine)
-    implements AddChartConfigurationDto, ChartConfigurationDto, PointBasedChartConfiguration {
+    implements AddChartConfigurationDto, ChartConfigurationDto, PointBasedChartConfigurationDto {
   public static final String SCHEMA_NAME = "ScatterChartConfiguration";
 
   @Override

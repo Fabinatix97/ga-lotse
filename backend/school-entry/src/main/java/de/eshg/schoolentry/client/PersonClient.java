@@ -337,7 +337,11 @@ public class PersonClient {
         personApi.getPersonFileStates(
             new GetPersonFileStatesRequest(personIdsToFetch, sortParameters));
 
-    if (sortParameters == null && response.personFileStates().size() != personIdsToFetch.size()) {
+    int expectedResponseSize =
+        sortParameters == null
+            ? personIdsToFetch.size()
+            : Math.min(pageSize, personIdsToFetch.size() - (pageNumber * pageSize));
+    if (response.personFileStates().size() < expectedResponseSize) {
       throw new IllegalStateException("Some persons were not found in the central file.");
     }
 

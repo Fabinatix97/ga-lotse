@@ -12,3 +12,12 @@ export type MutationPassThrough<
     | "onSuccess"
     | "onError",
 > = Pick<MutationOptions<TData, DefaultError, TParams>, TProps>;
+
+export interface MutationBundle<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TVariables = any,
+> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mutationOptions: MutationOptions<any, Error, TVariables>;
+  variableSupplier: () => TVariables;
+}

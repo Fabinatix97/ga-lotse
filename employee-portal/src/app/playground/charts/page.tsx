@@ -8,8 +8,9 @@
 import { Option, Select, Sheet, Stack, Switch, Typography } from "@mui/joy";
 import { ReactNode, useState } from "react";
 
-import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import {
+  AnalysisLineDiagramConfiguration,
+  AnalysisScatterDiagramConfiguration,
   DiagramAxisRange,
   DiagramCharacteristicParameter,
   DiagramColorScheme,
@@ -17,10 +18,9 @@ import {
   DiagramOrientation,
   DiagramScaling,
   DiagramType,
-  EvaluationLineDiagramConfiguration,
-  EvaluationScatterDiagramConfiguration,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
-import { EvaluationDiagramBox } from "@/lib/businessModules/statistics/components/shared/EvaluationAccordion/EvaluationDiagramBox";
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
+import { AnalysisDiagramBox } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisDiagramBox";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChoroplethMap } from "@/lib/businessModules/statistics/components/shared/charts/ChoroplethMap";
 import { Histogram } from "@/lib/businessModules/statistics/components/shared/charts/Histogram";
@@ -42,7 +42,7 @@ function PlaygroundChartBox({
     <Sheet>
       <Stack gap={2}>
         <Typography level="h4">{title}</Typography>
-        <EvaluationDiagramBox
+        <AnalysisDiagramBox
           evaluatedDataAmountTotal={100}
           description="Hier könnte Ihre Werbung stehen"
           filterLabels={["Label 1", "Label 2"]}
@@ -640,7 +640,7 @@ export default function PlaygroundChartsPage() {
       name: "Gewicht",
       unit: "kg",
     } as FlatAttribute,
-  } as EvaluationLineDiagramConfiguration;
+  } as AnalysisLineDiagramConfiguration;
 
   const lineChartGroupedWithLongValues = [
     {
@@ -682,7 +682,7 @@ export default function PlaygroundChartsPage() {
       name: "Die ganz besondere Einheit der gemessen Substanz gerundet nach Gefühl und Flexibilität",
       unit: "Einheitskürzel",
     } as FlatAttribute,
-  } as EvaluationLineDiagramConfiguration;
+  } as AnalysisLineDiagramConfiguration;
 
   const scatterChartSimple = [
     {
@@ -751,7 +751,7 @@ export default function PlaygroundChartsPage() {
       name: "Gewicht",
       unit: "kg",
     } as FlatAttribute,
-  } as EvaluationScatterDiagramConfiguration;
+  } as AnalysisScatterDiagramConfiguration;
 
   const choroplethData = [
     {

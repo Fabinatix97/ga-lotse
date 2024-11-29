@@ -63,9 +63,11 @@ export default function PlaygroundOfflinePasswordPage() {
           <OfflineNewPasswordDialog
             onPassword={() => {
               setOpenNewPasswordDialog(false);
+              return Promise.resolve();
             }}
             onClear={() => {
               setOpenExistingPasswordDialog(false);
+              return Promise.resolve();
             }}
             waiting={waiting}
           />
@@ -74,9 +76,11 @@ export default function PlaygroundOfflinePasswordPage() {
           <OfflineExistingPasswordDialog
             onClear={() => {
               setOpenExistingPasswordDialog(false);
+              return Promise.resolve();
             }}
             onPassword={() => {
               setOpenExistingPasswordDialog(false);
+              return Promise.resolve();
             }}
             retry={retry}
             waiting={waiting}

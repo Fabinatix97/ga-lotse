@@ -4,9 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation project(':lib-base-client')
     implementation project(':business-module-persistence-commons')
-    implementation 'commons-codec:commons-codec:1.16.1'
+    implementation 'commons-codec:commons-codec:1.16.1' // keycloak-admin-client forces version 1.16.1
 
     implementation "org.zalando:logbook-api:latest.release"
     implementation "org.zalando:logbook-spring:latest.release"
@@ -16,6 +15,7 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    testImplementation project(':lib-base-client')
     testImplementation testFixtures(project(':business-module-persistence-commons'))
 }
 
@@ -26,11 +26,10 @@ dockerCompose {
     ]
 }
 
-// chat-management should only start when Synapse is up
+// The chat-management:composeUp task should automatically start Synapse as well,
+// even though there is no strict dependency
 tasks.named("composeUp").configure {
-    def synapseUp = project(":synapse").tasks.named("composeUp")
-    dependsOn synapseUp
-    mustRunAfter synapseUp
+    dependsOn project(":synapse").tasks.named("composeUp")
 }
 
 dependencyTrack {

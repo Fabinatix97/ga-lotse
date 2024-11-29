@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Analysis } from "./evaluationDetailsViewTypes";
 import { FlatAttribute } from "./flatAttribute";
-import { Evaluation } from "./statisticDetailsViewTypes";
 
 export interface ReportDetailsView {
   id: string;
@@ -21,7 +21,7 @@ export interface ReportDetailsView {
     datasetAmount: number;
     attributeLabels: string[];
   };
-  evaluations: Evaluation[];
+  analyses: Analysis[];
   attributes: FlatAttribute[];
   userId: string;
 }

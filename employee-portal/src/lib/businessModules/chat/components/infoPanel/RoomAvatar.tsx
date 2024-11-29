@@ -10,7 +10,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { Avatar, Box, Button, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { EventType } from "matrix-js-sdk/lib/matrix";
+import { EventType } from "matrix-js-sdk";
 import { useState } from "react";
 
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
@@ -33,8 +33,7 @@ export function RoomAvatar({
   onCancel,
 }: Readonly<RoomAvatarProps>) {
   const { matrixClient } = useChatClientContext();
-  const roomInfo = useRoomInfo(roomId);
-  const { getAvatarUrl } = roomInfo;
+  const { getAvatarUrl } = useRoomInfo(roomId);
   const snackbar = useSnackbar();
 
   const [preview, setPreview] = useState(getAvatarUrl());
@@ -66,7 +65,7 @@ export function RoomAvatar({
 
   return (
     <>
-      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Stack sx={{ p: 3 }}>
         <Typography level="title-lg">Profilbild ändern</Typography>
         <Formik<{ avatar: File | undefined }>

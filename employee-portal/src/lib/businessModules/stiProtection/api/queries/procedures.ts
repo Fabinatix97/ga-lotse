@@ -5,6 +5,10 @@
 
 "use client";
 
+import {
+  ApiGetStiProtectionProceduresSortBy,
+  ApiGetStiProtectionProceduresSortOrder,
+} from "@eshg/employee-portal-api/stiProtection";
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -17,6 +21,29 @@ interface PageRequest {
   pageSize?: number;
   sortBy?: string;
   sortOrder?: string;
+}
+
+// TODO ISSUE-6724: Align mapping of sortBy and sortOrder to the implementation of other business modules
+function mapSortOrder(
+  sortOrder: string | undefined,
+): ApiGetStiProtectionProceduresSortOrder | undefined {
+  if (sortOrder?.toUpperCase() === "ASC") {
+    return ApiGetStiProtectionProceduresSortOrder.Asc;
+  } else if (sortOrder?.toUpperCase() === "DESC") {
+    return ApiGetStiProtectionProceduresSortOrder.Desc;
+  } else if (sortOrder === undefined) {
+    return undefined;
+  }
+}
+
+// TODO ISSUE-6724: Align mapping of sortBy and sortOrder to the implementation of other business modules
+function mapSortBy(
+  sortBy: string | undefined,
+): ApiGetStiProtectionProceduresSortBy | undefined {
+  if (sortBy === undefined) {
+    return undefined;
+  }
+  return sortBy as ApiGetStiProtectionProceduresSortBy;
 }
 
 export function useStiProcedureQuery(procedureId: string) {
@@ -34,8 +61,8 @@ export function useStiProceduresQuery(page: PageRequest) {
   return useSuspenseQuery({
     queryFn: ({ signal }) =>
       stiProtectionApi.getStiProcedures(
-        page.sortBy,
-        page.sortOrder,
+        mapSortBy(page.sortBy),
+        mapSortOrder(page.sortOrder),
         page.pageNumber,
         page.pageSize,
         { signal },

@@ -10,6 +10,7 @@ import {
   ApiVaccinationStatus,
   UpdateVaccinationStatusRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   mapOptionalDate,
@@ -24,7 +25,7 @@ import { isEmpty } from "remeda";
 
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
-import { useUpdateVaccinationStatus } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateVaccinationStatusOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import {
   getProcedureQuery,
   getVaccinationStatusQuery,
@@ -51,7 +52,10 @@ export default function SchoolEntryVaccinationStatusPage(
       ],
     },
   );
-  const updateVaccinationStatus = useUpdateVaccinationStatus();
+  const updateVaccinationStatusOptions = useUpdateVaccinationStatusOptions();
+  const updateVaccinationStatus = useHandledMutation(
+    updateVaccinationStatusOptions,
+  );
 
   async function handleSubmit(values: VaccinationFormValues) {
     await updateVaccinationStatus.mutateAsync(
@@ -68,6 +72,11 @@ export default function SchoolEntryVaccinationStatusPage(
         <VaccinationForm
           initialValues={mapToFormValues(vaccinationStatus)}
           onSubmit={handleSubmit}
+          valuesToMutationBundle={(values) => ({
+            mutationOptions: updateVaccinationStatusOptions,
+            variableSupplier: () =>
+              mapToRequest(procedureId, values, vaccinationStatus.version),
+          })}
         />
       </DisabledFormProvider>
     </ContentPanel>

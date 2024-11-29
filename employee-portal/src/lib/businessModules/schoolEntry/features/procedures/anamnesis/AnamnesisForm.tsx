@@ -8,6 +8,7 @@
 import {
   ApiBooleanWithUnknown,
   ApiSchoolEntryCountryCode,
+  UpdateAnamnesisRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { SoftRequiredBooleanSelectField } from "@eshg/lib-portal/businessModules/schoolEntry/features/procedures/fieldVariants";
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
@@ -19,6 +20,7 @@ import {
 } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { Divider, FormLabel, Stack } from "@mui/joy";
 import { Formik } from "formik";
 
@@ -149,6 +151,9 @@ export const TEXT_INPUT_STYLE = {
 interface AnamnesisFormProps extends FormProps<AnamnesisFormValues> {
   dateOfBirth: Date;
   countryCodes: CountryCodes;
+  valuesToMutationBundle: (
+    values: AnamnesisFormValues,
+  ) => MutationBundle<UpdateAnamnesisRequest>;
 }
 
 export function AnamnesisForm(props: AnamnesisFormProps) {
@@ -163,7 +168,9 @@ export function AnamnesisForm(props: AnamnesisFormProps) {
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => {
         return (
           <FormStack onSubmit={handleSubmit}>
-            <ConfirmLeaveDirtyFormEffect />
+            <ConfirmLeaveDirtyFormEffect
+              onSaveMutation={props.valuesToMutationBundle(values)}
+            />
             <Divider />
             <Stack direction="row" gap={4} flexWrap="wrap">
               <BooleanSelectField

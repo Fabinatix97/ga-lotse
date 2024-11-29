@@ -16,17 +16,22 @@ import {
   createQueueBroadCastChannelEndpoint,
 } from "@/serviceWorker/common/queueBroadCastChannel";
 
-const queueChannel = createQueueBroadCastChannelEndpoint();
-
 export async function clearQueue() {
   return new Promise<void>((resolve, reject) => {
+    const queueChannel = createQueueBroadCastChannelEndpoint();
     queueChannel.onmessage = (event: MessageEvent) => {
       if (event.data === CLEAR_DONE) {
         resolve();
+        queueChannel.close();
       }
       if (event.data === CLEAR_FAILED) {
         reject(new Error("queue clear failed"));
+        queueChannel.close();
       }
+    };
+    queueChannel.onmessageerror = (event: MessageEvent) => {
+      // eslint-disable-next-line no-console
+      console.error("queue channel: error for message CLEAR", event);
     };
     queueChannel.postMessage(CLEAR);
   });

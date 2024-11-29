@@ -55,47 +55,49 @@ The set of all preview features is defined in the `application-preview-features.
 
 ### port mapping
 
-| Name                    | Internal Port | External Port |
-|-------------------------|---------------|---------------|
-| maildev ui              | 1080          | 1080          |
-| maildev smtp            | 1025          | 1025          |
-| base-db                 | 5432          | 5433          |
-| inspection-db           | 5432          | 5434          |
-| school-entry-db         | 5432          | 5435          |
-| keycloak-db             | 5432          | 5436          |
-| service-directory-db    | 5432          | 5437          |
-| travel-medicine-db      | 5432          | 5438          |
-| measles-protection-db   | 5432          | 5439          |
-| statistics-db           | 5432          | 5440          |
-| chat-management-db      | 5432          | 5441          |
-| synapse-db              | 5432          | 5442          |
-| central-repository-db   | 5432          | 5443          |
-| auditlog-db             | 5432          | 5444          |
-| sti-protection-db       | 5432          | 5445          |
-| opendata-db             | 5432          | 5446          |
-| medical-registry-db     | 5432          | 5447          |
-| dental-db               | 5432          | 5448          |
-| synapse                 | 8008          | 8008          |
-| base                    | 8080          | 8080          |
-| inspection              | 8080          | 8081          |
-| school-entry            | 8080          | 8082          |
-| service-directory       | 8080          | 8083          |
-| relay-server            | 8080          | 8084          |
-| travel-medicine         | 8080          | 8085          |
-| measles-protection      | 8080          | 8086          |
-| statistics              | 8080          | 8087          |
-| sti-protection          | 8080          | 8095          |
-| opendata                | 8080          | 8096          |
-| medical-registry        | 8080          | 8097          |
-| dental                  | 8080          | 8098          |
-| chat-management         | 8080          | 8088          |
-| local-service-directory | 8080          | 8089          |
-| central-repository      | 8080          | 8091          |
-| auth-employee-portal    | 8080          | 8092          |
-| auth-citizen-portal     | 8080          | 8093          |
-| auth-cache              | 6379          | 6379          |
-| keycloak                | 8080          | 9090          |
-| auditlog                | 8080          | 8094          |
+| Name                        | Internal Port | External Port |
+|-----------------------------|---------------|---------------|
+| maildev ui                  | 1080          | 1080          |
+| maildev smtp                | 1025          | 1025          |
+| base-db                     | 5432          | 5433          |
+| inspection-db               | 5432          | 5434          |
+| school-entry-db             | 5432          | 5435          |
+| keycloak-db                 | 5432          | 5436          |
+| service-directory-db        | 5432          | 5437          |
+| travel-medicine-db          | 5432          | 5438          |
+| measles-protection-db       | 5432          | 5439          |
+| statistics-db               | 5432          | 5440          |
+| chat-management-db          | 5432          | 5441          |
+| synapse-db                  | 5432          | 5442          |
+| central-repository-db       | 5432          | 5443          |
+| auditlog-db                 | 5432          | 5444          |
+| sti-protection-db           | 5432          | 5445          |
+| opendata-db                 | 5432          | 5446          |
+| medical-registry-db         | 5432          | 5447          |
+| dental-db                   | 5432          | 5448          |
+| official-medical-service-db | 5432          | 5449          |
+| synapse                     | 8008          | 8008          |
+| base                        | 8080          | 8080          |
+| inspection                  | 8080          | 8081          |
+| school-entry                | 8080          | 8082          |
+| service-directory           | 8080          | 8083          |
+| relay-server                | 8080          | 8084          |
+| travel-medicine             | 8080          | 8085          |
+| measles-protection          | 8080          | 8086          |
+| statistics                  | 8080          | 8087          |
+| sti-protection              | 8080          | 8095          |
+| opendata                    | 8080          | 8096          |
+| medical-registry            | 8080          | 8097          |
+| dental                      | 8080          | 8098          |
+| official-medical-service    | 8080          | 8099          |
+| chat-management             | 8080          | 8088          |
+| local-service-directory     | 8080          | 8089          |
+| central-repository          | 8080          | 8091          |
+| auth-employee-portal        | 8080          | 8092          |
+| auth-citizen-portal         | 8080          | 8093          |
+| auth-cache                  | 6379          | 6379          |
+| keycloak                    | 8080          | 9090          |
+| auditlog                    | 8080          | 8094          |
 
 ## individual modules (dockerized)
 

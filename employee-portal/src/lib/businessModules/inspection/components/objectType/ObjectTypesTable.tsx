@@ -7,10 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiObjectType } from "@eshg/employee-portal-api/inspection";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { IconButton } from "@mui/joy";
 import { ColumnHelper, createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -18,19 +15,13 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
-import { EditObjectTypeSidebar } from "./EditObjectTypeSidebar";
-
-type SidebarState =
-  | { type: "closed" }
-  | { type: "edit"; selected: ApiObjectType };
+import { useEditObjectTypeSidebar } from "./EditObjectTypeSidebar";
 
 export function ObjectTypesTable() {
   const { data: objectTypes, isFetching } = useGetObjectTypes();
   const canEdit = useHasUserRoleCheck(ApiUserRole.InspectionObjecttypesWrite);
 
-  const [sidebarState, setSidebarState] = useState<SidebarState>({
-    type: "closed",
-  });
+  const sidebar = useEditObjectTypeSidebar();
 
   const columnHelper: ColumnHelper<ApiObjectType> =
     createColumnHelper<ApiObjectType>();
@@ -40,56 +31,56 @@ export function ObjectTypesTable() {
       header: "Name",
       meta: {
         width: "40%",
+        canNavigate: {
+          parentRow: true,
+        },
       },
     }),
     columnHelper.accessor("routineInterval", {
       header: "Intervall (Tage)",
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
     }),
     columnHelper.accessor("complaintInterval", {
       header: "nach Beanst. (Tage)",
+      meta: {
+        canNavigate: {
+          parentRow: true,
+        },
+      },
     }),
     columnHelper.accessor("standardDuration", {
       header: "Dauer (Std.)",
-    }),
-    columnHelper.display({
-      header: "Aktionen",
-      id: "navigationControl",
-      cell: (props) =>
-        canEdit && (
-          <IconButton
-            aria-label="Objekttyp bearbeiten"
-            color="primary"
-            onClick={() =>
-              setSidebarState({ type: "edit", selected: props.row.original })
-            }
-            sx={{
-              float: "right",
-            }}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-        ),
       meta: {
-        cellStyle: "button",
+        canNavigate: {
+          parentRow: true,
+        },
       },
     }),
   ];
 
   return (
-    <>
-      <TablePage fullHeight>
-        <TableSheet loading={isFetching}>
-          <DataTable data={objectTypes} columns={columns} striped />
-        </TableSheet>
-      </TablePage>
-
-      {canEdit && sidebarState.type === "edit" && (
-        <EditObjectTypeSidebar
-          open={sidebarState.type === "edit"}
-          onClose={() => setSidebarState({ type: "closed" })}
-          objectType={sidebarState.selected}
+    <TablePage fullHeight>
+      <TableSheet loading={isFetching}>
+        <DataTable
+          data={objectTypes}
+          columns={columns}
+          rowNavigation={
+            canEdit
+              ? {
+                  onClick: (row) => {
+                    sidebar.open({ objectType: row.original });
+                  },
+                  focusColumnAccessorKey: "name",
+                }
+              : undefined
+          }
+          striped
         />
-      )}
-    </>
+      </TableSheet>
+    </TablePage>
   );
 }

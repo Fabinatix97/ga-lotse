@@ -4,25 +4,25 @@
  */
 
 import {
+  AnalysisDiagramBarChart,
+  AnalysisDiagramHistogram,
   DiagramGrouping,
   DiagramScaling,
   DiagramType,
-  EvaluationDiagramBarChart,
-  EvaluationDiagramHistogram,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
 import { ChartApi } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
 
 interface HistogramProps {
-  diagramData: EvaluationDiagramHistogram["data"];
+  diagramData: AnalysisDiagramHistogram["data"];
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
 export function mapToBarChartDiagramData(
-  diagramData: EvaluationDiagramHistogram["data"],
-): EvaluationDiagramBarChart["data"] {
+  diagramData: AnalysisDiagramHistogram["data"],
+): AnalysisDiagramBarChart["data"] {
   return diagramData
     .toSorted((l, r) => l.min - r.min)
     .map((it) => ({

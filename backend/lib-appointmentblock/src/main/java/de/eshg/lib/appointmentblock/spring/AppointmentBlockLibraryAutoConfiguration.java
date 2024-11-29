@@ -6,13 +6,13 @@
 package de.eshg.lib.appointmentblock.spring;
 
 import de.eshg.lib.appointmentblock.AppointmentBlockController;
-import de.eshg.lib.appointmentblock.AppointmentBlockLibraryContactsMergedHandler;
 import de.eshg.lib.appointmentblock.AppointmentBlockService;
 import de.eshg.lib.appointmentblock.AppointmentBlockSlotUtil;
 import de.eshg.lib.appointmentblock.AppointmentBlockValidator;
 import de.eshg.lib.appointmentblock.AppointmentTypeController;
 import de.eshg.lib.appointmentblock.AppointmentTypeService;
 import de.eshg.lib.appointmentblock.client.CalendarClient;
+import de.eshg.lib.appointmentblock.contact.AppointmentBlockLibraryContactsMergedHandler;
 import de.eshg.lib.appointmentblock.persistence.CreateAppointmentTypeTask;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

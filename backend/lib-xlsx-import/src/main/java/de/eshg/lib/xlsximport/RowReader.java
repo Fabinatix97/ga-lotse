@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.util.StringUtils;
 
-public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
+public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
 
   private static final DataFormatter DATA_FORMATTER = new DataFormatter();
 
@@ -79,7 +79,7 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
     }
   }
 
-  public ErrorHandler createErrorHandler(RowValues result) {
+  public ErrorHandler createErrorHandler(T result) {
     return (cell, errorMessage) -> {
       result.foundInvalidData();
       addCellError(cell, errorMessage);
@@ -153,7 +153,10 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   }
 
   protected Cell convertToTextCell(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
-    Cell cell = col.get(column);
+    return convertToTextCell(col.get(column), errorHandler);
+  }
+
+  public static Cell convertToTextCell(Cell cell, ErrorHandler errorHandler) {
     if (cell == null) {
       return null;
     }
@@ -257,13 +260,20 @@ public abstract class RowReader<T extends RowValues, C extends XlsxColumn> {
   }
 
   protected LocalDate cellAsDate(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
-    LocalDateTime localDateTime = cellAsDateTime(col, column, errorHandler);
+    return cellAsDate(col.get(column), errorHandler);
+  }
+
+  public static LocalDate cellAsDate(Cell cell, ErrorHandler errorHandler) {
+    LocalDateTime localDateTime = cellAsDateTime(cell, errorHandler);
     return localDateTime != null ? localDateTime.toLocalDate() : null;
   }
 
   protected LocalDateTime cellAsDateTime(
       ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
-    Cell cell = col.get(column);
+    return cellAsDateTime(col.get(column), errorHandler);
+  }
+
+  private static LocalDateTime cellAsDateTime(Cell cell, ErrorHandler errorHandler) {
     if (invalidType(cell, CellType.NUMERIC, errorHandler) || invalidDate(cell, errorHandler)) {
       return null;
     }

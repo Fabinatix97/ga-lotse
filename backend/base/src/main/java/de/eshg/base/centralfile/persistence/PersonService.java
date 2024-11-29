@@ -6,11 +6,14 @@
 package de.eshg.base.centralfile.persistence;
 
 import static de.eshg.base.centralfile.PersonController.REFERENCE_PERSON_NOT_FOUND;
+import static de.eshg.base.util.PersonDiffer.isPersonMatch;
 import static de.eshg.base.util.SearchSpecificationUtil.getSimilarityThreshold;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.CentralFileAuditLogger;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
+import de.eshg.base.centralfile.api.person.UpdatePersonInBulkResult;
+import de.eshg.base.centralfile.api.person.UpdatePersonsResponse;
 import de.eshg.base.centralfile.persistence.entity.BirthDetails_;
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
 import de.eshg.base.centralfile.persistence.entity.Person;
@@ -61,7 +64,7 @@ public class PersonService {
   }
 
   public static boolean isPersonFileStateOutdated(Person personFileState, Person referencePerson) {
-    return !PersonDiffer.isPersonMatch(personFileState, referencePerson);
+    return !isPersonMatch(personFileState, referencePerson);
   }
 
   public Person addPersonFileState(Person personFileState, UUID referencePersonId) {
@@ -108,9 +111,7 @@ public class PersonService {
   }
 
   private List<UUID> addPersonFileStatesWhenLocked(List<Person> fileStates) {
-    Set<PersonKeyAttributes> personKeyAttributes = collectPersonKeyAttributes(fileStates);
-
-    List<Person> potentialMatches = findReferencePersonsByKeyAttributes(personKeyAttributes);
+    List<Person> potentialMatches = findReferencePersonsByKeyAttributes(fileStates);
 
     Map<PersonKeyAttributes, Person> lowestIdPersons = createLowestIdMap(potentialMatches);
 
@@ -133,7 +134,7 @@ public class PersonService {
     referencePerson.setDeleteAt(null);
   }
 
-  private static PersonKeyAttributes personKeyAttributesOf(Person fileState) {
+  static PersonKeyAttributes personKeyAttributesOf(Person fileState) {
     return new PersonKeyAttributes(
         fileState.getFirstName(),
         fileState.getLastName(),
@@ -149,7 +150,8 @@ public class PersonService {
                 Collectors.collectingAndThen(Collectors.toList(), List::getFirst)));
   }
 
-  private static Set<PersonKeyAttributes> collectPersonKeyAttributes(List<Person> fileStates) {
+  private static Set<PersonKeyAttributes> collectPersonKeyAttributes(
+      Collection<Person> fileStates) {
     return fileStates.stream()
         .map(PersonService::personKeyAttributesOf)
         .collect(StreamUtil.toLinkedHashSet());
@@ -189,7 +191,7 @@ public class PersonService {
         personRepository.findReferencePersonByKeyAttributes(
             person.getFirstName(), person.getLastName(), person.getBirthDetails().dateOfBirth());
     return possibleMatches
-        .filter(p -> PersonDiffer.isPersonMatch(person, p))
+        .filter(p -> isPersonMatch(person, p))
         .collect(StreamUtil.toSingleOptionalElement());
   }
 
@@ -247,7 +249,7 @@ public class PersonService {
   private Person updateFileStateAndReferencePersonWhenLocked(
       Person personFileState, Person fileStateUpdate) {
     if (personFileState.getDataOrigin() != DataOrigin.EXTERNAL
-        && PersonDiffer.isPersonMatch(fileStateUpdate, personFileState)) {
+        && isPersonMatch(fileStateUpdate, personFileState)) {
       log.debug(
           "Recognized no-op update. Returning original person file state (id={})",
           personFileState.getId());
@@ -299,7 +301,70 @@ public class PersonService {
     return addPersonFileState(updatedFileState, referencePerson);
   }
 
-  private void applyPersonUpdate(Person fileStateUpdate, Person referencePerson) {
+  public UpdatePersonsResponse updateFileStatesAndReferencesInBulk(
+      Map<UUID, Person> fileStateUpdatesById) {
+    return mutexService.doWithLockedMutex(
+        MUTEX_PERSON_WRITE,
+        () -> updateFileStatesAndReferencesInBulkWhenLocked(fileStateUpdatesById));
+  }
+
+  private UpdatePersonsResponse updateFileStatesAndReferencesInBulkWhenLocked(
+      Map<UUID, Person> fileStateUpdatesById) {
+    List<UUID> failedPersonIds =
+        PersonBulkUpdateHelper.collectUpdatesWithOverlappingData(fileStateUpdatesById);
+    failedPersonIds.addAll(
+        collectUpdatesWithSameDataAsExistingReferencePersons(fileStateUpdatesById));
+
+    failedPersonIds.forEach(fileStateUpdatesById::remove);
+    Set<UUID> fileStateForUpdateIds = fileStateUpdatesById.keySet();
+
+    Map<UUID, Person> fileStatesForUpdate =
+        personRepository
+            .findAllByExternalIdInAndReferencePersonIsNotNull(fileStateForUpdateIds)
+            .collect(StreamUtil.toLinkedHashMap(Person::getExternalId));
+
+    failedPersonIds.addAll(
+        PersonBulkUpdateHelper.collectMissingIds(
+            fileStatesForUpdate.keySet(), fileStateForUpdateIds));
+
+    failedPersonIds.addAll(
+        PersonBulkUpdateHelper.collectUpdatesOnOutdatedFileStates(fileStatesForUpdate.values()));
+    failedPersonIds.addAll(
+        PersonBulkUpdateHelper.collectUpdatesOnSameReference(fileStatesForUpdate.values()));
+
+    List<UpdatePersonInBulkResult> results = new ArrayList<>();
+
+    failedPersonIds.forEach(fileStateForUpdateIds::remove);
+    for (UUID fileStateForUpdateId : fileStateForUpdateIds) {
+      Person fileStateForUpdate = fileStatesForUpdate.get(fileStateForUpdateId);
+      Person newFileState = fileStateUpdatesById.get(fileStateForUpdateId);
+
+      Person updatedReference =
+          applyPersonUpdate(newFileState, fileStateForUpdate.getReferencePerson());
+      logger.logEditReferenceData(updatedReference);
+
+      newFileState.setDataOrigin(DataOrigin.EDIT);
+      addPersonFileState(newFileState, updatedReference);
+      logger.logAddFileState(newFileState);
+
+      results.add(
+          new UpdatePersonInBulkResult(
+              fileStateForUpdate.getExternalId(), newFileState.getExternalId()));
+    }
+
+    return new UpdatePersonsResponse(results, failedPersonIds);
+  }
+
+  private List<UUID> collectUpdatesWithSameDataAsExistingReferencePersons(
+      Map<UUID, Person> fileStateUpdatesById) {
+    List<Person> referencePersonMatches =
+        findReferencePersonsByKeyAttributes(fileStateUpdatesById.values());
+
+    return PersonBulkUpdateHelper.collectUpdatesWithSameDataAsExistingReferencePersons(
+        fileStateUpdatesById, referencePersonMatches);
+  }
+
+  private Person applyPersonUpdate(Person fileStateUpdate, Person referencePerson) {
     referencePerson.setTitle(fileStateUpdate.getTitle());
     referencePerson.setSalutation(fileStateUpdate.getSalutation());
     referencePerson.setGender(fileStateUpdate.getGender());
@@ -314,6 +379,7 @@ public class PersonService {
         referencePerson.cloneAddress(fileStateUpdate.getDifferentBillingAddress()));
     referencePerson.setModifiedAt(Instant.now(clock));
     referencePerson.setDataOrigin(DataOrigin.EDIT);
+    return referencePerson;
   }
 
   public Person addPersonFromExternalSource(Person personFileState) {
@@ -334,6 +400,11 @@ public class PersonService {
 
   private List<Person> findAllFilesStates(Set<UUID> fileStateIds) {
     return personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(fileStateIds);
+  }
+
+  private List<Person> findReferencePersonsByKeyAttributes(Collection<Person> fileStates) {
+    Set<PersonKeyAttributes> personKeyAttributes = collectPersonKeyAttributes(fileStates);
+    return findReferencePersonsByKeyAttributes(personKeyAttributes);
   }
 
   public List<Person> findReferencePersonsByKeyAttributes(Set<PersonKeyAttributes> keyAttributes) {

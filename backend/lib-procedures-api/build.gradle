@@ -11,7 +11,7 @@ dependencies {
     implementation project(':base-api')
 
     implementation 'org.springframework:spring-context'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     api 'org.openapitools:jackson-databind-nullable:latest.release'
 
     testImplementation 'com.tngtech.archunit:archunit:latest.release'

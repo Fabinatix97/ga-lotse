@@ -5,7 +5,7 @@
 
 "use client";
 
-import { StatisticsOverview } from "@/lib/businessModules/statistics/components/evaluations/StatisticsOverview";
+import { EvaluationsOverview } from "@/lib/businessModules/statistics/components/evaluations/EvaluationsOverview";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
@@ -14,7 +14,7 @@ export default function EvaluationsOverviewPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Auswertungen" />}>
       <MainContentLayout fullViewportHeight>
-        <StatisticsOverview />
+        <EvaluationsOverview />
       </MainContentLayout>
     </StickyToolbarLayout>
   );

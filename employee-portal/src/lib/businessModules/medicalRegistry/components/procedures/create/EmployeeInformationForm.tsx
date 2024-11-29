@@ -5,7 +5,10 @@
 
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
-import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import {
+  NestedFormProps,
+  NullableFieldValue,
+} from "@eshg/lib-portal/types/form";
 import { Grid, Typography } from "@mui/joy";
 import { useField } from "formik";
 
@@ -17,7 +20,7 @@ import { validateFile } from "@/lib/shared/helpers/validators";
 
 export interface EmployeeInformationFormValues {
   employeesEmployed: boolean;
-  employeesFile: File | null;
+  employeesFile: NullableFieldValue<File>;
 }
 
 export function EmployeeInformationForm(props: NestedFormProps) {

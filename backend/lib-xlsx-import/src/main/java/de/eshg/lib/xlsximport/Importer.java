@@ -10,6 +10,7 @@ import static de.eshg.lib.xlsximport.ImportStatus.MERGE_FAILED;
 import static de.eshg.lib.xlsximport.util.XlsxUtil.writeValue;
 
 import de.eshg.lib.xlsximport.model.ImportResult;
+import de.eshg.lib.xlsximport.model.ImportStatistics;
 import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -29,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 
-public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
+public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
 
   private static final Logger log = LoggerFactory.getLogger(Importer.class);
 
@@ -139,19 +141,24 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
     return rowValues;
   }
 
+  protected boolean isDuplicateRow(T values) {
+    return Stream.concat(validRows.importableRows().stream(), validRows.mergeableRows().stream())
+        .anyMatch(row -> row.isDuplicateRow(values));
+  }
+
   private void deleteReferenceId(Row row) {
     if (col.hasReferenceIdColum()) {
       writeValue(col.getReferenceId(row), "", defaultCellStyle);
     }
   }
 
-  protected void writeStatusAndProcedureId(Row row, ImportStatus status, UUID procedureId) {
+  protected void writeStatusAndEntityId(Row row, ImportStatus status, UUID procedureId) {
     writeStatus(row, status);
-    writeValue(col.getProcedureId(row), procedureId.toString(), defaultCellStyle);
+    writeValue(col.getEntityId(row), procedureId.toString(), defaultCellStyle);
   }
 
-  private void deleteProcedureId(Row row) {
-    writeValue(col.getProcedureId(row), "", defaultCellStyle);
+  private void deleteEntityId(Row row) {
+    writeValue(col.getEntityId(row), "", defaultCellStyle);
   }
 
   protected void writeStatusAndReferenceId(Row row, ImportStatus status, UUID referenceId) {
@@ -180,7 +187,7 @@ public abstract class Importer<T extends RowValues, C extends XlsxColumn> {
           .map(RowValues::getRow)
           .forEach(
               row -> {
-                deleteProcedureId(row);
+                deleteEntityId(row);
                 writeStatusAndReferenceId(row, MERGE_FAILED, failedProcedureId);
               });
     }

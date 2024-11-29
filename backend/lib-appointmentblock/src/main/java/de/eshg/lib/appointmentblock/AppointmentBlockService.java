@@ -27,8 +27,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -117,9 +115,8 @@ public class AppointmentBlockService {
             .filter(Objects::nonNull)
             .distinct()
             .toList();
-    return contactClient.getBulkContacts(contactIds).stream()
-        .map(contact -> new LocationDto(contact.id(), contact.name()))
-        .collect(Collectors.toMap(LocationDto::id, Function.identity()));
+    return contactClient.getBulkContacts(
+        contactIds, contact -> new LocationDto(contact.id(), contact.name()));
   }
 
   private AppointmentBlockGroupPageSpec createPageSpec(

@@ -10,7 +10,10 @@ import {
 } from "@eshg/employee-portal-api/base";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
@@ -228,7 +231,9 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
               name={fieldName("emailAddresses")}
               addMoreLabel={"E-Mail-Adresse hinzufügen"}
               fieldComponent={EmailField}
-              label={PERSON_FIELD_NAME.emailAddresses}
+              label={(index) =>
+                getIndexLabel(PERSON_FIELD_NAME.emailAddresses, index)
+              }
               validateEach={validateLength(6, 254)}
             />
           </section>
@@ -237,7 +242,9 @@ export function DefaultPersonForm<TValues extends DefaultPersonFormValues>(
             <InputArrayField
               name={fieldName("phoneNumbers")}
               addMoreLabel={"Telefonnummer hinzufügen"}
-              label={PERSON_FIELD_NAME.phoneNumbers}
+              label={(index) =>
+                getIndexLabel(PERSON_FIELD_NAME.phoneNumbers, index)
+              }
               validateEach={validateLength(1, 23)}
             />
           </section>

@@ -15,6 +15,7 @@ import {
   ApiSocioEducationalPerformance,
   UpdateDevelopmentScreeningResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   mapOptionalValue,
@@ -24,7 +25,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { DevelopmentScreeningResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/DevelopmentScreeningResult";
-import { useUpdateDevelopmentScreeningResult } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateDevelopmentScreeningResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import {
   getDevelopmentScreeningResultQuery,
   getProcedureQuery,
@@ -59,8 +60,11 @@ export default function SchoolEntryDevelopmentScreeningPage(
         getDevelopmentScreeningResultQuery(schoolEntryApi, procedureId),
       ],
     });
-  const updateDevelopmentScreeningResult =
-    useUpdateDevelopmentScreeningResult();
+  const updateDevelopmentScreeningResultOptions =
+    useUpdateDevelopmentScreeningResultOptions();
+  const updateDevelopmentScreeningResult = useHandledMutation(
+    updateDevelopmentScreeningResultOptions,
+  );
 
   async function handleSubmit(formValues: DevelopmentScreeningFormValues) {
     await updateDevelopmentScreeningResult.mutateAsync(
@@ -77,6 +81,15 @@ export default function SchoolEntryDevelopmentScreeningPage(
           initialValues={mapToFormValues(developmentScreeningResult)}
           initialPercentiles={developmentScreeningResult.percentiles}
           onSubmit={handleSubmit}
+          valuesToMutationBundle={(values) => ({
+            mutationOptions: updateDevelopmentScreeningResultOptions,
+            variableSupplier: () =>
+              mapToRequest(
+                procedureId,
+                values,
+                developmentScreeningResult.version,
+              ),
+          })}
         />
       </DisabledFormProvider>
     </ContentPanel>

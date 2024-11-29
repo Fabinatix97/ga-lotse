@@ -11,7 +11,7 @@ import {
   Room,
   RoomEvent,
   RoomMemberEvent,
-} from "matrix-js-sdk/lib/matrix";
+} from "matrix-js-sdk";
 import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -65,13 +65,13 @@ export function useChatRoomList() {
       const latestEvent = findLatestMessage(room);
       if (!latestEvent) return;
       const newMessage = await onMessage({ event: latestEvent, room });
-      const readReceiptsObj = getReadReceipts(
+      const isRead = getReadReceipts(
         latestEvent,
         room,
         matrixClient.getUserId(),
       );
       if (!isChatMessageType(newMessage)) return;
-      return { ...newMessage, readReceipts: readReceiptsObj };
+      return { ...newMessage, isRead, sent: true };
     },
     [matrixClient, onMessage],
   );
@@ -167,12 +167,7 @@ export function useChatRoomList() {
   const onRoomMessage = useCallback(
     async ({ event, room, isSent }: RoomEventDetails) => {
       const newMessage = await onMessage({ event, room });
-      const readReceiptsObj = getReadReceipts(
-        event,
-        room,
-        matrixClient.getUserId(),
-      );
-      if (!newMessage) return;
+      const isRead = getReadReceipts(event, room, matrixClient.getUserId());
 
       setRoomList((prevState) => {
         return prevState.map((roomItem) => {
@@ -189,7 +184,7 @@ export function useChatRoomList() {
             ...roomItem,
             latestMessage: {
               ...newMessage,
-              readReceipts: readReceiptsObj,
+              isRead,
               sent: !!isSent,
             },
           };

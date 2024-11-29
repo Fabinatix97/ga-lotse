@@ -8,10 +8,7 @@ package de.eshg.base.centralfile.persistence.repository;
 import de.eshg.base.centralfile.persistence.entity.Person;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -153,6 +150,20 @@ public interface PersonRepository
   order by p.id
   """)
   List<Person> findAllByExternalIdInAndReferencePersonIsNotNull(Set<UUID> ids, Pageable pageable);
+
+  @Query(
+      """
+    select p from Person p
+    left join fetch p.contactAddress
+    left join fetch p.differentBillingAddress
+    left join fetch p.referencePerson
+    left join fetch p.referencePerson.contactAddress
+    left join fetch p.referencePerson.differentBillingAddress
+    where p.externalId in :ids
+    and p.referencePerson is not null
+    order by p.id
+    """)
+  Stream<Person> findAllByExternalIdInAndReferencePersonIsNotNull(Set<UUID> ids);
 
   @Transactional
   @Modifying

@@ -6,6 +6,7 @@
 import { PropsWithChildren } from "react";
 
 import { InspectionTabNavigationToolbar } from "@/lib/businessModules/inspection/components/inspection/InspectionTabNavigationToolbar";
+import { TrackInspectionView } from "@/lib/businessModules/inspection/components/inspection/TrackInspectionView";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 
 export interface EditInspectionPageParams {
@@ -21,6 +22,7 @@ export default function EditInspectionLayout({
       toolbar={<InspectionTabNavigationToolbar inspectionId={params.id} />}
     >
       {children}
+      <TrackInspectionView inspectionId={params.id} />
     </StickyToolbarLayout>
   );
 }

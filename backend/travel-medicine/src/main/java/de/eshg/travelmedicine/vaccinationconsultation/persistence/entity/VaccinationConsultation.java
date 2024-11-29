@@ -15,7 +15,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
@@ -70,14 +69,23 @@ public class VaccinationConsultation
   private UUID citizenUserId;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
-  @OneToMany(mappedBy = ProcedureStep_.VACCINATION_CONSULTATION)
+  @OneToMany(
+      mappedBy = ProcedureStep_.VACCINATION_CONSULTATION,
+      cascade = {CascadeType.REMOVE})
   @OrderBy
   @BatchSize(size = 100)
   private final List<ProcedureStep> procedureSteps = new ArrayList<>();
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToMany(
-      fetch = FetchType.LAZY,
+      mappedBy = VcService_.VACCINATION_CONSULTATION,
+      cascade = {CascadeType.REMOVE})
+  @OrderBy
+  @BatchSize(size = 100)
+  private final List<VcService> vcServices = new ArrayList<>();
+
+  @DataSensitivity(SensitivityLevel.PUBLIC)
+  @OneToMany(
       mappedBy = InformationStatement_.VACCINATION_CONSULTATION,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       orphanRemoval = true)
@@ -149,6 +157,10 @@ public class VaccinationConsultation
 
   public List<ProcedureStep> getProcedureSteps() {
     return procedureSteps;
+  }
+
+  public List<VcService> getVcServices() {
+    return vcServices;
   }
 
   public List<InformationStatement> getInformationStatements() {

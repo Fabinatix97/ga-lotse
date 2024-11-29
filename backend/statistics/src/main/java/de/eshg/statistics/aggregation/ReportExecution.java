@@ -63,8 +63,7 @@ public class ReportExecution {
 
   public void completeReport(UUID reportId) {
     try {
-      AggregationResultStateInformation stateInfo =
-          reportService.getReportStateInformation(reportId);
+      AggregationResultStateInformation stateInfo = reportService.getStateInformation(reportId);
       while (stateInfo.state().equals(AggregationResultState.CREATING)) {
         AggregationResultPendingState pendingState = stateInfo.pendingState();
         moduleClientAuthenticator.doWithModuleClientAuthentication(
@@ -88,7 +87,7 @@ public class ReportExecution {
                             .formatted(reportId, pendingState));
               }
             });
-        stateInfo = reportService.getReportStateInformation(reportId);
+        stateInfo = reportService.getStateInformation(reportId);
       }
     } catch (Exception e) {
       log.error("Could not complete report {}", reportId, e);

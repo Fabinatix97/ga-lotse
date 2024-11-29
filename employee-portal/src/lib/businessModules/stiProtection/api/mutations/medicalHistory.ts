@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useMedicalHistoryApi } from "@/lib/businessModules/stiProtection/api/clients";
 import { stiProtectionProceduresApiQueryKey } from "@/lib/businessModules/stiProtection/api/queries/apiQueryKeys";
 
-export function useCreateMedicalHistory() {
+export function useUpsertMedicalHistory() {
   const medicalHistoryApi = useMedicalHistoryApi();
   const snackbar = useSnackbar();
 
@@ -21,7 +21,7 @@ export function useCreateMedicalHistory() {
     }: {
       id: string;
       medicalHistory: ApiCreateMedicalHistoryRequest;
-    }) => medicalHistoryApi.createMedicalHistory(id, medicalHistory),
+    }) => medicalHistoryApi.updateMedicalHistory(id, medicalHistory),
     onSuccess: () => {
       snackbar.confirmation("Die Anamnese wurde erfolgreich erstellt.");
     },

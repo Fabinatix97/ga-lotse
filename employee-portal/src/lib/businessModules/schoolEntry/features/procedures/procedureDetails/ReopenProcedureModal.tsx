@@ -15,7 +15,8 @@ import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/P
 import { useReopenProcedure } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { DataField } from "@/lib/shared/components/modal/DataField";
 
-interface ReopenProcedureModalProps extends Omit<BaseModalProps, "children"> {
+interface ReopenProcedureModalProps
+  extends Omit<BaseModalProps, "children" | "modalTitle"> {
   procedure: ProcedureDetails;
 }
 

@@ -41,8 +41,8 @@ export function MedicalHistoryRadioButtonElement({
         { value: "true", label: "Ja" },
         { value: "false", label: "Nein" },
       ]}
-      onChange={async (event) => {
-        if (event.target.value === "false" || !event.target.value) {
+      onChange={async (value) => {
+        if (value === "false" || !value) {
           if (element.anamnesisQuestion!.subElementText) {
             await setFieldValue(
               "medicalHistoryContent.sections[" +

@@ -34,6 +34,7 @@ function getInspectionPendingFacilityFromInspection(
       status: inspection.status,
       type: inspection.type,
       numberOfIncidents: inspection.incidents?.length ?? 0,
+      possibleInspectionDuplicate: false,
     },
     kind:
       roundToDate(inspection.plannedAppointment!.start.getDate()) >
@@ -48,6 +49,7 @@ function getInspectionPendingFacilityFromInspection(
       inspection.facility.baseFacility.contactAddress!.type === "PostboxAddress"
         ? "Postfach"
         : inspection.facility.baseFacility.contactAddress!.street,
+    possibleFacilityDuplicate: false,
   };
 }
 

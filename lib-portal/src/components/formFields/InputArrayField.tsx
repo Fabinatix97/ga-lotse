@@ -4,10 +4,10 @@
  */
 
 import { DeleteOutlined as DeleteIcon } from "@mui/icons-material";
-import { IconButton, Stack } from "@mui/joy";
+import { FormLabel, IconButton, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { FieldArray } from "formik";
-import { ComponentType } from "react";
+import { ComponentType, ReactNode } from "react";
 
 import { FieldProps } from "../../types/form";
 import { useIsFormDisabled } from "../form/DisabledFormContext";
@@ -22,12 +22,22 @@ type SupportInputFieldProps = Pick<
   "name" | "label" | "required" | "validate" | "fieldDecorator" | "sx"
 >;
 
-export interface InputArrayFieldProps extends FieldProps<string[]> {
+export interface InputArrayFieldProps
+  extends Omit<FieldProps<string[]>, "label"> {
   minCount?: number;
   addMoreLabel: string;
   fieldComponent?: ComponentType<SupportInputFieldProps>;
   validateEach?: FieldProps<string>["validate"];
   sx?: SxProps;
+  label: (index: number) => ReactNode;
+}
+
+export function getIndexLabel(label: ReactNode, index: number) {
+  return (
+    <>
+      {index + 1}. {label}
+    </>
+  );
 }
 
 export function InputArrayField(props: InputArrayFieldProps) {
@@ -45,7 +55,7 @@ export function InputArrayField(props: InputArrayFieldProps) {
             <FieldComponent
               key={index}
               name={`${props.name}.${index}`}
-              label={props.label}
+              label={<FormLabel>{props.label(index)}</FormLabel>}
               required={props.required}
               validate={props.validateEach}
               component={DecoratedInputField}

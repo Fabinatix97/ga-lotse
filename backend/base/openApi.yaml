@@ -999,8 +999,6 @@ paths:
         Add a new facility file state and associate it with a reference facility.
         If no reference id is provided, an existing reference facility with matching facility data is selected or (if
         it does not exist) created for this purpose.
-        If the partial match parameter is provided as true, only the knowledge factors name and address
-        (regardless of address addition and different name) are considered for the linking.
       tags:
       - Facility
   /facilities/centralfilestates/archive-deletion:
@@ -3438,8 +3436,7 @@ paths:
         name: role
         required: false
         schema:
-          type: string
-          description: A filter for a role users can have
+          $ref: "#/components/schemas/UserRole"
       - description: "The start of the first name, last name, username or email of\
           \ a User which shall be searched for."
         in: query
@@ -3963,6 +3960,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         referenceFacilityId:
           type: string
           format: uuid
@@ -4064,6 +4063,8 @@ components:
             example: "['+4912345678901','+4912345678902','+4912345678903']"
             items:
               type: string
+              maxLength: 23
+              minLength: 1
       required:
       - contactAddress
       - name
@@ -4173,6 +4174,8 @@ components:
             example: "['+4912345678901','+4912345678902','+4912345678903']"
             items:
               type: string
+              maxLength: 23
+              minLength: 1
           salutation:
             $ref: "#/components/schemas/Salutation"
           title:
@@ -4236,6 +4239,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -4518,6 +4523,7 @@ components:
       - STI_PROTECTION
       - MEDICAL_REGISTRY
       - DENTAL
+      - OFFICIAL_MEDICAL_SERVICE
     Calendar:
       type: object
       properties:
@@ -4635,6 +4641,7 @@ components:
       - DOCTORS_OFFICE
       - HEALTH_DEPARTMENT
       - MISC
+      - DAYCARE
     ContactHistoryEntry:
       type: object
       properties:
@@ -5385,6 +5392,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
       required:
       - name
     ExternalAddPersonFileStateRequest:
@@ -5438,6 +5447,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -5543,6 +5554,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 0
       required:
       - name
     FacilityFileState:
@@ -5586,6 +5599,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         referenceVersion:
           type: integer
           format: int64
@@ -6176,6 +6191,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         referenceVersion:
           type: integer
           format: int64
@@ -6521,6 +6538,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -6674,6 +6693,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         version:
           type: integer
           format: int64
@@ -6744,6 +6765,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -7665,6 +7688,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -7740,6 +7765,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -8559,6 +8586,8 @@ components:
             example: "['+4912345678901','+4912345678902','+4912345678903']"
             items:
               type: string
+              maxLength: 23
+              minLength: 1
       required:
       - name
     UpdateInventoryItemCountRequest:
@@ -8671,6 +8700,8 @@ components:
             example: "['+4912345678901','+4912345678902','+4912345678903']"
             items:
               type: string
+              maxLength: 23
+              minLength: 1
           salutation:
             $ref: "#/components/schemas/Salutation"
           title:
@@ -8951,6 +8982,7 @@ components:
       - user
     UserRole:
       type: string
+      description: A filter for a role users can have
       enum:
       - INSPECTION_LEADER
       - INSPECTION_LANDESAMT_LEADER
@@ -9023,6 +9055,10 @@ components:
       - DENTAL_ADMIN
       - OPEN_DATA_ADMIN
       - OPEN_DATA_LEADER
+      - MEDICAL_REGISTRY_IMPORT
+      - OFFICIAL_MEDICAL_SERVICE_LEADER
+      - OFFICIAL_MEDICAL_SERVICE_ADMIN
+      - OFFICIAL_MEDICAL_SERVICE_PHYSICIAN
     VCardAddress:
       type: object
       properties:

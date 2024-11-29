@@ -62,11 +62,11 @@ public class Report extends GloballyUniqueEntityBase {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private final List<ReportElement> reportElements = new ArrayList<>();
 
-  @OneToOne(cascade = {CascadeType.PERSIST})
+  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private Pdf reportFile;
 
-  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private InspectionSignature signature;
 

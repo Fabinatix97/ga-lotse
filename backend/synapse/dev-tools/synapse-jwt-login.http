@@ -1,0 +1,35 @@
+### Get login options
+GET http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+
+### Login with Keycloak JWT to obtain Synase Access Token and Refresh Token
+POST http://localhost:8008/_matrix/client/r0/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type":"org.matrix.login.jwt",
+  "refresh_token": true,
+  "token": "<KEYCLOAK_JWT>"
+}
+
+
+### Refresh Access Token
+POST http://localhost:8008/_matrix/client/r0/refresh
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type":"m.login.password",
+  "refresh_token":"<SYNAPSE_REFRESH_TOKEN>"
+}
+
+
+### Get whoami user data (requires Authorization)
+GET http://localhost:8008/_matrix/client/v3/account/whoami
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <SYNAPSE_ACCESS_TOKEN>
+

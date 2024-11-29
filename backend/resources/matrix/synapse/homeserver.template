@@ -96,6 +96,12 @@ oidc_providers:
     allow_insecure_http: true
     # WARNING
 
+jwt_config:
+  enabled: true
+  issuer: "http://localhost:4003/realms/eshg"
+  algorithm: "RS256"
+  secret: "$KEYCLOAK_RS256_PEM"
+
 #templates:
 #  custom_template_directory: "/data/templates/"
 # vim:ft=yaml

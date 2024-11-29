@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { IconButton, Stack, Typography } from "@mui/joy";
 import { RoomMember } from "matrix-js-sdk";
+import { useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
@@ -24,14 +27,13 @@ interface GroupChatMemberProps {
 
 export function GroupChatMember({
   member,
-  isRoomCreator,
   isAdmin,
   handleKick,
 }: Readonly<GroupChatMemberProps>) {
   const usernameAndOrganisation = getDepartmentNameFromUserId(member.userId);
   const { matrixClient } = useChatClientContext();
   const avatarUrl = getMemberAvatarUrl(matrixClient, member);
-  const canRemove = isAdmin && matrixClient.getUserId() !== member.userId;
+  const [open, setOpen] = useState(false);
 
   return (
     <Stack
@@ -51,7 +53,7 @@ export function GroupChatMember({
         <Typography noWrap level="title-sm">
           {member.name}
         </Typography>
-        {isRoomCreator && (
+        {isAdmin && (
           <Typography noWrap level="body-sm">
             Admin
           </Typography>
@@ -64,11 +66,32 @@ export function GroupChatMember({
         >
           {usernameAndOrganisation?.organisationName}
         </Typography>
+        <ButtonLink
+          level="body-sm"
+          sx={{ textTransform: "capitalize" }}
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Chat-ID anzeigen
+        </ButtonLink>
       </Stack>
-      {canRemove && (
+      {!isAdmin && (
         <IconButton color="primary" onClick={handleKick}>
           <CloseOutlinedIcon />
         </IconButton>
+      )}
+      {open && (
+        <BaseModal
+          modalTitle="User-Informationen"
+          open={open}
+          onClose={() => setOpen(false)}
+        >
+          <Typography
+            sx={{ textTransform: "capitalize" }}
+          >{`${member.name} | ${usernameAndOrganisation?.organisationName}`}</Typography>
+          <Typography>{`Chat-ID: ${member.userId}`}</Typography>
+        </BaseModal>
       )}
     </Stack>
   );

@@ -5,7 +5,6 @@
 
 import {
   ApiImportStatistics,
-  ApiResponse,
   ImportCitizenListRequest,
   ImportPastProcedureListRequest,
   ImportSchoolListRequest,
@@ -19,11 +18,7 @@ import {
 import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-
-interface ImportDataResult {
-  file: File;
-  statistics: ApiImportStatistics;
-}
+import { parseImportResult } from "@/lib/shared/helpers/import";
 
 export function useImportData() {
   const importApi = useImportApi();
@@ -32,14 +27,14 @@ export function useImportData() {
       values.listType === ImportListType.SchoolList
         ? importApi
             .importSchoolListRaw(mapSchoolFormValues(values))
-            .then(parseImportResult)
+            .then(parseImportResult<ApiImportStatistics>)
         : values.listType === ImportListType.CitizenList
           ? importApi
               .importCitizenListRaw(mapCitizenFormValues(values))
-              .then(parseImportResult)
+              .then(parseImportResult<ApiImportStatistics>)
           : importApi
               .importPastProcedureListRaw(mapPastProcedureFormValues(values))
-              .then(parseImportResult),
+              .then(parseImportResult<ApiImportStatistics>),
   });
 }
 
@@ -68,26 +63,5 @@ function mapPastProcedureFormValues(
   return {
     ...mapCitizenFormValues(values),
     schoolId: mapRequiredValue(values.schoolId),
-  };
-}
-
-/**
- * We parse the response manually, because it was not possible to strictly type the multipart-part content
- */
-async function parseImportResult(
-  response: ApiResponse<object>,
-): Promise<ImportDataResult> {
-  const formData = await response.raw.formData();
-  const file = formData.get("file");
-  const statisticsJson = formData.get("statistics");
-
-  if (!(file instanceof File && typeof statisticsJson === "string")) {
-    throw new Error("Response contains invalid import result.");
-  }
-
-  const statistics = JSON.parse(statisticsJson) as ApiImportStatistics;
-  return {
-    file,
-    statistics,
   };
 }

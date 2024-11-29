@@ -94,7 +94,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @NotNull WebRequest request) {
     Map<String, String> errors = new LinkedHashMap<>();
 
-    for (ParameterValidationResult parameterValidationResult : ex.getAllValidationResults()) {
+    for (ParameterValidationResult parameterValidationResult : ex.getParameterValidationResults()) {
       String parameterName = parameterValidationResult.getMethodParameter().getParameterName();
       String detail =
           parameterValidationResult.getResolvableErrors().stream()

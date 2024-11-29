@@ -11,9 +11,9 @@ import { isNonNullish } from "remeda";
 
 export function getAttributeLabel(
   attribute: Pick<ApiBusinessDataSourceAttribute, "name">,
-  baseAttribute?: Pick<ApiBaseDataSourceAttribute, "name">,
+  baseAttribute?: Pick<ApiBaseDataSourceAttribute, "displayName">,
 ) {
   return isNonNullish(baseAttribute)
-    ? `${attribute.name}: ${baseAttribute.name}`
+    ? baseAttribute.displayName
     : attribute.name;
 }

@@ -34,3 +34,7 @@ export function formatTotalCount(count: number) {
 export function formatIncidentCount(count: number) {
   return formatCount(count, "Vorkommnis", "Vorkommnisse");
 }
+
+export function formatPossibleDuplicates(count: number) {
+  return formatCount(count, "potentielles Duplikat", "potentielle Duplikate");
+}

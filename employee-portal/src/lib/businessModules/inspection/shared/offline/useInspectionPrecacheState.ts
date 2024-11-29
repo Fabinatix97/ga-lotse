@@ -24,9 +24,8 @@ export function useInspectionPrecacheState(
     void precachedInspectionIds
       .get(procedureId)
       .then((s) => isMounted && setState(s ?? "idle"));
-    createPrecachedInspectionIdsBroadCastChannelEndpoint().onmessage = async (
-      event: MessageEvent,
-    ) => {
+    const channel = createPrecachedInspectionIdsBroadCastChannelEndpoint();
+    channel.onmessage = async (event: MessageEvent) => {
       if (!isInspectionChangedMessage(event.data)) return;
       const { inspectionId } = event.data;
       if (inspectionId !== procedureId) return;
@@ -34,6 +33,7 @@ export function useInspectionPrecacheState(
       if (isMounted) setState(s);
     };
     return () => {
+      channel?.close();
       isMounted = false;
     };
   }, [procedureId]);

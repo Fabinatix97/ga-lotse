@@ -15,12 +15,7 @@ import de.eshg.lib.contact.model.ContactsMergedEvent;
 import de.eshg.lib.notification.NotificationApi;
 import de.eshg.lib.notification.api.GetNotificationsResponse;
 import de.eshg.lib.notification.api.MarkNotificationsAsReadRequest;
-import de.eshg.lib.procedure.api.GdprValidationTaskApi;
-import de.eshg.lib.procedure.api.ProcedureApi;
-import de.eshg.lib.procedure.api.ProcedureMetricsApi;
-import de.eshg.lib.procedure.api.RecentProcedureApi;
-import de.eshg.lib.procedure.api.TaskListApi;
-import de.eshg.lib.procedure.api.TaskMetricsApi;
+import de.eshg.lib.procedure.api.*;
 import de.eshg.lib.procedure.model.GetProcedureMetricsResponse;
 import de.eshg.lib.procedure.model.GetRecentProceduresResponse;
 import de.eshg.lib.procedure.model.GetTaskMetricsResponse;
@@ -29,10 +24,13 @@ import de.eshg.lib.procedure.model.GetTasksSortOptions;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import de.eshg.lib.procedure.model.TaskResponse;
+import de.eshg.lib.procedure.model.gdpr.*;
 import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
+import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskFilterParameters;
+import de.eshg.lib.procedure.model.gdpr.GetAllValidationTasksResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprNotificationBannerResponse;
+import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskDetailsResponse;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
-import de.eshg.lib.procedure.model.gdpr.GetRelatedBusinessProceduresResponse;
 import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
@@ -42,9 +40,13 @@ import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
@@ -216,6 +218,9 @@ public class BusinessModuleClient
   }
 
   @Override
+  public void closeGdprValidationTask(UUID gdprProcedureId) {}
+
+  @Override
   public void addDownloadPackage(UUID gdprProcedureId, UUID businessProcedureId) {
     gdprValidationTaskApiDelegate.addDownloadPackage(gdprProcedureId, businessProcedureId);
   }
@@ -231,8 +236,24 @@ public class BusinessModuleClient
   }
 
   @Override
-  public GetRelatedBusinessProceduresResponse getRelatedBusinessProcedures(UUID gdprProcedureId) {
-    return gdprValidationTaskApiDelegate.getRelatedBusinessProcedures(gdprProcedureId);
+  public GetGdprDownloadPackagesInfoResponse getGdprDownloadPackagesInfo(UUID procedureId) {
+    return new GetGdprDownloadPackagesInfoResponse(List.of());
+  }
+
+  @Override
+  public ResponseEntity<Resource> getGdprDownloadPackage(UUID id) {
+    return ResponseEntity.ok().body(new ByteArrayResource(new byte[] {}));
+  }
+
+  @Override
+  public GetGdprValidationTaskDetailsResponse getGdprValidationTaskDetails(UUID gdprProcedureId) {
+    return gdprValidationTaskApiDelegate.getGdprValidationTaskDetails(gdprProcedureId);
+  }
+
+  @Override
+  public GetAllValidationTasksResponse getAllGdprValidationTasks(
+      GdprValidationTaskFilterParameters parameters) {
+    return gdprValidationTaskApiDelegate.getAllGdprValidationTasks(parameters);
   }
 
   public void broadcastContactsMergedEvent(UUID mergedFromId, UUID mergedIntoId) {

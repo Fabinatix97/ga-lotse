@@ -12,7 +12,7 @@ dependencies {
     implementation project(":lib-document-generator")
     implementation project(':lib-scheduling')
     implementation project(':rest-oauth-client-commons')
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 

@@ -22,7 +22,8 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @DataSensitivity(PUBLIC)
 @Entity
 @DiscriminatorValue("BAR_CHART")
-public class BarChartConfiguration extends ChartConfiguration {
+public class BarChartConfiguration extends ChartConfiguration
+    implements TwoAttributesChartConfiguration {
   @OneToOne(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,

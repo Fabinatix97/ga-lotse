@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { FormLabel, Grid, Stack, Typography } from "@mui/joy";
@@ -89,11 +92,11 @@ export function CitizenAnamnesisStepThree() {
           minCount={1}
           addMoreLabel={t("health.addAllergie")}
           name={illnessAndAccidentInfo("allergies.values")}
-          label={
+          label={(index) => (
             <Typography level="body-sm">
-              {t("health.allergieDescription")}
+              {getIndexLabel(t("health.allergieDescription"), index)}
             </Typography>
-          }
+          )}
         />
       </ToggleableSection>
       <LocalBooleanRadioField

@@ -13,7 +13,7 @@ import { FinalizeInspectionModalContent } from "@/lib/businessModules/inspection
 
 export type FinalizeInspectionModalProps = {
   inspectionId: string;
-} & Omit<BaseModalProps, "children">;
+} & Omit<BaseModalProps, "children" | "modalTitle">;
 
 export function FinalizeInspectionModal({
   sx,

@@ -8,9 +8,11 @@ import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { validateTemplateTitle } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
 export function MedicalHistoryTemplateTitle() {
+  const label = "Titel";
   return (
     <InputField
       label
+      aria-label={label}
       name="title"
       placeholder="Name der Anamnese"
       validate={validateTemplateTitle}

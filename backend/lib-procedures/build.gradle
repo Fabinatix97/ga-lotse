@@ -4,10 +4,6 @@ plugins {
     id "java-test-fixtures"
 }
 
-configurations {
-    xjc
-}
-
 dependencies {
     api project(':lib-commons')
     api project(':lib-procedures-api')
@@ -17,10 +13,11 @@ dependencies {
     api project(':business-module-persistence-commons')
 
     implementation project(':lib-commons')
-    implementation project(':lib-base-client')
+    implementation project(':base-api')
     implementation project(':business-module-commons')
     implementation project(':rest-oauth-client-commons')
     implementation project(':file-commons')
+    implementation project(':lib-xdomea')
 
     implementation 'jakarta.persistence:jakarta.persistence-api'
     implementation 'org.springframework:spring-context'
@@ -59,60 +56,11 @@ dependencies {
     testImplementation 'org.apache.commons:commons-text:latest.release'
     testImplementation 'org.apache.commons:commons-collections4:latest.release'
 
+    testRuntimeOnly project(':lib-base-client')
     testRuntimeOnly 'org.postgresql:postgresql'
     testRuntimeOnly 'com.h2database:h2'
-
-    xjc 'org.glassfish.jaxb:jaxb-xjc:latest.release'
-    xjc 'org.glassfish.jaxb:jaxb-runtime:latest.release'
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-AaddSuppressWarningsAnnotation=true")
 }
-
-ext {
-    catalogFile = "$projectDir/xdomea/catalog.xml"
-    //find new version at https://www.xrepository.de/details/urn:xoev-de:xdomea:kosit:standard:xdomea
-    zipFile = "$projectDir/xdomea/xdomea_3-1-0_XML-Schemata.zip"
-    zipDir = layout.buildDirectory.dir("tmp/xdomea").get().asFile.path
-    xsdFile = "$zipDir/xdomea_3-1-0_XML-Schemata/xdomea-Nachrichten-AussonderungDurchfuehren.xsd"
-    xsdConfigFile = "$projectDir/xdomea/config.xsdconfig"
-    generatedSources = layout.buildDirectory.dir("generated/sources/xdomea/java").get().asFile.path
-}
-
-sourceSets.main.java.srcDirs += generatedSources
-
-tasks.register('unpackZip', Copy) {
-    def outdir = file(zipDir)
-
-    inputs.file file(zipFile)
-    outputs.dir outdir
-
-    for (File file : outdir.listFiles())
-        if (!file.isDirectory())
-            file.delete();
-
-    from zipTree(zipFile)
-    into outdir
-}
-
-tasks.register('xsd2java', JavaExec) {
-    dependsOn unpackZip
-
-    inputs.file file(catalogFile)
-    inputs.dir file(zipDir)
-    outputs.dir file(generatedSources)
-
-    mainClass = "com.sun.tools.xjc.XJCFacade"
-    classpath = configurations.xjc
-    args "-d", generatedSources
-    args "-p", "de.xdomea"
-    args "-nv"
-    args "-quiet"
-    args "-catalog", catalogFile
-    args xsdFile
-
-    defaultCharacterEncoding = "UTF-8"
-}
-
-compileJava.dependsOn xsd2java

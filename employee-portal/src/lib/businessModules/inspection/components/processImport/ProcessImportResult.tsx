@@ -45,7 +45,7 @@ export function ProcessImportResult({
     <>
       <SidebarContent title="Daten Importieren">
         <Stack spacing={3}>
-          <Typography color="success" fontWeight="md">
+          <Typography color="success" fontWeight="md" data-testid="statusText">
             Import erfolgreich
           </Typography>
           <InfoSheet>
@@ -93,7 +93,7 @@ export function ProcessImportResult({
 
 function InfoSheet({ children }: Readonly<PropsWithChildren>) {
   return (
-    <Sheet variant="soft" sx={{ p: 3 }}>
+    <Sheet variant="soft" sx={{ p: 3 }} data-testid="summary">
       <Stack spacing={3}>{children}</Stack>
     </Sheet>
   );

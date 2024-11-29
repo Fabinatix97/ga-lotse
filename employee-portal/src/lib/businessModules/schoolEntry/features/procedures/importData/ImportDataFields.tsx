@@ -24,11 +24,11 @@ import { routes as baseRoutes } from "@/lib/baseModule/shared/routes";
 import { useImportApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { ImportDataValues } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataSidebar";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-import { SchoolYearField } from "@/lib/businessModules/schoolEntry/features/procedures/shared/schoolYear";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { SearchContactField } from "@/lib/shared/components/formFields/SearchContactField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { FileType } from "@/lib/shared/components/formFields/file/FileType";
+import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 
 interface ImportDataFieldsProps {
   listType: ImportListType;

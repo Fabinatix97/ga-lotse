@@ -40,7 +40,8 @@ public class UserSettingsService {
         .sharePresence(request.sharePresence())
         .showTypingNotification(request.showTypingNotification())
         .showReadConfirmation(request.showReadConfirmation())
-        .chatConsentAsked(request.chatConsentAsked());
+        .chatConsentAsked(request.chatConsentAsked())
+        .accountDeactivated(request.accountDeactivated());
   }
 
   public static UserSettingsResponse mapTo(UserSettings userSettings) {
@@ -50,7 +51,8 @@ public class UserSettingsService {
         userSettings.getSharePresence(),
         userSettings.getShowTypingNotification(),
         userSettings.getChatConsentAsked(),
-        userSettings.getShowReadConfirmation());
+        userSettings.getShowReadConfirmation(),
+        userSettings.getAccountDeactivated());
   }
 
   private UserSettings mapOnlyNonNullFields(
@@ -69,6 +71,9 @@ public class UserSettingsService {
     }
     if (userSettingsRequest.chatConsentAsked() != null) {
       userSettings.chatConsentAsked(userSettingsRequest.chatConsentAsked());
+    }
+    if (userSettingsRequest.accountDeactivated() != null) {
+      userSettings.accountDeactivated(userSettingsRequest.accountDeactivated());
     }
     return userSettings;
   }

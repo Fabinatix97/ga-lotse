@@ -114,6 +114,7 @@ export function Chat() {
         }}
       >
         <ChatPanel
+          key={roomId}
           roomId={roomId}
           chatPanelView={chatPanelView}
           setChatPanelView={changeChatPanelView}
@@ -129,7 +130,7 @@ export function Chat() {
             borderColor: "neutral.outlinedBorder",
           }}
         >
-          <InfoPanel />
+          <InfoPanel key={roomId} />
         </Stack>
       )}
     </Stack>

@@ -6,8 +6,8 @@
 "use client";
 
 import {
+  ApiApplicantAddress,
   ApiMedicalRegistryEntry,
-  ApiProfessionalAddress,
 } from "@eshg/employee-portal-api/medicalRegistry";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -27,7 +27,7 @@ import { MedicalRegistryProceduresSearchBar } from "./MedicalRegistryProceduresS
 
 const columnHelper = createColumnHelper<ApiMedicalRegistryEntry>();
 
-function formatAddress(address: ApiProfessionalAddress) {
+function formatAddress(address: ApiApplicantAddress) {
   return `${address.street} ${address.houseNumber}, ${address.postalCode} ${address.city}, ${translateCountry(address.country)}`;
 }
 

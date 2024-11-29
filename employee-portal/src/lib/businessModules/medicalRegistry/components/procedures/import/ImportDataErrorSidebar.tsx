@@ -1,0 +1,55 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import { AlertProps } from "@eshg/lib-portal/components/Alert";
+import { PortalErrorCode } from "@eshg/lib-portal/errorHandling/PortalErrorCode";
+import { getErrorDescription } from "@eshg/lib-portal/errorHandling/errorMappers";
+import { resolveError } from "@eshg/lib-portal/errorHandling/errorResolvers";
+import { Button } from "@mui/joy";
+
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+
+interface ImportDataErrorSidebarProps {
+  error: Error;
+  onClose: () => void;
+  onReset: () => void;
+}
+
+export function ImportDataErrorSidebar({
+  error,
+  onReset,
+  onClose,
+}: ImportDataErrorSidebarProps) {
+  const { errorCode } = resolveError(error);
+  const { title, message } = getErrorDescription(errorCode);
+
+  const isUnexpectedError = errorCode === PortalErrorCode.UnexpectedError;
+  const alert: AlertProps = {
+    color: "danger",
+    title: title,
+    message: isUnexpectedError
+      ? "Bitte starten Sie den Import erneut."
+      : message,
+  };
+
+  return (
+    <>
+      <SidebarContent title="Daten importieren" alert={alert} />
+      <ButtonBar
+        right={
+          <>
+            <Button variant="soft" color="neutral" onClick={() => onClose()}>
+              Abbrechen
+            </Button>
+            <Button onClick={() => onReset()}>Import erneut starten</Button>
+          </>
+        }
+      />
+    </>
+  );
+}

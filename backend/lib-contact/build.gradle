@@ -1,5 +1,6 @@
 plugins {
     id "eshg.java-lib"
+    id("java-test-fixtures")
 }
 
 dependencies {
@@ -9,4 +10,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
 
     implementation project(':business-module-commons')
+
+    testFixturesImplementation project(':test-commons')
+    testFixturesImplementation 'org.assertj:assertj-core'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-test'
 }

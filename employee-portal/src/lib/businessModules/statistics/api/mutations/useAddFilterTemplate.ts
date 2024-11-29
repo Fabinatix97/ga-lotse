@@ -7,7 +7,7 @@ import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
 import { useFilterTemplateApi } from "@/lib/businessModules/statistics/api/clients";
-import { mapFilterValuesToStatisticFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToStatisticFilters";
+import { mapFilterValuesToEvaluationFilters } from "@/lib/businessModules/statistics/api/mapper/mapFilterValuesToEvaluationFilters";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { FilterValue } from "@/lib/shared/components/filterSettings/models/FilterValue";
 
@@ -23,7 +23,7 @@ export function useAddFilterTemplate(attributes: FlatAttribute[]) {
     mutationFn: (useAddFilterTemplate: UseAddFilterTemplate) =>
       api.addFilterTemplate({
         name: useAddFilterTemplate.name,
-        filters: mapFilterValuesToStatisticFilters(
+        filters: mapFilterValuesToEvaluationFilters(
           useAddFilterTemplate.filters,
           attributes,
         ),

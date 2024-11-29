@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { PROCESS_ABORTED } from "@/serviceWorker/common/common";
 import {
   GET_EXISTING_PASSWORD,
   GET_PASSWORD,
@@ -81,7 +82,7 @@ function getNewKey(
       offlinePasswordChannel.onmessage = null;
       offlinePasswordChannel.postMessage(PASSWORD_ACCEPTED);
     } else if (ev.data === GET_PASSWORD_ABORTED) {
-      reject(new Error("Vorgang abgebrochen"));
+      reject(new Error(PROCESS_ABORTED));
       offlinePasswordChannel.onmessage = null;
       deleteKey();
     } else if (ev.data === REGISTER_CLIENT) {

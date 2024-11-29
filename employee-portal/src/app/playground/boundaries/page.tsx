@@ -76,7 +76,7 @@ function Mutation() {
   );
 }
 
-function MutationModal(props: Omit<BaseModalProps, "children">) {
+function MutationModal(props: Omit<BaseModalProps, "children" | "modalTitle">) {
   return (
     <QueryBoundary>
       <BaseModal modalTitle="Modal Boundary" {...props}>

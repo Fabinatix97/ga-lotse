@@ -78,6 +78,7 @@ export function ChooseAttributesStep(props: {
         groups={searchableCheckboxGroups}
         label={values.dataSource!.name}
         placeholder="Attribut suchen"
+        startExpanded={searchableCheckboxGroups.length === 1}
         renderItem={(item) => (
           <CheckboxField
             {...item.checkboxFieldProps}

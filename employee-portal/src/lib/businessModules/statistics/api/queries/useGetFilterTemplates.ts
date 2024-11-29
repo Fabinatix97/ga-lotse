@@ -15,14 +15,14 @@ import { FilterTemplate } from "@/lib/shared/components/filterSettings/FilterTem
 
 export function createQueryGetFilterTemplates(
   api: FilterTemplateApi,
-  statisticId: string,
+  evaluationId: string,
 ) {
   return {
     queryKey: filterTemplateApiQueryKey([
       api.findFilterTemplatesForEvaluation.name,
-      statisticId,
+      evaluationId,
     ]),
-    queryFn: () => api.findFilterTemplatesForEvaluation(statisticId),
+    queryFn: () => api.findFilterTemplatesForEvaluation(evaluationId),
     select: (result: ApiGetFilterTemplatesForEvaluationResponse) =>
       result.filterTemplateIdAndNames.map(
         (it) =>
@@ -34,10 +34,10 @@ export function createQueryGetFilterTemplates(
   };
 }
 
-export function useGetFilterTemplates(statisticId: string) {
+export function useGetFilterTemplates(evaluationId: string) {
   const api = useFilterTemplateApi();
   const query = useSuspenseQuery(
-    createQueryGetFilterTemplates(api, statisticId),
+    createQueryGetFilterTemplates(api, evaluationId),
   );
   return query.data;
 }

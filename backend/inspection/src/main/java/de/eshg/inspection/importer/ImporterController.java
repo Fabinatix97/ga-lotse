@@ -5,6 +5,8 @@
 
 package de.eshg.inspection.importer;
 
+import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
+
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
@@ -18,8 +20,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -38,9 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Importer")
 public class ImporterController {
   public static final String BASE_URL = BaseUrls.Inspection.INSPECTION_IMPORT_CONTROLLER;
-
-  private static final DateTimeFormatter FILE_TIMESTAMP =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 
   private final ImporterService importerService;
   private final InspectionFeatureToggle featureToggle;
@@ -68,7 +65,7 @@ public class ImporterController {
       @RequestPart("file") MultipartFile file) throws IOException {
     featureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     ImportResult result = importerService.importProcesses(file);
-    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename());
+    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
   }
 
   @GetMapping(
@@ -78,9 +75,5 @@ public class ImporterController {
   public ResponseEntity<Resource> getInspectionImportTemplate() {
     featureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     return FileResponseUtil.getTemplateFileResponse(importTemplate);
-  }
-
-  private String filename() {
-    return "ImportResult_%s.xlsx".formatted(LocalDateTime.now(clock).format(FILE_TIMESTAMP));
   }
 }

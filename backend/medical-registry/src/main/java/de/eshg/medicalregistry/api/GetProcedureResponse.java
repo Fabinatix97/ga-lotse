@@ -26,11 +26,11 @@ public sealed interface GetProcedureResponse
 
   ProcedureTypeDto procedureType();
 
-  ProfessionalDto professional();
+  ApplicantDto applicant();
+
+  ProfessionInformationDto professionInformation();
 
   List<PracticeDto> practices();
-
-  boolean employeesEmployed();
 
   boolean consentToPrivacyPolicy();
 

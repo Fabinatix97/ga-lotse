@@ -151,26 +151,25 @@ export function PacklistDefinitionOverviewTable() {
     columnHelper.accessor("objectType.name", {
       header: "Objekttyp",
     }),
-    columnHelper.accessor("mostRecentRevisionId", {
+    columnHelper.display({
       header: "Aktionen",
+      id: "actions",
       enableSorting: false,
       cell: (info) => {
         const packlistRow = info.row.original;
         return (
           <ActionsMenu
             actionItems={[
-              ...[
-                {
-                  label: "Anpassen",
-                  onClick: () =>
-                    handleEditButtonClick(
-                      packlistRow.id,
-                      packlistRow.version,
-                      packlistRow.mostRecentRevisionId,
-                    ),
-                  startDecorator: <Edit />,
-                },
-              ],
+              {
+                label: "Anpassen",
+                onClick: () =>
+                  handleEditButtonClick(
+                    packlistRow.id,
+                    packlistRow.version,
+                    packlistRow.mostRecentRevisionId,
+                  ),
+                startDecorator: <Edit />,
+              },
               {
                 label: "Historie",
                 onClick: () => {
@@ -179,8 +178,13 @@ export function PacklistDefinitionOverviewTable() {
                 startDecorator: <History />,
               },
             ]}
-          ></ActionsMenu>
+          />
         );
+      },
+      meta: {
+        cellStyle: "button",
+        width: "7rem",
+        textAlign: "right",
       },
     }),
   ];

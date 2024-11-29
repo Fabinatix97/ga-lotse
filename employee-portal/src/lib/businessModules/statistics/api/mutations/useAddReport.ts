@@ -38,9 +38,9 @@ export function useAddReport(onSuccess: () => void) {
     },
   });
 
-  return async (statisticId: string, model: AddReportFormModel) => {
+  return async (evaluationId: string, model: AddReportFormModel) => {
     await mutation.mutateAsync({
-      evaluationId: statisticId,
+      evaluationId: evaluationId,
       model: model,
     });
   };

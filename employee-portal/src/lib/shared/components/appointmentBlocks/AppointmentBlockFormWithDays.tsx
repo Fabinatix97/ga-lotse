@@ -7,6 +7,7 @@ import { ApiDayOfWeek } from "@eshg/employee-portal-api/measlesProtection";
 import { DateField } from "@eshg/lib-portal/components/formFields/DateField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
+import { EnumMap } from "@eshg/lib-portal/types/helpers";
 import { Delete } from "@mui/icons-material";
 import { Button, Grid } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -24,19 +25,29 @@ export interface AppointmentBlockGroupValuesWithDays {
 }
 
 export interface WeekdayCheckboxOption {
-  id: string;
+  id: ApiDayOfWeek;
   label: string;
   disabled?: boolean;
 }
 
+export const WEEKDAY_TYPES: EnumMap<ApiDayOfWeek> = {
+  [ApiDayOfWeek.Sunday]: "Sonntag",
+  [ApiDayOfWeek.Monday]: "Montag",
+  [ApiDayOfWeek.Tuesday]: "Dienstag",
+  [ApiDayOfWeek.Wednesday]: "Mittwoch",
+  [ApiDayOfWeek.Thursday]: "Donnerstag",
+  [ApiDayOfWeek.Friday]: "Freitag",
+  [ApiDayOfWeek.Saturday]: "Samstag",
+};
+
 export const WEEKDAY_CHECKBOX_OPTIONS: WeekdayCheckboxOption[] = [
-  { id: "SUNDAY", label: "So", disabled: true },
+  { id: ApiDayOfWeek.Sunday, label: "So", disabled: true },
   { id: ApiDayOfWeek.Monday, label: "Mo" },
   { id: ApiDayOfWeek.Tuesday, label: "Di" },
   { id: ApiDayOfWeek.Wednesday, label: "Mi" },
   { id: ApiDayOfWeek.Thursday, label: "Do" },
   { id: ApiDayOfWeek.Friday, label: "Fr" },
-  { id: "SATURDAY", label: "Sa", disabled: true },
+  { id: ApiDayOfWeek.Saturday, label: "Sa", disabled: true },
 ];
 
 export function getWeekdayFromDate(date: Date): string {

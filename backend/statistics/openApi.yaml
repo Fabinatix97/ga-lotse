@@ -115,7 +115,7 @@ paths:
       - StatisticsCentralRepository
   /data-export/diagram/{diagramId}:
     get:
-      operationId: exportData
+      operationId: exportDiagramData
       parameters:
       - in: path
         name: diagramId
@@ -132,6 +132,48 @@ paths:
                 format: binary
           description: Exported diagram data
       summary: Export diagram data
+      tags:
+      - DataExport
+  /data-export/evaluation/{evaluationId}:
+    get:
+      operationId: exportEvaluationData
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Exported evaluation raw data
+      summary: Export evaluation data
+      tags:
+      - DataExport
+  /data-export/report/{reportId}:
+    get:
+      operationId: exportReportData
+      parameters:
+      - in: path
+        name: reportId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: Exported report raw data
+      summary: Export report data
       tags:
       - DataExport
   /data-source:
@@ -1601,20 +1643,23 @@ components:
       properties:
         code:
           type: string
-        name:
+        displayName:
           type: string
       required:
       - code
-      - name
+      - displayName
     BaseDataSourceAttribute:
       type: object
       properties:
         code:
           type: string
+        displayName:
+          type: string
         name:
           type: string
       required:
       - code
+      - displayName
       - name
     BinningMode:
       type: string
@@ -2100,6 +2145,8 @@ components:
             type: string
           maxItems: 2147483647
           minItems: 1
+        exportable:
+          type: boolean
         id:
           type: string
           format: uuid
@@ -2120,6 +2167,7 @@ components:
       - anonymized
       - createdAt
       - dataSourceNames
+      - exportable
       - id
       - name
       - state
@@ -3065,6 +3113,8 @@ components:
         executionDate:
           type: string
           format: date
+        exportable:
+          type: boolean
         id:
           type: string
           format: uuid
@@ -3084,6 +3134,7 @@ components:
           minimum: 0
       required:
       - executionDate
+      - exportable
       - id
       - name
       - state
@@ -3251,7 +3302,6 @@ components:
       type: string
       enum:
       - REPORTS
-      - CLONE_STATISTIC
       - FAKE_ANONYMIZATION
     TableColumnFilterParameter:
       type: object
@@ -3282,11 +3332,14 @@ components:
           format: uuid
         dataSourceName:
           type: string
+        displayName:
+          type: string
       required:
       - attribute
       - businessModule
       - dataSourceId
       - dataSourceName
+      - displayName
     TestHelperClockSetRequest:
       type: object
       properties:

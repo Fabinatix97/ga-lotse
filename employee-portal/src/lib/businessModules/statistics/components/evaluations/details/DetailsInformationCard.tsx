@@ -28,33 +28,28 @@ import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
 export interface DetailsInformationCardProps {
   canWrite: boolean;
   canDelete: boolean;
-  canUpdateStatistic: boolean;
+  canUpdateEvaluation: boolean;
   canExportData: boolean;
   start: Date;
   end: Date;
   createdAt: Date;
   createdBy: string;
-  onEvaluationCreateClicked: () => void;
+  onAnalysisCreateClicked: () => void;
   onDataBasisUpdateClicked: () => void;
   onNameChangeClicked: () => void;
-  onStatisticDeleteClicked: () => void;
-  onStatisticDuplicateClicked: () => void;
+  onEvaluationDeleteClicked: () => void;
+  onEvaluationDuplicateClicked: () => void;
   onSaveEvaluationTemplateClicked: () => void;
   onDataExport: () => Promise<void>;
 }
 
 export function DetailsInformationCard(props: DetailsInformationCardProps) {
-  const cloneStatisticFeatureToggle = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.CloneStatistic,
-  );
-  const canDuplicateStatistic = props.canWrite && cloneStatisticFeatureToggle;
-
   const exportDataFeatureToggle = useIsNewFeatureEnabled(
     ApiStatisticsFeature.FakeAnonymization,
   );
   const canExportData = props.canExportData && exportDataFeatureToggle;
 
-  const { canDelete, canUpdateStatistic, canWrite } = props;
+  const { canDelete, canUpdateEvaluation, canWrite } = props;
 
   return (
     <InfoTile
@@ -71,11 +66,11 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
             <Button
               startDecorator={<AddchartOutlined />}
               variant="solid"
-              onClick={props.onEvaluationCreateClicked}
+              onClick={props.onAnalysisCreateClicked}
             >
               Analyse erstellen
             </Button>
-            {props.canUpdateStatistic && (
+            {props.canUpdateEvaluation && (
               <Button
                 variant="outlined"
                 onClick={props.onDataBasisUpdateClicked}
@@ -87,13 +82,10 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
         )
       }
       controls={
-        (canUpdateStatistic ||
-          canDuplicateStatistic ||
-          canDelete ||
-          canWrite) && (
+        (canUpdateEvaluation || canDelete || canWrite || canExportData) && (
           <ActionsMenu
             actionItems={[
-              canUpdateStatistic && {
+              canUpdateEvaluation && {
                 label: "Name ändern",
                 onClick: () => props.onNameChangeClicked(),
                 startDecorator: <Edit />,
@@ -103,9 +95,9 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
                 onClick: () => props.onSaveEvaluationTemplateClicked(),
                 startDecorator: <Menu />,
               },
-              canDuplicateStatistic && {
+              canWrite && {
                 label: "Duplizieren",
-                onClick: () => props.onStatisticDuplicateClicked(),
+                onClick: () => props.onEvaluationDuplicateClicked(),
                 startDecorator: <FileCopy />,
               },
               canExportData && {
@@ -115,7 +107,7 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
               },
               canDelete && {
                 label: "Löschen",
-                onClick: () => props.onStatisticDeleteClicked(),
+                onClick: () => props.onEvaluationDeleteClicked(),
                 startDecorator: <Delete />,
                 color: "danger" as ColorPaletteProp,
               },

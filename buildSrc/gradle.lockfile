@@ -1,8 +1,8 @@
 # This is a Gradle generated file for dependency locking.
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
-com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:0.17.10=buildScriptClasspath,compileClasspath
-com.avast.gradle:gradle-docker-compose-plugin:0.17.10=buildScriptClasspath,compileClasspath
+com.avast.gradle.docker-compose:com.avast.gradle.docker-compose.gradle.plugin:0.17.11=buildScriptClasspath,compileClasspath
+com.avast.gradle:gradle-docker-compose-plugin:0.17.11=buildScriptClasspath,compileClasspath
 com.bmuschko.docker-remote-api:com.bmuschko.docker-remote-api.gradle.plugin:9.4.0=buildScriptClasspath,compileClasspath
 com.bmuschko:gradle-docker-plugin:9.4.0=buildScriptClasspath,compileClasspath
 com.fasterxml.jackson.core:jackson-annotations:2.15.3=buildScriptClasspath

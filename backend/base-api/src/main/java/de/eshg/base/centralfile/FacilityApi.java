@@ -38,8 +38,6 @@ public interface FacilityApi {
           Add a new facility file state and associate it with a reference facility.
           If no reference id is provided, an existing reference facility with matching facility data is selected or (if
           it does not exist) created for this purpose.
-          If the partial match parameter is provided as true, only the knowledge factors name and address
-          (regardless of address addition and different name) are considered for the linking.
           """)
   AddFacilityFileStateResponse addFacilityFileState(
       @RequestBody @Valid AddFacilityFileStateRequest request);

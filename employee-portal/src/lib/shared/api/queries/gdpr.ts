@@ -4,19 +4,25 @@
  */
 
 import {
+  ApiBusinessModule,
   ApiGetGdprNotificationBannerResponse,
-  GdprValidationTaskApi,
-} from "@eshg/employee-portal-api/schoolEntry";
-import { QueryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
+  GdprValidationTaskApiInterface,
+} from "@eshg/employee-portal-api/businessProcedures";
 import { queryOptions } from "@tanstack/react-query";
 
+import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
+
 export function getGdprValidationBannerQuery(
-  taskApi: GdprValidationTaskApi,
-  queryKeyFactory: QueryKeyFactory,
+  taskApi: GdprValidationTaskApiInterface,
+  businessModule: ApiBusinessModule,
   isFeatureEnabled: boolean,
 ) {
   return queryOptions({
-    queryKey: queryKeyFactory(["getGdprNotificationBanner", isFeatureEnabled]),
+    queryKey: gdprValidationTaskApiQueryKey([
+      businessModule,
+      "getGdprNotificationBanner",
+      isFeatureEnabled,
+    ]),
     queryFn: async (): Promise<ApiGetGdprNotificationBannerResponse> => {
       if (isFeatureEnabled) {
         return await taskApi.getGdprNotificationBanner();
@@ -26,5 +32,20 @@ export function getGdprValidationBannerQuery(
         };
       }
     },
+  });
+}
+
+export function getGdprValidationTaskDetails(
+  taskApi: GdprValidationTaskApiInterface,
+  businessModule: ApiBusinessModule,
+  id: string,
+) {
+  return queryOptions({
+    queryKey: gdprValidationTaskApiQueryKey([
+      businessModule,
+      "getGdprValidationTaskDetails",
+      id,
+    ]),
+    queryFn: () => taskApi.getGdprValidationTaskDetails(id),
   });
 }

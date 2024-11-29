@@ -29,5 +29,6 @@
   <include file="migrations/0019_add_download_package_table.xml"/>
   <include file="migrations/0020_add_anonymous_user_id.xml"/>
   <include file="migrations/0021_add_appointment_history.xml"/>
-
+  <include file="migrations/0022_add_rapid_test_examination.xml"/>
+  <include file="migrations/0023_refactor_medical_history.xml"/>
 </databaseChangeLog>

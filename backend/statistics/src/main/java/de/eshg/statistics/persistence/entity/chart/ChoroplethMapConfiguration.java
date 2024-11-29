@@ -22,7 +22,8 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @DataSensitivity(PUBLIC)
 @Entity
 @DiscriminatorValue("CHOROPLETH_MAP")
-public class ChoroplethMapConfiguration extends ChartConfiguration {
+public class ChoroplethMapConfiguration extends ChartConfiguration
+    implements TwoAttributesChartConfiguration {
   @OneToOne(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,

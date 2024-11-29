@@ -388,6 +388,48 @@ paths:
       tags:
       - File
   /gdpr-validation-tasks:
+    get:
+      operationId: getAllGdprValidationTasks
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/GdprValidationTaskSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAllValidationTasksResponse"
+          description: OK
+      summary: Get all GDPR validation tasks
+      tags:
+      - GdprValidationTask
     post:
       operationId: addGdprValidationTask
       requestBody:
@@ -400,6 +442,27 @@ paths:
         "200":
           description: Add a GDPR validation task
       summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/download-packages/{id}:
+    get:
+      operationId: getGdprDownloadPackage
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package by its id
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/notification-banner:
@@ -437,7 +500,7 @@ paths:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}/business-procedures:
     get:
-      operationId: getRelatedBusinessProcedures
+      operationId: getGdprValidationTaskDetails
       parameters:
       - description: The Id of the GDPR procedure.
         in: path
@@ -451,7 +514,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetRelatedBusinessProceduresResponse"
+                $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
           description: OK
       summary: Get a GDPR validation task by id
       tags:
@@ -479,6 +542,79 @@ paths:
         the data from the procedure with businessProcedureId
       tags:
       - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/close:
+    post:
+      operationId: closeGdprValidationTask
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Close a GDPR validation task
+      summary: Close a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages:
+    get:
+      operationId: getGdprDownloadPackagesInfo
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
+          description: OK
+      summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /import:
+    post:
+      operationId: importData
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MultiValueMapStringObject"
+          description: OK
+      tags:
+      - MedicalRegistryImport
+  /import/template:
+    get:
+      operationId: getImportTemplate
+      responses:
+        "200":
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the XLSX import template.
+      tags:
+      - MedicalRegistryImport
   /inbox-procedures:
     get:
       description: |
@@ -663,7 +799,9 @@ paths:
                     type: string
                     format: binary
                 procedure:
-                  $ref: "#/components/schemas/CreateProcedureRequest"
+                  oneOf:
+                  - $ref: "#/components/schemas/CreateDeregistrationProcedureRequest"
+                  - $ref: "#/components/schemas/CreateFullProcedureChangeRequest"
                 professionalLicenseCertificate:
                   type: string
                   format: binary
@@ -694,7 +832,7 @@ paths:
         schema:
           type: integer
           format: int32
-          default: 50
+          default: 25
           maximum: 200
           minimum: 1
       - description: Offset used for pagination
@@ -773,7 +911,9 @@ paths:
                     type: string
                     format: binary
                 procedure:
-                  $ref: "#/components/schemas/CreateProcedureRequest"
+                  oneOf:
+                  - $ref: "#/components/schemas/CreateDeregistrationProcedureRequest"
+                  - $ref: "#/components/schemas/CreateFullProcedureChangeRequest"
                 professionalLicenseCertificate:
                   type: string
                   format: binary
@@ -1108,6 +1248,35 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/GetProceduresResponse"
+          description: OK
+      tags:
+      - Procedure
+  /procedures/searchByPerson:
+    get:
+      operationId: searchProceduresByPerson
+      parameters:
+      - in: query
+        name: firstName
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: lastName
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: dateOfBirth
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SearchMedicalRegistryByPersonResponse"
           description: OK
       tags:
       - Procedure
@@ -1908,6 +2077,86 @@ components:
           type: string
       required:
       - '@type'
+    Applicant:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/ApplicantAddress"
+        dateOfBirth:
+          type: string
+          format: date
+        emailAddresses:
+          type: array
+          items:
+            type: string
+        firstName:
+          type: string
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        lastName:
+          type: string
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          maxLength: 40
+          minLength: 1
+        nationality:
+          $ref: "#/components/schemas/CountryCode"
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        placeOfBirth:
+          type: string
+          maxLength: 50
+          minLength: 1
+        title:
+          type: string
+          maxLength: 119
+          minLength: 1
+      required:
+      - address
+      - dateOfBirth
+      - emailAddresses
+      - firstName
+      - gender
+      - lastName
+      - nameAtBirth
+      - nationality
+      - phoneNumbers
+      - placeOfBirth
+    ApplicantAddress:
+      type: object
+      properties:
+        city:
+          type: string
+          maxLength: 50
+          minLength: 1
+        country:
+          $ref: "#/components/schemas/CountryCode"
+        houseNumber:
+          type: string
+          maxLength: 11
+          minLength: 1
+        postalCode:
+          type: string
+          maxLength: 20
+          minLength: 1
+        street:
+          type: string
+          maxLength: 55
+          minLength: 1
+      required:
+      - city
+      - country
+      - houseNumber
+      - postalCode
+      - street
     ApprovalRequest:
       type: object
       properties:
@@ -2050,6 +2299,7 @@ components:
       - STI_PROTECTION
       - MEDICAL_REGISTRY
       - DENTAL
+      - OFFICIAL_MEDICAL_SERVICE
     BusinessProcedureInclusionStatus:
       type: string
       enum:
@@ -2430,6 +2680,55 @@ components:
       - ZA
       - ZM
       - ZW
+    CreateApplicant:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/ApplicantAddress"
+        dateOfBirth:
+          type: string
+          format: date
+        emailAddress:
+          type: string
+        firstName:
+          type: string
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        lastName:
+          type: string
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          maxLength: 40
+          minLength: 1
+        nationality:
+          $ref: "#/components/schemas/CountryCode"
+        phoneNumber:
+          type: string
+          maxLength: 23
+          minLength: 1
+        placeOfBirth:
+          type: string
+          maxLength: 50
+          minLength: 1
+        title:
+          type: string
+          maxLength: 119
+          minLength: 1
+      required:
+      - address
+      - dateOfBirth
+      - emailAddress
+      - firstName
+      - gender
+      - lastName
+      - nameAtBirth
+      - nationality
+      - phoneNumber
+      - placeOfBirth
     CreateApprovalRequestRequest:
       type: object
       properties:
@@ -2437,6 +2736,40 @@ components:
           type: string
       required:
       - reason
+    CreateDeregistrationProcedureRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CreateProcedureRequest"
+      - type: object
+        properties:
+          typeOfDeRegistration:
+            $ref: "#/components/schemas/TypeOfDeRegistration"
+      required:
+      - applicant
+      - consentToPrivacyPolicy
+      - requestForWrittenConfirmation
+      - typeOfDeRegistration
+    CreateFullProcedureChangeRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CreateProcedureRequest"
+      - type: object
+        properties:
+          employeesEmployed:
+            type: boolean
+          practice:
+            $ref: "#/components/schemas/CreatePractice"
+          professionInformation:
+            $ref: "#/components/schemas/CreateProfessionInformation"
+          typeOfFullProcedureChange:
+            $ref: "#/components/schemas/TypeOfFullProcedureChange"
+      required:
+      - applicant
+      - consentToPrivacyPolicy
+      - employeesEmployed
+      - professionInformation
+      - requestForWrittenConfirmation
+      - typeOfFullProcedureChange
     CreateInboxProcedureRequest:
       type: object
       properties:
@@ -2508,39 +2841,26 @@ components:
       - phoneNumber
     CreateProcedureRequest:
       type: object
+      discriminator:
+        propertyName: '@type'
       properties:
+        '@type':
+          type: string
+        applicant:
+          $ref: "#/components/schemas/CreateApplicant"
         consentToPrivacyPolicy:
           type: boolean
-        employeesEmployed:
-          type: boolean
-        practice:
-          $ref: "#/components/schemas/CreatePractice"
-        professional:
-          $ref: "#/components/schemas/CreateProfessional"
         requestForWrittenConfirmation:
           type: boolean
-        typeOfChange:
-          $ref: "#/components/schemas/TypeOfChange"
       required:
-      - consentToPrivacyPolicy
-      - employeesEmployed
-      - professional
-      - requestForWrittenConfirmation
-      - typeOfChange
-    CreateProfessional:
+      - '@type'
+    CreateProfessionInformation:
       type: object
       properties:
-        address:
-          $ref: "#/components/schemas/ProfessionalAddress"
         approbationGrantedOn:
           type: string
           format: date
         approbationIssuingAuthority:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        emailAddress:
           type: string
         employmentStatus:
           $ref: "#/components/schemas/EmploymentStatus"
@@ -2548,60 +2868,22 @@ components:
           $ref: "#/components/schemas/EmploymentType"
         fieldOfExpertise:
           type: string
-        firstName:
-          type: string
-          maxLength: 80
-          minLength: 1
         furtherTraining:
           type: string
-        gender:
-          $ref: "#/components/schemas/Gender"
-        lastName:
-          type: string
-          maxLength: 120
-          minLength: 1
         lifetimeDoctorNumber:
           type: string
           pattern: "\\d{9}"
-        nameAtBirth:
-          type: string
-          maxLength: 40
-          minLength: 1
-        nationality:
-          $ref: "#/components/schemas/CountryCode"
-        phoneNumber:
-          type: string
-          maxLength: 23
-          minLength: 1
-        placeOfBirth:
-          type: string
-          maxLength: 50
-          minLength: 1
         professionalTitle:
           $ref: "#/components/schemas/ProfessionalTitle"
         qualifications:
           type: string
         specialistTitle:
           type: string
-        title:
-          type: string
-          maxLength: 119
-          minLength: 1
       required:
-      - address
       - approbationGrantedOn
       - approbationIssuingAuthority
-      - dateOfBirth
-      - emailAddress
       - employmentStatus
       - employmentType
-      - firstName
-      - gender
-      - lastName
-      - nameAtBirth
-      - nationality
-      - phoneNumber
-      - placeOfBirth
       - professionalTitle
     DataOrigin:
       type: string
@@ -2829,6 +3111,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         referenceVersion:
           type: integer
           format: int64
@@ -2866,12 +3150,132 @@ components:
       - PNG
       - PDF
       - EML
+    GdprDownloadPackageInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+      - id
+    GdprFacility:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GdprIdentificationData"
+      - type: object
+        properties:
+          address:
+            oneOf:
+            - $ref: "#/components/schemas/DomesticAddress"
+            - $ref: "#/components/schemas/PostboxAddress"
+          emailAddress:
+            type: string
+            description: The email addresses of the Facility.
+            example: mail@address.de
+            maxLength: 254
+            minLength: 6
+          name:
+            type: string
+            description: The name of the Facility.
+            example: 123 Example Facility
+            maxLength: 300
+            minLength: 1
+          phoneNumber:
+            type: string
+            description: The phone number of the Facility.
+            example: "+491234567890"
+            maxLength: 23
+            minLength: 1
+      required:
+      - address
+      - name
+    GdprIdentificationData:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    GdprPerson:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GdprIdentificationData"
+      - type: object
+        properties:
+          address:
+            oneOf:
+            - $ref: "#/components/schemas/DomesticAddress"
+            - $ref: "#/components/schemas/PostboxAddress"
+          dateOfBirth:
+            type: string
+            format: date
+            description: The date of birth of the Person.
+            example: 2000-01-01
+          emailAddress:
+            type: string
+            description: The email addresses of the Person.
+            example: mail@address.de
+            maxLength: 254
+            minLength: 6
+          firstName:
+            type: string
+            description: The given name(s) of the Person.
+            example: John
+            maxLength: 80
+            minLength: 1
+          lastName:
+            type: string
+            description: The last name of the Person.
+            example: Doe
+            maxLength: 120
+            minLength: 1
+          phoneNumber:
+            type: string
+            description: The phone number of the Person.
+            example: "+491234567890"
+            maxLength: 23
+            minLength: 0
+          salutation:
+            $ref: "#/components/schemas/Salutation"
+          title:
+            type: string
+            description: The academic title of the Person.
+            example: Prof. Dr.
+            maxLength: 119
+            minLength: 1
+      required:
+      - address
+      - dateOfBirth
+      - firstName
+      - lastName
     GdprProcedureType:
       type: string
       description: A list of types of GDPR procedures.
       enum:
       - RIGHT_OF_ACCESS
       - RIGHT_TO_ERASURE
+    GdprValidationTask:
+      type: object
+      properties:
+        dueDate:
+          type: string
+          format: date
+        identificationData:
+          oneOf:
+          - $ref: "#/components/schemas/GdprFacility"
+          - $ref: "#/components/schemas/GdprPerson"
+        status:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+      required:
+      - dueDate
+      - identificationData
+      - status
+    GdprValidationTaskSortKey:
+      type: string
+      enum:
+      - CREATED_AT
     GdprValidationTaskStatus:
       type: string
       enum:
@@ -2922,6 +3326,20 @@ components:
       - deletable
       - deleted
       - fileId
+    GetAllValidationTasksResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/GdprValidationTask"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - elements
+      - totalNumberOfElements
     GetArchivableProceduresResponse:
       type: object
       properties:
@@ -2990,6 +3408,15 @@ components:
       - persons
       - procedure
       - tasks
+    GetGdprDownloadPackagesInfoResponse:
+      type: object
+      properties:
+        downloadPackages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GdprDownloadPackageInfo"
+      required:
+      - downloadPackages
     GetGdprNotificationBannerResponse:
       type: object
       properties:
@@ -3002,11 +3429,25 @@ components:
           minimum: 0
       required:
       - openValidationTasksCount
+    GetGdprValidationTaskDetailsResponse:
+      type: object
+      properties:
+        proceduresWithStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
+        validationTask:
+          $ref: "#/components/schemas/GdprValidationTask"
+      required:
+      - proceduresWithStatus
+      - validationTask
     GetGdprValidationTaskResponse:
       type: object
       properties:
         status:
           $ref: "#/components/schemas/GdprValidationTaskStatus"
+      required:
+      - status
     GetInboxProcedureResponse:
       type: object
       properties:
@@ -3151,6 +3592,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -3203,6 +3646,8 @@ components:
       - $ref: "#/components/schemas/GetProcedureResponse"
       - type: object
         properties:
+          applicant:
+            $ref: "#/components/schemas/Applicant"
           consentToPrivacyPolicy:
             type: boolean
           employeesEmployed:
@@ -3216,8 +3661,8 @@ components:
               $ref: "#/components/schemas/Practice"
           procedureType:
             $ref: "#/components/schemas/MedicalRegistryEntryProcedureType"
-          professional:
-            $ref: "#/components/schemas/Professional"
+          professionInformation:
+            $ref: "#/components/schemas/ProfessionInformation"
           requestForWrittenConfirmation:
             type: boolean
           status:
@@ -3226,11 +3671,12 @@ components:
             type: integer
             format: int64
       required:
+      - applicant
       - consentToPrivacyPolicy
       - employeesEmployed
       - id
       - procedureType
-      - professional
+      - professionInformation
       - requestForWrittenConfirmation
       - status
       - version
@@ -3240,6 +3686,8 @@ components:
       - $ref: "#/components/schemas/GetProcedureResponse"
       - type: object
         properties:
+          applicant:
+            $ref: "#/components/schemas/Applicant"
           consentToPrivacyPolicy:
             type: boolean
           employeesEmployed:
@@ -3253,8 +3701,8 @@ components:
               $ref: "#/components/schemas/Practice"
           procedureType:
             $ref: "#/components/schemas/MedicalRegistryEntryProcedureType"
-          professional:
-            $ref: "#/components/schemas/Professional"
+          professionInformation:
+            $ref: "#/components/schemas/ProfessionInformation"
           requestForWrittenConfirmation:
             type: boolean
           status:
@@ -3265,11 +3713,10 @@ components:
             type: integer
             format: int64
       required:
+      - applicant
       - consentToPrivacyPolicy
-      - employeesEmployed
       - id
       - procedureType
-      - professional
       - requestForWrittenConfirmation
       - status
       - typeOfChange
@@ -3388,18 +3835,95 @@ components:
             $ref: "#/components/schemas/Procedure"
       required:
       - procedures
-    GetRelatedBusinessProceduresResponse:
+    GetReferencePersonResponse:
       type: object
       properties:
-        proceduresWithStatus:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        countryOfBirth:
+          $ref: "#/components/schemas/CountryCode"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        dateOfBirth:
+          type: string
+          format: date
+          description: The date of birth of the Person.
+          example: 2000-01-01
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
           type: array
+          description: A list of email addresses of the Person.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
           items:
-            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
-        validationTask:
-          $ref: "#/components/schemas/GetGdprValidationTaskResponse"
+            type: string
+        firstName:
+          type: string
+          description: The given name(s) of the Person.
+          example: John
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        id:
+          type: string
+          format: uuid
+          description: Id of the Person.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        lastName:
+          type: string
+          description: The last name of the Person.
+          example: Doe
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          description: The last name at birth of the Person.
+          example: Smith
+          maxLength: 40
+          minLength: 1
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Person.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        placeOfBirth:
+          type: string
+          description: The place of birth (without country) of the Person.
+          example: Berlin
+          maxLength: 50
+          minLength: 1
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a Person.
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
+        version:
+          type: integer
+          format: int64
+          description: "Version of the entity. Each time the entity is changed, it\
+            \ is incremented by one."
       required:
-      - proceduresWithStatus
-      - validationTask
+      - dataOrigin
+      - dateOfBirth
+      - emailAddresses
+      - firstName
+      - gender
+      - id
+      - lastName
+      - phoneNumbers
+      - salutation
+      - version
     GetRelevantArchivableProceduresResponse:
       type: object
       properties:
@@ -3547,6 +4071,40 @@ components:
             $ref: "#/components/schemas/ImageMetaData"
       required:
       - changedAt
+    ImportStatistics:
+      type: object
+      properties:
+        created:
+          type: integer
+          format: int32
+          minimum: 0
+        duplicated:
+          type: integer
+          format: int32
+          minimum: 0
+        failed:
+          type: integer
+          format: int32
+          minimum: 0
+        mergeFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        merged:
+          type: integer
+          format: int32
+          minimum: 0
+        total:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - created
+      - duplicated
+      - failed
+      - mergeFailed
+      - merged
+      - total
     InboxProcedure:
       type: object
       properties:
@@ -3781,7 +4339,7 @@ components:
       type: object
       properties:
         address:
-          $ref: "#/components/schemas/ProfessionalAddress"
+          $ref: "#/components/schemas/ApplicantAddress"
         certificateRequested:
           type: boolean
         dateOfBirth:
@@ -3813,6 +4371,34 @@ components:
       - MEDICAL_REGISTRY_ENTRY
       - MEDICAL_REGISTRY_CITIZEN_DRAFT
       - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
+    MedicalRegistryEntrySearchResult:
+      type: object
+      properties:
+        created:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        modifiedAt:
+          type: string
+          format: date-time
+        practiceNames:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: "#/components/schemas/ProcedureStatus"
+        version:
+          type: integer
+          format: int64
+      required:
+      - created
+      - id
+      - modifiedAt
+      - practiceNames
+      - status
+      - version
     MetaData:
       type: object
       discriminator:
@@ -3837,6 +4423,20 @@ components:
       required:
       - '@type'
       - changedAt
+    MultiValueMapStringObject:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: object
+      properties:
+        all:
+          type: object
+          additionalProperties:
+            type: object
+          writeOnly: true
+        empty:
+          type: boolean
     Operation:
       type: string
       enum:
@@ -3978,6 +4578,8 @@ components:
           type: array
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         website:
           type: string
           maxLength: 254
@@ -4034,6 +4636,9 @@ components:
           example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
           items:
             type: string
+        id:
+          type: string
+          format: uuid
         name:
           type: string
           description: The name of the Facility.
@@ -4046,15 +4651,14 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
-        referenceFacilityId:
-          type: string
-          format: uuid
+            maxLength: 23
+            minLength: 0
         version:
           type: integer
           format: int64
       required:
+      - id
       - name
-      - referenceFacilityId
       - version
     Procedure:
       type: object
@@ -4209,111 +4813,31 @@ components:
       - inboxProgressEntryType
       - modifiedAt
       - progressEntryId
-    Professional:
+    ProfessionInformation:
       type: object
       properties:
-        address:
-          $ref: "#/components/schemas/ProfessionalAddress"
         approbationGrantedOn:
           type: string
           format: date
         approbationIssuingAuthority:
           type: string
-        dateOfBirth:
-          type: string
-          format: date
-        emailAddresses:
-          type: array
-          items:
-            type: string
         employmentStatus:
           $ref: "#/components/schemas/EmploymentStatus"
         employmentType:
           $ref: "#/components/schemas/EmploymentType"
         fieldOfExpertise:
           type: string
-        firstName:
-          type: string
-          maxLength: 80
-          minLength: 1
         furtherTraining:
           type: string
-        gender:
-          $ref: "#/components/schemas/Gender"
-        lastName:
-          type: string
-          maxLength: 120
-          minLength: 1
         lifetimeDoctorNumber:
           type: string
           pattern: "\\d{9}"
-        nameAtBirth:
-          type: string
-          maxLength: 40
-          minLength: 1
-        nationality:
-          $ref: "#/components/schemas/CountryCode"
-        phoneNumbers:
-          type: array
-          items:
-            type: string
-        placeOfBirth:
-          type: string
-          maxLength: 50
-          minLength: 1
         professionalTitle:
           $ref: "#/components/schemas/ProfessionalTitle"
         qualifications:
           type: string
         specialistTitle:
           type: string
-        title:
-          type: string
-          maxLength: 119
-          minLength: 1
-      required:
-      - address
-      - approbationGrantedOn
-      - approbationIssuingAuthority
-      - dateOfBirth
-      - emailAddresses
-      - employmentStatus
-      - employmentType
-      - firstName
-      - gender
-      - lastName
-      - nameAtBirth
-      - nationality
-      - phoneNumbers
-      - placeOfBirth
-      - professionalTitle
-    ProfessionalAddress:
-      type: object
-      properties:
-        city:
-          type: string
-          maxLength: 50
-          minLength: 1
-        country:
-          $ref: "#/components/schemas/CountryCode"
-        houseNumber:
-          type: string
-          maxLength: 11
-          minLength: 1
-        postalCode:
-          type: string
-          maxLength: 20
-          minLength: 1
-        street:
-          type: string
-          maxLength: 55
-          minLength: 1
-      required:
-      - city
-      - country
-      - houseNumber
-      - postalCode
-      - street
     ProfessionalReferencePerson:
       type: object
       properties:
@@ -4346,6 +4870,9 @@ components:
           minLength: 1
         gender:
           $ref: "#/components/schemas/Gender"
+        id:
+          type: string
+          format: uuid
         lastName:
           type: string
           description: The last name of the Person.
@@ -4364,15 +4891,14 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
           example: Berlin
           maxLength: 50
           minLength: 1
-        referenceId:
-          type: string
-          format: uuid
         salutation:
           $ref: "#/components/schemas/Salutation"
         title:
@@ -4387,8 +4913,8 @@ components:
       required:
       - dateOfBirth
       - firstName
+      - id
       - lastName
-      - referenceId
       - version
     ProfessionalTitle:
       type: string
@@ -4496,6 +5022,22 @@ components:
       - NEUTRAL
       - FEMALE
       - MALE
+    SearchMedicalRegistryByPersonResponse:
+      type: object
+      properties:
+        procedures:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/MedicalRegistryEntrySearchResult"
+        resolvedPersons:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/GetReferencePersonResponse"
+      required:
+      - procedures
+      - resolvedPersons
     SelfAssignTaskRequest:
       type: object
       properties:
@@ -4507,6 +5049,11 @@ components:
           format: int64
       required:
       - taskVersion
+    SortDirection:
+      type: string
+      enum:
+      - ASC
+      - DESC
     SystemProgressEntry:
       type: object
       allOf:
@@ -4727,6 +5274,20 @@ components:
       - CHANGE_OF_NAME
       - RELOCATION
       - DEREGISTRATION
+      - OTHER
+    TypeOfDeRegistration:
+      type: string
+      enum:
+      - DEREGISTRATION
+      - RELOCATION
+    TypeOfFullProcedureChange:
+      type: string
+      enum:
+      - NEW_REGISTRATION
+      - SECOND_PRACTICE
+      - RE_REGISTRATION
+      - CHANGE_OF_REGISTRATION
+      - CHANGE_OF_NAME
       - OTHER
     User:
       type: object

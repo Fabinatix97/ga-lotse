@@ -8,7 +8,7 @@ package de.eshg.medicalregistry.mapper;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
-import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -18,21 +18,21 @@ public class EntryMapper {
   private EntryMapper() {}
 
   public static MedicalRegistryEntryDto mapToDto(
-      MedicalRegistryEntry entry, Map<UUID, GetPersonFileStateResponse> relatedPersons) {
+      MedicalRegistryProcedure entry, Map<UUID, GetPersonFileStateResponse> relatedPersons) {
     GetPersonFileStateResponse relatedPerson = getRelatedPersonOrThrow(entry, relatedPersons);
     return new MedicalRegistryEntryDto(
         entry.getExternalId(),
         relatedPerson.lastName(),
         relatedPerson.firstName(),
         relatedPerson.dateOfBirth(),
-        AddressMapper.mapToProfessionalAddressDto(relatedPerson.contactAddress()),
+        AddressMapper.mapToApplicantAddressDto(relatedPerson.contactAddress()),
         entry.isRequestForWrittenConfirmation(),
         ProcedureMapper.toInterfaceType(entry.getProcedureStatus()),
         ProcedureMapper.toInterfaceType(entry.getProcedureType()));
   }
 
   private static GetPersonFileStateResponse getRelatedPersonOrThrow(
-      MedicalRegistryEntry entry, Map<UUID, GetPersonFileStateResponse> personMap) {
+      MedicalRegistryProcedure entry, Map<UUID, GetPersonFileStateResponse> personMap) {
 
     UUID relatedPersonId = entry.getRelatedPersons().getFirst().getCentralFileStateId();
 

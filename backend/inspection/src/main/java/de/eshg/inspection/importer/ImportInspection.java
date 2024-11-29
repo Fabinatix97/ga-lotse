@@ -11,8 +11,11 @@ import de.eshg.inspection.inspection.api.InspectionResult;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
-record ImportInspection(
-    @NotNull Instant lastInspected, @NotNull InspectionResult result, String incidents) {
+record ImportInspection(Instant lastInspected, @NotNull InspectionResult result, String incidents) {
+
+  boolean hasInvalidLastInspectedDate() {
+    return lastInspected == null;
+  }
 
   boolean isSameDayAndResultAs(@NotNull ImportInspection other) {
     return isSameDay(other) && result.equals(other.result);

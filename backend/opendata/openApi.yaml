@@ -306,6 +306,7 @@ components:
       - STI_PROTECTION
       - MEDICAL_REGISTRY
       - DENTAL
+      - OFFICIAL_MEDICAL_SERVICE
     DefaultPopulationResponse:
       type: object
       properties:

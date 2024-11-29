@@ -11,6 +11,7 @@ dependencies {
 
     api 'org.apache.poi:poi:latest.release'
     api 'org.apache.poi:poi-ooxml:latest.release'
+    api 'org.springframework:spring-tx'
 
     implementation 'de.cronn:commons-lang:latest.release'
     implementation 'org.slf4j:slf4j-api'

@@ -5,14 +5,17 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
-import { statisticApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
+import { evaluationApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 
-export function useGetCompletenessInformation(statisticId: string) {
-  const statisticApi = useStatisticApi();
+export function useGetCompletenessInformation(evaluationId: string) {
+  const evaluationApi = useEvaluationApi();
   const queryResult = useSuspenseQuery({
-    queryKey: statisticApiQueryKey(["getCompletenessInformation", statisticId]),
-    queryFn: () => statisticApi.getCompletenessInformation(statisticId),
+    queryKey: evaluationApiQueryKey([
+      "getCompletenessInformation",
+      evaluationId,
+    ]),
+    queryFn: () => evaluationApi.getCompletenessInformation(evaluationId),
   });
   return queryResult.data;
 }

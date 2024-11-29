@@ -73,13 +73,15 @@ export function AppointmentDetailsAdditionalInformation(
             }
           />
         </Box>
-        <Box sx={isMobile ? BOX_STYLE_MOBILE : BOX_STYLE}>
-          <AppointmentDetailsInformationStatementList
-            informationStatementSummaries={
-              props.appointmentDetails.informationStatementSummaries
-            }
-          />
-        </Box>
+        {props.appointmentDetails.informationStatementSummaries.length > 0 && (
+          <Box sx={isMobile ? BOX_STYLE_MOBILE : BOX_STYLE}>
+            <AppointmentDetailsInformationStatementList
+              informationStatementSummaries={
+                props.appointmentDetails.informationStatementSummaries
+              }
+            />
+          </Box>
+        )}
         <InfoSection sx={{ padding: "0 24px 24px 24px" }}>
           <InfoSectionTitle>
             {t("medicalHistoryPanel.neededDocuments")}

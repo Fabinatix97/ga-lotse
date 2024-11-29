@@ -5,7 +5,10 @@
 
 "use client";
 
-import { ProtectionProcedureApi } from "@eshg/employee-portal-api/measlesProtection";
+import {
+  ApiGetMeaslesProtectionProceduresSortOrder,
+  ProtectionProcedureApi,
+} from "@eshg/employee-portal-api/measlesProtection";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useProtectionProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
@@ -66,6 +69,19 @@ export function useProcedureQuery(procedureId: string) {
   );
 }
 
+// TODO ISSUE-6724: Align mapping of sortBy and sortOrder to the implementation of other business modules
+function mapSortOrder(
+  sortOrder: string | undefined,
+): ApiGetMeaslesProtectionProceduresSortOrder | undefined {
+  if (sortOrder?.toUpperCase() === "ASC") {
+    return ApiGetMeaslesProtectionProceduresSortOrder.Asc;
+  } else if (sortOrder?.toUpperCase() === "DESC") {
+    return ApiGetMeaslesProtectionProceduresSortOrder.Desc;
+  } else if (sortOrder === undefined) {
+    return undefined;
+  }
+}
+
 export function useProceduresQuery(
   page: PageRequest,
   filters: ProcedureFilters,
@@ -78,7 +94,7 @@ export function useProceduresQuery(
         page.pageNumber,
         page.pageSize,
         mapTableFieldToSortField(page.sortBy),
-        page.sortOrder?.toUpperCase(),
+        mapSortOrder(page.sortOrder),
         filters.creationDate,
         filters.birthday,
         filters.facilityType,

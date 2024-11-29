@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { Chip, Tooltip } from "@mui/joy";
+import { Typography, styled } from "@mui/joy";
+import { useState } from "react";
 
 import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 
 interface Props {
   label: Label;
@@ -34,19 +38,40 @@ function c(color: number) {
   }
 }
 
+const StyledChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== "hexColor",
+})<{ hexColor: string }>(({ hexColor }) => ({
+  ".MuiChip-action": {
+    backgroundColor: hexColor,
+    color: contrastColor(hexColor),
+    maxWidth: "100%",
+  },
+}));
+
 export function LabelChip(props: Props) {
+  const [open, setOpen] = useState(false);
   return (
-    <Tooltip title={props.label.name} size="sm" placement="right">
-      <Chip
-        variant="solid"
-        sx={{
-          backgroundColor: props.label.hexColor,
-          color: contrastColor(props.label.hexColor),
-          maxWidth: "100%",
-        }}
-      >
-        {props.label.name}
-      </Chip>
-    </Tooltip>
+    <>
+      <Tooltip title={props.label.name} size="sm" placement="right">
+        <StyledChip
+          hexColor={props.label.hexColor}
+          variant="solid"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          {props.label.name}
+        </StyledChip>
+      </Tooltip>
+      <OverlayBoundary>
+        <BaseModal
+          open={open}
+          onClose={() => setOpen(false)}
+          modalTitle="Kennung"
+        >
+          <Typography>{props.label.name}</Typography>
+        </BaseModal>
+      </OverlayBoundary>
+    </>
   );
 }

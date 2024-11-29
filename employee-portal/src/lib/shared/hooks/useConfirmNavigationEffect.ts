@@ -4,13 +4,25 @@
  */
 
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { useEffect } from "react";
 
 export function useConfirmNavigationEffect(
   triggerLeaveConfirmation: boolean,
+  onSaveMutation?: MutationBundle,
 ): void {
-  const { setCanNavigate } = useNavigation();
+  const { setCanNavigate, setOnSaveMutation } = useNavigation();
   useEffect(() => {
+    setOnSaveMutation(onSaveMutation);
     setCanNavigate(!triggerLeaveConfirmation);
-  }, [triggerLeaveConfirmation, setCanNavigate]);
+    return () => {
+      setOnSaveMutation(undefined);
+      setCanNavigate(true);
+    };
+  }, [
+    triggerLeaveConfirmation,
+    setCanNavigate,
+    setOnSaveMutation,
+    onSaveMutation,
+  ]);
 }

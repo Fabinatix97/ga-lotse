@@ -5,4 +5,6 @@
 
 package de.eshg.lib.procedure.model.gdpr;
 
-public record GetGdprValidationTaskResponse(GdprValidationTaskStatusDto status) {}
+import jakarta.validation.constraints.NotNull;
+
+public record GetGdprValidationTaskResponse(@NotNull GdprValidationTaskStatusDto status) {}

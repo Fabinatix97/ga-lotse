@@ -6,15 +6,16 @@
 import {
   Direction,
   EventStatus,
+  IContent,
   MatrixEvent,
   MatrixEventEvent,
   Room,
   RoomEvent,
   TimelineWindow,
-} from "matrix-js-sdk/lib/matrix";
+} from "matrix-js-sdk";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { uniqueBy } from "remeda";
-import { v4 as uuidv4 } from "uuid";
+import { validate as isUUID, v4 as uuidv4 } from "uuid";
 
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
@@ -27,9 +28,9 @@ import { routes } from "@/lib/businessModules/chat/shared/routes";
 import {
   ChatSystemMessage,
   Message,
-  ReadConfirmationsPerUser,
 } from "@/lib/businessModules/chat/shared/types";
 import {
+  getReadReceipts,
   getRoomNameAndCommunicationType,
   shouldShowMessageTeaser,
   sortMessages,
@@ -78,6 +79,21 @@ export function useRoomTimeline(roomId: string) {
       return eventContent.membership as Membership;
     },
     [matrixClient],
+  );
+
+  const getDisplayName = useCallback(
+    (eventContent: IContent, sender?: string) => {
+      if (
+        eventContent.membership === Membership.Join &&
+        isUUID(eventContent.displayname) &&
+        sender &&
+        currentRoom
+      ) {
+        return currentRoom.getMember(sender)?.name;
+      }
+      return eventContent.displayname;
+    },
+    [currentRoom],
   );
 
   const onTimelineEvent = useCallback(
@@ -191,7 +207,7 @@ export function useRoomTimeline(roomId: string) {
             message: {
               ...newMessage,
               membership,
-              userName: eventContent.displayname,
+              userName: getDisplayName(eventContent, sender),
               avatarUrl: eventContent.avatar_url,
               sender: senderUser?.name ?? sender,
               messageType: MessageTypeEnum.SystemMessage,
@@ -247,7 +263,7 @@ export function useRoomTimeline(roomId: string) {
           return {
             message: {
               ...newMessage,
-              userName: eventContent.displayname,
+              userName: getDisplayName(eventContent, sender),
               avatarUrl: eventContent.avatar_url,
               messageType: MessageTypeEnum.SystemMessage,
             },
@@ -258,7 +274,13 @@ export function useRoomTimeline(roomId: string) {
         }
       }
     },
-    [getMembership, loggedInUserId, matrixClient, showMessageTeaser],
+    [
+      getDisplayName,
+      getMembership,
+      loggedInUserId,
+      matrixClient,
+      showMessageTeaser,
+    ],
   );
 
   const handleTimelineEvent = useCallback(
@@ -320,27 +342,18 @@ export function useRoomTimeline(roomId: string) {
       const newRoomMessages = await Promise.all(
         events.map(async (event: MatrixEvent) => {
           if (!room.current) return;
-          const readReceipts = room.current.room.getReceiptsForEvent(event);
+          const isRead = getReadReceipts(
+            event,
+            room.current.room,
+            loggedInUserId,
+          );
           const timelineData = await onTimelineEvent(event, room.current.room);
           if (timelineData?.removed) {
             removedMessages.push(timelineData.removed);
           }
-          const readReceiptsObj =
-            readReceipts?.reduce<ReadConfirmationsPerUser>(
-              (acc, { userId, data }) => {
-                if (userId === loggedInUserId) return acc;
-                return {
-                  ...acc,
-                  [userId]: {
-                    timestamp: data.ts,
-                    eventId: event.event.event_id ?? "",
-                  },
-                };
-              },
-              {},
-            );
+
           if (!timelineData?.message) return;
-          return { ...timelineData.message, readReceipts: readReceiptsObj };
+          return { ...timelineData.message, isRead, sent: true };
         }),
       );
 

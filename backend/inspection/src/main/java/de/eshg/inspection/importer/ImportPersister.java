@@ -18,7 +18,7 @@ import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.facility.persistence.Facility;
 import de.eshg.inspection.facility.persistence.FacilityRepository;
 import de.eshg.inspection.incident.persistence.InspectionIncident;
-import de.eshg.inspection.inspection.InspectionService;
+import de.eshg.inspection.inspection.ReviewService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
 import de.eshg.inspection.inspection.api.InspectionType;
 import de.eshg.inspection.inspection.persistence.Inspection;
@@ -55,7 +55,7 @@ public class ImportPersister {
 
   private static final Logger log = LoggerFactory.getLogger(ImportPersister.class);
 
-  private final InspectionService inspectionService;
+  private final ReviewService reviewService;
   private final InspectionRepository inspectionRepository;
   private final FacilityRepository facilityRepository;
   private final ObjectTypeRepository objectTypeRepository;
@@ -64,14 +64,14 @@ public class ImportPersister {
   private final Clock clock;
 
   ImportPersister(
-      InspectionService inspectionService,
+      ReviewService reviewService,
       InspectionRepository inspectionRepository,
       FacilityRepository facilityRepository,
       ObjectTypeRepository objectTypeRepository,
       FacilityClient facilityClient,
       AuditLogger auditLogger,
       Clock clock) {
-    this.inspectionService = inspectionService;
+    this.reviewService = reviewService;
     this.inspectionRepository = inspectionRepository;
     this.facilityRepository = facilityRepository;
     this.objectTypeRepository = objectTypeRepository;
@@ -132,7 +132,7 @@ public class ImportPersister {
   }
 
   /** inspection facility and its corresponding base facility reference id. */
-  record FacilityRef(Facility facility, UUID facilityReferenceId) {}
+  record FacilityRef(Facility facility, UUID facilityReferenceId, boolean isNew) {}
 
   /** Add a completely new base facility and inspection facility. */
   FacilityRef addBaseFacilityAndInspectionFacility(
@@ -142,7 +142,7 @@ public class ImportPersister {
     Facility facility = new Facility(importFacility.objectType(), centralFileStateId);
     facility.setPossibleDuplicates(hasPossibleDuplicates);
     facility = facilityRepository.save(facility);
-    return new FacilityRef(facility, referenceFacilityId);
+    return new FacilityRef(facility, referenceFacilityId, true);
   }
 
   /**
@@ -154,10 +154,17 @@ public class ImportPersister {
       GetReferenceFacilityResponse baseFacility,
       ObjectType objectType,
       boolean hasPossibleDuplicates) {
-    Facility facility =
-        inspectionService
-            .findInspectionFacilityForBaseReferenceId(baseFacility.id())
-            .orElseGet(() -> addInspectionFacility(baseFacility, objectType));
+    Facility facility;
+    boolean isNew;
+    Optional<Facility> existingFacility =
+        reviewService.findInspectionFacilityForBaseReferenceId(baseFacility.id());
+    if (existingFacility.isPresent()) {
+      facility = existingFacility.get();
+      isNew = false;
+    } else {
+      facility = addInspectionFacility(baseFacility, objectType);
+      isNew = true;
+    }
     facility.setPossibleDuplicates(hasPossibleDuplicates);
     // the inspection facility found in the previous step could be missing an object type, if the
     // facility is associated with a DRAFT procedure only. In this case, assign the objectType from
@@ -165,7 +172,7 @@ public class ImportPersister {
     if (facility.getObjectType() == null) {
       facility.setObjectType(objectType);
     }
-    return new FacilityRef(facility, baseFacility.id());
+    return new FacilityRef(facility, baseFacility.id(), isNew);
   }
 
   /** Add an inspection facility for an existing base facility. */

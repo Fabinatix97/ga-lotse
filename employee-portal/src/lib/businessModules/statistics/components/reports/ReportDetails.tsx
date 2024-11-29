@@ -6,7 +6,7 @@
 import { Box, Stack } from "@mui/joy";
 
 import { ReportDetailsView } from "@/lib/businessModules/statistics/api/models/reportDetailsViewTypes";
-import { EvaluationAccordion } from "@/lib/businessModules/statistics/components/shared/EvaluationAccordion/EvaluationAccordion";
+import { AnalysisAccordion } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisAccordion";
 
 import { ReportDetailsTile, ReportDetailsTileProps } from "./ReportDetailsTile";
 
@@ -20,8 +20,8 @@ export function ReportDetails(props: ReportDetailsView) {
   return (
     <Stack gap={3} direction={"row"}>
       <Box flex={2}>
-        <EvaluationAccordion
-          evaluations={props.evaluations}
+        <AnalysisAccordion
+          analyses={props.analyses}
           attributes={props.attributes}
           evaluatedDataAmountTotal={props.dataSource.datasetAmount}
           isReport

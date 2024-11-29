@@ -44,6 +44,7 @@ export interface SearchableGroupsProps<
   label?: string;
   placeholder?: string;
   hideSearch?: boolean;
+  startExpanded?: boolean;
   renderItem: (item: TItem) => ReactNode;
 }
 
@@ -54,7 +55,9 @@ export function SearchableGroups<
   const showSearch = !props.hideSearch;
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(
+    props.startExpanded ? props.groups.map((group) => group.name) : [],
+  );
 
   const filteredGroups = props.groups.map((group) => ({
     name: group.name,

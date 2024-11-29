@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Schema(name = "ProfessionalReferencePerson")
 public record ProfessionalReferencePersonDto(
-    @NotNull UUID referenceId,
+    @NotNull UUID id,
     @NotNull long version,
     @Size(min = 1, max = 119) String title,
     SalutationDto salutation,

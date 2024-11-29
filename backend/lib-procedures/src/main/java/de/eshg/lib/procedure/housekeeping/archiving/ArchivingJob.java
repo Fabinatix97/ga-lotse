@@ -10,6 +10,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.eshg.domain.model.GenericEntity;
+import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecification;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
@@ -34,22 +36,21 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
   private final ArchivingProperties archivingProperties;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
-  private final ArchivingJobService<ProcedureT> archivingJobService;
   private final Clock clock;
 
   public ArchivingJob(
       ArchivingProperties archivingProperties,
       ProcedureRepository<ProcedureT> procedureRepository,
       ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification,
-      ArchivingJobService<ProcedureT> archivingJobService,
       Clock clock) {
     this.archivingProperties = archivingProperties;
     this.procedureRepository = procedureRepository;
     this.archivableProceduresSpecification = archivableProceduresSpecification;
-    this.archivingJobService = archivingJobService;
+
     this.clock = clock;
   }
 
+  @Transactional
   @Scheduled(cron = "${de.eshg.lib.procedure.housekeeping.archiving.schedule:@daily}")
   public void run() {
     boolean withinGracePeriod = isWithinGracePeriod();
@@ -66,7 +67,7 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
 
       logger.info("Procedures to be updated: {}", getProcedureIds(proceduresRelevantForUpdate));
 
-      archivingJobService.updateProcedures();
+      updateProcedures();
     }
 
     List<ProcedureT> proceduresRelevantForDeletion = getProceduresRelevantForDeletion();
@@ -75,9 +76,31 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
 
     logger.info("Procedures to be deleted: {}", getProcedureIds(proceduresRelevantForDeletion));
 
-    archivingJobService.deleteProcedures(proceduresRelevantForDeletion);
+    deleteProcedures(proceduresRelevantForDeletion);
 
     logger.info("Succeeded");
+  }
+
+  private void deleteProcedures(Collection<ProcedureT> procedures) {
+    // not implemented
+    // TODO: when implementing the feature, assert that the procedures are actually deleted in the
+    // corresponding tests:
+    // de.eshg.lib.procedure.housekeeping.archiving.ArchivingIntegrationTest.HappyCase.testArchivingJob_afterGracePeriod
+    // de.eshg.lib.procedure.housekeeping.archiving.ArchivingIntegrationTest.HappyCase.testArchivingJob_withinGracePeriod
+  }
+
+  private void updateProcedures() {
+    List<ProcedureT> proceduresRelevantForUpdate =
+        procedureRepository.findAll(
+            where(archivableProceduresSpecification)
+                .and(archivableProceduresSpecification.procedureHasArchivingRelevanceDefault()));
+
+    for (ProcedureT procedure : proceduresRelevantForUpdate) {
+      ArchivingRelevance configuredDefaultRelevance =
+          archivingProperties.getDefaultArchivingRelevanceOrElseFallback(
+              procedure.getProcedureType());
+      procedure.setArchivingRelevance(configuredDefaultRelevance);
+    }
   }
 
   private void assertClosedBeforeArchivingPeriodInstant(ProcedureT procedure) {

@@ -7,6 +7,7 @@ import { FormikHelpers } from "formik";
 import { ReactNode } from "react";
 
 export type OptionalFieldValue<TValue> = TValue | "";
+export type NullableFieldValue<TValue> = TValue | null;
 
 export interface FormProps<TFormValues> {
   initialValues: TFormValues;

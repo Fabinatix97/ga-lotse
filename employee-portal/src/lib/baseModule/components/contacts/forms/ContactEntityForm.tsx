@@ -5,7 +5,10 @@
 
 import { ApiContactType } from "@eshg/employee-portal-api/base";
 import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, Divider, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
@@ -171,7 +174,7 @@ export function ContactEntityForm({
               >
                 <InputArrayField
                   name={"emailAddresses"}
-                  label={"E-Mail-Adresse"}
+                  label={(index) => getIndexLabel("E-Mail-Adresse", index)}
                   addMoreLabel={"E-Mail-Adresse hinzufügen"}
                   fieldComponent={EmailField}
                 />
@@ -184,7 +187,7 @@ export function ContactEntityForm({
               >
                 <InputArrayField
                   name={"phoneNumbers"}
-                  label={"Telefonnummer"}
+                  label={(index) => getIndexLabel("Telefonnummer", index)}
                   addMoreLabel={"Telefonnummer hinzufügen"}
                 />
               </Grid>

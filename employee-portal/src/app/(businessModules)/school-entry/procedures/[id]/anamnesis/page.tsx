@@ -18,6 +18,7 @@ import {
   ApiPromotionTherapyAndAidInfo,
   UpdateAnamnesisRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import {
@@ -36,7 +37,7 @@ import {
   useSchoolEntryApi,
 } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Anamnesis } from "@/lib/businessModules/schoolEntry/api/models/Anamnesis";
-import { useUpdateAnamnesis } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateAnamnesisOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import { getCountryCodesQuery } from "@/lib/businessModules/schoolEntry/api/queries/countryCodesApi";
 import {
   getAnamnesisQuery,
@@ -73,7 +74,8 @@ export default function SchoolEntryAnamnesisPage(
         getCountryCodesQuery(countryCodesApi),
       ],
     });
-  const updateAnamnesis = useUpdateAnamnesis(procedureId);
+  const updateAnamnesisOptions = useUpdateAnamnesisOptions(procedureId);
+  const updateAnamnesis = useHandledMutation(updateAnamnesisOptions);
 
   async function handleSubmit(values: AnamnesisFormValues) {
     await updateAnamnesis.mutateAsync(
@@ -90,6 +92,11 @@ export default function SchoolEntryAnamnesisPage(
           onSubmit={handleSubmit}
           dateOfBirth={procedure.child.dateOfBirth}
           countryCodes={countryCodes}
+          valuesToMutationBundle={(values) => ({
+            mutationOptions: updateAnamnesisOptions,
+            variableSupplier: () =>
+              mapToRequest(procedureId, values, anamnesis.version),
+          })}
         />
       </DisabledFormProvider>
     </ContentPanel>

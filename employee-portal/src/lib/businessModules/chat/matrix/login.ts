@@ -4,11 +4,7 @@
  */
 
 import { ApiUser } from "@eshg/employee-portal-api/base";
-import {
-  MatrixClient,
-  SSOAction,
-  createClient,
-} from "matrix-js-sdk/lib/matrix";
+import { MatrixClient, SSOAction, createClient } from "matrix-js-sdk";
 
 import {
   createPickleKey,

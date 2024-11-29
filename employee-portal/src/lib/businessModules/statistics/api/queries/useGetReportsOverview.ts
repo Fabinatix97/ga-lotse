@@ -12,13 +12,13 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useReportSeriesApi } from "@/lib/businessModules/statistics/api/clients";
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import {
   ReportSeriesItemOverview,
   ReportSeriesOverview,
   ReportsOverview,
   SingleReportOverview,
 } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
-import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
 

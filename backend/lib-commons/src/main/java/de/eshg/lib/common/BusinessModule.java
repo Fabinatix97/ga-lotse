@@ -5,12 +5,29 @@
 
 package de.eshg.lib.common;
 
+import static de.eshg.lib.common.BusinessModuleCapability.*;
+
+import de.cronn.commons.lang.SetUtils;
+import java.util.Set;
+
 public enum BusinessModule {
-  INSPECTION,
-  SCHOOL_ENTRY,
-  TRAVEL_MEDICINE,
-  MEASLES_PROTECTION,
-  STI_PROTECTION,
-  MEDICAL_REGISTRY,
-  DENTAL,
+  INSPECTION(PROCEDURES, TASKS, NOTIFICATIONS, CALENDAR),
+  SCHOOL_ENTRY(PROCEDURES, TASKS, NOTIFICATIONS, CALENDAR, CONTACT_MERGED_EVENT_CALLBACK),
+  TRAVEL_MEDICINE(PROCEDURES, TASKS, NOTIFICATIONS, CALENDAR),
+  MEASLES_PROTECTION(PROCEDURES, TASKS, NOTIFICATIONS, CALENDAR),
+  STI_PROTECTION(PROCEDURES, TASKS, NOTIFICATIONS, CALENDAR),
+  MEDICAL_REGISTRY(PROCEDURES),
+  DENTAL(CONTACT_MERGED_EVENT_CALLBACK),
+  OFFICIAL_MEDICAL_SERVICE(),
+  ;
+
+  private final Set<BusinessModuleCapability> capabilities;
+
+  BusinessModule(BusinessModuleCapability... capabilities) {
+    this.capabilities = SetUtils.orderedSet(capabilities);
+  }
+
+  public boolean hasCapability(BusinessModuleCapability capability) {
+    return this.capabilities.contains(capability);
+  }
 }

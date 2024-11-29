@@ -7,7 +7,6 @@ package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 
@@ -15,12 +14,13 @@ import java.time.LocalDate;
 public record StiConsultationMedicalHistoryDto(
     String examinationReason,
     String currentSymptoms,
-    @PastOrPresent LocalDate contactToClarifyDuration,
+    @PastOrPresent LocalDate contactToClarifyDate,
     RelationshipModelDto relationshipModel,
     @Valid ExaminationDto examinations,
-    @NotNull @Valid PreviousIllnessDto previousIllnesses,
+    @Valid PreviousIllnessDto previousIllnesses,
     @Valid RiskContactDto riskContacts,
-    @NotNull @Valid RiskFactorDto riskFactors,
+    @Valid PreventionDto prevention,
+    @Valid RiskFactorDto riskFactors,
     String additionalComments)
     implements MedicalHistoryDto {
 

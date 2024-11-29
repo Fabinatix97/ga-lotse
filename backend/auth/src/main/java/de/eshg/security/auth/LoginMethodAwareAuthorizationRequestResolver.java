@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -26,9 +27,18 @@ public class LoginMethodAwareAuthorizationRequestResolver
       List<LoginMethod> loginMethods,
       String authorizationRequestBaseUri) {
     this.loginMethods = loginMethods;
-    this.delegate =
+    this.delegate = buildRequestResolver(clientRegistrationRepository, authorizationRequestBaseUri);
+  }
+
+  private static OAuth2AuthorizationRequestResolver buildRequestResolver(
+      ClientRegistrationRepository clientRegistrationRepository,
+      String authorizationRequestBaseUri) {
+    DefaultOAuth2AuthorizationRequestResolver requestResolver =
         new DefaultOAuth2AuthorizationRequestResolver(
             clientRegistrationRepository, authorizationRequestBaseUri);
+    requestResolver.setAuthorizationRequestCustomizer(
+        OAuth2AuthorizationRequestCustomizers.withPkce());
+    return requestResolver;
   }
 
   @Override

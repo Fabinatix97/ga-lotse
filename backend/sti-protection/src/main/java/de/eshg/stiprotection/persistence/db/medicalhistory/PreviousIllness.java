@@ -7,35 +7,22 @@ package de.eshg.stiprotection.persistence.db.medicalhistory;
 
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public class PreviousIllness {
 
-  @Column(nullable = false)
   private Boolean hepA;
-
-  @Column(nullable = false)
   private Boolean hepB;
-
-  @Column(nullable = false)
   private Boolean hepC;
-
-  @Column(nullable = false)
   private Boolean hiv;
-
-  @Column(nullable = false)
   private Boolean syphilis;
-
-  @Column(nullable = false)
   private Boolean gonorrhea;
-
-  @Column(nullable = false)
   private Boolean chlamydia;
+  private Boolean other;
 
-  private String otherPreviousIllnesses;
+  private String otherData;
 
   public Boolean getHepA() {
     return hepA;
@@ -93,11 +80,19 @@ public class PreviousIllness {
     this.chlamydia = chlamydia;
   }
 
-  public String getOtherPreviousIllnesses() {
-    return otherPreviousIllnesses;
+  public Boolean getOther() {
+    return other;
   }
 
-  public void setOtherPreviousIllnesses(String otherPreviousIllnesses) {
-    this.otherPreviousIllnesses = otherPreviousIllnesses;
+  public void setOther(Boolean other) {
+    this.other = other;
+  }
+
+  public String getOtherData() {
+    return otherData;
+  }
+
+  public void setOtherData(String otherData) {
+    this.otherData = otherData;
   }
 }

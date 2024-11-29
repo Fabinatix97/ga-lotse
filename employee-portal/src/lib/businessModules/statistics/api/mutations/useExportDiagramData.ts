@@ -11,7 +11,7 @@ import { useDataExportApi } from "@/lib/businessModules/statistics/api/clients";
 export function useExportDiagramData(diagramId: string) {
   const dataExportApi = useDataExportApi();
   const mutation = useHandledMutation({
-    mutationFn: () => dataExportApi.exportData(diagramId),
+    mutationFn: () => dataExportApi.exportDiagramData(diagramId),
     onSuccess: (result) =>
       downloadFileAndOpen(new File([result], "Diagramm.xlsx"), document.body),
   });

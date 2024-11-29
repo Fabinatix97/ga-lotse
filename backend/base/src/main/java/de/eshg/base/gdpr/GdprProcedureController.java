@@ -25,6 +25,7 @@ import de.eshg.base.pdf.gdpr.GdprRightToObjectLetterGenerator;
 import de.eshg.base.util.PaginationUtil;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskStatusDto;
 import de.eshg.lib.procedure.model.gdpr.GetGdprValidationTaskResponse;
@@ -175,6 +176,7 @@ public class GdprProcedureController implements GdprProcedureApi {
       UUID gdprProcedureId) {
     return businessModuleAggregationHelper.requestFromBusinessModules(
         null,
+        BusinessModuleCapability.PROCEDURES,
         client -> {
           return client.getGdprValidationTask(gdprProcedureId);
         });
@@ -409,6 +411,7 @@ public class GdprProcedureController implements GdprProcedureApi {
     return aggregateErrorResponses(
         businessModuleAggregationHelper.requestFromBusinessModules(
             null,
+            BusinessModuleCapability.PROCEDURES,
             client -> {
               client.addGdprValidationTask(request);
               return null;

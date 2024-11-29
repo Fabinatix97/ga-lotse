@@ -97,9 +97,5 @@ export const routes = {
   },
   inbox: {
     index: inboxPath,
-    details: (inboxProcedureId: string) =>
-      `${inboxPath}/${inboxProcedureId}/details`,
-    create: (inboxProcedureId: string) =>
-      `${inboxPath}/${inboxProcedureId}/create`,
   },
 } as const;

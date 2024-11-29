@@ -47,6 +47,8 @@ const noBoxShadow = {
   boxShadow: "none",
 };
 
+export const radioGroupLabelClassName = "radio-group-label";
+
 export function multiLineEllipsis(linesToShow = 2): SxProps {
   return {
     display: "-webkit-box",
@@ -260,6 +262,10 @@ export const theme = extendTheme({
               ? theme.palette.text.secondary
               : theme.palette.text.primary,
           },
+          [`& .MuiRadio-root label, & .${radioGroupLabelClassName}`]: {
+            fontWeight: 400,
+            fontSize: theme.fontSize.md,
+          },
         }),
       },
       defaultProps: {
@@ -445,6 +451,14 @@ export const theme = extendTheme({
           }
           return {};
         },
+      },
+    },
+    JoyCheckbox: {
+      styleOverrides: {
+        label: ({ theme }) => ({
+          fontWeight: 400,
+          fontSize: theme.fontSize.md,
+        }),
       },
     },
   },

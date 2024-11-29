@@ -5,7 +5,7 @@
 
 package de.eshg.statistics.export;
 
-import static de.eshg.statistics.export.DataExportService.FIRST_COLUMN_WIDTH;
+import static de.eshg.statistics.export.DiagramExportService.FIRST_COLUMN_WIDTH;
 
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.chart.HistogramBin;
@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 public class HistogramChartDataExporter {
   private HistogramChartDataExporter() {}
 
   static void addData(
-      XSSFSheet sheet,
+      Sheet sheet,
       AtomicInteger rowCounter,
       HistogramChartData histogramChartData,
       HistogramChartConfiguration histogramChartConfiguration) {
@@ -44,8 +44,8 @@ public class HistogramChartDataExporter {
     }
   }
 
-  private static void addDataHeader(XSSFSheet sheet, int rowNumber, List<KeyToCount> keyToCounts) {
-    XSSFRow row = sheet.createRow(rowNumber);
+  private static void addDataHeader(Sheet sheet, int rowNumber, List<KeyToCount> keyToCounts) {
+    Row row = sheet.createRow(rowNumber);
     row.createCell(0, CellType.STRING).setCellValue("Bin Untergrenze");
     row.createCell(1, CellType.STRING).setCellValue("Bin Obergrenze");
     int columnIndex = 2;
@@ -55,8 +55,8 @@ public class HistogramChartDataExporter {
   }
 
   private static void addDataRow(
-      XSSFSheet sheet, int rowNumber, HistogramGroupData histogramGroupData) {
-    XSSFRow row = sheet.createRow(rowNumber);
+      Sheet sheet, int rowNumber, HistogramGroupData histogramGroupData) {
+    Row row = sheet.createRow(rowNumber);
     row.createCell(0, CellType.NUMERIC)
         .setCellValue(histogramGroupData.getHistogramBin().getLowerBound().doubleValue());
     row.createCell(1, CellType.NUMERIC)
@@ -71,8 +71,8 @@ public class HistogramChartDataExporter {
     }
   }
 
-  static void addAttributesInformation(
-      XSSFSheet sheet,
+  static void addHistogramAttributesInformation(
+      Sheet sheet,
       CellStyle cellStyle,
       AtomicInteger rowCounter,
       HistogramChartConfiguration histogramChartConfiguration,
@@ -84,26 +84,16 @@ public class HistogramChartDataExporter {
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .divide(BigDecimal.valueOf(bins.size()), 4, RoundingMode.HALF_UP);
 
-    DataExportService.addMetadataRow(
+    DataExportUtil.addMetadataRow(
         sheet, cellStyle, rowCounter.getAndIncrement(), "Anzahl der Bins", bins.size());
-    DataExportService.addMetadataRow(
+    DataExportUtil.addMetadataRow(
         sheet,
         cellStyle,
         rowCounter.getAndIncrement(),
         "Breite der Bins",
         averageBinWidth.doubleValue());
 
-    DataExportService.getAttributeName(
-            histogramChartConfiguration.getPrimaryAttributeSelection(), aggregationResult)
-        .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet, cellStyle, rowCounter.getAndIncrement(), "Zeilen", attributeName));
-    DataExportService.getAttributeName(
-            histogramChartConfiguration.getSecondaryAttributeSelection(), aggregationResult)
-        .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet, cellStyle, rowCounter.getAndIncrement(), "Spalten", attributeName));
+    TwoAttributesChartDataExporter.addAttributesInformation(
+        sheet, cellStyle, rowCounter, histogramChartConfiguration, aggregationResult);
   }
 }

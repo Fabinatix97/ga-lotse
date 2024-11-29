@@ -231,7 +231,7 @@ public class EvaluationTemplateMapper {
               BaseDataSourceAttribute baseDataSourceAttribute =
                   getBaseDataSourceAttribute(code, businessDataSourceAttribute);
               return new BaseDataAttributeWithName(
-                  baseDataSourceAttribute.code(), baseDataSourceAttribute.name());
+                  baseDataSourceAttribute.code(), baseDataSourceAttribute.displayName());
             })
         .toList();
   }
@@ -299,13 +299,18 @@ public class EvaluationTemplateMapper {
         dataAttribute.getCode(),
         dataAttribute.getName(),
         dataAttribute.getBaseAttributes().stream()
-            .map(EvaluationTemplateMapper::mapToBaseDataAttribute)
+            .map(
+                baseDataAttribute ->
+                    mapToBaseDataAttribute(dataAttribute.getName(), baseDataAttribute))
             .toList());
   }
 
   private static BaseDataAttributeWithName mapToBaseDataAttribute(
-      BaseDataAttribute baseDataAttribute) {
-    return new BaseDataAttributeWithName(baseDataAttribute.getCode(), baseDataAttribute.getName());
+      String businessAttributeName, BaseDataAttribute baseDataAttribute) {
+    return new BaseDataAttributeWithName(
+        baseDataAttribute.getCode(),
+        EvaluationMapper.getAttributeDisplayName(
+            businessAttributeName, baseDataAttribute.getName()));
   }
 
   private static List<AnalysisInfo> mapToAnalysisInfos(List<AnalysisTemplate> analysisTemplates) {

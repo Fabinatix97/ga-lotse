@@ -23,7 +23,14 @@ public final class ExaminationMapper {
         entity.getHiv(),
         entity.getSyphilis(),
         entity.getGonorrhea(),
-        entity.getChlamydia());
+        entity.getChlamydia(),
+        entity.getHepADate(),
+        entity.getHepBDate(),
+        entity.getHepCDate(),
+        entity.getHivDate(),
+        entity.getSyphilisDate(),
+        entity.getGonorrheaDate(),
+        entity.getChlamydiaDate());
   }
 
   public static Examination toDatabaseType(ExaminationDto dto) {
@@ -39,6 +46,13 @@ public final class ExaminationMapper {
     examination.setSyphilis(dto.syphilis());
     examination.setGonorrhea(dto.gonorrhea());
     examination.setChlamydia(dto.chlamydia());
+    examination.setHepADate(dto.hepADate());
+    examination.setHepBDate(dto.hepBDate());
+    examination.setHepCDate(dto.hepCDate());
+    examination.setHivDate(dto.hivDate());
+    examination.setSyphilisDate(dto.syphilisDate());
+    examination.setGonorrheaDate(dto.gonorrheaDate());
+    examination.setChlamydiaDate(dto.chlamydiaDate());
     return examination;
   }
 }

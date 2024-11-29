@@ -11,7 +11,6 @@ import {
   useFetchInboxProcedures,
 } from "@/lib/businessModules/schoolEntry/api/queries/inboxProcedures";
 import { procedureTypes } from "@/lib/businessModules/schoolEntry/shared/constants";
-import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 import { InboxProceduresPage } from "@/lib/shared/components/procedures/inbox/InboxProceduresPage";
 
 export default function SchoolEntryInboxProceduresPage() {
@@ -21,11 +20,6 @@ export default function SchoolEntryInboxProceduresPage() {
       useFetchInboxProcedures={useFetchInboxProcedures}
       useCloseInboxProcedure={useCloseInboxProcedure}
       procedureTypes={procedureTypes}
-      routes={{
-        index: routes.inbox.overview,
-        details: (inboxProcedureId: string) =>
-          routes.inbox.byId(inboxProcedureId).details,
-      }}
     />
   );
 }

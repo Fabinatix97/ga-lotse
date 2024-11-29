@@ -12,7 +12,6 @@ import { Formik, FormikErrors } from "formik";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 
 interface RenameChatProps {
   roomId: string;
@@ -26,7 +25,6 @@ export function RenameChat({
   onCancel,
 }: Readonly<RenameChatProps>) {
   const { matrixClient } = useChatClientContext();
-  const roomInfo = useRoomInfo(roomId);
   const snackbar = useSnackbar();
 
   async function handleRenameChat(values: { name: string }) {
@@ -51,7 +49,7 @@ export function RenameChat({
 
   return (
     <>
-      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Box
         sx={{
           overflowY: "auto",

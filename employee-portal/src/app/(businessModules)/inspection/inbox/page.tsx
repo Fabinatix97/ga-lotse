@@ -14,7 +14,6 @@ import {
   useFetchInboxProcedures,
 } from "@/lib/businessModules/inspection/api/queries/inboxProcedures";
 import { procedureTypes } from "@/lib/businessModules/inspection/shared/constants";
-import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { InboxProceduresPage } from "@/lib/shared/components/procedures/inbox/InboxProceduresPage";
 
 export default function InspectionInboxProceduresPage() {
@@ -25,7 +24,6 @@ export default function InspectionInboxProceduresPage() {
       useFetchInboxProcedure={useFetchInboxProcedure}
       useCloseInboxProcedure={useCloseInboxProcedure}
       useCreateInboxProcedure={useCreateInboxProcedure}
-      routes={routes.inbox}
     />
   );
 }

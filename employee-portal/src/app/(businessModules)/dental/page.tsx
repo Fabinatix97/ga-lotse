@@ -8,5 +8,5 @@ import { redirect } from "next/navigation";
 import { routes } from "@/lib/businessModules/dental/shared/routes";
 
 export default function DentalIndexPage() {
-  redirect(routes.procedures.overview);
+  redirect(routes.children.overview);
 }

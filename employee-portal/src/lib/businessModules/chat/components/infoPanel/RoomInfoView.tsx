@@ -8,14 +8,14 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { Box, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { find } from "remeda";
 
 import { GroupChatMember } from "@/lib/businessModules/chat/components/GroupChatMember";
 import { LeaveChatConfirmation } from "@/lib/businessModules/chat/components/LeaveChatConfirmation";
+import { MemberInfo } from "@/lib/businessModules/chat/components/MemberInfo";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import {
-  getDepartmentNameFromUserId,
   isDMRoom,
   isGroupRoom,
   leaveRoom,
@@ -36,24 +36,24 @@ export interface RoomInfoViewProps {
 
 export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
   const { matrixClient } = useChatClientContext();
-  const roomInfo = useRoomInfo(roomId);
   const { clearChatParams } = useChatSearchParams();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
   const [kickUserId, setKickUserId] = useState<string>();
   const snackbar = useSnackbar();
 
-  const { room, communicationType, dmRoomMember, checkIfAdmin } = roomInfo;
+  const { communicationType, getDMRoomMember, checkIfAdmin } =
+    useRoomInfo(roomId);
   const { invitedMembers, joinedMembers, allRoomMembers } =
     useRoomMembers(roomId);
 
-  const isAdmin = checkIfAdmin();
+  const isAdmin = useMemo(() => checkIfAdmin(), [checkIfAdmin]);
 
   function handleLeaveRoomClick() {
     setLeaveDialogOpen(false);
     clearChatParams();
     closeInfoPanel();
-    void leaveRoom(matrixClient, room?.roomId);
+    void leaveRoom(matrixClient, roomId);
   }
   async function handleRemoveUser() {
     if (!kickUserId) return;
@@ -74,7 +74,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
 
   return (
     <>
-      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Box
         sx={{
           overflowY: "auto",
@@ -82,20 +82,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
       >
         {/* Direct message room content */}
         {isDMRoom(communicationType) && (
-          <Stack
-            sx={{
-              padding: 3,
-              borderBottom: "1px solid",
-              borderColor: "neutral.outlinedBorder",
-            }}
-          >
-            <Typography sx={{ textTransform: "capitalize" }}>
-              {
-                getDepartmentNameFromUserId(dmRoomMember?.member.userId)
-                  ?.organisationName
-              }
-            </Typography>
-          </Stack>
+          <MemberInfo userId={getDMRoomMember()?.userId ?? ""} />
         )}
 
         {/* Group room content */}
@@ -111,7 +98,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
               <Typography level="title-lg">
                 {joinedMembers.length} Mitglieder
               </Typography>
-              {joinedMembers.map(({ member, isRoomCreator }) => {
+              {joinedMembers.map(({ member, isRoomCreator, isAdmin }) => {
                 return (
                   <GroupChatMember
                     key={member.userId}
@@ -132,7 +119,7 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
                 }}
               >
                 <Typography level="title-lg">Ausstehende Mitglieder</Typography>
-                {invitedMembers.map(({ member, isRoomCreator }) => {
+                {invitedMembers.map(({ member, isRoomCreator, isAdmin }) => {
                   return (
                     <GroupChatMember
                       key={member.userId}

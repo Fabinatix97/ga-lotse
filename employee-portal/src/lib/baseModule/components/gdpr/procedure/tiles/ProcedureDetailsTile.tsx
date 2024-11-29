@@ -8,6 +8,10 @@ import {
   ApiGdprProcedureType,
   ApiGetGdprProcedureResponse,
 } from "@eshg/employee-portal-api/base";
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import {
   AlertSlot,
   useAlert,
@@ -16,8 +20,11 @@ import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
-import { isNullish } from "remeda";
+import { Formik } from "formik";
+import { useState } from "react";
+import { isDefined, isNullish } from "remeda";
 
+import QueryBoundary from "@/app/@modal/template";
 import { useChangeProcedureStatus } from "@/lib/baseModule/api/mutations/gdpr";
 import { isGdprPerson } from "@/lib/baseModule/components/gdpr/helpers";
 import {
@@ -34,6 +41,9 @@ import {
 import { multiLineEllipsis } from "@/lib/baseModule/theme/theme";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
+
+type CloseModalMode = "cancel" | "close";
 
 export function ProcedureDetailsTile({
   procedure,
@@ -41,6 +51,7 @@ export function ProcedureDetailsTile({
   procedure: ApiGetGdprProcedureResponse;
 }) {
   const alert = useAlert();
+  const snackbar = useSnackbar();
 
   const editMatterOfConcernSidebar = useEditMatterOfConcernSidebar();
 
@@ -48,6 +59,10 @@ export function ProcedureDetailsTile({
     procedure.id,
     procedure.version,
   );
+
+  const [closeModalMode, setCloseModalMode] = useState<
+    CloseModalMode | undefined
+  >();
 
   const isRectification =
     procedure.type === ApiGdprProcedureType.ToRectification;
@@ -57,6 +72,17 @@ export function ProcedureDetailsTile({
   const isEditable =
     procedure.status === ApiGdprProcedureStatus.Draft ||
     procedure.status === ApiGdprProcedureStatus.InProgress;
+  const isCancellable =
+    isObjection &&
+    (procedure.status === ApiGdprProcedureStatus.InProgress ||
+      procedure.status === ApiGdprProcedureStatus.Draft);
+  const isClosable =
+    isObjection && procedure.status === ApiGdprProcedureStatus.InProgress;
+
+  const canDownloadReport =
+    isObjection &&
+    (procedure.status === ApiGdprProcedureStatus.InProgress ||
+      procedure.status === ApiGdprProcedureStatus.Closed);
 
   async function startProcedure() {
     if (isNullish(procedure.matterOfConcern) && requiresMatterOfConcern) {
@@ -66,7 +92,12 @@ export function ProcedureDetailsTile({
       });
     } else {
       alert.close();
-      await changeProcedureStatus.mutateAsync({ type: "start" });
+      await changeProcedureStatus.mutateAsync(
+        { type: "start" },
+        {
+          onSuccess: () => snackbar.confirmation("Vorgang gestartet"),
+        },
+      );
     }
   }
 
@@ -116,18 +147,32 @@ export function ProcedureDetailsTile({
           label={"Status"}
           value={statusTranslation[procedure.status]}
         />
+        <DetailsCell
+          name="internalNote"
+          label={
+            procedure.status === ApiGdprProcedureStatus.Closed
+              ? "Ergebnis"
+              : procedure.status === ApiGdprProcedureStatus.Aborted
+                ? "Begründung"
+                : "Interne Bemerkung"
+          }
+          value={procedure.internalNote}
+        />
         {requiresMatterOfConcern && (
           <DetailsCell
-            name={"matterOfConcern"}
-            label={"Anliegen"}
+            name="matterOfConcern"
+            label="Anliegen"
             value={
-              procedure.matterOfConcern ?? (
+              procedure.matterOfConcern ??
+              (isEditable ? (
                 <Typography
-                  startDecorator={<InfoIcon color={"danger"} size={"md"} />}
+                  startDecorator={<InfoIcon color="danger" size="md" />}
                 >
                   Bitte Anliegen eintragen.
                 </Typography>
-              )
+              ) : (
+                ""
+              ))
             }
             valueSx={{
               ...multiLineEllipsis(3),
@@ -136,24 +181,134 @@ export function ProcedureDetailsTile({
           />
         )}
 
-        <Divider />
-        <ButtonBar
-          right={
-            <>
-              <Button variant={"plain"} disabled>
-                Abbrechen
-              </Button>
-              {isDraft && (
-                <Button onClick={() => startProcedure()}>Starten</Button>
-              )}
-            </>
-          }
-        />
+        {(isCancellable || isDraft) && (
+          <>
+            <Divider />
+            <ButtonBar
+              right={
+                <>
+                  {isCancellable && (
+                    <Button
+                      variant="plain"
+                      onClick={() => setCloseModalMode("cancel")}
+                    >
+                      Abbrechen
+                    </Button>
+                  )}
+                  {isDraft && (
+                    <Button onClick={() => startProcedure()}>Starten</Button>
+                  )}
+                  {isClosable && (
+                    <Button onClick={() => setCloseModalMode("close")}>
+                      Abschließen
+                    </Button>
+                  )}
+                </>
+              }
+            />
+          </>
+        )}
       </SectionTile>
 
-      {isObjection && procedure.status !== ApiGdprProcedureStatus.Draft && (
-        <DownloadReportButton procedure={procedure} />
-      )}
+      {canDownloadReport && <DownloadReportButton procedure={procedure} />}
+
+      <QueryBoundary>
+        <CompleteProcedureDialog
+          procedure={procedure}
+          mode={closeModalMode}
+          key={closeModalMode}
+          onClose={() => setCloseModalMode(undefined)}
+        />
+      </QueryBoundary>
     </>
+  );
+}
+
+function CompleteProcedureDialog({
+  procedure,
+  onClose,
+  mode,
+}: {
+  procedure: ApiGetGdprProcedureResponse;
+  onClose: () => void;
+  mode: CloseModalMode | undefined;
+}) {
+  const snackbar = useSnackbar();
+  const changeProcedureStatus = useChangeProcedureStatus(
+    procedure.id,
+    procedure.version,
+  );
+
+  async function handleSubmit(values: { internalNote: string }) {
+    await changeProcedureStatus.mutateAsync(
+      {
+        type: mode!,
+        internalNote: values.internalNote,
+      },
+      {
+        onSuccess: () => {
+          snackbar.confirmation(
+            mode === "close" ? "Vorgang abgeschlossen" : "Vorgang abgebrochen",
+          );
+          onClose();
+        },
+      },
+    );
+  }
+
+  return (
+    <BaseModal
+      color={mode === "cancel" ? "danger" : "primary"}
+      modalTitle={
+        mode === "cancel" ? "Vorgang abbrechen" : "Vorgang abschließen"
+      }
+      open={isDefined(mode)}
+      onClose={onClose}
+    >
+      <Formik
+        initialValues={{ internalNote: "" }}
+        onSubmit={handleSubmit}
+        enableReinitialize
+      >
+        {({ isSubmitting }) => (
+          <FormPlus>
+            <Stack gap={2}>
+              {mode === "cancel" ? (
+                <>
+                  <Typography>
+                    Bitte geben Sie einen Grund an, warum dieser Vorgang
+                    abgebrochen wird.
+                  </Typography>
+                  <InputField
+                    name="internalNote"
+                    label="Begründung"
+                    required="Bitte eine Begründung angeben."
+                    hint="Die Begründung ist nur für Mitarbeiter sichtbar."
+                  />
+                </>
+              ) : (
+                <>
+                  <Typography>
+                    Mit dem Abschließen eines Vorgangs, bestätigen Sie, dass das
+                    Anliegen abgeschlossen ist.
+                  </Typography>
+                  <InputField
+                    name="internalNote"
+                    label="Ergebnis"
+                    hint="Das Ergebnis ist nur für Mitarbeiter sichtbar."
+                    required="Bitte das Ergebnis des Vorgangs angeben."
+                  />
+                </>
+              )}
+              <FormButtonBar
+                submitLabel="Bestätigen"
+                submitting={isSubmitting}
+                onCancel={onClose}
+              />
+            </Stack>
+          </FormPlus>
+        )}
+      </Formik>
+    </BaseModal>
   );
 }

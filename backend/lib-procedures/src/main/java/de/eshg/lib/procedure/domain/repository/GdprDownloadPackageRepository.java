@@ -24,6 +24,10 @@ public interface GdprDownloadPackageRepository
   Optional<GdprDownloadPackage> findByBusinessProcedureId(UUID businessProcedureId);
 
   @Query(
+      "select g.externalId as downloadId from GdprDownloadPackage g where g.externalId in :externalIds")
+  List<GdprDownloadPackageInfo> findInfoByExternalIdIn(Collection<UUID> externalIds);
+
+  @Query(
       """
     select d.businessProcedureId from GdprDownloadPackage d
     where d.businessProcedureId IN :businessProcedureIds

@@ -8,8 +8,10 @@
 import {
   ApiDecibelValue,
   ApiHertzValue,
+  UpdateHearingTestResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { Divider, Grid } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
@@ -33,7 +35,13 @@ export interface HearingTestFormValues {
   note: string;
 }
 
-export function HearingTestForm(props: FormProps<HearingTestFormValues>) {
+interface HearingTestFormProps extends FormProps<HearingTestFormValues> {
+  valuesToMutationBundle: (
+    values: HearingTestFormValues,
+  ) => MutationBundle<UpdateHearingTestResultRequest>;
+}
+
+export function HearingTestForm(props: HearingTestFormProps) {
   async function handleSubmit(
     formValues: HearingTestFormValues,
     helpers: FormikHelpers<HearingTestFormValues>,
@@ -46,7 +54,9 @@ export function HearingTestForm(props: FormProps<HearingTestFormValues>) {
     <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
         <FormStack onSubmit={handleSubmit}>
-          <ConfirmLeaveDirtyFormEffect />
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={props.valuesToMutationBundle(values)}
+          />
           <FormGroupGrid columns={{ xs: 6, xxl: 12 }}>
             <Grid xs={6}>
               <EarForm

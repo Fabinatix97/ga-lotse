@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  ApiAppointmentType,
-  ApiDayOfWeek,
-} from "@eshg/employee-portal-api/measlesProtection";
+import { ApiAppointmentType } from "@eshg/employee-portal-api/measlesProtection";
 import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
@@ -102,9 +99,7 @@ export function calculateAppointmentCount({
         end,
       });
       const includedDaysInDateRange = daysInDateRange.filter((day) => {
-        return daysOfWeek.includes(
-          WEEKDAY_CHECKBOX_OPTIONS[day.getDay()]?.id as ApiDayOfWeek,
-        );
+        return daysOfWeek.includes(WEEKDAY_CHECKBOX_OPTIONS[day.getDay()]!.id);
       });
       let appointmentsInBlockGroup = 0;
 

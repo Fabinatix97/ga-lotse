@@ -7,7 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, CloudUpload, Delete, Edit } from "@mui/icons-material";
 import { Box } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
@@ -19,7 +19,7 @@ import { useGetEvaluationTemplatesOverview } from "@/lib/businessModules/statist
 import { UpdateEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/UpdateEvaluationTemplateSidebar";
 import { CreateEvaluationFromTemplateSidebarStepper } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationFromTemplateSidebarStepper";
 import { useEvaluationTemplateDetailsSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/EvaluationTemplateDetailsSidebar";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import {
@@ -36,8 +36,10 @@ import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
+import { UploadTemplateSidebarStepper } from "./UploadTemplateSidebar/UploadTemplateSidebarStepper";
+
 export function EvaluationTemplatesOverview() {
-  const userPermissions = useStatisticRoleChecks();
+  const userPermissions = useStatisticsRoleChecks();
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
   const { sortKey, sortDirection, manualSortingProps } = useTableSorting({
@@ -55,6 +57,9 @@ export function EvaluationTemplatesOverview() {
     onEditSelectedEvaluationTemplateId,
     setOnEditSelectedEvaluationTemplateId,
   ] = useState<string | null>(null);
+  const [onUploadSelectedTemplateId, setOnUploadSelectedTemplateId] = useState<
+    string | null
+  >(null);
 
   const evaluationTemplatesOverview = useGetEvaluationTemplatesOverview({
     page,
@@ -89,6 +94,9 @@ export function EvaluationTemplatesOverview() {
       onCreateEvaluation: () => {
         setOnCreateSelectedEvaluationTemplateId(templateId);
       },
+      onUploadEvaluation: () => {
+        setOnUploadSelectedTemplateId(templateId);
+      },
     });
   }
 
@@ -120,6 +128,14 @@ export function EvaluationTemplatesOverview() {
               />
             </OverlayBoundary>
           )}
+          {onUploadSelectedTemplateId && (
+            <OverlayBoundary>
+              <UploadTemplateSidebarStepper
+                templateId={onUploadSelectedTemplateId}
+                onClose={() => setOnUploadSelectedTemplateId(null)}
+              />
+            </OverlayBoundary>
+          )}
 
           <DataTable
             data={evaluationTemplatesOverview.evaluationTemplates}
@@ -131,6 +147,7 @@ export function EvaluationTemplatesOverview() {
               deleteTemplateWithConfirmation,
               setOnEditSelectedEvaluationTemplateId,
               setOnCreateSelectedEvaluationTemplateId,
+              setOnUploadSelectedTemplateId,
             )}
             wrapHeader
             wrapContent
@@ -161,6 +178,7 @@ function evaluationTemplatesColumns(
   onDelete: (id: string) => void,
   onEdit: (id: string) => void,
   onCreateEvaluation: (id: string) => void,
+  onUploadEvaluationTemplate: (id: string) => void,
 ) {
   const staticColumns = [
     columnHelper.accessor("name", {
@@ -210,6 +228,11 @@ function evaluationTemplatesColumns(
               label: "Bearbeiten",
               onClick: () => onEdit(props.row.original.id),
               startDecorator: <Edit />,
+            },
+            canWrite(props.row.original.userId) && {
+              label: "Hochladen",
+              onClick: () => onUploadEvaluationTemplate(props.row.original.id),
+              startDecorator: <CloudUpload />,
             },
             canDelete(props.row.original.userId) &&
               ({

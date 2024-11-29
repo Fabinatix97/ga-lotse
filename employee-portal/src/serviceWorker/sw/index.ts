@@ -8,20 +8,17 @@ import { registerRoute } from "workbox-routing";
 import { NetworkFirst } from "workbox-strategies";
 
 import {
-  createGetInspectionPendingFacilityFromOfflineInspectionsResponse,
-  isGetInspectionPendingFacilityFromOfflineInspectionsMessage,
-} from "@/serviceWorker/common/GetInspectionPendingFacilityFromOfflineInspections";
-import {
   API_CACHE_NAME,
   PAGES_CACHE_NAME,
   PAGES_RSC_CACHE_NAME,
 } from "@/serviceWorker/common/common";
-import { precachedInspectionIds } from "@/serviceWorker/common/precachedInspectionIds";
+import { deleteServiceWorkerRegistration } from "@/serviceWorker/common/registrationPersistence";
 import {
   UNREGISTER,
   createUnregisterBroadCastChannelEndpoint,
 } from "@/serviceWorker/common/unregisterBroadCastChannel";
 import { CacheableResponsePlugin } from "@/serviceWorker/sw/CacheableResponsePlugin";
+import { CustomOfflineHandlerStrategy } from "@/serviceWorker/sw/CustomOfflineHandlerStrategy";
 import { EncryptPlugin } from "@/serviceWorker/sw/EncryptPlugin";
 import { RedirectOnErrorPlugin } from "@/serviceWorker/sw/RedirectOnErrorPlugin";
 import { StripRscRequestPlugin } from "@/serviceWorker/sw/StripRscRequestPlugin";
@@ -29,11 +26,13 @@ import {
   API_INSPECTION_CHECKLISTS_CHECKLIST_PATH_PATTERN,
   API_INSPECTION_CHECKLISTS_FILE_PATH_PATTERN,
   API_INSPECTION_CHECKLISTS_FILE_UPLOAD_PATH_PATTERN,
+  API_INSPECTION_FACILITIES_PENDING_PATH,
   API_INSPECTION_INSPECTIONS_FINALIZE_PATH_PATTERN,
   API_INSPECTION_PACKLISTS_PACKLIST_PATH_PATTERN,
   CACHE_RETENTION_IN_SECONDS,
   NETWORK_TIMEOUT_IN_SECONDS,
 } from "@/serviceWorker/sw/config";
+import { getPendingFacilities } from "@/serviceWorker/sw/inspection/controller/getPendingFacilities";
 import { updateChecklistCache } from "@/serviceWorker/sw/inspection/controller/updateChecklist";
 import {
   addFileToCache,
@@ -51,7 +50,6 @@ import {
   updateInspectionInCache,
 } from "@/serviceWorker/sw/inspection/controller/updateInspection";
 import { updatePacklistCache } from "@/serviceWorker/sw/inspection/controller/updatePacklists";
-import { getFacilities } from "@/serviceWorker/sw/inspection/service/getFacilities";
 import { finalizeInspection } from "@/serviceWorker/sw/inspection/service/updateInspection";
 import {
   getApiDeleteHandler,
@@ -99,6 +97,12 @@ registerRoute(
       }),
     ],
   }),
+  "GET",
+);
+
+registerRoute(
+  API_INSPECTION_FACILITIES_PENDING_PATH,
+  new CustomOfflineHandlerStrategy(getPendingFacilities),
   "GET",
 );
 
@@ -180,32 +184,11 @@ registerRoute(
   "POST",
 );
 
-getGlobalSelf().addEventListener("message", (event: ExtendableMessageEvent) => {
-  if (event.origin !== self.origin) return;
-  if (isGetInspectionPendingFacilityFromOfflineInspectionsMessage(event.data)) {
-    precachedInspectionIds
-      .getSuccessful()
-      .then((inspectionIds) => getFacilities(inspectionIds))
-      .then(
-        (facilities) => {
-          const response =
-            createGetInspectionPendingFacilityFromOfflineInspectionsResponse(
-              facilities,
-            );
-
-          event.ports[0]?.postMessage(response);
-        },
-        (reason) => {
-          throw reason;
-        },
-      );
-  }
-});
-
 const unregisterChannel = createUnregisterBroadCastChannelEndpoint();
 
 unregisterChannel.onmessage = async (event: MessageEvent) => {
   if (event.data === UNREGISTER) {
     await getGlobalSelf().registration.unregister();
+    await deleteServiceWorkerRegistration();
   }
 };

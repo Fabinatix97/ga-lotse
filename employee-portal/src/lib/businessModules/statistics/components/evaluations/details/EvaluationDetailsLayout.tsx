@@ -14,21 +14,21 @@ import { PropsWithChildren } from "react";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import {
-  StatisticDetailsTabHeader,
-  StatisticDetailsTabHeaderProps,
-} from "@/lib/businessModules/statistics/components/evaluations/details/StatisticDetailsTabHeader";
+  EvaluationDetailsTabHeader,
+  EvaluationDetailsTabHeaderProps,
+} from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsTabHeader";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 
 export function EvaluationDetailsLayout({
-  statisticId,
-  statisticDetailsTabHeaderProps,
+  evaluationId: evaluationId,
+  evaluationDetailsTabHeaderProps: evaluationDetailsTabHeaderProps,
   children,
 }: PropsWithChildren<{
-  statisticId: string;
-  statisticDetailsTabHeaderProps: StatisticDetailsTabHeaderProps;
+  evaluationId: string;
+  evaluationDetailsTabHeaderProps: EvaluationDetailsTabHeaderProps;
 }>) {
   const statisticReportsEnabled = useIsNewFeatureEnabled(
     ApiStatisticsFeature.Reports,
@@ -36,7 +36,7 @@ export function EvaluationDetailsLayout({
 
   const tabNavigationItems: TabNavigationItem[] = [
     {
-      href: routes.evaluations.details(statisticId).index,
+      href: routes.evaluations.details(evaluationId).index,
       tabButtonName: "Analysen",
       decorator: <PieChartOutlined />,
       exactMatch: true,
@@ -44,19 +44,19 @@ export function EvaluationDetailsLayout({
     ...(statisticReportsEnabled
       ? [
           {
-            href: routes.evaluations.details(statisticId).reports,
+            href: routes.evaluations.details(evaluationId).reports,
             tabButtonName: "Reports",
             decorator: <BookOutlined />,
           },
         ]
       : []),
     {
-      href: routes.evaluations.details(statisticId).table,
+      href: routes.evaluations.details(evaluationId).table,
       tabButtonName: "Tabelle",
       decorator: <TableChartOutlined />,
     },
     {
-      href: routes.evaluations.details(statisticId).dataQuality,
+      href: routes.evaluations.details(evaluationId).dataQuality,
       tabButtonName: "Datenqualität",
       decorator: <DiamondOutlined />,
       exactMatch: true,
@@ -70,7 +70,7 @@ export function EvaluationDetailsLayout({
           routeBack={routes.evaluations.index}
           items={tabNavigationItems}
           header={
-            <StatisticDetailsTabHeader {...statisticDetailsTabHeaderProps} />
+            <EvaluationDetailsTabHeader {...evaluationDetailsTabHeaderProps} />
           }
         />
       }

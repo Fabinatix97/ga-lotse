@@ -9,31 +9,40 @@ import { ApiProcedureType } from "@eshg/employee-portal-api/businessProcedures";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import { Stack } from "@mui/joy";
 
-import { UseFetchInboxProcedures } from "@/lib/shared/api/queries/inboxProcedures";
+import {
+  UseFetchInboxProcedure,
+  UseFetchInboxProcedures,
+} from "@/lib/shared/api/queries/inboxProcedures";
+import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { buildOptionsFromProcedureTypes } from "@/lib/shared/components/procedures/helper";
-import { useBuildRoutePreservingSearchParams } from "@/lib/shared/components/procedures/hooks/useBuildRoutePreservingSearchParams";
+import { InboxProcedureDetailsSidebar } from "@/lib/shared/components/procedures/inbox/InboxProcedureDetailsSidebar";
+import { UseCreateInboxProcedure } from "@/lib/shared/components/procedures/inbox/hooks/useCreateInboxProcedureStatusTemplate";
+import { UseCloseInboxProcedure } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { MultiSelectFilter } from "@/lib/shared/components/tableFilters/MultiSelectFilter";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
-import { InboxProceduresPageRoutes } from "./InboxProceduresPage";
 import { inboxProcedureColumns } from "./columns";
 import { statusNames } from "./constants";
 
 interface InboxProceduresTableProps {
   procedureTypes: ApiProcedureType[];
   useFetchInboxProcedures: UseFetchInboxProcedures;
-  routes: InboxProceduresPageRoutes;
+  useFetchInboxProcedure: UseFetchInboxProcedure;
+  useCloseInboxProcedure: UseCloseInboxProcedure;
+  useCreateInboxProcedure?: UseCreateInboxProcedure;
 }
 
 export function InboxProceduresTable(props: InboxProceduresTableProps) {
   const { inboxProcedures, totalElements } =
     props.useFetchInboxProcedures().data;
-  const buildRoutePreservingSearchParams =
-    useBuildRoutePreservingSearchParams();
+
+  const detailsSidebar = useSidebar({
+    component: InboxProcedureDetailsSidebar,
+  });
 
   const tableControl = useTableControl({
     serverSideSorting: true,
@@ -74,10 +83,11 @@ export function InboxProceduresTable(props: InboxProceduresTableProps) {
           sorting={tableControl.tableSorting}
           columns={inboxProcedureColumns}
           rowNavigation={{
-            route: (row) =>
-              buildRoutePreservingSearchParams(
-                props.routes.details(row.original.inboxProcedureId),
-              ),
+            onClick: (row) =>
+              detailsSidebar.open({
+                ...props,
+                inboxProcedureId: row.original.inboxProcedureId,
+              }),
             focusColumnAccessorKey: "inboxProgressEntry.subject",
           }}
         />

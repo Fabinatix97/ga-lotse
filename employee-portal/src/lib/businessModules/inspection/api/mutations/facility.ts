@@ -12,7 +12,10 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { mapBaseFacilityToApiAddFacilityFileStateRequest } from "@/lib/shared/helpers/facilityUtils";
+import {
+  mapBaseFacilityToApiAddFacilityFileStateRequest,
+  mapFacilityFormValuesToApiAddFacilityFileStateRequest,
+} from "@/lib/shared/helpers/facilityUtils";
 
 export function useUpdateInspectionFacility() {
   const facilityApi = useFacilityApi();
@@ -58,7 +61,7 @@ export function useAddInspectionFacility() {
       inboxProcedureId?: string;
     }) => {
       const baseFacility =
-        mapBaseFacilityToApiAddFacilityFileStateRequest(facility);
+        mapFacilityFormValuesToApiAddFacilityFileStateRequest(facility);
       return facilityApi.addFacility({
         baseFacility,
         webSearchEntryId,

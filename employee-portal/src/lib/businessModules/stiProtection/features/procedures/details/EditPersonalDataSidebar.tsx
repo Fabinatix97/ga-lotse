@@ -12,7 +12,6 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { Formik } from "formik";
 
 import { useUpdatePersonDetails } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
-import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
 import { AddNewProcedureForm } from "@/lib/businessModules/stiProtection/features/procedures/addNewProcedure/AddNewProcedureSidebar";
 import {
   PersonalDataForm,
@@ -40,13 +39,12 @@ export type EditPersonalDataForm = Pick<
 export const EDIT_PERSONAL_DATA_SEARCH_PARAM = "edit-person-details";
 
 export function EditPersonalDataSidebar({
-  procedureId,
-}: Readonly<{ procedureId: string }>) {
+  procedure,
+}: Readonly<{ procedure: ApiStiProtectionProcedure }>) {
   const [isOpen, setIsOpen] = useSearchParam(
     EDIT_PERSONAL_DATA_SEARCH_PARAM,
     "boolean",
   );
-  const procedure = useStiProcedureQuery(procedureId).data;
 
   const snackbar = useSnackbar();
   const updatePersonDetails = useUpdatePersonDetails({
@@ -68,7 +66,7 @@ export function EditPersonalDataSidebar({
         initialValues={mapApiToForm(procedure)}
         onSubmit={(values) =>
           updatePersonDetails.mutateAsync({
-            id: procedureId,
+            id: procedure.id,
             data: mapFormToApi(values),
           })
         }

@@ -59,10 +59,10 @@ export function PacklistTile({
     setPacklistSidebar(true);
   }
 
-  function handleDeleteClick(idx: number) {
+  function handleDeleteClick(revisionId: string) {
     openCancelDialog({
       onConfirm: async () => {
-        await handleDelete(idx);
+        await handleDelete(revisionId);
       },
       title: "Packliste löschen",
       description: "Möchten Sie diese Packliste wirklich löschen?",
@@ -70,20 +70,16 @@ export function PacklistTile({
     });
   }
 
-  async function handleDelete(idxToRemove: number) {
-    const request = {
-      packlistDefinitionRevisionIds: [] as string[],
-    };
-
-    request.packlistDefinitionRevisionIds = [
+  async function handleDelete(revisionIdToRemove: string) {
+    const packlistDefinitionRevisionIds = [
       ...inspection.selectedPacklistDefinitionRevisions
-        .filter((revision, i) => i !== idxToRemove)
+        .filter((revision) => revision.revisionId !== revisionIdToRemove)
         .map((revision) => revision.revisionId),
     ];
 
     await updateInspection({
       id: inspection.externalId,
-      apiUpdateInspectionRequest: request,
+      apiUpdateInspectionRequest: { packlistDefinitionRevisionIds },
     });
   }
 
@@ -102,9 +98,8 @@ export function PacklistTile({
     await checkPacklistElement(request);
   }
 
-  const packlistRevisionIdToPacklistMap = new Map<string, ApiPacklist>();
-  packlists.map((packlist) =>
-    packlistRevisionIdToPacklistMap.set(packlist.revisionId, packlist),
+  const packlistRevisionIdToPacklistMap = new Map<string, ApiPacklist>(
+    packlists.map((packlist) => [packlist.revisionId, packlist]),
   );
 
   async function handleEditNotes(notes: string) {
@@ -150,62 +145,56 @@ export function PacklistTile({
           onClose={() => setPacklistSidebar(false)}
         />
       )}
-      <Typography
-        level={"body-sm"}
-        textColor="text.secondary"
-        noWrap
-        sx={{
-          width: "fit-content",
-          maxWidth: "100%",
-        }}
-        label-id={"notes"}
-      >
-        Notizen
-      </Typography>
-      <Textarea
-        label-id={"notes"}
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexGrow: 1,
-          width: "100%",
-          maxHeight: "150px",
-        }}
-        name={"name"}
-        readOnly={readonly}
-        defaultValue={inspection.notes}
-        onChange={(event) =>
-          handleEditNotesWithDebounceAndCancel(event.target.value)
-        }
-      />
+      <Stack gap={0.5}>
+        <Typography
+          component="label"
+          level="body-sm"
+          textColor="text.secondary"
+          noWrap
+          id="packlist-notes-label"
+        >
+          Notizen
+        </Typography>
+        <Textarea
+          aria-labelledby="packlist-notes-label"
+          sx={{
+            maxHeight: "150px",
+          }}
+          readOnly={readonly}
+          defaultValue={inspection.notes}
+          onChange={(event) =>
+            handleEditNotesWithDebounceAndCancel(event.target.value)
+          }
+        />
+      </Stack>
 
       <Stack
         direction="column"
-        spacing={1}
+        gap={1}
         sx={{
           maxHeight: "342px",
-          overflow: "auto",
-          marginLeft: -1,
-          marginRight: -1,
+          overflowY: "auto",
         }}
       >
-        {inspection.selectedPacklistDefinitionRevisions.map((revision, idx) => {
-          const packlist = packlistRevisionIdToPacklistMap.get(
-            revision.revisionId,
-          );
-          return (
-            packlist && (
-              <Packlist
-                revisionName={revision.name}
-                packlist={packlist}
-                idx={idx}
-                handleCheck={handleCheck}
-                handleDeleteClick={handleDeleteClick}
-                readonly={readonly ?? isOffline}
-              />
-            )
-          );
-        })}
+        {inspection.selectedPacklistDefinitionRevisions.map(
+          (revision, index) => {
+            const packlist = packlistRevisionIdToPacklistMap.get(
+              revision.revisionId,
+            );
+            return (
+              packlist && (
+                <Packlist
+                  revisionName={revision.name}
+                  packlist={packlist}
+                  handleCheck={handleCheck}
+                  handleDeleteClick={handleDeleteClick}
+                  readonly={readonly ?? isOffline}
+                  key={"packlist-" + revision.name + "-" + index}
+                />
+              )
+            );
+          },
+        )}
       </Stack>
     </InfoTile>
   );

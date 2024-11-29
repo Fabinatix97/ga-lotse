@@ -32,8 +32,6 @@ import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulationProperties;
 import de.eshg.testhelper.population.PopulatorComponent;
-import de.eshg.x509.CertificateTestUtil;
-import de.eshg.x509.KeyStoreInfo;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -71,7 +69,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
   private final ServiceDirectoryReadService serviceDirectoryReadService;
   private final Optional<TestHelperClock> testHelperClock;
 
-  private final Map<String, KeyStoreInfo> lsdCertificates = new ConcurrentHashMap<>();
+  private final Map<String, CertKeyPair> lsdCertificates = new ConcurrentHashMap<>();
   private final ServiceDirectoryService serviceDirectoryService;
 
   protected OrgUnitPopulator(
@@ -137,7 +135,7 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
             .filter(a -> a.type().equals(ActorTypeDto.LSD))
             .findAny();
 
-    Optional<KeyStoreInfo> lsdCert =
+    Optional<CertKeyPair> lsdCert =
         lsd.map(ActorDto::currentCertificate).map(CertificateDto::value).map(lsdCertificates::get);
     if (lsdCert.isEmpty()) {
       return;
@@ -370,8 +368,8 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
     CertificateDto certificate = null;
     // TODO: for this to work with spatz, we have to sign the lsd certificate(s) with a valid CA.
     if (generateCertificate) {
-      KeyStoreInfo signatory = CertificateTestUtil.generateKeyStore(commonName, null);
-      String certPem = CertificateTestUtil.generateCertPem(X509Utils.parsePem(signatory.cert()));
+      CertKeyPair signatory = X509TestHelperUtil.generateKeyStore(commonName);
+      String certPem = X509TestHelperUtil.generateCertPem(X509Utils.parsePem(signatory.cert()));
       String signature = X509Utils.sign(certPem, signatory.privateKey());
       certificate = new CertificateDto(certPem, signature, signatory.cert());
       lsdCertificates.put(signatory.cert(), signatory);
@@ -413,11 +411,11 @@ public class OrgUnitPopulator extends BasePopulator<OrgUnitDto> {
   }
 
   private static de.eshg.lib.servicedirectory.api.CertificateDto createCertificate(
-      KeyStoreInfo signatory, String commonName) {
+      CertKeyPair signatory, String commonName) {
 
     String certificate;
     try {
-      certificate = CertificateTestUtil.generateCertPem(commonName);
+      certificate = X509TestHelperUtil.generateCertPem(commonName);
     } catch (Exception e) {
       if (e instanceof RuntimeException re) {
         throw re;

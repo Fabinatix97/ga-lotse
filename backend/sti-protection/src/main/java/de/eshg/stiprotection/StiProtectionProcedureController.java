@@ -9,8 +9,10 @@ import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
 import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.annotations.ProcedureStatusTransition;
 import de.eshg.stiprotection.api.CreateAppointmentRequest;
@@ -35,6 +37,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springdoc.core.annotations.ParameterObject;
@@ -61,14 +64,17 @@ public class StiProtectionProcedureController {
   private final StiProtectionProcedureService stiProtectionService;
   private final CitizenAccessCodeUserApi accessCodeUserApi;
   private final AppointmentService appointmentService;
+  private final AuditLogger auditLogger;
 
   public StiProtectionProcedureController(
       StiProtectionProcedureService stiProtectionService,
       CitizenAccessCodeUserApi accessCodeUserApi,
-      AppointmentService appointmentService) {
+      AppointmentService appointmentService,
+      AuditLogger auditLogger) {
     this.stiProtectionService = stiProtectionService;
     this.accessCodeUserApi = accessCodeUserApi;
     this.appointmentService = appointmentService;
+    this.auditLogger = auditLogger;
   }
 
   @PostMapping
@@ -83,6 +89,14 @@ public class StiProtectionProcedureController {
   @Operation(summary = "Get STI protection procedure by id.")
   @Transactional(readOnly = true)
   public StiProtectionProcedureDto getStiProcedure(@PathVariable("id") UUID procedureId) {
+    auditLogger.log(
+        "Vorgangsbearbeitung",
+        "Abfrage Vorgangs-Details",
+        Map.of(
+            "ID des Vorgangs",
+            procedureId.toString(),
+            "durch Benutzer",
+            CurrentUserHelper.getCurrentUserId().toString()));
     return StiProtectionProcedureMapper.toInterfaceType(
         stiProtectionService.getProcedure(procedureId));
   }
@@ -196,7 +210,7 @@ public class StiProtectionProcedureController {
     if (anonymousUserId != null) {
       throw new BadRequestException("User already registered.");
     }
-    String pin = RandomStringUtils.randomNumeric(6, 6);
+    String pin = RandomStringUtils.secure().nextNumeric(6, 6);
     CitizenAccessCodeUserDto user =
         accessCodeUserApi.addAnonymousUser(new AddAnonymousUserRequest(pin));
     procedure.getPerson().setAnonymousUserId(user.userId());

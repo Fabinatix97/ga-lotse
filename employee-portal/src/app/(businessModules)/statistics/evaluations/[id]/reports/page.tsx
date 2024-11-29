@@ -5,25 +5,25 @@
 
 "use client";
 
-import { useGetStatisticReports } from "@/lib/businessModules/statistics/api/queries/useGetStatisticReports";
+import { useGetEvaluationReports } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationReports";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
-import { StatisticReports } from "@/lib/businessModules/statistics/components/evaluations/details/reports/StatisticReports";
+import { EvaluationReports } from "@/lib/businessModules/statistics/components/evaluations/details/reports/EvaluationReports";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function EvaluationDetailsReportsPage(
   props: Readonly<{ params: { id: string } }>,
 ) {
-  const { data, isFetching } = useGetStatisticReports(props.params.id);
+  const { data, isFetching } = useGetEvaluationReports(props.params.id);
 
   return (
     <EvaluationDetailsLayout
-      statisticId={props.params.id}
-      statisticDetailsTabHeaderProps={{
-        statisticName: data.title,
+      evaluationId={props.params.id}
+      evaluationDetailsTabHeaderProps={{
+        evaluationName: data.title,
       }}
     >
       <MainContentLayout fullViewportHeight>
-        <StatisticReports data={data} isFetchingReports={isFetching} />
+        <EvaluationReports data={data} isFetchingReports={isFetching} />
       </MainContentLayout>
     </EvaluationDetailsLayout>
   );

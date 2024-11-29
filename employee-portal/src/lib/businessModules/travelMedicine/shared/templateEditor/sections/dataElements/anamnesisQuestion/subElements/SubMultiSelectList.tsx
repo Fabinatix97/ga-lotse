@@ -12,10 +12,14 @@ export function SubMultiSelectList({
   multiSelectElementsFormikPath,
   multiSelectElements,
   removeMultiSelectElementHandler,
+  sectionIndex,
+  elementIndex,
 }: Readonly<{
   multiSelectElementsFormikPath: string;
   multiSelectElements: ApiTemplateSubElementMultiSelect[];
   removeMultiSelectElementHandler: (index: number) => void;
+  sectionIndex: number;
+  elementIndex: number;
 }>) {
   return (
     <Stack
@@ -27,11 +31,12 @@ export function SubMultiSelectList({
       {multiSelectElements.map((element, index) => (
         <SubMultiSelectElement
           key={index}
-          elementIndex={index}
+          subElementIndex={index}
           multiSelectDeleteHandler={() =>
             removeMultiSelectElementHandler(index)
           }
           multiSelectElementFormikPath={`${multiSelectElementsFormikPath}[${index}]`}
+          label={`${sectionIndex + 1}. Sektion, ${elementIndex + 1}. Element, ${index + 1}. Antwort`}
         />
       ))}
     </Stack>

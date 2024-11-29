@@ -83,13 +83,13 @@ const steps = [
 const initialValues: AddNewProcedureForm = {
   concern: "",
 
-  appointmentType: "",
+  appointmentBookingType: "",
   blockAppointment: null,
   customAppointmentDate: "",
   customAppointmentDuration: "",
 
   gender: "",
-  countryOfBirth: "",
+  countryOfBirth: null,
   inGermanySince: "",
   yearOfBirth: "",
 };
@@ -97,7 +97,7 @@ const initialValues: AddNewProcedureForm = {
 export interface AddNewProcedureForm {
   concern?: ApiConcern | "";
 
-  appointmentType?: ApiAppointmentBookingType | "";
+  appointmentBookingType?: ApiAppointmentBookingType | "";
   blockAppointment?: null | ApiAppointment;
   customAppointmentDate: string;
   customAppointmentDuration: string;
@@ -189,11 +189,11 @@ function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
   if (!form.yearOfBirth) {
     throw new Error("Year of birth must be defined");
   }
-  if (!form.appointmentType) {
-    throw new Error("Appointment type must be defined");
+  if (!form.appointmentBookingType) {
+    throw new Error("Appointment booking type must be defined");
   }
   const isCustomAppointment =
-    form.appointmentType === ApiAppointmentBookingType.UserDefined;
+    form.appointmentBookingType === ApiAppointmentBookingType.UserDefined;
 
   const appointmentStart = isCustomAppointment
     ? new Date(form.customAppointmentDate)
@@ -209,7 +209,7 @@ function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
   }
 
   return deleteUndefined({
-    appointmentBookingType: form.appointmentType,
+    appointmentBookingType: form.appointmentBookingType,
     concern: CONCERN_OPTIONS.find((t) => t.value === form.concern)?.value,
     countryOfBirth: COUNTRY_CODE_OPTIONS.find(
       (t) => t.value === form.countryOfBirth,
@@ -232,7 +232,7 @@ export function getAppointmentDate(form: AddNewProcedureForm) {
       ? new Date(form.customAppointmentDate)
       : undefined;
   const date =
-    form.appointmentType === ApiAppointmentBookingType.AppointmentBlock
+    form.appointmentBookingType === ApiAppointmentBookingType.AppointmentBlock
       ? form.blockAppointment?.start
       : customAppointmentDate;
   return date ?? undefined;

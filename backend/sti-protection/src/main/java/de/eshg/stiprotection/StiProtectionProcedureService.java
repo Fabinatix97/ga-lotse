@@ -53,7 +53,6 @@ import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
-import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
@@ -104,7 +103,6 @@ public class StiProtectionProcedureService {
     procedure.setConcern(ConcernMapper.toDatabaseType(request.concern()));
     procedure.addRelatedPerson(createPerson(request));
     procedure.addTask(createTask());
-    procedure.setWaitingRoom(new WaitingRoom());
 
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
 
@@ -244,7 +242,7 @@ public class StiProtectionProcedureService {
       SystemProgressEntry progressEntry =
           SystemProgressEntryFactory.createSystemProgressEntry(
               PERSON_DETAILS_UPDATED.name(),
-              "Die Angaben zur Person wurden aktualisiert",
+              "Die Angaben zur Person wurden aktualisiert.",
               TriggerType.SYSTEM_AUTOMATIC);
       procedure.addProgressEntry(progressEntry);
     } else {

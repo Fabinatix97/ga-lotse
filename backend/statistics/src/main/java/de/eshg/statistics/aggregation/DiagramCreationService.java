@@ -12,7 +12,7 @@ import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
-import de.eshg.statistics.api.chart.PointBasedChartConfiguration;
+import de.eshg.statistics.api.chart.PointBasedChartConfigurationDto;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
 import de.eshg.statistics.mapper.AnalysisMapper;
 import de.eshg.statistics.mapper.FilterParameterMapper;
@@ -147,7 +147,7 @@ public class DiagramCreationService {
   private UUID addPointBasedChartDiagramWithData(
       UUID analysisId,
       AddDiagramRequest addDiagramRequest,
-      PointBasedChartConfiguration pointBasedChartConfiguration) {
+      PointBasedChartConfigurationDto pointBasedChartConfiguration) {
     List<DataPointHolder> chartDataHolder = new ArrayList<>();
 
     BiFunction<List<DataPointHolder>, Integer, Integer> collectDataFunction =

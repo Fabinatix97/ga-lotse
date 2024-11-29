@@ -8,10 +8,10 @@ import { useState } from "react";
 import { isNonNullish, randomString } from "remeda";
 
 import {
+  AnalysisDiagramChoroplethMap,
   DiagramCharacteristicParameter,
   DiagramColorScheme,
-  EvaluationDiagramChoroplethMap,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -19,7 +19,7 @@ import {
 import { getChoroplethAggregationMethod } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 
 export interface ChoroplethMapProps {
-  diagramData: EvaluationDiagramChoroplethMap["data"];
+  diagramData: AnalysisDiagramChoroplethMap["data"];
   colorScheme: DiagramColorScheme;
   characteristicParameter?: DiagramCharacteristicParameter;
   geoJson: string;
@@ -27,7 +27,7 @@ export interface ChoroplethMapProps {
 }
 
 export function getDefinedDiagramValues(
-  diagramData: EvaluationDiagramChoroplethMap["data"],
+  diagramData: AnalysisDiagramChoroplethMap["data"],
 ) {
   return diagramData
     .map((datapoint) => datapoint.value)

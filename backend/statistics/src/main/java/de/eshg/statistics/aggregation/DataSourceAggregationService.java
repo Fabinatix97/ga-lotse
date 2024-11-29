@@ -20,6 +20,7 @@ import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
 import de.eshg.statistics.api.datasource.BusinessDataSourceAttribute;
 import de.eshg.statistics.api.datasource.GetAvailableDataSourcesResponse;
 import de.eshg.statistics.config.OriginalDataAccessConfig;
+import de.eshg.statistics.mapper.EvaluationMapper;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -50,7 +51,7 @@ public class DataSourceAggregationService {
   public GetAvailableDataSourcesResponse getAvailableDataSources(Set<String> businessModules) {
     List<ClientResponse<GetDataSourcesResponse>> extractedResponses =
         businessModuleAggregationHelper.requestFromBusinessModulesClients(
-            businessModules, BusinessModuleClient::getAvailableDataSources);
+            businessModules, null, BusinessModuleClient::getAvailableDataSources);
 
     List<BaseAvailableDataSource> baseAvailableDataSources =
         baseModuleStatisticsApi.getAvailableDataSources().baseAvailableDataSources();
@@ -108,16 +109,23 @@ public class DataSourceAggregationService {
                   baseAvailableDataSource
                       .map(
                           availableDataSource ->
-                              mapToBaseDataSourceAttributes(availableDataSource.attributes()))
+                              mapToBaseDataSourceAttributes(
+                                  attribute.name(), availableDataSource.attributes()))
                       .orElse(null));
             })
         .toList();
   }
 
   private static List<BaseDataSourceAttribute> mapToBaseDataSourceAttributes(
-      List<BaseAttribute> attributes) {
+      String businessAttributeName, List<BaseAttribute> attributes) {
     return attributes.stream()
-        .map(attribute -> new BaseDataSourceAttribute(attribute.name(), attribute.code()))
+        .map(
+            attribute ->
+                new BaseDataSourceAttribute(
+                    EvaluationMapper.getAttributeDisplayName(
+                        businessAttributeName, attribute.name()),
+                    attribute.name(),
+                    attribute.code()))
         .toList();
   }
 }

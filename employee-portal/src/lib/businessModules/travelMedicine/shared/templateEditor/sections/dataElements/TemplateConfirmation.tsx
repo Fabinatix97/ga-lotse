@@ -14,6 +14,7 @@ import { notEmptyFieldValidation } from "@/lib/businessModules/travelMedicine/sh
 export interface TemplateConfirmationProps {
   sectionElementFormikPath: string;
   sectionElementDeleteHandler: () => void;
+  label: string;
 }
 export function TemplateConfirmation(
   props: Readonly<TemplateConfirmationProps>,
@@ -24,6 +25,7 @@ export function TemplateConfirmation(
       <Stack direction="row" spacing={1} alignItems={"flex-start"}>
         <InputField
           label
+          aria-label={props.label}
           name={`${props.sectionElementFormikPath}.confirmationTextField`}
           placeholder="Textfeld"
           sx={{ flex: 1 }}

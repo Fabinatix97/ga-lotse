@@ -10,11 +10,13 @@ import { NavigationLink } from "@eshg/lib-portal/components/navigation/Navigatio
 import { Add } from "@mui/icons-material";
 import { Button } from "@mui/joy";
 
+import { MedicalRegistryImportButton } from "@/lib/businessModules/medicalRegistry/components/procedures/import/MedicalRegistryImportButton";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 
 export function MedicalRegistryProceduresSearchBar() {
   return (
     <Row justifyContent="flex-end">
+      <MedicalRegistryImportButton />
       <NavigationLink href={routes.procedures.create} passHref>
         <Button startDecorator={<Add />}>Eintrag erstellen</Button>
       </NavigationLink>

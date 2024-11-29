@@ -8,6 +8,7 @@
 import {
   ApiBooleanWithUnknown,
   ApiVaccinationSchemeValue,
+  UpdateVaccinationStatusRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import {
   SoftRequiredBooleanSelectField,
@@ -26,6 +27,7 @@ import {
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { Add, DeleteOutlined } from "@mui/icons-material";
 import { Button, Divider, Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
@@ -118,7 +120,13 @@ const FIXED_BUTTON_STYLE: SxProps = {
   marginTop: "auto",
 };
 
-export function VaccinationForm(props: FormProps<VaccinationFormValues>) {
+interface VaccinationFormProps extends FormProps<VaccinationFormValues> {
+  valuesToMutationBundle: (
+    values: VaccinationFormValues,
+  ) => MutationBundle<UpdateVaccinationStatusRequest>;
+}
+
+export function VaccinationForm(props: VaccinationFormProps) {
   const disabled = useIsFormDisabled();
 
   async function handleSubmit(
@@ -156,7 +164,9 @@ export function VaccinationForm(props: FormProps<VaccinationFormValues>) {
     <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
         <FormStack onSubmit={handleSubmit}>
-          <ConfirmLeaveDirtyFormEffect />
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={props.valuesToMutationBundle(values)}
+          />
           <SoftRequiredSelectField
             name="vaccinationScheme"
             label="Impfschema"

@@ -11,7 +11,7 @@ import {
 import { assertNonEmptyArray } from "@eshg/lib-portal/helpers/assertions";
 import { first, last, sumBy } from "remeda";
 
-import { BaseEntity, mapBaseEntity } from "./BaseEntity";
+import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 
 export interface AppointmentBlockMeasles extends BaseEntity {
   readonly start: Date;

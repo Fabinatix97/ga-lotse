@@ -9,5 +9,5 @@ dependencies {
 
 
     implementation 'org.springframework:spring-context'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 }

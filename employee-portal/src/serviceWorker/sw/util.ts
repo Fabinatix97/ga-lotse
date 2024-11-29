@@ -5,6 +5,10 @@
 
 import { SERVICE_WORKER_SERVER_NAME } from "@/serviceWorker/common/common";
 
+export const JSON_HEADER = {
+  "Content-Type": "application/json",
+};
+
 export async function getFormDataValueAsString(value: File | string) {
   return typeof value === "string" ? value : await value?.text();
 }

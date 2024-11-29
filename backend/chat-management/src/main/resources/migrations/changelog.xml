@@ -10,5 +10,6 @@
 
   <include file="migrations/0001_initial.xml"/>
   <include file="migrations/0002_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
+  <include file="migrations/0003_user_settings_add_account_deactivated.xml"/>
 
 </databaseChangeLog>

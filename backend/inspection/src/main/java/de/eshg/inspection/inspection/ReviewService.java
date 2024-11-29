@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.SearchReferenceFacilitiesResponse;
 import de.eshg.domain.model.SequencedBaseEntity;
+import de.eshg.inspection.InspectionDeletionService;
 import de.eshg.inspection.facility.FacilityClient;
 import de.eshg.inspection.facility.FacilityMapper;
 import de.eshg.inspection.facility.persistence.Facility;
@@ -25,7 +26,6 @@ import de.eshg.inspection.inspection.api.InspectionDuplicateReviewDto;
 import de.eshg.inspection.inspection.api.InspectionForDuplicateReviewDto;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
-import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.persistence.TransactionHelper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
@@ -34,6 +34,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,17 +44,21 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReviewService {
+
+  private static final Logger log = LoggerFactory.getLogger(ReviewService.class);
 
   private final InspectionService inspectionService;
   private final FacilityClient facilityClient;
   private final FacilityRepository facilityRepository;
   private final InspectionRepository inspectionRepository;
   private final TransactionHelper transactionHelper;
-  private final ProcedureDeletionService<Inspection> inspectionDeletionService;
+  private final InspectionDeletionService inspectionDeletionService;
 
   public ReviewService(
       InspectionService inspectionService,
@@ -61,7 +66,7 @@ public class ReviewService {
       FacilityRepository facilityRepository,
       InspectionRepository inspectionRepository,
       TransactionHelper transactionHelper,
-      ProcedureDeletionService<Inspection> inspectionDeletionService) {
+      InspectionDeletionService inspectionDeletionService) {
     this.inspectionService = inspectionService;
     this.facilityClient = facilityClient;
     this.facilityRepository = facilityRepository;
@@ -188,8 +193,7 @@ public class ReviewService {
 
           // Otherwise determine if we already have a facility for the chosenReferenceId.
           Facility targetFacility =
-              inspectionService
-                  .findInspectionFacilityForBaseReferenceId(chosenReferenceId)
+              findInspectionFacilityForBaseReferenceId(chosenReferenceId)
                   .orElse(inspectionFacility);
 
           if (targetFacility == inspectionFacility) {
@@ -273,6 +277,38 @@ public class ReviewService {
         facilityClient.markFacilityFileStateForDeletion(centralFileStatesToDelete);
       }
     }
+  }
+
+  public Optional<Facility> findInspectionFacilityForBaseReferenceId(UUID baseFacilityReferenceId) {
+    // Determine all centralFileStateIds for the given baseFacilityReferenceId and find all
+    // associated inspections and their facilities.
+    List<UUID> fileStateIds =
+        facilityClient.getFacilityFileStateIdsAssociatedWithReferenceFacility(
+            baseFacilityReferenceId);
+
+    List<Inspection> inspections = inspectionRepository.findByCentralFileStateIds(fileStateIds);
+
+    // For historical reasons there could exist inspection facilities without inspection procedures
+    // matching one of the fileStateIds. Include them, too, if they exist.
+    List<Facility> facilities = facilityRepository.findAllByCentralFileStateIdIn(fileStateIds);
+
+    HashMap<Long, Facility> uniqueFacilities = new HashMap<>();
+    inspections.forEach(i -> uniqueFacilities.put(i.getFacility().getId(), i.getFacility()));
+    facilities.forEach(f -> uniqueFacilities.put(f.getId(), f));
+
+    return switch (uniqueFacilities.size()) {
+      case 0 -> Optional.empty();
+      case 1 -> uniqueFacilities.values().stream().findFirst();
+      default -> {
+        Optional<Facility> first = uniqueFacilities.values().stream().findFirst();
+        log.error(
+            "Found {} inspection facilities for these centralFileStateIds: {}; using the first one with id {}",
+            uniqueFacilities.size(),
+            fileStateIds,
+            first.get().getId());
+        yield first;
+      }
+    };
   }
 
   private UUID createNewFileState(UUID chosenReferenceId, UUID previousFileStateId) {

@@ -11,7 +11,7 @@ import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { Box, Card, IconButton, Stack, Typography } from "@mui/joy";
 import { de } from "date-fns/locale";
 import { Formik } from "formik";
-import { User } from "matrix-js-sdk/lib/matrix";
+import { User } from "matrix-js-sdk";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

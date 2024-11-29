@@ -234,7 +234,9 @@ public abstract class KeycloakProvisioning<T extends RealmBoundKeycloakClient> {
         getClientRepresentationAttributes(
             Map.of(
                 "post.logout.redirect.uris",
-                redirectUriBuilder.replacePath("/logout").toUriString())));
+                redirectUriBuilder.replacePath("/logout").toUriString(),
+                "pkce.code.challenge.method",
+                "S256")));
     setEshgClientScopes(clientRepresentation);
     return clientRepresentation;
   }

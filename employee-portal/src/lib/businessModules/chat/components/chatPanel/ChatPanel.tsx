@@ -26,8 +26,11 @@ import {
   getChatUserDirectory,
   getDepartmentNameFromUserId,
   getRoomNameAndCommunicationType,
+  markAllMessagesAsRead,
+  setReadMarker,
 } from "@/lib/businessModules/chat/shared/utils";
 import { sidebarPadding } from "@/lib/shared/components/sidebar/Sidebar";
+import { useWindowFocus } from "@/lib/shared/hooks/useWindowFocus";
 
 export interface ChatPanelProps {
   roomId: string | null;
@@ -41,8 +44,9 @@ export function ChatPanel({
   setChatPanelView,
 }: Readonly<ChatPanelProps>) {
   const {
-    userSettings: { showTypingNotification },
+    userSettings: { showTypingNotification, showReadConfirmation },
   } = useChat();
+  const isFocused = useWindowFocus();
   const { handleUserTyping } = useTyping(showTypingNotification);
   const { sendMessage } = useSendMessage();
   const [userList, setUserList] = useState<
@@ -55,6 +59,22 @@ export function ChatPanel({
   const roomWithCommunicationType = selectedRoom
     ? getRoomNameAndCommunicationType(selectedRoom)
     : undefined;
+
+  useEffect(() => {
+    if (!isFocused) return;
+    if (!roomId) return;
+    if (!showReadConfirmation) {
+      void setReadMarker({
+        roomId,
+        matrixClient,
+      });
+      return;
+    }
+    void markAllMessagesAsRead({
+      roomId,
+      matrixClient,
+    });
+  }, [isFocused, matrixClient, roomId, showReadConfirmation]);
 
   useEffect(() => {
     async function getUsers() {

@@ -5,7 +5,7 @@
 
 package de.eshg.base.keycloak;
 
-import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.BPK2_ATTRIBUTE;
+import static de.eshg.base.keycloak.CitizenKeycloakProvisioning.BUND_ID_PRIMARY_KEY_ATTRIBUTE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.FALSE;
 import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 
@@ -431,9 +431,9 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
             "attribute.nameformat",
             "Basic",
             "attribute.name",
-            BPK2_ATTRIBUTE,
+            BUND_ID_PRIMARY_KEY_ATTRIBUTE.getOid(),
             "friendly.name",
-            BPK2_ATTRIBUTE,
+            BUND_ID_PRIMARY_KEY_ATTRIBUTE.getFriendlyName(),
             "attribute.value",
             "hardcoded-bPK2-value"));
     return realmRolesMapper;

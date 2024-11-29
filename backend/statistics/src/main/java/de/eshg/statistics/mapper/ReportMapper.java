@@ -18,16 +18,21 @@ import de.eshg.statistics.persistence.entity.report.ReportSeries;
 import de.eshg.statistics.persistence.entity.report.ReportType;
 import de.eshg.statistics.persistence.entity.report.ReportingPeriod;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class ReportMapper {
   private ReportMapper() {}
 
-  public static ReportSeriesDto mapToApi(ReportSeries reportSeries) {
-    return mapToApi(reportSeries, reportSeries.getReports().stream());
+  public static ReportSeriesDto mapToApi(
+      ReportSeries reportSeries, Predicate<Report> isExportablePredicate) {
+    return mapToApi(reportSeries, reportSeries.getReports().stream(), isExportablePredicate);
   }
 
-  public static ReportSeriesDto mapToApi(ReportSeries reportSeries, Stream<Report> reportStream) {
+  public static ReportSeriesDto mapToApi(
+      ReportSeries reportSeries,
+      Stream<Report> reportStream,
+      Predicate<Report> isExportablePredicate) {
     return new ReportSeriesDto(
         reportSeries.getExternalId(),
         reportSeries.getCreatedByUserId(),
@@ -42,7 +47,9 @@ public class ReportMapper {
         mapToFrequencyDto(reportSeries.getFrequency()),
         mapToReportingPeriodDto(reportSeries.getPeriod()),
         EvaluationMapper.getDataSourceNames(reportSeries.getEvaluation()),
-        reportStream.map(ReportMapper::mapToReportInfoDto).toList());
+        reportStream
+            .map(report -> mapToReportInfoDto(report, isExportablePredicate.test(report)))
+            .toList());
   }
 
   public static ReportTypeDto mapToReportTypeDto(ReportType reportType) {
@@ -59,7 +66,7 @@ public class ReportMapper {
         .orElse(null);
   }
 
-  private static ReportInfoDto mapToReportInfoDto(Report report) {
+  private static ReportInfoDto mapToReportInfoDto(Report report, boolean isExportable) {
     return new ReportInfoDto(
         report.getExternalId(),
         report.getName(),
@@ -69,7 +76,8 @@ public class ReportMapper {
         report.getExecutionDate(),
         report.getState().equals(AggregationResultState.COMPLETED)
             ? report.getNumberOfTableRows()
-            : null);
+            : null,
+        isExportable);
   }
 
   private static ReportStateDto mapToReportStateDto(AggregationResultState state) {

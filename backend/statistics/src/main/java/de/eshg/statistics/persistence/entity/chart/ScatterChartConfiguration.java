@@ -23,7 +23,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @Entity
 @DiscriminatorValue("SCATTER_CHART")
 public class ScatterChartConfiguration extends ChartConfiguration
-    implements LineOrScatterChartConfiguration {
+    implements PointBasedChartConfiguration {
 
   @OneToOne(
       cascade = CascadeType.PERSIST,

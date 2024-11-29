@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { decodeBase64 } from "matrix-js-sdk/lib/base64";
-import { MatrixClient } from "matrix-js-sdk/lib/client";
+import { MatrixClient, decodeBase64 } from "matrix-js-sdk";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 

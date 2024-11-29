@@ -86,9 +86,8 @@ export function UsersAutocomplete({
               key={option}
               {...componentProps}
               sx={{
-                display: "grid",
+                display: "flex",
                 alignItems: "center",
-                gridTemplateColumns: "repeat(2, auto 1fr)",
                 gap: 2,
               }}
             >
@@ -110,9 +109,26 @@ export function UsersAutocomplete({
               {apiUser.department && (
                 <Typography
                   level="body-md"
-                  sx={{ color: "neutral.400", textTransform: "capitalize" }}
+                  sx={{
+                    color: "neutral.400",
+                    textTransform: "capitalize",
+                    flex: 1,
+                  }}
                 >
                   {apiUser.department}
+                </Typography>
+              )}
+              {apiUser.user_id && (
+                <Typography
+                  level="body-md"
+                  sx={{
+                    color: "neutral.400",
+                    textTransform: "capitalize",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                >
+                  {apiUser.user_id}
                 </Typography>
               )}
             </AutocompleteOption>

@@ -15,6 +15,7 @@ import { AnonymizedToggleButtonGroupField } from "@/lib/businessModules/statisti
 import {
   Analyses,
   Attributes,
+  DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { CreateEvaluationStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationStep/createEvaluationStepFormModel";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
@@ -66,12 +67,7 @@ export function CreateEvaluationStep({
           {evaluationTemplateDetails.name}
         </Typography>
       </Stack>
-      <Stack gap={1}>
-        <Typography level="title-md">Datenquelle</Typography>
-        <Typography level="body-md">
-          {evaluationTemplateDetails.dataSourceName}
-        </Typography>
-      </Stack>
+      <DataSource dataSourceName={evaluationTemplateDetails.dataSourceName} />
       <Attributes attributeLabels={evaluationTemplateDetails.attributeLabels} />
       <Analyses analyses={evaluationTemplateDetails.analyses} />
       <Alert

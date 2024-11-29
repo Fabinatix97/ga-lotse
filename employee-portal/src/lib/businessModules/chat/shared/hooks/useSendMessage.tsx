@@ -4,7 +4,7 @@
  */
 
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { EventType, MsgType } from "matrix-js-sdk/lib/matrix";
+import { EventType, MsgType } from "matrix-js-sdk";
 import { useCallback } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

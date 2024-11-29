@@ -49,12 +49,7 @@ export function FacilityContactPersonArrayForm({
                     </IconButton>
                   )}
                 </Stack>
-                <ContactPersonForm
-                  name={`contactPersons.${index}`}
-                  salutationRequired={true}
-                  roleRequired={false}
-                  titleRequired={false}
-                />
+                <ContactPersonForm name={`contactPersons.${index}`} />
               </Stack>
             );
           })}

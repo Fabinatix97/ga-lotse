@@ -7,7 +7,7 @@ import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 
-import { useAddStatistic } from "@/lib/businessModules/statistics/api/mutations/useAddStatistic";
+import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
@@ -35,7 +35,7 @@ export function CreateEvaluationFromTemplateSidebarStepper(props: {
   const evaluationTemplateDetails = useGetEvaluationTemplateDetails(
     props.evaluationTemplateId,
   );
-  const addEvaluation = useAddStatistic({
+  const addEvaluation = useAddEvaluation({
     onSuccess: () => {
       props.onClose();
       router.push(routes.evaluations.index);

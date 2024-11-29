@@ -11,6 +11,7 @@ import {
   Configuration,
   FileApi,
   MedicalHistoryApi,
+  MedicalHistoryDocumentApi,
   ProcedureApi,
   ProgressEntryApi,
   StiProtectionProcedureApi,
@@ -19,10 +20,10 @@ import {
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {
-  const configurationParameters = useApiConfiguration(
+  const configParameters = useApiConfiguration(
     "PUBLIC_STI_PROTECTION_BACKEND_URL",
   );
-  return new Configuration(configurationParameters);
+  return new Configuration(configParameters);
 }
 
 export function useStiProtectionProcedureApi() {
@@ -50,24 +51,29 @@ export function useMedicalHistoryApi() {
   return new MedicalHistoryApi(config);
 }
 
+export function useMedicalHistoryDocumentApi() {
+  const config = useConfiguration();
+  return new MedicalHistoryDocumentApi(config);
+}
+
 export function useApprovalRequestApi() {
-  const configuration = useConfiguration();
-  return new ApprovalRequestApi(configuration);
+  const config = useConfiguration();
+  return new ApprovalRequestApi(config);
 }
 
 export function useAppointmentBlockApi() {
-  const configuration = useConfiguration();
-  return new AppointmentBlockApi(configuration);
+  const config = useConfiguration();
+  return new AppointmentBlockApi(config);
 }
 
 export function useAppointmentTypeApi() {
-  const configuration = useConfiguration();
-  return new AppointmentTypeApi(configuration);
+  const config = useConfiguration();
+  return new AppointmentTypeApi(config);
 }
 
 export function useArchivingApi() {
-  const configuration = useConfiguration();
-  return new ArchivingApi(configuration);
+  const config = useConfiguration();
+  return new ArchivingApi(config);
 }
 
 export function useWaitingRoomApi() {

@@ -9,6 +9,214 @@ info:
 servers:
 - url: http://localhost:8098
 paths:
+  /children:
+    get:
+      operationId: getChildren
+      parameters:
+      - in: query
+        name: yearFilter
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1900
+      - in: query
+        name: institutionIdFilter
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: groupNameFilter
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/ChildSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetChildrenResponse"
+          description: OK
+      tags:
+      - Child
+    post:
+      operationId: createChild
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChildRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CreateChildResponse"
+          description: OK
+      tags:
+      - Child
+  /children/import/{institutionId}:
+    post:
+      operationId: importXlsx
+      parameters:
+      - in: path
+        name: institutionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: schoolYear
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 1900
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+      summary: Upload an XLSX file to create multiple children.
+      tags:
+      - Child
+  /children/{childId}:
+    get:
+      operationId: getChild
+      parameters:
+      - in: path
+        name: childId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChildDetails"
+          description: OK
+      tags:
+      - Child
+  /children/{childId}/examination:
+    post:
+      operationId: createExamination
+      parameters:
+      - in: path
+        name: childId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Examination"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChildDetails"
+          description: OK
+      tags:
+      - Child
+  /prophylaxis-sessions:
+    get:
+      operationId: getProphylaxisSessions
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/ProphylaxisSessionSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProphylaxisSessionResponse"
+          description: OK
+      tags:
+      - ProphylaxisSession
+    post:
+      operationId: createProphylaxisSession
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProphylaxisSessionRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CreateProphylaxisSessionResponse"
+          description: OK
+      tags:
+      - ProphylaxisSession
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -18,6 +226,42 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/DefaultPopulationResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/population/children:
+    post:
+      operationId: populateChildren
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PopulationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChildrenPopulationResult"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/population/prophylaxis-sessions:
+    post:
+      operationId: populateProphylaxisSessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PopulationRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProphylaxisSessionPopulationResult"
           description: OK
       tags:
       - TestHelper
@@ -142,6 +386,474 @@ components:
           minimum: 1
       required:
       - barrierId
+    Address:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    Child:
+      type: object
+      properties:
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
+        groupName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        institution:
+          $ref: "#/components/schemas/Institution"
+        lastName:
+          type: string
+        year:
+          type: integer
+          format: int32
+      required:
+      - dateOfBirth
+      - firstName
+      - gender
+      - groupName
+      - id
+      - institution
+      - lastName
+      - year
+    ChildDetails:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        countryOfBirth:
+          $ref: "#/components/schemas/CountryCode"
+        dateOfBirth:
+          type: string
+          format: date
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          items:
+            type: string
+            maxLength: 254
+            minLength: 6
+        examinations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Examination"
+        fileStateId:
+          type: string
+          format: uuid
+        fileStateOutdated:
+          type: boolean
+        firstName:
+          type: string
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        groupName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        institution:
+          $ref: "#/components/schemas/Institution"
+        lastName:
+          type: string
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          maxLength: 40
+          minLength: 1
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        placeOfBirth:
+          type: string
+          maxLength: 50
+          minLength: 1
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          maxLength: 119
+          minLength: 1
+        version:
+          type: integer
+          format: int64
+        year:
+          type: integer
+          format: int32
+      required:
+      - dateOfBirth
+      - emailAddresses
+      - examinations
+      - fileStateId
+      - fileStateOutdated
+      - firstName
+      - gender
+      - groupName
+      - id
+      - institution
+      - lastName
+      - phoneNumbers
+      - salutation
+      - version
+      - year
+    ChildSortKey:
+      type: string
+      enum:
+      - ID
+      - DATE_OF_BIRTH
+      - FIRST_NAME
+      - LAST_NAME
+      - YEAR
+      - GROUP_NAME
+    ChildrenPopulationResult:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateChildResponse"
+        count:
+          type: integer
+          format: int64
+      required:
+      - children
+      - count
+    CountryCode:
+      type: string
+      description: List of country codes in ISO 3166-1 alpha-2 format.
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AM
+      - AO
+      - AQ
+      - AR
+      - AS
+      - AT
+      - AU
+      - AW
+      - AX
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BL
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BV
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CC
+      - CD
+      - CF
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CU
+      - CV
+      - CW
+      - CX
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FM
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GF
+      - GG
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GP
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GU
+      - GW
+      - GY
+      - HK
+      - HM
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IM
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JE
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MF
+      - MG
+      - MH
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MP
+      - MQ
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NC
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - "NO"
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PF
+      - PG
+      - PH
+      - PK
+      - PL
+      - PM
+      - PN
+      - PR
+      - PS
+      - PT
+      - PW
+      - PY
+      - QA
+      - RE
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SJ
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TF
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UM
+      - US
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VI
+      - VN
+      - VU
+      - WF
+      - WS
+      - YE
+      - YT
+      - ZA
+      - ZM
+      - ZW
+    CreateChildRequest:
+      type: object
+      properties:
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        groupName:
+          type: string
+        institutionId:
+          type: string
+          format: uuid
+        lastName:
+          type: string
+          maxLength: 120
+          minLength: 1
+        year:
+          type: integer
+          format: int32
+      required:
+      - dateOfBirth
+      - firstName
+      - groupName
+      - institutionId
+      - lastName
+      - year
+    CreateChildResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the child.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+      required:
+      - id
+    CreateProphylaxisSessionRequest:
+      type: object
+      properties:
+        dateAndTime:
+          type: string
+          format: date-time
+        institutionId:
+          type: string
+          format: uuid
+      required:
+      - dateAndTime
+      - institutionId
+    CreateProphylaxisSessionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the prophylaxis session.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+      required:
+      - id
     DefaultPopulationResponse:
       type: object
       properties:
@@ -149,6 +861,103 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DomesticAddress:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Address"
+      - type: object
+        properties:
+          addressAddition:
+            type: string
+            description: A descriptive addition to the address.
+            example: 2.OG links
+            maxLength: 100
+            minLength: 1
+          city:
+            type: string
+            description: The city in which the address is located.
+            example: Berlin
+            maxLength: 50
+            minLength: 1
+          country:
+            $ref: "#/components/schemas/CountryCode"
+          differentName:
+            type: string
+            description: "If the name of the addressee deviates from the present name\
+              \ of a Person or Facility, e.g. when a company pays the bill for its\
+              \ employee or a parent company shall be contacted instead of its subsidiary."
+            example: Parent Company AG
+            maxLength: 200
+            minLength: 1
+          houseNumber:
+            type: string
+            description: "The house number of the address, including extensions."
+            example: 1a
+            maxLength: 11
+            minLength: 1
+          postalCode:
+            type: string
+            description: The postal code of the address.
+            example: "10115"
+            maxLength: 20
+            minLength: 1
+          street:
+            type: string
+            description: "The name of the street of the address, without the house\
+              \ number."
+            example: Beispielweg
+            maxLength: 55
+            minLength: 1
+      description: A usual domestic address.
+      required:
+      - city
+      - country
+      - postalCode
+      - street
+    Examination:
+      type: object
+      properties:
+        examinationDate:
+          type: string
+          format: date
+        note:
+          type: string
+      required:
+      - examinationDate
+    Gender:
+      type: string
+      description: The list of genders as specified in the German Personenstandsgesetz.
+      enum:
+      - NOT_SPECIFIED
+      - DIVERSE
+      - FEMALE
+      - MALE
+    GetChildrenResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Child"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+      required:
+      - elements
+      - totalNumberOfElements
+    GetProphylaxisSessionResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProphylaxisSession"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+      required:
+      - elements
+      - totalNumberOfElements
     HttpMethod:
       type: string
       enum:
@@ -160,6 +969,40 @@ components:
       - DELETE
       - OPTIONS
       - TRACE
+    ImportStatistics:
+      type: object
+      properties:
+        created:
+          type: integer
+          format: int32
+          minimum: 0
+        duplicated:
+          type: integer
+          format: int32
+          minimum: 0
+        failed:
+          type: integer
+          format: int32
+          minimum: 0
+        mergeFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        merged:
+          type: integer
+          format: int32
+          minimum: 0
+        total:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - created
+      - duplicated
+      - failed
+      - mergeFailed
+      - merged
+      - total
     InsertRequestInterceptionTestHelperRequest:
       type: object
       properties:
@@ -169,6 +1012,17 @@ components:
           $ref: "#/components/schemas/InterceptionType"
       required:
       - type
+    Institution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
     InterceptionType:
       type: string
       enum:
@@ -191,6 +1045,101 @@ components:
       required:
       - numberOfPopulatedEntities
       - totalNumberOfEntities
+    PopulationRequest:
+      type: object
+      properties:
+        numberOfEntitiesToPopulate:
+          type: integer
+          format: int32
+      required:
+      - numberOfEntitiesToPopulate
+    PostboxAddress:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Address"
+      - type: object
+        properties:
+          city:
+            type: string
+            description: The city in which the address is located.
+            example: Berlin
+            maxLength: 50
+            minLength: 1
+          country:
+            $ref: "#/components/schemas/CountryCode"
+          differentName:
+            type: string
+            description: "If the name of the addressee deviates from the present name\
+              \ of a Person or Facility, e.g. when a company pays the bill for its\
+              \ employee or a parent company shall be contacted instead of its subsidiary."
+            example: Parent Company AG
+            maxLength: 200
+            minLength: 1
+          postalCode:
+            type: string
+            description: The postal code of the address.
+            example: "10115"
+            maxLength: 20
+            minLength: 1
+          postbox:
+            type: string
+            description: The number (or name) of the postbox.
+            example: "123"
+            maxLength: 21
+            minLength: 1
+      description: An address which is a postbox.
+      required:
+      - city
+      - country
+      - postalCode
+      - postbox
+    ProphylaxisSession:
+      type: object
+      properties:
+        dateAndTime:
+          type: string
+          format: date-time
+        id:
+          type: string
+          format: uuid
+        institution:
+          $ref: "#/components/schemas/Institution"
+      required:
+      - dateAndTime
+      - id
+      - institution
+    ProphylaxisSessionPopulationResult:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        prophylaxisSessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateProphylaxisSessionResponse"
+      required:
+      - count
+      - prophylaxisSessions
+    ProphylaxisSessionSortKey:
+      type: string
+      enum:
+      - ID
+    Salutation:
+      type: string
+      description: A list of categories for the salutation from which specific salutation
+        phrases can be derived. The choice of salutation is free for every citizen
+        and not dependent on gender.
+      enum:
+      - NOT_SPECIFIED
+      - NEUTRAL
+      - FEMALE
+      - MALE
+    SortDirection:
+      type: string
+      enum:
+      - ASC
+      - DESC
     TestHelperClockSetRequest:
       type: object
       properties:

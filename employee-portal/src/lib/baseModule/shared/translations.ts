@@ -8,6 +8,7 @@ import { ApiContactCategory } from "@eshg/employee-portal-api/base";
 export const contactCategoryNames: Record<ApiContactCategory, string> = {
   [ApiContactCategory.Laboratory]: "Labor",
   [ApiContactCategory.School]: "Schule",
+  [ApiContactCategory.Daycare]: "Kindertagesstätte",
   [ApiContactCategory.DoctorsOffice]: "Arztpraxis",
   [ApiContactCategory.HealthDepartment]: "Gesundheitsamt",
   [ApiContactCategory.Misc]: "Sonstiges",

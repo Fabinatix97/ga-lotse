@@ -11,11 +11,14 @@ import de.eshg.file.common.FileType;
 import de.eshg.file.common.FileTypeDetector;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
+import de.eshg.medicalregistry.domain.model.FullProcedureChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import org.springframework.stereotype.Component;
@@ -30,26 +33,25 @@ public class Validator {
   }
 
   public void validateMergeTarget(
-      MedicalRegistryEntry mergeTarget, ProfessionalReferencePersonDto referencePerson) {
-    validateIsNotMedicalRegistryEntryChange(mergeTarget);
+      MedicalRegistryProcedure mergeTarget, ProfessionalReferencePersonDto referencePerson) {
     validateProfessionalReferenceIsGiven(referencePerson);
     validateProfessionalMatchesToProcedure(referencePerson, mergeTarget);
   }
 
   private void validateProfessionalMatchesToProcedure(
       ProfessionalReferencePersonDto professionalReferencePerson,
-      MedicalRegistryEntry medicalRegistryEntry) {
+      MedicalRegistryProcedure medicalRegistryProcedure) {
     GetReferencePersonResponse referencePerson =
         personApi.getReferencePerson(
-            medicalRegistryEntry.getProfessional().getCentralFileStateId());
+            medicalRegistryProcedure.getProfessional().getCentralFileStateId());
 
-    if (!referencePerson.id().equals(professionalReferencePerson.referenceId())) {
+    if (!referencePerson.id().equals(professionalReferencePerson.id())) {
       throw new BadRequestException(
           "professionalReferencePerson does not match reference person of procedure");
     }
   }
 
-  public static void validateIsDraft(MedicalRegistryEntry procedure) {
+  public static void validateIsDraft(MedicalRegistryProcedure procedure) {
     if (procedure.getProcedureStatus() != ProcedureStatus.DRAFT) {
       throw new BadRequestException(
           "Procedure %s is not in draft status and therefore cannot be deleted."
@@ -64,34 +66,51 @@ public class Validator {
     }
   }
 
-  public static void validateFileType(MultipartFile multipartFile, FileType allowedFileType)
-      throws IOException {
-    FileType actualFileType = FileTypeDetector.getSupportedFileTypeOrThrow(multipartFile);
-    if (actualFileType != allowedFileType) {
-      throw new BadRequestException(
-          ErrorCode.INVALID_FILE,
-          String.format(
-              "The file type of %s is not %s.", multipartFile.getName(), allowedFileType));
+  public static void validateFileType(MultipartFile multipartFile, FileType allowedFileType) {
+    try {
+      FileType actualFileType = FileTypeDetector.getSupportedFileTypeOrThrow(multipartFile);
+      if (actualFileType != allowedFileType) {
+        throw new BadRequestException(
+            ErrorCode.INVALID_FILE,
+            String.format(
+                "The file type of %s is not %s.", multipartFile.getName(), allowedFileType));
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
-  private static void validateIsNotMedicalRegistryEntryChange(
-      MedicalRegistryEntry medicalRegistryEntry) {
-    if (medicalRegistryEntry instanceof MedicalRegistryEntryChange) {
-      throw new BadRequestException("Procedure is change procedure");
+  public static void validateIsHasCompleteInformationForInitialConfirm(
+      MedicalRegistryEntryChange entryChange, MedicalRegistryEntry mergeTarget) {
+    if (entryChange instanceof FullProcedureChange) {
+      return;
+    }
+
+    if (mergeTarget == null) {
+      throw new BadRequestException(
+          "Only full procedure changes can be confirmed without merge target");
     }
   }
 
   static MedicalRegistryEntryChange validateIsMedicalRegistryEntryChange(
-      MedicalRegistryEntry medicalRegistryEntry) {
-    if (medicalRegistryEntry instanceof MedicalRegistryEntryChange draftMedicalRegistryEntry) {
-      return draftMedicalRegistryEntry;
+      MedicalRegistryProcedure medicalRegistryProcedure) {
+    if (medicalRegistryProcedure instanceof MedicalRegistryEntryChange medicalRegistryEntryChange) {
+      return medicalRegistryEntryChange;
     } else {
       throw new BadRequestException("Procedure is not a change procedure");
     }
   }
 
-  public static void validateHasPractice(MedicalRegistryEntryChange draftMedicalRegistryEntry) {
+  public static MedicalRegistryEntry validateIsMedicalRegistryEntry(
+      MedicalRegistryProcedure medicalRegistryProcedure) {
+    if (medicalRegistryProcedure instanceof MedicalRegistryEntry medicalRegistryEntry) {
+      return medicalRegistryEntry;
+    } else {
+      throw new BadRequestException("Procedure is not a medical registry entry");
+    }
+  }
+
+  public static void validateHasPractice(MedicalRegistryProcedure draftMedicalRegistryEntry) {
     if (draftMedicalRegistryEntry.getRelatedFacilities().isEmpty()) {
       throw new BadRequestException("Practice must exist when linking to ReferenceFacility");
     }

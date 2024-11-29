@@ -10,10 +10,10 @@ import { Box } from "@mui/joy";
 import { startTransition, useState } from "react";
 
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/models/reportsOverviewTypes";
-import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
@@ -68,7 +68,7 @@ export function ReportsOverview() {
 
   const { deleteReportWithConfirmation, deleteReportSeriesWithConfirmation } =
     useDeleteWithConfirmation();
-  const userPermissions = useStatisticRoleChecks();
+  const userPermissions = useStatisticsRoleChecks();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
     usePagination();
@@ -108,7 +108,7 @@ export function ReportsOverview() {
 
   return (
     <TablePage
-      data-testid="statistics-reports-overview-table"
+      data-testid="evaluations-reports-overview-table"
       fullHeight
       controls={
         <ButtonBar

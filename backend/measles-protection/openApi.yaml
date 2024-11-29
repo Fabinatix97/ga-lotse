@@ -559,6 +559,48 @@ paths:
       tags:
       - File
   /gdpr-validation-tasks:
+    get:
+      operationId: getAllGdprValidationTasks
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/GdprValidationTaskSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAllValidationTasksResponse"
+          description: OK
+      summary: Get all GDPR validation tasks
+      tags:
+      - GdprValidationTask
     post:
       operationId: addGdprValidationTask
       requestBody:
@@ -571,6 +613,27 @@ paths:
         "200":
           description: Add a GDPR validation task
       summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/download-packages/{id}:
+    get:
+      operationId: getGdprDownloadPackage
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package by its id
       tags:
       - GdprValidationTask
   /gdpr-validation-tasks/notification-banner:
@@ -608,7 +671,7 @@ paths:
       - GdprValidationTask
   /gdpr-validation-tasks/{gdprProcedureId}/business-procedures:
     get:
-      operationId: getRelatedBusinessProcedures
+      operationId: getGdprValidationTaskDetails
       parameters:
       - description: The Id of the GDPR procedure.
         in: path
@@ -622,7 +685,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetRelatedBusinessProceduresResponse"
+                $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
           description: OK
       summary: Get a GDPR validation task by id
       tags:
@@ -648,6 +711,42 @@ paths:
           description: OK
       summary: Creates a downloadPackage for validationTask with gdprProcedureId with
         the data from the procedure with businessProcedureId
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/close:
+    post:
+      operationId: closeGdprValidationTask
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Close a GDPR validation task
+      summary: Close a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages:
+    get:
+      operationId: getGdprDownloadPackagesInfo
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
+          description: OK
+      summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
       tags:
       - GdprValidationTask
   /inbox-procedures:
@@ -1464,14 +1563,12 @@ paths:
         name: sortBy
         required: false
         schema:
-          type: string
-          default: CREATED_AT
+          $ref: "#/components/schemas/GetMeaslesProtectionProceduresSortBy"
       - in: query
         name: sortOrder
         required: false
         schema:
-          type: string
-          default: DESC
+          $ref: "#/components/schemas/GetMeaslesProtectionProceduresSortOrder"
       - description: |
           Filter logic:
           - If 'creationDate' is submitted, only measles procedures which were created at the provided date are returned.
@@ -2710,6 +2807,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         referenceFacilityId:
           type: string
           format: uuid
@@ -2811,6 +2910,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -3170,6 +3271,7 @@ components:
       - STI_PROTECTION
       - MEDICAL_REGISTRY
       - DENTAL
+      - OFFICIAL_MEDICAL_SERVICE
     BusinessProcedureInclusionStatus:
       type: string
       enum:
@@ -4053,6 +4155,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
       required:
       - name
     Facility:
@@ -4158,6 +4262,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         referenceVersion:
           type: integer
           format: int64
@@ -4195,12 +4301,132 @@ components:
       - PNG
       - PDF
       - EML
+    GdprDownloadPackageInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+      - id
+    GdprFacility:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GdprIdentificationData"
+      - type: object
+        properties:
+          address:
+            oneOf:
+            - $ref: "#/components/schemas/DomesticAddress"
+            - $ref: "#/components/schemas/PostboxAddress"
+          emailAddress:
+            type: string
+            description: The email addresses of the Facility.
+            example: mail@address.de
+            maxLength: 254
+            minLength: 6
+          name:
+            type: string
+            description: The name of the Facility.
+            example: 123 Example Facility
+            maxLength: 300
+            minLength: 1
+          phoneNumber:
+            type: string
+            description: The phone number of the Facility.
+            example: "+491234567890"
+            maxLength: 23
+            minLength: 1
+      required:
+      - address
+      - name
+    GdprIdentificationData:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    GdprPerson:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GdprIdentificationData"
+      - type: object
+        properties:
+          address:
+            oneOf:
+            - $ref: "#/components/schemas/DomesticAddress"
+            - $ref: "#/components/schemas/PostboxAddress"
+          dateOfBirth:
+            type: string
+            format: date
+            description: The date of birth of the Person.
+            example: 2000-01-01
+          emailAddress:
+            type: string
+            description: The email addresses of the Person.
+            example: mail@address.de
+            maxLength: 254
+            minLength: 6
+          firstName:
+            type: string
+            description: The given name(s) of the Person.
+            example: John
+            maxLength: 80
+            minLength: 1
+          lastName:
+            type: string
+            description: The last name of the Person.
+            example: Doe
+            maxLength: 120
+            minLength: 1
+          phoneNumber:
+            type: string
+            description: The phone number of the Person.
+            example: "+491234567890"
+            maxLength: 23
+            minLength: 0
+          salutation:
+            $ref: "#/components/schemas/Salutation"
+          title:
+            type: string
+            description: The academic title of the Person.
+            example: Prof. Dr.
+            maxLength: 119
+            minLength: 1
+      required:
+      - address
+      - dateOfBirth
+      - firstName
+      - lastName
     GdprProcedureType:
       type: string
       description: A list of types of GDPR procedures.
       enum:
       - RIGHT_OF_ACCESS
       - RIGHT_TO_ERASURE
+    GdprValidationTask:
+      type: object
+      properties:
+        dueDate:
+          type: string
+          format: date
+        identificationData:
+          oneOf:
+          - $ref: "#/components/schemas/GdprFacility"
+          - $ref: "#/components/schemas/GdprPerson"
+        status:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+      required:
+      - dueDate
+      - identificationData
+      - status
+    GdprValidationTaskSortKey:
+      type: string
+      enum:
+      - CREATED_AT
     GdprValidationTaskStatus:
       type: string
       enum:
@@ -4251,6 +4477,20 @@ components:
       - deletable
       - deleted
       - fileId
+    GetAllValidationTasksResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/GdprValidationTask"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - elements
+      - totalNumberOfElements
     GetAppointmentBlock:
       type: object
       description: A planned appointment block. Appointment blocks offer a set of
@@ -4411,6 +4651,15 @@ components:
             $ref: "#/components/schemas/Appointment"
       required:
       - appointments
+    GetGdprDownloadPackagesInfoResponse:
+      type: object
+      properties:
+        downloadPackages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GdprDownloadPackageInfo"
+      required:
+      - downloadPackages
     GetGdprNotificationBannerResponse:
       type: object
       properties:
@@ -4423,11 +4672,25 @@ components:
           minimum: 0
       required:
       - openValidationTasksCount
+    GetGdprValidationTaskDetailsResponse:
+      type: object
+      properties:
+        proceduresWithStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
+        validationTask:
+          $ref: "#/components/schemas/GdprValidationTask"
+      required:
+      - proceduresWithStatus
+      - validationTask
     GetGdprValidationTaskResponse:
       type: object
       properties:
         status:
           $ref: "#/components/schemas/GdprValidationTaskStatus"
+      required:
+      - status
     GetInboxProcedureResponse:
       type: object
       properties:
@@ -4516,6 +4779,24 @@ components:
       - procedures
       - totalElements
       - totalPages
+    GetMeaslesProtectionProceduresSortBy:
+      type: string
+      default: CREATED_AT
+      enum:
+      - FIRST_NAME
+      - LAST_NAME
+      - DATE_OF_BIRTH
+      - CREATED_AT
+      - FACILITY_NAME
+      - FACILITY_TYPE
+      - CASE_STATUS
+      - PROCEDURE_STATUS
+    GetMeaslesProtectionProceduresSortOrder:
+      type: string
+      default: DESC
+      enum:
+      - ASC
+      - DESC
     GetMetaDataHistoryResponse:
       type: object
       properties:
@@ -4588,6 +4869,8 @@ components:
           example: "['+4912345678901','+4912345678902','+4912345678903']"
           items:
             type: string
+            maxLength: 23
+            minLength: 1
         placeOfBirth:
           type: string
           description: The place of birth (without country) of the Person.
@@ -4764,18 +5047,6 @@ components:
             $ref: "#/components/schemas/Procedure"
       required:
       - procedures
-    GetRelatedBusinessProceduresResponse:
-      type: object
-      properties:
-        proceduresWithStatus:
-          type: array
-          items:
-            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
-        validationTask:
-          $ref: "#/components/schemas/GetGdprValidationTaskResponse"
-      required:
-      - proceduresWithStatus
-      - validationTask
     GetRelevantArchivableProceduresResponse:
       type: object
       properties:

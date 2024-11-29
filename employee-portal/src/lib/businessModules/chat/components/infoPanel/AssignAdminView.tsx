@@ -85,7 +85,7 @@ export function AssignAdminView({
 
   return (
     <>
-      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Box sx={{ overflowY: "auto", flex: 1 }}>
         <Stack
           spacing={2}

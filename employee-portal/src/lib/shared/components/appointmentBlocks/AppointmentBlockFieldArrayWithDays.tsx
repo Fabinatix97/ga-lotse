@@ -6,6 +6,7 @@
 import { Add } from "@mui/icons-material";
 import { Button, Divider, Grid } from "@mui/joy";
 import { FieldArray } from "formik";
+import { Fragment } from "react";
 
 import {
   AppointmentBlockFormWithDays,
@@ -32,8 +33,8 @@ export function AppointmentBlockFieldArrayWithDays(
       {({ remove, push }) => (
         <>
           {props.appointmentBlocks.map((_value, index) => (
-            <>
-              <FormGroupGrid key={index} data-testid="appointmentBlockForm">
+            <Fragment key={index}>
+              <FormGroupGrid data-testid="appointmentBlockForm">
                 <AppointmentBlockFormWithDays
                   name={`appointmentBlocks.${index}`}
                   removeBlock={() => remove(index)}
@@ -42,7 +43,7 @@ export function AppointmentBlockFieldArrayWithDays(
               </FormGroupGrid>
               {props.appointmentBlocks.length > 1 &&
                 index < props.appointmentBlocks.length - 1 && <Divider />}
-            </>
+            </Fragment>
           ))}
           <>
             <Divider />

@@ -6,9 +6,12 @@
 import { ApiAddFacilityFileStateRequest } from "@eshg/employee-portal-api/base";
 import { ApiDataOrigin } from "@eshg/employee-portal-api/inspection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { isNullish } from "remeda";
 
 import { useFacilityApi } from "@/lib/baseModule/api/clients";
+import { mapBaseFacilityToUpdate } from "@/lib/baseModule/api/mapper/facility";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { mapBaseAddressToApi } from "@/lib/shared/components/form/address/helpers";
 import { mapContactPersonToApi } from "@/lib/shared/helpers/facilityUtils";
@@ -38,4 +41,16 @@ function mapBaseFacilityToAddRequest(
     contactPersons: facility.contactPersons.map(mapContactPersonToApi),
     dataOrigin: ApiDataOrigin.Manual,
   };
+}
+
+export function useUpdateReferenceFacility(id: string, version: number) {
+  const facilityApi = useFacilityApi();
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: async (facility: DefaultFacilityFormValues) => {
+      const request = mapBaseFacilityToUpdate(facility, version);
+      await facilityApi.updateReferenceFacility(id, request);
+    },
+    onSuccess: () => snackbar.confirmation("Einrichtung wurde gespeichert."),
+  });
 }

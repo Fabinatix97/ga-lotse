@@ -5,6 +5,8 @@
 
 package de.eshg.statistics.aggregation;
 
+import static de.eshg.statistics.mapper.AttributeSelectionMapper.SEARCH_KEY_DELIMITER;
+
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.statistics.api.AttributeSelectionDto;
@@ -17,11 +19,13 @@ import de.eshg.statistics.api.filter.NullFilterParameterDto;
 import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
+import de.eshg.statistics.mapper.AttributeSelectionMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 public class AggregationResultUtil {
   private AggregationResultUtil() {}
@@ -37,35 +41,30 @@ public class AggregationResultUtil {
     if (attributeSelection == null) {
       return null;
     }
+    return getTableColumn(
+        AttributeSelectionMapper.buildSearchKey(
+            attributeSelection.businessModuleAttributeCode(),
+            attributeSelection.dataSourceId(),
+            attributeSelection.businessModuleName(),
+            attributeSelection.baseModuleAttributeCode()),
+        aggregationResult);
+  }
+
+  public static TableColumn getTableColumn(
+      String searchKey, AbstractAggregationResult aggregationResult) {
+    if (searchKey == null) {
+      return null;
+    }
     return aggregationResult.getTableColumns().stream()
-        .filter(column -> isCorrectColumn(column, attributeSelection))
+        .filter(tableColumn -> tableColumn.getSearchKey().equals(searchKey))
         .findFirst()
         .orElseThrow(
             () ->
                 new NotFoundException(
                     "Table column '%s' not found in aggregation result with id '%s'"
                         .formatted(
-                            attributeSelection.businessModuleAttributeCode(),
+                            StringUtils.substringBefore(searchKey, SEARCH_KEY_DELIMITER),
                             aggregationResult.getExternalId())));
-  }
-
-  private static boolean isCorrectColumn(
-      TableColumn column, AttributeSelectionDto attributeSelection) {
-    return column.getBusinessModuleName().equals(attributeSelection.businessModuleName())
-        && column.getDataSourceId().equals(attributeSelection.dataSourceId())
-        && column
-            .getBusinessModuleAttributeCode()
-            .equals(attributeSelection.businessModuleAttributeCode())
-        && baseCodeCorrect(
-            column.getBaseModuleAttributeCode(), attributeSelection.baseModuleAttributeCode());
-  }
-
-  private static boolean baseCodeCorrect(String tableColumnBaseCode, String requestedBaseCode) {
-    if (tableColumnBaseCode == null) {
-      return requestedBaseCode == null;
-    } else {
-      return tableColumnBaseCode.equals(requestedBaseCode);
-    }
   }
 
   public static void validateColumnFilters(

@@ -12,6 +12,7 @@ import de.eshg.base.user.api.UserDto;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.lib.notification.NotificationService;
 import de.eshg.lib.notification.api.AbstractNotificationDto;
 import de.eshg.lib.notification.api.GetNotificationsResponse;
@@ -59,7 +60,7 @@ public class NotificationAggregationService {
             .toList();
     return aggregateNotifications(
         businessModuleAggregationHelper.requestFromBusinessModules(
-            null, BusinessModuleClient::getNotifications),
+            null, BusinessModuleCapability.NOTIFICATIONS, BusinessModuleClient::getNotifications),
         baseModuleNotifications);
   }
 
@@ -72,7 +73,9 @@ public class NotificationAggregationService {
             .toList();
     return aggregateNotifications(
         businessModuleAggregationHelper.requestFromBusinessModules(
-            null, BusinessModuleClient::getUnreadNotifications),
+            null,
+            BusinessModuleCapability.NOTIFICATIONS,
+            BusinessModuleClient::getUnreadNotifications),
         unreadBaseModuleNotifications);
   }
 
@@ -123,6 +126,7 @@ public class NotificationAggregationService {
         aggregateErrorResponses(
             businessModuleAggregationHelper.requestFromBusinessModules(
                 null,
+                BusinessModuleCapability.NOTIFICATIONS,
                 client -> {
                   client.markNotificationsAsRead(markNotificationsAsReadRequest);
                   return null;

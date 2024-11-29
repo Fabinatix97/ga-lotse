@@ -377,12 +377,13 @@ public class PastProcedureListRowReader
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     Cell cell = col.get(PROCEDURE_TYPE);
     String string = cellAsString(cell, errorHandler);
-
-    return switch (string) {
-      case null -> null;
-      case "Regel" -> ProcedureType.REGULAR_EXAMINATION;
-      case "Kann" -> ProcedureType.CAN_CHILD;
-      case "Eingangsstufe" -> ProcedureType.ENTRY_LEVEL;
+    if (string == null) {
+      return null;
+    }
+    return switch (string.toUpperCase()) {
+      case "REGEL" -> ProcedureType.REGULAR_EXAMINATION;
+      case "KANN" -> ProcedureType.CAN_CHILD;
+      case "EINGANGSSTUFE" -> ProcedureType.ENTRY_LEVEL;
       default -> {
         errorHandler.handleError(cell, "Ungültiger Wert");
         yield null;
@@ -499,12 +500,12 @@ public class PastProcedureListRowReader
     Cell cell = col.get(column);
     String value = cellAsString(col, column, errorHandler);
     return switch (value) {
-      case "I", "B", "U" -> {
+      case "I", "i", "B", "b", "U", "u" -> {
         ExaminationResult examinationResult = new ExaminationResult();
         examinationResult.setValue(mapToExaminationResultValue(value));
         yield examinationResult;
       }
-      case "A" -> {
+      case "A", "a" -> {
         ExaminationResult examinationResult = new ExaminationResult();
         examinationResult.setValue(mapToExaminationResultValue(value));
         examinationResult.setDoctorLetter(DoctorLetterValue.NO_REPLY);
@@ -525,12 +526,12 @@ public class PastProcedureListRowReader
     Cell cell = col.get(column);
     String value = cellAsString(col, column, errorHandler);
     return switch (value) {
-      case "I", "B", "U" -> {
+      case "I", "i", "B", "b", "U", "u" -> {
         ExaminationResult examinationResult = new ExaminationResult();
         examinationResult.setValue(mapToExaminationResultValue(value));
         yield getExaminationWithDiagnosis(examinationResult);
       }
-      case "A" -> {
+      case "A", "a" -> {
         ExaminationResult examinationResult = new ExaminationResult();
         examinationResult.setValue(mapToExaminationResultValue(value));
         examinationResult.setDoctorLetter(DoctorLetterValue.NO_REPLY);
@@ -552,7 +553,7 @@ public class PastProcedureListRowReader
   }
 
   private ExaminationResultValue mapToExaminationResultValue(String stringValue) {
-    return switch (stringValue) {
+    return switch (stringValue.toUpperCase()) {
       case "I" -> ExaminationResultValue.OK;
       case "B" -> ExaminationResultValue.KNOWN;
       case "A" -> ExaminationResultValue.DOCTOR_LETTER;
@@ -570,11 +571,11 @@ public class PastProcedureListRowReader
     Cell cell = col.get(column);
     String value = cellAsString(col, column, errorHandler);
     return switch (value) {
-      case "I" -> SopessExaminationResultValue.OK;
-      case "B" -> SopessExaminationResultValue.KNOWN;
-      case "G" -> SopessExaminationResultValue.BORDERLINE;
-      case "U" -> SopessExaminationResultValue.UNKNOWN;
-      case "A" -> {
+      case "I", "i" -> SopessExaminationResultValue.OK;
+      case "B", "b" -> SopessExaminationResultValue.KNOWN;
+      case "G", "g" -> SopessExaminationResultValue.BORDERLINE;
+      case "U", "u" -> SopessExaminationResultValue.UNKNOWN;
+      case "A", "a" -> {
         doctorLetterValueSetter.accept(sopessExaminationResult, DoctorLetterValue.NO_REPLY);
         yield SopessExaminationResultValue.DOCTOR_LETTER;
       }
@@ -778,7 +779,7 @@ public class PastProcedureListRowReader
       return null;
     }
 
-    return switch (value) {
+    return switch (value.toUpperCase()) {
       case "K" -> DisabilityType.PHYSICAL;
       case "G" -> DisabilityType.MENTAL;
       case "S" -> DisabilityType.EMOTIONAL;
@@ -795,13 +796,20 @@ public class PastProcedureListRowReader
       ColumnAccessor<PastProcedureListColumn> col, ErrorHandler errorHandler) {
     Cell cell = col.get(SCHOOL_RECOMMENDATION);
     String value = cellAsString(col, SCHOOL_RECOMMENDATION, errorHandler);
-    return switch (value) {
-      case "Nein" -> SchoolRecommendation.NO;
+
+    if (value == null) {
+      errorHandler.handleError(
+          cell, "Ungültiger Wert (Erwartet: Nein, ZURK, ZUEK, BEKK oder BFZ. Tatsächlich: null)");
+      return null;
+    }
+
+    return switch (value.toUpperCase()) {
+      case "NEIN" -> SchoolRecommendation.NO;
       case "ZURK" -> SchoolRecommendation.BACK_REGULAR;
       case "ZUEK" -> SchoolRecommendation.BACK_ENTRY_LEVEL;
       case "BEKK" -> SchoolRecommendation.CONCERNS_EARLY_ENROLMENT;
       case "BFZ" -> SchoolRecommendation.ADVICE_CENTER;
-      case null, default -> {
+      default -> {
         errorHandler.handleError(
             cell,
             "Ungültiger Wert (Erwartet: Nein, ZURK, ZUEK, BEKK oder BFZ. Tatsächlich: %s)"

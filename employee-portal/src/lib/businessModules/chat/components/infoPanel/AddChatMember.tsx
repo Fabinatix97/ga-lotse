@@ -21,7 +21,6 @@ import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAu
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import { UserToInvite } from "@/lib/businessModules/chat/shared/types";
 import {
@@ -41,7 +40,6 @@ export function AddChatMember({
   onCancel,
 }: Readonly<AddChatMemberProps>) {
   const { matrixClient } = useChatClientContext();
-  const roomInfo = useRoomInfo(roomId);
   const { joinedAndInvitedMembersWithoutMe } = useRoomMembers(roomId);
   const snackbar = useSnackbar();
 
@@ -122,7 +120,7 @@ export function AddChatMember({
 
   return (
     <>
-      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Box
         sx={{
           overflowY: "auto",

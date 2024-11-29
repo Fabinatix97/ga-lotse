@@ -28,9 +28,10 @@ export function CreateEvaluationSidebar({
   openSidebar: boolean;
   setOpenSidebar: (open: boolean) => void;
 }) {
-  const attributes: CategorizedFlatAttribute[] = apiDataSources.flatMap(
-    mapToCategorizedFlatAttributes,
-  );
+  const attributesByDataSourceId: Record<string, CategorizedFlatAttribute[]> =
+    Object.fromEntries(
+      apiDataSources.map((ds) => [ds.id, mapToCategorizedFlatAttributes(ds)]),
+    );
   const dataSources: DataSource[] = apiDataSources.map(mapToDataSource);
 
   return (
@@ -40,7 +41,7 @@ export function CreateEvaluationSidebar({
           open={openSidebar}
           onClose={() => setOpenSidebar(false)}
           dataSources={dataSources}
-          attributes={attributes}
+          attributesByDataSourceId={attributesByDataSourceId}
           evaluationTemplates={apiTemplates}
         />
       </OverlayBoundary>

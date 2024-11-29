@@ -7,7 +7,7 @@
 
 import { useGetCompletenessInformation } from "@/lib/businessModules/statistics/api/queries/useGetCompletenessInformation";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
-import { StatisticsDataQuality } from "@/lib/businessModules/statistics/components/evaluations/details/dataQuality/StatisticsDataQuality";
+import { EvaluationDataQuality } from "@/lib/businessModules/statistics/components/evaluations/details/dataQuality/EvaluationDataQuality";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function EvaluationDetailsDataQualityPage(
@@ -19,13 +19,13 @@ export default function EvaluationDetailsDataQualityPage(
 
   return (
     <EvaluationDetailsLayout
-      statisticId={props.params.id}
-      statisticDetailsTabHeaderProps={{
-        statisticName: completenessInformation.evaluationInfo.name,
+      evaluationId={props.params.id}
+      evaluationDetailsTabHeaderProps={{
+        evaluationName: completenessInformation.evaluationInfo.name,
       }}
     >
       <MainContentLayout fullViewportHeight>
-        <StatisticsDataQuality {...completenessInformation} />
+        <EvaluationDataQuality {...completenessInformation} />
       </MainContentLayout>
     </EvaluationDetailsLayout>
   );

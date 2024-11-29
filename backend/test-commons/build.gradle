@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'
 
     implementation 'org.assertj:assertj-core'
-    implementation 'ch.qos.logback:logback-classic'
+    api 'ch.qos.logback:logback-classic'
     implementation('com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:latest.release') {
         exclude group: "org.springframework.boot", module: "spring-boot-starter-jdbc"
     }

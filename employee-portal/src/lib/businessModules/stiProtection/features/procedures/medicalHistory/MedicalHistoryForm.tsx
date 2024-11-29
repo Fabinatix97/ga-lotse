@@ -6,44 +6,50 @@
 "use client";
 
 import {
+  ApiConcern,
   ApiGetMedicalHistory200Response,
-  CreateMedicalHistoryRequest,
+  ApiStiProtectionProcedure,
 } from "@eshg/employee-portal-api/stiProtection";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { mapMonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
-import { toDateString, toUtcDate } from "@eshg/lib-portal/helpers/dateTime";
-import { Divider, Grid, Typography, styled } from "@mui/joy";
-import { FieldArray, Formik } from "formik";
-import { useRouter } from "next/navigation";
+import Print from "@mui/icons-material/Print";
+import { Divider, Sheet, Stack, Typography, styled } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
+import { Formik } from "formik";
+import { useEffect, useState } from "react";
 
-import { useCreateMedicalHistory } from "@/lib/businessModules/stiProtection/api/mutations/medicalHistory";
-import { useStiProcedureQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
+import { theme } from "@/lib/baseModule/theme/theme";
+import { useUpsertMedicalHistory } from "@/lib/businessModules/stiProtection/api/mutations/medicalHistory";
 import {
-  CONCERN_VALUES,
-  DiseaseType,
-  diseaseTypeNames,
-} from "@/lib/businessModules/stiProtection/shared/constants";
+  MedicalHistoryDocumentLanguage,
+  useGetMedicalHistoryDocumentQuery,
+} from "@/lib/businessModules/stiProtection/api/queries/medicalHistoryDocument";
+import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { StickyBottomButtonBar } from "@/lib/shared/components/buttons/StickyBottomButtonBar";
-import { FormSheet } from "@/lib/shared/components/form/FormSheet";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
+import { IconButton } from "@/lib/shared/components/pagination/IconButton";
 
-import {
-  BooleanSelectDate,
-  booleanSelectGroupGridProps,
-} from "./BooleanSelectDate";
 import {
   MedicalHistoryFormData,
   defaultMedicalHistoryFormValues,
-  medicalHistoryFormFields as fields,
-  medicalHistoryFormSections as sections,
 } from "./MedicalHistoryForm.config";
-import { firstDayOfCurrentMonth, mapToFormValues } from "./helpers";
-import { MedicalHistoryCommonFields } from "./sections/MedicalHistoryCommonFields";
+import { SectionGrid } from "./SectionGrid";
+import { mapFormValuesToApi, mapToFormValues } from "./helpers";
+import { Examinations } from "./sections/Examinations";
+import { General } from "./sections/General";
+import { Prevention } from "./sections/Prevention";
+import { PreviousIllnesses } from "./sections/PreviousIllnesses";
+import { Risks } from "./sections/Risks";
 import { SexualOrientationAndContact } from "./sections/SexualOrientationAndContact";
+
+interface MedicalHistoryDocumentInfo {
+  concern?: ApiConcern;
+  language?: MedicalHistoryDocumentLanguage;
+  fileURL?: string;
+}
 
 export const AutoWidthHorizontalField = styled(HorizontalField)({
   ".MuiStack-root": {
@@ -52,237 +58,188 @@ export const AutoWidthHorizontalField = styled(HorizontalField)({
 });
 
 export function MedicalHistoryForm({
-  procedureId,
+  procedure: stiProcedure,
   medicalHistory,
 }: Readonly<{
-  procedureId: string;
+  procedure: ApiStiProtectionProcedure;
   medicalHistory?: ApiGetMedicalHistory200Response | null;
 }>) {
-  const { data: stiProcedure } = useStiProcedureQuery(procedureId);
-
-  const createMedicalHistory = useCreateMedicalHistory();
-  const router = useRouter();
+  const upsertMedicalHistory = useUpsertMedicalHistory();
 
   const formTitle = `Anamnesebogen ${CONCERN_VALUES[stiProcedure.concern]}`;
 
-  async function onSubmit(values: MedicalHistoryFormData) {
-    const examinationsToReport = Object.entries(values.examinations).filter(
-      ([_diseaseType, { hadExamination }]) => !!hadExamination,
-    );
-    const vaccinationsToReport = Object.entries(
-      values.riskFactors.vaccinations,
-    ).filter(([_diseaseType, { hadVaccination }]) => !!hadVaccination);
-
-    const medicalHistoryRequest: CreateMedicalHistoryRequest["apiCreateMedicalHistoryRequest"] =
-      {
-        medicalHistory: {
-          type:
-            stiProcedure.concern === "SEX_WORK"
-              ? "SexWorkMedicalHistory"
-              : "StiConsultationMedicalHistory",
-          ...(values.examinationReason && {
-            examinationReason: values.examinationReason,
-          }),
-          ...(examinationsToReport && {
-            examinations: Object.fromEntries(
-              examinationsToReport.map(([diseaseType, { examinationDate }]) => [
-                diseaseType as DiseaseType,
-                mapMonthAndYear(examinationDate) ??
-                  toUtcDate(toDateString(firstDayOfCurrentMonth())),
-              ]),
-            ),
-          }),
-          ...(values.sexualContact && {
-            sexualContact: values.sexualContact,
-          }),
-          ...(values.sexualOrientation && {
-            sexualOrientation: values.sexualOrientation,
-          }),
-          previousIllnesses: values.previousIllnesses,
-          riskFactors: {
-            prepInfoProvided: values.riskFactors.prepInfoProvided,
-            ...(vaccinationsToReport && {
-              vaccinations: Object.fromEntries(
-                vaccinationsToReport.map(
-                  ([diseaseType, { vaccinationDate }]) => [
-                    diseaseType as DiseaseType,
-                    mapMonthAndYear(vaccinationDate) ??
-                      toUtcDate(toDateString(firstDayOfCurrentMonth())),
-                  ],
-                ),
-              ),
-            }),
-          },
-        },
-      };
-
-    await createMedicalHistory.mutateAsync(
-      {
-        id: procedureId,
-        medicalHistory: medicalHistoryRequest,
-      },
-      {
-        onSuccess: () => {
-          router.push(routes.procedures.byId(procedureId).details);
-        },
-      },
-    );
+  function onSubmit(values: MedicalHistoryFormData) {
+    return upsertMedicalHistory.mutateAsync({
+      id: stiProcedure.id,
+      medicalHistory: mapFormValuesToApi(stiProcedure, values),
+    });
   }
+  const isForSexWork = stiProcedure.concern === "SEX_WORK";
+
+  const [openFile, setOpenFile] = useState<boolean>(false);
+  const [fileInfo, setFileInfo] = useState<MedicalHistoryDocumentInfo>({});
+  const { data, isFetched } = useGetMedicalHistoryDocumentQuery(
+    fileInfo.concern ?? ApiConcern.HivStiConsultation,
+    fileInfo.language ?? "DE",
+  );
+
+  function fetchMedicalHistoryDocument(
+    concern: ApiConcern,
+    language: MedicalHistoryDocumentLanguage,
+  ) {
+    setFileInfo({ concern, language });
+    setOpenFile(true);
+  }
+
+  useEffect(() => {
+    if (!openFile || !isFetched || !data) {
+      return;
+    }
+    if (fileInfo.fileURL) {
+      URL.revokeObjectURL(fileInfo.fileURL);
+    }
+
+    fileInfo.fileURL = URL.createObjectURL(data);
+    window.open(fileInfo.fileURL);
+    setOpenFile(false);
+  }, [openFile, isFetched, data, fileInfo, fileInfo.fileURL]);
 
   return (
     <Formik
       initialValues={
         medicalHistory
           ? mapToFormValues(medicalHistory)
-          : defaultMedicalHistoryFormValues(stiProcedure)
+          : defaultMedicalHistoryFormValues()
       }
       onSubmit={onSubmit}
     >
-      {({ values, isSubmitting }) => (
-        <>
-          <FormSheet sx={{ overflow: "auto" }}>
+      {({ isSubmitting }) => (
+        <FormPlus>
+          <Sheet sx={{ overflow: "auto", margin: theme.spacing(3) }}>
             <Typography level="h3" mb={2}>
               {formTitle}
             </Typography>
-            <Divider />
-            <MedicalHistoryCommonFields procedure={stiProcedure} />
-            <Divider />
-            <SexualOrientationAndContact />
-            <Divider />
-            <Typography level="title-md" mt={1} id="examinations-section-title">
-              {sections.examinations}
-            </Typography>
-            <Grid
-              xxs={12}
-              md={6}
-              component="section"
-              aria-labelledby="examinations-section-title"
-            >
-              <FieldArray name={"examinations"}>
-                {() => (
-                  <>
-                    {Object.entries(values.examinations).map(
-                      ([diseaseType, { examinationDate, hadExamination }]) => {
-                        const showDateField = !!hadExamination;
 
-                        return (
-                          <BooleanSelectDate
-                            key={diseaseType}
-                            date={examinationDate}
-                            diseaseType={diseaseType as DiseaseType}
-                            fieldNameDate={`examinations.${diseaseType}.examinationDate`}
-                            fieldNameSelect={`examinations.${diseaseType}.hadExamination`}
-                            showDateField={showDateField}
-                          />
-                        );
-                      },
-                    )}
-                  </>
-                )}
-              </FieldArray>
-            </Grid>
+            <General isForSexWork={isForSexWork} />
             <Divider />
-            <Typography level="title-md" mt={1}>
-              {sections.riskAndPrevention}
-            </Typography>
-            <Divider />
-            <Typography
-              level="title-md"
-              mt={1}
-              id="previous-illnesses-section-title"
-            >
-              {sections.previousIllnesses}
-            </Typography>
-            <Grid
-              component="section"
-              xxs={12}
-              md={6}
-              aria-labelledby="previous-illnesses-section-title"
-            >
-              <FieldArray name={"previousIllnesses"}>
-                {() => (
-                  <Grid {...booleanSelectGroupGridProps}>
-                    {Object.entries(values.previousIllnesses).map(
-                      ([diseaseType, _hadPreviousIllness]) => (
-                        <Grid key={diseaseType} mb={1}>
-                          <Grid xxs={12} md={6}>
-                            <BooleanSelectField
-                              name={`previousIllnesses.${diseaseType}`}
-                              label={
-                                diseaseTypeNames[diseaseType as DiseaseType]
-                              }
-                              component={AutoWidthHorizontalField}
-                              sx={{ mr: 1 }}
-                            />
-                          </Grid>
-                        </Grid>
-                      ),
-                    )}
-                  </Grid>
-                )}
-              </FieldArray>
-              <Grid xxs={12} lg={3}>
-                <TextareaField
-                  name="contactToClarifyDuration"
-                  label={fields.contactToClarifyDuration}
-                />
-              </Grid>
-            </Grid>
-            <Divider />
-            <Typography level="title-md" mt={1} id="vaccinations-section-title">
-              {sections.vaccinations}
-            </Typography>
-            <Grid
-              component="section"
-              aria-labelledby="vaccinations-section-title"
-              xxs={12}
-              md={6}
-            >
-              <FieldArray name={"vaccinations"}>
-                {() => (
-                  <>
-                    {Object.entries(values.riskFactors.vaccinations).map(
-                      ([diseaseType, { vaccinationDate, hadVaccination }]) => {
-                        const showDateField = !!hadVaccination;
 
-                        return (
-                          <BooleanSelectDate
-                            key={diseaseType}
-                            date={vaccinationDate}
-                            diseaseType={diseaseType as DiseaseType}
-                            fieldNameDate={`riskFactors.vaccinations.${diseaseType}.vaccinationDate`}
-                            fieldNameSelect={`riskFactors.vaccinations.${diseaseType}.hadVaccination`}
-                            showDateField={showDateField}
-                          />
-                        );
-                      },
-                    )}
-                  </>
-                )}
-              </FieldArray>
-            </Grid>
+            <Examinations />
             <Divider />
-            <Grid xxs={12}>
-              <TextareaField name="remarks" label={fields.remarks} />
-            </Grid>
-            <StickyBottomButtonBar
-              right={
-                <>
-                  <InternalLinkButton
-                    href={routes.procedures.byId(procedureId).details}
-                    variant="plain"
-                  >
-                    Abbrechen
-                  </InternalLinkButton>
-                  <SubmitButton submitting={isSubmitting}>
-                    Speichern
-                  </SubmitButton>
-                </>
-              }
-            ></StickyBottomButtonBar>
-          </FormSheet>
-        </>
+
+            <PreviousIllnesses />
+            <Divider />
+
+            <SexualOrientationAndContact isForSexWork={isForSexWork} />
+            <Divider />
+
+            <Prevention />
+            <Divider />
+
+            <Risks />
+            <Divider />
+
+            <SectionGrid>
+              <TextareaField name="remarks" label="Bemerkungen" />
+            </SectionGrid>
+          </Sheet>
+          <MedicalHistoryStickyBottomButtonBar
+            stiProcedure={stiProcedure}
+            isSubmitting={isSubmitting}
+            onClick={fetchMedicalHistoryDocument}
+          />
+        </FormPlus>
       )}
     </Formik>
+  );
+}
+
+interface MedicalHistoryStickyBottomButtonBarProps {
+  stiProcedure: ApiStiProtectionProcedure;
+  isSubmitting: boolean;
+  onClick: (
+    concern: ApiConcern,
+    language: MedicalHistoryDocumentLanguage,
+  ) => void;
+}
+
+function MedicalHistoryStickyBottomButtonBar(
+  props: MedicalHistoryStickyBottomButtonBarProps,
+) {
+  const {
+    stiProcedure,
+    isSubmitting,
+    onClick: fetchMedicalHistoryDocument,
+  } = props;
+
+  return (
+    <StickyBottomButtonBar
+      sx={{ padding: "0.75rem 1.5rem" }}
+      right={
+        <>
+          <InternalLinkButton
+            href={routes.procedures.byId(stiProcedure.id).details}
+            variant="plain"
+          >
+            Abbrechen
+          </InternalLinkButton>
+          <SubmitButton submitting={isSubmitting}>Speichern</SubmitButton>
+        </>
+      }
+      left={
+        <>
+          <NamedIconButton
+            label={"Anamnesebogen auf Deutsch herunterladen"}
+            text={"Druckvorlage herunterladen (DE)"}
+            onClick={() =>
+              fetchMedicalHistoryDocument(stiProcedure.concern, "DE")
+            }
+          />
+          <NamedIconButton
+            label={"Anamnesebogen auf Englisch herunterladen"}
+            text={"Druckvorlage herunterladen (EN)"}
+            onClick={() =>
+              fetchMedicalHistoryDocument(stiProcedure.concern, "EN")
+            }
+          />
+        </>
+      }
+    ></StickyBottomButtonBar>
+  );
+}
+
+interface NamedIconButtonProps {
+  text: string;
+  label: string;
+  onClick: () => void;
+  sx?: SxProps;
+}
+
+function NamedIconButton(props: NamedIconButtonProps) {
+  return (
+    <IconButton
+      variant="plain"
+      sx={{ padding: "6px 16px" }}
+      disabled={false}
+      label={props.label}
+      onClick={props.onClick}
+    >
+      <Stack direction={"row"} gap={theme.spacing(1)} alignItems={"center"}>
+        <Print
+          sx={{
+            width: "24px",
+            height: "24px",
+          }}
+        />
+        <Typography
+          textColor={"primary.plainColor"}
+          sx={(theme) => ({
+            fontSize: theme.fontSize.md,
+            fontWeight: theme.fontWeight.lg,
+          })}
+        >
+          {props.text}
+        </Typography>
+      </Stack>
+    </IconButton>
   );
 }

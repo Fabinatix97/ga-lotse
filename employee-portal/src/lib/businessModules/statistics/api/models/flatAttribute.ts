@@ -11,7 +11,6 @@ import {
 
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
-import { getAttributeLabel } from "@/lib/businessModules/statistics/components/evaluations/getAttributeLabel";
 
 type ApiAttribute = ApiTableColumnHeader["attribute"];
 
@@ -57,10 +56,7 @@ export function mapTableColumnHeadersToFlatAttributes(
       }
       return {
         ...header.attribute.baseAttribute,
-        name: getAttributeLabel(
-          header.attribute,
-          header.attribute.baseAttribute,
-        ),
+        name: header.displayName,
         key,
         businessModule: mapToApiBusinessModule(businessModule),
       } satisfies FlatAttribute;

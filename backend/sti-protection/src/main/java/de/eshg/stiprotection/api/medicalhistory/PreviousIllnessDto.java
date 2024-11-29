@@ -6,15 +6,15 @@
 package de.eshg.stiprotection.api.medicalhistory;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "PreviousIllness")
 public record PreviousIllnessDto(
-    @NotNull Boolean hepA,
-    @NotNull Boolean hepB,
-    @NotNull Boolean hepC,
-    @NotNull Boolean hiv,
-    @NotNull Boolean syphilis,
-    @NotNull Boolean gonorrhea,
-    @NotNull Boolean chlamydia,
-    String otherPreviousIllnesses) {}
+    Boolean hepA,
+    Boolean hepB,
+    Boolean hepC,
+    Boolean hiv,
+    Boolean syphilis,
+    Boolean gonorrhea,
+    Boolean chlamydia,
+    Boolean other,
+    String otherData) {}

@@ -14,6 +14,7 @@ import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.lib.procedure.api.TaskListApi;
 import de.eshg.lib.procedure.model.GetTasksFilterOptions;
 import de.eshg.lib.procedure.model.GetTasksSortByDto;
@@ -149,6 +150,7 @@ public class TaskAggregationService {
 
   private List<ClientResponse<TaskResponse>> requestTasksFromBusinessModules(
       Set<BusinessModule> businessModules, Function<BusinessModuleClient, TaskResponse> getTasks) {
-    return businessModuleAggregationHelper.requestFromBusinessModules(businessModules, getTasks);
+    return businessModuleAggregationHelper.requestFromBusinessModules(
+        businessModules, BusinessModuleCapability.TASKS, getTasks);
   }
 }

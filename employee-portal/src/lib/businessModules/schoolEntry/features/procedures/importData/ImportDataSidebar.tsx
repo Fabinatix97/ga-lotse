@@ -7,9 +7,7 @@
 
 import { ApiSchoolEntryFeature } from "@eshg/employee-portal-api/schoolEntry";
 import type { OptionalFieldValue } from "@eshg/lib-portal/types/form";
-import { CircularProgress, Stack, Typography, styled } from "@mui/joy";
 import { Formik } from "formik";
-import { useRouter } from "next/navigation";
 
 import { useImportData } from "@/lib/businessModules/schoolEntry/api/mutations/importApi";
 import {
@@ -17,19 +15,13 @@ import {
   useIsDirectProcedureTypeAssignmentOnImport,
 } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
+import { ImportDataFields } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataFields";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
-import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
-import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
-import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
+import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
 import {
   SidebarWithFormRefProps,
   useSidebarWithFormRef,
 } from "@/lib/shared/hooks/useSidebarWithFormRef";
-
-import { ImportDataFields } from "./ImportDataFields";
-import { ImportResult } from "./ImportResult";
 
 export function useImportDataSidebar() {
   return useSidebarWithFormRef({
@@ -54,109 +46,50 @@ export interface ImportDataValues {
 }
 
 function ImportDataSidebar(props: SidebarWithFormRefProps) {
-  const router = useRouter();
   const isPastProcedureImportEnabled = useIsNewFeatureEnabled(
     ApiSchoolEntryFeature.ImportPastProcedures,
   );
   const locationSelectionMode = useGetLocationSelectionMode();
   const isDirectProcedureTypeAssignmentOnImport =
     useIsDirectProcedureTypeAssignmentOnImport();
-  const importData = useImportData();
-
-  async function handleSubmit(values: ImportDataValues) {
-    await importData.mutateAsync(values);
-  }
-
-  function handleClose() {
-    router.push(routes.procedures.overview);
-    props.onClose(true);
-  }
+  const {
+    mutateAsync: importData,
+    data: importResult,
+    isSuccess,
+  } = useImportData();
 
   return (
-    <>
-      <Formik initialValues={INITIAL_VALUES} onSubmit={handleSubmit}>
-        {({
-          values,
-          setFieldValue,
-          setTouched,
-          isSubmitting,
-          handleSubmit,
-        }) => (
-          <SidebarForm ref={props.formRef} onSubmit={handleSubmit}>
-            <SidebarContent
-              title={
-                values.listType === ImportListType.PastProcedureList
-                  ? "Abgeschlossene Untersuchungen importieren"
-                  : "Daten importieren"
-              }
-            >
-              {importData.isSuccess ? (
-                <ImportResult
-                  file={importData.data.file}
-                  statistics={importData.data.statistics}
-                  isImportWithMerge={
-                    !(
-                      isDirectProcedureTypeAssignmentOnImport ||
-                      values.listType === ImportListType.PastProcedureList
-                    )
-                  }
-                />
-              ) : (
-                <ImportDataFields
-                  listType={values.listType}
-                  isPastProcedureImportEnabled={isPastProcedureImportEnabled}
-                  locationSelectionMode={locationSelectionMode}
-                  isDirectProcedureTypeAssignmentOnImport={
-                    isDirectProcedureTypeAssignmentOnImport
-                  }
-                  setFieldValue={setFieldValue}
-                  setTouched={setTouched}
-                />
-              )}
-              {isSubmitting && <ImportPendingOverlay />}
-            </SidebarContent>
-            {!isSubmitting && (
-              <SidebarActions>
-                <FormButtonBar
-                  submitLabel="Importieren"
-                  submitting={isSubmitting}
-                  onCancel={importData.isSuccess ? undefined : handleClose}
-                  onFinish={importData.isSuccess ? handleClose : undefined}
-                  size="sm"
-                />
-              </SidebarActions>
-            )}
-          </SidebarForm>
-        )}
-      </Formik>
-    </>
-  );
-}
-
-const OverlayStack = styled(Stack)(({ theme }) => ({
-  background: theme.palette.background.body,
-  userSelect: "none", // disable interactions
-  position: "absolute",
-  top: 0,
-  right: 0,
-  bottom: 0,
-  left: 0,
-  alignItems: "center",
-  padding: theme.spacing(12),
-}));
-
-function ImportPendingOverlay() {
-  return (
-    <OverlayStack data-testid="importPending" spacing={2}>
-      <CircularProgress
-        variant="plain"
-        size="md"
-        sx={{ "--CircularProgress-size": "100px" }}
-      />
-      <Typography level="body-md" textAlign="center">
-        Der Import kann einige Zeit in Anspruch nehmen. Bitte schließen Sie
-        dieses Fenster nicht.
-      </Typography>
-    </OverlayStack>
+    <Formik initialValues={INITIAL_VALUES} onSubmit={importData}>
+      {({ values, setFieldValue, setTouched }) => (
+        <ImportDataForm
+          formRef={props.formRef}
+          onClose={props.onClose}
+          importResult={importResult}
+          wasImportSuccessful={isSuccess}
+          title={
+            values.listType === ImportListType.PastProcedureList
+              ? "Abgeschlossene Untersuchungen importieren"
+              : "Daten importieren"
+          }
+          isImportWithMerge={
+            !(
+              isDirectProcedureTypeAssignmentOnImport ||
+              values.listType === ImportListType.PastProcedureList
+            )
+          }
+        >
+          <ImportDataFields
+            listType={values.listType}
+            isPastProcedureImportEnabled={isPastProcedureImportEnabled}
+            locationSelectionMode={locationSelectionMode}
+            isDirectProcedureTypeAssignmentOnImport={
+              isDirectProcedureTypeAssignmentOnImport
+            }
+            setFieldValue={setFieldValue}
+            setTouched={setTouched}
+          />
+        </ImportDataForm>
+      )}
+    </Formik>
   );
 }

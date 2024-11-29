@@ -18,10 +18,7 @@ export function DownloadNotPossibleDialog(
   props: DownloadNotPossibleDialogProps,
 ) {
   return (
-    <BaseModal {...props}>
-      <Typography level="h3" color="danger">
-        Download nicht möglich
-      </Typography>
+    <BaseModal modalTitle="Download nicht möglich" color="danger" {...props}>
       <Typography level="body-md">
         Keiner der ausgewählten Vorgänge hat einen zugewiesenen Termin. Daher
         sind keine Einladungen vorhanden.

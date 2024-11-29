@@ -1,0 +1,55 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1732538432160-1">
+    <createTable tableName="examination">
+      <column autoIncrement="true" name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true"
+                     primaryKeyName="pk_examination"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="examination_date" type="date"/>
+      <column name="note" type="TEXT"/>
+    </createTable>
+    <createTable tableName="child_examinations">
+      <column name="child_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="examinations_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="examinations_id"
+                         constraintName="child_examinations_examinations_id_key"
+                         tableName="child_examinations"/>
+    <addUniqueConstraint columnNames="external_id"
+                         constraintName="examination_external_id_key"
+                         tableName="examination"/>
+    <addForeignKeyConstraint baseColumnNames="child_id"
+                             baseTableName="child_examinations"
+                             constraintName="fk_child_examinations_child"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="child" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="examinations_id"
+                             baseTableName="child_examinations"
+                             constraintName="fk_child_examinations_examination"
+                             deferrable="false" initiallyDeferred="false"
+                             onDelete="NO ACTION" onUpdate="NO ACTION"
+                             referencedColumnNames="id"
+                             referencedTableName="examination" validate="true"/>
+  </changeSet>
+</databaseChangeLog>

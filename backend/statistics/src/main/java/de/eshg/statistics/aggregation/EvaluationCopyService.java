@@ -5,7 +5,6 @@
 
 package de.eshg.statistics.aggregation;
 
-import de.eshg.domain.model.SequencedBaseEntity_;
 import de.eshg.statistics.api.evaluation.CloneEvaluationRequest;
 import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.AggregationResultPendingState;
@@ -55,15 +54,11 @@ import de.eshg.statistics.persistence.entity.filter.NullFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.TextFilterParameter;
 import de.eshg.statistics.persistence.entity.filter.ValueOptionFilterParameter;
 import de.eshg.statistics.persistence.repository.EvaluationRepository;
-import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,19 +66,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class EvaluationCopyService {
   public static final String UNEXPECTED_VALUE = "Unexpected value: %s";
   private final EvaluationRepository evaluationRepository;
-  private final TableRowRepository tableRowRepository;
   private final EvaluationService evaluationService;
-  private final int tableRowPageSize;
 
   public EvaluationCopyService(
-      EvaluationRepository evaluationRepository,
-      TableRowRepository tableRowRepository,
-      EvaluationService evaluationService,
-      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize) {
+      EvaluationRepository evaluationRepository, EvaluationService evaluationService) {
     this.evaluationRepository = evaluationRepository;
-    this.tableRowRepository = tableRowRepository;
     this.evaluationService = evaluationService;
-    this.tableRowPageSize = tableRowPageSize;
   }
 
   @Transactional
@@ -565,13 +553,9 @@ public class EvaluationCopyService {
   }
 
   void copyTableRows(Evaluation copy, Evaluation original) {
-    Long tableRowsCount = tableRowRepository.countTableRowByAggregationResult(copy);
-    int page = (int) (tableRowsCount / tableRowPageSize);
-    Page<TableRow> tableRows =
-        tableRowRepository.findAllByAggregationResult(
-            original,
-            PageRequest.of(
-                page, tableRowPageSize, Sort.by(Sort.Direction.ASC, SequencedBaseEntity_.ID)));
+    Long tableRowsCount = evaluationService.countTableRows(copy);
+    int page = (int) (tableRowsCount / evaluationService.getTableRowPageSize());
+    Page<TableRow> tableRows = evaluationService.getTableRowPage(original, page);
 
     copy.addTableRows(
         tableRows.get().map(tableRow -> copyTableRow(tableRow, copy.getTableColumns())).toList());

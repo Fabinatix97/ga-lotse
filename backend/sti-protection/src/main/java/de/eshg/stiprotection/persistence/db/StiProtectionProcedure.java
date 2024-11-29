@@ -10,6 +10,8 @@ import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
+import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination_;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory_;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
@@ -49,6 +51,14 @@ public class StiProtectionProcedure
       fetch = FetchType.LAZY)
   private MedicalHistory medicalHistory;
 
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @OneToOne(
+      mappedBy = RapidTestExamination_.PROCEDURE,
+      cascade = CascadeType.PERSIST,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  private RapidTestExamination rapidTestExamination;
+
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST)
   private Appointment appointment;
@@ -75,10 +85,10 @@ public class StiProtectionProcedure
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @OneToOne(
-      optional = false,
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-      mappedBy = WaitingRoom_.PROCEDURE)
+      mappedBy = WaitingRoom_.PROCEDURE,
+      cascade = CascadeType.PERSIST,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
   private WaitingRoom waitingRoom;
 
   @Transient
@@ -108,6 +118,21 @@ public class StiProtectionProcedure
       medicalHistory.setProcedure(this);
     }
     this.medicalHistory = medicalHistory;
+  }
+
+  public RapidTestExamination getRapidTestExamination() {
+    return rapidTestExamination;
+  }
+
+  public void setRapidTestExamination(RapidTestExamination rapidTestExamination) {
+    if (rapidTestExamination == null) {
+      if (this.rapidTestExamination != null) {
+        this.rapidTestExamination.setProcedure(null);
+      }
+    } else {
+      rapidTestExamination.setProcedure(this);
+    }
+    this.rapidTestExamination = rapidTestExamination;
   }
 
   public Appointment getAppointment() {

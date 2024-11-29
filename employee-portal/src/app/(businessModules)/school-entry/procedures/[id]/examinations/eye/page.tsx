@@ -9,6 +9,7 @@ import {
   ApiEyeExaminationType,
   UpdateEyeExaminationResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { addMissingKeys, dropEmptyKeys } from "@eshg/lib-portal/helpers/form";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { EyeExaminationResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/EyeExaminationResult";
-import { useUpdateEyeExaminationResult } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateEyeExaminationResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import {
   getEyeExaminationResultQuery,
   getProcedureQuery,
@@ -42,7 +43,11 @@ export default function SchoolEntryEyeExaminationPage(
         getEyeExaminationResultQuery(schoolEntryApi, procedureId),
       ],
     });
-  const updateEyeExaminationResult = useUpdateEyeExaminationResult();
+  const updateEyeExaminationResultOptions =
+    useUpdateEyeExaminationResultOptions();
+  const updateEyeExaminationResult = useHandledMutation(
+    updateEyeExaminationResultOptions,
+  );
 
   async function handleSubmit(formValues: EyeExaminationFormValues) {
     await updateEyeExaminationResult.mutateAsync(
@@ -57,6 +62,11 @@ export default function SchoolEntryEyeExaminationPage(
         <EyeExaminationForm
           initialValues={mapToFormValues(eyeExaminationResult)}
           onSubmit={handleSubmit}
+          valuesToMutationBundle={(values) => ({
+            mutationOptions: updateEyeExaminationResultOptions,
+            variableSupplier: () =>
+              mapToRequest(procedureId, values, eyeExaminationResult.version),
+          })}
         />
       </DisabledFormProvider>
     </ContentPanel>

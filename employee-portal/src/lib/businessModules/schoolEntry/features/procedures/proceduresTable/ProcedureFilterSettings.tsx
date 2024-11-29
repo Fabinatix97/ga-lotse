@@ -17,7 +17,6 @@ import { Label } from "@/lib/businessModules/schoolEntry/api/models/Label";
 import { PROCEDURE_TYPE_OPTIONS } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LabelAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelAutocomplete";
 import { SearchSchoolFilter } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/SearchSchoolFilter";
-import { SchoolYearAutocomplete } from "@/lib/businessModules/schoolEntry/features/procedures/shared/schoolYear";
 import { ResetButton } from "@/lib/shared/components/ResetButton";
 import { ActiveFilter } from "@/lib/shared/components/filterSettings/ActiveFilter";
 import { FilterSettingsContent } from "@/lib/shared/components/filterSettings/FilterSettingsContent";
@@ -26,6 +25,7 @@ import {
   FilterSettingsSheetProps,
 } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { SetDictionaryFilterFn } from "@/lib/shared/components/filterSettings/useFilterDictionary";
+import { SchoolYearAutocomplete } from "@/lib/shared/components/formFields/schoolYear";
 
 export type ProcedureFilters = Pick<
   GetProceduresRequest,

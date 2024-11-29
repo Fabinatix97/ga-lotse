@@ -13,26 +13,29 @@ import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapToDto;
 import static de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry.CITIZEN_PORTAL_ENDPOINT;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
+import de.eshg.base.centralfile.api.facility.FacilityDetails;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.user.UserApi;
 import de.eshg.file.common.FileType;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
-import de.eshg.lib.procedure.model.GetProceduresPaginationOptions;
 import de.eshg.lib.procedure.util.FileValidator;
 import de.eshg.medicalregistry.api.ConfirmProcedureRequest;
+import de.eshg.medicalregistry.api.CreateFullProcedureChangeRequest;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.DeleteProcedureRequest;
 import de.eshg.medicalregistry.api.GetMedicalRegistryEntryOverview;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresFilterOptions;
+import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresPaginationOptions;
 import de.eshg.medicalregistry.api.GetProcedureResponse;
 import de.eshg.medicalregistry.api.ProcedureReferenceDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
 import de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
 import de.eshg.rest.service.error.BadRequestException;
@@ -42,7 +45,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +84,8 @@ public class MedicalRegistryController {
       "otherRelevantDocuments";
 
   private final MedicalRegistryService medicalRegistryService;
+  private final PersonService personService;
+  private final FacilityService facilityService;
   private final MedicalRegistryGuard medicalRegistryGuard;
   private final Validator validator;
   private final AuditLogger auditLogger;
@@ -89,11 +93,15 @@ public class MedicalRegistryController {
 
   public MedicalRegistryController(
       MedicalRegistryService medicalRegistryService,
+      PersonService personService,
+      FacilityService facilityService,
       MedicalRegistryGuard medicalRegistryGuard,
       Validator validator,
       AuditLogger auditLogger,
       UserApi userApi) {
     this.medicalRegistryService = medicalRegistryService;
+    this.personService = personService;
+    this.facilityService = facilityService;
     this.medicalRegistryGuard = medicalRegistryGuard;
     this.validator = validator;
     this.auditLogger = auditLogger;
@@ -105,13 +113,12 @@ public class MedicalRegistryController {
   public UUID confirmProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @RequestBody @Valid ConfirmProcedureRequest confirmProcedureRequest) {
-    MedicalRegistryEntry sourceMedicalRegistryEntry =
-        medicalRegistryService
-            .findProcedureByExternalIdForUpdate(procedureId, confirmProcedureRequest.version())
-            .orElseThrow(notFoundException(procedureId));
-
     MedicalRegistryEntryChange sourceMedicalRegistryChange =
-        Validator.validateIsMedicalRegistryEntryChange(sourceMedicalRegistryEntry);
+        Validator.validateIsMedicalRegistryEntryChange(
+            medicalRegistryService
+                .findProcedureByExternalIdForUpdate(procedureId, confirmProcedureRequest.version())
+                .orElseThrow(notFoundException(procedureId)));
+
     Validator.validateIsDraft(sourceMedicalRegistryChange);
 
     if (confirmProcedureRequest.practiceReferenceFacility() != null) {
@@ -120,6 +127,8 @@ public class MedicalRegistryController {
 
     MedicalRegistryEntry mergeTarget =
         findAndValidateMergeTargetByReferenceIfPresent(confirmProcedureRequest);
+    Validator.validateIsHasCompleteInformationForInitialConfirm(
+        sourceMedicalRegistryChange, mergeTarget);
 
     auditLogProcedureConfirmation(
         procedureId, confirmProcedureRequest, sourceMedicalRegistryChange.getTypeOfChange());
@@ -165,6 +174,7 @@ public class MedicalRegistryController {
     MedicalRegistryEntry mergeTarget =
         medicalRegistryService
             .findProcedureByExternalIdForUpdate(targetReference.id(), targetReference.version())
+            .map(Validator::validateIsMedicalRegistryEntry)
             .orElseThrow(
                 () -> new BadRequestException(makeProcedureNotFoundMessage(targetReference.id())));
 
@@ -188,8 +198,7 @@ public class MedicalRegistryController {
           MultipartFile employeeList,
       @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
           @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
-          List<MultipartFile> otherRelevantDocuments)
-      throws IOException {
+          List<MultipartFile> otherRelevantDocuments) {
 
     medicalRegistryGuard.guard();
 
@@ -218,8 +227,7 @@ public class MedicalRegistryController {
           MultipartFile employeeList,
       @RequestPart(name = REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS, required = false)
           @Size(max = MAX_OTHER_RELEVANT_DOCUMENTS)
-          List<MultipartFile> otherRelevantDocuments)
-      throws IOException {
+          List<MultipartFile> otherRelevantDocuments) {
 
     return createProcedureCommon(
         request,
@@ -240,10 +248,12 @@ public class MedicalRegistryController {
       MultipartFile employeeList,
       List<MultipartFile> otherRelevantDocuments,
       TriggerType triggerType,
-      ProcedureType procedureType)
-      throws IOException {
+      ProcedureType procedureType) {
 
-    Validator.validateEmployeesEmployed(request.employeesEmployed(), employeeList);
+    if (request instanceof CreateFullProcedureChangeRequest createFullProcedureRequest) {
+      Validator.validateEmployeesEmployed(
+          createFullProcedureRequest.employeesEmployed(), employeeList);
+    }
 
     List<DocumentData> providedDocuments =
         getProvidedDocuments(
@@ -320,23 +330,24 @@ public class MedicalRegistryController {
   @Transactional(readOnly = true)
   @Operation(summary = "Get medical registry procedure by id.")
   public GetProcedureResponse getProcedure(@PathVariable("procedureId") UUID procedureId) {
-    MedicalRegistryEntry medicalRegistryEntry =
+    MedicalRegistryProcedure medicalRegistryProcedure =
         medicalRegistryService
             .findProcedureByExternalId(procedureId)
             .orElseThrow(notFoundException(procedureId));
 
-    Professional professional = medicalRegistryEntry.getProfessional();
+    Professional professional = medicalRegistryProcedure.getProfessional();
     GetPersonFileStateResponse professionalDetails =
-        medicalRegistryService.findProfessionalDetails(professional.getCentralFileStateId());
+        personService.findProfessionalDetails(professional.getCentralFileStateId());
 
-    Map<UUID, GetFacilityFileStateResponse> practiceDetails =
-        medicalRegistryEntry.getRelatedFacilities().stream()
-            .map(f -> medicalRegistryService.findPracticeDetails(f.getCentralFileStateId()))
-            .collect(Collectors.toMap(GetFacilityFileStateResponse::id, facility -> facility));
+    Map<UUID, FacilityDetails> practiceDetails =
+        facilityService
+            .findPracticeDetails(medicalRegistryProcedure.getRelatedFacilities())
+            .stream()
+            .collect(Collectors.toMap(AddFacilityFileStateResponse::id, facility -> facility));
 
     auditLogProcedureDetailAccess(procedureId);
 
-    return mapToDto(medicalRegistryEntry, professionalDetails, practiceDetails);
+    return mapToDto(medicalRegistryProcedure, professionalDetails, practiceDetails);
   }
 
   private void auditLogProcedureDetailAccess(UUID procedureId) {
@@ -353,12 +364,12 @@ public class MedicalRegistryController {
   public void deleteProcedure(
       @PathVariable("procedureId") UUID procedureId,
       @Valid @RequestBody DeleteProcedureRequest request) {
-    MedicalRegistryEntry medicalRegistryEntry =
+    MedicalRegistryProcedure medicalRegistryProcedure =
         medicalRegistryService
             .findProcedureByExternalIdForUpdate(procedureId, request.version())
             .orElseThrow(notFoundException(procedureId));
     MedicalRegistryEntryChange medicalRegistryEntryChange =
-        Validator.validateIsMedicalRegistryEntryChange(medicalRegistryEntry);
+        Validator.validateIsMedicalRegistryEntryChange(medicalRegistryProcedure);
 
     Validator.validateIsDraft(medicalRegistryEntryChange);
 
@@ -372,7 +383,7 @@ public class MedicalRegistryController {
           "Get paginated and optionally filtered medical registry procedures. Filtering is optional")
   public GetMedicalRegistryEntryOverview getProcedureOverview(
       @Valid @ParameterObject @InlineParameterObject
-          GetProceduresPaginationOptions paginationOptions,
+          GetMedicalRegistryProceduresPaginationOptions paginationOptions,
       @Valid @ParameterObject @InlineParameterObject
           GetMedicalRegistryProceduresFilterOptions filterOptions) {
 
@@ -401,6 +412,6 @@ public class MedicalRegistryController {
 
   private static String makeProcedureNotFoundMessage(UUID procedureId) {
     return "%s with UUID %s not found"
-        .formatted(MedicalRegistryEntry.class.getSimpleName(), procedureId);
+        .formatted(MedicalRegistryProcedure.class.getSimpleName(), procedureId);
   }
 }

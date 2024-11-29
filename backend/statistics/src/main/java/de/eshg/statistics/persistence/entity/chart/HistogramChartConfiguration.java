@@ -27,7 +27,8 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @DataSensitivity(PUBLIC)
 @Entity
 @DiscriminatorValue("HISTOGRAM_CHART")
-public class HistogramChartConfiguration extends ChartConfiguration {
+public class HistogramChartConfiguration extends ChartConfiguration
+    implements TwoAttributesChartConfiguration {
   @OneToOne(
       cascade = CascadeType.PERSIST,
       fetch = FetchType.LAZY,

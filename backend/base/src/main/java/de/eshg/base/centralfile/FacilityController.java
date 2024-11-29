@@ -12,7 +12,6 @@ import de.eshg.base.centralfile.mapper.FacilityMapper;
 import de.eshg.base.centralfile.persistence.FacilityService;
 import de.eshg.base.centralfile.persistence.entity.Facility;
 import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
-import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -204,8 +203,6 @@ public class FacilityController implements FacilityApi {
   @Transactional
   public AddFacilityFileStateResponse updateReferenceFacility(
       UUID referenceDataId, UpdateReferenceFacilityRequest request) {
-    featureToggle.assertNewFeatureIsEnabled(BaseFeature.VERIFICATION_OF_EXTERNAL_DATA);
-
     Facility referenceFacilityUpdate = FacilityMapper.mapFacilityToDm(request);
 
     Facility updatedFacilityFileState =

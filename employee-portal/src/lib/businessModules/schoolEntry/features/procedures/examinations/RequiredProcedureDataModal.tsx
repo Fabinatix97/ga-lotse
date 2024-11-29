@@ -21,10 +21,7 @@ export function RequiredProcedureDataDialog(
     Omit<BaseModalProps, "children" | "modalTitle">,
 ) {
   return (
-    <BaseModal {...props}>
-      <Typography level="h3" color="danger">
-        Fehlende Angaben!
-      </Typography>
+    <BaseModal {...props} modalTitle="Fehlende Angaben!" color="danger">
       <Typography level="body-md">
         Bitte vervollständigen Sie folgende Bereiche:
       </Typography>

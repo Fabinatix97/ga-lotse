@@ -25,8 +25,7 @@
     "react-i18next": "catalog:i18next",
     "remeda": "catalog:common",
     "use-debounce": "catalog:common",
-    "valibot": "catalog:common",
-    "zod": "3.23.8"
+    "valibot": "catalog:common"
   },
   "devDependencies": {
     "@eslint/compat": "catalog:eslint",
@@ -40,11 +39,11 @@
     "@vitejs/plugin-react": "catalog:vitest",
     "@vitest/coverage-istanbul": "catalog:vitest",
     "eslint": "catalog:eslint",
-    "eslint-plugin-import": "catalog:eslint",
     "eslint-config-next": "catalog:next",
     "eslint-config-prettier": "catalog:eslint",
-    "eslint-plugin-unused-imports": "catalog:eslint",
+    "eslint-plugin-import": "catalog:eslint",
     "eslint-plugin-promise": "catalog:eslint",
+    "eslint-plugin-unused-imports": "catalog:eslint",
     "prettier": "catalog:prettier",
     "typescript": "catalog:common",
     "vite-tsconfig-paths": "catalog:vitest",

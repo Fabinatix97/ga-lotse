@@ -9,7 +9,6 @@ import static de.eshg.base.contact.persistence.ContactSearchSpecificationUtil.*;
 import static de.eshg.base.util.PaginationUtil.getPageable;
 import static de.eshg.lib.aggregation.AggregationHelper.aggregateErrorResponses;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.address.AddressDto;
 import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.address.PostboxAddressDto;
@@ -39,7 +38,7 @@ import de.eshg.domain.model.BaseRevisionEntity_;
 import de.eshg.domain.model.audit.DefaultRevisionEntity_;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.auditlog.AuditLogger;
-import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.mapper.AuditMapper;
 import de.eshg.mapper.RevisionEntryWithChange;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
@@ -49,7 +48,6 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.metamodel.SingularAttribute;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,11 +77,6 @@ public class ContactService {
   public static final String RELEVANCE_SORT_KEY = "RELEVANCE";
   public static final String TYPE_SORT_KEY = "TYPE";
   public static final String CATEGORY_SORT_KEY = "CATEGORY";
-
-  private static final Set<BusinessModule> BUSINESS_MODULES_REQUIRING_CONTACT_MERGE_CALLBACK =
-      Arrays.stream(BusinessModule.values())
-          .filter(ContactService::requiresContactMergedCallback)
-          .collect(StreamUtil.toLinkedHashSet());
 
   private final ContactRepository contactRepository;
   private final AuditLogger auditLogger;
@@ -349,6 +342,7 @@ public class ContactService {
         ContactMapper.mapAddressIntoDm(postboxAddressDto, existingPostboxAddress);
       } else {
         entityManager.remove(existingAddress);
+        addressConsumer.accept(null);
         entityManager.flush();
         addressConsumer.accept(ContactMapper.mapAddressIntoDm(addressDto));
       }
@@ -434,7 +428,8 @@ public class ContactService {
     List<ErrorResponseWithLocation> errors =
         aggregateErrorResponses(
             businessModuleAggregationHelper.requestFromBusinessModules(
-                BUSINESS_MODULES_REQUIRING_CONTACT_MERGE_CALLBACK,
+                null,
+                BusinessModuleCapability.CONTACT_MERGED_EVENT_CALLBACK,
                 client -> {
                   client.broadcastContactsMergedEvent(
                       source.getExternalId(), target.getExternalId());
@@ -503,18 +498,5 @@ public class ContactService {
     return Map.of(
         "Quelle Kontakt ID", source.getExternalId().toString(),
         "Ziel Kontakt ID", target.getExternalId().toString());
-  }
-
-  private static boolean requiresContactMergedCallback(BusinessModule businessModule) {
-    return switch (businessModule) {
-      case INSPECTION,
-              TRAVEL_MEDICINE,
-              MEASLES_PROTECTION,
-              STI_PROTECTION,
-              MEDICAL_REGISTRY,
-              DENTAL ->
-          false;
-      case SCHOOL_ENTRY -> true;
-    };
   }
 }

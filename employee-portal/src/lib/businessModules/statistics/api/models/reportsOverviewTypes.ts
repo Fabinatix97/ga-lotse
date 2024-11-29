@@ -7,7 +7,7 @@ import {
   ReportSeries,
   ReportSeriesItem,
   SingleReport,
-} from "./statisticReports";
+} from "./evaluationReports";
 
 export type ReportOverviewTableRow =
   | SingleReportOverview

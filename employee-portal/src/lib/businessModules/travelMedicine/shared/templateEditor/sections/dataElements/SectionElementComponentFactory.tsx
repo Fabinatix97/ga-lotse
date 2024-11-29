@@ -16,9 +16,11 @@ import { MainQuestion } from "@/lib/businessModules/travelMedicine/shared/templa
 
 export class SectionElementComponentFactory {
   private sectionElementsFormikPath;
+  private sectionIndex;
 
   public constructor(private sectionProps: TemplateSectionElementProp) {
     this.sectionElementsFormikPath = sectionProps.sectionElementsFormikPath;
+    this.sectionIndex = sectionProps.sectionIndex;
   }
 
   public createSectionElementComponents() {
@@ -43,6 +45,7 @@ export class SectionElementComponentFactory {
         sectionElementDeleteHandler={() =>
           this.sectionProps.sectionElementDeleteHandler(index)
         }
+        label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Textblock`}
         key={index}
       />
     );
@@ -63,6 +66,7 @@ export class SectionElementComponentFactory {
         sectionElementDeleteHandler={() =>
           this.sectionProps.sectionElementDeleteHandler(index)
         }
+        label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Bestätigungsfeld`}
         key={index}
       />
     );
@@ -88,8 +92,11 @@ export class SectionElementComponentFactory {
             sectionElementDeleteHandler={() =>
               this.sectionProps.sectionElementDeleteHandler(index)
             }
+            label={`${this.sectionIndex + 1}. Sektion, ${index + 1}. Element, Frage`}
           />
         }
+        sectionIndex={this.sectionIndex}
+        elementIndex={index}
         key={index}
       />
     );

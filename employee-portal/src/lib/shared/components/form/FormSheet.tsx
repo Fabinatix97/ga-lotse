@@ -25,5 +25,5 @@ interface FormSheetProps extends RequiresChildren {
 }
 
 export function FormSheet(props: FormSheetProps) {
-  return <StyledSheet {...props} variant="outlined" component={FormPlus} />;
+  return <StyledSheet variant="outlined" component={FormPlus} {...props} />;
 }

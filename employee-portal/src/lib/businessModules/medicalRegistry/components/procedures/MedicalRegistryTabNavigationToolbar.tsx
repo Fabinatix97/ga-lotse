@@ -30,7 +30,7 @@ export function MedicalRegistryTabNavigationToolbar({
   );
 
   const { data: procedure } = useGetProcedure(procedureId);
-  const headerTitle = formatPersonName(procedure.professional);
+  const headerTitle = formatPersonName(procedure.applicant);
 
   const tabItems: TabNavigationItem[] = [
     {

@@ -17,7 +17,8 @@ import { useRouter } from "next/navigation";
 import { useAboardDraftVaccinationConsultation } from "@/lib/businessModules/travelMedicine/api/mutations/vaccinationConsultation";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 
-interface AbortProcedureModalProps extends Omit<BaseModalProps, "children"> {
+interface AbortProcedureModalProps
+  extends Omit<BaseModalProps, "children" | "modalTitle"> {
   procedure: ApiGetVaccinationConsultationDetailsResponse;
 }
 

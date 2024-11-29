@@ -15,6 +15,7 @@ import { Formik, FormikErrors } from "formik";
 import { Ref } from "react";
 import { isEmpty } from "remeda";
 
+import { theme } from "@/lib/baseModule/theme/theme";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { AppointmentRadioGroup } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/shared/AppointmentRadioGroup";
 import {
@@ -147,7 +148,10 @@ export function AddServiceAppointmentForm(
                   }
                 />
               </Stack>
-              <Typography level="body-md" sx={{ fontWeight: "bold", mt: 2 }}>
+              <Typography
+                level="body-md"
+                sx={{ fontWeight: theme.fontWeight.xl, mt: 2 }}
+              >
                 Termin
               </Typography>
               <AppointmentRadioGroup

@@ -28,7 +28,7 @@ public class InspectionSignature extends BaseEntity {
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private String signer;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @NotNull
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   private MediaFile signatureImage;

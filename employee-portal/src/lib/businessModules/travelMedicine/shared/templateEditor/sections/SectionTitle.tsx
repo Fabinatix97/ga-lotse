@@ -10,14 +10,17 @@ import { IconButton, Stack } from "@mui/joy";
 export function SectionTitle({
   sectionDeleteHandler,
   sectionFormikPath,
+  label,
 }: Readonly<{
   sectionDeleteHandler: () => void;
   sectionFormikPath: string;
+  label: string;
 }>) {
   return (
     <Stack flex={1} direction="row" spacing={2} style={{ paddingRight: 12 }}>
       <InputField
         label
+        aria-label={label}
         name={`${sectionFormikPath}.sectionTitle`}
         placeholder="Sektionstitel eingeben"
         sx={{ flex: 1 }}

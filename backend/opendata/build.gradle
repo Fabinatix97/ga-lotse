@@ -9,7 +9,7 @@ dependencies {
     implementation project(':business-module-persistence-commons')
     implementation project(':auditlog-api')
     implementation project(':lib-base-client')
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
     implementation 'commons-io:commons-io:latest.release'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation project(':test-commons')
@@ -19,7 +19,7 @@ dependencies {
 
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
+    testImplementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 }
 
 dockerCompose {

@@ -13,7 +13,7 @@ import {
   RoomEvent,
   SetPresence,
   createClient,
-} from "matrix-js-sdk/lib/matrix";
+} from "matrix-js-sdk";
 import { KnownMembership, Membership } from "matrix-js-sdk/lib/types";
 import {
   Dispatch,

@@ -46,7 +46,3 @@ export const configApiQueryKey = queryKeyFactory(apiQueryKey(["configApi"]));
 export const archivingApiQueryKey = queryKeyFactory(
   apiQueryKey(["archivingApi"]),
 );
-
-export const gdprValidationTaskApiQueryKey = queryKeyFactory(
-  apiQueryKey(["gdprValidationTaskApi"]),
-);

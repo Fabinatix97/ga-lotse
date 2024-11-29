@@ -5,7 +5,9 @@
 
 package de.eshg.travelmedicine.vaccinationconsultation;
 
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.travelmedicine.certificate.CertificateService;
 import de.eshg.travelmedicine.certificate.api.GetCertificatesResponse;
@@ -40,6 +42,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -89,6 +92,7 @@ public class VaccinationConsultationController {
   private final CertificateService certificateService;
   private final InformationStatementService informationStatementService;
   private final MedicalHistoryService medicalHistoryService;
+  private final AuditLogger auditLogger;
 
   public VaccinationConsultationController(
       VaccinationConsultationService vaccinationConsultationService,
@@ -96,13 +100,15 @@ public class VaccinationConsultationController {
       CertificateService certificateService,
       TravelMedicineFeatureToggle featureToggle,
       InformationStatementService informationStatementService,
-      MedicalHistoryService medicalHistoryService) {
+      MedicalHistoryService medicalHistoryService,
+      AuditLogger auditLogger) {
     this.vaccinationConsultationService = vaccinationConsultationService;
     this.procedureStepService = procedureStepService;
     this.certificateService = certificateService;
     this.featureToggle = featureToggle;
     this.informationStatementService = informationStatementService;
     this.medicalHistoryService = medicalHistoryService;
+    this.auditLogger = auditLogger;
   }
 
   @GetMapping(path = APPOINTMENT_OVERVIEW)
@@ -155,7 +161,17 @@ public class VaccinationConsultationController {
   @Transactional(readOnly = true)
   public GetVaccinationConsultationDetailsResponse getVaccinationConsultationDetails(
       @PathVariable("procedureId") UUID procedureId) {
-    return vaccinationConsultationService.getVaccinationConsultationDetails(procedureId);
+    GetVaccinationConsultationDetailsResponse vaccinationConsultationDetails =
+        vaccinationConsultationService.getVaccinationConsultationDetails(procedureId);
+    auditLogger.log(
+        "Vorgangsbearbeitung",
+        "Abfrage Vorgangs-Details",
+        Map.of(
+            "ID des Vorgangs",
+            procedureId.toString(),
+            "durch Benutzer",
+            CurrentUserHelper.getCurrentUserId().toString()));
+    return vaccinationConsultationDetails;
   }
 
   @DeleteMapping(path = "/{procedureId}")

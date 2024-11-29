@@ -14,6 +14,7 @@ import { TextareaField } from "@/lib/shared/components/formFields/TextareaField"
 export interface TemplateTextBlockProps {
   sectionElementFormikPath: string;
   sectionElementDeleteHandler: () => void;
+  label: string;
 }
 
 export function TemplateTextBlock(props: Readonly<TemplateTextBlockProps>) {
@@ -23,6 +24,7 @@ export function TemplateTextBlock(props: Readonly<TemplateTextBlockProps>) {
       <Stack direction="row" spacing={1} alignItems={"flex-start"}>
         <TextareaField
           label
+          aria-label={props.label}
           name={`${props.sectionElementFormikPath}.textField`}
           placeholder="Text"
           sx={{ flex: 1 }}

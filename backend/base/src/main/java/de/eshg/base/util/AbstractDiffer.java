@@ -19,7 +19,11 @@ public abstract class AbstractDiffer {
     Address left = lhs != null ? lhs : new DomesticFacilityAddress();
     Address right = rhs != null ? rhs : new DomesticFacilityAddress();
     DiffBuilder<Address> diffBuilder =
-        new DiffBuilder<>(left, right, ToStringStyle.SHORT_PREFIX_STYLE)
+        new DiffBuilder.Builder<Address>()
+            .setLeft(left)
+            .setRight(right)
+            .setStyle(ToStringStyle.SHORT_PREFIX_STYLE)
+            .build()
             .append("country", left.getCountry(), right.getCountry())
             .append("city", trim(left.getCity()), trim(right.getCity()))
             .append("postalCode", trim(left.getPostalCode()), trim(right.getPostalCode()))

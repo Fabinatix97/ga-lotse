@@ -26,13 +26,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C extends XlsxColumn, M>
+public abstract class SchoolEntryImporter<
+        T extends SchoolEntryRowValues<T>, C extends XlsxColumn, M>
     extends Importer<T, C> {
 
   private static final Logger log = LoggerFactory.getLogger(SchoolEntryImporter.class);
@@ -101,8 +101,7 @@ public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C exte
         writeStatus(row, INVALID_PROCEDURE_ID);
         stats.countFailed();
       }
-    } else if (rowValues.getStatus() == DUPLICATE_WITHIN_LIST
-        || containsMatchingRow(validRows, rowValues)) {
+    } else if (rowValues.getStatus() == DUPLICATE_WITHIN_LIST || isDuplicateRow(rowValues)) {
       writeStatus(row, DUPLICATE_WITHIN_LIST);
       stats.countDuplicated();
     } else if (rowValues.isValid()) {
@@ -113,11 +112,6 @@ public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C exte
       writeStatus(row, ERROR_INPUT_DATA);
       stats.countFailed();
     }
-  }
-
-  protected boolean containsMatchingRow(ValidRows<T> rows, T values) {
-    return Stream.concat(rows.importableRows().stream(), rows.mergeableRows().stream())
-        .anyMatch(row -> row.isDuplicateRow(values));
   }
 
   protected abstract void evaluateActionForValidRow(
@@ -147,7 +141,7 @@ public abstract class SchoolEntryImporter<T extends SchoolEntryRowValues, C exte
       SchoolEntryProcedure createdProcedure = createdProcedures.get(i);
 
       Row row = rowValues.getRow();
-      writeStatusAndProcedureId(row, importStatus, createdProcedure.getExternalId());
+      writeStatusAndEntityId(row, importStatus, createdProcedure.getExternalId());
     }
   }
 

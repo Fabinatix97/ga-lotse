@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use client";
-
 import {
   ApiGetInboxProcedureResponse,
   ApiInboxProcedureAddress,
@@ -12,7 +10,6 @@ import {
 } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Button, Divider, Stack, Typography } from "@mui/joy";
-import { useRouter } from "next/navigation";
 import { ReactElement, useState } from "react";
 
 import { UseFetchInboxProcedure } from "@/lib/shared/api/queries/inboxProcedures";
@@ -21,11 +18,10 @@ import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBound
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { ConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialog";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
-import { useBuildRoutePreservingSearchParams } from "@/lib/shared/components/procedures/hooks/useBuildRoutePreservingSearchParams";
 import { InboxProcedureStatusChip } from "@/lib/shared/components/procedures/inbox/InboxProcedureStatusChip";
 import { UseCloseInboxProcedure } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
@@ -35,7 +31,6 @@ import {
 } from "@/lib/shared/helpers/facilityUtils";
 import { join } from "@/lib/shared/helpers/strings";
 
-import { InboxProceduresPageRoutes } from "./InboxProceduresPage";
 import {
   contactTypeNames,
   inboxProgressEntryTypeNames,
@@ -46,27 +41,15 @@ import {
   useCreateInboxProcedureDisabled,
 } from "./hooks/useCreateInboxProcedureStatusTemplate";
 
-interface InboxProcedureDetailsSidebarProps {
+interface InboxProcedureDetailsSidebarProps extends DrawerProps {
   inboxProcedureId: string;
-  routes: InboxProceduresPageRoutes;
   useFetchInboxProcedure: UseFetchInboxProcedure;
   useCloseInboxProcedure: UseCloseInboxProcedure;
   useCreateInboxProcedure?: UseCreateInboxProcedure;
 }
 
-export function InboxProcedureDetailsSidebar(
-  props: InboxProcedureDetailsSidebarProps,
-) {
-  return (
-    <OverlayBoundary>
-      <InternalInboxProcedureDetailsSidebar {...props} />
-    </OverlayBoundary>
-  );
-}
-
-function InternalInboxProcedureDetailsSidebar({
+export function InboxProcedureDetailsSidebar({
   inboxProcedureId,
-  routes,
   useFetchInboxProcedure,
   useCloseInboxProcedure,
   useCreateInboxProcedure = useCreateInboxProcedureDisabled,
@@ -75,21 +58,10 @@ function InternalInboxProcedureDetailsSidebar({
   const { inboxProcedure } = response;
 
   const [showClosureModal, setShowClosureModal] = useState(false);
-  const router = useRouter();
-  const buildRoutePreservingSearchParams =
-    useBuildRoutePreservingSearchParams();
   const createInboxProcedure = useCreateInboxProcedure(inboxProcedureId);
 
-  function onClose() {
-    router.push(buildRoutePreservingSearchParams(routes.index));
-  }
-
   return (
-    <Sidebar
-      aria-label="Posteingangsvorgangsseitenleiste"
-      onClose={onClose}
-      open
-    >
+    <>
       <InboxProcedureDetailsSidebarContent {...response} />
       <SidebarActions>
         <ButtonBar
@@ -130,7 +102,7 @@ function InternalInboxProcedureDetailsSidebar({
           useCloseInboxProcedure={useCloseInboxProcedure}
         />
       )}
-    </Sidebar>
+    </>
   );
 }
 

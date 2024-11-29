@@ -10,7 +10,8 @@ import de.eshg.schoolentry.domain.model.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public final class PastProcedureListRowValues extends SchoolEntryRowValues {
+public final class PastProcedureListRowValues
+    extends SchoolEntryRowValues<PastProcedureListRowValues> {
 
   private ProcedureType procedureType;
 
@@ -93,8 +94,7 @@ public final class PastProcedureListRowValues extends SchoolEntryRowValues {
   }
 
   @Override
-  boolean isDuplicateRow(Object other) {
-    return (other instanceof PastProcedureListRowValues pastProcedureListRowValues)
-        && Objects.equals(this.getChild(), pastProcedureListRowValues.getChild());
+  public boolean isDuplicateRow(PastProcedureListRowValues other) {
+    return Objects.equals(this.getChild(), other.getChild());
   }
 }

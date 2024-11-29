@@ -11,10 +11,10 @@ import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarSt
 
 export function AddReportSidebar({
   onClose,
-  statisticId,
+  evaluationId,
 }: {
   onClose: () => void;
-  statisticId: string;
+  evaluationId: string;
 }) {
   const initialValues: AddReportFormModel = {
     name: "",
@@ -28,7 +28,7 @@ export function AddReportSidebar({
     <SidebarStepper
       onClose={onClose}
       open={true}
-      onSubmit={(model) => addReport(statisticId, model)}
+      onSubmit={(model) => addReport(evaluationId, model)}
       initialValues={initialValues}
       saveLabel="Erstellen"
       steps={[

@@ -75,6 +75,12 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
   int replaceSchoolId(
       @Param("oldSchoolId") UUID oldSchoolId, @Param("newSchoolId") UUID newSchoolId);
 
+  @Modifying
+  @Query(
+      "update SchoolEntryProcedure p set p.locationId = :newLocationId where p.locationId = :oldLocationId")
+  int replaceLocationId(
+      @Param("oldLocationId") UUID oldLocationId, @Param("newLocationId") UUID newLocationId);
+
   @Query(
       "select p.externalId from SchoolEntryProcedure p where p.procedureStatus = de.eshg.lib.procedure.domain.model.ProcedureStatus.CLOSED order by p.id")
   List<UUID> findExternalIdsOfClosedProcedures();

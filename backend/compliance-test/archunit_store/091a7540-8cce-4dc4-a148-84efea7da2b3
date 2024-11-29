@@ -1,11 +1,6 @@
-de.eshg.inspection.inspection.persistence.Inspection.followupInspection not able to cascade deletions
-de.eshg.inspection.report.persistence.InspectionSignature.signatureImage not able to cascade deletions
-de.eshg.inspection.report.persistence.Report.reportFile not able to cascade deletions
-de.eshg.inspection.report.persistence.Report.signature not able to cascade deletions
 de.eshg.lib.procedure.domain.model.ProcessedInboxProgressEntry.inboxProcedure not able to cascade deletions
 de.eshg.measlesprotection.persistence.db.AccessRestriction.progressEntry not able to cascade deletions
 de.eshg.measlesprotection.persistence.db.AccessRestrictionLetter.progressEntry not able to cascade deletions
 de.eshg.measlesprotection.persistence.db.ProofRequestLetter.pdf not able to cascade deletions
 de.eshg.measlesprotection.persistence.db.ProofSubmission.manualProgressEntry not able to cascade deletions
 de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep.services not able to cascade deletions
-de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.VaccinationConsultation.procedureSteps not able to cascade deletions

@@ -7,6 +7,11 @@
 
 import { Workbox } from "workbox-window";
 
+import {
+  getServiceWorkerRegistration,
+  putServiceWorkerRegistration,
+} from "@/serviceWorker/common/registrationPersistence";
+
 // injected by next-pwa
 declare global {
   interface Window {
@@ -18,8 +23,27 @@ let workboxRegistered = false;
 
 export async function registerServiceWorker() {
   if (!workboxRegistered) {
-    workboxRegistered = true;
     await window.workbox?.register();
+    workboxRegistered = true;
+    const serviceWorker = await window.workbox?.controlling;
+    await putServiceWorkerRegistration(serviceWorker?.scriptURL);
+    return serviceWorker;
   }
   return window.workbox?.controlling;
+}
+
+export async function isServiceWorkerRegistered(): Promise<boolean> {
+  return !!(await getServiceWorkerRegistration());
+}
+
+export async function getRegistration() {
+  const sw = await window.workbox?.controlling;
+  const scriptUrl = sw?.scriptURL;
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  for (const registration of registrations) {
+    if (registration.active?.scriptURL === scriptUrl) {
+      return registration;
+    }
+  }
+  return undefined;
 }

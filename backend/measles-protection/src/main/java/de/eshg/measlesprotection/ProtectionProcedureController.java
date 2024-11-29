@@ -7,6 +7,7 @@ package de.eshg.measlesprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.measlesprotection.api.CaseStatusDto;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresPaginationOptions;
@@ -22,11 +23,13 @@ import de.eshg.measlesprotection.persistence.centralfile.ProcedureDetailsData;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.measlesprotection.persistence.support.ResultPage;
 import de.eshg.measlesprotection.validation.ProtectedProcedure;
+import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,12 +50,15 @@ public class ProtectionProcedureController {
 
   private final MeaslesProtectionService measlesProtectionService;
   private final GetProceduresForPersonMapper getProceduresForPersonMapper;
+  private final AuditLogger auditLogger;
 
   public ProtectionProcedureController(
       MeaslesProtectionService measlesProtectionService,
-      GetProceduresForPersonMapper getProceduresForPersonMapper) {
+      GetProceduresForPersonMapper getProceduresForPersonMapper,
+      AuditLogger auditLogger) {
     this.measlesProtectionService = measlesProtectionService;
     this.getProceduresForPersonMapper = getProceduresForPersonMapper;
+    this.auditLogger = auditLogger;
   }
 
   @PutMapping("/{id}")
@@ -77,6 +83,14 @@ public class ProtectionProcedureController {
   public ProtectionProcedureDto getProcedure(@PathVariable("id") UUID id) {
     ProcedureDetailsData procedureDetails =
         measlesProtectionService.findAndAugmentProcedureByExternalId(id);
+    auditLogger.log(
+        "Vorgangsbearbeitung",
+        "Abfrage Vorgangs-Details",
+        Map.of(
+            "ID des Vorgangs",
+            id.toString(),
+            "durch Benutzer",
+            CurrentUserHelper.getCurrentUserId().toString()));
     return ToDtoMappers.toProcedureDetails(procedureDetails);
   }
 

@@ -87,8 +87,7 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
    *       actually be deleted
    * </ul>
    *
-   * @param procedureId The procedureId of the {@link Procedure} which should be written to the
-   *     cemetery and then deleted.
+   * @param procedureId The procedureId of the {@link Procedure} which should be deleted.
    * @throws NotFoundException if the {@link Procedure} is not found
    */
   @Transactional

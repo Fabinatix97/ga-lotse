@@ -7,6 +7,7 @@ package de.eshg.schoolentry.importer;
 
 import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
 import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
+import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
 import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MERGED_DATA_FROM_CITIZEN_LIST;
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MERGED_DATA_FROM_SCHOOL_LIST;
@@ -120,13 +121,13 @@ public class ImportService {
       validateSheet(workbook);
       Sheet sheet = workbook.getSheetAt(0);
 
-      validator.validateNumberOfRows(sheet);
+      validateNumberOfRows(sheet, schoolEntryProperties.getMaxNumberOfImportRows());
       validateHeaderExists(sheet);
 
       try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
         XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
 
-        SchoolEntryImporter<? extends SchoolEntryRowValues, ? extends XlsxColumn, ?>
+        SchoolEntryImporter<? extends SchoolEntryRowValues<?>, ? extends XlsxColumn, ?>
             schoolEntryImporter =
                 createImporter(importType, schoolId, locationId, schoolYear, normalizedSheet);
 
@@ -135,7 +136,7 @@ public class ImportService {
     }
   }
 
-  private SchoolEntryImporter<? extends SchoolEntryRowValues, ? extends XlsxColumn, ?>
+  private SchoolEntryImporter<? extends SchoolEntryRowValues<?>, ? extends XlsxColumn, ?>
       createImporter(
           ImportType importType,
           UUID schoolId,

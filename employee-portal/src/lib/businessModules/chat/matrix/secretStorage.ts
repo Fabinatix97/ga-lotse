@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MatrixClient } from "matrix-js-sdk/lib/client";
+import { MatrixClient, UIAuthCallback } from "matrix-js-sdk";
 import { KeyBackupInfo } from "matrix-js-sdk/lib/crypto-api";
-import { UIAuthCallback } from "matrix-js-sdk/lib/matrix";
 
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 

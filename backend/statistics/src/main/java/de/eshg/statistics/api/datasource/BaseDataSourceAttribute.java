@@ -7,4 +7,5 @@ package de.eshg.statistics.api.datasource;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record BaseDataSourceAttribute(@NotBlank String name, @NotBlank String code) {}
+public record BaseDataSourceAttribute(
+    @NotBlank String displayName, @NotBlank String name, @NotBlank String code) {}

@@ -12,12 +12,12 @@ import {
   headerHeightDesktop,
   simpleToolbarHeight,
 } from "@/lib/baseModule/components/layout/sizes";
-import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import {
   UpdateReportSidebar,
   UpdateReportSidebarReportInfo,
 } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -51,8 +51,8 @@ export interface ReportDetailsTileProps {
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
   const [openUpdateReportSidebar, setOpenUpdateReportSidebar] =
     useState<UpdateReportSidebarReportInfo | null>(null);
-  const canWrite = useStatisticRoleChecks().canWrite();
-  const canDelete = useStatisticRoleChecks().canDelete(props.userId);
+  const canWrite = useStatisticsRoleChecks().canWrite();
+  const canDelete = useStatisticsRoleChecks().canDelete(props.userId);
   const { deleteReportWithConfirmation } = useDeleteWithConfirmation({
     redirectRoute: routes.reports.index,
   });

@@ -9,14 +9,14 @@ import { Button, Stack } from "@mui/joy";
 import { isNonNullish } from "remeda";
 
 import {
+  ActiveSeriesInfo,
+  ReportDataType,
+} from "@/lib/businessModules/statistics/api/models/evaluationReports";
+import {
   INTERVAL_TRANSLATION,
   REPORTING_PERIOD_TRANSLATION,
   ReportSeriesState,
 } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
-import {
-  ActiveSeriesInfo,
-  ReportDataType,
-} from "@/lib/businessModules/statistics/api/models/statisticReports";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 

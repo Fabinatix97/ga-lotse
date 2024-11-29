@@ -4,7 +4,10 @@
  */
 
 import { Row } from "@eshg/lib-portal/components/Row";
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
@@ -41,9 +44,6 @@ interface FacilityFormProps {
   sidebarFormRef?: RefObject<SidebarFormHandle>;
   title: string;
   contactPersonRequired?: boolean;
-  contactPersonSalutationRequired?: boolean;
-  contactPersonTitleRequired?: boolean;
-  contactPersonRoleRequired?: boolean;
 }
 
 export function FacilityForm({
@@ -55,9 +55,6 @@ export function FacilityForm({
   sidebarFormRef,
   title,
   contactPersonRequired,
-  contactPersonSalutationRequired,
-  contactPersonTitleRequired,
-  contactPersonRoleRequired,
 }: FacilityFormProps) {
   const fieldName = createFieldNameMapper<BaseFacility>();
   return (
@@ -96,7 +93,7 @@ export function FacilityForm({
                 <Grid xxs={12} data-testid={"emailAddresses"}>
                   <InputArrayField
                     name={fieldName("emailAddresses")}
-                    label={"E-Mail-Adresse"}
+                    label={(index) => getIndexLabel("E-Mail-Adresse", index)}
                     addMoreLabel={"E-Mail-Adresse hinzufügen"}
                     fieldComponent={EmailField}
                   />
@@ -104,7 +101,7 @@ export function FacilityForm({
                 <Grid xxs={12} data-testid={"phoneNumbers"}>
                   <InputArrayField
                     name={fieldName("phoneNumbers")}
-                    label={"Telefonnummer"}
+                    label={(index) => getIndexLabel("Telefonnummer", index)}
                     addMoreLabel={"Telefonnummer hinzufügen"}
                     fieldComponent={PhoneNumberField}
                   />
@@ -113,9 +110,6 @@ export function FacilityForm({
 
               <ContactPersonsFieldArray
                 values={values}
-                salutationRequired={contactPersonSalutationRequired}
-                titleRequired={contactPersonTitleRequired}
-                roleRequired={contactPersonRoleRequired}
                 contactPersonRequired={contactPersonRequired}
               />
 
@@ -143,16 +137,10 @@ export function FacilityForm({
 
 interface ContactPersonFieldArrayProps {
   values: BaseFacility;
-  salutationRequired?: boolean;
-  titleRequired?: boolean;
-  roleRequired?: boolean;
   contactPersonRequired?: boolean;
 }
 function ContactPersonsFieldArray({
   values,
-  salutationRequired = true,
-  titleRequired = true,
-  roleRequired = true,
   contactPersonRequired,
 }: ContactPersonFieldArrayProps) {
   return (
@@ -187,12 +175,7 @@ function ContactPersonsFieldArray({
                     </IconButton>
                   )}
                 </Row>
-                <ContactPersonForm
-                  name={`contactPersons.${index}`}
-                  salutationRequired={salutationRequired}
-                  titleRequired={titleRequired}
-                  roleRequired={roleRequired}
-                />
+                <ContactPersonForm name={`contactPersons.${index}`} />
               </section>
             );
           })}

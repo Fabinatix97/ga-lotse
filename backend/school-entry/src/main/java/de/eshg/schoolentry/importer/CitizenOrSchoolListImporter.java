@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues, C extends XlsxColumn>
+public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C extends XlsxColumn>
     extends SchoolEntryImporter<T, C, ProcedureWithChildData> {
 
   private static final Logger log = LoggerFactory.getLogger(CitizenOrSchoolListImporter.class);
@@ -97,7 +97,7 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues, C exten
         } else {
           value.setProcedureId(procedureId);
           validRows.mergeableRows().add(value);
-          writeStatusAndProcedureId(row, MERGED_SUCCESSFULLY, procedureId);
+          writeStatusAndEntityId(row, MERGED_SUCCESSFULLY, procedureId);
           stats.countMerged();
         }
       } else {

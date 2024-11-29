@@ -8,11 +8,11 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { isDate } from "date-fns";
 import { isDefined } from "remeda";
 
+import { EvaluationDetailsTableValue } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import { StatisticDetailsTableValue } from "@/lib/businessModules/statistics/api/models/statisticDetailsTableData";
 
 export function mapRawValueToTableCell(
-  rawValue: StatisticDetailsTableValue,
+  rawValue: EvaluationDetailsTableValue,
   valueType: FlatAttribute["type"],
   valueOptions?: ApiValueOption[],
   locale?: string,

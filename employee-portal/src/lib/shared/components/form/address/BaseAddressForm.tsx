@@ -5,6 +5,7 @@
 
 "use client";
 
+import { FormAddMoreButton } from "@eshg/lib-portal/components/form/FormAddMoreButton";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { SelectOption } from "@eshg/lib-portal/components/formFields/SelectOptions";
@@ -18,6 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { Box, Button, Grid, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
+import { useId } from "react";
 import { isNonNullish } from "remeda";
 
 import {
@@ -39,6 +41,56 @@ export function ContactAddressForm(props: AddressFormProps) {
   return (
     <>
       <CommonAddressFields type={props.type} fieldName={fieldName} />
+    </>
+  );
+}
+
+export function OptionalContactAddressForm(props: {
+  name: string;
+  values?: BaseAddressFormInputs;
+  optional?: boolean;
+}) {
+  const { setFieldValue } = useFormikContext();
+  const id = useId();
+
+  return (
+    <>
+      {isNonNullish(props.values) ? (
+        <Box
+          component={"section"}
+          aria-labelledby={id}
+          sx={{ display: "contents" }}
+        >
+          <Grid xxs={12}>
+            <Typography
+              level="title-md"
+              id={id}
+              justifyContent="space-between"
+              endDecorator={
+                props.optional && (
+                  <IconButton
+                    aria-label="Entfernen"
+                    onClick={() => setFieldValue(props.name, undefined, false)}
+                  >
+                    <DeleteIcon color={"primary"} />
+                  </IconButton>
+                )
+              }
+            >
+              Kontaktadresse
+            </Typography>
+          </Grid>
+          <ContactAddressForm name={props.name} type={props.values.type} />
+        </Box>
+      ) : (
+        <Grid xxs={12}>
+          <FormAddMoreButton
+            onClick={() => setFieldValue(props.name, createEmptyAddress())}
+          >
+            Kontaktadresse hinzufügen
+          </FormAddMoreButton>
+        </Grid>
+      )}
     </>
   );
 }

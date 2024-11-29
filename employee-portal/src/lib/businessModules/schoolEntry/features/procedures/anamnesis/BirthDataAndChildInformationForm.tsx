@@ -79,8 +79,9 @@ export function BirthDataAndChildInformationForm(
           />
           <FormLabel sx={LABEL_TEXT_STYLE}>in g</FormLabel>
           <InfoIconTooltipButton
-            title="(300 - 6000, 9999 - unbekannt)"
+            infoText="(300 - 6000, 9999 - unbekannt)"
             tooltipColor="success"
+            title="Hinweis Gewicht"
           />
         </Stack>
         <BooleanSelectField

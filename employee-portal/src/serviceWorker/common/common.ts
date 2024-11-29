@@ -17,6 +17,8 @@ export const PAGES_RSC_CACHE_NAME = "pages-rsc";
 export const X_ESHG_INSPECTION_ID = "x-eshg-inspection-id";
 export const PRE_CACHE_FOR_OFFLINE_MODE = "pre-cache-for-offline-mode";
 
+export const PROCESS_ABORTED = "process-aborted";
+
 export function isServiceWorkerResponse<T>(response: ApiResponse<T>): boolean {
   return response.raw.headers.get("Server") === SERVICE_WORKER_SERVER_NAME;
 }

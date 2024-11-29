@@ -6,7 +6,6 @@
 package de.eshg.statistics.aggregation;
 
 import static de.eshg.statistics.aggregation.EvaluationController.BASE_URL;
-import static de.eshg.statistics.config.StatisticsFeature.CLONE_STATISTIC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.error.BadRequestException;
@@ -92,7 +91,6 @@ public class EvaluationController {
   @ApiResponse(responseCode = "200", description = "The UUID of the cloned evaluation")
   @Operation(summary = "Clone an evaluation")
   public UUID cloneEvaluation(@Valid @RequestBody CloneEvaluationRequest cloneEvaluationRequest) {
-    featureToggle.assertNewFeatureIsEnabled(CLONE_STATISTIC);
     evaluationService.checkPermissionForEvaluation(cloneEvaluationRequest.originalEvaluationId());
     UUID originalId = cloneEvaluationRequest.originalEvaluationId();
     UUID copyId = evaluationCopyService.addCopy(cloneEvaluationRequest);

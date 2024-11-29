@@ -48,5 +48,4 @@ export enum InfoPanelView {
   AssignAdminLevel = "ASSIGN_ADMIN_LEVEL",
   RenameGroupChat = "RENAME_GROUP_CHAT",
   AdminSettings = "ADMIN_SETTINGS",
-  RoomAvatar = "ROOM_AVATAR",
 }

@@ -5,23 +5,17 @@
 
 package de.eshg.stiprotection;
 
-import static de.eshg.stiprotection.StiProtectionProcedureService.unexpectedProcedureStatus;
-
 import de.eshg.base.SortDirection;
-import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.stiprotection.api.waitingroom.GetWaitingRoomProceduresResponse;
-import de.eshg.stiprotection.api.waitingroom.WaitingRoomDto;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomProcedurePaginationAndSortParameters;
 import de.eshg.stiprotection.api.waitingroom.WaitingRoomSortKey;
 import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomMapper;
-import de.eshg.stiprotection.mapper.waitingroom.WaitingRoomProcedureMapper;
-import de.eshg.stiprotection.mapper.waitingroom.WaitingStatusMapper;
 import de.eshg.stiprotection.persistence.anonymoususer.AnonymousUserClient;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoom;
 import de.eshg.stiprotection.persistence.db.waitingroom.WaitingRoomSpecification;
 import jakarta.validation.Valid;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,26 +37,8 @@ public class WaitingRoomService {
     this.anonymousUserClient = anonymousUserClient;
   }
 
-  public WaitingRoomDto updateWaitingRoomDetails(UUID procedureId, @Valid WaitingRoomDto request) {
-    StiProtectionProcedure procedure =
-        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
-
-    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
-    if (!procedureStatus.isOpen()) {
-      throw unexpectedProcedureStatus(procedureId, procedureStatus);
-    }
-
-    WaitingRoom waitingRoom = procedure.getWaitingRoom();
-    waitingRoom.setInfo(request.info());
-    waitingRoom.setStatus(WaitingStatusMapper.toDatabaseType(request.status()));
-
-    StiProtectionProcedure persistedProcedure = stiProtectionProcedureRepository.save(procedure);
-    return WaitingRoomMapper.toInterfaceType(persistedProcedure.getWaitingRoom());
-  }
-
-  public GetWaitingRoomProceduresResponse getWaitingRoomProcedures(
+  public Page<StiProtectionProcedure> getWaitingRoomProcedures(
       @Valid WaitingRoomProcedurePaginationAndSortParameters parameters) {
-
     WaitingRoomSpecification specification =
         new WaitingRoomSpecification(
             parameters.sortKeyOrFallback(WaitingRoomSortKey.ID),
@@ -71,20 +47,22 @@ public class WaitingRoomService {
 
     PageRequest pageable =
         PageRequest.of(parameters.pageNumberOrFallback(0), parameters.pageSizeOrFallback(25));
-
-    Page<StiProtectionProcedure> results =
-        stiProtectionProcedureRepository.findAll(specification, pageable);
-
-    return new GetWaitingRoomProceduresResponse(
-        results.stream()
-            .map(
-                procedure ->
-                    WaitingRoomProcedureMapper.toInterface(procedure, getAccessCode(procedure)))
-            .toList(),
-        results.getNumberOfElements());
+    return stiProtectionProcedureRepository.findAll(specification, pageable);
   }
 
-  private String getAccessCode(StiProtectionProcedure procedure) {
+  public String getAccessCode(StiProtectionProcedure procedure) {
     return anonymousUserClient.getAccessCode(procedure.getPerson().getAnonymousUserId());
+  }
+
+  public WaitingRoom getOrCreateWaitingRoom(UUID procedureId) {
+    StiProtectionProcedure procedure =
+        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    return Objects.requireNonNullElseGet(
+        procedure.getWaitingRoom(),
+        () -> {
+          WaitingRoom waitingRoom = new WaitingRoom();
+          procedure.setWaitingRoom(waitingRoom);
+          return waitingRoom;
+        });
   }
 }

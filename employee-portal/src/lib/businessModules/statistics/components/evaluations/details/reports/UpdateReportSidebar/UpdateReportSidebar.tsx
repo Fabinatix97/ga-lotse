@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { useUpdateReport } from "@/lib/businessModules/statistics/api/mutations/useUpdateReport";
 import { UpdateReportStep } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportStep";
 import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/updateReportFormModel";

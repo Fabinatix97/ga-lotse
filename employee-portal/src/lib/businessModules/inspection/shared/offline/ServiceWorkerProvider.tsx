@@ -16,7 +16,7 @@ import {
 
 import { unregisterServiceWorker } from "@/lib/businessModules/inspection/shared/offline/unregisterServiceWorker";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
-import { useServiceWorkerMessageListeners } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerMessageListeners";
+import { useServiceWorkerSyncQueue } from "@/lib/businessModules/inspection/shared/offline/useServiceWorkerSyncQueue";
 import { useIsOffline } from "@/lib/shared/hooks/useIsOffline";
 
 export interface ServiceWorker {
@@ -61,7 +61,7 @@ function ServiceWorkerProviderInner({
     [isOffline],
   );
 
-  const syncing = useServiceWorkerMessageListeners();
+  const syncing = useServiceWorkerSyncQueue();
 
   return (
     <ServiceWorkerContext.Provider value={contextValue}>

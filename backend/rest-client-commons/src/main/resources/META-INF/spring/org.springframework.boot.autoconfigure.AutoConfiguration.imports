@@ -1,1 +1,2 @@
+de.eshg.rest.client.EshgCommonRestClientAutoConfiguration
 de.eshg.rest.client.RequestResponseLoggingRestClientCustomizer

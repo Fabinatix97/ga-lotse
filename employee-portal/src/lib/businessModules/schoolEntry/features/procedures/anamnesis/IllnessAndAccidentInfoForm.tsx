@@ -7,7 +7,10 @@
 
 import { BooleanSelectField } from "@eshg/lib-portal/components/formFields/BooleanSelectField";
 import { HorizontalField } from "@eshg/lib-portal/components/formFields/HorizontalField";
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { FormLabel, Stack, Typography } from "@mui/joy";
@@ -31,8 +34,9 @@ export function IllnessAndAccidentInfoForm() {
             <FlexLabel>
               Schwere Infektionskrankheiten
               <InfoIconTooltipButton
-                title="z.B. Hirnhautentzündung oder andere schwere Erkrankungen"
+                infoText="z.B. Hirnhautentzündung oder andere schwere Erkrankungen"
                 tooltipColor="success"
+                title="Hinweis Schwere Infektionskrankheiten"
               />
             </FlexLabel>
           }
@@ -59,8 +63,9 @@ export function IllnessAndAccidentInfoForm() {
             <FlexLabel>
               Regelmäßige Medikamenteneinnahme
               <InfoIconTooltipButton
-                title="Präparat und Dosierung"
+                infoText="Präparat und Dosierung"
                 tooltipColor="success"
+                title="Hinweis Regelmäßige Medikamenteneinnahme"
               />
             </FlexLabel>
           }
@@ -76,7 +81,11 @@ export function IllnessAndAccidentInfoForm() {
           minCount={1}
           addMoreLabel="Allergie hinzufügen"
           name={illnessAndAccidentInfo("allergies")}
-          label={<Typography level="body-sm">Welche?</Typography>}
+          label={(index) => (
+            <Typography level="body-sm">
+              {getIndexLabel("Allergie", index)}
+            </Typography>
+          )}
           sx={{ width: "300px" }}
         />
       </Stack>

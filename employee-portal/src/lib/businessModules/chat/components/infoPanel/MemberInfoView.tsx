@@ -5,18 +5,16 @@
 
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import { Box, Stack, Typography } from "@mui/joy";
+import { Box, Stack } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { isStrictEqual } from "remeda";
 
+import { MemberInfo } from "@/lib/businessModules/chat/components/MemberInfo";
 import { InfoPanelHeader } from "@/lib/businessModules/chat/components/infoPanel/InfoPanelHeader";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { UserFromDirectory } from "@/lib/businessModules/chat/shared/types";
-import {
-  getChatUser,
-  getDepartmentNameFromUserId,
-} from "@/lib/businessModules/chat/shared/utils";
+import { getChatUser } from "@/lib/businessModules/chat/shared/utils";
 
 export interface MemberInfoViewProps {
   userId: string;
@@ -52,29 +50,13 @@ export function MemberInfoView({ userId, onClose }: MemberInfoViewProps) {
 
   return (
     <>
-      <InfoPanelHeader
-        avatarUrl={user?.avatar_url}
-        userId={userId}
-        displayName={user?.display_name}
-        close={onClose}
-        type="memberInfo"
-      />
+      <InfoPanelHeader user={user} close={onClose} type="memberInfo" />
       <Box
         sx={{
           overflowY: "auto",
         }}
       >
-        <Stack
-          sx={{
-            padding: 3,
-            borderBottom: "1px solid",
-            borderColor: "neutral.outlinedBorder",
-          }}
-        >
-          <Typography sx={{ textTransform: "capitalize" }}>
-            {getDepartmentNameFromUserId(userId)?.organisationName}
-          </Typography>
-        </Stack>
+        <MemberInfo userId={userId} />
       </Box>
       <Stack
         spacing={1}

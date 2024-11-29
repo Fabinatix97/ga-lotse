@@ -10,13 +10,10 @@ import {
 } from "@eshg/employee-portal-api/schoolEntry";
 
 import {
-  BaseEntity,
-  mapBaseEntity,
-} from "@/lib/businessModules/schoolEntry/api/models/BaseEntity";
-import {
   Person,
   mapPerson,
 } from "@/lib/businessModules/schoolEntry/api/models/Person";
+import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 import { Versioned, mapVersioned } from "@/lib/shared/api/models/Versioned";
 
 export interface WaitingRoom extends Versioned {

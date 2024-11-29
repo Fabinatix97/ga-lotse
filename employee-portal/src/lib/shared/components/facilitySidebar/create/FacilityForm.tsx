@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { InputArrayField } from "@eshg/lib-portal/components/formFields/InputArrayField";
+import {
+  InputArrayField,
+  getIndexLabel,
+} from "@eshg/lib-portal/components/formFields/InputArrayField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { validateLength } from "@eshg/lib-portal/helpers/validators";
-import { Box, Divider, Grid, Stack, Typography } from "@mui/joy";
+import { Box, Divider, Grid, Stack } from "@mui/joy";
 import { Formik } from "formik";
 import { Ref } from "react";
 import { isDefined } from "remeda";
@@ -21,8 +24,8 @@ import {
   SidebarFormHandle,
 } from "@/lib/shared/components/form/SidebarForm";
 import {
-  ContactAddressForm,
   OptionalBillingAddressForm,
+  OptionalContactAddressForm,
 } from "@/lib/shared/components/form/address/BaseAddressForm";
 import {
   BaseAddressFormInputs,
@@ -38,7 +41,7 @@ export interface DefaultFacilityFormValues {
   name: string;
   emailAddresses: string[];
   phoneNumbers: string[];
-  contactAddress: BaseAddressFormInputs;
+  contactAddress?: BaseAddressFormInputs;
   differentBillingAddress?: BaseAddressFormInputs;
   contactPersons: BaseFacilityContactPerson[];
 }
@@ -67,6 +70,7 @@ export interface FacilityFormProps {
   initialValues?: DefaultFacilityFormValues;
   requiresContactPerson?: boolean;
   mode?: "create" | "edit";
+  addressOptional?: boolean;
 
   sidebarFormRef?: Ref<SidebarFormHandle>;
   onSubmit: (values: DefaultFacilityFormValues) => Promise<void>;
@@ -90,7 +94,9 @@ export function FacilityForm(props: FacilityFormProps) {
         <SidebarForm ref={props.sidebarFormRef}>
           <SidebarContent
             title={props.title}
-            subtitle={"Neue Einrichtung anlegen"}
+            subtitle={
+              props.mode === "create" ? "Neue Einrichtung anlegen" : undefined
+            }
           >
             <Stack gap={2}>
               <InputField
@@ -107,30 +113,20 @@ export function FacilityForm(props: FacilityFormProps) {
 
               <Divider />
 
-              <Box
-                component={"section"}
-                aria-labelledby={"contact-address-section-title"}
-                sx={{ display: "contents" }}
-              >
-                <Typography
-                  level={"title-md"}
-                  id={"contact-address-section-title"}
-                >
-                  Kontaktadresse
-                </Typography>
-                <Grid container spacing={2}>
-                  <ContactAddressForm
-                    type={values.contactAddress.type}
-                    name={fieldName("contactAddress")}
-                  />
-                </Grid>
-              </Box>
-
               <Grid container spacing={2}>
-                <OptionalBillingAddressForm
-                  name={fieldName("differentBillingAddress")}
-                  values={values.differentBillingAddress}
+                <OptionalContactAddressForm
+                  name={fieldName("contactAddress")}
+                  values={values.contactAddress}
+                  optional={props.addressOptional}
                 />
+                {isDefined(
+                  values.contactAddress ?? values.differentBillingAddress,
+                ) && (
+                  <OptionalBillingAddressForm
+                    name={fieldName("differentBillingAddress")}
+                    values={values.differentBillingAddress}
+                  />
+                )}
               </Grid>
 
               <Divider />
@@ -144,7 +140,7 @@ export function FacilityForm(props: FacilityFormProps) {
                   name={fieldName("emailAddresses")}
                   addMoreLabel={"E-Mail-Adresse hinzufügen"}
                   fieldComponent={EmailField}
-                  label={"E-Mail-Adresse"}
+                  label={(index) => getIndexLabel("E-Mail-Adresse", index)}
                   validateEach={validateLength(6, 254)}
                 />
               </Box>
@@ -158,7 +154,7 @@ export function FacilityForm(props: FacilityFormProps) {
                   name={fieldName("phoneNumbers")}
                   addMoreLabel={"Telefonnummer hinzufügen"}
                   fieldComponent={PhoneNumberField}
-                  label={"Telefonnummer"}
+                  label={(index) => getIndexLabel("Telefonnummer", index)}
                   validateEach={validateLength(1, 23)}
                 />
               </Box>

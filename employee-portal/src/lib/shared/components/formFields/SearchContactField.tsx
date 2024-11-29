@@ -21,6 +21,7 @@ export interface SearchContactFieldProps {
 const requiredMessage: Record<ApiContactCategory, string> = {
   [ApiContactCategory.Laboratory]: "Bitte ein Labor angeben.",
   [ApiContactCategory.School]: "Bitte eine Schule angeben.",
+  [ApiContactCategory.Daycare]: "Bitte eine Kindertagesstätte angeben.",
   [ApiContactCategory.DoctorsOffice]: "Bitte eine Arztpraxis angeben.",
   [ApiContactCategory.HealthDepartment]: "Bitte ein Gesundheitsamt angeben.",
   [ApiContactCategory.Misc]: "Bitte eine Einrichtung angeben.",

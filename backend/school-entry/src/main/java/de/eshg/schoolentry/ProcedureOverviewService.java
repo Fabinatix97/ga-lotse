@@ -9,7 +9,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.Comparator.nullsLast;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonsSortKey;
@@ -299,7 +298,7 @@ public class ProcedureOverviewService {
   }
 
   Stream<ProcedureData> augmentWithChildData(List<SchoolEntryProcedure> procedures) {
-    List<SchoolDto> schools = getSchools(procedures);
+    Map<UUID, SchoolDto> schools = getSchools(procedures);
 
     return personClient
         .augmentWithChildData(procedures)
@@ -321,7 +320,7 @@ public class ProcedureOverviewService {
                     data.procedure().getModifiedAt()));
   }
 
-  private List<SchoolDto> getSchools(List<SchoolEntryProcedure> procedures) {
+  private Map<UUID, SchoolDto> getSchools(List<SchoolEntryProcedure> procedures) {
     List<UUID> schoolIds =
         procedures.stream()
             .map(SchoolEntryProcedure::getSchoolId)
@@ -329,24 +328,21 @@ public class ProcedureOverviewService {
             .distinct()
             .toList();
 
-    return contactClient.getBulkContacts(schoolIds).stream()
-        .map(contact -> new SchoolDto(contact.id(), contact.name()))
-        .toList();
+    return contactClient.getBulkContacts(
+        schoolIds, contact -> new SchoolDto(contact.id(), contact.name()));
   }
 
-  private static SchoolDto getSchool(ProcedureWithChildData data, List<SchoolDto> schools) {
+  private static SchoolDto getSchool(ProcedureWithChildData data, Map<UUID, SchoolDto> schools) {
     UUID procedureSchoolId = data.procedure().getSchoolId();
-    Optional<SchoolDto> optionalSchool =
-        schools.stream()
-            .filter(school -> school.id().equals(procedureSchoolId))
-            .collect(StreamUtil.toSingleOptionalElement());
-
-    if (procedureSchoolId != null && optionalSchool.isEmpty()) {
+    if (procedureSchoolId == null) {
+      return null;
+    }
+    SchoolDto school = schools.get(procedureSchoolId);
+    if (school == null) {
       throw new BadRequestException(
           "Could not find school with id %s in central file".formatted(procedureSchoolId));
     }
-
-    return optionalSchool.orElse(null);
+    return school;
   }
 
   private static ProcedurePageSpec createPageSpec(

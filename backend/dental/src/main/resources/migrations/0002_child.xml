@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1732007482069-1">
+    <createTable tableName="child">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_child"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="child_id_from_central_file" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="year" type="INTEGER">
+      <constraints nullable="false"/>
+    </column>
+      <column name="institution_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="group_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint columnNames="child_id_from_central_file" constraintName="child_child_id_from_central_file_key" tableName="child"/>
+    <addUniqueConstraint columnNames="external_id" constraintName="child_external_id_key" tableName="child"/>
+    <createSequence sequenceName="child_seq" startValue="1" incrementBy="50" dataType="bigint"/>
+  </changeSet>
+
+</databaseChangeLog>

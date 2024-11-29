@@ -6,7 +6,7 @@
 import { AppointmentPickerFieldLabels } from "./AppointmentPickerField";
 
 export const FIELD_LABELS_DE = {
-  requiredAppointment: "Bitte ein Termin auswählen",
+  requiredAppointment: "Bitte einen Termin auswählen",
   requiredDay: "Bitte ein Tag auswählen",
   monthSelection: "Termin Kalendermonat",
   nextMonth: "zum nächsten Monat",

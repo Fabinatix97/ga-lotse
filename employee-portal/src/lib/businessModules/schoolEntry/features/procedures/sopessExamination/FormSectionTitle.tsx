@@ -16,7 +16,11 @@ export function FormSectionTitle(props: FormSectionTitleProps) {
   return (
     <Stack gap={1} direction="row" alignItems="center">
       <Typography level="title-sm">{props.title}</Typography>
-      <InfoIconTooltipButton title={props.tooltip} tooltipColor="success" />
+      <InfoIconTooltipButton
+        title={`Hinweis ${props.title}`}
+        infoText={props.tooltip}
+        tooltipColor="success"
+      />
     </Stack>
   );
 }

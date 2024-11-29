@@ -23,6 +23,7 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
     // specific rights, then for `/checklists/**` with a lesser right.
     //
 
+    grantAccessToStatistics();
     objectType();
     checklistDefinitionCentralRepository();
     checklistDefinition();
@@ -68,6 +69,10 @@ public final class InspectionPublicSecurityConfig extends AbstractPublicSecurity
             BaseUrls.Inspection.INSPECTION_CONTROLLER + "/{id}/**",
             BaseUrls.Inspection.CHECKLIST_CONTROLLER + "/**",
             BaseUrls.Inspection.PACKLIST_CONTROLLER + "/**")
+        .hasAnyRole(
+            EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
+    requestMatchers(POST, BaseUrls.Inspection.INSPECTION_CONTROLLER + "/{id}/viewed")
         .hasAnyRole(
             EmployeePermissionRole.INSPECTION_PROCEDURE_EDIT,
             EmployeePermissionRole.PROCEDURE_ARCHIVE);

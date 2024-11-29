@@ -6,7 +6,7 @@
 "use client";
 
 import { PendingFacilitiesOfflineTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesOfflineTable";
-import { PendingFacilitiesTable } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTable";
+import { PendingFacilitiesTableWrapper } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesTableWrapper";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
@@ -28,7 +28,7 @@ export default function InspectionProceduresPage(
         {isOffline ? (
           <PendingFacilitiesOfflineTable />
         ) : (
-          <PendingFacilitiesTable filter={props.searchParams} />
+          <PendingFacilitiesTableWrapper filter={props.searchParams} />
         )}
       </MainContentLayout>
     </StickyToolbarLayout>

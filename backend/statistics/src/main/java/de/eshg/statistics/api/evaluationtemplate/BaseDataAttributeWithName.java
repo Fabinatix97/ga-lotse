@@ -7,4 +7,4 @@ package de.eshg.statistics.api.evaluationtemplate;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record BaseDataAttributeWithName(@NotBlank String code, @NotBlank String name) {}
+public record BaseDataAttributeWithName(@NotBlank String code, @NotBlank String displayName) {}

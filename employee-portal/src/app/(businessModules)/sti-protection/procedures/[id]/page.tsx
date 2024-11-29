@@ -5,7 +5,7 @@
 
 import { redirect } from "next/navigation";
 
-import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/layout";
+import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 
 export default function StiProtectionProcedurePage({

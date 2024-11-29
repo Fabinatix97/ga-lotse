@@ -69,17 +69,19 @@ export function generateChecklistDefinitionOverviewTableColumns(
       header: "",
       id: "coreChecklist",
       cell: (info) => (
-        <Stack direction="row">
+        <Stack direction="row" justifyContent="center">
           {info.row.original.coreChecklist && (
             <>
               {info.row.original.expandable ? (
                 <CorechecklistIcon
+                  size="sm"
                   aria-hidden={false}
                   titleAccess="Kern-Checkliste"
                   aria-label="Kern-Checkliste"
                 />
               ) : (
                 <ExclusiveCorechecklistIcon
+                  size="sm"
                   aria-hidden={false}
                   titleAccess="Exklusive Kern-Checkliste"
                   aria-label="Exklusive Kern-Checkliste"
@@ -90,16 +92,22 @@ export function generateChecklistDefinitionOverviewTableColumns(
         </Stack>
       ),
       meta: {
+        canNavigate: {
+          parentRow: true,
+        },
         width: 40,
+        cellStyle: "icon",
+        headerLabel: "Kern-Checkliste",
       },
     }),
     columnHelper.display({
       header: "",
       id: "deleted",
       cell: (info) => (
-        <Stack direction="row">
+        <Stack direction="row" justifyContent="center">
           {info.row.original.mostRecentVersion.context.deleted && (
             <InactiveChecklistIcon
+              size="sm"
               aria-hidden={false}
               titleAccess="inaktive Checkliste"
               aria-label="inaktive Checkliste"
@@ -108,7 +116,12 @@ export function generateChecklistDefinitionOverviewTableColumns(
         </Stack>
       ),
       meta: {
+        canNavigate: {
+          parentRow: true,
+        },
         width: 40,
+        cellStyle: "icon",
+        headerLabel: "Inaktiv",
       },
     }),
     columnHelper.accessor("mostRecentVersion.context.name", {
@@ -231,7 +244,9 @@ export function generateChecklistDefinitionOverviewTableColumns(
         );
       },
       meta: {
-        width: 138,
+        width: 96,
+        cellStyle: "button",
+        textAlign: "right",
       },
     }),
   ];

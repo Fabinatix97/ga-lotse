@@ -67,6 +67,11 @@ export function InspectionTabPlanning({
     ApiInspectionPhase.Executed,
   );
 
+  const hasReachedClosed = !inspectionIsBeforePhase(
+    inspection.phase,
+    ApiInspectionPhase.Closed,
+  );
+
   const lockedByDifferentUser =
     inspection.lockedByUser !== undefined &&
     selfUser.userId !== inspection.lockedByUser.userId;
@@ -119,6 +124,7 @@ export function InspectionTabPlanning({
               isOffline={isOffline}
               lockedByDifferentUser={lockedByDifferentUser}
               hasReachedExecuted={hasReachedExecuted}
+              hasReachedClosed={hasReachedClosed}
               inspection={inspection}
             />
           </Box>
@@ -139,6 +145,8 @@ export function InspectionTabPlanning({
             isOffline={isOffline}
             lockedByDifferentUser={lockedByDifferentUser}
             hasReachedExecuting={hasReachedExecuting}
+            hasReachedExecuted={hasReachedExecuted}
+            hasReachedClosed={hasReachedClosed}
             inspection={inspection}
           />
         </Box>
@@ -165,12 +173,15 @@ export function InspectionTabPlanning({
           isOffline={isOffline}
           lockedByDifferentUser={lockedByDifferentUser}
           hasReachedExecuting={hasReachedExecuting}
+          hasReachedExecuted={hasReachedExecuted}
+          hasReachedClosed={hasReachedClosed}
           inspection={inspection}
         />
         <LeftColumnBottomElements
           isOffline={isOffline}
           lockedByDifferentUser={lockedByDifferentUser}
           hasReachedExecuted={hasReachedExecuted}
+          hasReachedClosed={hasReachedClosed}
           inspection={inspection}
         />
       </Box>
@@ -215,11 +226,13 @@ function LeftColumnBottomElements({
   isOffline,
   lockedByDifferentUser,
   hasReachedExecuted,
+  hasReachedClosed,
   inspection,
 }: {
   isOffline: boolean;
   lockedByDifferentUser: boolean;
   hasReachedExecuted: boolean;
+  hasReachedClosed: boolean;
   inspection: ApiInspection;
 }) {
   return (
@@ -230,7 +243,7 @@ function LeftColumnBottomElements({
         inspectionInventories={inspection.inventories}
       />
       <ResourceTile
-        readonly={isOffline || lockedByDifferentUser || hasReachedExecuted}
+        readonly={isOffline || lockedByDifferentUser || hasReachedClosed}
         procedureId={inspection.externalId}
         inspectionResources={inspection.resources}
         plannedAppointment={inspection.plannedAppointment}
@@ -245,11 +258,15 @@ function RightColumnElements({
   isOffline,
   lockedByDifferentUser,
   hasReachedExecuting,
+  hasReachedExecuted,
+  hasReachedClosed,
   inspection,
 }: {
   isOffline: boolean;
   lockedByDifferentUser: boolean;
   hasReachedExecuting: boolean;
+  hasReachedExecuted: boolean;
+  hasReachedClosed: boolean;
   inspection: ApiInspection;
 }) {
   return (
@@ -260,12 +277,12 @@ function RightColumnElements({
         announcement={inspection.announcement}
       />
       <TravelTimeTile
-        readonly={hasReachedExecuting}
+        readonly={hasReachedClosed}
         inspection={inspection}
         facilityAddress={inspection.facility.baseFacility.contactAddress}
       />
       <PacklistTile
-        readonly={lockedByDifferentUser && !isOffline}
+        readonly={(lockedByDifferentUser && !isOffline) || hasReachedExecuted}
         isOffline={isOffline}
         inspection={inspection}
       />

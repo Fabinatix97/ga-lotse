@@ -12,23 +12,26 @@ import { validateSelectField } from "@/lib/businessModules/travelMedicine/shared
 export function SubMultiSelectElement({
   multiSelectElementFormikPath,
   multiSelectDeleteHandler,
-  elementIndex,
+  subElementIndex,
+  label,
 }: Readonly<{
   multiSelectElementFormikPath: string;
-  elementIndex: number;
   multiSelectDeleteHandler: () => void;
+  subElementIndex: number;
+  label: string;
 }>) {
   return (
     <Stack direction="row" spacing={1} alignItems="flex-start">
-      <Box sx={{ paddingTop: "12px" }}>{`Antwort ${elementIndex + 1}:`}</Box>
+      <Box sx={{ paddingTop: "12px" }}>{`Antwort ${subElementIndex + 1}:`}</Box>
 
       <InputField
         label
+        aria-label={label}
         name={`${multiSelectElementFormikPath}.questionText`}
-        placeholder="Frage eingeben"
+        placeholder="Antwortmöglichkeit eingeben"
         sx={{ flex: 1 }}
         validate={validateSelectField}
-        data-testid={`element-multi-select-${elementIndex}`}
+        data-testid={`element-multi-select-${subElementIndex}`}
       />
       <Stack alignItems="center" paddingTop={"6px"}>
         <IconButton
@@ -37,7 +40,7 @@ export function SubMultiSelectElement({
           color="warning"
           variant="outlined"
           title="Antwortmöglichkeit löschen"
-          data-testid={`element-multi-select-delete-button-${elementIndex}`}
+          data-testid={`element-multi-select-delete-button-${subElementIndex}`}
         >
           <DeleteOutlineIcon />
         </IconButton>

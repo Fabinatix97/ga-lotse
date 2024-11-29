@@ -65,6 +65,7 @@ public class KeycloakMapper {
       case STI_PROTECTION -> ModuleMemberGroup.STI_PROTECTION;
       case MEDICAL_REGISTRY -> ModuleMemberGroup.MEDICAL_REGISTRY;
       case DENTAL -> ModuleMemberGroup.DENTAL;
+      case OFFICIAL_MEDICAL_SERVICE -> ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE;
     };
   }
 

@@ -8,7 +8,7 @@ package de.eshg.lib.xlsximport;
 import java.util.UUID;
 import org.apache.poi.ss.usermodel.Row;
 
-public class RowValues {
+public abstract class RowValues<T extends RowValues<T>> {
 
   private Row row;
   private ImportStatus status;
@@ -46,4 +46,6 @@ public class RowValues {
   public void foundInvalidData() {
     this.valid = false;
   }
+
+  public abstract boolean isDuplicateRow(T other);
 }

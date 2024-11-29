@@ -8,12 +8,13 @@ dependencies {
     implementation project(':business-module-persistence-commons')
     implementation project(':lib-commons')
     implementation 'org.apache.commons:commons-collections4:latest.release'
-    implementation project(':test-commons')
+    implementation 'org.bouncycastle:bcpkix-jdk18on:latest.release'
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation testFixtures(project(':lib-service-directory-admin-api'))
     testImplementation testFixtures(project(':business-module-persistence-commons'))
 
+    testImplementation project(':test-commons')
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
 }

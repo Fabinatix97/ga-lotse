@@ -35,6 +35,7 @@ export function createInspectionHistoryColumns(
 ) {
   return [
     columnHelper.display({
+      header: "",
       id: "openInNewTab",
       cell: (ctx) =>
         ctx.row.original.inspection!.id !== thisInspectionId && (
@@ -42,6 +43,7 @@ export function createInspectionHistoryColumns(
             online={
               <IconButton
                 aria-label="In neuem Tab öffnen"
+                color="primary"
                 onClick={() =>
                   window.open(
                     getPendingFacilityRowRoute(ctx.row),
@@ -50,20 +52,12 @@ export function createInspectionHistoryColumns(
                   )
                 }
               >
-                <OpenInNewOutlined
-                  fontSize="xl"
-                  sx={{
-                    color: (theme) => `${theme.palette.primary.outlinedColor}`,
-                  }}
-                />
+                <OpenInNewOutlined fontSize="xl" />
               </IconButton>
             }
             offline={
               <IconButton aria-label="In neuem Tab öffnen" disabled={true}>
-                <OpenInNewOutlined
-                  fontSize="xl"
-                  sx={{ color: "neutral.400" }}
-                />
+                <OpenInNewOutlined fontSize="xl" />
               </IconButton>
             }
             procedureId={ctx.row.original.inspection!.id}
@@ -72,6 +66,7 @@ export function createInspectionHistoryColumns(
       meta: {
         cellStyle: "icon",
         width: "48px",
+        headerLabel: "In neuem Tab öffnen",
       },
     }),
     columnHelper.accessor("name", {
@@ -92,14 +87,10 @@ export function createInspectionHistoryColumns(
       header: "Adresse",
       cell: (ctx) => (
         <GrayWhenOffline procedureId={ctx.row.original.inspection!.id}>
-          {formatAddress(
-            ctx.row.original.street,
-            ctx.row.original.houseNo,
-            ctx.row.original.postalCode,
-            ctx.row.original.city,
-          )}
+          {formatAddress(ctx.row.original)}
         </GrayWhenOffline>
       ),
+      sortingFn: sortBy(formatAddress),
       meta: {
         canNavigate: {
           parentRow: true,
@@ -123,11 +114,17 @@ export function createInspectionHistoryColumns(
     }),
     columnHelper.accessor("inspection.type", {
       header: "Typ",
-      cell: (ctx) => (
-        <GrayWhenOffline procedureId={ctx.row.original.inspection!.id}>
-          {ctx.row.original.inspection?.type &&
-            translateInspectionType(ctx.getValue())}
-        </GrayWhenOffline>
+      cell: (ctx) => {
+        if (!ctx.row.original.inspection) return null;
+        return (
+          <GrayWhenOffline procedureId={ctx.row.original.inspection.id}>
+            {translateInspectionType(ctx.getValue())}
+          </GrayWhenOffline>
+        );
+      },
+      sortingFn: sortBy(
+        (row) =>
+          row.inspection?.type && translateInspectionType(row.inspection.type),
       ),
       meta: {
         canNavigate: {
@@ -138,12 +135,20 @@ export function createInspectionHistoryColumns(
     }),
     columnHelper.accessor("inspection.result", {
       header: "Ergebnis",
-      cell: (ctx) =>
-        ctx.row.original.inspection?.result && (
-          <Chip color={inspectionResultColors[ctx.getValue()!]}>
-            {translateInspectionResult(ctx.getValue()!)}
+      cell: (ctx) => {
+        const value = ctx.getValue();
+        if (!value) return null;
+        return (
+          <Chip color={inspectionResultColors[value]}>
+            {translateInspectionResult(value)}
           </Chip>
-        ),
+        );
+      },
+      sortingFn: sortBy(
+        (row) =>
+          row.inspection?.result &&
+          translateInspectionResult(row.inspection.result),
+      ),
       meta: {
         canNavigate: {
           parentRow: true,
@@ -153,12 +158,20 @@ export function createInspectionHistoryColumns(
     }),
     columnHelper.accessor("inspection.status", {
       header: "Status",
-      cell: (ctx) =>
-        ctx.row.original.inspection?.status && (
-          <Chip color={statusColors[ctx.getValue()]}>
-            {translateProcedureStatus(ctx.getValue())}
+      cell: (ctx) => {
+        const value = ctx.getValue();
+        if (!value) return null;
+        return (
+          <Chip color={statusColors[value]}>
+            {translateProcedureStatus(value)}
           </Chip>
-        ),
+        );
+      },
+      sortingFn: sortBy(
+        (row) =>
+          row.inspection?.status &&
+          translateProcedureStatus(row.inspection.status),
+      ),
       meta: {
         canNavigate: {
           parentRow: true,
@@ -203,15 +216,23 @@ export function getPendingFacilityRowRoute(row: Row<ApiInspPendingFacility>) {
     : routes.procedures.new(row.original.inspection!.id);
 }
 
-export function formatAddress(
-  street: string,
-  houseNumber: string | undefined | null,
-  postalCode: string,
-  city: string,
-) {
-  return houseNumber
-    ? `${street} ${houseNumber}, ${postalCode} ${city}`
+export function formatAddress({
+  street,
+  houseNo,
+  postalCode,
+  city,
+}: ApiInspPendingFacility) {
+  return houseNo
+    ? `${street} ${houseNo}, ${postalCode} ${city}`
     : `${street}, ${postalCode} ${city}`;
+}
+
+function sortBy(accessor: (row: ApiInspPendingFacility) => string | undefined) {
+  return (a: Row<ApiInspPendingFacility>, b: Row<ApiInspPendingFacility>) => {
+    const aValue = accessor(a.original) ?? "";
+    const bValue = accessor(b.original) ?? "";
+    return aValue.localeCompare(bValue);
+  };
 }
 
 function GrayWhenOffline({

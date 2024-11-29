@@ -14,9 +14,11 @@ import {
   ApiLanguageKnowledgeValue,
   ApiPrimaryLanguageValue,
   ApiSopessExaminationResultValue,
+  UpdateSopessExaminationResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { Divider, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
@@ -135,9 +137,14 @@ export const MIN_0 = 0;
 export const MAX_9 = 9;
 export const MAX_99 = 99;
 
-export function SopessExaminationForm(
-  props: FormProps<SopessExaminationFormValues>,
-) {
+interface SopessExaminationFormProps
+  extends FormProps<SopessExaminationFormValues> {
+  valuesToMutationBundle: (
+    values: SopessExaminationFormValues,
+  ) => MutationBundle<UpdateSopessExaminationResultRequest>;
+}
+
+export function SopessExaminationForm(props: SopessExaminationFormProps) {
   async function handleSubmit(
     formValues: SopessExaminationFormValues,
     helpers: FormikHelpers<SopessExaminationFormValues>,
@@ -150,7 +157,9 @@ export function SopessExaminationForm(
     <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
         <FormStack dense onSubmit={handleSubmit}>
-          <ConfirmLeaveDirtyFormEffect />
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={props.valuesToMutationBundle(values)}
+          />
           <Stack
             gap={5}
             direction="row"

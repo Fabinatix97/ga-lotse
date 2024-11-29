@@ -6,7 +6,7 @@
 "use client";
 
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useLockInspection } from "@/lib/businessModules/inspection/api/mutations/inspection";
 import {
@@ -16,6 +16,7 @@ import {
 import { OfflineExistingPasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflineExistingPasswordDialog";
 import { OfflineNewPasswordDialog } from "@/lib/businessModules/inspection/shared/offline/password/OfflineNewPasswordDialog";
 import { hasQueuedRequests } from "@/lib/businessModules/inspection/shared/offline/password/hasQueuedRequests";
+import { isServiceWorkerRegistered } from "@/lib/businessModules/inspection/shared/offline/registerServiceWorker";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import {
@@ -47,6 +48,8 @@ export function OfflinePasswordPrompt() {
 
 function OfflinePasswordPromptInner() {
   const [passwordChannel, setPasswordChannel] = useState<BroadcastChannel>();
+  const { openConfirmationDialog } = useConfirmationDialog();
+  const lockInspection = useLockInspection();
 
   const [state, setState] = useState({
     getExistingPassword: false,
@@ -89,18 +92,52 @@ function OfflinePasswordPromptInner() {
     return () => offlinePasswordChannel.close();
   }, []);
 
-  const handlePassword = useCallback(
-    async (password: string) => {
-      setState({ ...state, passwordSent: true });
-      if (state.getExistingPassword) {
-        await transferLegacySalt();
-      }
-      passwordChannel?.postMessage(createPasswordMessage(password));
-    },
-    [state, passwordChannel],
-  );
+  async function handlePassword(password: string) {
+    setState({ ...state, passwordSent: true });
+    if (state.getExistingPassword) {
+      await transferLegacySalt();
+    }
+    passwordChannel?.postMessage(createPasswordMessage(password));
+  }
 
-  const handleClear = useHandleClear(passwordChannel);
+  async function handleClear() {
+    const isRegistered = await isServiceWorkerRegistered();
+    if (!isRegistered) {
+      passwordChannel?.postMessage(GET_PASSWORD_ABORTED);
+      setPasswordChannel(undefined);
+      return;
+    }
+    const queuedRequests = await hasQueuedRequests();
+    if (queuedRequests) {
+      openConfirmationDialog({
+        title: "Änderung verwerfen?",
+        description:
+          "Die Eingaben, die Sie offline gemacht hatten, sind noch nicht gespeichert worden. Wenn Sie jetzt fortfahren, gehen diese Eingaben verloren. Möchten Sie wirklich fortfahren und alle Änderungen verlieren?",
+        confirmLabel: "Verwerfen",
+        color: "danger",
+        onConfirm: onConfirmClear,
+      });
+    } else {
+      await onConfirmClear();
+    }
+  }
+
+  async function onConfirmClear() {
+    const ids = await precachedInspectionIds.getAll();
+    await clearQueue();
+    await precachedInspectionIds.clear();
+    await clearCaches();
+    await Promise.all(
+      ids.map((id) =>
+        lockInspection(id, false).catch(() =>
+          // eslint-disable-next-line no-console
+          console.error("Failed to unlock inspection", id),
+        ),
+      ),
+    );
+    passwordChannel?.postMessage(GET_PASSWORD_ABORTED);
+    window.location.reload();
+  }
 
   if (!passwordChannel) return false;
 
@@ -118,47 +155,6 @@ function OfflinePasswordPromptInner() {
       waiting={state.passwordSent}
     />
   );
-}
-
-function useHandleClear(passwordChannel: BroadcastChannel | undefined) {
-  const { openConfirmationDialog } = useConfirmationDialog();
-  const lockInspection = useLockInspection();
-
-  return useCallback(async () => {
-    const queuedRequests = await hasQueuedRequests();
-
-    async function onConfirm() {
-      const ids = await precachedInspectionIds.getAll();
-      if (queuedRequests) {
-        await clearQueue();
-      }
-      await precachedInspectionIds.clear();
-      await clearCaches();
-      await Promise.all(
-        ids.map((id) =>
-          lockInspection(id, false).catch(() =>
-            // eslint-disable-next-line no-console
-            console.error("Failed to unlock inspection", id),
-          ),
-        ),
-      );
-      passwordChannel?.postMessage(GET_PASSWORD_ABORTED);
-      window.location.reload();
-    }
-
-    if (queuedRequests) {
-      openConfirmationDialog({
-        title: "Änderung verwerfen?",
-        description:
-          "Die Eingaben, die Sie offline gemacht hatten, sind noch nicht gespeichert worden. Wenn Sie jetzt fortfahren, gehen diese Eingaben verloren. Möchten Sie wirklich fortfahren und alle Änderungen verlieren?",
-        confirmLabel: "Verwerfen",
-        color: "danger",
-        onConfirm,
-      });
-    } else {
-      await onConfirm();
-    }
-  }, [lockInspection, openConfirmationDialog, passwordChannel]);
 }
 
 // backwards-compatible restore legacy salt. new salt is stored in the index-db.

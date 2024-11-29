@@ -3,26 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { doNothing } from "remeda";
 import { Queue } from "workbox-background-sync";
 
+import { PROCESS_ABORTED } from "@/serviceWorker/common/common";
 import {
   CLEAR,
   CLEAR_DONE,
   CLEAR_FAILED,
+  DELETE_FILE_FAILED_WITH_404,
   GET_QUEUE,
   GET_QUEUE_EMPTY,
   GET_QUEUE_FAILED,
   GET_QUEUE_SOME,
-  SYNC,
-  createQueueBroadCastChannelEndpoint,
-} from "@/serviceWorker/common/queueBroadCastChannel";
-import {
-  DELETE_FILE_FAILED_WITH_404,
+  REPLAY_ABORTED,
   REPLAY_DONE,
   REPLAY_FAILED,
   REPLAY_STARTED,
-  createSyncBroadCastChannelEndpoint,
-} from "@/serviceWorker/common/syncBroadCastChannel";
+  SYNC,
+  createQueueBroadCastChannelEndpoint,
+} from "@/serviceWorker/common/queueBroadCastChannel";
 import {
   API_INSPECTION_CHECKLISTS_FILE_PATH_PATTERN,
   CACHE_RETENTION_IN_MINUTES,
@@ -30,7 +30,12 @@ import {
 import { decrypt, encrypt } from "@/serviceWorker/sw/crypto/crypto";
 
 const queueChannel = createQueueBroadCastChannelEndpoint();
-const syncChannel = createSyncBroadCastChannelEndpoint();
+
+const queue = new Queue("inspection-request-queue", {
+  maxRetentionTime: CACHE_RETENTION_IN_MINUTES,
+  // Sync events are not supported on Safari and are unreliable on Chrome in conjunction with Keycloak. Use custom code instead (See useServiceWorkerSyncQueue.ts)
+  onSync: doNothing(),
+});
 
 queueChannel.onmessage = (event: MessageEvent) => {
   if (event.data === CLEAR) {
@@ -59,7 +64,7 @@ async function onSync({ queue }: { queue: Queue }) {
   let entry;
   let response;
   let errorMessage;
-  syncChannel.postMessage(REPLAY_STARTED);
+  queueChannel.postMessage(REPLAY_STARTED);
   while ((entry = await queue.shiftRequest())) {
     let request = entry.request.clone();
     await queue.unshiftRequest(entry);
@@ -68,8 +73,9 @@ async function onSync({ queue }: { queue: Queue }) {
       response = await fetch(request);
       if (!response?.ok) {
         errorMessage = handleHttpError(request, response);
+      } else {
+        await queue.shiftRequest();
       }
-      await queue.shiftRequest();
     } catch (error) {
       errorMessage =
         typeof error === "object" && error !== null && "message" in error
@@ -77,14 +83,18 @@ async function onSync({ queue }: { queue: Queue }) {
           : String(error);
     }
     if (errorMessage) {
-      syncChannel.postMessage(REPLAY_FAILED);
+      if (errorMessage === PROCESS_ABORTED) {
+        queueChannel.postMessage(REPLAY_ABORTED);
+      } else {
+        queueChannel.postMessage(REPLAY_FAILED);
+      }
       throw new Error(
         `queue ${queue.name} replay failed: ${String(errorMessage)}`,
       );
     }
   }
 
-  syncChannel.postMessage(REPLAY_DONE);
+  queueChannel.postMessage(REPLAY_DONE);
 }
 
 let lock = Promise.resolve();
@@ -94,11 +104,6 @@ function runSequentially(fn: () => Promise<void>): Promise<void> {
 async function synchronizedOnSync(onSyncCallbackOptions: { queue: Queue }) {
   return runSequentially(() => onSync(onSyncCallbackOptions));
 }
-
-const queue = new Queue("inspection-request-queue", {
-  maxRetentionTime: CACHE_RETENTION_IN_MINUTES,
-  onSync: synchronizedOnSync,
-});
 
 function handleHttpError(
   request: Request,
@@ -112,7 +117,7 @@ function handleHttpError(
     )
   ) {
     // ignore 404 on delete file
-    syncChannel.postMessage(DELETE_FILE_FAILED_WITH_404);
+    queueChannel.postMessage(DELETE_FILE_FAILED_WITH_404);
   } else {
     return response.statusText || `HTTP ${response.status}`;
   }

@@ -7,9 +7,9 @@ import { EChartsOption, SeriesOption } from "echarts";
 import { unique } from "remeda";
 
 import {
-  EvaluationDiagramScatterChart,
-  EvaluationScatterDiagramConfiguration,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+  AnalysisDiagramScatterChart,
+  AnalysisScatterDiagramConfiguration,
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -21,8 +21,8 @@ import {
 } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 interface ScatterChartDiagramProps {
-  filterSet: EvaluationDiagramScatterChart["data"];
-  configuration: EvaluationScatterDiagramConfiguration;
+  filterSet: AnalysisDiagramScatterChart["data"];
+  configuration: AnalysisScatterDiagramConfiguration;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 

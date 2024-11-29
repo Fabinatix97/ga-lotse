@@ -3,43 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MatrixEvent, Room, RoomEvent } from "matrix-js-sdk/lib/matrix";
+import { MatrixEvent, Room, RoomEvent } from "matrix-js-sdk";
 import { useEffect, useState } from "react";
 import { isObjectType } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
+import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { isReceiptType } from "@/lib/businessModules/chat/shared/types";
-import {
-  markAllMessagesAsRead,
-  setReadMarker,
-} from "@/lib/businessModules/chat/shared/utils";
-import { useWindowFocus } from "@/lib/shared/hooks/useWindowFocus";
 
-export function useReadConfirmation(showReadConfirmation: boolean) {
+export function useReadConfirmation() {
   const { matrixClient } = useChatClientContext();
-  const isFocused = useWindowFocus();
-  const { selectedRoomId } = useChatSearchParams();
+  const {
+    userSettings: { showReadConfirmation },
+  } = useChat();
+
   const [messageReadsPerRoom, setMessageReadsPerRoom] = useState<
     Record<string, string[]>
   >({});
 
-  useEffect(() => {
-    if (!isFocused) return;
-    if (!showReadConfirmation) {
-      void setReadMarker({
-        roomId: selectedRoomId,
-        matrixClient,
-      });
-      return;
-    }
-    void markAllMessagesAsRead({
-      roomId: selectedRoomId,
-      matrixClient,
-    });
-  }, [isFocused, matrixClient, selectedRoomId, showReadConfirmation]);
-
-  // Subscribe to room timeline
   useEffect(() => {
     function onRoomReceipt(event: MatrixEvent, room: Room) {
       const receiptContent = event.getContent();
@@ -70,7 +51,7 @@ export function useReadConfirmation(showReadConfirmation: boolean) {
     return () => {
       matrixClient.removeListener(RoomEvent.Receipt, onRoomReceipt);
     };
-  }, [matrixClient, messageReadsPerRoom]);
+  }, [matrixClient, messageReadsPerRoom, showReadConfirmation]);
 
   return { messageReadsPerRoom };
 }

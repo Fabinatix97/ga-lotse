@@ -22,13 +22,12 @@ export function OfflineNewPasswordDialog({
   onClear,
   waiting,
 }: Readonly<{
-  onPassword: (pwd: string) => void;
-  onClear: () => void;
+  onPassword: (pwd: string) => Promise<void>;
+  onClear: () => Promise<void>;
   waiting: boolean;
 }>) {
-  function handleSubmit({ password }: { password: string }) {
-    onPassword(password);
-    return Promise.resolve();
+  async function handleSubmit({ password }: { password: string }) {
+    await onPassword(password);
   }
 
   return (

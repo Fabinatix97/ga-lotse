@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { ApiSchoolEntryProcedureSortKey } from "@eshg/employee-portal-api/schoolEntry";
 import {
   formatDate,
@@ -22,21 +23,17 @@ import { ReactNode, useReducer } from "react";
 import { isNullish } from "remeda";
 
 import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
-import {
-  useSchoolEntryApi,
-  useSchoolEntryGdprValidationTaskApi,
-} from "@/lib/businessModules/schoolEntry/api/clients";
+import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
-import { gdprValidationTaskApiQueryKey } from "@/lib/businessModules/schoolEntry/api/queries/apiQueryKeys";
 import { getProceduresQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
 import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
-import { formatSchoolYear } from "@/lib/businessModules/schoolEntry/features/procedures/formatters";
 import { ProceduresTableTitle } from "@/lib/businessModules/schoolEntry/features/procedures/proceduresTable/ProcedureTableTitle";
 import {
   PROCEDURE_STATUS,
   PROCEDURE_TYPES,
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 import { getGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
@@ -53,6 +50,7 @@ import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { getSortDirection } from "@/lib/shared/components/table/sorting";
+import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 import {
   CustomSortingProps,
   useTableControl,
@@ -107,11 +105,13 @@ export function ProceduresTable(props: ProceduresTableProps) {
   });
 
   const schoolEntryApi = useSchoolEntryApi();
-  const gdprValidationTaskApi = useSchoolEntryGdprValidationTaskApi();
+  const gdprValidationTaskApi = useGdprValidationTaskApi(
+    ApiBusinessModule.SchoolEntry,
+  );
   const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
   const gdprBannerQuery = getGdprValidationBannerQuery(
     gdprValidationTaskApi,
-    gdprValidationTaskApiQueryKey,
+    ApiBusinessModule.SchoolEntry,
     isGdprFeatureEnabled,
   );
   const proceduresQuery = getProceduresQuery(schoolEntryApi, {
@@ -130,7 +130,7 @@ export function ProceduresTable(props: ProceduresTableProps) {
 
   useGdprValidationTasksAlert({
     banner: gdprBanner.data,
-    overviewRoute: routes.procedures.gdprValidationTasks,
+    businessModule: ApiBusinessModule.SchoolEntry,
   });
 
   useSyncRowSelection(rowSelectionProps, procedures.data.elements);
@@ -311,9 +311,6 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 250,
-      canNavigate: {
-        parentRow: true,
-      },
     },
   }),
   columnHelper.accessor("appointmentStart", {

@@ -88,9 +88,6 @@ interface LegacyFacilitySidebarProps {
   extraFieldsTop?: ReactNode;
   extraFieldsBottom?: ReactNode;
   extraFieldsInitialValues?: NonNullable<unknown>;
-  contactPersonSalutationRequired?: boolean;
-  contactPersonTitleRequired?: boolean;
-  contactPersonRoleRequired?: boolean;
 }
 
 export function LegacyFacilitySidebar({
@@ -107,9 +104,6 @@ export function LegacyFacilitySidebar({
   extraFieldsTop,
   extraFieldsBottom,
   extraFieldsInitialValues,
-  contactPersonSalutationRequired,
-  contactPersonTitleRequired,
-  contactPersonRoleRequired,
 }: LegacyFacilitySidebarProps) {
   const [mode, setMode] = useState<Mode>(pMode ?? Mode.search);
   const [editFacility, setEditFacility] = useState<BaseFacility | null>(
@@ -218,9 +212,6 @@ export function LegacyFacilitySidebar({
             contactPersonRequired={contactPersonRequired}
             extraFieldsTop={extraFieldsTop}
             extraFieldsBottom={extraFieldsBottom}
-            contactPersonSalutationRequired={contactPersonSalutationRequired}
-            contactPersonTitleRequired={contactPersonTitleRequired}
-            contactPersonRoleRequired={contactPersonRoleRequired}
           />
         ) : (
           <FacilitySearch

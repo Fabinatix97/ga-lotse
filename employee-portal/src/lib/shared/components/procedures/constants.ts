@@ -21,6 +21,7 @@ export const businessModuleNames = {
   [ApiBusinessModule.StiProtection]: "HIV-STI Schutz",
   [ApiBusinessModule.MedicalRegistry]: "Medizinalkartei",
   [ApiBusinessModule.Dental]: "Zahnärztlicher Dienst",
+  [ApiBusinessModule.OfficialMedicalService]: "Amtsärztliche Gutachten",
 } satisfies Record<ApiBusinessModule, string>;
 
 export const procedureTypeNames = {

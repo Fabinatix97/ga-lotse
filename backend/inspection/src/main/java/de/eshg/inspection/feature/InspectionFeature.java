@@ -10,4 +10,5 @@ public enum InspectionFeature {
   IMPORT,
   BANNED_FACILITIES_EXPORT,
   FACILITY_HISTORY,
+  STATISTICS,
 }

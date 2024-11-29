@@ -15,6 +15,7 @@ export interface TemplateSectionElementProp {
     index: number,
     sectionElement: ApiTemplateSectionElement,
   ) => void;
+  sectionIndex: number;
 }
 
 export function SectionDataElementList(

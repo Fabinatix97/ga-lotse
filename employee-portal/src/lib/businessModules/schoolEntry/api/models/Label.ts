@@ -5,10 +5,7 @@
 
 import { ApiSchoolEntryLabel } from "@eshg/employee-portal-api/schoolEntry";
 
-import {
-  BaseEntity,
-  mapBaseEntity,
-} from "@/lib/businessModules/schoolEntry/api/models/BaseEntity";
+import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 
 export interface Label extends BaseEntity {
   readonly version: number;

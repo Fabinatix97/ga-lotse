@@ -9,6 +9,15 @@ import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 import { CollapsableList } from "@/lib/businessModules/statistics/components/shared/CollapsableList";
 import { SearchableGroups } from "@/lib/shared/components/SearchableGroups";
 
+export function DataSource({ dataSourceName }: { dataSourceName: string }) {
+  return (
+    <Stack gap={1}>
+      <Typography level="title-md">Datenquelle</Typography>
+      <Typography level="body-md">{dataSourceName}</Typography>
+    </Stack>
+  );
+}
+
 export function Attributes({ attributeLabels }: { attributeLabels: string[] }) {
   return (
     <Stack gap={1}>
@@ -19,10 +28,10 @@ export function Attributes({ attributeLabels }: { attributeLabels: string[] }) {
 }
 
 export function Analyses({ analyses }: { analyses: Analysis[] }) {
-  const groups = analyses.map((evaluation) => ({
-    name: evaluation.name,
+  const groups = analyses.map((analysis) => ({
+    name: analysis.name,
     inAccordion: true,
-    items: evaluation.diagramTitles.map((it) => ({
+    items: analysis.diagramTitles.map((it) => ({
       key: it,
       searchableValue: it,
     })),

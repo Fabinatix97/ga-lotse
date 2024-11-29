@@ -24,4 +24,4 @@ public record StiProtectionProcedureDto(
     @NotNull @Valid PersonDto person,
     @Valid AppointmentDto appointment,
     @NotNull @Valid List<AppointmentHistoryEntryDto> appointmentHistory,
-    @NotNull @Valid WaitingRoomDto waitingRoom) {}
+    @Valid WaitingRoomDto waitingRoom) {}

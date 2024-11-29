@@ -6,10 +6,7 @@
 import { ApiOtherServiceTemplate } from "@eshg/employee-portal-api/travelMedicine";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import {
-  BaseEntity,
-  mapBaseEntity,
-} from "@/lib/businessModules/travelMedicine/api/models/BaseEntity";
+import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 
 export interface OtherServicesTemplates extends BaseEntity {
   readonly createdAt: Date;

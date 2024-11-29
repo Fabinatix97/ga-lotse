@@ -5,38 +5,35 @@
 
 package de.eshg.medicalregistry.domain.model;
 
-import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
-import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.TriggerType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class MedicalRegistryEntry
-    extends Procedure<MedicalRegistryEntry, MedicalRegistryTask, Professional, Practice> {
-
-  protected MedicalRegistryEntry() {}
-
-  public MedicalRegistryEntry(TriggerType triggerType) {
-    super(triggerType);
-  }
+public class MedicalRegistryEntry extends MedicalRegistryProcedure {
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   @Column(nullable = false)
   private boolean employeesEmployed;
 
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = false)
-  private boolean consentToPrivacyPolicy;
+  @OneToOne(
+      orphanRemoval = true,
+      cascade = CascadeType.PERSIST,
+      optional = false,
+      fetch = FetchType.LAZY)
+  private ProfessionInformation professionInformation;
 
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = false)
-  private boolean requestForWrittenConfirmation;
+  public MedicalRegistryEntry() {}
+
+  public MedicalRegistryEntry(TriggerType triggerType) {
+    super(triggerType);
+  }
 
   public boolean isEmployeesEmployed() {
     return employeesEmployed;
@@ -46,23 +43,11 @@ public class MedicalRegistryEntry
     this.employeesEmployed = employeesEmployed;
   }
 
-  public boolean isConsentToPrivacyPolicy() {
-    return consentToPrivacyPolicy;
+  public ProfessionInformation getProfessionInformation() {
+    return professionInformation;
   }
 
-  public void setConsentToPrivacyPolicy(boolean consentToPrivacyPolicy) {
-    this.consentToPrivacyPolicy = consentToPrivacyPolicy;
-  }
-
-  public boolean isRequestForWrittenConfirmation() {
-    return requestForWrittenConfirmation;
-  }
-
-  public void setRequestForWrittenConfirmation(boolean requestForWrittenConfirmation) {
-    this.requestForWrittenConfirmation = requestForWrittenConfirmation;
-  }
-
-  public Professional getProfessional() {
-    return this.getRelatedPersons().stream().collect(StreamUtil.toSingleElement());
+  public void setProfessionInformation(ProfessionInformation professionInformation) {
+    this.professionInformation = professionInformation;
   }
 }

@@ -7,6 +7,9 @@ package de.eshg.lib.xlsximport.util;
 
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.xlsximport.model.ImportResult;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
@@ -17,6 +20,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 public class FileResponseUtil {
+
+  private static final DateTimeFormatter FILE_TIMESTAMP =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 
   private FileResponseUtil() {}
 
@@ -37,9 +43,13 @@ public class FileResponseUtil {
   }
 
   public static ResponseEntity<Resource> getTemplateFileResponse(Resource templateFile) {
+    return getTemplateFileResponse(templateFile, templateFile.getFilename());
+  }
+
+  public static ResponseEntity<Resource> getTemplateFileResponse(
+      Resource templateFile, String filename) {
     return ResponseEntity.ok()
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION, fileAttachment(templateFile.getFilename()).toString())
+        .header(HttpHeaders.CONTENT_DISPOSITION, fileAttachment(filename).toString())
         .header(HttpHeaders.CONTENT_TYPE, CustomMediaTypes.APPLICATION_XLSX_VALUE)
         .body(templateFile);
   }
@@ -54,5 +64,9 @@ public class FileResponseUtil {
 
   private static ContentDisposition file(String filename, ContentDisposition.Builder builder) {
     return builder.name("file").filename(filename).build();
+  }
+
+  public static String filename(Clock clock) {
+    return "Datenimport_%s.xlsx".formatted(LocalDateTime.now(clock).format(FILE_TIMESTAMP));
   }
 }

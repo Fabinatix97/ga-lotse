@@ -43,7 +43,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
   private final SchoolEntryFeatureToggle schoolEntryFeatureToggle;
   private final SchoolEntryProperties schoolEntryProperties;
   private final SchoolEntryProceduresPopulator schoolEntryProceduresPopulator;
-  private final AppointmentBlockGroupsPopulator schoolEntryAppointmentBlockGroupsPopulator;
+  private final AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator;
   private final AuditLogTestHelperService auditLogTestHelperService;
   private final AppointmentBlockProperties appointmentBlockProperties;
 
@@ -52,7 +52,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
       SchoolEntryFeatureToggle schoolEntryFeatureToggle,
       SchoolEntryProperties schoolEntryProperties,
       SchoolEntryProceduresPopulator schoolEntryProceduresPopulator,
-      AppointmentBlockGroupsPopulator schoolEntryAppointmentBlockGroupsPopulator,
+      AppointmentBlockGroupsPopulator appointmentBlockGroupsPopulator,
       AuditLogTestHelperService auditLogTestHelperService,
       AppointmentBlockProperties appointmentBlockProperties,
       EnvironmentConfig environmentConfig) {
@@ -61,7 +61,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
     this.schoolEntryFeatureToggle = schoolEntryFeatureToggle;
     this.schoolEntryProperties = schoolEntryProperties;
     this.schoolEntryProceduresPopulator = schoolEntryProceduresPopulator;
-    this.schoolEntryAppointmentBlockGroupsPopulator = schoolEntryAppointmentBlockGroupsPopulator;
+    this.appointmentBlockGroupsPopulator = appointmentBlockGroupsPopulator;
     this.auditLogTestHelperService = auditLogTestHelperService;
     this.appointmentBlockProperties = appointmentBlockProperties;
   }
@@ -120,7 +120,7 @@ public class SchoolEntryTestHelperController extends TestHelperController
   public SchoolEntryAppointmentBlockPopulationResult populateAppointmentBlockGroups(
       @Valid @RequestBody PopulationRequest request) {
     ListWithTotalNumber<CreateAppointmentBlockGroupResponse> result =
-        schoolEntryAppointmentBlockGroupsPopulator.populate(request.numberOfEntitiesToPopulate());
+        appointmentBlockGroupsPopulator.populate(request.numberOfEntitiesToPopulate());
     return new SchoolEntryAppointmentBlockPopulationResult(
         result.entities(), result.totalNumberOfElements());
   }

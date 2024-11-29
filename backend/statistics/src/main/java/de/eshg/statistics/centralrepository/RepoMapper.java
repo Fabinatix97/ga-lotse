@@ -69,6 +69,7 @@ import de.eshg.statistics.centralrepository.dto.filter.RepoValueOptionFilter;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
+import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.persistence.entity.AbstractFilterParameter;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
@@ -356,7 +357,10 @@ public class RepoMapper {
         attribute.baseDataAttributes().stream()
             .map(
                 baseAttribute ->
-                    new BaseDataAttributeWithName(baseAttribute.code(), baseAttribute.name()))
+                    new BaseDataAttributeWithName(
+                        baseAttribute.code(),
+                        EvaluationMapper.getAttributeDisplayName(
+                            attribute.name(), baseAttribute.name())))
             .toList());
   }
 

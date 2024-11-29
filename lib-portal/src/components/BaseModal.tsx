@@ -6,14 +6,13 @@
 import { DialogTitle, Modal, ModalClose, ModalDialog } from "@mui/joy";
 import { DefaultColorPalette, SxProps } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
-import { isDefined } from "remeda";
 
 import { AlertSlot, useResetAlertContext } from "../errorHandling/AlertContext";
 
 export interface BaseModalProps {
   children: ReactNode;
   color?: DefaultColorPalette;
-  modalTitle?: string;
+  modalTitle: string;
   open: boolean;
   onClose: () => void;
   sx?: SxProps;
@@ -38,16 +37,9 @@ export function BaseModal({
 
   return (
     <>
-      <Modal
-        aria-labelledby="modal-title"
-        open={open}
-        color={color}
-        onClose={handleClose}
-      >
+      <Modal open={open} color={color} onClose={handleClose}>
         <ModalDialog sx={{ width: { xxs: 328, sm: 688 }, gap: 2, ...sx }}>
-          {isDefined(modalTitle) && (
-            <DialogTitle color={color}>{modalTitle}</DialogTitle>
-          )}
+          <DialogTitle color={color}>{modalTitle}</DialogTitle>
           <AlertSlot />
           <ModalClose
             variant="outlined"

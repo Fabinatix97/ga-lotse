@@ -8,106 +8,138 @@ import {
   ApiCreateMedicalHistoryRequest,
   ApiExamination,
   ApiGender,
+  ApiPartnerRiskFactors,
   ApiPreviousIllness,
+  ApiProtectionMethod,
   ApiRelationshipModel,
-  ApiRiskFactors,
+  ApiSafeSexPractice,
+  ApiSexWorkLocation,
   ApiSexualOrientation,
-  ApiStiProtectionProcedure,
   ApiVaccination,
-  CreateMedicalHistoryRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { MonthAndYear } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-type Merge<M, N> = Omit<M, Extract<keyof M, keyof N>> & N;
+import { YesOrNoFieldData } from "./YesOrNoWithFollowUp";
 
-export type ExaminationData = Merge<
-  ApiExamination,
-  {
-    [K in keyof ApiExamination]: {
-      hadExamination: boolean;
-      examinationDate: MonthAndYear;
-    };
-  }
->;
+type ValueOf<T> = T[keyof T];
+type DateKeys<T> = ValueOf<{
+  [K in keyof T]-?: K extends `${infer J}Date` ? J : K;
+}>;
 
-export type VaccinationData = Merge<
-  ApiVaccination,
-  {
-    [K in keyof ApiVaccination]: {
-      hadVaccination: boolean;
-      vaccinationDate: MonthAndYear;
-    };
-  }
->;
+export type ExaminationData = Required<{
+  [K in DateKeys<ApiExamination>]: StandardExaminationQuestion;
+}>;
 
-type RiskFactors = Merge<
-  ApiRiskFactors,
-  {
-    vaccinations: VaccinationData;
-  }
->;
-
+export interface StandardRiskFactors {
+  unprotectedVaginal: StandardRiskQuestion;
+  unprotectedAnal: StandardRiskQuestion;
+  unprotectedOral: StandardRiskQuestion;
+}
+export interface StandardRiskQuestion {
+  taken: YesOrNoFieldData;
+  lastIncident: MonthAndYear;
+}
+export interface StandardExaminationQuestion {
+  hadExamination: YesOrNoFieldData;
+  examinationDate: MonthAndYear;
+}
+const defaultStandardExaminationQuestion: StandardExaminationQuestion = {
+  hadExamination: null,
+  examinationDate: { year: "", month: null },
+};
 export const defaultExaminations: ExaminationData = {
-  chlamydia: {
-    hadExamination: false,
-    examinationDate: { month: null, year: "" },
-  },
-  gonorrhea: {
-    hadExamination: false,
-    examinationDate: { month: null, year: "" },
-  },
-  hepA: { hadExamination: false, examinationDate: { month: null, year: "" } },
-  hepB: { hadExamination: false, examinationDate: { month: null, year: "" } },
-  hepC: { hadExamination: false, examinationDate: { month: null, year: "" } },
-  hiv: { hadExamination: false, examinationDate: { month: null, year: "" } },
-  syphilis: {
-    hadExamination: false,
-    examinationDate: { month: null, year: "" },
-  },
+  hepA: defaultStandardExaminationQuestion,
+  hepB: defaultStandardExaminationQuestion,
+  hepC: defaultStandardExaminationQuestion,
+  hiv: defaultStandardExaminationQuestion,
+  syphilis: defaultStandardExaminationQuestion,
+  gonorrhea: defaultStandardExaminationQuestion,
+  chlamydia: defaultStandardExaminationQuestion,
+} as const;
+
+export type PreviousIllnessesForm = {
+  [K in keyof ApiPreviousIllness]-?: Exclude<
+    ApiPreviousIllness[K],
+    undefined
+  > extends boolean
+    ? YesOrNoFieldData
+    : Exclude<ApiPreviousIllness[K], undefined>;
 };
 
-export const defaultPreviousIllnesses: ApiPreviousIllness = {
-  chlamydia: false,
-  gonorrhea: false,
-  hepA: false,
-  hepB: false,
-  hepC: false,
-  hiv: false,
-  syphilis: false,
+export const defaultPreviousIllnesses: PreviousIllnessesForm = {
+  hepA: null,
+  hepB: null,
+  hepC: null,
+  hiv: null,
+  syphilis: null,
+  gonorrhea: null,
+  chlamydia: null,
+  other: null,
+  otherData: "",
+};
+const defaultMonthAndYear: MonthAndYear = { month: null, year: "" };
+const defaultStandardRiskQuestion: StandardRiskQuestion = {
+  lastIncident: defaultMonthAndYear,
+  taken: null,
+};
+const defaultStandardRisks: StandardRiskFactors = {
+  unprotectedVaginal: defaultStandardRiskQuestion,
+  unprotectedAnal: defaultStandardRiskQuestion,
+  unprotectedOral: defaultStandardRiskQuestion,
 };
 
-export const defaultVaccinations: VaccinationData = {
-  hepA: { hadVaccination: false, vaccinationDate: { month: null, year: "" } },
-  hepB: { hadVaccination: false, vaccinationDate: { month: null, year: "" } },
-  hpv: { hadVaccination: false, vaccinationDate: { month: null, year: "" } },
-};
+export const defaultVaccinations: VaccinationData = [];
 
-export interface MedicalHistoryFormData
-  extends Omit<
-    CreateMedicalHistoryRequest["apiCreateMedicalHistoryRequest"]["medicalHistory"],
-    | "contactToClarifyDuration"
-    | "examinations"
-    | "riskFactors"
-    | "relationshipModel"
-  > {
-  contactToClarifyDuration: OptionalFieldValue<string>;
-  currentSymptoms: string;
+export interface MedicalHistoryFormData {
+  general: GeneralData;
+
   examinations: ExaminationData;
-  lastCancerScreening: OptionalFieldValue<string>;
-  lastMenstruation: OptionalFieldValue<string>;
-  hasBeenPregnant: boolean | null;
+
+  previousIllnesses: PreviousIllnessesForm;
+
+  sexualOrientationAndContact: SexualOrientationAndContactData;
+
+  prevention: PreventionData;
+
+  standardRiskFactors: StandardRiskFactors;
+  otherRisks: {
+    taken: YesOrNoFieldData;
+    description: string;
+  };
+
+  remarks: string;
+}
+
+export interface GeneralData {
+  examinationReason: string;
+  relationshipModel: ApiRelationshipModel | "";
+  contactToClarifyDate: string;
+  currentSymptoms: string;
+  lastCancerScreening: string;
+  lastMenstruation: string;
+  hasBeenPregnant: YesOrNoFieldData;
   knownOperationsOrIllnesses: string;
   medications: string;
-  numberOfBirthsOrAbortions: number;
-  numberOfPregnancies: number;
-  numberOfSexualPartnersLast12Months: number;
-  relationshipModel: OptionalFieldValue<ApiRelationshipModel>;
-  remarks: string;
-  riskFactors: RiskFactors;
-  sexualContact: ApiGender;
-  sexualOrientation: ApiSexualOrientation;
+  numberOfBirthsOrAbortions: number | "";
+  numberOfPregnancies: number | "";
+}
+
+export type VaccinationData = ApiVaccination[];
+
+export interface PreventionData {
+  vaccinations: VaccinationData;
+  safeSexRegularity: ApiSafeSexPractice | "";
+  stiProtectiveMeasures: ApiProtectionMethod[];
+  infoAboutPrepDesired: YesOrNoFieldData;
+}
+
+export interface SexualOrientationAndContactData {
+  sexualOrientation: ApiSexualOrientation | null;
+  numberOfSexualPartnersLast12Months: number | "";
+  sexualContactGenders: ApiGender[];
+  sexualContactFactors: ApiPartnerRiskFactors[];
+  startInSexWork: MonthAndYear;
+  sexWorkType: ApiSexWorkLocation[];
 }
 
 type MedicalHistoryType =
@@ -121,65 +153,43 @@ export const medicalHistoryTypeByConcern: Record<
   [ApiConcern.HivStiConsultation]: "StiConsultationMedicalHistory",
 } satisfies Record<ApiConcern, MedicalHistoryType>;
 
-export function defaultMedicalHistoryFormValues({
-  concern,
-}: ApiStiProtectionProcedure): MedicalHistoryFormData {
+export function defaultMedicalHistoryFormValues(): MedicalHistoryFormData {
   return {
-    type: medicalHistoryTypeByConcern[concern],
-    contactToClarifyDuration: "",
-    currentSymptoms: "",
-    examinationReason: "",
-    examinations: defaultExaminations,
-    hasBeenPregnant: null,
-    knownOperationsOrIllnesses: "",
-    lastCancerScreening: "",
-    lastMenstruation: "",
-    medications: "",
-    numberOfBirthsOrAbortions: 0,
-    numberOfPregnancies: 0,
-    numberOfSexualPartnersLast12Months: 0,
-    previousIllnesses: defaultPreviousIllnesses,
-    relationshipModel: "",
-    remarks: "",
-    riskFactors: {
-      prepInfoProvided: false,
-      vaccinations: defaultVaccinations,
+    general: {
+      contactToClarifyDate: "",
+      currentSymptoms: "",
+      examinationReason: "",
+      hasBeenPregnant: null,
+      knownOperationsOrIllnesses: "",
+      lastCancerScreening: "",
+      lastMenstruation: "",
+      medications: "",
+      numberOfBirthsOrAbortions: "",
+      numberOfPregnancies: "",
+      relationshipModel: "",
     },
-    sexualContact: "NOT_SPECIFIED",
-    sexualOrientation: "NOT_SPECIFIED",
+    examinations: defaultExaminations,
+    previousIllnesses: defaultPreviousIllnesses,
+
+    sexualOrientationAndContact: {
+      numberOfSexualPartnersLast12Months: "",
+      sexualContactGenders: [],
+      sexualContactFactors: [],
+      startInSexWork: { month: null, year: "" },
+      sexWorkType: [],
+      sexualOrientation: null,
+    },
+
+    prevention: {
+      vaccinations: defaultVaccinations,
+      safeSexRegularity: "",
+      stiProtectiveMeasures: [],
+      infoAboutPrepDesired: null,
+    },
+
+    standardRiskFactors: defaultStandardRisks,
+    otherRisks: { taken: null, description: "" },
+
+    remarks: "",
   };
 }
-
-export const medicalHistoryFormFields = {
-  additionalComments: "",
-  contactToClarifyDuration: "Abzuklärender Kontakt vor",
-  currentSymptoms: "Aktuelle Beschwerden",
-  examinationReason: "Grund für die heutige Beratung",
-  hasBeenPregnant: "Bereits schwanger?",
-  knownOperationsOrIllnesses: "Bekannte Operationen oder Erkrankungen",
-  lastCancerScreening: "Letzte Krebsvorsorge vor",
-  lastMenstruation: "Letzte Menstruation vor",
-  medications: "Medikamente",
-  numberOfBirthsOrAbortions: "Anzahl Geburten/Aborte",
-  numberOfPregnancies: "Wenn ja, wie oft?",
-  numberOfSexualPartnersLast12Months:
-    "Anzahl der Sexpartner:innen in den letzten 12 Monaten",
-  previousIllnesses: "Bisherige Krankheiten",
-  relationshipModel: "Beziehungsmodell",
-  remarks: "Bemerkungen",
-  riskContacts: "",
-  sexualContact: "Sexueller Kontakt",
-  sexualOrientation: "Sexuelle Orientierung",
-} as const satisfies Record<
-  keyof Omit<MedicalHistoryFormData, "type" | "examinations" | "riskFactors">,
-  string
->;
-
-export const medicalHistoryFormSections = {
-  common: "Allgemein",
-  examinations: "Untersuchungen",
-  previousIllnesses: "Bisherige Krankheiten",
-  riskAndPrevention: "Risiko und Prävention",
-  sexualOrientationAndContact: "Sexuelle Orientierung / Kontakte",
-  vaccinations: "Impfungen",
-};

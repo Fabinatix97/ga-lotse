@@ -18,7 +18,7 @@ import {
 import { ReportDetailsView } from "@/lib/businessModules/statistics/api/models/reportDetailsViewTypes";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
-import { mapEvaluations } from "./useGetDetailPageInformation";
+import { mapAnalyses } from "./useGetDetailPageInformation";
 
 export function mapToReportDetailsView(
   response: ApiGetReportDetailPageResponse,
@@ -46,7 +46,7 @@ export function mapToReportDetailsView(
       attributeLabels: attributes.map((it) => it.name),
       datasetAmount: response.totalNumberOfElements,
     },
-    evaluations: mapEvaluations(response.analyses, attributes),
+    analyses: mapAnalyses(response.analyses, attributes),
     attributes: attributes,
     userId: response.userReport?.userId ?? response.userReportSeries!.userId,
     numberInSeries: isReportOfSeries ? response.name : undefined,

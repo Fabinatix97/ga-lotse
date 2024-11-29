@@ -24,7 +24,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(indexes = @Index(columnList = "reference_facility_id"))
+@Table(indexes = {@Index(columnList = "reference_facility_id"), @Index(columnList = "name")})
 @EntityListeners(AuditingEntityListener.class)
 public class Facility extends SequencedBaseEntityWithExternalId implements CentralFileData {
 

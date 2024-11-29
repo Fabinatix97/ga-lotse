@@ -7,4 +7,7 @@ import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
 const apiQueryKey = queryKeyFactory(["dental"]);
 
-export const dentalApiQueryKey = queryKeyFactory(apiQueryKey(["dentalApi"]));
+export const childApiQueryKey = queryKeyFactory(apiQueryKey(["childApi"]));
+export const prophylaxisSessionApiQueryKey = queryKeyFactory(
+  apiQueryKey(["prophylaxisSessionApi"]),
+);

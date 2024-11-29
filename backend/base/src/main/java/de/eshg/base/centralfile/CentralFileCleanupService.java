@@ -9,7 +9,6 @@ import de.eshg.base.centralfile.persistence.FacilityService;
 import de.eshg.base.centralfile.persistence.PersonService;
 import java.time.Clock;
 import java.time.Instant;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,14 +31,12 @@ public class CentralFileCleanupService {
   }
 
   @Scheduled(cron = "${de.eshg.central-file-deletion-service.schedule:@daily}")
-  @SchedulerLock(name = "DailyCentralFileCleanUpForFacilities")
   void performCleanUpForFacilities() {
     Instant expirationTime = Instant.now(clock);
     deleteExpiredFacilityFileStates(expirationTime);
   }
 
   @Scheduled(cron = "${de.eshg.central-file-deletion-service.schedule:@daily}")
-  @SchedulerLock(name = "DailyCentralFileCleanUpForPersons")
   void performCleanupForPersons() {
     Instant expirationTime = Instant.now(clock);
     deleteExpiredPersonFileStates(expirationTime);

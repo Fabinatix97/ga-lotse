@@ -5,11 +5,18 @@ plugins {
 
 dependencies {
     implementation project(':lib-base-client')
+    implementation project(':lib-contact')
     implementation project(':business-module-persistence-commons')
+    implementation project(':lib-xlsx-import')
+
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-contact'))
+    testImplementation testFixtures(project(':lib-xlsx-import'))
 }
 
 dockerCompose {

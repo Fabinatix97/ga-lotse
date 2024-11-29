@@ -21,6 +21,7 @@ export function MainQuestion(
   props: Readonly<{
     elementDataFormikPath: string;
     sectionElementDeleteHandler: () => void;
+    label: string;
   }>,
 ) {
   return (
@@ -32,6 +33,7 @@ export function MainQuestion(
     >
       <InputField
         label
+        aria-label={props.label}
         name={`${props.elementDataFormikPath}.questionText`}
         placeholder="Frage eingeben"
         sx={{ flex: 1 }}

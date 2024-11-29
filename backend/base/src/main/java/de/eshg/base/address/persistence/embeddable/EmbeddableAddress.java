@@ -9,14 +9,12 @@ import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-@Embeddable
 @MappedSuperclass
-public class EmbeddableAddress {
+public abstract class EmbeddableAddress {
 
   @Column(nullable = false)
   @DataSensitivity(SensitivityLevel.PROTECTED)

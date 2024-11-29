@@ -7,12 +7,12 @@ import { EChartsOption } from "echarts";
 import { CallbackDataParams } from "echarts/types/dist/shared.js";
 
 import {
+  AnalysisDiagramBarChart,
   DiagramGrouping,
   DiagramOrientation,
   DiagramScaling,
   DiagramType,
-  EvaluationDiagramBarChart,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -21,7 +21,7 @@ import { chartLegend } from "@/lib/businessModules/statistics/components/shared/
 import { calculateRelativeFormatting } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 export interface BarChartProps {
-  filterSetData: EvaluationDiagramBarChart["data"];
+  filterSetData: AnalysisDiagramBarChart["data"];
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
   orientation?: DiagramOrientation;
@@ -32,7 +32,7 @@ export interface BarChartProps {
 }
 
 export function mapToUnstackedSeries(
-  diagramData: EvaluationDiagramBarChart["data"],
+  diagramData: AnalysisDiagramBarChart["data"],
 ) {
   const labels: string[] = [];
   const data: number[] = [];
@@ -51,7 +51,7 @@ export function mapToUnstackedSeries(
 type DataGroups = Record<string, { groupLabel: string; value: number }[]>;
 
 export function mapToStackedSeries(
-  diagramData: EvaluationDiagramBarChart["data"],
+  diagramData: AnalysisDiagramBarChart["data"],
 ) {
   const labels: string[] = [];
   const dataGroups: DataGroups = {};

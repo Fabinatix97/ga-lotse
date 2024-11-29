@@ -5,16 +5,16 @@
 
 import { isDefined } from "remeda";
 
-import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import {
-  EvaluationDiagramLineChart,
-  EvaluationDiagramScatterChart,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+  AnalysisDiagramLineChart,
+  AnalysisDiagramScatterChart,
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 
 export function calculateXYMinMax(
   filterSet:
-    | EvaluationDiagramScatterChart["data"]
-    | EvaluationDiagramLineChart["data"],
+    | AnalysisDiagramScatterChart["data"]
+    | AnalysisDiagramLineChart["data"],
 ) {
   const xList = filterSet.flatMap((it) => it.dataPoints.flatMap((it) => it.x));
   const xMin = Math.min(...xList);

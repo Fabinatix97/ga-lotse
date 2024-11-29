@@ -9,67 +9,74 @@ import {
   ColorPaletteProp,
   IconButton as JoyIconButton,
   Tooltip,
+  Typography,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { PropsWithChildren, ReactNode, forwardRef, useState } from "react";
 
+import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+
 export function InfoIconTooltipButton({
-  title,
+  infoText,
   sx,
   size,
   iconLabelledBy,
-  iconLabel: iconLabelProp,
   tooltipColor,
+  title,
 }: Readonly<{
-  title: ReactNode;
+  infoText: ReactNode;
   sx?: SxProps;
-  iconLabel?: string;
   iconLabelledBy?: string;
   size?: "sm" | "md" | "lg";
   tooltipColor?: ColorPaletteProp;
+  title: string;
 }>) {
-  const iconLabel =
-    !iconLabelledBy && !iconLabelProp ? "Mehr Informationen" : iconLabelProp;
   return (
     <IconTooltipButton
       icon={<InfoOutlined sx={sx} size={size} />}
-      iconLabel={iconLabel}
       iconLabelledBy={iconLabelledBy}
-      title={title}
+      infoText={infoText}
       tooltipColor={tooltipColor}
+      title={title}
     />
   );
 }
 
 export function IconTooltipButton({
   icon,
-  iconLabel,
   iconLabelledBy,
-  title,
+  infoText,
   tooltipColor,
+  title,
 }: Readonly<{
   icon: ReactNode;
-  iconLabel?: string;
   iconLabelledBy?: string;
-  title: ReactNode;
+  infoText: ReactNode;
   tooltipColor?: ColorPaletteProp;
+  title: string;
 }>) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Tooltip arrow color={tooltipColor} variant="outlined" title={title}>
+      <Tooltip arrow color={tooltipColor} variant="outlined" title={infoText}>
         <IconButton
-          aria-label={iconLabel}
+          aria-label={title}
           aria-labelledby={iconLabelledBy}
           onClick={() => setOpen(true)}
         >
           {icon}
         </IconButton>
       </Tooltip>
-      <BaseModal open={open} onClose={() => setOpen(false)}>
-        {title}
-      </BaseModal>
+      <OverlayBoundary>
+        <BaseModal
+          open={open}
+          onClose={() => setOpen(false)}
+          modalTitle={title}
+        >
+          <Typography>{infoText}</Typography>
+        </BaseModal>
+      </OverlayBoundary>
     </>
   );
 }

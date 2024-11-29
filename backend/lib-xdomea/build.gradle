@@ -1,0 +1,67 @@
+import org.apache.commons.io.FileUtils
+
+plugins {
+    id "eshg.java-lib"
+}
+
+configurations {
+    xjc
+}
+
+dependencies {
+    api 'jakarta.xml.bind:jakarta.xml.bind-api'
+
+    xjc 'org.glassfish.jaxb:jaxb-xjc:latest.release'
+    xjc 'org.glassfish.jaxb:jaxb-runtime:latest.release'
+}
+
+ext {
+    catalogFile = "$projectDir/xdomea/catalog.xml"
+    xoevCodeFile = "$projectDir/xdomea/xoev-code.xsd"
+    //find new version at https://www.xrepository.de/details/urn:xoev-de:xdomea:kosit:standard:xdomea
+    zipFile = "$projectDir/xdomea/xdomea_3-1-0_XML-Schemata.zip"
+    zipDir = layout.buildDirectory.dir("tmp/xdomea").get().asFile
+    xsdFile = "$zipDir/xdomea_3-1-0_XML-Schemata/xdomea-Nachrichten-AussonderungDurchfuehren.xsd"
+    xsdConfigFile = "$projectDir/xdomea/config.xsdconfig"
+    generatedSources = layout.buildDirectory.dir("generated/sources/xdomea/java").get().asFile
+}
+
+sourceSets.main.java.srcDirs += generatedSources
+
+tasks.register('unpackZip', Copy) {
+    inputs.file file(zipFile)
+    outputs.dir zipDir
+
+    doFirst {
+        FileUtils.cleanDirectory(zipDir)
+    }
+
+    from zipTree(zipFile)
+    into zipDir
+}
+
+tasks.register('xsd2java', JavaExec) {
+    dependsOn unpackZip
+
+    inputs.file file(catalogFile)
+    inputs.file file(xoevCodeFile)
+    inputs.dir zipDir
+    outputs.dir generatedSources
+
+    doFirst {
+        FileUtils.cleanDirectory(generatedSources)
+    }
+
+    mainClass = "com.sun.tools.xjc.XJCFacade"
+    classpath = configurations.xjc
+    args "-d", generatedSources
+    args "-p", "de.xdomea"
+    args "-nv"
+    args "-quiet"
+    args "-catalog", catalogFile
+    args xsdFile
+
+    defaultCharacterEncoding = "UTF-8"
+}
+
+compileJava.dependsOn xsd2java

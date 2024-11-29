@@ -8,6 +8,7 @@ import {
   Configuration,
   FileApi,
   MedicalRegistryApi,
+  MedicalRegistryImportApi,
   ProcedureApi,
   ProgressEntryApi,
 } from "@eshg/employee-portal-api/medicalRegistry";
@@ -23,6 +24,11 @@ function useConfiguration() {
 export function useMedicalRegistryApi() {
   const configuration = useConfiguration();
   return new MedicalRegistryApi(configuration);
+}
+
+export function useMedicalRegistryImportApi() {
+  const configuration = useConfiguration();
+  return new MedicalRegistryImportApi(configuration);
 }
 
 export function useProcedureApi() {

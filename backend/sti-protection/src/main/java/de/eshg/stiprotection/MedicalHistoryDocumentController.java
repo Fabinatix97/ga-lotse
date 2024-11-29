@@ -46,13 +46,13 @@ public class MedicalHistoryDocumentController {
 
   @GetMapping(path = "/consultation-de")
   @Operation(summary = "Get the printable document for sti hiv consultation in DE locale.")
-  public ResponseEntity<Resource> getConsulatationDEDocument() {
+  public ResponseEntity<Resource> getConsultationDEDocument() {
     return getDocument(consultationDEDocument);
   }
 
   @GetMapping(path = "/consultation-en")
   @Operation(summary = "Get the printable document for sti hiv consultation in EN locale.")
-  public ResponseEntity<Resource> getConsulatationENDocument() {
+  public ResponseEntity<Resource> getConsultationENDocument() {
     return getDocument(consultationENDocument);
   }
 

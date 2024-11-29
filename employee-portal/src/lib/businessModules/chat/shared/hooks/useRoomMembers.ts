@@ -13,20 +13,17 @@ import { useEffect, useMemo, useState } from "react";
 import { filter, isStrictEqual, map } from "remeda";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { getRoomCreator } from "@/lib/businessModules/chat/shared/utils";
+import {
+  getRoomAdmins,
+  getRoomCreator,
+} from "@/lib/businessModules/chat/shared/utils";
 
 export function useRoomMembers(roomId: string) {
   const { matrixClient } = useChatClientContext();
-  const [roomMembers, setRoomMembers] = useState<RoomMember[]>([]);
+  const [roomMembers, setRoomMembers] = useState<RoomMember[]>(
+    matrixClient.getRoom(roomId)?.getMembers() ?? [],
+  );
   const loggedInUserId = matrixClient.getUserId();
-
-  useEffect(() => {
-    const room = matrixClient.getRoom(roomId);
-    const roomMembers = room?.getMembers();
-    if (roomMembers?.length) {
-      setRoomMembers(roomMembers);
-    }
-  }, [matrixClient, roomId]);
 
   useEffect(() => {
     function onRoomMember(event: MatrixEvent, state: RoomState) {
@@ -47,14 +44,14 @@ export function useRoomMembers(roomId: string) {
     [matrixClient, roomId],
   );
 
-  const allRoomMembers = useMemo(
-    () =>
-      map(roomMembers, (m) => ({
-        member: m,
-        isRoomCreator: isStrictEqual(m.userId, roomCreatorId),
-      })),
-    [roomCreatorId, roomMembers],
-  );
+  const allRoomMembers = useMemo(() => {
+    const roomAdmins = getRoomAdmins(matrixClient.getRoom(roomId));
+    return map(roomMembers, (m) => ({
+      member: m,
+      isRoomCreator: isStrictEqual(m.userId, roomCreatorId),
+      isAdmin: roomAdmins.includes(m.userId),
+    }));
+  }, [matrixClient, roomCreatorId, roomId, roomMembers]);
 
   const joinedMembers = useMemo(() => {
     return [

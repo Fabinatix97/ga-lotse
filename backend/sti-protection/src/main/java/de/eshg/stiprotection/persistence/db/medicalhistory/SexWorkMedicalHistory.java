@@ -8,6 +8,7 @@ package de.eshg.stiprotection.persistence.db.medicalhistory;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import java.time.LocalDate;
 
@@ -16,9 +17,11 @@ import java.time.LocalDate;
 @DiscriminatorValue(value = "SEX_WORK")
 public class SexWorkMedicalHistory extends MedicalHistory {
 
-  private LocalDate lastMenstruationDuration;
+  private LocalDate lastMenstruationDate;
 
-  private LocalDate lastCancerScreeningDuration;
+  private LocalDate lastCancerScreeningDate;
+
+  private Boolean previouslyPregnant;
 
   private Integer amountPregnancies;
 
@@ -28,20 +31,30 @@ public class SexWorkMedicalHistory extends MedicalHistory {
 
   private String medications;
 
-  public LocalDate getLastMenstruationDuration() {
-    return lastMenstruationDuration;
+  @Embedded private SexWorkRiskContact sexWorkRiskContacts;
+
+  public LocalDate getLastMenstruationDate() {
+    return lastMenstruationDate;
   }
 
-  public void setLastMenstruationDuration(LocalDate lastMenstruationDuration) {
-    this.lastMenstruationDuration = lastMenstruationDuration;
+  public void setLastMenstruationDate(LocalDate lastMenstruationDate) {
+    this.lastMenstruationDate = lastMenstruationDate;
   }
 
-  public LocalDate getLastCancerScreeningDuration() {
-    return lastCancerScreeningDuration;
+  public LocalDate getLastCancerScreeningDate() {
+    return lastCancerScreeningDate;
   }
 
-  public void setLastCancerScreeningDuration(LocalDate lastCancerScreeningDuration) {
-    this.lastCancerScreeningDuration = lastCancerScreeningDuration;
+  public void setLastCancerScreeningDate(LocalDate lastCancerScreeningDate) {
+    this.lastCancerScreeningDate = lastCancerScreeningDate;
+  }
+
+  public Boolean getPreviouslyPregnant() {
+    return previouslyPregnant;
+  }
+
+  public void setPreviouslyPregnant(Boolean previouslyPregnant) {
+    this.previouslyPregnant = previouslyPregnant;
   }
 
   public Integer getAmountPregnancies() {
@@ -74,5 +87,13 @@ public class SexWorkMedicalHistory extends MedicalHistory {
 
   public void setMedications(String medications) {
     this.medications = medications;
+  }
+
+  public SexWorkRiskContact getSexWorkRiskContacts() {
+    return sexWorkRiskContacts;
+  }
+
+  public void setSexWorkRiskContacts(SexWorkRiskContact sexWorkRiskContacts) {
+    this.sexWorkRiskContacts = sexWorkRiskContacts;
   }
 }

@@ -5,13 +5,11 @@
 
 "use client";
 
-import { ApiInspPendingFacility } from "@eshg/employee-portal-api/inspection";
 import { Typography } from "@mui/joy";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { getInspectionPendingFacilityFromOfflineInspections } from "@/lib/businessModules/inspection/api/queries/getInspectionPendingFacilityFromOfflineInspections";
+import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
 import { PendingFacilitiesIncidentsSidebar } from "@/lib/businessModules/inspection/components/facility/pending/PendingFacilitiesIncidentsSidebar";
-import { useServiceWorker } from "@/lib/businessModules/inspection/shared/offline/ServiceWorkerProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -29,14 +27,14 @@ type UserActivityState =
 const initialUserActivity: UserActivityState = { type: "view-table" };
 
 export function PendingFacilitiesOfflineTable() {
-  const procedures = useInspectionPendingFacilityFromOfflineInspections();
+  const { data: procedures, isFetching } = useGetPendingFacilities({});
 
   const tableControl = useTableControl({ serverSideSorting: false });
   const columns = createPendingFacilitiesColumns(
-    false,
     handleViewIncidentsClick,
     () => undefined,
     () => undefined,
+    false,
     false,
   );
 
@@ -60,9 +58,9 @@ export function PendingFacilitiesOfflineTable() {
 
   return (
     <TablePage fullHeight>
-      <TableSheet>
+      <TableSheet loading={isFetching}>
         <DataTable
-          data={procedures}
+          data={procedures.elements}
           columns={columns}
           sorting={tableControl.tableSorting}
           noDataComponent={NoDataHint}
@@ -95,23 +93,4 @@ function NoDataHint() {
       </Typography>
     </>
   );
-}
-
-export function useInspectionPendingFacilityFromOfflineInspections() {
-  const { sendMessageToServiceWorker } = useServiceWorker();
-
-  const [facilities, setFacilities] = useState<ApiInspPendingFacility[]>([]);
-
-  useEffect(() => {
-    getInspectionPendingFacilityFromOfflineInspections(
-      sendMessageToServiceWorker,
-    ).then(
-      (facilities) => setFacilities(facilities),
-      (reason) => {
-        throw reason;
-      },
-    );
-  }, [sendMessageToServiceWorker]);
-
-  return facilities;
 }

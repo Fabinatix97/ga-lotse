@@ -9,13 +9,13 @@ import { Stack } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
+import { EvaluationDetailsTableRow } from "@/lib/businessModules/statistics/api/models/evaluationDetailsTableData";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import { StatisticDetailsTableRow } from "@/lib/businessModules/statistics/api/models/statisticDetailsTableData";
 import { mapRawValueToTableCell } from "@/lib/businessModules/statistics/components/evaluations/details/table/mapRawValueToTableCell";
 
-const columnHelper = createColumnHelper<StatisticDetailsTableRow>();
+const columnHelper = createColumnHelper<EvaluationDetailsTableRow>();
 
-export function statisticsColumns(flatAttributes: FlatAttribute[]) {
+export function evaluationColumns(flatAttributes: FlatAttribute[]) {
   const dataColumns = flatAttributes
     .filter((attribute) => attribute.type !== "ProcedureIdAttribute")
     .map((attribute) => {

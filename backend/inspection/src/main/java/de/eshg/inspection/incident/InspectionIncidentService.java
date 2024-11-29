@@ -14,6 +14,7 @@ import de.eshg.inspection.inspection.InspectionMapper;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.InspectionUpdater;
 import de.eshg.inspection.inspection.persistence.Inspection;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.util.Comparator;
@@ -43,6 +44,10 @@ public class InspectionIncidentService {
   public InspectionIncidentDto createIncident(
       UUID inspectionId, CreateInspectionIncidentRequest request) {
     Inspection inspection = inspectionService.loadInspectionForUpdate(inspectionId);
+    checkInspectionIsNotClosed(
+        inspection,
+        "Vorkommnisse können nicht zu abgeschlossenen Vorgängen hinzugefügt werden.",
+        "incident could not be added");
 
     int newPosition =
         inspection.getIncidents().stream()
@@ -69,6 +74,10 @@ public class InspectionIncidentService {
   public InspectionIncidentDto updateIncident(
       UUID inspectionId, UUID incidentId, UpdateInspectionIncidentRequest request) {
     Inspection inspection = inspectionService.loadInspectionForUpdate(inspectionId);
+    checkInspectionIsNotClosed(
+        inspection,
+        "Vorkommnisse von abgeschlossenen Vorgängen können nicht geändert werden.",
+        "incident could not be updated");
     InspectionIncident inspectionIncident = findInspectionIncident(inspection, incidentId);
 
     String title = request.title();
@@ -92,6 +101,10 @@ public class InspectionIncidentService {
 
   public void deleteIncident(UUID inspectionId, UUID incidentId) {
     Inspection inspection = inspectionService.loadInspectionForUpdate(inspectionId);
+    checkInspectionIsNotClosed(
+        inspection,
+        "Vorkommnisse von abgeschlossenen Vorgängen können nicht gelöscht werden.",
+        "incident could not be deleted");
     InspectionIncident incident = findInspectionIncident(inspection, incidentId);
     if (incident.getChecklistElement() != null) {
       throw new BadRequestException("Not allowed to delete checklist incident");
@@ -101,6 +114,19 @@ public class InspectionIncidentService {
 
     inspectionUpdater.advanceToExecutingPhase(inspection);
     inspectionUpdater.updateModified(inspection);
+  }
+
+  private static void checkInspectionIsNotClosed(
+      Inspection inspection, String userErrorMessage, String errorMessageAppendix) {
+    if (ProcedureStatus.isClosed(inspection.getProcedureStatus())) {
+      throw new BadRequestException(
+          userErrorMessage,
+          String.format(
+              "Inspection %s procedure is %s, %s",
+              inspection.getExternalId(),
+              inspection.getProcedureStatus().name(),
+              errorMessageAppendix));
+    }
   }
 
   private static InspectionIncident findInspectionIncident(Inspection inspection, UUID incidentId) {

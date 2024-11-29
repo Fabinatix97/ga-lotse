@@ -4,12 +4,7 @@
  */
 
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
-import {
-  ClientEvent,
-  MatrixEvent,
-  User,
-  UserEvent,
-} from "matrix-js-sdk/lib/matrix";
+import { ClientEvent, MatrixEvent, User, UserEvent } from "matrix-js-sdk";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { isNullish } from "remeda";
 

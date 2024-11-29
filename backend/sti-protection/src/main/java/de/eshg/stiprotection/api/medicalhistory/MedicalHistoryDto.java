@@ -32,7 +32,7 @@ public sealed interface MedicalHistoryDto extends HasTypeDiscriminator
 
   String currentSymptoms();
 
-  LocalDate contactToClarifyDuration();
+  LocalDate contactToClarifyDate();
 
   RelationshipModelDto relationshipModel();
 
@@ -47,6 +47,10 @@ public sealed interface MedicalHistoryDto extends HasTypeDiscriminator
   // Orientation and Contact
 
   RiskContactDto riskContacts();
+
+  // Prevention
+
+  PreventionDto prevention();
 
   // Risk Factors
 

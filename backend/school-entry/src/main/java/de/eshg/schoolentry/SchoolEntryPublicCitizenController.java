@@ -60,18 +60,18 @@ public class SchoolEntryPublicCitizenController {
   @Operation(summary = "Get the privacy-notice document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyNotice() {
-    return getPrivacyDocument(privacyNotice);
+    return getPrivacyDocument(privacyNotice, "Datenschutz-Information.pdf");
   }
 
   @GetMapping(path = "/documents/privacy-policy")
   @Operation(summary = "Get the privacy-policy document.")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> getPrivacyPolicy() {
-    return getPrivacyDocument(privacyPolicy);
+    return getPrivacyDocument(privacyPolicy, "Datenschutzerklaerung.pdf");
   }
 
-  private static ResponseEntity<Resource> getPrivacyDocument(Resource privacyDocument) {
-    String filename = privacyDocument.getFilename();
+  private static ResponseEntity<Resource> getPrivacyDocument(
+      Resource privacyDocument, String filename) {
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,

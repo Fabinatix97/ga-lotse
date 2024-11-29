@@ -99,7 +99,7 @@ export function AnnouncementSidebar({
                     name="type"
                     options={ANNOUNCEMENT_TYPE_OPTIONS}
                     required="Bitte ein Kommunikationsmittel auswählen."
-                    direction="column"
+                    orientation="vertical"
                   />
                 </Grid>
               </Grid>

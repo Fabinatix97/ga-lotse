@@ -21,7 +21,7 @@ import {
 
 import { evaluationTemplateApiQueryKey } from "./apiQueryKeys";
 
-export function mapToEvaluationTemplatesToTableView(
+export function mapEvaluationTemplatesToTableView(
   response: ApiGetEvaluationTemplatesResponse,
 ): EvaluationTemplateTableView {
   const templates = response.evaluationTemplates.map((template) => {
@@ -68,7 +68,7 @@ export function useGetEvaluationTemplatesOverview(
           mapPageRequestSortKey,
         ),
       ),
-    select: mapToEvaluationTemplatesToTableView,
+    select: mapEvaluationTemplatesToTableView,
   });
   return queryResult.data;
 }

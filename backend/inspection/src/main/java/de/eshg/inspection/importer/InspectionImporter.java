@@ -70,6 +70,8 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
       facilityDuplicateCandidates = new HashMap<>();
 
   private Long firstImportedInspectionId = null;
+  private int importedFacilities = 0;
+  private int importedNewFacilities = 0;
 
   InspectionImporter(
       XSSFSheet sheet,
@@ -87,7 +89,7 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
 
     for (InspectionImporterRowValues rowValues : values) {
       Row row = rowValues.getRow();
-      if (rowValues.getStatus() == DUPLICATE_WITHIN_LIST || containsMatchingRow(rowValues)) {
+      if (rowValues.getStatus() == DUPLICATE_WITHIN_LIST || isDuplicateRow(rowValues)) {
         writeStatus(row, DUPLICATE_WITHIN_LIST);
         rowValues.setStatus(DUPLICATE_WITHIN_LIST);
         stats.countDuplicated();
@@ -103,7 +105,14 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
         } else if (!rowValues.isValid()) {
           markWithError(rowValues, ERROR_INPUT_DATA);
         }
-        // Note that we even add _invalid_ rows to the result maps.
+        if (rowValues.getInspection().hasInvalidLastInspectedDate()) {
+          // if the lastInspected date is invalid (e.g. it's defined by a formular
+          // or something else) then omit this row entirely, because we don't know
+          // how to fit it into any import batch.
+          continue;
+        }
+        // Note that we even add rows with _invalid_ cells to the result maps!
+        // (Well, except invalid inspectedAt dates, see above.)
         // This is intentional; in the next step createProceduresAndWriteResults() we'll
         // check if any batch of rows having the same (facility) importId has any error;
         // then we'll mark the _all_ rows of the same batch as error.
@@ -164,14 +173,20 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     // First of all sort the batch by ascending inspection date.
     batch.sort(Comparator.comparing(row -> row.getInspection().lastInspected()));
 
-    // Try to import the facility first. Take the facility data of the _last_ row in this batch,
-    // because the batch is sorted by ascending inspection date, and the last row contains the
-    // _newest_ facility data. This will be the _reference_ facility. The other rows might contain
-    // different facility data; these will be saved as different fileStates for the reference
-    // facility. (PS: Note that if we're importing a batch from 'handleRowsWithoutImportIds', then
-    // all rows will have exactly the same facility data, so it doesn't matter if we take the first
-    // or last facility in this case.)
-    InspectionImporterRowValues rowForFacility = batch.getLast();
+    // Try to import the facility first. Take the facility data of the _last valid_ row in this
+    // batch, because the batch is sorted by ascending inspection date, and the last row contains
+    // the _newest_ facility data. This will be the _reference_ facility. The other rows might
+    // contain different facility data; these will be saved as different fileStates for the
+    // reference facility. (PS: Note that if we're importing a batch from
+    // 'handleRowsWithoutImportIds', then all rows will have exactly the same facility data, so it
+    // doesn't matter if we take the first or last facility in this case.)
+    Optional<InspectionImporterRowValues> rowForFacilityCandidate =
+        batch.reversed().stream().filter(r -> !hasError(r)).findFirst();
+    if (rowForFacilityCandidate.isEmpty()) {
+      // If there's no a candidate then all rows in this batch are erroneous. No import then.
+      return;
+    }
+    InspectionImporterRowValues rowForFacility = rowForFacilityCandidate.get();
     FacilityRef facilityRef;
     try {
       facilityRef = searchForDuplicatesAndAddFacility(rowForFacility.getFacility());
@@ -184,6 +199,12 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
           .filter(rowValues -> rowValues != rowForFacility)
           .forEach(rowValues -> markWithError(rowValues, BATCH_ERROR));
       return;
+    }
+
+    // Count imported facility. Note that these counters are not part of ImportStatistics.
+    countFacility();
+    if (facilityRef.isNew()) {
+      countNewFacility();
     }
 
     // Try to import inspections for this facility. Also create a new facility fileState for each
@@ -284,7 +305,7 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
             firstImportedInspectionId);
 
     UUID procedureId = inspection.getExternalId();
-    writeStatusAndProcedureId(rowValues.getRow(), IMPORTED_SUCCESSFULLY, procedureId);
+    writeStatusAndEntityId(rowValues.getRow(), IMPORTED_SUCCESSFULLY, procedureId);
     rowValues.setStatus(IMPORTED_SUCCESSFULLY);
     rowValues.setProcedureId(procedureId);
     stats.countCreated();
@@ -303,8 +324,20 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     return importPersister.fetchExistingProcedureIds(procedureIds);
   }
 
-  private boolean containsMatchingRow(InspectionImporterRowValues rowValues) {
-    return validRows.importableRows().stream().anyMatch(row -> row.isDuplicateRow(rowValues));
+  private void countFacility() {
+    importedFacilities++;
+  }
+
+  private void countNewFacility() {
+    importedNewFacilities++;
+  }
+
+  int getImportedFacilities() {
+    return importedFacilities;
+  }
+
+  int getImportedNewFacilities() {
+    return importedNewFacilities;
   }
 
   private void markWithError(InspectionImporterRowValues rowValues, ImportStatus error) {

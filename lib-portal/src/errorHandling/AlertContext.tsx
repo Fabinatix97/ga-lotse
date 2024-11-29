@@ -9,6 +9,7 @@ import {
   Fragment,
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -42,7 +43,7 @@ const AlertContext = createContext<AlertContextValue | null>(null);
 export function AlertContextProvider(props: RequiresChildren) {
   const [alerts, setAlerts] = useState<AlertInstance[]>([]);
 
-  const contextValue = useMemo(() => {
+  const open = useCallback(
     function open(
       alertId: string,
       props: AlertProps,
@@ -66,35 +67,41 @@ export function AlertContextProvider(props: RequiresChildren) {
           return [alertInstance, ...prevAlerts];
         }
       });
-    }
+    },
+    [setAlerts],
+  );
 
+  const close = useCallback(
     function close(alertId?: string): void {
-      if (
-        alerts.length === 0 ||
-        (isDefined(alertId) &&
-          alerts.every((alert) => alert.alertId !== alertId))
-      ) {
-        return;
-      }
+      setAlerts((prevAlerts) => {
+        if (
+          prevAlerts.length === 0 ||
+          (isDefined(alertId) &&
+            prevAlerts.every((alert) => alert.alertId !== alertId))
+        ) {
+          return prevAlerts;
+        }
 
-      // close all alerts
-      if (alertId === undefined) {
-        setAlerts([]);
-        return;
-      }
+        // close all alerts
+        if (alertId === undefined) {
+          return [];
+        }
 
-      // close specified alert
-      setAlerts((prevAlerts) =>
-        prevAlerts.filter((alert) => alert.alertId !== alertId),
-      );
-    }
+        // close specified alert
+        return prevAlerts.filter((alert) => alert.alertId !== alertId);
+      });
+    },
+    [setAlerts],
+  );
 
-    return {
+  const contextValue = useMemo(
+    () => ({
       alerts,
       open,
       close,
-    };
-  }, [alerts, setAlerts]);
+    }),
+    [alerts, open, close],
+  );
 
   // close alert after navigation
   useNavigateEffect(() => contextValue.close());
@@ -177,17 +184,25 @@ export function useControlledAlert(options: UseControlledAlertOptions): void {
   const { type, open, ...alertOptions } = options;
   const alert = useAlert();
 
+  const shouldOpen = open && !alert.isOpen;
   useEffect(() => {
-    if (open === alert.isOpen) {
-      return;
+    if (shouldOpen) {
+      alert[type](alertOptions);
     }
 
-    if (open) {
-      alert[type](alertOptions);
-    } else {
+    return () => {
+      if (alert.isOpen) {
+        alert.close();
+      }
+    };
+  }, [shouldOpen, type, alert, alertOptions]);
+
+  const shouldClose = !open && alert.isOpen;
+  useEffect(() => {
+    if (shouldClose) {
       alert.close();
     }
-  }, [open, type, alertOptions, alert]);
+  }, [shouldClose, alert]);
 }
 
 export function useResetAlertContext(): () => void {

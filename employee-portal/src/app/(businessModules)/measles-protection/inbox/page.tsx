@@ -11,7 +11,6 @@ import {
   useFetchInboxProcedures,
 } from "@/lib/businessModules/measlesProtection/api/queries/inboxProcedures";
 import { procedureTypes } from "@/lib/businessModules/measlesProtection/shared/constants";
-import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { InboxProceduresPage } from "@/lib/shared/components/procedures/inbox/InboxProceduresPage";
 
 export default function MeaslesProtectionInboxProceduresPage() {
@@ -21,7 +20,6 @@ export default function MeaslesProtectionInboxProceduresPage() {
       useFetchInboxProcedures={useFetchInboxProcedures}
       useCloseInboxProcedure={useCloseInboxProcedure}
       procedureTypes={procedureTypes}
-      routes={routes.inbox}
     />
   );
 }

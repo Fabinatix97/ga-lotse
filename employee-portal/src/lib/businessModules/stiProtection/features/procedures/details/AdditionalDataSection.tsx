@@ -13,13 +13,13 @@ import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell"
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 
-const dateFormater = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" });
-const timeFormater = new Intl.DateTimeFormat("de-DE", { timeStyle: "short" });
-function formatAppointmentTime(date?: Date) {
+const dateFormatter = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" });
+const timeFormatter = new Intl.DateTimeFormat("de-DE", { timeStyle: "short" });
+export function formatAppointmentTime(date?: Date) {
   if (date == null) {
     return "-";
   }
-  return `${dateFormater.format(date)}, ${timeFormater.format(date)} Uhr`;
+  return `${dateFormatter.format(date)}, ${timeFormatter.format(date)} Uhr`;
 }
 
 export function AdditionalDataSection({

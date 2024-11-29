@@ -15,9 +15,10 @@ export function ProcessImportPending() {
         alignItems="center"
         gap={3}
         sx={{ marginTop: 6 }}
+        data-testid="importPending"
       >
         <CircularProgress variant="plain" size="lg" />
-        <Typography level="body-xs" textAlign="center" width={0.75}>
+        <Typography level="body-md" textAlign="center" width={0.75}>
           Der Import kann einige Zeit in Anspruch nehmen. Bitte schließen Sie
           dieses Fenster nicht.
         </Typography>

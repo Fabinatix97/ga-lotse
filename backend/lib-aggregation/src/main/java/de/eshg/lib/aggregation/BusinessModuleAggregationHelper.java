@@ -5,7 +5,9 @@
 
 package de.eshg.lib.aggregation;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import de.eshg.rest.service.error.NotFoundException;
@@ -14,8 +16,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -78,24 +80,40 @@ public class BusinessModuleAggregationHelper extends AggregationHelper {
   }
 
   public <T> List<ClientResponse<T>> requestFromBusinessModulesClients(
-      Set<String> businessModuleNames, Function<BusinessModuleClient, T> getFromBusinessModule) {
+      Set<String> businessModuleNamesFilter,
+      BusinessModuleCapability businessModuleCapabilityFilter,
+      Function<BusinessModuleClient, T> getFromBusinessModule) {
     List<BusinessModuleClient> businessModuleClients =
         businessModuleClientRegistry.getBusinessModuleClients().stream()
-            .filter(
-                client ->
-                    CollectionUtils.isEmpty(businessModuleNames)
-                        || businessModuleNames.contains(client.getBusinessModule().name()))
+            .filter(nameFilter(businessModuleNamesFilter))
+            .filter(capabilityFilter(businessModuleCapabilityFilter))
             .toList();
     return requestFromClients(businessModuleClients, getFromBusinessModule);
   }
 
+  private static Predicate<BusinessModuleClient> capabilityFilter(
+      BusinessModuleCapability businessModuleCapability) {
+    return client ->
+        businessModuleCapability == null
+            || client.getBusinessModule().hasCapability(businessModuleCapability);
+  }
+
+  private static Predicate<BusinessModuleClient> nameFilter(Set<String> businessModuleNames) {
+    if (CollectionUtils.isEmpty(businessModuleNames)) {
+      return client -> true;
+    }
+    return client -> businessModuleNames.contains(client.getBusinessModule().name());
+  }
+
   public <T> List<ClientResponse<T>> requestFromBusinessModules(
-      Set<BusinessModule> businessModules,
+      Set<BusinessModule> businessModulesFilter,
+      BusinessModuleCapability businessModuleCapabilityFilter,
       Function<BusinessModuleClient, T> getFromBusinessModule) {
     Set<String> businessModuleNames =
-        businessModules == null
+        businessModulesFilter == null
             ? null
-            : businessModules.stream().map(Enum::name).collect(Collectors.toSet());
-    return requestFromBusinessModulesClients(businessModuleNames, getFromBusinessModule);
+            : businessModulesFilter.stream().map(Enum::name).collect(StreamUtil.toLinkedHashSet());
+    return requestFromBusinessModulesClients(
+        businessModuleNames, businessModuleCapabilityFilter, getFromBusinessModule);
   }
 }

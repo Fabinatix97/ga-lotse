@@ -78,7 +78,7 @@ function validateForm(
     const msg =
       "Es muss mindestens ein Arzt/eine Ärztin oder ein:e Berater:in ausgewählt sein.";
     errors.physicians = msg;
-    errors.mfas = msg;
+    errors.consultants = msg;
   }
 
   return errors;

@@ -31,10 +31,10 @@ interface WaitingRoomDetails {
   status: ApiWaitingStatus | null;
 }
 
-function initialValues(val: ApiWaitingRoom): WaitingRoomDetails {
+function initialValues(val?: ApiWaitingRoom): WaitingRoomDetails {
   return {
-    info: val.info ?? "",
-    status: val.status ?? null,
+    info: val?.info ?? "",
+    status: val?.status ?? null,
   };
 }
 
@@ -44,14 +44,11 @@ export function WaitingRoomSection({
   procedure: ApiStiProtectionProcedure;
 }) {
   const snackbar = useSnackbar();
-  const api = useUpdateWaitingRoomDetails({
+  const updateWaitingRoomDetails = useUpdateWaitingRoomDetails({
     onSuccess: () => {
       snackbar.confirmation("Wartezimmerdaten aktualisiert");
     },
   });
-  function updateWaitingStatus(values: UpdateWaitingRoomDetailsRequest) {
-    api.mutate(values);
-  }
 
   const onlyIfOpen = createOnlyIfProcedureOpen(procedure);
   const isOpen = isProcedureOpen(procedure);
@@ -63,7 +60,7 @@ export function WaitingRoomSection({
           enableReinitialize
           initialValues={initialValues(procedure.waitingRoom)}
           onSubmit={(form) =>
-            updateWaitingStatus(transformToValid(form, procedure))
+            updateWaitingRoomDetails.mutate(transformToValid(form, procedure))
           }
         >
           <FormPlus style={{ display: "contents" }}>
@@ -78,7 +75,9 @@ export function WaitingRoomSection({
               disabled={!isOpen}
               options={WAITING_STATUS_OPTIONS}
             />
-            {onlyIfOpen(<FormButtons isSubmitting={api.isPending} />)}
+            {onlyIfOpen(
+              <FormButtons isSubmitting={updateWaitingRoomDetails.isPending} />,
+            )}
           </FormPlus>
         </Formik>
       </DetailsSection>

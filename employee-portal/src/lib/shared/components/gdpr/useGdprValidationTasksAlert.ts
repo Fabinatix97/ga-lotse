@@ -5,18 +5,22 @@
 
 "use client";
 
-import { ApiGetGdprNotificationBannerResponse } from "@eshg/employee-portal-api/schoolEntry";
+import {
+  ApiBusinessModule,
+  ApiGetGdprNotificationBannerResponse,
+} from "@eshg/employee-portal-api/businessProcedures";
 import { useControlledAlert } from "@eshg/lib-portal/errorHandling/AlertContext";
 import { isPast } from "date-fns";
 
+import { routes } from "@/lib/baseModule/shared/routes";
 import { formatDurationFromNowUntil } from "@/lib/shared/helpers/dateTime";
 
 export function useGdprValidationTasksAlert({
   banner,
-  overviewRoute,
+  businessModule,
 }: {
   banner: ApiGetGdprNotificationBannerResponse;
-  overviewRoute: string;
+  businessModule: ApiBusinessModule;
 }) {
   const { openValidationTasksCount, earliestDueDate } = banner;
 
@@ -35,7 +39,7 @@ export function useGdprValidationTasksAlert({
     message: `${numberOfTasksLine} ${deadlineLine}`,
     action: {
       text: "Anfragen Prüfen",
-      href: overviewRoute,
+      href: routes.gdpr.validationTasks(businessModule).overview,
     },
   });
 }

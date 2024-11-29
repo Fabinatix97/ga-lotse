@@ -10,5 +10,6 @@ openapiGenerator {
     'measlesProtection' : backendDir.file('measles-protection/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
     'schoolEntry' : backendDir.file('school-entry/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
     'travelMedicine' : backendDir.file('travel-medicine/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
+    'officialMedicalService' : backendDir.file('official-medical-service/openApi.yaml'), // TODO: use separate OpenAPI specification for citizen-portal
   ]
 }

@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiAppointmentStatus,
   ApiAppointmentType,
   ApiConcern,
   ApiExamination,
@@ -12,9 +13,9 @@ import {
   ApiProcedureType,
   ApiSexualOrientation,
   ApiTaskType,
-  ApiVaccination,
 } from "@eshg/employee-portal-api/stiProtection";
 import { EnumMap } from "@eshg/lib-portal/types/helpers";
+import { DefaultColorPalette } from "@mui/joy/styles/types";
 
 export const procedureTypes = [ApiProcedureType.StiProtection];
 
@@ -33,7 +34,7 @@ export const PROCEDURE_TYPES = [ApiProcedureType.StiProtection];
 export const TASK_TYPES = [ApiTaskType.StiProtection];
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
-  PERSON_DETAILS_UPDATED: "Die Angaben zur Person wurden aktualisiert",
+  PERSON_DETAILS_UPDATED: "Person aktualisiert",
 };
 
 export const CONCERN_VALUES: EnumMap<ApiConcern> = {
@@ -61,6 +62,18 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
   [ApiAppointmentType.Vaccination]: "Impfung",
 };
 
+export const APPOINTMENT_STATUS: EnumMap<ApiAppointmentStatus> = {
+  [ApiAppointmentStatus.Cancelled]: "Abgeschlossen",
+  [ApiAppointmentStatus.Closed]: "Storniert",
+  [ApiAppointmentStatus.Open]: "Offen",
+};
+
+export const appointmentStatusColor = {
+  [ApiAppointmentStatus.Cancelled]: "danger",
+  [ApiAppointmentStatus.Closed]: "success",
+  [ApiAppointmentStatus.Open]: "neutral",
+} as const satisfies Record<ApiAppointmentStatus, DefaultColorPalette>;
+
 export const sexualOrientationNames: EnumMap<ApiSexualOrientation> = {
   [ApiSexualOrientation.Bisexual]: "Bisexuell",
   [ApiSexualOrientation.Heterosexual]: "Heterosexuell",
@@ -75,15 +88,18 @@ export const sexualContactNames: EnumMap<ApiGender> = {
   [ApiGender.NotSpecified]: "Keine Angabe",
 } satisfies Record<ApiGender, string>;
 
-export type DiseaseType = keyof ApiExamination | keyof ApiVaccination;
+export type NotEndsWith<T, K extends string> = T extends `${infer _J}${K}`
+  ? never
+  : T;
 
-export const diseaseTypeNames: EnumMap<DiseaseType> = {
+export type ExaminableIllnesses = NotEndsWith<keyof ApiExamination, "Date">;
+
+export const examinableIllnessNames = {
   chlamydia: "Chlamydien",
   gonorrhea: "Gonorrhoe (Tripper)",
   hepA: "Hepatitis A",
   hepB: "Hepatitis B",
   hepC: "Hepatitis C",
   hiv: "HIV",
-  hpv: "HPV",
   syphilis: "Syphilis (Lues)",
-} satisfies Record<DiseaseType, string>;
+} as const satisfies Record<ExaminableIllnesses, string>;

@@ -21,6 +21,7 @@ public class UserSettings {
   private Boolean sharePresence = true;
   private Boolean showTypingNotification = true;
   private Boolean showReadConfirmation = true;
+  private Boolean accountDeactivated = false;
 
   public String getUserId() {
     return userId;
@@ -73,6 +74,15 @@ public class UserSettings {
 
   public UserSettings showReadConfirmation(Boolean showReadConfirmation) {
     this.showReadConfirmation = showReadConfirmation;
+    return this;
+  }
+
+  public Boolean getAccountDeactivated() {
+    return accountDeactivated;
+  }
+
+  public UserSettings accountDeactivated(Boolean accountDeactivated) {
+    this.accountDeactivated = accountDeactivated;
     return this;
   }
 }

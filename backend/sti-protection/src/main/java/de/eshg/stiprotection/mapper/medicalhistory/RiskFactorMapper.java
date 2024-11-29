@@ -12,28 +12,36 @@ public final class RiskFactorMapper {
   private RiskFactorMapper() {}
 
   public static RiskFactorDto toInterfaceType(RiskFactor entity) {
+    if (entity == null) {
+      return null;
+    }
+
     return new RiskFactorDto(
-        VaccinationMapper.toInterfaceType(entity.getVaccinations()),
-        SafeSexPracticeMapper.toInterfaceType(entity.getSafeSexPractice()),
-        ProtectionMethodMapper.toInterfaceType(entity.getProtectionMethods()),
-        entity.getPrepInfoProvided(),
         entity.getRiskActivityDateVaginalIntercourse(),
         entity.getRiskActivityDateOralIntercourse(),
         entity.getRiskActivityDateAnalIntercourse(),
-        entity.getOtherRiskActivities());
+        entity.getOtherRiskActivities(),
+        entity.getRiskActivityDateVaginalIntercourseDate(),
+        entity.getRiskActivityDateOralIntercourseDate(),
+        entity.getRiskActivityDateAnalIntercourseDate(),
+        entity.getOtherRiskActivitiesData());
   }
 
   public static RiskFactor toDatabaseType(RiskFactorDto dto) {
+    if (dto == null) {
+      return null;
+    }
+
     RiskFactor riskFactor = new RiskFactor();
-    riskFactor.setVaccinations(VaccinationMapper.toDatabaseType(dto.vaccinations()));
-    riskFactor.setSafeSexPractice(SafeSexPracticeMapper.toDatabaseType(dto.safeSexPractice()));
-    riskFactor.setProtectionMethods(
-        ProtectionMethodMapper.toDatabaseType(dto.protectionMethodsUsed()));
-    riskFactor.setPrepInfoProvided(dto.prepInfoProvided());
     riskFactor.setRiskActivityDateVaginalIntercourse(dto.riskActivityDateVaginalIntercourse());
     riskFactor.setRiskActivityDateOralIntercourse(dto.riskActivityDateOralIntercourse());
     riskFactor.setRiskActivityDateAnalIntercourse(dto.riskActivityDateAnalIntercourse());
     riskFactor.setOtherRiskActivities(dto.otherRiskActivities());
+    riskFactor.setRiskActivityDateVaginalIntercourseDate(
+        dto.riskActivityDateVaginalIntercourseDate());
+    riskFactor.setRiskActivityDateOralIntercourseDate(dto.riskActivityDateOralIntercourseDate());
+    riskFactor.setRiskActivityDateAnalIntercourseDate(dto.riskActivityDateAnalIntercourseDate());
+    riskFactor.setOtherRiskActivitiesData(dto.otherRiskActivitiesData());
     return riskFactor;
   }
 }

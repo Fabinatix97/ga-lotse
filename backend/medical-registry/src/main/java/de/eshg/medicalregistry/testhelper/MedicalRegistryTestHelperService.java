@@ -7,7 +7,7 @@ package de.eshg.medicalregistry.testhelper;
 
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.registry.MedicalRegistryEntryRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DatabaseResetHelper;
@@ -49,14 +49,14 @@ public class MedicalRegistryTestHelperService extends DefaultTestHelperService {
   }
 
   public void closeProcedure(UUID procedureId) {
-    MedicalRegistryEntry medicalRegistryEntry =
+    MedicalRegistryProcedure medicalRegistryProcedure =
         medicalRegistryEntryRepository.findByExternalId(procedureId).orElseThrow();
-    medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+    medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
   }
 
   public void openProcedure(UUID procedureId) {
-    MedicalRegistryEntry medicalRegistryEntry =
+    MedicalRegistryProcedure medicalRegistryProcedure =
         medicalRegistryEntryRepository.findByExternalId(procedureId).orElseThrow();
-    medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
   }
 }

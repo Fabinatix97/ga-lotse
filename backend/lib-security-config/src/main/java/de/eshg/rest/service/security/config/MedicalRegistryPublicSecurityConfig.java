@@ -28,5 +28,8 @@ public final class MedicalRegistryPublicSecurityConfig extends AbstractPublicSec
 
     requestMatchers(BaseUrls.MedicalRegistry.MEDICAL_REGISTRY_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN);
+
+    requestMatchers(MedicalRegistry.MEDICAL_REGISTRY_IMPORT_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.MEDICAL_REGISTRY_IMPORT);
   }
 }

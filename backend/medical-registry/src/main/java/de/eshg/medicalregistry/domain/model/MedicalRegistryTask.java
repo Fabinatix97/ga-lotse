@@ -12,4 +12,4 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(indexes = @Index(columnList = "procedure_id"))
-public class MedicalRegistryTask extends Task<MedicalRegistryEntry> {}
+public class MedicalRegistryTask extends Task<MedicalRegistryProcedure> {}

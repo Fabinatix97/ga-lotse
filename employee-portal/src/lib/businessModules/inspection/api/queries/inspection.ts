@@ -4,7 +4,12 @@
  */
 
 import { InspectionApi } from "@eshg/employee-portal-api/inspection";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import { useInspectionApi } from "@/lib/businessModules/inspection/api/clients";
 import { inspectionApiQueryKey } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
@@ -113,4 +118,16 @@ export function useGetInspectionDuplicates(procedureId: string) {
     queryKey: getInspectionDuplicatesQueryKey(procedureId),
     queryFn: () => inspectionApi.getInspectionDuplicates(procedureId),
   });
+}
+
+export function useInspectionViewed(inspectionId: string) {
+  const queryClient = useQueryClient();
+  const inspectionApi = useInspectionApi();
+
+  useEffect(() => {
+    void queryClient.fetchQuery({
+      queryKey: getInspectionQueryKey(inspectionId),
+      queryFn: () => inspectionApi.inspectionViewed(inspectionId),
+    });
+  }, [queryClient, inspectionApi, inspectionId]);
 }

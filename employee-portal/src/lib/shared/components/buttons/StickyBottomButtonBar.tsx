@@ -6,14 +6,22 @@
 "use client";
 
 import { Sheet } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 
 import {
   ButtonBar,
   ButtonBarProps,
 } from "@/lib/shared/components/buttons/ButtonBar";
 
+export interface StickyBottomButtonBarProps extends ButtonBarProps {
+  sx?: SxProps;
+}
+
 /** Displays a {@link ButtonBar} sticky at the bottom of a page. */
-export function StickyBottomButtonBar(props: Readonly<ButtonBarProps>) {
+export function StickyBottomButtonBar(
+  props: Readonly<StickyBottomButtonBarProps>,
+) {
+  const { sx: barSx, ...buttons } = props;
   return (
     <Sheet
       sx={{
@@ -21,9 +29,10 @@ export function StickyBottomButtonBar(props: Readonly<ButtonBarProps>) {
         bottom: 0,
         zIndex: (theme) => theme.zIndex.toolbar,
         borderRadius: 0,
+        ...barSx,
       }}
     >
-      <ButtonBar {...props} />
+      <ButtonBar {...buttons} />
     </Sheet>
   );
 }

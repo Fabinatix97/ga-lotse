@@ -5,18 +5,22 @@
 
 package de.eshg.lib.procedure.gdpr;
 
+import static de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus.CLOSED;
+
 import de.eshg.base.gdpr.GdprProcedureApi;
+import de.eshg.base.gdpr.api.AddGdprDownloadsRequest;
+import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
+import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
+import de.eshg.base.util.PaginationUtil;
 import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.procedure.domain.model.GdprDownloadPackage;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask;
 import de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus;
+import de.eshg.lib.procedure.domain.model.GdprValidationTask_;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Task;
-import de.eshg.lib.procedure.domain.repository.GdprDownloadPackageRepository;
-import de.eshg.lib.procedure.domain.repository.GdprValidationTaskRepository;
-import de.eshg.lib.procedure.domain.repository.OpenTaskSummaryRawData;
-import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
+import de.eshg.lib.procedure.domain.repository.*;
 import de.eshg.lib.procedure.mapping.ProcedureLibraryEnrichingMapper;
 import de.eshg.lib.procedure.model.ProcedureDto;
 import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
@@ -28,22 +32,28 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GdprValidationTaskService<
     ProcedureT extends Procedure<ProcedureT, TaskT, ?, ?>, TaskT extends Task<ProcedureT>> {
+  private static final Logger log = LoggerFactory.getLogger(GdprValidationTaskService.class);
   private final GdprValidationTaskRepository validationTaskRepository;
   private final GdprDownloadPackageRepository downloadPackageRepository;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final ProcedureLibraryEnrichingMapper<ProcedureT, TaskT> enrichingMapper;
   private final GdprProcedureApi baseGdprProcedureApi;
-  private static final Logger log = LoggerFactory.getLogger(GdprValidationTaskService.class);
   private final Clock clock;
 
   public GdprValidationTaskService(
@@ -65,6 +75,21 @@ public class GdprValidationTaskService<
     return validationTaskRepository
         .findByGdprProcedureId(id)
         .orElseThrow(() -> new NotFoundException("GdprValidationTask not found."));
+  }
+
+  public List<GdprDownloadPackageInfo> findByDownloadIdIn(Set<UUID> downloadIds) {
+    log.info("Fetching download packages from database for IDs: {}", downloadIds);
+    if (downloadIds == null || downloadIds.isEmpty()) {
+      return List.of();
+    }
+    return downloadPackageRepository.findInfoByExternalIdIn(downloadIds);
+  }
+
+  public GdprDownloadPackage getDownloadPackage(UUID id) {
+    log.info("Fetching download package from database by id: {}", id);
+    return downloadPackageRepository
+        .findByExternalId(id)
+        .orElseThrow(() -> new NotFoundException("GdprDownloadPackage not found."));
   }
 
   public Procedure<?, ?, ?, ?> getBusinessProcedureFromDb(UUID id) {
@@ -101,7 +126,7 @@ public class GdprValidationTaskService<
       List<UUID> fileStateIds, GdprValidationTask validationTask) {
     List<UUID> businessProcedureIds = procedureRepository.findIdsByFileStateIds(fileStateIds);
     if (businessProcedureIds.isEmpty()) {
-      validationTask.setStatus(GdprValidationTaskStatus.CLOSED);
+      validationTask.setStatus(CLOSED);
     }
   }
 
@@ -113,11 +138,21 @@ public class GdprValidationTaskService<
     return validationTaskRepository.save(validationTask);
   }
 
+  public void sendDownloadId(UUID gdprProcedureId, UUID downloadId) {
+    baseGdprProcedureApi.addDownloads(
+        gdprProcedureId, new AddGdprDownloadsRequest(Set.of(downloadId)));
+  }
+
   public GdprDownloadPackage createAndSaveDownloadPackage(UUID businessProcedureId, byte[] zip) {
     GdprDownloadPackage downloadPackage = new GdprDownloadPackage();
     downloadPackage.setBusinessProcedureId(businessProcedureId);
     downloadPackage.setContent(zip);
     return downloadPackageRepository.save(downloadPackage);
+  }
+
+  public GetGdprDownloadsResponse fetchDownloadIdsFromBase(UUID gdprProcedureId) {
+    log.info("Fetching download IDs for GdprProcedureId: {}", gdprProcedureId);
+    return baseGdprProcedureApi.getDownloads(gdprProcedureId);
   }
 
   public List<UUID> getAndValidateFileStateIds(UUID gdprProcedureId) {
@@ -138,17 +173,21 @@ public class GdprValidationTaskService<
         : fileStateResponse.personFileStateIds();
   }
 
+  public GdprIdentificationDataDto getGdprIdentificationData(UUID gdprId) {
+    return baseGdprProcedureApi.getGdprProcedure(gdprId).identificationData();
+  }
+
   public OpenTaskSummary getOpenGdprValidationTaskSummary() {
     OpenTaskSummaryRawData summaryRawData = validationTaskRepository.getOpenTaskSummary();
     return toOpenTaskSummary(summaryRawData);
   }
 
   private static OpenTaskSummary toOpenTaskSummary(OpenTaskSummaryRawData summaryRawData) {
-    LocalDate earliestDueDate = toEarliestDueDate(summaryRawData.getOldestStartDate());
+    LocalDate earliestDueDate = toDueDate(summaryRawData.getOldestStartDate());
     return new OpenTaskSummary(summaryRawData.getCount(), earliestDueDate);
   }
 
-  private static LocalDate toEarliestDueDate(Instant startedAt) {
+  public static LocalDate toDueDate(Instant startedAt) {
     if (startedAt == null) {
       return null;
     }
@@ -176,5 +215,36 @@ public class GdprValidationTaskService<
     return includedIds.contains(id)
         ? BusinessProcedureInclusionStatusDto.INCLUDED
         : BusinessProcedureInclusionStatusDto.UNDECIDED;
+  }
+
+  public void closeTask(UUID gdprProcedureId) {
+    GdprValidationTask task = getTaskForUpdate(gdprProcedureId);
+    if (CLOSED != task.getStatus()) {
+      log.info("Closing GdprProcedure with gdprProcedureId: {}", gdprProcedureId);
+      task.setStatus(CLOSED);
+      task.setClosedAt(clock.instant());
+    }
+  }
+
+  private GdprValidationTask getTaskForUpdate(UUID gdprProcedureId) {
+    return validationTaskRepository
+        .findByExternalIdForUpdate(gdprProcedureId)
+        .orElseThrow(() -> new NotFoundException("GdprValidationTask not found."));
+  }
+
+  public Page<GdprValidationTask> findAll(
+      GdprValidationTaskStatus status, PaginationUtil.PageSpec pageSpec) {
+    Specification<GdprValidationTask> specification = Specification.allOf(hasStatus(status));
+
+    return validationTaskRepository.findAll(
+        specification,
+        PageRequest.of(pageSpec.pageNumber(), pageSpec.pageSize(), Sort.by(pageSpec.order())));
+  }
+
+  private static Specification<GdprValidationTask> hasStatus(GdprValidationTaskStatus status) {
+    if (status == null) {
+      return (root, query, builder) -> builder.and();
+    }
+    return (root, query, cb) -> cb.equal(root.get(GdprValidationTask_.status), status);
   }
 }

@@ -16,8 +16,8 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         libs {
-            version('keycloak-client', '26.0.1')
-            version('keycloak-server', '26.0.2')
+            version('keycloak-client', '26.0.3')
+            version('keycloak-server', '26.0.6')
 
             library('keycloak-client-admin-client', 'org.keycloak', 'keycloak-admin-client').versionRef('keycloak-client')
 
@@ -47,7 +47,6 @@ include 'business-module-commons'
 include 'business-module-persistence-commons'
 include 'central-repository'
 include 'chat-management'
-include 'synapse'
 include 'compliance-test'
 include 'dental'
 include 'file-commons'
@@ -85,11 +84,13 @@ include 'lib-service-directory-admin-api'
 include 'lib-service-directory-api'
 include 'lib-statistics'
 include 'lib-statistics-api'
+include 'lib-xdomea'
 include 'lib-xlsx-import'
 include 'local-service-directory'
 include 'logging-commons'
 include 'measles-protection'
 include 'medical-registry'
+include 'official-medical-service'
 include 'opendata'
 include 'relay-server'
 include 'rest-client-commons'
@@ -103,6 +104,7 @@ include 'spatz'
 include 'spatz-dns'
 include 'statistics'
 include 'sti-protection'
+include 'synapse'
 include 'test-commons'
 include 'test-helper-commons'
 include 'test-helper-commons-api'

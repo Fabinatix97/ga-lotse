@@ -4,10 +4,12 @@
  */
 
 import {
+  ApiCreateAppointmentRequest,
   ApiCreateProcedureRequest,
   ApiCreateProcedureResponse,
   ApiStiProtectionProcedure,
   ApiUpdatePersonDetailsRequest,
+  CancelAppointmentRequest,
 } from "@eshg/employee-portal-api/stiProtection";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
@@ -120,6 +122,40 @@ export function useUpdatePersonDetails({
     onSuccess(data, variables, context) {
       onSuccess?.(data, variables, context);
     },
+    onError,
+  });
+}
+
+interface CreateAppointmentParams {
+  id: string;
+  data: ApiCreateAppointmentRequest;
+}
+
+export function useCreateAppointmentMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<CreateAppointmentParams, void> = {}) {
+  const api = useStiProtectionProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: ({ id, data }: CreateAppointmentParams) =>
+      api.createAppointment(id, data),
+    mutationKey: stiProtectionApiQueryKey(["procedures"]),
+    onSuccess,
+    onError,
+  });
+}
+
+export function useCancelAppointmentMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<CancelAppointmentRequest, void> = {}) {
+  const api = useStiProtectionProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: ({ id }: CancelAppointmentRequest) => api.cancelAppointment(id),
+    mutationKey: stiProtectionApiQueryKey(["appointment", "cancel"]),
+    onSuccess,
     onError,
   });
 }

@@ -12,28 +12,28 @@ import {
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
+import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapAttributeSelectionToKey } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
 import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/mapper/mapToApiBusinessModule";
 import {
+  Analysis,
+  AnalysisDiagramConfiguration,
+  DiagramColorScheme,
+  DiagramType,
+  EvaluationDetailsView,
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
+import {
   FlatAttribute,
   mapTableColumnHeadersToFlatAttributes,
 } from "@/lib/businessModules/statistics/api/models/flatAttribute";
-import {
-  DiagramColorScheme,
-  DiagramType,
-  Evaluation,
-  EvaluationDiagramConfiguration,
-  StatisticDetailsView,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
-import { statisticApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
+import { evaluationApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 function mapConfiguration(
   attributes: Map<string, FlatAttribute>,
   diagramConfiguration: ApiAnalysisChartConfiguration,
-): EvaluationDiagramConfiguration {
+): AnalysisDiagramConfiguration {
   function getApiAttribute(
     selectionKey: ApiAttributeSelection | undefined,
   ): FlatAttribute | undefined {
@@ -112,13 +112,13 @@ function mapConfiguration(
   }
 }
 
-export function mapEvaluations(
-  evaluations: ApiAnalysis[],
+export function mapAnalyses(
+  analyses: ApiAnalysis[],
   attributes: FlatAttribute[],
-): Evaluation[] {
+): Analysis[] {
   const attributeMap = new Map<string, FlatAttribute>();
   attributes.forEach((it) => attributeMap.set(it.key, it));
-  return evaluations.map((it) => ({
+  return analyses.map((it) => ({
     id: it.id,
     name: it.name,
     numberOfDiagrams: it.numberOfDiagrams,
@@ -127,14 +127,14 @@ export function mapEvaluations(
   }));
 }
 
-export function mapToStatisticDetailsView(
+export function mapToEvaluationDetailsView(
   result: ApiGetDetailPageInformationResponse,
 ) {
   const attributes: FlatAttribute[] = mapTableColumnHeadersToFlatAttributes(
     result.tableColumnHeaders,
   );
   return {
-    statisticId: result.evaluationInfo.id,
+    evaluationId: result.evaluationInfo.id,
     title: result.evaluationInfo.name,
     start: result.evaluationInfo.timeRangeStart,
     end: mapTimeRangeEndApiToFrontend(result.evaluationInfo.timeRangeEnd),
@@ -151,27 +151,27 @@ export function mapToStatisticDetailsView(
       datasetAmount: result.totalNumberOfElements,
     },
     attributes: attributes,
-    evaluations: mapEvaluations(result.analyses, attributes),
+    analyses: mapAnalyses(result.analyses, attributes),
     userId: result.user!.userId,
     anonymized: result.evaluationInfo.anonymized,
-  } satisfies StatisticDetailsView;
+  } satisfies EvaluationDetailsView;
 }
 
 export function createQueryGetDetailPageInformation(
-  statisticApi: EvaluationApi,
-  statisticId: string,
+  evaluationApi: EvaluationApi,
+  evaluationId: string,
 ) {
   return {
-    queryKey: statisticApiQueryKey(["getDetailPageInformation", statisticId]),
-    queryFn: () => statisticApi.getDetailPageInformation(statisticId),
-    select: mapToStatisticDetailsView,
+    queryKey: evaluationApiQueryKey(["getDetailPageInformation", evaluationId]),
+    queryFn: () => evaluationApi.getDetailPageInformation(evaluationId),
+    select: mapToEvaluationDetailsView,
   };
 }
 
-export function useGetDetailPageInformation(statisticId: string) {
-  const statisticApi = useStatisticApi();
+export function useGetDetailPageInformation(evaluationId: string) {
+  const evaluationApi = useEvaluationApi();
   const queryResult = useSuspenseQuery(
-    createQueryGetDetailPageInformation(statisticApi, statisticId),
+    createQueryGetDetailPageInformation(evaluationApi, evaluationId),
   );
   return queryResult.data;
 }

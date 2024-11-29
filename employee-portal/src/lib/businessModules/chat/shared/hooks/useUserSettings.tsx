@@ -58,10 +58,21 @@ export function useUserSettings() {
     });
   }
 
+  function deactivateAccount(accountDeactivated: boolean) {
+    if (!userId) {
+      return;
+    }
+    createOrUpdateUserSettings.mutate({
+      userId: userId,
+      accountDeactivated: accountDeactivated,
+    });
+  }
+
   return {
     togglePresenceStatus,
     toggleReadConfirmation,
     toggleTypingNotifications,
     updateChatUserConsents,
+    deactivateAccount,
   };
 }

@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ClientEvent, MatrixClient } from "matrix-js-sdk/lib/client";
-import { SyncState, createClient } from "matrix-js-sdk/lib/matrix";
+import {
+  ClientEvent,
+  MatrixClient,
+  SyncState,
+  createClient,
+} from "matrix-js-sdk";
 import {
   Dispatch,
   MutableRefObject,

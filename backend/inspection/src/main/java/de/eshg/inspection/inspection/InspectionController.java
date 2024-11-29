@@ -11,6 +11,7 @@ import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.inspection.feature.InspectionFeature;
 import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.api.*;
+import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -47,14 +49,17 @@ public class InspectionController {
   private final ReviewService reviewService;
 
   private final InspectionFeatureToggle inspectionFeatureToggle;
+  private final AuditLogger auditLogger;
 
   public InspectionController(
       InspectionService inspectionService,
       ReviewService reviewService,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      InspectionFeatureToggle inspectionFeatureToggle,
+      AuditLogger auditLogger) {
     this.inspectionService = inspectionService;
     this.reviewService = reviewService;
     this.inspectionFeatureToggle = inspectionFeatureToggle;
+    this.auditLogger = auditLogger;
   }
 
   @PostMapping(path = "/{id}")
@@ -220,6 +225,20 @@ associated reference facility
   public FacilityDuplicateReviewDto getFacilityDuplicates(@PathVariable("id") UUID externalId) {
     inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     return reviewService.reviewFacilityDuplicates(externalId);
+  }
+
+  @PostMapping(path = "/{id}/viewed")
+  @Operation(summary = "Mark inspection as viewed in audit-log")
+  public void inspectionViewed(
+      @Parameter(description = "The id of the inspection") @PathVariable("id") UUID id) {
+    auditLogger.log(
+        "Vorgangsbearbeitung",
+        "Abfrage Vorgangs-Details",
+        Map.of(
+            "ID des Vorgangs",
+            id.toString(),
+            "durch Benutzer",
+            CurrentUserHelper.getCurrentUserId().toString()));
   }
 
   private static void validateAssignmentRole(UUID assigneeId) {

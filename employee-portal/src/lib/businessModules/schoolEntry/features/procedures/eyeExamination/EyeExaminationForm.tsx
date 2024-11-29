@@ -9,12 +9,14 @@ import {
   ApiDoctorLetterValue,
   ApiEyeExaminationType,
   ApiPercentageValue,
+  UpdateEyeExaminationResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import {
   FormProps,
   OptionalFieldValue,
   SetFieldValueHelper,
 } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { Divider, Grid, Stack } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
@@ -86,7 +88,13 @@ export interface EyeExaminationFormValues {
   note: string;
 }
 
-export function EyeExaminationForm(props: FormProps<EyeExaminationFormValues>) {
+interface EyeExaminationFormProps extends FormProps<EyeExaminationFormValues> {
+  valuesToMutationBundle: (
+    values: EyeExaminationFormValues,
+  ) => MutationBundle<UpdateEyeExaminationResultRequest>;
+}
+
+export function EyeExaminationForm(props: EyeExaminationFormProps) {
   async function handleSubmit(
     formValues: EyeExaminationFormValues,
     helpers: FormikHelpers<EyeExaminationFormValues>,
@@ -120,7 +128,9 @@ export function EyeExaminationForm(props: FormProps<EyeExaminationFormValues>) {
     <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
       {({ values, isSubmitting, handleSubmit, setFieldValue }) => (
         <FormStack onSubmit={handleSubmit}>
-          <ConfirmLeaveDirtyFormEffect />
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={props.valuesToMutationBundle(values)}
+          />
           <FormGroupGrid columns={{ xs: 6, xxl: 12 }}>
             <Grid xs={6}>
               <EyeForm

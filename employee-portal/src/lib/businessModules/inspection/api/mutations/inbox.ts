@@ -3,24 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 import { useInboxProcedureApi } from "@/lib/businessModules/inspection/api/clients";
-import { routes } from "@/lib/businessModules/inspection/shared/routes";
-import { useBuildRoutePreservingSearchParams } from "@/lib/shared/components/procedures/hooks/useBuildRoutePreservingSearchParams";
+import { InspectionInboxProcedureCreateSidebar } from "@/lib/businessModules/inspection/components/inbox/InspectionInboxProcedureCreateSidebar";
 import { useCloseInboxProcedureTemplate } from "@/lib/shared/components/procedures/inbox/mutations/useCloseInboxProcedureStatusTemplate";
+import { useSidebarWithFormRef } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 export function useCloseInboxProcedure() {
   return useCloseInboxProcedureTemplate(useInboxProcedureApi);
 }
 
 export function useCreateInboxProcedure(inboxProcedureId: string) {
-  const router = useRouter();
-  const buildRoutePreservingSearchParams =
-    useBuildRoutePreservingSearchParams();
-  return function () {
-    router.push(
-      buildRoutePreservingSearchParams(routes.inbox.create(inboxProcedureId)),
-    );
-  };
+  const { open } = useSidebarWithFormRef({
+    component: InspectionInboxProcedureCreateSidebar,
+  });
+
+  return useCallback(() => {
+    open({ inboxProcedureId });
+  }, [open, inboxProcedureId]);
 }

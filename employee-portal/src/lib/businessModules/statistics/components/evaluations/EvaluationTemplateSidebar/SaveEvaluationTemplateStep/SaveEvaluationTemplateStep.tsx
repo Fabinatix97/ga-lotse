@@ -13,6 +13,7 @@ import { SaveEvaluationTemplateStepFormModel } from "@/lib/businessModules/stati
 import {
   Analyses,
   Attributes,
+  DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { TextareaField } from "@/lib/shared/components/formFields/TextareaField";
 
@@ -39,12 +40,7 @@ export function SaveEvaluationTemplateStep({
         Zusammenfassung
       </Typography>
       <Stack gap={2}>
-        <Stack gap={1}>
-          <Typography level="title-md">Datenquelle</Typography>
-          <Typography level="body-md">
-            {evaluationDetails.dataSourceName}
-          </Typography>
-        </Stack>
+        <DataSource dataSourceName={evaluationDetails.dataSourceName} />
         <Attributes attributeLabels={evaluationDetails.attributeLabels} />
         <Analyses analyses={evaluationDetails.analyses} />
         <Alert

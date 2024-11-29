@@ -13,7 +13,7 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 
-type ChatConsentModalProps = Omit<BaseModalProps, "children"> & {
+type ChatConsentModalProps = Omit<BaseModalProps, "children" | "modalTitle"> & {
   chatUsageEnabled: boolean;
 };
 

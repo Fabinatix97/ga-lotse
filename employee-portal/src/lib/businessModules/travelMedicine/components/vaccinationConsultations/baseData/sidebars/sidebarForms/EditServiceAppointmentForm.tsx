@@ -82,7 +82,7 @@ function formatBookingType(bookingType: ApiAppointmentBookingType | undefined) {
     bookingType === ApiAppointmentBookingType.AppointmentBlock
   ) {
     return (
-      <Chip color={"primary"} size="md">
+      <Chip color={"primary"} size="md" component={"span"}>
         Gebucht
       </Chip>
     );

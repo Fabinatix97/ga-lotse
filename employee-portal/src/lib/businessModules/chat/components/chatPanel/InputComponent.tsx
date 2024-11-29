@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/joy";
 import { useField, useFormikContext } from "formik";
-import { RoomMember } from "matrix-js-sdk/lib/matrix";
+import { RoomMember } from "matrix-js-sdk";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 

@@ -5,6 +5,7 @@
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { EditOutlined } from "@mui/icons-material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { isDefined } from "remeda";
 
@@ -12,8 +13,9 @@ import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistic
 import {
   Analyses,
   Attributes,
+  DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
-import { useStatisticRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticRoleChecks";
+import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
@@ -34,6 +36,7 @@ interface EvaluationTemplateDetailsSidebarProps extends DrawerProps {
   evaluationTemplateId: string;
   onEditEvaluationTemplate: () => void;
   onCreateEvaluation: () => void;
+  onUploadEvaluation: () => void;
 }
 
 function EvaluationTemplateDetailsSidebar({
@@ -41,11 +44,12 @@ function EvaluationTemplateDetailsSidebar({
   evaluationTemplateId,
   onEditEvaluationTemplate,
   onCreateEvaluation,
+  onUploadEvaluation,
 }: EvaluationTemplateDetailsSidebarProps) {
   const evaluationTemplateDetails =
     useGetEvaluationTemplateDetails(evaluationTemplateId);
 
-  const userPermissions = useStatisticRoleChecks();
+  const userPermissions = useStatisticsRoleChecks();
   const canUpdateEvaluationTemplate =
     userPermissions.canUpdateEvaluationTemplate(
       evaluationTemplateDetails.user?.userId,
@@ -95,16 +99,29 @@ function EvaluationTemplateDetailsSidebar({
           <Typography level="h3" component="h2">
             Vorlagendetails
           </Typography>
-          <Stack gap={1}>
-            <Typography level="title-md">Datenquelle</Typography>
-            <Typography level="body-md">
-              {evaluationTemplateDetails.dataSourceName}
-            </Typography>
-          </Stack>
+          <DataSource
+            dataSourceName={evaluationTemplateDetails.dataSourceName}
+          />
           <Attributes
             attributeLabels={evaluationTemplateDetails.attributeLabels}
           />
           <Analyses analyses={evaluationTemplateDetails.analyses} />
+          {canWrite && (
+            <Stack gap={3}>
+              <Divider />
+              <Button
+                variant="plain"
+                endDecorator={<ArrowForwardIcon />}
+                onClick={() => {
+                  onClose();
+                  onUploadEvaluation();
+                }}
+                sx={{ alignSelf: "end" }}
+              >
+                Auswertungsvorlage hochladen
+              </Button>
+            </Stack>
+          )}
         </Stack>
       </SidebarContent>
       <SidebarActions>

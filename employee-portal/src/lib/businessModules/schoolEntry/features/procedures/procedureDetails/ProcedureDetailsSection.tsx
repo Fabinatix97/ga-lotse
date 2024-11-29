@@ -14,13 +14,13 @@ import { isDefined } from "remeda";
 import { ProcedureDetails } from "@/lib/businessModules/schoolEntry/api/models/ProcedureDetails";
 import { useGetLocationSelectionMode } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
 import { LabelChip } from "@/lib/businessModules/schoolEntry/features/labels/LabelChip";
-import { formatSchoolYear } from "@/lib/businessModules/schoolEntry/features/procedures/formatters";
 import { InvitationDetails } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/InvitationDetails";
 import { useUpdateProcedureSidebar } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/UpdateProcedureSidebar";
 import { PROCEDURE_TYPES } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { ContentPanel } from "@/lib/shared/components/contentPanel/ContentPanel";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 
 interface ProcedureDetailsProps {
   procedure: ProcedureDetails;

@@ -30,6 +30,8 @@ export interface AnamnesisQuestionProp {
   addSubElementHandler: () => void;
   removeSubQuestionHandler: () => void;
   mainQuestion: ReactNode;
+  sectionIndex: number;
+  elementIndex: number;
 }
 
 export function AnamnesisQuestion({
@@ -38,6 +40,8 @@ export function AnamnesisQuestion({
   addSubElementHandler,
   mainQuestion,
   removeSubQuestionHandler,
+  sectionIndex,
+  elementIndex,
 }: Readonly<AnamnesisQuestionProp>) {
   const multiSelectElementsFormikPath = `${anamnesisFormikPath}.subElementMultiSelect`;
   return (
@@ -58,6 +62,8 @@ export function AnamnesisQuestion({
                     templateAnamnesisQuestion.subElementMultiSelect
                   }
                   removeMultiSelectElementHandler={remove}
+                  sectionIndex={sectionIndex}
+                  elementIndex={elementIndex}
                 />
               )}
               {templateAnamnesisQuestion.subElementText && (
@@ -67,6 +73,7 @@ export function AnamnesisQuestion({
                   multiSelectLength={
                     templateAnamnesisQuestion.subElementMultiSelect.length
                   }
+                  label={`${sectionIndex + 1}. Sektion, ${elementIndex + 1}. Element`}
                 />
               )}
 

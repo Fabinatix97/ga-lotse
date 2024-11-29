@@ -40,7 +40,12 @@ export function InspectionHistoryTable(
     inspection.facility.id,
   );
 
-  const tableControl = useTableControl({ serverSideSorting: !isOffline });
+  const tableControl = useTableControl({
+    initialSorting: {
+      id: "executedFrom",
+      desc: true,
+    },
+  });
   const columns = createInspectionHistoryColumns(
     props.inspectionId,
     isOfflineEnabled && !isOffline,

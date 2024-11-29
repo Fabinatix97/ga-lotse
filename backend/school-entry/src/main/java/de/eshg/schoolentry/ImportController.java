@@ -6,6 +6,7 @@
 package de.eshg.schoolentry;
 
 import de.eshg.file.common.CustomMediaTypes;
+import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
 import de.eshg.rest.service.error.BadRequestException;
@@ -23,9 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import java.io.IOException;
 import java.time.Clock;
-import java.time.LocalDateTime;
 import java.time.Year;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -47,8 +46,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImportController {
 
   public static final String BASE_URL = BaseUrls.SchoolEntry.IMPORT_CONTROLLER;
-  private static final DateTimeFormatter FILE_TIMESTAMP =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 
   private final ImportService importService;
   private final Resource citizenListTemplate;
@@ -99,7 +96,8 @@ public class ImportController {
         importService.importProceduresFromFile(
             file, ImportType.CITIZEN_LIST, null, null, Year.of(schoolYear));
 
-    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename());
+    return FileResponseUtil.mapImportResultToMultipartResponse(
+        result, FileResponseUtil.filename(clock));
   }
 
   @ApiResponse(
@@ -122,7 +120,8 @@ public class ImportController {
         importService.importProceduresFromFile(
             file, ImportType.SCHOOL_LIST, schoolId, locationId, Year.of(schoolYear));
 
-    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename());
+    return FileResponseUtil.mapImportResultToMultipartResponse(
+        result, FileResponseUtil.filename(clock));
   }
 
   @ApiResponse(
@@ -146,11 +145,8 @@ public class ImportController {
         importService.importProceduresFromFile(
             file, ImportType.PAST_PROCEDURE_LIST, schoolId, null, Year.of(schoolYear));
 
-    return FileResponseUtil.mapImportResultToMultipartResponse(result, filename());
-  }
-
-  private String filename() {
-    return "ImportResult_%s.xlsx".formatted(LocalDateTime.now(clock).format(FILE_TIMESTAMP));
+    return FileResponseUtil.mapImportResultToMultipartResponse(
+        result, FileResponseUtil.filename(clock));
   }
 
   @GetMapping(path = "/templates/citizen-list", produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)

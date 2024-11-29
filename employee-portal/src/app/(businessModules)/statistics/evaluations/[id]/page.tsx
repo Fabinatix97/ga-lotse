@@ -5,9 +5,9 @@
 
 "use client";
 
-import { useGetStatisticDetailsPage } from "@/lib/businessModules/statistics/api/queries/useGetStatisticDetailsPage";
+import { useGetEvaluationDetailsPage } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetailsPage";
+import { EvaluationDetails } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetails";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
-import { StatisticDetails } from "@/lib/businessModules/statistics/components/evaluations/details/StatisticDetails";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 
 export default function EvaluationDetailsPage(
@@ -15,7 +15,7 @@ export default function EvaluationDetailsPage(
     params: { id: string };
   }>,
 ) {
-  const { detailPageInformation, geoShapes } = useGetStatisticDetailsPage(
+  const { detailPageInformation, geoShapes } = useGetEvaluationDetailsPage(
     props.params.id,
     {
       onlyActive: true,
@@ -25,13 +25,13 @@ export default function EvaluationDetailsPage(
 
   return (
     <EvaluationDetailsLayout
-      statisticId={props.params.id}
-      statisticDetailsTabHeaderProps={{
-        statisticName: detailPageInformation.title,
+      evaluationId={props.params.id}
+      evaluationDetailsTabHeaderProps={{
+        evaluationName: detailPageInformation.title,
       }}
     >
       <MainContentLayout>
-        <StatisticDetails
+        <EvaluationDetails
           {...detailPageInformation}
           choroplethMaps={geoShapes}
         />

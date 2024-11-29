@@ -34,12 +34,14 @@ export interface MedicalHistoryTemplateSectionProp {
   sectionFormikPath: string;
   sectionElements: ApiTemplateSectionElement[];
   sectionTitle: ReactNode;
+  sectionIndex: number;
 }
 
 export function TemplateSection({
   sectionFormikPath,
   sectionElements,
   sectionTitle,
+  sectionIndex,
 }: Readonly<MedicalHistoryTemplateSectionProp>) {
   const snackbar = useSnackbar();
   const sectionElementsFormikPath = `${sectionFormikPath}.sectionElements`;
@@ -60,8 +62,8 @@ export function TemplateSection({
   return (
     <Sheet
       sx={{ marginTop: 3 }}
-      aria-label={`section ${sectionFormikPath}`}
-      data-testid={"section"}
+      aria-label={`${sectionIndex + 1}. Sektion`}
+      data-testid="section"
     >
       <FieldArray
         name={`${sectionElementsFormikPath}`}
@@ -85,6 +87,7 @@ export function TemplateSection({
                   deleteSectionElementHandler(index, remove)
                 }
                 replaceSectionElementHandler={replace}
+                sectionIndex={sectionIndex}
               />
               <SectionButtonBar
                 textBlockButtonAction={() =>

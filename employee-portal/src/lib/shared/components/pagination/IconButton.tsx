@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { IconButton as JoyIconButton } from "@mui/joy";
+import { ButtonProps, IconButton as JoyIconButton } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { CSSProperties, PropsWithChildren } from "react";
 
 export function IconButton(
@@ -12,6 +13,8 @@ export function IconButton(
     label: string;
     onClick: () => void;
     style?: CSSProperties;
+    sx?: SxProps;
+    variant?: ButtonProps["variant"];
   }>,
 ) {
   return (
@@ -19,10 +22,11 @@ export function IconButton(
       aria-label={props.label}
       disabled={props.disabled}
       color="primary"
-      variant="soft"
+      variant={props.variant ?? "soft"}
       size="sm"
       onClick={props.onClick}
       style={props.style}
+      sx={props.sx}
     >
       {props.children}
     </JoyIconButton>

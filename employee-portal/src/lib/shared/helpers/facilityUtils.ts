@@ -12,6 +12,7 @@ import { ApiDataOrigin } from "@eshg/employee-portal-api/inspection";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 import { isNullish } from "remeda";
 
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import {
   BaseFacility,
   BaseFacilityContactPerson,
@@ -49,11 +50,10 @@ export function fullAddress(address?: {
 }
 
 /**
- * this is only needed temporarily until the ApiAddFacilityFileStateRequest
- * gets adapted to the new structure with fixed postal and billing address.
+ * BaseFacility is still used in the legacy facility sidebar.
  */
 export function mapBaseFacilityToApiAddFacilityFileStateRequest(
-  baseFacility: BaseFacility,
+  baseFacility: BaseFacility & { differentBillingAddress?: void },
 ): ApiAddFacilityFileStateRequest {
   return {
     name: baseFacility.name,
@@ -63,6 +63,22 @@ export function mapBaseFacilityToApiAddFacilityFileStateRequest(
     differentBillingAddress: isNullish(baseFacility.billingAddress)
       ? undefined
       : mapBaseAddressToApi(baseFacility.billingAddress),
+    contactPersons: baseFacility.contactPersons.map(mapContactPersonToApi),
+    dataOrigin: ApiDataOrigin.Manual,
+  };
+}
+
+export function mapFacilityFormValuesToApiAddFacilityFileStateRequest(
+  baseFacility: DefaultFacilityFormValues & { billingAddress?: void },
+): ApiAddFacilityFileStateRequest {
+  return {
+    name: baseFacility.name,
+    emailAddresses: baseFacility.emailAddresses,
+    phoneNumbers: baseFacility.phoneNumbers,
+    contactAddress: mapBaseAddressToApi(baseFacility.contactAddress),
+    differentBillingAddress: isNullish(baseFacility.differentBillingAddress)
+      ? undefined
+      : mapBaseAddressToApi(baseFacility.differentBillingAddress),
     contactPersons: baseFacility.contactPersons.map(mapContactPersonToApi),
     dataOrigin: ApiDataOrigin.Manual,
   };

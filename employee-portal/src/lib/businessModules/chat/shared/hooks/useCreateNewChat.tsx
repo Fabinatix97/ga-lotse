@@ -10,7 +10,7 @@ import {
   JoinRule,
   Preset,
   Visibility,
-} from "matrix-js-sdk/lib/matrix";
+} from "matrix-js-sdk";
 import { KnownMembership } from "matrix-js-sdk/lib/types";
 import { useCallback } from "react";
 

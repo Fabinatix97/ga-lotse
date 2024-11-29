@@ -13,10 +13,12 @@ export function SubQuestion({
   subElementTextFormikPath,
   subQuestionDeleteHandler,
   multiSelectLength,
+  label,
 }: Readonly<{
   subElementTextFormikPath: string;
   subQuestionDeleteHandler: () => void;
   multiSelectLength: number;
+  label: string;
 }>) {
   return (
     <Grid container spacing={1}>
@@ -29,6 +31,11 @@ export function SubQuestion({
         <Stack direction="row" spacing={1} alignItems={"flex-start"}>
           <InputField
             label
+            aria-label={
+              multiSelectLength > 0
+                ? `${label}, Antwort ${multiSelectLength + 1}, Freifeldtext, Label`
+                : `${label}, Label`
+            }
             name={`${subElementTextFormikPath}.questionText`}
             placeholder="Label"
             sx={{ flex: 1 }}
@@ -51,6 +58,11 @@ export function SubQuestion({
       <Grid xs={11.63}>
         <InputField
           label
+          aria-label={
+            multiSelectLength > 0
+              ? `${label}, Antwort ${multiSelectLength + 1}, Freifeldtext, Textfeld`
+              : `${label}, Textfeld`
+          }
           disabled
           name="SubTextAnswer"
           placeholder="Textfeld"

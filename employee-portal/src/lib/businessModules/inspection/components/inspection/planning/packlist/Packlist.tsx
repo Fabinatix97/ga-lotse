@@ -22,31 +22,25 @@ import {
 export interface PacklistProps {
   revisionName: string;
   packlist: ApiPacklist;
-  idx: number;
   handleCheck: (
     packlistId: string,
     packlistElementId: string,
     checked: boolean,
   ) => void;
-  handleDeleteClick: (idx: number) => void;
+  handleDeleteClick: (revisionId: string) => void;
   readonly?: boolean;
 }
 
 export function Packlist({
   revisionName,
   packlist,
-  idx,
   handleCheck,
   handleDeleteClick,
   readonly,
 }: Readonly<PacklistProps>) {
   return (
-    <AccordionGroup
-      variant="plain"
-      transition="0.5s"
-      key={"version-info-" + revisionName + "-" + idx}
-    >
-      <Accordion>
+    <AccordionGroup variant="plain" transition="0.5s">
+      <Accordion sx={{ p: 0 }}>
         <Stack direction="row" spacing={2} alignItems={"flex-start"}>
           <Grid
             sx={(theme) => ({
@@ -59,7 +53,6 @@ export function Packlist({
           >
             <Stack
               direction="row"
-              key={"version-info-" + revisionName + "-" + idx}
               justifyContent="space-between"
               alignItems={"flex-start"}
             >
@@ -147,7 +140,7 @@ export function Packlist({
               aria-label="Löschen"
               variant="plain"
               color="danger"
-              onClick={() => handleDeleteClick(idx)}
+              onClick={() => handleDeleteClick(packlist.revisionId)}
             >
               <DeleteOutlined />
             </IconButton>

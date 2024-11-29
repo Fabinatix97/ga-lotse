@@ -14,7 +14,7 @@ import {
   Switch,
   Typography,
 } from "@mui/joy";
-import { User } from "matrix-js-sdk/lib/matrix";
+import { User } from "matrix-js-sdk";
 import { useState } from "react";
 
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";

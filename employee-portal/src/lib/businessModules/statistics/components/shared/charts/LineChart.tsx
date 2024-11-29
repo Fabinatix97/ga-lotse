@@ -6,9 +6,9 @@
 import { EChartsOption, SeriesOption } from "echarts";
 
 import {
-  EvaluationDiagramLineChart,
-  EvaluationLineDiagramConfiguration,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+  AnalysisDiagramLineChart,
+  AnalysisLineDiagramConfiguration,
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import {
   ChartApi,
   EChart,
@@ -20,8 +20,8 @@ import {
 } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 interface LineChartDiagramProps {
-  diagram: EvaluationDiagramLineChart["data"];
-  configuration: EvaluationLineDiagramConfiguration;
+  diagram: AnalysisDiagramLineChart["data"];
+  configuration: AnalysisLineDiagramConfiguration;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 

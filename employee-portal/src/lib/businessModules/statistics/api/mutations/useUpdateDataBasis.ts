@@ -8,7 +8,7 @@ import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvid
 import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 
-import { useStatisticApi } from "@/lib/businessModules/statistics/api/clients";
+import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapTimeRangeEndFrontendToApi } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
 import { TimeSpan } from "@/lib/shared/components/formFields/TimeSpanField";
 
@@ -18,18 +18,18 @@ export function useUpdateDataBasis({
   redirectRoute: string;
 }) {
   const snackbar = useSnackbar();
-  const statisticApi = useStatisticApi();
+  const evaluationApi = useEvaluationApi();
   const router = useRouter();
 
   const mutation = useHandledMutation({
     mutationFn: ({
-      statisticId,
+      evaluationId,
       timeSpan,
     }: {
-      statisticId: string;
+      evaluationId: string;
       timeSpan: TimeSpan;
     }) =>
-      statisticApi.updateEvaluation(statisticId, {
+      evaluationApi.updateEvaluation(evaluationId, {
         type: "UpdateEvaluationTimeRangeRequest",
         timeRange: {
           start: parseISO(timeSpan.start),
@@ -42,9 +42,9 @@ export function useUpdateDataBasis({
     },
   });
 
-  return async (statisticId: string, timeSpan: TimeSpan) => {
+  return async (evaluationId: string, timeSpan: TimeSpan) => {
     return mutation.mutateAsync({
-      statisticId: statisticId,
+      evaluationId: evaluationId,
       timeSpan: timeSpan,
     });
   };

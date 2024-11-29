@@ -18,7 +18,7 @@ public record LineChartConfigurationDto(
     @NotNull @Valid AttributeSelectionDto yAttribute,
     @Valid AttributeSelectionDto secondaryAttribute,
     @NotNull RangeDto range)
-    implements AddChartConfigurationDto, ChartConfigurationDto, PointBasedChartConfiguration {
+    implements AddChartConfigurationDto, ChartConfigurationDto, PointBasedChartConfigurationDto {
   public static final String SCHEMA_NAME = "LineChartConfiguration";
 
   @Override

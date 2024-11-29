@@ -27,6 +27,10 @@ export const gdprProcedureApiQueryKey = queryKeyFactory(
   baseApiQueryKey(["gdprProcedureApi"]),
 );
 
+export const gdprValidationTaskApiQueryKey = queryKeyFactory(
+  baseApiQueryKey(["gdprValidationTaskApi"]),
+);
+
 export const resourceApiQueryKey = queryKeyFactory(
   baseApiQueryKey(["resourceApi"]),
 );

@@ -21,4 +21,5 @@ public record EvaluationInfo(
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
     @NotNull Instant createdAt,
-    @NotNull boolean anonymized) {}
+    @NotNull boolean anonymized,
+    @NotNull boolean exportable) {}

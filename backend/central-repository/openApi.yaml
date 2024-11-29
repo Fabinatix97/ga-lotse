@@ -538,6 +538,7 @@ components:
           type: array
           items:
             type: string
+            pattern: "^(?!\\s*$)[^,]+$"
       required:
       - category
       - name

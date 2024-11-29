@@ -14,18 +14,34 @@ import {
   Checkbox,
   FormControl,
   FormHelperText,
-  FormLabel,
   List,
   ListItem,
-  Typography,
+  styled,
 } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { ChangeEvent } from "react";
+
+import { theme } from "@/lib/baseModule/theme/theme";
 
 export enum Mode {
   assignableService,
   appliedService,
 }
+
+const StyledFieldSet = styled("fieldset")({
+  border: 0,
+  margin: 0,
+  padding: 0,
+});
+
+const StyledLegend = styled("legend")({
+  fontWeight: theme.fontWeight.xl,
+  fontSize: theme.fontSize.md,
+  size: "md",
+  color: theme.palette.text.primary,
+  padding: 0,
+  marginBottom: 16,
+});
 
 export interface CheckboxGroupProps {
   mode: Mode;
@@ -80,13 +96,10 @@ export function CheckboxGroup({
 
   return (
     <>
-      <FormLabel id={ariaLabelId} htmlFor={labelId}>
-        <Typography level="body-md" sx={{ fontWeight: "bold" }}>
-          {label}
-        </Typography>
-      </FormLabel>
-      <div id={labelId} role="group" aria-labelledby={ariaLabelId}>
-        <List size="sm" role="listbox" sx={{ rowGap: 2, py: 0 }}>
+      <StyledFieldSet>
+        <StyledLegend id={ariaLabelId}>{label}</StyledLegend>
+
+        <List size="sm" sx={{ rowGap: 2, py: 0 }} aria-labelledby={ariaLabelId}>
           {props.mode == Mode.assignableService
             ? (element as ApiAssignableService[])?.map((val, index) => (
                 <ListItem
@@ -135,7 +148,7 @@ export function CheckboxGroup({
         <FormControl error={!!meta.error}>
           <FormHelperText sx={{ pt: 1 }}>{helperText}</FormHelperText>
         </FormControl>
-      </div>
+      </StyledFieldSet>
     </>
   );
 }

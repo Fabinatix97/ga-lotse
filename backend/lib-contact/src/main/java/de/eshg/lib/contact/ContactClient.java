@@ -5,17 +5,24 @@
 
 package de.eshg.lib.contact;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.GetContactsRequest;
+import de.eshg.base.contact.GetContactsResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.base.contact.api.InstitutionContactCategoryDto;
 import de.eshg.base.contact.api.InstitutionContactDto;
 import de.eshg.rest.service.error.BadRequestException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -33,24 +40,54 @@ public class ContactClient {
     return cachedContacts.computeIfAbsent(contactId, contactApiClient::getContact);
   }
 
-  public List<ContactDto> getBulkContacts(List<UUID> contactIds) {
+  public Stream<ContactDto> getBulkContacts(List<UUID> contactIds) {
     if (contactIds.isEmpty()) {
-      return List.of();
+      return Stream.empty();
     }
-    return contactApiClient.getBulkContacts(new GetContactsRequest(contactIds)).contactResponses();
+    GetContactsResponse response =
+        contactApiClient.getBulkContacts(new GetContactsRequest(contactIds));
+    Assert.isTrue(
+        response.notFoundIds().isEmpty(),
+        () -> "Failed to find %s contact(s)".formatted(response.notFoundIds().size()));
+    return response.contactResponses().stream();
+  }
+
+  public <T> Map<UUID, T> getBulkContacts(
+      List<UUID> contactIds, Function<ContactDto, T> valueMapper) {
+    return getBulkContacts(contactIds)
+        .collect(StreamUtil.toLinkedHashMap(ContactDto::id, valueMapper));
   }
 
   public void validateContactIsInstitutionWithCategory(
-      UUID locationId, InstitutionContactCategoryDto category) {
+      UUID contactId, InstitutionContactCategoryDto category) {
     try {
-      ContactDto contact = getContact(locationId);
+      ContactDto contact = getContact(contactId);
       if (!(contact instanceof InstitutionContactDto institution
           && institution.category() == category)) {
         throw new BadRequestException(
-            "Contact with id %s is not of category %s.".formatted(locationId, category));
+            "Contact with id %s is not of category %s.".formatted(contactId, category));
       }
     } catch (HttpClientErrorException.NotFound e) {
-      throw new BadRequestException("Contact with id %s does not exist.".formatted(locationId));
+      throw new BadRequestException("Contact with id %s does not exist.".formatted(contactId));
+    }
+  }
+
+  public void validateContactIsInstitutionWithCategory(
+      UUID contactId, Set<InstitutionContactCategoryDto> categories) {
+    try {
+      ContactDto contact = getContact(contactId);
+      if (!(contact instanceof InstitutionContactDto institution
+          && categories.contains(institution.category()))) {
+        String expectedCategories =
+            categories.stream()
+                .map(InstitutionContactCategoryDto::toString)
+                .collect(Collectors.joining(", "));
+        throw new BadRequestException(
+            "Contact with id %s does not have a valid category. Expected one of: %s"
+                .formatted(contactId, expectedCategories));
+      }
+    } catch (HttpClientErrorException.NotFound e) {
+      throw new BadRequestException("Contact with id %s does not exist.".formatted(contactId));
     }
   }
 }

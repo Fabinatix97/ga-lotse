@@ -6,7 +6,7 @@
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 
 import { useFilterTemplateApi } from "@/lib/businessModules/statistics/api/clients";
-import { mapStatisticFilterToFilterValue } from "@/lib/businessModules/statistics/api/mapper/mapStatisticFilterToFilterValue";
+import { mapEvaluationFilterToFilterValue } from "@/lib/businessModules/statistics/api/mapper/mapEvaluationFilterToFilterValue";
 
 export function useGetFilterTemplateFilters() {
   const api = useFilterTemplateApi();
@@ -14,7 +14,7 @@ export function useGetFilterTemplateFilters() {
     mutationFn: (filterTemplateId: string) =>
       api
         .getFilterTemplate(filterTemplateId)
-        .then((result) => result.filters.map(mapStatisticFilterToFilterValue)),
+        .then((result) => result.filters.map(mapEvaluationFilterToFilterValue)),
   });
 
   return async (filterTemplateId: string) => {

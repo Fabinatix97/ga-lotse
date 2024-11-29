@@ -8,13 +8,15 @@ import {
   BaseModalProps,
 } from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
-import { logger } from "matrix-js-sdk/lib/logger";
 
 import { deleteBackup } from "@/lib/businessModules/chat/matrix/secretStorage";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 
-export function ResetBackupModal(props: Omit<BaseModalProps, "children">) {
+export function ResetBackupModal(
+  props: Omit<BaseModalProps, "children" | "modalTitle">,
+) {
   const { matrixClient, setClientState } = useChatClientContext();
 
   async function handleResetAllClick() {

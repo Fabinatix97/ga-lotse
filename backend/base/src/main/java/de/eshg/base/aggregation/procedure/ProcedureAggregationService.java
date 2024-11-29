@@ -12,6 +12,7 @@ import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.common.BusinessModule;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.lib.procedure.api.ProcedureMetricsApi;
 import de.eshg.lib.procedure.model.*;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
@@ -63,7 +64,9 @@ public class ProcedureAggregationService {
       Function<BusinessModuleClient, GetRecentProceduresResponse> getRecentProceduresFunction) {
     List<ClientResponse<GetRecentProceduresResponse>> procedureResponses =
         businessModuleAggregationHelper.requestFromBusinessModules(
-            filteringBusinessModules, getRecentProceduresFunction);
+            filteringBusinessModules,
+            BusinessModuleCapability.PROCEDURES,
+            getRecentProceduresFunction);
     List<ProcedureDto> aggregatedProcedures = aggregateProcedures(procedureResponses, limit);
     List<ErrorResponseWithLocation> aggregatedErrorResponses =
         aggregateErrorResponses(procedureResponses);
@@ -92,7 +95,9 @@ public class ProcedureAggregationService {
 
     List<ClientResponse<GetProcedureMetricsResponse>> extractedResponses =
         businessModuleAggregationHelper.requestFromBusinessModules(
-            null, client -> client.getProcedureMetrics(timeRangeStart, timeRangeEnd));
+            null,
+            BusinessModuleCapability.PROCEDURES,
+            client -> client.getProcedureMetrics(timeRangeStart, timeRangeEnd));
 
     Comparator<ProcedureMetric> moduleComparator =
         Comparator.comparing(metric -> metric.businessModule().name());

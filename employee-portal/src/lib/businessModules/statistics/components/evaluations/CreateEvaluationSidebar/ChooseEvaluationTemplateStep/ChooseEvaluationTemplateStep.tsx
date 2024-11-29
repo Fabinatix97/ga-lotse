@@ -16,6 +16,7 @@ import { ChooseEvaluationTemplateStepFormModel } from "@/lib/businessModules/sta
 import {
   Analyses,
   Attributes,
+  DataSource,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -82,12 +83,7 @@ function Summary(props: { evaluationTemplateId: string }) {
             </Typography>
           </Stack>
         )}
-        <Stack gap={1}>
-          <Typography level="title-md">Datenquelle</Typography>
-          <Typography level="body-md">
-            {evaluationTemplateDetails.dataSourceName}
-          </Typography>
-        </Stack>
+        <DataSource dataSourceName={evaluationTemplateDetails.dataSourceName} />
         <Attributes
           attributeLabels={evaluationTemplateDetails.attributeLabels}
         />

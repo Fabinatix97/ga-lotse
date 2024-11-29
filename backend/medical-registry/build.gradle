@@ -6,11 +6,13 @@ plugins {
 dependencies {
     implementation project(':lib-base-client')
     implementation project(':lib-procedures')
+    implementation project(':lib-xlsx-import')
     implementation project(':business-module-persistence-commons')
     implementation project(':file-commons')
 
     implementation 'com.bucket4j:bucket4j-core:latest.release'
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.6.0' // Pinned to workaround https://github.com/springdoc/springdoc-openapi/issues/2776
+    implementation 'de.cronn:reflection-util:latest.release'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
@@ -18,6 +20,7 @@ dependencies {
 
     testImplementation "org.testcontainers:postgresql"
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-xlsx-import'))
 }
 
 dockerCompose {

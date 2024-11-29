@@ -44,7 +44,7 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
 
   private String currentSymptoms;
 
-  private LocalDate contactToClarifyDuration;
+  private LocalDate contactToClarifyDate;
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private RelationshipModel relationshipModel;
@@ -73,6 +73,7 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
     @AttributeOverride(name = "syphilis", column = @Column(name = "previous_illnesses_syphilis")),
     @AttributeOverride(name = "gonorrhea", column = @Column(name = "previous_illnesses_gonorrhea")),
     @AttributeOverride(name = "chlamydia", column = @Column(name = "previous_illnesses_chlamydia")),
+    @AttributeOverride(name = "other", column = @Column(name = "previous_illnesses_other")),
   })
   @Embedded
   private PreviousIllness previousIllnesses;
@@ -80,6 +81,10 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
   // Orientation and Contact
 
   @Embedded private RiskContact riskContacts;
+
+  // Prevention
+
+  @Embedded private Prevention prevention;
 
   // Risk Factors
 
@@ -126,12 +131,12 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
     this.currentSymptoms = currentSymptoms;
   }
 
-  public LocalDate getContactToClarifyDuration() {
-    return contactToClarifyDuration;
+  public LocalDate getContactToClarifyDate() {
+    return contactToClarifyDate;
   }
 
-  public void setContactToClarifyDuration(LocalDate contactToClarifyDuration) {
-    this.contactToClarifyDuration = contactToClarifyDuration;
+  public void setContactToClarifyDate(LocalDate contactToClarifyDate) {
+    this.contactToClarifyDate = contactToClarifyDate;
   }
 
   public RelationshipModel getRelationshipModel() {
@@ -170,6 +175,16 @@ public abstract class MedicalHistory extends GenericEntity<Long> {
 
   public void setRiskContacts(RiskContact riskContacts) {
     this.riskContacts = riskContacts;
+  }
+
+  // Prevention
+
+  public Prevention getPrevention() {
+    return prevention;
+  }
+
+  public void setPrevention(Prevention prevention) {
+    this.prevention = prevention;
   }
 
   // Risk Factors

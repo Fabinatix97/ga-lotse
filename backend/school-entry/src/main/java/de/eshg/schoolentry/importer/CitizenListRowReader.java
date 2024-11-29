@@ -30,7 +30,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
       List.of(
           new CustodianColumns(
               LAST_NAME_CUSTODIAN_1,
-              FIST_NAME_CUSTODIAN_1,
+              FIRST_NAME_CUSTODIAN_1,
               new AddressColumns<>(
                   STREET_CUSTODIAN_1,
                   HOUSE_NUMBER_CUSTODIAN_1,
@@ -43,7 +43,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
               GENDER_CUSTODIAN_1),
           new CustodianColumns(
               LAST_NAME_CUSTODIAN_2,
-              FIST_NAME_CUSTODIAN_2,
+              FIRST_NAME_CUSTODIAN_2,
               new AddressColumns<>(
                   STREET_CUSTODIAN_2,
                   HOUSE_NUMBER_CUSTODIAN_2,
@@ -78,7 +78,7 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
   private ImportChildData readChildData(
       ColumnAccessor<CitizenListColumn> col, ErrorHandler errorHandler) {
     String lastName = cellAsString(col, LAST_NAME, errorHandler);
-    String firstName = cellAsString(col, FIST_NAME, errorHandler);
+    String firstName = cellAsString(col, FIRST_NAME, errorHandler);
     AddressData addressData = readAddressData(col, CHILD_ADDRESS_COLUMNS, errorHandler, true);
     LocalDate birthDate = cellAsDate(col, DATE_OF_BIRTH, errorHandler);
     String placeOfBirth = cellAsString(col, PLACE_OF_BIRTH, true, false, errorHandler);

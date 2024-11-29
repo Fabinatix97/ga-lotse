@@ -16,15 +16,20 @@ import {
 } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/inner/ReadOnlyCLDElementTextModule";
 import { ReadOnlyCLDElementWrapper } from "@/lib/businessModules/inspection/components/checklistDefinition/readOnly/elements/inner/ReadOnlyCLDElementWrapper";
 
-export function ReadOnlyCLDElementMultiSelect({
-  element,
-  ...props
-}: Readonly<ReadOnlyCLDElementProps<ApiCLMultiSelectContext>>) {
+export function ReadOnlyCLDElementMultiSelect(
+  props: Readonly<ReadOnlyCLDElementProps<ApiCLMultiSelectContext>>,
+) {
+  const { element, sectionIndex, elementIndex } = props;
   return (
-    <ReadOnlyCLDElementWrapper element={element} {...props}>
+    <ReadOnlyCLDElementWrapper {...props}>
       <List sx={{ rowGap: 2 }} aria-label="Antwortmöglichkeiten">
         {element.items?.map((option) => (
-          <FieldOption option={option} type={element.type} key={option.id} />
+          <FieldOption
+            option={option}
+            type={element.type}
+            elementTitle={`${sectionIndex + 1}.${elementIndex + 1}.`}
+            key={option.id}
+          />
         ))}
       </List>
     </ReadOnlyCLDElementWrapper>
@@ -34,9 +39,11 @@ export function ReadOnlyCLDElementMultiSelect({
 function FieldOption({
   option,
   type,
+  elementTitle,
 }: Readonly<{
   option: ApiCLFieldOptionContext;
   type: string;
+  elementTitle: string;
 }>) {
   const OptionSymbol =
     type === "MULTI_SELECT" ? CheckboxOptionSymbol : RadioOptionSymbol;
@@ -65,7 +72,7 @@ function FieldOption({
         </Typography>
         <TextModuleComponent
           {...option}
-          id={`${option.id}-desc`}
+          elementTitle={elementTitle}
           sx={{ gridColumnStart: 2 }}
         />
       </Box>

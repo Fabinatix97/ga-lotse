@@ -39,6 +39,10 @@ public enum EmployeePermissionRole implements PermissionRole {
   DENTAL_LEADER(LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("ZAD"), Module.DENTAL),
   OPEN_DATA_LEADER(
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Open Data"), Module.OPEN_DATA),
+  OFFICIAL_MEDICAL_SERVICE_LEADER(
+      LEADER_KEYCLOAK_NAME,
+      LEADER_DESCRIPTION.formatted("Amtsärztliche Gutachten"),
+      Module.OFFICIAL_MEDICAL_SERVICE),
 
   BASE_PERSONS_READ(
       READ_PERMISSION_TEMPLATE.formatted("Personen (Stammdaten-Konverter)"),
@@ -193,6 +197,9 @@ public enum EmployeePermissionRole implements PermissionRole {
       "Berechtigung zum Abruf der öffentlichen Schlüssel von Usern, welche Audit-Log-Dateien entschlüsseln dürfen",
       Module.BASE),
 
+  MEDICAL_REGISTRY_IMPORT(
+      "Berechtigung zum Importieren von Medizinalkartei-Daten", Module.MEDICAL_REGISTRY),
+
   // TODO ISSUE-3317: Add keycloak descriptions for the inspection module
   INSPECTION_NOTIFICATIONS_READ("Benachrichtigungen erhalten", Module.INSPECTION),
   INSPECTION_PROCEDURE_EDIT("Begehungsvorgänge bearbeiten", Module.INSPECTION),
@@ -291,12 +298,22 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_FACILITIES_READ,
       BASE_FACILITIES_WRITE),
 
-  DENTAL_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Zahnärztlicher Dienst"), Module.DENTAL),
+  DENTAL_ADMIN(
+      ADMIN_KEYCLOAK_NAME.formatted("Zahnärztlicher Dienst"),
+      Module.DENTAL,
+      BASE_PERSONS_READ,
+      BASE_PERSONS_WRITE,
+      BASE_CONTACTS_READ,
+      BASE_CONTACTS_WRITE),
 
   OPEN_DATA_ADMIN(ADMIN_KEYCLOAK_NAME.formatted("Open Data"), Module.OPEN_DATA),
 
   CHAT_MANAGEMENT_WRITE(
-      READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT);
+      READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT),
+
+  OFFICIAL_MEDICAL_SERVICE_ADMIN("Amtsärztliche Gutachten Admin", Module.OFFICIAL_MEDICAL_SERVICE),
+  OFFICIAL_MEDICAL_SERVICE_PHYSICIAN(
+      "Amtsärztliche Gutachten Arzt", Module.OFFICIAL_MEDICAL_SERVICE);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;
@@ -349,7 +366,8 @@ public enum EmployeePermissionRole implements PermissionRole {
     STI_PROTECTION("HIV-STI-Service"),
     MEDICAL_REGISTRY("Medizinalkartei"),
     DENTAL("Zahnärztlicher Dienst"),
-    OPEN_DATA("Open Data");
+    OPEN_DATA("Open Data"),
+    OFFICIAL_MEDICAL_SERVICE("Amtsärztliche Gutachten");
 
     private final String displayName;
 

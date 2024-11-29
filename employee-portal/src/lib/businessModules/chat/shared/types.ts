@@ -12,7 +12,7 @@ import {
   Room,
   RoomMember,
   User,
-} from "matrix-js-sdk/lib/matrix";
+} from "matrix-js-sdk";
 import { isEmpty, isObjectType, isString } from "remeda";
 
 import {
@@ -37,11 +37,12 @@ export interface Message {
   sender: User | null;
   roomId: string;
   mentions?: string[];
-  readReceipts?: ReadConfirmationsPerUser;
+  // readReceipts?: ReadConfirmationsPerUser;
   messageType: MessageTypeEnum;
   sent: boolean;
   removed: boolean;
   decrypted?: boolean;
+  isRead?: boolean;
 }
 
 export function isChatMessageType(data: unknown): data is Message {

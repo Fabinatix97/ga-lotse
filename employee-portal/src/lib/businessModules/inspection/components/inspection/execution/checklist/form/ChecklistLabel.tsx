@@ -49,7 +49,11 @@ export function ChecklistLabel(props: Readonly<ChecklistLabelProps>) {
             {props.children}
           </FormLabel>
           {isDefined(props.tooltipText) && (
-            <InfoIconTooltipButton size="md" title={props.tooltipText} />
+            <InfoIconTooltipButton
+              size="md"
+              infoText={props.tooltipText}
+              title="Hinweis"
+            />
           )}
         </Stack>
         {props.endDecorator}

@@ -50,7 +50,7 @@ dependencies {
     testImplementation testFixtures(project(':lib-document-generator'))
 
     testImplementation 'com.tngtech.archunit:archunit-junit5:latest.release'
-    testImplementation('com.squareup.okhttp3:mockwebserver') {
+    testImplementation('com.squareup.okhttp3:mockwebserver:latest.release') {
         exclude group: "junit", module: "junit"
     }
     // mockwebserver depends on Junit 4 interfaces that we don't want.

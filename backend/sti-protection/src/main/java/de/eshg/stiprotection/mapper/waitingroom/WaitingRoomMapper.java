@@ -22,6 +22,12 @@ public class WaitingRoomMapper {
         waitingRoom.getInfo(), WaitingStatusMapper.toInterfaceType(waitingRoom.getStatus()));
   }
 
+  public static WaitingRoom update(WaitingRoomDto dto, WaitingRoom entity) {
+    entity.setInfo(dto.info());
+    entity.setStatus(WaitingStatusMapper.toDatabaseType(dto.status()));
+    return entity;
+  }
+
   public static Sort.Direction toDatabaseType(SortDirection sortDirection) {
     return switch (sortDirection) {
       case ASC -> Sort.Direction.ASC;

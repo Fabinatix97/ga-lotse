@@ -25,6 +25,7 @@ interface TextareaFieldProps extends ValidationRules<string> {
   untrimmedInput?: boolean;
   disabled?: boolean;
   "data-testid"?: string;
+  "aria-label"?: string;
 }
 
 export function TextareaField(props: TextareaFieldProps) {
@@ -65,6 +66,7 @@ export function TextareaField(props: TextareaFieldProps) {
         disabled={disabled}
         slotProps={{ textarea: { disabled } }}
         data-testid={props["data-testid"]}
+        aria-label={props["aria-label"]}
       />
     </BaseField>
   );

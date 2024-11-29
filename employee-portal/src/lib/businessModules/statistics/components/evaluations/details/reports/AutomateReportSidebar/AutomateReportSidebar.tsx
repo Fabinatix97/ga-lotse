@@ -18,10 +18,10 @@ import {
 
 export function AutomateReportSidebar({
   onClose,
-  statisticId,
+  evaluationId,
 }: {
   onClose: () => void;
-  statisticId: string;
+  evaluationId: string;
 }) {
   const initialValues: AutomateReportFormModel = {
     name: "",
@@ -37,7 +37,7 @@ export function AutomateReportSidebar({
     <SidebarStepper
       onClose={onClose}
       open={true}
-      onSubmit={(model) => addAutoReportSeries(statisticId, model)}
+      onSubmit={(model) => addAutoReportSeries(evaluationId, model)}
       initialValues={initialValues}
       saveLabel="Speichern"
       steps={[

@@ -12,10 +12,10 @@ import {
   isValidAttributeKey,
   mapKeyToAttributeSelection,
 } from "@/lib/businessModules/statistics/api/mapper/mapAttributeSelectionKey";
-import { StatisticFilter } from "@/lib/businessModules/statistics/api/models/statisticFilterType";
-import { useGetStatisticDetailsTablePage } from "@/lib/businessModules/statistics/api/queries/useGetStatisticDetailsTablePage";
+import { EvaluationFilter } from "@/lib/businessModules/statistics/api/models/evaluationFilterType";
+import { useGetEvaluationDetailsTablePage } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetailsTablePage";
 import { EvaluationDetailsLayout } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationDetailsLayout";
-import { StatisticDetailsTable } from "@/lib/businessModules/statistics/components/evaluations/details/table/StatisticDetailsTable";
+import { EvaluationDetailsTable } from "@/lib/businessModules/statistics/components/evaluations/details/table/EvaluationDetailsTable";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
@@ -31,9 +31,9 @@ export default function EvaluationDetailsTablePage(
     onSortingChange: () => resetPageNumber(),
   });
 
-  const [filters, setFilters] = useState<StatisticFilter[]>([]);
+  const [filters, setFilters] = useState<EvaluationFilter[]>([]);
 
-  const { statistic, filterTemplates } = useGetStatisticDetailsTablePage(
+  const { evaluation, filterTemplates } = useGetEvaluationDetailsTablePage(
     {
       evaluationId: props.params.id,
       apiGetEvaluationRequest: {
@@ -52,18 +52,18 @@ export default function EvaluationDetailsTablePage(
 
   return (
     <EvaluationDetailsLayout
-      statisticId={props.params.id}
-      statisticDetailsTabHeaderProps={{
-        statisticName: statistic.statisticName,
+      evaluationId={props.params.id}
+      evaluationDetailsTabHeaderProps={{
+        evaluationName: evaluation.evaluationName,
       }}
     >
       <MainContentLayout fullViewportHeight>
-        <StatisticDetailsTable
-          statisticId={props.params.id}
-          attributes={statistic.attributes}
-          tableData={statistic.tableData}
+        <EvaluationDetailsTable
+          evaluationId={props.params.id}
+          attributes={evaluation.attributes}
+          tableData={evaluation.tableData}
           paginationProps={getPaginationProps({
-            totalCount: statistic.totalNumberOfElements,
+            totalCount: evaluation.totalNumberOfElements,
           })}
           manualSortingProps={manualSortingProps}
           onFiltersSubmit={(filters) =>

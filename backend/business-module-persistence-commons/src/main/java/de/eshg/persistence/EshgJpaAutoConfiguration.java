@@ -10,13 +10,11 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
 /** AutoConfiguration to inject the {@link EshgPostgreSQLDialect} by default */
 @AutoConfiguration(before = HibernateJpaAutoConfiguration.class)
 @PropertySource("classpath:/common-persistence.properties")
-@Import(SortedPersistenceManagedTypes.class)
 class EshgJpaAutoConfiguration {
 
   EshgJpaAutoConfiguration(DataSource dataSource) throws SQLException {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ClientEvent, MatrixEvent } from "matrix-js-sdk/lib/matrix";
+import { ClientEvent, MatrixEvent } from "matrix-js-sdk";
 import { useContext, useEffect, useState } from "react";
 
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";

@@ -5,6 +5,7 @@
 
 package de.eshg.stiprotection.mapper.medicalhistory;
 
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.stiprotection.api.medicalhistory.MedicalHistoryDto;
 import de.eshg.stiprotection.api.medicalhistory.SexWorkMedicalHistoryDto;
 import de.eshg.stiprotection.api.medicalhistory.StiConsultationMedicalHistoryDto;
@@ -31,10 +32,11 @@ public final class MedicalHistoryMapper {
     return new SexWorkMedicalHistoryDto(
         entity.getExaminationReason(),
         entity.getCurrentSymptoms(),
-        entity.getContactToClarifyDuration(),
+        entity.getContactToClarifyDate(),
         RelationshipModelMapper.toInterfaceType(entity.getRelationshipModel()),
-        entity.getLastMenstruationDuration(),
-        entity.getLastCancerScreeningDuration(),
+        entity.getLastMenstruationDate(),
+        entity.getLastCancerScreeningDate(),
+        entity.getPreviouslyPregnant(),
         entity.getAmountPregnancies(),
         entity.getAmountAbortions(),
         entity.getKnownOperations(),
@@ -42,6 +44,8 @@ public final class MedicalHistoryMapper {
         ExaminationMapper.toInterfaceType(entity.getExaminations()),
         PreviousIllnessMapper.toInterfaceType(entity.getPreviousIllnesses()),
         RiskContactMapper.toInterfaceType(entity.getRiskContacts()),
+        SexWorkRiskContactMapper.toInterfaceType(entity.getSexWorkRiskContacts()),
+        PreventionMapper.toInterfaceType(entity.getPrevention()),
         RiskFactorMapper.toInterfaceType(entity.getRiskFactors()),
         entity.getAdditionalComments());
   }
@@ -50,48 +54,70 @@ public final class MedicalHistoryMapper {
     return new StiConsultationMedicalHistoryDto(
         entity.getExaminationReason(),
         entity.getCurrentSymptoms(),
-        entity.getContactToClarifyDuration(),
+        entity.getContactToClarifyDate(),
         RelationshipModelMapper.toInterfaceType(entity.getRelationshipModel()),
         ExaminationMapper.toInterfaceType(entity.getExaminations()),
         PreviousIllnessMapper.toInterfaceType(entity.getPreviousIllnesses()),
         RiskContactMapper.toInterfaceType(entity.getRiskContacts()),
+        PreventionMapper.toInterfaceType(entity.getPrevention()),
         RiskFactorMapper.toInterfaceType(entity.getRiskFactors()),
         entity.getAdditionalComments());
   }
 
-  public static MedicalHistory toDatabaseType(MedicalHistoryDto dto) {
+  public static MedicalHistory update(MedicalHistoryDto dto, MedicalHistory entity) {
+    if (dto instanceof StiConsultationMedicalHistoryDto
+        && !(entity instanceof StiConsultationMedicalHistory)) {
+      throw new BadRequestException(
+          "StiConsultationMedicalHistory can't be updated at procedure %s with concern %s"
+              .formatted(
+                  entity.getProcedure().getExternalId(), entity.getProcedure().getConcern()));
+    } else if (dto instanceof SexWorkMedicalHistoryDto
+        && !(entity instanceof SexWorkMedicalHistory)) {
+      throw new BadRequestException(
+          "SexWorkMedicalHistory can't be created at procedure %s with concern %s"
+              .formatted(
+                  entity.getProcedure().getExternalId(), entity.getProcedure().getConcern()));
+    }
+
     return switch (dto) {
-      case SexWorkMedicalHistoryDto sexWork -> toDatabaseType(sexWork);
-      case StiConsultationMedicalHistoryDto consultation -> toDatabaseType(consultation);
+      case SexWorkMedicalHistoryDto sexWork -> updateSexWorkMedicalHistory(sexWork, entity);
+      case StiConsultationMedicalHistoryDto consultation ->
+          updateStiConsultationMedicalHistory(consultation, entity);
     };
   }
 
-  private static MedicalHistory toDatabaseType(SexWorkMedicalHistoryDto dto) {
-    SexWorkMedicalHistory sexWorkMedicalHistory = new SexWorkMedicalHistory();
-    sexWorkMedicalHistory.setLastMenstruationDuration(dto.lastMenstruationDuration());
-    sexWorkMedicalHistory.setLastCancerScreeningDuration(dto.lastCancerScreeningDuration());
+  private static MedicalHistory updateSexWorkMedicalHistory(
+      SexWorkMedicalHistoryDto dto, MedicalHistory entity) {
+    SexWorkMedicalHistory sexWorkMedicalHistory = (SexWorkMedicalHistory) entity;
+    sexWorkMedicalHistory.setLastMenstruationDate(dto.lastMenstruationDate());
+    sexWorkMedicalHistory.setLastCancerScreeningDate(dto.lastCancerScreeningDate());
+    sexWorkMedicalHistory.setPreviouslyPregnant(dto.previouslyPregnant());
     sexWorkMedicalHistory.setAmountPregnancies(dto.amountPregnancies());
     sexWorkMedicalHistory.setAmountAbortions(dto.amountAbortions());
     sexWorkMedicalHistory.setKnownOperations(dto.knownOperations());
     sexWorkMedicalHistory.setMedications(dto.medications());
-    return updateMedicalHistory(dto, sexWorkMedicalHistory);
+    sexWorkMedicalHistory.setSexWorkRiskContacts(
+        SexWorkRiskContactMapper.toDatabaseType(dto.sexWorkRiskContacts()));
+    return updateGeneralMedicalHistory(dto, entity);
   }
 
-  private static MedicalHistory toDatabaseType(StiConsultationMedicalHistoryDto dto) {
-    return updateMedicalHistory(dto, new StiConsultationMedicalHistory());
+  private static MedicalHistory updateStiConsultationMedicalHistory(
+      StiConsultationMedicalHistoryDto dto, MedicalHistory entity) {
+    return updateGeneralMedicalHistory(dto, entity);
   }
 
-  private static MedicalHistory updateMedicalHistory(MedicalHistoryDto dto, MedicalHistory entity) {
+  private static MedicalHistory updateGeneralMedicalHistory(
+      MedicalHistoryDto dto, MedicalHistory entity) {
     entity.setExaminationReason(dto.examinationReason());
     entity.setCurrentSymptoms(dto.currentSymptoms());
-    entity.setContactToClarifyDuration(dto.contactToClarifyDuration());
+    entity.setContactToClarifyDate(dto.contactToClarifyDate());
     entity.setRelationshipModel(RelationshipModelMapper.toDatabaseType(dto.relationshipModel()));
     entity.setExaminations(ExaminationMapper.toDatabaseType(dto.examinations()));
     entity.setPreviousIllnesses(PreviousIllnessMapper.toDatabaseType(dto.previousIllnesses()));
     entity.setRiskContacts(RiskContactMapper.toDatabaseType(dto.riskContacts()));
+    entity.setPrevention(PreventionMapper.toDatabaseType(dto.prevention()));
     entity.setRiskFactors(RiskFactorMapper.toDatabaseType(dto.riskFactors()));
     entity.setAdditionalComments(dto.additionalComments());
-
     return entity;
   }
 }

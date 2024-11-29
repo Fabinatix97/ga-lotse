@@ -20,9 +20,9 @@ import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/u
 export function CreateDiagramSidebar(props: {
   open: boolean;
   onClose: () => void;
-  evaluationId: string;
+  analysisId: string;
   attributes: FlatAttribute[];
-  statisticId: string;
+  evaluationId: string;
 }) {
   const initialValues: CreateDiagramFormModel = {
     title: "",
@@ -33,7 +33,7 @@ export function CreateDiagramSidebar(props: {
   const createDiagram = useAddDiagram();
   const addFilterTemplate = useAddFilterTemplate(props.attributes);
   const deleteFilterTemplate = useDeleteFilterTemplate();
-  const filterTemplates = useGetFilterTemplates(props.statisticId);
+  const filterTemplates = useGetFilterTemplates(props.evaluationId);
   const getFilterTemplateFilters = useGetFilterTemplateFilters();
 
   function getUseFilterTemplateProps(
@@ -53,7 +53,7 @@ export function CreateDiagramSidebar(props: {
   async function onSubmit(model: CreateDiagramFormModel): Promise<void> {
     await createDiagram(
       {
-        evaluationId: props.evaluationId,
+        analysisId: props.analysisId,
         attributes: props.attributes,
         ...model,
       },

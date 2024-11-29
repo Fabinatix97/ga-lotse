@@ -11,7 +11,8 @@ import { Button, Stack, Typography } from "@mui/joy";
 
 import { useDeleteAppointmentEp } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 
-interface CancelAppointmentModalProps extends Omit<BaseModalProps, "children"> {
+interface CancelAppointmentModalProps
+  extends Omit<BaseModalProps, "children" | "modalTitle"> {
   procedureStepId: string;
 }
 

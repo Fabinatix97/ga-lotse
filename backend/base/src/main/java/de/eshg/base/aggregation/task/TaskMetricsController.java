@@ -14,6 +14,7 @@ import de.eshg.base.feature.BaseFeatureToggle;
 import de.eshg.base.util.TimeRangeValidator;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.lib.procedure.api.ProcedureMetricsApi;
 import de.eshg.lib.procedure.model.GetTaskMetricsResponse;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
@@ -63,6 +64,7 @@ public class TaskMetricsController {
     List<ClientResponse<GetTaskMetricsResponse>> clientResponses =
         businessModuleAggregationHelper.requestFromBusinessModulesClients(
             Set.of(businessModuleName),
+            BusinessModuleCapability.TASKS,
             client -> client.getTaskMetrics(procedureType, timeRangeStart, timeRangeEnd));
     if (clientResponses.isEmpty() || clientResponses.getFirst().response() == null) {
       throw new IllegalStateException("Could not retrieve data from business module");

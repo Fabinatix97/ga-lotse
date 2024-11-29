@@ -10,6 +10,7 @@ import de.eshg.base.SalutationDto;
 import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.persistence.entity.DataOrigin;
+import de.eshg.mapper.RestMappingUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,11 +21,7 @@ public class MappingUtil {
   private MappingUtil() {}
 
   public static Sort.Direction mapDirection(SortDirection sortDirection) {
-    return switch (sortDirection) {
-      case null -> Sort.Direction.ASC;
-      case SortDirection.ASC -> Sort.Direction.ASC;
-      case SortDirection.DESC -> Sort.Direction.DESC;
-    };
+    return RestMappingUtil.mapDirection(sortDirection);
   }
 
   public static Salutation mapSalutationToDm(SalutationDto salutation) {

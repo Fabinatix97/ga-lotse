@@ -9,7 +9,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import de.eshg.lib.xlsximport.RowValues;
 
-class InspectionImporterRowValues extends RowValues {
+class InspectionImporterRowValues extends RowValues<InspectionImporterRowValues> {
   private ImportInspectionFacility facility;
   private ImportInspection inspection;
 
@@ -33,6 +33,7 @@ class InspectionImporterRowValues extends RowValues {
     return !isBlank(facility.importId());
   }
 
+  @Override
   public boolean isDuplicateRow(InspectionImporterRowValues other) {
     return facility.equals(other.facility) && inspection.equals(other.inspection);
   }

@@ -10,29 +10,30 @@ import { SxProps } from "@mui/joy/styles/types";
 export interface ReadOnlyCLDElementTextModuleProps {
   textModuleFalse?: string;
   textModuleTrue?: string;
+  text: string;
+  elementTitle: string;
   sx?: SxProps;
-  id?: string;
 }
 
 export function ReadOnlyCLDElementTextModule({
   textModuleFalse,
   textModuleTrue,
+  text,
+  elementTitle,
   sx,
-  id,
 }: Readonly<ReadOnlyCLDElementTextModuleProps>) {
   if (!textModuleTrue && !textModuleFalse) {
     return;
   }
 
   return (
-    <Sheet sx={sx} id={id} role="region" aria-labelledby={`${id}-label`}>
+    <Sheet
+      sx={sx}
+      role="region"
+      aria-label={`Textbausteine für Antwort "${text}" in Element "${elementTitle}"`}
+    >
       <Stack gap={1}>
-        <Typography
-          id={`${id}-label`}
-          level="title-sm"
-          fontWeight="normal"
-          component="label"
-        >
+        <Typography level="title-sm" fontWeight="normal" component="label">
           Textbausteine
         </Typography>
         {textModuleTrue && (
@@ -64,23 +65,23 @@ export function ReadOnlyCLDElementTextModule({
 
 export function ReadOnlyCLDElementCheckboxTextModule({
   textModuleTrue,
+  text,
+  elementTitle,
   sx,
-  id,
 }: Readonly<ReadOnlyCLDElementTextModuleProps>) {
   if (!textModuleTrue) {
     return;
   }
 
   return (
-    <Sheet sx={sx} role="region">
+    <Sheet sx={sx}>
       <Typography
-        id={id}
         level="body-sm"
         sx={{
           whiteSpace: "pre",
           textWrap: "wrap",
         }}
-        aria-label="Textbaustein"
+        aria-label={`Textbaustein für Antwort "${text}" in Element "${elementTitle}"`}
       >
         {textModuleTrue}
       </Typography>

@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(indexes = @Index(columnList = "procedure_id"))
-public class Practice extends RelatedFacility<MedicalRegistryEntry> {
+public class Practice extends RelatedFacility<MedicalRegistryProcedure> {
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   private String website;

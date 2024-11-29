@@ -27,10 +27,7 @@ export function PartialDownloadDialog(props: PartialDownloadDialogProps) {
       ? "1 Einladung herunterladen"
       : `${props.invitationsToDownload} Einladungen herunterladen`;
   return (
-    <BaseModal {...props}>
-      <Typography level="h3" color="primary">
-        Download starten?
-      </Typography>
+    <BaseModal modalTitle="Download starten?" color="primary" {...props}>
       <Typography level="body-md">
         {props.total - props.invitationsToDownload} von {props.total}{" "}
         ausgewählten Vorgängen haben keinen festgelegten Termin. Einladungen

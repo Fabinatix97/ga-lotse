@@ -8,9 +8,14 @@ package de.eshg.medicalregistry.domain.registry;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
-import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.Query;
 
-public interface MedicalRegistryEntryRepository extends ProcedureRepository<MedicalRegistryEntry> {
+public interface MedicalRegistryEntryRepository
+    extends ProcedureRepository<MedicalRegistryProcedure> {
 
   long countByProcedureTypeAndProcedureStatus(
       ProcedureType procedureType, ProcedureStatus procedureStatus);
@@ -19,4 +24,7 @@ public interface MedicalRegistryEntryRepository extends ProcedureRepository<Medi
     return countByProcedureTypeAndProcedureStatus(
         ProcedureType.MEDICAL_REGISTRY_CITIZEN_DRAFT, ProcedureStatus.DRAFT);
   }
+
+  @Query("SELECT m.externalId FROM MedicalRegistryEntry m WHERE m.externalId IN :externalIds")
+  Set<UUID> findExistingExternalIds(List<UUID> externalIds);
 }

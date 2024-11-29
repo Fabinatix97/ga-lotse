@@ -5,13 +5,19 @@
 
 import {
   ApiAddCustodianRequest,
+  ApiAnamnesis,
   ApiCreateAppointmentsBulkRequest,
   ApiCreateMedicalReportRequest,
   ApiCreateProcedureRequest,
   ApiCreateSchoolInfoLetterRequest,
+  ApiDevelopmentScreeningResult,
+  ApiEyeExaminationResult,
+  ApiHearingTestResult,
   ApiRemoveCustodianRequest,
+  ApiSopessExaminationResult,
   ApiSyncPersonRequest,
   ApiUpdatePersonRequest,
+  ApiVaccinationStatus,
   CloseProcedureRequest,
   DeleteProcedureRequest,
   ReopenProcedureRequest,
@@ -28,7 +34,7 @@ import {
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { useQueryClient } from "@tanstack/react-query";
+import { MutationOptions, useQueryClient } from "@tanstack/react-query";
 
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import {
@@ -62,10 +68,14 @@ export function useUpdateProcedure(procedureId: string) {
   });
 }
 
-export function useUpdateHearingTestResult() {
+export function useUpdateHearingTestResultOptions(): MutationOptions<
+  ApiHearingTestResult,
+  Error,
+  UpdateHearingTestResultRequest
+> {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return {
     mutationFn: (request: UpdateHearingTestResultRequest) =>
       schoolEntryApi
         .updateHearingTestResultRaw(request)
@@ -75,13 +85,17 @@ export function useUpdateHearingTestResult() {
         "Die Ergebnisse des Hörscreenings wurden erfolgreich gespeichert.",
       );
     },
-  });
+  };
 }
 
-export function useUpdateEyeExaminationResult() {
+export function useUpdateEyeExaminationResultOptions(): MutationOptions<
+  ApiEyeExaminationResult,
+  Error,
+  UpdateEyeExaminationResultRequest
+> {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return {
     mutationFn: (request: UpdateEyeExaminationResultRequest) =>
       schoolEntryApi
         .updateEyeExaminationResultRaw(request)
@@ -91,13 +105,17 @@ export function useUpdateEyeExaminationResult() {
         "Die Ergebnisse des Sehscreenings wurden erfolgreich gespeichert.",
       );
     },
-  });
+  };
 }
 
-export function useUpdateSopessExaminationResult() {
+export function useUpdateSopessExaminationResultOptions(): MutationOptions<
+  ApiSopessExaminationResult,
+  Error,
+  UpdateSopessExaminationResultRequest
+> {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return {
     mutationFn: (request: UpdateSopessExaminationResultRequest) =>
       schoolEntryApi
         .updateSopessExaminationResultRaw(request)
@@ -105,13 +123,17 @@ export function useUpdateSopessExaminationResult() {
     onSuccess: () => {
       snackbar.confirmation("Der SOPESS Test wurde erfolgreich gespeichert.");
     },
-  });
+  };
 }
 
-export function useUpdateDevelopmentScreeningResult() {
+export function useUpdateDevelopmentScreeningResultOptions(): MutationOptions<
+  ApiDevelopmentScreeningResult,
+  Error,
+  UpdateDevelopmentScreeningResultRequest
+> {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return {
     mutationFn: (request: UpdateDevelopmentScreeningResultRequest) =>
       schoolEntryApi
         .updateDevelopmentScreeningResultRaw(request)
@@ -119,13 +141,17 @@ export function useUpdateDevelopmentScreeningResult() {
     onSuccess: () => {
       snackbar.confirmation("Der S1 Befund wurde erfolgreich gespeichert.");
     },
-  });
+  };
 }
 
-export function useUpdateVaccinationStatus() {
+export function useUpdateVaccinationStatusOptions(): MutationOptions<
+  ApiVaccinationStatus,
+  Error,
+  UpdateVaccinationStatusRequest
+> {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
-  return useHandledMutation({
+  return {
     mutationFn: (request: UpdateVaccinationStatusRequest) =>
       schoolEntryApi
         .updateVaccinationStatusRaw(request)
@@ -133,15 +159,17 @@ export function useUpdateVaccinationStatus() {
     onSuccess: () => {
       snackbar.confirmation("Der Impfstatus wurde erfolgreich gespeichert.");
     },
-  });
+  };
 }
 
-export function useUpdateAnamnesis(procedureId: string) {
+export function useUpdateAnamnesisOptions(
+  procedureId: string,
+): MutationOptions<ApiAnamnesis, Error, UpdateAnamnesisRequest> {
   const schoolEntryApi = useSchoolEntryApi();
   const snackbar = useSnackbar();
   const { queryKey } = getAnamnesisQuery(schoolEntryApi, procedureId);
   const queryClient = useQueryClient();
-  return useHandledMutation({
+  return {
     meta: { updatesQuery: queryKey },
     mutationFn: (request: UpdateAnamnesisRequest) =>
       schoolEntryApi.updateAnamnesisRaw(request).then(unwrapRawResponse),
@@ -149,7 +177,7 @@ export function useUpdateAnamnesis(procedureId: string) {
       queryClient.setQueryData(queryKey, updatedApiAnamnesis);
       snackbar.confirmation("Die Anamnese wurde erfolgreich gespeichert.");
     },
-  });
+  };
 }
 
 export function useCreateProcedure() {
@@ -196,11 +224,19 @@ export function useSyncPerson(procedureId: string) {
 
 export function useAddPersonAsCustodian(procedureId: string) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
   return useHandledMutation({
+    meta: {
+      updatesQuery: queryKey,
+    },
     mutationFn: (request: ApiAddCustodianRequest) =>
       schoolEntryApi.addCustodian(procedureId, request),
-    onSuccess: () => snackbar.confirmation("PSB erfolgreich angelegt."),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("PSB erfolgreich angelegt.");
+    },
   });
 }
 
@@ -229,8 +265,11 @@ export function useRemoveCustodian(
   custodianCentralFileStateId: string,
 ) {
   const schoolEntryApi = useSchoolEntryApi();
+  const { queryKey } = getProcedureQuery(schoolEntryApi, procedureId);
+  const queryClient = useQueryClient();
   const snackbar = useSnackbar();
   return useHandledMutation({
+    meta: { updatesQuery: queryKey },
     mutationFn: (request: ApiRemoveCustodianRequest) =>
       schoolEntryApi
         .removeCustodianRaw({
@@ -239,7 +278,10 @@ export function useRemoveCustodian(
           apiRemoveCustodianRequest: request,
         })
         .then(unwrapRawResponse),
-    onSuccess: () => snackbar.confirmation("PSB erfolgreich entfernt."),
+    onSuccess: (response) => {
+      queryClient.setQueryData(queryKey, response);
+      snackbar.confirmation("PSB erfolgreich entfernt.");
+    },
   });
 }
 

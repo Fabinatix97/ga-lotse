@@ -6,26 +6,27 @@
 package de.eshg.statistics.export;
 
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
-import de.eshg.statistics.persistence.entity.chart.LineOrScatterChartConfiguration;
+import de.eshg.statistics.persistence.entity.chart.PointBasedChartConfiguration;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPoint;
 import de.eshg.statistics.persistence.entity.diagramdata.DataPointGroup;
 import de.eshg.statistics.persistence.entity.diagramdata.LineOrScatterChartData;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 public class PointBasedChartDataExporter {
   private PointBasedChartDataExporter() {}
 
   static void addData(
-      XSSFSheet sheet,
+      Sheet sheet,
       AtomicInteger rowCounter,
       LineOrScatterChartData lineOrScatterChartData,
-      LineOrScatterChartConfiguration lineOrScatterChartConfiguration) {
-    if (lineOrScatterChartConfiguration.getSecondaryAttributeSelection() != null) {
+      PointBasedChartConfiguration pointBasedChartConfiguration) {
+    if (pointBasedChartConfiguration.getSecondaryAttributeSelection() != null) {
       addDataHeader(
           sheet,
           rowCounter.getAndIncrement(),
@@ -50,12 +51,9 @@ public class PointBasedChartDataExporter {
   }
 
   private static void addDataHeader(
-      XSSFSheet sheet,
-      int firstRowNumber,
-      int secondRowNumber,
-      List<DataPointGroup> dataPointGroups) {
-    XSSFRow firstRow = sheet.createRow(firstRowNumber);
-    XSSFRow secondRow = sheet.createRow(secondRowNumber);
+      Sheet sheet, int firstRowNumber, int secondRowNumber, List<DataPointGroup> dataPointGroups) {
+    Row firstRow = sheet.createRow(firstRowNumber);
+    Row secondRow = sheet.createRow(secondRowNumber);
     int columnIndex = 0;
     for (DataPointGroup dataPointGroup : dataPointGroups) {
       firstRow.createCell(columnIndex, CellType.STRING).setCellValue(dataPointGroup.getKey());
@@ -64,14 +62,14 @@ public class PointBasedChartDataExporter {
     }
   }
 
-  private static void addXYCells(XSSFRow row, int xColumnIndex) {
+  private static void addXYCells(Row row, int xColumnIndex) {
     row.createCell(xColumnIndex, CellType.STRING).setCellValue("x");
     row.createCell(xColumnIndex + 1, CellType.STRING).setCellValue("y");
   }
 
   private static void addDataRow(
-      XSSFSheet sheet, int rowNumber, List<DataPointGroup> dataPointGroups, int dataPointIndex) {
-    XSSFRow row = sheet.createRow(rowNumber);
+      Sheet sheet, int rowNumber, List<DataPointGroup> dataPointGroups, int dataPointIndex) {
+    Row row = sheet.createRow(rowNumber);
     int columnIndex = 0;
     for (DataPointGroup dataPointGroup : dataPointGroups) {
       if (dataPointIndex < dataPointGroup.getDataPoints().size()) {
@@ -81,7 +79,7 @@ public class PointBasedChartDataExporter {
     }
   }
 
-  private static void addDataPointToRow(XSSFRow row, int xColumnIndex, DataPoint dataPoint) {
+  private static void addDataPointToRow(Row row, int xColumnIndex, DataPoint dataPoint) {
     row.createCell(xColumnIndex, CellType.NUMERIC)
         .setCellValue(dataPoint.getXCoordinate().doubleValue());
     row.createCell(xColumnIndex + 1, CellType.NUMERIC)
@@ -89,32 +87,48 @@ public class PointBasedChartDataExporter {
   }
 
   static void addAttributesInformation(
-      XSSFSheet sheet,
+      Sheet sheet,
       CellStyle cellStyle,
       AtomicInteger rowCounter,
-      LineOrScatterChartConfiguration lineOrScatterChartConfiguration,
+      PointBasedChartConfiguration pointBasedChartConfiguration,
       AbstractAggregationResult aggregationResult) {
-    DataExportService.getAttributeName(
-            lineOrScatterChartConfiguration.getXAttributeSelection(), aggregationResult)
+    DataExportUtil.addMetadataRow(
+        sheet,
+        cellStyle,
+        rowCounter.getAndIncrement(),
+        "x-Achse",
+        DiagramExportService.getAttributeName(
+            pointBasedChartConfiguration.getXAttributeSelection(), aggregationResult));
+    DiagramExportService.addLegend(
+        sheet,
+        cellStyle,
+        rowCounter,
+        aggregationResult,
+        pointBasedChartConfiguration.getXAttributeSelection());
+    DataExportUtil.addMetadataRow(
+        sheet,
+        cellStyle,
+        rowCounter.getAndIncrement(),
+        "y-Achse",
+        DiagramExportService.getAttributeName(
+            pointBasedChartConfiguration.getYAttributeSelection(), aggregationResult));
+    DiagramExportService.addLegend(
+        sheet,
+        cellStyle,
+        rowCounter,
+        aggregationResult,
+        pointBasedChartConfiguration.getYAttributeSelection());
+    Optional.ofNullable(pointBasedChartConfiguration.getSecondaryAttributeSelection())
         .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet, cellStyle, rowCounter.getAndIncrement(), "x-Achse", attributeName));
-    DataExportService.getAttributeName(
-            lineOrScatterChartConfiguration.getYAttributeSelection(), aggregationResult)
-        .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet, cellStyle, rowCounter.getAndIncrement(), "y-Achse", attributeName));
-    DataExportService.getAttributeName(
-            lineOrScatterChartConfiguration.getSecondaryAttributeSelection(), aggregationResult)
-        .ifPresent(
-            attributeName ->
-                DataExportService.addMetadataRow(
-                    sheet,
-                    cellStyle,
-                    rowCounter.getAndIncrement(),
-                    "Sekundäres Attribut",
-                    attributeName));
+            secondaryAttribute -> {
+              DataExportUtil.addMetadataRow(
+                  sheet,
+                  cellStyle,
+                  rowCounter.getAndIncrement(),
+                  "Sekundäres Attribut",
+                  DiagramExportService.getAttributeName(secondaryAttribute, aggregationResult));
+              DiagramExportService.addLegend(
+                  sheet, cellStyle, rowCounter, aggregationResult, secondaryAttribute);
+            });
   }
 }

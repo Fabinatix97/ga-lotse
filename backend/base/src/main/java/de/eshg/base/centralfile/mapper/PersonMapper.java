@@ -190,6 +190,10 @@ public class PersonMapper {
     return mapPersonDetailsToDm(request.updatedPerson());
   }
 
+  public static Person mapPersonToDm(UpdatePersonInBulkRequest request) {
+    return mapPersonDetailsToDm(request.updatedPerson());
+  }
+
   public static Person mapPersonToDm(UpdateReferencePersonRequest request) {
     return mapPersonDetailsToDm(request.personDetails());
   }

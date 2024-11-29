@@ -8,7 +8,7 @@ import { isDefined } from "remeda";
 import { FilterDefinition } from "@/lib/shared/components/filterSettings/models/FilterDefinition";
 import { getDefinitionByValue } from "@/lib/shared/components/filterSettings/models/getDefinitionByValue";
 
-import { SuppertedStatisticsFilterValues } from "./suppertedStatisticsFilterValues";
+import { SuppertedEvaluationFilterValues } from "./suppertedEvaluationFilterValues";
 
 const includeNullString = "leere Felder";
 
@@ -29,7 +29,7 @@ function createNumberFilterLabels(
 }
 
 export function getActiveFilterLabels(
-  filterValues: SuppertedStatisticsFilterValues[] | undefined,
+  filterValues: SuppertedEvaluationFilterValues[] | undefined,
   filterDefinitions: FilterDefinition[],
 ) {
   if (isDefined(filterValues) && filterValues.length > 0) {

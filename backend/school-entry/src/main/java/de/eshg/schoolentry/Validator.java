@@ -19,14 +19,12 @@ import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.rest.service.error.BadRequestException;
-import de.eshg.rest.service.error.ErrorCode;
 import de.eshg.schoolentry.api.*;
 import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
 import de.eshg.schoolentry.api.anamnesis.DaycareAndSchoolInfoDto;
 import de.eshg.schoolentry.api.citizen.CitizenAnamnesisDto;
 import de.eshg.schoolentry.business.model.ChildData;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
-import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.repository.Icd10CodeRepository;
 import de.eshg.schoolentry.domain.repository.Icd10GroupRepository;
@@ -39,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -63,7 +60,6 @@ public class Validator {
   private final Icd10GroupRepository icd10GroupRepository;
   private final ContactClient contactClient;
   private final Clock clock;
-  private final SchoolEntryProperties schoolEntryProperties;
   private final AppointmentBlockProperties appointmentBlockProperties;
 
   public Validator(
@@ -71,13 +67,11 @@ public class Validator {
       Icd10GroupRepository icd10GroupRepository,
       ContactClient contactClient,
       Clock clock,
-      SchoolEntryProperties schoolEntryProperties,
       AppointmentBlockProperties appointmentBlockProperties) {
     this.icd10CodeRepository = icd10CodeRepository;
     this.icd10GroupRepository = icd10GroupRepository;
     this.contactClient = contactClient;
     this.clock = clock;
-    this.schoolEntryProperties = schoolEntryProperties;
     this.appointmentBlockProperties = appointmentBlockProperties;
   }
 
@@ -560,15 +554,6 @@ public class Validator {
     if (!procedureDetailsData.isDeletable()) {
       throw new BadRequestException(
           "Procedure %s cannot be deleted.".formatted(procedureDetailsData.externalId()));
-    }
-  }
-
-  public void validateNumberOfRows(Sheet sheet) {
-    if (sheet.getPhysicalNumberOfRows() > schoolEntryProperties.getMaxNumberOfImportRows()) {
-      throw new BadRequestException(
-          ErrorCode.INVALID_FILE,
-          "Invalid file structure. At most %s rows are allowed."
-              .formatted(schoolEntryProperties.getMaxNumberOfImportRows()));
     }
   }
 

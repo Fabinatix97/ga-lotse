@@ -25,7 +25,7 @@ import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
 import de.eshg.statistics.api.chart.HistogramChartConfigurationDto;
 import de.eshg.statistics.api.chart.LineChartConfigurationDto;
 import de.eshg.statistics.api.chart.PieChartConfigurationDto;
-import de.eshg.statistics.api.chart.PointBasedChartConfiguration;
+import de.eshg.statistics.api.chart.PointBasedChartConfigurationDto;
 import de.eshg.statistics.api.chart.ScatterChartConfigurationDto;
 import de.eshg.statistics.api.diagram.DiagramDto;
 import de.eshg.statistics.api.diagram.UpdateDiagramRequest;
@@ -486,7 +486,7 @@ public class AnalysisService {
   }
 
   private static void validatePointBasedChartConfiguration(
-      PointBasedChartConfiguration chartConfiguration,
+      PointBasedChartConfigurationDto chartConfiguration,
       AbstractAggregationResult aggregationResult,
       String name,
       String configName) {
@@ -1284,7 +1284,7 @@ public class AnalysisService {
       Integer page,
       UUID analysisId,
       List<TableColumnFilterParameter> filters,
-      PointBasedChartConfiguration pointBasedChartConfiguration) {
+      PointBasedChartConfigurationDto pointBasedChartConfiguration) {
     Analysis analysis = getAnalysisInternal(analysisId);
     AbstractAggregationResult aggregationResult = analysis.getAggregationResult();
 
@@ -1362,7 +1362,7 @@ public class AnalysisService {
       UUID analysisId,
       AddDiagramRequest addDiagramRequest,
       List<DataPointHolder> data,
-      PointBasedChartConfiguration pointBasedChartConfiguration) {
+      PointBasedChartConfigurationDto pointBasedChartConfiguration) {
     Analysis analysis = getAnalysisInternal(analysisId);
 
     Comparator<DataPointHolder> comparator =

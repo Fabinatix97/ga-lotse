@@ -65,7 +65,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -73,7 +72,6 @@ public class DataAggregationService {
   private final BusinessModuleAggregationHelper businessModuleAggregationHelper;
   private final BaseStatisticsApi baseModuleStatisticsApi;
   private final int businessModuleDataRequestPageSize;
-  private final int tableRowPageSize;
   private final TableRowRepository tableRowRepository;
   private final CellEntryRepository cellEntryRepository;
   private final AuditLogger auditLogger;
@@ -81,7 +79,6 @@ public class DataAggregationService {
   public DataAggregationService(
       BusinessModuleAggregationHelper businessModuleAggregationHelper,
       BaseStatisticsApi baseModuleStatisticsApi,
-      @Value("${eshg.statistics.tablerows.pagesize:500}") int tableRowPageSize,
       @Value("${eshg.statistics.businessmodule.pagesize:500}")
           int businessModuleDataRequestPageSize,
       TableRowRepository tableRowRepository,
@@ -90,17 +87,12 @@ public class DataAggregationService {
     this.businessModuleAggregationHelper = businessModuleAggregationHelper;
     this.baseModuleStatisticsApi = baseModuleStatisticsApi;
     this.businessModuleDataRequestPageSize = businessModuleDataRequestPageSize;
-    this.tableRowPageSize = tableRowPageSize;
     this.tableRowRepository = tableRowRepository;
     this.cellEntryRepository = cellEntryRepository;
     this.auditLogger = auditLogger;
     if (this.businessModuleDataRequestPageSize <= 0) {
       throw new IllegalArgumentException(
           "'eshg.statistics.businessmodule.pagesize' must be greater than 0");
-    }
-    if (this.tableRowPageSize <= 0) {
-      throw new IllegalArgumentException(
-          "'eshg.statistics.tablerows.pagesize' must be greater than 0");
     }
   }
 
@@ -169,7 +161,9 @@ public class DataAggregationService {
 
     List<ClientResponse<GetSpecificDataResponse>> clientResponses =
         businessModuleAggregationHelper.requestFromBusinessModulesClients(
-            Set.of(businessModuleName), client -> client.getSpecificData(businessModuleRequest));
+            Set.of(businessModuleName),
+            null,
+            client -> client.getSpecificData(businessModuleRequest));
     if (clientResponses.isEmpty()) {
       throw new BadRequestException(message);
     }
@@ -358,7 +352,7 @@ public class DataAggregationService {
   }
 
   public void collectTableRows(AbstractAggregationResult aggregationResult) {
-    Long tableRowsCount = countTableRows(aggregationResult);
+    Long tableRowsCount = tableRowRepository.countTableRowByAggregationResult(aggregationResult);
     int page = (int) (tableRowsCount / businessModuleDataRequestPageSize);
     int ignoreTableRowsCount = (int) (tableRowsCount % businessModuleDataRequestPageSize);
 
@@ -428,10 +422,6 @@ public class DataAggregationService {
       aggregationResult.setPendingState(AggregationResultPendingState.MIN_MAX_DETERMINATION);
       auditLogAggregationResult(aggregationResult);
     }
-  }
-
-  public Long countTableRows(AbstractAggregationResult aggregationResult) {
-    return tableRowRepository.countTableRowByAggregationResult(aggregationResult);
   }
 
   private static List<String> getBusinessModuleAttributeCodes(
@@ -889,13 +879,6 @@ public class DataAggregationService {
                   return sb.toString();
                 })
             .collect(Collectors.joining(", ")));
-  }
-
-  public void removeTableRows(AbstractAggregationResult aggregationResult) {
-    tableRowRepository.deleteAll(
-        tableRowRepository
-            .findAllByAggregationResult(aggregationResult, Pageable.ofSize(tableRowPageSize))
-            .getContent());
   }
 
   private record BaseStatisticsData(BaseDataTableHeader dataTableHeader, List<DataRow> dataRows) {}

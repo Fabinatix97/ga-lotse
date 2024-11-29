@@ -139,7 +139,7 @@ function createFilterDefinitions(
 export function PendingFacilitiesTable(
   props: Readonly<{ filter: PendingFacilitiesFilters }>,
 ) {
-  const isOfflineEnabled = useIsOfflineFeatureEnabled();
+  const isOfflineFeatureEnabled = useIsOfflineFeatureEnabled();
   const isImportFeatureEnabled = useIsNewFeatureEnabled(
     ApiInspectionFeature.Import,
   );
@@ -196,10 +196,10 @@ export function PendingFacilitiesTable(
 
   const tableControl = useTableControl({ serverSideSorting: true });
   const columns = createPendingFacilitiesColumns(
-    isOfflineEnabled,
     handleViewIncidentsClick,
     openReviewFacilityDuplicateSidebar,
     openReviewInspectionDuplicateSidebar,
+    isOfflineFeatureEnabled,
     isImportFeatureEnabled,
   );
 

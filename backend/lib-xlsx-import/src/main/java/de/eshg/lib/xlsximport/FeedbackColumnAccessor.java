@@ -13,13 +13,18 @@ import org.apache.poi.ss.usermodel.Row;
 public class FeedbackColumnAccessor {
 
   private final int statusColumn;
-  private final int procedureIdColumn;
+  private final int entityIdColumn;
   private final int referenceIdColumn;
 
   public FeedbackColumnAccessor(List<? extends XlsxColumn> actualColumns) {
+    this(actualColumns, XlsxColumn.PROCEDURE_COLUMN_HEADER);
+  }
+
+  public FeedbackColumnAccessor(
+      List<? extends XlsxColumn> actualColumns, String entityIdColumnHeader) {
     List<String> headers = actualColumns.stream().map(XlsxColumn::getHeader).toList();
     this.statusColumn = headers.indexOf(XlsxColumn.STATUS_COLUMN_HEADER);
-    this.procedureIdColumn = headers.indexOf(XlsxColumn.PROCEDURE_COLUMN_HEADER);
+    this.entityIdColumn = headers.indexOf(entityIdColumnHeader);
     this.referenceIdColumn = headers.indexOf(XlsxColumn.REFERENCE_COLUMN_HEADER);
   }
 
@@ -27,8 +32,8 @@ public class FeedbackColumnAccessor {
     return getCellNullSafe(row, statusColumn);
   }
 
-  public Cell getProcedureId(Row row) {
-    return getCellNullSafe(row, procedureIdColumn);
+  public Cell getEntityId(Row row) {
+    return getCellNullSafe(row, entityIdColumn);
   }
 
   public Cell getReferenceId(Row row) {

@@ -5,11 +5,9 @@
 
 "use client";
 
-import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import { WarningAmberOutlined } from "@mui/icons-material";
-import { Sheet, Stack, Typography } from "@mui/joy";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 
-import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { formatPossibleDuplicates } from "@/lib/businessModules/inspection/components/processImport/formatters";
 
 export interface PotentialDuplicatesWarningProps {
   numberOfDuplicates: number;
@@ -21,41 +19,15 @@ export function PotentialDuplicatesWarning({
   filterForDuplicates,
 }: Readonly<PotentialDuplicatesWarningProps>) {
   return (
-    <Sheet
+    <Alert
+      message={formatPossibleDuplicates(numberOfDuplicates)}
+      color="warning"
+      action={{ text: "FILTER", onClick: filterForDuplicates }}
       sx={{
-        padding: 2,
-        borderRadius: (theme) => theme.radius.sm,
         border: "1px solid",
         borderColor: "warning.300",
-        backgroundColor: "warning.100",
         marginBottom: 2,
       }}
-      aria-label={"Einrichtung"}
-    >
-      <ButtonBar
-        left={
-          <Stack direction="row" gap={1}>
-            <WarningAmberOutlined sx={{ color: "warning.600" }} />{" "}
-            <Typography sx={{ color: "warning.600" }}>
-              {numberOfDuplicates} potentielle{numberOfDuplicates == 1 && "s"}{" "}
-              Duplikat
-              {numberOfDuplicates != 1 && "e"}
-            </Typography>
-          </Stack>
-        }
-        right={
-          <ButtonLink
-            underline="none"
-            color="neutral"
-            textColor={"warning.600"}
-            fontWeight="lg"
-            onClick={filterForDuplicates}
-            sx={{ color: "warning.600" }}
-          >
-            FILTERN
-          </ButtonLink>
-        }
-      />
-    </Sheet>
+    />
   );
 }

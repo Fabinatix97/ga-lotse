@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Schema(name = "PracticeReferenceFacility")
 public record PracticeReferenceFacilityDto(
-    @NotNull UUID referenceFacilityId,
+    @NotNull UUID id,
     @NotNull long version,
     @NotNull @Size(min = 1, max = 300) String name,
     List<@EmailAddressConstraint String> emailAddresses,

@@ -51,6 +51,7 @@ export function SignatureSection() {
         <InputField
           sx={{ width: "65%" }}
           label={null}
+          aria-label={"Signaturfeld"}
           placeholder="Max Mustermann"
           name="signer"
           data-testid="signature-section-name"

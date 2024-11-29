@@ -9,7 +9,7 @@ import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ApiChatFeature } from "@eshg/employee-portal-api/chatManagement";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import { createContext, useContext, useMemo } from "react";
-import { isNullish, omit } from "remeda";
+import { doNothing, isNullish, omit } from "remeda";
 
 import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
 import { useMessagesSidebar } from "@/lib/baseModule/components/layout/messagesSidebar/MessagesSidebar";
@@ -44,7 +44,11 @@ export interface ChatProviderProps extends RequiresChildren {
 export function ChatProvider(props: ChatProviderProps) {
   const isOffline = useIsOffline();
 
-  return isOffline ? props.children : <InnerChatProvider {...props} />;
+  return isOffline ? (
+    <InnerChatProviderMock {...props} />
+  ) : (
+    <InnerChatProvider {...props} />
+  );
 }
 
 function InnerChatProvider({ children, configuration }: ChatProviderProps) {
@@ -110,4 +114,32 @@ export function useChat() {
   }
 
   return context;
+}
+
+function InnerChatProviderMock({ children, configuration }: ChatProviderProps) {
+  return (
+    <ChatContext.Provider
+      value={{
+        configuration,
+        userSettings: {
+          chatConsentAsked: undefined,
+          chatUsageEnabled: false,
+          sharePresence: false,
+          showReadConfirmation: false,
+          showTypingNotification: false,
+        },
+        canAccessChat: false,
+        isSettingsLoading: false,
+        isFeatureToggleLoading: false,
+        isFeatureToggleSuccess: true,
+        messagesSidebar: {
+          isOpen: false,
+          open: doNothing(),
+          close: doNothing(),
+        },
+      }}
+    >
+      {children}
+    </ChatContext.Provider>
+  );
 }

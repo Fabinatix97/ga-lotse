@@ -22,18 +22,12 @@ interface ContactPersonFormProps {
   name: string;
   extraFieldsTop?: ReactNode;
   extraFieldsBottom?: ReactNode;
-  salutationRequired?: boolean;
-  titleRequired?: boolean;
-  roleRequired?: boolean;
 }
 
 export function ContactPersonForm({
   name,
   extraFieldsTop,
   extraFieldsBottom,
-  salutationRequired = true,
-  titleRequired = true,
-  roleRequired = true,
 }: ContactPersonFormProps) {
   const fieldName = createFieldNameMapper<BaseFacilityContactPerson>(name);
 
@@ -44,9 +38,7 @@ export function ContactPersonForm({
           <SelectField
             name={fieldName("salutation")}
             label="Anrede"
-            required={
-              salutationRequired ? "Bitte eine Anrede auswählen." : undefined
-            }
+            required="Bitte eine Anrede auswählen."
             options={SALUTATION_OPTIONS}
           />
         </Grid>
@@ -54,7 +46,6 @@ export function ContactPersonForm({
           <SelectField
             name={fieldName("title")}
             label="Titel"
-            required={titleRequired ? "Bitte einen Titel angeben." : undefined}
             options={TITLE_OPTIONS}
           />
         </Grid>
@@ -63,13 +54,11 @@ export function ContactPersonForm({
       <InputField
         name={fieldName("role")}
         label="Rolle"
-        required={roleRequired ? "Bitte eine Rolle angeben." : undefined}
         validate={validateLength(1, 255)}
       />
       <InputField
         name={fieldName("firstName")}
         label="Vorname"
-        required="Bitte einen Vornamen angeben."
         validate={validateLength(1, 80)}
       />
       <InputField

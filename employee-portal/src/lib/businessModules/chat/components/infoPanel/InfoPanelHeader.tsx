@@ -8,33 +8,39 @@ import { IconButton, Stack, Typography } from "@mui/joy";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { ChatColumnHeaderWrapper } from "@/lib/businessModules/chat/components/ChatColumnHeaderWrapper";
-import { RoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
+import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
+import { useRoomStateEventUpdate } from "@/lib/businessModules/chat/shared/hooks/useRoomStateEventUpdate";
+import { UserFromDirectory } from "@/lib/businessModules/chat/shared/types";
 
-interface InfoPanelHeaderProps extends Partial<RoomInfo> {
-  userId?: string;
-  displayName?: string;
-  avatarUrl?: string;
+interface InfoPanelHeaderProps {
+  roomId?: string;
+  user?: UserFromDirectory;
   close: () => void;
   type?: "roomInfo" | "memberInfo";
 }
 
 export function InfoPanelHeader({
-  room,
-  userId,
-  displayName,
-  communicationType,
-  dmRoomMember,
-  avatarUrl,
-  getAvatarUrl,
+  roomId,
+  user,
   close,
   type = "roomInfo",
 }: InfoPanelHeaderProps) {
-  const name = room?.name ?? displayName;
+  const { communicationType, getAvatarUrl, getDMRoomMember, room } =
+    useRoomInfo(roomId);
+
+  useRoomStateEventUpdate(roomId);
+
+  const name = type === "memberInfo" ? user?.display_name : room?.name;
+
+  const avatarType =
+    type === "memberInfo" ? CommunicationType.DirectMessage : communicationType;
+
   const currentUserId =
-    type === "memberInfo" ? userId : dmRoomMember?.member.userId;
+    type === "memberInfo" ? user?.user_id : getDMRoomMember()?.userId;
 
   function getAvatar() {
-    if (type === "memberInfo" && avatarUrl) return avatarUrl;
+    if (type === "memberInfo" && user?.avatar_url) return user?.avatar_url;
     if (type === "roomInfo" && getAvatarUrl) return getAvatarUrl();
     return null;
   }
@@ -59,7 +65,7 @@ export function InfoPanelHeader({
         >
           <ChatAvatar
             name={name}
-            communicationType={communicationType}
+            communicationType={avatarType}
             avatarUrl={getAvatar()}
             size="lg"
             userId={currentUserId}

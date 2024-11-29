@@ -46,4 +46,8 @@ public class MapperHelper {
   public static <T, M> Consumer<T> mapAndSet(Function<T, M> mapper, Consumer<M> setter) {
     return value -> setter.accept(mapper.apply(value));
   }
+
+  public static List<String> toList(String value) {
+    return value == null ? List.of() : List.of(value);
+  }
 }

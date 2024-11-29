@@ -31,6 +31,7 @@ import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.ClientScopeRepresentation;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -174,8 +175,12 @@ public class KeycloakProvisioning {
           user -> {
             Optional<UserResource> existing = keycloakClient.getUserByName(user.username());
             if (existing.isPresent()) {
-              log.info(
-                  "not creating user {} from importfile: user already exists", user.username());
+              log.info("updating password for existing user {} from importfile", user.username());
+              CredentialRepresentation passwordCredentials = new CredentialRepresentation();
+              passwordCredentials.setType(CredentialRepresentation.PASSWORD);
+              passwordCredentials.setValue(user.password());
+              passwordCredentials.setTemporary(false);
+              existing.get().resetPassword(passwordCredentials);
             } else {
               keycloakClient.addUser(user.username(), user.password(), LSD_WRITE_TECH_USER);
               log.info("created user {} from importfile", user.username());

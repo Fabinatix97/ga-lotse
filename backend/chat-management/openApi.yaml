@@ -348,6 +348,8 @@ components:
     UserSettingsRequest:
       type: object
       properties:
+        accountDeactivated:
+          type: boolean
         chatConsentAsked:
           type: boolean
         chatUsageEnabled:
@@ -365,6 +367,8 @@ components:
     UserSettingsResponse:
       type: object
       properties:
+        accountDeactivated:
+          type: boolean
         chatConsentAsked:
           type: boolean
         chatUsageEnabled:

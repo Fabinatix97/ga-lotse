@@ -8,8 +8,10 @@
 import {
   ApiSchoolFeedback,
   ApiSchoolRecommendation,
+  UpdateDevelopmentScreeningResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
 import { FormProps, OptionalFieldValue } from "@eshg/lib-portal/types/form";
+import { MutationBundle } from "@eshg/lib-portal/types/query";
 import { Divider } from "@mui/joy";
 import { Formik, FormikHelpers } from "formik";
 
@@ -55,6 +57,9 @@ interface DevelopmentScreeningFormProps
   extends FormProps<DevelopmentScreeningFormValues> {
   procedureId: string;
   initialPercentiles: Percentiles;
+  valuesToMutationBundle: (
+    values: DevelopmentScreeningFormValues,
+  ) => MutationBundle<UpdateDevelopmentScreeningResultRequest>;
 }
 
 export function DevelopmentScreeningForm(props: DevelopmentScreeningFormProps) {
@@ -82,7 +87,9 @@ export function DevelopmentScreeningForm(props: DevelopmentScreeningFormProps) {
     <Formik initialValues={props.initialValues} onSubmit={handleSubmit}>
       {({ values, errors, isSubmitting, handleSubmit, setFieldValue }) => (
         <FormStack dense onSubmit={handleSubmit}>
-          <ConfirmLeaveDirtyFormEffect />
+          <ConfirmLeaveDirtyFormEffect
+            onSaveMutation={props.valuesToMutationBundle(values)}
+          />
           <MeasurementFields
             name="measurements"
             procedureId={props.procedureId}

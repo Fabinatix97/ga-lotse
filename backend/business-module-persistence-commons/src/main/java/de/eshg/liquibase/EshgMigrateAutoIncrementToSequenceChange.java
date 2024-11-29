@@ -20,7 +20,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.ValidationErrors;
 import liquibase.statement.SqlStatement;
-import liquibase.statement.core.RawSqlStatement;
+import liquibase.statement.core.RawParameterizedSqlStatement;
 import org.springframework.util.Assert;
 
 @DatabaseChange(
@@ -93,16 +93,17 @@ public class EshgMigrateAutoIncrementToSequenceChange extends AbstractChange {
       List<SqlStatement> sqlStatements = new ArrayList<>();
 
       sqlStatements.add(
-          new RawSqlStatement(CREATE_SEQUENCE_SQL.formatted(newSequenceName, ALLOCATION_SIZE)));
+          new RawParameterizedSqlStatement(
+              CREATE_SEQUENCE_SQL.formatted(newSequenceName, ALLOCATION_SIZE)));
 
       if (nextValue > 1) {
         sqlStatements.add(
-            new RawSqlStatement(
+            new RawParameterizedSqlStatement(
                 "alter sequence %s restart with %d".formatted(newSequenceName, nextValue)));
       }
 
       sqlStatements.add(
-          new RawSqlStatement(
+          new RawParameterizedSqlStatement(
               "alter table %s alter column id drop identity".formatted(getTableName())));
 
       return sqlStatements.toArray(SqlStatement[]::new);

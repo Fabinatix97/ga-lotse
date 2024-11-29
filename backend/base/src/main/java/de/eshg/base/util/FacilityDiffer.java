@@ -18,7 +18,11 @@ public class FacilityDiffer extends AbstractDiffer {
     Facility left = lhs != null ? lhs : new Facility();
     Facility right = rhs != null ? rhs : new Facility();
 
-    return new DiffBuilder<>(left, right, ToStringStyle.SHORT_PREFIX_STYLE)
+    return new DiffBuilder.Builder<Facility>()
+        .setLeft(left)
+        .setRight(right)
+        .setStyle(ToStringStyle.SHORT_PREFIX_STYLE)
+        .build()
         .append("name", trim(left.getName()), trim(right.getName()))
         .append("emailAddress", collectEmailAddresses(left), collectEmailAddresses(right))
         .append("phoneNumbers", collectPhoneNumbers(left), collectPhoneNumbers(right))

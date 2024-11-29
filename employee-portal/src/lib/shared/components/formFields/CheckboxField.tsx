@@ -18,6 +18,7 @@ export interface CheckboxFieldProps extends FieldProps<boolean> {
   size?: CheckboxProps["size"];
   variant?: CheckboxProps["variant"];
   sx?: SxProps;
+  "aria-label"?: string;
 }
 
 export function CheckboxField(props: CheckboxFieldProps) {
@@ -44,6 +45,9 @@ export function CheckboxField(props: CheckboxFieldProps) {
       size={props.size}
       variant={props.variant}
       sx={props.sx}
+      slotProps={{
+        input: { "aria-label": props["aria-label"] },
+      }}
     />
   );
 }

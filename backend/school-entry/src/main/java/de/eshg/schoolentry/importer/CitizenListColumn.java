@@ -9,7 +9,7 @@ import de.eshg.lib.xlsximport.XlsxColumn;
 
 public enum CitizenListColumn implements XlsxColumn {
   LAST_NAME("Nachname"),
-  FIST_NAME("Vorname"),
+  FIRST_NAME("Vorname"),
   STREET("Straße"),
   HOUSE_NUMBER("Hausnummer"),
   POSTAL_CODE("PLZ"),
@@ -22,7 +22,7 @@ public enum CitizenListColumn implements XlsxColumn {
   GENDER("Geschlecht (Männlich = M, Weiblich = W, Divers = D, Unbekannt = U)"),
   INFORMATION_BLOCK("Auskunftssperre (Ja = X)", Necessity.OPTIONAL),
   LAST_NAME_CUSTODIAN_1("Nachname PSB1"),
-  FIST_NAME_CUSTODIAN_1("Vorname PSB1"),
+  FIRST_NAME_CUSTODIAN_1("Vorname PSB1"),
   STREET_CUSTODIAN_1("Straße PSB1"),
   HOUSE_NUMBER_CUSTODIAN_1("Hausnummer PSB1"),
   POSTAL_CODE_CUSTODIAN_1("PLZ PSB1"),
@@ -33,7 +33,7 @@ public enum CitizenListColumn implements XlsxColumn {
   SALUTATION_CUSTODIAN_1("Anrede (Herr, Frau, Neutral, Unbekannt) PSB1"),
   GENDER_CUSTODIAN_1("Geschlecht (Männlich = M, Weiblich = W, Divers = D, Unbekannt = U) PSB1"),
   LAST_NAME_CUSTODIAN_2("Nachname PSB2"),
-  FIST_NAME_CUSTODIAN_2("Vorname PSB2"),
+  FIRST_NAME_CUSTODIAN_2("Vorname PSB2"),
   STREET_CUSTODIAN_2("Straße PSB2"),
   HOUSE_NUMBER_CUSTODIAN_2("Hausnummer PSB2"),
   POSTAL_CODE_CUSTODIAN_2("PLZ PSB2"),
@@ -44,8 +44,8 @@ public enum CitizenListColumn implements XlsxColumn {
   SALUTATION_CUSTODIAN_2("Anrede (Herr, Frau, Neutral, Unbekannt) PSB2"),
   GENDER_CUSTODIAN_2("Geschlecht (Männlich = M, Weiblich = W, Divers = D, Unbekannt = U) PSB2"),
   STATUS(STATUS_COLUMN_HEADER, Necessity.ADD_IF_MISSING, STATUS_COLUMN_HEADER_WIDTH),
-  PROCEDURE_ID(PROCEDURE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, PROCEDURE_COLUMN_WIDTH),
-  REFERENCE_ID(REFERENCE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, PROCEDURE_COLUMN_WIDTH);
+  PROCEDURE_ID(PROCEDURE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH),
+  REFERENCE_ID(REFERENCE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH);
   ;
 
   private final String header;

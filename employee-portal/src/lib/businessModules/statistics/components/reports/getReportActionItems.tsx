@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 import { isDefined } from "remeda";
 
-import { ReportDataType } from "@/lib/businessModules/statistics/api/models/statisticReports";
+import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { ActionsItem } from "@/lib/shared/components/buttons/ActionsMenu";
 

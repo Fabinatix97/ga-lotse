@@ -145,12 +145,14 @@ public final class BaseUrls {
   public static final class MedicalRegistry {
     public static final String MEDICAL_REGISTRY_CONTROLLER = "/medical-registry-entries";
     public static final String CITIZEN_PORTAL_ENDPOINT = "/public";
+    public static final String MEDICAL_REGISTRY_IMPORT_CONTROLLER = "/import";
 
     private MedicalRegistry() {}
   }
 
   public static final class Dental {
-    public static final String DENTAL_CONTROLLER = "/dental";
+    public static final String CHILD_CONTROLLER = "/children";
+    public static final String PROPHYLAXIS_SESSION_CONTROLLER = "/prophylaxis-sessions";
 
     private Dental() {}
   }
@@ -199,6 +201,10 @@ public final class BaseUrls {
     public static final String ARCHIVING_API = "/archiving";
     public static final String TASKS_TEAM_VIEW = TASKS_API + "/team-view";
     public static final String GDPR_VALIDATION_TASK_API = "/gdpr-validation-tasks";
+    public static final String GDPR_VALIDATION_TASK_API_DOWNLOAD_INFO =
+        "/gdpr-validation-tasks/{gdprProcedureId}/download-packages";
+    public static final String GDPR_VALIDATION_TASK_API_DOWNLOAD =
+        "/gdpr-validation-tasks/download-packages/{id}";
 
     private ProcedureLibrary() {}
   }
@@ -226,5 +232,13 @@ public final class BaseUrls {
     public static final String OPEN_DATA_CONTROLLER = "/open-documents";
 
     private OpenData() {}
+  }
+
+  public static final class OfficialMedicalService {
+    public static final String EMPLOYEE_API = "/employee";
+    public static final String CITIZEN_PUBLIC_API = "/citizen-public";
+    public static final String CITIZEN_AUTH_API = "/citizen-auth";
+
+    private OfficialMedicalService() {}
   }
 }

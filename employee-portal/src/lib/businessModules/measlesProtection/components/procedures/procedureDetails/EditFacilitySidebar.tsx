@@ -67,9 +67,6 @@ export function EditFacilitySidebar({
         otherFacilityTypeInformation: "",
       }}
       contactPersonRequired={true}
-      contactPersonSalutationRequired={false}
-      contactPersonTitleRequired={false}
-      contactPersonRoleRequired={false}
     />
   );
 }

@@ -137,7 +137,7 @@ function Icd10Sidebar(props: Idc10SidebarProps) {
                       variant="outlined"
                       slotProps={{
                         input: {
-                          "aria-labelledby": `${currentRowCode.code}-code`,
+                          "aria-label": currentRowCode.code,
                           "aria-describedby": `${currentRowCode.code}-title`,
                         },
                       }}

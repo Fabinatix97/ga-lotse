@@ -854,11 +854,11 @@ public class VaccinationConsultationService {
       } catch (Exception e) {
         log.warn("Error while deleting citizen access code user.", e);
       }
-    List<VcService> services =
+    /*    List<VcService> services =
         serviceRepository.findAllByVaccinationConsultationExternalIdOrderById(
             vaccinationConsultation.getExternalId());
     serviceRepository.deleteAll(services);
-    procedureStepRepository.deleteAll(vaccinationConsultation.getProcedureSteps());
+    procedureStepRepository.deleteAll(vaccinationConsultation.getProcedureSteps());*/
     vaccinationConsultationRepository.deleteById(vaccinationConsultation.getId());
   }
 

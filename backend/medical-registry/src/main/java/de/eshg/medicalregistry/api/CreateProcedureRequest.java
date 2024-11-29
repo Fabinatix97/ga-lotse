@@ -5,13 +5,25 @@
 
 package de.eshg.medicalregistry.api;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public record CreateProcedureRequest(
-    @NotNull TypeOfChangeDto typeOfChange,
-    @NotNull @Valid CreateProfessionalDto professional,
-    @Valid CreatePracticeDto practice,
-    @NotNull boolean employeesEmployed,
-    @NotNull boolean consentToPrivacyPolicy,
-    @NotNull boolean requestForWrittenConfirmation) {}
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
+@JsonSubTypes({
+  @Type(CreateFullProcedureChangeRequest.class),
+  @Type(CreateDeregistrationProcedureRequest.class)
+})
+public sealed interface CreateProcedureRequest
+    permits CreateDeregistrationProcedureRequest, CreateFullProcedureChangeRequest {
+
+  @JsonProperty
+  CreateApplicantDto applicant();
+
+  @JsonProperty
+  boolean consentToPrivacyPolicy();
+
+  @JsonProperty
+  boolean requestForWrittenConfirmation();
+}

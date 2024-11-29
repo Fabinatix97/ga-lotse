@@ -20,7 +20,7 @@ public record MedicalRegistryEntryDto(
     @NotEmpty String lastName,
     @NotEmpty String firstName,
     @NotNull LocalDate dateOfBirth,
-    @NotNull @Valid ProfessionalAddressDto address,
+    @NotNull @Valid ApplicantAddressDto address,
     @NotNull boolean certificateRequested,
     @NotNull ProcedureStatusDto status,
     @NotNull ProcedureTypeDto type) {}

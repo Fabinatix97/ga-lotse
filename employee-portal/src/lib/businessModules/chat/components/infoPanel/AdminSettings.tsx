@@ -4,7 +4,6 @@
  */
 
 import { ButtonLink } from "@eshg/lib-portal/components/buttons/ButtonLink";
-import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { Stack } from "@mui/joy";
@@ -20,7 +19,6 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { InfoPanelView } from "@/lib/businessModules/chat/shared/enums";
-import { useRoomInfo } from "@/lib/businessModules/chat/shared/hooks/useRoomInfo";
 
 export interface AdminSettingsProps {
   roomId: string;
@@ -32,7 +30,6 @@ export function AdminSettings({
   onClose,
 }: Readonly<AdminSettingsProps>) {
   const { matrixClient } = useChatClientContext();
-  const roomInfo = useRoomInfo(roomId);
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
 
@@ -45,15 +42,8 @@ export function AdminSettings({
 
   return (
     <>
-      <InfoPanelHeader close={onClose} {...roomInfo} />
+      <InfoPanelHeader close={onClose} roomId={roomId} />
       <Stack gap={2} sx={{ overflowY: "auto", padding: 2, marginTop: 2 }}>
-        <ButtonLink
-          level="title-md"
-          startDecorator={<CameraAltOutlinedIcon />}
-          onClick={() => setInfoPanelView(InfoPanelView.RoomAvatar, roomId)}
-        >
-          Profilbild ändern
-        </ButtonLink>
         <ButtonLink
           level="title-md"
           startDecorator={<EditOutlinedIcon />}

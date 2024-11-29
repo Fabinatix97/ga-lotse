@@ -20,6 +20,7 @@ import { PracticesDetailsSection } from "@/lib/businessModules/medicalRegistry/c
 import { ProfessionalDetailsSection } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ProfessionalDetailsSection";
 import { TypeOfChangeSection } from "@/lib/businessModules/medicalRegistry/components/procedures/details/TypeOfChangeSection";
 import { WrittenConfirmationSection } from "@/lib/businessModules/medicalRegistry/components/procedures/details/WrittenConfirmationSection";
+import { useFinalizeDraft } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
@@ -90,6 +91,8 @@ function DraftActions({
   const deleteDraftProcedure = useDeleteDraftProcedure();
   const { openConfirmationDialog } = useConfirmationDialog();
 
+  const { isLoading, finalizeDraft } = useFinalizeDraft(procedure);
+
   function handleDeleteDraft() {
     openConfirmationDialog({
       color: "danger",
@@ -108,22 +111,22 @@ function DraftActions({
     });
   }
 
-  function handleConfirmDraft() {
-    // TODO ISSUE-5889
-  }
-
   return (
     <InformationSheet>
-      <Stack gap={3} direction="row" flexWrap="wrap">
-        <Button
-          color="danger"
-          variant="soft"
-          onClick={handleDeleteDraft}
-          sx={{ flexGrow: 1 }}
-        >
+      <Stack
+        gap={3}
+        direction="row"
+        flexWrap="wrap"
+        sx={{ "> *": { flexGrow: 1 } }}
+      >
+        <Button color="danger" variant="soft" onClick={handleDeleteDraft}>
           Entwurf verwerfen
         </Button>
-        <Button onClick={handleConfirmDraft} sx={{ flexGrow: 1 }} disabled>
+        <Button
+          loadingPosition="start"
+          loading={isLoading}
+          onClick={() => finalizeDraft()}
+        >
           Entwurf übernehmen
         </Button>
       </Stack>

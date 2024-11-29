@@ -14,67 +14,131 @@ import java.time.LocalDate;
 @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
 public class Examination {
 
-  private LocalDate hepA;
-  private LocalDate hepB;
-  private LocalDate hepC;
-  private LocalDate hiv;
-  private LocalDate syphilis;
-  private LocalDate gonorrhea;
-  private LocalDate chlamydia;
+  private Boolean hepA;
+  private Boolean hepB;
+  private Boolean hepC;
+  private Boolean hiv;
+  private Boolean syphilis;
+  private Boolean gonorrhea;
+  private Boolean chlamydia;
 
-  public LocalDate getHepA() {
+  private LocalDate hepADate;
+  private LocalDate hepBDate;
+  private LocalDate hepCDate;
+  private LocalDate hivDate;
+  private LocalDate syphilisDate;
+  private LocalDate gonorrheaDate;
+  private LocalDate chlamydiaDate;
+
+  public Boolean getHepA() {
     return hepA;
   }
 
-  public void setHepA(LocalDate hepA) {
+  public void setHepA(Boolean hepA) {
     this.hepA = hepA;
   }
 
-  public LocalDate getHepB() {
+  public Boolean getHepB() {
     return hepB;
   }
 
-  public void setHepB(LocalDate hepB) {
+  public void setHepB(Boolean hepB) {
     this.hepB = hepB;
   }
 
-  public LocalDate getHepC() {
+  public Boolean getHepC() {
     return hepC;
   }
 
-  public void setHepC(LocalDate hepC) {
+  public void setHepC(Boolean hepC) {
     this.hepC = hepC;
   }
 
-  public LocalDate getHiv() {
+  public Boolean getHiv() {
     return hiv;
   }
 
-  public void setHiv(LocalDate hiv) {
+  public void setHiv(Boolean hiv) {
     this.hiv = hiv;
   }
 
-  public LocalDate getSyphilis() {
+  public Boolean getSyphilis() {
     return syphilis;
   }
 
-  public void setSyphilis(LocalDate syphilis) {
+  public void setSyphilis(Boolean syphilis) {
     this.syphilis = syphilis;
   }
 
-  public LocalDate getGonorrhea() {
+  public Boolean getGonorrhea() {
     return gonorrhea;
   }
 
-  public void setGonorrhea(LocalDate gonorrhea) {
+  public void setGonorrhea(Boolean gonorrhea) {
     this.gonorrhea = gonorrhea;
   }
 
-  public LocalDate getChlamydia() {
+  public Boolean getChlamydia() {
     return chlamydia;
   }
 
-  public void setChlamydia(LocalDate chlamydia) {
+  public void setChlamydia(Boolean chlamydia) {
     this.chlamydia = chlamydia;
+  }
+
+  public LocalDate getHepADate() {
+    return hepADate;
+  }
+
+  public void setHepADate(LocalDate hepADate) {
+    this.hepADate = hepADate;
+  }
+
+  public LocalDate getHepBDate() {
+    return hepBDate;
+  }
+
+  public void setHepBDate(LocalDate hepBDate) {
+    this.hepBDate = hepBDate;
+  }
+
+  public LocalDate getHepCDate() {
+    return hepCDate;
+  }
+
+  public void setHepCDate(LocalDate hepCDate) {
+    this.hepCDate = hepCDate;
+  }
+
+  public LocalDate getHivDate() {
+    return hivDate;
+  }
+
+  public void setHivDate(LocalDate hivDate) {
+    this.hivDate = hivDate;
+  }
+
+  public LocalDate getSyphilisDate() {
+    return syphilisDate;
+  }
+
+  public void setSyphilisDate(LocalDate syphilisDate) {
+    this.syphilisDate = syphilisDate;
+  }
+
+  public LocalDate getGonorrheaDate() {
+    return gonorrheaDate;
+  }
+
+  public void setGonorrheaDate(LocalDate gonorrheaDate) {
+    this.gonorrheaDate = gonorrheaDate;
+  }
+
+  public LocalDate getChlamydiaDate() {
+    return chlamydiaDate;
+  }
+
+  public void setChlamydiaDate(LocalDate chlamydiaDate) {
+    this.chlamydiaDate = chlamydiaDate;
   }
 }

@@ -73,6 +73,10 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
             EmployeePermissionRole.BASE_FACILITIES_READ,
             EmployeePermissionRole.PROCEDURE_ARCHIVE,
             EmployeePermissionRole.PROCEDURE_ARCHIVE_ADMIN);
+    requestMatchers(POST, BaseUrls.Base.FACILITY_API + "/reference/*/update")
+        .hasAnyRole(
+            EmployeePermissionRole.BASE_FACILITIES_WRITE,
+            EmployeePermissionRole.BASE_GDPR_PROCEDURE_WRITE);
   }
 
   private void gdpr() {

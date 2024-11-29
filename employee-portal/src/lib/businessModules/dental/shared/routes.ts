@@ -6,11 +6,12 @@
 import { defineRoutes } from "@eshg/lib-portal/helpers/routes";
 
 export const routes = defineRoutes("/dental", (dentalPath) => ({
-  procedures: defineRoutes(dentalPath("/procedures"), (proceduresPath) => ({
-    overview: proceduresPath("/"),
-    byId: (procedureId: string) =>
-      defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
-        details: procedurePath("/details"),
+  prophylaxisSessions: dentalPath("/prophylaxis-sessions"),
+  children: defineRoutes(dentalPath("/children"), (childrenPath) => ({
+    overview: childrenPath("/"),
+    byId: (childId: string) =>
+      defineRoutes(childrenPath(`/${childId}`), (childrenPath) => ({
+        details: childrenPath("/details"),
       })),
   })),
 }));

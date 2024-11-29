@@ -23,7 +23,7 @@ import {
   DiagramOrientation,
   DiagramScaling,
   DiagramType,
-} from "@/lib/businessModules/statistics/api/models/statisticDetailsViewTypes";
+} from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 
 import { AttributeType } from "./types";
 

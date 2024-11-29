@@ -32,6 +32,7 @@ import {
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
+import { useEditReferenceFacilitySidebar } from "@/lib/shared/components/facilitySidebar/EditReferenceFacilitySidebar";
 import { useEditReferencePersonSidebar } from "@/lib/shared/components/personSidebar/PersonEditSidebar";
 import { mapReferencePersonToForm } from "@/lib/shared/components/personSidebar/helpers";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
@@ -69,6 +70,7 @@ export function GDPRProcedureDetails({
   });
 
   const editPersonSidebar = useEditReferencePersonSidebar();
+  const editFacilitySidebar = useEditReferenceFacilitySidebar();
 
   const identity = procedure.identificationData;
   const canEditCentralFile =
@@ -104,6 +106,10 @@ export function GDPRProcedureDetails({
     });
   }
 
+  function editFacility(facility: ApiGetReferenceFacilityResponse) {
+    editFacilitySidebar.open({ facility });
+  }
+
   return (
     <Stack
       direction={{ xxs: "column", md: "row" }}
@@ -134,7 +140,11 @@ export function GDPRProcedureDetails({
         ))}
         {linkedFacilities.map((facility, index) => (
           <SectionTile key={facility.id} id={facility.id}>
-            <SectionTitle id={facility.id}>
+            <SectionTitle
+              id={facility.id}
+              canEdit={canEditCentralFile}
+              onEdit={() => editFacility(facility)}
+            >
               {index + 1}. Datensatz aus dem Stammdaten-Konverter
             </SectionTitle>
             <CentralFileFacilityDetails

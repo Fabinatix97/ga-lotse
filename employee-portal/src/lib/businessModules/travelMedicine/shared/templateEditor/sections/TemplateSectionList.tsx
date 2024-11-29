@@ -61,8 +61,10 @@ export function TemplateSectionList(
                     sectionDeleteHandler(index, remove)
                   }
                   sectionFormikPath={getSectionPath(index)}
+                  label={`Titel ${index + 1}. Sektion`}
                 />
               }
+              sectionIndex={index}
               key={index}
             />
           ))}

@@ -16,5 +16,6 @@ public enum InstitutionContactCategoryDto {
   SCHOOL,
   DOCTORS_OFFICE,
   HEALTH_DEPARTMENT,
-  MISC
+  MISC,
+  DAYCARE
 }

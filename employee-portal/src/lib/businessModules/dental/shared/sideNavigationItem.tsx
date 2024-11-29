@@ -21,8 +21,13 @@ const sideNavigationItem = {
 
 const defaultSubItems: SideNavigationSubItem[] = [
   {
-    name: "Vorgänge",
-    href: routes.procedures.overview,
+    name: "Prophylaxen",
+    href: routes.prophylaxisSessions,
+    accessCheck: hasUserRole(ApiUserRole.DentalAdmin),
+  },
+  {
+    name: "Kinder",
+    href: routes.children.overview,
     accessCheck: hasUserRole(ApiUserRole.DentalAdmin),
   },
 ];

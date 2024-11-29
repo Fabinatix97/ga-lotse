@@ -5,13 +5,12 @@
 
 import { Box, Divider, List, ListItem, Typography } from "@mui/joy";
 import { isSameDay, startOfDay } from "date-fns";
-import { User } from "matrix-js-sdk/lib/matrix";
+import { User } from "matrix-js-sdk";
 import { Fragment } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import {
   filter,
   find,
-  isEmpty,
   isNonNullish,
   isStrictEqual,
   isTruthy,
@@ -33,38 +32,40 @@ import {
   isChatMessageType,
   isSystemMessage,
 } from "@/lib/businessModules/chat/shared/types";
-import { getDayLabel } from "@/lib/businessModules/chat/shared/utils";
+import { getDayLabel, isDMRoom } from "@/lib/businessModules/chat/shared/utils";
 
 interface ChatMessagesProps {
   room: RoomWithCommunicationType;
 }
 
 export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
-  const {
-    userSettings: { showReadConfirmation },
-  } = useChat();
   const { messages, paginateMessages, isLoading, hasNextPage, error } =
     useRoomTimeline(room.room.roomId);
   const { matrixClient } = useChatClientContext();
   const loggedInUserId = matrixClient.getUserId() ?? "";
-  const { messageReadsPerRoom } = useReadConfirmation(showReadConfirmation);
+  const { messageReadsPerRoom } = useReadConfirmation();
   const lastReadMessageIds = messageReadsPerRoom[room.room.roomId] ?? [];
-  const lastReadIndexes = messages
-    .map(({ id }, index) =>
-      lastReadMessageIds.includes(id) ? index : undefined,
-    )
-    .filter((item) => isNonNullish(item));
-  const initialReadIndexes = messages
-    .map((message, index) => {
-      const readReceipts = isChatMessageType(message)
-        ? message.readReceipts
-        : undefined;
-      if (!readReceipts) return;
-      if (!isEmpty(readReceipts)) {
-        return index;
-      }
-    })
-    .filter((item) => isNonNullish(item));
+  const lastReadIndexes = messages.map(({ id }, index) =>
+    lastReadMessageIds.includes(id) ? index : undefined,
+  );
+
+  const readUpTo = isDMRoom(room.communicationType)
+    ? room.room.getEventReadUpTo(room.room.guessDMUserId())
+    : undefined;
+  const initialReadIndex =
+    readUpTo && messages?.findIndex(({ id }) => id === readUpTo);
+  const initialReadIndexes = messages.map((message, index) => {
+    const isRead = isChatMessageType(message) ? message.isRead : undefined;
+    if (isRead) {
+      return index;
+    }
+  });
+  const lastReadMessageIndexes = [
+    initialReadIndex,
+    ...initialReadIndexes,
+    ...lastReadIndexes,
+  ].filter((item) => isNonNullish(item)) as number[];
+
   const {
     userSettings: { showTypingNotification },
   } = useChat();
@@ -152,9 +153,7 @@ export function ChatMessages({ room }: Readonly<ChatMessagesProps>) {
                     loggedInUserId={loggedInUserId}
                     message={message}
                     mentions={mentions}
-                    lastReadMessageIndexes={
-                      [...initialReadIndexes, ...lastReadIndexes] as number[]
-                    }
+                    lastReadMessageIndexes={lastReadMessageIndexes}
                     index={index}
                     removeMessage={removeMessage}
                   />

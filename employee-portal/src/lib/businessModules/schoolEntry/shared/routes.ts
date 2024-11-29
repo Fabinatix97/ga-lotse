@@ -10,7 +10,6 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
     schoolEntryPath("/procedures"),
     (proceduresPath) => ({
       overview: proceduresPath("/"),
-      gdprValidationTasks: proceduresPath("/gdpr-validation-tasks"),
       byId: (procedureId: string) =>
         defineRoutes(proceduresPath(`/${procedureId}`), (procedurePath) => ({
           details: procedurePath("/details"),
@@ -54,10 +53,6 @@ export const routes = defineRoutes("/school-entry", (schoolEntryPath) => ({
   ),
   inbox: defineRoutes(schoolEntryPath("/inbox"), (inboxPath) => ({
     overview: inboxPath("/"),
-    byId: (inboxProcedureId: string) =>
-      defineRoutes(inboxPath(`/${inboxProcedureId}`), (entryPath) => ({
-        details: entryPath("/details"),
-      })),
   })),
   labels: defineRoutes(schoolEntryPath("/labels"), (labelsPath) => ({
     overview: labelsPath("/"),

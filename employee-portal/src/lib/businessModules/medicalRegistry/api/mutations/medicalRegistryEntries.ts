@@ -3,12 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CreateProcedureRequest } from "@eshg/employee-portal-api/medicalRegistry";
+import {
+  ConfirmProcedureRequest,
+  CreateProcedureRequest,
+} from "@eshg/employee-portal-api/medicalRegistry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useRouter } from "next/navigation";
 
 import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
+import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 
 export function useCreateProcedure() {
   const medicalRegistryApi = useMedicalRegistryApi();
@@ -39,5 +44,22 @@ export function useDeleteDraftProcedure() {
         procedureId,
         apiDeleteProcedureRequest: { version },
       }),
+  });
+}
+
+export function useConfirmDraft() {
+  const router = useRouter();
+  const snackbar = useSnackbar();
+  const medicalRegistryApi = useMedicalRegistryApi();
+
+  return useHandledMutation({
+    mutationFn: (request: ConfirmProcedureRequest) =>
+      medicalRegistryApi.confirmProcedureRaw(request).then(unwrapRawResponse),
+    onSuccess: (newProcedureId: string) => {
+      snackbar.confirmation("Der Eintrag wurde angelegt.");
+      router.push(routes.procedures.byId(newProcedureId).details);
+    },
+    onError: () =>
+      snackbar.error("Der Entwurf konnte nicht übernommen werden."),
   });
 }

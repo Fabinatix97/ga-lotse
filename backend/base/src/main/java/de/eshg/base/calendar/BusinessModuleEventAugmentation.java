@@ -15,6 +15,7 @@ import de.eshg.calendar.lib.api.GetMetadataOfEventsRequest;
 import de.eshg.calendar.lib.api.GetMetadataOfEventsResponse;
 import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.ClientResponse;
+import de.eshg.lib.common.BusinessModuleCapability;
 import de.eshg.rest.service.error.ErrorResponseWithLocation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +51,7 @@ public class BusinessModuleEventAugmentation {
     List<ClientResponse<GetMetadataOfEventsResponse>> extractedBusinessModuleResponses =
         businessModuleAggregationHelper.requestFromBusinessModules(
             null,
+            BusinessModuleCapability.CALENDAR,
             client ->
                 client.getMetadataForEvents(
                     new GetMetadataOfEventsRequest(new ArrayList<>(idToEventMap.keySet()))));

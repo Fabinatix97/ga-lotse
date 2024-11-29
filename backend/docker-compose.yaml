@@ -57,7 +57,6 @@ services:
       - eshg.keycloak.internal.url=http://keycloak:8080
       - eshg.keycloak.bootstrap-admin.enabled=true
       - spring.mail.host=maildev
-      - eshg.synapse.url=http://localhost:8008
       - eshg.synapse.client.secret=very-secrety-synapse-client-secret
       - de.eshg.business-modules.clients[INSPECTION].url=http://inspection:8080
       - de.eshg.business-modules.clients[SCHOOL_ENTRY].url=http://school-entry:8080
@@ -66,6 +65,7 @@ services:
       - de.eshg.business-modules.clients[STI_PROTECTION].url=http://sti-protection:8080
       - de.eshg.business-modules.clients[MEDICAL_REGISTRY].url=http://medical-registry:8080
       - de.eshg.business-modules.clients[DENTAL].url=http://dental:8080
+      - de.eshg.business-modules.clients[OFFICIAL_MEDICAL_SERVICE].url=http://official-medical-service:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
     depends_on:
       keycloak:
@@ -314,6 +314,7 @@ services:
       - spring.datasource.url=jdbc:postgresql://statistics-db/statistics
       - de.eshg.base.service-url=http://base:8080
       - de.eshg.business-modules.clients[SCHOOL_ENTRY].url=http://school-entry:8080
+      - de.eshg.business-modules.clients[INSPECTION].url=http://inspection:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
       - de.eshg.centralrepository.service-url=http://central-repository:8080
       - de.eshg.centralrepository.mock-cert-subject-cn=statistics.frankfurt.ga-lotse
@@ -409,6 +410,7 @@ services:
       - SYNAPSE_SERVER_NAME=synapse.local.dev
       - UID=0
       - GID=0
+      - KEYCLOAK_JWKS_URL=http://keycloak:8080/realms/eshg/protocol/openid-connect/certs
       - DB_USER=synapse
       - DB_PASSWORD=synapse
       - DB_NAME=synapse
@@ -489,7 +491,6 @@ services:
     depends_on:
       opendata-db:
         condition: service_healthy
-    restart: unless-stopped
     environment:
       - spring.datasource.url=jdbc:postgresql://opendata-db/opendata
       - de.eshg.base.service-url=http://base:8080
@@ -516,7 +517,6 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
-    restart: unless-stopped
     depends_on:
       medical-registry-db:
         condition: service_healthy
@@ -544,7 +544,6 @@ services:
       - de.eshg.base.service-url=http://base:8080
       - eshg.keycloak.internal.url=http://keycloak:8080
       - de.eshg.auditlog.service-url=http://auditlog:8080
-    restart: unless-stopped
     depends_on:
       dental-db:
         condition: service_healthy
@@ -559,5 +558,31 @@ services:
       - 5448:5432
     environment:
       POSTGRES_DB: dental
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+
+  official-medical-service:
+    image: ga-lotse/official-medical-service
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-service-base
+    environment:
+      - spring.datasource.url=jdbc:postgresql://official-medical-service-db/official_medical_service
+      - de.eshg.base.service-url=http://base:8080
+      - eshg.keycloak.internal.url=http://keycloak:8080
+    depends_on:
+      official-medical-service-db:
+        condition: service_healthy
+    ports:
+      - 8099:8080
+
+  official-medical-service-db:
+    extends:
+      file: docker-compose-common.yaml
+      service: eshg-postgres-base
+    ports:
+      - 5449:5432
+    environment:
+      POSTGRES_DB: official_medical_service
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword

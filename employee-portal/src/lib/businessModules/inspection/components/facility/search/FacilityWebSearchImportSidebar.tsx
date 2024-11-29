@@ -22,6 +22,7 @@ import {
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { EmbeddedFacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { fullAddress } from "@/lib/shared/helpers/facilityUtils";
@@ -56,7 +57,7 @@ function FacilityWebSearchImportSidebarWithinBoundary(
   });
 
   function handleSaveFacility(
-    facility: BaseFacility,
+    facility: DefaultFacilityFormValues,
     webSearchEntryId: string,
   ) {
     addInspectionFacility(

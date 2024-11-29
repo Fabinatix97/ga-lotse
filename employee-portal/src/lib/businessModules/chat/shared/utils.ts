@@ -18,7 +18,6 @@ import {
 import { de } from "date-fns/locale";
 import {
   Direction,
-  EventTimeline,
   EventType,
   MatrixClient,
   MatrixEvent,
@@ -26,7 +25,7 @@ import {
   Room,
   RoomMember,
   User,
-} from "matrix-js-sdk/lib/matrix";
+} from "matrix-js-sdk";
 import {
   forEach,
   isEmpty,
@@ -44,7 +43,6 @@ import {
   ChatSystemMessage,
   Message,
   Presence,
-  ReadConfirmationsPerUser,
   RoomLastMessage,
   RoomWithCommunicationType,
   UserDirectoryResponse,
@@ -76,71 +74,54 @@ export function findDirectChat({
 export function getRoomNameAndCommunicationType(
   room: Room,
 ): RoomWithCommunicationType {
-  // These are direct chats where you were invited by someone:
-  const type = room.getDMInviter() ? "directMessage" : "room";
+  return {
+    room,
+    communicationType: getRoomCommunicationType(undefined, undefined, room),
+  };
+}
 
-  if (type === "directMessage") {
-    return { room, communicationType: CommunicationType.DirectMessage };
+export function getRoomCommunicationType(
+  matrixClient?: MatrixClient,
+  roomId?: string,
+  room?: Room,
+) {
+  let currentRoom: Room | null = room ?? null;
+  let communicationType = CommunicationType.PublicRoom;
+
+  if (!room && matrixClient) {
+    currentRoom = matrixClient.getRoom(roomId);
   }
 
-  const allMembers = room
-    .getLiveTimeline()
-    .getState(EventTimeline.FORWARDS)
-    ?.getMembers();
+  if (currentRoom) {
+    const type = currentRoom.getDMInviter() ? "directMessage" : "room";
 
-  // These are the direct chats that you invited someone to
-  if (type === "room" && allMembers?.length && allMembers.length <= 2) {
-    const someDMInviter = allMembers?.some((m) => m.getDMInviter());
-    const otherMember = allMembers.find(
-      (m) => !isStrictEqual(m.userId, room.myUserId),
-    );
-    const isRoomNameAndOtherMemberEqual = isStrictEqual(
-      otherMember?.name,
-      room.name,
-    );
+    if (type === "directMessage") {
+      communicationType = CommunicationType.DirectMessage;
+    }
 
-    if (someDMInviter || isRoomNameAndOtherMemberEqual) {
-      return { room, communicationType: CommunicationType.DirectMessage };
+    const allMembers = currentRoom.getMembers();
+
+    if (type === "room" && allMembers.length <= 2) {
+      const someDMInviter = allMembers.some((m) => m.getDMInviter());
+
+      if (someDMInviter) {
+        communicationType = CommunicationType.DirectMessage;
+      } else {
+        const otherMember = allMembers.find(
+          (m) => !isStrictEqual(m.userId, currentRoom.myUserId),
+        );
+        const isRoomNameAndOtherMemberEqual = isStrictEqual(
+          otherMember?.name,
+          currentRoom.name,
+        );
+        if (isRoomNameAndOtherMemberEqual) {
+          communicationType = CommunicationType.DirectMessage;
+        }
+      }
     }
   }
-  return { room, communicationType: CommunicationType.PublicRoom };
-}
 
-export function getDirectMessageMember(room: RoomWithCommunicationType) {
-  if (room.communicationType === CommunicationType.PublicRoom) {
-    return;
-  }
-  return room.room.getAvatarFallbackMember();
-}
-
-export function formatUserReceipts(
-  userReceipts: ReadConfirmationsPerUser | undefined,
-): Record<string, string[]> | undefined {
-  if (!userReceipts) return;
-
-  return Object.entries(userReceipts).reduce(
-    (acc, [userId, { eventId }]) => {
-      const currentUserIds = acc[eventId] ?? [];
-      return {
-        ...acc,
-        [eventId]: [...currentUserIds, userId],
-      };
-    },
-    {} as Record<string, string[]>,
-  );
-}
-
-export async function sendReceipt({
-  event,
-  matrixClient,
-}: {
-  matrixClient: MatrixClient;
-  event: MatrixEvent;
-}) {
-  try {
-    await matrixClient.sendReceipt(event, ReceiptType.Read);
-    await matrixClient.sendReceipt(event, ReceiptType.FullyRead);
-  } catch {}
+  return communicationType;
 }
 
 export function shouldShowMessageTeaser({
@@ -177,18 +158,16 @@ export async function setReadMarker({
     if (!room) {
       return;
     }
-
-    const timelineSet = room.getLiveTimeline();
-    const events = timelineSet.getEvents();
-    const latestEvent = events.length > 0 && events[events.length - 1];
-    if (!latestEvent || !latestEvent.event.event_id) {
+    const latestEvent = room.getLastLiveEvent();
+    const eventId = latestEvent?.getId();
+    if (!eventId) {
       return;
     }
     await matrixClient.setRoomReadMarkersHttpRequest(
       roomId!,
-      latestEvent.event.event_id,
+      eventId,
       undefined,
-      latestEvent.event.event_id,
+      eventId,
     );
   } catch {}
 }
@@ -206,10 +185,7 @@ export async function markAllMessagesAsRead({
       return;
     }
 
-    // Use the most recent event in the timeline as a reference
-    const timelineSet = room.getLiveTimeline();
-    const events = timelineSet.getEvents();
-    const latestEvent = events.length > 0 && events[events.length - 1];
+    const latestEvent = room.getLastLiveEvent();
     if (!latestEvent) {
       return;
     }
@@ -543,21 +519,10 @@ export function getReadReceipts(
 ) {
   if (!loggedInUserId) return;
   const readReceipts = room.getReceiptsForEvent(event);
-  return readReceipts?.reduce<ReadConfirmationsPerUser>(
-    (acc, { userId, data }) => {
-      if (userId === loggedInUserId) return acc;
-      const eventId = event.getId();
-      if (!eventId) return acc;
-      return {
-        ...acc,
-        [userId]: {
-          timestamp: data.ts,
-          eventId,
-        },
-      };
-    },
-    {},
-  );
+  const isRead = readReceipts?.find(({ userId }) => {
+    if (userId !== loggedInUserId) return true;
+  });
+  return !!isRead;
 }
 
 export function clearSearchParams(...paramNames: string[]) {

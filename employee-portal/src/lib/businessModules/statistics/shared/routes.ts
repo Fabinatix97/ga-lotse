@@ -18,6 +18,7 @@ export const routes = {
     }),
     templates: {
       index: `${evaluationsPath}/templates`,
+      repository: `${evaluationsPath}/templates/repository`,
     },
   },
   reports: {

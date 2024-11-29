@@ -13,6 +13,7 @@ export const ToggleExpandColumn: DisplayColumnDef<unknown> = {
     width: "48px",
     headerLabel: "Zeile ein-/ausklappen",
     cellStyle: "button",
+    isHeaderLabelHidden: true,
   },
   cell: ToggleExpandButton,
 };

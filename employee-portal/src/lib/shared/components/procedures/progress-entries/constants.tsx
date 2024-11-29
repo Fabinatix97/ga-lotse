@@ -23,6 +23,7 @@ import { systemProgressEntryTypeTitles as inspectionSystemProgressEntryTypeTitle
 import { systemProgressEntryTypeTitles as measlesProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { systemProgressEntryTypeTitles as medicalRegistrySystemProgressEntryTypeTitles } from "@/lib/businessModules/medicalRegistry/shared/constants";
 import { systemProgressEntryTypeTitles as schoolEntrySystemProgressEntryTypeTitles } from "@/lib/businessModules/schoolEntry/shared/constants";
+import { systemProgressEntryTypeTitles as stiProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/stiProtection/shared/constants";
 import { systemProgressEntryTypeTitles as travelMedicineSystemProgressEntryTypeTitles } from "@/lib/businessModules/travelMedicine/shared/constants";
 import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 
@@ -85,6 +86,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   ...schoolEntrySystemProgressEntryTypeTitles,
   ...travelMedicineSystemProgressEntryTypeTitles,
   ...measlesProtectionSystemProgressEntryTypeTitles,
+  ...stiProtectionSystemProgressEntryTypeTitles,
   ...medicalRegistrySystemProgressEntryTypeTitles,
 };
 

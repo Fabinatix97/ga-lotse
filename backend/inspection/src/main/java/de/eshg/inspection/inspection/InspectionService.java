@@ -5,8 +5,6 @@
 
 package de.eshg.inspection.inspection;
 
-import static java.util.stream.Collectors.toMap;
-
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.base.feature.BaseFeature;
@@ -73,7 +71,6 @@ import de.eshg.rest.service.security.CurrentUserHelper;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -91,6 +88,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class InspectionService {
   private static final Logger log = LoggerFactory.getLogger(InspectionService.class);
+
   private final InspectionRepository inspectionRepository;
   private final InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository;
   private final ObjectTypeRepository objectTypeRepository;
@@ -531,34 +529,6 @@ public class InspectionService {
     Instant newEnd = newStart.plus(Duration.ofHours(standardDuration));
     appointment.setAppointmentStart(newStart);
     appointment.setAppointmentEnd(newEnd);
-  }
-
-  public Optional<Facility> findInspectionFacilityForBaseReferenceId(UUID baseFacilityReferenceId) {
-    // Determine all centralFileStateIds for the given baseFacilityReferenceId and find all
-    // associated inspections and their facilities.
-    List<UUID> fileStateIds =
-        facilityClient.getFacilityFileStateIdsAssociatedWithReferenceFacility(
-            baseFacilityReferenceId);
-    List<Inspection> allInspectionsOfReferenceFacility =
-        inspectionRepository.findByCentralFileStateIds(fileStateIds);
-    Collection<Facility> facilities =
-        allInspectionsOfReferenceFacility.stream()
-            .map(Inspection::getFacility)
-            .collect(toMap(Facility::getId, v -> v, (v, w) -> v))
-            .values();
-    return switch (facilities.size()) {
-      case 0 -> Optional.empty();
-      case 1 -> Optional.of(facilities.iterator().next());
-      default -> {
-        Facility first = facilities.iterator().next();
-        log.error(
-            "Found {} inspection facilities for these centralFileStateIds: {}; using the first one with id {}",
-            facilities.size(),
-            fileStateIds,
-            first.getId());
-        yield Optional.of(first);
-      }
-    };
   }
 
   public void linkInboxProcedure(UUID inboxProcedureId, Inspection inspection) {

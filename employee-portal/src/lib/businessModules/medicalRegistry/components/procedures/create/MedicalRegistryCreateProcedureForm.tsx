@@ -102,11 +102,11 @@ const initialOccupationalInformationFormValues: OccupationalInformationFormValue
 const initialProfessionalismInformationFormValues: ProfessionalismInformationFormValues =
   {
     employmentType: ApiEmploymentType.FullTime,
-    employmentStatus: ApiEmploymentStatus.SelfEmployed,
+    employmentStatus: ApiEmploymentStatus.Employee,
   };
 
 const initialPracticeInformationFormValues: PracticeInformationFormValues = {
-  proprietaryPractice: true,
+  proprietaryPractice: false,
   practiceName: "",
   street: "",
   houseNumber: "",
@@ -122,7 +122,7 @@ const initialPracticeInformationFormValues: PracticeInformationFormValues = {
 };
 
 const initialEmployeeInformationFormValues: EmployeeInformationFormValues = {
-  employeesEmployed: true,
+  employeesEmployed: false,
   employeesFile: null,
 };
 
@@ -130,6 +130,7 @@ const initialRequiredDocumentsFormValues: RequiredDocumentsFormValues = {
   license: null,
   identificationDocument: null,
   workPermit: null,
+  otherRelevantDocuments: [],
 };
 
 const initialDataPrivacyFormValues: DataPrivacyFormValues = {

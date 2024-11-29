@@ -103,6 +103,7 @@ public class ContactMapper {
       case DOCTORS_OFFICE -> DOCTORS_OFFICE;
       case HEALTH_DEPARTMENT -> HEALTH_DEPARTMENT;
       case MISC -> MISC;
+      case DAYCARE -> DAYCARE;
     };
   }
 
@@ -421,6 +422,7 @@ public class ContactMapper {
       case DOCTORS_OFFICE -> InstitutionContactCategoryDto.DOCTORS_OFFICE;
       case HEALTH_DEPARTMENT -> InstitutionContactCategoryDto.HEALTH_DEPARTMENT;
       case MISC -> InstitutionContactCategoryDto.MISC;
+      case DAYCARE -> InstitutionContactCategoryDto.DAYCARE;
     };
   }
 

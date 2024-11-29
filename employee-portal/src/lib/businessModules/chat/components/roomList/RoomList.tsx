@@ -8,11 +8,13 @@ import { useMemo } from "react";
 
 import { RoomListItem } from "@/lib/businessModules/chat/components/roomList/RoomListItem";
 import { useInfoPanelContext } from "@/lib/businessModules/chat/shared/InfoPanelProvider";
+import { useNotificationContext } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import {
   ChatPanelView,
   InfoPanelView,
 } from "@/lib/businessModules/chat/shared/enums";
 import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
+import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
 import { RoomData } from "@/lib/businessModules/chat/shared/types";
 
 interface RoomListProps {
@@ -30,6 +32,8 @@ export function RoomList({
 }: Readonly<RoomListProps>) {
   const { infoPanelState, setInfoPanelView } = useInfoPanelContext();
   const { selectedRoomId, setRoomIdParam } = useChatSearchParams();
+  const { messageReadsPerRoom } = useReadConfirmation();
+  const { unreadNotificationsPerRoom } = useNotificationContext();
   const sortedChats = useMemo(() => {
     //todo: here?
     return roomList.toSorted((roomA, roomB) => {
@@ -62,6 +66,10 @@ export function RoomList({
             >
               <RoomListItem
                 room={data.room}
+                messageReads={messageReadsPerRoom[data.room.roomId] ?? []}
+                unreadNotifications={
+                  unreadNotificationsPerRoom[data.room.roomId]
+                }
                 communicationType={data.communicationType}
                 latestMessage={data.latestMessage}
                 searchQuery={searchQuery}

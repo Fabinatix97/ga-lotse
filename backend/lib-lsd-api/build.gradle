@@ -9,7 +9,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation libs.keycloak.client.admin.client
 
-    testImplementation('com.squareup.okhttp3:mockwebserver') {
+    testImplementation('com.squareup.okhttp3:mockwebserver:latest.release') {
         exclude group: "junit", module: "junit"
     }
     // mockwebserver depends on Junit 4 interfaces that we don't want.

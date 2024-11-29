@@ -9,9 +9,9 @@ import {
   ApiSchoolEntryStatusType,
 } from "@eshg/employee-portal-api/schoolEntry";
 
+import { BaseEntity, mapBaseEntity } from "@/lib/shared/api/models/BaseEntity";
 import { mapOptional } from "@/lib/shared/api/models/utils";
 
-import { BaseEntity, mapBaseEntity } from "./BaseEntity";
 import { Label, mapLabels } from "./Label";
 import { Location, mapLocation } from "./Location";
 import { Person, mapPerson } from "./Person";

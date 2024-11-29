@@ -1,0 +1,279 @@
+# Copyright 2024 cronn GmbH
+# SPDX-License-Identifier: Apache-2.0
+
+openapi: 3.0.1
+info:
+  description: This is the api for the official medical service module
+  title: Official Medical Service Api
+  version: "0.1"
+servers:
+- url: http://localhost:8099
+paths:
+  /citizen-public/opening-hours:
+    get:
+      operationId: getOpeningHours
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetOpeningHoursResponse"
+          description: OK
+      summary: Get opening hours.
+      tags:
+      - CitizenPublic
+  /test-helper/population:
+    post:
+      operationId: populateDefaults
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DefaultPopulationResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor:
+    post:
+      operationId: interceptNextRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsertRequestInterceptionTestHelperRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/barriers:
+    post:
+      operationId: addBarrier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperInterceptionRequestFilter"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AddBarrierTestHelperResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/barriers/{barrierId}/await:
+    post:
+      operationId: awaitBarrier
+      parameters:
+      - in: path
+        name: barrierId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - in: query
+        name: timeoutInMillis
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 0
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/request-interceptor/reset:
+    post:
+      operationId: resetInterceptionsAndBarriers
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/reset:
+    post:
+      operationId: reset
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/set-clock:
+    patch:
+      operationId: setClock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperClockSetRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/wind-clock:
+    patch:
+      operationId: windClockForward
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestHelperClockWindForwardRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TestHelperClockUpdateResponse"
+          description: OK
+      tags:
+      - TestHelper
+components:
+  schemas:
+    AddBarrierTestHelperResponse:
+      type: object
+      properties:
+        barrierId:
+          type: integer
+          format: int64
+          minimum: 1
+      required:
+      - barrierId
+    DefaultPopulationResponse:
+      type: object
+      properties:
+        populations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Population"
+    GetOpeningHoursResponse:
+      type: object
+      properties:
+        de:
+          type: array
+          items:
+            type: string
+        en:
+          type: array
+          items:
+            type: string
+      required:
+      - de
+      - en
+    HttpMethod:
+      type: string
+      enum:
+      - GET
+      - HEAD
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      - TRACE
+    InsertRequestInterceptionTestHelperRequest:
+      type: object
+      properties:
+        filter:
+          $ref: "#/components/schemas/TestHelperInterceptionRequestFilter"
+        type:
+          $ref: "#/components/schemas/InterceptionType"
+      required:
+      - type
+    InterceptionType:
+      type: string
+      enum:
+      - BAD_REQUEST
+      - UNAUTHORIZED
+      - FORBIDDEN
+      - NOT_FOUND
+      - INTERNAL_SERVER_ERROR
+    Population:
+      type: object
+      properties:
+        numberOfPopulatedEntities:
+          type: integer
+          format: int32
+        populatorName:
+          type: string
+        totalNumberOfEntities:
+          type: integer
+          format: int64
+      required:
+      - numberOfPopulatedEntities
+      - totalNumberOfEntities
+    TestHelperClockSetRequest:
+      type: object
+      properties:
+        newInstant:
+          type: string
+          format: date-time
+      required:
+      - newInstant
+    TestHelperClockUpdateResponse:
+      type: object
+      properties:
+        instant:
+          type: string
+          format: date-time
+      required:
+      - instant
+    TestHelperClockWindForwardRequest:
+      type: object
+      properties:
+        days:
+          type: integer
+          format: int32
+          minimum: 0
+        hours:
+          type: integer
+          format: int32
+          minimum: 0
+        minutes:
+          type: integer
+          format: int32
+          minimum: 0
+        months:
+          type: integer
+          format: int32
+          minimum: 0
+        seconds:
+          type: integer
+          format: int32
+          minimum: 0
+        weeks:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - days
+      - hours
+      - minutes
+      - months
+      - seconds
+      - weeks
+    TestHelperInterceptionRequestFilter:
+      type: object
+      properties:
+        httpMethodFilter:
+          $ref: "#/components/schemas/HttpMethod"
+        queryPatternFilter:
+          type: string
+        urlPatternFilter:
+          type: string

@@ -1,0 +1,11 @@
+/*
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package de.eshg.officialmedicalservice.citizenpublic.api;
+
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
+
+public record GetOpeningHoursResponse(@NotNull List<String> de, @NotNull List<String> en) {}

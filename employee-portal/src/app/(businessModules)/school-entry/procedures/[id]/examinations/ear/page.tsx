@@ -9,6 +9,7 @@ import {
   ApiHertzValue,
   UpdateHearingTestResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import { addMissingKeys, dropEmptyKeys } from "@eshg/lib-portal/helpers/form";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { HearingTestResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/HearingTestResult";
-import { useUpdateHearingTestResult } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateHearingTestResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import {
   getHearingTestResultQuery,
   getProcedureQuery,
@@ -43,7 +44,10 @@ export default function SchoolEntryHearingTestPage(
       ],
     },
   );
-  const updateHearingTestResult = useUpdateHearingTestResult();
+  const updateHearingTestResultOptions = useUpdateHearingTestResultOptions();
+  const updateHearingTestResult = useHandledMutation(
+    updateHearingTestResultOptions,
+  );
 
   async function handleSubmit(formValues: HearingTestFormValues) {
     await updateHearingTestResult.mutateAsync(
@@ -58,6 +62,11 @@ export default function SchoolEntryHearingTestPage(
         <HearingTestForm
           initialValues={mapToFormValues(hearingTestResult)}
           onSubmit={handleSubmit}
+          valuesToMutationBundle={(values) => ({
+            mutationOptions: updateHearingTestResultOptions,
+            variableSupplier: () =>
+              mapToRequest(procedureId, values, hearingTestResult.version),
+          })}
         />
       </DisabledFormProvider>
     </ContentPanel>

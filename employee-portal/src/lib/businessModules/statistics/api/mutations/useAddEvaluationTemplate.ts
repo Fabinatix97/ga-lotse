@@ -11,7 +11,7 @@ import { EvaluationTemplateFormModel } from "@/lib/businessModules/statistics/co
 
 export function useAddEvaluationTemplate(onSuccess?: () => void) {
   const snackbar = useSnackbar();
-  const statisticsApi = useEvaluationTemplateApi();
+  const evaluationTemplateApi = useEvaluationTemplateApi();
 
   const mutation = useHandledMutation({
     mutationFn: ({
@@ -21,7 +21,7 @@ export function useAddEvaluationTemplate(onSuccess?: () => void) {
       evaluationId: string;
       model: EvaluationTemplateFormModel;
     }) =>
-      statisticsApi.addEvaluationTemplate({
+      evaluationTemplateApi.addEvaluationTemplate({
         type: "AddEvaluationTemplateFromEvaluationRequest",
         evaluationId: evaluationId,
         name: model.name,

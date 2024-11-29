@@ -4,7 +4,7 @@
  */
 
 import { ApiDocumentContent } from "@eshg/citizen-portal-api/travelMedicine";
-import { Button } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 import { Dispatch, SetStateAction } from "react";
 
 import { useTranslation } from "@/lib/i18n/client";
@@ -32,24 +32,26 @@ export function MedicalHistorySidePanel(
 
   return (
     <ContentSheet data-testid="medical-history-side-panel">
-      {props.currentStep < props.medicalHistory.sections.length - 1 && (
-        <Button color="primary" variant="solid" onClick={goToNextSection}>
-          {t("sidePanel.nextStep")}
+      <Stack direction="column" gap={2} width="100%">
+        {props.currentStep < props.medicalHistory.sections.length - 1 && (
+          <Button color="primary" variant="solid" onClick={goToNextSection}>
+            {t("sidePanel.nextStep")}
+          </Button>
+        )}
+        {props.currentStep === props.medicalHistory.sections.length - 1 && (
+          <Button color="primary" variant="solid" type="submit">
+            {t("sidePanel.submitMedicalHistory")}
+          </Button>
+        )}
+        {props.currentStep > 0 && (
+          <Button color="neutral" variant="soft" onClick={goToPrevSection}>
+            {t("sidePanel.previousStep")}
+          </Button>
+        )}
+        <Button color="neutral" variant="soft" onClick={props.onRouteBack}>
+          {t("sidePanel.cancel")}
         </Button>
-      )}
-      {props.currentStep === props.medicalHistory.sections.length - 1 && (
-        <Button color="primary" variant="solid" type="submit">
-          {t("sidePanel.submitMedicalHistory")}
-        </Button>
-      )}
-      {props.currentStep > 0 && (
-        <Button color="neutral" variant="soft" onClick={goToPrevSection}>
-          {t("sidePanel.previousStep")}
-        </Button>
-      )}
-      <Button color="neutral" variant="soft" onClick={props.onRouteBack}>
-        {t("sidePanel.cancel")}
-      </Button>
+      </Stack>
     </ContentSheet>
   );
 }

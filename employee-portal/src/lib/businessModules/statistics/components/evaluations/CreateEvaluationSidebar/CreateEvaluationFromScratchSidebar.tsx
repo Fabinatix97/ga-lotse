@@ -5,9 +5,9 @@
 
 import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { parseISO } from "date-fns";
-import { groupBy, isDefined } from "remeda";
+import { groupBy, identity, isDefined } from "remeda";
 
-import { useAddStatistic } from "@/lib/businessModules/statistics/api/mutations/useAddStatistic";
+import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { mapAnonymizedFieldValueToBoolean } from "@/lib/businessModules/statistics/components/evaluations/AnonymizedToggleButtonGroupField";
 import {
@@ -39,13 +39,13 @@ export function CreateEvaluationFromScratchSidebar({
   open,
   onClose,
   dataSources,
-  attributes,
+  attributesByDataSourceId,
   evaluationTemplates,
 }: {
   open: boolean;
   onClose: () => void;
   dataSources: DataSource[];
-  attributes: CategorizedFlatAttribute[];
+  attributesByDataSourceId: Record<string, CategorizedFlatAttribute[]>;
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
 }) {
   const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
@@ -60,13 +60,13 @@ export function CreateEvaluationFromScratchSidebar({
     _selectedAttributeKeys: [],
     anonymized: fakeAnonymizationEnabled ? ENUM_TRUE_VALUE : ENUM_FALSE_VALUE,
   };
-  const addStatistic = useAddStatistic({
+  const addEvaluation = useAddEvaluation({
     onSuccess: onClose,
   });
 
   async function onSubmit(model: CreateEvaluationFromScratchFormModel) {
     if (model._dataSourceId === "CHOOSE_EVALUATION_TEMPLATE") {
-      await addStatistic({
+      await addEvaluation({
         type: "AddEvaluationWithTemplateRequest",
         name: model.evaluationName.trim(),
         timeRangeStart: parseISO(model.timeSpan.start),
@@ -80,7 +80,7 @@ export function CreateEvaluationFromScratchSidebar({
         (item) => item.code,
       );
 
-      await addStatistic({
+      await addEvaluation({
         type: "AddEvaluationWithDataSourcesRequest",
         name: model.evaluationName.trim(),
         dataSources: [
@@ -127,6 +127,9 @@ export function CreateEvaluationFromScratchSidebar({
           type: "BranchingStep",
           branch: (model) => {
             if (model._dataSourceId !== "CHOOSE_EVALUATION_TEMPLATE") {
+              const attributes =
+                attributesByDataSourceId[model._dataSourceId!] ??
+                Object.values(attributesByDataSourceId).flatMap(identity());
               return {
                 title: "Attribute wählen",
                 content: <ChooseAttributesStep attributes={attributes} />,

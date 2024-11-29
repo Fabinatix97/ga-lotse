@@ -9,6 +9,7 @@ import {
   ApiScoredEvaluationExamination,
   UpdateSopessExaminationResultRequest,
 } from "@eshg/employee-portal-api/schoolEntry";
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { DisabledFormProvider } from "@eshg/lib-portal/components/form/DisabledFormContext";
 import {
   mapOptionalValue,
@@ -19,7 +20,7 @@ import { useSuspenseQueries } from "@tanstack/react-query";
 import { SchoolEntryProcedurePageProps } from "@/app/(businessModules)/school-entry/procedures/[id]/layout";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { SopessExaminationResult } from "@/lib/businessModules/schoolEntry/api/models/examinations/SopessExaminationResult";
-import { useUpdateSopessExaminationResult } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
+import { useUpdateSopessExaminationResultOptions } from "@/lib/businessModules/schoolEntry/api/mutations/schoolEntryApi";
 import {
   getProcedureQuery,
   getSopessExaminationResultQuery,
@@ -48,7 +49,11 @@ export default function SchoolEntrySopessExaminationPage(
         getSopessExaminationResultQuery(schoolEntryApi, procedureId),
       ],
     });
-  const updateSopessExaminationResult = useUpdateSopessExaminationResult();
+  const updateSopessExaminationResultOptions =
+    useUpdateSopessExaminationResultOptions();
+  const updateSopessExaminationResult = useHandledMutation(
+    updateSopessExaminationResultOptions,
+  );
 
   async function handleSubmit(formValues: SopessExaminationFormValues) {
     await updateSopessExaminationResult.mutateAsync(
@@ -63,6 +68,15 @@ export default function SchoolEntrySopessExaminationPage(
         <SopessExaminationForm
           initialValues={mapToFormValues(sopessExaminationResult)}
           onSubmit={handleSubmit}
+          valuesToMutationBundle={(values) => ({
+            mutationOptions: updateSopessExaminationResultOptions,
+            variableSupplier: () =>
+              mapToRequest(
+                procedureId,
+                values,
+                sopessExaminationResult.version,
+              ),
+          })}
         />
       </DisabledFormProvider>
     </ContentPanel>

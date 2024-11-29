@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-"use client";
-
 import {
   ApiContactType,
   ApiGetReferenceFacilityResponse,
@@ -13,8 +11,7 @@ import {
 } from "@eshg/employee-portal-api/inspection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { assertNever } from "@eshg/lib-portal/helpers/assertions";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   useAddInspectionFacility,
@@ -25,34 +22,19 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { EmbeddedFacilitySidebar } from "@/lib/shared/components/facilitySidebar/FacilitySidebar";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 import { FacilitySearchFormValues } from "@/lib/shared/components/facilitySidebar/search/FacilitySearchForm";
-import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
 import { BaseAddressFormInputs } from "@/lib/shared/components/form/address/helpers";
-import {
-  SidebarWithFormRefProps,
-  useSidebarWithFormRef,
-} from "@/lib/shared/hooks/useSidebarWithFormRef";
+import { SidebarWithFormRefProps } from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function useInspectionInboxProcedureCreateSidebar() {
-  const inboxProcedureId = useParams().id;
-
-  const { open } = useSidebarWithFormRef({
-    component: InspectionInboxProcedureCreateEmbeddedSidebar,
-  });
-
-  useEffect(() => {
-    if (typeof inboxProcedureId === "string") {
-      open({ inboxProcedureId });
-    }
-  }, [open, inboxProcedureId]);
+interface InspectionInboxProcedureCreateSidebarProps
+  extends SidebarWithFormRefProps {
+  inboxProcedureId: string;
 }
 
-function InspectionInboxProcedureCreateEmbeddedSidebar({
+export function InspectionInboxProcedureCreateSidebar({
   onClose,
   formRef,
   inboxProcedureId,
-}: SidebarWithFormRefProps & {
-  inboxProcedureId: string;
-}) {
+}: InspectionInboxProcedureCreateSidebarProps) {
   const { inboxProcedure } = useFetchInboxProcedure(inboxProcedureId).data;
 
   const router = useRouter();
@@ -60,7 +42,7 @@ function InspectionInboxProcedureCreateEmbeddedSidebar({
   const { mutate: linkBaseFacility } = useLinkBaseFacility();
   const { mutate: addInspectionFacility } = useAddInspectionFacility();
 
-  function handleSaveFacility(facility: BaseFacility) {
+  function handleSaveFacility(facility: DefaultFacilityFormValues) {
     addInspectionFacility(
       { facility, inboxProcedureId },
       {

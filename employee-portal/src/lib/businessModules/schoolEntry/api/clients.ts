@@ -10,7 +10,6 @@ import {
   ArchivingApi,
   Configuration,
   FileApi,
-  GdprValidationTaskApi,
   Icd10CodeApi,
   ImportApi,
   InboxProcedureApi,
@@ -110,9 +109,4 @@ export function useAppointmentTypeApi() {
 export function useArchivingApi() {
   const configuration = useConfiguration();
   return new ArchivingApi(configuration);
-}
-
-export function useSchoolEntryGdprValidationTaskApi() {
-  const configuration = useConfiguration();
-  return new GdprValidationTaskApi(configuration);
 }

@@ -44,11 +44,11 @@ import {
 } from "@/lib/businessModules/schoolEntry/features/procedures/options";
 import { LabelSelection } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/LabelSelection";
 import { isDraft } from "@/lib/businessModules/schoolEntry/features/procedures/procedureDetails/options";
-import { SchoolYearField } from "@/lib/businessModules/schoolEntry/features/procedures/shared/schoolYear";
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { CheckboxField } from "@/lib/shared/components/formFields/CheckboxField";
+import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {

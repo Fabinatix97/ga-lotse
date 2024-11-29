@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Button } from "@mui/joy";
 import { EChartsOption } from "echarts";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import {
@@ -62,17 +63,84 @@ export function EChart(props: {
     setTimeout(() => {
       const downloadLink = document.createElement("a");
       const instance = ref.current!.getEchartsInstance();
-      instance.resize({
-        height: 750,
-        width: 1000,
-      });
+
+      // Configure Chart for export
+      /* eslint-disable */
+      // @ts-ignore
+      const seriesOld = instance.getOption().series;
+      // @ts-ignore
+      const isPieChart = seriesOld.find((it: any) => it.type === "pie");
+      if (isPieChart) {
+        // @ts-ignore
+        const seriesNew = seriesOld.map((it: any) => ({
+          ...it,
+          top: 0,
+        }));
+        instance.setOption({
+          legend: {
+            show: false,
+          },
+          series: seriesNew,
+        });
+        instance.resize({
+          height: 650,
+          width: "auto",
+        });
+      } else {
+        // Resize width first to cause the legend to adjust to a correct height
+        instance.resize({
+          width: 1000,
+        });
+        instance.setOption({
+          legend: {
+            type: "plain",
+            top: "bottom",
+          },
+        });
+
+        // The core problem is that legend and chart are drawn independent
+        // of each other. Thus we need to reconfigure the chart for the export.
+        // This requires us to access some private properties, which is why
+        // this hacky part of code exists.
+        // https://github.com/apache/echarts/issues/15654#issuecomment-2097407718
+        // @ts-ignore
+        const legend = instance._componentsViews.find(
+          (entry: any) => entry.type === "legend.plain",
+        );
+        const legendHeight = legend?._backgroundEl.shape.height as number;
+        instance.setOption({
+          grid: {
+            top: 32,
+            bottom: legendHeight + 32,
+          },
+        });
+        instance.resize({
+          height: 750 + legendHeight,
+        });
+      }
+      /* eslint-enable */
       downloadLink.href = instance.getDataURL();
+      downloadLink.download = "Diagramm";
+      downloadLink.click();
+
+      // Configure chart back for normal use
+      instance.setOption({
+        legend: {
+          show: true,
+          type: "scroll",
+          top: 8,
+          right: 0,
+        },
+        grid: {
+          top: 64,
+          bottom: 32,
+        },
+        series: seriesOld,
+      });
       instance.resize({
         height: "auto",
         width: "auto",
       });
-      downloadLink.download = "Diagramm";
-      downloadLink.click();
     }, 1000);
   }, [ref]);
 
@@ -98,9 +166,16 @@ export function EChart(props: {
       },
       tooltip: {},
       legend: {
+        type: "scroll",
+        top: 8,
+        right: 0,
         textStyle: {
           color: theme.palette.text.secondary,
         },
+      },
+      grid: {
+        top: 64,
+        bottom: 32,
       },
       color: ["#626c91", "#3fb1e3", "#6be6c1", "#96dee8", "#a0a7e6", "#c4ebad"],
     } as EChartsOption,
@@ -108,12 +183,15 @@ export function EChart(props: {
   );
 
   return (
-    <ReactEChartsCore
-      ref={ref}
-      echarts={echarts}
-      option={options}
-      opts={{ locale: "DE", renderer: imageType }}
-      style={{ flex: 1 }}
-    />
+    <>
+      <Button onClick={() => exportAsImage()}>TODO: TESt</Button>
+      <ReactEChartsCore
+        ref={ref}
+        echarts={echarts}
+        option={options}
+        opts={{ locale: "DE", renderer: imageType }}
+        style={{ flex: 1 }}
+      />
+    </>
   );
 }

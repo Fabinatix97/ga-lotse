@@ -4,7 +4,7 @@
  */
 
 import { Avatar, Stack, Tooltip } from "@mui/joy";
-import { User } from "matrix-js-sdk/lib/matrix";
+import { User } from "matrix-js-sdk";
 
 interface ReadConfirmationsProps {
   receiptUsers: (User | null)[];

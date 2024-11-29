@@ -63,6 +63,7 @@ All common tasks are also available within the e2e project.
 | `./gradlew e2e:startLocalDocker`           | Start all backend containers and dockerized employee, citizen and admin portals
 | `./gradlew e2e:test`                       | Run all tests in headless mode
 | `./gradlew e2e:testUi`                     | Open Playwright in UI mode (enables running and debugging individual tests)
+| `./gradlew e2e:testFile -Pfile=FILE`       | Run test for single file matching the specified name (can include paths)
 | `./gradlew e2e:testReport`                 | Open HTML test report
 | `./gradlew e2e:cleanValidationFilesOutput` | Delete e2e/data/validation/output to have a clean folder for finding unused files
 | `./gradlew e2e:findUnusedValidationFiles`  | Compare e2e/data/validation with e2e/data/output to find unused validation files

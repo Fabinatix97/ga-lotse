@@ -5,25 +5,30 @@
 
 package de.eshg.medicalregistry.mapper;
 
-import static de.eshg.medicalregistry.mapper.AddressMapper.*;
+import static de.eshg.medicalregistry.mapper.AddressMapper.mapToApplicantAddressDto;
 
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
-import de.eshg.medicalregistry.api.*;
+import de.eshg.medicalregistry.api.ApplicantDto;
+import de.eshg.medicalregistry.api.EmploymentStatusDto;
+import de.eshg.medicalregistry.api.EmploymentTypeDto;
+import de.eshg.medicalregistry.api.ProfessionInformationDto;
+import de.eshg.medicalregistry.api.ProfessionalTitleDto;
 import de.eshg.medicalregistry.domain.model.EmploymentStatus;
 import de.eshg.medicalregistry.domain.model.EmploymentType;
+import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.ProfessionalTitle;
 
 public final class ProfessionalMapper {
   private ProfessionalMapper() {}
 
-  public static ProfessionalDto mapToDto(
+  public static ApplicantDto mapToDto(
       Professional professional, GetPersonFileStateResponse professionalDetails) {
     if (professionalDetails == null) {
       return null;
     }
 
-    return new ProfessionalDto(
+    return new ApplicantDto(
         professionalDetails.title(),
         professionalDetails.gender(),
         professionalDetails.firstName(),
@@ -33,18 +38,22 @@ public final class ProfessionalMapper {
         professionalDetails.placeOfBirth(),
         professionalDetails.emailAddresses(),
         professionalDetails.phoneNumbers(),
-        mapToProfessionalAddressDto(professionalDetails.contactAddress()),
-        mapToDto(professional.getProfessionalTitle()),
-        professional.getFieldOfExpertise(),
-        professional.getSpecialistTitle(),
-        professional.getFurtherTraining(),
-        professional.getQualifications(),
-        professional.getApprobationGrantedOn(),
-        professional.getApprobationIssuingAuthority(),
-        professional.getLifetimeDoctorNumber(),
-        mapToDto(professional.getEmploymentType()),
-        mapToDto(professional.getEmploymentStatus()),
+        mapToApplicantAddressDto(professionalDetails.contactAddress()),
         professional.getNationality());
+  }
+
+  public static ProfessionInformationDto mapToDto(ProfessionInformation professionInformation) {
+    return new ProfessionInformationDto(
+        mapToDto(professionInformation.getProfessionalTitle()),
+        professionInformation.getFieldOfExpertise(),
+        professionInformation.getSpecialistTitle(),
+        professionInformation.getFurtherTraining(),
+        professionInformation.getQualifications(),
+        professionInformation.getApprobationGrantedOn(),
+        professionInformation.getApprobationIssuingAuthority(),
+        professionInformation.getLifetimeDoctorNumber(),
+        mapToDto(professionInformation.getEmploymentType()),
+        mapToDto(professionInformation.getEmploymentStatus()));
   }
 
   private static ProfessionalTitleDto mapToDto(ProfessionalTitle professionalTitle) {

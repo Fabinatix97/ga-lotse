@@ -20,6 +20,7 @@ import de.eshg.base.centralfile.persistence.entity.Person;
 import de.eshg.base.centralfile.persistence.entity.Person_;
 import de.eshg.base.centralfile.persistence.repository.PersonRepository;
 import de.eshg.base.feature.BaseFeatureToggle;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.*;
@@ -297,28 +298,21 @@ public class PersonController implements PersonApi {
   @Override
   @Transactional
   public UpdatePersonsResponse updatePersonFileStatesAndReferences(UpdatePersonsRequest request) {
-    /*
-     * ⚠ This is a naïve implementation to update persons in bulk ⚠
-     *
-     * It will be further optimized in the context of ISSUE-5608
-     */
-    List<UpdatePersonInBulkResult> results = new ArrayList<>();
-    List<UUID> failedPersonIds = new ArrayList<>();
+    Map<UUID, Person> fileStateUpdatesById = collectUpdatesByFileStateId(request);
+    return personService.updateFileStatesAndReferencesInBulk(fileStateUpdatesById);
+  }
 
+  private static Map<UUID, Person> collectUpdatesByFileStateId(UpdatePersonsRequest request) {
+    Map<UUID, Person> fileStateUpdatesById = new LinkedHashMap<>();
     for (UpdatePersonInBulkRequest updateRequest : request.updateRequests()) {
-      UUID personFileStateId = updateRequest.fileStateId();
-      try {
-        AddPersonFileStateResponse response =
-            updatePersonFileStateAndReference(
-                personFileStateId, new UpdatePersonRequest(updateRequest.updatedPerson()));
-        results.add(new UpdatePersonInBulkResult(personFileStateId, response.id()));
-      } catch (Exception e) {
-        log.error("Failed to update person", e);
-        failedPersonIds.add(personFileStateId);
+      UUID filedStateId = updateRequest.fileStateId();
+      Person newFileState = PersonMapper.mapPersonToDm(updateRequest);
+      if (fileStateUpdatesById.putIfAbsent(filedStateId, newFileState) != null) {
+        throw new BadRequestException(
+            "File state with id " + filedStateId + " is updated more than once");
       }
     }
-
-    return new UpdatePersonsResponse(results, failedPersonIds);
+    return fileStateUpdatesById;
   }
 
   @Override

@@ -3,23 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { MonthAndYearFields } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
-import { FormLabel, Grid, Typography } from "@mui/joy";
+import { Typography } from "@mui/joy";
+import { useFormikContext } from "formik";
 
-import { multiLineEllipsis } from "@/lib/baseModule/theme/theme";
-import { AutoWidthHorizontalField } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm";
+import { MedicalHistoryFormData } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
+import { SectionGrid } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/SectionGrid";
 import {
-  medicalHistoryFormFields as fields,
-  medicalHistoryFormSections as sections,
-} from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/MedicalHistoryForm.config";
-import {
-  sexualContactOptions,
+  sexWorkTypeOptions,
+  sexualContactFactorOptions,
+  sexualContactGenderOptions,
   sexualOrientationOptions,
 } from "@/lib/businessModules/stiProtection/features/procedures/medicalHistory/options";
-import { FormGroupGrid } from "@/lib/shared/components/form/FormGroupGrid";
+import {
+  CheckboxGroupField,
+  FieldSetControl,
+} from "@/lib/shared/components/formFields/CheckboxGroupField";
+import { Legend } from "@/lib/shared/components/formFields/Legend";
 
-export function SexualOrientationAndContact() {
+export function SexualOrientationAndContact({
+  isForSexWork,
+}: {
+  isForSexWork: boolean;
+}) {
+  const { values } = useFormikContext<MedicalHistoryFormData>();
   return (
     <>
       <Typography
@@ -27,44 +36,47 @@ export function SexualOrientationAndContact() {
         mt={1}
         id="sexual-orientation-and-contact-title"
       >
-        {sections.sexualOrientationAndContact}
+        Sexuelle Orientierung / Kontakte
       </Typography>
-      <FormGroupGrid
-        component="section"
-        aria-labelledby="sexual-orientation-and-contact-title"
-      >
-        <Grid xxs={12} md={4}>
-          <SelectField
-            name="sexualOrientation"
-            label={fields.sexualOrientation}
-            options={sexualOrientationOptions}
-            component={AutoWidthHorizontalField}
-          />
-        </Grid>
-        <Grid xxs={12} md={4}>
-          <NumberField
-            name="numberOfSexualPartnersLast12Months"
-            label={
-              <FormLabel
-                sx={multiLineEllipsis(1)}
-                title={fields.numberOfSexualPartnersLast12Months}
-              >
-                {fields.numberOfSexualPartnersLast12Months}
-              </FormLabel>
-            }
-            required="Bitte eine Zahl eingeben"
-            component={AutoWidthHorizontalField}
-          />
-        </Grid>
-        <Grid xxs={12} md={4}>
-          <SelectField
-            name="sexualContact"
-            label={fields.sexualContact}
-            options={sexualContactOptions}
-            component={AutoWidthHorizontalField}
-          />
-        </Grid>
-      </FormGroupGrid>
+      <SectionGrid aria-labelledby="sexual-orientation-and-contact-title">
+        <SelectField
+          name="sexualOrientationAndContact.sexualOrientation"
+          label="Sexuelle Orientierung"
+          options={sexualOrientationOptions}
+        />
+        <NumberField
+          name="sexualOrientationAndContact.numberOfSexualPartnersLast12Months"
+          label="Anzahl der Sexpartner:innen in den letzten 12 Monaten"
+        />
+        <CheckboxGroupField
+          name="sexualOrientationAndContact.sexualContactGenders"
+          label="Sexueller Kontakt"
+          options={sexualContactGenderOptions}
+        />
+        <CheckboxGroupField
+          sx={{ gridColumnStart: 1, gridColumnEnd: 3 }}
+          name="sexualOrientationAndContact.sexualContactFactors"
+          label={"Bisherige Sexparter:innen ist/hat"}
+          options={sexualContactFactorOptions}
+        />
+        {isForSexWork ? (
+          <>
+            <FieldSetControl>
+              <Legend variant="single">Seit wann in Sexarbeit?</Legend>
+              <MonthAndYearFields
+                fieldName="sexualOrientationAndContact.startInSexWork"
+                date={values.sexualOrientationAndContact.startInSexWork}
+              />
+            </FieldSetControl>
+            <CheckboxGroupField
+              sx={{ gridColumnStart: 1, gridColumnEnd: 3 }}
+              name="sexualOrientationAndContact.sexWorkType"
+              label={"Arbeitsstätte"}
+              options={sexWorkTypeOptions}
+            />
+          </>
+        ) : null}
+      </SectionGrid>
     </>
   );
 }

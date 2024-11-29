@@ -8,15 +8,12 @@ import NotificationsOffOutlinedIcon from "@mui/icons-material/NotificationsOffOu
 import { Box, Stack, Typography, useTheme } from "@mui/joy";
 import { Room } from "matrix-js-sdk";
 import { useMemo } from "react";
-import { isEmpty } from "remeda";
 
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { HighlightedText } from "@/lib/businessModules/chat/components/roomList/HighlightedText";
 import { ReceiptStatus } from "@/lib/businessModules/chat/components/roomList/ReceiptStatus";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import { useNotificationContext } from "@/lib/businessModules/chat/shared/NotificationProvider";
 import { CommunicationType } from "@/lib/businessModules/chat/shared/enums";
-import { useReadConfirmation } from "@/lib/businessModules/chat/shared/hooks/useReadConfirmation";
 import { Message } from "@/lib/businessModules/chat/shared/types";
 import {
   formatChatDate,
@@ -27,6 +24,8 @@ import {
 
 export interface RoomListItemProps {
   room: Room;
+  messageReads: string[];
+  unreadNotifications?: number;
   communicationType?: CommunicationType;
   latestMessage?: Message;
   searchQuery?: string;
@@ -37,14 +36,13 @@ export function RoomListItem({
   communicationType = CommunicationType.DirectMessage,
   latestMessage,
   searchQuery,
+  messageReads,
+  unreadNotifications,
 }: Readonly<RoomListItemProps>) {
   const theme = useTheme();
   const { matrixClient } = useChatClientContext();
-  const { unreadNotificationsPerRoom } = useNotificationContext();
-
+  const loggedInUserId = matrixClient.getUserId();
   const parsedDate = formatChatDate(latestMessage?.timestamp);
-  const unreadNotifications = unreadNotificationsPerRoom[room.roomId];
-  const { messageReadsPerRoom } = useReadConfirmation(true);
 
   // TO DO - finish notification feature
   const disableNotifications = false;
@@ -58,15 +56,11 @@ export function RoomListItem({
     ? getMemberAvatarUrl(matrixClient, dmMember)
     : getRoomAvatarUrl(matrixClient, room);
 
-  const isLatestMessageRead = messageReadsPerRoom[room.roomId]?.some(
+  const isLatestMessageRead = messageReads.some(
     (id) => id === latestMessage?.id,
   );
 
-  const latestMessageRead =
-    latestMessage?.readReceipts && !isEmpty(latestMessage?.readReceipts);
-
-  const isMessageMine =
-    latestMessage?.sender?.userId === matrixClient.getUserId();
+  const isMessageMine = latestMessage?.sender?.userId === loggedInUserId;
 
   return (
     <Stack
@@ -146,7 +140,7 @@ export function RoomListItem({
         >
           <ReceiptStatus
             unreadNotifications={unreadNotifications}
-            isRead={isLatestMessageRead ?? latestMessageRead}
+            isRead={isLatestMessageRead || latestMessage?.isRead}
             isMessageMine={isMessageMine}
             isSent={latestMessage?.sent ?? false}
           />
