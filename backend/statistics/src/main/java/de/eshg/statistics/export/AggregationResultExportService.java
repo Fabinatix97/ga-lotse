@@ -48,17 +48,23 @@ public class AggregationResultExportService {
   public void checkExportAllowedEvaluation(UUID evaluationId, EvaluationService evaluationService) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     Evaluation evaluation = evaluationService.getEvaluationInternal(evaluationId);
-    if (Boolean.FALSE.equals(
-        EvaluationService.isEvaluationExportableFunction().apply(evaluation))) {
-      throw new BadRequestException("Data export is not allowed for this evaluation");
+    if (!evaluation.isAnonymized()) {
+      throw new BadRequestException(DataExportUtil.NOT_ANONYMIZED_ERROR);
+    }
+    EvaluationService.validateEvaluationCompleted(evaluation);
+    if (Boolean.TRUE.equals(
+        AbstractAggregationResultService.isTooMuchDataForExportFunction().apply(evaluation))) {
+      throw new BadRequestException("The evaluation has too much data to be exported");
     }
   }
 
   @Transactional
   public void checkExportAllowedReport(UUID reportId, ReportService reportService) {
     Report report = reportService.getReportInternal(reportId);
-    if (Boolean.FALSE.equals(ReportService.isReportExportableFunction().apply(report))) {
-      throw new BadRequestException("Data export is not allowed for this report");
+    ReportService.validateReportCompleted(report);
+    if (Boolean.TRUE.equals(
+        AbstractAggregationResultService.isTooMuchDataForExportFunction().apply(report))) {
+      throw new BadRequestException("The report has too much data to be exported");
     }
   }
 

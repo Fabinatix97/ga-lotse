@@ -5,6 +5,7 @@
 
 import {
   ApprovalRequestApi,
+  ArchivingApi,
   Configuration,
   FileApi,
   MedicalRegistryApi,
@@ -49,4 +50,9 @@ export function useFileApi() {
 export function useProgressEntryApi() {
   const configuration = useConfiguration();
   return new ProgressEntryApi(configuration);
+}
+
+export function useArchivingApi() {
+  const configuration = useConfiguration();
+  return new ArchivingApi(configuration);
 }

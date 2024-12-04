@@ -53,7 +53,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,12 +85,6 @@ public class ReportService extends AbstractAggregationResultService {
     this.userService = userService;
     this.clock = clock;
     this.analysisService = analysisService;
-  }
-
-  public static Function<Report, Boolean> isReportExportableFunction() {
-    return report ->
-        report.getState().equals(AggregationResultState.COMPLETED)
-            && report.getNumberOfTableRows() < getMaxDataRowExportable();
   }
 
   @Override
@@ -159,13 +152,14 @@ public class ReportService extends AbstractAggregationResultService {
         report.getExecutionDate(),
         EvaluationMapper.mapToApi(report.getTableColumns()),
         report.getNumberOfTableRows(),
+        isTooMuchDataForExportFunction().apply(report),
         resolvedUsers.get(reportSeriesUserId),
         resolvedUsers.get(report.getCreatedByUserId()),
         analyses,
         ReportMapper.mapToReportTypeDto(report.getReportSeries().getReportType()));
   }
 
-  private static void validateReportCompleted(Report report) {
+  public static void validateReportCompleted(Report report) {
     if (!report.getState().equals(AggregationResultState.COMPLETED)) {
       throw new BadRequestException(
           "Report %s is not in state COMPLETED".formatted(report.getExternalId()));

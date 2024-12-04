@@ -54,6 +54,13 @@ export function getInspectionDuplicatesQueryKey(inspectionId: string) {
   ]);
 }
 
+export function postInspectionViewedQueryKey(inspectionId: string) {
+  return inspectionApiQueryKey([
+    inspectionGettersQueryKey(inspectionId),
+    "postInspectionViewed",
+  ]);
+}
+
 export function useGetInspection(procedureId: string) {
   const inspectionApi = useInspectionApi();
   return useSuspenseQuery(getInspectionQuery(inspectionApi, procedureId));
@@ -126,7 +133,7 @@ export function useInspectionViewed(inspectionId: string) {
 
   useEffect(() => {
     void queryClient.fetchQuery({
-      queryKey: getInspectionQueryKey(inspectionId),
+      queryKey: postInspectionViewedQueryKey(inspectionId),
       queryFn: () => inspectionApi.inspectionViewed(inspectionId),
     });
   }, [queryClient, inspectionApi, inspectionId]);

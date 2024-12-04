@@ -34,7 +34,7 @@ export function ProcedureDetailsSection(props: ProcedureDetailsProps) {
     <>
       <ContentPanel testId="child-details-panel">
         <DetailsSection
-          name="additional-infos"
+          data-testid="additional-infos"
           title="Zusatzinfos"
           onEdit={() =>
             updateProcedureSidebar.open({

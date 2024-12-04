@@ -6,6 +6,9 @@
 package de.eshg.stiprotection.persistence.anonymoususer;
 
 import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
+import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
+import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
+import de.eshg.base.citizenuser.api.VerifyPinRequest;
 import de.eshg.rest.service.error.NotFoundException;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -27,5 +30,13 @@ public class AnonymousUserClient {
     } catch (NotFoundException e) {
       return null;
     }
+  }
+
+  public CitizenAccessCodeUserDto addAnonymousUser(AddAnonymousUserRequest request) {
+    return citizenAccessCodeUserApi.addAnonymousUser(request);
+  }
+
+  public void verifyAnonymousUserPin(UUID userId, String pin) {
+    citizenAccessCodeUserApi.verifyAnonymousUserPin(userId, new VerifyPinRequest(pin));
   }
 }

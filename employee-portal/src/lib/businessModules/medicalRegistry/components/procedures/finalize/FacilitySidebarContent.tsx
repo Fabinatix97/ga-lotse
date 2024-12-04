@@ -34,7 +34,7 @@ export function FacilitySidebarContent({
         <Typography level="body-md">
           Bitte überprüfen Sie, ob die Angaben zur Einrichtung{" "}
           {isDefined(practiceName) && (
-            <Typography fontWeight="bold">“{practiceName}”</Typography>
+            <Typography fontWeight="bold">„{practiceName}”</Typography>
           )}{" "}
           mit einem der folgenden Datensätze in den Stammdaten übereinstimmen
           oder legen Sie die Einrichtung mit Daten aus dem Formular neu an.

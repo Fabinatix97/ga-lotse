@@ -21,6 +21,7 @@ public final class BaseUrls {
 
   public static final class Base {
     public static final String BULK_GET_URL_END = "/bulk-get";
+    public static final String MUK_SELF_USER_FACILITY = "/self/facility";
 
     public static final String USER_API = "/users";
     public static final String USER_KEYS_URL = "/keys";
@@ -63,13 +64,14 @@ public final class BaseUrls {
     public static final String FACILITY_API = "/facilities";
     public static final String FACILITY_FILE_STATE_URL = "/centralfilestates";
     public static final String FACILITY_EXTERNAL_DATA_SOURCE_URL = "/external-source";
+    public static final String MUK_FACILITY_LINK_API = "/muk-facility-link";
     public static final String STREET_AUTOCOMPLETE_URL = "/autocomplete";
     public static final String RECENT_PROCEDURE_API = "/recent-procedures";
     public static final String PROCEDURE_METRICS_API = "/procedure-metrics";
     public static final String TASK_METRICS_API = "/task-metrics";
     public static final String TASK_API = "/tasks";
     public static final String PROCEDURE_CONFIG_API = "/procedure-config";
-    public static final String CONFIG_API = "/config";
+    public static final String PUBLIC_CONFIG_API = "/public/config";
 
     private Base() {}
   }
@@ -230,6 +232,7 @@ public final class BaseUrls {
 
   public static final class OpenData {
     public static final String OPEN_DATA_CONTROLLER = "/open-documents";
+    public static final String PUBLIC_CITIZEN_CONTROLLER = "/citizen/public";
 
     private OpenData() {}
   }

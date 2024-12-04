@@ -17,6 +17,17 @@ export function getSortKey<TSortKey extends string>(
   return sorting[0].id.toUpperCase() as TSortKey;
 }
 
+export function getSortKeyWithSpecificMapping<TSortKey extends string>(
+  sortingProps: CustomSortingProps,
+  mapping: Record<string, TSortKey>,
+): TSortKey | undefined {
+  const sorting = sortingProps.manualSorting
+    ? sortingProps.sortingState
+    : sortingProps.initialSorting;
+  if (sorting?.[0] === undefined) return undefined;
+  return mapping[sorting[0].id];
+}
+
 export function getSortDirection(
   sortingProps: CustomSortingProps,
 ): ApiSortDirection | undefined {

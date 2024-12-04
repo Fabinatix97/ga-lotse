@@ -6,9 +6,12 @@
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,
+  ApiProcedureType,
   ApiProfessionalTitle,
   ApiTypeOfChange,
 } from "@eshg/employee-portal-api/medicalRegistry";
+
+export const archivableProcedureTypes = [ApiProcedureType.MedicalRegistryEntry];
 
 export const changeTypeNames = {
   [ApiTypeOfChange.NewRegistration]: "Neuanmeldung",

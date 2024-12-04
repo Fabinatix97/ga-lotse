@@ -14,54 +14,50 @@ import {
   ChartApi,
   EChart,
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
-import { chartLegend } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import {
   calculateXYMinMax,
   mapAxisTitleWithOptionalUnit,
 } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 interface ScatterChartDiagramProps {
-  filterSet: AnalysisDiagramScatterChart["data"];
-  configuration: AnalysisScatterDiagramConfiguration;
+  diagramData: AnalysisDiagramScatterChart["data"];
+  configuration: Pick<
+    AnalysisScatterDiagramConfiguration,
+    "axisRange" | "xAttribute" | "yAttribute"
+  >;
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
 export function ScatterChart({
-  filterSet,
+  diagramData,
   configuration,
   eChartApi,
 }: ScatterChartDiagramProps) {
-  const series: SeriesOption[] = filterSet.map((group) => ({
+  const series: SeriesOption[] = diagramData.map((group) => ({
     data: group.dataPoints.map((it) => [it.x, it.y]),
     name: group.label,
     type: "scatter",
   }));
 
-  if (configuration.trendline) {
-    for (const group of filterSet) {
-      series.push({
-        type: "line",
-        name: group.label,
-        data: unique(group.dataPoints.map((it) => it.x)).map((it) => [
-          it,
-          group.trendline
-            ? group.trendline.offset + group.trendline.slope * it
-            : undefined,
-        ]),
-      });
-    }
+  for (const group of diagramData.filter((it) => it.trendline)) {
+    series.push({
+      type: "line",
+      name: group.label,
+      data: unique(group.dataPoints.map((it) => it.x)).map((it) => [
+        it,
+        group.trendline!.offset + group.trendline!.slope * it,
+      ]),
+    });
   }
 
-  const [xMin, xMax, yMin, yMax] = calculateXYMinMax(filterSet);
+  const [xMin, xMax, yMin, yMax] = calculateXYMinMax(diagramData);
   const option: EChartsOption = {
-    legend: chartLegend,
     xAxis: {
       name: mapAxisTitleWithOptionalUnit(configuration.xAttribute),
       nameTextStyle: {
         fontWeight: 600,
       },
-      type:
-        configuration.xAttribute.type === "DateAttribute" ? "time" : "value",
+      type: "value",
       min: configuration.axisRange === "ADAPTED" ? xMin : undefined,
       max: configuration.axisRange === "ADAPTED" ? xMax : undefined,
     },
@@ -70,8 +66,7 @@ export function ScatterChart({
       nameTextStyle: {
         fontWeight: 600,
       },
-      type:
-        configuration.yAttribute.type === "DateAttribute" ? "time" : "value",
+      type: "value",
       min: configuration.axisRange === "ADAPTED" ? yMin : undefined,
       max: configuration.axisRange === "ADAPTED" ? yMax : undefined,
     },

@@ -7,10 +7,10 @@ package de.eshg.inspection.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import de.eshg.domain.model.serialization.SerializationObjectMapperConfigurer;
 import de.eshg.inspection.common.persistence.MediaFileContentSerializer;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.lib.keycloak.ModuleMemberGroup;
-import de.eshg.lib.procedure.domain.serialization.SerializationObjectMapperConfigurer;
 import java.util.function.BiConsumer;
 import java.util.function.UnaryOperator;
 import org.springframework.context.annotation.Bean;

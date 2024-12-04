@@ -7,10 +7,6 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
-  ApiInspectionFeature,
-  ApiInspectionPhase,
-} from "@eshg/employee-portal-api/inspection";
-import {
   History,
   OtherHousesOutlined,
   SubjectOutlined,
@@ -19,11 +15,9 @@ import {
   TimelineOutlined,
 } from "@mui/icons-material";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabHeader } from "@/lib/businessModules/inspection/components/inspection/InspectionTabHeader";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";
-import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
@@ -34,18 +28,11 @@ export function InspectionTabNavigationToolbar({
 }: Readonly<{
   inspectionId: string;
 }>) {
-  const isHistoryEnabled = useIsNewFeatureEnabled(
-    ApiInspectionFeature.FacilityHistory,
-  );
   const hasProcedureEditRole = useHasUserRoleCheck(
     ApiUserRole.InspectionProcedureEdit,
   );
   const { data: inspection } = useGetInspection(inspectionId);
-  const tabItems = createTabItems(
-    inspectionId,
-    inspection.phase,
-    isHistoryEnabled,
-  );
+  const tabItems = createTabItems(inspectionId);
 
   return (
     <TabNavigationToolbar
@@ -63,11 +50,7 @@ export function InspectionTabNavigationToolbar({
   );
 }
 
-function createTabItems(
-  id: string,
-  phase: ApiInspectionPhase,
-  isHistoryEnabled: boolean,
-): TabNavigationItem[] {
+function createTabItems(id: string): TabNavigationItem[] {
   return [
     {
       tabButtonName: "Vorgangsdaten",
@@ -82,19 +65,11 @@ function createTabItems(
     {
       tabButtonName: "Begehung",
       href: routes.procedures.execution(id),
-      disabled: inspectionIsBeforePhase(
-        phase,
-        ApiInspectionPhase.ReadyForExecution,
-      ),
       decorator: <OtherHousesOutlined />,
     },
     {
       tabButtonName: "Bericht/Ergebnis",
       href: routes.procedures.reportResult(id),
-      disabled: inspectionIsBeforePhase(
-        phase,
-        ApiInspectionPhase.CreatingReportAndInvoice,
-      ),
       decorator: <SubjectOutlined />,
     },
     {
@@ -102,12 +77,10 @@ function createTabItems(
       href: routes.procedures.progressEntries(id).index,
       decorator: <TimelineOutlined />,
     },
-    isHistoryEnabled
-      ? {
-          tabButtonName: "Historie",
-          href: routes.procedures.history(id),
-          decorator: <History />,
-        }
-      : null,
+    {
+      tabButtonName: "Historie",
+      href: routes.procedures.history(id),
+      decorator: <History />,
+    },
   ].filter((it) => it !== null);
 }

@@ -30,7 +30,7 @@ export function ReadOnlyCLDElementTextModule({
     <Sheet
       sx={sx}
       role="region"
-      aria-label={`Textbausteine für Antwort "${text}" in Element "${elementTitle}"`}
+      aria-label={`Textbausteine für Antwort „${text}” in Element „${elementTitle}”`}
     >
       <Stack gap={1}>
         <Typography level="title-sm" fontWeight="normal" component="label">
@@ -81,7 +81,7 @@ export function ReadOnlyCLDElementCheckboxTextModule({
           whiteSpace: "pre",
           textWrap: "wrap",
         }}
-        aria-label={`Textbaustein für Antwort "${text}" in Element "${elementTitle}"`}
+        aria-label={`Textbaustein für Antwort „${text}” in Element „${elementTitle}”`}
       >
         {textModuleTrue}
       </Typography>

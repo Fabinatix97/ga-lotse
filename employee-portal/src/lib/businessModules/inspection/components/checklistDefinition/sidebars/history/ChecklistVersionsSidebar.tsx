@@ -69,7 +69,7 @@ function ChecklistVersionsSidebarWithQuery({
       <SidebarContent title={"Historie"}>
         <Stack direction="column" gap={4}>
           <Typography level="h4" component="p" textColor="text.primary">
-            {`Versionen der ${newestVersion.isCoreChecklist ? "Kernchecklisten-Definition" : "Checklisten-Definition"}: “${newestVersion?.context.name ?? ""}“`}
+            {`Versionen der ${newestVersion.isCoreChecklist ? "Kernchecklisten-Definition" : "Checklisten-Definition"}: „${newestVersion?.context.name ?? ""}”`}
           </Typography>
           <ChecklistHint version={newestVersion} permissions={permissions} />
           <Stack direction="column" gap={2}>

@@ -5,7 +5,7 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ import { useDeleteProcedure } from "@/lib/businessModules/schoolEntry/api/mutati
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 interface DeleteProcedureModalProps
-  extends Omit<BaseModalProps, "children" | "modalTitle"> {
+  extends Omit<BaseModalPropsRequiredClose, "children" | "modalTitle"> {
   procedure: ProcedureDetails;
 }
 

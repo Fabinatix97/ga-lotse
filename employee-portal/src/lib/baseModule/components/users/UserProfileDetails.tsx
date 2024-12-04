@@ -11,13 +11,15 @@ import {
   ApiUser,
   ApiUserGroup,
 } from "@eshg/employee-portal-api/base";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { isDefined, isNullish } from "remeda";
+import { isDefined } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { useUserProfileEditSidebar } from "@/lib/baseModule/components/users/userSidebar/UserProfileEditSidebar";
+import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { routes } from "@/lib/businessModules/chat/shared/routes";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { EditButton } from "@/lib/shared/components/buttons/EditButton";
@@ -149,20 +151,27 @@ export function UserProfileDetails({
                 label={"Telefonnummer"}
                 value={user.phoneNumber}
               />
-              {showChatUsername && (
-                <DetailsCell
-                  name={"externalChatUsername"}
-                  label={"Chat"}
-                  value={
-                    isNullish(user.externalChatUsername) ? undefined : (
-                      <InternalLink
-                        href={routes.userRoom(user.externalChatUsername)}
-                      >
-                        {user.externalChatUsername}
-                      </InternalLink>
-                    )
-                  }
-                />
+              {showChatUsername && user.externalChatUsername && (
+                <>
+                  <DetailsCell
+                    name={"externalChatUsername"}
+                    label={"Chat-ID"}
+                    valueIsDiv
+                    value={
+                      <ChatUserId userId={user.externalChatUsername} noLabel />
+                    }
+                  />
+                  {!isSelf && (
+                    <InternalLinkButton
+                      href={routes.userRoom(user.externalChatUsername)}
+                      startDecorator={<ChatOutlinedIcon />}
+                      variant="outlined"
+                      sx={{ alignSelf: "flex-start", maxWidth: "100%", mt: 1 }}
+                    >
+                      Direktnachricht
+                    </InternalLinkButton>
+                  )}
+                </>
               )}
             </DetailsColumn>
 

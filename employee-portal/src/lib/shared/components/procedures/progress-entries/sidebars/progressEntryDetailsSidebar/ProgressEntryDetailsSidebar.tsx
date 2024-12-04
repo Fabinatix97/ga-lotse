@@ -7,7 +7,7 @@
 
 import { ApiGetProgressEntryResponse } from "@eshg/employee-portal-api/businessProcedures";
 import { UseSuspenseQueryResult } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { isDefined } from "remeda";
 
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -18,6 +18,8 @@ import { SystemProgressEntryDetails } from "@/lib/shared/components/procedures/p
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 
 interface ProgressEntryDetailsSidebarProps {
+  procedureId: string;
+  progressEntryId: string;
   route: (procedureId: string, entryId: string) => string;
   useFetchProgressEntryDetails: (
     procedureId: string,
@@ -26,21 +28,21 @@ interface ProgressEntryDetailsSidebarProps {
 }
 
 export function ProgressEntryDetailsSidebar({
+  procedureId,
+  progressEntryId,
   route,
   useFetchProgressEntryDetails,
 }: Readonly<ProgressEntryDetailsSidebarProps>) {
-  const { id, entryId } = useParams<{
-    id: string;
-    entryId: string;
-  }>();
   const { progressEntry, relatedKeyDocumentProgressEntries } =
-    useFetchProgressEntryDetails(id, entryId).data;
+    useFetchProgressEntryDetails(procedureId, progressEntryId).data;
   const router = useRouter();
   const buildRoutePreservingSearchParams =
     useBuildRoutePreservingSearchParams();
 
   function onClose() {
-    router.push(buildRoutePreservingSearchParams(route(id, entryId)));
+    router.push(
+      buildRoutePreservingSearchParams(route(procedureId, progressEntryId)),
+    );
   }
 
   return (

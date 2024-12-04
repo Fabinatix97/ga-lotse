@@ -5,6 +5,7 @@
 
 package de.eshg.base.keycloak;
 
+import de.eshg.lib.keycloak.KeycloakGroup;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import java.util.List;
 import org.keycloak.admin.client.resource.UserResource;
@@ -27,6 +28,10 @@ public class EmployeeKeycloakTestClient extends KeycloakTestClient {
   }
 
   public UserRepresentation createTemporaryTestUser() {
+    return createTemporaryTestUser(null);
+  }
+
+  public UserRepresentation createTemporaryTestUser(KeycloakGroup keycloakGroup) {
     UserRepresentation representation = new UserRepresentation();
     representation.setEnabled(true);
     representation.setUsername(TEMPORARY_TEST_USER_USERNAME);
@@ -34,7 +39,11 @@ public class EmployeeKeycloakTestClient extends KeycloakTestClient {
     representation.setLastName("TestUser");
     representation.setEmail("temporary_test_user@eshg.de");
     representation.setEmailVerified(true);
-    representation.setGroups(List.of());
+    if (keycloakGroup != null) {
+      representation.setGroups(List.of(keycloakGroup.getKeycloakName()));
+    } else {
+      representation.setGroups(List.of());
+    }
     UserResource user = keycloakClient.createUser(representation);
     UserRepresentation created = user.toRepresentation();
     created.setRequiredActions(List.of());

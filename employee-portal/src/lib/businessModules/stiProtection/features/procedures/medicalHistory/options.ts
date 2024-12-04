@@ -36,7 +36,7 @@ export const sexualContactFactorNames = {
   [ApiPartnerRiskFactors.StiPositive]: "eine STI",
   [ApiPartnerRiskFactors.InjectedDrugs]: "Drogen gespritzt",
   [ApiPartnerRiskFactors.SexWorker]: "im Sexgewerbe tätig",
-} as const satisfies { [K in ApiPartnerRiskFactors]: string };
+} as const satisfies Record<ApiPartnerRiskFactors, string>;
 
 export const sexualContactFactorOptions = Object.entries(
   sexualContactFactorNames,
@@ -62,7 +62,7 @@ export const vaccineNames = {
   [ApiVaccination.HepatitisA]: "Hepatitis A",
   [ApiVaccination.HepatitisB]: "Hepatitis B",
   [ApiVaccination.Hpv]: "HPV",
-} as const satisfies { [K in ApiVaccination]: string };
+} as const satisfies Record<ApiVaccination, string>;
 
 export const vaccineOptions = Object.entries(vaccineNames).map(
   ([value, label]) => ({ value, label }),
@@ -73,7 +73,7 @@ export const safeSexRegularityNames = {
   [ApiSafeSexPractice.Frequently]: "Häufig",
   [ApiSafeSexPractice.Occasionally]: "Gelegentlich",
   [ApiSafeSexPractice.Never]: "Nie",
-} as const satisfies { [K in ApiSafeSexPractice]: string };
+} as const satisfies Record<ApiSafeSexPractice, string>;
 
 export const safeSexRegularityOptions = Object.entries(
   safeSexRegularityNames,
@@ -86,7 +86,7 @@ export const stiProtectiveMeasuresNames = {
   PREP: "PrEP (Prä-Expositions-Prophylaxe)",
   TASP: "Schutz durch Therapie",
   OTHER: "Sonstiges",
-} as const satisfies { [K in ApiProtectionMethod]: string };
+} as const satisfies Record<ApiProtectionMethod, string>;
 
 export const stiProtectiveMeasuresOptions = Object.entries(
   stiProtectiveMeasuresNames,
@@ -108,7 +108,7 @@ export const relationshipModelNames = {
   NO_COMMITMENT: "Keine feste Beziehung",
   MONOGAMOUS: "Monogam",
   OPEN: "Offen",
-} as const satisfies { [K in ApiRelationshipModel]: string };
+} as const satisfies Record<ApiRelationshipModel, string>;
 
 export const relationshipModelOptions = Object.entries(
   relationshipModelNames,

@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 
-import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
@@ -18,6 +17,7 @@ import { routes } from "./routes";
 const sideNavigationItem = {
   name: "HIV-STI",
   decorator: <HivOutlined />,
+  accessCheck: hasUserRole(ApiUserRole.StiProtectionUser),
 };
 
 const defaultSubItems: SideNavigationSubItem[] = [
@@ -44,10 +44,9 @@ const defaultSubItems: SideNavigationSubItem[] = [
 ];
 
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
-  const isModuleEnabled = useIsNewFeatureEnabled(ApiBaseFeature.StiProtection);
   const subItems = defaultSubItems;
   return {
     isLoading: false,
-    items: isModuleEnabled ? [{ ...sideNavigationItem, subItems }] : [],
+    items: [{ ...sideNavigationItem, subItems }],
   };
 }

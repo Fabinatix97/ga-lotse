@@ -5,14 +5,17 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 
 import { SignDocumentModalContent } from "@/lib/businessModules/travelMedicine/components/informationStatement/SignDocumentModalContent";
 import { useTranslation } from "@/lib/i18n/client";
 
-type SignDocumentModalProps = Omit<BaseModalProps, "children" | "modalTitle">;
+type SignDocumentModalProps = Omit<
+  BaseModalPropsRequiredClose,
+  "children" | "modalTitle"
+>;
 
 export function SignDocumentModal({
   sx,

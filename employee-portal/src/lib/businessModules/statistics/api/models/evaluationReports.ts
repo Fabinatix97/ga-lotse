@@ -46,6 +46,7 @@ export interface ReportBase {
   status: ApiReportState;
   type: Extract<ReportDataType, "SINGLE" | "CHILD">;
   userId: string;
+  tooMuchDataForExport: boolean;
 }
 
 export interface ReportSeries {

@@ -69,7 +69,7 @@ export function AddCustodianPanel(props: { procedure: ProcedureDetails }) {
     <>
       <ContentPanel>
         <DetailsSection
-          name="add-custodian"
+          data-testid="add-custodian"
           title="PSB - Personensorgeberechtigte:r"
         >
           <Button

@@ -1,0 +1,37 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
+
+import {
+  TabNavigationHeader,
+  TabNavigationHeaderTypography,
+} from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
+
+interface Person {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+}
+
+interface PersonToolbarHeaderProps {
+  person: Person;
+}
+
+export function PersonToolbarHeader(props: PersonToolbarHeaderProps) {
+  const { person } = props;
+
+  return (
+    <TabNavigationHeader titleAsH1>
+      <TabNavigationHeaderTypography>
+        {formatPersonName(person)}
+      </TabNavigationHeaderTypography>
+      <TabNavigationHeaderTypography>
+        Geb. {formatDate(person.dateOfBirth)}
+      </TabNavigationHeaderTypography>
+    </TabNavigationHeader>
+  );
+}

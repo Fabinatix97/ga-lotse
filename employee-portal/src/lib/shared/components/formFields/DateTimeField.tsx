@@ -11,19 +11,14 @@ import { validatePipe } from "@eshg/lib-portal/helpers/validators";
 
 import { validateDateTime } from "@/lib/shared/helpers/validators";
 
-type DateTimeFieldProps = Omit<InputFieldProps, "type"> & {
-  allowEmpty?: boolean;
-};
+type DateTimeFieldProps = Omit<InputFieldProps, "type">;
 
 export function DateTimeField(props: DateTimeFieldProps) {
   return (
     <InputField
       {...props}
       type="datetime-local"
-      validate={validatePipe(
-        validateDateTime(props.allowEmpty),
-        props.validate,
-      )}
+      validate={validatePipe(validateDateTime, props.validate)}
     />
   );
 }

@@ -13,6 +13,8 @@ import static de.eshg.stiprotection.pdf.identification.DocumentParameters.toDocu
 import static de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType.PERSON_DETAILS_UPDATED;
 
 import de.eshg.base.calendar.api.TimeRange;
+import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
+import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.document.generator.department.DepartmentClient;
 import de.eshg.lib.document.generator.department.DepartmentLogo;
@@ -52,6 +54,7 @@ import de.eshg.stiprotection.persistence.db.Person_;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedureRepository;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure_;
+import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.persistence.db.StiProtectionTask;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -67,6 +70,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class StiProtectionProcedureService {
@@ -105,7 +109,6 @@ public class StiProtectionProcedureService {
     procedure.addTask(createTask());
 
     appointmentService.createAppointment(procedure, AppointmentMapper.toDataType(request));
-
     return repository.save(procedure);
   }
 
@@ -177,7 +180,6 @@ public class StiProtectionProcedureService {
 
       Path<?> sortProperty = getSortProperty(sortBy, root, psJoin);
 
-      assert query != null;
       if (sortOrder == ASC) {
         query.orderBy(criteriaBuilder.asc(sortProperty));
       } else {
@@ -231,23 +233,14 @@ public class StiProtectionProcedureService {
 
   public void updatePersonDetails(UUID procedureId, @Valid UpdatePersonDetailsRequest request) {
     StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
-    ProcedureStatus procedureStatus = procedure.getProcedureStatus();
-    if (procedureStatus.isOpen()) {
-      Person person = procedure.getPerson();
-      person.setGender(GenderMapper.toDatabaseType(request.gender()));
-      person.setYearOfBirth(request.yearOfBirth());
-      person.setCountryOfBirth(request.countryOfBirth());
-      person.setInGermanySince(request.inGermanySince());
 
-      SystemProgressEntry progressEntry =
-          SystemProgressEntryFactory.createSystemProgressEntry(
-              PERSON_DETAILS_UPDATED.name(),
-              "Die Angaben zur Person wurden aktualisiert.",
-              TriggerType.SYSTEM_AUTOMATIC);
-      procedure.addProgressEntry(progressEntry);
-    } else {
-      throw unexpectedProcedureStatus(procedureId, procedureStatus);
-    }
+    Person person = procedure.getPerson();
+    person.setGender(GenderMapper.toDatabaseType(request.gender()));
+    person.setYearOfBirth(request.yearOfBirth());
+    person.setCountryOfBirth(request.countryOfBirth());
+    person.setInGermanySince(request.inGermanySince());
+
+    addProgressEntry(procedureId, PERSON_DETAILS_UPDATED);
   }
 
   public void closeProcedure(UUID procedureId) {
@@ -299,5 +292,36 @@ public class StiProtectionProcedureService {
       throw new BadRequestException("Access code cannot be null or blank");
     }
     return accessCode;
+  }
+
+  public void registerAnonymousUser(StiProtectionProcedure procedure, String pin) {
+    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
+    if (anonymousUserId != null) {
+      throw new BadRequestException("User already registered.");
+    }
+    CitizenAccessCodeUserDto user =
+        anonymousUserClient.addAnonymousUser(new AddAnonymousUserRequest(pin));
+    procedure.getPerson().setAnonymousUserId(user.userId());
+  }
+
+  public void verifyAnonymousUserPin(UUID procedureId, String pin) {
+    StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
+    Person person = procedure.getPerson();
+    try {
+      anonymousUserClient.verifyAnonymousUserPin(person.getAnonymousUserId(), pin);
+    } catch (HttpClientErrorException.BadRequest e) {
+      throw new BadRequestException("Invalid credentials");
+    }
+  }
+
+  public void addProgressEntry(
+      UUID procedureId, StiProtectionSystemProgressEntryType progressEntryType) {
+    StiProtectionProcedure procedure = findProcedureByExternalId(procedureId);
+    SystemProgressEntry progressEntry =
+        SystemProgressEntryFactory.createSystemProgressEntry(
+            progressEntryType.name(),
+            progressEntryType.getChangeDescription(),
+            TriggerType.SYSTEM_AUTOMATIC);
+    procedure.addProgressEntry(progressEntry);
   }
 }

@@ -5,7 +5,7 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { QueryBoundary } from "@eshg/lib-portal/components/boundaries/QueryBoundary";
 
@@ -13,7 +13,7 @@ import { FinalizeInspectionModalContent } from "@/lib/businessModules/inspection
 
 export type FinalizeInspectionModalProps = {
   inspectionId: string;
-} & Omit<BaseModalProps, "children" | "modalTitle">;
+} & Omit<BaseModalPropsRequiredClose, "children" | "modalTitle">;
 
 export function FinalizeInspectionModal({
   sx,

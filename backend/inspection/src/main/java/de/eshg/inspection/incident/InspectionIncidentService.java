@@ -5,6 +5,8 @@
 
 package de.eshg.inspection.incident;
 
+import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNotClosed;
+
 import de.eshg.inspection.incident.api.CreateInspectionIncidentRequest;
 import de.eshg.inspection.incident.api.GetInspectionIncidentsResponse;
 import de.eshg.inspection.incident.api.InspectionIncidentDto;
@@ -14,7 +16,6 @@ import de.eshg.inspection.inspection.InspectionMapper;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.InspectionUpdater;
 import de.eshg.inspection.inspection.persistence.Inspection;
-import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.util.Comparator;
@@ -114,19 +115,6 @@ public class InspectionIncidentService {
 
     inspectionUpdater.advanceToExecutingPhase(inspection);
     inspectionUpdater.updateModified(inspection);
-  }
-
-  private static void checkInspectionIsNotClosed(
-      Inspection inspection, String userErrorMessage, String errorMessageAppendix) {
-    if (ProcedureStatus.isClosed(inspection.getProcedureStatus())) {
-      throw new BadRequestException(
-          userErrorMessage,
-          String.format(
-              "Inspection %s procedure is %s, %s",
-              inspection.getExternalId(),
-              inspection.getProcedureStatus().name(),
-              errorMessageAppendix));
-    }
   }
 
   private static InspectionIncident findInspectionIncident(Inspection inspection, UUID incidentId) {

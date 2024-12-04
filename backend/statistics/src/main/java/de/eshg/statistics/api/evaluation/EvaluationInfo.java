@@ -22,4 +22,4 @@ public record EvaluationInfo(
     @NotNull Instant timeRangeEnd,
     @NotNull Instant createdAt,
     @NotNull boolean anonymized,
-    @NotNull boolean exportable) {}
+    @NotNull boolean tooMuchDataForExport) {}

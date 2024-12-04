@@ -25,7 +25,7 @@ export function mapTaskDueAtReminderNotificationProps(
   const content = (
     <>
       <Typography level="body-md">
-        {`Aufgabe "${taskTypeNames[notification.taskType as ApiTaskType]}" ist ${
+        {`Aufgabe „${taskTypeNames[notification.taskType as ApiTaskType]}” ist ${
           notification.dueAt > new Date()
             ? `am ${formatDateTime(notification.dueAt)} fällig`
             : `seit ${formatDateTime(notification.dueAt)} überfällig`

@@ -9,6 +9,262 @@ info:
 servers:
 - url: http://localhost:8099
 paths:
+  /approval-requests/{approvalRequestId}:
+    get:
+      operationId: getApprovalRequest
+      parameters:
+      - in: path
+        name: approvalRequestId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApprovalRequest"
+          description: OK
+      tags:
+      - ApprovalRequest
+  /approval-requests/{approvalRequestId}/decision:
+    put:
+      operationId: decideApprovalRequest
+      parameters:
+      - in: path
+        name: approvalRequestId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Decision"
+        required: true
+      responses:
+        "200":
+          description: OK
+      tags:
+      - ApprovalRequest
+  /archiving/config:
+    get:
+      operationId: getArchivingConfiguration
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetArchivingConfigurationResponse"
+          description: OK
+      summary: Get archiving configuration
+      tags:
+      - Archiving
+  /archiving/procedures:
+    get:
+      operationId: getArchivableProcedures
+      parameters:
+      - description: |
+          Filter logic:
+          - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
+          - If not submitted, no filtering takes place
+        in: query
+        name: procedureType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureType"
+          uniqueItems: true
+      - description: |
+          Filter logic:
+          - If `closedAtDay` is set, only procedures are returned which were closed at that date
+          - If not submitted, no filtering takes place
+        in: query
+        name: closedAtDay
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: |
+          Filter logic:
+          - If `defaultArchivingRelevance` is submitted, only procedures are returned which have one of the submitted default archiving relevances.
+          - If not submitted, no filtering takes place
+        in: query
+        name: defaultArchivingRelevance
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ArchivingRelevance"
+          uniqueItems: true
+      - description: |
+          The following sorting options are available:
+          - `CLOSED_AT`: Sorting by closedAt attribute
+          - `PROCEDURE_TYPE`: Sorting by procedureType attribute
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetArchivableProceduresSortBy"
+      - description: Sorting order.
+        in: query
+        name: sortOrder
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetArchivableProceduresSortOrder"
+      - description: Limit of returned procedures
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      - description: Offset used for pagination
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2000
+          minimum: 0
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetArchivableProceduresResponse"
+          description: OK
+      summary: Get archivable procedures
+      tags:
+      - Archiving
+  /archiving/procedures/bulk-update-archiving-relevance:
+    post:
+      operationId: bulkUpdateProceduresArchivingRelevance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkUpdateProceduresArchivingRelevanceRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BulkUpdateProceduresArchivingRelevanceResponse"
+          description: OK
+      summary: Bulk update procedures archiving relevance
+      tags:
+      - Archiving
+  /archiving/relevant-procedures:
+    get:
+      operationId: getRelevantArchivableProcedures
+      parameters:
+      - description: |
+          Filter logic:
+          - If `closedAtDay` is set, only procedures are returned which were closed at that date
+          - If not submitted, no filtering takes place
+        in: query
+        name: closedAtDay
+        required: false
+        schema:
+          type: string
+          format: date
+      - description: |
+          Filter logic:
+          - If `exported` is true, only procedures are returned which have already been exported.
+          - If `exported` is false, only procedures are returned which have not been exported, yet.
+          - If not submitted, no filtering takes place
+        in: query
+        name: exported
+        required: false
+        schema:
+          type: boolean
+      - description: |
+          The following sorting options are available:
+          - `CLOSED_AT`: Sorting by closedAt attribute
+          - `EXPORTED_AT`: Sorting by exportedAt attribute
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetRelevantArchivableProceduresSortBy"
+      - description: Sorting order.
+        in: query
+        name: sortOrder
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetRelevantArchivableProceduresSortOrder"
+      - description: Limit of returned procedures
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      - description: Offset used for pagination
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2000
+          minimum: 0
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetRelevantArchivableProceduresResponse"
+          description: OK
+      summary: Get relevant archivable procedures
+      tags:
+      - Archiving
+  /archiving/relevant-procedures/export:
+    post:
+      operationId: exportRelevantProcedures
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExportArchivingRelevantProceduresRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      tags:
+      - Archiving
+  /citizen-public/department-info:
+    get:
+      operationId: getDepartmentInfo
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDepartmentInfoResponse"
+          description: OK
+      summary: Get department info.
+      tags:
+      - CitizenPublic
   /citizen-public/opening-hours:
     get:
       operationId: getOpeningHours
@@ -22,6 +278,1348 @@ paths:
       summary: Get opening hours.
       tags:
       - CitizenPublic
+  /employee/procedures:
+    get:
+      operationId: getAllEmployeeProcedures
+      parameters:
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/EmployeeOmsProcedureSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetEmployeeOmsProcedureOverviewResponse"
+          description: OK
+      summary: Get all oms procedures
+      tags:
+      - EmployeeOmsProcedure
+    post:
+      operationId: postEmployeeProcedure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostEmployeeOmsProcedureRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      summary: Save a new employee oms procedure
+      tags:
+      - EmployeeOmsProcedure
+  /files/{fileId}:
+    delete:
+      operationId: deleteFile
+      parameters:
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Soft deletes the specified file
+      tags:
+      - File
+    get:
+      operationId: getFile
+      parameters:
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Image"
+                - $ref: "#/components/schemas/Mail"
+                - $ref: "#/components/schemas/Pdf"
+          description: OK
+      summary: Retrieves the meta data of the specified file
+      tags:
+      - File
+  /files/{fileId}/deletion-request:
+    post:
+      operationId: requestFileDeletion
+      parameters:
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApprovalRequestRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApprovalRequest"
+          description: OK
+      summary: Request deletion of a file entry
+      tags:
+      - File
+  /files/{fileId}/download:
+    get:
+      operationId: downloadFile
+      parameters:
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      tags:
+      - File
+  /files/{fileId}/meta-data:
+    put:
+      operationId: updateFileMetaData
+      parameters:
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: "#/components/schemas/ImageMetaData"
+              - $ref: "#/components/schemas/MailMetaData"
+              - $ref: "#/components/schemas/PdfMetaData"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/Image"
+                - $ref: "#/components/schemas/Mail"
+                - $ref: "#/components/schemas/Pdf"
+          description: Updated file
+      summary: Updates the meta data of the specified file
+      tags:
+      - File
+  /files/{fileId}/meta-data/history:
+    get:
+      operationId: getMetaDataHistory
+      parameters:
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetMetaDataHistoryResponse"
+          description: OK
+      tags:
+      - File
+  /gdpr-validation-tasks:
+    get:
+      operationId: getAllGdprValidationTasks
+      parameters:
+      - in: query
+        name: status
+        required: false
+        schema:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+      - in: query
+        name: sortKey
+        required: false
+        schema:
+          $ref: "#/components/schemas/GdprValidationTaskSortKey"
+      - in: query
+        name: sortDirection
+        required: false
+        schema:
+          $ref: "#/components/schemas/SortDirection"
+      - in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+      - in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetAllValidationTasksResponse"
+          description: OK
+      summary: Get all GDPR validation tasks
+      tags:
+      - GdprValidationTask
+    post:
+      operationId: addGdprValidationTask
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGdprValidationTaskRequest"
+        required: true
+      responses:
+        "200":
+          description: Add a GDPR validation task
+      summary: Add a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/download-packages/{id}:
+    get:
+      operationId: getGdprDownloadPackage
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package by its id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/notification-banner:
+    get:
+      operationId: getGdprNotificationBanner
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprNotificationBannerResponse"
+          description: OK
+      summary: Get data for GDPR notification banner
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}:
+    get:
+      operationId: getGdprValidationTask
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprValidationTaskResponse"
+          description: OK
+      summary: Get Gdpr Validation Task by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures:
+    get:
+      operationId: getGdprValidationTaskDetails
+      parameters:
+      - description: The Id of the GDPR procedure.
+        in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprValidationTaskDetailsResponse"
+          description: OK
+      summary: Get a GDPR validation task by id
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/business-procedures/{businessProcedureId}/downloadPackage:
+    post:
+      operationId: addDownloadPackage
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: businessProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Creates a downloadPackage for validationTask with gdprProcedureId with
+        the data from the procedure with businessProcedureId
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/close:
+    post:
+      operationId: closeGdprValidationTask
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Close a GDPR validation task
+      summary: Close a GDPR validation task
+      tags:
+      - GdprValidationTask
+  /gdpr-validation-tasks/{gdprProcedureId}/download-packages:
+    get:
+      operationId: getGdprDownloadPackagesInfo
+      parameters:
+      - in: path
+        name: gdprProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetGdprDownloadPackagesInfoResponse"
+          description: OK
+      summary: Get approved Gdpr Download Packages by Gdpr Procedure Id
+      tags:
+      - GdprValidationTask
+  /inbox-procedures:
+    get:
+      description: |
+        Get all inbox procedures with filter, sort, and pagination options
+      operationId: getInboxProcedures
+      parameters:
+      - description: |
+          Filter logic:
+          - If `inboxProcedureType` is submitted, only inbox procedures are returned which have one of the submitted types.
+          - If not submitted, no filtering takes place.
+        in: query
+        name: inboxProcedureType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureType"
+          uniqueItems: true
+      - description: |
+          Filter logic:
+          - If true, inbox procedures which have no type are returned in addition to the types specified by 'inboxProcedureType'.
+          - If false or not submitted, inbox procedures which have no type are not returned.
+        in: query
+        name: includeUntyped
+        required: false
+        schema:
+          type: boolean
+      - description: |
+          Filter logic:
+          - If `inboxProcedureStatus` is submitted, only inbox procedures are returned which have one of the submitted statuses.
+          - If not submitted, no filtering takes place.
+        in: query
+        name: inboxProcedureStatus
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/InboxProcedureStatus"
+          uniqueItems: true
+      - description: |
+          The following sorting options are available:
+          - `CREATED_AT`: Sorting by createdAt attribute
+          - `MODIFIED_AT`: Sorting by modifiedAt attribute
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetInboxProceduresSortBy"
+      - description: Sorting order.
+        in: query
+        name: sortOrder
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetInboxProceduresSortOrder"
+      - description: Number of the requested page
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+      - description: Amount of requested inbox procedures
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetInboxProceduresResponse"
+          description: OK
+      summary: Get inbox procedures
+      tags:
+      - InboxProcedure
+    post:
+      description: |-
+        Creates an inbox procedure with an optional file upload.
+
+               Permitted file formats:
+                - Image formats: jpeg, png
+                - PDF formats: pdf/a
+                - Mail formats: eml
+      operationId: addInboxProcedure
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                createInboxProcedureRequest:
+                  $ref: "#/components/schemas/CreateInboxProcedureRequest"
+                file:
+                  type: string
+                  format: binary
+                fileMetaData:
+                  $ref: "#/components/schemas/FileMetaData"
+              required:
+              - createInboxProcedureRequest
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/InboxProcedure"
+          description: OK
+      summary: Add inbox procedure
+      tags:
+      - InboxProcedure
+  /inbox-procedures/{inboxProcedureId}:
+    get:
+      operationId: getInboxProcedure
+      parameters:
+      - in: path
+        name: inboxProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetInboxProcedureResponse"
+          description: OK
+      summary: Get inbox procedure with detailed information
+      tags:
+      - InboxProcedure
+  /inbox-procedures/{inboxProcedureId}/inbox-procedure-status:
+    put:
+      operationId: updateInboxProcedureStatus
+      parameters:
+      - in: path
+        name: inboxProcedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InboxProcedureStatus"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/InboxProcedure"
+          description: OK
+      summary: Update status of inbox procedure
+      tags:
+      - InboxProcedure
+  /procedure-metrics:
+    get:
+      operationId: getProcedureMetrics
+      parameters:
+      - in: query
+        name: timeRangeStart
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: timeRangeEnd
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProcedureMetricsResponse"
+          description: the metrics of procedures
+      summary: Get procedure metrics for procedures created in the given time range
+      tags:
+      - Procedure
+  /procedures:
+    get:
+      description: |
+        GET operation for retrieving basic information of procedures for the procedure overview.
+      operationId: getProcedures
+      parameters:
+      - description: |
+          Only procedures are returned where the assigneeId of at least one task equals the `assignedToId`.
+          If not submitted, no filtering takes place.
+        in: query
+        name: assignedToId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - description: |
+          Only procedures are returned where the assigneeId of none of the task equals `notAssignedToId`.
+          If not submitted, no filtering takes place.
+        in: query
+        name: notAssignedToId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - description: |
+          Only procedures are returned where the user is or was assigned to at least one task (at least one assigneeId equals `onceAssignedToId` in taskHistory for at least one task).
+          If not submitted, no filtering takes place.
+        in: query
+        name: onceAssignedToId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - description: |
+          Filter logic:
+          - In case of `true` only procedures are returned where all tasks are unassigned
+          - In case of `false` only procedures are returned which have at least one assigned task
+          - If not submitted, no filtering takes place
+        in: query
+        name: unassigned
+        required: false
+        schema:
+          type: boolean
+      - description: |
+          Filter logic:
+          - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
+          - If not submitted, no filtering takes place
+        in: query
+        name: procedureType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureType"
+          uniqueItems: true
+      - description: |
+          Filter logic:
+          - If `procedureStatus` is submitted, only procedures are returned which have one of the submitted statuses.
+          - If not submitted, no filtering takes place
+        in: query
+        name: procedureStatus
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureStatus"
+          uniqueItems: true
+      - description: |
+          Filter logic:
+          - If `createdInYear` is set, only procedures are returned which were created in that year
+          - If not submitted, no filtering takes place
+        in: query
+        name: createdInYear
+        required: false
+        schema:
+          type: string
+      - description: |
+          The following sorting options are available:
+          - `CREATED_AT`: Sorting by createdAt attribute
+          - `MODIFIED_AT`: Sorting by modifiedAt attribute
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetProceduresSortBy"
+      - description: Sorting order.
+        in: query
+        name: sortOrder
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetProceduresSortOrder"
+      - description: Limit of returned procedures
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      - description: Offset used for pagination
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2000
+          minimum: 0
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProceduresResponse"
+          description: the users recent procedures
+      summary: Get recent procedures for user
+      tags:
+      - Procedure
+  /procedures/recent:
+    get:
+      operationId: getRecentProcedures
+      parameters:
+      - in: query
+        name: userId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: procedureType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureType"
+          uniqueItems: true
+      - in: query
+        name: procedureStatus
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureStatus"
+          uniqueItems: true
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetRecentProceduresResponse"
+          description: the users recent procedures
+      summary: Get recent procedures for user
+      tags:
+      - Procedure
+  /procedures/recent/self:
+    get:
+      operationId: getSelfRecentProcedures
+      parameters:
+      - in: query
+        name: procedureType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureType"
+          uniqueItems: true
+      - in: query
+        name: procedureStatus
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureStatus"
+          uniqueItems: true
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetRecentProceduresResponse"
+          description: the current users recent procedures
+      summary: Get recent procedures for the current user
+      tags:
+      - Procedure
+  /procedures/search:
+    get:
+      operationId: searchProcedures
+      parameters:
+      - in: query
+        name: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProceduresResponse"
+          description: OK
+      tags:
+      - Procedure
+  /procedures/{id}:
+    get:
+      operationId: getDetailedProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetDetailedProcedureResponse"
+          description: a single procedure with details
+      summary: Get a single procedure with details
+      tags:
+      - Procedure
+  /procedures/{id}/approval-requests:
+    get:
+      operationId: getApprovalRequests
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProcedureApprovalRequestsResponse"
+          description: OK
+      summary: Get all approval requests related to this procedure
+      tags:
+      - Procedure
+  /procedures/{id}/files:
+    get:
+      operationId: getProcedureFileDetails
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProcedureFileDetailsResponse"
+          description: OK
+      summary: Get all file details for a procedure
+      tags:
+      - Procedure
+  /procedures/{procedureId}/progress-entries:
+    get:
+      operationId: getProgressEntries
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - description: Filter on progressEntryType
+        in: query
+        name: progressEntryType
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      - description: Filter on child class of progressEntry
+        in: query
+        name: progressEntryClass
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProgressEntryClass"
+          uniqueItems: true
+      - description: |
+          If `initiatedBy` is set with a `userId` then the following is returned:
+          * Only progressEntries with `createdBy`=`userId` in case `ManualProgressEntry` or `ProcessedInboxProgressEntry`
+          * Only progressEntries with `triggeredBy`=`userId` in case `SystemProgressEntry`
+        in: query
+        name: initiatedBy
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      - description: |
+          Filter on triggerType.
+          If this is set, only SystemProgressEntries are returned since only SystemProgressEntries have this attribute.
+        in: query
+        name: triggerType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/TriggerType"
+          uniqueItems: true
+      - description: 'Sorting on either modifiedAt or createdAt '
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          $ref: "#/components/schemas/ProgressEntrySortBy"
+      - description: Sorting order. Possible options  "ASC" for ascending and "DESC"
+          for descending.
+        in: query
+        name: sortOrder
+        required: false
+        schema:
+          $ref: "#/components/schemas/ProgressEntrySortOrder"
+      - description: Maximum number of elements to return
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      - description: Index of page to be returned
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProgressEntriesResponse"
+          description: OK
+      summary: Get list of procedure's progress entries
+      tags:
+      - ProgressEntry
+    post:
+      description: |-
+        Creates a manual progress entry with an optional file upload.
+
+               Permitted file formats:
+                - Image formats: jpeg, png
+                - PDF formats: pdf/a
+                - Mail formats: eml
+      operationId: addProgressEntry
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                createManualProgressEntryRequest:
+                  $ref: "#/components/schemas/CreateManualProgressEntryRequest"
+                file:
+                  type: string
+                  format: binary
+                fileMetaData:
+                  $ref: "#/components/schemas/FileMetaData"
+              required:
+              - createManualProgressEntryRequest
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ManualProgressEntry"
+          description: OK
+      summary: Create a manual progress entry
+      tags:
+      - ProgressEntry
+  /procedures/{procedureId}/progress-entries/{progressEntryId}:
+    delete:
+      operationId: removeProgressEntry
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: progressEntryId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      summary: Remove a manual progress entry
+      tags:
+      - ProgressEntry
+    get:
+      operationId: getProgressEntry
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: progressEntryId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetProgressEntryResponse"
+          description: OK
+      summary: Get a progress entry
+      tags:
+      - ProgressEntry
+    patch:
+      operationId: patchProgressEntry
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: progressEntryId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchManualProgressEntryRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ManualProgressEntry"
+          description: OK
+      summary: Modify a manual progress entry
+      tags:
+      - ProgressEntry
+  /procedures/{procedureId}/progress-entries/{progressEntryId}/deletion-request:
+    post:
+      operationId: requestProgressEntryDeletion
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: progressEntryId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApprovalRequestRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApprovalRequest"
+          description: OK
+      summary: Request deletion of a manual progress entry
+      tags:
+      - ProgressEntry
+  /procedures/{procedureId}/progress-entries/{progressEntryId}/history:
+    get:
+      operationId: getManualProgressEntryHistory
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: progressEntryId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetManualProgressEntryHistoryResponse"
+          description: OK
+      summary: Get the history of a manual progress entry
+      tags:
+      - ProgressEntry
+  /task-metrics:
+    get:
+      operationId: getTaskMetrics
+      parameters:
+      - in: query
+        name: procedureType
+        required: true
+        schema:
+          $ref: "#/components/schemas/ProcedureType"
+      - in: query
+        name: timeRangeStart
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: timeRangeEnd
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetTaskMetricsResponse"
+          description: the metrics of a specific procedure type
+      summary: Get tasks metrics for a procedure type of a business module for procedures
+        created in the given time range
+      tags:
+      - Task
+  /tasks:
+    get:
+      operationId: getTasks
+      parameters:
+      - in: query
+        name: assigneeId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: assignedById
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      - in: query
+        name: taskTypes
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskType"
+          uniqueItems: true
+      - in: query
+        name: taskStatus
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskStatus"
+          uniqueItems: true
+      - in: query
+        name: hasDueAt
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: isOverdue
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: wasAssignedByOther
+        required: false
+        schema:
+          type: boolean
+      - in: query
+        name: sortKey
+        required: true
+        schema:
+          $ref: "#/components/schemas/GetTasksSortBy"
+      - in: query
+        name: sortOrder
+        required: false
+        schema:
+          $ref: "#/components/schemas/GetTasksSortOrder"
+      - in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+          maximum: 200
+          minimum: 1
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TaskResponse"
+          description: tasks
+      summary: Get tasks
+      tags:
+      - Task
+  /tasks/dashboard:
+    get:
+      operationId: getTasksForDashboard
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TaskResponse"
+          description: tasks
+      summary: Get tasks for the dashboard
+      tags:
+      - Task
+  /tasks/team-view:
+    get:
+      description: Returns all _open_ tasks per module group member.
+      operationId: getTasksByAssignee
+      parameters:
+      - description: |
+          If provided, `assignee` must be member of the module group.
+          If not provided, all tasks for all members of the module group are returned.
+        in: query
+        name: assigneeId
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetTaskByUserResponse"
+          description: OK
+      tags:
+      - Task
+  /tasks/{taskId}/assignment:
+    put:
+      operationId: assignTask
+      parameters:
+      - in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignTaskRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Task"
+          description: OK
+      tags:
+      - Task
+  /tasks/{taskId}/self-assignment:
+    put:
+      operationId: selfAssignTask
+      parameters:
+      - in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelfAssignTaskRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Task"
+          description: OK
+      tags:
+      - Task
+  /test-helper/archiving-job:
+    post:
+      operationId: runArchivingJob
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/audit-log-storage:
+    delete:
+      operationId: clearAuditLogStorageDirectory
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -32,6 +1630,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/DefaultPopulationResponse"
           description: OK
+      tags:
+      - TestHelper
+  /test-helper/population/procedure:
+    post:
+      operationId: populateProcedure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostPopulateProcedureRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PostPopulateProcedureResponse"
+          description: OK
+      summary: Create a procedure and dependent entities
       tags:
       - TestHelper
   /test-helper/request-interceptor:
@@ -146,6 +1763,69 @@ paths:
       - TestHelper
 components:
   schemas:
+    AbstractFile:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractFileReference"
+      - type: object
+        properties:
+          attachedToMail:
+            type: string
+            format: uuid
+          createdAt:
+            type: string
+            format: date-time
+          createdBy:
+            type: string
+            format: uuid
+          fileName:
+            type: string
+          fileSizeBytes:
+            type: integer
+            format: int32
+          fileType:
+            $ref: "#/components/schemas/FileType"
+          locked:
+            type: boolean
+          modifiedAt:
+            type: string
+            format: date-time
+      - type: object
+        properties:
+          '@type':
+            type: string
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - createdAt
+      - deletable
+      - deleted
+      - fileId
+      - fileName
+      - fileSizeBytes
+      - fileType
+      - locked
+      - modifiedAt
+    AbstractFileReference:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        deletable:
+          type: boolean
+        deleted:
+          type: boolean
+        fileId:
+          type: string
+          format: uuid
+      required:
+      - '@type'
+      - deletable
+      - deleted
+      - fileId
     AddBarrierTestHelperResponse:
       type: object
       properties:
@@ -155,6 +1835,597 @@ components:
           minimum: 1
       required:
       - barrierId
+    AddGdprValidationTaskRequest:
+      type: object
+      properties:
+        gdprProcedureId:
+          type: string
+          format: uuid
+        startedAt:
+          type: string
+          format: date-time
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - gdprProcedureId
+      - startedAt
+      - type
+    Address:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    ApprovalRequest:
+      type: object
+      properties:
+        approvalRequestId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+          format: uuid
+        decidedAt:
+          type: string
+          format: date-time
+        decidedBy:
+          type: string
+          format: uuid
+        decision:
+          $ref: "#/components/schemas/Decision"
+        entity:
+          oneOf:
+          - $ref: "#/components/schemas/ManualProgressEntry"
+          - $ref: "#/components/schemas/Image"
+          - $ref: "#/components/schemas/Mail"
+          - $ref: "#/components/schemas/Pdf"
+        operation:
+          $ref: "#/components/schemas/Operation"
+        reason:
+          type: string
+        status:
+          $ref: "#/components/schemas/ApprovalRequestStatus"
+      required:
+      - approvalRequestId
+      - createdAt
+      - createdBy
+      - operation
+      - reason
+      - status
+    ApprovalRequestEntity:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    ApprovalRequestStatus:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
+    ArchivingDetails:
+      type: object
+      properties:
+        archivingPeriodYears:
+          type: integer
+          format: int32
+        archivingRelevance:
+          $ref: "#/components/schemas/ArchivingRelevance"
+      required:
+      - archivingPeriodYears
+      - archivingRelevance
+    ArchivingRelevance:
+      type: string
+      enum:
+      - DEFAULT
+      - RELEVANT
+      - IRRELEVANT
+    ArchivingRelevanceSettings:
+      type: object
+      properties:
+        archivingRelevance:
+          $ref: "#/components/schemas/ArchivingRelevance"
+        defaultArchivingRelevance:
+          $ref: "#/components/schemas/ArchivingRelevance"
+      required:
+      - archivingRelevance
+      - defaultArchivingRelevance
+    AssignTaskRequest:
+      type: object
+      properties:
+        assignee:
+          type: string
+          format: uuid
+        dueAt:
+          type: string
+          format: date-time
+        taskVersion:
+          type: integer
+          format: int64
+      required:
+      - assignee
+      - taskVersion
+    BulkUpdateProceduresArchivingRelevanceRequest:
+      type: object
+      properties:
+        archivingRelevance:
+          $ref: "#/components/schemas/ArchivingRelevance"
+        procedures:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 200
+          minItems: 1
+          uniqueItems: true
+      required:
+      - archivingRelevance
+      - procedures
+    BulkUpdateProceduresArchivingRelevanceResponse:
+      type: object
+      properties:
+        archivingRelevance:
+          $ref: "#/components/schemas/ArchivingRelevance"
+        failedProcedures:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+        updatedProcedures:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+      required:
+      - archivingRelevance
+      - failedProcedures
+      - updatedProcedures
+    BusinessModule:
+      type: string
+      enum:
+      - INSPECTION
+      - SCHOOL_ENTRY
+      - TRAVEL_MEDICINE
+      - MEASLES_PROTECTION
+      - STI_PROTECTION
+      - MEDICAL_REGISTRY
+      - DENTAL
+      - OFFICIAL_MEDICAL_SERVICE
+    BusinessProcedureInclusionStatus:
+      type: string
+      enum:
+      - INCLUDED
+      - UNDECIDED
+    BusinessProcedureWithInclusionStatus:
+      type: object
+      properties:
+        businessProcedure:
+          $ref: "#/components/schemas/Procedure"
+        inclusionStatus:
+          $ref: "#/components/schemas/BusinessProcedureInclusionStatus"
+      required:
+      - businessProcedure
+      - inclusionStatus
+    ConcreteFileDto:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractFile"
+      - type: object
+        properties:
+          '@type':
+            type: string
+      - $ref: "#/components/schemas/ConcreteFileOrFileReference"
+      - type: object
+        properties:
+          attachedToMail:
+            type: string
+            format: uuid
+          createdAt:
+            type: string
+            format: date-time
+          createdBy:
+            type: string
+            format: uuid
+          deletable:
+            type: boolean
+          deleted:
+            type: boolean
+          fileId:
+            type: string
+            format: uuid
+          fileName:
+            type: string
+          fileSizeBytes:
+            type: integer
+            format: int32
+          fileType:
+            $ref: "#/components/schemas/FileType"
+          locked:
+            type: boolean
+          modifiedAt:
+            type: string
+            format: date-time
+      - $ref: "#/components/schemas/ApprovalRequestEntity"
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - createdAt
+      - deletable
+      - deleted
+      - fileId
+      - fileName
+      - fileSizeBytes
+      - fileType
+      - locked
+      - modifiedAt
+    ConcreteFileOrFileReference:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        deletable:
+          type: boolean
+        deleted:
+          type: boolean
+        fileId:
+          type: string
+          format: uuid
+      required:
+      - '@type'
+    ContactDetails:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/InboxProcedureAddress"
+        contactType:
+          $ref: "#/components/schemas/ContactType"
+        dateOfBirth:
+          type: string
+          format: date
+        emailAddress:
+          type: string
+        facilityName:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        title:
+          $ref: "#/components/schemas/Title"
+      required:
+      - contactType
+    ContactType:
+      type: string
+      enum:
+      - PRIVATE_PERSON
+      - FACILITY
+    CountryCode:
+      type: string
+      description: List of country codes in ISO 3166-1 alpha-2 format.
+      enum:
+      - AD
+      - AE
+      - AF
+      - AG
+      - AI
+      - AL
+      - AM
+      - AO
+      - AQ
+      - AR
+      - AS
+      - AT
+      - AU
+      - AW
+      - AX
+      - AZ
+      - BA
+      - BB
+      - BD
+      - BE
+      - BF
+      - BG
+      - BH
+      - BI
+      - BJ
+      - BL
+      - BM
+      - BN
+      - BO
+      - BQ
+      - BR
+      - BS
+      - BT
+      - BV
+      - BW
+      - BY
+      - BZ
+      - CA
+      - CC
+      - CD
+      - CF
+      - CG
+      - CH
+      - CI
+      - CK
+      - CL
+      - CM
+      - CN
+      - CO
+      - CR
+      - CU
+      - CV
+      - CW
+      - CX
+      - CY
+      - CZ
+      - DE
+      - DJ
+      - DK
+      - DM
+      - DO
+      - DZ
+      - EC
+      - EE
+      - EG
+      - EH
+      - ER
+      - ES
+      - ET
+      - FI
+      - FJ
+      - FK
+      - FM
+      - FO
+      - FR
+      - GA
+      - GB
+      - GD
+      - GE
+      - GF
+      - GG
+      - GH
+      - GI
+      - GL
+      - GM
+      - GN
+      - GP
+      - GQ
+      - GR
+      - GS
+      - GT
+      - GU
+      - GW
+      - GY
+      - HK
+      - HM
+      - HN
+      - HR
+      - HT
+      - HU
+      - ID
+      - IE
+      - IL
+      - IM
+      - IN
+      - IO
+      - IQ
+      - IR
+      - IS
+      - IT
+      - JE
+      - JM
+      - JO
+      - JP
+      - KE
+      - KG
+      - KH
+      - KI
+      - KM
+      - KN
+      - KP
+      - KR
+      - KW
+      - KY
+      - KZ
+      - LA
+      - LB
+      - LC
+      - LI
+      - LK
+      - LR
+      - LS
+      - LT
+      - LU
+      - LV
+      - LY
+      - MA
+      - MC
+      - MD
+      - ME
+      - MF
+      - MG
+      - MH
+      - MK
+      - ML
+      - MM
+      - MN
+      - MO
+      - MP
+      - MQ
+      - MR
+      - MS
+      - MT
+      - MU
+      - MV
+      - MW
+      - MX
+      - MY
+      - MZ
+      - NA
+      - NC
+      - NE
+      - NF
+      - NG
+      - NI
+      - NL
+      - "NO"
+      - NP
+      - NR
+      - NU
+      - NZ
+      - OM
+      - PA
+      - PE
+      - PF
+      - PG
+      - PH
+      - PK
+      - PL
+      - PM
+      - PN
+      - PR
+      - PS
+      - PT
+      - PW
+      - PY
+      - QA
+      - RE
+      - RO
+      - RS
+      - RU
+      - RW
+      - SA
+      - SB
+      - SC
+      - SD
+      - SE
+      - SG
+      - SH
+      - SI
+      - SJ
+      - SK
+      - SL
+      - SM
+      - SN
+      - SO
+      - SR
+      - SS
+      - ST
+      - SV
+      - SX
+      - SY
+      - SZ
+      - TC
+      - TD
+      - TF
+      - TG
+      - TH
+      - TJ
+      - TK
+      - TL
+      - TM
+      - TN
+      - TO
+      - TR
+      - TT
+      - TV
+      - TW
+      - TZ
+      - UA
+      - UG
+      - UM
+      - US
+      - UY
+      - UZ
+      - VA
+      - VC
+      - VE
+      - VG
+      - VI
+      - VN
+      - VU
+      - WF
+      - WS
+      - YE
+      - YT
+      - ZA
+      - ZM
+      - ZW
+    CreateApprovalRequestRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+      required:
+      - reason
+    CreateInboxProcedureRequest:
+      type: object
+      properties:
+        contactDetails:
+          $ref: "#/components/schemas/ContactDetails"
+        inboxProcedureType:
+          $ref: "#/components/schemas/ProcedureType"
+        inboxProgressEntry:
+          $ref: "#/components/schemas/CreateInboxProgressEntry"
+      required:
+      - contactDetails
+      - inboxProgressEntry
+    CreateInboxProgressEntry:
+      type: object
+      properties:
+        inboxProgressEntryType:
+          $ref: "#/components/schemas/InboxProgressEntryType"
+        messageText:
+          type: string
+        subject:
+          type: string
+      required:
+      - inboxProgressEntryType
+    CreateManualProgressEntryRequest:
+      type: object
+      properties:
+        keyDocumentType:
+          type: string
+        manualProgressEntryType:
+          $ref: "#/components/schemas/ManualProgressEntryType"
+        note:
+          type: string
+      required:
+      - manualProgressEntryType
+    DataOrigin:
+      type: string
+      description: "A list of possible origins of Persons and Facility in the Central\
+        \ Files. EDIT will only be set automatically on changes. EXTERNAL is for entries\
+        \ that come, e.g., from the citizen portal. IMPORT is reserved for automatic\
+        \ imports. MANUAL shall be set for every creation or connection done by an\
+        \ employee."
+      enum:
+      - MANUAL
+      - EXTERNAL
+      - IMPORT
+      - EDIT
+    Decision:
+      type: string
+      enum:
+      - GRANTED
+      - DENIED
     DefaultPopulationResponse:
       type: object
       properties:
@@ -162,6 +2433,679 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    DetailedFacility:
+      type: object
+      properties:
+        facilityFileState:
+          $ref: "#/components/schemas/FacilityFileState"
+        facilityType:
+          $ref: "#/components/schemas/FacilityType"
+      required:
+      - facilityFileState
+      - facilityType
+    DetailedPerson:
+      type: object
+      properties:
+        person:
+          $ref: "#/components/schemas/GetPersonFileStateResponse"
+        personType:
+          $ref: "#/components/schemas/PersonType"
+      required:
+      - person
+      - personType
+    DetailedTask:
+      type: object
+      properties:
+        assignedByName:
+          type: string
+        assigneeName:
+          type: string
+        task:
+          $ref: "#/components/schemas/Task"
+      required:
+      - task
+    DomesticAddress:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Address"
+      - type: object
+        properties:
+          addressAddition:
+            type: string
+            description: A descriptive addition to the address.
+            example: 2.OG links
+            maxLength: 100
+            minLength: 1
+          city:
+            type: string
+            description: The city in which the address is located.
+            example: Berlin
+            maxLength: 50
+            minLength: 1
+          country:
+            $ref: "#/components/schemas/CountryCode"
+          differentName:
+            type: string
+            description: "If the name of the addressee deviates from the present name\
+              \ of a Person or Facility, e.g. when a company pays the bill for its\
+              \ employee or a parent company shall be contacted instead of its subsidiary."
+            example: Parent Company AG
+            maxLength: 200
+            minLength: 1
+          houseNumber:
+            type: string
+            description: "The house number of the address, including extensions."
+            example: 1a
+            maxLength: 11
+            minLength: 1
+          postalCode:
+            type: string
+            description: The postal code of the address.
+            example: "10115"
+            maxLength: 20
+            minLength: 1
+          street:
+            type: string
+            description: "The name of the street of the address, without the house\
+              \ number."
+            example: Beispielweg
+            maxLength: 55
+            minLength: 1
+      description: A usual domestic address.
+      required:
+      - city
+      - country
+      - postalCode
+      - street
+    EmployeeOmsProcedureOverview:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/ProcedureStatus"
+      required:
+      - id
+      - status
+    EmployeeOmsProcedureSortKey:
+      type: string
+      enum:
+      - ID
+    ExportArchivingRelevantProceduresRequest:
+      type: object
+      properties:
+        procedures:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 2147483647
+          minItems: 1
+          uniqueItems: true
+      required:
+      - procedures
+    FacilityContactPerson:
+      type: object
+      properties:
+        emailAddress:
+          type: string
+          description: The email addresses of the Contact Person.
+          example: mail1@address.de
+          maxLength: 254
+          minLength: 6
+        firstName:
+          type: string
+          description: The given name(s) of the Contact Person.
+          example: John
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        lastName:
+          type: string
+          description: The last name of the Contact Person.
+          example: Doe
+          maxLength: 120
+          minLength: 1
+        phoneNumber:
+          type: string
+          description: The phone number of the Contact Person.
+          example: "+491234567890"
+          maxLength: 23
+          minLength: 1
+        role:
+          type: string
+          description: The role of the Contact Person in the Facility.
+          example: CEO
+          maxLength: 255
+          minLength: 1
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of the Contact Person.
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
+      required:
+      - lastName
+    FacilityFileState:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        contactPersons:
+          type: array
+          description: A list of contact persons of the Facility.
+          items:
+            $ref: "#/components/schemas/FacilityContactPerson"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          description: A list of email addresses of the Facility.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
+          items:
+            type: string
+        id:
+          type: string
+          format: uuid
+          description: The Id of the Facility.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        name:
+          type: string
+          description: The name of the Facility.
+          example: Example Facility
+          maxLength: 300
+          minLength: 1
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Facility.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        referenceVersion:
+          type: integer
+          format: int64
+          description: The version of referenceData that was present when the FileState
+            was created. Can be increased if a newer version is irrelevant for the
+            Procedure and the outdated flag shall be suppressed.
+          example: 1
+      required:
+      - contactPersons
+      - dataOrigin
+      - emailAddresses
+      - id
+      - name
+      - phoneNumbers
+      - referenceVersion
+    FacilityType:
+      type: string
+      enum:
+      - SCHOOL
+      - INSPECTION
+      - DAYCARE
+      - HOSPITAL
+      - MEDICAL_PRACTICE
+      - REFUGEE_ACCOMMODATION
+      - OTHER
+    FileMetaData:
+      type: object
+      properties:
+        description:
+          type: string
+    FileType:
+      type: string
+      enum:
+      - JPEG
+      - PNG
+      - PDF
+      - EML
+    GdprDownloadPackageInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+      - id
+    GdprFacility:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GdprIdentificationData"
+      - type: object
+        properties:
+          address:
+            oneOf:
+            - $ref: "#/components/schemas/DomesticAddress"
+            - $ref: "#/components/schemas/PostboxAddress"
+          emailAddress:
+            type: string
+            description: The email addresses of the Facility.
+            example: mail@address.de
+            maxLength: 254
+            minLength: 6
+          name:
+            type: string
+            description: The name of the Facility.
+            example: 123 Example Facility
+            maxLength: 300
+            minLength: 1
+          phoneNumber:
+            type: string
+            description: The phone number of the Facility.
+            example: "+491234567890"
+            maxLength: 23
+            minLength: 1
+      required:
+      - address
+      - name
+    GdprIdentificationData:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+      required:
+      - '@type'
+    GdprPerson:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/GdprIdentificationData"
+      - type: object
+        properties:
+          address:
+            oneOf:
+            - $ref: "#/components/schemas/DomesticAddress"
+            - $ref: "#/components/schemas/PostboxAddress"
+          dateOfBirth:
+            type: string
+            format: date
+            description: The date of birth of the Person.
+            example: 2000-01-01
+          emailAddress:
+            type: string
+            description: The email addresses of the Person.
+            example: mail@address.de
+            maxLength: 254
+            minLength: 6
+          firstName:
+            type: string
+            description: The given name(s) of the Person.
+            example: John
+            maxLength: 80
+            minLength: 1
+          lastName:
+            type: string
+            description: The last name of the Person.
+            example: Doe
+            maxLength: 120
+            minLength: 1
+          phoneNumber:
+            type: string
+            description: The phone number of the Person.
+            example: "+491234567890"
+            maxLength: 23
+            minLength: 0
+          salutation:
+            $ref: "#/components/schemas/Salutation"
+          title:
+            type: string
+            description: The academic title of the Person.
+            example: Prof. Dr.
+            maxLength: 119
+            minLength: 1
+      required:
+      - address
+      - dateOfBirth
+      - firstName
+      - lastName
+    GdprProcedureType:
+      type: string
+      description: A list of types of GDPR procedures.
+      enum:
+      - RIGHT_OF_ACCESS
+      - RIGHT_TO_ERASURE
+    GdprValidationTask:
+      type: object
+      properties:
+        dueDate:
+          type: string
+          format: date
+        gdprProcedureId:
+          type: string
+          format: uuid
+        identificationData:
+          oneOf:
+          - $ref: "#/components/schemas/GdprFacility"
+          - $ref: "#/components/schemas/GdprPerson"
+        status:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
+      required:
+      - dueDate
+      - gdprProcedureId
+      - identificationData
+      - status
+      - type
+    GdprValidationTaskSortKey:
+      type: string
+      enum:
+      - CREATED_AT
+    GdprValidationTaskStatus:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
+    Gender:
+      type: string
+      description: The list of genders as specified in the German Personenstandsgesetz.
+      enum:
+      - NOT_SPECIFIED
+      - DIVERSE
+      - FEMALE
+      - MALE
+    GenericFile:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractFile"
+      - type: object
+        properties:
+          '@type':
+            type: string
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - createdAt
+      - deletable
+      - deleted
+      - fileId
+      - fileName
+      - fileSizeBytes
+      - fileType
+      - locked
+      - modifiedAt
+    GenericFileReference:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/AbstractFileReference"
+      - $ref: "#/components/schemas/ConcreteFileOrFileReference"
+      - type: object
+        properties:
+          '@type':
+            type: string
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - deletable
+      - deleted
+      - fileId
+    GetAllValidationTasksResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/GdprValidationTask"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+          minimum: 0
+      required:
+      - elements
+      - totalNumberOfElements
+    GetArchivableProceduresResponse:
+      type: object
+      properties:
+        procedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/Procedure"
+          maxItems: 200
+          minItems: 0
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
+      required:
+      - procedures
+      - totalElements
+      - totalPages
+    GetArchivableProceduresSortBy:
+      type: string
+      default: CLOSED_AT
+      enum:
+      - CLOSED_AT
+      - PROCEDURE_TYPE
+    GetArchivableProceduresSortOrder:
+      type: string
+      default: ASC
+      enum:
+      - ASC
+      - DESC
+    GetArchivingConfigurationResponse:
+      type: object
+      properties:
+        archivingDetails:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/ArchivingDetails"
+        gracePeriodMonths:
+          type: integer
+          format: int32
+      required:
+      - archivingDetails
+      - gracePeriodMonths
+    GetDepartmentInfoResponse:
+      type: object
+      properties:
+        abbreviation:
+          type: string
+          description: The abbreviation of the name of the department
+          example: LTG
+        city:
+          type: string
+          description: The name of the city where the department is located
+          example: Berlin
+        country:
+          $ref: "#/components/schemas/CountryCode"
+        email:
+          type: string
+          description: The email address of the department
+          example: mail@address.de
+        homepage:
+          type: string
+          description: "The domain of the department's official homepage, excluding\
+            \ protocols"
+          example: department-homepage.de
+        houseNumber:
+          type: string
+          description: "The house number at the department's address, including any\
+            \ extensions or suffixes"
+          example: 1b
+        location:
+          $ref: "#/components/schemas/Location"
+        name:
+          type: string
+          description: The name of the department
+          example: Gesundheitsamt Landkreis Testgebiet
+        phoneNumber:
+          type: string
+          description: The primary contact telephone number for the department
+          example: "+491234567890"
+        postalCode:
+          type: string
+          description: The postal code for the department’s address
+          example: "12345"
+        street:
+          type: string
+          description: "The street name for the department’s address, not including\
+            \ the house number"
+          example: Beispielweg
+      required:
+      - city
+      - country
+      - email
+      - homepage
+      - houseNumber
+      - location
+      - name
+      - phoneNumber
+      - postalCode
+      - street
+    GetDetailedProcedureResponse:
+      type: object
+      properties:
+        facilities:
+          type: array
+          items:
+            $ref: "#/components/schemas/DetailedFacility"
+        persons:
+          type: array
+          items:
+            $ref: "#/components/schemas/DetailedPerson"
+        procedure:
+          $ref: "#/components/schemas/Procedure"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/DetailedTask"
+      required:
+      - facilities
+      - persons
+      - procedure
+      - tasks
+    GetEmployeeOmsProcedureOverviewResponse:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmployeeOmsProcedureOverview"
+        totalNumberOfElements:
+          type: integer
+          format: int64
+      required:
+      - elements
+      - totalNumberOfElements
+    GetGdprDownloadPackagesInfoResponse:
+      type: object
+      properties:
+        downloadPackages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GdprDownloadPackageInfo"
+      required:
+      - downloadPackages
+    GetGdprNotificationBannerResponse:
+      type: object
+      properties:
+        earliestDueDate:
+          type: string
+          format: date
+        openValidationTasksCount:
+          type: integer
+          format: int32
+          minimum: 0
+      required:
+      - openValidationTasksCount
+    GetGdprValidationTaskDetailsResponse:
+      type: object
+      properties:
+        proceduresWithStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessProcedureWithInclusionStatus"
+        validationTask:
+          $ref: "#/components/schemas/GdprValidationTask"
+      required:
+      - proceduresWithStatus
+      - validationTask
+    GetGdprValidationTaskResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/GdprValidationTaskStatus"
+      required:
+      - status
+    GetInboxProcedureResponse:
+      type: object
+      properties:
+        inboxProcedure:
+          $ref: "#/components/schemas/InboxProcedure"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+      required:
+      - inboxProcedure
+      - resolvedUsers
+    GetInboxProceduresResponse:
+      type: object
+      properties:
+        inboxProcedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/InboxProcedure"
+          maxItems: 200
+          minItems: 0
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
+      required:
+      - inboxProcedures
+      - totalElements
+      - totalPages
+    GetInboxProceduresSortBy:
+      type: string
+      default: CREATED_AT
+      enum:
+      - CREATED_AT
+    GetInboxProceduresSortOrder:
+      type: string
+      default: ASC
+      enum:
+      - ASC
+      - DESC
+    GetManualProgressEntryHistoryResponse:
+      type: object
+      properties:
+        manualProgressEntryHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/ManualProgressEntryHistory"
+    GetMetaDataHistoryResponse:
+      type: object
+      properties:
+        metaDataHistory:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/ImageMetaDataHistory"
+            - $ref: "#/components/schemas/MailMetaDataHistory"
+            - $ref: "#/components/schemas/PdfMetaDataHistory"
     GetOpeningHoursResponse:
       type: object
       properties:
@@ -176,6 +3120,315 @@ components:
       required:
       - de
       - en
+    GetPersonFileStateResponse:
+      type: object
+      properties:
+        contactAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        countryOfBirth:
+          $ref: "#/components/schemas/CountryCode"
+        dataOrigin:
+          $ref: "#/components/schemas/DataOrigin"
+        dateOfBirth:
+          type: string
+          format: date
+          description: The date of birth of the Person.
+          example: 2000-01-01
+        differentBillingAddress:
+          oneOf:
+          - $ref: "#/components/schemas/DomesticAddress"
+          - $ref: "#/components/schemas/PostboxAddress"
+        emailAddresses:
+          type: array
+          description: A list of email addresses of the Person.
+          example: "['mail1@address.de','mail2@address.de','mail3@address.de']"
+          items:
+            type: string
+        firstName:
+          type: string
+          description: The given name(s) of the Person.
+          example: John
+          maxLength: 80
+          minLength: 1
+        gender:
+          $ref: "#/components/schemas/Gender"
+        id:
+          type: string
+          format: uuid
+          description: Id of the Person.
+          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        lastName:
+          type: string
+          description: The last name of the Person.
+          example: Doe
+          maxLength: 120
+          minLength: 1
+        nameAtBirth:
+          type: string
+          description: The last name at birth of the Person.
+          example: Smith
+          maxLength: 40
+          minLength: 1
+        outdated:
+          type: boolean
+          description: A flag that signals if a File State differs from the referencePerson
+            it is connected to. Set to 'null' if unchecked.
+          example: true
+        phoneNumbers:
+          type: array
+          description: A list of telephone numbers of the Person.
+          example: "['+4912345678901','+4912345678902','+4912345678903']"
+          items:
+            type: string
+            maxLength: 23
+            minLength: 1
+        placeOfBirth:
+          type: string
+          description: The place of birth (without country) of the Person.
+          example: Berlin
+          maxLength: 50
+          minLength: 1
+        referenceVersion:
+          type: integer
+          format: int64
+          description: The version of referenceData that was present when the FileState
+            was created. Can be increased if a newer version is irrelevant for the
+            Procedure and the outdated flag shall be suppressed.
+          example: 1
+        salutation:
+          $ref: "#/components/schemas/Salutation"
+        title:
+          type: string
+          description: The academic title of a Person.
+          example: Prof. Dr.
+          maxLength: 119
+          minLength: 1
+      required:
+      - dataOrigin
+      - dateOfBirth
+      - emailAddresses
+      - firstName
+      - gender
+      - id
+      - lastName
+      - phoneNumbers
+      - referenceVersion
+      - salutation
+    GetProcedureApprovalRequestsResponse:
+      type: object
+      properties:
+        approvalRequests:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApprovalRequest"
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+      required:
+      - approvalRequests
+      - resolvedUsers
+    GetProcedureFileDetailsResponse:
+      type: object
+      properties:
+        fileDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProgressEntryReferenceFilePair"
+        procedureId:
+          type: string
+          format: uuid
+      required:
+      - fileDetails
+      - procedureId
+    GetProcedureMetricsResponse:
+      type: object
+      properties:
+        procedureMetrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureMetric"
+      required:
+      - procedureMetrics
+    GetProceduresResponse:
+      type: object
+      properties:
+        procedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/Procedure"
+          maxItems: 200
+          minItems: 0
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
+      required:
+      - procedures
+      - totalElements
+      - totalPages
+    GetProceduresSortBy:
+      type: string
+      default: CREATED_AT
+      enum:
+      - MODIFIED_AT
+      - CREATED_AT
+    GetProceduresSortOrder:
+      type: string
+      default: ASC
+      enum:
+      - ASC
+      - DESC
+    GetProgressEntriesResponse:
+      type: object
+      properties:
+        progressEntries:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/ProcessedInboxProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
+          maxItems: 200
+          minItems: 0
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
+      required:
+      - progressEntries
+      - totalElements
+      - totalPages
+    GetProgressEntryResponse:
+      type: object
+      properties:
+        progressEntry:
+          oneOf:
+          - $ref: "#/components/schemas/ManualProgressEntry"
+          - $ref: "#/components/schemas/ProcessedInboxProgressEntry"
+          - $ref: "#/components/schemas/SystemProgressEntry"
+        relatedKeyDocumentProgressEntries:
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/ManualProgressEntry"
+            - $ref: "#/components/schemas/SystemProgressEntry"
+      required:
+      - progressEntry
+      - relatedKeyDocumentProgressEntries
+    GetRecentProceduresResponse:
+      type: object
+      properties:
+        procedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/Procedure"
+      required:
+      - procedures
+    GetRelevantArchivableProceduresResponse:
+      type: object
+      properties:
+        fileSizeBytes:
+          type: integer
+          format: int32
+        procedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/Procedure"
+          maxItems: 200
+          minItems: 0
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
+      required:
+      - fileSizeBytes
+      - procedures
+      - totalElements
+      - totalPages
+    GetRelevantArchivableProceduresSortBy:
+      type: string
+      default: CLOSED_AT
+      enum:
+      - CLOSED_AT
+      - EXPORTED_AT
+    GetRelevantArchivableProceduresSortOrder:
+      type: string
+      default: ASC
+      enum:
+      - ASC
+      - DESC
+    GetTaskByUserResponse:
+      type: object
+      properties:
+        resolvedUsers:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/User"
+        tasksByUser:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/Task"
+      required:
+      - resolvedUsers
+      - tasksByUser
+    GetTaskMetricsResponse:
+      type: object
+      properties:
+        businessModule:
+          $ref: "#/components/schemas/BusinessModule"
+        closedProcedureCount:
+          type: integer
+          format: int64
+        fastestProcedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureWithDuration"
+        procedureType:
+          $ref: "#/components/schemas/ProcedureType"
+        slowestProcedures:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureWithDuration"
+        taskMetrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskMetric"
+      required:
+      - businessModule
+      - closedProcedureCount
+      - fastestProcedures
+      - procedureType
+      - slowestProcedures
+      - taskMetrics
+    GetTasksSortBy:
+      type: string
+      enum:
+      - PRIORITY
+      - CREATED_AT
+      - MODIFIED_AT
+    GetTasksSortOrder:
+      type: string
+      default: ASC
+      enum:
+      - ASC
+      - DESC
     HttpMethod:
       type: string
       enum:
@@ -187,6 +3440,128 @@ components:
       - DELETE
       - OPTIONS
       - TRACE
+    Image:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/ConcreteFileDto"
+      - type: object
+        properties:
+          '@type':
+            type: string
+          metaData:
+            $ref: "#/components/schemas/ImageMetaData"
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - createdAt
+      - deletable
+      - deleted
+      - fileId
+      - fileName
+      - fileSizeBytes
+      - fileType
+      - locked
+      - modifiedAt
+    ImageMetaData:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MetaData"
+      - type: object
+        properties:
+          createdDate:
+            type: string
+            format: date-time
+    ImageMetaDataHistory:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MetaDataHistory"
+      - type: object
+        properties:
+          imageMetaData:
+            $ref: "#/components/schemas/ImageMetaData"
+      required:
+      - changedAt
+    InboxProcedure:
+      type: object
+      properties:
+        closedAt:
+          type: string
+          format: date-time
+        contactDetails:
+          $ref: "#/components/schemas/ContactDetails"
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+          format: uuid
+        inboxProcedureId:
+          type: string
+          format: uuid
+        inboxProcedureStatus:
+          $ref: "#/components/schemas/InboxProcedureStatus"
+        inboxProcedureType:
+          $ref: "#/components/schemas/ProcedureType"
+        inboxProgressEntry:
+          $ref: "#/components/schemas/InboxProgressEntry"
+      required:
+      - contactDetails
+      - createdAt
+      - createdBy
+      - inboxProcedureId
+      - inboxProcedureStatus
+      - inboxProgressEntry
+    InboxProcedureAddress:
+      type: object
+      properties:
+        addressAddition:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        houseNumber:
+          type: string
+        postalCode:
+          type: string
+        postboxNumber:
+          type: integer
+          format: int32
+        street:
+          type: string
+    InboxProcedureStatus:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
+    InboxProgressEntry:
+      type: object
+      properties:
+        fileReference:
+          oneOf:
+          - $ref: "#/components/schemas/GenericFileReference"
+          - $ref: "#/components/schemas/Image"
+          - $ref: "#/components/schemas/Mail"
+          - $ref: "#/components/schemas/Pdf"
+        inboxProgressEntryId:
+          type: string
+          format: uuid
+        inboxProgressEntryType:
+          $ref: "#/components/schemas/InboxProgressEntryType"
+        messageText:
+          type: string
+        subject:
+          type: string
+      required:
+      - inboxProgressEntryId
+      - inboxProgressEntryType
+    InboxProgressEntryType:
+      type: string
+      enum:
+      - LETTER
+      - PHONE_CALL
+      - EMAIL
     InsertRequestInterceptionTestHelperRequest:
       type: object
       properties:
@@ -204,6 +3579,242 @@ components:
       - FORBIDDEN
       - NOT_FOUND
       - INTERNAL_SERVER_ERROR
+    KeyDocumentAwareProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        keyDocumentType:
+          type: string
+        keyDocumentVersion:
+          type: integer
+          format: int32
+      required:
+      - '@type'
+    Location:
+      type: object
+      description: Location defined by latitude and longitude.
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: Geographic coordinate that specifies the north–south angular
+            location of a point on the surface of the Earth.
+          example: 52.51627
+        longitude:
+          type: number
+          format: double
+          description: Geographic coordinate that specifies the east–west angular
+            position of a point on the surface of the Earth.
+          example: 13.377703
+      required:
+      - latitude
+      - longitude
+    Mail:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/ConcreteFileDto"
+      - type: object
+        properties:
+          '@type':
+            type: string
+          attachments:
+            type: array
+            items:
+              oneOf:
+              - $ref: "#/components/schemas/Image"
+              - $ref: "#/components/schemas/Mail"
+              - $ref: "#/components/schemas/Pdf"
+          metaData:
+            $ref: "#/components/schemas/MailMetaData"
+          removedInvalidAttachments:
+            type: integer
+            format: int32
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - createdAt
+      - deletable
+      - deleted
+      - fileId
+      - fileName
+      - fileSizeBytes
+      - fileType
+      - locked
+      - modifiedAt
+      - removedInvalidAttachments
+    MailMetaData:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MetaData"
+      - type: object
+        properties:
+          mailFrom:
+            type: string
+          mailTo:
+            type: string
+          messageText:
+            type: string
+          sentDate:
+            type: string
+            format: date-time
+          subject:
+            type: string
+      required:
+      - mailFrom
+      - mailTo
+      - messageText
+      - sentDate
+      - subject
+    MailMetaDataHistory:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MetaDataHistory"
+      - type: object
+        properties:
+          mailMetaData:
+            $ref: "#/components/schemas/MailMetaData"
+      required:
+      - changedAt
+    ManualProgressEntry:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/ProgressEntry"
+      - type: object
+        properties:
+          createdBy:
+            type: string
+            format: uuid
+          createdByUserFirstName:
+            type: string
+          createdByUserLastName:
+            type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
+          locked:
+            type: boolean
+          manualProgressEntryType:
+            $ref: "#/components/schemas/ManualProgressEntryType"
+          note:
+            type: string
+      - $ref: "#/components/schemas/ApprovalRequestEntity"
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
+      required:
+      - createdAt
+      - createdBy
+      - locked
+      - manualProgressEntryType
+      - modifiedAt
+      - progressEntryId
+    ManualProgressEntryHistory:
+      type: object
+      properties:
+        changedAt:
+          type: string
+          format: date-time
+        manualProgressEntry:
+          $ref: "#/components/schemas/ManualProgressEntry"
+      required:
+      - changedAt
+    ManualProgressEntryType:
+      type: string
+      enum:
+      - LETTER
+      - PHONE_CALL
+      - NOTE
+      - EMAIL
+      - IMAGE
+      - DOCUMENT
+    MetaData:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        description:
+          type: string
+      required:
+      - '@type'
+    MetaDataHistory:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+      required:
+      - '@type'
+      - changedAt
+    Operation:
+      type: string
+      enum:
+      - DELETE
+    PatchManualProgressEntryRequest:
+      type: object
+      properties:
+        manualProgressEntryType:
+          $ref: "#/components/schemas/ManualProgressEntryType"
+        note:
+          type: string
+          nullable: true
+    Pdf:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/ConcreteFileDto"
+      - type: object
+        properties:
+          '@type':
+            type: string
+          metaData:
+            $ref: "#/components/schemas/PdfMetaData"
+      discriminator:
+        propertyName: '@type'
+      required:
+      - '@type'
+      - createdAt
+      - deletable
+      - deleted
+      - fileId
+      - fileName
+      - fileSizeBytes
+      - fileType
+      - locked
+      - modifiedAt
+    PdfMetaData:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MetaData"
+      - type: object
+        properties:
+          createdDate:
+            type: string
+            format: date-time
+    PdfMetaDataHistory:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/MetaDataHistory"
+      - type: object
+        properties:
+          pdfMetaData:
+            $ref: "#/components/schemas/PdfMetaData"
+      required:
+      - changedAt
+    PersonType:
+      type: string
+      enum:
+      - PATIENT
+      - PARENT
+      - PROFESSIONAL
     Population:
       type: object
       properties:
@@ -218,6 +3829,422 @@ components:
       required:
       - numberOfPopulatedEntities
       - totalNumberOfEntities
+    PostEmployeeOmsProcedureRequest:
+      type: object
+    PostPopulateProcedureRequest:
+      type: object
+    PostPopulateProcedureResponse:
+      type: object
+      properties:
+        procedureId:
+          type: string
+          format: uuid
+      required:
+      - procedureId
+    PostboxAddress:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Address"
+      - type: object
+        properties:
+          city:
+            type: string
+            description: The city in which the address is located.
+            example: Berlin
+            maxLength: 50
+            minLength: 1
+          country:
+            $ref: "#/components/schemas/CountryCode"
+          differentName:
+            type: string
+            description: "If the name of the addressee deviates from the present name\
+              \ of a Person or Facility, e.g. when a company pays the bill for its\
+              \ employee or a parent company shall be contacted instead of its subsidiary."
+            example: Parent Company AG
+            maxLength: 200
+            minLength: 1
+          postalCode:
+            type: string
+            description: The postal code of the address.
+            example: "10115"
+            maxLength: 20
+            minLength: 1
+          postbox:
+            type: string
+            description: The number (or name) of the postbox.
+            example: "123"
+            maxLength: 21
+            minLength: 1
+      description: An address which is a postbox.
+      required:
+      - city
+      - country
+      - postalCode
+      - postbox
+    Procedure:
+      type: object
+      properties:
+        archivingRelevanceSettings:
+          $ref: "#/components/schemas/ArchivingRelevanceSettings"
+        businessModule:
+          $ref: "#/components/schemas/BusinessModule"
+        closedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        exportedAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        procedureId:
+          type: string
+          format: uuid
+        procedureStatus:
+          $ref: "#/components/schemas/ProcedureStatus"
+        procedureType:
+          $ref: "#/components/schemas/ProcedureType"
+        summary:
+          type: string
+          maxLength: 128
+          minLength: 0
+          pattern: "[a-zA-Z0-9.].+"
+      required:
+      - archivingRelevanceSettings
+      - businessModule
+      - createdAt
+      - modifiedAt
+      - procedureId
+      - procedureStatus
+      - procedureType
+      - summary
+    ProcedureMetric:
+      type: object
+      properties:
+        abortedCount:
+          type: integer
+          format: int64
+        averageDuration:
+          type: string
+          description: A duration in ISO 8601
+        businessModule:
+          $ref: "#/components/schemas/BusinessModule"
+        closedCount:
+          type: integer
+          format: int64
+        inProgressCount:
+          type: integer
+          format: int64
+        openOrDraftCount:
+          type: integer
+          format: int64
+        procedureType:
+          $ref: "#/components/schemas/ProcedureType"
+        totalCount:
+          type: integer
+          format: int64
+      required:
+      - abortedCount
+      - businessModule
+      - closedCount
+      - inProgressCount
+      - openOrDraftCount
+      - procedureType
+      - totalCount
+    ProcedureStatus:
+      type: string
+      enum:
+      - DRAFT
+      - OPEN
+      - IN_PROGRESS
+      - CLOSED
+      - ABORTED
+    ProcedureType:
+      type: string
+      enum:
+      - REGULAR_EXAMINATION
+      - CAN_CHILD
+      - ENTRY_LEVEL
+      - DRAFT_CITIZEN_OFFICE_IMPORT
+      - DRAFT_SCHOOL_IMPORT
+      - INSPECTION
+      - TM_VACCINATION_CONSULTATION
+      - MEASLES_PROTECTION
+      - STI_PROTECTION
+      - MEDICAL_REGISTRY_ENTRY
+      - MEDICAL_REGISTRY_CITIZEN_DRAFT
+      - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
+      - DENTAL_CHILD
+      - OFFICIAL_MEDICAL_SERVICE
+    ProcedureWithDuration:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        duration:
+          type: string
+          description: A duration in ISO 8601
+        id:
+          type: string
+          format: uuid
+      required:
+      - createdAt
+      - duration
+      - id
+    ProcessedInboxProgressEntry:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/ProgressEntry"
+      - type: object
+        properties:
+          createdBy:
+            type: string
+            format: uuid
+          createdByUserFirstName:
+            type: string
+          createdByUserLastName:
+            type: string
+          inboxProcedureId:
+            type: string
+            format: uuid
+          inboxProgressEntryType:
+            $ref: "#/components/schemas/InboxProgressEntryType"
+          messageText:
+            type: string
+          subject:
+            type: string
+      required:
+      - createdAt
+      - createdBy
+      - inboxProcedureId
+      - inboxProgressEntryType
+      - modifiedAt
+      - progressEntryId
+    ProgressEntry:
+      type: object
+      discriminator:
+        propertyName: '@type'
+      properties:
+        '@type':
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        fileReference:
+          oneOf:
+          - $ref: "#/components/schemas/GenericFileReference"
+          - $ref: "#/components/schemas/Image"
+          - $ref: "#/components/schemas/Mail"
+          - $ref: "#/components/schemas/Pdf"
+        modifiedAt:
+          type: string
+          format: date-time
+        progressEntryId:
+          type: string
+          format: uuid
+      required:
+      - '@type'
+      - createdAt
+      - modifiedAt
+      - progressEntryId
+    ProgressEntryClass:
+      type: string
+      enum:
+      - MANUAL_PROGRESS_ENTRY
+      - SYSTEM_PROGRESS_ENTRY
+      - PROCESSED_INBOX_PROGRESS_ENTRY
+    ProgressEntryReferenceFilePair:
+      type: object
+      properties:
+        file:
+          $ref: "#/components/schemas/GenericFile"
+        progressEntryId:
+          type: string
+          format: uuid
+      required:
+      - file
+      - progressEntryId
+    ProgressEntrySortBy:
+      type: string
+      default: CREATED_AT
+      enum:
+      - CREATED_AT
+      - MODIFIED_AT
+    ProgressEntrySortOrder:
+      type: string
+      default: ASC
+      enum:
+      - ASC
+      - DESC
+    Salutation:
+      type: string
+      description: A list of categories for the salutation from which specific salutation
+        phrases can be derived. The choice of salutation is free for every citizen
+        and not dependent on gender.
+      enum:
+      - NOT_SPECIFIED
+      - NEUTRAL
+      - FEMALE
+      - MALE
+    SelfAssignTaskRequest:
+      type: object
+      properties:
+        dueAt:
+          type: string
+          format: date-time
+        taskVersion:
+          type: integer
+          format: int64
+      required:
+      - taskVersion
+    SortDirection:
+      type: string
+      enum:
+      - ASC
+      - DESC
+    SystemProgressEntry:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/ProgressEntry"
+      - type: object
+        properties:
+          changeDescription:
+            type: string
+          keyDocumentType:
+            type: string
+          keyDocumentVersion:
+            type: integer
+            format: int32
+          systemProgressEntryType:
+            type: string
+          triggerType:
+            $ref: "#/components/schemas/TriggerType"
+          triggeredBy:
+            type: string
+            format: uuid
+          triggeredByUserFirstName:
+            type: string
+          triggeredByUserLastName:
+            type: string
+      - $ref: "#/components/schemas/KeyDocumentAwareProgressEntry"
+      required:
+      - createdAt
+      - modifiedAt
+      - progressEntryId
+      - systemProgressEntryType
+      - triggerType
+    Task:
+      type: object
+      properties:
+        assignedById:
+          type: string
+          format: uuid
+        assigneeId:
+          type: string
+          format: uuid
+        businessModule:
+          $ref: "#/components/schemas/BusinessModule"
+        createdAt:
+          type: string
+          format: date-time
+        dueAt:
+          type: string
+          format: date-time
+        isOverdue:
+          type: boolean
+        modifiedAt:
+          type: string
+          format: date-time
+        procedureId:
+          type: string
+          format: uuid
+        summary:
+          type: string
+          maxLength: 128
+          minLength: 0
+        taskId:
+          type: string
+          format: uuid
+        taskStatus:
+          $ref: "#/components/schemas/TaskStatus"
+        taskType:
+          $ref: "#/components/schemas/TaskType"
+        version:
+          type: integer
+          format: int64
+      required:
+      - businessModule
+      - createdAt
+      - isOverdue
+      - modifiedAt
+      - procedureId
+      - summary
+      - taskId
+      - taskStatus
+      - taskType
+      - version
+    TaskMetric:
+      type: object
+      properties:
+        averageDuration:
+          type: string
+          description: A duration in ISO 8601
+        moreThanTwoOccurrencesCount:
+          type: integer
+          format: int32
+        noOccurrencesCount:
+          type: integer
+          format: int32
+        oneOccurrenceCount:
+          type: integer
+          format: int32
+        taskType:
+          $ref: "#/components/schemas/TaskType"
+        twoOccurrencesCount:
+          type: integer
+          format: int32
+      required:
+      - moreThanTwoOccurrencesCount
+      - noOccurrencesCount
+      - oneOccurrenceCount
+      - taskType
+      - twoOccurrencesCount
+    TaskResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: total number of tasks for this query
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+          maxItems: 200
+          minItems: 0
+      required:
+      - count
+      - tasks
+    TaskStatus:
+      type: string
+      enum:
+      - OPEN
+      - CLOSED
+    TaskType:
+      type: string
+      enum:
+      - BOOK_APPOINTMENT
+      - PERFORM_SCHOOL_ENTRY_EXAMINATION
+      - INSPECTION_PLANNING
+      - INSPECTION_EXECUTION
+      - INSPECTION_REPORT
+      - TRAVEL_MEDICINE
+      - MEASLES_PROTECTION
+      - STI_PROTECTION
     TestHelperClockSetRequest:
       type: object
       properties:
@@ -277,3 +4304,58 @@ components:
           type: string
         urlPatternFilter:
           type: string
+    Title:
+      type: string
+      enum:
+      - DR
+      - PROF
+      - PROF_DR
+    TriggerType:
+      type: string
+      enum:
+      - SYSTEM_AUTOMATIC
+      - EMPLOYEE
+      - CITIZEN
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address of a user.
+          example: example@mail.de
+        enabled:
+          type: boolean
+          description: "True, if the user can login"
+          example: false
+        externalChatUsername:
+          type: string
+          description: The chat username of the gematik TI-Messenger (matrix chat).
+          example: '@username:server'
+        firstName:
+          type: string
+          description: The given name(s) of a user.
+          example: John
+        lastName:
+          type: string
+          description: The last name of a user.
+          example: Doe
+        phoneNumber:
+          type: string
+          description: The phone number of a user.
+          example: "+491234567890"
+        userId:
+          type: string
+          format: uuid
+          description: The Id of the user.
+          example: fe9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+        username:
+          type: string
+          description: The username which is displayed in the application and can
+            be used for the login.
+          example: testuser
+      required:
+      - enabled
+      - firstName
+      - lastName
+      - userId
+      - username

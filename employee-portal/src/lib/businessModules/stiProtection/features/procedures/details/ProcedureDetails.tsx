@@ -11,6 +11,7 @@ import { Grid, Stack } from "@mui/joy";
 import { AdditionalDataSection } from "./AdditionalDataSection";
 import { AnonIdentityDocumentCard } from "./AnonIdentityDocumentCard";
 import { AppointmentDetails } from "./AppointmentDetails";
+import { CheckPinSection } from "./CheckPinSection";
 import { CloseAndReopenProcedurePanel } from "./CloseProcedurePanel";
 import { CreateAppointmentSidebar } from "./CreateAppointmentSidebar";
 import { EditPersonalDataSidebar } from "./EditPersonalDataSidebar";
@@ -37,6 +38,7 @@ export function ProcedureDetails({
         <Grid xxs={12} lg={4}>
           <Stack spacing={2}>
             <AdditionalDataSection procedure={procedure} />
+            <CheckPinSection procedure={procedure} />
             <WaitingRoomSection procedure={procedure} />
             <CloseAndReopenProcedurePanel procedure={procedure} />
           </Stack>

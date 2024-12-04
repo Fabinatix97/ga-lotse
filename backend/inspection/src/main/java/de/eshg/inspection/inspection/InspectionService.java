@@ -7,8 +7,6 @@ package de.eshg.inspection.inspection;
 
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.domain.model.GloballyUniqueEntityBase;
 import de.eshg.inspection.checklist.ChecklistService;
 import de.eshg.inspection.checklist.api.ChecklistDto;
@@ -45,10 +43,7 @@ import de.eshg.inspection.packlist.PacklistService;
 import de.eshg.inspection.packlist.api.GetPacklistsResponse;
 import de.eshg.inspection.packlist.api.PacklistDto;
 import de.eshg.inspection.packlist.api.UpdatePacklistElementRequest;
-import de.eshg.inspection.packlist.persistence.Packlist;
-import de.eshg.inspection.packlist.persistence.PacklistElement;
 import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevision;
-import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevisionRepository;
 import de.eshg.inspection.util.Holder;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -93,7 +88,6 @@ public class InspectionService {
   private final InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository;
   private final ObjectTypeRepository objectTypeRepository;
   private final ChecklistDefinitionVersionRepository cldVersionRepository;
-  private final PacklistDefinitionRevisionRepository pldRevisionRepository;
   private final InspectionMapper inspectionMapper;
   private final InspectionUpdater inspectionUpdater;
   private final InspectionFinalizer inspectionFinalizer;
@@ -103,14 +97,12 @@ public class InspectionService {
   private final FacilityClient facilityClient;
   private final PacklistService packlistService;
   private final InboxProcedureService inboxProcedureService;
-  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
 
   public InspectionService(
       InspectionRepository inspectionRepository,
       InspectionRelatedFacilityRepository inspectionRelatedFacilityRepository,
       ObjectTypeRepository objectTypeRepository,
       ChecklistDefinitionVersionRepository cldVersionRepository,
-      PacklistDefinitionRevisionRepository pldRevisionRepository,
       InspectionMapper inspectionMapper,
       InspectionUpdater inspectionUpdater,
       InspectionFinalizer inspectionFinalizer,
@@ -119,13 +111,11 @@ public class InspectionService {
       AuditLogger auditLogger,
       FacilityClient facilityClient,
       PacklistService packlistService,
-      InboxProcedureService inboxProcedureService,
-      BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      InboxProcedureService inboxProcedureService) {
     this.inspectionRepository = inspectionRepository;
     this.inspectionRelatedFacilityRepository = inspectionRelatedFacilityRepository;
     this.objectTypeRepository = objectTypeRepository;
     this.cldVersionRepository = cldVersionRepository;
-    this.pldRevisionRepository = pldRevisionRepository;
     this.inspectionMapper = inspectionMapper;
     this.inspectionUpdater = inspectionUpdater;
     this.inspectionFinalizer = inspectionFinalizer;
@@ -135,7 +125,6 @@ public class InspectionService {
     this.facilityClient = facilityClient;
     this.packlistService = packlistService;
     this.inboxProcedureService = inboxProcedureService;
-    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
   }
 
   public InspectionDto startInspection(UUID externalId, StartInspectionRequest request) {
@@ -363,28 +352,12 @@ public class InspectionService {
 
   public InspectionAvailablePLDRevisionsResponse getAvailablePLDs(UUID externalId) {
     Inspection inspection = loadInspection(externalId);
-    ObjectType objectType = inspection.getFacility().getObjectType();
-
-    if (objectType != null) {
-      final Set<UUID> availablePacklistDefinitions =
-          inspection.getPacklists().stream()
-              .map(pl -> pl.getPacklistDefinitionRevision().getPacklistDefinition())
-              .map(GloballyUniqueEntityBase::getId)
-              .collect(Collectors.toSet());
-
-      List<PacklistDefinitionRevision> entityVersions =
-          pldRevisionRepository.findNewestPLDRevisionsForObjectTypeWithExclusion(
-              objectType, availablePacklistDefinitions);
-
-      return inspectionMapper.mapPldrsToResponse(entityVersions);
-    } else {
-      return new InspectionAvailablePLDRevisionsResponse(List.of());
-    }
+    List<PacklistDefinitionRevision> availablePLDs = packlistService.getAvailablePLDs(inspection);
+    return inspectionMapper.mapPldrsToResponse(availablePLDs);
   }
 
   public GetPacklistsResponse getPacklists(UUID inspectionExternalId) {
     Inspection inspection = this.loadInspection(inspectionExternalId);
-
     return packlistService.getPacklists(inspection);
   }
 
@@ -394,22 +367,8 @@ public class InspectionService {
       UUID packlistElementId,
       UpdatePacklistElementRequest request) {
     Inspection inspection = this.loadInspection(inspectionExternalId);
-
-    Packlist packlist =
-        inspection.getPacklists().stream()
-            .filter(pl -> pl.getId().equals(packlistId))
-            .findFirst()
-            .orElseThrow(
-                () -> new NotFoundException("This packlist is not part of this inspection"));
-
-    PacklistElement packlistElement =
-        packlist.getElements().stream()
-            .filter(e -> e.getId().equals(packlistElementId))
-            .findFirst()
-            .orElseThrow(
-                () -> new NotFoundException("This packlist element is not part of this packlist"));
-
-    return packlistService.checkPacklistElement(packlistElement, request.checked());
+    return packlistService.checkPacklistElement(
+        inspection, packlistId, packlistElementId, request.checked());
   }
 
   public InspectionDto syncInspectionFacilityFileState(
@@ -533,13 +492,6 @@ public class InspectionService {
 
   public void linkInboxProcedure(UUID inboxProcedureId, Inspection inspection) {
     if (inboxProcedureId == null) return;
-
-    Set<BaseFeature> features = baseFeatureTogglesApi.getFeatureToggles().enabledNewFeatures();
-    if (!features.contains(BaseFeature.INBOX) && !features.contains(BaseFeature.INSPECTION_INBOX)) {
-      throw new IllegalStateException(
-          "Neither new features %s and %s is enabled"
-              .formatted(BaseFeature.INBOX, BaseFeature.INSPECTION_INBOX));
-    }
 
     InboxProcedure inboxProcedure;
     try {

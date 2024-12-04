@@ -271,12 +271,14 @@ public class UserController implements UserApi {
   }
 
   private void createNotification(String sysAdminId, UserDto suggestedUser) {
-    notificationService.addNotification(
+    SimpleNotification emailEnabledNotification =
         new SimpleNotification(
             UUID.fromString(sysAdminId),
             "Benutzerverwaltung: Neuer Accountvorschlag",
             "Bitte in Keycloak ablehnen oder bestätigen: Ein neuer Benutzer mit der Mailadresse %s soll hinzugefügt werden."
-                .formatted(suggestedUser.email())));
+                .formatted(suggestedUser.email()));
+    emailEnabledNotification.setMailToSentFlag(true);
+    notificationService.addNotification(emailEnabledNotification);
   }
 
   @ExceptionHandler(NotFoundException.class)

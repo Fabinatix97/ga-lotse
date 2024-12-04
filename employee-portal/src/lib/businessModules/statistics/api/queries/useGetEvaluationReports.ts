@@ -24,6 +24,7 @@ import {
   EvaluationReports,
   ReportDataType,
   ReportSeries,
+  ReportSeriesItem,
   SingleReport,
 } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 
@@ -80,6 +81,7 @@ function mapSingleReport(apiReportSeries: ApiReportSeries): SingleReport {
     status: apiReportInfo.state,
     description: apiReportSeries.description,
     userId: apiReportSeries.userId,
+    tooMuchDataForExport: apiReportInfo.tooMuchDataForExport,
   };
 }
 
@@ -95,17 +97,20 @@ function mapSeriesReport(apiReportSeries: ApiReportSeries): ReportSeries {
     status: apiReportSeries.active
       ? ReportSeriesState.Activated
       : ReportSeriesState.Deactivated,
-    subRows: apiReportSeries.reportInfos.map((reportInfo) => ({
-      type: ReportDataType.Child,
-      seriesId: apiReportSeries.id,
-      userId: apiReportSeries.userId,
-      reportId: reportInfo.id,
-      name: `# ${reportInfo.name}`,
-      timeRangeStart: reportInfo.timeRangeStart,
-      timeRangeEnd: reportInfo.timeRangeEnd,
-      datasetAmount: reportInfo.totalNumberOfElements,
-      status: reportInfo.state,
-    })),
+    subRows: apiReportSeries.reportInfos.map(
+      (reportInfo) =>
+        ({
+          type: ReportDataType.Child,
+          userId: apiReportSeries.userId,
+          reportId: reportInfo.id,
+          name: `# ${reportInfo.name}`,
+          timeRangeStart: reportInfo.timeRangeStart,
+          timeRangeEnd: reportInfo.timeRangeEnd,
+          datasetAmount: reportInfo.totalNumberOfElements,
+          status: reportInfo.state,
+          tooMuchDataForExport: reportInfo.tooMuchDataForExport,
+        }) satisfies ReportSeriesItem,
+    ),
     isAllItemsDeleting: apiReportSeries.reportInfos.every(
       (reportInfo) => reportInfo.state === ApiReportState.Deleting,
     ),

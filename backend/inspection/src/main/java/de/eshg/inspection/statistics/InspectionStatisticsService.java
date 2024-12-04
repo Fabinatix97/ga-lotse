@@ -55,9 +55,6 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
       UUID.fromString("3f5939db-c5ca-4567-ae03-33012e2abc39");
   public static final String FACILITY_DATA_SOURCE_NAME = "Einrichtungen";
 
-  static final String ATTRIBUTE_CATEGORY_INSPECTION = "Begehung";
-  static final String ATTRIBUTE_CATEGORY_FACILITY = "Einrichtung";
-
   private final Clock clock;
   private final FacilityRepository facilityRepository;
   private final InspectionFeatureToggle inspectionFeatureToggle;

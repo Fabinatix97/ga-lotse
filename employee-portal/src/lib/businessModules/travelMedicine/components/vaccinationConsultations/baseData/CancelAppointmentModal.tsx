@@ -5,14 +5,14 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { Button, Stack, Typography } from "@mui/joy";
 
 import { useDeleteAppointmentEp } from "@/lib/businessModules/travelMedicine/api/mutations/procedureSteps";
 
 interface CancelAppointmentModalProps
-  extends Omit<BaseModalProps, "children" | "modalTitle"> {
+  extends Omit<BaseModalPropsRequiredClose, "children" | "modalTitle"> {
   procedureStepId: string;
 }
 

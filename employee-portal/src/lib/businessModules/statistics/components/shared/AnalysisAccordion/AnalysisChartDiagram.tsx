@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import {
   Delete,
@@ -28,7 +27,6 @@ import {
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { useDeleteDiagram } from "@/lib/businessModules/statistics/api/mutations/useDeleteDiagram";
 import { useExportDiagramData } from "@/lib/businessModules/statistics/api/mutations/useExportDiagramData";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { UpdateDiagramSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/UpdateDiagramSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { AnalysisDiagramBox } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisDiagramBox";
@@ -72,7 +70,7 @@ export function AnalysisChartDiagram(props: {
       case DiagramType.PIE_CHART:
         return (
           <PieChart
-            filterSetData={
+            diagramData={
               props.analysisDiagram.data as AnalysisDiagramPieChart["data"]
             }
             eChartApi={setEChartApi}
@@ -81,7 +79,9 @@ export function AnalysisChartDiagram(props: {
       case DiagramType.LINE_CHART:
         return (
           <LineChart
-            diagram={(props.analysisDiagram as AnalysisDiagramLineChart).data}
+            diagramData={
+              (props.analysisDiagram as AnalysisDiagramLineChart).data
+            }
             configuration={props.configuration}
             eChartApi={setEChartApi}
           />
@@ -89,7 +89,7 @@ export function AnalysisChartDiagram(props: {
       case DiagramType.SCATTER_CHART:
         return (
           <ScatterChart
-            filterSet={
+            diagramData={
               (props.analysisDiagram as AnalysisDiagramScatterChart).data
             }
             configuration={props.configuration}
@@ -99,7 +99,7 @@ export function AnalysisChartDiagram(props: {
       case DiagramType.BAR_CHART:
         return (
           <BarChart
-            filterSetData={
+            diagramData={
               props.analysisDiagram.data as AnalysisDiagramBarChart["data"]
             }
             grouping={props.configuration.grouping}
@@ -140,10 +140,7 @@ export function AnalysisChartDiagram(props: {
 
   const [openFullScreenChart, setOpenFullScreenChart] = useState(false);
   const chart = getChart();
-  const exportDataFeatureToggle = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
-  const canExportData = props.anonymized && exportDataFeatureToggle;
+  const canExportData = props.anonymized;
 
   return (
     <>
@@ -235,7 +232,7 @@ export function AnalysisChartDiagram(props: {
                         openConfirmationDialog({
                           onConfirm: deleteDiagram,
                           title: "Diagramm löschen?",
-                          description: `Das Diagramm “${props.analysisDiagram.title}” wird dann unwiderruflich gelöscht.`,
+                          description: `Das Diagramm „${props.analysisDiagram.title}” wird dann unwiderruflich gelöscht.`,
                           cancelLabel: "Abbrechen",
                           confirmLabel: "Löschen",
                           color: "danger",

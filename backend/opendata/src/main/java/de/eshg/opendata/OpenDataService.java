@@ -9,6 +9,7 @@ import static de.eshg.domain.model.BaseEntity_.ID;
 import static de.eshg.domain.model.BaseEntity_.id;
 import static de.eshg.opendata.VersionFilterSpecification.fetchingResourcesAndSources;
 import static de.eshg.opendata.VersionFilterSpecification.filterByFileType;
+import static de.eshg.opendata.VersionFilterSpecification.filterBySearchString;
 import static de.eshg.opendata.VersionFilterSpecification.filterBySource;
 import static de.eshg.opendata.VersionFilterSpecification.filterStatisticsStartAndEndDatesByYear;
 import static java.util.stream.Collectors.groupingBy;
@@ -23,6 +24,7 @@ import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
 import de.eshg.opendata.api.UpdateVersionMetaDataRequest;
+import de.eshg.opendata.api.VersionDto;
 import de.eshg.opendata.domain.model.FileContent;
 import de.eshg.opendata.domain.model.OpenDataFileType;
 import de.eshg.opendata.domain.model.Resource;
@@ -34,6 +36,10 @@ import de.eshg.opendata.domain.repository.VersionRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
@@ -77,7 +83,8 @@ public class OpenDataService {
     this.versionProperties = versionProperties;
   }
 
-  public List<ResourceDto> getOpenDocuments(GetOpenDocumentsRequest filterOptions) {
+  public List<ResourceDto> getOpenDocuments(
+      GetOpenDocumentsRequest filterOptions, boolean returnOnlyMostRecentMinorVersions) {
     List<Specification<Version>> specifications = new ArrayList<>();
 
     if (filterOptions.statisticsYearFilter() != null) {
@@ -91,6 +98,14 @@ public class OpenDataService {
 
     if (filterOptions.fileTypeFilter() != null) {
       specifications.add(filterByFileType(filterOptions.fileTypeFilter()));
+    }
+
+    if (filterOptions.searchString() != null) {
+      specifications.add(filterBySearchString(filterOptions.searchString()));
+    }
+
+    if (returnOnlyMostRecentMinorVersions) {
+      specifications.add(filterForOnlyMostRecentMinorVersions());
     }
 
     specifications.add(fetchingResourcesAndSources());
@@ -110,10 +125,26 @@ public class OpenDataService {
         .toList();
   }
 
-  public List<ResourceDto> searchOpenDocuments(String searchString) {
-    return resourceRepository.findByResourceNameOrVersionNameOrDescription(searchString).stream()
-        .map(OpenDataMapper::toInterfaceType)
-        .toList();
+  private Specification<Version> filterForOnlyMostRecentMinorVersions() {
+    return (root, query, criteriaBuilder) -> {
+      Subquery<Integer> subquery = query.subquery(Integer.class);
+      Root<Version> from = subquery.from(Version.class);
+      Path<Integer> minorVersion = from.get(Version_.minor);
+
+      Predicate resourceEquals =
+          criteriaBuilder.equal(root.get(Version_.resource), from.get(Version_.resource));
+      Predicate majorVersionEquals =
+          criteriaBuilder.equal(root.get(Version_.major), from.get(Version_.major));
+      subquery.where(criteriaBuilder.and(resourceEquals, majorVersionEquals));
+
+      return criteriaBuilder.equal(
+          root.get(Version_.minor), subquery.select(criteriaBuilder.max(minorVersion)));
+    };
+  }
+
+  public VersionDto getSpecificVersion(UUID versionId) {
+    Version version = getVersionByExternalIdOrThrow(versionId);
+    return OpenDataMapper.toInterfaceType(version);
   }
 
   public ResponseEntity<byte[]> downloadDocument(UUID versionId) {

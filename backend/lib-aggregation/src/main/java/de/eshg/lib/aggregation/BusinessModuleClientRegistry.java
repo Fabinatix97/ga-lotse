@@ -5,9 +5,11 @@
 
 package de.eshg.lib.aggregation;
 
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.aggregation.spring.BusinessModulesConfigurationProperties;
-import java.util.Arrays;
+import de.eshg.lib.common.BusinessModule;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
@@ -19,38 +21,39 @@ public class BusinessModuleClientRegistry {
 
   private static final Logger log = LoggerFactory.getLogger(BusinessModuleClientRegistry.class);
 
-  private List<BusinessModuleClient> businessModuleClients;
+  private final Map<BusinessModule, BusinessModuleClient> businessModuleClients;
+  private final BusinessModulesConfigurationProperties businessModulesConfigurationProperties;
 
   public BusinessModuleClientRegistry(
-      BusinessModulesConfigurationProperties configurationProperties,
+      BusinessModulesConfigurationProperties businessModulesConfigurationProperties,
       Builder restClientBuilder,
       ConversionService conversionService) {
+    this.businessModuleClients =
+        businessModulesConfigurationProperties.getClients().entrySet().stream()
+            .map(entry -> createBusinessModuleClient(restClientBuilder, conversionService, entry))
+            .collect(StreamUtil.toLinkedHashMap(BusinessModuleClient::getBusinessModule));
+    this.businessModulesConfigurationProperties = businessModulesConfigurationProperties;
+  }
 
-    businessModuleClients =
-        configurationProperties.clients().entrySet().stream()
-            .map(
-                entry ->
-                    new BusinessModuleClient(
-                        entry.getKey(), entry.getValue(), restClientBuilder, conversionService))
-            .toList();
-
-    businessModuleClients.forEach(
-        client ->
-            log.info(
-                "Created business module client {} on {}",
-                client.getBusinessModule(),
-                client.getUrl()));
+  private static BusinessModuleClient createBusinessModuleClient(
+      Builder restClientBuilder,
+      ConversionService conversionService,
+      Map.Entry<
+              BusinessModule, BusinessModulesConfigurationProperties.BusinessModuleClientProperties>
+          entry) {
+    BusinessModuleClient client =
+        new BusinessModuleClient(
+            entry.getKey(), entry.getValue(), restClientBuilder, conversionService);
+    log.info(
+        "Created business module client {} on {}", client.getBusinessModule(), client.getUrl());
+    return client;
   }
 
   public List<BusinessModuleClient> getBusinessModuleClients() {
-    return businessModuleClients;
-  }
-
-  private void setBusinessModuleClients(List<BusinessModuleClient> businessModuleClients) {
-    this.businessModuleClients = businessModuleClients;
-  }
-
-  public final void setBusinessModuleClients(BusinessModuleClient... businessModuleClients) {
-    setBusinessModuleClients(Arrays.asList(businessModuleClients));
+    // Note: For testing, individual business modules can be removed via the Test Helper.
+    // Active modules are managed via BusinessModulesConfigurationProperties.
+    return businessModulesConfigurationProperties.getClients().keySet().stream()
+        .map(businessModuleClients::get)
+        .toList();
   }
 }

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import {
   AddchartOutlined,
@@ -13,10 +12,9 @@ import {
   FileCopy,
   Menu,
 } from "@mui/icons-material";
-import { Button, ColorPaletteProp, Stack } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 import { isPlainObject } from "remeda";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import {
@@ -29,7 +27,7 @@ export interface DetailsInformationCardProps {
   canWrite: boolean;
   canDelete: boolean;
   canUpdateEvaluation: boolean;
-  canExportData: boolean;
+  anonymized: boolean;
   start: Date;
   end: Date;
   createdAt: Date;
@@ -44,10 +42,7 @@ export interface DetailsInformationCardProps {
 }
 
 export function DetailsInformationCard(props: DetailsInformationCardProps) {
-  const exportDataFeatureToggle = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.FakeAnonymization,
-  );
-  const canExportData = props.canExportData && exportDataFeatureToggle;
+  const canExportData = props.anonymized;
 
   const { canDelete, canUpdateEvaluation, canWrite } = props;
 
@@ -105,12 +100,13 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
                 onClick: () => props.onDataExport(),
                 startDecorator: <Download />,
               },
-              canDelete && {
-                label: "Löschen",
-                onClick: () => props.onEvaluationDeleteClicked(),
-                startDecorator: <Delete />,
-                color: "danger" as ColorPaletteProp,
-              },
+              canDelete &&
+                ({
+                  label: "Löschen",
+                  onClick: () => props.onEvaluationDeleteClicked(),
+                  startDecorator: <Delete />,
+                  color: "danger",
+                } as const),
             ].filter(isPlainObject)}
           />
         )

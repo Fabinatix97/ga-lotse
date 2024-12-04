@@ -9,4 +9,4 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "RapidTestData")
-public record RapidTestDataDto(@NotNull String number, @NotNull Boolean result) {}
+public record RapidTestDataDto(String number, @NotNull Boolean result) {}

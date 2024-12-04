@@ -36,6 +36,7 @@ export function mapSingleReports(
     timeRangeEnd: singleReport.timeRangeEnd,
     type: isChild ? ReportDataType.Child : ReportDataType.Single,
     dataSourceName: reportSeries.dataSourceNames[0]!,
+    tooMuchDataForExport: singleReport.tooMuchDataForExport,
   };
 }
 

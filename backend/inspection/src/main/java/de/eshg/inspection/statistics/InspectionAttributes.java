@@ -5,11 +5,12 @@
 
 package de.eshg.inspection.statistics;
 
-import static de.eshg.inspection.statistics.InspectionStatisticsService.ATTRIBUTE_CATEGORY_INSPECTION;
+import static de.eshg.inspection.statistics.AttributeUtil.ATTRIBUTE_CATEGORY_INSPECTION;
 
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.util.AttributeInfo;
+import java.util.ArrayList;
 import java.util.List;
 
 public enum InspectionAttributes implements AttributeInfo {
@@ -33,7 +34,7 @@ public enum InspectionAttributes implements AttributeInfo {
       "Begehungsjahr",
       "YEAR_OF_INSPECTION",
       true,
-      ValueType.DATE,
+      ValueType.INTEGER,
       ATTRIBUTE_CATEGORY_INSPECTION,
       false),
 
@@ -42,6 +43,8 @@ public enum InspectionAttributes implements AttributeInfo {
       "OBJECT_TYPE",
       true,
       ValueType.VALUE_WITH_OPTIONS,
+      null,
+      new ArrayList<>(),
       ATTRIBUTE_CATEGORY_INSPECTION,
       false),
 
@@ -50,6 +53,8 @@ public enum InspectionAttributes implements AttributeInfo {
       "RESULT",
       true,
       ValueType.VALUE_WITH_OPTIONS,
+      null,
+      AttributeUtil.createResultOptions(),
       ATTRIBUTE_CATEGORY_INSPECTION,
       true),
 

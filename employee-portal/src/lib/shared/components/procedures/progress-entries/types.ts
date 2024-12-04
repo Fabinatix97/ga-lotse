@@ -50,7 +50,9 @@ interface Routes {
 }
 
 export interface ProgressEntriesPageProps extends ProgressEntryApiMethods {
-  urlParams: ProgressEntriesUrlParams;
+  procedureId: string;
+  progressEntryId: string | undefined;
+  searchParams: SearchParams;
   routes: Routes;
   leaderRole: ApiUserRole;
   systemProgressEntryTypes: Record<string, string>;
@@ -72,8 +74,8 @@ export interface ProgressEntriesConfig extends ProgressEntryApiActions {
   approvalRequestsResponse?: ApiGetProcedureApprovalRequestsResponse;
 }
 
-export interface ProgressEntriesUrlParams {
-  params: Readonly<{ id: string; entryId?: string }>;
+export interface ProgressEntriesUrlParams<TPageParams = unknown> {
+  params: Readonly<TPageParams>;
   searchParams: SearchParams;
 }
 

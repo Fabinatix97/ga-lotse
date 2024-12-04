@@ -24,7 +24,6 @@ import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import {
   getChatUserDirectory,
-  getDepartmentNameFromUserId,
   getRoomNameAndCommunicationType,
   markAllMessagesAsRead,
   setReadMarker,
@@ -52,7 +51,7 @@ export function ChatPanel({
   const [userList, setUserList] = useState<
     (ApiUser & { department?: string })[] | undefined
   >();
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, departmentInfo } = useChatClientContext();
   const loggedInUserId = matrixClient.getUserId();
   const [alert, setAlert] = useState<AlertProps>();
   const selectedRoom = matrixClient.getRoom(roomId ?? undefined);
@@ -81,23 +80,16 @@ export function ChatPanel({
       try {
         const data = await getChatUserDirectory(matrixClient);
         if (data.results.length) {
-          const users = data.results.filter(
-            (user) =>
-              !!user && user.user_id !== loggedInUserId && !!user.display_name,
-          );
-          const usersWithDepartment = await Promise.all(
-            users.map(async (user) => {
-              const userInfo = await matrixClient.whoami();
-              const department = getDepartmentNameFromUserId(
-                userInfo.user_id,
-              )?.organisationName;
-              return {
-                ...user,
-                department,
-              };
-            }),
-          );
-          setUserList(usersWithDepartment);
+          const users = data.results
+            .filter(
+              (user) =>
+                !!user &&
+                user.user_id !== loggedInUserId &&
+                !!user.display_name,
+            )
+            .map((u) => ({ ...u, department: departmentInfo?.name }));
+
+          setUserList(users);
           setAlert(undefined);
         }
       } catch (error) {
@@ -114,7 +106,7 @@ export function ChatPanel({
     ) {
       void getUsers();
     }
-  }, [chatPanelView, loggedInUserId, matrixClient]);
+  }, [chatPanelView, departmentInfo?.name, loggedInUserId, matrixClient]);
 
   if (isNonNullish(alert)) {
     return (

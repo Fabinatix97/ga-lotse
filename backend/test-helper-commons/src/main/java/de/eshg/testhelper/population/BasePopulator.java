@@ -5,6 +5,8 @@
 
 package de.eshg.testhelper.population;
 
+import de.eshg.base.address.DomesticAddressDto;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import de.eshg.testhelper.security.AuthenticationFaker;
 import jakarta.annotation.PostConstruct;
@@ -15,9 +17,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import net.datafaker.Faker;
+import net.datafaker.providers.base.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -87,8 +91,16 @@ public abstract class BasePopulator<R> {
     return new ListWithTotalNumber<>(entities, totalNumberOfElements);
   }
 
+  protected static <E> Function<Faker, E> randomElement(E[] elements) {
+    return faker -> randomElement(faker, elements);
+  }
+
   protected static <E> E randomElement(Faker faker, E[] elements) {
     return randomElement(faker, Arrays.asList(elements));
+  }
+
+  protected static <E> Function<Faker, E> randomElement(List<E> elements) {
+    return faker -> randomElement(faker, elements);
   }
 
   protected static <E> E randomElement(Faker faker, List<E> elements) {
@@ -101,6 +113,10 @@ public abstract class BasePopulator<R> {
 
   protected static <E> List<E> randomElements(Faker faker, List<E> elements) {
     return elements.stream().filter(e -> faker.bool().bool()).toList();
+  }
+
+  protected static Function<Faker, List<String>> randomListOfPhoneNumbers(int maxSize) {
+    return faker -> randomListOfPhoneNumbers(faker, maxSize);
   }
 
   protected static List<String> randomListOfPhoneNumbers(Faker faker, int maxSize) {
@@ -120,6 +136,10 @@ public abstract class BasePopulator<R> {
     return faker.numerify(randomElement(faker, numbers));
   }
 
+  protected static Function<Faker, List<String>> randomListOfEmails(int maxSize) {
+    return faker -> randomListOfEmails(faker, maxSize);
+  }
+
   protected static List<String> randomListOfEmails(Faker faker, int maxSize) {
     return randomListOfEmails(faker, 0, maxSize);
   }
@@ -130,12 +150,41 @@ public abstract class BasePopulator<R> {
         .toList();
   }
 
+  protected static DomesticAddressDto randomAddress(Faker faker) {
+    Address address = faker.address();
+    return new DomesticAddressDto(
+        randomCountry(faker),
+        address.city(),
+        address.postcode(),
+        null,
+        address.streetAddress(),
+        optional(faker, address.streetAddressNumber(), 0.1),
+        optional(faker, address.secondaryAddress(), 0.1));
+  }
+
   protected static <E> E optional(Faker faker, E value) {
     return optional(faker, value, 0.1);
   }
 
+  protected static <E> E optional(Faker faker, Function<Faker, E> valueProvider) {
+    return optional(faker, valueProvider, 0.1);
+  }
+
   protected static <E> E optional(Faker faker, E value, double probabilityToBeNull) {
-    return faker.random().nextDouble() < probabilityToBeNull ? null : value;
+    return optional(faker, ignored -> value, probabilityToBeNull);
+  }
+
+  protected static <E> E optional(
+      Faker faker, Function<Faker, E> valueProvider, double probabilityToBeNull) {
+    return faker.random().nextDouble() < probabilityToBeNull ? null : valueProvider.apply(faker);
+  }
+
+  protected static Function<Faker, CountryCode> randomCountry() {
+    return BasePopulator::randomCountry;
+  }
+
+  protected static CountryCode randomCountry(Faker faker) {
+    return randomElement(faker, CountryCode.values());
   }
 
   protected abstract long countExistingEntities();

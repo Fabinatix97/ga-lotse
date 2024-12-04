@@ -24,4 +24,7 @@ export const auditLogSourceNames = {
     businessModuleNames[ApiBusinessModule.StiProtection],
   [ApiAuditLogSource.MedicalRegistry]:
     businessModuleNames[ApiBusinessModule.MedicalRegistry],
+  [ApiAuditLogSource.Dental]: businessModuleNames[ApiBusinessModule.Dental],
+  [ApiAuditLogSource.OfficialMedicalService]:
+    businessModuleNames[ApiBusinessModule.OfficialMedicalService],
 } satisfies Record<ApiAuditLogSource, string>;

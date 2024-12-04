@@ -7,12 +7,14 @@ import { queryKeyFactory } from "@eshg/lib-portal/api/queryKeyFactory";
 
 const apiQueryKey = queryKeyFactory(["chat"]);
 
-export const chatApiQueryKey = queryKeyFactory(apiQueryKey(["chatApi"]));
-
 export const userSettingsApiQueryKey = queryKeyFactory(
   apiQueryKey(["userSettingsApi"]),
 );
 
 export const chatFeatureTogglesApiQueryKey = queryKeyFactory(
   apiQueryKey(["chatFeatureTogglesApi"]),
+);
+
+export const departmentApiQueryKey = queryKeyFactory(
+  apiQueryKey(["departmentApi"]),
 );

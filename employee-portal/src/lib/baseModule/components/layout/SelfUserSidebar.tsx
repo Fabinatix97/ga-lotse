@@ -73,7 +73,7 @@ function SelfUserSidebar() {
   const { data: selfUser } = useGetSelfUser();
   const {
     canAccessChat,
-    userSettings: { chatUsageEnabled },
+    userSettings: { chatUsageEnabled, accountDeactivated },
   } = useChat();
 
   return (
@@ -102,7 +102,9 @@ function SelfUserSidebar() {
               Anmeldeprotokoll
             </NavLinkButton>
 
-            {canAccessChat && chatUsageEnabled && <ChatSettingsButton />}
+            {canAccessChat && chatUsageEnabled && !accountDeactivated && (
+              <ChatSettingsButton />
+            )}
 
             <Divider orientation="horizontal" />
           </Stack>

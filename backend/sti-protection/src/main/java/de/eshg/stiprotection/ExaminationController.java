@@ -8,6 +8,7 @@ package de.eshg.stiprotection;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.api.examination.RapidTestExaminationDto;
 import de.eshg.stiprotection.mapper.examination.RapidTestExaminationMapper;
+import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,9 +30,13 @@ public class ExaminationController {
       BaseUrls.StiProtection.PROCEDURE_CONTROLLER + "/{procedureId}/examination";
 
   private final ExaminationService examinationService;
+  private final StiProtectionProcedureService stiProtectionProcedureService;
 
-  public ExaminationController(ExaminationService examinationService) {
+  public ExaminationController(
+      ExaminationService examinationService,
+      StiProtectionProcedureService stiProtectionProcedureService) {
     this.examinationService = examinationService;
+    this.stiProtectionProcedureService = stiProtectionProcedureService;
   }
 
   @GetMapping("/rapid-test")
@@ -52,5 +57,7 @@ public class ExaminationController {
     RapidTestExamination rapidTestExamination =
         examinationService.getOrCreateRapidTestExamination(procedureId);
     RapidTestExaminationMapper.update(rapidTestExaminationDto, rapidTestExamination);
+    stiProtectionProcedureService.addProgressEntry(
+        procedureId, StiProtectionSystemProgressEntryType.RAPID_TEST_EXAMINATION_UPDATED);
   }
 }

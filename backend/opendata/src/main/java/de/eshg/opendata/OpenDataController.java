@@ -8,14 +8,12 @@ package de.eshg.opendata;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.base.feature.BaseFeature;
-import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.GetOpenDocumentsResponse;
 import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
 import de.eshg.opendata.api.UpdateVersionMetaDataRequest;
-import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.opendata.api.VersionDto;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,16 +43,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class OpenDataController {
 
   private final OpenDataService openDataService;
-
-  private final BaseFeatureTogglesApi baseFeatureTogglesApi;
+  private final OpenDataValidations openDataValidations;
 
   public OpenDataController(
-      OpenDataService openDataService, BaseFeatureTogglesApi baseFeatureTogglesApi) {
+      OpenDataService openDataService, OpenDataValidations openDataValidations) {
     this.openDataService = openDataService;
-    this.baseFeatureTogglesApi = baseFeatureTogglesApi;
+    this.openDataValidations = openDataValidations;
   }
 
-  @GetMapping()
+  @GetMapping
   @Transactional(readOnly = true)
   @Operation(
       summary = "Gets open documents",
@@ -67,19 +63,20 @@ public class OpenDataController {
           """)
   public GetOpenDocumentsResponse getOpenDocuments(
       @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request) {
-    validateOpenDataEnabled();
-    return new GetOpenDocumentsResponse(openDataService.getOpenDocuments(request));
+    openDataValidations.validateOpenDataEnabled();
+    return new GetOpenDocumentsResponse(openDataService.getOpenDocuments(request, false));
   }
 
-  @GetMapping("/search")
+  @GetMapping("/{versionId}")
   @Transactional(readOnly = true)
   @Operation(
-      summary = "Searches for `searchString` in open documents",
-      description =
-          "Returns versions with matching `fileName` or `description` grouped by their resource")
-  public GetOpenDocumentsResponse searchOpenDocuments(@RequestParam String searchString) {
-    validateOpenDataEnabled();
-    return new GetOpenDocumentsResponse(openDataService.searchOpenDocuments(searchString));
+      summary = "Get specific version of an open document",
+      description = """
+      Gets one specific version of an open document by its id
+      """)
+  public VersionDto getVersion(@PathVariable("versionId") UUID versionId) {
+    openDataValidations.validateOpenDataEnabled();
+    return openDataService.getSpecificVersion(versionId);
   }
 
   @GetMapping("/{versionId}/download")
@@ -90,9 +87,9 @@ public class OpenDataController {
               mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
               schema = @Schema(format = "binary")))
   @Transactional(readOnly = true)
-  @Operation(summary = "Downloads document of a version")
+  @Operation(summary = "Download a specific version of a document")
   public ResponseEntity<byte[]> downloadDocument(@PathVariable("versionId") UUID versionId) {
-    validateOpenDataEnabled();
+    openDataValidations.validateOpenDataEnabled();
     return openDataService.downloadDocument(versionId);
   }
 
@@ -104,7 +101,7 @@ public class OpenDataController {
   public void updateVersionMetadata(
       @PathVariable("versionId") UUID versionId,
       @RequestBody @Valid UpdateVersionMetaDataRequest updateRequest) {
-    validateOpenDataEnabled();
+    openDataValidations.validateOpenDataEnabled();
     openDataService.updateVersionMetadata(versionId, updateRequest);
   }
 
@@ -114,7 +111,7 @@ public class OpenDataController {
       summary = "Deletes a version",
       description = "Deletes correlating resource as well if there are no other versions left")
   public void deleteVersion(@PathVariable("versionId") UUID versionId) {
-    validateOpenDataEnabled();
+    openDataValidations.validateOpenDataEnabled();
     openDataService.deleteVersion(versionId);
   }
 
@@ -130,17 +127,7 @@ public class OpenDataController {
   public ResourceDto createOpenDocument(
       @RequestPart(name = "postOpenDocumentRequest") @Valid PostOpenDocumentRequest postRequest,
       @RequestPart(name = "file") MultipartFile file) {
-    validateOpenDataEnabled();
+    openDataValidations.validateOpenDataEnabled();
     return openDataService.createOpenDocument(postRequest, file);
-  }
-
-  private void validateOpenDataEnabled() {
-    if (!baseFeatureTogglesApi
-        .getFeatureToggles()
-        .enabledNewFeatures()
-        .contains(BaseFeature.OPEN_DATA)) {
-      throw new BadRequestException(
-          "New feature %s is not enabled".formatted(BaseFeature.OPEN_DATA));
-    }
   }
 }

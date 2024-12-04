@@ -6,7 +6,9 @@
 import {
   ApiEmploymentStatus,
   ApiEmploymentType,
+  ApiTypeOfChange,
 } from "@eshg/employee-portal-api/medicalRegistry";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
@@ -153,10 +155,61 @@ const initialValues: MedicalRegistryCreateProcedureFormValues = {
   writtenConfirmationForm: initialWrittenConfirmationFormValues,
 };
 
+const DEREGISTRATION_TYPES = [
+  ApiTypeOfChange.Relocation,
+  ApiTypeOfChange.Deregistration,
+];
+
 export const requiredFieldMessage = "Pflichtfeld!";
 
 interface MedicalRegistryCreateProcedureFormProps {
   setShowSuccessPage: (showSuccessPage: boolean) => void;
+}
+
+function shouldEnableProfession(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  return shouldEnable(
+    values.generalInformationForm.changeType,
+    DEREGISTRATION_TYPES,
+  );
+}
+
+function shouldEnablePractice(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  return shouldEnable(
+    values.generalInformationForm.changeType,
+    DEREGISTRATION_TYPES,
+  );
+}
+
+function shouldEnableEmployees(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  return shouldEnable(
+    values.generalInformationForm.changeType,
+    DEREGISTRATION_TYPES,
+  );
+}
+
+function shouldEnableOptionalDocuments(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  return shouldEnable(
+    values.generalInformationForm.changeType,
+    DEREGISTRATION_TYPES,
+  );
+}
+
+function shouldEnable(
+  typeOfChange: OptionalFieldValue<ApiTypeOfChange>,
+  disabledFor: ApiTypeOfChange[],
+) {
+  if (typeOfChange === "") {
+    return true;
+  }
+  return !disabledFor.includes(typeOfChange);
 }
 
 export function MedicalRegistryCreateProcedureForm(
@@ -186,7 +239,7 @@ export function MedicalRegistryCreateProcedureForm(
           });
       }}
     >
-      {({ isSubmitting, handleSubmit }) => (
+      {({ values, isSubmitting, handleSubmit }) => (
         <FormSheet onSubmit={handleSubmit}>
           <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
             <GeneralInformationForm name="generalInformationForm" />
@@ -198,26 +251,55 @@ export function MedicalRegistryCreateProcedureForm(
           </FormGroupGrid>
           <Divider />
 
-          <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
-            <OccupationalInformationForm name="occupationalInformationForm" />
-          </FormGroupGrid>
-          <Divider />
+          {shouldEnableProfession(values) && (
+            <>
+              <FormGroupGrid
+                columns={{ xxs: 6, xxl: 12 }}
+                data-testid="occupational-information"
+              >
+                <OccupationalInformationForm name="occupationalInformationForm" />
+              </FormGroupGrid>
+              <Divider />
 
-          <ProfessionalismInformationForm name="professionalismInformationForm" />
-          <Divider />
+              <FormGroupGrid
+                columns={{ xxs: 6, xxl: 12 }}
+                data-testid="professionalism-information"
+              >
+                <ProfessionalismInformationForm name="professionalismInformationForm" />
+              </FormGroupGrid>
+              <Divider />
+            </>
+          )}
+
+          {shouldEnablePractice(values) && (
+            <>
+              <FormGroupGrid
+                columns={{ xxs: 6, xxl: 12 }}
+                data-testid="practice-information"
+              >
+                <PracticeInformationForm name="practiceInformationForm" />
+              </FormGroupGrid>
+              <Divider />
+            </>
+          )}
+
+          {shouldEnableEmployees(values) && (
+            <>
+              <FormGroupGrid
+                columns={{ xxs: 6, xxl: 12 }}
+                data-testid="employees-information"
+              >
+                <EmployeeInformationForm name="employeeInformationForm" />
+              </FormGroupGrid>
+              <Divider />
+            </>
+          )}
 
           <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
-            <PracticeInformationForm name="practiceInformationForm" />
-          </FormGroupGrid>
-          <Divider />
-
-          <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
-            <EmployeeInformationForm name="employeeInformationForm" />
-          </FormGroupGrid>
-          <Divider />
-
-          <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
-            <RequiredDocumentsForm name="requiredDocumentsForm" />
+            <RequiredDocumentsForm
+              name="requiredDocumentsForm"
+              enableOptionalDocuments={shouldEnableOptionalDocuments(values)}
+            />
           </FormGroupGrid>
           <Divider />
 

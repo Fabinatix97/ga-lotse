@@ -4,7 +4,7 @@ plugins {
 
 node {
   version = '22.11.0'
-  pnpmVersion = '9.13.2'
+  pnpmVersion = '9.14.2'
   download = true
   workDir = file("${rootProject.projectDir}/.gradle/nodejs")
   pnpmWorkDir = file("${rootProject.projectDir}/.gradle/pnpm")

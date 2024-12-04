@@ -37,6 +37,11 @@ export const sideNavigationItems: SideNavigationItem[] = [
         accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
       },
       {
+        name: "Medizinalaufsicht",
+        href: routes.archive.module.medicalRegistry,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
+      },
+      {
         name: "HIV-STI",
         href: routes.archive.module.stiProtection,
         accessCheck: hasUserRole(ApiUserRole.ProcedureArchive),
@@ -65,6 +70,11 @@ export const sideNavigationItems: SideNavigationItem[] = [
       {
         name: "Masernschutz",
         href: routes.archiveAdmin.module.measlesProtection,
+        accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
+      },
+      {
+        name: "Medizinalaufsicht",
+        href: routes.archiveAdmin.module.medicalRegistry,
         accessCheck: hasUserRole(ApiUserRole.ProcedureArchiveAdmin),
       },
       {

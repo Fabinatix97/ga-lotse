@@ -17,7 +17,10 @@ export function useGetSelfUserPresence() {
   const { usersPresence } = usePresence(loggedInUserId ?? undefined);
 
   const isChatEnabled =
-    canAccessChat && userSettings.chatUsageEnabled && matrixClient;
+    canAccessChat &&
+    userSettings.chatUsageEnabled &&
+    matrixClient &&
+    !userSettings.accountDeactivated;
 
   return useMemo(() => {
     let userPresence: Presence | undefined = undefined;

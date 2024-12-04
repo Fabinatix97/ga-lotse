@@ -18,10 +18,7 @@ import {
   Warehouse,
 } from "@mui/icons-material";
 
-import {
-  useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled,
-  useIsNewFeatureEnabled,
-} from "@/lib/baseModule/api/queries/feature";
+import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
   SideNavigationItem,
   UseSideNavigationItemsResult,
@@ -101,9 +98,6 @@ const sideNavigationItems: SideNavigationItem[] = [
     decorator: <PermMediaOutlined />,
     accessCheck: hasUserRole(ApiUserRole.OpenDataAdmin),
   },
-];
-
-const inboxNavigationItem: SideNavigationItem[] = [
   {
     name: "Posteingang",
     href: routes.inbox,
@@ -113,17 +107,10 @@ const inboxNavigationItem: SideNavigationItem[] = [
 ];
 
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
-  const isInboxEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Inbox);
-  const isInspectionInboxEnabled = useIsNewBaseFeatureEnabled(
-    ApiBaseFeature.InspectionInbox,
-  );
   const isGdprEnabled = useIsNewFeatureEnabled(ApiBaseFeature.Gdpr);
   const isOpenDataEnabled = useIsNewFeatureEnabled(ApiBaseFeature.OpenData);
 
   let items = sideNavigationItems;
-  if (isInboxEnabled || isInspectionInboxEnabled) {
-    items = items.concat(inboxNavigationItem);
-  }
   if (!isGdprEnabled) {
     items = items.filter((item) => item.name !== "DSGVO");
   }

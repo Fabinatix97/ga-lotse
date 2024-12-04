@@ -4,6 +4,7 @@
  */
 
 import { ObjectTypeApi } from "@eshg/employee-portal-api/inspection";
+import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useObjectTypeApi } from "@/lib/businessModules/inspection/api/clients";
@@ -19,5 +20,9 @@ export function getObjectTypesQuery(objectTypeApi: ObjectTypeApi) {
     queryKey: objectTypeApiQueryKey(["getObjectTypes"]),
     queryFn: () => objectTypeApi.getObjectTypes(),
     select: (response) => response.objectTypes ?? [],
+    // Enable long-time caching for this query, but do not make this query static,
+    // i.e. don't disable the invalidation through mutation.
+    gcTime: STATIC_QUERY_OPTIONS.gcTime,
+    staleTime: STATIC_QUERY_OPTIONS.staleTime,
   });
 }

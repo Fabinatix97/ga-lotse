@@ -48,7 +48,9 @@ export function EvaluationsOverview() {
     apiGetEvaluationsRequest: {
       page,
       pageSize,
-      anonymizationValue,
+      filterOptions: {
+        anonymizationValue,
+      },
       sortDirection,
       sortKey: evaluationSortKey[sortKey as keyof EvaluationOverviewTableItem],
     },

@@ -46,5 +46,6 @@
     <include file="migrations/0036_rename_evaluation_to_analysis.xml"/>
     <include file="migrations/0037_drop_default_revision_entity_created_by_not_null_contraint.xml"/>
     <include file="migrations/0038_rename_statistic_to_evaluation.xml"/>
+    <include file="migrations/0039_use_lib_scheduling.xml"/>
 
 </databaseChangeLog>

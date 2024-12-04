@@ -14,14 +14,16 @@
   <include file="migrations/0004_add_medical_registry_procedure_types.xml"/>
   <include file="migrations/0005_medical_histories.xml"/>
   <include file="migrations/0006_remove_key_document_type_enum.xml"/>
-  <include file="migrations/0007_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
+  <include
+    file="migrations/0007_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
   <include file="migrations/0008_add_system_progress_entry_keydocument.xml"/>
   <include file="migrations/0009_add_calendar_event_id.xml"/>
   <include file="migrations/0010_cemetery_sequence.xml"/>
   <include file="migrations/0011_shedlock.xml"/>
   <include file="migrations/0012_add_waiting_room.xml"/>
   <include file="migrations/0013_extend_medical_histories.xml"/>
-  <include file="migrations/0014_move_subject_and_message_text_to_mail_metadata.xml"/>
+  <include
+    file="migrations/0014_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0015_add_gdpr_validation_task.xml"/>
   <include file="migrations/0016_add_started_at.xml"/>
   <include file="migrations/0017_drop_not_null_constraints.xml"/>
@@ -31,4 +33,9 @@
   <include file="migrations/0021_add_appointment_history.xml"/>
   <include file="migrations/0022_add_rapid_test_examination.xml"/>
   <include file="migrations/0023_refactor_medical_history.xml"/>
+  <include file="migrations/0024_add_dental_as_procedure_type.xml"/>
+  <include
+    file="migrations/0025_add_official_medical_service_procedure_type.xml"/>
+  <include file="migrations/0026_add_mail_to_simple_notification.xml"/>
+
 </databaseChangeLog>

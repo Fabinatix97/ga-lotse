@@ -99,7 +99,7 @@ export function ChatSystemMessage({
         }
       }
       case "m.room.name": {
-        return `Sie haben den Gruppennamen umbenannt zu “${systemMessage.roomName}”.`;
+        return `Sie haben den Gruppennamen umbenannt zu „${systemMessage.roomName}”.`;
       }
       case "m.room.create": {
         return `${systemMessage.creator} hat den Raum erstellt und konfiguriert.`;

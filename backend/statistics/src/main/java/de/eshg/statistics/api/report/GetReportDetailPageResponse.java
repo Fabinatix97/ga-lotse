@@ -29,6 +29,7 @@ public record GetReportDetailPageResponse(
     @NotNull LocalDate executionDate,
     @NotNull @Valid List<TableColumnHeader> tableColumnHeaders,
     @NotNull @Min(0) long totalNumberOfElements,
+    @NotNull boolean tooMuchDataForExport,
     @Valid UserDto userReportSeries,
     @Valid UserDto userReport,
     @NotNull @Valid List<AnalysisDto> analyses,

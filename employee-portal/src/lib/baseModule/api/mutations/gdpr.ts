@@ -7,6 +7,10 @@ import {
   ApiAddCentralFileIdToGdprProcedureRequest,
   ApiAddGdprProcedureRequest,
 } from "@eshg/employee-portal-api/base";
+import {
+  ApiGdprProcedureType,
+  GdprValidationTaskApiInterface,
+} from "@eshg/employee-portal-api/businessProcedures";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -83,5 +87,27 @@ export function useChangeProcedureStatus(id: string, version: number) {
           break;
       }
     },
+  });
+}
+
+export function useRefreshProcedureStatus(id: string) {
+  const gdprProcedureApi = useGdprProcedureApi();
+  return useHandledMutation({
+    mutationFn: () => gdprProcedureApi.refreshStatus(id),
+  });
+}
+
+export function useCloseValidationTask(
+  gdprValidationTaskApi: GdprValidationTaskApiInterface,
+  type: ApiGdprProcedureType,
+) {
+  const snackbar = useSnackbar();
+  return useHandledMutation({
+    mutationFn: (id: string) =>
+      gdprValidationTaskApi.closeGdprValidationTask(id),
+    onSuccess: () =>
+      snackbar.confirmation(
+        `DSGVO Auftrag zur ${type === ApiGdprProcedureType.OfAccess ? "Datenauskunft" : "Löschung"} wurde abgeschlossen.`,
+      ),
   });
 }

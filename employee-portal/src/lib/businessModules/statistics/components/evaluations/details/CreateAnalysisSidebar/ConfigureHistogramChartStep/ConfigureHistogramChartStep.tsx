@@ -19,7 +19,7 @@ import {
   binningValueNames,
   groupingValueNames,
   isBooleanOrValueWithOptions,
-  isNumericOrDate,
+  isNumeric,
   scalingValueNames,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { AutocompleteSelectOption } from "@/lib/shared/components/AutocompleteSelectOptions";
@@ -46,9 +46,7 @@ export function ConfigureHistogramChartStep({
 
   const primaryAutocompleteSelectOptions: AutocompleteSelectOption[] =
     attributes.map(
-      mapAttributeToAutocompleteSelectionOption((attr) =>
-        isNumericOrDate(attr.type),
-      ),
+      mapAttributeToAutocompleteSelectionOption((attr) => isNumeric(attr.type)),
     );
   const secondaryAutocompleteSelectOptions: AutocompleteSelectOption[] =
     attributes.map(

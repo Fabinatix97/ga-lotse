@@ -15,8 +15,8 @@ import {
 } from "@mui/icons-material";
 
 import { useGetProcedure } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
-import { ProcedureTabHeader } from "@/lib/businessModules/schoolEntry/features/procedures/ProcedureTabHeader";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
+import { PersonToolbarHeader } from "@/lib/shared/components/layout/PersonToolbarHeader";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
@@ -38,7 +38,7 @@ export function ProcedureToolbar(props: ProcedureToolbarProps) {
       routeBack={
         hasSchoolEntryAdminRole ? routes.procedures.overview : undefined
       }
-      header={<ProcedureTabHeader child={procedure.data.child} />}
+      header={<PersonToolbarHeader person={procedure.data.child} />}
       afterTabs={
         procedure.data.isClosed ? (
           <span data-testid="procedureStatus">Vorgang geschlossen</span>

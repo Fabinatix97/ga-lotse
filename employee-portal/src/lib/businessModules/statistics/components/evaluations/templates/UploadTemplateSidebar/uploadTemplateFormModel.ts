@@ -5,6 +5,6 @@
 
 export interface UploadTemplateFormModel {
   name: string;
-  description?: string;
+  description: string;
   contact: string;
 }

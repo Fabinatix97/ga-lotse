@@ -38,6 +38,7 @@ import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.rest.client.AccessTokenForwardingInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -62,7 +63,7 @@ public class BusinessModuleClient
         GdprValidationTaskApi {
 
   private final BusinessModule businessModule;
-  private final String url;
+  private final URI url;
   private final Duration clientTimeout;
   private final TaskListApi taskListApiDelegate;
   private final TaskMetricsApi taskMetricsApiDelegate;
@@ -75,7 +76,7 @@ public class BusinessModuleClient
 
   public BusinessModuleClient(
       BusinessModule businessModule,
-      String url,
+      URI url,
       Duration clientTimeout,
       RestClient.Builder restClientBuilder,
       ConversionService conversionService) {
@@ -115,7 +116,7 @@ public class BusinessModuleClient
     return businessModule;
   }
 
-  public String getUrl() {
+  public URI getUrl() {
     return url;
   }
 
@@ -124,7 +125,7 @@ public class BusinessModuleClient
   }
 
   private static HttpServiceProxyFactory createHttpServiceProxyFactory(
-      RestClient.Builder restClientBuilder, ConversionService conversionService, String url) {
+      RestClient.Builder restClientBuilder, ConversionService conversionService, URI url) {
     RestClient restClient =
         restClientBuilder
             .baseUrl(url)

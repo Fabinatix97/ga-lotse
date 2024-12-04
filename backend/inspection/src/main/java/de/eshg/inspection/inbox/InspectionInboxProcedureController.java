@@ -5,12 +5,10 @@
 
 package de.eshg.inspection.inbox;
 
-import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.inbox.InboxProcedureController;
 import de.eshg.lib.procedure.inbox.InboxProcedureService;
-import java.util.Set;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,12 +23,7 @@ public class InspectionInboxProcedureController extends InboxProcedureController
 
   @Override
   protected void validateInboxEnabled() {
-    Set<BaseFeature> features = baseFeatureTogglesApi.getFeatureToggles().enabledNewFeatures();
-    if (Set.of(BaseFeature.INBOX, BaseFeature.INSPECTION_INBOX).stream()
-        .noneMatch(features::contains)) {
-      throw new IllegalStateException(
-          "Neither new features %s or %s is enabled"
-              .formatted(BaseFeature.INBOX, BaseFeature.INSPECTION_INBOX));
-    }
+    // inspection inbox is always enabled, thus we don't check the BaseFeature.INBOX feature toggle
+    // here, intentionally.
   }
 }

@@ -11,7 +11,7 @@ import de.eshg.file.common.FileType;
 import de.eshg.file.common.FileTypeDetector;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
-import de.eshg.medicalregistry.domain.model.FullProcedureChange;
+import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
@@ -82,7 +82,7 @@ public class Validator {
 
   public static void validateIsHasCompleteInformationForInitialConfirm(
       MedicalRegistryEntryChange entryChange, MedicalRegistryEntry mergeTarget) {
-    if (entryChange instanceof FullProcedureChange) {
+    if (entryChange instanceof FullMedicalRegistryEntryChange) {
       return;
     }
 

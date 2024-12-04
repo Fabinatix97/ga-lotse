@@ -10,7 +10,6 @@ import de.eshg.base.calendar.CalendarService;
 import de.eshg.base.calendar.api.BaseEventRequest;
 import de.eshg.base.calendar.api.BaseEventTypeDto;
 import de.eshg.base.calendar.api.EventTimeData;
-import de.eshg.base.calendar.api.ShowAs;
 import de.eshg.base.calendar.api.UserCalendar;
 import de.eshg.base.citizenuser.AccessCodeGenerator;
 import de.eshg.base.contact.api.ContactDto;
@@ -266,8 +265,7 @@ public class BaseTestHelperService extends DefaultTestHelperService {
           new BaseEventRequest(
               currentUserCalendar.calendarId(),
               BaseEventTypeDto.VACATION,
-              ShowAs.BUSY,
-              "Test Event %d".formatted(i),
+              null,
               new EventTimeData(
                   nextStart.toInstant(),
                   nextStart.plusMinutes(pseudoRandomLength).toInstant(),

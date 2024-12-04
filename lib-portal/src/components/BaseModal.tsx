@@ -14,9 +14,12 @@ export interface BaseModalProps {
   color?: DefaultColorPalette;
   modalTitle: string;
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   sx?: SxProps;
 }
+
+export type BaseModalPropsRequiredClose = Omit<BaseModalProps, "onClose"> &
+  Required<Pick<BaseModalProps, "onClose">>;
 
 export function BaseModal({
   children,
@@ -41,14 +44,16 @@ export function BaseModal({
         <ModalDialog sx={{ width: { xxs: 328, sm: 688 }, gap: 2, ...sx }}>
           <DialogTitle color={color}>{modalTitle}</DialogTitle>
           <AlertSlot />
-          <ModalClose
-            variant="outlined"
-            aria-label="Schließen"
-            color="primary"
-            sx={{
-              margin: 1,
-            }}
-          />
+          {onClose ? (
+            <ModalClose
+              variant="outlined"
+              aria-label="Schließen"
+              color="primary"
+              sx={{
+                margin: 1,
+              }}
+            />
+          ) : null}
           {children}
         </ModalDialog>
       </Modal>

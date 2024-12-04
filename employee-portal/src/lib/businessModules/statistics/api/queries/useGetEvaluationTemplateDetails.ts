@@ -7,9 +7,9 @@ import { ApiEvaluationTemplate } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
+import { mapAttributesToLabels } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToLabels";
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
 import { evaluationTemplateApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
-import { mapToAttributeLabels } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetails";
 
 export function mapToEvaluationTemplateDetails(
   result: ApiEvaluationTemplate,
@@ -20,7 +20,7 @@ export function mapToEvaluationTemplateDetails(
     dataSourceName: result.dataSources[0]!.dataSourceName,
     createdAt: result.createdAt,
     user: result.user,
-    attributeLabels: mapToAttributeLabels(
+    attributeLabels: mapAttributesToLabels(
       result.dataSources[0]!.dataAttributes,
     ),
     analyses: result.analysisInfos.map((it) => ({

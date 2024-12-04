@@ -245,16 +245,20 @@ public class StatisticsController implements BaseStatisticsApi {
   }
 
   private DistrictDto getDistrictDto(EmbeddableDomesticAddress domesticAddress) {
-    SearchStreetResponse searchStreetResponse =
-        streetController.searchStreet(
-            domesticAddress.getStreet(),
-            domesticAddress.getHouseNumber(),
-            domesticAddress.getPostalCode(),
-            domesticAddress.getCountry());
-    Set<DistrictDto> districts = searchStreetResponse.cityDistricts();
-    if (districts.size() == 1) {
-      return districts.iterator().next();
-    } else {
+    try {
+      SearchStreetResponse searchStreetResponse =
+          streetController.searchStreet(
+              domesticAddress.getStreet(),
+              domesticAddress.getHouseNumber(),
+              domesticAddress.getPostalCode(),
+              domesticAddress.getCountry());
+      Set<DistrictDto> districts = searchStreetResponse.cityDistricts();
+      if (districts.size() == 1) {
+        return districts.iterator().next();
+      } else {
+        return null;
+      }
+    } catch (BadRequestException ignored) {
       return null;
     }
   }

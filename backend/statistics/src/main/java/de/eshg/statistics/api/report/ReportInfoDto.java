@@ -22,4 +22,4 @@ public record ReportInfoDto(
     @NotNull ReportStateDto state,
     @NotNull LocalDate executionDate,
     @Min(0) Long totalNumberOfElements,
-    @NotNull boolean exportable) {}
+    @NotNull boolean tooMuchDataForExport) {}

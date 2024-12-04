@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 
+import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { useDownloadTravelMedicineFile } from "@/lib/businessModules/travelMedicine/api/download/files";
 import {
   useDecideApprovalRequest,
@@ -34,9 +35,15 @@ import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
+interface TravelMedicineProgressEntriesPageParams
+  extends EditInspectionPageParams {
+  entryId?: string;
+}
+
 export default function TravelMedicineProgressEntries(
-  props: ProgressEntriesUrlParams,
+  props: ProgressEntriesUrlParams<TravelMedicineProgressEntriesPageParams>,
 ) {
+  const { params, searchParams } = props;
   return (
     <ProgressEntriesPage
       useCreateProgressEntry={useCreateProgressEntry}
@@ -45,7 +52,9 @@ export default function TravelMedicineProgressEntries(
       usePatchProgressEntry={usePatchProgressEntry}
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-      urlParams={props}
+      procedureId={params.id}
+      progressEntryId={params.entryId}
+      searchParams={searchParams}
       leaderRole={ApiUserRole.TravelMedicineLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
       useRequestFileDeletion={useRequestFileDeletion}

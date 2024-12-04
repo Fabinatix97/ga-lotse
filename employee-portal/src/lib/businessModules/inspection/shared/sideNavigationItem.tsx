@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiBaseFeature, ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { EmojiTransportation } from "@mui/icons-material";
 
-import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import {
   SideNavigationSubItem,
   UseSideNavigationItemsResult,
@@ -61,31 +60,20 @@ const defaultSubItems: SideNavigationSubItem[] = [
     href: routes.packlists.definitions.index,
     accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
   },
+  {
+    name: "Posteingang",
+    href: routes.inbox.index,
+    accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
+  },
 ];
 
-const inboxNavigationItem: SideNavigationSubItem = {
-  name: "Posteingang",
-  href: routes.inbox.index,
-  accessCheck: hasUserRole(ApiUserRole.InspectionProcedureEdit),
-};
-
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
-  const isInboxEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Inbox);
-  const isInspectionInboxEnabled = useIsNewBaseFeatureEnabled(
-    ApiBaseFeature.InspectionInbox,
-  );
-
-  const subItems =
-    isInboxEnabled || isInspectionInboxEnabled
-      ? [...defaultSubItems, inboxNavigationItem]
-      : defaultSubItems;
-
   return {
     isLoading: false,
     items: [
       {
         ...sideNavigationItem,
-        subItems,
+        subItems: defaultSubItems,
       },
     ],
   };

@@ -5,6 +5,8 @@
 
 package de.eshg.statistics.aggregation;
 
+import static de.eshg.statistics.aggregation.AggregationResultSpecifications.addDateSpecification;
+
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -15,20 +17,34 @@ import de.eshg.statistics.StatisticsUserService;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
 import de.eshg.statistics.api.report.AddAutoReportSeriesRequest;
 import de.eshg.statistics.api.report.AddManualReportSeriesRequest;
+import de.eshg.statistics.api.report.GetReportsFilterOptions;
 import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
+import de.eshg.statistics.api.report.ReportTypeDto;
 import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
 import de.eshg.statistics.mapper.EvaluationMapper;
 import de.eshg.statistics.mapper.ReportMapper;
+import de.eshg.statistics.persistence.entity.AbstractAggregationResult_;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.Evaluation;
+import de.eshg.statistics.persistence.entity.TableColumn;
+import de.eshg.statistics.persistence.entity.TableColumn_;
 import de.eshg.statistics.persistence.entity.report.Report;
 import de.eshg.statistics.persistence.entity.report.ReportSeries;
+import de.eshg.statistics.persistence.entity.report.ReportSeries_;
 import de.eshg.statistics.persistence.entity.report.ReportType;
+import de.eshg.statistics.persistence.entity.report.Report_;
 import de.eshg.statistics.persistence.repository.ReportSeriesRepository;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,8 +54,11 @@ import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class ReportSeriesService {
@@ -72,7 +91,6 @@ public class ReportSeriesService {
     if (!evaluation.isAnonymized()) {
       throw new BadRequestException("Reports are only allowed for anonymized evaluations");
     }
-    validateHasDiagrams(evaluation);
     validateIsNotDeleting(evaluation);
 
     ReportSeries reportSeries =
@@ -87,13 +105,8 @@ public class ReportSeriesService {
 
     reportSeriesRepository.flush();
     return ReportMapper.mapToApi(
-        reportSeries, report -> ReportService.isReportExportableFunction().apply(report));
-  }
-
-  private void validateHasDiagrams(Evaluation evaluation) {
-    if (EvaluationService.hasNoDiagrams(evaluation)) {
-      throw new BadRequestException("Report creation is only possible with existing diagrams");
-    }
+        reportSeries,
+        report -> AbstractAggregationResultService.isTooMuchDataForExportFunction().apply(report));
   }
 
   private void validateIsNotDeleting(Evaluation evaluation) {
@@ -198,7 +211,8 @@ public class ReportSeriesService {
     }
 
     return ReportMapper.mapToApi(
-        reportSeries, report -> ReportService.isReportExportableFunction().apply(report));
+        reportSeries,
+        report -> AbstractAggregationResultService.isTooMuchDataForExportFunction().apply(report));
   }
 
   private static void validateNotPendingManualReport(ReportSeries reportSeries) {
@@ -283,23 +297,31 @@ public class ReportSeriesService {
 
   @Transactional(readOnly = true)
   public GetReportsResponse getReportSeriesEntriesForOverview(GetReportsRequest getReportsRequest) {
-    PageRequest pageRequest =
-        PageRequest.of(
-            getReportsRequest.page(),
-            getReportsRequest.pageSize(),
-            Sort.by(
-                EvaluationMapper.mapSortDirection(getReportsRequest.sortDirection()),
-                BaseEntity_.ID));
+    List<Specification<ReportSeries>> specifications = new ArrayList<>();
+    addAtLeastOneCompletedReportSpecification(specifications);
 
-    Page<ReportSeries> relevantReportSeriesPage;
-    if (getReportsRequest.reportTypeFilter() == null) {
-      relevantReportSeriesPage =
-          reportSeriesRepository.findAllWithAtLeastOneCompletedReport(pageRequest);
-    } else {
-      relevantReportSeriesPage =
-          reportSeriesRepository.findAllWithAtLeastOneCompletedReportAndType(
-              ReportMapper.mapToReportType(getReportsRequest.reportTypeFilter()), pageRequest);
+    GetReportsFilterOptions filterOptions = getReportsRequest.filterOptions();
+    if (filterOptions != null) {
+      addReportTypeSpecification(specifications, filterOptions.reportType());
+      addDataSourcesSpecification(specifications, filterOptions.dataSourceIds());
+      addDateSpecification(
+          specifications, filterOptions.start(), AbstractAggregationResult_.TIME_RANGE_START);
+      addDateSpecification(
+          specifications, filterOptions.end(), AbstractAggregationResult_.TIME_RANGE_END);
+      AggregationResultSpecifications.<ReportSeries>nameSpecification(filterOptions.name())
+          .ifPresent(specifications::add);
     }
+
+    Page<ReportSeries> relevantReportSeriesPage =
+        reportSeriesRepository.findAll(
+            Specification.allOf(specifications),
+            PageRequest.of(
+                getReportsRequest.page(),
+                getReportsRequest.pageSize(),
+                Sort.by(
+                    EvaluationMapper.mapSortDirection(getReportsRequest.sortDirection()),
+                    BaseEntity_.ID)));
+
     List<ReportSeriesDto> reportSeriesDtos =
         relevantReportSeriesPage.get().map(this::mapReportSeriesForOverview).toList();
 
@@ -311,6 +333,66 @@ public class ReportSeriesService {
         reportSeriesDtos, resolvedUsers, relevantReportSeriesPage.getTotalElements());
   }
 
+  private static void addAtLeastOneCompletedReportSpecification(
+      List<Specification<ReportSeries>> specifications) {
+
+    specifications.add(
+        (root, query, criteriaBuilder) -> {
+          Assert.notNull(query, "CriteriaQuery must not be null");
+          Subquery<Report> subquery = query.subquery(Report.class);
+          Root<Report> reportRoot = subquery.from(Report.class);
+
+          subquery.select(reportRoot);
+          subquery.where(
+              criteriaBuilder.and(
+                  criteriaBuilder.equal(
+                      reportRoot.get(AbstractAggregationResult_.STATE),
+                      AggregationResultState.COMPLETED),
+                  criteriaBuilder.equal(reportRoot.get(Report_.REPORT_SERIES), root)));
+
+          return criteriaBuilder.exists(subquery);
+        });
+  }
+
+  private void addReportTypeSpecification(
+      List<Specification<ReportSeries>> specifications, ReportTypeDto reportType) {
+    if (reportType == null) {
+      return;
+    }
+
+    specifications.add(
+        (root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(
+                root.get(ReportSeries_.REPORT_TYPE), ReportMapper.mapToReportType(reportType)));
+  }
+
+  private void addDataSourcesSpecification(
+      List<Specification<ReportSeries>> specifications, List<UUID> dataSourceIds) {
+    if (CollectionUtils.isEmpty(dataSourceIds)) {
+      return;
+    }
+    specifications.add(
+        (root, query, criteriaBuilder) -> {
+          Assert.notNull(query, "CriteriaQuery must not be null");
+          Join<ReportSeries, Evaluation> evaluationJoin = root.join(ReportSeries_.EVALUATION);
+
+          Subquery<TableColumn> subquery = query.subquery(TableColumn.class);
+          Root<TableColumn> tableColumnRoot = subquery.from(TableColumn.class);
+          subquery.select(tableColumnRoot);
+
+          Expression<Collection<TableColumn>> tableColumnsExpression =
+              evaluationJoin.get(AbstractAggregationResult_.TABLE_COLUMNS);
+          Predicate tableColumnMemberPredicate =
+              criteriaBuilder.isMember(tableColumnRoot, tableColumnsExpression);
+
+          Predicate dataSourcePredicate =
+              tableColumnRoot.get(TableColumn_.DATA_SOURCE_ID).in(dataSourceIds);
+
+          subquery.where(criteriaBuilder.and(tableColumnMemberPredicate, dataSourcePredicate));
+          return criteriaBuilder.exists(subquery);
+        });
+  }
+
   private ReportSeriesDto mapReportSeriesForOverview(ReportSeries reportSeries) {
     Stream<Report> reportStream =
         reportSeries.getReports().stream()
@@ -318,7 +400,7 @@ public class ReportSeriesService {
     return ReportMapper.mapToApi(
         reportSeries,
         reportStream,
-        report -> ReportService.isReportExportableFunction().apply(report));
+        report -> AbstractAggregationResultService.isTooMuchDataForExportFunction().apply(report));
   }
 
   @Transactional(readOnly = true)

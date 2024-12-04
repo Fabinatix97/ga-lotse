@@ -7,6 +7,7 @@ package de.eshg.inspection.importer;
 
 import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
 import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
+import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
 import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.joining;
@@ -37,11 +38,17 @@ public class ImporterService {
   private final Clock clock;
   private final ImportPersister importPersister;
   private final AuditLogger auditLogger;
+  private final ImportProperties importProperties;
 
-  public ImporterService(Clock clock, ImportPersister importPersister, AuditLogger auditLogger) {
+  public ImporterService(
+      Clock clock,
+      ImportPersister importPersister,
+      AuditLogger auditLogger,
+      ImportProperties importProperties) {
     this.clock = clock;
     this.importPersister = importPersister;
     this.auditLogger = auditLogger;
+    this.importProperties = importProperties;
   }
 
   /**
@@ -58,6 +65,7 @@ public class ImporterService {
       validateSheet(workbook);
 
       XSSFSheet sheet = workbook.getSheetAt(0);
+      validateNumberOfRows(sheet, importProperties.getMaxNumberOfImportRows());
       validateHeaderExists(sheet);
 
       return importProcesses(sheet, file.getOriginalFilename());

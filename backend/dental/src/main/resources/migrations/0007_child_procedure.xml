@@ -1,0 +1,192 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: Apache-2.0
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="GA-Lotse" id="1732706148228-1">
+    <ext:createPostgresEnumType name="archivingrelevance" values="DEFAULT, IRRELEVANT, RELEVANT"/>
+    <ext:createPostgresEnumType name="procedurestatus" values="ABORTED, CLOSED, DRAFT, IN_PROGRESS, OPEN"/>
+    <ext:createPostgresEnumType name="taskstatus" values="CLOSED, OPEN"/>
+    <ext:createPostgresEnumType name="tasktype" values="BOOK_APPOINTMENT, INSPECTION_EXECUTION, INSPECTION_PLANNING, INSPECTION_REPORT, MEASLES_PROTECTION, PERFORM_SCHOOL_ENTRY_EXAMINATION, STI_PROTECTION, TRAVEL_MEDICINE"/>
+    <ext:createPostgresEnumType name="facilitytype" values="DAYCARE, HOSPITAL, INSPECTION, MEDICAL_PRACTICE, OTHER, REFUGEE_ACCOMMODATION, SCHOOL"/>
+    <ext:createPostgresEnumType name="persontype" values="PARENT, PATIENT, PROFESSIONAL"/>
+
+    <createTable tableName="child_task">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_child_task"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="assignee_id" type="UUID"/>
+      <column name="assigned_by_id" type="UUID"/>
+      <column name="assignment_date" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="due_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="task_status" type="TASKSTATUS">
+        <constraints nullable="false"/>
+      </column>
+      <column name="task_type" type="TASKTYPE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="facility">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_facility"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="facility_type" type="FACILITYTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="central_file_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="person">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="person_type" type="PERSONTYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="central_file_state_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint tableName="child_task" columnNames="external_id" constraintName="child_task_external_id_key"/>
+    <addUniqueConstraint tableName="facility" columnNames="central_file_state_id" constraintName="facility_central_file_state_id_key"/>
+    <addUniqueConstraint tableName="facility" columnNames="external_id" constraintName="facility_external_id_key"/>
+    <addUniqueConstraint tableName="person" columnNames="central_file_state_id" constraintName="person_central_file_state_id_key"/>
+    <addUniqueConstraint tableName="person" columnNames="external_id" constraintName="person_external_id_key"/>
+
+    <createSequence sequenceName="child_task_seq" dataType="bigint" incrementBy="50" startValue="1"/>
+    <createSequence sequenceName="facility_seq" dataType="bigint" incrementBy="50" startValue="1"/>
+    <createSequence sequenceName="person_seq" dataType="bigint" incrementBy="50" startValue="1"/>
+
+    <dropTable tableName="child_examinations"/>
+    <dropTable tableName="child"/>
+
+    <createTable tableName="child">
+      <column name="id" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_child"/>
+      </column>
+      <column name="version" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="external_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="closed_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="exported_at" type="TIMESTAMP WITH TIME ZONE"/>
+      <column name="modified_at" type="TIMESTAMP WITH TIME ZONE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_status" type="PROCEDURESTATUS">
+        <constraints nullable="false"/>
+      </column>
+      <column name="procedure_type" type="PROCEDURETYPE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="group_name" type="TEXT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="institution_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="year" type="INTEGER">
+        <constraints nullable="false"/>
+      </column>
+      <column name="archiving_relevance" type="ARCHIVINGRELEVANCE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint columnNames="external_id" constraintName="child_external_id_key" tableName="child"/>
+
+    <addColumn tableName="assignment_history_item">
+      <column name="task_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+    <addColumn tableName="task_due_at_reminder_notification">
+      <column name="task_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+    <createIndex tableName="assignment_history_item" indexName="idx_assignment_history_item_task_id">
+      <column name="task_id"/>
+    </createIndex>
+    <createIndex tableName="child_task" indexName="idx_child_task_procedure_id">
+      <column name="procedure_id"/>
+    </createIndex>
+    <createIndex tableName="facility" indexName="idx_facility_procedure_id">
+      <column name="procedure_id"/>
+    </createIndex>
+    <createIndex tableName="person" indexName="idx_person_procedure_id">
+      <column name="procedure_id"/>
+    </createIndex>
+    <createIndex tableName="task_due_at_reminder_notification" indexName="idx_task_due_at_reminder_notification_task_id">
+      <column name="task_id"/>
+    </createIndex>
+
+    <addForeignKeyConstraint baseTableName="assignment_history_item" baseColumnNames="task_id" constraintName="fk_assignment_history_item_child_task" referencedColumnNames="id" referencedTableName="child_task"/>
+    <addForeignKeyConstraint baseTableName="child_task" baseColumnNames="procedure_id" constraintName="fk_child_task_child" referencedColumnNames="id" referencedTableName="child"/>
+    <addForeignKeyConstraint baseTableName="facility" baseColumnNames="procedure_id" constraintName="fk_facility_child" referencedColumnNames="id" referencedTableName="child"/>
+    <addForeignKeyConstraint baseTableName="person" baseColumnNames="procedure_id" constraintName="fk_person_child" referencedColumnNames="id" referencedTableName="child"/>
+    <addForeignKeyConstraint baseTableName="progress_entry" baseColumnNames="procedure_id" constraintName="fk_progress_entry_child" referencedColumnNames="id" referencedTableName="child"/>
+    <addForeignKeyConstraint baseTableName="task_due_at_reminder_notification" baseColumnNames="task_id" constraintName="fk_task_due_at_reminder_notification_child_task" referencedColumnNames="id" referencedTableName="child_task"/>
+  </changeSet>
+
+  <changeSet author="GA-Lotse" id="1732785914830-1">
+    <createTable tableName="child_examinations">
+      <column name="child_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="examinations_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint tableName="child_examinations" columnNames="examinations_id" constraintName="child_examinations_examinations_id_key"/>
+    <addForeignKeyConstraint baseTableName="child_examinations" baseColumnNames="child_id" constraintName="fk_child_examinations_child" referencedColumnNames="id" referencedTableName="child"/>
+    <addForeignKeyConstraint baseTableName="child_examinations" baseColumnNames="examinations_id" constraintName="fk_child_examinations_examination" referencedColumnNames="id" referencedTableName="examination"/>
+  </changeSet>
+
+</databaseChangeLog>

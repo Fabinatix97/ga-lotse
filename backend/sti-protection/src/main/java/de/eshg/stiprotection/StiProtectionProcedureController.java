@@ -6,12 +6,8 @@
 package de.eshg.stiprotection;
 
 import de.eshg.api.commons.InlineParameterObject;
-import de.eshg.base.citizenuser.CitizenAccessCodeUserApi;
-import de.eshg.base.citizenuser.api.AddAnonymousUserRequest;
-import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.Pdf;
-import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.CurrentUserHelper;
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.stiprotection.annotations.ProcedureStatusTransition;
@@ -21,10 +17,10 @@ import de.eshg.stiprotection.api.CreateProcedureResponse;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresPaginationOptions;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresResponse;
 import de.eshg.stiprotection.api.GetStiProtectionProceduresSortOptions;
-import de.eshg.stiprotection.api.RegisterAnonymousUserResponse;
 import de.eshg.stiprotection.api.StiProtectionProcedureDto;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.api.UpdatePersonDetailsRequest;
+import de.eshg.stiprotection.api.VerifyAnonymousUserPinRequest;
 import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
 import de.eshg.stiprotection.persistence.data.ResultPage;
@@ -62,17 +58,14 @@ public class StiProtectionProcedureController {
   public static final String BASE_URL = BaseUrls.StiProtection.PROCEDURE_CONTROLLER;
 
   private final StiProtectionProcedureService stiProtectionService;
-  private final CitizenAccessCodeUserApi accessCodeUserApi;
   private final AppointmentService appointmentService;
   private final AuditLogger auditLogger;
 
   public StiProtectionProcedureController(
       StiProtectionProcedureService stiProtectionService,
-      CitizenAccessCodeUserApi accessCodeUserApi,
       AppointmentService appointmentService,
       AuditLogger auditLogger) {
     this.stiProtectionService = stiProtectionService;
-    this.accessCodeUserApi = accessCodeUserApi;
     this.appointmentService = appointmentService;
     this.auditLogger = auditLogger;
   }
@@ -81,8 +74,10 @@ public class StiProtectionProcedureController {
   @Transactional
   public CreateProcedureResponse createProcedure(
       @Valid @RequestBody CreateProcedureRequest request) {
-    return StiProtectionProcedureMapper.toInterfaceType(
-        stiProtectionService.createProcedure(request));
+    StiProtectionProcedure procedure = stiProtectionService.createProcedure(request);
+    String pin = RandomStringUtils.secure().nextNumeric(6);
+    stiProtectionService.registerAnonymousUser(procedure, pin);
+    return StiProtectionProcedureMapper.toInterfaceType(procedure, pin);
   }
 
   @GetMapping("/{id}")
@@ -201,19 +196,13 @@ public class StiProtectionProcedureController {
         .body(content);
   }
 
-  @PostMapping(path = "/{id}/register-anonymous-user")
-  @Operation(summary = "Register an anonymous user")
-  @Transactional
-  public RegisterAnonymousUserResponse registerAnonymousUser(@PathVariable("id") UUID procedureId) {
-    StiProtectionProcedure procedure = stiProtectionService.findProcedureByExternalId(procedureId);
-    UUID anonymousUserId = procedure.getPerson().getAnonymousUserId();
-    if (anonymousUserId != null) {
-      throw new BadRequestException("User already registered.");
-    }
-    String pin = RandomStringUtils.secure().nextNumeric(6, 6);
-    CitizenAccessCodeUserDto user =
-        accessCodeUserApi.addAnonymousUser(new AddAnonymousUserRequest(pin));
-    procedure.getPerson().setAnonymousUserId(user.userId());
-    return new RegisterAnonymousUserResponse(user.userId(), user.accessCode(), pin);
+  @PostMapping("/{id}/verify-pin")
+  @Operation(summary = "Verify anonymous user PIN for a given STI procedure.")
+  @Transactional(readOnly = true)
+  public void verifyAnonymousUserPin(
+      @PathVariable("id") UUID procedureId,
+      @Valid @RequestBody VerifyAnonymousUserPinRequest request) {
+    String pin = request.pin();
+    stiProtectionService.verifyAnonymousUserPin(procedureId, pin);
   }
 }

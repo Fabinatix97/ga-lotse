@@ -18,6 +18,7 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     super("base");
     calendarsAndEvents();
     users();
+    mukFacilityLinks();
     notifications();
     inventory();
     resources();
@@ -31,6 +32,13 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
     department();
     features();
     config();
+  }
+
+  private void mukFacilityLinks() {
+    requestMatchers(GET, BaseUrls.Base.MUK_FACILITY_LINK_API + BaseUrls.Base.MUK_SELF_USER_FACILITY)
+        .hasRole(CitizenPermissionRole.MUK_USER);
+    requestMatchers(POST, BaseUrls.Base.MUK_FACILITY_LINK_API)
+        .hasRole(EmployeePermissionRole.BASE_MUK_FACILITY_LINK_WRITE);
   }
 
   private void proceduresAndTasks() {
@@ -208,6 +216,8 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void users() {
+    requestMatchers(GET, BaseUrls.Base.USER_API + "/self/keys/**")
+        .hasRole(EmployeePermissionRole.AUDITLOG_DECRYPT_AND_ACCESS);
     requestMatchers(
             GET,
             BaseUrls.Base.USER_API + "/*",
@@ -255,7 +265,6 @@ public final class BasePublicSecurityConfig extends AbstractPublicSecurityConfig
   }
 
   private void config() {
-    requestMatchers(GET, BaseUrls.Base.CONFIG_API + "/**")
-        .hasRole(EmployeePermissionRole.STANDARD_EMPLOYEE);
+    requestMatchers(GET, BaseUrls.Base.PUBLIC_CONFIG_API).permitAll();
   }
 }

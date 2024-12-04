@@ -55,7 +55,7 @@ export function WaitingRoomSection({
 
   return (
     <Sheet>
-      <DetailsSection title="Wartezimmer" name="">
+      <DetailsSection title="Wartezimmer">
         <Formik
           enableReinitialize
           initialValues={initialValues(procedure.waitingRoom)}

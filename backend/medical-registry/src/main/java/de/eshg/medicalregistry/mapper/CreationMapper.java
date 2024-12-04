@@ -7,16 +7,17 @@ package de.eshg.medicalregistry.mapper;
 
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
+import de.eshg.medicalregistry.api.CreateApplicantChangeRequest;
 import de.eshg.medicalregistry.api.CreateApplicantDto;
-import de.eshg.medicalregistry.api.CreateDeregistrationProcedureRequest;
-import de.eshg.medicalregistry.api.CreateFullProcedureChangeRequest;
+import de.eshg.medicalregistry.api.CreateFullChangeRequest;
+import de.eshg.medicalregistry.api.CreatePracticeChangeRequest;
 import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.CreateProfessionInformationDto;
-import de.eshg.medicalregistry.domain.model.Deregistration;
-import de.eshg.medicalregistry.domain.model.FullProcedureChange;
+import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
+import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import de.eshg.medicalregistry.domain.model.Professional;
@@ -30,32 +31,49 @@ public final class CreationMapper {
   public static MedicalRegistryEntryChange mapToDomain(
       CreateProcedureRequest request, TriggerType triggerType, UUID personId, UUID facilityId) {
     return switch (request) {
-      case CreateFullProcedureChangeRequest createFullProcedureChangeRequest ->
-          mapToDomain(createFullProcedureChangeRequest, triggerType, personId, facilityId);
-      case CreateDeregistrationProcedureRequest createDeregistrationProcedureRequest ->
-          mapToDomain(createDeregistrationProcedureRequest, triggerType, personId);
+      case CreateFullChangeRequest createFullChangeRequest ->
+          mapToDomain(createFullChangeRequest, triggerType, personId, facilityId);
+      case CreateApplicantChangeRequest createApplicantChangeRequest ->
+          mapToDomain(createApplicantChangeRequest, triggerType, personId);
+      case CreatePracticeChangeRequest createPracticeChangeRequest ->
+          mapToDomain(createPracticeChangeRequest, triggerType, personId, facilityId);
     };
   }
 
-  public static Deregistration mapToDomain(
-      CreateDeregistrationProcedureRequest request, TriggerType triggerType, UUID personId) {
-    Deregistration medicalRegistryEntry = new Deregistration(triggerType);
-    medicalRegistryEntry.setTypeOfDeregistration(
-        ProcedureMapper.mapToDomain(request.typeOfDeRegistration()));
+  public static PartialMedicalRegistryEntryChange mapToDomain(
+      CreateApplicantChangeRequest request, TriggerType triggerType, UUID personId) {
+    PartialMedicalRegistryEntryChange medicalRegistryEntry =
+        new PartialMedicalRegistryEntryChange(triggerType);
+    medicalRegistryEntry.setTypeOfPartialChange(
+        ProcedureMapper.mapToDomain(request.typeOfApplicantChange()));
     mapCommonFields(medicalRegistryEntry, request, personId);
     return medicalRegistryEntry;
   }
 
-  public static FullProcedureChange mapToDomain(
-      CreateFullProcedureChangeRequest request,
+  public static PartialMedicalRegistryEntryChange mapToDomain(
+      CreatePracticeChangeRequest request,
       TriggerType triggerType,
       UUID personId,
       UUID facilityId) {
-    FullProcedureChange medicalRegistryEntry = new FullProcedureChange(triggerType);
+    PartialMedicalRegistryEntryChange medicalRegistryEntry =
+        new PartialMedicalRegistryEntryChange(triggerType);
     mapCommonFields(medicalRegistryEntry, request, personId);
 
-    medicalRegistryEntry.setTypeOfFullProcedureChange(
-        ProcedureMapper.mapToDomain(request.typeOfFullProcedureChange()));
+    medicalRegistryEntry.setTypeOfPartialChange(
+        ProcedureMapper.mapToDomain(request.typeOfPracticeChange()));
+    medicalRegistryEntry.setEmployeesEmployed(request.employeesEmployed());
+    medicalRegistryEntry.addRelatedFacility(buildPractice(request.practice(), facilityId));
+    return medicalRegistryEntry;
+  }
+
+  public static FullMedicalRegistryEntryChange mapToDomain(
+      CreateFullChangeRequest request, TriggerType triggerType, UUID personId, UUID facilityId) {
+    FullMedicalRegistryEntryChange medicalRegistryEntry =
+        new FullMedicalRegistryEntryChange(triggerType);
+    mapCommonFields(medicalRegistryEntry, request, personId);
+
+    medicalRegistryEntry.setTypeOfFullChange(
+        ProcedureMapper.mapToDomain(request.typeOfFullChange()));
     medicalRegistryEntry.setEmployeesEmployed(request.employeesEmployed());
     ProfessionInformation professionInformation =
         buildProfessionInformation(request.professionInformation());

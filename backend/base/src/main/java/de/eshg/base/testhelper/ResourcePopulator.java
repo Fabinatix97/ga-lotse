@@ -45,7 +45,7 @@ public class ResourcePopulator extends BasePopulator<ResourceDto> {
   protected ResourceDto populate(int index, Faker faker, UniqueValueProvider uniqueValueProvider) {
     String makeAndModel =
         uniqueValueProvider.getUniqueFakerValue(faker.vehicle()::makeAndModel, Resource_.NAME);
-    ResourceTypeDto type = BasePopulator.randomElement(faker, ResourceTypeDto.values());
+    ResourceTypeDto type = randomElement(faker, ResourceTypeDto.values());
     String description = optional(faker, faker.starWars().quotes());
     String articleNumber = optional(faker, faker.idNumber().valid());
     List<String> labels = BasePopulator.randomElements(faker, labelNames);

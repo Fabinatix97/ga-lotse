@@ -39,5 +39,7 @@ public enum ErrorCode {
   /** Use when data was illegally manipulated */
   CORRUPT,
   /** Use when a resource is locked by another user */
-  LOCKED
+  LOCKED,
+  /** Use when a xlsx file has too many rows */
+  XLSX_TOO_MANY_ROWS,
 }

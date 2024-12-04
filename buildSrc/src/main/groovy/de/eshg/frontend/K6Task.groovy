@@ -22,7 +22,7 @@ abstract class K6Task extends Exec {
   Task configure(Closure closure) {
     def task = super.configure(closure) as Exec
 
-    task.dependsOn project.tasks.named("compile")
+    task.dependsOn project.tasks.named("build")
     task.dependsOn project.tasks.named("startServices")
     task.dependsOn project.tasks.named("assertK6ContainerNotRunning")
 

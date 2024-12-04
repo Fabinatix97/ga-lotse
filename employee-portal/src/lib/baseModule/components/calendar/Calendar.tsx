@@ -15,7 +15,9 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { Stack } from "@mui/joy";
+import { Circle } from "@mui/icons-material";
+import { Stack, Tooltip, Typography } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { format } from "date-fns";
 import {
   forwardRef,
@@ -24,7 +26,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { isNonNullish } from "remeda";
+import { isDefined, isNonNullish } from "remeda";
 
 import { useCalendarEventApi } from "@/lib/baseModule/api/clients";
 import { theme } from "@/lib/baseModule/theme/theme";
@@ -118,14 +120,90 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       element.setAttribute("tabindex", "0");
     }
 
+    function eventContent(eventInfo: {
+      timeText: string;
+      backgroundColor: string;
+      event: {
+        title: string;
+        extendedProps: EventWithCalendarId;
+      };
+    }) {
+      if (fullCalendarView.type === CalendarViewTypes.DayGridMonth) {
+        return (
+          <Stack direction="row" gap={1} overflow="hidden" alignItems="center">
+            <Circle sx={{ color: eventInfo.backgroundColor, fontSize: 12 }} />
+            <Typography
+              level="body-xs"
+              sx={{
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              {eventInfo.timeText} {eventInfo.event.title}
+            </Typography>
+          </Stack>
+        );
+      } else if (fullCalendarView.type === CalendarViewTypes.ListMonth) {
+        return (
+          <Typography
+            level="body-md"
+            color="neutral"
+            sx={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+            }}
+          >
+            {eventInfo.event.title}
+          </Typography>
+        );
+      } else {
+        function content(color?: "white") {
+          const sx = {
+            color,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          } satisfies SxProps;
+
+          return (
+            <Stack>
+              <Typography level="title-sm" sx={sx}>
+                {eventInfo.event.title}
+              </Typography>
+              {isDefined(eventInfo.event.extendedProps.metaData.location) && (
+                <Typography level="body-sm" sx={sx}>
+                  {eventInfo.event.extendedProps.metaData.location}
+                </Typography>
+              )}
+              {isDefined(eventInfo.event.extendedProps.metaData.subject) && (
+                <Typography level="body-sm" sx={sx}>
+                  Eintrag von {eventInfo.event.extendedProps.metaData.subject}
+                </Typography>
+              )}
+              <Typography level="body-sm" sx={sx}>
+                {eventInfo.timeText}
+              </Typography>
+            </Stack>
+          );
+        }
+
+        return (
+          <Tooltip title={content("white")} arrow placement="bottom">
+            {content()}
+          </Tooltip>
+        );
+      }
+    }
+
     return (
       <Stack spacing={2} flex={1}>
         <HeaderToolbar
           title={fullCalendarView.title}
           viewType={fullCalendarView.type}
-          onViewTypeChange={(view) =>
-            fullCalendarRef.current?.getApi().changeView(view)
-          }
+          onViewTypeChange={(view) => {
+            queueMicrotask(() => {
+              fullCalendarRef.current?.getApi().changeView(view);
+            });
+          }}
           goToToday={() => fullCalendarRef.current?.getApi().today()}
           goToPrevious={() => fullCalendarRef.current?.getApi().prev()}
           goToNext={() => fullCalendarRef.current?.getApi().next()}
@@ -153,6 +231,7 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
                 type: view.type as CalendarViewType,
               });
             }}
+            eventContent={eventContent}
             initialView={fullCalendarView.type}
             eventClick={(info) => {
               const event = extractExtendedProps(info.event);

@@ -6,6 +6,7 @@
 import { useFileDownload } from "@eshg/lib-portal/api/files/download";
 
 import { useDataExportApi } from "@/lib/businessModules/statistics/api/clients";
+import { useDataExportWithSizeCheck } from "@/lib/businessModules/statistics/api/downloads/useDataExportWithSizeCheck";
 
 export function useExportEvaluationData() {
   const dataExportApi = useDataExportApi();
@@ -16,5 +17,5 @@ export function useExportEvaluationData() {
       }),
   );
 
-  return { download, downloadContainerRef };
+  return useDataExportWithSizeCheck({ download, downloadContainerRef });
 }

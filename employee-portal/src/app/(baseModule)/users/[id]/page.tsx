@@ -10,6 +10,7 @@ import { Stack } from "@mui/joy";
 import { useGetUserProfile } from "@/lib/baseModule/api/queries/users";
 import { UserAbsence } from "@/lib/baseModule/components/users/UserAbsence";
 import { UserProfileDetails } from "@/lib/baseModule/components/users/UserProfileDetails";
+import { routes } from "@/lib/baseModule/shared/routes";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
@@ -25,7 +26,9 @@ export default function UserProfilePage({
     query.data;
 
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title={fullName(user)} />}>
+    <StickyToolbarLayout
+      toolbar={<Toolbar title={fullName(user)} backHref={routes.users.index} />}
+    >
       <MainContentLayout>
         <Stack
           flexWrap={"wrap"}

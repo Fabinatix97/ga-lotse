@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import {
   ApiGetProcedure200Response,
   ApiGetProcedureDraftResponse,
@@ -25,6 +26,7 @@ import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { PageGrid } from "@/lib/shared/components/page/PageGrid";
+import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
 interface MedicalRegistryProcedureDetailsProps {
   procedureId: string;
@@ -35,6 +37,9 @@ const SPACING = { xxs: 2, sm: 3, md: 4, xxl: 5 };
 export function MedicalRegistryProcedureDetails(
   props: Readonly<MedicalRegistryProcedureDetailsProps>,
 ) {
+  const hasMedicalRegistryAdminRole = useHasUserRoleCheck(
+    ApiUserRole.MedicalRegistryAdmin,
+  );
   const { data: procedure } = useGetProcedure(props.procedureId);
   const isDraft = procedure.type === "GetProcedureDraftResponse";
 
@@ -56,7 +61,9 @@ export function MedicalRegistryProcedureDetails(
             {isDraft && (
               <>
                 <TypeOfChangeSection procedure={procedure} />
-                <DraftActions procedure={procedure} />
+                {hasMedicalRegistryAdminRole && (
+                  <DraftActions procedure={procedure} />
+                )}
               </>
             )}
           </Stack>

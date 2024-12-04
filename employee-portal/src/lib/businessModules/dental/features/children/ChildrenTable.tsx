@@ -9,8 +9,9 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
+import { Child } from "@/lib/businessModules/dental/api/models/Child";
 import { useGetChildren } from "@/lib/businessModules/dental/api/queries/childApi";
-import { Child } from "@/lib/businessModules/dental/models/Child";
+import { routes } from "@/lib/businessModules/dental/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -67,6 +68,10 @@ export function ChildrenTable(props: ChildrenTableProps) {
           sorting={tableControl.tableSorting}
           enableSortingRemoval={false}
           minWidth={1200}
+          rowNavigation={{
+            focusColumnAccessorKey: "lastName",
+            route: (row) => routes.children.byId(row.original.id).details,
+          }}
         />
       </TableSheet>
     </TablePage>
@@ -81,6 +86,9 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 180,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("firstName", {
@@ -89,6 +97,9 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 180,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("dateOfBirth", {
@@ -97,6 +108,9 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 90,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("institution.name", {
@@ -105,6 +119,9 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 180,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("groupName", {
@@ -113,6 +130,9 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 50,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
   columnHelper.accessor("year", {
@@ -121,6 +141,9 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 50,
+      canNavigate: {
+        parentRow: true,
+      },
     },
   }),
 ];

@@ -50,6 +50,7 @@ export function mapToReportDetailsView(
     attributes: attributes,
     userId: response.userReport?.userId ?? response.userReportSeries!.userId,
     numberInSeries: isReportOfSeries ? response.name : undefined,
+    tooMuchDataForExport: response.tooMuchDataForExport,
   };
 }
 

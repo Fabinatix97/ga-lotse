@@ -37,8 +37,11 @@ import de.eshg.inspection.incident.InspectionIncidentService;
 import de.eshg.inspection.incident.api.CreateInspectionIncidentRequest;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.FinalizeInspectionRequest;
+import de.eshg.inspection.inspection.api.FollowupType;
 import de.eshg.inspection.inspection.api.InspectionAvailableCLDVersionsResponse;
 import de.eshg.inspection.inspection.api.InspectionCLDVersionDto;
+import de.eshg.inspection.inspection.api.InspectionDto;
+import de.eshg.inspection.inspection.api.InspectionResult;
 import de.eshg.inspection.inspection.api.UpdateInspectionAddResourceRequest;
 import de.eshg.inspection.inspection.api.UpdateInspectionAppointmentDto;
 import de.eshg.inspection.inspection.api.UpdateInspectionModifyInventoryRequest;
@@ -68,8 +71,10 @@ public class InspectionTestDataProvider {
   private final CalendarEventApi calendarEventApi;
   private final InspectionIncidentService inspectionIncidentService;
 
+  private static final int INSPECTIONS_FOR_SIXTH_FACILITY = 4;
   private static final List<String> resourceNames =
-      List.of("Bulls Wildtail", "Seat Leon", "Hilbertraum", "Nikon Z8", "Lineal", "Linealset");
+      List.of(
+          "Bulls Wildtail", "Seat Leon", "Hilbertraum", "Nikon Z8", "Lineal", "Linealset", "Auryn");
   private static final List<ResourceTypeDto> resourceTypes =
       List.of(
           ResourceTypeDto.BICYCLE,
@@ -77,7 +82,8 @@ public class InspectionTestDataProvider {
           ResourceTypeDto.ROOM,
           ResourceTypeDto.CAMERA,
           ResourceTypeDto.MEASURING_DEVICE,
-          ResourceTypeDto.MEASURING_KIT);
+          ResourceTypeDto.MEASURING_KIT,
+          ResourceTypeDto.MISC);
 
   private static final String inventoryName = "FFP2-Maske";
   private static final InventoryItemTypeDto inventoryType =
@@ -105,7 +111,13 @@ public class InspectionTestDataProvider {
     3: Inspection in phase EXECUTING
     4: Inspection in phase CREATING_REPORT_AND_INVOICE
     5: Inspection in phase CLOSED (thereby also creating followup inspection)
+    6: Lots of Inspections
     */
+
+    if (index == 6) {
+      prepareSixthTestInspection(inspectionId, faker, 0);
+      return;
+    }
 
     if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 1) {
       addPlannedAppointment(inspectionId, index);
@@ -123,6 +135,52 @@ public class InspectionTestDataProvider {
     if ((index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES) > 4) {
       inspectionService.approveInspection(inspectionId);
     }
+  }
+
+  public void prepareSixthTestInspection(
+      @NotNull UUID inspectionId, Faker faker, int inspectionIndex) {
+    int index = 6;
+
+    addPlannedAppointment(inspectionId, index + inspectionIndex);
+    addResource(inspectionId, index);
+    addInventory(inspectionId);
+    if (inspectionIndex % 2 == 0) {
+      addChecklists(inspectionId);
+    }
+    fillOutAllChecklists(inspectionId, faker);
+    createManualIncident(inspectionId, faker);
+    inspectionService.finalizeInspection(inspectionId, new FinalizeInspectionRequest(null), null);
+    if (inspectionIndex == INSPECTIONS_FOR_SIXTH_FACILITY - 1) {
+      failInspection(inspectionId);
+    } else if (inspectionIndex % 2 == 0) {
+      almostFailInspection(inspectionId, index + inspectionIndex);
+    } else {
+      passInspection(inspectionId);
+    }
+    InspectionDto inspection = inspectionService.approveInspection(inspectionId);
+    if (inspectionIndex < INSPECTIONS_FOR_SIXTH_FACILITY - 1) {
+      prepareSixthTestInspection(
+          inspection.followupInfo().followupId(), faker, inspectionIndex + 1);
+    }
+  }
+
+  private void almostFailInspection(UUID inspectionId, int index) {
+    inspectionService.updateInspection(
+        inspectionId,
+        UpdateInspectionRequest.forResult(
+            InspectionResult.SUCCESSFUL_WITH_INCIDENTS,
+            FollowupType.REVIEW,
+            getAppointmentTime(index).start()));
+  }
+
+  private void failInspection(UUID inspectionId) {
+    inspectionService.updateInspection(
+        inspectionId, UpdateInspectionRequest.forResult(InspectionResult.FAILED, null, null));
+  }
+
+  private void passInspection(UUID inspectionId) {
+    inspectionService.updateInspection(
+        inspectionId, UpdateInspectionRequest.forResult(InspectionResult.SUCCESSFUL, null, null));
   }
 
   private static UpdateChecklistElementDto getUpdateElementDto(
@@ -268,9 +326,9 @@ public class InspectionTestDataProvider {
     OffsetDateTime startTime =
         OffsetDateTime.of(
             2030 + index,
-            index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES,
-            index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES,
-            12 + (index % FacilityTestDataProvider.NUMBER_OF_DEFINED_FACILITIES),
+            index % 12 + 1,
+            index % 28 + 1,
+            12 + (index % 12),
             0,
             0,
             0,

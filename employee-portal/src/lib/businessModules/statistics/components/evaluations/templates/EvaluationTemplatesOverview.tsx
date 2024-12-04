@@ -75,10 +75,13 @@ export function EvaluationTemplatesOverview() {
   const evaluationTemplateDetailsSidebar =
     useEvaluationTemplateDetailsSidebar();
 
-  function deleteTemplateWithConfirmation(templateId: string) {
+  function deleteTemplateWithConfirmation(
+    templateId: string,
+    templateName: string,
+  ) {
     openConfirmationDialog({
       title: "Vorlage löschen?",
-      description: "Möchten Sie die Vorlage wirklich löschen?",
+      description: `Die Vorlage „${templateName}” wird dann unwiderruflich gelöscht.`,
       confirmLabel: "Löschen",
       onConfirm: () => deleteEvaluationTemplate(templateId),
       color: "danger",
@@ -175,7 +178,7 @@ function evaluationTemplatesColumns(
   canWrite: (creatorUserId: string) => boolean,
   canEdit: (creatorUserId: string) => boolean,
   canDelete: (creatorUserId: string) => boolean,
-  onDelete: (id: string) => void,
+  onDelete: (id: string, name: string) => void,
   onEdit: (id: string) => void,
   onCreateEvaluation: (id: string) => void,
   onUploadEvaluationTemplate: (id: string) => void,
@@ -237,7 +240,8 @@ function evaluationTemplatesColumns(
             canDelete(props.row.original.userId) &&
               ({
                 label: "Löschen",
-                onClick: () => onDelete(props.row.original.id),
+                onClick: () =>
+                  onDelete(props.row.original.id, props.row.original.name),
                 color: "danger",
                 startDecorator: <Delete />,
               } satisfies ActionsItem),

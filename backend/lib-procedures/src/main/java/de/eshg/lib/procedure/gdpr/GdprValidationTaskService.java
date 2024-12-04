@@ -13,7 +13,6 @@ import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.gdpr.api.GetGdprProcedureFileStateIdsResponse;
 import de.eshg.base.util.PaginationUtil;
-import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.procedure.domain.model.GdprDownloadPackage;
 import de.eshg.lib.procedure.domain.model.GdprValidationTask;
 import de.eshg.lib.procedure.domain.model.GdprValidationTaskStatus;
@@ -83,6 +82,14 @@ public class GdprValidationTaskService<
       return List.of();
     }
     return downloadPackageRepository.findInfoByExternalIdIn(downloadIds);
+  }
+
+  public List<UUID> findBusinessProcedureIdsByDownloadIdIn(Set<UUID> downloadIds) {
+    log.info("Fetching download packages from database for IDs: {}", downloadIds);
+    if (downloadIds == null || downloadIds.isEmpty()) {
+      return List.of();
+    }
+    return downloadPackageRepository.findBusinessProcedureIdsByExternalIdIn(downloadIds);
   }
 
   public GdprDownloadPackage getDownloadPackage(UUID id) {
@@ -196,17 +203,18 @@ public class GdprValidationTaskService<
   }
 
   public List<BusinessProcedureWithInclusionStatusDto> getBusinessProceduresWithInclusionStatus(
-      List<UUID> fileStateIds) {
+      UUID gdprId, List<UUID> fileStateIds) {
+    GetGdprDownloadsResponse downloadIdsFromBase = fetchDownloadIdsFromBase(gdprId);
+    List<UUID> knownProcedureIds =
+        findBusinessProcedureIdsByDownloadIdIn(downloadIdsFromBase.downloadIds());
+
     List<ProcedureT> procedures = procedureRepository.findByFileStateIds(fileStateIds);
-    List<UUID> procedureIds =
-        procedures.stream().map(SequencedBaseEntityWithExternalId::getExternalId).toList();
-    List<UUID> procedureIdsFromDownloads = downloadPackageRepository.findProcedureIds(procedureIds);
     List<ProcedureDto> enrichedProcedures = enrichingMapper.enrichAndMapProcedures(procedures);
     return enrichedProcedures.stream()
         .map(
             eP ->
                 new BusinessProcedureWithInclusionStatusDto(
-                    eP, getInclusionStatus(eP.procedureId(), procedureIdsFromDownloads)))
+                    eP, getInclusionStatus(eP.procedureId(), knownProcedureIds)))
         .toList();
   }
 

@@ -60,7 +60,7 @@ export function ProfessionalDetailsSection({
 
   return (
     <InformationSheet>
-      <DetailsSection name="professional-section" title="Person">
+      <DetailsSection data-testid="professional-section" title="Person">
         <Stack
           direction={{ md: "row" }}
           gap={3}

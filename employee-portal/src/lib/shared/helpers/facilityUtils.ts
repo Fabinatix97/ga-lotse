@@ -84,19 +84,15 @@ export function mapFacilityFormValuesToApiAddFacilityFileStateRequest(
   };
 }
 
-/**
- * this is only needed temporarily until the ApiAddFacilityFileStateRequest
- * gets adapted to the new structure with fixed postal and billing address.
- */
-export function mapApiFacilityStateToBaseFacility(
+export function mapApiFacilityStateToFacilityFormValues(
   data: ApiFacilityFileState,
-): BaseFacility {
+): DefaultFacilityFormValues & { billingAddress?: void } {
   return {
     name: data.name,
     emailAddresses: data.emailAddresses,
     phoneNumbers: data.phoneNumbers,
     contactAddress: mapApiAddressToForm(data.contactAddress!),
-    billingAddress: isNullish(data.differentBillingAddress)
+    differentBillingAddress: isNullish(data.differentBillingAddress)
       ? undefined
       : mapApiAddressToForm(data.differentBillingAddress),
     contactPersons: data.contactPersons?.map(mapApiContactPersonToForm) ?? [],

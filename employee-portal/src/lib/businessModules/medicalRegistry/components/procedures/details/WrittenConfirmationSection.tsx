@@ -18,7 +18,10 @@ export function WrittenConfirmationSection({
 
   return (
     <ContentPanel>
-      <DetailsSection name="written-confirmation" title="Meldebestätigung">
+      <DetailsSection
+        data-testid="written-confirmation"
+        title="Meldebestätigung"
+      >
         <Typography level="body-md">{message}</Typography>
       </DetailsSection>
     </ContentPanel>

@@ -155,7 +155,6 @@ export function AppointmentForm() {
             />
             <Stack gap={1}>
               <DateTimeField
-                allowEmpty={!customSectionSelected}
                 label="Individueller Termin"
                 name="customAppointmentDate"
                 validate={validateTodayOrFutureDate}

@@ -9,7 +9,7 @@ import {
 } from "@eshg/employee-portal-api/medicalRegistry";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { NestedFormProps } from "@eshg/lib-portal/types/form";
-import { Radio, Typography } from "@mui/joy";
+import { Grid, Radio, Typography } from "@mui/joy";
 
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 import {
@@ -30,41 +30,47 @@ export function ProfessionalismInformationForm(props: NestedFormProps) {
 
   return (
     <>
-      <Typography level="h3">Angaben zur Berufsausübung</Typography>
-      <RadioGroupField
-        name={fieldName("employmentType")}
-        label="Beschäftigungsart"
-        orientation="horizontal"
-        required={requiredFieldMessage}
-      >
-        <Radio
-          value={ApiEmploymentType.FullTime}
-          label={employmentTypeNames[ApiEmploymentType.FullTime]}
-        />
-        <Radio
-          value={ApiEmploymentType.PartTime}
-          label={employmentTypeNames[ApiEmploymentType.PartTime]}
-        />
-      </RadioGroupField>
-      <RadioGroupField
-        name={fieldName("employmentStatus")}
-        label="Beschäftigungsstatus"
-        orientation="horizontal"
-        required={requiredFieldMessage}
-      >
-        <Radio
-          value={ApiEmploymentStatus.SelfEmployed}
-          label={employmentStatusNames[ApiEmploymentStatus.SelfEmployed]}
-        />
-        <Radio
-          value={ApiEmploymentStatus.Freelance}
-          label={employmentStatusNames[ApiEmploymentStatus.Freelance]}
-        />
-        <Radio
-          value={ApiEmploymentStatus.Employee}
-          label={employmentStatusNames[ApiEmploymentStatus.Employee]}
-        />
-      </RadioGroupField>
+      <Grid xxs={12}>
+        <Typography level="h3">Angaben zur Berufsausübung</Typography>
+      </Grid>
+      <Grid xxs={12}>
+        <RadioGroupField
+          name={fieldName("employmentType")}
+          label="Beschäftigungsart"
+          orientation="horizontal"
+          required={requiredFieldMessage}
+        >
+          <Radio
+            value={ApiEmploymentType.FullTime}
+            label={employmentTypeNames[ApiEmploymentType.FullTime]}
+          />
+          <Radio
+            value={ApiEmploymentType.PartTime}
+            label={employmentTypeNames[ApiEmploymentType.PartTime]}
+          />
+        </RadioGroupField>
+      </Grid>
+      <Grid xxs={12}>
+        <RadioGroupField
+          name={fieldName("employmentStatus")}
+          label="Beschäftigungsstatus"
+          orientation="horizontal"
+          required={requiredFieldMessage}
+        >
+          <Radio
+            value={ApiEmploymentStatus.SelfEmployed}
+            label={employmentStatusNames[ApiEmploymentStatus.SelfEmployed]}
+          />
+          <Radio
+            value={ApiEmploymentStatus.Freelance}
+            label={employmentStatusNames[ApiEmploymentStatus.Freelance]}
+          />
+          <Radio
+            value={ApiEmploymentStatus.Employee}
+            label={employmentStatusNames[ApiEmploymentStatus.Employee]}
+          />
+        </RadioGroupField>
+      </Grid>
     </>
   );
 }

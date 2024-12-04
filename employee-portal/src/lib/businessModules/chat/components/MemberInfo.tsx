@@ -6,13 +6,13 @@
 import { Stack, Typography } from "@mui/joy";
 
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
-import { getDepartmentNameFromUserId } from "@/lib/businessModules/chat/shared/utils";
 
 interface MemberInfoProps {
   userId: string;
+  departmentName?: string;
 }
 
-export function MemberInfo({ userId }: MemberInfoProps) {
+export function MemberInfo({ userId, departmentName }: MemberInfoProps) {
   return (
     <Stack
       spacing={2}
@@ -22,9 +22,7 @@ export function MemberInfo({ userId }: MemberInfoProps) {
         borderColor: "neutral.outlinedBorder",
       }}
     >
-      <Typography sx={{ textTransform: "capitalize" }}>
-        {getDepartmentNameFromUserId(userId)?.organisationName}
-      </Typography>
+      <Typography sx={{ textWrap: "pretty" }}>{departmentName}</Typography>
       <ChatUserId userId={userId} />
     </Stack>
   );

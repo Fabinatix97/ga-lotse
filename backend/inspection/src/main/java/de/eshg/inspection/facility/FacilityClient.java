@@ -14,6 +14,7 @@ import de.eshg.base.centralfile.api.facility.AddFacilityFileStateRequest;
 import de.eshg.base.centralfile.api.facility.AddFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStateResponse;
 import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesRequest;
+import de.eshg.base.centralfile.api.facility.GetFacilityFileStatesResponse;
 import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
 import de.eshg.base.centralfile.api.facility.PutFacilityRequest;
 import de.eshg.base.centralfile.api.facility.SearchReferenceFacilitiesResponse;
@@ -63,11 +64,12 @@ public class FacilityClient {
   }
 
   public List<AddFacilityFileStateResponse> getFacilityFileStates(List<UUID> fileStateIds) {
+    return getFacilityFileStatesWithNotFound(fileStateIds).facilityFileStates();
+  }
+
+  public GetFacilityFileStatesResponse getFacilityFileStatesWithNotFound(List<UUID> fileStateIds) {
     return doAndForwardErrorCodes(
-        () ->
-            facilityApi
-                .getFacilityFileStates(new GetFacilityFileStatesRequest(fileStateIds))
-                .facilityFileStates());
+        () -> facilityApi.getFacilityFileStates(new GetFacilityFileStatesRequest(fileStateIds)));
   }
 
   public AddFacilityFileStateResponse syncFacilityFileState(UUID id, long version) {

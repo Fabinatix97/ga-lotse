@@ -23,7 +23,7 @@ export function deleteVersionDialogOptions({
 > {
   return {
     title: "Eintrag löschen?",
-    description: `Möchten Sie den Eintrag "${versionName}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`,
+    description: `Möchten Sie den Eintrag „${versionName}” wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`,
     confirmLabel: "Löschen",
     color: "danger",
   };

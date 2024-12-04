@@ -44,7 +44,10 @@ dependencies {
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
+    testFixturesImplementation project(':test-commons')
+    testFixturesImplementation 'org.springframework.boot:spring-boot-test'
     testFixturesImplementation 'org.springframework.data:spring-data-jpa'
+    testFixturesImplementation 'org.assertj:assertj-core'
 
     testImplementation project(':rest-oauth-client-commons')
     testImplementation testFixtures(project(':business-module-persistence-commons'))

@@ -22,7 +22,7 @@ export interface MemberInfoViewProps {
 }
 
 export function MemberInfoView({ userId, onClose }: MemberInfoViewProps) {
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, departmentInfo } = useChatClientContext();
   const [user, setUser] = useState<UserFromDirectory>();
   const isMe = isStrictEqual(userId, matrixClient.getUserId());
 
@@ -56,7 +56,7 @@ export function MemberInfoView({ userId, onClose }: MemberInfoViewProps) {
           overflowY: "auto",
         }}
       >
-        <MemberInfo userId={userId} />
+        <MemberInfo userId={userId} departmentName={departmentInfo?.name} />
       </Box>
       <Stack
         spacing={1}

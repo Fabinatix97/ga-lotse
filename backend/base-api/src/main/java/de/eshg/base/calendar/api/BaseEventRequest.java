@@ -16,6 +16,5 @@ import java.util.UUID;
 public record BaseEventRequest(
     @NotNull UUID calendarId,
     @NotNull BaseEventTypeDto type,
-    ShowAs showAs,
     String subject,
     @Valid @NotNull EventTimeData timeData) {}

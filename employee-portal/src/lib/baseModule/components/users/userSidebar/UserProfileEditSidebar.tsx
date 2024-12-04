@@ -23,10 +23,8 @@ import { useUpdateSelfUser } from "@/lib/baseModule/api/mutations/users";
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { GroupList } from "@/lib/baseModule/components/users/GroupList";
 import { UserSidebarHeader } from "@/lib/baseModule/components/users/userSidebar/UserSidebarHeader";
-import {
-  chatUsernameValidator,
-  phoneNumberValidator,
-} from "@/lib/baseModule/components/users/validation";
+import { phoneNumberValidator } from "@/lib/baseModule/components/users/validation";
+import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { MultiFormButtonBar } from "@/lib/shared/components/form/MultiFormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
@@ -140,14 +138,6 @@ function UserProfileEditSidebar({
                 validate={phoneNumberValidator}
               />
 
-              {showChatUsername && (
-                <InputField
-                  label={"Chat Benutzername"}
-                  name={fieldName("externalChatUsername")}
-                  validate={chatUsernameValidator}
-                />
-              )}
-
               {selfGroups.length > 0 && (
                 <>
                   <Divider />
@@ -156,6 +146,23 @@ function UserProfileEditSidebar({
                     label={"Abteilung"}
                     value={<GroupList groups={selfGroups} />}
                     valueIsDiv
+                  />
+                </>
+              )}
+
+              {showChatUsername && selfUser.externalChatUsername && (
+                <>
+                  <Divider />
+                  <DetailsCell
+                    name={"externalChatUsername"}
+                    label={"Chat-ID"}
+                    valueIsDiv
+                    value={
+                      <ChatUserId
+                        userId={selfUser.externalChatUsername}
+                        noLabel
+                      />
+                    }
                   />
                 </>
               )}

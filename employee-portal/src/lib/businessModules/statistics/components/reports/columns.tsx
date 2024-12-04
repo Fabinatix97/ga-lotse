@@ -35,6 +35,9 @@ export function getReportsOverviewColumns(
   share: (id: string) => Promise<void>,
   deleteReportWithConfirmation: (reportId: string) => void,
   deleteReportSeriesWithConfirmation: (seriesId: string) => void,
+  exportData: (
+    item: SingleReportOverview | ReportSeriesItemOverview,
+  ) => Promise<void>,
   canWrite: boolean,
   canDelete: (creatorUserId: string) => boolean,
 ) {
@@ -85,6 +88,15 @@ export function getReportsOverviewColumns(
                           | ReportSeriesItemOverview
                       ).reportId,
                     ),
+                  ),
+              },
+              {
+                type: "export",
+                action: () =>
+                  exportData(
+                    props.row.original as
+                      | SingleReportOverview
+                      | ReportSeriesItemOverview,
                   ),
               },
             ],

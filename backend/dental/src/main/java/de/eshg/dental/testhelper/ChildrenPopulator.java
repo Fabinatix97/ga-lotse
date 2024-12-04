@@ -8,15 +8,16 @@ package de.eshg.dental.testhelper;
 import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
 import de.eshg.base.GenderDto;
+import de.eshg.base.SalutationDto;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.dental.ChildController;
 import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.CreateChildResponse;
-import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.repository.ChildRepository;
 import de.eshg.testhelper.environment.EnvironmentConfig;
+import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.ListWithTotalNumber;
 import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import de.eshg.testhelper.population.PopulationProperties;
@@ -25,7 +26,7 @@ import de.eshg.testhelper.population.RequestContextFaker;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Year;
-import java.util.*;
+import java.util.List;
 import net.datafaker.Faker;
 import net.datafaker.providers.base.Name;
 
@@ -67,21 +68,7 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
   protected CreateChildResponse populate(
       int index, Faker faker, ChildrenPopulator.UniqueValueProvider uniqueValueProvider) {
     CreateChildRequest request = randomChild(faker);
-    CreateChildResponse createChildResponse = childController.createChild(request);
-    createRandomExaminations(faker, createChildResponse);
-    return createChildResponse;
-  }
-
-  private void createRandomExaminations(Faker faker, CreateChildResponse createChildResponse) {
-    int numberOfExaminations = faker.random().nextInt(0, 2);
-    for (int i = 0; i < numberOfExaminations; i++) {
-      childController.createExamination(createChildResponse.id(), randomExamination(faker));
-    }
-  }
-
-  private ExaminationDto randomExamination(Faker faker) {
-    return new ExaminationDto(
-        LocalDate.now(clock).minusDays(faker.random().nextInt(350)), faker.medication().drugName());
+    return childController.createChild(request);
   }
 
   private CreateChildRequest randomChild(Faker faker) {
@@ -97,10 +84,20 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
     String groupName = faker.random().nextInt(1, 4) + randomElement(faker, List.of("a", "b", "c"));
 
     return new CreateChildRequest(
+        null,
+        name.title(),
+        optional(faker, randomElement(SalutationDto.values()), 0.9),
         name.firstName(),
         name.lastName(),
-        optional(faker, randomElement(faker, GenderDto.values()), 0.05),
+        optional(faker, randomElement(GenderDto.values()), 0.05),
         dateOfBirth,
+        optional(faker, faker.name().lastName(), 0.95),
+        optional(faker, faker.address().city(), 0.5),
+        optional(faker, BasePopulator::randomCountry, 0.5),
+        optional(faker, randomListOfEmails(1), 0.4),
+        optional(faker, randomListOfPhoneNumbers(1), 0.4),
+        optional(faker, BasePopulator::randomAddress, 0.3),
+        optional(faker, BasePopulator::randomAddress, 0.9),
         randomYear,
         groupName,
         randomSchool(faker));

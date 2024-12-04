@@ -14,35 +14,23 @@ import { InfoTileAddButton } from "@/lib/shared/components/infoTile/InfoTileAddB
 export interface BillingAddressTileProps {
   billingAddress?: ApiAddFacilityFileStateRequestContactAddress;
   readonly?: boolean;
-  setOpen: (initialState: boolean) => void;
+  onEdit: () => void;
 }
 
 export function BillingAddressTile({
   billingAddress,
   readonly,
-  setOpen,
+  onEdit,
 }: Readonly<BillingAddressTileProps>) {
-  function handleEdit() {
-    setOpen(true);
-  }
-
-  function handleAddButton() {
-    setOpen(true);
-  }
-
   return (
     <InfoTile
       name="billingAddress"
       title="Abweichende Rechnungsadresse"
-      onEdit={
-        isNonNullish(billingAddress) && !readonly ? handleEdit : undefined
-      }
+      onEdit={isNonNullish(billingAddress) && !readonly ? onEdit : undefined}
     >
       <Grid container direction="column" sx={{ gap: 2 }}>
         {!isNonNullish(billingAddress) && (
-          <InfoTileAddButton onClick={handleAddButton}>
-            Hinzufügen
-          </InfoTileAddButton>
+          <InfoTileAddButton onClick={onEdit}>Hinzufügen</InfoTileAddButton>
         )}
         {isDefined(billingAddress) && (
           <BaseAddressDetails address={billingAddress} />

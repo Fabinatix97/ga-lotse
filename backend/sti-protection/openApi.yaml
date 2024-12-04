@@ -1780,26 +1780,6 @@ paths:
       summary: Update the person details of an STI procedure.
       tags:
       - StiProtectionProcedure
-  /sti-procedures/{id}/register-anonymous-user:
-    post:
-      operationId: registerAnonymousUser
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/RegisterAnonymousUserResponse"
-          description: OK
-      summary: Register an anonymous user
-      tags:
-      - StiProtectionProcedure
   /sti-procedures/{id}/reopen:
     put:
       operationId: reopenProcedure
@@ -1818,6 +1798,28 @@ paths:
                 $ref: "#/components/schemas/StiProtectionProcedure"
           description: OK
       summary: Re-open an STI procedure.
+      tags:
+      - StiProtectionProcedure
+  /sti-procedures/{id}/verify-pin:
+    post:
+      operationId: verifyAnonymousUserPin
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyAnonymousUserPinRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Verify anonymous user PIN for a given STI procedure.
       tags:
       - StiProtectionProcedure
   /sti-procedures/{procedureId}/examination/rapid-test:
@@ -3161,10 +3163,16 @@ components:
     CreateProcedureResponse:
       type: object
       properties:
+        pin:
+          type: string
+          description: The PIN for anonymous authorization.
+          example: "654321"
+          pattern: "\\d{6}"
         procedureId:
           type: string
           format: uuid
       required:
+      - pin
       - procedureId
     DataOrigin:
       type: string
@@ -3572,16 +3580,23 @@ components:
         dueDate:
           type: string
           format: date
+        gdprProcedureId:
+          type: string
+          format: uuid
         identificationData:
           oneOf:
           - $ref: "#/components/schemas/GdprFacility"
           - $ref: "#/components/schemas/GdprPerson"
         status:
           $ref: "#/components/schemas/GdprValidationTaskStatus"
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
       required:
       - dueDate
+      - gdprProcedureId
       - identificationData
       - status
+      - type
     GdprValidationTaskSortKey:
       type: string
       enum:
@@ -4862,6 +4877,8 @@ components:
       - MEDICAL_REGISTRY_ENTRY
       - MEDICAL_REGISTRY_CITIZEN_DRAFT
       - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
+      - DENTAL_CHILD
+      - OFFICIAL_MEDICAL_SERVICE
     ProcedureWithDuration:
       type: object
       properties:
@@ -4980,7 +4997,6 @@ components:
         result:
           type: boolean
       required:
-      - number
       - result
     RapidTestExamination:
       type: object
@@ -5026,27 +5042,6 @@ components:
       - testsPayed
       - ultrasoundRequested
       - urinalysisRequested
-    RegisterAnonymousUserResponse:
-      type: object
-      properties:
-        accessCode:
-          type: string
-          description: The access code for the anonymous user
-          example: Wzhu89yP4F728jVTT
-        pin:
-          type: string
-          description: The PIN for anonymous authorization.
-          example: "654321"
-          pattern: "\\d{6}"
-        userId:
-          type: string
-          format: uuid
-          description: Id of the anonymous user
-          example: ae9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
-      required:
-      - accessCode
-      - pin
-      - userId
     RelationshipModel:
       type: string
       enum:
@@ -5626,6 +5621,16 @@ components:
       required:
       - userIdsWithEventConflicts
       - userIdsWithoutEventConflicts
+    VerifyAnonymousUserPinRequest:
+      type: object
+      properties:
+        pin:
+          type: string
+          description: The PIN for verification
+          example: "654321"
+          pattern: "\\d{6}"
+      required:
+      - pin
     WaitingRoom:
       type: object
       properties:

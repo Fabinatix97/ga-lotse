@@ -6,6 +6,7 @@
 "use client";
 
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
+import { Button } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { EventView } from "@/lib/baseModule/components/calendar/EventView";
@@ -49,9 +50,9 @@ export function ViewEventSidebar({
               }
             ></EventView>
           </SidebarContent>
-          {isDefined(event.metaData.procedureId) &&
-            isDefined(event.metaData.businessModule) && (
-              <SidebarActions>
+          <SidebarActions>
+            {isDefined(event.metaData.procedureId) &&
+              isDefined(event.metaData.businessModule) && (
                 <InternalLinkButton
                   variant="plain"
                   color="primary"
@@ -65,8 +66,16 @@ export function ViewEventSidebar({
                 >
                   Zum Vorgang
                 </InternalLinkButton>
-              </SidebarActions>
-            )}
+              )}
+            <Button
+              variant="solid"
+              color="primary"
+              sx={{ alignSelf: "flex-end" }}
+              onClick={() => closeSidebar()}
+            >
+              Schließen
+            </Button>
+          </SidebarActions>
         </>
       )}
     </Sidebar>

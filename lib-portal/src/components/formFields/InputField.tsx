@@ -40,6 +40,7 @@ export interface InputFieldProps
   maxLength?: number;
   "aria-label"?: string;
   untrimmedInput?: boolean;
+  autoComplete?: InputProps["autoComplete"];
 }
 
 export function InputField(props: Readonly<InputFieldProps>) {
@@ -55,8 +56,8 @@ export function InputField(props: Readonly<InputFieldProps>) {
 
   async function handleBlur(event: FocusEvent<HTMLInputElement>) {
     if (!props.untrimmedInput) {
-      const value = field.input.value;
-      const trimmedValue = value.trim();
+      const value: string | undefined = field.input.value;
+      const trimmedValue = value?.trim();
       if (value !== trimmedValue) {
         await field.helpers.setValue(trimmedValue);
         event.target.value = trimmedValue;
@@ -92,6 +93,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
         color={props.primary ? "primary" : undefined}
         data-testid={props["data-testid"]}
         aria-label={props["aria-label"]}
+        autoComplete={props.autoComplete}
         slotProps={{
           input: {
             readOnly: props.readOnly === true || props.unstyledReadOnly,

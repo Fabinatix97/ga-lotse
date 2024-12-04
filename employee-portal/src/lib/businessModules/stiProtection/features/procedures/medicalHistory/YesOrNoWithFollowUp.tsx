@@ -17,7 +17,7 @@ import {
 function hasProperty<K extends string>(
   obj: unknown,
   prop: K,
-): obj is { [k in K]: unknown } {
+): obj is Record<K, unknown> {
   return obj != null && typeof obj === "object" && prop in obj;
 }
 
@@ -71,17 +71,20 @@ function selectPath<T, K extends string>(
   }
 }
 
+export interface YesOrNoWithFollowUpProps<T>
+  extends PropsWithChildren<Omit<RadioGroupFieldProps, "name" | "label">> {
+  name: Path<T> | string;
+  label: string;
+  sx?: SxProps;
+  labelTrue?: string;
+  labelFalse?: string;
+}
+
 export function YesOrNoWithFollowUp<T>({
   children,
   sx,
   ...radioProps
-}: PropsWithChildren<
-  Omit<RadioGroupFieldProps, "name" | "label"> & {
-    name: Path<T>;
-    label: string;
-    sx?: SxProps;
-  }
->) {
+}: YesOrNoWithFollowUpProps<T>) {
   const { values, getFieldHelpers } = useFormikContext<T>();
   const { setValue } = getFieldHelpers(radioProps.name);
   const value = selectPath(values, radioProps.name);
@@ -99,8 +102,16 @@ export function YesOrNoWithFollowUp<T>({
     >
       <Row>
         <RadioGroupField {...radioProps} orientation="horizontal">
-          <Radio name={radioProps.name} value={"yes"} label="Ja" />
-          <Radio name={radioProps.name} value={"no"} label="Nein" />
+          <Radio
+            name={radioProps.name}
+            value={"yes"}
+            label={radioProps.labelTrue ?? "Ja"}
+          />
+          <Radio
+            name={radioProps.name}
+            value={"no"}
+            label={radioProps.labelFalse ?? "Nein"}
+          />
           {value ? (
             <Button
               variant="plain"
@@ -125,8 +136,10 @@ export function YesOrNoWithFollowUp<T>({
 
 export type YesOrNoFieldData = "yes" | "no" | null;
 
-export function mapYesOrNoToBool(b: YesOrNoFieldData): boolean | undefined {
-  if (b == null) {
+export function mapYesOrNoToBool(
+  b: YesOrNoFieldData | "",
+): boolean | undefined {
+  if (b == null || b == "") {
     return;
   }
   return b === "yes";

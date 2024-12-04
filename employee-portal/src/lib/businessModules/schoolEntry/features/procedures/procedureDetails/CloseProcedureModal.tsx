@@ -5,7 +5,7 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { ArrowForward } from "@mui/icons-material";
@@ -18,7 +18,7 @@ import { useCloseProcedure } from "@/lib/businessModules/schoolEntry/api/mutatio
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
 
 interface CloseProcedureModalProps
-  extends Omit<BaseModalProps, "children" | "modalTitle"> {
+  extends Omit<BaseModalPropsRequiredClose, "children" | "modalTitle"> {
   procedure: ProcedureDetails;
 }
 
@@ -44,7 +44,7 @@ export function CloseProcedureModal(props: CloseProcedureModalProps) {
   ) : (
     <BaseModalWithInfo
       modalTitle="Schulinfobrief erstellen"
-      info="Der Vorgang kann nicht geschlossen werden. Sie müssen zuerst einen Schulinfobrief im Bereich “Untersuchung” erstellen."
+      info="Der Vorgang kann nicht geschlossen werden. Sie müssen zuerst einen Schulinfobrief im Bereich „Untersuchung” erstellen."
       button={
         <InternalLinkButton
           href={routes.procedures.byId(props.procedure.id).examinations.index}

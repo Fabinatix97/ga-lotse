@@ -13,7 +13,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapTimeRangeEndApiToFrontend } from "@/lib/businessModules/statistics/api/mapper/mapTimeRangeEnd";
-import { EvaluationOverview } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
+import {
+  EvaluationOverview,
+  EvaluationOverviewTableItem,
+} from "@/lib/businessModules/statistics/api/models/evaluationOverview";
 
 import { getEvaluationsQueryKey } from "./apiQueryKeys";
 
@@ -43,12 +46,16 @@ function mapGetEvaluations(
 ): EvaluationOverview {
   return {
     totalNumberOfElements: apiGetEvaluationsResponse.totalNumberOfElements,
-    data: apiGetEvaluationsResponse.evaluations.map((evaluation) => ({
-      ...evaluation,
-      timeRangeEnd: mapTimeRangeEndApiToFrontend(evaluation.timeRangeEnd),
-      user: apiGetEvaluationsResponse.resolvedUsers[evaluation.userId],
-      dataSourceName: evaluation.dataSourceNames[0]!,
-      anonymized: evaluation.anonymized,
-    })),
+    data: apiGetEvaluationsResponse.evaluations.map(
+      (evaluation) =>
+        ({
+          ...evaluation,
+          timeRangeEnd: mapTimeRangeEndApiToFrontend(evaluation.timeRangeEnd),
+          user: apiGetEvaluationsResponse.resolvedUsers[evaluation.userId],
+          dataSourceName: evaluation.dataSourceNames[0]!,
+          anonymized: evaluation.anonymized,
+          tooMuchDataForExport: evaluation.tooMuchDataForExport,
+        }) satisfies EvaluationOverviewTableItem,
+    ),
   };
 }

@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class InspectionValidator {
@@ -52,7 +51,7 @@ public class InspectionValidator {
   private HashAlgorithm hashAlgorithm;
 
   public void generateSignatureHash(
-      InspectionSignature signature, MultipartFile signatureFile, InspectionPhase inspectionPhase) {
+      InspectionSignature signature, InspectionPhase inspectionPhase) {
     verifyInspectionPhase(inspectionPhase);
 
     if (signature != null) {
@@ -62,7 +61,10 @@ public class InspectionValidator {
                   ("%s;%s;".formatted(signatureId, signature.getSigner()))
                       .getBytes(StandardCharsets.UTF_8));
           InputStream combinedInputStream =
-              new SequenceInputStream(stringInputStream, signatureFile.getInputStream())) {
+              new SequenceInputStream(
+                  stringInputStream,
+                  new ByteArrayInputStream(
+                      signature.getSignatureImage().getFileContent().getAllBytes()))) {
         String signatureHash = HashUtil.hash(combinedInputStream, hashAlgorithm);
         signature.setHashAlgorithm(hashAlgorithm);
         signature.setHashValue(signatureHash);

@@ -23,7 +23,8 @@
   <include file="migrations/0013_update_trigger_type.xml"/>
   <include file="migrations/0014_add_physician_mfa_to_service.xml"/>
   <include file="migrations/0015_add_citizen_user_id_to_procedure.xml"/>
-  <include file="migrations/0016_add_sti_protection_procedure_lib_enum_values.xml"/>
+  <include
+    file="migrations/0016_add_sti_protection_procedure_lib_enum_values.xml"/>
   <include file="migrations/0017_add_information_statement_editor.xml"/>
   <include file="migrations/0018_central_file_state_id_unique_index.xml"/>
   <include file="migrations/0019_add_cemetery.xml"/>
@@ -42,11 +43,13 @@
   <include file="migrations/0032_remove_key_document_type_enum.xml"/>
   <include file="migrations/0033_set_earliest_date_to_ps.xml"/>
   <include file="migrations/0034_add_citizen_has_answered_to_infostmt.xml"/>
-  <include file="migrations/0035_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
+  <include
+    file="migrations/0035_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
   <include file="migrations/0036_delete_templates_and_documents.xml"/>
   <include file="migrations/0037_add_system_progress_entry_keydocument.xml"/>
   <include file="migrations/0038_cemetery_sequence.xml"/>
-  <include file="migrations/0039_move_subject_and_message_text_to_mail_metadata.xml"/>
+  <include
+    file="migrations/0039_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0040_add_gdpr_validation_task.xml"/>
   <include file="migrations/0041_add_started_at.xml"/>
   <include file="migrations/0042_add_default_batch_id.xml"/>
@@ -54,4 +57,9 @@
   <include file="migrations/0044_rename_gdpr_validation_task_procedure_id.xml"/>
   <include file="migrations/0045_add_download_package_table.xml"/>
   <include file="migrations/0046_add_tm_signature.xml"/>
+  <include file="migrations/0047_add_dental_as_procedure_type.xml"/>
+  <include
+    file="migrations/0048_add_official_medical_service_procedure_type.xml"/>
+  <include file="migrations/0049_add_mail_to_simple_notification.xml"/>
+
 </databaseChangeLog>

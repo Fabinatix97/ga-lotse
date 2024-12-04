@@ -5,9 +5,9 @@
 
 import { ApiBaseFeature, ApiUser } from "@eshg/employee-portal-api/base";
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
+import { InternalLinkIconButton } from "@eshg/lib-portal/components/navigation/InternalLinkIconButton";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { createColumnHelper } from "@tanstack/react-table";
-import { isDefined } from "remeda";
 
 import { useIsNewFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { UserAvatar } from "@/lib/baseModule/components/users/UserAvatar";
@@ -72,14 +72,26 @@ const userColumns = [
   }),
   columnHelper.accessor("externalChatUsername", {
     header: "Chat",
-    cell: (props) =>
-      isDefined(props.getValue()) ? (
-        <InternalLink href={chatRoutes.userRoom(props.getValue()!)}>
-          {props.getValue()}
-        </InternalLink>
+    cell: (props) => {
+      const value = props.getValue();
+      return value ? (
+        <InternalLinkIconButton
+          aria-label="Direktnachricht"
+          href={chatRoutes.userRoom(value)}
+          color="primary"
+          size="sm"
+          variant="plain"
+        >
+          <ChatOutlinedIcon />
+        </InternalLinkIconButton>
       ) : (
         <></>
-      ),
+      );
+    },
+    meta: {
+      width: "9ch",
+      cellStyle: "button",
+    },
   }),
 ];
 

@@ -25,7 +25,13 @@ export const sideNavigationItem: SideNavigationItem = {
 };
 
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
-  const { canAccessChat } = useChat();
+  const { canAccessChat, userSettings } = useChat();
 
-  return { isLoading: false, items: canAccessChat ? [sideNavigationItem] : [] };
+  return {
+    isLoading: false,
+    items:
+      canAccessChat && !userSettings.accountDeactivated
+        ? [sideNavigationItem]
+        : [],
+  };
 }

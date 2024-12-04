@@ -17,20 +17,21 @@ import de.eshg.medicalregistry.api.GetProcedureDraftResponse;
 import de.eshg.medicalregistry.api.GetProcedureResponse;
 import de.eshg.medicalregistry.api.PracticeDto;
 import de.eshg.medicalregistry.api.ProcedureTypeDto;
+import de.eshg.medicalregistry.api.TypeOfApplicantChangeDto;
 import de.eshg.medicalregistry.api.TypeOfChangeDto;
-import de.eshg.medicalregistry.api.TypeOfDeRegistrationDto;
-import de.eshg.medicalregistry.api.TypeOfFullProcedureChangeDto;
-import de.eshg.medicalregistry.domain.model.Deregistration;
-import de.eshg.medicalregistry.domain.model.FullProcedureChange;
+import de.eshg.medicalregistry.api.TypeOfFullChangeDto;
+import de.eshg.medicalregistry.api.TypeOfPracticeChangeDto;
+import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.MedicalRegistrySystemProgressEntryType;
+import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
-import de.eshg.medicalregistry.domain.model.TypeOfDeregistration;
-import de.eshg.medicalregistry.domain.model.TypeOfFullProcedureChange;
+import de.eshg.medicalregistry.domain.model.TypeOfFullMedicalRegistryEntryChange;
+import de.eshg.medicalregistry.domain.model.TypeOfPartialMedicalRegistryEntryChange;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,44 +58,47 @@ public final class ProcedureMapper {
       GetPersonFileStateResponse professionalDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
     return switch (medicalRegistryEntry) {
-      case FullProcedureChange fullProcedureChange ->
-          mapToDraftDto(fullProcedureChange, professionalDetails, practiceDetails);
-      case Deregistration deRegistration -> mapToDraftDto(deRegistration, professionalDetails);
+      case FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange ->
+          mapToDraftDto(fullMedicalRegistryEntryChange, professionalDetails, practiceDetails);
+      case PartialMedicalRegistryEntryChange partialMedicalRegistryEntryChange ->
+          mapToDraftDto(partialMedicalRegistryEntryChange, professionalDetails, practiceDetails);
     };
   }
 
   public static GetProcedureDraftResponse mapToDraftDto(
-      Deregistration deregistration, GetPersonFileStateResponse professionalDetails) {
-    return new GetProcedureDraftResponse(
-        deregistration.getExternalId(),
-        deregistration.getVersion(),
-        mapStatusToDto(deregistration.getProcedureStatus()),
-        mapProcedureTypeToDto(deregistration.getProcedureType()),
-        mapTypeOfChangeToDto(deregistration.getTypeOfChange()),
-        mapApplicant(deregistration.getRelatedPersons(), professionalDetails),
-        null,
-        null,
-        null,
-        deregistration.isConsentToPrivacyPolicy(),
-        deregistration.isRequestForWrittenConfirmation());
-  }
-
-  public static GetProcedureDraftResponse mapToDraftDto(
-      FullProcedureChange fullProcedureChange,
+      PartialMedicalRegistryEntryChange partialMedicalRegistryEntryChange,
       GetPersonFileStateResponse professionalDetails,
       Map<UUID, FacilityDetails> practiceDetails) {
     return new GetProcedureDraftResponse(
-        fullProcedureChange.getExternalId(),
-        fullProcedureChange.getVersion(),
-        mapStatusToDto(fullProcedureChange.getProcedureStatus()),
-        mapProcedureTypeToDto(fullProcedureChange.getProcedureType()),
-        mapTypeOfChangeToDto(fullProcedureChange.getTypeOfChange()),
-        mapApplicant(fullProcedureChange.getRelatedPersons(), professionalDetails),
-        ProfessionalMapper.mapToDto(fullProcedureChange.getProfessionInformation()),
-        mapPractices(fullProcedureChange.getRelatedFacilities(), practiceDetails),
-        fullProcedureChange.isEmployeesEmployed(),
-        fullProcedureChange.isConsentToPrivacyPolicy(),
-        fullProcedureChange.isRequestForWrittenConfirmation());
+        partialMedicalRegistryEntryChange.getExternalId(),
+        partialMedicalRegistryEntryChange.getVersion(),
+        mapStatusToDto(partialMedicalRegistryEntryChange.getProcedureStatus()),
+        mapProcedureTypeToDto(partialMedicalRegistryEntryChange.getProcedureType()),
+        mapTypeOfChangeToDto(partialMedicalRegistryEntryChange.getTypeOfChange()),
+        mapApplicant(partialMedicalRegistryEntryChange.getRelatedPersons(), professionalDetails),
+        null,
+        mapPractices(partialMedicalRegistryEntryChange.getRelatedFacilities(), practiceDetails),
+        partialMedicalRegistryEntryChange.getEmployeesEmployed(),
+        partialMedicalRegistryEntryChange.isConsentToPrivacyPolicy(),
+        partialMedicalRegistryEntryChange.isRequestForWrittenConfirmation());
+  }
+
+  public static GetProcedureDraftResponse mapToDraftDto(
+      FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange,
+      GetPersonFileStateResponse professionalDetails,
+      Map<UUID, FacilityDetails> practiceDetails) {
+    return new GetProcedureDraftResponse(
+        fullMedicalRegistryEntryChange.getExternalId(),
+        fullMedicalRegistryEntryChange.getVersion(),
+        mapStatusToDto(fullMedicalRegistryEntryChange.getProcedureStatus()),
+        mapProcedureTypeToDto(fullMedicalRegistryEntryChange.getProcedureType()),
+        mapTypeOfChangeToDto(fullMedicalRegistryEntryChange.getTypeOfChange()),
+        mapApplicant(fullMedicalRegistryEntryChange.getRelatedPersons(), professionalDetails),
+        ProfessionalMapper.mapToDto(fullMedicalRegistryEntryChange.getProfessionInformation()),
+        mapPractices(fullMedicalRegistryEntryChange.getRelatedFacilities(), practiceDetails),
+        fullMedicalRegistryEntryChange.isEmployeesEmployed(),
+        fullMedicalRegistryEntryChange.isConsentToPrivacyPolicy(),
+        fullMedicalRegistryEntryChange.isRequestForWrittenConfirmation());
   }
 
   public static GetProcedureConfirmedResponse mapToConfirmedDto(
@@ -115,10 +119,20 @@ public final class ProcedureMapper {
         medicalRegistryProcedure.isRequestForWrittenConfirmation());
   }
 
-  public static TypeOfDeregistration mapToDomain(TypeOfDeRegistrationDto typeOfDeregistrationDto) {
+  public static TypeOfPartialMedicalRegistryEntryChange mapToDomain(
+      TypeOfApplicantChangeDto typeOfDeregistrationDto) {
     return switch (typeOfDeregistrationDto) {
-      case RELOCATION -> TypeOfDeregistration.RELOCATION;
-      case DEREGISTRATION -> TypeOfDeregistration.DEREGISTRATION;
+      case RELOCATION -> TypeOfPartialMedicalRegistryEntryChange.RELOCATION;
+      case DEREGISTRATION -> TypeOfPartialMedicalRegistryEntryChange.DEREGISTRATION;
+      case CHANGE_OF_NAME -> TypeOfPartialMedicalRegistryEntryChange.CHANGE_OF_NAME;
+    };
+  }
+
+  public static TypeOfPartialMedicalRegistryEntryChange mapToDomain(
+      TypeOfPracticeChangeDto typeOfPracticeChangeDto) {
+    return switch (typeOfPracticeChangeDto) {
+      case CHANGE_OF_REGISTRATION -> TypeOfPartialMedicalRegistryEntryChange.CHANGE_OF_REGISTRATION;
+      case SECOND_PRACTICE -> TypeOfPartialMedicalRegistryEntryChange.SECOND_PRACTICE;
     };
   }
 
@@ -135,27 +149,20 @@ public final class ProcedureMapper {
         .toList();
   }
 
-  public static TypeOfFullProcedureChange mapToDomain(
-      TypeOfFullProcedureChangeDto typeOfChangeDto) {
+  public static TypeOfFullMedicalRegistryEntryChange mapToDomain(
+      TypeOfFullChangeDto typeOfChangeDto) {
     if (typeOfChangeDto == null) {
       return null;
     }
 
     return switch (typeOfChangeDto) {
-      case NEW_REGISTRATION -> TypeOfFullProcedureChange.NEW_REGISTRATION;
-      case SECOND_PRACTICE -> TypeOfFullProcedureChange.SECOND_PRACTICE;
-      case RE_REGISTRATION -> TypeOfFullProcedureChange.RE_REGISTRATION;
-      case CHANGE_OF_REGISTRATION -> TypeOfFullProcedureChange.CHANGE_OF_REGISTRATION;
-      case CHANGE_OF_NAME -> TypeOfFullProcedureChange.CHANGE_OF_NAME;
-      case OTHER -> TypeOfFullProcedureChange.OTHER;
+      case NEW_REGISTRATION -> TypeOfFullMedicalRegistryEntryChange.NEW_REGISTRATION;
+      case RE_REGISTRATION -> TypeOfFullMedicalRegistryEntryChange.RE_REGISTRATION;
+      case OTHER -> TypeOfFullMedicalRegistryEntryChange.OTHER;
     };
   }
 
   private static TypeOfChangeDto mapTypeOfChangeToDto(TypeOfChange typeOfChange) {
-    if (typeOfChange == null) {
-      return null;
-    }
-
     return switch (typeOfChange) {
       case NEW_REGISTRATION -> TypeOfChangeDto.NEW_REGISTRATION;
       case SECOND_PRACTICE -> TypeOfChangeDto.SECOND_PRACTICE;

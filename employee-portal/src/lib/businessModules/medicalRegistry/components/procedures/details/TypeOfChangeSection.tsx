@@ -15,7 +15,10 @@ export function TypeOfChangeSection({
 }: Readonly<{ procedure: ApiGetProcedureDraftResponse }>) {
   return (
     <ContentPanel>
-      <DetailsSection name="type-of-change-section" title="Art der Änderung">
+      <DetailsSection
+        data-testid="type-of-change-section"
+        title="Art der Änderung"
+      >
         <Typography level="body-md">
           {changeTypeNames[procedure.typeOfChange]}
         </Typography>

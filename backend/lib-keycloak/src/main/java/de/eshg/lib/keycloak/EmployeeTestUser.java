@@ -198,7 +198,22 @@ public enum EmployeeTestUser implements KeycloakUser {
       "password",
       "Daniel",
       "Schultze",
-      List.of(ModuleMemberGroup.OPEN_DATA));
+      List.of(ModuleMemberGroup.OPEN_DATA)),
+  OMS_LEADER(
+      "oms_leader",
+      "+49 555 456 654",
+      "password",
+      "Hans",
+      "Hansen",
+      List.of(
+          ModuleLeaderGroup.OFFICIAL_MEDICAL_SERVICE, ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE)),
+  OMS_CLERK(
+      "oms_clerk",
+      "+49 555 456 456",
+      "password",
+      "Hans",
+      "Hansen",
+      List.of(ModuleMemberGroup.OFFICIAL_MEDICAL_SERVICE));
 
   private final String username;
   private final String email;

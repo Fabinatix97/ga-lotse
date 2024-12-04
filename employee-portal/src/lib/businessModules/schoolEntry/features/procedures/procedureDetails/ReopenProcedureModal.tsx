@@ -5,7 +5,7 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { formatPersonName } from "@eshg/lib-portal/formatters/person";
@@ -16,7 +16,7 @@ import { useReopenProcedure } from "@/lib/businessModules/schoolEntry/api/mutati
 import { DataField } from "@/lib/shared/components/modal/DataField";
 
 interface ReopenProcedureModalProps
-  extends Omit<BaseModalProps, "children" | "modalTitle"> {
+  extends Omit<BaseModalPropsRequiredClose, "children" | "modalTitle"> {
   procedure: ProcedureDetails;
 }
 

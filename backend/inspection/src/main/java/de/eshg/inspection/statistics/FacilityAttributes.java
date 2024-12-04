@@ -5,16 +5,17 @@
 
 package de.eshg.inspection.statistics;
 
-import static de.eshg.inspection.statistics.InspectionStatisticsService.ATTRIBUTE_CATEGORY_FACILITY;
+import static de.eshg.inspection.statistics.AttributeUtil.ATTRIBUTE_CATEGORY_FACILITY;
 
 import de.eshg.lib.statistics.api.ValueOptionInternal;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.util.AttributeInfo;
+import java.util.ArrayList;
 import java.util.List;
 
 public enum FacilityAttributes implements AttributeInfo {
   CENTRAL_FILE_ID(
-      "Sachstands-ID",
+      "Einrichtung",
       "CENTRAL_FILE_ID",
       true,
       ValueType.CENTRAL_FILE_ID,
@@ -26,6 +27,8 @@ public enum FacilityAttributes implements AttributeInfo {
       "OBJECT_TYPE",
       true,
       ValueType.VALUE_WITH_OPTIONS,
+      null,
+      new ArrayList<>(),
       ATTRIBUTE_CATEGORY_FACILITY,
       false),
 

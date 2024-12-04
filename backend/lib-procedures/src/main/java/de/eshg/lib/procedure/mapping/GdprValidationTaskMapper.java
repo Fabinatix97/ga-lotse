@@ -47,6 +47,14 @@ public class GdprValidationTaskMapper {
     };
   }
 
+  public static GdprValidationTaskTypeDto mapToApi(GdprValidationTaskType type) {
+    return switch (type) {
+      case null -> null;
+      case RIGHT_OF_ACCESS -> GdprValidationTaskTypeDto.RIGHT_OF_ACCESS;
+      case RIGHT_TO_ERASURE -> GdprValidationTaskTypeDto.RIGHT_TO_ERASURE;
+    };
+  }
+
   public static GdprValidationTaskStatus mapToDm(GdprValidationTaskStatusDto type) {
     return switch (type) {
       case null -> null;

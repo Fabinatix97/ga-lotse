@@ -8,7 +8,5 @@ package de.eshg.inspection.feature;
 public enum InspectionFeature {
   OFFLINE,
   IMPORT,
-  BANNED_FACILITIES_EXPORT,
-  FACILITY_HISTORY,
   STATISTICS,
 }

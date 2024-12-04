@@ -7,7 +7,6 @@ import {
   BaseFeatureTogglesApi,
   CalendarApi,
   CalendarEventApi,
-  ConfigApi,
   Configuration,
   ContactApi,
   DepartmentApi,
@@ -18,6 +17,7 @@ import {
   NotificationAggregationApi,
   PersonApi,
   ProcedureAggregationApi,
+  PublicConfigApi,
   ResourceApi,
   StreetApi,
   TaskAggregationApi,
@@ -120,5 +120,5 @@ export function useDepartmentApi() {
 
 export function useConfigApi() {
   const configuration = useConfiguration();
-  return new ConfigApi(configuration);
+  return new PublicConfigApi(configuration);
 }

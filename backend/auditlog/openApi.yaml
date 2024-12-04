@@ -439,8 +439,10 @@ components:
       - MEASLES_PROTECTION
       - STI_PROTECTION
       - MEDICAL_REGISTRY
+      - DENTAL
       - AUDITLOG
       - STATISTICS
+      - OFFICIAL_MEDICAL_SERVICE
     DefaultPopulationResponse:
       type: object
       properties:

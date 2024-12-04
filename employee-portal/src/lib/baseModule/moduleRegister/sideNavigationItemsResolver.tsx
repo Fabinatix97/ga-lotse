@@ -13,6 +13,7 @@ import { useSideNavigationItems as useDentalSideNavigationItems } from "@/lib/bu
 import { useSideNavigationItems as useInspectionSideNavigationItems } from "@/lib/businessModules/inspection/shared/sideNavigationItem";
 import { useSideNavigationItems as useMeaslesProtectionSideNavigationItems } from "@/lib/businessModules/measlesProtection/shared/sideNavigationItem";
 import { useSideNavigationItems as useMedicalRegistrySideNavigationItems } from "@/lib/businessModules/medicalRegistry/shared/sideNavigationItem";
+import { useSideNavigationItems as useOfficialMedicalServiceSideNavigationItems } from "@/lib/businessModules/officialMedicalService/shared/sideNavigationItem";
 import { useSideNavigationItems as useSchoolEntrySideNavigationItems } from "@/lib/businessModules/schoolEntry/shared/sideNavigationItem";
 import { useSideNavigationItems as useStatisticsSideNavigationItems } from "@/lib/businessModules/statistics/shared/sideNavigationItem";
 import { useSideNavigationItems as useStiProtectionSideNavigationItems } from "@/lib/businessModules/stiProtection/shared/sideNavigationItem";
@@ -32,6 +33,8 @@ export function useResolveSideNavigationItems(): UseSideNavigationItemsResult {
   const chatSideNavigation = useChatSideNavigationItems();
   const baseSideNavigation = useBaseSideNavigationItems();
   const dentalSideNavigationItems = useDentalSideNavigationItems();
+  const officialMedicalServiceSideNavigationItems =
+    useOfficialMedicalServiceSideNavigationItems();
 
   const orderedSideNavigationItems: UseSideNavigationItemsResult[] = [
     baseSideNavigation,
@@ -42,6 +45,7 @@ export function useResolveSideNavigationItems(): UseSideNavigationItemsResult {
     stiProtectionSideNavigation,
     medicalRegistrySideNavigationItems,
     dentalSideNavigationItems,
+    officialMedicalServiceSideNavigationItems,
     statisticsSideNavigation,
     { isLoading: false, items: archivingSideNavigationItems },
     chatSideNavigation,

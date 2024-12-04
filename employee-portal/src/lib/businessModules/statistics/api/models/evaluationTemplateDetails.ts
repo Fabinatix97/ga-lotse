@@ -17,3 +17,14 @@ export interface EvaluationTemplateDetails {
   analyses: Analysis[];
   withoutAnonymizationAllowed: boolean;
 }
+
+export interface EvaluationTemplateDetailsFromRepository {
+  name: string;
+  description?: string;
+  contact?: string;
+  origin: string;
+  createdAt: Date;
+  dataSourceName: string;
+  attributeLabels: string[];
+  analyses: Analysis[];
+}

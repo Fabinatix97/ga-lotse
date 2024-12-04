@@ -71,6 +71,7 @@ function ReviewInspectionDuplicateSidebar({
               inspection={inspectionDuplicates.importedInspection}
               importedInspection={inspectionDuplicates.importedInspection}
               isImportedInspection={true}
+              testId={"importedProcess"}
             ></InspectionDuplicateTile>
             <Typography level="h4" component="p" sx={{ marginTop: 2 }}>
               Bereits existierende Vorgänge:
@@ -81,6 +82,7 @@ function ReviewInspectionDuplicateSidebar({
                 inspection={inspection}
                 importedInspection={inspectionDuplicates.importedInspection}
                 isImportedInspection={false}
+                testId={"existingProcess"}
               ></InspectionDuplicateTile>
             ))}
           </Stack>

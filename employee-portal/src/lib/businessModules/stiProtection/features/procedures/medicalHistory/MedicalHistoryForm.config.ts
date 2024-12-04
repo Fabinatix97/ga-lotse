@@ -26,9 +26,9 @@ type DateKeys<T> = ValueOf<{
   [K in keyof T]-?: K extends `${infer J}Date` ? J : K;
 }>;
 
-export type ExaminationData = Required<{
-  [K in DateKeys<ApiExamination>]: StandardExaminationQuestion;
-}>;
+export type ExaminationData = Required<
+  Record<DateKeys<ApiExamination>, StandardExaminationQuestion>
+>;
 
 export interface StandardRiskFactors {
   unprotectedVaginal: StandardRiskQuestion;

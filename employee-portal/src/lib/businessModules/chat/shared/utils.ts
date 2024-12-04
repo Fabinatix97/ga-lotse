@@ -355,25 +355,6 @@ export function formatDateForChat(date: Date): string {
   return format(date, "dd.MM.YY HH:mm");
 }
 
-// TODO: fix mapping of synapse server name to appropriate health department
-export function mapToDepartmentName(
-  serverName: string | undefined,
-): string | undefined {
-  if (serverName === "synapse.local.dev") {
-    return "Gesundheitsamt Frankfurt";
-  }
-}
-
-export function getDepartmentNameFromUserId(userId?: string | null) {
-  if (!userId) return;
-
-  const splittedName = userId.split(":");
-  return {
-    username: splittedName[0],
-    organisationName: splittedName[1]?.replaceAll(".", " "),
-  };
-}
-
 export function isGroupRoom(communicationType?: CommunicationType) {
   return communicationType === CommunicationType.PublicRoom;
 }

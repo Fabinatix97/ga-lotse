@@ -106,7 +106,7 @@ export function MedicalHistoriesContent({
         <InformationSheet sx={{ flex: "1 1 auto" }}>
           {medicalHistory && (
             <DetailsSection
-              name="medical-history-card-tile"
+              data-testid="medical-history-card-tile"
               title={
                 medicalHistory.followUp
                   ? `${formatDate(medicalHistory.appointment)} Folgeanamnese`

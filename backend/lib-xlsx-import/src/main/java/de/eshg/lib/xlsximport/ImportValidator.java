@@ -46,7 +46,7 @@ public class ImportValidator {
   public static void validateNumberOfRows(Sheet sheet, int maxNumberOfImportRows) {
     if (sheet.getPhysicalNumberOfRows() > maxNumberOfImportRows) {
       throw new BadRequestException(
-          ErrorCode.INVALID_FILE,
+          ErrorCode.XLSX_TOO_MANY_ROWS,
           "Invalid file structure. At most %s rows are allowed.".formatted(maxNumberOfImportRows));
     }
   }

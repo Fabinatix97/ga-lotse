@@ -5,6 +5,8 @@
 
 package de.eshg.rest.service.security.config;
 
+import static org.springframework.http.HttpMethod.GET;
+
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.lib.keycloak.ModuleLeaderRole;
 import de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry;
@@ -26,6 +28,10 @@ public final class MedicalRegistryPublicSecurityConfig extends AbstractPublicSec
                 + "/**")
         .permitAll();
 
+    requestMatchers(GET, BaseUrls.MedicalRegistry.MEDICAL_REGISTRY_CONTROLLER + "/*/**")
+        .hasAnyRole(
+            EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN,
+            EmployeePermissionRole.PROCEDURE_ARCHIVE);
     requestMatchers(BaseUrls.MedicalRegistry.MEDICAL_REGISTRY_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN);
 

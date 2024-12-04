@@ -9,14 +9,12 @@ import static de.eshg.base.util.ClassNameUtil.getClassNameAsPropertyKey;
 
 import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
-import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.contact.ContactApi;
 import de.eshg.base.contact.api.*;
 import de.eshg.base.testhelper.BaseTestHelperApi;
 import de.eshg.lib.appointmentblock.LocationSelectionMode;
 import de.eshg.lib.appointmentblock.spring.AppointmentBlockProperties;
 import de.eshg.lib.appointmentblock.testhelper.AppointmentBlockGroupsPopulator;
-import de.eshg.lib.common.CountryCode;
 import de.eshg.schoolentry.Icd10CodeController;
 import de.eshg.schoolentry.LabelController;
 import de.eshg.schoolentry.SchoolEntryController;
@@ -40,7 +38,6 @@ import java.time.Year;
 import java.util.*;
 import java.util.stream.Stream;
 import net.datafaker.Faker;
-import net.datafaker.providers.base.Address;
 import net.datafaker.providers.base.Name;
 
 @PopulatorComponent
@@ -202,34 +199,18 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     return new CreatePersonDto(
         null,
         name.title(),
-        optional(faker, randomElement(faker, SalutationDto.values()), 0.9),
-        optional(faker, randomElement(faker, GenderDto.values()), 0.05),
+        optional(faker, randomElement(SalutationDto.values()), 0.9),
+        optional(faker, randomElement(GenderDto.values()), 0.05),
         name.firstName(),
         name.lastName(),
         dateOfBirth,
         optional(faker, faker.name().lastName(), 0.95),
         optional(faker, faker.address().city(), 0.5),
-        randomCountryBase(faker),
-        optional(faker, randomListOfEmails(faker, 1), 0.4),
-        optional(faker, randomListOfPhoneNumbers(faker, 1), 0.4),
-        optional(faker, randomAddress(faker), 0.3),
-        null);
-  }
-
-  private static DomesticAddressDto randomAddress(Faker faker) {
-    Address address = faker.address();
-    return new DomesticAddressDto(
-        randomCountryBase(faker),
-        address.city(),
-        address.postcode(),
-        null,
-        address.streetAddress(),
-        optional(faker, address.streetAddressNumber(), 0.1),
-        optional(faker, address.secondaryAddress(), 0.1));
-  }
-
-  private static CountryCode randomCountryBase(Faker faker) {
-    return randomElement(faker, CountryCode.values());
+        randomCountry(faker),
+        optional(faker, randomListOfEmails(1), 0.4),
+        optional(faker, randomListOfPhoneNumbers(1), 0.4),
+        optional(faker, BasePopulator::randomAddress, 0.3),
+        optional(faker, BasePopulator::randomAddress, 0.9));
   }
 
   private void createRandomExaminationsAndAnamnesisForProcedure(UUID procedureId, Faker faker) {
@@ -294,7 +275,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
   private static Map<HertzValueDto, DecibelValueDto> randomHertzDecibelMapping(Faker faker) {
     Map<HertzValueDto, DecibelValueDto> ear = new LinkedHashMap<>();
     for (HertzValueDto hertzValueDto : HertzValueDto.values()) {
-      ear.put(hertzValueDto, optional(faker, randomElement(faker, DecibelValueDto.values()), 0.1));
+      ear.put(hertzValueDto, optional(faker, randomElement(DecibelValueDto.values()), 0.1));
     }
     return ear;
   }
@@ -348,8 +329,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     Map<EyeExaminationTypeDto, PercentageValueDto> eye = new LinkedHashMap<>();
     for (EyeExaminationTypeDto eyeExaminationTypeDto : EyeExaminationTypeDto.values()) {
       eye.put(
-          eyeExaminationTypeDto,
-          optional(faker, randomElement(faker, PercentageValueDto.values()), 0.1));
+          eyeExaminationTypeDto, optional(faker, randomElement(PercentageValueDto.values()), 0.1));
     }
     return eye;
   }

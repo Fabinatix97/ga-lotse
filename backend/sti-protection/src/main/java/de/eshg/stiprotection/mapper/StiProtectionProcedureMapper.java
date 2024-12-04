@@ -17,8 +17,9 @@ public class StiProtectionProcedureMapper {
 
   private StiProtectionProcedureMapper() {}
 
-  public static CreateProcedureResponse toInterfaceType(StiProtectionProcedure procedure) {
-    return new CreateProcedureResponse(procedure.getExternalId());
+  public static CreateProcedureResponse toInterfaceType(
+      StiProtectionProcedure procedure, String pin) {
+    return new CreateProcedureResponse(procedure.getExternalId(), pin);
   }
 
   public static StiProtectionProcedureDto toInterfaceType(

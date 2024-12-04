@@ -50,7 +50,7 @@ export function InspectionTypeCard({
   return (
     <InformationSheet>
       <DetailsSection
-        name="inspectionType"
+        data-testid="inspectionType"
         title="Begehungsart"
         renderEditModal={
           !readonly

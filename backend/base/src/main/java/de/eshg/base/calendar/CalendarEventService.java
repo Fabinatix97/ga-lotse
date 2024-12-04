@@ -22,13 +22,11 @@ import de.eshg.base.calendar.api.GetEventsOfCalendarResponse;
 import de.eshg.base.calendar.api.GetEventsWithTimeDataResponse;
 import de.eshg.base.calendar.api.GetResourceCalendarsResponse;
 import de.eshg.base.calendar.api.ResourceCalendar;
-import de.eshg.base.calendar.api.ShowAs;
 import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.mapper.CalendarData;
 import de.eshg.base.calendar.mapper.CalendarEventData;
 import de.eshg.base.calendar.mapper.CalendarEventMapper;
 import de.eshg.base.calendar.persistence.CalendarEventDomainModelHandler;
-import de.eshg.base.calendar.persistence.entity.AvailabilityType;
 import de.eshg.base.calendar.persistence.entity.CalendarType;
 import de.eshg.base.calendar.persistence.entity.EventType;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
@@ -109,7 +107,7 @@ public class CalendarEventService {
     validatePermissionForBaseEventChange(calendarData);
     validateStartBeforeEnd(request.timeData().start(), request.timeData().end());
     validateEventTypeFitsToCalendarType(calendarData.getType(), request.type());
-    validateOnlyBusyEventsInResourceCalendars(calendarData.getType(), request.showAs());
+    validateNoSubjectForUserCalendar(calendarData.getType(), request.subject());
 
     return doWithResourceCalendarLocks(
         calendarDatas,
@@ -133,7 +131,7 @@ public class CalendarEventService {
     validatePermissionForBaseEventChange(eventToUpdate.getCalendars().iterator().next());
     validateStartBeforeEnd(request.timeData().start(), request.timeData().end());
     validateEventTypeFitsToCalendarType(calendarData.getType(), request.type());
-    validateOnlyBusyEventsInResourceCalendars(calendarData.getType(), request.showAs());
+    validateNoSubjectForUserCalendar(calendarData.getType(), request.subject());
 
     return doWithResourceCalendarLocks(
         calendarDatas,
@@ -403,6 +401,12 @@ public class CalendarEventService {
     }
   }
 
+  private void validateNoSubjectForUserCalendar(CalendarType calendarType, String subject) {
+    if (calendarType.equals(CalendarType.USER) && subject != null) {
+      throw new BadRequestException("No subject allowed for user calendar events");
+    }
+  }
+
   private List<CalendarData> validateCalendarsExist(List<UUID> calendarExternalIds) {
     List<CalendarData> calendars =
         calendarEventDomainModelHandler.findCalendarsById(calendarExternalIds);
@@ -414,13 +418,6 @@ public class CalendarEventService {
               .formatted(String.join(";", notFoundIds.stream().map(UUID::toString).toList())));
     }
     return calendars;
-  }
-
-  private void validateOnlyBusyEventsInResourceCalendars(CalendarType calendarType, ShowAs showAs) {
-    if (CalendarType.RESOURCE.equals(calendarType)
-        && !CalendarEventMapper.mapShowAs(showAs).equals(AvailabilityType.BUSY)) {
-      throw new BadRequestException("Only 'BUSY' events are allowed in resource calendars");
-    }
   }
 
   private static boolean isMapResponseWithSubject(CalendarData calendarData) {

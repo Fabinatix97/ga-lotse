@@ -22,6 +22,8 @@ public class MedicalRegistryProperties {
 
   @Positive private int draftEntryLimit = 1000;
 
+  @Positive private int maxNumberOfImportRows = 4_005;
+
   public Duration getRateLimitIntervalMinutes() {
     return rateLimitIntervalMinutes;
   }
@@ -44,5 +46,13 @@ public class MedicalRegistryProperties {
 
   public void setDraftEntryLimit(int draftEntryLimit) {
     this.draftEntryLimit = draftEntryLimit;
+  }
+
+  public int getMaxNumberOfImportRows() {
+    return maxNumberOfImportRows;
+  }
+
+  public void setMaxNumberOfImportRows(int maxNumberOfImportRows) {
+    this.maxNumberOfImportRows = maxNumberOfImportRows;
   }
 }

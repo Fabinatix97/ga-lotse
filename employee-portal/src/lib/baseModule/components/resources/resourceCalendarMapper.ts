@@ -7,7 +7,6 @@ import {
   ApiBaseEventRequest,
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
-  ApiShowAs,
 } from "@eshg/employee-portal-api/base";
 import { EventInput } from "@fullcalendar/core/index.js";
 import { eachDayOfInterval, isAfter, isSameDay, max, min } from "date-fns";
@@ -108,7 +107,6 @@ export function mapFormToRequestValues(
 ): ApiBaseEventRequest {
   const wholeDay = values.wholeDay;
   return {
-    showAs: ApiShowAs.Busy,
     calendarId,
     subject: values.reason,
     timeData: {

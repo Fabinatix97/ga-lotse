@@ -16,7 +16,7 @@ import { mapAttributeToAutocompleteSelectionOption } from "@/lib/businessModules
 import {
   axisRangeValueNames,
   isBooleanOrValueWithOptions,
-  isNumericOrDate,
+  isNumeric,
 } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { ToggleButtonGroupField } from "@/lib/shared/components/formFields/ToggleButtonGroupField";
 
@@ -30,7 +30,7 @@ export function ConfigureLineChartStep({
   );
   const axisAttributes = attributes.map(
     mapAttributeToAutocompleteSelectionOption((attribute) =>
-      isNumericOrDate(attribute.type),
+      isNumeric(attribute.type),
     ),
   );
   const secondaryAttributes = attributes.map(

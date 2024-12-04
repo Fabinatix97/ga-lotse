@@ -256,7 +256,7 @@ export const COUNTRY_CODE_LABELS = {
   [ApiCountryCode.Eh]: "Westsahara",
   [ApiCountryCode.Cf]: "Zentralafrikanische Republik",
   [ApiCountryCode.Cy]: "Zypern",
-} as const satisfies { [_c in ApiCountryCode]: string };
+} as const satisfies Record<ApiCountryCode, string>;
 
 export const COUNTRY_CODE_OPTIONS = Object.entries(COUNTRY_CODE_LABELS).map(
   ([code, label]) => ({ label, value: code as ApiCountryCode }),

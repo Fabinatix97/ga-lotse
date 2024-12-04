@@ -12,6 +12,7 @@ import de.eshg.opendata.domain.model.Version_;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.LocalDate;
@@ -81,6 +82,23 @@ public class VersionFilterSpecification {
       root.fetch(Version_.resource);
       root.fetch(Version_.sources, JoinType.LEFT);
       return null;
+    };
+  }
+
+  public static Specification<Version> filterBySearchString(String searchString) {
+    return (version, query, cb) -> {
+      Path<String> fileName = version.get(Version_.fileName);
+      Path<String> description = version.get(Version_.description);
+      Path<String> versionName = version.get(Version_.versionName);
+
+      Expression<String> lowerCaseWildcardSearchString =
+          cb.lower(cb.concat(cb.concat(cb.literal("%"), searchString), cb.literal("%")));
+
+      Predicate fileNameLike = cb.like(cb.lower(fileName), lowerCaseWildcardSearchString);
+      Predicate descriptionLike = cb.like(cb.lower(description), lowerCaseWildcardSearchString);
+      Predicate versionNameLike = cb.like(cb.lower(versionName), lowerCaseWildcardSearchString);
+
+      return cb.or(fileNameLike, descriptionLike, versionNameLike);
     };
   }
 }

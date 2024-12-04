@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':lib-procedures')
     implementation project(':lib-base-client')
     implementation project(':lib-contact')
     implementation project(':business-module-persistence-commons')
@@ -16,6 +17,7 @@ dependencies {
 
     testImplementation testFixtures(project(':business-module-persistence-commons'))
     testImplementation testFixtures(project(':lib-contact'))
+    testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-xlsx-import'))
 }
 

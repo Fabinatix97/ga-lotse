@@ -23,7 +23,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.util.FileValidator;
 import de.eshg.medicalregistry.api.ConfirmProcedureRequest;
-import de.eshg.medicalregistry.api.CreateFullProcedureChangeRequest;
+import de.eshg.medicalregistry.api.CreateFullChangeRequest;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.DeleteProcedureRequest;
 import de.eshg.medicalregistry.api.GetMedicalRegistryEntryOverview;
@@ -250,7 +250,7 @@ public class MedicalRegistryController {
       TriggerType triggerType,
       ProcedureType procedureType) {
 
-    if (request instanceof CreateFullProcedureChangeRequest createFullProcedureRequest) {
+    if (request instanceof CreateFullChangeRequest createFullProcedureRequest) {
       Validator.validateEmployeesEmployed(
           createFullProcedureRequest.employeesEmployed(), employeeList);
     }
@@ -376,7 +376,7 @@ public class MedicalRegistryController {
     medicalRegistryService.deleteProcedure(medicalRegistryEntryChange);
   }
 
-  @GetMapping("/procedures")
+  @GetMapping
   @Transactional(readOnly = true)
   @Operation(
       summary =

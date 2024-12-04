@@ -3,17 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useBaseField } from "@eshg/lib-portal/components/formFields/BaseField";
 import { FieldProps } from "@eshg/lib-portal/types/form";
-import { Checkbox, CheckboxProps } from "@mui/joy";
+import { Checkbox, CheckboxProps, FormControl, FormHelperText } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
-import { useField } from "formik";
 import { ChangeEventHandler } from "react";
-import { isDefined, isString } from "remeda";
 
 export interface CheckboxFieldProps extends FieldProps<boolean> {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean;
-  // represents the value of the checkbox as string (see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#value)
   representingValue?: string;
   size?: CheckboxProps["size"];
   variant?: CheckboxProps["variant"];
@@ -21,33 +19,64 @@ export interface CheckboxFieldProps extends FieldProps<boolean> {
   "aria-label"?: string;
 }
 
+function isChecked(
+  value: string | number | readonly string[],
+  representingValue?: string,
+): boolean {
+  if (value == null) {
+    return false;
+  }
+  if (typeof value === "boolean") {
+    return value;
+  }
+  const values = value instanceof Array ? value : [`${value}`];
+  return values.includes(representingValue ?? "true");
+}
+
 export function CheckboxField(props: CheckboxFieldProps) {
-  const [field] = useField<boolean | string>({
+  const {
+    input: field,
+    required,
+    meta,
+  } = useBaseField<number | string | readonly string[]>({
     name: props.name,
-    value: props.representingValue,
+    required: props.required,
     type: "checkbox",
+    validate: (v) => {
+      if (isChecked(v, props.representingValue)) {
+        return;
+      }
+      return props.required;
+    },
   });
 
+  const showHelperText = !!meta.error && props.required;
   return (
-    <Checkbox
-      name={field.name}
-      onChange={(event) => {
-        field.onChange(event);
-        if (isDefined(props.onChange)) {
-          props.onChange(event);
-        }
-      }}
-      onBlur={field.onBlur}
-      checked={field.checked}
-      label={props.label}
-      disabled={props.disabled}
-      value={isString(field.value) ? field.value : undefined}
-      size={props.size}
-      variant={props.variant}
-      sx={props.sx}
-      slotProps={{
-        input: { "aria-label": props["aria-label"] },
-      }}
-    />
+    <FormControl error={!!meta.error} required={required}>
+      <Checkbox
+        name={field.name}
+        onChange={(event) => {
+          field.onChange(event);
+          if (props.onChange != null) {
+            props.onChange(event);
+          }
+        }}
+        onBlur={field.onBlur}
+        label={props.label}
+        disabled={props.disabled}
+        checked={isChecked(field.value, props.representingValue)}
+        value={props.representingValue ?? "true"}
+        size={props.size}
+        required={required}
+        variant={props.variant}
+        sx={props.sx}
+        slotProps={{
+          input: { "aria-label": props["aria-label"] },
+        }}
+      />
+      {showHelperText ? (
+        <FormHelperText>{props.required}</FormHelperText>
+      ) : null}
+    </FormControl>
   );
 }

@@ -35,7 +35,7 @@ Die Abteilung Digitale Zukunft, IT und strategische Planung des Gesundheitsamtes
 ## Verantwortung:
 
 Stefanie Kaulich, Abteilungsleitung Digitale Zukunft, IT und strategische Planung.
-Bei Fragen oder Anregungen zu konkreten Inhalten und Seiten können Sie sich gerne an Frau Kaulich oder die unter „Kontakt“ benannte eMail wenden.
+Bei Fragen oder Anregungen zu konkreten Inhalten und Seiten können Sie sich gerne an Frau Kaulich oder die unter „Kontakt” benannte eMail wenden.
 
 ## Technische Realisierung:
 

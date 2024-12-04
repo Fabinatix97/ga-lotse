@@ -8,7 +8,6 @@ import {
   ApiBaseEventType,
   ApiDetailedEventWithoutCalendarId,
   ApiEventType,
-  ApiShowAs,
 } from "@eshg/employee-portal-api/base";
 import { DayHeaderContentArg, EventInput } from "@fullcalendar/core/index.js";
 import { EventImpl } from "@fullcalendar/core/internal";
@@ -36,6 +35,12 @@ export function mapCalendarEventsBackendToUi(
       start: event.timeData.start,
       end: mapEndDate(event.timeData.end, event.timeData.wholeDay),
       allDay: event.timeData.wholeDay,
+      ...(event.type === "VACATION"
+        ? {
+            backgroundColor: event.type === "VACATION" ? "#CDD7E1" : undefined,
+            borderColor: event.type === "VACATION" ? "#CDD7E1" : undefined,
+          }
+        : {}),
       extendedProps: eventWithCalendarId,
     };
   });
@@ -56,25 +61,14 @@ export function mapEventTypeToFallbackTitle(eventType: ApiEventType) {
   }
 }
 
-export function mapEventShowAs(eventShowAs: ApiShowAs) {
-  switch (eventShowAs) {
-    case "BUSY":
-      return "beschäftigt";
-    case "FREE":
-      return "frei";
-  }
-}
-
 export function mapFormToRequestValues(
   values: EventFormValues,
   type: ApiBaseEventType,
   calendarId: string,
-  showAs?: ApiShowAs,
 ): ApiBaseEventRequest {
   const wholeDay = values.wholeDay;
   return {
     ...values,
-    showAs,
     calendarId,
     timeData: {
       start: mapStartWholeDayRequest(values.start, wholeDay),

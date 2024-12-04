@@ -192,7 +192,7 @@ export function showPublishChecklistDefinitionDialog(
 ) {
   openConfirmationDialog({
     title: "Checklisten-Definition veröffentlichen?",
-    description: `Möchten Sie den Entwurf “${cldName}” wirklich veröffentlichen? Danach sind keine Änderungen mehr möglich. Sie können jedoch weiterhin neue Versionen basierend auf diesem Entwurf erstellen.`,
+    description: `Möchten Sie den Entwurf „${cldName}” wirklich veröffentlichen? Danach sind keine Änderungen mehr möglich. Sie können jedoch weiterhin neue Versionen basierend auf diesem Entwurf erstellen.`,
     confirmLabel: "Veröffentlichen",
     cancelLabel: "Abbrechen",
     onConfirm: onConfirm,

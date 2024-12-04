@@ -16,7 +16,7 @@ import {
 
 export function usePresence(userId?: string) {
   const {
-    userSettings: { sharePresence },
+    userSettings: { sharePresence, accountDeactivated },
   } = useChat();
   const chatContext = useContext(ChatClientContext);
   const { matrixClient, clientState } = chatContext ?? {};
@@ -26,6 +26,7 @@ export function usePresence(userId?: string) {
   useEffect(() => {
     if (!matrixClient) return;
     if (clientState !== ClientState.Prepared) return;
+    if (accountDeactivated) return;
     if (userId) {
       const user = matrixClient.getUser(userId);
       setUsersPresence({ [userId]: user?.presence } as UsersPresence);
@@ -36,10 +37,11 @@ export function usePresence(userId?: string) {
       ) as UsersPresence;
       setUsersPresence(statuses);
     }
-  }, [clientState, matrixClient, userId]);
+  }, [accountDeactivated, clientState, matrixClient, userId]);
 
   useEffect(() => {
     if (clientState !== ClientState.Prepared) return;
+    if (accountDeactivated) return;
 
     function handleUserPresence(event: MatrixEvent) {
       const eventType = event.getType();
@@ -67,6 +69,13 @@ export function usePresence(userId?: string) {
     return () => {
       matrixClient?.removeListener(ClientEvent.Event, handleUserPresence);
     };
-  }, [clientState, matrixClient, sharePresence, userId, usersPresence]);
+  }, [
+    accountDeactivated,
+    clientState,
+    matrixClient,
+    sharePresence,
+    userId,
+    usersPresence,
+  ]);
   return { usersPresence: sharePresence ? usersPresence : {} };
 }

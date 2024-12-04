@@ -69,10 +69,6 @@ export function calendarSxProps(theme: Theme, view: CalendarViewType) {
       {
         color: "text.primary",
       },
-    ".fc-event-time, .fc-event-title": {
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    },
     ".fc-scrollgrid-section-body .fc-timegrid-axis-cushion": {
       alignSelf: "flex-start",
       textAlign: "right",
@@ -106,6 +102,11 @@ export function calendarSxProps(theme: Theme, view: CalendarViewType) {
     "--fc-small-font-size": "0.75rem",
     ".fc-event-title": {
       fontWeight: theme.fontWeight.md,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+    ".fc-event-main": {
+      overflow: "hidden",
     },
     ".fc-daygrid-dot-event": {
       paddingX: view === CalendarViewTypes.DayGridMonth ? 0 : 1,

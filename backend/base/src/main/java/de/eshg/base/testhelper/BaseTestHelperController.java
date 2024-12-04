@@ -16,9 +16,12 @@ import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsResponse;
 import de.eshg.base.testhelper.api.CreateSetupAdminRequest;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.aggregation.spring.BusinessModulesConfigurationProperties;
 import de.eshg.lib.auditlog.AuditLogTestHelperService;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.keycloak.Realm;
 import de.eshg.lib.keycloak.UsernamePassword;
+import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.testhelper.AccessToken;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.TestHelperController;
@@ -40,18 +43,21 @@ public class BaseTestHelperController extends TestHelperController
   private final BaseFeatureToggle baseFeatureToggle;
   private final MasterKeycloakProvisioning masterKeycloakProvisioning;
   private final AuditLogTestHelperService auditLogTestHelperService;
+  private final BusinessModulesConfigurationProperties businessModulesConfigurationProperties;
 
   public BaseTestHelperController(
       BaseTestHelperService baseTestHelperService,
       BaseFeatureToggle baseFeatureToggle,
       MasterKeycloakProvisioning masterKeycloakProvisioning,
       AuditLogTestHelperService auditLogTestHelperService,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      BusinessModulesConfigurationProperties businessModulesConfigurationProperties) {
     super(baseTestHelperService, environmentConfig);
     this.baseTestHelperService = baseTestHelperService;
     this.baseFeatureToggle = baseFeatureToggle;
     this.masterKeycloakProvisioning = masterKeycloakProvisioning;
     this.auditLogTestHelperService = auditLogTestHelperService;
+    this.businessModulesConfigurationProperties = businessModulesConfigurationProperties;
   }
 
   @Override
@@ -133,6 +139,15 @@ public class BaseTestHelperController extends TestHelperController
   @Override
   public void disableNewFeature(BaseFeature featureToDisable) {
     baseFeatureToggle.disableNewFeature(featureToDisable);
+  }
+
+  @Override
+  public void disableBusinessModule(BusinessModule businessModuleToDisable) {
+    Object removedModule =
+        businessModulesConfigurationProperties.getClients().remove(businessModuleToDisable);
+    if (removedModule == null) {
+      throw new BadRequestException("Business module was not enabled");
+    }
   }
 
   @Override

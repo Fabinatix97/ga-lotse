@@ -50,9 +50,9 @@ public class EvaluationMapper {
       Evaluation evaluation,
       List<TableRow> tableRows,
       long totalNumberOfElements,
-      boolean isExportable) {
+      boolean isTooMuchDataForExport) {
     return new GetEvaluationResponse(
-        mapToEvaluationInfo(evaluation, isExportable),
+        mapToEvaluationInfo(evaluation, isTooMuchDataForExport),
         mapToApi(evaluation.getTableColumns()),
         tableRows.stream().map(EvaluationMapper::mapToApi).toList(),
         totalNumberOfElements);
@@ -176,7 +176,7 @@ public class EvaluationMapper {
     return new DataRow(tableRow.getCellEntries().stream().map(CellEntry::getValue).toList());
   }
 
-  public static List<ValueToMeaning> mapToPersistence(List<ValueOptionInternal> valueOptions) {
+  public static List<ValueToMeaning> mapToValueToMeanings(List<ValueOptionInternal> valueOptions) {
     if (valueOptions == null) {
       return Collections.emptyList();
     } else {
@@ -211,30 +211,31 @@ public class EvaluationMapper {
   public static GetEvaluationsResponse mapEvaluationPageToResponse(
       Page<Evaluation> evaluationPage,
       Map<UUID, UserDto> resolvedUsers,
-      Predicate<Evaluation> isExportablePredicate) {
+      Predicate<Evaluation> isTooMuchDataForExportPredicate) {
     return new GetEvaluationsResponse(
         evaluationPage.stream()
             .map(
                 evaluation ->
                     EvaluationMapper.mapToEvaluationInfo(
-                        evaluation, isExportablePredicate.test(evaluation)))
+                        evaluation, isTooMuchDataForExportPredicate.test(evaluation)))
             .toList(),
         resolvedUsers,
         evaluationPage.getTotalElements());
   }
 
-  public static EvaluationInfo mapToEvaluationInfo(Evaluation evaluation, boolean isExportable) {
+  public static EvaluationInfo mapToEvaluationInfo(
+      Evaluation evaluation, boolean isTooMuchDataForExport) {
     return new EvaluationInfo(
         evaluation.getExternalId(),
         evaluation.getCreatedByUserId(),
         evaluation.getName(),
         getDataSourceNames(evaluation),
-        mapEvaluationState(evaluation.getState()),
+        mapToEvaluationState(evaluation.getState()),
         evaluation.getTimeRangeStart(),
         evaluation.getTimeRangeEnd(),
         evaluation.getCreatedAt(),
         evaluation.isAnonymized(),
-        isExportable);
+        isTooMuchDataForExport);
   }
 
   public static List<String> getDataSourceNames(Evaluation evaluation) {
@@ -245,8 +246,18 @@ public class EvaluationMapper {
         .toList();
   }
 
-  public static EvaluationStateDto mapEvaluationState(
+  private static EvaluationStateDto mapToEvaluationState(
       AggregationResultState aggregationResultState) {
     return EvaluationStateDto.valueOf(aggregationResultState.name());
+  }
+
+  public static List<AggregationResultState> mapToAggregationResultStates(
+      List<EvaluationStateDto> evaluationStates) {
+    return evaluationStates.stream().map(EvaluationMapper::mapToAggregationResultState).toList();
+  }
+
+  private static AggregationResultState mapToAggregationResultState(
+      EvaluationStateDto evaluationState) {
+    return AggregationResultState.valueOf(evaluationState.name());
   }
 }

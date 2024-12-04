@@ -6,7 +6,6 @@
 package de.eshg.base.calendar.mapper;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.base.calendar.persistence.entity.AvailabilityType;
 import de.eshg.base.calendar.persistence.entity.CalendarEvent;
 import de.eshg.base.calendar.persistence.entity.EventType;
 import java.time.Instant;
@@ -17,7 +16,6 @@ public class CalendarEventData {
   private final Long id;
   private final UUID externalId;
   private final Set<CalendarData> calendars;
-  private final AvailabilityType availability;
   private final String subject;
   private final EventType eventType;
   private final Instant eventStart;
@@ -32,7 +30,6 @@ public class CalendarEventData {
         calendarEvent.getCalendars().stream()
             .map(CalendarData::new)
             .collect(StreamUtil.toLinkedHashSet());
-    availability = calendarEvent.getAvailability();
     subject = calendarEvent.getSubject();
     eventType = calendarEvent.getEventType();
     eventStart = calendarEvent.getEventStart();
@@ -51,10 +48,6 @@ public class CalendarEventData {
 
   public Set<CalendarData> getCalendars() {
     return calendars;
-  }
-
-  public AvailabilityType getAvailability() {
-    return availability;
   }
 
   public String getSubject() {

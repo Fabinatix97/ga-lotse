@@ -9,6 +9,98 @@ info:
 servers:
 - url: http://localhost:8096
 paths:
+  /citizen/public:
+    get:
+      description: |
+        Gets all open documents aka all resources including their versions.
+        It is possible to filter by `fileType`, `sources` and the year of
+        `statisticsStartDate` and `statisticsEndDate`
+      operationId: getOpenDocuments_1
+      parameters:
+      - description: |
+          If set only versions with a `statisticsStartDate` or `statisticsEndDate`
+          within the given year or whose period from `statisticsStartDate` to
+          `statisticsEndDate` covers the given year
+        in: query
+        name: statisticsYearFilter
+        required: false
+        schema:
+          type: string
+      - description: |
+          If set, versions with at least one of the given business modules are returned
+        in: query
+        name: sourcesFilter
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessModule"
+      - description: "If set, versions with the given file type are returned"
+        in: query
+        name: fileTypeFilter
+        required: false
+        schema:
+          $ref: "#/components/schemas/OpenDataFileType"
+      - description: "If set, versions with `fileName` or `description` matching the\
+          \ given search string are returned"
+        in: query
+        name: searchString
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetOpenDocumentsResponse"
+          description: OK
+      summary: Gets open documents
+      tags:
+      - OpenDataPublicCitizen
+  /citizen/public/{versionId}:
+    get:
+      description: |
+        Gets one specific version of an open document by its id
+      operationId: getVersion_1
+      parameters:
+      - in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Version"
+          description: OK
+      summary: Get specific version of an open document
+      tags:
+      - OpenDataPublicCitizen
+  /citizen/public/{versionId}/download:
+    get:
+      operationId: downloadDocument_1
+      parameters:
+      - in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Download a specific version of a document
+      tags:
+      - OpenDataPublicCitizen
   /open-documents:
     get:
       description: |
@@ -41,6 +133,13 @@ paths:
         required: false
         schema:
           $ref: "#/components/schemas/OpenDataFileType"
+      - description: "If set, versions with `fileName` or `description` matching the\
+          \ given search string are returned"
+        in: query
+        name: searchString
+        required: false
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -80,27 +179,6 @@ paths:
       summary: Creates a new version
       tags:
       - OpenData
-  /open-documents/search:
-    get:
-      description: Returns versions with matching `fileName` or `description` grouped
-        by their resource
-      operationId: searchOpenDocuments
-      parameters:
-      - in: query
-        name: searchString
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/GetOpenDocumentsResponse"
-          description: OK
-      summary: Searches for `searchString` in open documents
-      tags:
-      - OpenData
   /open-documents/{versionId}:
     delete:
       description: Deletes correlating resource as well if there are no other versions
@@ -117,6 +195,27 @@ paths:
         "200":
           description: OK
       summary: Deletes a version
+      tags:
+      - OpenData
+    get:
+      description: |
+        Gets one specific version of an open document by its id
+      operationId: getVersion
+      parameters:
+      - in: path
+        name: versionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Version"
+          description: OK
+      summary: Get specific version of an open document
       tags:
       - OpenData
     put:
@@ -160,7 +259,7 @@ paths:
                 type: string
                 format: binary
           description: OK
-      summary: Downloads document of a version
+      summary: Download a specific version of a document
       tags:
       - OpenData
   /test-helper/population:

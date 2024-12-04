@@ -5,21 +5,37 @@
 
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useRouter } from "next/navigation";
 
 import { useCentralRepositoryApi } from "@/lib/businessModules/statistics/api/clients";
 import { UploadTemplateFormModel } from "@/lib/businessModules/statistics/components/evaluations/templates/UploadTemplateSidebar/uploadTemplateFormModel";
+import { routes } from "@/lib/businessModules/statistics/shared/routes";
 
 export function useUploadEvaluationTemplate(onSuccess: () => void) {
   const snackbar = useSnackbar();
+  const router = useRouter();
   const centralRepositoryApi = useCentralRepositoryApi();
   const mutation = useHandledMutation({
-    mutationFn: (props: { templateId: string; contact: string }) =>
+    mutationFn: (props: {
+      templateId: string;
+      model: UploadTemplateFormModel;
+    }) =>
       centralRepositoryApi.uploadEvaluationTemplateToRepository({
         templateId: props.templateId,
-        contact: props.contact,
+        name: props.model.name,
+        description:
+          props.model.description.length === 0
+            ? undefined
+            : props.model.description,
+        contact: props.model.contact,
       }),
     onSuccess: () => {
-      snackbar.confirmation("Vorlage hochgeladen");
+      snackbar.confirmation("Vorlage hochgeladen", {
+        action: {
+          name: "Anzeigen",
+          onClick: () => router.push(routes.evaluations.templates.repository),
+        },
+      });
     },
   });
 
@@ -27,7 +43,7 @@ export function useUploadEvaluationTemplate(onSuccess: () => void) {
     mutation.mutateAsync(
       {
         templateId,
-        contact: model.contact,
+        model,
       },
       {
         onSuccess,

@@ -34,9 +34,15 @@ import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
+interface MeaslesProtectionProcedureProgressEntriesPageParams {
+  id: string;
+  entryId?: string;
+}
+
 export default function MeaslesProtectionProcedureDataProgressEntriesTab(
-  props: ProgressEntriesUrlParams,
+  props: ProgressEntriesUrlParams<MeaslesProtectionProcedureProgressEntriesPageParams>,
 ) {
+  const { params, searchParams } = props;
   return (
     <ProgressEntriesPage
       useCreateProgressEntry={useCreateProgressEntry}
@@ -45,7 +51,9 @@ export default function MeaslesProtectionProcedureDataProgressEntriesTab(
       usePatchProgressEntry={usePatchProgressEntry}
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-      urlParams={props}
+      procedureId={props.params.id}
+      progressEntryId={params.entryId}
+      searchParams={searchParams}
       leaderRole={ApiUserRole.MeaslesProtectionLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
       useRequestFileDeletion={useRequestFileDeletion}

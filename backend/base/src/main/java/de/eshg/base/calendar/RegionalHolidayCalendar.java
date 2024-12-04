@@ -11,7 +11,6 @@ import de.eshg.base.calendar.api.DetailedEventWithoutCalendarId;
 import de.eshg.base.calendar.api.EventMetaData;
 import de.eshg.base.calendar.api.EventTimeData;
 import de.eshg.base.calendar.api.EventTypeDto;
-import de.eshg.base.calendar.api.ShowAs;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -100,7 +99,6 @@ public final class RegionalHolidayCalendar {
             (periodSource.getProperty(Property.UID).orElseThrow().getValue() + start + end)
                 .getBytes(StandardCharsets.UTF_8)),
         EventTypeDto.HOLIDAY,
-        ShowAs.BUSY,
         null,
         new EventMetaData(
             periodSource.getProperty(Property.SUMMARY).orElseThrow().getValue(),

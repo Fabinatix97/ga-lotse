@@ -6,6 +6,7 @@
 package de.eshg.officialmedicalservice;
 
 import de.eshg.lib.common.BusinessModule;
+import de.eshg.officialmedicalservice.citizenpublic.DepartmentInfoProperties;
 import de.eshg.officialmedicalservice.citizenpublic.OpeningHoursProperties;
 import de.eshg.rest.service.security.config.OfficialMedicalServicePublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(OfficialMedicalServicePublicSecurityConfig.class)
-@EnableConfigurationProperties({OpeningHoursProperties.class})
+@EnableConfigurationProperties({OpeningHoursProperties.class, DepartmentInfoProperties.class})
 public class OfficialMedicalServiceApplication {
 
   @Bean

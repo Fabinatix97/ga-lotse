@@ -11,6 +11,7 @@ import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
 import de.eshg.dental.api.ProphylaxisSessionSortKey;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisSession_;
+import de.eshg.dental.domain.model.ProphylaxisType;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Order;
@@ -18,6 +19,9 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serial;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +33,17 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
 
   private final SortDirection sortDirection;
   private final ProphylaxisSessionSortKey sortKey;
+  private final ProphylaxisType typeFilter;
+  private final UUID institutionIdFilter;
 
   public ProphylaxisSessionSpecification(
-      ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters) {
+      ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters,
+      UUID institutionIdFilter,
+      ProphylaxisType typeFilter) {
     sortKey = paginationAndSortParameters.sortKeyOrFallback(ProphylaxisSessionSortKey.ID);
     sortDirection = paginationAndSortParameters.sortDirectionOrFallback(SortDirection.ASC);
+    this.typeFilter = typeFilter;
+    this.institutionIdFilter = institutionIdFilter;
   }
 
   static Pageable toPageSpec(PaginationParameters paginationParameters) {
@@ -48,7 +58,17 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
         Stream.of(getPrimarySortOrder(cb, root), cb.asc(root.get(ProphylaxisSession_.id)))
             .distinct()
             .toList());
-    return cb.and();
+
+    List<Predicate> conjunctions = new ArrayList<>();
+
+    if (typeFilter != null) {
+      conjunctions.add(cb.equal(root.get(ProphylaxisSession_.type), typeFilter));
+    }
+    if (institutionIdFilter != null) {
+      conjunctions.add(cb.equal(root.get(ProphylaxisSession_.institutionId), institutionIdFilter));
+    }
+
+    return cb.and(conjunctions.toArray(Predicate[]::new));
   }
 
   private Order getPrimarySortOrder(CriteriaBuilder cb, Root<ProphylaxisSession> root) {
@@ -62,6 +82,9 @@ class ProphylaxisSessionSpecification implements Specification<ProphylaxisSessio
   private Path<?> mapToSortPath(Root<ProphylaxisSession> root) {
     return switch (sortKey) {
       case ID -> root.get(ProphylaxisSession_.id);
+      case TYPE -> root.get(ProphylaxisSession_.type);
+      case GROUP_NAME -> root.get(ProphylaxisSession_.groupName);
+      case DATE_AND_TIME -> root.get(ProphylaxisSession_.dateAndTime);
     };
   }
 }

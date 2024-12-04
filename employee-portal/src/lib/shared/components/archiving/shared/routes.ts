@@ -8,6 +8,7 @@ export const routes = {
     module: {
       inspection: `/archiving/inspection`,
       measlesProtection: `/archiving/measles-protection`,
+      medicalRegistry: `/archiving/medical-registry`,
       schoolEntry: `/archiving/school-entry`,
       travelMedicine: `/archiving/travel-medicine`,
       stiProtection: `/archiving/sti-protection`,
@@ -17,6 +18,7 @@ export const routes = {
     module: {
       inspection: `/archiving-admin/inspection`,
       measlesProtection: `/archiving-admin/measles-protection`,
+      medicalRegistry: `/archiving-admin/medical-registry`,
       schoolEntry: `/archiving-admin/school-entry`,
       travelMedicine: `/archiving-admin/travel-medicine`,
       stiProtection: `/archiving-admin/sti-protection`,

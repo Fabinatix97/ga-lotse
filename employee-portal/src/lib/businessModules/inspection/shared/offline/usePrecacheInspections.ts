@@ -8,12 +8,11 @@
 import {
   ApiUserRole,
   BaseFeatureTogglesApi,
-  ConfigApi,
   DepartmentApi,
+  PublicConfigApi,
   UserApi,
 } from "@eshg/employee-portal-api/base";
 import {
-  ApiInspectionFeature,
   ChecklistApi,
   EditorApi,
   FacilityApi,
@@ -62,7 +61,6 @@ import {
 } from "@/lib/businessModules/inspection/api/queries/apiQueryKeys";
 import { getChecklistsQueryKey } from "@/lib/businessModules/inspection/api/queries/checklist";
 import { getDepartmentQueryKey } from "@/lib/businessModules/inspection/api/queries/department";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import {
   getAvailableCLDVsQueryKey,
   getAvailablePLDRsQueryKey,
@@ -113,10 +111,6 @@ export function usePrecacheInspections() {
     ApiUserRole.InspectionLeader,
   );
 
-  const isHistoryEnabled = useIsNewFeatureEnabled(
-    ApiInspectionFeature.FacilityHistory,
-  );
-
   // execute async call in this synchronous hook
   return useCallback(
     (inspectionId: string) => {
@@ -138,7 +132,6 @@ export function usePrecacheInspections() {
         packlistApi,
         facilityApi,
         fetchApprovalRequests,
-        isHistoryEnabled,
       });
     },
     [
@@ -159,7 +152,6 @@ export function usePrecacheInspections() {
       queryClient,
       // snackbar,
       userApi,
-      isHistoryEnabled,
     ],
   );
 }
@@ -182,11 +174,10 @@ async function prefetchAll({
   packlistApi,
   facilityApi,
   fetchApprovalRequests,
-  isHistoryEnabled,
 }: {
   inspectionIds: string[];
   queryClient: QueryClient;
-  configApi: ConfigApi;
+  configApi: PublicConfigApi;
   departmentApi: DepartmentApi;
   userApi: UserApi;
   baseFeatureTogglesApi: BaseFeatureTogglesApi;
@@ -201,7 +192,6 @@ async function prefetchAll({
   packlistApi: PacklistApi;
   facilityApi: FacilityApi;
   fetchApprovalRequests: boolean;
-  isHistoryEnabled: boolean;
 }) {
   // 1. pre-fetch inspection procedure related queries
   for (const inspectionId of inspectionIds) {
@@ -387,21 +377,19 @@ async function prefetchAll({
     });
 
     // 1.11 pre-fetch useGetFacilityHistory()
-    if (isHistoryEnabled) {
-      inspPromises.push(
-        queryClient.fetchQuery({
-          queryKey: facilityApiQueryKey([
-            "getFacilityHistory",
-            {
-              inspectionId: inspection.externalId,
-              facilityId: inspection.facility.id,
-            },
-          ]),
-          queryFn: () =>
-            facilityApi.getFacilityHistory(inspection.facility.id, headers),
-        }),
-      );
-    }
+    inspPromises.push(
+      queryClient.fetchQuery({
+        queryKey: facilityApiQueryKey([
+          "getFacilityHistory",
+          {
+            inspectionId: inspection.externalId,
+            facilityId: inspection.facility.id,
+          },
+        ]),
+        queryFn: () =>
+          facilityApi.getFacilityHistory(inspection.facility.id, headers),
+      }),
+    );
 
     // 1.12 execute all inspection related promises
     await executeInChunks(inspPromises);

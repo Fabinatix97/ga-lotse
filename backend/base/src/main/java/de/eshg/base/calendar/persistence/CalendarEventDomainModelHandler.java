@@ -14,7 +14,6 @@ import de.eshg.base.calendar.api.TimeRange;
 import de.eshg.base.calendar.mapper.CalendarData;
 import de.eshg.base.calendar.mapper.CalendarEventData;
 import de.eshg.base.calendar.mapper.CalendarEventMapper;
-import de.eshg.base.calendar.persistence.entity.AvailabilityType;
 import de.eshg.base.calendar.persistence.entity.Calendar;
 import de.eshg.base.calendar.persistence.entity.CalendarEvent;
 import de.eshg.base.calendar.persistence.entity.CalendarEventMutex;
@@ -214,11 +213,10 @@ public class CalendarEventDomainModelHandler {
   private static Specification<CalendarEvent> busyEventsOfCalendarsSpecification(
       List<UUID> calendarExternalIds, Instant timeRangeStart, Instant timeRangeEnd) {
     return (Root<CalendarEvent> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
-      Specification<CalendarEvent> and =
+      Specification<CalendarEvent> specification =
           where(
-                  isInCalendars(calendarExternalIds)
-                      .and(timeRangeOverlaps(timeRangeStart, timeRangeEnd)))
-              .and(isBusy());
+              isInCalendars(calendarExternalIds)
+                  .and(timeRangeOverlaps(timeRangeStart, timeRangeEnd)));
 
       query.multiselect(
           criteriaBuilder.construct(
@@ -228,7 +226,7 @@ public class CalendarEventDomainModelHandler {
               root.get(CalendarEvent_.eventEnd),
               root.get(CalendarEvent_.wholeDay)));
 
-      return and.toPredicate(root, query, criteriaBuilder);
+      return specification.toPredicate(root, query, criteriaBuilder);
     };
   }
 
@@ -262,10 +260,5 @@ public class CalendarEventDomainModelHandler {
             criteriaBuilder.and(
                 criteriaBuilder.lessThan(root.get(CalendarEvent_.eventStart), timeRangeStart),
                 criteriaBuilder.greaterThan(root.get(CalendarEvent_.eventEnd), timeRangeEnd)));
-  }
-
-  private static Specification<CalendarEvent> isBusy() {
-    return (Root<CalendarEvent> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) ->
-        criteriaBuilder.equal(root.get(CalendarEvent_.availability), AvailabilityType.BUSY);
   }
 }

@@ -35,7 +35,7 @@ export interface RoomInfoViewProps {
 }
 
 export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, departmentInfo } = useChatClientContext();
   const { clearChatParams } = useChatSearchParams();
   const { closeInfoPanel, setInfoPanelView } = useInfoPanelContext();
   const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
@@ -82,7 +82,10 @@ export function RoomInfoView({ roomId, onClose }: Readonly<RoomInfoViewProps>) {
       >
         {/* Direct message room content */}
         {isDMRoom(communicationType) && (
-          <MemberInfo userId={getDMRoomMember()?.userId ?? ""} />
+          <MemberInfo
+            userId={getDMRoomMember()?.userId ?? ""}
+            departmentName={departmentInfo?.name}
+          />
         )}
 
         {/* Group room content */}

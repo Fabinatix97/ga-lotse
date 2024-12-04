@@ -6,20 +6,14 @@
 package de.eshg.dental.domain.repository;
 
 import de.eshg.dental.domain.model.Child;
-import jakarta.persistence.LockModeType;
+import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ChildRepository
-    extends JpaRepository<Child, Long>, JpaSpecificationExecutor<Child> {
+public interface ChildRepository extends ProcedureRepository<Child> {
 
   @Modifying
   @Query(
@@ -28,19 +22,9 @@ public interface ChildRepository
       @Param("oldInstitutionId") UUID oldInstitutionId,
       @Param("newInstitutionId") UUID newInstitutionId);
 
-  Optional<Child> findByExternalId(UUID externalId);
-
-  @Lock(LockModeType.PESSIMISTIC_WRITE)
-  @Query("FROM #{#entityName} p WHERE p.externalId = :externalId")
-  Optional<Child> findByExternalIdForUpdate(@Param("externalId") UUID externalId);
-
   @Query(
-      """
-      select c
-      from Child c
-      where c.childIdFromCentralFile in :centralFileStateIds
-      order by c.id
-      """)
-  Stream<Child> findByCentralFileStateIds(
-      @Param("centralFileStateIds") List<UUID> centralFileStateIds);
+      "select distinct c.groupName from Child c where c.institutionId = :institutionId order by c.groupName")
+  List<String> findDistinctInstitutionGroups(@Param("institutionId") UUID institutionId);
+
+  List<Child> findByInstitutionIdAndGroupNameOrderById(UUID institutionId, String groupName);
 }

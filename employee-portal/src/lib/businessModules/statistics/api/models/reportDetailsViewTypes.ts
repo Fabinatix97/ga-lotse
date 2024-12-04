@@ -24,4 +24,5 @@ export interface ReportDetailsView {
   analyses: Analysis[];
   attributes: FlatAttribute[];
   userId: string;
+  tooMuchDataForExport: boolean;
 }

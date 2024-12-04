@@ -10,6 +10,7 @@ dependencies {
     implementation project(':lib-auditlog')
     implementation project(':lib-base-client')
     implementation project(':lib-central-repository-client')
+    implementation project(':lib-scheduling')
     implementation project(':lib-statistics-api')
     implementation project(':rest-oauth-client-commons')
     implementation project(':file-commons')

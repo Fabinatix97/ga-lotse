@@ -123,7 +123,7 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
     openConfirmationDialog({
       onConfirm: () => deleteAnalysis(analysisId),
       title: "Analyse löschen?",
-      description: `Die Analyse “${name}” und alle darin enthaltenen Diagramme werden dann unwiderruflich gelöscht.`,
+      description: `Die Analyse „${name}” und alle darin enthaltenen Diagramme werden dann unwiderruflich gelöscht.`,
       cancelLabel: "Abbrechen",
       confirmLabel: "Löschen",
       color: "danger",

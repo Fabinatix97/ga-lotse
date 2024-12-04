@@ -38,7 +38,8 @@
   <include file="migrations/0026_remove_task_type_2.xml"/>
   <include file="migrations/0027_update_trigger_type.xml"/>
   <include file="migrations/0028_new_anamnesis_fields.xml"/>
-  <include file="migrations/0029_add_sti_protection_procedure_lib_enum_values.xml"/>
+  <include
+    file="migrations/0029_add_sti_protection_procedure_lib_enum_values.xml"/>
   <include file="migrations/0030_school_year.xml"/>
   <include file="migrations/0031_central_file_state_id_unique_index.xml"/>
   <include file="migrations/0032_add_cemetery.xml"/>
@@ -59,16 +60,22 @@
   <include file="migrations/0047_introduce_procedure_file_type.xml"/>
   <include file="migrations/0048_add_medical_registry_procedure_types.xml"/>
   <include file="migrations/0049_remove_key_document_type_enum.xml"/>
-  <include file="migrations/0050_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
+  <include
+    file="migrations/0050_make_file_and_manual_progress_entry_owning_side_of_approval_requests.xml"/>
   <include file="migrations/0051_add_system_progress_entry_keydocument.xml"/>
   <include file="migrations/0052_cemetery_sequence.xml"/>
   <include file="migrations/0053_add_was_in_daycare_flag.xml"/>
-  <include file="migrations/0054_move_subject_and_message_text_to_mail_metadata.xml"/>
+  <include
+    file="migrations/0054_move_subject_and_message_text_to_mail_metadata.xml"/>
   <include file="migrations/0055_add_gdpr_validation_task.xml"/>
-  <include file="/migrations/0056_compute_key_document_versions.xml"/>
+  <include file="migrations/0056_compute_key_document_versions.xml"/>
   <include file="migrations/0057_add_started_at.xml"/>
   <include file="migrations/0058_drop_not_null_constraints.xml"/>
   <include file="migrations/0059_rename_gdpr_validation_task_procedure_id.xml"/>
   <include file="migrations/0060_add_download_package_table.xml"/>
+  <include file="migrations/0061_add_dental_as_procedure_type.xml"/>
+  <include
+    file="migrations/0062_add_official_medical_service_procedure_type.xml"/>
+  <include file="migrations/0063_add_mail_to_simple_notification.xml"/>
 
 </databaseChangeLog>

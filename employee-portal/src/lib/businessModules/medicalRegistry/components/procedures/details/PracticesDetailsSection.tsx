@@ -24,11 +24,10 @@ import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 
 export function PracticesDetailsSection({
   procedure,
-}: Readonly<{ procedure: ApiGetProcedure200Response }>) {
+}: Readonly<{
+  procedure: ApiGetProcedure200Response;
+}>) {
   const { practices } = procedure;
-  if (!isDefined(practices)) {
-    return null;
-  }
 
   const hasMultiplePractices = practices.length > 1;
   return practices.map((practice, index) => {
@@ -68,7 +67,10 @@ const COLUMN_STYLE: SxProps = {
 function PracticeDetails({
   practiceNumber,
   practice,
-}: Readonly<{ practiceNumber?: number; practice: ApiPractice }>) {
+}: Readonly<{
+  practiceNumber?: number;
+  practice: ApiPractice;
+}>) {
   const { address, emailAddresses, phoneNumbers } = practice;
   const title = isDefined(practiceNumber)
     ? `Einrichtung ${practiceNumber}`
@@ -82,7 +84,7 @@ function PracticeDetails({
 
   return (
     <InformationSheet>
-      <DetailsSection name="practice-section" title={title}>
+      <DetailsSection data-testid="practice-section" title={title}>
         <Stack
           direction={{ md: "row" }}
           gap={3}

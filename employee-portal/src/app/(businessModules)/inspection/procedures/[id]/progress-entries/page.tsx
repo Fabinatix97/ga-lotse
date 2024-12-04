@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 
+import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { useDownloadInspectionFile } from "@/lib/businessModules/inspection/api/download/files";
 import {
   useDecideApprovalRequest,
@@ -35,9 +36,14 @@ import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
+interface InspectionProgressEntriesPageParams extends EditInspectionPageParams {
+  entryId?: string;
+}
+
 export default function InspectionProgressEntriesPage(
-  props: ProgressEntriesUrlParams,
+  props: ProgressEntriesUrlParams<InspectionProgressEntriesPageParams>,
 ) {
+  const { params, searchParams } = props;
   return (
     <ProgressEntriesPage
       useCreateProgressEntry={useCreateProgressEntry}
@@ -46,7 +52,9 @@ export default function InspectionProgressEntriesPage(
       usePatchProgressEntry={usePatchProgressEntry}
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-      urlParams={props}
+      procedureId={params.id}
+      progressEntryId={params.entryId}
+      searchParams={searchParams}
       leaderRole={ApiUserRole.InspectionLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
       useRequestFileDeletion={useRequestFileDeletion}

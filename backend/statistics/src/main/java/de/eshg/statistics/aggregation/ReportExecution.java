@@ -13,6 +13,8 @@ import de.eshg.statistics.persistence.entity.AggregationResultState;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -36,7 +38,14 @@ public class ReportExecution {
   }
 
   @Scheduled(cron = "${de.eshg.statistics.auto-report.schedule:@daily}")
+  @SchedulerLock(name = "HandlePlannedReports")
   public void handlePlannedReports() {
+    LockAssert.assertLocked();
+    log.info("Starting job 'HandlePlannedReports'");
+    handlePlannedReportsInternal();
+  }
+
+  public void handlePlannedReportsInternal() {
     UUID reportId = reportService.getPlannedReportToExecuteSetToPending();
     while (reportId != null) {
       createNewPlannedReport(reportId);

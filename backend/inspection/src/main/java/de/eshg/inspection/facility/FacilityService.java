@@ -11,6 +11,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import de.eshg.base.address.AddressDto;
+import de.eshg.base.address.DomesticAddressDto;
 import de.eshg.base.centralfile.api.DataOriginDto;
 import de.eshg.base.centralfile.api.facility.*;
 import de.eshg.domain.model.BaseEntity_;
@@ -49,6 +50,7 @@ import de.eshg.inspection.inspection.persistence.Inspection_;
 import de.eshg.inspection.objecttype.api.ObjectTypeRefDto;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.objecttype.persistence.ObjectType_;
+import de.eshg.lib.common.CountryCode;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
@@ -255,9 +257,6 @@ public class FacilityService {
     if (params.hasDuplicates() != null) {
       inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.IMPORT);
     }
-    if (params.banned() != null) {
-      inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.BANNED_FACILITIES_EXPORT);
-    }
 
     // early validate page request params
     PageRequest pageRequest = pagination.getPageRequest();
@@ -286,12 +285,14 @@ public class FacilityService {
             null);
 
     // fetch centralfile data in a bulk query
-    Map<UUID, AddFacilityFileStateResponse> centralFileData =
+    Map<UUID, AddFacilityFileStateResponse> centralFileResponse =
         fetchCentralFileData(extractCentralFileStateIds(candidates));
+
+    candidates = filterCandidatesBasedOnCentralFileStates(candidates, centralFileResponse.keySet());
 
     // map to dto
     Stream<InspPendingFacilityDto> entries =
-        candidates.stream().map(e -> createInspPendingFacilityDto(e, centralFileData));
+        candidates.stream().map(e -> createInspPendingFacilityDto(e, centralFileResponse));
 
     // application-side filtering and sorting (cannot do this in db because of db separation)
     List<InspPendingFacilityDto> filteredEntries = filterEntries(entries, params);
@@ -301,6 +302,27 @@ public class FacilityService {
 
     return new InspPendingFacilitiesOverviewResponse(
         totalPages, filteredEntries.size(), result, numberOfDuplicates);
+  }
+
+  private List<PendingFacilityView> filterCandidatesBasedOnCentralFileStates(
+      List<PendingFacilityView> candidates, Set<UUID> foundIds) {
+    return candidates.stream()
+        .filter(facility -> Objects.nonNull(facility.irf()))
+        .filter(
+            row ->
+                idExists(
+                    row.facility().getCentralFileStateId(),
+                    row.facility().getExternalId(),
+                    foundIds))
+        .filter(
+            row -> idExists(row.irf().getCentralFileStateId(), row.irf().getExternalId(), foundIds))
+        .toList();
+  }
+
+  private static boolean idExists(UUID centralFileStateId, UUID externalId, Set<UUID> foundIds) {
+    if (foundIds.contains(centralFileStateId)) return true;
+    log.error("CentralFileStateID {} not found for external ID {}", centralFileStateId, externalId);
+    return false;
   }
 
   private List<PendingFacilityView> findPendingFacilities(
@@ -459,7 +481,29 @@ public class FacilityService {
         executionAppointment == null ? null : executionAppointment.getAppointmentStart();
 
     return FacilityMapper.createInspPendingFacilityDto(
-        view, facilityDto, kind, plannedFrom, objecttype, executionFrom);
+        view,
+        creatDummyContactAddressIfEmpty(facilityDto),
+        kind,
+        plannedFrom,
+        objecttype,
+        executionFrom);
+  }
+
+  private AddFacilityFileStateResponse creatDummyContactAddressIfEmpty(
+      AddFacilityFileStateResponse facilityDto) {
+    if (facilityDto.contactAddress() != null) return facilityDto;
+
+    // Build empty Address to prevent crash in facility overview, if base module has none
+    return new AddFacilityFileStateResponse(
+        facilityDto.id(),
+        facilityDto.name(),
+        facilityDto.emailAddresses(),
+        facilityDto.phoneNumbers(),
+        facilityDto.referenceVersion(),
+        facilityDto.contactPersons(),
+        new DomesticAddressDto(CountryCode.DE, "", "", "", ""),
+        facilityDto.differentBillingAddress(),
+        facilityDto.dataOrigin());
   }
 
   private InspPendingFacilityKind determineInspPendingFacilityKind(
@@ -606,8 +650,6 @@ public class FacilityService {
   }
 
   public InspPendingFacilitiesOverviewResponse getFacilityHistory(UUID externalId) {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.FACILITY_HISTORY);
-
     List<PendingFacilityView> candidates =
         findPendingFacilities(
             null, null, null, null, null, null, null, null, List.of(), List.of(), externalId);

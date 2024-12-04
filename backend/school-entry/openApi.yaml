@@ -5074,16 +5074,23 @@ components:
         dueDate:
           type: string
           format: date
+        gdprProcedureId:
+          type: string
+          format: uuid
         identificationData:
           oneOf:
           - $ref: "#/components/schemas/GdprFacility"
           - $ref: "#/components/schemas/GdprPerson"
         status:
           $ref: "#/components/schemas/GdprValidationTaskStatus"
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
       required:
       - dueDate
+      - gdprProcedureId
       - identificationData
       - status
+      - type
     GdprValidationTaskSortKey:
       type: string
       enum:
@@ -6934,6 +6941,8 @@ components:
       - MEDICAL_REGISTRY_ENTRY
       - MEDICAL_REGISTRY_CITIZEN_DRAFT
       - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
+      - DENTAL_CHILD
+      - OFFICIAL_MEDICAL_SERVICE
     ProcedureWithDuration:
       type: object
       properties:
@@ -7399,8 +7408,7 @@ components:
     SchoolEntryFeature:
       type: string
       enum:
-      - IMPORT_PAST_PROCEDURES
-      - BULK_DOWNLOAD_INVITATIONS
+      - DUMMY
     SchoolEntryLabel:
       type: object
       description: Labels can be associated to a procedure. There are predefined labels

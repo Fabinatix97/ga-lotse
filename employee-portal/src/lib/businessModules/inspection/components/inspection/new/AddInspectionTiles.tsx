@@ -11,17 +11,12 @@ import {
   ApiObjectType,
 } from "@eshg/employee-portal-api/inspection";
 import { Grid } from "@mui/joy";
-import { useState } from "react";
 
 import { useUpdateInspectionFacility } from "@/lib/businessModules/inspection/api/mutations/facility";
+import { useEditFacilitySidebar } from "@/lib/businessModules/inspection/components/inspection/EditFacilitySidebar";
 import { FacilityTile } from "@/lib/businessModules/inspection/components/inspection/common/facility/FacilityTile";
 import { AdditionalInfoTile } from "@/lib/businessModules/inspection/components/inspection/new/AdditionalInfoTile";
-import {
-  LegacyFacilitySidebar,
-  Mode,
-} from "@/lib/shared/components/facilitySidebar/LegacyFacilitySidebar";
-import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import { mapApiFacilityStateToBaseFacility } from "@/lib/shared/helpers/facilityUtils";
+import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
 
 export function AddInspectionTiles({
   inspection,
@@ -35,48 +30,40 @@ export function AddInspectionTiles({
   selfUser: ApiUser;
 }>) {
   const { mutateAsync: updateFacility } = useUpdateInspectionFacility();
+  const editFacilitySidebar = useEditFacilitySidebar();
   const facility = inspection.facility;
 
-  async function saveFacility(baseFacility: BaseFacility) {
-    return await updateFacility({
+  async function saveFacility(facility: DefaultFacilityFormValues) {
+    await updateFacility({
       procedureId: inspection.externalId,
       inspectionFacilityId: inspection.facility.id,
-      baseFacility,
+      facility,
     });
   }
 
-  const [open, setOpen] = useState(false);
-
-  const sideBarAddress = mapApiFacilityStateToBaseFacility(
-    facility.baseFacility,
-  );
+  function openEdit() {
+    editFacilitySidebar.open({
+      facility: inspection.facility.baseFacility,
+      onSave: saveFacility,
+    });
+  }
 
   // stack tiles vertically on small screens
   //  to avoid the form buttons of AdditionalInfoTile from overflowing
   return (
-    <>
-      <Grid container spacing={3} direction={{ xs: "column", xl: "row" }}>
-        <Grid xl={9}>
-          <FacilityTile facility={facility} setOpen={setOpen} />
-        </Grid>
-        <Grid xl={3} style={{ flex: 1 }}>
-          <AdditionalInfoTile
-            procedureId={inspection.externalId}
-            objectTypes={objectTypes}
-            facility={facility}
-            selfUser={selfUser}
-            allAssignableUsers={allAssignableUsers}
-          />
-        </Grid>
+    <Grid container spacing={3} direction={{ xs: "column", xl: "row" }}>
+      <Grid xl={9}>
+        <FacilityTile facility={facility} onEdit={openEdit} />
       </Grid>
-      <LegacyFacilitySidebar
-        facility={sideBarAddress}
-        open={open}
-        onClose={() => setOpen(false)}
-        mode={Mode.edit}
-        titleEdit="Einrichtung bearbeiten"
-        onSubmit={saveFacility}
-      />
-    </>
+      <Grid xl={3} style={{ flex: 1 }}>
+        <AdditionalInfoTile
+          procedureId={inspection.externalId}
+          objectTypes={objectTypes}
+          facility={facility}
+          selfUser={selfUser}
+          allAssignableUsers={allAssignableUsers}
+        />
+      </Grid>
+    </Grid>
   );
 }

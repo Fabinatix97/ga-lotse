@@ -30,7 +30,7 @@ export function InfoTile({
     <InformationSheet>
       <Box flexGrow={1}>
         <DetailsSection
-          name={name}
+          data-testid={name}
           title={title}
           onEdit={onEdit}
           buttons={controls}

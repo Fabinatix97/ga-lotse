@@ -19,13 +19,17 @@ import {
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { isDefined, isNullish } from "remeda";
 
 import QueryBoundary from "@/app/@modal/template";
-import { useChangeProcedureStatus } from "@/lib/baseModule/api/mutations/gdpr";
+import {
+  useChangeProcedureStatus,
+  useRefreshProcedureStatus,
+} from "@/lib/baseModule/api/mutations/gdpr";
 import { isGdprPerson } from "@/lib/baseModule/components/gdpr/helpers";
 import {
   gdprProcedureTypeWithGdprArticle,
@@ -40,8 +44,16 @@ import {
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
 import { multiLineEllipsis } from "@/lib/baseModule/theme/theme";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
+
+function isMatterOfConcernRequired(type: ApiGdprProcedureType) {
+  return (
+    type === ApiGdprProcedureType.ToObject ||
+    type === ApiGdprProcedureType.ToRectification
+  );
+}
 
 type CloseModalMode = "cancel" | "close";
 
@@ -50,15 +62,7 @@ export function ProcedureDetailsTile({
 }: {
   procedure: ApiGetGdprProcedureResponse;
 }) {
-  const alert = useAlert();
-  const snackbar = useSnackbar();
-
   const editMatterOfConcernSidebar = useEditMatterOfConcernSidebar();
-
-  const changeProcedureStatus = useChangeProcedureStatus(
-    procedure.id,
-    procedure.version,
-  );
 
   const [closeModalMode, setCloseModalMode] = useState<
     CloseModalMode | undefined
@@ -67,8 +71,9 @@ export function ProcedureDetailsTile({
   const isRectification =
     procedure.type === ApiGdprProcedureType.ToRectification;
   const isObjection = procedure.type === ApiGdprProcedureType.ToObject;
+
   const requiresMatterOfConcern = isObjection || isRectification;
-  const isDraft = procedure.status === ApiGdprProcedureStatus.Draft;
+
   const isEditable =
     procedure.status === ApiGdprProcedureStatus.Draft ||
     procedure.status === ApiGdprProcedureStatus.InProgress;
@@ -79,27 +84,14 @@ export function ProcedureDetailsTile({
   const isClosable =
     isObjection && procedure.status === ApiGdprProcedureStatus.InProgress;
 
+  const showButtons =
+    procedure.status !== ApiGdprProcedureStatus.Aborted &&
+    procedure.status !== ApiGdprProcedureStatus.Closed;
+
   const canDownloadReport =
     isObjection &&
     (procedure.status === ApiGdprProcedureStatus.InProgress ||
       procedure.status === ApiGdprProcedureStatus.Closed);
-
-  async function startProcedure() {
-    if (isNullish(procedure.matterOfConcern) && requiresMatterOfConcern) {
-      alert.warning({
-        message: "Sie müssen ein Anliegen angeben.",
-        closeable: true,
-      });
-    } else {
-      alert.close();
-      await changeProcedureStatus.mutateAsync(
-        { type: "start" },
-        {
-          onSuccess: () => snackbar.confirmation("Vorgang gestartet"),
-        },
-      );
-    }
-  }
 
   return (
     <>
@@ -181,7 +173,7 @@ export function ProcedureDetailsTile({
           />
         )}
 
-        {(isCancellable || isDraft) && (
+        {showButtons && (
           <>
             <Divider />
             <ButtonBar
@@ -195,14 +187,15 @@ export function ProcedureDetailsTile({
                       Abbrechen
                     </Button>
                   )}
-                  {isDraft && (
-                    <Button onClick={() => startProcedure()}>Starten</Button>
-                  )}
+                  <StartProcedureButton procedure={procedure} />
+
                   {isClosable && (
                     <Button onClick={() => setCloseModalMode("close")}>
                       Abschließen
                     </Button>
                   )}
+
+                  <RefreshStatusButton procedure={procedure} />
                 </>
               }
             />
@@ -222,6 +215,86 @@ export function ProcedureDetailsTile({
       </QueryBoundary>
     </>
   );
+}
+
+function RefreshStatusButton({
+  procedure,
+}: {
+  procedure: ApiGetGdprProcedureResponse;
+}) {
+  const [isPending, startTransition] = useTransition();
+  const snackbar = useSnackbar();
+  const refreshStatus = useRefreshProcedureStatus(procedure.id);
+
+  const isVisible =
+    procedure.status === ApiGdprProcedureStatus.InProgress &&
+    procedure.type === ApiGdprProcedureType.OfAccess;
+
+  return (
+    isVisible && (
+      <Button
+        loading={isPending}
+        loadingPosition={"start"}
+        startDecorator={<RefreshIcon />}
+        onClick={() =>
+          startTransition(async () => {
+            await refreshStatus.mutateAsync(undefined, {
+              onSuccess: (response) => {
+                if (response.status === ApiGdprProcedureStatus.Closed) {
+                  snackbar.confirmation("Vorgang ist abgeschlossen.");
+                }
+              },
+            });
+          })
+        }
+      >
+        Status prüfen
+      </Button>
+    )
+  );
+}
+
+function StartProcedureButton({
+  procedure,
+}: {
+  procedure: ApiGetGdprProcedureResponse;
+}) {
+  const alert = useAlert();
+  const snackbar = useSnackbar();
+  const { openConfirmationDialog } = useConfirmationDialog();
+  const changeProcedureStatus = useChangeProcedureStatus(
+    procedure.id,
+    procedure.version,
+  );
+
+  const isVisible = procedure.status === ApiGdprProcedureStatus.Draft;
+  const requiresMatterOfConcern = isMatterOfConcernRequired(procedure.type);
+
+  function startProcedure() {
+    if (isNullish(procedure.matterOfConcern) && requiresMatterOfConcern) {
+      alert.warning({
+        message: "Sie müssen ein Anliegen angeben.",
+        closeable: true,
+      });
+    } else {
+      alert.close();
+      openConfirmationDialog({
+        title: "Wollen Sie den Vorgang starten?",
+        description:
+          "Nachdem der Vorgang gestartet ist, können Sie keine weiteren Datensätze mehr hinzufügen.",
+        confirmLabel: "Vorgang starten",
+        onConfirm: () =>
+          changeProcedureStatus.mutate(
+            { type: "start" },
+            {
+              onSuccess: () => snackbar.confirmation("Vorgang gestartet"),
+            },
+          ),
+      });
+    }
+  }
+
+  return isVisible && <Button onClick={() => startProcedure()}>Starten</Button>;
 }
 
 function CompleteProcedureDialog({

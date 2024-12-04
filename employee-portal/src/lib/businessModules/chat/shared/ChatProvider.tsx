@@ -71,6 +71,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
   // Chat user settings
   const userSettings = useMemo<ChatUserSettings>(
     () => ({
+      accountDeactivated: true,
       chatConsentAsked: undefined,
       chatUsageEnabled: false,
       sharePresence: false,
@@ -93,7 +94,7 @@ function InnerChatProvider({ children, configuration }: ChatProviderProps) {
         messagesSidebar,
       }}
     >
-      {userSettings.chatUsageEnabled ? (
+      {userSettings.chatUsageEnabled && !userSettings.accountDeactivated ? (
         <MessageTeaserProvider>
           <ChatClientProvider>
             <NotificationProvider>{children}</NotificationProvider>
@@ -122,6 +123,7 @@ function InnerChatProviderMock({ children, configuration }: ChatProviderProps) {
       value={{
         configuration,
         userSettings: {
+          accountDeactivated: false,
           chatConsentAsked: undefined,
           chatUsageEnabled: false,
           sharePresence: false,

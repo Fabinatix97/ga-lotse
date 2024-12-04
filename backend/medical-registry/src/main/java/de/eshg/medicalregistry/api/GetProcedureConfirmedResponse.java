@@ -18,7 +18,7 @@ public record GetProcedureConfirmedResponse(
     @NotNull ProcedureTypeDto procedureType,
     @NotNull @Valid ApplicantDto applicant,
     @NotNull @Valid ProfessionInformationDto professionInformation,
-    @Valid List<PracticeDto> practices,
+    @NotNull @Valid List<PracticeDto> practices,
     @NotNull boolean employeesEmployed,
     @NotNull boolean consentToPrivacyPolicy,
     @NotNull boolean requestForWrittenConfirmation)

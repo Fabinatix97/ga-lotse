@@ -8,9 +8,9 @@ package de.eshg.dental.domain.model;
 import static de.eshg.lib.common.SensitivityLevel.PROTECTED;
 import static de.eshg.lib.common.SensitivityLevel.PSEUDONYMIZED;
 
-import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
+import de.cronn.commons.lang.StreamUtil;
 import de.eshg.lib.common.DataSensitivity;
-import de.eshg.lib.common.SensitivityLevel;
+import de.eshg.lib.procedure.domain.model.Procedure;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,11 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class Child extends SequencedBaseEntityWithExternalId {
-
-  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
-  @Column(nullable = false, unique = true)
-  private UUID childIdFromCentralFile;
+public class Child extends Procedure<Child, ChildTask, Person, Facility> {
 
   @DataSensitivity(PROTECTED)
   @Column(nullable = false)
@@ -41,16 +37,21 @@ public class Child extends SequencedBaseEntityWithExternalId {
   private String groupName;
 
   @DataSensitivity(PROTECTED)
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST)
+  @OneToMany(
+      orphanRemoval = true,
+      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+      mappedBy = Examination_.CHILD)
   @OrderBy
   private final List<Examination> examinations = new ArrayList<>();
 
   public UUID getChildIdFromCentralFile() {
-    return childIdFromCentralFile;
+    return getChild().getCentralFileStateId();
   }
 
-  public void setChildIdFromCentralFile(UUID childIdFromCentralFile) {
-    this.childIdFromCentralFile = childIdFromCentralFile;
+  public Person getChild() {
+    return getRelatedPersons().stream()
+        .filter(Person::isChild)
+        .collect(StreamUtil.toSingleElement());
   }
 
   public Year getYear() {
@@ -83,5 +84,6 @@ public class Child extends SequencedBaseEntityWithExternalId {
 
   public void addExamination(Examination examination) {
     this.examinations.add(examination);
+    examination.setChild(this);
   }
 }

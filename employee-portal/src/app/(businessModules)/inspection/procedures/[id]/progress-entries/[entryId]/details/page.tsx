@@ -4,10 +4,5 @@
  */
 
 import InspectionProgressEntriesPage from "@/app/(businessModules)/inspection/procedures/[id]/progress-entries/page";
-import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-export default function InspectionProgressEntryDetailsPage(
-  props: ProgressEntriesUrlParams,
-) {
-  return <InspectionProgressEntriesPage {...props} />;
-}
+export default InspectionProgressEntriesPage;

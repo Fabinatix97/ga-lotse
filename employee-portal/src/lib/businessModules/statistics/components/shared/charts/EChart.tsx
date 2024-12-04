@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button } from "@mui/joy";
 import { EChartsOption } from "echarts";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import {
@@ -183,15 +182,12 @@ export function EChart(props: {
   );
 
   return (
-    <>
-      <Button onClick={() => exportAsImage()}>TODO: TESt</Button>
-      <ReactEChartsCore
-        ref={ref}
-        echarts={echarts}
-        option={options}
-        opts={{ locale: "DE", renderer: imageType }}
-        style={{ flex: 1 }}
-      />
-    </>
+    <ReactEChartsCore
+      ref={ref}
+      echarts={echarts}
+      option={options}
+      opts={{ locale: "DE", renderer: imageType }}
+      style={{ flex: 1 }}
+    />
   );
 }

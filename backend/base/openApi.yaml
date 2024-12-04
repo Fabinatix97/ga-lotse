@@ -542,19 +542,6 @@ paths:
       summary: Get the permissions of the user which is currently active
       tags:
       - CitizenUser
-  /config:
-    get:
-      operationId: getConfig
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Configuration"
-          description: OK
-      summary: Get general system configuration which is needed by the frontend
-      tags:
-      - Config
   /contacts:
     get:
       operationId: getContacts
@@ -2081,6 +2068,35 @@ paths:
       summary: Send an email notification via template.
       tags:
       - Mail
+  /muk-facility-link:
+    post:
+      operationId: createMukFacilityLink
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddMukFacilityLinkRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Establish a link between a MUK user and a facility
+      tags:
+      - MukFacilityLink
+  /muk-facility-link/self/facility:
+    get:
+      operationId: getReferenceFacilityLinkedToMukSelfUser
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetReferenceFacilityResponse"
+          description: OK
+      summary: Get the reference facility linked to the MUK user which is currently
+        active
+      tags:
+      - MukFacilityLink
   /notification-aggregation:
     get:
       operationId: getNotifications
@@ -2563,6 +2579,19 @@ paths:
       summary: Get procedure metrics for procedures created in the given time range
       tags:
       - ProcedureAggregation
+  /public/config:
+    get:
+      operationId: getConfig
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetConfigurationResponse"
+          description: OK
+      summary: Get general system configuration which is needed by the frontend
+      tags:
+      - PublicConfig
   /recent-procedures:
     get:
       operationId: aggregateRecentProcedures
@@ -3058,6 +3087,20 @@ paths:
   /test-helper/audit-log-storage:
     delete:
       operationId: clearAuditLogStorageDirectory
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/business-modules/{businessModuleToDisable}:
+    delete:
+      operationId: disableBusinessModule
+      parameters:
+      - in: path
+        name: businessModuleToDisable
+        required: true
+        schema:
+          $ref: "#/components/schemas/BusinessModule"
       responses:
         "200":
           description: OK
@@ -4124,6 +4167,23 @@ components:
           example: Travel Medicine
       required:
       - name
+    AddMukFacilityLinkRequest:
+      type: object
+      description: Request used for establishing a link between a MUK user and a reference
+        facility
+      properties:
+        mukId:
+          type: string
+          description: The id of the mukUser
+          example: du-986b2b54ab89cf4ed674ad8c3126b966b54d4872
+        referenceFacilityId:
+          type: string
+          format: uuid
+          description: The (external) id of the reference facility
+          example: be9831d4-dc25-48d8-9bfe-4c0b54bfb2c1
+      required:
+      - mukId
+      - referenceFacilityId
     AddPersonContactRequest:
       type: object
       allOf:
@@ -4430,8 +4490,6 @@ components:
         calendarId:
           type: string
           format: uuid
-        showAs:
-          $ref: "#/components/schemas/ShowAs"
         subject:
           type: string
         timeData:
@@ -4455,12 +4513,10 @@ components:
       - CHAT_USERNAME
       - SEARCH_PROCEDURES
       - INBOX
-      - INSPECTION_INBOX
-      - STI_PROTECTION
-      - VERIFICATION_OF_EXTERNAL_DATA
       - OPEN_DATA
       - GDPR
       - GDPR_ONLINE_PORTAL
+      - MUK_FACILITY_LINK
     BlockingEventsOfCalendar:
       type: object
       properties:
@@ -4595,14 +4651,6 @@ components:
       required:
       - internalNote
       - version
-    Configuration:
-      type: object
-      properties:
-        maxFileSize:
-          type: integer
-          format: int64
-      required:
-      - maxFileSize
     Contact:
       type: object
       discriminator:
@@ -5039,8 +5087,6 @@ components:
           format: uuid
         metaData:
           $ref: "#/components/schemas/EventMetaData"
-        showAs:
-          $ref: "#/components/schemas/ShowAs"
         timeData:
           $ref: "#/components/schemas/EventTimeData"
         type:
@@ -5049,7 +5095,6 @@ components:
       - calendarIds
       - id
       - metaData
-      - showAs
       - timeData
       - type
     DetailedEventWithoutCalendarId:
@@ -5063,8 +5108,6 @@ components:
           format: uuid
         metaData:
           $ref: "#/components/schemas/EventMetaData"
-        showAs:
-          $ref: "#/components/schemas/ShowAs"
         timeData:
           $ref: "#/components/schemas/EventTimeData"
         type:
@@ -5072,7 +5115,6 @@ components:
       required:
       - id
       - metaData
-      - showAs
       - timeData
       - type
     Device:
@@ -5298,6 +5340,7 @@ components:
       - NONCONFORM_PDF
       - CORRUPT
       - LOCKED
+      - XLSX_TOO_MANY_ROWS
     ErrorResponseWithLocation:
       type: object
       properties:
@@ -5959,6 +6002,19 @@ components:
             $ref: "#/components/schemas/CitizenUserRole"
       required:
       - permissions
+    GetConfigurationResponse:
+      type: object
+      properties:
+        activeModules:
+          type: array
+          items:
+            $ref: "#/components/schemas/BusinessModule"
+        maxFileSize:
+          type: integer
+          format: int64
+      required:
+      - activeModules
+      - maxFileSize
     GetContactHistoryResponse:
       type: object
       properties:
@@ -8022,6 +8078,8 @@ components:
       - MEDICAL_REGISTRY_ENTRY
       - MEDICAL_REGISTRY_CITIZEN_DRAFT
       - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
+      - DENTAL_CHILD
+      - OFFICIAL_MEDICAL_SERVICE
     ProcedureWithDuration:
       type: object
       properties:
@@ -8294,15 +8352,6 @@ components:
       required:
       - concern
       - version
-    ShowAs:
-      type: string
-      description: |2
-            - FREE shows the timeslot of an event as available
-            - BUSY shows the timeslot of an event as unavailable. Events can still be booked at BUSY timeslots
-            - BUSY is the default value
-      enum:
-      - BUSY
-      - FREE
     SimpleNotification:
       type: object
       allOf:
@@ -9008,6 +9057,7 @@ components:
       - BASE_GDPR_PROCEDURE_REVIEW
       - BASE_GDPR_PROCEDURE_READ
       - BASE_GDPR_PROCEDURE_WRITE
+      - BASE_MUK_FACILITY_LINK_WRITE
       - BASE_GLOBAL_CALENDARS_WRITE
       - BASE_CALENDAR_BUSINESS_EVENTS_WRITE
       - BASE_PROCEDURES_READ

@@ -49,12 +49,7 @@ export function EditAbsenceSidebar({
     submitCalendarEvent.mutate(
       {
         eventId: event.id,
-        request: mapFormToRequestValues(
-          values,
-          "VACATION",
-          event.calendarId,
-          event.showAs,
-        ),
+        request: mapFormToRequestValues(values, "VACATION", event.calendarId),
       },
       {
         onSuccess: () => {

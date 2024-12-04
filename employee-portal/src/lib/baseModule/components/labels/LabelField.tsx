@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* eslint-disable @typescript-eslint/no-base-to-string */
 import {
   BaseField,
   useBaseField,
@@ -66,7 +67,7 @@ export function LabelField(props: LabelFieldProps) {
           if (inputValue !== "" && !isExisting) {
             filtered.push({
               value: inputValue,
-              label: `Neues Label "${inputValue}"`,
+              label: `Neues Label „${inputValue}”`,
             });
           }
           return filtered;

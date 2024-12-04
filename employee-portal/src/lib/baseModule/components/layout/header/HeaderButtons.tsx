@@ -23,7 +23,7 @@ import { HeaderMessagesButton } from "./HeaderMessagesButton";
 
 export function HeaderButtons() {
   const nodeRef = useRef(null);
-  const { canAccessChat } = useChat();
+  const { canAccessChat, userSettings } = useChat();
   const userSidebar = useSelfUserSidebar();
   const { data: notificationResponse } = useGetUnreadNotifications();
   const notificationsSidebar = useNotificationsSidebar();
@@ -71,7 +71,9 @@ export function HeaderButtons() {
           <NotificationsIcon sx={{ color: "background.body" }} />
         </Badge>
       </HeaderIconButton>
-      {canAccessChat && <HeaderMessagesButton />}
+      {canAccessChat && !userSettings.accountDeactivated && (
+        <HeaderMessagesButton />
+      )}
 
       <HeaderIconButton
         aria-label={`Benutzer (${getPresenseLabel(userPresence)})`}
@@ -81,7 +83,9 @@ export function HeaderButtons() {
         onClick={toggleUserSidebar}
       >
         <Badge
-          invisible={!canAccessChat || !sharePresence}
+          invisible={
+            !canAccessChat || !sharePresence || userSettings.accountDeactivated
+          }
           size="sm"
           badgeInset="18%"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

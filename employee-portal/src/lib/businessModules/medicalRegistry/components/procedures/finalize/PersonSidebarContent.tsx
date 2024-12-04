@@ -37,7 +37,7 @@ export function PersonSidebarContent({
       <Stack spacing={2}>
         <Typography level="body-md">
           Bitte überprüfen Sie, ob die Angaben zur Person{" "}
-          <Typography fontWeight="bold">“{formattedProfessional}”</Typography>{" "}
+          <Typography fontWeight="bold">„{formattedProfessional}”</Typography>{" "}
           mit einem der folgenden Datensätze in den Stammdaten übereinstimmen
           oder legen Sie die Person mit Daten aus dem Formular neu an.
         </Typography>

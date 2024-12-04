@@ -23,6 +23,7 @@ import de.eshg.testhelper.population.PopulationProperties;
 import java.time.Clock;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.datafaker.Faker;
@@ -47,14 +48,14 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
       Faker faker, Supplier<InstitutionContactCategoryDto> categorySupplier) {
     String name = faker.beer().brand();
     InstitutionContactCategoryDto category = categorySupplier.get();
-    List<String> phoneNumbers = optional(faker, randomListOfPhoneNumbers(faker, 7));
-    List<String> emailAddresses = optional(faker, randomListOfEmails(faker, 7));
+    List<String> phoneNumbers = optional(faker, randomListOfPhoneNumbers(7));
+    List<String> emailAddresses = optional(faker, randomListOfEmails(7));
     AddressDto contactAddress =
         switch (category) {
           case SCHOOL, HEALTH_DEPARTMENT -> createDomesticAddress(faker);
           case null, default -> createAddress(faker);
         };
-    AddressDto differentBillingAddress = optional(faker, createAddress(faker));
+    AddressDto differentBillingAddress = optional(faker, createAddress());
     return contactController.addContact(
         new AddInstitutionContactRequest(
             name, category, phoneNumbers, emailAddresses, contactAddress, differentBillingAddress));
@@ -65,7 +66,11 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
         Arrays.stream(InstitutionContactCategoryDto.values())
             .filter(Predicate.not(InstitutionContactCategoryDto.SCHOOL::equals))
             .toList();
-    return () -> optional(faker, randomElement(faker, values));
+    return () -> optional(faker, randomElement(values));
+  }
+
+  protected Function<Faker, AddressDto> createAddress() {
+    return faker -> createAddress(faker);
   }
 
   protected AddressDto createAddress(Faker faker) {
@@ -73,7 +78,7 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
   }
 
   private DomesticAddressDto createDomesticAddress(Faker faker) {
-    CountryCode country = randomElement(faker, CountryCode.values());
+    CountryCode country = randomCountry(faker);
     String city = faker.address().city();
     String postalCode = faker.address().postcode();
     String differentName = optional(faker, faker.fullMetalAlchemist().character());
@@ -85,7 +90,7 @@ public abstract class AbstractContactPopulator extends BasePopulator<ContactDto>
   }
 
   private PostboxAddressDto createPostboxAddress(Faker faker) {
-    CountryCode country = randomElement(faker, CountryCode.values());
+    CountryCode country = randomCountry(faker);
     String city = faker.dungeonsAndDragons().cities();
     String postalCode = faker.address().postcode();
     String differentName = optional(faker, faker.fullMetalAlchemist().character());

@@ -27,4 +27,8 @@ public record GetOpenDocumentsRequest(
                 """)
         List<BusinessModule> sourcesFilter,
     @Parameter(description = "If set, versions with the given file type are returned")
-        OpenDataFileType fileTypeFilter) {}
+        OpenDataFileType fileTypeFilter,
+    @Parameter(
+            description =
+                "If set, versions with `fileName` or `description` matching the given search string are returned")
+        String searchString) {}

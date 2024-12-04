@@ -5,7 +5,6 @@
 
 package de.eshg.base.notification;
 
-import de.eshg.base.calendar.persistence.entity.AvailabilityType;
 import de.eshg.base.calendar.persistence.entity.Calendar;
 import de.eshg.base.calendar.persistence.entity.CalendarEvent;
 import de.eshg.base.calendar.persistence.entity.CalendarType;
@@ -50,7 +49,6 @@ public class AbsenceNotificationService extends AbstractNotificationService<Abse
   public void createAbsenceNotificationIfNeeded(CalendarEvent calendarEvent) {
     Calendar calendar = calendarEvent.getCalendars().iterator().next();
     if (calendar.getType().equals(CalendarType.USER)
-        && calendarEvent.getAvailability().equals(AvailabilityType.BUSY)
         && calendarEvent.getEventType().equals(EventType.VACATION)) {
       Set<UUID> recipientUserIds = getOtherUsersInGroups(calendar.getUserId());
 

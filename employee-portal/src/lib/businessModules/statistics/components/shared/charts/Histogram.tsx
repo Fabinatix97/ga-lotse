@@ -23,10 +23,14 @@ interface HistogramProps {
 export function mapToBarChartDiagramData(
   diagramData: AnalysisDiagramHistogram["data"],
 ): AnalysisDiagramBarChart["data"] {
+  // On a 1920 width display 15 Bars barely fit the whole label
+  const tooManyBars = diagramData.length > 15;
   return diagramData
     .toSorted((l, r) => l.min - r.min)
     .map((it) => ({
-      label: `${it.min.toFixed(2)} - ${it.max.toFixed(2)}`,
+      label: tooManyBars
+        ? `${it.min.toFixed(2)}`
+        : `${it.min.toFixed(2)} - ${it.max.toFixed(2)}`,
       attributes: it.attributes,
     }));
 }
@@ -39,7 +43,7 @@ export function Histogram(props: HistogramProps) {
 
   return (
     <BarChart
-      filterSetData={data}
+      diagramData={data}
       grouping={props.grouping}
       scaling={props.scaling}
       orientation={"VERTICAL"}

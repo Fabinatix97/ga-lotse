@@ -65,7 +65,6 @@ const initialUserActivity: UserActivityState = { type: "view-table" };
 function createFilterDefinitions(
   objectTypes: ApiObjectType[],
   isImportFeatureEnabled: boolean,
-  isBannedFacilitiesExportFeatureEnabled: boolean,
 ): FilterDefinition[] {
   const objectTypeOptions = objectTypes.map((o) => ({
     label: o.name,
@@ -124,14 +123,12 @@ function createFilterDefinitions(
     });
   }
 
-  if (isBannedFacilitiesExportFeatureEnabled) {
-    filterDefinitions.push({
-      type: "EnumSingle",
-      key: "banned",
-      name: "Untersagte Einrichtung",
-      options: optionsFromRecord(inspectionBannedFacilityFilterNames),
-    });
-  }
+  filterDefinitions.push({
+    type: "EnumSingle",
+    key: "banned",
+    name: "Untersagte Einrichtung",
+    options: optionsFromRecord(inspectionBannedFacilityFilterNames),
+  });
 
   return filterDefinitions;
 }
@@ -143,15 +140,11 @@ export function PendingFacilitiesTable(
   const isImportFeatureEnabled = useIsNewFeatureEnabled(
     ApiInspectionFeature.Import,
   );
-  const isBannedFacilitiesExportFeatureEnabled = useIsNewFeatureEnabled(
-    ApiInspectionFeature.BannedFacilitiesExport,
-  );
   const { data: objectTypes } = useGetObjectTypes();
 
   const filterDefinitions = createFilterDefinitions(
     objectTypes,
     isImportFeatureEnabled,
-    isBannedFacilitiesExportFeatureEnabled,
   );
   const paramStateProvider = useSearchParamStateProvider(
     filterDefinitions,
@@ -247,7 +240,7 @@ export function PendingFacilitiesTable(
         procedures.numberOfPossibleDuplicates !== 0 && (
           <PotentialDuplicatesWarning
             numberOfDuplicates={procedures.numberOfPossibleDuplicates}
-            filterForDuplicates={filterForDuplicates}
+            onFilterForDuplicates={filterForDuplicates}
           />
         )}
       <TablePage
@@ -282,7 +275,9 @@ export function PendingFacilitiesTable(
             right={
               <>
                 <ExportBannedFacilitiesButton />
-                <ProcessImportButton />
+                <ProcessImportButton
+                  onFilterForDuplicates={filterForDuplicates}
+                />
                 <NewFacilityButton />
               </>
             }

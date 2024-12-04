@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class InspectionTestHelperService extends DefaultTestHelperService {
 
   private final CreateObjectTypeTask createObjectTypeTask;
+  private final ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider;
 
   public InspectionTestHelperService(
       DatabaseResetHelper databaseResetHelper,
@@ -28,7 +29,8 @@ public class InspectionTestHelperService extends DefaultTestHelperService {
       List<BasePopulator<?>> populators,
       List<ResettableProperties> resettableProperties,
       CreateObjectTypeTask createObjectTypeTask,
-      EnvironmentConfig environmentConfig) {
+      EnvironmentConfig environmentConfig,
+      ChecklistDefinitionTestDataProvider checklistDefinitionTestDataProvider) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -37,12 +39,14 @@ public class InspectionTestHelperService extends DefaultTestHelperService {
         resettableProperties,
         environmentConfig);
     this.createObjectTypeTask = createObjectTypeTask;
+    this.checklistDefinitionTestDataProvider = checklistDefinitionTestDataProvider;
   }
 
   @Override
   public Instant reset() throws Exception {
     Instant newInstant = super.reset();
     createObjectTypeTask.createObjectTypes();
+    checklistDefinitionTestDataProvider.clearTestCLDs();
     return newInstant;
   }
 }

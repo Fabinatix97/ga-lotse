@@ -31,7 +31,7 @@ public final class ChildMapper {
     if (child == null) return null;
     return new ChildDetailsDto(
         child.child().getExternalId(),
-        child.personData().referenceVersion(),
+        child.child().getVersion(),
         child.personData().id(),
         child.personData().outdated(),
         child.personData().title(),
@@ -66,11 +66,13 @@ public final class ChildMapper {
   }
 
   private static List<ExaminationDto> mapToDto(List<Examination> examinations) {
-    if (examinations == null) return null;
+    if (examinations == null) return List.of();
     return examinations.stream()
         .map(
             examination ->
-                new ExaminationDto(examination.getExaminationDate(), examination.getNote()))
+                new ExaminationDto(
+                    examination.getExternalId(), examination.getVersion(),
+                    examination.getProphylaxisSession().getDateAndTime(), examination.getNote()))
         .toList();
   }
 

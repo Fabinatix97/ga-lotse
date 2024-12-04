@@ -8,7 +8,7 @@ import { isDateString } from "@eshg/lib-portal/helpers/dateTime";
 import { isValidEmailString } from "@eshg/lib-portal/helpers/email";
 import { isBlankString, isEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { isValidURL } from "@eshg/lib-portal/helpers/url";
-import { OptionalFieldValue, Validator } from "@eshg/lib-portal/types/form";
+import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { endOfDay, isPast } from "date-fns";
 import { FormikErrors } from "formik";
 import { isEmpty, isNullish } from "remeda";
@@ -42,22 +42,16 @@ export function validateTime(value: string) {
   return undefined;
 }
 
-export function validateDateTime(
-  allowEmpty?: boolean,
-): Validator<OptionalFieldValue<string>> {
-  return (value: OptionalFieldValue<string>) => {
-    {
-      if (allowEmpty && isEmpty(value)) {
-        return undefined;
-      }
+export function validateDateTime(value: OptionalFieldValue<string>) {
+  if (isEmptyString(value)) {
+    return undefined;
+  }
 
-      if (!isDateTimeString(value)) {
-        return "Bitte ein gültiges Datum mit Uhrzeit angeben.";
-      }
+  if (!isDateTimeString(value)) {
+    return "Bitte ein gültiges Datum mit Uhrzeit angeben.";
+  }
 
-      return undefined;
-    }
-  };
+  return undefined;
 }
 
 export function validateEmail(value: string) {

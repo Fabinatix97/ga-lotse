@@ -262,10 +262,11 @@ export const theme = extendTheme({
               ? theme.palette.text.secondary
               : theme.palette.text.primary,
           },
-          [`& .MuiRadio-root label, & .${radioGroupLabelClassName}`]: {
-            fontWeight: 400,
-            fontSize: theme.fontSize.md,
-          },
+          [`& .MuiRadio-root label, & .MuiCheckbox-label, & .${radioGroupLabelClassName}`]:
+            {
+              fontWeight: 400,
+              fontSize: theme.fontSize.md,
+            },
         }),
       },
       defaultProps: {

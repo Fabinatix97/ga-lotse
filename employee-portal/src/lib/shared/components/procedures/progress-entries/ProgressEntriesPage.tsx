@@ -8,8 +8,8 @@
 import { DeleteOutlined } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Divider, Grid, Sheet, Stack, Typography } from "@mui/joy";
-import { useParams } from "next/navigation";
 import { useState } from "react";
+import { isDefined } from "remeda";
 
 import { useGetUsersByGroupQuery } from "@/lib/baseModule/api/queries/users";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -45,11 +45,12 @@ import { ProgressEntriesFilters, ProgressEntriesPageProps } from "./types";
 export function ProgressEntriesPage({
   useFetchProgressEntries,
   useFetchProgressEntryDetails,
-  urlParams,
+  procedureId,
+  progressEntryId,
+  searchParams,
   additionalKeyDocumentTypes,
   ...props
 }: ProgressEntriesPageProps) {
-  const procedureId = urlParams.params.id;
   const [filters, setFilters] = useState<ProgressEntriesFilters>({});
 
   const {
@@ -81,18 +82,29 @@ export function ProgressEntriesPage({
           ...additionalKeyDocumentTypes,
         },
         approvalRequestsResponse: approvalRequestsResponse,
-        searchParams: urlParams.searchParams,
+        searchParams,
         filterSettings,
         useFetchProgressEntryDetails,
         ...props,
       }}
     >
-      <ProgressEntriesPageComponent />
+      <ProgressEntriesPageComponent
+        procedureId={procedureId}
+        progressEntryId={progressEntryId}
+      />
     </ProgressEntriesProvider>
   );
 }
 
-export function ProgressEntriesPageComponent() {
+interface ProgressEntriesPageComponentProps {
+  procedureId: string;
+  progressEntryId: string | undefined;
+}
+
+export function ProgressEntriesPageComponent({
+  procedureId,
+  progressEntryId,
+}: ProgressEntriesPageComponentProps) {
   const { filterSettings, routes, useFetchProgressEntryDetails } =
     useProgressEntriesConfig();
   const [showCreateProgressEntrySidebar, setShowCreateProgressEntrySidebar] =
@@ -130,10 +142,6 @@ export function ProgressEntriesPageComponent() {
   const deletionProps = useDeletionProps();
   const FileDeletionModal = deletionProps.FileModal;
   const hasDeletionRights = useHasDeletionRights();
-
-  const { entryId } = useParams<{
-    entryId: string;
-  }>();
 
   return (
     <>
@@ -202,12 +210,14 @@ export function ProgressEntriesPageComponent() {
           onClose={closeApprovalRequestsSidebar}
         />
       )}
-      {entryId ? (
+      {isDefined(progressEntryId) ? (
         <ProgressEntryDetailsSidebar
+          procedureId={procedureId}
+          progressEntryId={progressEntryId}
           route={routes.progressEntries}
           useFetchProgressEntryDetails={useFetchProgressEntryDetails}
         />
-      ) : undefined}
+      ) : null}
       <FileDeletionModal />
     </>
   );

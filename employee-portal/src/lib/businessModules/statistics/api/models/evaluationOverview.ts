@@ -19,6 +19,7 @@ export interface EvaluationOverviewTableItem {
   userId: string;
   user: ApiUser | undefined;
   anonymized: boolean;
+  tooMuchDataForExport: boolean;
 }
 
 export interface EvaluationOverview {

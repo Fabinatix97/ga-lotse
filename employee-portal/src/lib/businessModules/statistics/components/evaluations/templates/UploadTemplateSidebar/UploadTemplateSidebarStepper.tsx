@@ -34,7 +34,7 @@ export function UploadTemplateSidebarStepper(props: {
       onSubmit={onSubmit}
       initialValues={{
         name: evaluationTemplateDetails.name,
-        description: evaluationTemplateDetails.description,
+        description: evaluationTemplateDetails.description ?? "",
         contact: `${formatPersonName(selfUser)} (${selfUser.email})`,
       }}
       saveLabel="Hochladen"

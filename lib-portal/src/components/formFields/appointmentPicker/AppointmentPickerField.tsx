@@ -81,7 +81,7 @@ export function AppointmentPickerField<T extends Appointment>({
     requiredDay: requiredDayWarning,
     requiredAppointment: requiredAppointmentWarning,
   } = labels;
-  const { initialValues } = useFormikContext<{ [K in string]: T }>();
+  const { initialValues } = useFormikContext<Record<string, T>>();
   const [selectedDay, setSelectedDayRaw] = useState<Date | undefined>(
     initialValues[props.name]?.start,
   );

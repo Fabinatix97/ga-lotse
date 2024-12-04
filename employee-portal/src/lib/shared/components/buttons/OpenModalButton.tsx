@@ -5,11 +5,11 @@
 
 "use client";
 
-import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
 import { Button, ButtonProps } from "@mui/joy";
 import { ReactElement, useState } from "react";
 
-type ModalProps = Pick<BaseModalProps, "open" | "onClose">;
+type ModalProps = Pick<BaseModalPropsRequiredClose, "open" | "onClose">;
 
 interface OpenModalButtonProps extends Omit<ButtonProps, "onClick"> {
   renderModal: (props: ModalProps) => ReactElement;

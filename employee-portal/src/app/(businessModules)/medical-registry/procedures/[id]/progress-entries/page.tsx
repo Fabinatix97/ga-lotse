@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 
+import { MedicalRegistryProcedurePageParams } from "@/app/(businessModules)/medical-registry/procedures/[id]/page";
 import {
   useDecideApprovalRequest,
   useGrantDeletionForAllRequests,
@@ -39,9 +40,17 @@ import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
+interface MedicalRegistryProgressEntriesPageParams
+  extends MedicalRegistryProcedurePageParams {
+  entryId?: string;
+}
+
 export default function MedicalRegistryProgressEntriesPage(
-  props: Readonly<ProgressEntriesUrlParams>,
+  props: Readonly<
+    ProgressEntriesUrlParams<MedicalRegistryProgressEntriesPageParams>
+  >,
 ) {
+  const { params, searchParams } = props;
   return (
     <ProgressEntriesPage
       useCreateProgressEntry={useCreateProgressEntry}
@@ -50,7 +59,9 @@ export default function MedicalRegistryProgressEntriesPage(
       usePatchProgressEntry={usePatchProgressEntry}
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-      urlParams={props}
+      procedureId={params.id}
+      progressEntryId={params.entryId}
+      searchParams={searchParams}
       leaderRole={ApiUserRole.MedicalRegistryLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
       useRequestFileDeletion={useRequestFileDeletion}

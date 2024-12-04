@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
 import { useState } from "react";
-import { doNothing, isNonNullish } from "remeda";
+import { isNonNullish } from "remeda";
 
 import {
   headerHeightDesktop,
   simpleToolbarHeight,
 } from "@/lib/baseModule/components/layout/sizes";
+import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
 import {
   UpdateReportSidebar,
@@ -46,6 +48,7 @@ export interface ReportDetailsTileProps {
   datasetAmount: number;
   attributeLabels: string[];
   userId: string;
+  tooMuchDataForExport: boolean;
 }
 
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
@@ -56,6 +59,8 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
   const { deleteReportWithConfirmation } = useDeleteWithConfirmation({
     redirectRoute: routes.reports.index,
   });
+
+  const { download: exportData, downloadContainerRef } = useExportReportData();
 
   function updateReport() {
     setOpenUpdateReportSidebar({
@@ -70,6 +75,8 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
 
   return (
     <>
+      <HiddenContainer ref={downloadContainerRef} />
+
       {openUpdateReportSidebar && (
         <OverlayBoundary>
           <UpdateReportSidebar
@@ -78,6 +85,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
           />
         </OverlayBoundary>
       )}
+
       <Stack
         gap={3}
         flex={1}
@@ -86,15 +94,6 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
         position="sticky"
         top={`calc(${headerHeightDesktop} + ${simpleToolbarHeight} + 1.5rem)`}
       >
-        {/* Uncomment in  https://cronn-gmbh.atlassian.net/browse/ISSUE-5001
-      <Stack gap={2} direction={"row"}>
-        {isNonNullish(props.numberInSeries) && (
-          <Button variant="outlined" startDecorator={<BookmarksOutlined />}>
-            Serie abonnieren
-          </Button>
-        )}
-        <Button startDecorator={<BookmarkAddOutlined />}>Report merken</Button>
-      </Stack> */}
         <Sheet sx={{ padding: 3 }} data-testid="report-details-tile">
           <Stack gap={3}>
             <Stack
@@ -108,7 +107,6 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
               <ActionsMenu
                 actionItems={getReportActionItems(
                   [
-                    { type: "remember", action: doNothing },
                     {
                       type: "update",
                       action: updateReport,
@@ -116,6 +114,14 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                     {
                       type: "share",
                       action: async () => await copy(getSharedURL(props.id)),
+                    },
+                    {
+                      type: "export",
+                      action: () =>
+                        exportData(
+                          { reportId: props.id },
+                          { tooMuchDataForExport: props.tooMuchDataForExport },
+                        ),
                     },
                   ],
                   isNonNullish(props.numberInSeries) ? "CHILD" : "SINGLE",

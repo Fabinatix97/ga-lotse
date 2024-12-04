@@ -5,17 +5,20 @@
 
 "use client";
 
-import { BaseModalProps } from "@eshg/lib-portal/components/BaseModal";
+import { BaseModalPropsRequiredClose } from "@eshg/lib-portal/components/BaseModal";
 import { Stack } from "@mui/joy";
 import { ReactNode, useId, useMemo, useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
 
 import { SectionHeader } from "@/lib/shared/components/detailsSection/SectionHeader";
 
-export type SimplifiedModalProps = Pick<BaseModalProps, "open" | "onClose">;
+export type SimplifiedModalProps = Pick<
+  BaseModalPropsRequiredClose,
+  "open" | "onClose"
+>;
 
 interface DetailsSectionProps {
-  name?: string;
+  "data-testid"?: string;
   title: string;
   canEdit?: boolean;
   canDelete?: boolean;
@@ -27,7 +30,7 @@ interface DetailsSectionProps {
 }
 
 export function DetailsSection({
-  name,
+  "data-testid": testId,
   title,
   renderEditModal,
   onEdit,
@@ -53,15 +56,14 @@ export function DetailsSection({
     return undefined;
   }, [canEditCallback, canRenderModal, onEdit]);
 
-  const backupId = useId();
-  const headerId = `${name ?? backupId}-header`;
+  const headerId = useId();
 
   return (
     <Stack
       component="section"
       gap={2}
       aria-labelledby={headerId}
-      data-testid={name}
+      data-testid={testId}
     >
       <SectionHeader
         id={headerId}

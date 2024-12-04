@@ -24,12 +24,12 @@
     "@tanstack/react-query": "catalog:common",
     "@tanstack/react-table": "catalog:common",
     "compressorjs": "1.2.1",
-    "drauu": "0.4.1",
+    "drauu": "catalog:common",
     "date-fns": "catalog:common",
     "echarts": "5.5.1",
     "echarts-for-react": "3.0.2",
     "formik": "catalog:common",
-    "hpke-js": "1.5.0",
+    "hpke-js": "1.6.1",
     "iso8601-duration": "2.1.2",
     "matrix-js-sdk": "34.3.1",
     "next": "catalog:next",
@@ -42,9 +42,9 @@
     "use-debounce": "catalog:common",
     "uuid": "catalog:common",
     "valibot": "catalog:common",
-    "workbox-background-sync": "7.1.0",
-    "workbox-core": "7.1.0",
-    "workbox-window": "7.1.0"
+    "workbox-background-sync": "7.3.0",
+    "workbox-core": "7.3.0",
+    "workbox-window": "7.3.0"
   },
   "devDependencies": {
     "@eslint/compat": "catalog:eslint",

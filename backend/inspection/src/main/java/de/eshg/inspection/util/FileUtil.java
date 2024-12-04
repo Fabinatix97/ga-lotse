@@ -29,7 +29,7 @@ public final class FileUtil {
   private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 
   public static MediaFile readFileAndValidate(
-      MultipartFile file, Collection<MediaType> allowedMediaTypes) {
+      MultipartFile file, Collection<MediaType> allowedMediaTypes, long maxImageSize) {
     MediaType mediaType;
     if (allowedMediaTypes.containsAll(
         List.of(CustomMediaTypes.MEDIA_TYPE_MP3, CustomMediaTypes.MEDIA_TYPE_WAV))) {
@@ -48,7 +48,15 @@ public final class FileUtil {
 
     try {
       MediaFileContent mediaFileContent = new MediaFileContent();
-      Blob fileContent = BlobProxy.generateProxy(file.getInputStream(), file.getSize());
+      Blob fileContent;
+      if (mediaType.getType().equalsIgnoreCase("IMAGE")) {
+        byte[] rewrittenFile =
+            ImageRewriter.validateAndRewriteImageFile(file, mediaType, maxImageSize);
+        fileContent = BlobProxy.generateProxy(rewrittenFile);
+        mediaFile.setFileSize(rewrittenFile.length);
+      } else {
+        fileContent = BlobProxy.generateProxy(file.getInputStream(), file.getSize());
+      }
       mediaFileContent.setFile(fileContent);
       mediaFile.setFileContent(mediaFileContent);
     } catch (final IOException e) {

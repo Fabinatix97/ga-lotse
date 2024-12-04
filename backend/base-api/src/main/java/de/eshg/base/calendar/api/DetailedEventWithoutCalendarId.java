@@ -12,7 +12,6 @@ import java.util.UUID;
 public record DetailedEventWithoutCalendarId(
     @NotNull UUID id,
     @NotNull EventTypeDto type,
-    @NotNull ShowAs showAs,
     UUID lastModifiedByUserId,
     @Valid @NotNull EventMetaData metaData,
     @Valid @NotNull EventTimeData timeData)
@@ -21,6 +20,6 @@ public record DetailedEventWithoutCalendarId(
   @Override
   public DetailedEventWithoutCalendarId copyWithMetadata(EventMetaData metaData) {
     return new DetailedEventWithoutCalendarId(
-        this.id, this.type, this.showAs, this.lastModifiedByUserId, metaData, this.timeData);
+        this.id, this.type, this.lastModifiedByUserId, metaData, this.timeData);
   }
 }

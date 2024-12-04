@@ -6,12 +6,18 @@
 "use client";
 
 import { ApiContactCategory } from "@eshg/employee-portal-api/base";
+import { ApiProphylaxisType } from "@eshg/employee-portal-api/dental";
+import { SelectField } from "@eshg/lib-portal/components/formFields/SelectField";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
+import { useHasChanged } from "@eshg/lib-portal/hooks/useHasChanged";
 import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Stack } from "@mui/joy";
 import { FormikProvider, useFormik } from "formik";
+import { useEffect } from "react";
 
 import { useCreateProphylaxisSession } from "@/lib/businessModules/dental/api/mutations/prophylaxisSessionApi";
+import { SearchGroupField } from "@/lib/businessModules/dental/features/prophylaxisSessions/SearchGroupField";
+import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/prophylaxisSessions/options";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
@@ -32,12 +38,16 @@ export function useCreateProphylaxisSessionSidebar() {
 export interface CreateProphylaxisSessionValues {
   dateAndTime: string;
   institutionId: OptionalFieldValue<string>;
+  groupName: OptionalFieldValue<string>;
+  type: OptionalFieldValue<ApiProphylaxisType>;
 }
 
 function mapValues(values: CreateProphylaxisSessionValues) {
   return {
     dateAndTime: new Date(values.dateAndTime),
     institutionId: mapRequiredValue(values.institutionId),
+    groupName: mapRequiredValue(values.groupName),
+    type: mapRequiredValue(values.type),
   };
 }
 
@@ -48,6 +58,8 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
     initialValues: {
       dateAndTime: "",
       institutionId: "",
+      groupName: "",
+      type: "",
     },
     onSubmit: (values) =>
       createSession.mutateAsync(mapValues(values), {
@@ -57,6 +69,13 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
       }),
   });
 
+  const shouldClearGroupName = useHasChanged(formik.values.institutionId);
+  useEffect(() => {
+    if (shouldClearGroupName) {
+      void formik.setFieldValue("groupName", "");
+    }
+  }, [shouldClearGroupName, formik, formik.setFieldValue]);
+
   return (
     <FormikProvider value={formik}>
       <SidebarForm ref={props.formRef} onSubmit={formik.handleSubmit}>
@@ -65,12 +84,23 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
             <DateTimeField
               name="dateAndTime"
               label="Datum und Uhrzeit"
-              allowEmpty={false}
+              required="Bitte ein Datum mit Uhrzeit angeben."
             />
             <SearchContactField
               name="institutionId"
               label="Einrichtung"
               category={ApiContactCategory.School} // Todo: Allow multiple categories, School and Daycare
+            />
+            <SearchGroupField
+              name="groupName"
+              label="Gruppe"
+              institutionId={formik.values.institutionId}
+            />
+            <SelectField
+              name="type"
+              label="Typ"
+              options={PROPHYLAXIS_TYPE_OPTIONS}
+              required="Bitte den Typ der Prophylaxe angeben."
             />
           </Stack>
         </SidebarContent>

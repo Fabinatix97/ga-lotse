@@ -4,7 +4,6 @@
  */
 
 import { STATIC_QUERY_OPTIONS } from "@eshg/lib-portal/api/queryOptions";
-import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useConfigApi } from "@/lib/baseModule/api/clients";
@@ -16,7 +15,6 @@ export function useServerConfig() {
   return useSuspenseQuery({
     ...STATIC_QUERY_OPTIONS,
     queryKey: configApiQueryKey(["getConfig"]),
-    queryFn: () => configApi.getConfigRaw().then(unwrapRawResponse),
-    select: (response) => response,
+    queryFn: () => configApi.getConfig(),
   });
 }

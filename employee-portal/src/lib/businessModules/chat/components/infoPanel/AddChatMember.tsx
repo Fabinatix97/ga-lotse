@@ -23,10 +23,7 @@ import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClie
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useRoomMembers } from "@/lib/businessModules/chat/shared/hooks/useRoomMembers";
 import { UserToInvite } from "@/lib/businessModules/chat/shared/types";
-import {
-  getChatUserDirectory,
-  getDepartmentNameFromUserId,
-} from "@/lib/businessModules/chat/shared/utils";
+import { getChatUserDirectory } from "@/lib/businessModules/chat/shared/utils";
 
 export interface AddChatMemberProps {
   roomId: string;
@@ -39,7 +36,7 @@ export function AddChatMember({
   onClose,
   onCancel,
 }: Readonly<AddChatMemberProps>) {
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, departmentInfo } = useChatClientContext();
   const { joinedAndInvitedMembersWithoutMe } = useRoomMembers(roomId);
   const snackbar = useSnackbar();
 
@@ -67,8 +64,7 @@ export function AddChatMember({
         }),
         map((user) => ({
           ...user,
-          department:
-            getDepartmentNameFromUserId(loggedInUserId)?.organisationName,
+          department: departmentInfo?.name,
         })),
       );
 
@@ -76,7 +72,7 @@ export function AddChatMember({
     }
 
     return [];
-  }, [joinedAndInvitedMembersWithoutMe, matrixClient]);
+  }, [departmentInfo?.name, joinedAndInvitedMembersWithoutMe, matrixClient]);
 
   useEffect(() => {
     getMembersToInvite()

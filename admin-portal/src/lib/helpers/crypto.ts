@@ -30,6 +30,6 @@ export function getCommonName(pem: string): string | undefined {
     .valueBlock.value;
 }
 
-function base64StringToArrayBuffer(b64str: string): ArrayBufferLike {
-  return Uint8Array.from(atob(b64str), (m) => m.codePointAt(0)!);
+function base64StringToArrayBuffer(b64str: string): ArrayBuffer {
+  return Uint8Array.from(atob(b64str), (m) => m.codePointAt(0)!).buffer;
 }

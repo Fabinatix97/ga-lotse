@@ -6,6 +6,7 @@
 package de.eshg.rest.service.security.config;
 
 import de.eshg.lib.keycloak.EmployeePermissionRole;
+import de.eshg.rest.service.security.config.BaseUrls.OpenData;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,11 @@ public final class OpenDataPublicSecurityConfig extends AbstractPublicSecurityCo
         .hasRole(EmployeePermissionRole.OPEN_DATA_ADMIN);
     requestMatchers(HttpMethod.DELETE, BaseUrls.OpenData.OPEN_DATA_CONTROLLER + "/**")
         .hasRole(EmployeePermissionRole.OPEN_DATA_ADMIN);
+    requestMatchers(HttpMethod.GET, BaseUrls.OpenData.OPEN_DATA_CONTROLLER + "/**")
+        .hasRole(EmployeePermissionRole.OPEN_DATA_ADMIN);
     requestMatchers(HttpMethod.POST, BaseUrls.OpenData.OPEN_DATA_CONTROLLER)
         .hasRole(EmployeePermissionRole.OPEN_DATA_ADMIN);
+
+    requestMatchers(HttpMethod.GET, OpenData.PUBLIC_CITIZEN_CONTROLLER + "/**").permitAll();
   }
 }

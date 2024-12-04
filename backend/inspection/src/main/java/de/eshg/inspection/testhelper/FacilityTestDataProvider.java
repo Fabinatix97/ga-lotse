@@ -38,10 +38,17 @@ public class FacilityTestDataProvider {
 
   private static final String STANDARD_OBJECT_TYPE = "Kosmetische Einrichtung";
 
-  public static final int NUMBER_OF_DEFINED_FACILITIES = 6;
+  public static final int NUMBER_OF_DEFINED_FACILITIES = 7;
 
   private static final List<String> facilityNames =
-      List.of("Indira Nails", "Lalesen", "Mena's Studio", "My Nails", "Nails", "Oh, my Nails!");
+      List.of(
+          "Indira Nails",
+          "Lalesen",
+          "Mena's Studio",
+          "My Nails",
+          "Nails",
+          "Oh, my Nails!",
+          "Antiquariat");
 
   private static final List<DomesticAddressDto> domesticAddressList =
       List.of(
@@ -62,7 +69,9 @@ public class FacilityTestDataProvider {
               null,
               "Eschersheimer Landstraße",
               "312",
-              null));
+              null),
+          new DomesticAddressDto(
+              CountryCode.DE, "Frankfurt am Main", "60313", null, "Göthestraße", "123", null));
 
   private static final List<FacilityContactPersonDto> contactPersonList =
       List.of(
@@ -119,6 +128,15 @@ public class FacilityTestDataProvider {
               "Tore",
               "Prof. Dr.",
               SalutationDto.MALE,
+              GenderDto.MALE),
+          new FacilityContactPersonDto(
+              "kkk@example.com",
+              "069 481",
+              "Bibliothekar",
+              "Koreander",
+              "Karl Konrad",
+              null,
+              SalutationDto.MALE,
               GenderDto.MALE));
 
   private static final List<String> emailAddressList =
@@ -128,7 +146,8 @@ public class FacilityTestDataProvider {
           "rebecca.kass@example.com",
           "len.deja@example.com",
           "kristin.krug@example.com",
-          "ruben.stanger@example.com");
+          "ruben.stanger@example.com",
+          "bbb@example.com");
   private static final List<String> phoneNumberList =
       List.of(
           "032 2996751",
@@ -136,7 +155,8 @@ public class FacilityTestDataProvider {
           "08023 725294",
           "04969 61",
           "04966 232545609",
-          "032 2047392");
+          "032 2047392",
+          "069 480");
 
   public FacilityTestDataProvider(
       FacilityService facilityService,

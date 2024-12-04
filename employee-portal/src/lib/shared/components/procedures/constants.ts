@@ -19,9 +19,9 @@ export const businessModuleNames = {
     "Reisemedizinische Beratung und Impfungen",
   [ApiBusinessModule.MeaslesProtection]: "Masernschutzimpfung",
   [ApiBusinessModule.StiProtection]: "HIV-STI Schutz",
-  [ApiBusinessModule.MedicalRegistry]: "Medizinalkartei",
+  [ApiBusinessModule.MedicalRegistry]: "Medizinalaufsicht",
   [ApiBusinessModule.Dental]: "Zahnärztlicher Dienst",
-  [ApiBusinessModule.OfficialMedicalService]: "Amtsärztliche Gutachten",
+  [ApiBusinessModule.OfficialMedicalService]: "Amtsärztlicher Dienst",
 } satisfies Record<ApiBusinessModule, string>;
 
 export const procedureTypeNames = {
@@ -39,6 +39,8 @@ export const procedureTypeNames = {
     "Entwurf Medizinalkarteieintrag Mitarbeiter",
   [ApiProcedureType.MedicalRegistryCitizenDraft]:
     "Entwurf Medizinalkarteieintrag Bürger",
+  [ApiProcedureType.DentalChild]: "Kind",
+  [ApiProcedureType.OfficialMedicalService]: "Amtsärztlicher Dienst",
 } satisfies Record<ApiProcedureType, string>;
 
 export const procedureStatusNames = {

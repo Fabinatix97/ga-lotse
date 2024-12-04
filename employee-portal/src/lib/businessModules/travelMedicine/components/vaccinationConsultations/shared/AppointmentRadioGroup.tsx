@@ -16,7 +16,6 @@ import {
 import { Stack, Typography } from "@mui/joy";
 import { useField } from "formik";
 import { useState } from "react";
-import { isEmpty } from "remeda";
 
 import { Appointment } from "@/lib/businessModules/travelMedicine/api/models/Appointment";
 import { SelectableCard } from "@/lib/shared/components/cards/SelectableCard";
@@ -88,18 +87,7 @@ export function AppointmentRadioGroup({
             <DateTimeField
               label={"Individueller Termin"}
               name={"userDefinedAppointmentDate"}
-              allowEmpty={
-                (!required && isEmpty(bookingTypeFieldProps.value)) ||
-                bookingTypeFieldProps.value ===
-                  ApiAppointmentBookingType.UserDefined ||
-                (!required &&
-                  bookingTypeFieldProps.value !==
-                    ApiAppointmentBookingType.UserDefined) ||
-                (required &&
-                  bookingTypeFieldProps.value !==
-                    ApiAppointmentBookingType.UserDefined)
-              }
-            ></DateTimeField>
+            />
             <NumberField
               label={"Termin Dauer in Min."}
               name={"appointmentTypeStandardDuration"}

@@ -13,6 +13,7 @@ import de.eshg.base.testhelper.api.CreateCalendarTestEventsRequest;
 import de.eshg.base.testhelper.api.CreateCalendarTestEventsResponse;
 import de.eshg.base.testhelper.api.CreateSetupAdminRequest;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.common.BusinessModule;
 import de.eshg.testhelper.AccessToken;
 import de.eshg.testhelper.LoginProvider;
 import de.eshg.testhelper.TestHelperApi;
@@ -74,6 +75,10 @@ public interface BaseTestHelperApi extends TestHelperApi, LoginProvider {
 
   @PostExchange("/disable-new-features/{featureToDisable}")
   void disableNewFeature(@PathVariable("featureToDisable") BaseFeature featureToDisable);
+
+  @DeleteExchange("/business-modules/{businessModuleToDisable}")
+  void disableBusinessModule(
+      @PathVariable("businessModuleToDisable") BusinessModule businessModuleToDisable);
 
   @PostExchange("/setup-admin")
   void createSetupAdmin(@Valid @RequestBody CreateSetupAdminRequest request);

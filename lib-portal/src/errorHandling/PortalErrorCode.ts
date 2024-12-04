@@ -15,6 +15,7 @@ export const PortalErrorCode = {
   NonconformPdf: "NONCONFORM_PDF",
   Corrupt: "CORRUPT",
   Locked: "LOCKED",
+  XlsxTooManyRows: "XLSX_TOO_MANY_ROWS",
 } as const;
 export type PortalErrorCode =
   (typeof PortalErrorCode)[keyof typeof PortalErrorCode];

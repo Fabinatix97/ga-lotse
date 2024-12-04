@@ -49,6 +49,7 @@ export interface EvaluationDetailsView {
   attributes: FlatAttribute[];
   userId: string;
   anonymized: boolean;
+  tooMuchDataForExport: boolean;
 }
 
 export interface Diagram<T> {

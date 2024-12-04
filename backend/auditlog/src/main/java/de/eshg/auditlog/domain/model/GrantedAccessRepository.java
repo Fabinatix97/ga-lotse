@@ -9,7 +9,6 @@ import de.eshg.auditlog.AuditLogSource;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface GrantedAccessRepository extends JpaRepository<GrantedAccess, Long> {
 
-  Optional<GrantedAccess> findByAuditLogSourceAndDateAndIdOfGrantedUserAndExpiresAtIsAfter(
+  boolean existsByAuditLogSourceAndDateAndIdOfGrantedUserAndExpiresAtIsAfter(
       AuditLogSource auditLogSource, LocalDate date, UUID idOfGrantedUser, Instant now);
 
   @Query(

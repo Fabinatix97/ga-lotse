@@ -7,6 +7,7 @@ package de.eshg.medicalregistry;
 
 import static de.eshg.lib.xlsximport.ImportValidator.validateFileExistsAndHasCorrectType;
 import static de.eshg.lib.xlsximport.ImportValidator.validateHeaderExists;
+import static de.eshg.lib.xlsximport.ImportValidator.validateNumberOfRows;
 import static de.eshg.lib.xlsximport.ImportValidator.validateSheet;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.filename;
 import static de.eshg.lib.xlsximport.util.FileResponseUtil.getTemplateFileResponse;
@@ -15,6 +16,7 @@ import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.xlsximport.XlsxNormalizer;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
+import de.eshg.medicalregistry.config.MedicalRegistryProperties;
 import de.eshg.medicalregistry.importer.MedicalRegistryImporter;
 import de.eshg.rest.service.security.config.BaseUrls.MedicalRegistry;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +33,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,13 +53,19 @@ public class MedicalRegistryImportController {
 
   public static final String TEMPLATE_FILE_NAME_DOWNLOAD = "Template.xlsx";
 
+  private static final int IMPORTER_BATCH_SIZE = 1000;
+
   private final Clock clock;
   private final MedicalRegistryService medicalRegistryService;
+  private final MedicalRegistryProperties medicalRegistryProperties;
 
   public MedicalRegistryImportController(
-      Clock clock, MedicalRegistryService medicalRegistryService) {
+      Clock clock,
+      MedicalRegistryService medicalRegistryService,
+      MedicalRegistryProperties medicalRegistryProperties) {
     this.clock = clock;
     this.medicalRegistryService = medicalRegistryService;
+    this.medicalRegistryProperties = medicalRegistryProperties;
   }
 
   @GetMapping(path = "/template", produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
@@ -67,6 +76,7 @@ public class MedicalRegistryImportController {
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Transactional(timeout = 300)
   public ResponseEntity<MultiValueMap<String, Object>> importData(
       @RequestPart("file") MultipartFile file) {
     log.info("Importing file ({} bytes)", file.getSize());
@@ -77,6 +87,7 @@ public class MedicalRegistryImportController {
 
       Sheet sheet = workbook.getSheetAt(0);
 
+      validateNumberOfRows(sheet, medicalRegistryProperties.getMaxNumberOfImportRows());
       validateHeaderExists(sheet);
 
       ImportResult result = log(normalizeAndImport(sheet));
@@ -99,7 +110,7 @@ public class MedicalRegistryImportController {
   private ImportResult normalizeAndImport(Sheet sheet) {
     try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
       return new MedicalRegistryImporter(
-              xlsxNormalizer.normalize(sheet), medicalRegistryService, 10_000)
+              xlsxNormalizer.normalize(sheet), medicalRegistryService, IMPORTER_BATCH_SIZE)
           .process();
     } catch (IOException e) {
       throw new UncheckedIOException("Error during normalizing xlsx sheet", e);

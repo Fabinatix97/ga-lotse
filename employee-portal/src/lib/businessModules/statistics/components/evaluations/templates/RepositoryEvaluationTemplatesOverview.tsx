@@ -6,19 +6,60 @@
 "use client";
 
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { Box } from "@mui/joy";
+import { CloudDownload, Delete } from "@mui/icons-material";
+import { Box, List, ListItem } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { EvaluationTemplateFromRepository } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";
+import { useDeleteRepositoryEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteRepositoryEvaluationTemplate";
 import { useGetEvaluationTemplatesFromRepository } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesFromRepository";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import {
+  ActionsItem,
+  ActionsMenu,
+} from "@/lib/shared/components/buttons/ActionsMenu";
+import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 
+import { useRepositoryEvaluationTemplateDetailsSidebar } from "./RepositoryEvaluationTemplateDetailsSidebar";
+
 export function RepositoryEvaluationTemplatesOverview() {
   const evaluationTemplates = useGetEvaluationTemplatesFromRepository();
+  const repositoryEvaluationTemplateDetailsSidebar =
+    useRepositoryEvaluationTemplateDetailsSidebar();
+
+  function openTemplateDetails(templateId: string, templateVersion: number) {
+    repositoryEvaluationTemplateDetailsSidebar.open({
+      evaluationTemplateId: parseInt(templateId),
+      evaluationTemplateVersion: templateVersion,
+    });
+  }
+
+  const deleteEvaluationTemplate = useDeleteRepositoryEvaluationTemplate();
+  const { openConfirmationDialog } = useConfirmationDialog();
+
+  function deleteTemplateWithConfirmation(
+    templateId: number,
+    templateVersion: number,
+  ) {
+    openConfirmationDialog({
+      title: "Vorlage löschen?",
+      description: "Wenn Sie mit dem Löschen fortfahren, wird ...",
+      children: (
+        <List marker="disc">
+          <ListItem>die Auswertungsvorlage unwiderruflich gelöscht,</ListItem>
+          <ListItem>
+            die Auswertungsvorlage aus den zentralen Diensten entfernt.
+          </ListItem>
+        </List>
+      ),
+      confirmLabel: "Löschen",
+      onConfirm: () => deleteEvaluationTemplate(templateId, templateVersion),
+      color: "danger",
+    });
+  }
 
   return (
     <TablePage
@@ -28,7 +69,10 @@ export function RepositoryEvaluationTemplatesOverview() {
       <TableSheet>
         <DataTable
           data={evaluationTemplates}
-          columns={evaluationTemplatesColumns()}
+          columns={evaluationTemplatesColumns(
+            openTemplateDetails,
+            deleteTemplateWithConfirmation,
+          )}
           wrapHeader
           wrapContent
           noDataComponent={() => (
@@ -45,6 +89,11 @@ export function RepositoryEvaluationTemplatesOverview() {
               },
             ],
           }}
+          rowNavigation={{
+            focusColumnAccessorKey: "name",
+            onClick: (row) =>
+              openTemplateDetails(row.original.id, row.original.version),
+          }}
         />
       </TableSheet>
     </TablePage>
@@ -53,7 +102,10 @@ export function RepositoryEvaluationTemplatesOverview() {
 
 const columnHelper = createColumnHelper<EvaluationTemplateFromRepository>();
 
-function evaluationTemplatesColumns() {
+function evaluationTemplatesColumns(
+  openTemplateDetails: (id: string, version: number) => void,
+  deleteEvaluationTemplate: (id: number, version: number) => void,
+) {
   const staticColumns = [
     columnHelper.accessor("name", {
       header: "Name",
@@ -68,6 +120,10 @@ function evaluationTemplatesColumns() {
       cell: (props) => formatDate(props.getValue()),
       meta: { canNavigate: { parentRow: true } },
     }),
+    columnHelper.accessor("origin", {
+      header: "Herkunft",
+      meta: { canNavigate: { parentRow: true } },
+    }),
   ];
 
   return [
@@ -76,7 +132,31 @@ function evaluationTemplatesColumns() {
       id: "actions",
       header: "Aktionen",
       enableSorting: false,
-      cell: () => <ActionsMenu actionItems={[]} />,
+      cell: (props) => (
+        <ActionsMenu
+          actionItems={[
+            {
+              label: "Herunterladen",
+              onClick: () =>
+                openTemplateDetails(
+                  props.row.original.id,
+                  props.row.original.version,
+                ),
+              startDecorator: <CloudDownload />,
+            },
+            {
+              label: "Löschen",
+              onClick: () =>
+                deleteEvaluationTemplate(
+                  parseInt(props.row.original.id),
+                  props.row.original.version,
+                ),
+              color: "danger",
+              startDecorator: <Delete />,
+            } satisfies ActionsItem,
+          ]}
+        />
+      ),
       meta: {
         width: "6rem",
         cellStyle: "button",

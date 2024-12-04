@@ -70,7 +70,9 @@ public class StatisticsCentralRepositoryService {
 
     MultiValueMap<String, Object> parts =
         createMultiValueBody(
-            RepoMapper.mapToRepo(evaluationTemplate), request.changelog(), request.contact());
+            RepoMapper.mapToRepo(evaluationTemplate, request.name(), request.description()),
+            request.changelog(),
+            request.contact());
 
     MetadataResponseDto metadataResponseDto =
         callCentralRepositoryGetBody(

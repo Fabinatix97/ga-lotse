@@ -6,6 +6,7 @@
 package de.eshg.lib.procedure.gdpr;
 
 import static de.eshg.lib.procedure.BaseFeatureTogglesHelper.assertNewFeatureEnabled;
+import static de.eshg.lib.procedure.mapping.GdprValidationTaskMapper.mapToApi;
 import static de.eshg.lib.procedure.mapping.GdprValidationTaskMapper.mapToDm;
 import static de.eshg.lib.procedure.mapping.GdprValidationTaskMapper.mapToPageSpec;
 
@@ -15,6 +16,7 @@ import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.gdpr.api.GdprIdentificationDataDto;
 import de.eshg.base.gdpr.api.GetGdprDownloadsResponse;
 import de.eshg.base.util.PaginationUtil;
+import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.file.common.CustomMediaTypes;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.api.GdprValidationTaskApi;
@@ -25,7 +27,6 @@ import de.eshg.lib.procedure.domain.model.GdprValidationTaskType;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.GdprDownloadPackageInfo;
-import de.eshg.lib.procedure.domain.serialization.SerializationService;
 import de.eshg.lib.procedure.mapping.GdprValidationTaskMapper;
 import de.eshg.lib.procedure.model.gdpr.AddGdprValidationTaskRequest;
 import de.eshg.lib.procedure.model.gdpr.GdprValidationTaskDto;
@@ -232,16 +233,18 @@ public class GdprValidationTaskController<
 
     GdprValidationTaskDto validationTaskDto = getGdprValidationTaskDto(existingTask);
     return new GetGdprValidationTaskDetailsResponse(
-        validationTaskDto, service.getBusinessProceduresWithInclusionStatus(fileStateIds));
+        validationTaskDto, service.getBusinessProceduresWithInclusionStatus(gdprId, fileStateIds));
   }
 
   private GdprValidationTaskDto getGdprValidationTaskDto(GdprValidationTask task) {
     GdprIdentificationDataDto identificationData =
         service.getGdprIdentificationData(task.getGdprProcedureId());
     return new GdprValidationTaskDto(
+        task.getGdprProcedureId(),
         GdprValidationTaskMapper.mapToApi(task.getStatus()),
         GdprValidationTaskService.toDueDate(task.getStartedAt()),
-        identificationData);
+        identificationData,
+        mapToApi(task.getType()));
   }
 
   @Override

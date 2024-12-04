@@ -17,8 +17,6 @@ import de.eshg.inspection.facility.api.InspLinkBaseFacilityResponse;
 import de.eshg.inspection.facility.api.InspPendingFacilitiesOverviewResponse;
 import de.eshg.inspection.facility.api.InspUpdateFacilityRequest;
 import de.eshg.inspection.facility.export.FacilityExportService;
-import de.eshg.inspection.feature.InspectionFeature;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,15 +49,11 @@ public class FacilityController {
 
   private final FacilityService facilityService;
   private final FacilityExportService facilityExportService;
-  private final InspectionFeatureToggle inspectionFeatureToggle;
 
   public FacilityController(
-      FacilityService facilityService,
-      FacilityExportService facilityExportService,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      FacilityService facilityService, FacilityExportService facilityExportService) {
     this.facilityService = facilityService;
     this.facilityExportService = facilityExportService;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   @PostMapping
@@ -102,7 +96,6 @@ public class FacilityController {
   @Operation(summary = "Export banned facilities")
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> exportBannedFacilities() {
-    inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.BANNED_FACILITIES_EXPORT);
     return ResponseEntity.ok()
         .header(
             HttpHeaders.CONTENT_DISPOSITION,

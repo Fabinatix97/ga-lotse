@@ -7,6 +7,7 @@ package de.eshg.statistics.aggregation;
 
 import de.eshg.base.SortDirection;
 import de.eshg.domain.model.BaseEntity_;
+import de.eshg.statistics.api.DateSpan;
 import de.eshg.statistics.api.filter.BooleanFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalRangeFilterParameterDto;
 import de.eshg.statistics.api.filter.DecimalValueFilterParameterDto;
@@ -18,6 +19,7 @@ import de.eshg.statistics.api.filter.TableColumnFilterParameter;
 import de.eshg.statistics.api.filter.TextFilterParameterDto;
 import de.eshg.statistics.api.filter.ValueOptionFilterParameterDto;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
+import de.eshg.statistics.persistence.entity.AbstractAggregationResult_;
 import de.eshg.statistics.persistence.entity.CellEntry_;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
@@ -37,8 +39,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.query.EscapeCharacter;
+import org.springframework.util.StringUtils;
 
 public class AggregationResultSpecifications {
   private AggregationResultSpecifications() {}
@@ -397,5 +402,36 @@ public class AggregationResultSpecifications {
           criteriaBuilder.equal(join.get(CellEntry_.TABLE_COLUMN), tableColumn),
           criteriaBuilder.equal(join.get(DateEntry_.DATE_VALUE), date));
     };
+  }
+
+  public static <T> Optional<Specification<T>> nameSpecification(String name) {
+    return Optional.ofNullable(name)
+        .filter(StringUtils::hasText)
+        .map(
+            n ->
+                (root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get(AbstractAggregationResult_.NAME)),
+                        "%" + EscapeCharacter.DEFAULT.escape(n.toLowerCase()) + "%",
+                        EscapeCharacter.DEFAULT.getEscapeCharacter()));
+  }
+
+  public static <T> void addDateSpecification(
+      List<Specification<T>> specifications, DateSpan dateSpan, String fieldPath) {
+    if (dateSpan == null) {
+      return;
+    }
+
+    if (dateSpan.lowerBoundary() != null) {
+      specifications.add(
+          (root, query, criteriaBuilder) ->
+              criteriaBuilder.greaterThanOrEqualTo(root.get(fieldPath), dateSpan.lowerBoundary()));
+    }
+
+    if (dateSpan.upperBoundary() != null) {
+      specifications.add(
+          (root, query, criteriaBuilder) ->
+              criteriaBuilder.lessThan(root.get(fieldPath), dateSpan.upperBoundary()));
+    }
   }
 }

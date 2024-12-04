@@ -3,13 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  BookmarkAdd,
-  Bookmarks,
-  Delete,
-  Edit,
-  Share,
-} from "@mui/icons-material";
+import { Delete, Download, Edit, Share } from "@mui/icons-material";
 import { isDefined } from "remeda";
 
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
@@ -17,10 +11,9 @@ import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { ActionsItem } from "@/lib/shared/components/buttons/ActionsMenu";
 
 type OptionalActionItem =
-  | { type: "remember"; action: () => void }
-  | { type: "subscribe"; action: () => void }
   | { type: "share"; action: () => Promise<void> }
-  | { type: "update"; action: () => void };
+  | { type: "update"; action: () => void }
+  | { type: "export"; action: () => Promise<void> };
 
 export function getSharedURL(detailLinkId: string) {
   return new URL(
@@ -47,7 +40,7 @@ export function getReportActionItems(
   canWrite: boolean,
   canDelete: boolean,
   disabled: boolean,
-) {
+): ActionsItem[] {
   function concatOptionalActionItem(
     itemName: OptionalActionItem["type"],
     actionsItem: Omit<ActionsItem, "onClick">,
@@ -66,14 +59,6 @@ export function getReportActionItems(
   }
 
   return [
-    concatOptionalActionItem("remember", {
-      label: "Report merken",
-      startDecorator: <BookmarkAdd />,
-    }),
-    concatOptionalActionItem("subscribe", {
-      label: "Serie abonnieren",
-      startDecorator: <Bookmarks />,
-    }),
     concatOptionalActionItem(
       "update",
       {
@@ -88,15 +73,22 @@ export function getReportActionItems(
     concatOptionalActionItem(
       "share",
       {
-        // TODO: Discuss and change after https://cronn-gmbh.atlassian.net/browse/ISSUE-5002
         label: "Teilen",
         startDecorator: <Share />,
       },
       type !== ReportDataType.Series,
     ),
+    concatOptionalActionItem(
+      "export",
+      {
+        label: "Daten exportieren",
+        startDecorator: <Download />,
+      },
+      type !== ReportDataType.Series,
+    ),
     canDelete
       ? type === ReportDataType.Series && "seriesId" in deleteActions
-        ? {
+        ? ({
             label: "Serie löschen",
             onClick: () => {
               deleteActions.deleteReportSeriesWithConfirmation(
@@ -106,8 +98,8 @@ export function getReportActionItems(
             startDecorator: <Delete />,
             disabled,
             color: "danger",
-          }
-        : {
+          } as const)
+        : ({
             label: "Report löschen",
             onClick: () => {
               deleteActions.deleteReportWithConfirmation(
@@ -117,7 +109,7 @@ export function getReportActionItems(
             startDecorator: <Delete />,
             disabled,
             color: "danger",
-          }
+          } as const)
       : undefined,
-  ].filter((it) => isDefined(it)) as ActionsItem[];
+  ].filter(isDefined);
 }

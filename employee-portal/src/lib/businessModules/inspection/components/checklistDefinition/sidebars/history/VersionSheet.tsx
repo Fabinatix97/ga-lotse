@@ -174,7 +174,7 @@ export function VersionSheet({
           <Stack direction="row">
             <Alert
               color={"primary"}
-              message={`Die Checkliste wurde umbenannt zu “${nameChange}”.`}
+              message={`Die Checkliste wurde umbenannt zu „${nameChange}”.`}
               sx={{ width: "100%" }}
             />
           </Stack>

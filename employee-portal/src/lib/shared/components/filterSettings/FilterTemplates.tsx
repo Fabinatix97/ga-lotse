@@ -44,7 +44,7 @@ export function FilterTemplates(props: FilterTemplatesProps) {
     openConfirmationDialog({
       color: "danger",
       title: "Vorlage löschen?",
-      description: `Die Vorlage “${props.templates.find((it) => it.id === props.selectedFilterTemplateId)!.name}” wird dann unwiderruflich gelöscht.`,
+      description: `Die Vorlage „${props.templates.find((it) => it.id === props.selectedFilterTemplateId)!.name}” wird dann unwiderruflich gelöscht.`,
       cancelLabel: "Abbrechen",
       confirmLabel: "Löschen",
       onConfirm: () => {

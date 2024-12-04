@@ -7,7 +7,9 @@ package de.eshg.dental.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.Instant;
+import java.util.UUID;
 
 @Schema(name = "Examination")
-public record ExaminationDto(@NotNull LocalDate examinationDate, String note) {}
+public record ExaminationDto(
+    @NotNull UUID id, @NotNull long version, @NotNull Instant dateAndTime, String note) {}

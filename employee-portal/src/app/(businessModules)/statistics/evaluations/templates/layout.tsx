@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+"use client";
+
+import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   BackupTableOutlined,
@@ -18,6 +21,7 @@ import {
   TabNavigationHeaderTypography,
 } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationHeader";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
+import { hasAnyUserRoles } from "@/lib/shared/helpers/accessControl";
 
 export default function EvaluationTemplatesLayout({
   children,
@@ -34,6 +38,10 @@ export default function EvaluationTemplatesLayout({
       tabButtonName: "Geteilte Vorlagen",
       decorator: <CloudDownloadOutlined />,
       exactMatch: true,
+      accessCheck: hasAnyUserRoles([
+        ApiUserRole.StatisticsStatisticsWrite,
+        ApiUserRole.StatisticsStatisticsAdmin,
+      ]),
     },
   ];
 

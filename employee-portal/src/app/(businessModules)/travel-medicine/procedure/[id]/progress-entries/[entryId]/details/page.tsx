@@ -4,10 +4,5 @@
  */
 
 import TravelMedicineProgressEntries from "@/app/(businessModules)/travel-medicine/procedure/[id]/progress-entries/page";
-import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
-export default function TravelMedicineProgressEntryDetails(
-  props: ProgressEntriesUrlParams,
-) {
-  return <TravelMedicineProgressEntries {...props} />;
-}
+export default TravelMedicineProgressEntries;

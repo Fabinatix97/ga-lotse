@@ -11,7 +11,6 @@ import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.security.config.BaseUrls;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.config.SchoolEntryProperties;
 import de.eshg.schoolentry.importer.ImportService;
@@ -138,7 +137,6 @@ public class ImportController {
       @RequestPart("file") MultipartFile file)
       throws IOException {
 
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.IMPORT_PAST_PROCEDURES);
     validator.validateSchoolExists(schoolId);
 
     ImportResult result =
@@ -166,7 +164,6 @@ public class ImportController {
       produces = CustomMediaTypes.APPLICATION_XLSX_VALUE)
   @Operation(summary = "Get the XLSX past procedures list template.")
   public ResponseEntity<Resource> getPastProcedureListTemplate() {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.IMPORT_PAST_PROCEDURES);
     return FileResponseUtil.getTemplateFileResponse(pastProcedureListTemplate);
   }
 }

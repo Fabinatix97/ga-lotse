@@ -187,18 +187,24 @@ public class EmployeeKeycloakProvisioning extends KeycloakProvisioning<EmployeeK
     ClientRepresentation clientRepresentation = new ClientRepresentation();
     clientRepresentation.setClientId(SYSTEM_CLIENT_ID_PREFIX + "synapse");
     clientRepresentation.setName(SYSTEM_CLIENT_NAME_PREFIX + "Matrix Chat Client");
-    clientRepresentation.setFrontchannelLogout(true);
+    clientRepresentation.setFrontchannelLogout(false);
     clientRepresentation.setWebOrigins(List.of("+"));
     clientRepresentation.setSecret(synapseClientSecret);
     clientRepresentation.setPublicClient(false);
+    clientRepresentation.setDefaultClientScopes(List.of(ESHG_CLIENT_SCOPE_NAME));
+    clientRepresentation.setOptionalClientScopes(List.of());
     clientRepresentation.setAttributes(
-        Map.of(
-            "backchannel.logout.url",
+        getClientRepresentationAttributes(
+            Map.of(
+                "backchannel.logout.url",
                 UriComponentsBuilder.fromUri(synapseUrl)
                     .replacePath("_synapse/client/oidc/backchannel_logout")
                     .toUriString(),
-            "backchannel.logout.revoke.offline.tokens", FALSE,
-            "backchannel.logout.session.required", TRUE));
+                "backchannel.logout.revoke.offline.tokens",
+                FALSE,
+                "backchannel.logout.session.required",
+                TRUE)));
+
     clientRepresentation.setRedirectUris(
         List.of(
             UriComponentsBuilder.fromUri(synapseUrl)

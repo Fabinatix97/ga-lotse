@@ -6,6 +6,7 @@
 package de.eshg.inspection.inspection;
 
 import static de.eshg.inspection.client.UserClient.UNKNOWN_USER;
+import static de.eshg.inspection.inspection.InspectionUtils.checkInspectionIsNotClosed;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.INSPECTION_LEADER;
 import static java.util.Optional.ofNullable;
 
@@ -51,9 +52,6 @@ import de.eshg.inspection.inspection.persistence.InspectionTask;
 import de.eshg.inspection.inspection.persistence.InspectionTravelTime;
 import de.eshg.inspection.objecttype.persistence.ObjectType;
 import de.eshg.inspection.packlist.PacklistService;
-import de.eshg.inspection.packlist.persistence.Packlist;
-import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevision;
-import de.eshg.inspection.packlistdefinition.persistence.PacklistDefinitionRevisionRepository;
 import de.eshg.inspection.util.Holder;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.factory.SystemProgressEntryFactory;
@@ -100,7 +98,7 @@ public class InspectionUpdater {
 
   private final InspectionRepository inspectionRepository;
   private final ChecklistDefinitionVersionRepository cldVersionRepository;
-  private final PacklistDefinitionRevisionRepository pldRevisionRepository;
+  private final PacklistService packlistService;
   private final UserClient userClient;
   private final CalendarClient calendarClient;
   private final ResourceApi resourceApi;
@@ -114,7 +112,7 @@ public class InspectionUpdater {
   public InspectionUpdater(
       InspectionRepository inspectionRepository,
       ChecklistDefinitionVersionRepository cldVersionRepository,
-      PacklistDefinitionRevisionRepository pldRevisionRepository,
+      PacklistService packlistService,
       UserClient userClient,
       CalendarClient calendarClient,
       ResourceApi resourceApi,
@@ -126,7 +124,7 @@ public class InspectionUpdater {
       FacilityClient facilityClient) {
     this.inspectionRepository = inspectionRepository;
     this.cldVersionRepository = cldVersionRepository;
-    this.pldRevisionRepository = pldRevisionRepository;
+    this.packlistService = packlistService;
     this.userClient = userClient;
     this.calendarClient = calendarClient;
     this.resourceApi = resourceApi;
@@ -139,15 +137,22 @@ public class InspectionUpdater {
   }
 
   Inspection updateInspection(Inspection inspection, UpdateInspectionRequest request) {
+    checkInspectionIsNotClosed(
+        inspection,
+        "Abgeschlossene Vorgänge können nicht geändert werden.",
+        "inspection could not be updated");
+
     if (inspection.getProcedureStatus() == ProcedureStatus.DRAFT) {
       throw new BadRequestException(
           "Inspection is still in DRAFT and needs to be started in order to update it");
     }
+
     if (inspection.getPhase() == InspectionPhase.NEW && request.centralFileStateID() == null) {
       inspection.setPhase(InspectionPhase.PLANNING);
       inspection.updateProcedureStatus(ProcedureStatus.IN_PROGRESS, clock, auditLogger);
       setInspectionInProgressIfNeeded(inspection);
     }
+
     if (request.centralFileStateID() != null) {
       // important: check if centralFileStateID exists! (throws if not found)
       facilityClient.getFacilityFileState(request.centralFileStateID());
@@ -166,7 +171,7 @@ public class InspectionUpdater {
           inspection, request.checklistDefinitionVersionIds());
     }
     if (request.packlistDefinitionRevisionIds() != null) {
-      updateSelectedPacklistDefinitionRevisions(
+      packlistService.updateSelectedPacklistDefinitionRevisions(
           inspection, request.packlistDefinitionRevisionIds());
     }
     if (request.notes() != null) {
@@ -222,6 +227,11 @@ public class InspectionUpdater {
   }
 
   Inspection addResource(Inspection inspection, UpdateInspectionAddResourceRequest request) {
+    checkInspectionIsNotClosed(
+        inspection,
+        "Abgeschlossene Vorgänge können nicht geändert werden.",
+        "resource could not be added");
+
     ResourceDto baseResource;
     try {
       baseResource = resourceApi.getResource(request.resourceId());
@@ -238,6 +248,11 @@ public class InspectionUpdater {
   }
 
   Inspection deleteResource(Inspection inspection, UUID resourceId) {
+    checkInspectionIsNotClosed(
+        inspection,
+        "Abgeschlossene Vorgänge können nicht geändert werden.",
+        "resource could not be deleted");
+
     InspectionResource resource =
         findResource(inspection, resourceId)
             .orElseThrow(() -> new NotFoundException("resource not found"));
@@ -249,6 +264,11 @@ public class InspectionUpdater {
 
   Inspection modifyInventory(
       Inspection inspection, UpdateInspectionModifyInventoryRequest request) {
+    checkInspectionIsNotClosed(
+        inspection,
+        "Abgeschlossene Vorgänge können nicht geändert werden.",
+        "inventory could not be changed");
+
     Optional<InspectionInventory> inv =
         findInventory(inspection, request.bookingId(), request.inventoryId());
     if (inv.isPresent()) {
@@ -304,7 +324,7 @@ public class InspectionUpdater {
     }
   }
 
-  void updatePlannedAppointment(
+  private void updatePlannedAppointment(
       Inspection inspection, UpdateInspectionAppointmentDto appointmentDto) {
     // Create or update calendar entry first (if that fails, abort and don't do the rest).
     // But update calendar entry only if the executionAppointment doesn't exist!
@@ -643,98 +663,6 @@ public class InspectionUpdater {
     Checklist checklist = ChecklistService.createChecklist(version, inspection);
     checklist.setPosition(newChecklists.size());
     newChecklists.add(checklist);
-  }
-
-  private void updateSelectedPacklistDefinitionRevisions(
-      Inspection inspection, List<UUID> selectedPacklistDefinitionRevisionIds) {
-
-    Map<UUID, PacklistDefinitionRevision> selectedRevisionsMap =
-        pldRevisionRepository.findAllById(selectedPacklistDefinitionRevisionIds).stream()
-            .collect(Collectors.toMap(PacklistDefinitionRevision::getId, Function.identity()));
-
-    // first, some basic user input validation
-    List<String> missingIds =
-        selectedPacklistDefinitionRevisionIds.stream()
-            .filter(id -> !selectedRevisionsMap.containsKey(id))
-            .map(UUID::toString)
-            .toList();
-    if (!missingIds.isEmpty()) {
-      throw new BadRequestException(
-          "The following packlistDefinitionRevisionIds were not found: "
-              + String.join(",", missingIds));
-    }
-    Set<UUID> pldrDefinitionSet = new HashSet<>();
-    selectedRevisionsMap
-        .values()
-        .forEach(
-            pldr -> {
-              if (!pldr.getPacklistDefinition()
-                  .getObjectType()
-                  .getId()
-                  .equals(inspection.getFacility().getObjectType().getId())) {
-                throw new BadRequestException(
-                    "Packlists are required to have the same object type as the inspection facility");
-              }
-
-              boolean uniquelyAdded = pldrDefinitionSet.add(pldr.getPacklistDefinition().getId());
-              if (!uniquelyAdded) {
-                throw new BadRequestException(
-                    ErrorCode.CONFLICT,
-                    "Only a single revision per packlist definition is allowed");
-              }
-            });
-
-    updatePacklists(selectedRevisionsMap, inspection);
-
-    // always sort packlists by name
-    renumberPacklistPositions(inspection);
-  }
-
-  private void updatePacklists(
-      Map<UUID, PacklistDefinitionRevision> selectedRevisionsMap, Inspection inspection) {
-
-    List<UUID> packListsIdsToRemove =
-        inspection.getPacklists().stream()
-            .filter(
-                pl -> {
-                  boolean plIsStillSelected =
-                      selectedRevisionsMap.containsKey(pl.getPacklistDefinitionRevision().getId());
-                  return !plIsStillSelected;
-                })
-            .map(GloballyUniqueEntityBase::getId)
-            .toList();
-
-    // remove packlists that are now unselected
-    inspection.getPacklists().removeIf(packlist -> packListsIdsToRemove.contains(packlist.getId()));
-
-    // find new selected packlists and add them to newPacklists
-    selectedRevisionsMap.forEach(
-        (id, revision) -> {
-          boolean revisionIdNotYetInNewPacklists =
-              inspection.getPacklists().stream()
-                  .noneMatch(pl -> pl.getPacklistDefinitionRevision().getId().equals(id));
-          if (revisionIdNotYetInNewPacklists) {
-            addRevisionToNewPacklists(revision, inspection, inspection.getPacklists());
-          }
-        });
-  }
-
-  private static void renumberPacklistPositions(Inspection inspection) {
-    AtomicInteger count = new AtomicInteger(0);
-    inspection.getPacklists().stream()
-        .sorted(Comparator.comparing(pl -> pl.getPacklistDefinitionRevision().getName()))
-        .forEach(pl -> pl.setPosition(count.getAndIncrement()));
-  }
-
-  private void addRevisionToNewPacklists(
-      PacklistDefinitionRevision revision, Inspection inspection, List<Packlist> newPacklists) {
-    if (revision.getValidTo() != null) {
-      throw new BadRequestException(
-          "not allowed to set old packlistDefinitionRevision; select the newest revision");
-    }
-    Packlist packlist = PacklistService.createPacklist(revision, inspection);
-    packlist.setPosition(newPacklists.size());
-    newPacklists.add(packlist);
   }
 
   private void updateNotes(Inspection inspection, String notes) {

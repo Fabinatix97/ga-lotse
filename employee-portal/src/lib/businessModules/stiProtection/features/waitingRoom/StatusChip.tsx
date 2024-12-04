@@ -8,7 +8,7 @@ import { Chip, ChipProps } from "@mui/joy";
 
 import { WAITING_STATUS_VALUES } from "@/lib/businessModules/stiProtection/features/procedures/translations";
 
-const COLOR_MAP: { [S in ApiWaitingStatus]: ChipProps["color"] } = {
+const COLOR_MAP: Record<ApiWaitingStatus, ChipProps["color"]> = {
   [ApiWaitingStatus.WaitingForConsultation]: "warning",
   [ApiWaitingStatus.WaitingForResultsReview]: "warning",
   [ApiWaitingStatus.WaitingForTests]: "warning",

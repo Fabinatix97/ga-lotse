@@ -22,10 +22,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { ChatAvatar } from "@/lib/businessModules/chat/components/ChatAvatar";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
-import {
-  getDepartmentNameFromUserId,
-  getMemberAvatarUrl,
-} from "@/lib/businessModules/chat/shared/utils";
+import { getMemberAvatarUrl } from "@/lib/businessModules/chat/shared/utils";
 
 interface MessageFormValues {
   message: string;
@@ -48,7 +45,7 @@ export function InputComponent({
   selectedRoomId,
   disabled,
 }: Readonly<InputComponent>) {
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, departmentInfo } = useChatClientContext();
   const [filteredUsers, setFilteredUsers] = useState<RoomMember[]>([]);
   const [selectedUserIndex, setSelectedUserIndex] = useState<number>();
   const inputRef = useRef<HTMLDivElement>(null);
@@ -200,7 +197,7 @@ export function InputComponent({
                 textColor="neutral.400"
                 sx={{ textTransform: "capitalize" }}
               >
-                {getDepartmentNameFromUserId(user.userId)?.organisationName}
+                {departmentInfo?.name}
               </Typography>
             </MenuItem>
           ))}

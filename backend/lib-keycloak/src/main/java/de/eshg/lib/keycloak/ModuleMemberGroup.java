@@ -57,7 +57,7 @@ public enum ModuleMemberGroup implements KeycloakGroup {
   DENTAL("Zahnärztlicher Dienst", getStandardRoles(), List.of(EmployeePermissionRole.DENTAL_ADMIN)),
   OPEN_DATA("Open Data", EmployeePermissionRole.OPEN_DATA_ADMIN),
   OFFICIAL_MEDICAL_SERVICE(
-      "Amtsärztliche Gutachten",
+      "Amtsärztlicher Dienst",
       getStandardRoles(),
       List.of(EmployeePermissionRole.OFFICIAL_MEDICAL_SERVICE_ADMIN));
 

@@ -167,8 +167,8 @@ export async function unwrapPrivateKey(
   );
 }
 
-function decimalViewToSignedIntByteArray(decimalView: string[]) {
+function decimalViewToSignedIntByteArray(decimalView: string[]): ArrayBuffer {
   const int8Array = new Int8Array(decimalView.length);
   int8Array.set(decimalView.map((value) => parseInt(value, 10)));
-  return int8Array;
+  return int8Array.buffer;
 }

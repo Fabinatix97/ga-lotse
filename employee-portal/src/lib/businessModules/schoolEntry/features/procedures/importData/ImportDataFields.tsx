@@ -32,7 +32,6 @@ import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
 
 interface ImportDataFieldsProps {
   listType: ImportListType;
-  isPastProcedureImportEnabled: boolean;
   locationSelectionMode: ApiLocationSelectionMode;
   isDirectProcedureTypeAssignmentOnImport: boolean;
   setFieldValue: SetFieldValueHelper;
@@ -158,12 +157,11 @@ export function ImportDataFields(props: ImportDataFieldsProps) {
         />
         <DownloadListTemplateButton listType={props.listType} />
       </Stack>
-      {props.isPastProcedureImportEnabled &&
-        props.listType !== ImportListType.PastProcedureList && (
-          <ButtonLink onClick={handleClickPastProceduresButton}>
-            Abgeschlossene Untersuchungen importieren
-          </ButtonLink>
-        )}
+      {props.listType !== ImportListType.PastProcedureList && (
+        <ButtonLink onClick={handleClickPastProceduresButton}>
+          Abgeschlossene Untersuchungen importieren
+        </ButtonLink>
+      )}
     </Stack>
   );
 }

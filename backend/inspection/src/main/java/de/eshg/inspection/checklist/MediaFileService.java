@@ -20,7 +20,6 @@ import de.eshg.inspection.checklist.persistence.element.ChecklistImageElement;
 import de.eshg.inspection.checklistdefinition.api.ChecklistElementType;
 import de.eshg.inspection.common.persistence.MediaFile;
 import de.eshg.inspection.common.persistence.MediaFileRepository;
-import de.eshg.inspection.feature.InspectionFeatureToggle;
 import de.eshg.inspection.inspection.InspectionService;
 import de.eshg.inspection.inspection.api.InspectionPhase;
 import de.eshg.inspection.inspection.persistence.Inspection;
@@ -36,6 +35,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.util.InternalException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -46,15 +46,14 @@ public class MediaFileService {
 
   private final MediaFileRepository mediaFileRepository;
   private final InspectionService inspectionService;
-  private final InspectionFeatureToggle inspectionFeatureToggle;
+
+  @Value("${de.eshg.inspection.checklist.max.image.sidelength}")
+  private long maxImageSidelength;
 
   public MediaFileService(
-      MediaFileRepository mediaFileRepository,
-      InspectionService inspectionService,
-      InspectionFeatureToggle inspectionFeatureToggle) {
+      MediaFileRepository mediaFileRepository, InspectionService inspectionService) {
     this.mediaFileRepository = mediaFileRepository;
     this.inspectionService = inspectionService;
-    this.inspectionFeatureToggle = inspectionFeatureToggle;
   }
 
   UpdateChecklistResponse saveFile(
@@ -71,7 +70,7 @@ public class MediaFileService {
     List<MediaType> allowedMediaTypes =
         getAllowedMediaTypes(uploadMediaFileRequest.updateElementDto());
 
-    MediaFile mediaFile = FileUtil.readFileAndValidate(file, allowedMediaTypes);
+    MediaFile mediaFile = FileUtil.readFileAndValidate(file, allowedMediaTypes, maxImageSidelength);
     mediaFile.setFileExternalId(uploadMediaFileRequest.fileExternalId());
     MediaFile savedFile = mediaFileRepository.save(mediaFile);
     UpdateChecklistElementDto updateElement =

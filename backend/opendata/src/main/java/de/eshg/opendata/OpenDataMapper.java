@@ -23,7 +23,7 @@ class OpenDataMapper {
     return new ResourceDto(resource.getResourceName(), toInterfaceType(resource.getVersions()));
   }
 
-  private static VersionDto toInterfaceType(Version version) {
+  static VersionDto toInterfaceType(Version version) {
     return new VersionDto(
         version.getVersionName(),
         version.getVersion(),

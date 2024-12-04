@@ -1045,6 +1045,34 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/populate-based-on-evaluation/{evaluationId}:
+    post:
+      operationId: createOtherEntities
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/populate-create-evaluation:
+    post:
+      operationId: createEvaluation
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -1363,10 +1391,15 @@ components:
           type: string
         contact:
           type: string
+        description:
+          type: string
+        name:
+          type: string
         templateId:
           type: string
           format: uuid
       required:
+      - name
       - templateId
     AddEvaluationTemplateWithDataSourcesRequest:
       type: object
@@ -1982,6 +2015,15 @@ components:
       required:
       - code
       - name
+    DateSpan:
+      type: object
+      properties:
+        lowerBoundary:
+          type: string
+          format: date-time
+        upperBoundary:
+          type: string
+          format: date-time
     DecimalAttribute:
       type: object
       allOf:
@@ -2119,6 +2161,7 @@ components:
       - NONCONFORM_PDF
       - CORRUPT
       - LOCKED
+      - XLSX_TOO_MANY_ROWS
     ErrorResponseWithLocation:
       type: object
       properties:
@@ -2145,8 +2188,6 @@ components:
             type: string
           maxItems: 2147483647
           minItems: 1
-        exportable:
-          type: boolean
         id:
           type: string
           format: uuid
@@ -2160,6 +2201,8 @@ components:
         timeRangeStart:
           type: string
           format: date-time
+        tooMuchDataForExport:
+          type: boolean
         userId:
           type: string
           format: uuid
@@ -2167,12 +2210,12 @@ components:
       - anonymized
       - createdAt
       - dataSourceNames
-      - exportable
       - id
       - name
       - state
       - timeRangeEnd
       - timeRangeStart
+      - tooMuchDataForExport
       - userId
     EvaluationSortKey:
       type: string
@@ -2577,11 +2620,31 @@ components:
       - evaluationTemplates
       - resolvedUsers
       - totalNumberOfElements
-    GetEvaluationsRequest:
+    GetEvaluationsFilterOptions:
       type: object
       properties:
         anonymizationValue:
           type: boolean
+        dataSourceIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        end:
+          $ref: "#/components/schemas/DateSpan"
+        name:
+          type: string
+        start:
+          $ref: "#/components/schemas/DateSpan"
+        states:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationState"
+    GetEvaluationsRequest:
+      type: object
+      properties:
+        filterOptions:
+          $ref: "#/components/schemas/GetEvaluationsFilterOptions"
         page:
           type: integer
           format: int32
@@ -2677,6 +2740,8 @@ components:
         timeRangeStart:
           type: string
           format: date-time
+        tooMuchDataForExport:
+          type: boolean
         totalNumberOfElements:
           type: integer
           format: int64
@@ -2697,6 +2762,7 @@ components:
       - tableColumnHeaders
       - timeRangeEnd
       - timeRangeStart
+      - tooMuchDataForExport
       - totalNumberOfElements
     GetReportSeriesEntriesOfEvaluationResponse:
       type: object
@@ -2722,9 +2788,27 @@ components:
       - evaluationName
       - reportSeriesEntries
       - resolvedUsers
+    GetReportsFilterOptions:
+      type: object
+      properties:
+        dataSourceIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        end:
+          $ref: "#/components/schemas/DateSpan"
+        name:
+          type: string
+        reportType:
+          $ref: "#/components/schemas/ReportType"
+        start:
+          $ref: "#/components/schemas/DateSpan"
     GetReportsRequest:
       type: object
       properties:
+        filterOptions:
+          $ref: "#/components/schemas/GetReportsFilterOptions"
         page:
           type: integer
           format: int32
@@ -2735,8 +2819,6 @@ components:
           format: int32
           default: 25
           minimum: 1
-        reportTypeFilter:
-          $ref: "#/components/schemas/ReportType"
         sortDirection:
           $ref: "#/components/schemas/SortDirection"
     GetReportsResponse:
@@ -3113,8 +3195,6 @@ components:
         executionDate:
           type: string
           format: date
-        exportable:
-          type: boolean
         id:
           type: string
           format: uuid
@@ -3128,18 +3208,20 @@ components:
         timeRangeStart:
           type: string
           format: date-time
+        tooMuchDataForExport:
+          type: boolean
         totalNumberOfElements:
           type: integer
           format: int64
           minimum: 0
       required:
       - executionDate
-      - exportable
       - id
       - name
       - state
       - timeRangeEnd
       - timeRangeStart
+      - tooMuchDataForExport
     ReportSeries:
       type: object
       properties:

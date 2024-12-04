@@ -41,7 +41,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("Open Data"), Module.OPEN_DATA),
   OFFICIAL_MEDICAL_SERVICE_LEADER(
       LEADER_KEYCLOAK_NAME,
-      LEADER_DESCRIPTION.formatted("Amtsärztliche Gutachten"),
+      LEADER_DESCRIPTION.formatted("Amtsärztlicher Dienst"),
       Module.OFFICIAL_MEDICAL_SERVICE),
 
   BASE_PERSONS_READ(
@@ -134,6 +134,11 @@ public enum EmployeePermissionRole implements PermissionRole {
       BASE_GDPR_PROCEDURE_READ,
       BASE_PERSONS_READ,
       BASE_FACILITIES_READ),
+
+  BASE_MUK_FACILITY_LINK_WRITE(
+      WRITE_PERMISSION_TEMPLATE.formatted("Muk Facility Links"),
+      "Kann Verknüpfungen zwischen MUK Usern und Facilities (Stammdaten-Konverter) anlegen",
+      Module.BASE),
 
   BASE_PROCEDURES_READ(
       READ_PERMISSION_TEMPLATE.formatted("Vorgänge"),
@@ -311,9 +316,8 @@ public enum EmployeePermissionRole implements PermissionRole {
   CHAT_MANAGEMENT_WRITE(
       READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT),
 
-  OFFICIAL_MEDICAL_SERVICE_ADMIN("Amtsärztliche Gutachten Admin", Module.OFFICIAL_MEDICAL_SERVICE),
-  OFFICIAL_MEDICAL_SERVICE_PHYSICIAN(
-      "Amtsärztliche Gutachten Arzt", Module.OFFICIAL_MEDICAL_SERVICE);
+  OFFICIAL_MEDICAL_SERVICE_ADMIN("Amtsärztlicher Dienst Admin", Module.OFFICIAL_MEDICAL_SERVICE),
+  OFFICIAL_MEDICAL_SERVICE_PHYSICIAN("Amtsärztlicher Dienst Arzt", Module.OFFICIAL_MEDICAL_SERVICE);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;
@@ -367,7 +371,7 @@ public enum EmployeePermissionRole implements PermissionRole {
     MEDICAL_REGISTRY("Medizinalkartei"),
     DENTAL("Zahnärztlicher Dienst"),
     OPEN_DATA("Open Data"),
-    OFFICIAL_MEDICAL_SERVICE("Amtsärztliche Gutachten");
+    OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst");
 
     private final String displayName;
 

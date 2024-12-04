@@ -138,11 +138,12 @@ public class RepoMapper {
         metadataResponseDto.category());
   }
 
-  public static RepoEvaluationTemplate mapToRepo(EvaluationTemplate evaluationTemplate) {
+  public static RepoEvaluationTemplate mapToRepo(
+      EvaluationTemplate evaluationTemplate, String name, String description) {
     return new RepoEvaluationTemplate(
         evaluationTemplate.getExternalId(),
-        evaluationTemplate.getName(),
-        evaluationTemplate.getDescription(),
+        name,
+        description,
         evaluationTemplate.getDataSources().stream().map(RepoMapper::mapToRepo).toList(),
         evaluationTemplate.getAnalysisTemplates().stream().map(RepoMapper::mapToRepo).toList());
   }

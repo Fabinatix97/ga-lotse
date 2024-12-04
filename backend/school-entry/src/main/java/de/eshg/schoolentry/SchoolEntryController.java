@@ -24,7 +24,6 @@ import de.eshg.schoolentry.api.anamnesis.AnamnesisDto;
 import de.eshg.schoolentry.business.model.PagedProcedures;
 import de.eshg.schoolentry.business.model.PagedWaitingRoomProcedures;
 import de.eshg.schoolentry.business.model.ProcedureDetailsData;
-import de.eshg.schoolentry.config.SchoolEntryFeature;
 import de.eshg.schoolentry.config.SchoolEntryFeatureToggle;
 import de.eshg.schoolentry.domain.model.*;
 import de.eshg.schoolentry.mapper.*;
@@ -572,7 +571,6 @@ public class SchoolEntryController {
   @Transactional(readOnly = true)
   public ResponseEntity<Resource> downloadInvitations(
       @Valid @RequestBody DownloadInvitationsBulkRequest request) throws IOException {
-    featureToggle.assertNewFeatureIsEnabled(SchoolEntryFeature.BULK_DOWNLOAD_INVITATIONS);
     String timeStamp =
         clock
             .instant()

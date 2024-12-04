@@ -10,6 +10,8 @@ import {
   instanceOfApiGdprFacility,
   instanceOfApiGdprPerson,
 } from "@eshg/employee-portal-api/base";
+import { ApiGdprValidationTaskIdentificationData } from "@eshg/employee-portal-api/businessProcedures";
+import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 
 export function isGdprPerson(
   identificationData: ApiGdprIdentificationData,
@@ -21,4 +23,12 @@ export function isGdprFacility(
   identificationData: ApiGdprIdentificationData,
 ): identificationData is ApiGdprFacility {
   return instanceOfApiGdprFacility(identificationData);
+}
+
+export function formatIdentityName(
+  identificationData: ApiGdprValidationTaskIdentificationData,
+) {
+  return isGdprPerson(identificationData)
+    ? formatPersonName(identificationData)
+    : identificationData.name;
 }

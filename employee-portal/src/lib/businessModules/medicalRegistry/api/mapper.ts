@@ -6,9 +6,12 @@
 import {
   ApiCountryCode,
   ApiCreateApplicant,
+  ApiCreatePractice,
   ApiCreateProcedureRequestProcedure,
-  ApiTypeOfDeRegistration,
-  ApiTypeOfFullProcedureChange,
+  ApiCreateProfessionInformation,
+  ApiTypeOfApplicantChange,
+  ApiTypeOfFullChange,
+  ApiTypeOfPracticeChange,
   CreateProcedureRequest,
 } from "@eshg/employee-portal-api/medicalRegistry";
 import {
@@ -25,24 +28,7 @@ export function mapCreateProcedureRequest(
 ): CreateProcedureRequest {
   return {
     procedure: mapProcedure(values),
-    employeeList: values.employeeInformationForm.employeesEmployed
-      ? mapRequiredValue(values.employeeInformationForm.employeesFile)
-      : undefined,
-    professionalLicenseCertificate: mapNullableValue(
-      values.requiredDocumentsForm.license,
-    ),
-    identificationDocument: mapRequiredValue(
-      values.requiredDocumentsForm.identificationDocument,
-    ),
-    workPermit:
-      values.personalInformationForm.nationality !== ApiCountryCode.De
-        ? mapNullableValue(values.requiredDocumentsForm.workPermit)
-        : undefined,
-    otherRelevantDocuments: !isEmpty(
-      values.requiredDocumentsForm.otherRelevantDocuments,
-    )
-      ? values.requiredDocumentsForm.otherRelevantDocuments
-      : undefined,
+    ...mapDocuments(values),
   };
 }
 
@@ -55,96 +41,83 @@ function mapProcedure(
   switch (typeOfChange) {
     case "DEREGISTRATION":
     case "RELOCATION":
-      return mapCreateDeRegistrationProcedureRequest(typeOfChange, values);
+    case "CHANGE_OF_NAME":
+      return mapCreateApplicantChangeRequest(typeOfChange, values);
+    case "SECOND_PRACTICE":
+    case "CHANGE_OF_REGISTRATION":
+      return mapCreatePracticeChangeRequest(typeOfChange, values);
+    case "NEW_REGISTRATION":
+    case "RE_REGISTRATION":
+    case "OTHER":
+      return mapCreateFullChangeRequest(typeOfChange, values);
+  }
+}
+
+function mapDocuments(values: MedicalRegistryCreateProcedureFormValues) {
+  const typeOfChange = mapRequiredValue(
+    values.generalInformationForm.changeType,
+  );
+  switch (typeOfChange) {
+    case "DEREGISTRATION":
+    case "RELOCATION":
+      return mapCreateDeRegistrationDocuments(values);
     case "CHANGE_OF_NAME":
     case "CHANGE_OF_REGISTRATION":
     case "NEW_REGISTRATION":
     case "RE_REGISTRATION":
     case "SECOND_PRACTICE":
-      return mapCreateFullProcedureChangeRequest(typeOfChange, values);
+      return mapCreateFullDocuments(values);
     default:
       throw new Error("Unexpected type of change");
   }
 }
 
-function mapCreateDeRegistrationProcedureRequest(
-  typeOfDeRegistration: ApiTypeOfDeRegistration,
+function mapCreateApplicantChangeRequest(
+  typeOfApplicantChange: ApiTypeOfApplicantChange,
   values: MedicalRegistryCreateProcedureFormValues,
 ): ApiCreateProcedureRequestProcedure {
   return {
-    type: "CreateDeregistrationProcedureRequest",
+    type: "CreateApplicantChangeRequest",
     consentToPrivacyPolicy: values.dataPrivacyForm.agreed,
     applicant: mapApplicant(values),
     requestForWrittenConfirmation:
       values.writtenConfirmationForm.requestForWrittenConfirmation,
-    typeOfDeRegistration: typeOfDeRegistration,
+    typeOfApplicantChange: typeOfApplicantChange,
   };
 }
 
-function mapCreateFullProcedureChangeRequest(
-  typeOfFullProcedureChange: ApiTypeOfFullProcedureChange,
+function mapCreatePracticeChangeRequest(
+  typeOfChange: ApiTypeOfPracticeChange,
   values: MedicalRegistryCreateProcedureFormValues,
 ): ApiCreateProcedureRequestProcedure {
   return {
-    type: "CreateFullProcedureChangeRequest",
+    type: "CreatePracticeChangeRequest",
+    consentToPrivacyPolicy: values.dataPrivacyForm.agreed,
+    employeesEmployed: values.employeeInformationForm.employeesEmployed,
+    applicant: mapApplicant(values),
+    requestForWrittenConfirmation:
+      values.writtenConfirmationForm.requestForWrittenConfirmation,
+    practice: mapPractice(values),
+    typeOfPracticeChange: typeOfChange,
+  };
+}
+
+function mapCreateFullChangeRequest(
+  typeOfFullChange: ApiTypeOfFullChange,
+  values: MedicalRegistryCreateProcedureFormValues,
+): ApiCreateProcedureRequestProcedure {
+  return {
+    type: "CreateFullChangeRequest",
     consentToPrivacyPolicy: values.dataPrivacyForm.agreed,
     employeesEmployed: values.employeeInformationForm.employeesEmployed,
     practice: values.practiceInformationForm.proprietaryPractice
-      ? {
-          address: {
-            city: values.practiceInformationForm.city,
-            houseNumber: values.practiceInformationForm.houseNumber,
-            postalCode: values.practiceInformationForm.postalCode,
-            street: values.practiceInformationForm.street,
-          },
-          emailAddress: values.practiceInformationForm.email,
-          establishmentNumber: mapOptionalValue(
-            values.practiceInformationForm.establishmentNumber,
-          ),
-          healthInsuranceAuthorization:
-            values.practiceInformationForm.healthInsuranceAuthorization,
-          institutionIdentifier: mapOptionalValue(
-            values.practiceInformationForm.institutionIdentifier,
-          ),
-          name: values.practiceInformationForm.practiceName,
-          openingHours: mapOptionalValue(
-            values.practiceInformationForm.openingHours,
-          ),
-          phoneNumber: values.practiceInformationForm.phoneNumber,
-          website: mapOptionalValue(values.practiceInformationForm.website),
-        }
+      ? mapPractice(values)
       : undefined,
     applicant: mapApplicant(values),
-    professionInformation: {
-      approbationGrantedOn: new Date(
-        values.occupationalInformationForm.approbationGrantedOn,
-      ),
-      approbationIssuingAuthority:
-        values.occupationalInformationForm.approbationIssuingAuthority,
-      employmentStatus: values.professionalismInformationForm.employmentStatus,
-      employmentType: values.professionalismInformationForm.employmentType,
-      fieldOfExpertise: mapOptionalValue(
-        values.occupationalInformationForm.fieldOfExpertise,
-      ),
-      furtherTraining: mapOptionalValue(
-        values.occupationalInformationForm.furtherTraining,
-      ),
-      lifetimeDoctorNumber: mapOptionalValue(
-        values.occupationalInformationForm.lifetimeDoctorNumber,
-      ),
-      professionalTitle: mapRequiredValue(
-        values.occupationalInformationForm.professionalTitle,
-      ),
-      qualifications: mapOptionalValue(
-        values.occupationalInformationForm.qualifications,
-      ),
-      specialistTitle: mapOptionalValue(
-        values.occupationalInformationForm.specialistTitle,
-      ),
-    },
+    professionInformation: mapProfessionInformation(values),
     requestForWrittenConfirmation:
       values.writtenConfirmationForm.requestForWrittenConfirmation,
-    typeOfFullProcedureChange: typeOfFullProcedureChange,
+    typeOfFullChange: typeOfFullChange,
   };
 }
 
@@ -169,5 +142,98 @@ function mapApplicant(
     placeOfBirth: values.personalInformationForm.birthPlace,
     title: mapOptionalValue(values.personalInformationForm.title),
     nationality: mapRequiredValue(values.personalInformationForm.nationality),
+  };
+}
+
+function mapPractice(
+  values: MedicalRegistryCreateProcedureFormValues,
+): ApiCreatePractice {
+  return {
+    address: {
+      city: values.practiceInformationForm.city,
+      houseNumber: values.practiceInformationForm.houseNumber,
+      postalCode: values.practiceInformationForm.postalCode,
+      street: values.practiceInformationForm.street,
+    },
+    emailAddress: values.practiceInformationForm.email,
+    establishmentNumber: mapOptionalValue(
+      values.practiceInformationForm.establishmentNumber,
+    ),
+    healthInsuranceAuthorization:
+      values.practiceInformationForm.healthInsuranceAuthorization,
+    institutionIdentifier: mapOptionalValue(
+      values.practiceInformationForm.institutionIdentifier,
+    ),
+    name: values.practiceInformationForm.practiceName,
+    openingHours: mapOptionalValue(values.practiceInformationForm.openingHours),
+    phoneNumber: values.practiceInformationForm.phoneNumber,
+    website: mapOptionalValue(values.practiceInformationForm.website),
+  };
+}
+
+function mapProfessionInformation(
+  values: MedicalRegistryCreateProcedureFormValues,
+): ApiCreateProfessionInformation {
+  return {
+    approbationGrantedOn: new Date(
+      values.occupationalInformationForm.approbationGrantedOn,
+    ),
+    approbationIssuingAuthority:
+      values.occupationalInformationForm.approbationIssuingAuthority,
+    employmentStatus: values.professionalismInformationForm.employmentStatus,
+    employmentType: values.professionalismInformationForm.employmentType,
+    fieldOfExpertise: mapOptionalValue(
+      values.occupationalInformationForm.fieldOfExpertise,
+    ),
+    furtherTraining: mapOptionalValue(
+      values.occupationalInformationForm.furtherTraining,
+    ),
+    lifetimeDoctorNumber: mapOptionalValue(
+      values.occupationalInformationForm.lifetimeDoctorNumber,
+    ),
+    professionalTitle: mapRequiredValue(
+      values.occupationalInformationForm.professionalTitle,
+    ),
+    qualifications: mapOptionalValue(
+      values.occupationalInformationForm.qualifications,
+    ),
+    specialistTitle: mapOptionalValue(
+      values.occupationalInformationForm.specialistTitle,
+    ),
+  };
+}
+
+function mapCreateDeRegistrationDocuments(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  return {
+    identificationDocument: mapRequiredValue(
+      values.requiredDocumentsForm.identificationDocument,
+    ),
+  };
+}
+
+function mapCreateFullDocuments(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  return {
+    employeeList: values.employeeInformationForm.employeesEmployed
+      ? mapRequiredValue(values.employeeInformationForm.employeesFile)
+      : undefined,
+    professionalLicenseCertificate: mapNullableValue(
+      values.requiredDocumentsForm.license,
+    ),
+    identificationDocument: mapRequiredValue(
+      values.requiredDocumentsForm.identificationDocument,
+    ),
+    workPermit:
+      values.personalInformationForm.nationality !== ApiCountryCode.De
+        ? mapNullableValue(values.requiredDocumentsForm.workPermit)
+        : undefined,
+    otherRelevantDocuments: !isEmpty(
+      values.requiredDocumentsForm.otherRelevantDocuments,
+    )
+      ? values.requiredDocumentsForm.otherRelevantDocuments
+      : undefined,
   };
 }

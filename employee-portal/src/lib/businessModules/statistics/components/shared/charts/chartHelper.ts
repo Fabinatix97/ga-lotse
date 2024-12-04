@@ -27,12 +27,6 @@ import {
 
 import { AttributeType } from "./types";
 
-export const chartLegend = {
-  show: true,
-  top: 8,
-  right: 0,
-};
-
 export const colorSchemeNames: EnumMap<DiagramColorScheme> = {
   UNIFORM: "Uniform",
   GREEN2BLUE: "Grün nach blau",
@@ -114,12 +108,4 @@ export function isBooleanOrValueWithOptions(valueType: AttributeType) {
 
 export function isNumeric(valueType: AttributeType) {
   return valueType === "DecimalAttribute" || valueType === "IntegerAttribute";
-}
-
-export function isNumericOrDate(valueType: AttributeType) {
-  return (
-    valueType === "DateAttribute" ||
-    valueType === "DecimalAttribute" ||
-    valueType === "IntegerAttribute"
-  );
 }

@@ -5,15 +5,15 @@
 
 import { PropsWithChildren } from "react";
 
+import { ChildToolbar } from "@/lib/businessModules/dental/features/children/details/ChildToolbar";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
-import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
 
 export type DentalChildPageProps = Readonly<{
   params: DentalChildPageParams;
 }>;
 
-interface DentalChildPageParams {
+export interface DentalChildPageParams {
   childId: string;
 }
 
@@ -21,7 +21,9 @@ export default function DentalChildLayout(
   props: PropsWithChildren<DentalChildPageProps>,
 ) {
   return (
-    <StickyToolbarLayout toolbar={<Toolbar title="Zahnärztlicher Dienst" />}>
+    <StickyToolbarLayout
+      toolbar={<ChildToolbar childId={props.params.childId} />}
+    >
       <MainContentLayout fullViewportHeight>{props.children}</MainContentLayout>
     </StickyToolbarLayout>
   );

@@ -84,8 +84,8 @@ export function FinalizeInspectionModalContent({
       setSignatureMissing(false);
 
       const signatureBlob = await pathToPngBlob(svgPath, {
-        ...getResolution(drauu.el),
-        scale: 4,
+        height: 1024,
+        width: 768,
       });
 
       const signatureFileName = `signature_${inspectionId}.png`;
@@ -164,13 +164,6 @@ export function FinalizeInspectionModalContent({
       </Formik>
     </Stack>
   );
-}
-
-function getResolution(svg: SVGSVGElement) {
-  const bbox = svg.getBoundingClientRect();
-  const width = Math.round(bbox.width);
-  const height = Math.round(bbox.height);
-  return { width, height };
 }
 
 function pathToPngBlob(

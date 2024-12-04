@@ -20,12 +20,14 @@ export interface InspectionDuplicateTileProps {
   inspection: ApiInspectionForDuplicateReview;
   importedInspection: ApiInspectionForDuplicateReview;
   isImportedInspection: boolean;
+  testId?: string;
 }
 
 export function InspectionDuplicateTile({
   inspection,
   importedInspection,
   isImportedInspection,
+  testId,
 }: Readonly<InspectionDuplicateTileProps>) {
   const badgeText = isImportedInspection ? "Import" : "Stammdaten";
 
@@ -40,7 +42,7 @@ export function InspectionDuplicateTile({
       }}
       aria-label={"Einrichtung"}
     >
-      <Stack direction="column" gap={2}>
+      <Stack direction="column" gap={2} data-testid={testId}>
         <Typography level="h4" component="p">
           {inspection.title}
         </Typography>

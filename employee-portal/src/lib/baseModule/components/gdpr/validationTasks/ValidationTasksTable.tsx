@@ -1,0 +1,134 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+"use client";
+
+import {
+  ApiBusinessModule,
+  ApiGdprValidationTask,
+  ApiGdprValidationTaskStatus,
+  GetAllGdprValidationTasksRequest,
+} from "@eshg/employee-portal-api/businessProcedures";
+import { Chip } from "@mui/joy";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
+
+import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
+import { typeTranslation } from "@/lib/baseModule/components/gdpr/i18n";
+import { routes } from "@/lib/baseModule/shared/routes";
+import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
+import { getGdprValidationTasksQuery } from "@/lib/shared/api/queries/gdpr";
+import { Pagination } from "@/lib/shared/components/pagination/Pagination";
+import { DataTable } from "@/lib/shared/components/table/DataTable";
+import { TablePage } from "@/lib/shared/components/table/TablePage";
+import { TableSheet } from "@/lib/shared/components/table/TableSheet";
+import { formatDurationFromNowUntil } from "@/lib/shared/helpers/dateTime";
+import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
+
+export function ValidationTasksTable({
+  request,
+  businessModule,
+}: Readonly<{
+  request: GetAllGdprValidationTasksRequest;
+  businessModule: ApiBusinessModule;
+}>) {
+  const gdprValidationTaskApi = useGdprValidationTaskApi(businessModule);
+  const { data, isFetching } = useSuspenseQuery(
+    getGdprValidationTasksQuery(gdprValidationTaskApi, businessModule, request),
+  );
+
+  const tableControl = useTableControl({
+    serverSideSorting: true,
+    sortFieldName: "sortKey",
+    initialSorting: {
+      id: "dueDate",
+      desc: false,
+    },
+  });
+
+  return (
+    <TablePage fullHeight data-testid="validation-task-table">
+      <TableSheet
+        loading={isFetching}
+        footer={
+          <Pagination
+            totalCount={data.totalNumberOfElements}
+            {...tableControl.paginationProps}
+          />
+        }
+      >
+        <DataTable
+          data={data.elements}
+          columns={columns}
+          sorting={tableControl.tableSorting}
+          enableSortingRemoval={false}
+          rowNavigation={{
+            route: (row) =>
+              routes.gdpr
+                .validationTasks(businessModule)
+                .byId(row.original.gdprProcedureId),
+            focusColumnAccessorKey: "identificationData",
+          }}
+        />
+      </TableSheet>
+    </TablePage>
+  );
+}
+
+const columnHelper = createColumnHelper<ApiGdprValidationTask>();
+const columns = [
+  columnHelper.accessor("identificationData", {
+    header: "Name",
+    enableSorting: false,
+    cell: (props) => formatIdentityName(props.getValue()),
+    meta: {
+      canNavigate: {
+        parentRow: true,
+      },
+    },
+  }),
+  columnHelper.accessor("type", {
+    header: "Typ",
+    enableSorting: false,
+    cell: (props) => typeTranslation[props.getValue()],
+    meta: {
+      canNavigate: {
+        parentRow: true,
+      },
+    },
+  }),
+  columnHelper.accessor("dueDate", {
+    header: "Frist",
+    enableSorting: true,
+    cell: (props) =>
+      props.row.original.status === ApiGdprValidationTaskStatus.Open
+        ? (formatDurationFromNowUntil(props.getValue()) ?? "Abgelaufen")
+        : undefined,
+    meta: {
+      canNavigate: {
+        parentRow: true,
+      },
+    },
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    enableSorting: false,
+    cell: (props) => <StatusChip status={props.getValue()} />,
+    meta: {
+      canNavigate: {
+        parentRow: true,
+      },
+    },
+  }),
+];
+
+function StatusChip({ status }: { status: ApiGdprValidationTaskStatus }) {
+  const open = status === ApiGdprValidationTaskStatus.Open;
+  return (
+    <Chip variant="soft" color={open ? "neutral" : "success"}>
+      {open ? "Offen" : "Abgeschlossen"}
+    </Chip>
+  );
+}

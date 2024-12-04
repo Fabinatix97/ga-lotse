@@ -6,21 +6,27 @@
 import {
   ApiBusinessProcedureInclusionStatus,
   ApiBusinessProcedureWithInclusionStatus,
+  ApiGdprProcedureType,
+  ApiGdprValidationTaskStatus,
+  ApiProcedure,
   ApiProcedureStatus,
   GdprValidationTaskApiInterface,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDateTime } from "@eshg/lib-portal/formatters/dateTime";
 import IncludedIcon from "@mui/icons-material/CheckOutlined";
 import UndecidedIcon from "@mui/icons-material/ClearOutlined";
-import { Chip, Typography } from "@mui/joy";
+import { Button, Chip, Typography } from "@mui/joy";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useTransition } from "react";
 
+import { useCloseValidationTaskDialog } from "@/lib/baseModule/components/gdpr/validationTasks/UseCloseValidationTaskDialog";
 import { resolveProcedureDetailsRoute } from "@/lib/baseModule/moduleRegister/routeResolver";
 import { PROCEDURE_STATUS } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { useAddDownloadPackage } from "@/lib/shared/api/mutations/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { procedureTypeNames } from "@/lib/shared/components/procedures/constants";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -29,6 +35,8 @@ import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 interface ValidationTaskProceduresTableProps {
   gdprValidationTaskApi: GdprValidationTaskApiInterface;
   gdprProcedureId: string;
+  gdprProcedureType: ApiGdprProcedureType;
+  status: ApiGdprValidationTaskStatus;
   procedures: ApiBusinessProcedureWithInclusionStatus[];
   loading: boolean;
 }
@@ -36,13 +44,26 @@ interface ValidationTaskProceduresTableProps {
 export function ValidationTaskProceduresTable({
   gdprValidationTaskApi,
   gdprProcedureId,
+  gdprProcedureType,
+  status,
   procedures,
   loading,
 }: Readonly<ValidationTaskProceduresTableProps>) {
   const [isPendingUpdate, startTransition] = useTransition();
-  const addDownloadPackage = useAddDownloadPackage(gdprValidationTaskApi);
+  const addDownloadPackage = useAddDownloadPackage(
+    gdprValidationTaskApi,
+    gdprProcedureType,
+  );
 
-  const columns = getColumns({
+  const { openCloseValidationTaskDialog } = useCloseValidationTaskDialog({
+    gdprValidationTaskApi,
+    gdprProcedureId,
+    gdprProcedureType,
+    procedures,
+  });
+
+  const columns = useColumns({
+    gdprProcedureType,
     onStatusChange: (event) => {
       startTransition(() =>
         addDownloadPackage.mutate({
@@ -54,7 +75,20 @@ export function ValidationTaskProceduresTable({
   });
 
   return (
-    <TablePage fullHeight>
+    <TablePage
+      fullHeight
+      controls={
+        status === ApiGdprValidationTaskStatus.Open && (
+          <ButtonBar
+            right={
+              <Button onClick={openCloseValidationTaskDialog}>
+                Finalisieren
+              </Button>
+            }
+          />
+        )
+      }
+    >
       <TableSheet
         loading={loading || isPendingUpdate}
         title={
@@ -128,14 +162,40 @@ function isIncluded(status: ApiBusinessProcedureInclusionStatus) {
   return status === ApiBusinessProcedureInclusionStatus.Included;
 }
 
-function getColumns({
+function useColumns({
+  gdprProcedureType,
   onStatusChange,
 }: {
+  gdprProcedureType: ApiGdprProcedureType;
   onStatusChange: (event: {
     businessModuleProcedureId: string;
     included: boolean;
   }) => void;
 }) {
+  const { openConfirmationDialog } = useConfirmationDialog();
+
+  function approveProcedure(procedure: ApiProcedure) {
+    openConfirmationDialog({
+      title:
+        gdprProcedureType === "RIGHT_OF_ACCESS"
+          ? "Anfrage zur Dateneinsicht freigeben?"
+          : "Anfrage zur Datenlöschung zustimmen?",
+      description:
+        gdprProcedureType === "RIGHT_OF_ACCESS"
+          ? "Wenn Sie die Daten zur Einsicht freigeben, erhalten Antragsteller Einsicht in die gespeicherten Daten. Die Aktion kann nicht widerrufen werden."
+          : "Wenn Sie diese Aktion bestätigen, werden alle Vorgangsdaten unwiderruflich gelöscht.",
+      confirmLabel:
+        gdprProcedureType === "RIGHT_OF_ACCESS"
+          ? "Einsicht freigeben"
+          : "Löschung freigeben ",
+      onConfirm: () =>
+        onStatusChange({
+          businessModuleProcedureId: procedure.procedureId,
+          included: true,
+        }),
+    });
+  }
+
   return [
     columnHelper.accessor("inclusionStatus", {
       header: "Freigeben",
@@ -201,11 +261,7 @@ function getColumns({
                 label: "Freigeben",
                 startDecorator: <IncludedIcon color="success" />,
                 onClick: () =>
-                  onStatusChange({
-                    businessModuleProcedureId:
-                      props.row.original.businessProcedure.procedureId,
-                    included: true,
-                  }),
+                  approveProcedure(props.row.original.businessProcedure),
               },
             ]}
           />

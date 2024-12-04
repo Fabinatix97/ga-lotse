@@ -21,6 +21,7 @@ export function mapEvaluationTemplatesFromRepositoryToTableView(
       id: `${template.repositoryMetaInfo.id}`,
       name: template.repositoryMetaInfo.name,
       origin: template.repositoryMetaInfo.createdBy,
+      version: template.repositoryMetaInfo.version,
     };
   });
 }

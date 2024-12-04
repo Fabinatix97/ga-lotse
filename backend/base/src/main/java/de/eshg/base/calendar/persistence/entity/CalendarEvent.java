@@ -37,11 +37,6 @@ public class CalendarEvent extends BaseEntityWithExternalId {
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private EventType eventType;
 
-  @DataSensitivity(SensitivityLevel.PROTECTED)
-  @Column(nullable = false)
-  @JdbcType(PostgreSQLEnumJdbcType.class)
-  private AvailabilityType availability;
-
   @DataSensitivity(SensitivityLevel.SENSITIVE)
   @Column
   private String subject;
@@ -69,14 +64,6 @@ public class CalendarEvent extends BaseEntityWithExternalId {
   public void setCalendars(Collection<Calendar> calendars) {
     this.calendars.clear();
     this.calendars.addAll(calendars);
-  }
-
-  public AvailabilityType getAvailability() {
-    return availability;
-  }
-
-  public void setAvailability(AvailabilityType availability) {
-    this.availability = availability;
   }
 
   public String getSubject() {

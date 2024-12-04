@@ -11,31 +11,30 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 
 import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
 import { DefaultFacilityFormValues } from "@/lib/shared/components/facilitySidebar/create/FacilityForm";
-import { BaseFacility } from "@/lib/shared/components/facilitySidebar/types";
-import {
-  mapBaseFacilityToApiAddFacilityFileStateRequest,
-  mapFacilityFormValuesToApiAddFacilityFileStateRequest,
-} from "@/lib/shared/helpers/facilityUtils";
+import { mapFacilityFormValuesToApiAddFacilityFileStateRequest } from "@/lib/shared/helpers/facilityUtils";
 
 export function useUpdateInspectionFacility() {
   const facilityApi = useFacilityApi();
+  const snackbar = useSnackbar();
   return useHandledMutation({
     mutationFn: async ({
       procedureId,
       inspectionFacilityId,
-      baseFacility,
+      facility,
     }: {
       procedureId: string;
       inspectionFacilityId: string;
-      baseFacility: BaseFacility;
+      facility: DefaultFacilityFormValues;
     }) => {
       const mappedBaseFacility =
-        mapBaseFacilityToApiAddFacilityFileStateRequest(baseFacility);
+        mapFacilityFormValuesToApiAddFacilityFileStateRequest(facility);
       return await facilityApi.updateFacility(inspectionFacilityId, {
-        ...baseFacility,
         procedureId,
         baseFacility: mappedBaseFacility,
       });
+    },
+    onSuccess: () => {
+      snackbar.confirmation("Einrichtung erfolgreich gespeichert.");
     },
   });
 }

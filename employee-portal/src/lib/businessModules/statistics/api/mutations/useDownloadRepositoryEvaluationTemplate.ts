@@ -1,0 +1,43 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
+import { useRouter } from "next/navigation";
+
+import { useCentralRepositoryApi } from "@/lib/businessModules/statistics/api/clients";
+import { routes } from "@/lib/businessModules/statistics/shared/routes";
+
+export function useDownloadEvaluationTemplate(onSuccess?: () => void) {
+  const snackbar = useSnackbar();
+  const router = useRouter();
+  const centralRepositoryApi = useCentralRepositoryApi();
+  const mutation = useHandledMutation({
+    mutationFn: (props: { id: number; version: number }) =>
+      centralRepositoryApi.downloadEvaluationTemplateFromRepository(
+        props.id,
+        props.version,
+      ),
+    onSuccess: () => {
+      snackbar.confirmation("Auswertungsvorlage heruntergeladen", {
+        action: {
+          name: "Anzeigen",
+          onClick: () => router.push(routes.evaluations.templates.index),
+        },
+      });
+    },
+  });
+
+  return async (id: number, version: number) =>
+    mutation.mutateAsync(
+      {
+        id,
+        version,
+      },
+      {
+        onSuccess,
+      },
+    );
+}

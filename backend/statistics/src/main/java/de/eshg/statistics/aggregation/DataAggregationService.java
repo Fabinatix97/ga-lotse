@@ -303,7 +303,7 @@ public class DataAggregationService {
       tableColumn.setValueType(businessModuleAttribute.valueType());
       tableColumn.setUnit(businessModuleAttribute.unit());
       tableColumn.addValueToMeanings(
-          EvaluationMapper.mapToPersistence(businessModuleAttribute.valueOptions()));
+          EvaluationMapper.mapToValueToMeanings(businessModuleAttribute.valueOptions()));
       tableColumn.setMandatory(businessModuleAttribute.mandatory());
     } else {
       tableColumn.setBaseModuleAttributeCode(baseModuleAttribute.code());
@@ -311,7 +311,7 @@ public class DataAggregationService {
       tableColumn.setValueType(baseModuleAttribute.valueType());
       tableColumn.setUnit(baseModuleAttribute.unit());
       tableColumn.addValueToMeanings(
-          EvaluationMapper.mapToPersistence(baseModuleAttribute.valueOptions()));
+          EvaluationMapper.mapToValueToMeanings(baseModuleAttribute.valueOptions()));
       tableColumn.setMandatory(baseModuleAttribute.mandatory());
     }
 

@@ -49,7 +49,7 @@ export function GeoShapesTable({
 
   function archiveGeoShapeWithConfirmation(geoShape: GeoShapeInfo) {
     openConfirmationDialog({
-      title: `"${geoShape.title}" archivieren?`,
+      title: `„${geoShape.title}” archivieren?`,
       description:
         "Die Karte steht dann bei der Diagramm-Erstellung nicht mehr zur Verfügung.",
       confirmLabel: "Archivieren",
@@ -76,7 +76,7 @@ export function GeoShapesTable({
 
   function deleteGeoShapeWithConfirmation(geoShape: GeoShapeInfo) {
     openConfirmationDialog({
-      title: `"${geoShape.title}" löschen?`,
+      title: `„${geoShape.title}” löschen?`,
       description: "Die Geo-Shapes werden dann unwiderruflich gelöscht.",
       confirmLabel: "Löschen",
       onConfirm: () => deleteGeoShape(geoShape.id),

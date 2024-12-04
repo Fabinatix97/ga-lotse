@@ -21,7 +21,10 @@ import {
 } from "@eshg/lib-portal/components/formFields/MonthAndYearFields";
 import { mapOptionalValue } from "@eshg/lib-portal/helpers/form";
 
-import { mapOptional } from "@/lib/businessModules/stiProtection/shared/helpers";
+import {
+  guardValue,
+  mapOptional,
+} from "@/lib/businessModules/stiProtection/shared/helpers";
 
 import {
   ExaminationData,
@@ -393,13 +396,6 @@ function mapExaminationsToApi(form: ExaminationData): ApiExamination {
       mapMonthAndYear(form.syphilis.examinationDate),
     ),
   };
-}
-
-function guardValue<T>(
-  guard: boolean | null | undefined,
-  value: T,
-): T | undefined {
-  return guard ? value : undefined;
 }
 
 function mapOptionalDate(nullableValue: string | null) {

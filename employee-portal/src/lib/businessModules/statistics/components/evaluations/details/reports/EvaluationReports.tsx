@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiReportState } from "@eshg/employee-portal-api/statistics";
+import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { InternalLinkButton } from "@eshg/lib-portal/components/navigation/InternalLinkButton";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, NotInterestedOutlined } from "@mui/icons-material";
@@ -21,6 +22,7 @@ import {
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
 
+import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
 import {
   EvaluationReports as EvaluationReportsType,
@@ -75,6 +77,7 @@ function columns(
   deleteReportSeriesWithConfirmation: (seriesId: string) => void,
   updateReport: (report: UpdateReportSidebarReportInfo) => void,
   share: (id: string) => Promise<void>,
+  exportData: (item: SingleReport | ReportSeriesItem) => Promise<void>,
   canDelete: (creatorUserId: string) => boolean,
   canWrite: () => boolean,
 ) {
@@ -152,6 +155,11 @@ function columns(
                       ),
                     ),
                 },
+                {
+                  type: "export",
+                  action: () =>
+                    exportData(data as SingleReport | ReportSeriesItem),
+                },
               ],
               data.type,
               {
@@ -197,6 +205,7 @@ export function EvaluationReports({
   const { openConfirmationDialog } = useConfirmationDialog();
   const { deleteReportSeriesWithConfirmation, deleteReportWithConfirmation } =
     useDeleteWithConfirmation();
+  const { download: exportData, downloadContainerRef } = useExportReportData();
   const deactivateReportSeries = useDeactivateReportSeries();
   const userPermissions = useStatisticsRoleChecks();
 
@@ -221,6 +230,8 @@ export function EvaluationReports({
 
   return data.anonymized ? (
     <>
+      <HiddenContainer ref={downloadContainerRef} />
+
       {openCreateReportSidebar && (
         <OverlayBoundary>
           <AddReportSidebar
@@ -283,6 +294,11 @@ export function EvaluationReports({
                   deleteReportSeriesWithConfirmation,
                   updateReport,
                   copy,
+                  (item) =>
+                    exportData(
+                      { reportId: item.reportId },
+                      { tooMuchDataForExport: item.tooMuchDataForExport },
+                    ),
                   userPermissions.canDelete,
                   userPermissions.canWrite,
                 )}

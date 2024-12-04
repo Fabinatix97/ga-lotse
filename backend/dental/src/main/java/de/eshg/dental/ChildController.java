@@ -15,9 +15,14 @@ import de.eshg.dental.api.CreateChildRequest;
 import de.eshg.dental.api.CreateChildResponse;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.GetChildrenResponse;
+import de.eshg.dental.api.GetInstitutionGroupsResponse;
+import de.eshg.dental.api.UpdateChildRequest;
+import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.domain.model.Child;
+import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.mapper.ChildMapper;
+import de.eshg.dental.mapper.ExaminationMapper;
 import de.eshg.lib.xlsximport.TransactionalWithTimeoutForFileImports;
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.util.FileResponseUtil;
@@ -49,11 +54,17 @@ public class ChildController {
   public static final String BASE_URL = BaseUrls.Dental.CHILD_CONTROLLER;
 
   private final ChildService childService;
+  private final ExaminationService examinationService;
   private final Clock clock;
   private final Validator validator;
 
-  public ChildController(ChildService childService, Clock clock, Validator validator) {
+  public ChildController(
+      ChildService childService,
+      ExaminationService examinationService,
+      Clock clock,
+      Validator validator) {
     this.childService = childService;
+    this.examinationService = examinationService;
     this.clock = clock;
     this.validator = validator;
   }
@@ -87,13 +98,23 @@ public class ChildController {
     return ChildMapper.mapToChildDetailsDto(augmentedChildData);
   }
 
-  @PostMapping("/{childId}/examination")
+  @PutMapping("/{childId}")
   @Transactional
-  public ChildDetailsDto createExamination(
-      @PathVariable("childId") UUID childId, @Valid @RequestBody ExaminationDto request) {
-    ChildWithAugmentedData childWithAugmentedData =
-        childService.createExaminationForChild(request, childId);
-    return ChildMapper.mapToChildDetailsDto(childWithAugmentedData);
+  public ChildDetailsDto updateChild(
+      @PathVariable("childId") UUID childId, @Valid @RequestBody UpdateChildRequest request) {
+    validator.validateInstitution(request.institutionId());
+    ChildWithAugmentedData augmentedChildData = childService.update(childId, request);
+    return ChildMapper.mapToChildDetailsDto(augmentedChildData);
+  }
+
+  @PutMapping("/examination/{examinationId}")
+  @Transactional
+  public ExaminationDto updateExamination(
+      @PathVariable("examinationId") UUID examinationId,
+      @Valid @RequestBody UpdateExaminationRequest request) {
+    Examination examination = examinationService.findExaminationForUpdate(examinationId);
+    examinationService.updateExamination(examination, request);
+    return ExaminationMapper.mapToDto(examination);
   }
 
   @ApiResponse(
@@ -112,5 +133,12 @@ public class ChildController {
     ImportResult result = childService.importChildrenFromFile(file, institutionId, schoolYear);
 
     return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
+  }
+
+  @GetMapping("/institutions/{institutionId}/groups")
+  @Transactional(readOnly = true)
+  public GetInstitutionGroupsResponse getInstitutionGroups(
+      @PathVariable("institutionId") UUID institutionId) {
+    return new GetInstitutionGroupsResponse(childService.getInstitutionGroups(institutionId));
   }
 }

@@ -96,6 +96,7 @@ export function UsersAutocomplete({
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
+                  flexShrink: 0,
                 }}
               >
                 <ChatAvatar
@@ -108,11 +109,10 @@ export function UsersAutocomplete({
               </Box>
               {apiUser.department && (
                 <Typography
+                  noWrap
                   level="body-md"
                   sx={{
                     color: "neutral.400",
-                    textTransform: "capitalize",
-                    flex: 1,
                   }}
                 >
                   {apiUser.department}
@@ -120,12 +120,14 @@ export function UsersAutocomplete({
               )}
               {apiUser.user_id && (
                 <Typography
+                  noWrap
                   level="body-md"
                   sx={{
                     color: "neutral.400",
-                    textTransform: "capitalize",
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
+                    textAlign: "right",
+                    flex: {
+                      xl: 1,
+                    },
                   }}
                 >
                   {apiUser.user_id}

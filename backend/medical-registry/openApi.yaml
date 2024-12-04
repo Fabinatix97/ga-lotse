@@ -779,49 +779,6 @@ paths:
       tags:
       - InboxProcedure
   /medical-registry-entries:
-    post:
-      operationId: createProcedure
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                employeeList:
-                  type: string
-                  format: binary
-                identificationDocument:
-                  type: string
-                  format: binary
-                otherRelevantDocuments:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-                procedure:
-                  oneOf:
-                  - $ref: "#/components/schemas/CreateDeregistrationProcedureRequest"
-                  - $ref: "#/components/schemas/CreateFullProcedureChangeRequest"
-                professionalLicenseCertificate:
-                  type: string
-                  format: binary
-                workPermit:
-                  type: string
-                  format: binary
-              required:
-              - identificationDocument
-              - procedure
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: string
-                format: uuid
-          description: OK
-      tags:
-      - MedicalRegistry
-  /medical-registry-entries/procedures:
     get:
       operationId: getProcedureOverview
       parameters:
@@ -890,6 +847,49 @@ paths:
         Filtering is optional
       tags:
       - MedicalRegistry
+    post:
+      operationId: createProcedure
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                employeeList:
+                  type: string
+                  format: binary
+                identificationDocument:
+                  type: string
+                  format: binary
+                otherRelevantDocuments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                procedure:
+                  oneOf:
+                  - $ref: "#/components/schemas/CreateApplicantChangeRequest"
+                  - $ref: "#/components/schemas/CreateFullChangeRequest"
+                  - $ref: "#/components/schemas/CreatePracticeChangeRequest"
+                professionalLicenseCertificate:
+                  type: string
+                  format: binary
+                workPermit:
+                  type: string
+                  format: binary
+              required:
+              - identificationDocument
+              - procedure
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      tags:
+      - MedicalRegistry
   /medical-registry-entries/public:
     post:
       operationId: createProcedureFromCitizenPortal
@@ -912,8 +912,9 @@ paths:
                     format: binary
                 procedure:
                   oneOf:
-                  - $ref: "#/components/schemas/CreateDeregistrationProcedureRequest"
-                  - $ref: "#/components/schemas/CreateFullProcedureChangeRequest"
+                  - $ref: "#/components/schemas/CreateApplicantChangeRequest"
+                  - $ref: "#/components/schemas/CreateFullChangeRequest"
+                  - $ref: "#/components/schemas/CreatePracticeChangeRequest"
                 professionalLicenseCertificate:
                   type: string
                   format: binary
@@ -2729,6 +2730,19 @@ components:
       - nationality
       - phoneNumber
       - placeOfBirth
+    CreateApplicantChangeRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CreateProcedureRequest"
+      - type: object
+        properties:
+          typeOfApplicantChange:
+            $ref: "#/components/schemas/TypeOfApplicantChange"
+      required:
+      - applicant
+      - consentToPrivacyPolicy
+      - requestForWrittenConfirmation
+      - typeOfApplicantChange
     CreateApprovalRequestRequest:
       type: object
       properties:
@@ -2736,20 +2750,7 @@ components:
           type: string
       required:
       - reason
-    CreateDeregistrationProcedureRequest:
-      type: object
-      allOf:
-      - $ref: "#/components/schemas/CreateProcedureRequest"
-      - type: object
-        properties:
-          typeOfDeRegistration:
-            $ref: "#/components/schemas/TypeOfDeRegistration"
-      required:
-      - applicant
-      - consentToPrivacyPolicy
-      - requestForWrittenConfirmation
-      - typeOfDeRegistration
-    CreateFullProcedureChangeRequest:
+    CreateFullChangeRequest:
       type: object
       allOf:
       - $ref: "#/components/schemas/CreateProcedureRequest"
@@ -2761,15 +2762,15 @@ components:
             $ref: "#/components/schemas/CreatePractice"
           professionInformation:
             $ref: "#/components/schemas/CreateProfessionInformation"
-          typeOfFullProcedureChange:
-            $ref: "#/components/schemas/TypeOfFullProcedureChange"
+          typeOfFullChange:
+            $ref: "#/components/schemas/TypeOfFullChange"
       required:
       - applicant
       - consentToPrivacyPolicy
       - employeesEmployed
       - professionInformation
       - requestForWrittenConfirmation
-      - typeOfFullProcedureChange
+      - typeOfFullChange
     CreateInboxProcedureRequest:
       type: object
       properties:
@@ -2839,6 +2840,25 @@ components:
       - healthInsuranceAuthorization
       - name
       - phoneNumber
+    CreatePracticeChangeRequest:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/CreateProcedureRequest"
+      - type: object
+        properties:
+          employeesEmployed:
+            type: boolean
+          practice:
+            $ref: "#/components/schemas/CreatePractice"
+          typeOfPracticeChange:
+            $ref: "#/components/schemas/TypeOfPracticeChange"
+      required:
+      - applicant
+      - consentToPrivacyPolicy
+      - employeesEmployed
+      - practice
+      - requestForWrittenConfirmation
+      - typeOfPracticeChange
     CreateProcedureRequest:
       type: object
       discriminator:
@@ -3262,16 +3282,23 @@ components:
         dueDate:
           type: string
           format: date
+        gdprProcedureId:
+          type: string
+          format: uuid
         identificationData:
           oneOf:
           - $ref: "#/components/schemas/GdprFacility"
           - $ref: "#/components/schemas/GdprPerson"
         status:
           $ref: "#/components/schemas/GdprValidationTaskStatus"
+        type:
+          $ref: "#/components/schemas/GdprProcedureType"
       required:
       - dueDate
+      - gdprProcedureId
       - identificationData
       - status
+      - type
     GdprValidationTaskSortKey:
       type: string
       enum:
@@ -3675,6 +3702,7 @@ components:
       - consentToPrivacyPolicy
       - employeesEmployed
       - id
+      - practices
       - procedureType
       - professionInformation
       - requestForWrittenConfirmation
@@ -3716,6 +3744,7 @@ components:
       - applicant
       - consentToPrivacyPolicy
       - id
+      - practices
       - procedureType
       - requestForWrittenConfirmation
       - status
@@ -4768,6 +4797,8 @@ components:
       - MEDICAL_REGISTRY_ENTRY
       - MEDICAL_REGISTRY_CITIZEN_DRAFT
       - MEDICAL_REGISTRY_EMPLOYEE_DRAFT
+      - DENTAL_CHILD
+      - OFFICIAL_MEDICAL_SERVICE
     ProcedureWithDuration:
       type: object
       properties:
@@ -5264,6 +5295,12 @@ components:
       - SYSTEM_AUTOMATIC
       - EMPLOYEE
       - CITIZEN
+    TypeOfApplicantChange:
+      type: string
+      enum:
+      - DEREGISTRATION
+      - RELOCATION
+      - CHANGE_OF_NAME
     TypeOfChange:
       type: string
       enum:
@@ -5275,20 +5312,17 @@ components:
       - RELOCATION
       - DEREGISTRATION
       - OTHER
-    TypeOfDeRegistration:
-      type: string
-      enum:
-      - DEREGISTRATION
-      - RELOCATION
-    TypeOfFullProcedureChange:
+    TypeOfFullChange:
       type: string
       enum:
       - NEW_REGISTRATION
-      - SECOND_PRACTICE
       - RE_REGISTRATION
-      - CHANGE_OF_REGISTRATION
-      - CHANGE_OF_NAME
       - OTHER
+    TypeOfPracticeChange:
+      type: string
+      enum:
+      - SECOND_PRACTICE
+      - CHANGE_OF_REGISTRATION
     User:
       type: object
       properties:

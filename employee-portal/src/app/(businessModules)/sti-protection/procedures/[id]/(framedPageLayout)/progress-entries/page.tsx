@@ -7,6 +7,7 @@
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 
+import { StiProtectionProcedurePageParams } from "@/app/(businessModules)/sti-protection/procedures/[id]/(framedPageLayout)/layout";
 import { useDownloadStiProtectionFile } from "@/lib/businessModules/stiProtection/api/download/files";
 import {
   useDecideApprovalRequest,
@@ -34,9 +35,17 @@ import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
 import { ProgressEntriesPage } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesPage";
 import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/progress-entries/types";
 
+interface StiProtectionProcedureProgressEntriesPageParams
+  extends StiProtectionProcedurePageParams {
+  entryId?: string;
+}
+
 export default function StiProtectionProcedureProgressEntriesTab(
-  props: Readonly<ProgressEntriesUrlParams>,
+  props: Readonly<
+    ProgressEntriesUrlParams<StiProtectionProcedureProgressEntriesPageParams>
+  >,
 ) {
+  const { params, searchParams } = props;
   return (
     <ProgressEntriesPage
       useCreateProgressEntry={useCreateProgressEntry}
@@ -45,7 +54,9 @@ export default function StiProtectionProcedureProgressEntriesTab(
       usePatchProgressEntry={usePatchProgressEntry}
       useFetchProgressEntries={useFetchProgressEntries}
       useFetchProgressEntryDetails={useFetchProgressEntryDetails}
-      urlParams={props}
+      procedureId={params.id}
+      progressEntryId={params.entryId}
+      searchParams={searchParams}
       leaderRole={ApiUserRole.StiProtectionLeader}
       useRequestProgressEntryDeletion={useRequestProgressEntryDeletion}
       useRequestFileDeletion={useRequestFileDeletion}

@@ -71,7 +71,7 @@ export function EvaluationDetails(
     canDelete: canDelete(props.userId),
     canUpdateEvaluation: canUpdateEvaluation(props.userId),
     canWrite: canWrite(),
-    canExportData: props.anonymized,
+    anonymized: props.anonymized,
     start: props.start,
     end: props.end,
     createdAt: props.createdAt,
@@ -93,7 +93,11 @@ export function EvaluationDetails(
       }),
     onSaveEvaluationTemplateClicked: () =>
       setSaveAsEvaluationTemplateSidebarEvaluationId(props.evaluationId),
-    onDataExport: () => exportData({ evaluationId: props.evaluationId }),
+    onDataExport: () =>
+      exportData(
+        { evaluationId: props.evaluationId },
+        { tooMuchDataForExport: props.tooMuchDataForExport },
+      ),
   };
 
   const businessModuleInformationCardsProps: BusinessModuleInformationCardProps[] =

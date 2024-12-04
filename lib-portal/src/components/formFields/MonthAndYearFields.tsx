@@ -13,11 +13,7 @@ import {
 } from "../../businessModules/schoolEntry/features/procedures/fieldVariants";
 import { toDateString, toUtcDate } from "../../helpers/dateTime";
 import { isEmptyString } from "../../helpers/guards";
-import {
-  validateIntegerAnd,
-  validatePastMonthAndYear,
-  validateRange,
-} from "../../helpers/validators";
+import { useMonthAndYearValidationsRules } from "../../hooks/useMonthAndYearValidations";
 import { OptionalFieldValue } from "../../types/form";
 
 import { HorizontalField } from "./HorizontalField";
@@ -70,16 +66,7 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
       : "";
   }
 
-  function getRequiredMonth() {
-    if (!isEmptyString(props.date.year) && props.date.month === null) {
-      return "Bitte einen Monat angeben.";
-    }
-  }
-  function getRequiredYear() {
-    if (isEmptyString(props.date.year) && props.date.month !== null) {
-      return "Bitte ein Jahr angeben.";
-    }
-  }
+  const { month, year } = useMonthAndYearValidationsRules(props.fieldName);
 
   return (
     <Stack direction="row" gap={2} data-testid={props.testId}>
@@ -90,12 +77,8 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
         getOptionLabel={getMonthLabel}
         component={HorizontalField}
         sx={{ width: "170px" }}
-        validate={(month) => {
-          if (month !== null && props.date.year !== "") {
-            return validatePastMonthAndYear(props.date.year, month);
-          }
-        }}
-        required={getRequiredMonth()}
+        validate={month.validate}
+        required={month.required}
         softRequired={props.softRequired}
       />
       <SoftRequiredNumberField
@@ -104,10 +87,8 @@ export function MonthAndYearFields(props: MonthAndYearFieldsProps) {
         sx={{ width: "85px" }}
         component={HorizontalField}
         min={1900}
-        validate={validateIntegerAnd(
-          validateRange(1900, new Date().getFullYear()),
-        )}
-        required={getRequiredYear()}
+        validate={year.validate}
+        required={year.required}
         softRequired={props.softRequired}
       />
     </Stack>

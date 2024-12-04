@@ -14,7 +14,7 @@ export function useDeleteEvaluationWithConfirmation(onConfirm?: () => void) {
   return (evaluationId: string, evaluationName: string) =>
     openConfirmationDialog({
       title: "Auswertung löschen?",
-      description: `Die Auswertung "${evaluationName}" wird dann unwiderruflich gelöscht.`,
+      description: `Die Auswertung „${evaluationName}” wird dann unwiderruflich gelöscht.`,
       confirmLabel: "Löschen",
       children: (
         <Alert

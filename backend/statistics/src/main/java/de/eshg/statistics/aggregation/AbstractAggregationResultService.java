@@ -12,6 +12,7 @@ import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.repository.TableRowRepository;
 import java.util.UUID;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -51,8 +52,8 @@ public abstract class AbstractAggregationResultService {
     maxDataRowExportable = dataRowCount;
   }
 
-  public static long getMaxDataRowExportable() {
-    return maxDataRowExportable;
+  public static Function<AbstractAggregationResult, Boolean> isTooMuchDataForExportFunction() {
+    return aggregationResult -> aggregationResult.getNumberOfTableRows() > maxDataRowExportable;
   }
 
   public abstract AbstractAggregationResult getAbstractAggregationResultInternal(UUID id);

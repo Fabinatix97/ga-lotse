@@ -65,6 +65,8 @@ public final class ProcedureMapper {
       case MEDICAL_REGISTRY_ENTRY -> ProcedureTypeDto.MEDICAL_REGISTRY_ENTRY;
       case MEDICAL_REGISTRY_CITIZEN_DRAFT -> ProcedureTypeDto.MEDICAL_REGISTRY_CITIZEN_DRAFT;
       case MEDICAL_REGISTRY_EMPLOYEE_DRAFT -> ProcedureTypeDto.MEDICAL_REGISTRY_EMPLOYEE_DRAFT;
+      case DENTAL_CHILD -> ProcedureTypeDto.DENTAL_CHILD;
+      case OFFICIAL_MEDICAL_SERVICE -> ProcedureTypeDto.OFFICIAL_MEDICAL_SERVICE;
     };
   }
 
@@ -91,6 +93,8 @@ public final class ProcedureMapper {
       case MEDICAL_REGISTRY_CITIZEN_DRAFT -> ProcedureType.MEDICAL_REGISTRY_CITIZEN_DRAFT;
       case MEDICAL_REGISTRY_EMPLOYEE_DRAFT -> ProcedureType.MEDICAL_REGISTRY_EMPLOYEE_DRAFT;
       case MEDICAL_REGISTRY_ENTRY -> ProcedureType.MEDICAL_REGISTRY_ENTRY;
+      case DENTAL_CHILD -> ProcedureType.DENTAL_CHILD;
+      case OFFICIAL_MEDICAL_SERVICE -> ProcedureType.OFFICIAL_MEDICAL_SERVICE;
     };
   }
 

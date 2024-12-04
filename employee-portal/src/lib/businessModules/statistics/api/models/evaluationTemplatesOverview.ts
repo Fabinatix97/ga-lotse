@@ -25,4 +25,5 @@ export interface EvaluationTemplateWithUserInfo extends EvaluationTemplate {
 
 export interface EvaluationTemplateFromRepository extends EvaluationTemplate {
   origin: string;
+  version: number;
 }

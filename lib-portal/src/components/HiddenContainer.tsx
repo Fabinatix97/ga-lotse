@@ -7,7 +7,7 @@ import { styled } from "@mui/joy";
 import { forwardRef } from "react";
 
 const VisuallyHiddenContainer = styled("div")({
-  display: "hidden",
+  display: "none",
 });
 
 export const HiddenContainer = forwardRef<HTMLDivElement>(

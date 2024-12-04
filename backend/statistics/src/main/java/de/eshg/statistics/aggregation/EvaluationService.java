@@ -30,8 +30,10 @@ import de.eshg.statistics.api.evaluation.AbstractAddEvaluationRequest;
 import de.eshg.statistics.api.evaluation.AbstractUpdateEvaluationRequest;
 import de.eshg.statistics.api.evaluation.AddEvaluationWithDataSourcesRequest;
 import de.eshg.statistics.api.evaluation.AddEvaluationWithTemplateRequest;
+import de.eshg.statistics.api.evaluation.EvaluationStateDto;
 import de.eshg.statistics.api.evaluation.GetEvaluationRequest;
 import de.eshg.statistics.api.evaluation.GetEvaluationResponse;
+import de.eshg.statistics.api.evaluation.GetEvaluationsFilterOptions;
 import de.eshg.statistics.api.evaluation.GetEvaluationsRequest;
 import de.eshg.statistics.api.evaluation.GetEvaluationsResponse;
 import de.eshg.statistics.api.evaluation.UpdateEvaluationNameRequest;
@@ -80,7 +82,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hibernate.Hibernate;
@@ -91,6 +92,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class EvaluationService extends AbstractAggregationResultService {
@@ -117,13 +120,6 @@ public class EvaluationService extends AbstractAggregationResultService {
     this.evaluationTemplateService = evaluationTemplateService;
     this.dataSourceValidator = dataSourceValidator;
     this.originalDataAccessConfig = originalDataAccessConfig;
-  }
-
-  public static Function<Evaluation, Boolean> isEvaluationExportableFunction() {
-    return evaluation ->
-        evaluation.getState().equals(AggregationResultState.COMPLETED)
-            && evaluation.isAnonymized()
-            && evaluation.getNumberOfTableRows() < getMaxDataRowExportable();
   }
 
   @Override
@@ -276,26 +272,23 @@ public class EvaluationService extends AbstractAggregationResultService {
 
   @Transactional(readOnly = true)
   public GetEvaluationsResponse getEvaluations(GetEvaluationsRequest getEvaluationsRequest) {
-    Specification<Evaluation> specification;
-    if (getEvaluationsRequest.anonymizationValue() == null) {
-      specification =
-          Specification.anyOf(
-              anonymizedEvaluations(),
-              notAnonymizedEvaluations(
-                  originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser()));
-    } else {
-      if (Boolean.TRUE.equals(getEvaluationsRequest.anonymizationValue())) {
-        specification = anonymizedEvaluations();
-      } else {
-        specification =
-            notAnonymizedEvaluations(
-                originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser());
-      }
+    List<Specification<Evaluation>> specifications = new ArrayList<>();
+    GetEvaluationsFilterOptions filterOptions = getEvaluationsRequest.filterOptions();
+    addAnonymizationSpecification(specifications, filterOptions);
+    if (filterOptions != null) {
+      addStatesSpecification(specifications, filterOptions.states());
+      addDataSourcesSpecification(specifications, filterOptions.dataSourceIds());
+      AggregationResultSpecifications.addDateSpecification(
+          specifications, filterOptions.start(), AbstractAggregationResult_.TIME_RANGE_START);
+      AggregationResultSpecifications.addDateSpecification(
+          specifications, filterOptions.end(), AbstractAggregationResult_.TIME_RANGE_END);
+      AggregationResultSpecifications.<Evaluation>nameSpecification(filterOptions.name())
+          .ifPresent(specifications::add);
     }
 
     Page<Evaluation> evaluationPage =
         evaluationRepository.findAll(
-            specification,
+            Specification.allOf(specifications),
             PageRequest.of(
                 getEvaluationsRequest.page(),
                 getEvaluationsRequest.pageSize(),
@@ -308,7 +301,26 @@ public class EvaluationService extends AbstractAggregationResultService {
     return EvaluationMapper.mapEvaluationPageToResponse(
         evaluationPage,
         resolvedUsers,
-        evaluation -> isEvaluationExportableFunction().apply(evaluation));
+        evaluation -> isTooMuchDataForExportFunction().apply(evaluation));
+  }
+
+  private void addAnonymizationSpecification(
+      List<Specification<Evaluation>> specifications, GetEvaluationsFilterOptions filterOptions) {
+    if (filterOptions == null || filterOptions.anonymizationValue() == null) {
+      specifications.add(
+          Specification.anyOf(
+              anonymizedEvaluations(),
+              notAnonymizedEvaluations(
+                  originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser())));
+    } else {
+      if (Boolean.TRUE.equals(filterOptions.anonymizationValue())) {
+        specifications.add(anonymizedEvaluations());
+      } else {
+        specifications.add(
+            notAnonymizedEvaluations(
+                originalDataAccessConfig.getBusinessModulesOriginalDataAllowedForCurrentUser()));
+      }
+    }
   }
 
   private Specification<Evaluation> anonymizedEvaluations() {
@@ -319,6 +331,7 @@ public class EvaluationService extends AbstractAggregationResultService {
   private Specification<Evaluation> notAnonymizedEvaluations(
       Set<String> allowedBusinessModuleNames) {
     return (root, query, criteriaBuilder) -> {
+      Assert.notNull(query, "CriteriaQuery must not be null");
       Predicate notAnonymizedPredicate = criteriaBuilder.isFalse(root.get(Evaluation_.ANONYMIZED));
 
       Subquery<TableColumn> subquery = query.subquery(TableColumn.class);
@@ -342,6 +355,42 @@ public class EvaluationService extends AbstractAggregationResultService {
       return criteriaBuilder.and(
           notAnonymizedPredicate, criteriaBuilder.not(criteriaBuilder.exists(subquery)));
     };
+  }
+
+  private void addStatesSpecification(
+      List<Specification<Evaluation>> specifications, List<EvaluationStateDto> states) {
+    if (CollectionUtils.isEmpty(states)) {
+      return;
+    }
+    List<AggregationResultState> aggregationResultStates =
+        EvaluationMapper.mapToAggregationResultStates(states);
+    specifications.add(
+        (root, query, criteriaBuilder) ->
+            root.get(AbstractAggregationResult_.STATE).in(aggregationResultStates));
+  }
+
+  private void addDataSourcesSpecification(
+      List<Specification<Evaluation>> specifications, List<UUID> dataSourceIds) {
+    if (CollectionUtils.isEmpty(dataSourceIds)) {
+      return;
+    }
+    specifications.add(
+        (root, query, criteriaBuilder) -> {
+          Assert.notNull(query, "CriteriaQuery must not be null");
+          Subquery<TableColumn> subquery = query.subquery(TableColumn.class);
+          Root<TableColumn> tableColumnRoot = subquery.from(TableColumn.class);
+          subquery.select(tableColumnRoot);
+          Expression<Collection<TableColumn>> tableColumnsExpression =
+              root.get(AbstractAggregationResult_.TABLE_COLUMNS);
+          Predicate tableColumnMemberPredicate =
+              criteriaBuilder.isMember(tableColumnRoot, tableColumnsExpression);
+
+          Predicate dataSourcePredicate =
+              tableColumnRoot.get(TableColumn_.DATA_SOURCE_ID).in(dataSourceIds);
+
+          subquery.where(criteriaBuilder.and(tableColumnMemberPredicate, dataSourcePredicate));
+          return criteriaBuilder.exists(subquery);
+        });
   }
 
   private Map<UUID, UserDto> getResolvedUsers(
@@ -389,10 +438,10 @@ public class EvaluationService extends AbstractAggregationResultService {
         evaluation,
         tableRowPage.get().toList(),
         tableRowPage.getTotalElements(),
-        isEvaluationExportableFunction().apply(evaluation));
+        isTooMuchDataForExportFunction().apply(evaluation));
   }
 
-  static void validateEvaluationCompleted(Evaluation evaluation) {
+  public static void validateEvaluationCompleted(Evaluation evaluation) {
     if (!evaluation.getState().equals(AggregationResultState.COMPLETED)) {
       throw new BadRequestException(
           "Evaluation %s is not in state COMPLETED".formatted(evaluation.getExternalId()));
@@ -417,7 +466,7 @@ public class EvaluationService extends AbstractAggregationResultService {
 
     return new GetDetailPageInformationResponse(
         EvaluationMapper.mapToEvaluationInfo(
-            evaluation, isEvaluationExportableFunction().apply(evaluation)),
+            evaluation, isTooMuchDataForExportFunction().apply(evaluation)),
         EvaluationMapper.mapToApi(evaluation.getTableColumns()),
         evaluation.getNumberOfTableRows(),
         resolvedUsers.get(evaluation.getCreatedByUserId()),
@@ -505,7 +554,7 @@ public class EvaluationService extends AbstractAggregationResultService {
 
     return new GetCompletenessDataResponse(
         EvaluationMapper.mapToEvaluationInfo(
-            evaluation, isEvaluationExportableFunction().apply(evaluation)),
+            evaluation, isTooMuchDataForExportFunction().apply(evaluation)),
         completenessOfAttributes);
   }
 
@@ -568,8 +617,7 @@ public class EvaluationService extends AbstractAggregationResultService {
             .map(
                 reportSeries ->
                     ReportMapper.mapToApi(
-                        reportSeries,
-                        report -> ReportService.isReportExportableFunction().apply(report)))
+                        reportSeries, report -> isTooMuchDataForExportFunction().apply(report)))
             .toList();
     Set<UUID> userIds =
         reportSeriesDtos.stream().map(ReportSeriesDto::userId).collect(Collectors.toSet());

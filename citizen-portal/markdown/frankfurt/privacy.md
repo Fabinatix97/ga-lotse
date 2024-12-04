@@ -1,4 +1,4 @@
-Diese Datenschutzerklärung gilt für die Webseite „frankfurt.ga-lotse.de“ (bzw. „https://frankfurt.ga-lotse.de“ sowie dazu zugehörige Subdomains) des Gesundheitsamts der Stadt Frankfurt am Main. Dieses Informationsportal bietet Informationen zu besonderen Ereignissen und wird ausschließlich zum dem Zwecke genutzt.
+Diese Datenschutzerklärung gilt für die Webseite „frankfurt.ga-lotse.de” (bzw. „https://frankfurt.ga-lotse.de” sowie dazu zugehörige Subdomains) des Gesundheitsamts der Stadt Frankfurt am Main. Dieses Informationsportal bietet Informationen zu besonderen Ereignissen und wird ausschließlich zum dem Zwecke genutzt.
 
 
 ## 1. Name und Kontaktdaten des für die Verarbeitung Verantwortlichen sowie des behördlichen Datenschutzbeauftragten
@@ -7,7 +7,7 @@ Diese Datenschutz-Information gilt für die Datenverarbeitung durch:
 
 Verantwortlicher:
 
-Verantwortlich für die Website „frankfurt.ga-lotse.de“ ist das Gesundheitsamt Frankfurt am Main:
+Verantwortlich für die Website „frankfurt.ga-lotse.de” ist das Gesundheitsamt Frankfurt am Main:
 
 Gesundheitsamt Frankfurt am Main  
 Breite Gasse 28  
@@ -23,7 +23,7 @@ Sandgasse 6, 60311 Frankfurt am Main
 
 2.1 Beim Besuch der Website
 
-Beim Aufrufen unserer Website „frankfurt.ga-lotse.de“ werden durch den auf Ihrem Endgerät zum Einsatz kommenden Browser automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporär in einem sog. Logfile gespeichert. Folgende Informationen werden dabei ohne Ihr Zutun erfasst und bis zur automatisierten Löschung gespeichert:
+Beim Aufrufen unserer Website „frankfurt.ga-lotse.de” werden durch den auf Ihrem Endgerät zum Einsatz kommenden Browser automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporär in einem sog. Logfile gespeichert. Folgende Informationen werden dabei ohne Ihr Zutun erfasst und bis zur automatisierten Löschung gespeichert:
 
 
 - IP-Adresse des anfragenden Rechners

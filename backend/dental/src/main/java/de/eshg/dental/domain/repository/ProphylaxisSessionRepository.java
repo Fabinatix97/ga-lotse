@@ -6,6 +6,7 @@
 package de.eshg.dental.domain.repository;
 
 import de.eshg.dental.domain.model.ProphylaxisSession;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -22,4 +23,6 @@ public interface ProphylaxisSessionRepository
   int replaceInstitutionId(
       @Param("oldInstitutionId") UUID oldInstitutionId,
       @Param("newInstitutionId") UUID newInstitutionId);
+
+  Optional<ProphylaxisSession> findByExternalId(UUID externalId);
 }

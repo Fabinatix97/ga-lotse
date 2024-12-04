@@ -32,7 +32,7 @@ export function TravelDataTile(procedure: Readonly<TravelDataTileProps>) {
   return (
     <>
       <DetailsSection
-        name="travelData"
+        data-testid="travelData"
         title="Reisedaten"
         onEdit={() => travelDataSidebar.open(procedure)}
         canEdit={!procedure.isProcedureClosed}

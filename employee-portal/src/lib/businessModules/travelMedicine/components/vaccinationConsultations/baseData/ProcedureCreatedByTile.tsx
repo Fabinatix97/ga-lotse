@@ -22,7 +22,11 @@ interface ProcedureOriginValues {
 export function ProcedureCreatedByTile(props: Readonly<ProcedureOriginProps>) {
   return (
     <>
-      <DetailsSection name="procedure" title="Vorgangsdaten" canEdit={false}>
+      <DetailsSection
+        data-testid="procedure"
+        title="Vorgangsdaten"
+        canEdit={false}
+      >
         <Grid xs={12} pl={0} py={0}>
           <DetailsCell
             name="createdBy"

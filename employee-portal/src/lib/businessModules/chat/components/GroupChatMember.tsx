@@ -11,10 +11,7 @@ import { RoomMember } from "matrix-js-sdk";
 import { useState } from "react";
 
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
-import {
-  getDepartmentNameFromUserId,
-  getMemberAvatarUrl,
-} from "@/lib/businessModules/chat/shared/utils";
+import { getMemberAvatarUrl } from "@/lib/businessModules/chat/shared/utils";
 
 import { ChatAvatar } from "./ChatAvatar";
 
@@ -30,8 +27,7 @@ export function GroupChatMember({
   isAdmin,
   handleKick,
 }: Readonly<GroupChatMemberProps>) {
-  const usernameAndOrganisation = getDepartmentNameFromUserId(member.userId);
-  const { matrixClient } = useChatClientContext();
+  const { matrixClient, departmentInfo } = useChatClientContext();
   const avatarUrl = getMemberAvatarUrl(matrixClient, member);
   const [open, setOpen] = useState(false);
 
@@ -58,13 +54,8 @@ export function GroupChatMember({
             Admin
           </Typography>
         )}
-        <Typography
-          noWrap
-          level="body-sm"
-          textColor="text.secondary"
-          sx={{ textTransform: "capitalize" }}
-        >
-          {usernameAndOrganisation?.organisationName}
+        <Typography noWrap level="body-sm" textColor="text.secondary">
+          {departmentInfo?.name}
         </Typography>
         <ButtonLink
           level="body-sm"
@@ -87,9 +78,7 @@ export function GroupChatMember({
           open={open}
           onClose={() => setOpen(false)}
         >
-          <Typography
-            sx={{ textTransform: "capitalize" }}
-          >{`${member.name} | ${usernameAndOrganisation?.organisationName}`}</Typography>
+          <Typography>{`${member.name} | ${departmentInfo?.name}`}</Typography>
           <Typography>{`Chat-ID: ${member.userId}`}</Typography>
         </BaseModal>
       )}

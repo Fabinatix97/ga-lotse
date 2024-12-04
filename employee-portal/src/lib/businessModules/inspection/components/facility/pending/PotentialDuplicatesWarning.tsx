@@ -9,20 +9,24 @@ import { Alert } from "@eshg/lib-portal/components/Alert";
 
 import { formatPossibleDuplicates } from "@/lib/businessModules/inspection/components/processImport/formatters";
 
-export interface PotentialDuplicatesWarningProps {
+export interface PotentialDuplicatesFilterProps {
+  onFilterForDuplicates: () => void;
+}
+
+export interface PotentialDuplicatesWarningProps
+  extends PotentialDuplicatesFilterProps {
   numberOfDuplicates: number;
-  filterForDuplicates: () => void;
 }
 
 export function PotentialDuplicatesWarning({
   numberOfDuplicates,
-  filterForDuplicates,
+  onFilterForDuplicates,
 }: Readonly<PotentialDuplicatesWarningProps>) {
   return (
     <Alert
       message={formatPossibleDuplicates(numberOfDuplicates)}
       color="warning"
-      action={{ text: "FILTER", onClick: filterForDuplicates }}
+      action={{ text: "FILTER", onClick: onFilterForDuplicates }}
       sx={{
         border: "1px solid",
         borderColor: "warning.300",

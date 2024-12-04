@@ -821,10 +821,7 @@ export default function PlaygroundChartsPage() {
         <PlaygroundChartBox
           title="Balkendiagramm simpel"
           chart={
-            <BarChart
-              filterSetData={barChartSimple}
-              orientation={orientation}
-            />
+            <BarChart diagramData={barChartSimple} orientation={orientation} />
           }
           switches={[orientationSwitch]}
         />
@@ -832,7 +829,7 @@ export default function PlaygroundChartsPage() {
           title="Balkendiagramm simpel mit negativen Werten"
           chart={
             <BarChart
-              filterSetData={barChartSimpleWithNegativeValues}
+              diagramData={barChartSimpleWithNegativeValues}
               orientation={orientation}
             />
           }
@@ -842,7 +839,7 @@ export default function PlaygroundChartsPage() {
           title="Balkendiagramm gruppiert"
           chart={
             <BarChart
-              filterSetData={barChartGrouped}
+              diagramData={barChartGrouped}
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -854,7 +851,7 @@ export default function PlaygroundChartsPage() {
           title="Balkendiagramm gruppiert mit negativen Werten"
           chart={
             <BarChart
-              filterSetData={barChartGroupedWithNegativeValues}
+              diagramData={barChartGroupedWithNegativeValues}
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -866,7 +863,7 @@ export default function PlaygroundChartsPage() {
           title="Balkendiagramm mit vielen Werten"
           chart={
             <BarChart
-              filterSetData={barChartMuchData}
+              diagramData={barChartMuchData}
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -878,7 +875,7 @@ export default function PlaygroundChartsPage() {
           title="Balkendiagramm mit langen Bezeichnern"
           chart={
             <BarChart
-              filterSetData={barChartLongLabels}
+              diagramData={barChartLongLabels}
               orientation={orientation}
             />
           }
@@ -888,7 +885,7 @@ export default function PlaygroundChartsPage() {
           title="Balkendiagramm mit vielen langen sekundären Attributen"
           chart={
             <BarChart
-              filterSetData={barChartManyLongSecondaryAttributes}
+              diagramData={barChartManyLongSecondaryAttributes}
               orientation={orientation}
               grouping={grouping}
               scaling={scaling}
@@ -898,19 +895,19 @@ export default function PlaygroundChartsPage() {
         />
         <PlaygroundChartBox
           title="Kreisdiagram simpel"
-          chart={<PieChart filterSetData={pieChartSimple} />}
+          chart={<PieChart diagramData={pieChartSimple} />}
         />
         <PlaygroundChartBox
           title="Kreisdiagram mit vielen Werten und langen Bezeichnern"
-          chart={<PieChart filterSetData={pieChartManyLongValues} />}
+          chart={<PieChart diagramData={pieChartManyLongValues} />}
         />
         <PlaygroundChartBox
           title="Kreisdiagram mit sehr großen und kleinen Werten"
-          chart={<PieChart filterSetData={pieChartLargeAndSmallValues} />}
+          chart={<PieChart diagramData={pieChartLargeAndSmallValues} />}
         />
         <PlaygroundChartBox
           title="Kreisdiagram mit negativem Wert"
-          chart={<PieChart filterSetData={pieChartWithNegativeValue} />}
+          chart={<PieChart diagramData={pieChartWithNegativeValue} />}
         />
         <PlaygroundChartBox
           title="Histogramm simpel"
@@ -946,7 +943,7 @@ export default function PlaygroundChartsPage() {
           title="Liniendiagramm simpel"
           chart={
             <LineChart
-              diagram={lineChartSimple}
+              diagramData={lineChartSimple}
               configuration={lineChartSimpleConfiguration}
             />
           }
@@ -956,7 +953,7 @@ export default function PlaygroundChartsPage() {
           title="Liniendiagramm gruppiert mit langen Attributnamen und Achsentiteln"
           chart={
             <LineChart
-              diagram={lineChartGroupedWithLongValues}
+              diagramData={lineChartGroupedWithLongValues}
               configuration={lineChartConfigurationWithLongAxisNames}
             />
           }
@@ -966,7 +963,7 @@ export default function PlaygroundChartsPage() {
           title="Streudiagramm simpel"
           chart={
             <ScatterChart
-              filterSet={scatterChartSimple}
+              diagramData={scatterChartSimple}
               configuration={scatterChartConfig}
             />
           }
@@ -976,7 +973,7 @@ export default function PlaygroundChartsPage() {
           title="Streudiagramm mit Werten die weit auseinander sind"
           chart={
             <ScatterChart
-              filterSet={scatterChartLargeAndSmallValues}
+              diagramData={scatterChartLargeAndSmallValues}
               configuration={scatterChartConfig}
             />
           }

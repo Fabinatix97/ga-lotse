@@ -90,8 +90,7 @@ function columns(
   onDuplicate: (item: EvaluationOverviewTableItem) => void,
   onNameChange: (id: string, name: string) => void,
   onSaveAsTemplate: (item: EvaluationOverviewTableItem) => void,
-  exportDataFeatureToggle: boolean,
-  onExportData: (id: string) => void,
+  onExportData: (item: EvaluationOverviewTableItem) => Promise<void>,
 ) {
   return [
     columnHelper.accessor("name", {
@@ -181,16 +180,13 @@ function columns(
                 props.row.original.state !== ApiEvaluationState.Completed,
               startDecorator: <Menu />,
             },
-            props.row.original.anonymized &&
-              exportDataFeatureToggle && {
-                label: "Daten exportieren",
-                onClick: () => {
-                  onExportData(props.row.original.id);
-                },
-                disabled:
-                  props.row.original.state !== ApiEvaluationState.Completed,
-                startDecorator: <Download />,
-              },
+            props.row.original.anonymized && {
+              label: "Daten exportieren",
+              onClick: () => onExportData(props.row.original),
+              disabled:
+                props.row.original.state !== ApiEvaluationState.Completed,
+              startDecorator: <Download />,
+            },
             canDelete(props.row.original.userId) &&
               ({
                 label: "Löschen",
@@ -318,10 +314,8 @@ export function EvaluationsTable({
               setDuplicateEvaluationAction,
               (id, name) => setNameChangeAction({ id, name }),
               (item) => setSaveAsEvaluationTemplateSidebarEvaluationId(item.id),
-              fakeAnonymizationEnabled,
-              (id) => {
-                void exportData({ evaluationId: id });
-              },
+              ({ id, tooMuchDataForExport }) =>
+                exportData({ evaluationId: id }, { tooMuchDataForExport }),
             )}
             sorting={manualSortingProps}
             rowNavigation={{

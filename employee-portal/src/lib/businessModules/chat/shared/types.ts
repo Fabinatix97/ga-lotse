@@ -115,6 +115,7 @@ export interface ChatBaseModal<T>
 }
 
 export interface ChatUserSettings {
+  accountDeactivated?: boolean;
   chatConsentAsked?: boolean;
   chatUsageEnabled: boolean;
   sharePresence: boolean;

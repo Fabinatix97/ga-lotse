@@ -10,6 +10,8 @@ import { IconButton, Stack, Typography } from "@mui/joy";
 export function AppointmentDayPickerHeader(
   props: Readonly<{
     title: string;
+    prevMonthAvailable: () => boolean;
+    nextMonthAvailable: () => boolean;
     goToPrevious: CalendarApi["prev"];
     goToNext: CalendarApi["next"];
   }>,
@@ -37,6 +39,7 @@ export function AppointmentDayPickerHeader(
           size="sm"
           onClick={props.goToPrevious}
           aria-label={"Vorheriger Monat"}
+          disabled={!props.prevMonthAvailable()}
         >
           <ChevronLeft />
         </IconButton>
@@ -46,6 +49,7 @@ export function AppointmentDayPickerHeader(
           size="sm"
           onClick={props.goToNext}
           aria-label={"Nächster Monat"}
+          disabled={!props.nextMonthAvailable()}
         >
           <ChevronRight />
         </IconButton>

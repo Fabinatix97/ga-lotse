@@ -4,6 +4,7 @@
  */
 
 import { useImportProcess } from "@/lib/businessModules/inspection/api/mutations/processImport";
+import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
 import {
   ProcessImportForm,
   ProcessImportFormValues,
@@ -13,13 +14,23 @@ import { ProcessImportResult } from "@/lib/businessModules/inspection/components
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
 
-export function useProcessImportSidebar() {
+export function useProcessImportSidebar({
+  onFilterForDuplicates,
+}: PotentialDuplicatesFilterProps) {
   return useSidebar({
-    component: ProcessImportSidebar,
+    component: (props) => (
+      <ProcessImportSidebar
+        onFilterForDuplicates={onFilterForDuplicates}
+        {...props}
+      />
+    ),
   });
 }
 
-function ProcessImportSidebar({ onClose }: DrawerProps) {
+function ProcessImportSidebar({
+  onClose,
+  onFilterForDuplicates,
+}: DrawerProps & PotentialDuplicatesFilterProps) {
   const {
     mutateAsync: importProcess,
     reset,
@@ -32,21 +43,29 @@ function ProcessImportSidebar({ onClose }: DrawerProps) {
     onClose();
   }
 
+  function handleFilterForDuplicates() {
+    handleClose();
+    onFilterForDuplicates();
+  }
+
   async function handleSubmit({ file }: ProcessImportFormValues) {
     if (!file) {
       throw new Error("No file selected");
     }
-
-    await importProcess({
-      file,
-    });
+    await importProcess({ file });
   }
 
   switch (status) {
     case "pending":
       return <ProcessImportPending />;
     case "success":
-      return <ProcessImportResult result={result} onClose={handleClose} />;
+      return (
+        <ProcessImportResult
+          result={result}
+          onClose={handleClose}
+          onFilterForDuplicates={handleFilterForDuplicates}
+        />
+      );
     default:
       return (
         <ProcessImportForm onSubmit={handleSubmit} onClose={handleClose} />

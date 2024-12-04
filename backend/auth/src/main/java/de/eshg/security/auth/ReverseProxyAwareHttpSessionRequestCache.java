@@ -27,9 +27,10 @@ class ReverseProxyAwareHttpSessionRequestCache extends HttpSessionRequestCache {
 
   /**
    * regex for service-worker files, either "/sw.js" or "/worker-[hash].js" or "/workbox-[hash].js"
+   * or "fallback-[hash].js"
    */
   private static final Pattern SERVICE_WORKER_REGEX =
-      Pattern.compile("^/(sw|(worker-|workbox-)\\p{Alnum}+)\\.js$");
+      Pattern.compile("^/(sw|(worker-|workbox-|fallback-)\\p{Alnum}+)\\.js$");
 
   @Override
   public void saveRequest(HttpServletRequest request, HttpServletResponse response) {

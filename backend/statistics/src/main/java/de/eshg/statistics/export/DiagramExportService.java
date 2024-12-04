@@ -78,7 +78,7 @@ public class DiagramExportService {
         Hibernate.unproxy(
             diagram.getAnalysis().getAggregationResult(), AbstractAggregationResult.class);
     if (aggregationResult instanceof Evaluation evaluation && !evaluation.isAnonymized()) {
-      throw new BadRequestException("Data exports are only allowed for anonymized evaluations");
+      throw new BadRequestException(DataExportUtil.NOT_ANONYMIZED_ERROR);
     }
 
     try (XSSFWorkbook workbook = new XSSFWorkbook();

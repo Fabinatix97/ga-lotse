@@ -25,14 +25,15 @@ public class ReportMapper {
   private ReportMapper() {}
 
   public static ReportSeriesDto mapToApi(
-      ReportSeries reportSeries, Predicate<Report> isExportablePredicate) {
-    return mapToApi(reportSeries, reportSeries.getReports().stream(), isExportablePredicate);
+      ReportSeries reportSeries, Predicate<Report> isTooMuchDataForExportPredicate) {
+    return mapToApi(
+        reportSeries, reportSeries.getReports().stream(), isTooMuchDataForExportPredicate);
   }
 
   public static ReportSeriesDto mapToApi(
       ReportSeries reportSeries,
       Stream<Report> reportStream,
-      Predicate<Report> isExportablePredicate) {
+      Predicate<Report> isTooMuchDataForExportPredicate) {
     return new ReportSeriesDto(
         reportSeries.getExternalId(),
         reportSeries.getCreatedByUserId(),
@@ -48,7 +49,7 @@ public class ReportMapper {
         mapToReportingPeriodDto(reportSeries.getPeriod()),
         EvaluationMapper.getDataSourceNames(reportSeries.getEvaluation()),
         reportStream
-            .map(report -> mapToReportInfoDto(report, isExportablePredicate.test(report)))
+            .map(report -> mapToReportInfoDto(report, isTooMuchDataForExportPredicate.test(report)))
             .toList());
   }
 
@@ -66,7 +67,7 @@ public class ReportMapper {
         .orElse(null);
   }
 
-  private static ReportInfoDto mapToReportInfoDto(Report report, boolean isExportable) {
+  private static ReportInfoDto mapToReportInfoDto(Report report, boolean isTooMuchDataForExport) {
     return new ReportInfoDto(
         report.getExternalId(),
         report.getName(),
@@ -77,7 +78,7 @@ public class ReportMapper {
         report.getState().equals(AggregationResultState.COMPLETED)
             ? report.getNumberOfTableRows()
             : null,
-        isExportable);
+        isTooMuchDataForExport);
   }
 
   private static ReportStateDto mapToReportStateDto(AggregationResultState state) {

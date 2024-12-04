@@ -5,8 +5,11 @@ plugins {
 
 dependencies {
     implementation project(':lib-base-client')
+    implementation project(':lib-procedures')
     implementation project(':business-module-persistence-commons')
     implementation project(':rest-oauth-client-commons')
+
+    implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
 
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 

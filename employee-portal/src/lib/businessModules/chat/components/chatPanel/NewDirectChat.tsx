@@ -5,24 +5,20 @@
 
 import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Box, Button, Stack, Typography, useTheme } from "@mui/joy";
 import { Formik, FormikErrors } from "formik";
-import { isObjectType } from "remeda";
 
-import { ChatIllustrationBackground } from "@/lib/businessModules/chat/components/ChatIllustrationBackground";
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
-import { ChatMessages } from "@/lib/businessModules/chat/components/chatPanel/ChatMessages";
+import { DirectChatContent } from "@/lib/businessModules/chat/components/chatPanel/DirectChatContent";
 import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/InputComponent";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
-import { useChatSearchParams } from "@/lib/businessModules/chat/shared/hooks/useChatSearchParams";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import { delayed } from "@/lib/businessModules/chat/shared/utils";
 
 export interface DirectChatFormValues {
-  invite: string;
+  invite: string | null;
   message: string;
 }
 
@@ -37,15 +33,15 @@ export function NewDirectChat({
   userList,
   setChatPanelView,
 }: Readonly<NewDirectChatProps>) {
-  const { createNewChat, findExisingRoom } = useCreateNewChat();
+  const { createNewChat } = useCreateNewChat();
   const { sendMessage } = useSendMessage();
   const theme = useTheme();
-  const { setRoomIdParam } = useChatSearchParams();
 
   const snackbar = useSnackbar();
 
   async function handleStartDirectMessage(values: DirectChatFormValues) {
     try {
+      if (values.invite === null) return;
       const newRoomId = await createNewChat({
         invite: [values.invite],
         is_direct: true,
@@ -67,7 +63,7 @@ export function NewDirectChat({
     values: DirectChatFormValues,
   ): FormikErrors<DirectChatFormValues> {
     const errors: FormikErrors<DirectChatFormValues> = {};
-    if (!values.invite || values.invite === "") {
+    if (!values.invite || values.invite === "" || values.invite === null) {
       errors.invite = "Bitte wählen Sie mindestens einen Benutzer aus.";
     }
     if (!values.message || values.message === "") {
@@ -80,94 +76,57 @@ export function NewDirectChat({
   return (
     <Box sx={{ height: "100%" }}>
       <Formik<DirectChatFormValues>
-        initialValues={{ invite: "", message: "" }}
+        initialValues={{ invite: null, message: "" }}
         onSubmit={handleStartDirectMessage}
         validate={validateDMForm}
       >
-        {({ values }) => {
-          const existingChat =
-            values.invite &&
-            !Array.isArray(values.invite) &&
-            findExisingRoom(values.invite);
-          if (existingChat) {
-            setRoomIdParam(existingChat.room.roomId);
-          }
-          return (
-            <FormPlus
-              style={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
+        <FormPlus
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box
+            sx={{
+              padding: 2,
+              paddingBottom: 0,
+              borderBottom: "1px solid",
+              borderColor: theme.palette.neutral.outlinedBorder,
+            }}
+          >
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              marginBottom={1}
+              height="2.25rem"
             >
-              <Box
-                sx={{
-                  padding: 2,
-                  paddingBottom: 0,
-                  borderBottom: "1px solid",
-                  borderColor: theme.palette.neutral.outlinedBorder,
-                }}
+              <Typography level="h3">Neue Direktnachricht</Typography>
+              <Button
+                variant="soft"
+                color="neutral"
+                type="button"
+                onClick={() => cancel()}
               >
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  marginBottom={1}
-                  height="2.25rem"
-                >
-                  <Typography level="h3">Neue Direktnachricht</Typography>
-                  <Button
-                    variant="soft"
-                    color="neutral"
-                    type="button"
-                    onClick={() => cancel()}
-                  >
-                    Abbrechen
-                  </Button>
-                </Stack>
-                <UsersAutocomplete
-                  name="invite"
-                  placeholder="Empfänger:in auswählen"
-                  usersList={userList ?? []}
-                  multiple={false}
-                />
-              </Box>
-              {isObjectType(existingChat) && existingChat?.room.roomId ? (
-                <ChatMessages room={existingChat} />
-              ) : (
-                <>
-                  <ChatIllustrationBackground />
-                  <Box sx={{ minHeight: "2rem" }}>
-                    {values.invite && !isObjectType(existingChat) && (
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ width: "100%" }}
-                      >
-                        <ChatOutlinedIcon sx={{ color: "neutral.500" }} />
-                        <Typography
-                          level="title-sm"
-                          textColor="neutral.500"
-                          fontWeight="500"
-                        >
-                          Senden Sie eine Nachricht, um einen Chat zu starten!
-                        </Typography>
-                      </Stack>
-                    )}
-                  </Box>
-                </>
-              )}
-              <InputComponent
-                name="message"
-                selectFieldName="mentionedUsers"
-                roomMembers={[]}
-              />
-            </FormPlus>
-          );
-        }}
+                Abbrechen
+              </Button>
+            </Stack>
+            <UsersAutocomplete
+              name="invite"
+              placeholder="Empfänger:in auswählen"
+              usersList={userList ?? []}
+              multiple={false}
+            />
+          </Box>
+          <DirectChatContent />
+          <InputComponent
+            name="message"
+            selectFieldName="mentionedUsers"
+            roomMembers={[]}
+          />
+        </FormPlus>
       </Formik>
     </Box>
   );

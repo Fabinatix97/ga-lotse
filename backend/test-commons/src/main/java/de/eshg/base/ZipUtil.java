@@ -59,7 +59,6 @@ public class ZipUtil {
     }
     return results.stream()
         .map(String::stripTrailing)
-        .sorted()
         .collect(Collectors.joining(System.lineSeparator()));
   }
 

@@ -16,6 +16,7 @@ export function LogoutButton(props: { text: string }) {
       href="/logout/keycloak"
       color="danger"
       variant="soft"
+      aria-label={isMobile ? props.text : undefined}
       endDecorator={isMobile ? undefined : <LogoutOutlined />}
     >
       {isMobile ? <LogoutOutlined /> : props.text}

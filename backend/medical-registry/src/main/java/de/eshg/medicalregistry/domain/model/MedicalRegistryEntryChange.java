@@ -10,7 +10,7 @@ import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract sealed class MedicalRegistryEntryChange extends MedicalRegistryProcedure
-    permits Deregistration, FullProcedureChange {
+    permits PartialMedicalRegistryEntryChange, FullMedicalRegistryEntryChange {
 
   protected MedicalRegistryEntryChange() {}
 

@@ -33,7 +33,8 @@ import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.lib.xlsximport.RowValues;
-import de.eshg.medicalregistry.api.CreateFullProcedureChangeRequest;
+import de.eshg.medicalregistry.api.CreateFullChangeRequest;
+import de.eshg.medicalregistry.api.CreatePracticeChangeRequest;
 import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.GetMedicalRegistryEntryOverview;
@@ -43,14 +44,14 @@ import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
 import de.eshg.medicalregistry.api.PracticeReferenceFacilityDto;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
-import de.eshg.medicalregistry.domain.model.Deregistration;
-import de.eshg.medicalregistry.domain.model.FullProcedureChange;
-import de.eshg.medicalregistry.domain.model.FullProcedureChange_;
+import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
+import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange_;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry_;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.MedicalRegistrySystemProgressEntryType;
+import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation_;
@@ -71,6 +72,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,6 +91,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MedicalRegistryService {
   private static final Logger log = LoggerFactory.getLogger(MedicalRegistryService.class);
+  private static final Set<TypeOfChange> DEREGISTRATION_TYPE_OF_CHANGES =
+      EnumSet.of(TypeOfChange.DEREGISTRATION, TypeOfChange.RELOCATION);
 
   private final MedicalRegistryEntryRepository medicalRegistryEntryRepository;
   private final ProcedureDeletionService<MedicalRegistryProcedure> procedureDeletionService;
@@ -152,8 +156,9 @@ public class MedicalRegistryService {
 
   private CreatePracticeDto getPractice(CreateProcedureRequest createProcedureRequest) {
     return switch (createProcedureRequest) {
-      case CreateFullProcedureChangeRequest createFullProcedureChangeRequest ->
-          createFullProcedureChangeRequest.practice();
+      case CreateFullChangeRequest createFullChangeRequest -> createFullChangeRequest.practice();
+      case CreatePracticeChangeRequest createPracticeChangeRequest ->
+          createPracticeChangeRequest.practice();
       default -> null;
     };
   }
@@ -218,7 +223,7 @@ public class MedicalRegistryService {
 
     updateProfessionInformation(draftMedicalRegistryEntry, medicalRegistryProcedure);
 
-    if (draftMedicalRegistryEntry instanceof Deregistration) {
+    if (DEREGISTRATION_TYPE_OF_CHANGES.contains(draftMedicalRegistryEntry.getTypeOfChange())) {
       medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
     }
 
@@ -270,18 +275,18 @@ public class MedicalRegistryService {
 
   private Optional<Boolean> getIsEmployeesEmployed(MedicalRegistryEntryChange source) {
     return switch (source) {
-      case FullProcedureChange fullProcedureChange ->
-          Optional.of(fullProcedureChange.isEmployeesEmployed());
-      case Deregistration ignored -> Optional.empty();
+      case FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange ->
+          Optional.of(fullMedicalRegistryEntryChange.isEmployeesEmployed());
+      case PartialMedicalRegistryEntryChange ignored -> Optional.empty();
     };
   }
 
   private Optional<ProfessionInformation> getProfessionalInformation(
       MedicalRegistryEntryChange source) {
     return switch (source) {
-      case FullProcedureChange fullProcedureChange ->
-          Optional.of(fullProcedureChange.getProfessionInformation());
-      case Deregistration ignored -> Optional.empty();
+      case FullMedicalRegistryEntryChange fullMedicalRegistryEntryChange ->
+          Optional.of(fullMedicalRegistryEntryChange.getProfessionInformation());
+      case PartialMedicalRegistryEntryChange ignored -> Optional.empty();
     };
   }
 
@@ -526,8 +531,8 @@ public class MedicalRegistryService {
 
       Predicate pendingRegistrationWithProfessionalTitle =
           criteriaBuilder
-              .treat(root, FullProcedureChange.class)
-              .join(FullProcedureChange_.professionInformation, JoinType.LEFT)
+              .treat(root, FullMedicalRegistryEntryChange.class)
+              .join(FullMedicalRegistryEntryChange_.professionInformation, JoinType.LEFT)
               .get(ProfessionInformation_.professionalTitle)
               .in(filteringProfessionalTitles);
 

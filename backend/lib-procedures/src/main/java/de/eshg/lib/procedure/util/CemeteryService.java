@@ -7,9 +7,9 @@ package de.eshg.lib.procedure.util;
 
 import de.eshg.domain.model.EntityWithExternalId;
 import de.eshg.domain.model.GenericEntity;
+import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.lib.procedure.domain.model.Cemetery;
 import de.eshg.lib.procedure.domain.repository.CemeteryRepository;
-import de.eshg.lib.procedure.domain.serialization.SerializationService;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

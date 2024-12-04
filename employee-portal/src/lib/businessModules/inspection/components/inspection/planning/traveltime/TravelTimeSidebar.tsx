@@ -197,7 +197,6 @@ function TravelTimeSidebarWithMutations({
                   <DateTimeField
                     name="startTime"
                     label="Zeitpunkt der Abfahrt"
-                    allowEmpty
                     validate={(value) =>
                       validateBeforeAppointment(value, appointment)
                     }
@@ -234,7 +233,6 @@ function TravelTimeSidebarWithMutations({
                   <DateTimeField
                     name="endTime"
                     label="Zeitpunkt der Rückkehr"
-                    allowEmpty
                     validate={(value) =>
                       validateAfterAppointment(value, appointment)
                     }

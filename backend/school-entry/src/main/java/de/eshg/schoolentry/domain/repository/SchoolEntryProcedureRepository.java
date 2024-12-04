@@ -46,8 +46,10 @@ public interface SchoolEntryProcedureRepository extends ProcedureRepository<Scho
   @Query(
       """
       select s from SchoolEntryProcedure s
-      join s.relatedPersons p
-      where p.centralFileStateId in :centralFileStateIds
+      where exists (
+          select 1 from s.relatedPersons p
+          where p.centralFileStateId in :centralFileStateIds
+      )
       order by s.id
       """)
   @EntityGraph(attributePaths = SchoolEntryProcedure_.APPOINTMENT)

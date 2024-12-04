@@ -18,7 +18,7 @@ import { ContentSheet } from "@/lib/shared/components/layout/contentSheet";
 import { createFieldNameMapper } from "@/lib/shared/helpers/form";
 
 import { CitizenAnamnesisInfoAlert } from "./components/CitizenAnamnesisInfoAlert";
-import { LocalMonthAndYearFields } from "./components/LocalMonthAndYearFields";
+import { CitizenPortalMonthAndYearFields } from "./components/CitizenPortalMonthAndYearFields";
 
 const countryCodeOptions = buildEnumOptions(COUNTRY_CODE_VALUES);
 
@@ -93,11 +93,11 @@ function ContactForm(props: ContactFormProps) {
         />
       </Grid>
       {props.for === "child" && (
-        <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
-          <FormLabel sx={{ fontSize: "14px", fontWeight: "500" }}>
+        <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "700" }}>
             {t("migration.inGermanySince")}
           </FormLabel>
-          <LocalMonthAndYearFields
+          <CitizenPortalMonthAndYearFields
             fieldName={migrationBackground("child.inGermanySince")}
             date={props.values.migrationBackground.child.inGermanySince}
           />

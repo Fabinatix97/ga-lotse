@@ -128,11 +128,17 @@ export function AppointmentDayPicker({
   }, [updateAvailableAppointmentEvents]);
 
   function checkIfPrevMonthDisplayIsAllowed() {
-    return isAfter(fullCalendarRef.current!.getApi().view.activeStart, start);
+    return (
+      fullCalendarRef.current !== null &&
+      isAfter(fullCalendarRef.current.getApi().view.activeStart, start)
+    );
   }
 
   function checkIfNextMonthDisplayIsAllowed() {
-    return isBefore(fullCalendarRef.current!.getApi().view.activeEnd, end);
+    return (
+      fullCalendarRef.current !== null &&
+      isBefore(fullCalendarRef.current.getApi().view.activeEnd, end)
+    );
   }
 
   return (
@@ -148,6 +154,8 @@ export function AppointmentDayPicker({
       >
         <AppointmentDayPickerHeader
           title={fullCalendarTitle}
+          prevMonthAvailable={checkIfPrevMonthDisplayIsAllowed}
+          nextMonthAvailable={checkIfNextMonthDisplayIsAllowed}
           goToPrevious={() => {
             if (checkIfPrevMonthDisplayIsAllowed()) {
               fullCalendarRef.current?.getApi().prev();

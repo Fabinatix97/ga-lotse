@@ -11,20 +11,20 @@ import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 
 interface FacilityTileProps {
   facility: ApiInspFacility;
-  setOpen: (initialState: boolean) => void;
   readonly?: boolean;
+  onEdit?: () => void;
 }
 
 export function FacilityTile({
   facility,
-  setOpen,
   readonly,
+  onEdit,
 }: Readonly<FacilityTileProps>) {
   return (
     <InfoTile
       name="facility"
       title="Einrichtung"
-      onEdit={!readonly ? () => setOpen(true) : undefined}
+      onEdit={!readonly ? onEdit : undefined}
     >
       <CentralFileFacilityDetails facility={facility.baseFacility}>
         <DetailsCell

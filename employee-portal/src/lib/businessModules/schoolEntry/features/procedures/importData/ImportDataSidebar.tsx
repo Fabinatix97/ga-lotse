@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiSchoolEntryFeature } from "@eshg/employee-portal-api/schoolEntry";
 import type { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Formik } from "formik";
 
@@ -14,7 +13,6 @@ import {
   useGetLocationSelectionMode,
   useIsDirectProcedureTypeAssignmentOnImport,
 } from "@/lib/businessModules/schoolEntry/api/queries/configApi";
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/schoolEntry/api/queries/featureTogglesApi";
 import { ImportDataFields } from "@/lib/businessModules/schoolEntry/features/procedures/importData/ImportDataFields";
 import { ImportListType } from "@/lib/businessModules/schoolEntry/features/procedures/importData/importTypes";
 import { ImportDataForm } from "@/lib/shared/components/import/ImportDataForm";
@@ -46,9 +44,6 @@ export interface ImportDataValues {
 }
 
 function ImportDataSidebar(props: SidebarWithFormRefProps) {
-  const isPastProcedureImportEnabled = useIsNewFeatureEnabled(
-    ApiSchoolEntryFeature.ImportPastProcedures,
-  );
   const locationSelectionMode = useGetLocationSelectionMode();
   const isDirectProcedureTypeAssignmentOnImport =
     useIsDirectProcedureTypeAssignmentOnImport();
@@ -80,7 +75,6 @@ function ImportDataSidebar(props: SidebarWithFormRefProps) {
         >
           <ImportDataFields
             listType={values.listType}
-            isPastProcedureImportEnabled={isPastProcedureImportEnabled}
             locationSelectionMode={locationSelectionMode}
             isDirectProcedureTypeAssignmentOnImport={
               isDirectProcedureTypeAssignmentOnImport

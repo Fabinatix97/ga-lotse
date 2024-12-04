@@ -6,5 +6,8 @@
 package de.eshg.dental.api;
 
 public enum ProphylaxisSessionSortKey {
-  ID
+  ID,
+  TYPE,
+  GROUP_NAME,
+  DATE_AND_TIME
 }

@@ -20,6 +20,7 @@ dependencies {
 
     testImplementation "org.testcontainers:postgresql"
     testImplementation testFixtures(project(':business-module-persistence-commons'))
+    testImplementation testFixtures(project(':lib-procedures'))
     testImplementation testFixtures(project(':lib-xlsx-import'))
 }
 

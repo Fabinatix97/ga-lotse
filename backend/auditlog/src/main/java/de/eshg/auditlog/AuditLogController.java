@@ -244,11 +244,8 @@ public class AuditLogController implements AuditLogApi, AuditLogArchivingApi {
 
   private void validateAccessWasGranted(AuditLogSource source, LocalDate date, UserDto selfUser) {
 
-    Optional<GrantedAccess> grant =
-        grantedAccessRepository.findByAuditLogSourceAndDateAndIdOfGrantedUserAndExpiresAtIsAfter(
-            source, date, selfUser.userId(), Instant.now(clock));
-
-    if (grant.isEmpty()) {
+    if (!grantedAccessRepository.existsByAuditLogSourceAndDateAndIdOfGrantedUserAndExpiresAtIsAfter(
+        source, date, selfUser.userId(), Instant.now(clock))) {
       throw new BadRequestException(
           ErrorCode.INSUFFICIENT_USER_RIGHTS,
           "Access was not granted for audit log of %s of %s to user with id %s"

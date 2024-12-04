@@ -102,8 +102,7 @@ public record UpdateInspectionRequest(
   public static UpdateInspectionRequest forPacklistDefinitionRevisionId(
       UUID packlistDefinitionVersionId) {
     List<UUID> list = List.of(packlistDefinitionVersionId);
-    return new UpdateInspectionRequest(
-        null, null, null, null, null, list, null, null, null, null, null, null, null, null, null);
+    return forPacklistDefinitionRevisionIds(list);
   }
 
   public static UpdateInspectionRequest forPacklistDefinitionRevisionIds(
@@ -271,5 +270,25 @@ public record UpdateInspectionRequest(
   public static UpdateInspectionRequest forLock(Boolean lock) {
     return new UpdateInspectionRequest(
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, lock);
+  }
+
+  public static UpdateInspectionRequest forResult(
+      InspectionResult inspectionResult, FollowupType followupType, Instant followupDate) {
+    return new UpdateInspectionRequest(
+        null,
+        null,
+        null,
+        inspectionResult,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        followupType,
+        followupDate,
+        null,
+        null);
   }
 }

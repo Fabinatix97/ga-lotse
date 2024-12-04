@@ -67,3 +67,10 @@ export function createOnlyIfProcedureOpen(
     return t;
   };
 }
+
+export function guardValue<T>(
+  guard: boolean | null | undefined,
+  value: T,
+): T | undefined {
+  return guard ? value : undefined;
+}

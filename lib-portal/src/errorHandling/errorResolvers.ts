@@ -37,6 +37,7 @@ const ERROR_MAPPING: Record<ApiErrorCode, PortalErrorCode> = {
   [ApiErrorCode.InvalidFile]: PortalErrorCode.InvalidFile,
   [ApiErrorCode.Corrupt]: PortalErrorCode.Corrupt,
   [ApiErrorCode.Locked]: PortalErrorCode.Locked,
+  [ApiErrorCode.XlsxTooManyRows]: PortalErrorCode.XlsxTooManyRows,
 };
 
 export function resolveError(error: unknown): PortalError {

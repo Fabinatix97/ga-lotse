@@ -5,6 +5,7 @@
 
 import { useParams } from "next/navigation";
 
+import { EditInspectionPageParams } from "@/app/(businessModules)/inspection/procedures/[id]/layout";
 import { useFileApi } from "@/lib/businessModules/inspection/api/clients";
 import { getHeadersForOfflineCaching } from "@/lib/businessModules/inspection/shared/offline/getHeadersForOfflineCaching";
 import { useDownloadFile } from "@/lib/shared/api/download/files";
@@ -12,7 +13,8 @@ import { ProgressEntriesUrlParams } from "@/lib/shared/components/procedures/pro
 
 export function useDownloadInspectionFile() {
   const fileApi = useFileApi();
-  const { id } = useParams<ProgressEntriesUrlParams["params"]>();
+  const { id } =
+    useParams<ProgressEntriesUrlParams<EditInspectionPageParams>["params"]>();
   return useDownloadFile((fileId: string) =>
     fileApi.downloadFileRaw({ fileId }, getHeadersForOfflineCaching(id)),
   );

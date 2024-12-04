@@ -5,27 +5,17 @@
 
 "use client";
 
-import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
-import { formatPersonName } from "@eshg/lib-portal/formatters/person";
-import { Button, Stack } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { isGdprPerson } from "@/lib/baseModule/components/gdpr/helpers";
+import { formatIdentityName } from "@/lib/baseModule/components/gdpr/helpers";
 import { ValidationTaskProceduresTable } from "@/lib/baseModule/components/gdpr/validationTasks/ValidationTaskProceduresTable";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
-import { getGdprValidationTaskDetails } from "@/lib/shared/api/queries/gdpr";
+import { getGdprValidationTaskDetailsQuery } from "@/lib/shared/api/queries/gdpr";
 import { MainContentLayout } from "@/lib/shared/components/layout/MainContentLayout";
 import { StickyToolbarLayout } from "@/lib/shared/components/layout/StickyToolbarLayout";
 import { Toolbar } from "@/lib/shared/components/layout/Toolbar";
-
-const businessModuleNames: string[] = Object.values(ApiBusinessModule);
-
-function isBusinessModule(
-  businessModule: string,
-): businessModule is ApiBusinessModule {
-  return businessModuleNames.includes(businessModule);
-}
+import { isBusinessModule } from "@/lib/shared/helpers/guards";
 
 export default function GdprValidationTaskPage({
   params,
@@ -40,9 +30,8 @@ export default function GdprValidationTaskPage({
   }
 
   const gdprValidationTaskApi = useGdprValidationTaskApi(businessModule);
-
   const query = useSuspenseQuery(
-    getGdprValidationTaskDetails(
+    getGdprValidationTaskDetailsQuery(
       gdprValidationTaskApi,
       businessModule,
       params.gdprProcedureId,
@@ -52,9 +41,7 @@ export default function GdprValidationTaskPage({
   const { validationTask, proceduresWithStatus } = query.data;
 
   const identity = validationTask.identificationData;
-  const name = isGdprPerson(identity)
-    ? formatPersonName(identity)
-    : identity.name;
+  const name = formatIdentityName(identity);
 
   return (
     <StickyToolbarLayout
@@ -66,12 +53,11 @@ export default function GdprValidationTaskPage({
       }
     >
       <MainContentLayout fullViewportHeight gap={2}>
-        <Stack direction={{ md: "row" }} justifyContent="flex-end">
-          <Button>Finalisieren (WIP)</Button>
-        </Stack>
         <ValidationTaskProceduresTable
-          gdprProcedureId={params.gdprProcedureId}
           gdprValidationTaskApi={gdprValidationTaskApi}
+          gdprProcedureId={params.gdprProcedureId}
+          gdprProcedureType={validationTask.type}
+          status={validationTask.status}
           procedures={proceduresWithStatus}
           loading={query.isFetching}
         />

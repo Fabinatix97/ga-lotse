@@ -4,7 +4,6 @@
  */
 
 import { EChartsOption } from "echarts";
-import { CallbackDataParams } from "echarts/types/dist/shared.js";
 
 import {
   AnalysisDiagramBarChart,
@@ -17,11 +16,10 @@ import {
   ChartApi,
   EChart,
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
-import { chartLegend } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 import { calculateRelativeFormatting } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 export interface BarChartProps {
-  filterSetData: AnalysisDiagramBarChart["data"];
+  diagramData: AnalysisDiagramBarChart["data"];
   grouping?: DiagramGrouping;
   scaling?: DiagramScaling;
   orientation?: DiagramOrientation;
@@ -121,10 +119,10 @@ function evaluateGrouping(
 
 export function BarChart(props: BarChartProps) {
   const grouping = evaluateGrouping(props.grouping, props.scaling);
-  const isStackedSeries = (props.filterSetData[0]?.attributes?.length ?? 0) > 1;
+  const isStackedSeries = (props.diagramData[0]?.attributes?.length ?? 0) > 1;
   const series = isStackedSeries
-    ? mapToStackedSeries(props.filterSetData)
-    : mapToUnstackedSeries(props.filterSetData);
+    ? mapToStackedSeries(props.diagramData)
+    : mapToUnstackedSeries(props.diagramData);
 
   if (props.scaling === "RELATIVE") {
     series.data = transformToRelativeData(series.data);
@@ -144,6 +142,7 @@ export function BarChart(props: BarChartProps) {
     },
     axisTick: {
       show: props.type === DiagramType.HISTOGRAM_CHART,
+      interval: 0,
     },
     splitLine: {
       show: props.type === DiagramType.HISTOGRAM_CHART,
@@ -170,12 +169,10 @@ export function BarChart(props: BarChartProps) {
         };
 
   const option: EChartsOption = {
-    legend: chartLegend,
     ...axis,
     tooltip: {
       show: true,
-      formatter: (params) =>
-        formatter((params as CallbackDataParams).value as number),
+      valueFormatter: (params) => formatter(params as number),
     },
     series: isStackedSeries
       ? Object.keys(series.data).map((serie) => {

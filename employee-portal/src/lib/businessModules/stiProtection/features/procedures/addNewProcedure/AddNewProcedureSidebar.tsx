@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiCreateProcedureResponse } from "@eshg/employee-portal-api/schoolEntry";
 import {
   ApiAppointment,
   ApiAppointmentBookingType,
   ApiConcern,
   ApiCountryCode,
   ApiCreateProcedureRequest,
+  ApiCreateProcedureResponse,
   ApiGender,
 } from "@eshg/employee-portal-api/stiProtection";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { differenceInMinutes } from "date-fns";
 import { Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/navigation";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 
 import { useCreateStiProcedureMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
@@ -41,6 +41,7 @@ import {
   PersonalDataForm,
   personalDataFormValidation,
 } from "./PersonalDataForm";
+import { SharePinModal } from "./SharePinModal";
 import { SummaryForm, SummaryFormProps } from "./SummaryForm";
 
 export const CONCERN_OPTIONS = Object.entries(CONCERN_VALUES).map(
@@ -111,6 +112,9 @@ export interface AddNewProcedureForm {
 export function AddNewProcedureSidebar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useSearchParam("add-procedure", "boolean");
+  const [dataToShare, setDataToShare] = useState<
+    { pin: string; id: string } | undefined
+  >();
   const lastStepIndex = steps.length - 1;
   const [stepIndex, changeToStep] = useReducer(
     (_index: number, newIndex: number) =>
@@ -125,9 +129,17 @@ export function AddNewProcedureSidebar() {
     onSuccess: (data: ApiCreateProcedureResponse) => {
       setIsOpen(false);
       snackbar.confirmation("Vorgang angelegt");
-      router.push(routes.procedures.byId(data.procedureId).details);
+      setDataToShare({ pin: data.pin, id: data.procedureId });
     },
   });
+
+  function pinIsShared() {
+    if (dataToShare == null) {
+      return;
+    }
+    router.push(routes.procedures.byId(dataToShare.id).details);
+    setDataToShare(undefined);
+  }
 
   const { sidebarFormRef, handleClose } = useSidebarForm({
     onClose: () => {
@@ -152,36 +164,39 @@ export function AddNewProcedureSidebar() {
   const Fields = step.fields;
 
   return (
-    <Sidebar open={isOpen} onClose={handleClose}>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleNext}
-        validate={step.validate}
-      >
-        <SidebarForm ref={sidebarFormRef}>
-          <SidebarContent title={step.title} subtitle={step.subTitle}>
-            <Fields
-              jumpToAppointmentSelection={() => {
-                changeToStep(1);
-              }}
-              jumpToPersonalData={() => {
-                changeToStep(2);
-              }}
-            />
-          </SidebarContent>
-          <SidebarActions>
-            <MultiFormButtonBar
-              submitting={addNewProcedure.isPending}
-              onCancel={handleClose}
-              onBack={
-                isOnFirstStep ? undefined : () => changeToStep(stepIndex - 1)
-              }
-              submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
-            />
-          </SidebarActions>
-        </SidebarForm>
-      </Formik>
-    </Sidebar>
+    <>
+      <Sidebar open={isOpen} onClose={handleClose}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleNext}
+          validate={step.validate}
+        >
+          <SidebarForm ref={sidebarFormRef}>
+            <SidebarContent title={step.title} subtitle={step.subTitle}>
+              <Fields
+                jumpToAppointmentSelection={() => {
+                  changeToStep(1);
+                }}
+                jumpToPersonalData={() => {
+                  changeToStep(2);
+                }}
+              />
+            </SidebarContent>
+            <SidebarActions>
+              <MultiFormButtonBar
+                submitting={addNewProcedure.isPending}
+                onCancel={handleClose}
+                onBack={
+                  isOnFirstStep ? undefined : () => changeToStep(stepIndex - 1)
+                }
+                submitLabel={isOnLastStep ? "Vorgang anlegen" : "Weiter"}
+              />
+            </SidebarActions>
+          </SidebarForm>
+        </Formik>
+      </Sidebar>
+      <SharePinModal pinToShare={dataToShare?.pin} onShared={pinIsShared} />
+    </>
   );
 }
 

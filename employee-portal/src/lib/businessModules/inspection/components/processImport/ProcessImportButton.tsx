@@ -9,13 +9,16 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { Button } from "@mui/joy";
 
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
+import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
 import { useProcessImportSidebar } from "@/lib/businessModules/inspection/components/processImport/ProcessImportSidebar";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
-export function ProcessImportButton() {
+export function ProcessImportButton({
+  onFilterForDuplicates,
+}: PotentialDuplicatesFilterProps) {
   const isEnabled = useIsNewFeatureEnabled(ApiInspectionFeature.Import);
   const hasImportRole = useHasUserRoleCheck(ApiUserRole.InspectionImport);
-  const { open } = useProcessImportSidebar();
+  const { open } = useProcessImportSidebar({ onFilterForDuplicates });
 
   if (!isEnabled || !hasImportRole) {
     return null;

@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -62,6 +63,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class InspectionFinalizer {
+
+  @Value("${de.eshg.inspection.signature.max.image.sidelength}")
+  private long maxImageSignatureSideLength;
 
   private final InspectionUpdater inspectionUpdater;
   private final InspectionReportService inspectionReportService;
@@ -139,7 +143,7 @@ public class InspectionFinalizer {
     inspection.setPhase(InspectionPhase.CREATING_REPORT_AND_INVOICE);
     inspection.getExecutionTaskOrThrow().setTaskStatus(TaskStatus.CLOSED);
     inspection.createReportTask(clock);
-    inspectionValidator.generateSignatureHash(signature, signatureFile, inspection.getPhase());
+    inspectionValidator.generateSignatureHash(signature, inspection.getPhase());
     inspectionValidator.generateChecklistHashes(inspection.getChecklists(), inspection.getPhase());
     inspectionUpdater.updateModified(inspection);
   }
@@ -174,11 +178,12 @@ public class InspectionFinalizer {
     inspectionUpdater.updateModified(inspection);
   }
 
-  private static InspectionSignature createSignature(
+  private InspectionSignature createSignature(
       FinalizeInspectionRequest request, MultipartFile signatureFile) {
     if (StringUtils.isNotBlank(request.signer()) && signatureFile != null) {
       MediaFile signatureImage =
-          FileUtil.readFileAndValidate(signatureFile, List.of(MediaType.IMAGE_PNG));
+          FileUtil.readFileAndValidate(
+              signatureFile, List.of(MediaType.IMAGE_PNG), maxImageSignatureSideLength);
       InspectionSignature signature = new InspectionSignature();
       signature.setSigner(request.signer().trim());
       signature.setSignatureImage(signatureImage);

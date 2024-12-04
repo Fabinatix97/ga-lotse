@@ -5,7 +5,7 @@
 
 import {
   BaseModal,
-  BaseModalProps,
+  BaseModalPropsRequiredClose,
 } from "@eshg/lib-portal/components/BaseModal";
 import { Block, Done } from "@mui/icons-material";
 import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
@@ -13,7 +13,10 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/joy";
 import { clearCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 
-type ChatConsentModalProps = Omit<BaseModalProps, "children" | "modalTitle"> & {
+type ChatConsentModalProps = Omit<
+  BaseModalPropsRequiredClose,
+  "children" | "modalTitle"
+> & {
   chatUsageEnabled: boolean;
 };
 

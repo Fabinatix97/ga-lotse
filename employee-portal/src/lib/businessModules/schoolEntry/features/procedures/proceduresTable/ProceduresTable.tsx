@@ -49,12 +49,12 @@ import {
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
-import { getSortDirection } from "@/lib/shared/components/table/sorting";
-import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
 import {
-  CustomSortingProps,
-  useTableControl,
-} from "@/lib/shared/hooks/searchParams/useTableControl";
+  getSortDirection,
+  getSortKeyWithSpecificMapping,
+} from "@/lib/shared/components/table/sorting";
+import { formatSchoolYear } from "@/lib/shared/helpers/formatters";
+import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import {
   useRowSelection,
   useSyncRowSelection,
@@ -120,7 +120,10 @@ export function ProceduresTable(props: ProceduresTableProps) {
     ...filterValues,
     labelsFilter: filterValues.labelsFilter?.map((label) => label.id),
     ...personSearch.searchParams,
-    sortKey: getSortKey(tableControl.tableSorting),
+    sortKey: getSortKeyWithSpecificMapping(
+      tableControl.tableSorting,
+      SORT_KEY_MAPPING,
+    ),
     sortDirection: getSortDirection(tableControl.tableSorting),
   });
 
@@ -349,15 +352,3 @@ const SORT_KEY_MAPPING: Record<string, ApiSchoolEntryProcedureSortKey> = {
   appointmentStart: ApiSchoolEntryProcedureSortKey.AppointmentStart,
   schoolYear: ApiSchoolEntryProcedureSortKey.SchoolYear,
 };
-
-function getSortKey(
-  sortingProps: CustomSortingProps,
-): ApiSchoolEntryProcedureSortKey | undefined {
-  const sorting = sortingProps.manualSorting
-    ? sortingProps.sortingState
-    : sortingProps.initialSorting;
-  if (sorting?.[0] === undefined) return undefined;
-
-  const columnId = sorting[0].id;
-  return SORT_KEY_MAPPING[columnId];
-}

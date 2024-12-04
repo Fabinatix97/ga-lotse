@@ -17,7 +17,9 @@ export default function ChatPlaygroundPage() {
   return (
     <StickyToolbarLayout toolbar={<Toolbar title="Chat Playground" />}>
       <MainContentLayout>
-        {canAccessChat && userSettings.chatConsentAsked ? (
+        {canAccessChat &&
+        userSettings.chatConsentAsked &&
+        !userSettings.accountDeactivated ? (
           <ChatPlaygroundContent />
         ) : null}
       </MainContentLayout>

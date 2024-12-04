@@ -4,8 +4,12 @@
  */
 
 import {
+  ApprovalRequestApi,
   ChildApi,
   Configuration,
+  FileApi,
+  ProcedureApi,
+  ProgressEntryApi,
   ProphylaxisSessionApi,
 } from "@eshg/employee-portal-api/dental";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
@@ -25,4 +29,24 @@ export function useChildApi() {
 export function useProphylaxisSessionApi() {
   const configuration = useConfiguration();
   return new ProphylaxisSessionApi(configuration);
+}
+
+export function useProcedureApi() {
+  const configuration = useConfiguration();
+  return new ProcedureApi(configuration);
+}
+
+export function useProgressEntryApi() {
+  const configuration = useConfiguration();
+  return new ProgressEntryApi(configuration);
+}
+
+export function useFileApi() {
+  const configuration = useConfiguration();
+  return new FileApi(configuration);
+}
+
+export function useApprovalRequestApi() {
+  const configuration = useConfiguration();
+  return new ApprovalRequestApi(configuration);
 }

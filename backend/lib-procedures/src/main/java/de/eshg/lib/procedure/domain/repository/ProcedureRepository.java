@@ -177,36 +177,46 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
 
   @Query(
       """
-   SELECT procedure.externalId from #{#entityName} procedure
-   LEFT JOIN procedure.relatedPersons relatedPerson
-   LEFT JOIN procedure.relatedFacilities relatedFacility
-   WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
-   OR relatedFacility.centralFileStateId IN :centralFileStateIds
-   ORDER BY procedure.createdAt DESC, procedure.id ASC
-   """)
+        SELECT procedure.externalId from #{#entityName} procedure
+        WHERE EXISTS (
+            SELECT 1 FROM procedure.relatedPersons person
+            WHERE person.centralFileStateId IN :centralFileStateIds
+        )
+        OR EXISTS (
+            SELECT 1 FROM procedure.relatedFacilities facility
+            WHERE facility.centralFileStateId IN :centralFileStateIds
+        )
+        ORDER BY procedure.createdAt DESC, procedure.id ASC
+      """)
   List<UUID> findIdsByFileStateIds(
       @Param("centralFileStateIds") Collection<UUID> centralFileStateIds);
 
   @Query(
       """
- SELECT procedure from #{#entityName} procedure
- LEFT JOIN procedure.relatedPersons relatedPerson
- LEFT JOIN procedure.relatedFacilities relatedFacility
- WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
- OR relatedFacility.centralFileStateId IN :centralFileStateIds
- ORDER BY procedure.createdAt DESC, procedure.id ASC
- """)
+        SELECT procedure from #{#entityName} procedure
+        WHERE EXISTS (
+            SELECT 1 FROM procedure.relatedPersons person
+            WHERE person.centralFileStateId IN :centralFileStateIds
+        )
+        OR EXISTS (
+            SELECT 1 FROM procedure.relatedFacilities facility
+            WHERE facility.centralFileStateId IN :centralFileStateIds
+        )
+        ORDER BY procedure.createdAt DESC, procedure.id ASC
+      """)
   List<ProcedureT> findByFileStateIds(
       @Param("centralFileStateIds") Collection<UUID> centralFileStateIds);
 
   @Query(
       """
- SELECT procedure from #{#entityName} procedure
-JOIN procedure.relatedPersons relatedPerson
-WHERE relatedPerson.centralFileStateId IN :centralFileStateIds
-AND relatedPerson.personType = :personType
-ORDER BY procedure.createdAt DESC, procedure.id ASC
-""")
+        SELECT procedure from #{#entityName} procedure
+        WHERE EXISTS (
+          SELECT 1 FROM procedure.relatedPersons person
+          WHERE person.centralFileStateId IN :centralFileStateIds
+          AND person.personType = :personType
+        )
+        ORDER BY procedure.createdAt DESC, procedure.id ASC
+      """)
   List<ProcedureT> findByRelatedPersonsCentralFileStateIds(
       @Param("centralFileStateIds") Collection<UUID> centralFileStateIds,
       @Param("personType") PersonType personType);
@@ -220,7 +230,7 @@ ORDER BY procedure.createdAt DESC, procedure.id ASC
         SELECT relatedPerson.centralFileStateId FROM #{#entityName} procedure
         JOIN procedure.relatedPersons relatedPerson
         WHERE procedure.procedureStatus IN :procedureStatuses
-        """)
+      """)
   List<UUID> findAllRelatedPersonFileStateIdsByProcedureStatus(
       @Param("procedureStatuses") Set<ProcedureStatus> procedureStatuses);
 

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiGetDepartmentInfoResponse } from "@eshg/employee-portal-api/base";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   MatrixClient,
@@ -27,6 +28,7 @@ import {
 } from "react";
 import { isNullish } from "remeda";
 
+import { useGetDepartment } from "@/lib/businessModules/chat/api/queries/department";
 import { useMessageTeaser } from "@/lib/businessModules/chat/components/messageTeaser/MessageTeaserProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
@@ -47,6 +49,7 @@ export interface ChatClientContextType {
   matrixClient: MatrixClient;
   clientState: ClientState;
   setClientState: Dispatch<SetStateAction<ClientState>>;
+  departmentInfo?: ApiGetDepartmentInfoResponse;
 }
 
 export const ChatClientContext = createContext<ChatClientContextType | null>(
@@ -61,6 +64,7 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
   const matrixClient = useRef<MatrixClient>(createClient({ baseUrl }));
 
   const [clientState, setClientState] = useState<ClientState>(ClientState.Idle);
+  const { data: departmentInfo } = useGetDepartment();
 
   // CHAT INIT
   useChatLifecycle(matrixClient, clientState, setClientState);
@@ -187,8 +191,9 @@ export function ChatClientProvider({ children }: Readonly<RequiresChildren>) {
       clientState,
       setClientState,
       matrixClient: matrixClient.current,
+      departmentInfo,
     }),
-    [clientState],
+    [clientState, departmentInfo],
   );
 
   return (

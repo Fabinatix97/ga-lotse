@@ -15,7 +15,6 @@ public record DetailedEvent(
     @NotNull UUID id,
     @NotNull @Size(min = 1) List<UUID> calendarIds,
     @NotNull EventTypeDto type,
-    @NotNull ShowAs showAs,
     UUID lastModifiedByUserId,
     @Valid @NotNull EventMetaData metaData,
     @Valid @NotNull EventTimeData timeData)
@@ -24,12 +23,6 @@ public record DetailedEvent(
   @Override
   public DetailedEvent copyWithMetadata(EventMetaData metaData) {
     return new DetailedEvent(
-        this.id,
-        this.calendarIds,
-        this.type,
-        this.showAs,
-        this.lastModifiedByUserId,
-        metaData,
-        this.timeData);
+        this.id, this.calendarIds, this.type, this.lastModifiedByUserId, metaData, this.timeData);
   }
 }

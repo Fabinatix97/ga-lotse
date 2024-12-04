@@ -10,21 +10,19 @@ import {
   ChartApi,
   EChart,
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
-import { chartLegend } from "@/lib/businessModules/statistics/components/shared/charts/chartHelper";
 
 interface PieChartProps {
-  filterSetData: AnalysisDiagramPieChart["data"];
+  diagramData: AnalysisDiagramPieChart["data"];
   eChartApi?: (eChartApi: ChartApi) => void;
 }
 
-export function PieChart({ filterSetData, eChartApi }: PieChartProps) {
-  const portions = filterSetData.map((it) => ({
+export function PieChart({ diagramData, eChartApi }: PieChartProps) {
+  const portions = diagramData.map((it) => ({
     name: it.label,
     value: it.value,
   }));
 
   const option: EChartsOption = {
-    legend: chartLegend,
     series: [
       {
         type: "pie",

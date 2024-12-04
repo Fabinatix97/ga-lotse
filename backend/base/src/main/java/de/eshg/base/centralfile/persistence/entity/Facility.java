@@ -8,6 +8,8 @@ package de.eshg.base.centralfile.persistence.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eshg.base.address.persistence.entity.Address;
 import de.eshg.base.centralfile.CentralFileData;
+import de.eshg.base.muk.persistence.entity.MukFacilityLink;
+import de.eshg.base.muk.persistence.entity.MukFacilityLink_;
 import de.eshg.domain.model.SequencedBaseEntityWithExternalId;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
@@ -93,6 +95,13 @@ public class Facility extends SequencedBaseEntityWithExternalId implements Centr
   @JoinColumn(name = "reference_facility_id")
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private Facility referenceFacility;
+
+  @OneToOne(
+      cascade = CascadeType.REMOVE,
+      orphanRemoval = true,
+      mappedBy = MukFacilityLink_.REFERENCE_FACILITY)
+  @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
+  private MukFacilityLink mukFacilityLink;
 
   public Instant getCreatedAt() {
     return createdAt;
@@ -324,6 +333,10 @@ public class Facility extends SequencedBaseEntityWithExternalId implements Centr
     clone.setCity(address.getCity());
     clone.setCountry(address.getCountry());
     clone.setDifferentName(address.getDifferentName());
+  }
+
+  public void setMukFacilityLink(MukFacilityLink mukFacilityLink) {
+    this.mukFacilityLink = mukFacilityLink;
   }
 
   @Override

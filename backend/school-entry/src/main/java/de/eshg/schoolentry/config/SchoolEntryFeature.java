@@ -6,6 +6,5 @@
 package de.eshg.schoolentry.config;
 
 public enum SchoolEntryFeature {
-  IMPORT_PAST_PROCEDURES,
-  BULK_DOWNLOAD_INVITATIONS,
+  DUMMY,
 }

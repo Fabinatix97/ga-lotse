@@ -84,7 +84,7 @@ export function PersonDetailsPanel({
   return (
     <ContentPanel testId="person-details-panel">
       <DetailsSection
-        name={name}
+        data-testid={name}
         title={title}
         buttons={
           procedure.isClosed ? undefined : (

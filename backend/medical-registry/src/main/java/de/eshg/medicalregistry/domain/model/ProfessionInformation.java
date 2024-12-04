@@ -5,7 +5,7 @@
 
 package de.eshg.medicalregistry.domain.model;
 
-import de.eshg.domain.model.BaseEntity;
+import de.eshg.domain.model.SequencedBaseEntity;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import jakarta.persistence.Column;
@@ -15,7 +15,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-public class ProfessionInformation extends BaseEntity {
+public class ProfessionInformation extends SequencedBaseEntity {
 
   @JdbcType(PostgreSQLEnumJdbcType.class)
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)

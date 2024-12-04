@@ -20,35 +20,25 @@ import { SALUTATION_VALUES } from "@/lib/shared/components/personSidebar/constan
 export interface ContactPersonTileProps {
   contactPerson?: ApiFacilityContactPerson;
   readonly?: boolean;
-  setOpen: (initialState: boolean) => void;
+  onEdit: () => void;
   index?: number;
 }
 
 export function ContactPersonTile({
   contactPerson,
   readonly,
-  setOpen,
+  onEdit,
   index,
 }: Readonly<ContactPersonTileProps>) {
-  function handleEdit() {
-    setOpen(true);
-  }
-
-  function handleAddButton() {
-    setOpen(true);
-  }
-
   return (
     <InfoTile
       name={isNonNullish(index) ? `contactPerson-${index}` : "contactPerson"}
       title="Kontaktperson"
-      onEdit={isNonNullish(contactPerson) && !readonly ? handleEdit : undefined}
+      onEdit={isNonNullish(contactPerson) && !readonly ? onEdit : undefined}
     >
       <Grid container spacing={1}>
         {!isNonNullish(contactPerson) && (
-          <InfoTileAddButton onClick={handleAddButton}>
-            Hinzufügen
-          </InfoTileAddButton>
+          <InfoTileAddButton onClick={onEdit}>Hinzufügen</InfoTileAddButton>
         )}
         <Grid xs={6}>
           <Grid container direction="column" sx={{ gap: 2 }}>

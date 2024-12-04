@@ -103,7 +103,7 @@ export function PatientPanel({
     <>
       <InformationSheet data-testid={"patient"}>
         <DetailsSection
-          name="patient-card-tile"
+          data-testid="patient-card-tile"
           title="Patient"
           buttons={
             !isProcedureDraft &&

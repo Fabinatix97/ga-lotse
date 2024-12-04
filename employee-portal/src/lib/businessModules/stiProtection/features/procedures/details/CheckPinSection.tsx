@@ -1,0 +1,133 @@
+/**
+ * Copyright 2024 cronn GmbH
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ApiStiProtectionProcedure } from "@eshg/employee-portal-api/stiProtection";
+import { Row } from "@eshg/lib-portal/components/Row";
+import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
+import { FormPlus } from "@eshg/lib-portal/components/form/FormPlus";
+import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
+import {
+  CheckCircleOutlined,
+  ErrorOutlineOutlined,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+} from "@mui/icons-material";
+import { IconButton, Sheet, Typography } from "@mui/joy";
+import { Formik, useFormikContext } from "formik";
+import { useReducer, useState } from "react";
+
+import { usePinCheck } from "@/lib/businessModules/stiProtection/api/queries/identity";
+import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
+
+export function CheckPinSection({
+  procedure,
+}: {
+  procedure: ApiStiProtectionProcedure;
+}) {
+  const [pinToCheck, setPinToCheck] = useState<string | undefined>();
+  const isPinValid = usePinCheck(procedure.id, pinToCheck);
+  const [checkboxType, toggleCheckboxType] = useReducer(
+    (current: "password" | "text") =>
+      current === "password" ? "text" : "password",
+    "password",
+  );
+
+  return (
+    <Sheet>
+      <DetailsSection title="ID-Check">
+        <CheckResult valid={isPinValid.data} />
+        <Formik
+          initialValues={{ pin: undefined }}
+          onSubmit={(form) => setPinToCheck(form.pin)}
+        >
+          <FormPlus style={{ display: "contents" }}>
+            <Row sx={{ alignItems: "end" }}>
+              <InputField
+                label="6-stellige PIN"
+                name="pin"
+                type={checkboxType}
+                required="Geben Sie eine PIN ein."
+                onChange={() => setPinToCheck(undefined)}
+                endDecorator={
+                  <ViewToggle
+                    checkboxType={checkboxType}
+                    toggleCheckboxType={toggleCheckboxType}
+                  />
+                }
+                autoComplete={"off"}
+                sx={{ overflow: "hidden", flex: 1 }}
+                validate={validatePin}
+              />
+              <CheckButton isSubmitting={isPinValid.isFetching} />
+            </Row>
+          </FormPlus>
+        </Formik>
+      </DetailsSection>
+    </Sheet>
+  );
+}
+
+function validatePin(value: string | undefined) {
+  if (!value) {
+    return;
+  }
+  if (!/\d+/.test(value)) {
+    return "Bitte geben Sie eine numerische PIN ein.";
+  }
+  if (value.length != 6) {
+    return "Bitte geben Sie eine 6-stellige PIN ein.";
+  }
+}
+
+function ViewToggle({
+  checkboxType,
+  toggleCheckboxType,
+}: {
+  checkboxType: "password" | "text";
+  toggleCheckboxType: () => void;
+}) {
+  return (
+    <IconButton onClick={() => toggleCheckboxType()} aria-hidden>
+      {checkboxType === "password" ? (
+        <VisibilityOutlined />
+      ) : (
+        <VisibilityOffOutlined />
+      )}
+    </IconButton>
+  );
+}
+
+function CheckResult({ valid }: { valid: boolean | undefined }) {
+  if (valid == null) {
+    return;
+  }
+  let message = "Die eingegebene PIN ist korrekt.";
+  let icon = <CheckCircleOutlined color="success" />;
+  if (!valid) {
+    message = "Die eingegebene PIN ist falsch.";
+    icon = <ErrorOutlineOutlined color="danger" />;
+  }
+  return (
+    <Typography sx={{ display: "flex", gap: 1 }}>
+      {icon}
+      {message}
+    </Typography>
+  );
+}
+
+function CheckButton({ isSubmitting }: { isSubmitting: boolean }) {
+  const { errors, getFieldMeta } = useFormikContext<{
+    pin: string | undefined;
+  }>();
+  const meta = getFieldMeta("pin");
+  return (
+    <SubmitButton
+      submitting={isSubmitting}
+      sx={{ marginBottom: errors.pin && meta.touched ? 3 : 0 }}
+    >
+      Prüfen
+    </SubmitButton>
+  );
+}

@@ -12,8 +12,8 @@ import { FieldArray } from "formik";
 import { Fragment } from "react";
 
 import { CitizenAnamnesisFormValues } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/CitizenAnamnesisForm";
+import { CitizenPortalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/CitizenPortalMonthAndYearFields";
 import { LocalBooleanRadioField } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalBooleanRadioField";
-import { LocalMonthAndYearFields } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/LocalMonthAndYearFields";
 import { QuarterWidthGrid } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/QuarterWidthGrid";
 import { ToggleableSection } from "@/lib/businessModules/schoolEntry/pages/citizenAnamnesis/steps/components/ToggleableSection";
 import { useTranslation } from "@/lib/i18n/client";
@@ -112,12 +112,12 @@ export function CitizenAnamnesisStepTwo({
         name={daycareAndSchoolInfo("wasInDaycare.show")}
         title={t("additionalInfo.wasInDaycare")}
       >
-        <Grid container sx={{ flexGrow: 1 }}>
-          <Grid {...byBreakpoint({ mobile: 12, desktop: 6 })}>
+        <Grid container sx={{ flexGrow: 1 }} spacing={2}>
+          <Grid {...byBreakpoint({ mobile: 12, desktop: 12 })}>
             <Typography level="body-sm">
               {t("additionalInfo.dayCareSince")}
             </Typography>
-            <LocalMonthAndYearFields
+            <CitizenPortalMonthAndYearFields
               fieldName={daycareAndSchoolInfo("inDaycareSince")}
               date={values.daycareAndSchoolInfo.inDaycareSince}
             />

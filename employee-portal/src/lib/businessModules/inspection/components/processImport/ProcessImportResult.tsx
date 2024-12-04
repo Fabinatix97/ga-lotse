@@ -20,6 +20,7 @@ import {
 import { PropsWithChildren, useRef } from "react";
 
 import { ImportProcessResult } from "@/lib/businessModules/inspection/api/mutations/processImport";
+import { PotentialDuplicatesFilterProps } from "@/lib/businessModules/inspection/components/facility/pending/PotentialDuplicatesWarning";
 import {
   formatDuplicatedCount,
   formatFailedCount,
@@ -30,14 +31,16 @@ import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-export interface ProcessImportResultProps {
+export interface ProcessImportResultProps
+  extends PotentialDuplicatesFilterProps {
   result: ImportProcessResult;
   onClose: () => void;
 }
 
 export function ProcessImportResult({
   result,
-  onClose: handleClose,
+  onClose,
+  onFilterForDuplicates,
 }: Readonly<ProcessImportResultProps>) {
   const { file, statistics } = result;
 
@@ -79,10 +82,14 @@ export function ProcessImportResult({
         <ButtonBar
           right={
             <>
-              <Button onClick={handleClose} variant="soft" color="neutral">
+              <Button
+                onClick={onFilterForDuplicates}
+                variant="soft"
+                color="neutral"
+              >
                 Duplikate prüfen
               </Button>
-              <Button onClick={handleClose}>Fertig</Button>
+              <Button onClick={onClose}>Fertig</Button>
             </>
           }
         />

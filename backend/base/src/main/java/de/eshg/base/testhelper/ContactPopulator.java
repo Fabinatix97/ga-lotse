@@ -44,13 +44,13 @@ public class ContactPopulator extends AbstractContactPopulator {
     String title = optional(faker, faker.university().degree());
     String firstName = optional(faker, faker.elderScrolls().firstName());
     String name = faker.elderScrolls().lastName();
-    SalutationDto salutation = optional(faker, randomElement(faker, SalutationDto.values()));
-    GenderDto gender = optional(faker, randomElement(faker, GenderDto.values()));
+    SalutationDto salutation = optional(faker, randomElement(SalutationDto.values()));
+    GenderDto gender = optional(faker, randomElement(GenderDto.values()));
     String externalChatUsername = optional(faker, faker.cat().name());
-    List<String> phoneNumbers = optional(faker, randomListOfPhoneNumbers(faker, 7));
-    List<String> emailAddresses = optional(faker, randomListOfEmails(faker, 7));
-    AddressDto contactAddress = optional(faker, createAddress(faker));
-    AddressDto differentBillingAddress = optional(faker, createAddress(faker));
+    List<String> phoneNumbers = optional(faker, randomListOfPhoneNumbers(7));
+    List<String> emailAddresses = optional(faker, randomListOfEmails(7));
+    AddressDto contactAddress = optional(faker, createAddress());
+    AddressDto differentBillingAddress = optional(faker, createAddress());
     return contactController.addContact(
         new AddPersonContactRequest(
             title,

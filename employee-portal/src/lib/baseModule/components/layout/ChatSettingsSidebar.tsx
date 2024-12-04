@@ -4,15 +4,24 @@
  */
 
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
+import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { OpenInNew } from "@mui/icons-material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import { Button, Divider, Stack, Switch, Typography } from "@mui/joy";
-import { useContext } from "react";
+import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
+import { useCallback, useContext, useState } from "react";
+import { isObjectType } from "remeda";
 
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
+import {
+  DeactivateModal,
+  DeactivateModalProps,
+} from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
+import { deleteCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
@@ -32,6 +41,8 @@ export function useChatUserSidebar(): UseSidebarResult {
 function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const { matrixClient } = useContext(ChatClientContext) ?? {};
   const { tryNavigate } = useNavigation();
+  const [modalValues, setModalValues] = useState<DeactivateModalProps>();
+  const snackbar = useSnackbar();
 
   const chatUserId = matrixClient?.getUserId();
 
@@ -46,7 +57,67 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     togglePresenceStatus,
     toggleReadConfirmation,
     toggleTypingNotifications,
+    deactivateAccount,
   } = useUserSettings();
+
+  const handleStopChat = useCallback(async () => {
+    if (!matrixClient) return;
+    deactivateAccount(true);
+    try {
+      await deleteCachedCredentials();
+      await matrixClient.clearStores();
+    } catch (error) {
+      logger.error(error);
+    }
+  }, [deactivateAccount, matrixClient]);
+
+  const showSSOModal = useCallback(
+    (values: Omit<DeactivateModalProps, "onFinished" | "open">) => {
+      return new Promise<{ confirmed: boolean }>((resolve) => {
+        function onFinished(confirmed: boolean) {
+          resolve({ confirmed });
+          setModalValues(undefined);
+          onClose();
+          if (confirmed) {
+            void handleStopChat();
+          }
+        }
+        setModalValues({ ...values, onFinished });
+      });
+    },
+    [handleStopChat, onClose],
+  );
+
+  const handleDeactivateClick = useCallback(async () => {
+    if (!matrixClient) return;
+    async function makeRequest(auth: AuthDict | null) {
+      return matrixClient?.deactivateAccount(auth ?? undefined);
+    }
+
+    try {
+      await matrixClient.deactivateAccount(undefined);
+    } catch (error) {
+      if (isObjectType(error) && "data" in error) {
+        const { session } = error.data as IAuthData;
+
+        if (!session) {
+          throw new Error("Unable to receive session");
+        }
+
+        const modalPromise = showSSOModal({
+          makeRequest: makeRequest as (
+            auth: AuthDict | null,
+          ) => Promise<UIAResponse<void>>,
+          session: session,
+          authData: error.data as AuthDict,
+        });
+        const { confirmed } = await modalPromise;
+        if (confirmed) {
+          snackbar.notification("Account Deactivated");
+        }
+      }
+    }
+  }, [matrixClient, showSSOModal, snackbar]);
 
   return (
     <>
@@ -95,6 +166,13 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           >
             Schreibanzeige aktivieren
           </Typography>
+          <Button
+            onClick={handleDeactivateClick}
+            sx={{ alignSelf: "flex-start", mt: 10 }}
+            color="danger"
+          >
+            Account deaktivieren
+          </Button>
         </Stack>
       </SidebarContent>
 
@@ -110,6 +188,12 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           Chatbereich
         </Button>
       </SidebarActions>
+      <DeactivateModal
+        onFinished={modalValues?.onFinished}
+        makeRequest={modalValues?.makeRequest}
+        session={modalValues?.session}
+        authData={modalValues?.authData}
+      />
     </>
   );
 }
