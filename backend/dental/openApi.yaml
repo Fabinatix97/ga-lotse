@@ -425,30 +425,6 @@ paths:
           description: OK
       tags:
       - Child
-    put:
-      operationId: updateChild
-      parameters:
-      - in: path
-        name: childId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateChildRequest"
-        required: true
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/ChildDetails"
-          description: OK
-      tags:
-      - Child
   /files/{fileId}:
     delete:
       operationId: deleteFile
@@ -4815,21 +4791,6 @@ components:
       - SYSTEM_AUTOMATIC
       - EMPLOYEE
       - CITIZEN
-    UpdateChildRequest:
-      type: object
-      properties:
-        groupName:
-          type: string
-        institutionId:
-          type: string
-          format: uuid
-        version:
-          type: integer
-          format: int64
-      required:
-      - groupName
-      - institutionId
-      - version
     UpdateExaminationRequest:
       type: object
       properties:

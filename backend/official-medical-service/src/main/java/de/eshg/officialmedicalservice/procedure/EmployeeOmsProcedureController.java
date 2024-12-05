@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,12 +41,14 @@ public class EmployeeOmsProcedureController {
 
   @PostMapping(path = PROCEDURES)
   @Operation(summary = "Save a new employee oms procedure")
+  @Transactional
   public UUID postEmployeeProcedure(@RequestBody @Valid PostEmployeeOmsProcedureRequest request) {
     return employeeOmsProcedureService.createEmployeeProcedure(request);
   }
 
   @GetMapping(path = PROCEDURES)
   @Operation(summary = "Get all oms procedures")
+  @Transactional(readOnly = true)
   public GetEmployeeOmsProcedureOverviewResponse getAllEmployeeProcedures(
       @InlineParameterObject @ParameterObject @Valid
           EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters) {

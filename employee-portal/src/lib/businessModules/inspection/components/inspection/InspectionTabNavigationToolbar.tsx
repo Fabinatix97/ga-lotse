@@ -6,6 +6,7 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiInspectionPhase } from "@eshg/employee-portal-api/inspection";
 import {
   History,
   OtherHousesOutlined,
@@ -18,6 +19,7 @@ import {
 import { useGetInspection } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { InspectionTabHeader } from "@/lib/businessModules/inspection/components/inspection/InspectionTabHeader";
 import { OfflineSwitch } from "@/lib/businessModules/inspection/components/inspection/OfflineSwitch";
+import { inspectionIsBeforePhase } from "@/lib/businessModules/inspection/shared/enums";
 import { routes } from "@/lib/businessModules/inspection/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
 import { TabNavigationToolbar } from "@/lib/shared/components/tabNavigationToolbar/TabNavigationToolbar";
@@ -32,7 +34,7 @@ export function InspectionTabNavigationToolbar({
     ApiUserRole.InspectionProcedureEdit,
   );
   const { data: inspection } = useGetInspection(inspectionId);
-  const tabItems = createTabItems(inspectionId);
+  const tabItems = createTabItems(inspectionId, inspection.phase);
 
   return (
     <TabNavigationToolbar
@@ -50,7 +52,10 @@ export function InspectionTabNavigationToolbar({
   );
 }
 
-function createTabItems(id: string): TabNavigationItem[] {
+function createTabItems(
+  id: string,
+  phase: ApiInspectionPhase,
+): TabNavigationItem[] {
   return [
     {
       tabButtonName: "Vorgangsdaten",
@@ -65,11 +70,19 @@ function createTabItems(id: string): TabNavigationItem[] {
     {
       tabButtonName: "Begehung",
       href: routes.procedures.execution(id),
+      disabled: inspectionIsBeforePhase(
+        phase,
+        ApiInspectionPhase.ReadyForExecution,
+      ),
       decorator: <OtherHousesOutlined />,
     },
     {
       tabButtonName: "Bericht/Ergebnis",
       href: routes.procedures.reportResult(id),
+      disabled: inspectionIsBeforePhase(
+        phase,
+        ApiInspectionPhase.CreatingReportAndInvoice,
+      ),
       decorator: <SubjectOutlined />,
     },
     {

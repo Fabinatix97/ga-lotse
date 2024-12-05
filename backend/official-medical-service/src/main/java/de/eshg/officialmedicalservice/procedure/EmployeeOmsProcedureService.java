@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeOmsProcedureService {
@@ -31,7 +30,6 @@ public class EmployeeOmsProcedureService {
     this.omsProcedureOverviewMapper = omsProcedureOverviewMapper;
   }
 
-  @Transactional
   public UUID createEmployeeProcedure(PostEmployeeOmsProcedureRequest request) {
     OmsProcedure procedure =
         omsProcedureOverviewMapper.toDomainType(
@@ -42,7 +40,6 @@ public class EmployeeOmsProcedureService {
     return procedure.getExternalId();
   }
 
-  @Transactional(readOnly = true)
   public EmployeePagedOmsProcedures getEmployeeProceduresOverview(
       EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters) {
 

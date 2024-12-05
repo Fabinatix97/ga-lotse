@@ -6,7 +6,5 @@
 package de.eshg.dental.util;
 
 public enum ChildSystemProgressEntryType {
-  EXAMINATION_MODIFIED,
-  GROUP_MODIFIED,
-  INSTITUTION_MODIFIED,
+  EXAMINATION_MODIFIED
 }

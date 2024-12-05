@@ -24,7 +24,6 @@ import de.eshg.dental.api.ChildFilterParameters;
 import de.eshg.dental.api.ChildPaginationAndSortParameters;
 import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.api.CreateChildRequest;
-import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.config.DentalProperties;
@@ -36,9 +35,6 @@ import de.eshg.dental.importer.DentalImporter;
 import de.eshg.dental.importer.DentalRowReader;
 import de.eshg.dental.mapper.ChildMapper;
 import de.eshg.dental.util.ChildPageSpec;
-import de.eshg.dental.util.ChildSystemProgressEntryType;
-import de.eshg.dental.util.ExceptionUtil;
-import de.eshg.dental.util.ProgressEntryUtil;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.contact.ContactClient;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
@@ -47,22 +43,19 @@ import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.ImportValidator;
 import de.eshg.lib.xlsximport.XlsxNormalizer;
 import de.eshg.lib.xlsximport.model.ImportResult;
-import de.eshg.validation.ValidationUtil;
+import de.eshg.rest.service.error.NotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Clock;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -75,8 +68,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ChildService {
 
-  private static final Logger log = LoggerFactory.getLogger(ChildService.class);
-
   private final Clock clock;
   private final AuditLogger auditLogger;
   private final ChildRepository childRepository;
@@ -84,7 +75,6 @@ public class ChildService {
   private final ContactClient contactClient;
   private final DentalProperties dentalProperties;
   private final PersonClient personClient;
-  private final ProgressEntryUtil progressEntryUtil;
 
   public ChildService(
       Clock clock,
@@ -93,8 +83,7 @@ public class ChildService {
       PersonApi personApi,
       ContactClient contactClient,
       DentalProperties dentalProperties,
-      PersonClient personClient,
-      ProgressEntryUtil progressEntryUtil) {
+      PersonClient personClient) {
     this.clock = clock;
     this.auditLogger = auditLogger;
     this.childRepository = childRepository;
@@ -102,7 +91,6 @@ public class ChildService {
     this.contactClient = contactClient;
     this.dentalProperties = dentalProperties;
     this.personClient = personClient;
-    this.progressEntryUtil = progressEntryUtil;
   }
 
   public Child createChild(CreateChildRequest request) {
@@ -144,11 +132,12 @@ public class ChildService {
     Child child =
         childRepository
             .findByExternalId(childId)
-            .orElseThrow(ExceptionUtil.childNotFoundException(childId));
+            .orElseThrow(
+                () -> new NotFoundException("Child with UUID %s not found".formatted(childId)));
     return augmentWithDetails(child);
   }
 
-  public ChildWithAugmentedData augmentWithDetails(Child child) {
+  private ChildWithAugmentedData augmentWithDetails(Child child) {
     GetPersonFileStateResponse person =
         personApi.getPersonFileState(child.getChildIdFromCentralFile());
     ContactDto contact = contactClient.getContact(child.getInstitutionId());
@@ -264,42 +253,5 @@ public class ChildService {
 
   public List<String> getInstitutionGroups(UUID institutionId) {
     return childRepository.findDistinctInstitutionGroups(institutionId);
-  }
-
-  public ChildWithAugmentedData update(UUID childId, UpdateChildRequest request) {
-    Child child =
-        childRepository
-            .findByExternalIdForUpdate(childId)
-            .orElseThrow(ExceptionUtil.childNotFoundException(childId));
-
-    ValidationUtil.validateVersion(request.version(), child);
-
-    boolean updateGroup = !Objects.equals(request.groupName(), child.getGroupName());
-    if (updateGroup) {
-      log.debug("Updating group name: '{}' → '{}'", child.getGroupName(), request.groupName());
-      child.setGroupName(request.groupName());
-    }
-
-    boolean updateInstitution = !Objects.equals(request.institutionId(), child.getInstitutionId());
-    if (updateInstitution) {
-      log.debug(
-          "Updating institution: '{}' → '{}'", child.getInstitutionId(), request.institutionId());
-      child.setInstitutionId(request.institutionId());
-    }
-
-    if (updateInstitution) {
-      addSystemProgressEntry(child, ChildSystemProgressEntryType.INSTITUTION_MODIFIED);
-    } else if (updateGroup) {
-      addSystemProgressEntry(child, ChildSystemProgressEntryType.GROUP_MODIFIED);
-    }
-
-    childRepository.flush();
-
-    return augmentWithDetails(child);
-  }
-
-  private void addSystemProgressEntry(
-      Child child, ChildSystemProgressEntryType childSystemProgressEntryType) {
-    progressEntryUtil.addSystemProgressEntry(child, childSystemProgressEntryType);
   }
 }

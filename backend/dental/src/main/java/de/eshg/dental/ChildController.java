@@ -16,7 +16,6 @@ import de.eshg.dental.api.CreateChildResponse;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.GetChildrenResponse;
 import de.eshg.dental.api.GetInstitutionGroupsResponse;
-import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.domain.model.Child;
@@ -95,15 +94,6 @@ public class ChildController {
   @Transactional(readOnly = true)
   public ChildDetailsDto getChild(@PathVariable("childId") UUID childId) {
     ChildWithAugmentedData augmentedChildData = childService.findAndAugmentByExternalId(childId);
-    return ChildMapper.mapToChildDetailsDto(augmentedChildData);
-  }
-
-  @PutMapping("/{childId}")
-  @Transactional
-  public ChildDetailsDto updateChild(
-      @PathVariable("childId") UUID childId, @Valid @RequestBody UpdateChildRequest request) {
-    validator.validateInstitution(request.institutionId());
-    ChildWithAugmentedData augmentedChildData = childService.update(childId, request);
     return ChildMapper.mapToChildDetailsDto(augmentedChildData);
   }
 

@@ -31,7 +31,7 @@ public final class ChildMapper {
     if (child == null) return null;
     return new ChildDetailsDto(
         child.child().getExternalId(),
-        child.child().getVersion(),
+        child.personData().referenceVersion(),
         child.personData().id(),
         child.personData().outdated(),
         child.personData().title(),

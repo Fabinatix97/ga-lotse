@@ -11,7 +11,6 @@ import {
   ApiInspectionAvailableCLDVersionsResponse,
   ApiInspectionCLDVersion,
 } from "@eshg/employee-portal-api/inspection";
-import { Alert } from "@eshg/lib-portal/components/Alert";
 import { DeleteOutlined } from "@mui/icons-material";
 import { Chip, IconButton, Stack, Typography } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
@@ -137,12 +136,6 @@ export function ChecklistTile({
       )}
 
       <Stack direction="column" spacing={1}>
-        {!inspection.selectedChecklistDefinitionVersions.length && (
-          <Alert
-            color="primary"
-            message="Mindestens eine Checkliste muss ausgewählt sein, um eine Begehung durchzuführen."
-          />
-        )}
         {inspection.selectedChecklistDefinitionVersions.map((version, idx) => {
           return (
             <Stack

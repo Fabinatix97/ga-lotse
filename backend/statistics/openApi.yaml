@@ -1045,34 +1045,6 @@ paths:
           description: OK
       tags:
       - TestHelper
-  /test-helper/populate-based-on-evaluation/{evaluationId}:
-    post:
-      operationId: createOtherEntities
-      parameters:
-      - in: path
-        name: evaluationId
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: OK
-      tags:
-      - TestHelper
-  /test-helper/populate-create-evaluation:
-    post:
-      operationId: createEvaluation
-      responses:
-        "200":
-          content:
-            '*/*':
-              schema:
-                type: string
-                format: uuid
-          description: OK
-      tags:
-      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
