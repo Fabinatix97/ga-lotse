@@ -10,6 +10,7 @@ import de.eshg.base.SortDirection;
 import de.eshg.base.SortParameters;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.Min;
+import java.util.Set;
 
 public record ContactFilterParameters(
     @Parameter(
@@ -22,7 +23,7 @@ public record ContactFilterParameters(
         String street,
     @Parameter(description = "A filter for the possible types of Contacts.") ContactTypeDto type,
     @Parameter(description = "A filter for the possible categories of Institutions.")
-        InstitutionContactCategoryDto category,
+        Set<InstitutionContactCategoryDto> categories,
     @Parameter(description = "The parameter by which to sort.") ContactSortKey sortKey,
     @Parameter(description = "The direction by which to sort.") SortDirection sortDirection,
     @Parameter(

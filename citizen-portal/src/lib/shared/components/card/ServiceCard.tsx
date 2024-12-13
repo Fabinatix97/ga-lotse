@@ -4,8 +4,9 @@
  */
 
 import { NavigationLink } from "@eshg/lib-portal/components/navigation/NavigationLink";
-import { CardContent, Typography } from "@mui/joy";
+import { Box, CardContent, Typography } from "@mui/joy";
 import Card from "@mui/joy/Card";
+import { useId } from "react";
 
 import { SubNavigationItem } from "@/lib/baseModule/components/layout/types";
 import { GradientIcon } from "@/lib/shared/components/icon/GradientIcon";
@@ -13,13 +14,14 @@ import { GradientIcon } from "@/lib/shared/components/icon/GradientIcon";
 type ServiceCardProps = Omit<SubNavigationItem, "description">;
 
 export function ServiceCard(props: ServiceCardProps) {
+  const nameId = useId();
+
   return (
     <NavigationLink
       href={props.href}
       passHref
       style={{
-        flex: "1",
-        minWidth: "296px",
+        width: "100%",
         textDecoration: "none",
       }}
     >
@@ -32,8 +34,9 @@ export function ServiceCard(props: ServiceCardProps) {
           minHeight: "400px",
         }}
       >
-        <div
-          style={{
+        <Box
+          aria-hidden
+          sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -44,19 +47,20 @@ export function ServiceCard(props: ServiceCardProps) {
             style={{ width: "153px", height: "153px" }}
             iconClass={props.icon}
           />
-        </div>
+        </Box>
         <CardContent>
-          <div
-            style={{
+          <Box
+            sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             <Typography
+              id={nameId}
               level="title-md"
               textAlign="center"
-              style={{
+              sx={{
                 width: "248px",
                 height: "48px",
                 wordWrap: "break-word",
@@ -65,7 +69,7 @@ export function ServiceCard(props: ServiceCardProps) {
             >
               {props.name}
             </Typography>
-          </div>
+          </Box>
         </CardContent>
       </Card>
     </NavigationLink>

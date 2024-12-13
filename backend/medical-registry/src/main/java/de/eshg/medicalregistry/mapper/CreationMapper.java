@@ -21,7 +21,7 @@ import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
 import de.eshg.medicalregistry.domain.model.Professional;
-import de.eshg.medicalregistry.importer.MedicalRegistryRowValues;
+import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import java.util.UUID;
 
 public final class CreationMapper {
@@ -86,7 +86,7 @@ public final class CreationMapper {
   }
 
   public static MedicalRegistryEntry mapToDomain(
-      MedicalRegistryRowValues rowValue, UUID professionalId, UUID practiceId) {
+      MedicalRegistryRow rowValue, UUID professionalId, UUID practiceId) {
     MedicalRegistryEntry medicalRegistryEntry =
         new MedicalRegistryEntry(TriggerType.SYSTEM_AUTOMATIC);
     medicalRegistryEntry.setConsentToPrivacyPolicy(true);

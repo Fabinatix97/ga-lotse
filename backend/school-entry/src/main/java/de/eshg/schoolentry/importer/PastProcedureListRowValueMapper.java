@@ -11,7 +11,7 @@ import de.eshg.schoolentry.mapper.PersonMapper;
 
 public class PastProcedureListRowValueMapper {
 
-  public ImportPastProcedureData mapValuesToImportData(PastProcedureListRowValues values) {
+  public ImportPastProcedureData mapValuesToImportData(PastProcedureListRow values) {
     return new ImportPastProcedureData(
         new ImportProcedureData(
             PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),

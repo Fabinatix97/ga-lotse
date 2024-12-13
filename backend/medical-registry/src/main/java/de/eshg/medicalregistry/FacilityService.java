@@ -27,7 +27,7 @@ import de.eshg.medicalregistry.api.CreateApplicantDto;
 import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.PracticeReferenceFacilityDto;
 import de.eshg.medicalregistry.domain.model.Practice;
-import de.eshg.medicalregistry.importer.MedicalRegistryRowValues;
+import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import de.eshg.medicalregistry.mapper.AddressMapper;
 import de.eshg.medicalregistry.mapper.EnrichmentHelper;
 import java.util.Collections;
@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -89,9 +88,9 @@ public class FacilityService {
     return addFacilityResponse.id();
   }
 
-  Map<Row, UUID> createFacilitiesInCentralFile(List<MedicalRegistryRowValues> rowValues) {
-    List<MedicalRegistryRowValues> relevantRowValues =
-        rowValues.stream().filter(MedicalRegistryRowValues::hasPractice).toList();
+  Map<MedicalRegistryRow, UUID> createFacilitiesInCentralFile(List<MedicalRegistryRow> row) {
+    List<MedicalRegistryRow> relevantRowValues =
+        row.stream().filter(MedicalRegistryRow::hasPractice).toList();
     if (relevantRowValues.isEmpty()) {
       return Collections.emptyMap();
     } else {
@@ -105,7 +104,7 @@ public class FacilityService {
               .facilityFileStateIds();
       return IntStream.range(0, relevantRowValues.size())
           .boxed()
-          .collect(Collectors.toMap(i -> relevantRowValues.get(i).getRow(), facilityStateIds::get));
+          .collect(Collectors.toMap(relevantRowValues::get, facilityStateIds::get));
     }
   }
 
@@ -137,10 +136,6 @@ public class FacilityService {
     } else {
       return confirmFacility(facilityFileState);
     }
-  }
-
-  void deleteInCentralFile(UUID practiceId) {
-    facilityApi.markFacilityFileStateForDeletion(new DeleteFileStatesRequest(practiceId));
   }
 
   private UUID confirmFacility(GetFacilityFileStateResponse facilityFileState) {
@@ -186,13 +181,13 @@ public class FacilityService {
   }
 
   private static AddFacilityFileStateRequest mapToAddFacilityFileStateRequest(
-      MedicalRegistryRowValues rowValues) {
+      MedicalRegistryRow row) {
     return new AddFacilityFileStateRequest(
-        rowValues.getPractice().getName(),
-        List.of(rowValues.getPractice().getEmailAddress()),
-        List.of(rowValues.getPractice().getPhoneNumber()),
-        List.of(FacilityService.mapContactPerson(rowValues.getApplicant())),
-        AddressMapper.mapAddress(rowValues.getPractice().getAddress()),
+        row.getPractice().getName(),
+        List.of(row.getPractice().getEmailAddress()),
+        List.of(row.getPractice().getPhoneNumber()),
+        List.of(FacilityService.mapContactPerson(row.getApplicant())),
+        AddressMapper.mapAddress(row.getPractice().getAddress()),
         null,
         DataOriginDto.IMPORT);
   }

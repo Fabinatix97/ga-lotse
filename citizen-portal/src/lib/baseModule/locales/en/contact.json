@@ -1,15 +1,22 @@
 {
-  "pageTitle": {
-    "contact": "Contact",
-    "contact_information": "Contact and availability"
-  },
-  "sectionTitle": {
-    "address": "Address",
-    "contact": "Contact",
-    "opening_hours": "Opening hours",
-    "internet": "Internet"
-  },
-  "opening_hours_information": "Different consultation hours apply for individual areas and advice centers.",
-  "health_department": "Health department",
-  "phone_number": "Phone"
+  "pageTitle": "Contact",
+  "contact": {
+    "title": "Contact and availability",
+    "addressSection": {
+      "title": "Address"
+    },
+    "contactSection": {
+      "title": "Contact",
+      "phoneNumber": "Phone: {{ phoneNumber }}",
+      "eMail": "E-Mail:"
+    },
+    "openingHoursSection": {
+      "title": "Opening hours",
+      "information": "Different consultation hours apply for individual areas and advice centers."
+    },
+    "internetSection": {
+      "title": "Internet",
+      "healthDepartment": "Health department"
+    }
+  }
 }

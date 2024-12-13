@@ -131,12 +131,6 @@ public class DefaultEshgSecurityConfig {
         .xssProtection(HeadersConfigurer.XXssConfig::disable);
   }
 
-  @Bean
-  public JwtAuthenticationProvider employeePortalAuthenticationProvider() {
-    return authenticationProvider(
-        this.resourceServerProperties.getEmployeeJwt(), jwtAuthenticationConverterForKeycloak());
-  }
-
   private static void validateSpringOAuth2PropertiesNotSet(AbstractEnvironment env) {
     List<String> foundSpringOAuth2Properties = getSpringOauth2ResourceserverProperties(env);
 

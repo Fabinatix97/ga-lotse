@@ -19,19 +19,24 @@ import de.eshg.base.centralfile.api.person.PersonDetailsDto;
 import de.eshg.base.centralfile.api.person.UpdatePersonRequest;
 import de.eshg.base.centralfile.api.person.UpdateReferencePersonRequest;
 import de.eshg.lib.procedure.MapperHelper;
+import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.medicalregistry.api.CreateApplicantDto;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
-import de.eshg.medicalregistry.importer.MedicalRegistryRowValues;
+import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
+import de.eshg.medicalregistry.domain.model.Professional;
+import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import de.eshg.medicalregistry.mapper.AddressMapper;
 import de.eshg.medicalregistry.mapper.EnrichmentHelper;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,8 +49,8 @@ public class PersonService {
     this.personApi = personApi;
   }
 
-  GetPersonFileStateResponse findProfessionalDetails(UUID externalId) {
-    return personApi.getPersonFileState(externalId);
+  GetPersonFileStateResponse findProfessionalDetails(Professional professional) {
+    return personApi.getPersonFileState(professional.getCentralFileStateId());
   }
 
   UUID createPersonInCentralFile(CreateApplicantDto professional) {
@@ -69,19 +74,19 @@ public class PersonService {
     return addPersonResponse.id();
   }
 
-  Map<Row, UUID> createPersonsInCentralFile(List<MedicalRegistryRowValues> rowValues) {
+  Map<MedicalRegistryRow, UUID> createPersonsInCentralFile(List<MedicalRegistryRow> rows) {
     List<UUID> fileStateIds =
         personApi
             .addPersonFileStates(
                 new AddPersonFileStatesRequest(
-                    rowValues.stream()
-                        .map(MedicalRegistryRowValues::getApplicant)
+                    rows.stream()
+                        .map(MedicalRegistryRow::getApplicant)
                         .map(PersonService::mapToAddPersonFileStateRequest)
                         .toList()))
             .personFileStateIds();
-    return IntStream.range(0, rowValues.size())
+    return IntStream.range(0, rows.size())
         .boxed()
-        .collect(Collectors.toMap(i -> rowValues.get(i).getRow(), fileStateIds::get));
+        .collect(Collectors.toMap(rows::get, fileStateIds::get));
   }
 
   UUID updateOrConfirmProfessional(
@@ -97,16 +102,27 @@ public class PersonService {
     }
   }
 
-  void deleteInCentralFile(UUID professionalId) {
-    personApi.markPersonFileStateForDeletion(new DeleteFileStatesRequest(professionalId));
-  }
+  Map<UUID, GetPersonFileStateResponse> resolvePersonDetailsById(
+      Page<MedicalRegistryProcedure> medicalRegistryEntries) {
+    List<UUID> centralFileStateIds = collectCentralFileStateIds(medicalRegistryEntries);
+    if (centralFileStateIds.isEmpty()) {
+      return Map.of();
+    }
 
-  Map<UUID, GetPersonFileStateResponse> resolvePersonIds(List<UUID> relatedPersonIds) {
     return personApi
-        .getPersonFileStates(new GetPersonFileStatesRequest(relatedPersonIds))
+        .getPersonFileStates(new GetPersonFileStatesRequest(centralFileStateIds))
         .personFileStates()
         .stream()
         .collect(Collectors.toMap(GetPersonFileStateResponse::id, person -> person));
+  }
+
+  private static List<UUID> collectCentralFileStateIds(
+      Page<MedicalRegistryProcedure> medicalRegistryEntries) {
+    return medicalRegistryEntries.stream()
+        .map(Procedure::getRelatedPersons)
+        .flatMap(Collection::stream)
+        .map(RelatedPerson::getCentralFileStateId)
+        .toList();
   }
 
   private UUID confirmPerson(GetPersonFileStateResponse personFileState) {

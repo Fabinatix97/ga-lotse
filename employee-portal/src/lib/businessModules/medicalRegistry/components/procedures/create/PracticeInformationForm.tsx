@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { BooleanRadioField } from "@eshg/lib-portal/components/formFields/BooleanRadioField";
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
@@ -20,6 +21,10 @@ import { useField } from "formik";
 import { requiredFieldMessage } from "@/lib/businessModules/medicalRegistry/components/procedures/create/MedicalRegistryCreateProcedureForm";
 import { EmailField } from "@/lib/shared/components/formFields/EmailField";
 
+interface PracticeInformationFormProps extends NestedFormProps {
+  forceProprietaryPractice: boolean;
+}
+
 export interface PracticeInformationFormValues {
   proprietaryPractice: boolean;
   practiceName: string;
@@ -36,7 +41,7 @@ export interface PracticeInformationFormValues {
   healthInsuranceAuthorization: boolean;
 }
 
-export function PracticeInformationForm(props: NestedFormProps) {
+export function PracticeInformationForm(props: PracticeInformationFormProps) {
   const fieldName = createFieldNameMapper<PracticeInformationFormValues>(
     props.name,
   );
@@ -50,14 +55,26 @@ export function PracticeInformationForm(props: NestedFormProps) {
       <Grid xxs={12}>
         <Typography level="h3">Praxis-/Tätigkeitsangaben</Typography>
       </Grid>
-      <Grid xxs={12}>
-        <BooleanRadioField
-          name={fieldName("proprietaryPractice")}
-          label="Eigene Praxis / Niederlassung"
-        />
-      </Grid>
+      {props.forceProprietaryPractice ? (
+        <>
+          <Grid xxs={6}>
+            <Alert
+              color="primary"
+              message="Für die ausgewählte Änderungsart ist nur eine eigene Praxis / Niederlassung möglich."
+            />
+          </Grid>
+          <Grid xxl={6} />
+        </>
+      ) : (
+        <Grid xxs={12}>
+          <BooleanRadioField
+            name={fieldName("proprietaryPractice")}
+            label="Eigene Praxis / Niederlassung"
+          />
+        </Grid>
+      )}
 
-      {proprietaryPractice.value && (
+      {(props.forceProprietaryPractice || proprietaryPractice.value) && (
         <>
           <Grid xxs={6}>
             <InputField

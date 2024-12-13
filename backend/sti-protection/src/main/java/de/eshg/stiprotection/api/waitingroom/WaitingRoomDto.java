@@ -9,4 +9,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 
 @Schema(name = "WaitingRoom")
-public record WaitingRoomDto(@Size(max = 60) String info, WaitingStatusDto status) {}
+public record WaitingRoomDto(
+    @Size(max = 60)
+        @Schema(
+            description =
+                "Optional field for additional information, such as room numbers or internal ticket system identifiers.",
+            example = "Waits in Room 3")
+        String info,
+    @Schema(
+            description = "Indicates the current status of the procedure waiting in the room.",
+            example = "IN_CONSULTATION")
+        WaitingStatusDto status) {}

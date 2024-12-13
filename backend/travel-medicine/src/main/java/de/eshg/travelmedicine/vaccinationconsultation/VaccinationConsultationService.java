@@ -58,7 +58,6 @@ import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Appoint
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.CreatedByUserType;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.OtherService;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.Person;
-import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.PersonRepository;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStepRepository;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ServicePlanEntry;
@@ -119,7 +118,8 @@ public class VaccinationConsultationService {
       "The patient update failed. Is the person data up-to-date?";
   private final ProcedureAccessor procedureAccessor;
   private final NotificationService notificationService;
-  private final PersonRepository personRepository;
+
+  private final ProgressEntryService progressEntryService;
 
   public VaccinationConsultationService(
       VaccinationConsultationRepository vaccinationConsultationRepository,
@@ -138,7 +138,7 @@ public class VaccinationConsultationService {
       AuditLogger auditLogger,
       ProcedureAccessor procedureAccessor,
       NotificationService notificationService,
-      PersonRepository personRepository) {
+      ProgressEntryService progressEntryService) {
     this.vaccinationConsultationRepository = vaccinationConsultationRepository;
     this.procedureStepRepository = procedureStepRepository;
     this.procedureStepService = procedureStepService;
@@ -155,7 +155,7 @@ public class VaccinationConsultationService {
     this.auditLogger = auditLogger;
     this.procedureAccessor = procedureAccessor;
     this.notificationService = notificationService;
-    this.personRepository = personRepository;
+    this.progressEntryService = progressEntryService;
   }
 
   public PatientDto patientOf(VaccinationConsultation vaccinationConsultation) {
@@ -186,6 +186,8 @@ public class VaccinationConsultationService {
     vaccinationConsultationRepository.save(vaccinationConsultation);
     procedureStepRepository.save(initialProcedureStep);
 
+    progressEntryService.createProgressEntryForNewAppointment(
+        vaccinationConsultation, request.initialStepAppointmentType(), request.appointmentStart());
     return vaccinationConsultation.getExternalId();
   }
 
@@ -226,7 +228,8 @@ public class VaccinationConsultationService {
           initialProcedureStep.getAppointment().getAppointmentStart(),
           citizenAccessCodeUser.accessCode());
     }
-
+    progressEntryService.createProgressEntryForNewAppointment(
+        vaccinationConsultation, request.initialStepAppointmentType(), request.appointmentStart());
     return vaccinationConsultation.getExternalId();
   }
 
@@ -303,8 +306,6 @@ public class VaccinationConsultationService {
             PERSON_SYNCHRONIZED.name(), TriggerType.SYSTEM_AUTOMATIC);
     progressEntry.setProcedureId(vaccinationConsultation.getId());
     vaccinationConsultation.addProgressEntry(progressEntry);
-
-    personRepository.flush();
   }
 
   public void updatePatient(UUID externalId, PatchVaccinationConsultationPatientRequest request) {
@@ -772,10 +773,22 @@ public class VaccinationConsultationService {
     appointmentService.cancelAppointment(procedureStep);
 
     VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    boolean sendMailSuccessfully = false;
     if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
-      notificationService.notifyCancelledByCitizen(
-          patientOf(vaccinationConsultation), cancelledAppointment);
+      try {
+        notificationService.notifyCancelledByCitizen(
+            patientOf(vaccinationConsultation), cancelledAppointment);
+        sendMailSuccessfully = true;
+      } catch (Exception e) {
+        log.warn("Cannot send eMail", e);
+      }
     }
+
+    progressEntryService.createProgressEntryForCancelAppointmentByCitizen(
+        vaccinationConsultation,
+        procedureStep.getAppointmentType(),
+        cancelledAppointment,
+        sendMailSuccessfully);
   }
 
   public void bookCitizenAppointmentByCitizen(
@@ -830,14 +843,34 @@ public class VaccinationConsultationService {
     }
 
     VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    boolean sendMailSuccessfully = false;
     if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
-      if (rebook) {
-        notificationService.notifyRebookedByCitizen(
-            patientOf(vaccinationConsultation), previousAppointmentStart, newAppointmentStart);
-      } else {
-        notificationService.notifyBookedByCitizen(
-            patientOf(vaccinationConsultation), newAppointmentStart);
+      try {
+        if (rebook) {
+          notificationService.notifyRebookedByCitizen(
+              patientOf(vaccinationConsultation), previousAppointmentStart, newAppointmentStart);
+        } else {
+          notificationService.notifyBookedByCitizen(
+              patientOf(vaccinationConsultation), newAppointmentStart);
+        }
+        sendMailSuccessfully = true;
+      } catch (Exception e) {
+        log.warn("Cannot send eMail", e);
       }
+    }
+    if (rebook) {
+      progressEntryService.createProgressEntryForAppointmentRebookingByCitizen(
+          vaccinationConsultation,
+          procedureStep.getAppointmentType(),
+          previousAppointmentStart,
+          newAppointmentStart,
+          sendMailSuccessfully);
+    } else {
+      progressEntryService.createProgressEntryForAppointmentBookingByCitizen(
+          vaccinationConsultation,
+          procedureStep.getAppointmentType(),
+          newAppointmentStart,
+          sendMailSuccessfully);
     }
   }
 
@@ -854,11 +887,7 @@ public class VaccinationConsultationService {
       } catch (Exception e) {
         log.warn("Error while deleting citizen access code user.", e);
       }
-    /*    List<VcService> services =
-        serviceRepository.findAllByVaccinationConsultationExternalIdOrderById(
-            vaccinationConsultation.getExternalId());
-    serviceRepository.deleteAll(services);
-    procedureStepRepository.deleteAll(vaccinationConsultation.getProcedureSteps());*/
+
     vaccinationConsultationRepository.deleteById(vaccinationConsultation.getId());
   }
 

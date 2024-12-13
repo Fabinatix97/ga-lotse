@@ -9,7 +9,7 @@ import { useState } from "react";
 import { identity } from "remeda";
 
 import { useSearchSchools } from "@/lib/baseModule/api/queries/contacts";
-import { mapContactToSelectOption } from "@/lib/businessModules/schoolEntry/features/procedures/helpers";
+import { mapContactToSelectOption } from "@/lib/shared/helpers/contactCategoryMapper";
 
 interface SearchSchoolFilterProps {
   schoolId: string | undefined;

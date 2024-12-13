@@ -25,6 +25,7 @@ import de.eshg.stiprotection.mapper.AppointmentMapper;
 import de.eshg.stiprotection.mapper.StiProtectionProcedureMapper;
 import de.eshg.stiprotection.persistence.data.ResultPage;
 import de.eshg.stiprotection.persistence.data.StiProtectionProcedureData;
+import de.eshg.stiprotection.persistence.db.AppointmentHistoryEntry;
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,6 +43,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,14 +62,17 @@ public class StiProtectionProcedureController {
   private final StiProtectionProcedureService stiProtectionService;
   private final AppointmentService appointmentService;
   private final AuditLogger auditLogger;
+  private final StiProtectionProcedureDeletionService procedureDeletionService;
 
   public StiProtectionProcedureController(
       StiProtectionProcedureService stiProtectionService,
       AppointmentService appointmentService,
-      AuditLogger auditLogger) {
+      AuditLogger auditLogger,
+      StiProtectionProcedureDeletionService procedureDeletionService) {
     this.stiProtectionService = stiProtectionService;
     this.appointmentService = appointmentService;
     this.auditLogger = auditLogger;
+    this.procedureDeletionService = procedureDeletionService;
   }
 
   @PostMapping
@@ -140,8 +145,11 @@ public class StiProtectionProcedureController {
   public void updateAppointment(
       @PathVariable("id") UUID procedureId, @Valid @RequestBody UpdateAppointmentRequest request) {
     StiProtectionProcedure procedure = stiProtectionService.findProcedureByExternalId(procedureId);
+    AppointmentHistoryEntry appointmentHistoryEntry =
+        appointmentService.getOpenAppointmentHistoryEntry(procedure);
     appointmentService.updateAppointment(
-        procedure, AppointmentMapper.toDataType(request, procedure.getConcern()));
+        procedure,
+        AppointmentMapper.toDataType(request, appointmentHistoryEntry.getAppointmentType()));
   }
 
   @PostMapping("/{id}/appointment/cancel")
@@ -204,5 +212,12 @@ public class StiProtectionProcedureController {
       @Valid @RequestBody VerifyAnonymousUserPinRequest request) {
     String pin = request.pin();
     stiProtectionService.verifyAnonymousUserPin(procedureId, pin);
+  }
+
+  @DeleteMapping("/{id}")
+  @Transactional
+  public void deleteProcedure(@PathVariable("id") UUID procedureId) {
+    procedureDeletionService.deleteAndWriteToCemetery(
+        stiProtectionService.findProcedureByExternalId(procedureId));
   }
 }

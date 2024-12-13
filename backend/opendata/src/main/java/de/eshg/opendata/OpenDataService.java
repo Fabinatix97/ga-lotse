@@ -5,48 +5,27 @@
 
 package de.eshg.opendata;
 
-import static de.eshg.domain.model.BaseEntity_.ID;
-import static de.eshg.domain.model.BaseEntity_.id;
-import static de.eshg.opendata.VersionFilterSpecification.fetchingResourcesAndSources;
-import static de.eshg.opendata.VersionFilterSpecification.filterByFileType;
-import static de.eshg.opendata.VersionFilterSpecification.filterBySearchString;
-import static de.eshg.opendata.VersionFilterSpecification.filterBySource;
-import static de.eshg.opendata.VersionFilterSpecification.filterStatisticsStartAndEndDatesByYear;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.data.jpa.domain.JpaSort.of;
-import static org.springframework.data.jpa.domain.JpaSort.path;
-import static org.springframework.data.jpa.domain.Specification.allOf;
-
 import de.eshg.file.common.FileTypeDetector;
 import de.eshg.file.common.PdfAConformanceValidator;
-import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
 import de.eshg.opendata.api.UpdateVersionMetaDataRequest;
 import de.eshg.opendata.api.VersionDto;
+import de.eshg.opendata.config.OpenDataProperties;
 import de.eshg.opendata.domain.model.FileContent;
 import de.eshg.opendata.domain.model.OpenDataFileType;
 import de.eshg.opendata.domain.model.Resource;
-import de.eshg.opendata.domain.model.Resource_;
 import de.eshg.opendata.domain.model.Version;
-import de.eshg.opendata.domain.model.Version_;
 import de.eshg.opendata.domain.repository.ResourceRepository;
 import de.eshg.opendata.domain.repository.VersionRepository;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,8 +33,6 @@ import java.util.UUID;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -70,76 +47,17 @@ public class OpenDataService {
   private final ResourceRepository resourceRepository;
   private final VersionRepository versionRepository;
   private final Clock clock;
-  private final VersionProperties versionProperties;
+  private final OpenDataProperties openDataProperties;
 
   public OpenDataService(
       ResourceRepository resourceRepository,
       VersionRepository versionRepository,
       Clock clock,
-      VersionProperties versionProperties) {
+      OpenDataProperties openDataProperties) {
     this.resourceRepository = resourceRepository;
     this.versionRepository = versionRepository;
     this.clock = clock;
-    this.versionProperties = versionProperties;
-  }
-
-  public List<ResourceDto> getOpenDocuments(
-      GetOpenDocumentsRequest filterOptions, boolean returnOnlyMostRecentMinorVersions) {
-    List<Specification<Version>> specifications = new ArrayList<>();
-
-    if (filterOptions.statisticsYearFilter() != null) {
-      specifications.add(
-          filterStatisticsStartAndEndDatesByYear(filterOptions.statisticsYearFilter()));
-    }
-
-    if (filterOptions.sourcesFilter() != null) {
-      specifications.add(filterBySource(filterOptions.sourcesFilter()));
-    }
-
-    if (filterOptions.fileTypeFilter() != null) {
-      specifications.add(filterByFileType(filterOptions.fileTypeFilter()));
-    }
-
-    if (filterOptions.searchString() != null) {
-      specifications.add(filterBySearchString(filterOptions.searchString()));
-    }
-
-    if (returnOnlyMostRecentMinorVersions) {
-      specifications.add(filterForOnlyMostRecentMinorVersions());
-    }
-
-    specifications.add(fetchingResourcesAndSources());
-
-    return versionRepository
-        .findAll(
-            Specification.where(allOf(specifications)),
-            of(Direction.ASC, path(Version_.resource).dot(Resource_.resourceName))
-                .andUnsafe(Direction.ASC, "%s.%s".formatted(Version_.RESOURCE, ID))
-                .and(of(Direction.DESC, path(Version_.publicationDate)))
-                .and(of(Direction.ASC, path(id))))
-        .stream()
-        .collect(groupingBy(Version::getResource, LinkedHashMap::new, toList()))
-        .entrySet()
-        .stream()
-        .map(entry -> OpenDataMapper.toInterfaceWithVersions(entry.getKey(), entry.getValue()))
-        .toList();
-  }
-
-  private Specification<Version> filterForOnlyMostRecentMinorVersions() {
-    return (root, query, criteriaBuilder) -> {
-      Subquery<Integer> subquery = query.subquery(Integer.class);
-      Root<Version> from = subquery.from(Version.class);
-      Path<Integer> minorVersion = from.get(Version_.minor);
-
-      Predicate resourceEquals =
-          criteriaBuilder.equal(root.get(Version_.resource), from.get(Version_.resource));
-      Predicate majorVersionEquals =
-          criteriaBuilder.equal(root.get(Version_.major), from.get(Version_.major));
-      subquery.where(criteriaBuilder.and(resourceEquals, majorVersionEquals));
-
-      return criteriaBuilder.equal(
-          root.get(Version_.minor), subquery.select(criteriaBuilder.max(minorVersion)));
-    };
+    this.openDataProperties = openDataProperties;
   }
 
   public VersionDto getSpecificVersion(UUID versionId) {
@@ -168,6 +86,8 @@ public class OpenDataService {
     version.setDescription(updateRequest.description());
     version.setLicence(updateRequest.licence());
     version.setSources(updateRequest.sources());
+    version.setStatisticStartDate(updateRequest.statisticStartDate());
+    version.setStatisticEndDate(updateRequest.statisticEndDate());
   }
 
   public void deleteVersion(UUID versionId) {
@@ -195,7 +115,7 @@ public class OpenDataService {
     version.setStatisticStartDate(postRequest.statisticStartDate());
     version.setStatisticEndDate(postRequest.statisticEndDate());
     version.setSources(postRequest.sources());
-    version.setAuthor(versionProperties.getAuthor());
+    version.setAuthor(openDataProperties.getAuthor());
     version.setDescription(postRequest.description());
     version.setPublicationDate(Instant.now(clock));
     version.setVersionName(postRequest.versionName());

@@ -16,14 +16,25 @@ import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarSt
 import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
 import { UseFilterSettings } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { UseFilterTemplateProps } from "@/lib/shared/components/filterSettings/useFilterTemplate";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function CreateDiagramSidebar(props: {
-  open: boolean;
-  onClose: () => void;
+export function useCreateDiagramSidebar(): UseSidebarWithFormRefResult<CreateDiagramSidebarProps> {
+  return useSidebarWithFormRef({
+    component: CreateDiagramSidebar,
+  });
+}
+
+interface CreateDiagramSidebarProps extends SidebarWithFormRefProps {
   analysisId: string;
   attributes: FlatAttribute[];
   evaluationId: string;
-}) {
+}
+
+function CreateDiagramSidebar(props: CreateDiagramSidebarProps) {
   const initialValues: CreateDiagramFormModel = {
     title: "",
     description: "",
@@ -58,17 +69,17 @@ export function CreateDiagramSidebar(props: {
         ...model,
       },
       {
-        onSuccess: props.onClose,
+        onSuccess: () => props.onClose(true),
       },
     );
   }
 
   return (
     <SidebarStepper
-      open={props.open}
       onClose={props.onClose}
       onSubmit={onSubmit}
       initialValues={initialValues}
+      formRef={props.formRef}
       steps={
         [
           {

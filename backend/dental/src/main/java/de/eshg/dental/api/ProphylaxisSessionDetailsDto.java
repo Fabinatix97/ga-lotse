@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Schema(name = "ProphylaxisSessionDetails")
@@ -18,4 +19,5 @@ public record ProphylaxisSessionDetailsDto(
     @NotNull Instant dateAndTime,
     @NotNull @Valid InstitutionDto institution,
     @NotBlank String groupName,
-    @NotNull ProphylaxisTypeDto type) {}
+    @NotNull ProphylaxisTypeDto type,
+    @NotNull @Valid List<ChildResult> participants) {}

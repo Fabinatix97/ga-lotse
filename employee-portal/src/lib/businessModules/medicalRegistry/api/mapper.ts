@@ -60,13 +60,15 @@ function mapDocuments(values: MedicalRegistryCreateProcedureFormValues) {
   switch (typeOfChange) {
     case "DEREGISTRATION":
     case "RELOCATION":
-      return mapCreateDeRegistrationDocuments(values);
     case "CHANGE_OF_NAME":
     case "CHANGE_OF_REGISTRATION":
+      return mapMandatoryDocuments(values);
+    case "SECOND_PRACTICE":
+      return mapPracticeDocuments(values);
     case "NEW_REGISTRATION":
     case "RE_REGISTRATION":
-    case "SECOND_PRACTICE":
-      return mapCreateFullDocuments(values);
+    case "OTHER":
+      return mapFullDocuments(values);
     default:
       throw new Error("Unexpected type of change");
   }
@@ -203,7 +205,7 @@ function mapProfessionInformation(
   };
 }
 
-function mapCreateDeRegistrationDocuments(
+function mapMandatoryDocuments(
   values: MedicalRegistryCreateProcedureFormValues,
 ) {
   return {
@@ -213,9 +215,20 @@ function mapCreateDeRegistrationDocuments(
   };
 }
 
-function mapCreateFullDocuments(
+function mapPracticeDocuments(
   values: MedicalRegistryCreateProcedureFormValues,
 ) {
+  return {
+    employeeList: values.employeeInformationForm.employeesEmployed
+      ? mapRequiredValue(values.employeeInformationForm.employeesFile)
+      : undefined,
+    identificationDocument: mapRequiredValue(
+      values.requiredDocumentsForm.identificationDocument,
+    ),
+  };
+}
+
+function mapFullDocuments(values: MedicalRegistryCreateProcedureFormValues) {
   return {
     employeeList: values.employeeInformationForm.employeesEmployed
       ? mapRequiredValue(values.employeeInformationForm.employeesFile)

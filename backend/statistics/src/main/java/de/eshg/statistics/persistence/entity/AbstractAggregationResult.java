@@ -99,6 +99,11 @@ public abstract class AbstractAggregationResult extends BaseEntityWithExternalId
   @OrderBy
   private final List<Analysis> analyses = new ArrayList<>();
 
+  @DataSensitivity(PUBLIC)
+  @Column(nullable = false)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private StatisticsDataSensitivity dataSensitivity;
+
   public Instant getCreatedAt() {
     return createdAt;
   }
@@ -184,5 +189,13 @@ public abstract class AbstractAggregationResult extends BaseEntityWithExternalId
 
   public List<Analysis> getAnalyses() {
     return analyses;
+  }
+
+  public StatisticsDataSensitivity getDataSensitivity() {
+    return dataSensitivity;
+  }
+
+  public void setDataSensitivity(StatisticsDataSensitivity dataSensitivity) {
+    this.dataSensitivity = dataSensitivity;
   }
 }

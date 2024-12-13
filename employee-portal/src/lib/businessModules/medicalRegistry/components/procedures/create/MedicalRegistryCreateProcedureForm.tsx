@@ -8,7 +8,6 @@ import {
   ApiEmploymentType,
   ApiTypeOfChange,
 } from "@eshg/employee-portal-api/medicalRegistry";
-import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { Divider } from "@mui/joy";
 import { Formik } from "formik";
 import { useRouter } from "next/navigation";
@@ -155,61 +154,58 @@ const initialValues: MedicalRegistryCreateProcedureFormValues = {
   writtenConfirmationForm: initialWrittenConfirmationFormValues,
 };
 
-const DEREGISTRATION_TYPES = [
-  ApiTypeOfChange.Relocation,
-  ApiTypeOfChange.Deregistration,
-];
-
 export const requiredFieldMessage = "Pflichtfeld!";
 
 interface MedicalRegistryCreateProcedureFormProps {
   setShowSuccessPage: (showSuccessPage: boolean) => void;
 }
 
-function shouldEnableProfession(
-  values: MedicalRegistryCreateProcedureFormValues,
-) {
-  return shouldEnable(
-    values.generalInformationForm.changeType,
-    DEREGISTRATION_TYPES,
-  );
-}
-
-function shouldEnablePractice(
-  values: MedicalRegistryCreateProcedureFormValues,
-) {
-  return shouldEnable(
-    values.generalInformationForm.changeType,
-    DEREGISTRATION_TYPES,
-  );
-}
-
-function shouldEnableEmployees(
-  values: MedicalRegistryCreateProcedureFormValues,
-) {
-  return shouldEnable(
-    values.generalInformationForm.changeType,
-    DEREGISTRATION_TYPES,
-  );
-}
-
-function shouldEnableOptionalDocuments(
-  values: MedicalRegistryCreateProcedureFormValues,
-) {
-  return shouldEnable(
-    values.generalInformationForm.changeType,
-    DEREGISTRATION_TYPES,
-  );
-}
+type Section = "profession" | "practice" | "employees" | "optionalDocuments";
+const sectionEnabled: Record<Section, ApiTypeOfChange[]> = {
+  profession: [
+    ApiTypeOfChange.NewRegistration,
+    ApiTypeOfChange.ReRegistration,
+    ApiTypeOfChange.Other,
+  ],
+  practice: [
+    ApiTypeOfChange.NewRegistration,
+    ApiTypeOfChange.ReRegistration,
+    ApiTypeOfChange.Other,
+    ApiTypeOfChange.SecondPractice,
+    ApiTypeOfChange.ChangeOfRegistration,
+  ],
+  employees: [
+    ApiTypeOfChange.NewRegistration,
+    ApiTypeOfChange.ReRegistration,
+    ApiTypeOfChange.Other,
+    ApiTypeOfChange.SecondPractice,
+  ],
+  optionalDocuments: [
+    ApiTypeOfChange.NewRegistration,
+    ApiTypeOfChange.ReRegistration,
+    ApiTypeOfChange.Other,
+  ],
+};
 
 function shouldEnable(
-  typeOfChange: OptionalFieldValue<ApiTypeOfChange>,
-  disabledFor: ApiTypeOfChange[],
-) {
+  section: Section,
+  values: MedicalRegistryCreateProcedureFormValues,
+): boolean {
+  const typeOfChange = values.generalInformationForm.changeType;
   if (typeOfChange === "") {
     return true;
   }
-  return !disabledFor.includes(typeOfChange);
+  return sectionEnabled[section].includes(typeOfChange);
+}
+
+function forceProprietaryPractice(
+  values: MedicalRegistryCreateProcedureFormValues,
+) {
+  const typeOfChange = values.generalInformationForm.changeType;
+  return (
+    typeOfChange === ApiTypeOfChange.SecondPractice ||
+    typeOfChange === ApiTypeOfChange.ChangeOfRegistration
+  );
 }
 
 export function MedicalRegistryCreateProcedureForm(
@@ -251,7 +247,7 @@ export function MedicalRegistryCreateProcedureForm(
           </FormGroupGrid>
           <Divider />
 
-          {shouldEnableProfession(values) && (
+          {shouldEnable("profession", values) && (
             <>
               <FormGroupGrid
                 columns={{ xxs: 6, xxl: 12 }}
@@ -271,19 +267,22 @@ export function MedicalRegistryCreateProcedureForm(
             </>
           )}
 
-          {shouldEnablePractice(values) && (
+          {shouldEnable("practice", values) && (
             <>
               <FormGroupGrid
                 columns={{ xxs: 6, xxl: 12 }}
                 data-testid="practice-information"
               >
-                <PracticeInformationForm name="practiceInformationForm" />
+                <PracticeInformationForm
+                  name="practiceInformationForm"
+                  forceProprietaryPractice={forceProprietaryPractice(values)}
+                />
               </FormGroupGrid>
               <Divider />
             </>
           )}
 
-          {shouldEnableEmployees(values) && (
+          {shouldEnable("employees", values) && (
             <>
               <FormGroupGrid
                 columns={{ xxs: 6, xxl: 12 }}
@@ -298,7 +297,10 @@ export function MedicalRegistryCreateProcedureForm(
           <FormGroupGrid columns={{ xxs: 6, xxl: 12 }}>
             <RequiredDocumentsForm
               name="requiredDocumentsForm"
-              enableOptionalDocuments={shouldEnableOptionalDocuments(values)}
+              enableOptionalDocuments={shouldEnable(
+                "optionalDocuments",
+                values,
+              )}
             />
           </FormGroupGrid>
           <Divider />

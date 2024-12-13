@@ -10,11 +10,7 @@ import {
 } from "@eshg/employee-portal-api/dental";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
 import { isBlankString } from "@eshg/lib-portal/helpers/guards";
-import {
-  queryOptions,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useChildApi } from "@/lib/businessModules/dental/api/clients";
 import { mapChild } from "@/lib/businessModules/dental/api/models/Child";
@@ -23,10 +19,10 @@ import { mapPaginatedList } from "@/lib/shared/api/models/PaginatedList";
 
 import { childApiQueryKey } from "./apiQueryKeys";
 
-export function useGetChildren(request: GetChildrenRequest) {
+export function useGetChildrenQuery(request: GetChildrenRequest) {
   const childApi = useChildApi();
 
-  return useSuspenseQuery({
+  return queryOptions({
     queryKey: childApiQueryKey(["getChildren", request]),
     queryFn: () => childApi.getChildrenRaw(request).then(unwrapRawResponse),
     select: mapPaginatedList(mapChild),

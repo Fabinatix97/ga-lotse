@@ -8,6 +8,7 @@ package de.eshg.measlesprotection.persistence.centralfile;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.PersonApi;
 import de.eshg.base.centralfile.api.DataOriginDto;
+import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateRequest;
 import de.eshg.base.centralfile.api.person.AddPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -21,15 +22,20 @@ import de.eshg.measlesprotection.api.AffectedPersonDto;
 import de.eshg.measlesprotection.persistence.db.MeaslesProtectionProcedure;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PersonClient {
+
+  private static final Logger log = LoggerFactory.getLogger(PersonClient.class);
 
   private final PersonApi personApi;
 
@@ -124,5 +130,15 @@ public class PersonClient {
             .flatMap(response -> response.fileStateIds().stream())
             .toList();
     return new PersonFileStateIdsWithSameReferencePerson(fileStateIds);
+  }
+
+  public void markCentralFileStatesForDeletion(UUID[] personIds) {
+    if (log.isInfoEnabled()) {
+      log.info("Marking central file state(s) {} for deletion", Arrays.toString(personIds));
+    }
+    personApi.markPersonFileStateForDeletion(new DeleteFileStatesRequest(personIds));
+    if (log.isInfoEnabled()) {
+      log.info("Marked central file state(s) {} for deletion", Arrays.toString(personIds));
+    }
   }
 }

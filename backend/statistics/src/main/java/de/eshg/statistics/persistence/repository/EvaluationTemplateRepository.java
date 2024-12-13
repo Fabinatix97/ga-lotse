@@ -9,7 +9,9 @@ import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTempla
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface EvaluationTemplateRepository extends JpaRepository<EvaluationTemplate, Long> {
+public interface EvaluationTemplateRepository
+    extends JpaRepository<EvaluationTemplate, Long>, JpaSpecificationExecutor<EvaluationTemplate> {
   Optional<EvaluationTemplate> findByExternalId(UUID templateId);
 }

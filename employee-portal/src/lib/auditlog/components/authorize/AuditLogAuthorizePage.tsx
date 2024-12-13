@@ -5,18 +5,15 @@
 
 "use client";
 
-import { format } from "date-fns";
-
+import { useAuditLogAuthorizeSidebar } from "@/lib/auditlog/components/authorize/AuditLogAuthorizeSidebar";
 import { auditLogAuthorizeColumns } from "@/lib/auditlog/components/authorize/auditLogAuthorizeColumns";
 import { useAuditLogAdminFilterSettings } from "@/lib/auditlog/components/authorize/useAuditLogAdminFilterSettings";
 import { useGetAvailableAuditLogs } from "@/lib/auditlog/queries/auditlog";
-import { routes } from "@/lib/baseModule/shared/routes";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
 import { FilterSettingsSheet } from "@/lib/shared/components/filterSettings/FilterSettingsSheet";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
-import { useBuildRoutePreservingSearchParams } from "@/lib/shared/components/procedures/hooks/useBuildRoutePreservingSearchParams";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -29,8 +26,7 @@ export function AuditLogAuthorizePage(
   }>,
 ) {
   const tableControl = useTableControl();
-  const buildRoutePreservingSearchParams =
-    useBuildRoutePreservingSearchParams();
+  const authorizeSidebar = useAuditLogAuthorizeSidebar();
 
   const { data: response } = useGetAvailableAuditLogs(props.searchParams);
 
@@ -67,13 +63,11 @@ export function AuditLogAuthorizePage(
           data={response.logs}
           columns={auditLogAuthorizeColumns}
           rowNavigation={{
-            route: (row) =>
-              buildRoutePreservingSearchParams(
-                routes.auditlog.authorize.grantAccess(
-                  row.original.auditLogSource,
-                  format(row.original.createdAt, "yyyy-MM-dd"),
-                ),
-              ),
+            onClick: (row) =>
+              authorizeSidebar.open({
+                source: row.original.auditLogSource,
+                date: row.original.createdAt,
+              }),
             focusColumnAccessorKey: "auditLogSource",
           }}
         />

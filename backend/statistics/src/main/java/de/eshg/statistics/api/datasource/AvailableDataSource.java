@@ -5,6 +5,7 @@
 
 package de.eshg.statistics.api.datasource;
 
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,4 +17,6 @@ public record AvailableDataSource(
     @NotNull boolean withoutAnonymizationAllowed,
     @NotNull UUID id,
     @NotBlank String name,
+    @NotNull DataSourceSensitivity sensitivity,
+    @NotNull boolean canBeAnonymized,
     @NotNull @Valid List<BusinessDataSourceAttribute> attributes) {}

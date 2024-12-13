@@ -20,20 +20,31 @@ import { SelectDiagramStep } from "@/lib/businessModules/statistics/components/e
 import { CreateAnalysisFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/CreateAnalysisSidebar/createAnalysisFormModel";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function CreateAnalysisSidebar({
-  open,
+export function useCreateAnalysisSidebar(): UseSidebarWithFormRefResult<CreateAnalysisSidebarProps> {
+  return useSidebarWithFormRef({
+    component: CreateAnalysisSidebar,
+  });
+}
+
+interface CreateAnalysisSidebarProps extends SidebarWithFormRefProps {
+  evaluationId: string;
+  attributes: FlatAttribute[];
+  choroplethMaps: GeoShapeInfo[];
+}
+
+function CreateAnalysisSidebar({
   onClose,
   evaluationId,
   attributes,
   choroplethMaps,
-}: {
-  open: boolean;
-  onClose: () => void;
-  evaluationId: string;
-  attributes: FlatAttribute[];
-  choroplethMaps: GeoShapeInfo[];
-}) {
+  formRef,
+}: CreateAnalysisSidebarProps) {
   const initialValues: CreateAnalysisFormModel = {
     diagramType: DiagramType.BAR_CHART,
     name: "",
@@ -77,7 +88,7 @@ export function CreateAnalysisSidebar({
     },
   };
 
-  const addAnalysis = useAddAnalysis(evaluationId, onClose);
+  const addAnalysis = useAddAnalysis(evaluationId, () => onClose(true));
   const addDiagram = useAddDiagram();
 
   async function createAnalysisAndDiagramWithoutFilters(
@@ -100,10 +111,10 @@ export function CreateAnalysisSidebar({
 
   return (
     <SidebarStepper
-      open={open}
       onClose={onClose}
       onSubmit={createAnalysisAndDiagramWithoutFilters}
       initialValues={initialValues}
+      formRef={formRef}
       steps={
         [
           {

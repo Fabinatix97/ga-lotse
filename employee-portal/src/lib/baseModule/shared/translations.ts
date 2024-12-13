@@ -13,3 +13,8 @@ export const contactCategoryNames: Record<ApiContactCategory, string> = {
   [ApiContactCategory.HealthDepartment]: "Gesundheitsamt",
   [ApiContactCategory.Misc]: "Sonstiges",
 };
+
+export const contactCategoryNamesShort: Record<ApiContactCategory, string> = {
+  ...contactCategoryNames,
+  [ApiContactCategory.Daycare]: "Kita",
+};

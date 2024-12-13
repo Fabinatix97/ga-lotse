@@ -5,11 +5,7 @@
 
 package de.eshg.schoolentry.importer;
 
-import static de.eshg.lib.xlsximport.ImportStatus.DUPLICATE_WITHIN_LIST;
-import static de.eshg.lib.xlsximport.ImportStatus.ERROR_INPUT_DATA;
-import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_PREVIOUSLY;
 import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_SUCCESSFULLY;
-import static de.eshg.lib.xlsximport.ImportStatus.INVALID_PROCEDURE_ID;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
@@ -22,18 +18,15 @@ import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import java.time.Year;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SchoolEntryImporter<
-        T extends SchoolEntryRowValues<T>, C extends XlsxColumn, M>
-    extends Importer<T, C> {
+public abstract class SchoolEntryImporter<R extends SchoolEntryRow<R>, C extends XlsxColumn, M>
+    extends Importer<R, C> {
 
   private static final Logger log = LoggerFactory.getLogger(SchoolEntryImporter.class);
   protected final UUID schoolId;
@@ -42,7 +35,7 @@ public abstract class SchoolEntryImporter<
 
   protected SchoolEntryImporter(
       XSSFSheet sheet,
-      RowReader<T, C> rowReader,
+      RowReader<R, C> rowReader,
       FeedbackColumnAccessor feedbackColumnAccessor,
       UUID schoolId,
       Year schoolYear,
@@ -54,33 +47,28 @@ public abstract class SchoolEntryImporter<
   }
 
   @Override
-  protected void readRowsAndEvaluateActions() {
-    Map<Row, T> rowValues = readRows();
-
-    List<UUID> existingProcedureIds = fetchExistingProceduresIfNecessary(rowValues);
+  protected void evaluateActionsForRows(List<R> rows) {
+    List<UUID> existingProcedureIds = fetchExistingProceduresIfNecessary(rows);
 
     Map<PersonKeyAttributes, List<M>> mergeCandidates =
-        fetchMergeCandidates(getChildKeyAttributesOfValidRows(rowValues));
+        fetchMergeCandidates(getChildKeyAttributesOfValidRows(rows));
 
-    for (Entry<Row, T> entry : rowValues.entrySet()) {
-      evaluateActionForRow(entry.getKey(), entry.getValue(), existingProcedureIds, mergeCandidates);
+    for (R row : rows) {
+      evaluateActionForRow(row, existingProcedureIds, mergeCandidates);
     }
   }
 
-  private List<UUID> fetchExistingProceduresIfNecessary(Map<Row, T> rowValues) {
+  private List<UUID> fetchExistingProceduresIfNecessary(List<R> rows) {
     List<UUID> procedureIds =
-        rowValues.values().stream()
-            .map(SchoolEntryRowValues::getProcedureId)
-            .filter(Objects::nonNull)
-            .toList();
+        rows.stream().map(SchoolEntryRow::getEntityId).filter(Objects::nonNull).toList();
     return importService.collectExistingProcedures(procedureIds);
   }
 
-  private Set<PersonKeyAttributes> getChildKeyAttributesOfValidRows(Map<Row, T> rowValues) {
-    return rowValues.values().stream()
-        .filter(row -> row.getProcedureId() == null)
-        .filter(SchoolEntryRowValues::isValid)
-        .map(SchoolEntryRowValues::getChildKeyAttributes)
+  private Set<PersonKeyAttributes> getChildKeyAttributesOfValidRows(List<R> rows) {
+    return rows.stream()
+        .filter(row -> row.getEntityId() == null)
+        .filter(SchoolEntryRow::isValid)
+        .map(SchoolEntryRow::getChildKeyAttributes)
         .collect(StreamUtil.toLinkedHashSet());
   }
 
@@ -88,38 +76,27 @@ public abstract class SchoolEntryImporter<
       Set<PersonKeyAttributes> childKeyAttributes);
 
   private void evaluateActionForRow(
-      Row row,
-      T rowValues,
-      List<UUID> existingProcedureIds,
-      Map<PersonKeyAttributes, List<M>> mergeCandidates) {
-
-    if (rowValues.getProcedureId() != null) {
-      if (existingProcedureIds.contains(rowValues.getProcedureId())) {
-        writeStatus(row, IMPORTED_PREVIOUSLY);
-        stats.countPreviouslyImported();
+      R row, List<UUID> existingProcedureIds, Map<PersonKeyAttributes, List<M>> mergeCandidates) {
+    if (row.getEntityId() != null) {
+      if (existingProcedureIds.contains(row.getEntityId())) {
+        markAsImportedPreviously(row);
       } else {
-        writeStatus(row, INVALID_PROCEDURE_ID);
-        stats.countFailed();
+        markAsInvalidEntityId(row);
       }
-    } else if (rowValues.getStatus() == DUPLICATE_WITHIN_LIST || isDuplicateRow(rowValues)) {
-      writeStatus(row, DUPLICATE_WITHIN_LIST);
-      stats.countDuplicated();
-    } else if (rowValues.isValid()) {
-
-      evaluateActionForValidRow(row, rowValues, mergeCandidates);
-
+    } else if (isDuplicateRow(row)) {
+      markAsDuplicateWithinList(row);
+    } else if (row.isValid()) {
+      evaluateActionForValidRow(row, mergeCandidates);
     } else {
-      writeStatus(row, ERROR_INPUT_DATA);
-      stats.countFailed();
+      markAsInputDataError(row);
     }
   }
 
   protected abstract void evaluateActionForValidRow(
-      Row row, T value, Map<PersonKeyAttributes, List<M>> mergeCandidates);
+      R row, Map<PersonKeyAttributes, List<M>> mergeCandidates);
 
   @Override
-  protected void createProceduresAndWriteResults() {
-    List<T> importableRows = validRows.importableRows();
+  protected void createEntitiesAndWriteResults(List<R> importableRows) {
     try {
       List<SchoolEntryProcedure> createdProcedures = createProcedures(importableRows);
       writeProcedureIdsInSheet(importableRows, createdProcedures, IMPORTED_SUCCESSFULLY);
@@ -130,28 +107,25 @@ public abstract class SchoolEntryImporter<
     }
   }
 
-  protected abstract List<SchoolEntryProcedure> createProcedures(List<T> importableRows);
+  protected abstract List<SchoolEntryProcedure> createProcedures(List<R> importableRows);
 
   protected void writeProcedureIdsInSheet(
-      List<T> importableRows,
+      List<R> importableRows,
       List<SchoolEntryProcedure> createdProcedures,
       ImportStatus importStatus) {
     for (int i = 0; i < importableRows.size(); i++) {
-      T rowValues = importableRows.get(i);
+      R row = importableRows.get(i);
       SchoolEntryProcedure createdProcedure = createdProcedures.get(i);
-
-      Row row = rowValues.getRow();
       writeStatusAndEntityId(row, importStatus, createdProcedure.getExternalId());
     }
   }
 
   @Override
-  protected void mergeProceduresAndWriteResults() {
-    List<T> mergeableRows = validRows.mergeableRows();
+  protected void mergeEntitiesAndWriteResults(List<R> mergeableRows) {
     List<UUID> failedProcedureIds = mergeProceduresAndGetFailedProcedureIds(mergeableRows);
     writeMergedFailedStatusInSheet(mergeableRows, failedProcedureIds);
     stats.correctMergeToFailed(failedProcedureIds.size());
   }
 
-  protected abstract List<UUID> mergeProceduresAndGetFailedProcedureIds(List<T> mergeableRows);
+  protected abstract List<UUID> mergeProceduresAndGetFailedProcedureIds(List<R> mergeableRows);
 }

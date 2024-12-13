@@ -37,5 +37,6 @@
   <include
     file="migrations/0025_add_official_medical_service_procedure_type.xml"/>
   <include file="migrations/0026_add_mail_to_simple_notification.xml"/>
+  <include file="migrations/0027_add_laboratory_test_examination.xml"/>
 
 </databaseChangeLog>

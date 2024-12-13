@@ -8,30 +8,18 @@
 import { ApiGetRelevantCalendarsResponse } from "@eshg/employee-portal-api/base";
 import { useMemo, useRef, useState } from "react";
 
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
-
 import { Calendar, CalendarHandle } from "./Calendar";
 import { mapApiCalendarsToCalendarInfo } from "./calendarDisplay";
 import { EventWithCalendarId } from "./calendarMapper";
-import { AddAbsenceSidebar } from "./sidebar/AddAbsenceSidebar";
-import { EditAbsenceSidebar } from "./sidebar/EditAbsenceSidebar";
+import { useAddAbsenceSidebar } from "./sidebar/AddAbsenceSidebar";
+import { useEditAbsenceSidebar } from "./sidebar/EditAbsenceSidebar";
 import { SettingsSidebar } from "./sidebar/SettingsSidebar";
-import { ViewEventSidebar } from "./sidebar/ViewEventSidebar";
-
-type UserActivityState =
-  | { type: "view-calendar" }
-  | { type: "add-event" }
-  | { type: "edit-event"; event: EventWithCalendarId }
-  | { type: "view-event"; event: EventWithCalendarId }
-  | { type: "settings" };
-
-const initialUserActivity: UserActivityState = { type: "view-calendar" };
+import { useViewEventSidebar } from "./sidebar/ViewEventSidebar";
 
 export function UserCalendar(props: {
   calendarsResponse: ApiGetRelevantCalendarsResponse;
 }) {
-  const [userActivity, setUserActivity] =
-    useState<UserActivityState>(initialUserActivity);
+  const [settingsSidebarOpen, setSettingsSidebarOpen] = useState(false);
 
   const { userCalendarId, calendars } = useMemo(
     () => mapApiCalendarsToCalendarInfo(props.calendarsResponse),
@@ -42,21 +30,42 @@ export function UserCalendar(props: {
     userCalendarId,
   ]);
 
+  const addAbsenceSidebar = useAddAbsenceSidebar();
+  const editAbsenceSidebar = useEditAbsenceSidebar();
+  const viewEventSidebar = useViewEventSidebar();
+
   const calendarRef = useRef<CalendarHandle>(null);
 
   function refetchEvents() {
     calendarRef.current?.refetchEvents();
   }
 
-  function closeSidebar() {
-    setUserActivity(initialUserActivity);
+  function openAddAbsenceSidebar() {
+    addAbsenceSidebar.open({
+      userCalendarId,
+      refetchEvents,
+    });
+  }
+
+  function openEditAbsenceSidebar(event: EventWithCalendarId) {
+    editAbsenceSidebar.open({
+      refetchEvents,
+      event,
+    });
+  }
+
+  function openViewEventSidebar(event: EventWithCalendarId) {
+    viewEventSidebar.open({
+      calendars,
+      event,
+    });
   }
 
   return (
     <>
       <Calendar
         ref={calendarRef}
-        onNewEventButtonClick={() => setUserActivity({ type: "add-event" })}
+        onNewEventButtonClick={openAddAbsenceSidebar}
         calendars={calendars}
         displayedCalendarIds={displayedCalendarIds}
         onEventClick={(event) => {
@@ -64,49 +73,17 @@ export function UserCalendar(props: {
             event.type === "VACATION" &&
             event.calendarId === userCalendarId
           ) {
-            setUserActivity({
-              type: "edit-event",
-              event: event,
-            });
+            openEditAbsenceSidebar(event);
           }
           if (event.type === "BUSINESS_CASE") {
-            setUserActivity({
-              type: "view-event",
-              event: event,
-            });
+            openViewEventSidebar(event);
           }
         }}
-        onSettingsButtonClick={() => setUserActivity({ type: "settings" })}
-      />
-      <OverlayBoundary>
-        <AddAbsenceSidebar
-          open={userActivity.type === "add-event"}
-          closeSidebar={closeSidebar}
-          userCalendarId={userCalendarId}
-          refetchEvents={refetchEvents}
-        />
-      </OverlayBoundary>
-      <OverlayBoundary>
-        <EditAbsenceSidebar
-          open={userActivity.type === "edit-event"}
-          closeSidebar={closeSidebar}
-          event={
-            userActivity.type === "edit-event" ? userActivity.event : undefined
-          }
-          refetchEvents={refetchEvents}
-        />
-      </OverlayBoundary>
-      <ViewEventSidebar
-        open={userActivity.type === "view-event"}
-        closeSidebar={closeSidebar}
-        event={
-          userActivity.type === "view-event" ? userActivity.event : undefined
-        }
-        calendars={calendars}
+        onSettingsButtonClick={() => setSettingsSidebarOpen(true)}
       />
       <SettingsSidebar
-        open={userActivity.type === "settings"}
-        closeSidebar={closeSidebar}
+        open={settingsSidebarOpen}
+        closeSidebar={() => setSettingsSidebarOpen(false)}
         calendars={calendars}
         displayedCalendarIds={displayedCalendarIds}
         setDisplayedCalendarIds={setDisplayedCalendarIds}

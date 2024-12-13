@@ -134,6 +134,12 @@ public class ResourceService {
 
   public Resource updateResource(UUID id, UpdateResourceRequest request) {
     Resource resource = findByIdOrThrow(id);
+    if (!resource.getName().equals(request.name())
+        && resourceRepository.existsByName(request.name())) {
+      throw new AlreadyExistsException(
+          "Resource with name `%s` already exists".formatted(resource.getName()));
+    }
+
     resource.setName(request.name());
     resource.setDescription(request.description());
     resource.setArticleNumber(request.articleNumber());

@@ -9,24 +9,20 @@
   "place": {
     "title": "Who is responsible for the school enrollment examination?"
   },
-  "address": {
-    "title": "Address"
-  },
-  "openingHours": {
-    "title": "Opening and Consultation Hours",
-    "days": "Mon - Thu",
-    "daysShort": "Fri",
-    "hours": "07:30 AM - 4:00 PM",
-    "remark": "By appointment only.",
-    "hoursShort": "07:30 AM - 2:00 PM",
-    "remarkShort": "By appointment only."
-  },
-  "telefon": {
-    "title": "Phone",
-    "number": "Phone: {{phoneNumber}}"
-  },
-  "email": {
-    "title": "Email Address"
+  "contact": {
+    "addressSection": {
+      "title": "Address"
+    },
+    "openingHoursSection": {
+      "title": "Opening and Consultation Hours"
+    },
+    "telefonSection": {
+      "title": "Phone",
+      "number": "Phone: {{phoneNumber}}"
+    },
+    "emailSection": {
+      "title": "Email Address"
+    }
   },
   "personalArea": {
     "title": "Have you received an invitation?",

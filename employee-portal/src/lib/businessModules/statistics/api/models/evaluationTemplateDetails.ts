@@ -7,9 +7,12 @@ import { ApiUser } from "@eshg/employee-portal-api/base";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
 
+import { DataSourceSensitivity } from "./dataSourceSensitivity";
+
 export interface EvaluationTemplateDetails {
   name: string;
   dataSourceName: string;
+  dataSourceSensitivity?: DataSourceSensitivity;
   description?: string;
   createdAt: Date;
   user?: ApiUser;

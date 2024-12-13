@@ -33,7 +33,6 @@ import de.eshg.lib.procedure.domain.model.SystemProgressEntry_;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.domain.model.view.InboxProcedureProgressEntryView;
 import de.eshg.lib.procedure.domain.repository.InboxProcedureRepository;
-import de.eshg.lib.procedure.domain.repository.ManualProgressEntryRepository;
 import de.eshg.lib.procedure.domain.repository.ProgressEntryRepository;
 import de.eshg.lib.procedure.helper.UserHelper;
 import de.eshg.lib.procedure.mapping.FileMapper;
@@ -73,7 +72,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements ProgressEntryApi {
 
   private final ProgressEntryRepository progressEntryRepository;
-  private final ManualProgressEntryRepository manualProgressEntryRepository;
   private final ProgressEntryService<P> progressEntryService;
   private final InboxProcedureRepository inboxProcedureRepository;
   private final ApprovalRequestMapper approvalRequestMapper;
@@ -81,13 +79,11 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
 
   public ProgressEntryController(
       ProgressEntryRepository progressEntryRepository,
-      ManualProgressEntryRepository manualProgressEntryRepository,
       ProgressEntryService<P> progressEntryService,
       InboxProcedureRepository inboxProcedureRepository,
       ApprovalRequestMapper approvalRequestMapper,
       UserHelper userHelper) {
     this.progressEntryRepository = progressEntryRepository;
-    this.manualProgressEntryRepository = manualProgressEntryRepository;
     this.progressEntryService = progressEntryService;
     this.inboxProcedureRepository = inboxProcedureRepository;
     this.approvalRequestMapper = approvalRequestMapper;
@@ -209,7 +205,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
             procedureId, manualProgressEntry, file, fileMetaData);
 
     ManualProgressEntryDto manualProgressEntryDto =
-        ProgressEntryMapper.toInterfaceType(savedManualProgressEntry);
+        ProgressEntryMapper.toInterfaceTypeWithFileReference(savedManualProgressEntry);
 
     userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDto);
 
@@ -217,10 +213,10 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
   }
 
   private Sort mapToSort(GetProgressEntriesSortOptions sortOptions) {
+    Direction direction = mapToSortOrder(sortOptions.sortOrder());
     return Sort.by(
-        Order.by(mapToDomainProperty(sortOptions.sortBy()))
-            .with(mapToSortOrder(sortOptions.sortOrder())),
-        Order.by(ID));
+        Order.by(mapToDomainProperty(sortOptions.sortBy())).with(direction),
+        Order.by(ID).with(direction));
   }
 
   private Direction mapToSortOrder(ProgressEntrySortOrderDto progressEntrySortOrder) {
@@ -332,7 +328,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
   }
 
   private ProgressEntryDto mapAndEnrichWithFileDetails(ProgressEntry entity) {
-    ProgressEntryDto response = ProgressEntryMapper.toInterfaceType(entity);
+    ProgressEntryDto response = ProgressEntryMapper.toInterfaceTypeWithFileReference(entity);
     userHelper.enrichUsersFirstNamesAndLastNames(response);
     response.setFileReference(FileMapper.toInterfaceType(entity.getFile()));
     return response;
@@ -361,7 +357,7 @@ public class ProgressEntryController<P extends Procedure<P, ?, ?, ?>> implements
             procedureId, progressEntryId, patchManualProgressEntryRequest);
 
     ManualProgressEntryDto manualProgressEntryDto =
-        ProgressEntryMapper.toInterfaceType(manualProgressEntry);
+        ProgressEntryMapper.toInterfaceTypeWithFileReference(manualProgressEntry);
 
     userHelper.enrichUsersFirstNamesAndLastNames(manualProgressEntryDto);
 

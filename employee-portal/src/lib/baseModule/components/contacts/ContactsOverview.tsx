@@ -10,6 +10,7 @@ import {
   ApiContactSortKey,
   ApiContactType,
 } from "@eshg/employee-portal-api/base";
+import { isDefined } from "remeda";
 
 import { useGetContactsOverviewPageQuery } from "@/lib/baseModule/api/queries/contacts";
 import { ContactsTable } from "@/lib/baseModule/components/contacts/ContactsTable";
@@ -28,12 +29,21 @@ export interface ContactOverviewSearchParams
   category?: ApiContactCategory;
 }
 
+function mapParams(params: ContactOverviewSearchParams) {
+  return {
+    ...params,
+    categories: isDefined(params.category)
+      ? new Set<ApiContactCategory>().add(params.category)
+      : undefined,
+  };
+}
+
 export function ContactsOverview({
   params,
 }: {
   params: ContactOverviewSearchParams;
 }) {
-  const query = useGetContactsOverviewPageQuery(params);
+  const query = useGetContactsOverviewPageQuery(mapParams(params));
   const response = query.isSuccess ? query.data : undefined;
 
   const addInstitutionContactSidebar = useAddInstitutionContactSidebar();

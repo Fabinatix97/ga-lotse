@@ -8,6 +8,17 @@ import { useUpdateReport } from "@/lib/businessModules/statistics/api/mutations/
 import { UpdateReportStep } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportStep";
 import { UpdateReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/updateReportFormModel";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
+
+export function useUpdateReportSidebar(): UseSidebarWithFormRefResult<UpdateReportSidebarProps> {
+  return useSidebarWithFormRef({
+    component: UpdateReportSidebar,
+  });
+}
 
 export interface UpdateReportSidebarReportInfo {
   seriesId: string;
@@ -15,16 +26,17 @@ export interface UpdateReportSidebarReportInfo {
   description?: string;
   type: ReportDataType;
 }
-export interface UpdateReportSidebarProps {
-  onClose: () => void;
+
+interface UpdateReportSidebarProps extends SidebarWithFormRefProps {
   report: UpdateReportSidebarReportInfo;
 }
 
-export function UpdateReportSidebar({
+function UpdateReportSidebar({
   onClose,
   report,
+  formRef,
 }: UpdateReportSidebarProps) {
-  const updateReport = useUpdateReport(onClose);
+  const updateReport = useUpdateReport(() => onClose(true));
 
   async function onSubmit(model: UpdateReportFormModel) {
     return updateReport(report.seriesId, model);
@@ -38,9 +50,9 @@ export function UpdateReportSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      open={true}
       onSubmit={onSubmit}
       initialValues={initialValues}
+      formRef={formRef}
       steps={[
         {
           type: "StandardStep",

@@ -7,6 +7,7 @@ package de.eshg.dental.mapper;
 
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.dental.domain.model.ProphylaxisSession;
 
 public final class ExaminationMapper {
   private ExaminationMapper() {}
@@ -15,10 +16,12 @@ public final class ExaminationMapper {
     if (examination == null) {
       return null;
     }
+    ProphylaxisSession prophylaxisSession = examination.getProphylaxisSession();
     return new ExaminationDto(
         examination.getExternalId(),
         examination.getVersion(),
-        examination.getProphylaxisSession().getDateAndTime(),
+        prophylaxisSession.getDateAndTime(),
+        ProphylaxisSessionMapper.mapToDto(prophylaxisSession.getType()),
         examination.getNote());
   }
 }

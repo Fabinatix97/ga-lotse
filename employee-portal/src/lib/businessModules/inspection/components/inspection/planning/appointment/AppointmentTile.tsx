@@ -9,6 +9,7 @@ import {
   ApiInspection,
   ApiInspectionAppointment,
 } from "@eshg/employee-portal-api/inspection";
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { useState } from "react";
 import { isNonNullish, isNullish } from "remeda";
 
@@ -72,6 +73,12 @@ export function AppointmentTile({
         </>
       }
     >
+      {!date && (
+        <Alert
+          color="primary"
+          message="Termin muss ausgewählt sein, um eine Begehung durchzuführen."
+        />
+      )}
       <DetailsCell name="date" label="Datum" value={date} />
       <DetailsCell name="timeFrame" label="Zeitraum" value={fromTo} />
     </InfoTile>

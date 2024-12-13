@@ -36,6 +36,7 @@ import de.eshg.testhelper.population.RequestContextFaker;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -162,7 +163,7 @@ public class AppointmentBlockGroupsPopulator
     return contactApi
         .getContacts(
             new ContactFilterParameters(
-                null, null, ContactTypeDto.INSTITUTION, category, null, null, null, null))
+                null, null, ContactTypeDto.INSTITUTION, Set.of(category), null, null, null, null))
         .elements()
         .stream()
         .findFirst()

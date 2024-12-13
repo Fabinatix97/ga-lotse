@@ -8,7 +8,7 @@ import { ApiContactType } from "@eshg/employee-portal-api/base";
 export const contactSearchParamNames = {
   name: "name",
   type: "type",
-  category: "category",
+  categories: "categories",
 } as const;
 
 export const contactDiscriminatorToEnum = {

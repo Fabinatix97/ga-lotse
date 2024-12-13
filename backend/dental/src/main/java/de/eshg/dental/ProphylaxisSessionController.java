@@ -11,7 +11,7 @@ import de.eshg.dental.api.CreateProphylaxisSessionResponse;
 import de.eshg.dental.api.GetProphylaxisSessionResponse;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
-import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
+import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.mapper.ProphylaxisSessionMapper;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -61,7 +61,7 @@ public class ProphylaxisSessionController {
           ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters,
       @InlineParameterObject @ParameterObject @Valid
           ProphylaxisSessionFilterParameters filterParameters) {
-    Page<ProphylaxisSessionWithAugmentedData> prophylaxisSessions =
+    Page<ProphylaxisSessionWithAugmentedInstitution> prophylaxisSessions =
         prophylaxisSessionService.getProphylaxisSessions(
             paginationAndSortParameters, filterParameters);
     return new GetProphylaxisSessionResponse(
@@ -76,6 +76,6 @@ public class ProphylaxisSessionController {
   public ProphylaxisSessionDetailsDto getProphylaxisSession(
       @PathVariable("prophylaxisSessionId") UUID prophylaxisSessionId) {
     return ProphylaxisSessionMapper.mapProphylaxisSessionToDetailsDto(
-        prophylaxisSessionService.getProphylaxisSession(prophylaxisSessionId));
+        prophylaxisSessionService.getProphylaxisSessionWithDetails(prophylaxisSessionId));
   }
 }

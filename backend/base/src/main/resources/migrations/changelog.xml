@@ -37,5 +37,5 @@
   <include file="migrations/0026_remove_availability.xml"/>
   <include file="migrations/0027_create_table_muk_facility_link.xml"/>
   <include file="migrations/0028_add_mail_to_simple_notification.xml"/>
-
+  <include file="migrations/0029_add_download_package.xml"/>
 </databaseChangeLog>

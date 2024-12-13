@@ -13,8 +13,8 @@ import {
   OpenDataFormValues,
   validateOpenDataForm,
 } from "@/lib/opendata/components/OpenDataForm";
-import { OPEN_DATA_DEFAULT_LICENCE_URL } from "@/lib/opendata/constants";
 import { usePostOpenDocument } from "@/lib/opendata/mutations/opendata";
+import { useGetFallbackLicenseUrl } from "@/lib/opendata/queries/opendata";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
@@ -60,13 +60,15 @@ export function NewEntrySidebar({
     setSubmitting(false);
   }
 
+  const { data: fallbackLicenseUrl } = useGetFallbackLicenseUrl();
+
   const initialValues: OpenDataFormValues = {
     resourceName: prefilledValues.resourceName,
     versionName: "",
     description: "",
     statisticStartDate: "",
     statisticEndDate: "",
-    licence: OPEN_DATA_DEFAULT_LICENCE_URL,
+    licence: fallbackLicenseUrl,
     sources: [],
     fileName: "",
     file: null,

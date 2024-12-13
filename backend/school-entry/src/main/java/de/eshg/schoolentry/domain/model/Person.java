@@ -20,12 +20,15 @@ import java.util.Objects;
 @Table(indexes = @Index(columnList = "procedure_id"))
 public class Person extends RelatedPerson<SchoolEntryProcedure> {
 
+  public static final PersonType PERSON_TYPE_USED_FOR_CHILDREN = PersonType.PATIENT;
+  public static final PersonType PERSON_TYPE_USED_FOR_CUSTODIANS = PersonType.PARENT;
+
   boolean isChild() {
-    return hasPersonType(PersonType.PATIENT);
+    return hasPersonType(PERSON_TYPE_USED_FOR_CHILDREN);
   }
 
   boolean isCustodian() {
-    return hasPersonType(PersonType.PARENT);
+    return hasPersonType(PERSON_TYPE_USED_FOR_CUSTODIANS);
   }
 
   private boolean hasPersonType(PersonType personType) {

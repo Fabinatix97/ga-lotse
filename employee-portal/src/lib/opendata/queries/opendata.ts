@@ -23,3 +23,13 @@ export function useGetOpenDocuments(request: GetOpenDocumentsRequest) {
         .then(({ elements }) => elements.map(mapToOpenDataRow)),
   });
 }
+
+export function useGetFallbackLicenseUrl() {
+  const openDataApi = useOpenDataApi();
+
+  return useSuspenseQuery({
+    queryKey: openDataApiQueryKey(["getFallbackLicenseUrl"]),
+    queryFn: () => openDataApi.getFallbackLicenseUrl(),
+    select: (response) => response.fallbackLicenseUrl,
+  });
+}

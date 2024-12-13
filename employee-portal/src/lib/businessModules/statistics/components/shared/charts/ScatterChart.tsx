@@ -52,8 +52,13 @@ export function ScatterChart({
 
   const [xMin, xMax, yMin, yMax] = calculateXYMinMax(diagramData);
   const option: EChartsOption = {
+    grid: {
+      containLabel: true,
+    },
     xAxis: {
       name: mapAxisTitleWithOptionalUnit(configuration.xAttribute),
+      nameLocation: "middle",
+      nameGap: 40,
       nameTextStyle: {
         fontWeight: 600,
       },
@@ -63,6 +68,8 @@ export function ScatterChart({
     },
     yAxis: {
       name: mapAxisTitleWithOptionalUnit(configuration.yAttribute),
+      nameLocation: "middle",
+      nameGap: 40,
       nameTextStyle: {
         fontWeight: 600,
       },

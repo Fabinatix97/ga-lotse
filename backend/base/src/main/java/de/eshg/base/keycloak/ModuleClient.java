@@ -8,7 +8,9 @@ package de.eshg.base.keycloak;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_FILE_SEND;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.AUDITLOG_PUBLIC_KEYS_READ;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_ACCESS_CODE_USER_ADMIN;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_FACILITIES_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_MAIL_SEND;
+import static de.eshg.lib.keycloak.EmployeePermissionRole.BASE_PERSONS_DELETE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STANDARD_EMPLOYEE;
 import static de.eshg.lib.keycloak.EmployeePermissionRole.STATISTICS_STATISTICS_WRITE;
 
@@ -22,15 +24,25 @@ public enum ModuleClient {
   CHAT_MANAGEMENT("chat-management"),
   CITIZEN_AUTH("citizen-auth"),
   EMPLOYEE_AUTH("employee-auth"),
-  INSPECTION("inspection", List.of(BASE_MAIL_SEND)),
+  INSPECTION("inspection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   LOCAL_SERVICE_DIRECTORY("local-service-directory"),
-  MEASLES_PROTECTION("measles-protection", List.of(BASE_MAIL_SEND)),
-  SCHOOL_ENTRY("school-entry", List.of(BASE_MAIL_SEND)),
+  MEASLES_PROTECTION(
+      "measles-protection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+  SCHOOL_ENTRY(
+      "school-entry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   STATISTICS("statistics", List.of(STATISTICS_STATISTICS_WRITE)),
-  TRAVEL_MEDICINE("travel-medicine", List.of(BASE_MAIL_SEND, BASE_ACCESS_CODE_USER_ADMIN)),
-  STI_PROTECTION("sti-protection", List.of(BASE_MAIL_SEND)),
-  MEDICAL_REGISTRY("medical-registry", List.of(BASE_MAIL_SEND)),
-  DENTAL("dental", List.of(BASE_MAIL_SEND)),
+  TRAVEL_MEDICINE(
+      "travel-medicine",
+      List.of(
+          BASE_MAIL_SEND,
+          BASE_ACCESS_CODE_USER_ADMIN,
+          BASE_PERSONS_DELETE,
+          BASE_FACILITIES_DELETE)),
+  STI_PROTECTION(
+      "sti-protection", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+  MEDICAL_REGISTRY(
+      "medical-registry", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
+  DENTAL("dental", List.of(BASE_MAIL_SEND, BASE_PERSONS_DELETE, BASE_FACILITIES_DELETE)),
   OFFICIAL_MEDICAL_SERVICE("official-medical-service", List.of(BASE_MAIL_SEND));
 
   private final String clientIdWithoutPrefix;

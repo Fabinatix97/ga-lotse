@@ -47,8 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
-class InspectionProcedureRowReader
-    extends RowReader<InspectionImporterRowValues, InspectionListColumn> {
+class InspectionProcedureRowReader extends RowReader<InspectionImporterRow, InspectionListColumn> {
 
   private final ImportPersister importPersister;
   private final Clock clock;
@@ -58,22 +57,20 @@ class InspectionProcedureRowReader
       List<InspectionListColumn> actualColumns,
       ImportPersister importPersister,
       Clock clock) {
-    super(sheet, actualColumns);
+    super(sheet, actualColumns, InspectionImporterRow::new);
     this.importPersister = importPersister;
     this.clock = clock;
   }
 
   @Override
-  protected InspectionImporterRowValues read(ColumnAccessor<InspectionListColumn> col) {
-    InspectionImporterRowValues result = new InspectionImporterRowValues();
-    ErrorHandler errorHandler = createErrorHandler(result);
-
+  protected void read(
+      InspectionImporterRow result,
+      ColumnAccessor<InspectionListColumn> col,
+      ErrorHandler errorHandler) {
     result.setFacility(readFacilityData(col, errorHandler));
     result.setInspection(readInspectionData(col, errorHandler));
     result.setStatus(readStatus(col, STATUS, errorHandler));
-    result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
-
-    return result;
+    result.setEntityId(readUuid(col, PROCEDURE_ID, errorHandler));
   }
 
   private ImportInspectionFacility readFacilityData(

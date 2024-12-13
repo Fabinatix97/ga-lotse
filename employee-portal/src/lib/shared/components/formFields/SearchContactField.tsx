@@ -10,9 +10,9 @@ import { useState } from "react";
 
 import { useSearchContacts } from "@/lib/baseModule/api/queries/contacts";
 import { contactCategoryNames } from "@/lib/baseModule/shared/translations";
-import { mapContactToSelectOption } from "@/lib/businessModules/schoolEntry/features/procedures/helpers";
+import { mapContactToSelectOption } from "@/lib/shared/helpers/contactCategoryMapper";
 
-export interface SearchContactFieldProps {
+interface SearchContactFieldProps {
   name: string;
   label: string;
   category: ApiContactCategory;
@@ -21,7 +21,7 @@ export interface SearchContactFieldProps {
 const requiredMessage: Record<ApiContactCategory, string> = {
   [ApiContactCategory.Laboratory]: "Bitte ein Labor angeben.",
   [ApiContactCategory.School]: "Bitte eine Schule angeben.",
-  [ApiContactCategory.Daycare]: "Bitte eine Kindertagesstätte angeben.",
+  [ApiContactCategory.Daycare]: "Bitte eine Kita angeben.",
   [ApiContactCategory.DoctorsOffice]: "Bitte eine Arztpraxis angeben.",
   [ApiContactCategory.HealthDepartment]: "Bitte ein Gesundheitsamt angeben.",
   [ApiContactCategory.Misc]: "Bitte eine Einrichtung angeben.",
@@ -29,7 +29,9 @@ const requiredMessage: Record<ApiContactCategory, string> = {
 
 export function SearchContactField(props: SearchContactFieldProps) {
   const [contactName, setContactName] = useState("");
-  const searchContacts = useSearchContacts(contactName, props.category);
+  const categories = new Set<ApiContactCategory>();
+  categories.add(props.category);
+  const searchContacts = useSearchContacts(contactName, categories);
   const schools = searchContacts.isSuccess ? searchContacts.data.elements : [];
   const options = schools.map(mapContactToSelectOption);
 

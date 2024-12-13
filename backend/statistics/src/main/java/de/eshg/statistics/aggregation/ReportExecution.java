@@ -22,11 +22,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReportExecution {
+  private static final Logger log = LoggerFactory.getLogger(ReportExecution.class);
+
   private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final ReportService reportService;
   private final DiagramCreationService diagramCreationService;
-
-  private static final Logger log = LoggerFactory.getLogger(ReportExecution.class);
 
   public ReportExecution(
       ModuleClientAuthenticator moduleClientAuthenticator,
@@ -37,7 +37,7 @@ public class ReportExecution {
     this.diagramCreationService = diagramCreationService;
   }
 
-  @Scheduled(cron = "${de.eshg.statistics.auto-report.schedule:@daily}")
+  @Scheduled(cron = "${de.eshg.statistics.auto-report.schedule:@hourly}")
   @SchedulerLock(name = "HandlePlannedReports")
   public void handlePlannedReports() {
     LockAssert.assertLocked();
@@ -46,10 +46,17 @@ public class ReportExecution {
   }
 
   public void handlePlannedReportsInternal() {
+    long start = System.currentTimeMillis();
+    long maxJobDurationInMinutes = 50;
     UUID reportId = reportService.getPlannedReportToExecuteSetToPending();
     while (reportId != null) {
       createNewPlannedReport(reportId);
       completeReport(reportId);
+
+      if (((System.currentTimeMillis() - start) / (1000 * 60)) > maxJobDurationInMinutes) {
+        break;
+      }
+
       UUID nextReportId = reportService.getPlannedReportToExecuteSetToPending();
       if (reportId.equals(nextReportId)) {
         // prevent endless loop

@@ -16,8 +16,6 @@ import de.eshg.statistics.api.report.GetReportsRequest;
 import de.eshg.statistics.api.report.GetReportsResponse;
 import de.eshg.statistics.api.report.ReportSeriesDto;
 import de.eshg.statistics.api.report.UpdateReportSeriesRequest;
-import de.eshg.statistics.config.StatisticsFeature;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,21 +39,18 @@ public class ReportSeriesController {
   private final StatisticsExecutorService statisticsExecutorService;
   private final ReportExecution reportExecution;
   private final ReportSeriesExecution reportSeriesExecution;
-  private final StatisticsFeatureToggle statisticsFeatureToggle;
 
   public ReportSeriesController(
       EvaluationService evaluationService,
       ReportSeriesService reportSeriesService,
       StatisticsExecutorService statisticsExecutorService,
       ReportExecution reportExecution,
-      ReportSeriesExecution reportSeriesExecution,
-      StatisticsFeatureToggle statisticsFeatureToggle) {
+      ReportSeriesExecution reportSeriesExecution) {
     this.evaluationService = evaluationService;
     this.reportSeriesService = reportSeriesService;
     this.statisticsExecutorService = statisticsExecutorService;
     this.reportExecution = reportExecution;
     this.reportSeriesExecution = reportSeriesExecution;
-    this.statisticsFeatureToggle = statisticsFeatureToggle;
   }
 
   @PostExchange(accept = APPLICATION_JSON_VALUE)
@@ -63,7 +58,6 @@ public class ReportSeriesController {
   @Operation(summary = "Add a report series")
   public ReportSeriesDto addReportSeries(
       @RequestBody @Valid AbstractAddReportSeriesRequest addReportSeriesRequest) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     evaluationService.checkPermissionForEvaluation(addReportSeriesRequest.evaluationId());
 
     if (addReportSeriesRequest instanceof AddManualReportSeriesRequest) {
@@ -91,7 +85,6 @@ public class ReportSeriesController {
   public ReportSeriesDto updateReportSeries(
       @PathVariable(name = "reportSeriesId") UUID reportSeriesId,
       @RequestBody @Valid UpdateReportSeriesRequest updateReportSeriesRequest) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     return reportSeriesService.updateReportSeries(reportSeriesId, updateReportSeriesRequest);
   }
 
@@ -99,7 +92,6 @@ public class ReportSeriesController {
   @ApiResponse(responseCode = "200", description = "Returned when the report series is deleted")
   @Operation(summary = "Delete a report series with the reports")
   public void deleteReportSeries(@PathVariable(name = "reportSeriesId") UUID reportSeriesId) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     boolean isDeleted =
         reportSeriesService.deactivateAndDeleteOrFlagReportsForDeletion(reportSeriesId);
     if (!isDeleted) {
@@ -112,7 +104,6 @@ public class ReportSeriesController {
   @ApiResponse(responseCode = "200", description = "Returned when the report series is deactivated")
   @Operation(summary = "Deactivate a report series")
   public void deactivateReportSeries(@PathVariable(name = "reportSeriesId") UUID reportSeriesId) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     reportSeriesService.deactivateOrDeleteReportSeries(reportSeriesId);
   }
 
@@ -121,7 +112,6 @@ public class ReportSeriesController {
   @Operation(summary = "Get report series entries for the overview page")
   public GetReportsResponse getReportOverview(
       @RequestBody @Valid GetReportsRequest getReportsRequest) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     return reportSeriesService.getReportSeriesEntriesForOverview(getReportsRequest);
   }
 }

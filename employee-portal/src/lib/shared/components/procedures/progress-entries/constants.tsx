@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import { ReactNode } from "react";
 
+import { systemProgressEntryTypeTitles as dentalSystemProgressEntryTypeTitles } from "@/lib/businessModules/dental/shared/constants";
 import { systemProgressEntryTypeTitles as inspectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/inspection/shared/constants";
 import { systemProgressEntryTypeTitles as measlesProtectionSystemProgressEntryTypeTitles } from "@/lib/businessModules/measlesProtection/shared/constants";
 import { systemProgressEntryTypeTitles as medicalRegistrySystemProgressEntryTypeTitles } from "@/lib/businessModules/medicalRegistry/shared/constants";
@@ -88,6 +89,7 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   ...measlesProtectionSystemProgressEntryTypeTitles,
   ...stiProtectionSystemProgressEntryTypeTitles,
   ...medicalRegistrySystemProgressEntryTypeTitles,
+  ...dentalSystemProgressEntryTypeTitles,
 };
 
 export const inboxProgressEntryTitles = {

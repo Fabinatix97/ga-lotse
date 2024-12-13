@@ -16,7 +16,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
 
 public class ZipFileWrapper {
-
   private final Map<String, byte[]> entries = new LinkedHashMap<>();
 
   public String getCollisionFreeFileName(String originalFileName) {

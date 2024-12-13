@@ -25,12 +25,24 @@ export function calculateXYMinMax(
   return [xMin, xMax, yMin, yMax];
 }
 
+export function formatBreakLongStringOnce(input: string) {
+  if (input.length <= 30) {
+    return input;
+  }
+
+  const textParts = input.split(" ");
+  const middle = Math.round(textParts.length / 2);
+  const topPart = textParts.slice(0, middle).join(" ");
+  const bottomPart = textParts.slice(middle).join(" ");
+  return topPart + "\n" + bottomPart;
+}
+
 export function mapAxisTitleWithOptionalUnit(attribute: FlatAttribute) {
   return (attribute.type === "DecimalAttribute" ||
     attribute.type === "IntegerAttribute") &&
     isDefined(attribute.unit)
-    ? `${attribute.name} [${attribute.unit}]`
-    : attribute.name;
+    ? `${formatBreakLongStringOnce(attribute.name)} [${attribute.unit}]`
+    : formatBreakLongStringOnce(attribute.name);
 }
 
 export function calculateRelativeFormatting(value: number): string {

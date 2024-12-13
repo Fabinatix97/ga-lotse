@@ -8,6 +8,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
 import { mapAttributesToLabels } from "@/lib/businessModules/statistics/api/mapper/mapAttributesToLabels";
+import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { EvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/models/evaluationTemplateDetails";
 import { evaluationTemplateApiQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 
@@ -18,6 +19,9 @@ export function mapToEvaluationTemplateDetails(
     name: result.name,
     description: result.description,
     dataSourceName: result.dataSources[0]!.dataSourceName,
+    dataSourceSensitivity: mapDataSourceSensitivityApiToFrontend(
+      result.templateSensitivityInfo.sensitivity,
+    ),
     createdAt: result.createdAt,
     user: result.user,
     attributeLabels: mapAttributesToLabels(
@@ -27,7 +31,8 @@ export function mapToEvaluationTemplateDetails(
       name: it.name,
       diagramTitles: it.diagramTitles,
     })),
-    withoutAnonymizationAllowed: result.withoutAnonymizationAllowed,
+    withoutAnonymizationAllowed:
+      result.templateSensitivityInfo.withoutAnonymizationAllowed,
   };
 }
 

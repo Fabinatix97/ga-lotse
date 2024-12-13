@@ -16,6 +16,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
   Optional<Report> findByExternalId(UUID externalId);
 
-  Optional<Report> findByExecutionDateLessThanEqualAndState(
+  Optional<Report> findFirstByExecutionDateLessThanEqualAndStateOrderByIdAsc(
       LocalDate date, AggregationResultState state);
 }

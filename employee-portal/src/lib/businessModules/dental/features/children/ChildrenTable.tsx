@@ -5,14 +5,18 @@
 
 "use client";
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 import { Child } from "@/lib/businessModules/dental/api/models/Child";
-import { useGetChildren } from "@/lib/businessModules/dental/api/queries/childApi";
+import { useGetChildrenQuery } from "@/lib/businessModules/dental/api/queries/childApi";
 import { routes } from "@/lib/businessModules/dental/shared/routes";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -41,11 +45,24 @@ export function ChildrenTable(props: ChildrenTableProps) {
     initialSorting: initialSorting,
   });
 
-  const children = useGetChildren({
+  const childrenQuery = useGetChildrenQuery({
     pageNumber: tableControl.paginationProps.pageNumber,
     pageSize: tableControl.paginationProps.pageSize,
     sortKey: getSortKey(tableControl.tableSorting),
     sortDirection: getSortDirection(tableControl.tableSorting),
+  });
+
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.Dental,
+  );
+
+  const [children, gdprBanner] = useSuspenseQueries({
+    queries: [childrenQuery, gdprBannerQuery],
+  });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    businessModule: ApiBusinessModule.Dental,
   });
 
   return (

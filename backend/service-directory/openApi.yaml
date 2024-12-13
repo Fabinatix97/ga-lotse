@@ -619,6 +619,32 @@ paths:
         \ by type, orgUnitType and orgUnitId, if needed"
       tags:
       - ServiceDirectory
+  /api/actors/activeOrgUnitActors:
+    get:
+      operationId: getActiveOrgUnitActors
+      parameters:
+      - in: header
+        name: If-None-Match
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: type
+        required: false
+        schema:
+          $ref: "#/components/schemas/ActorType"
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetActiveActorsResponse"
+          description: Returns an ResponseEntity object containing the list of active
+            actors in the body and the ETag value in the response headers
+      summary: "Get the active actors of the calling actor's org-unit from the service\
+        \ directory. result can be filtered by type, if needed"
+      tags:
+      - ServiceDirectory
   /api/actors/metadata/self:
     put:
       operationId: updateActorMetadata

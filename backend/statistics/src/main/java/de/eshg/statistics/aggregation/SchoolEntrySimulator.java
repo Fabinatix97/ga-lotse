@@ -9,6 +9,7 @@ import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
@@ -150,7 +151,9 @@ public class SchoolEntrySimulator implements StatisticsApi {
   @Override
   public GetDataSourcesResponse getAvailableDataSources() {
     return new GetDataSourcesResponse(
-        List.of(new DataSource(DATA_SOURCE_UUID, "ESU", ATTRIBUTE_LIST)));
+        List.of(
+            new DataSource(
+                DATA_SOURCE_UUID, "ESU", DataSourceSensitivity.SENSITIVE, true, ATTRIBUTE_LIST)));
   }
 
   @Override
@@ -159,6 +162,8 @@ public class SchoolEntrySimulator implements StatisticsApi {
         "ESU",
         getSpecificDataRequest.timeRangeStart(),
         getSpecificDataRequest.timeRangeEnd(),
+        DataSourceSensitivity.SENSITIVE,
+        getSpecificDataRequest.anonymizationRequired(),
         new DataTableHeader(ATTRIBUTE_LIST),
         List.of(
             new DataRow(

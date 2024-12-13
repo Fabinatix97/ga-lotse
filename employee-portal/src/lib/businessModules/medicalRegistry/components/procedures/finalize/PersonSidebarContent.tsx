@@ -8,7 +8,10 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Stack, Typography } from "@mui/joy";
 
 import { SearchDraftReferencesResponse } from "@/lib/businessModules/medicalRegistry/api/queries/draft";
-import { FORM_OPTION_NEW } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
+import {
+  FORM_OPTION_NEW,
+  FORM_OPTION_NO_MATCH,
+} from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
 import { mapToOptionalPhoneNumbers } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/helper";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
@@ -20,12 +23,14 @@ interface PersonSidebarContentProps {
   fieldName: string;
   procedure: ApiGetProcedureDraftResponse;
   persons: SearchDraftReferencesResponse["persons"];
+  showNoMatchOption: boolean;
 }
 
 export function PersonSidebarContent({
   fieldName,
   procedure,
   persons,
+  showNoMatchOption,
 }: PersonSidebarContentProps) {
   const { applicant } = procedure;
   const name = join([applicant.lastName, applicant.firstName], ", ");
@@ -59,7 +64,14 @@ export function PersonSidebarContent({
               ]}
             />
           ))}
-          <SelectCard value={FORM_OPTION_NEW} title="Person neu anlegen" />
+          {showNoMatchOption ? (
+            <SelectCard
+              value={FORM_OPTION_NO_MATCH}
+              title="Keine Übereinstimmung"
+            />
+          ) : (
+            <SelectCard value={FORM_OPTION_NEW} title="Person neu anlegen" />
+          )}
         </RadioGroupField>
       </Stack>
     </SidebarContent>

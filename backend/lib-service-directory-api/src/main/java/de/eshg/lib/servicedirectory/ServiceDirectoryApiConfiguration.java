@@ -15,7 +15,6 @@ import de.eshg.lib.servicedirectory.api.GetTrustedActorsResponse;
 import de.eshg.lib.servicedirectory.api.OrgUnitTypeDto;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.UnaryOperator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -55,11 +54,6 @@ public class ServiceDirectoryApiConfiguration {
   @Bean
   @ConditionalOnBean(value = {ServiceDirectoryApi.class})
   ActiveActorsSupplier cachingGetActiveActors(ServiceDirectoryApi serviceDirectoryApi) {
-    return cachingGetActiveActors(serviceDirectoryApi, UnaryOperator.identity());
-  }
-
-  private ActiveActorsSupplier cachingGetActiveActors(
-      ServiceDirectoryApi serviceDirectoryApi, UnaryOperator<List<ActorResponseDto>> filterActors) {
     AtomicReference<GetActiveActorsCacheEntry> cache = new AtomicReference<>();
 
     return (type, orgUnitType, orgUnitId) -> {
@@ -69,21 +63,45 @@ public class ServiceDirectoryApiConfiguration {
 
       ResponseEntity<GetActiveActorsResponse> response =
           serviceDirectoryApi.getActiveActors(ifNoneMatch, type, orgUnitType, orgUnitId);
-      if (response.getStatusCode() == HttpStatus.NOT_MODIFIED) {
-        return Objects.requireNonNull(cacheEntry, "received HTTP 304 on an empty cache");
-      } else {
-        Assert.isTrue(
-            response.getStatusCode().is2xxSuccessful(),
-            "Unexpected status code " + response.getStatusCode());
-        String eTag = Objects.requireNonNull(response.getHeaders().getETag());
-        List<ActorResponseDto> actors = Objects.requireNonNull(response.getBody()).actors();
-
-        GetActiveActorsCacheEntry newCacheEntry =
-            new GetActiveActorsCacheEntry(eTag, filterActors.apply(actors));
-        cache.set(newCacheEntry);
-        return newCacheEntry;
-      }
+      return cacheResponse(cache, cacheEntry, response);
     };
+  }
+
+  @Bean
+  @ConditionalOnBean(value = {ServiceDirectoryApi.class})
+  ActiveOrgUnitActorsSupplier cachingGetActiveOrgUnitActors(
+      ServiceDirectoryApi serviceDirectoryApi) {
+    AtomicReference<GetActiveActorsCacheEntry> cache = new AtomicReference<>();
+
+    return (type) -> {
+      GetActiveActorsCacheEntry cacheEntry = cache.get();
+      String ifNoneMatch =
+          Optional.ofNullable(cacheEntry).map(GetActiveActorsCacheEntry::eTag).orElse(null);
+
+      ResponseEntity<GetActiveActorsResponse> response =
+          serviceDirectoryApi.getActiveOrgUnitActors(ifNoneMatch, type);
+      return cacheResponse(cache, cacheEntry, response);
+    };
+  }
+
+  private static List<ActorResponseDto> cacheResponse(
+      AtomicReference<GetActiveActorsCacheEntry> cache,
+      GetActiveActorsCacheEntry existingCacheEntry,
+      ResponseEntity<GetActiveActorsResponse> response) {
+    if (response.getStatusCode() == HttpStatus.NOT_MODIFIED) {
+      return Objects.requireNonNull(existingCacheEntry, "received HTTP 304 on an empty cache")
+          .activeActors();
+    } else {
+      Assert.isTrue(
+          response.getStatusCode().is2xxSuccessful(),
+          "Unexpected status code " + response.getStatusCode());
+      String eTag = Objects.requireNonNull(response.getHeaders().getETag());
+      List<ActorResponseDto> actors = Objects.requireNonNull(response.getBody()).actors();
+
+      GetActiveActorsCacheEntry newCacheEntry = new GetActiveActorsCacheEntry(eTag, actors);
+      cache.set(newCacheEntry);
+      return actors;
+    }
   }
 
   @Bean
@@ -117,10 +135,6 @@ public class ServiceDirectoryApiConfiguration {
     };
   }
 
-  private static String quote(String str) {
-    return "\"" + str + "\"";
-  }
-
   public record GetActiveActorsCacheEntry(String eTag, List<ActorResponseDto> activeActors) {}
 
   public record GetTrustedActorsCacheEntry(
@@ -129,23 +143,31 @@ public class ServiceDirectoryApiConfiguration {
       Set<ActorResponseDto> allowedOutboundActors) {}
 
   public interface ActiveActorsSupplier {
-    default GetActiveActorsCacheEntry get() {
+    default List<ActorResponseDto> get() {
       return get(null, null, null);
     }
 
-    default GetActiveActorsCacheEntry get(ActorTypeDto type) {
+    default List<ActorResponseDto> get(ActorTypeDto type) {
       return get(type, null, null);
     }
 
-    default GetActiveActorsCacheEntry get(OrgUnitTypeDto orgUnitType) {
+    default List<ActorResponseDto> get(OrgUnitTypeDto orgUnitType) {
       return get(null, orgUnitType, null);
     }
 
-    default GetActiveActorsCacheEntry get(UUID orgUnitId) {
+    default List<ActorResponseDto> get(UUID orgUnitId) {
       return get(null, null, orgUnitId);
     }
 
-    GetActiveActorsCacheEntry get(ActorTypeDto type, OrgUnitTypeDto orgUnitType, UUID orgUnitId);
+    List<ActorResponseDto> get(ActorTypeDto type, OrgUnitTypeDto orgUnitType, UUID orgUnitId);
+  }
+
+  public interface ActiveOrgUnitActorsSupplier {
+    default List<ActorResponseDto> get() {
+      return get(null);
+    }
+
+    List<ActorResponseDto> get(ActorTypeDto type);
   }
 
   public interface TrustedActorsSupplier {

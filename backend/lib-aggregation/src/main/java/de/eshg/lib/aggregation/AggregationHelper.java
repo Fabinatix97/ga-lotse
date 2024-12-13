@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
@@ -33,9 +34,14 @@ public abstract class AggregationHelper {
 
   private static final Map<Class<?>, ErrorCode> EXPECTED_EXCEPTIONS =
       Map.of(
-          TimeoutException.class, ErrorCode.TIMEOUT,
-          Forbidden.class, ErrorCode.INSUFFICIENT_USER_RIGHTS,
-          Unauthorized.class, ErrorCode.UNAUTHORIZED);
+          TimeoutException.class,
+          ErrorCode.TIMEOUT,
+          Forbidden.class,
+          ErrorCode.INSUFFICIENT_USER_RIGHTS,
+          Unauthorized.class,
+          ErrorCode.UNAUTHORIZED,
+          HttpClientErrorException.NotFound.class,
+          ErrorCode.NOT_FOUND);
 
   protected abstract Logger logger();
 
@@ -46,7 +52,9 @@ public abstract class AggregationHelper {
       List<C> clients, Function<C, R> getFromClient) {
     try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
       Executor executor =
-          new CorrelationIdAwareExecutor(new DelegatingSecurityContextExecutor(executorService));
+          new CorrelationIdAwareExecutor(
+              new ModuleClientAuthenticationAwareExecutor(
+                  new DelegatingSecurityContextExecutor(executorService)));
 
       Map<BusinessModule, Future<R>> futures =
           clients.stream()

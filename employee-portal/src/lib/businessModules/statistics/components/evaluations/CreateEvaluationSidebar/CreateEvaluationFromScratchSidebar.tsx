@@ -5,6 +5,7 @@
 
 import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { parseISO } from "date-fns";
+import { Ref } from "react";
 import { groupBy, identity, isDefined } from "remeda";
 
 import { useAddEvaluation } from "@/lib/businessModules/statistics/api/mutations/useAddEvaluation";
@@ -34,19 +35,20 @@ import {
 } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import { SidebarFormHandle } from "@/lib/shared/components/form/SidebarForm";
 
 export function CreateEvaluationFromScratchSidebar({
-  open,
   onClose,
   dataSources,
   attributesByDataSourceId,
   evaluationTemplates,
+  formRef,
 }: {
-  open: boolean;
-  onClose: () => void;
+  onClose: (force?: boolean) => void;
   dataSources: DataSource[];
   attributesByDataSourceId: Record<string, CategorizedFlatAttribute[]>;
   evaluationTemplates: EvaluationTemplateStepAutocompleteEntry[];
+  formRef: Ref<SidebarFormHandle>;
 }) {
   const fakeAnonymizationEnabled = useIsNewFeatureEnabled(
     ApiStatisticsFeature.FakeAnonymization,
@@ -61,7 +63,7 @@ export function CreateEvaluationFromScratchSidebar({
     anonymized: fakeAnonymizationEnabled ? ENUM_TRUE_VALUE : ENUM_FALSE_VALUE,
   };
   const addEvaluation = useAddEvaluation({
-    onSuccess: onClose,
+    onSuccess: () => onClose(true),
   });
 
   async function onSubmit(model: CreateEvaluationFromScratchFormModel) {
@@ -111,9 +113,9 @@ export function CreateEvaluationFromScratchSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      open={open}
       onSubmit={onSubmit}
       initialValues={initialValues}
+      formRef={formRef}
       steps={[
         {
           type: "StandardStep",

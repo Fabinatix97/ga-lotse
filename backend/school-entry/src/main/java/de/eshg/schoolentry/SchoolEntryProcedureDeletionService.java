@@ -5,6 +5,8 @@
 
 package de.eshg.schoolentry;
 
+import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.PersonApi;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.model.ProgressEntry;
@@ -66,16 +68,12 @@ public class SchoolEntryProcedureDeletionService
       ProcedureRepository<SchoolEntryProcedure> procedureRepository,
       CemeteryService cemeteryService,
       PersonClient personClient,
-      SchoolEntryProcedureRepository schoolEntryProcedureRepository) {
-    super(procedureRepository, cemeteryService);
+      SchoolEntryProcedureRepository schoolEntryProcedureRepository,
+      PersonApi personApi,
+      FacilityApi facilityApi) {
+    super(procedureRepository, cemeteryService, personApi, facilityApi);
     this.personClient = personClient;
     this.schoolEntryProcedureRepository = schoolEntryProcedureRepository;
-  }
-
-  @Override
-  public void deleteAndWriteToCemetery(SchoolEntryProcedure procedure) {
-    markRelatedPersonsForDeletionInCentralFile(List.of(procedure));
-    super.deleteAndWriteToCemetery(procedure);
   }
 
   private void markRelatedPersonsForDeletionInCentralFile(List<SchoolEntryProcedure> procedures) {

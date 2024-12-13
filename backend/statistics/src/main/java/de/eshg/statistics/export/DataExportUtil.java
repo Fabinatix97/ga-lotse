@@ -21,8 +21,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 public class DataExportUtil {
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZoneOffset.UTC);
-  static final String NOT_ANONYMIZED_ERROR =
-      "Data exports are only allowed for anonymized evaluations";
+  static final String SENSITIVE_DATA_ERROR =
+      "Data exports are only allowed for non-sensitive evaluations";
 
   private DataExportUtil() {}
 

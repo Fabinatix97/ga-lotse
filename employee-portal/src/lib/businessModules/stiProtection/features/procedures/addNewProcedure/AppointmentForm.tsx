@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiAppointmentBookingType } from "@eshg/employee-portal-api/stiProtection";
+import {
+  ApiAppointmentBookingType,
+  ApiAppointmentType,
+  ApiStiProtectionProcedure,
+} from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { NumberField } from "@eshg/lib-portal/components/formFields/NumberField";
 import {
@@ -17,6 +21,7 @@ import { useEffect, useId, useState } from "react";
 
 import { useGetFreeAppointments } from "@/lib/businessModules/stiProtection/api/queries/appointmentBlocks";
 import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
+import { concernToAppointmentType } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import {
@@ -29,18 +34,18 @@ import { AddNewProcedureForm } from "./AddNewProcedureSidebar";
 function ConnectedAppointmentPicker({
   name,
   active,
-  initialMonth,
-  concern,
 }: {
   name: string;
   active?: boolean;
-  initialMonth: Date | null;
-  concern: AddNewProcedureForm["concern"];
 }) {
-  const now = new Date();
+  const {
+    values: { appointmentType, blockAppointment },
+  } = useFormikContext<AddNewProcedureForm | CreateAppointmentForm>();
+  const initialMonth = blockAppointment?.start ?? null;
   const [currentMonth, setCurrentMonth] = useState(initialMonth ?? new Date());
+  const now = new Date();
   const freeAppointments = useGetFreeAppointments({
-    concern: concern === "" ? undefined : concern,
+    appointmentType: appointmentType as ApiAppointmentType,
     earliestDate: startOfHour(now),
   });
   const monthAppointments = freeAppointments.data ?? [];
@@ -58,8 +63,10 @@ function ConnectedAppointmentPicker({
   );
 }
 
-export function AppointmentForm() {
-  const appointmentBlockDescriptionlId = useId();
+export function AppointmentForm({
+  procedure,
+}: Readonly<{ procedure?: ApiStiProtectionProcedure }>) {
+  const appointmentBlockDescriptionId = useId();
   const { values, setFieldValue } = useFormikContext<
     AddNewProcedureForm | CreateAppointmentForm
   >();
@@ -93,6 +100,23 @@ export function AppointmentForm() {
     setFieldValue,
   ]);
 
+  useEffect(() => {
+    let appointmentType: ApiAppointmentType | undefined;
+    const [openAppointment] = procedure
+      ? procedure.appointmentHistory.filter(
+          ({ appointmentStatus }) => appointmentStatus === "OPEN",
+        )
+      : [];
+
+    if (openAppointment?.appointmentType) {
+      appointmentType = openAppointment?.appointmentType;
+    } else if (values.concern) {
+      appointmentType = concernToAppointmentType(values.concern);
+    }
+
+    if (appointmentType) void setFieldValue("appointmentType", appointmentType);
+  }, [setFieldValue, values.concern, procedure]);
+
   return (
     <RadioGroupField
       name="appointmentBookingType"
@@ -120,7 +144,7 @@ export function AppointmentForm() {
             <Grid xxs={10}>
               <Stack>
                 <Typography
-                  id={appointmentBlockDescriptionlId}
+                  id={appointmentBlockDescriptionId}
                   style={{ marginBottom: "16px" }}
                 >
                   Aus Terminblock
@@ -129,8 +153,6 @@ export function AppointmentForm() {
                   <ConnectedAppointmentPicker
                     name="blockAppointment"
                     active={blockSectionSelected}
-                    concern={values.concern}
-                    initialMonth={values.blockAppointment?.start ?? null}
                   />
                 </Row>
               </Stack>

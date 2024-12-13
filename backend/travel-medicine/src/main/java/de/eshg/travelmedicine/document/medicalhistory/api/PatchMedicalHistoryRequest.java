@@ -9,6 +9,9 @@ import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.UUID;
 
 public record PatchMedicalHistoryRequest(
-    @NotNull @Valid DocumentContentDto medicalHistoryContent, @Size(max = 4000) String note) {}
+    @NotNull UUID procedureId,
+    @NotNull @Valid DocumentContentDto medicalHistoryContent,
+    @Size(max = 4000) String note) {}

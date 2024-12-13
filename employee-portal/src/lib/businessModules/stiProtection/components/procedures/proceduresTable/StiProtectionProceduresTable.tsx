@@ -5,10 +5,12 @@
 
 "use client";
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { ApiStiProtectionProcedureOverview } from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { EditOutlined, ToggleOffOutlined } from "@mui/icons-material";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { useStiProceduresQuery } from "@/lib/businessModules/stiProtection/api/queries/procedures";
@@ -24,13 +26,14 @@ import {
 } from "@/lib/businessModules/stiProtection/shared/constants";
 import { isProcedureOpen } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { routes } from "@/lib/businessModules/stiProtection/shared/routes";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import { useTablePageParams } from "@/lib/shared/hooks/useTablePageParams";
 
 const initialSorting: ColumnSort = {
   id: "createdAt",
@@ -122,27 +125,6 @@ function getProceduresColumns({
   ];
 }
 
-type ColumnNames = keyof ApiStiProtectionProcedureOverview;
-
-function mapTableFieldToSortField(sortBy?: ColumnNames) {
-  if (!sortBy) return;
-
-  switch (sortBy) {
-    case "yearOfBirth":
-      return "YEAR_OF_BIRTH";
-    case "gender":
-      return "GENDER";
-    case "status":
-      return "STATUS";
-    case "concern":
-      return "CONCERN";
-    case "createdAt":
-      return "CREATED_AT";
-    default:
-      throw Error(`Unexpected sort field: ${sortBy}`);
-  }
-}
-
 function openActions(procedureId: string) {
   return [
     {
@@ -170,24 +152,35 @@ function closedActions({
 }
 
 export function StiProtectionProceduresTable() {
-  const fieldNames = {
-    sortFieldName: "sortBy",
-    sortDirectionName: "sortOrder",
-  };
   const tableControl = useTableControl({
     serverSideSorting: true,
     initialSorting,
-    ...fieldNames,
+    sortFieldName: "sortBy",
+    sortDirectionName: "sortOrder",
   });
 
-  const tablePage = useTablePageParams<ColumnNames>({
-    fieldNames,
-    mapColumnNames: mapTableFieldToSortField,
+  const proceduresQuery = useStiProceduresQuery(
+    tableControl.paginationProps,
+    tableControl.tableSorting,
+  );
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.StiProtection,
+  );
+
+  const [
+    {
+      data: { procedures, totalElements },
+      isLoading,
+    },
+    gdprBanner,
+  ] = useSuspenseQueries({
+    queries: [proceduresQuery, gdprBannerQuery],
   });
-  const {
-    data: { procedures, totalElements },
-    isLoading,
-  } = useStiProceduresQuery(tablePage);
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    businessModule: ApiBusinessModule.StiProtection,
+  });
 
   const reopenDialog = useCloseAndReopenProcedure();
 

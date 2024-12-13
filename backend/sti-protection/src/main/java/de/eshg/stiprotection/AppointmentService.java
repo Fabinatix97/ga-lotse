@@ -169,7 +169,7 @@ public class AppointmentService {
           determineAppointmentStatus(procedure.getAppointment().getAppointmentEnd());
       procedure.getAppointmentHistory().getLast().setAppointmentStatus(status);
       if (status == AppointmentStatus.CANCELLED) {
-        calendarEventApi.deleteBusinessCaseEvent(procedure.getCalendarEventId());
+        deleteAppointmentCalendarEvent(procedure);
       }
     }
   }
@@ -199,5 +199,15 @@ public class AppointmentService {
   private void cancelAppointmentHistoryEntry(StiProtectionProcedure procedure) {
     AppointmentHistoryEntry appointmentHistoryEntry = procedure.getAppointmentHistory().getLast();
     appointmentHistoryEntry.setAppointmentStatus(AppointmentStatus.CANCELLED);
+  }
+
+  public AppointmentHistoryEntry getOpenAppointmentHistoryEntry(StiProtectionProcedure procedure) {
+    AppointmentHistoryEntry appointmentHistoryEntry = procedure.getAppointmentHistory().getLast();
+    if (appointmentHistoryEntry.getAppointmentStatus() != AppointmentStatus.OPEN) {
+      throw new BadRequestException(
+          "Latest appointment history entry in procedure %s is not OPEN"
+              .formatted(procedure.getExternalId()));
+    }
+    return appointmentHistoryEntry;
   }
 }

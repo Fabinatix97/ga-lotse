@@ -3,30 +3,40 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
 import {
   ApiBusinessModule,
+  ApiGdprDownloadPackageInfo,
+  ApiGetGdprDownloadPackagesInfoResponse,
   ApiGetGdprNotificationBannerResponse,
   GdprValidationTaskApiInterface,
   GetAllGdprValidationTasksRequest,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQueries } from "@tanstack/react-query";
+import assert from "assert";
+import { isDefined } from "remeda";
 
 import { gdprValidationTaskApiQueryKey } from "@/lib/baseModule/api/queries/apiQueryKey";
+import { useServerConfig } from "@/lib/baseModule/api/queries/config";
+import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
+import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
 
-export function getGdprValidationBannerQuery(
-  taskApi: GdprValidationTaskApiInterface,
+const businessModules = Object.freeze(Object.values(ApiBusinessModule));
+
+export function useGetGdprValidationBannerQuery(
   businessModule: ApiBusinessModule,
-  isFeatureEnabled: boolean,
 ) {
+  const taskApi = useGdprValidationTaskApi(businessModule);
+  const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
   return queryOptions({
     queryKey: gdprValidationTaskApiQueryKey([
       businessModule,
       "getGdprNotificationBanner",
-      isFeatureEnabled,
+      isGdprFeatureEnabled,
     ]),
     queryFn: async (): Promise<ApiGetGdprNotificationBannerResponse> => {
-      if (isFeatureEnabled) {
+      if (isGdprFeatureEnabled) {
         return await taskApi.getGdprNotificationBanner();
       } else {
         return {
@@ -66,4 +76,88 @@ export function getGdprValidationTasksQuery(
     queryFn: () =>
       taskApi.getAllGdprValidationTasksRaw(request).then(unwrapRawResponse),
   });
+}
+
+interface DownloadPackagesQueryResponse {
+  businessModule: ApiBusinessModule;
+  downloadPackages: ApiGdprDownloadPackageInfo[];
+}
+
+function getGdprDownloadPackagesInfoQuery(
+  taskApi: GdprValidationTaskApiInterface,
+  businessModule: ApiBusinessModule,
+  gdprProcedureId: string,
+  enabled: boolean,
+) {
+  return queryOptions({
+    queryKey: gdprValidationTaskApiQueryKey([
+      businessModule,
+      "getGdprDownloadPackagesInfo",
+      gdprProcedureId,
+      enabled,
+    ]),
+    queryFn: (): Promise<
+      "disabled" | ApiGetGdprDownloadPackagesInfoResponse
+    > => {
+      if (enabled) {
+        return taskApi.getGdprDownloadPackagesInfo(gdprProcedureId);
+      } else {
+        return Promise.resolve("disabled");
+      }
+    },
+    select: (data): DownloadPackagesQueryResponse => {
+      if (data === "disabled") {
+        return {
+          businessModule,
+          downloadPackages: [],
+        };
+      } else {
+        return {
+          businessModule,
+          downloadPackages: data.downloadPackages,
+        };
+      }
+    },
+  });
+}
+
+export function useGetGdprDownloadPackagesInfo(gdprProcedureId: string) {
+  const { data: config } = useServerConfig();
+  const queries = businessModules.map((module) => {
+    // Using hooks in a loop is allowed here, since the businessModules array is constant.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const gdprValidationTaskApi = useGdprValidationTaskApi(module);
+    return getGdprDownloadPackagesInfoQuery(
+      gdprValidationTaskApi,
+      module,
+      gdprProcedureId,
+      config.activeModules.includes(module),
+    );
+  });
+
+  return useSuspenseQueries({
+    queries,
+  });
+}
+
+export function useDownloadPackageFileByModule() {
+  const moduleApiHooks = businessModules.map((module) => ({
+    module,
+    // Using hooks in a loop is allowed here, since the businessModules array is constant.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    api: useGdprValidationTaskApi(module),
+  }));
+
+  function downloadPackage(businessModule: ApiBusinessModule, id: string) {
+    const resolved = moduleApiHooks.find(
+      ({ module }) => module === businessModule,
+    )!;
+    assert(
+      isDefined(resolved),
+      `Module mapping for API should be defined for business module ${businessModule}`,
+    );
+    return resolved.api.getGdprDownloadPackageRaw({ id });
+  }
+
+  return downloadPackage;
 }

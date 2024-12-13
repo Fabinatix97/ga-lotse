@@ -3,25 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ApiProgressEntryReferenceFilePair } from "@eshg/employee-portal-api/businessProcedures";
+import { ApiInboxProgressEntryFileReference } from "@eshg/employee-portal-api/businessProcedures";
 import { Box } from "@mui/joy";
 import { isDefined } from "remeda";
 
 import { FileOrDeletionNote } from "@/lib/shared/components/procedures/progress-entries/FileOrDeletionNote";
 
 export function EntryFile(props: {
-  progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined;
+  fileReference: ApiInboxProgressEntryFileReference | undefined;
+  progressEntryId: string;
 }) {
-  if (!isDefined(props.progressEntryReferenceFilePair)) {
+  if (!isDefined(props.fileReference)) {
     return null;
   }
 
-  const { progressEntryId, file } = props.progressEntryReferenceFilePair;
+  const { progressEntryId, fileReference } = props;
   return (
     <Box display="flex" justifyContent="flex-start">
       <FileOrDeletionNote
-        detailsProgressEntryId={progressEntryId}
-        file={file}
+        progressEntryId={progressEntryId}
+        fileReference={fileReference}
       />
     </Box>
   );

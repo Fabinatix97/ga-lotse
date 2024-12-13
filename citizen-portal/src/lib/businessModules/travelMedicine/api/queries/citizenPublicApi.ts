@@ -4,7 +4,7 @@
  */
 
 import { ApiAppointmentType } from "@eshg/citizen-portal-api/travelMedicine";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useCitizenPublicApi } from "@/lib/businessModules/travelMedicine/api/clients";
 import { citizenPublicApiQueryKey } from "@/lib/businessModules/travelMedicine/api/queries/apiQueryKeys";
@@ -56,11 +56,18 @@ export function useGetDepartmentInfo() {
   });
 }
 
-export function useGetOpeningHours() {
-  const citizenPublicApi = useCitizenPublicApi();
-  return useSuspenseQuery({
+export function useGetDepartmentInfoQuery() {
+  const departmentApi = useCitizenPublicApi();
+  return queryOptions({
+    queryKey: citizenPublicApiQueryKey(["getDepartmentInfo"]),
+    queryFn: () => departmentApi.getDepartmentInfo(),
+  });
+}
+
+export function useGetOpeningHoursQuery() {
+  const departmentApi = useCitizenPublicApi();
+  return queryOptions({
     queryKey: citizenPublicApiQueryKey(["getOpeningHours"]),
-    queryFn: () => citizenPublicApi.getOpeningHours(),
-    refetchOnWindowFocus: false,
+    queryFn: () => departmentApi.getOpeningHours(),
   });
 }

@@ -1,20 +1,26 @@
 {
-  "title": "Reisemedizinische Impfberatung",
+  "pageTitle": "Reisemedizinische Impfberatung",
   "contact": {
     "title": "Kontakt und Erreichbarkeit",
-    "address": "Adresse",
-    "openingHours": "Öffnungszeiten",
-    "contact": "Kontakt",
-    "phoneNumber": "Telefon: {{ phoneNumber }}",
-    "eMail": "E-Mail:"
+    "addressSection": {
+      "title": "Adresse"
+    },
+    "contactSection": {
+      "title": "Kontakt",
+      "phoneNumber": "Telefon: {{ phoneNumber }}",
+      "eMail": "E-Mail:"
+    },
+    "openingHoursSection": {
+      "title": "Öffnungszeiten"
+    }
   },
-  "appointment": {
-    "bookAppointmentTitle": "Termin vereinbaren?",
-    "bookAppointmentText": "Sie haben die Möglichkeit Termine für Impfungen, Folgeimpfungen und Beratungsgespräche mit anschließender Impfung zu vereinbaren.",
+  "personalArea": {
+    "title": "Termin vereinbaren?",
+    "information": "Sie haben die Möglichkeit Termine für Impfungen, Folgeimpfungen und Beratungsgespräche mit anschließender Impfung zu vereinbaren.",
     "bookAppointment": "Termin buchen",
-    "myAppointment": "Zu meinen Terminen"
+    "goToPersonalArea": "Zu meinen Terminen"
   },
-  "vaccinations": {
-    "availableVaccinations": "Verfügbare Impfungen"
+  "vaccionation": {
+    "title": "Verfügbare Impfungen"
   }
 }

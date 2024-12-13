@@ -19,7 +19,7 @@ public record EvaluationTemplateDto(
     @NotNull UUID id,
     @NotBlank String name,
     String description,
-    @NotNull boolean withoutAnonymizationAllowed,
+    @NotNull @Valid TemplateSensitivityInfo templateSensitivityInfo,
     @NotNull @Valid List<DataSourceWithAttributeNames> dataSources,
     @NotNull @Valid List<AnalysisInfo> analysisInfos,
     @Valid UserDto user,

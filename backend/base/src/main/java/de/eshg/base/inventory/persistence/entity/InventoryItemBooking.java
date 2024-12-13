@@ -47,7 +47,7 @@ public class InventoryItemBooking extends BaseEntity {
   @DataSensitivity(value = SensitivityLevel.PROTECTED)
   private Instant bookedAt;
 
-  @Min(1)
+  @Min(0)
   @Column(nullable = false)
   @DataSensitivity(value = SensitivityLevel.PSEUDONYMIZED)
   private int amount;

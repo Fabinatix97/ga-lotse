@@ -29,12 +29,14 @@ import { TextareaField } from "@/lib/shared/components/formFields/TextareaField"
 
 interface MedicalHistoryProps {
   medicalHistory: ApiMedicalHistory;
+  procedureId: string;
   readOnly?: boolean;
   onCancel: () => void;
 }
 
 export function MedicalHistory({
   medicalHistory,
+  procedureId,
   readOnly = false,
   onCancel,
 }: Readonly<MedicalHistoryProps>) {
@@ -48,6 +50,7 @@ export function MedicalHistory({
     const request: PatchMedicalHistoryRequest = {
       medicalHistoryId: medicalHistory.id,
       request: {
+        procedureId: procedureId,
         medicalHistoryContent: changedContent.medicalHistoryContent,
         note: changedContent.note,
       },

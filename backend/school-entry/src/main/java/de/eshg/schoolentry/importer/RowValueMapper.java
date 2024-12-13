@@ -8,8 +8,8 @@ package de.eshg.schoolentry.importer;
 import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 
-public interface RowValueMapper<T> {
-  ImportProcedureData mapValuesToImportData(T values);
+public interface RowValueMapper<R> {
+  ImportProcedureData mapValuesToImportData(R values);
 
-  MergeProcedureData mapValuesToMergeData(T values);
+  MergeProcedureData mapValuesToMergeData(R values);
 }

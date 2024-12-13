@@ -5,7 +5,8 @@
 
 import { InputField } from "@eshg/lib-portal/components/formFields/InputField";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { Grid, IconButton, Stack } from "@mui/joy";
+import { Card, Grid, IconButton, Stack, styled } from "@mui/joy";
+import { useId } from "react";
 
 import { notEmptyFieldValidation } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
 
@@ -20,9 +21,10 @@ export function SubQuestion({
   multiSelectLength: number;
   label: string;
 }>) {
+  const detailsId = useId();
   return (
     <Grid container spacing={1}>
-      <Grid xs={12}>
+      <Grid id={detailsId} xs={12}>
         {multiSelectLength > 0
           ? `Antwort ${multiSelectLength + 1}: Freifeldtext `
           : "Textfeld wird nur bei Ja angezeigt"}
@@ -36,6 +38,7 @@ export function SubQuestion({
                 ? `${label}, Antwort ${multiSelectLength + 1}, Freifeldtext, Label`
                 : `${label}, Label`
             }
+            aria-details={detailsId}
             name={`${subElementTextFormikPath}.questionText`}
             placeholder="Label"
             sx={{ flex: 1 }}
@@ -56,18 +59,17 @@ export function SubQuestion({
         </Stack>
       </Grid>
       <Grid xs={11.63}>
-        <InputField
-          label
-          aria-label={
-            multiSelectLength > 0
-              ? `${label}, Antwort ${multiSelectLength + 1}, Freifeldtext, Textfeld`
-              : `${label}, Textfeld`
-          }
-          disabled
-          name="SubTextAnswer"
-          placeholder="Textfeld"
-        />
+        <ReadOnlyInputField>Textfeld</ReadOnlyInputField>
       </Grid>
     </Grid>
   );
 }
+
+// use a Card to make something that looks like a text input
+const ReadOnlyInputField = styled(Card)(({ theme }) => ({
+  height: 36,
+  padding: "0 0.75rem",
+  lineHeight: "2.125rem",
+  color: theme.palette.neutral.solidDisabledColor,
+  borderColor: theme.palette.neutral.outlinedDisabledBorder,
+}));

@@ -88,7 +88,7 @@ const sideNavigationItems: SideNavigationItem[] = [
   },
   {
     name: "Auditlog Freigabe",
-    href: routes.auditlog.authorize.index,
+    href: routes.auditlog.authorize,
     decorator: <ContentPasteSearch />,
     accessCheck: hasUserRole(ApiUserRole.AuditlogAuthorizeAccess),
   },

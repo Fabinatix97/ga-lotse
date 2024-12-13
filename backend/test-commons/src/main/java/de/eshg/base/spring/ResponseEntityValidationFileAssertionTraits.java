@@ -66,6 +66,11 @@ public interface ResponseEntityValidationFileAssertionTraits
   }
 
   default void assertHeadersWithFile(
+      ResponseEntity<?> response, ValidationNormalizer validationNormalizer) {
+    assertWithFileWithSuffix(renderHeaders(response), validationNormalizer, "headers");
+  }
+
+  default void assertHeadersWithFile(
       ResponseEntity<?> response, ValidationNormalizer validationNormalizer, String suffix) {
     assertWithFileWithSuffix(renderHeaders(response), validationNormalizer, suffix);
   }

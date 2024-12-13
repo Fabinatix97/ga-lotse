@@ -110,10 +110,14 @@ export function useSearchSchools(schoolName: string) {
   const [debouncedSchoolName] = useDebounce(schoolName, 250, {
     trailing: true,
   });
+  const categories = new Set<ApiContactCategory>().add(
+    ApiContactCategory.School,
+  );
+
   return useSearchContactsQuery(
     {
       name: debouncedSchoolName,
-      category: ApiContactCategory.School,
+      categories: categories,
       sortKey: ApiContactSortKey.Relevance,
     },
     { enabled: debouncedSchoolName.length >= 1 },
@@ -122,7 +126,7 @@ export function useSearchSchools(schoolName: string) {
 
 export function useSearchContacts(
   contactName: string,
-  contactCategory: ApiContactCategory,
+  contactCategories: Set<ApiContactCategory>,
 ) {
   const [debouncedName] = useDebounce(contactName, 250, {
     trailing: true,
@@ -130,7 +134,7 @@ export function useSearchContacts(
   return useSearchContactsQuery(
     {
       name: debouncedName,
-      category: contactCategory,
+      categories: contactCategories,
       sortKey: ApiContactSortKey.Relevance,
     },
     { enabled: debouncedName.length >= 1 },

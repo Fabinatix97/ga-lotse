@@ -8,7 +8,6 @@ import {
   ApiReportType,
 } from "@eshg/employee-portal-api/statistics";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { isNonNullish } from "remeda";
 
 import { useReportApi } from "@/lib/businessModules/statistics/api/clients";
 import {
@@ -16,6 +15,7 @@ import {
   mapTableColumnHeadersToFlatAttributes,
 } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { ReportDetailsView } from "@/lib/businessModules/statistics/api/models/reportDetailsViewTypes";
+import { fullName } from "@/lib/shared/components/users/userFormatter";
 
 import { reportApiQueryKey } from "./apiQueryKeys";
 import { mapAnalyses } from "./useGetDetailPageInformation";
@@ -38,9 +38,7 @@ export function mapToReportDetailsView(
     start: response.timeRangeStart,
     end: response.timeRangeEnd,
     createdAt: response.executionDate,
-    createdBy: isNonNullish(user)
-      ? `${user.firstName} ${user.lastName}`
-      : undefined,
+    createdBy: fullName(user),
     dataSource: {
       name: response.tableColumnHeaders[0]!.dataSourceName,
       attributeLabels: attributes.map((it) => it.name),
@@ -48,7 +46,7 @@ export function mapToReportDetailsView(
     },
     analyses: mapAnalyses(response.analyses, attributes),
     attributes: attributes,
-    userId: response.userReport?.userId ?? response.userReportSeries!.userId,
+    userId: user?.userId,
     numberInSeries: isReportOfSeries ? response.name : undefined,
     tooMuchDataForExport: response.tooMuchDataForExport,
   };

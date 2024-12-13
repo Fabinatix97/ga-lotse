@@ -35,12 +35,6 @@ export function mapCalendarEventsBackendToUi(
       start: event.timeData.start,
       end: mapEndDate(event.timeData.end, event.timeData.wholeDay),
       allDay: event.timeData.wholeDay,
-      ...(event.type === "VACATION"
-        ? {
-            backgroundColor: event.type === "VACATION" ? "#CDD7E1" : undefined,
-            borderColor: event.type === "VACATION" ? "#CDD7E1" : undefined,
-          }
-        : {}),
       extendedProps: eventWithCalendarId,
     };
   });

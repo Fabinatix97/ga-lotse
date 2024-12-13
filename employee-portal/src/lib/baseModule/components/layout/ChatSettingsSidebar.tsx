@@ -3,26 +3,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { BaseModal } from "@eshg/lib-portal/components/BaseModal";
 import { useNavigation } from "@eshg/lib-portal/components/navigation/NavigationContext";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 import { OpenInNew } from "@mui/icons-material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import { Button, Divider, Stack, Switch, Typography } from "@mui/joy";
+import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/joy";
 import { AuthDict, IAuthData, UIAResponse } from "matrix-js-sdk";
 import { useCallback, useContext, useState } from "react";
 import { isObjectType } from "remeda";
 
+import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
+import {
+  useGetSelfUser,
+  useGetUserProfile,
+} from "@/lib/baseModule/api/queries/users";
 import { routes } from "@/lib/baseModule/shared/routes";
 import { ChatUserId } from "@/lib/businessModules/chat/components/ChatUserId";
 import {
   DeactivateModal,
   DeactivateModalProps,
 } from "@/lib/businessModules/chat/components/deactivate/DeactivateModal";
-import { deleteCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
+import {
+  clearMatrixStores,
+  deleteCachedCredentials,
+} from "@/lib/businessModules/chat/matrix/tokens";
 import { ChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useUserSettings } from "@/lib/businessModules/chat/shared/hooks/useUserSettings";
+import { termsOfUseText } from "@/lib/businessModules/chat/shared/termsOfUseText";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
 import {
   UseSidebarResult,
@@ -42,6 +52,7 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
   const { matrixClient } = useContext(ChatClientContext) ?? {};
   const { tryNavigate } = useNavigation();
   const [modalValues, setModalValues] = useState<DeactivateModalProps>();
+  const [termsOfUseModal, setTermsOfUseModal] = useState(false);
   const snackbar = useSnackbar();
 
   const chatUserId = matrixClient?.getUserId();
@@ -59,17 +70,30 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
     toggleTypingNotifications,
     deactivateAccount,
   } = useUserSettings();
+  const updateSelfUser = useUpdateSelfUserChatUsername();
+  const { data: selfUser } = useGetSelfUser();
+  const { data: userData } = useGetUserProfile(selfUser.userId);
 
   const handleStopChat = useCallback(async () => {
     if (!matrixClient) return;
     deactivateAccount(true);
     try {
+      await updateSelfUser.mutateAsync({
+        externalChatUsername: undefined,
+        phoneNumber: userData.user.phoneNumber,
+        salutation: userData.salutation,
+        title: userData.title,
+      });
+    } catch (e) {
+      logger.error(e);
+    }
+    try {
       await deleteCachedCredentials();
-      await matrixClient.clearStores();
+      await clearMatrixStores();
     } catch (error) {
       logger.error(error);
     }
-  }, [deactivateAccount, matrixClient]);
+  }, [deactivateAccount, matrixClient, updateSelfUser, userData]);
 
   const showSSOModal = useCallback(
     (values: Omit<DeactivateModalProps, "onFinished" | "open">) => {
@@ -166,9 +190,23 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
           >
             Schreibanzeige aktivieren
           </Typography>
+          <Typography level="body-sm" mt={10}>
+            Sie haben den
+            <Button
+              onClick={() => setTermsOfUseModal(true)}
+              variant="plain"
+              sx={{
+                paddingX: 1,
+                "&:hover": { backgroundColor: "transparent" },
+              }}
+            >
+              Nutzungsbedingungen
+            </Button>
+            zur Chatfunktion zugestimmt
+          </Typography>
           <Button
             onClick={handleDeactivateClick}
-            sx={{ alignSelf: "flex-start", mt: 10 }}
+            sx={{ alignSelf: "flex-start", mt: 2 }}
             color="danger"
           >
             Account deaktivieren
@@ -194,6 +232,13 @@ function ChatSettingsSidebar({ onClose }: DrawerProps) {
         session={modalValues?.session}
         authData={modalValues?.authData}
       />
+      <BaseModal
+        modalTitle="Nutzungsbedingungen"
+        open={termsOfUseModal}
+        onClose={() => setTermsOfUseModal(false)}
+      >
+        <Box sx={{ paddingY: 3 }}>{termsOfUseText}</Box>
+      </BaseModal>
     </>
   );
 }

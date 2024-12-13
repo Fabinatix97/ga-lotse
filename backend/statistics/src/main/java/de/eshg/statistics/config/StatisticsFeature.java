@@ -6,6 +6,5 @@
 package de.eshg.statistics.config;
 
 public enum StatisticsFeature {
-  REPORTS,
   FAKE_ANONYMIZATION
 }

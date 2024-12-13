@@ -9,20 +9,17 @@ import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.ImportStatus;
 import de.eshg.lib.xlsximport.ImportValidator;
 import de.eshg.lib.xlsximport.Importer;
-import de.eshg.lib.xlsximport.RowValues;
+import de.eshg.lib.xlsximport.RowData;
 import de.eshg.medicalregistry.MedicalRegistryService;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-public class MedicalRegistryImporter
-    extends Importer<MedicalRegistryRowValues, MedicalRegistryColumn> {
+public class MedicalRegistryImporter extends Importer<MedicalRegistryRow, MedicalRegistryColumn> {
 
   private final MedicalRegistryService medicalRegistryService;
 
@@ -39,54 +36,40 @@ public class MedicalRegistryImporter
   }
 
   @Override
-  protected void readRowsAndEvaluateActions() {
-    Collection<MedicalRegistryRowValues> rowValuesCollection = readRows().values();
+  protected void evaluateActionsForRows(List<MedicalRegistryRow> rows) {
     Set<UUID> existingIds =
         medicalRegistryService.findExistingProcedureIds(
-            rowValuesCollection.stream()
-                .map(RowValues::getProcedureId)
-                .filter(Objects::nonNull)
-                .toList(),
-            batchSize);
-    for (MedicalRegistryRowValues rowValues : rowValuesCollection) {
-      if (rowValues.getProcedureId() != null) {
-        if (existingIds.contains(rowValues.getProcedureId())) {
-          writeStatus(rowValues.getRow(), ImportStatus.IMPORTED_PREVIOUSLY);
+            rows.stream().map(RowData::getEntityId).filter(Objects::nonNull).toList(), batchSize);
+    for (MedicalRegistryRow row : rows) {
+      if (row.getEntityId() != null) {
+        if (existingIds.contains(row.getEntityId())) {
+          writeStatus(row, ImportStatus.IMPORTED_PREVIOUSLY);
           stats.countPreviouslyImported();
         } else {
-          writeStatus(rowValues.getRow(), ImportStatus.INVALID_PROCEDURE_ID);
+          writeStatus(row, ImportStatus.INVALID_ENTITY_ID);
           stats.countFailed();
         }
-      } else if (rowValues.getStatus() == ImportStatus.DUPLICATE_WITHIN_LIST
-          || isDuplicateRow(rowValues)) {
-        writeStatus(rowValues.getRow(), ImportStatus.DUPLICATE_WITHIN_LIST);
-        stats.countDuplicated();
-      } else if (rowValues.isValid()) {
-        addToImportableRows(rowValues);
+      } else if (isDuplicateRow(row)) {
+        markAsDuplicateWithinList(row);
+      } else if (row.isValid()) {
+        addToImportableRows(row);
       } else {
-        writeStatus(rowValues.getRow(), ImportStatus.ERROR_INPUT_DATA);
+        writeStatus(row, ImportStatus.ERROR_INPUT_DATA);
         stats.countFailed();
       }
     }
   }
 
   @Override
-  protected void createProceduresAndWriteResults() {
-    ListUtils.partition(validRows.importableRows(), batchSize).forEach(this::persistRows);
+  protected void createEntitiesAndWriteResults(List<MedicalRegistryRow> importableRows) {
+    ListUtils.partition(importableRows, batchSize).forEach(this::persistRows);
   }
 
-  @Override
-  protected void mergeProceduresAndWriteResults() {}
-
-  private void addToImportableRows(MedicalRegistryRowValues rowValues) {
-    validRows.importableRows().add(rowValues);
+  private void persistRows(List<MedicalRegistryRow> rows) {
+    medicalRegistryService.createProceduresFromImport(rows).forEach(this::writeResult);
   }
 
-  private void persistRows(List<MedicalRegistryRowValues> rowValues) {
-    medicalRegistryService.createProceduresFromImport(rowValues).forEach(this::writeResult);
-  }
-
-  private void writeResult(Row row, Optional<UUID> optionalProcedureId) {
+  private void writeResult(MedicalRegistryRow row, Optional<UUID> optionalProcedureId) {
     if (optionalProcedureId.isPresent()) {
       writeStatusAndEntityId(row, ImportStatus.IMPORTED_SUCCESSFULLY, optionalProcedureId.get());
       stats.countCreated();

@@ -6,6 +6,8 @@
 package de.eshg.officialmedicalservice.procedure;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureDetailsDto;
+import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedureHeaderDto;
 import de.eshg.officialmedicalservice.procedure.api.EmployeeOmsProcedurePaginationAndSortParameters;
 import de.eshg.officialmedicalservice.procedure.api.EmployeePagedOmsProcedures;
 import de.eshg.officialmedicalservice.procedure.api.GetEmployeeOmsProcedureOverviewResponse;
@@ -17,8 +19,8 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,14 +43,26 @@ public class EmployeeOmsProcedureController {
 
   @PostMapping(path = PROCEDURES)
   @Operation(summary = "Save a new employee oms procedure")
-  @Transactional
   public UUID postEmployeeProcedure(@RequestBody @Valid PostEmployeeOmsProcedureRequest request) {
     return employeeOmsProcedureService.createEmployeeProcedure(request);
   }
 
+  @GetMapping(path = PROCEDURES + "/{id}/header")
+  @Operation(summary = "Get details of an oms procedure")
+  public EmployeeOmsProcedureHeaderDto getEmployeeProcedureHeader(
+      @PathVariable("id") UUID externalId) {
+    return employeeOmsProcedureService.getEmployeeProcedureHeader(externalId);
+  }
+
+  @GetMapping(path = PROCEDURES + "/{id}/details")
+  @Operation(summary = "Get details of an oms procedure")
+  public EmployeeOmsProcedureDetailsDto getEmployeeProcedureDetails(
+      @PathVariable("id") UUID externalId) {
+    return employeeOmsProcedureService.getEmployeeProcedureDetails(externalId);
+  }
+
   @GetMapping(path = PROCEDURES)
   @Operation(summary = "Get all oms procedures")
-  @Transactional(readOnly = true)
   public GetEmployeeOmsProcedureOverviewResponse getAllEmployeeProcedures(
       @InlineParameterObject @ParameterObject @Valid
           EmployeeOmsProcedurePaginationAndSortParameters paginationAndSortParameters) {

@@ -28,6 +28,12 @@ public final class MedicalRegistryPublicSecurityConfig extends AbstractPublicSec
                 + "/**")
         .permitAll();
 
+    requestMatchers(HttpMethod.GET, MedicalRegistry.CITIZEN_PORTAL_ENDPOINT + "/privacy-notice")
+        .permitAll();
+
+    requestMatchers(HttpMethod.GET, MedicalRegistry.CITIZEN_PORTAL_ENDPOINT + "/privacy-policy")
+        .permitAll();
+
     requestMatchers(GET, BaseUrls.MedicalRegistry.MEDICAL_REGISTRY_CONTROLLER + "/*/**")
         .hasAnyRole(
             EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN,

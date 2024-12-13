@@ -34,7 +34,9 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.data.domain.Page;
@@ -220,15 +222,20 @@ public class ContactController implements ContactApi {
           case ContactTypeDto.INSTITUTION -> InstitutionContact.class;
           case ContactTypeDto.PERSON -> PersonContact.class;
         };
-    InstitutionContactCategory institutionContactCategory =
-        ContactMapper.mapInstitutionContactCategoryToDm(parameters.category());
+
+    Set<InstitutionContactCategory> institutionContactCategories =
+        parameters.categories() != null
+            ? parameters.categories().stream()
+                .map(ContactMapper::mapInstitutionContactCategoryToDm)
+                .collect(Collectors.toSet())
+            : Set.of();
 
     Page<? extends Contact> contacts =
         contactService.fuzzySearchContacts(
             parameters.name(),
             parameters.street(),
             contactType,
-            institutionContactCategory,
+            institutionContactCategories,
             pageSpec);
     return new SearchContactsResponse(
         contacts.stream().map(ContactMapper::mapContactToApi).toList(),

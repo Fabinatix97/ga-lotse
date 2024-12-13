@@ -92,4 +92,8 @@ public class ProphylaxisSession extends BaseEntityWithExternalId {
     this.examinations.add(examination);
     examination.setProphylaxisSession(this);
   }
+
+  public List<Child> getParticipants() {
+    return getExaminations().stream().map(Examination::getChild).toList();
+  }
 }

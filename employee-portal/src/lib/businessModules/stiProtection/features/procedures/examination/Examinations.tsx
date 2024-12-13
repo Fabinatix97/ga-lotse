@@ -64,9 +64,14 @@ function mapRapidTestToApi(
     return undefined;
   }
 
+  const resultValue = mapYesOrNoToBool(formData.result);
+  if (resultValue === undefined) {
+    return undefined;
+  }
+
   return {
     number: mapOptionalValue(formData.number?.trim()),
-    result: formData.result ? !!mapYesOrNoToBool(formData.result) : false,
+    result: !!resultValue,
   };
 }
 

@@ -445,13 +445,12 @@ public class AnalysisService {
       TableColumn tableColumnSecondary) {
     List<Specification<TableRow>> specifications = new ArrayList<>();
     specifications.add(
-        AggregationResultSpecifications.tableRowOfAggregationOrderByTableRowId(aggregationResult));
+        TableRowSpecifications.tableRowOfAggregationOrderByTableRowId(aggregationResult));
     specifications.add(
-        AggregationResultSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
+        TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
             tableColumnPrimary));
     if (tableColumnSecondary != null) {
-      specifications.add(
-          AggregationResultSpecifications.getNotNullSpecification(tableColumnSecondary));
+      specifications.add(TableRowSpecifications.getNotNullSpecification(tableColumnSecondary));
     }
     return tableRowRepository.count(Specification.allOf(specifications));
   }
@@ -631,12 +630,12 @@ public class AnalysisService {
     Stream<Specification<TableRow>> notNullSpecifications;
     if (secondaryTableColumn == null) {
       notNullSpecifications =
-          Stream.of(AggregationResultSpecifications.getNotNullSpecification(primaryTableColumn));
+          Stream.of(TableRowSpecifications.getNotNullSpecification(primaryTableColumn));
     } else {
       notNullSpecifications =
           Stream.of(
-              AggregationResultSpecifications.getNotNullSpecification(primaryTableColumn),
-              AggregationResultSpecifications.getNotNullSpecification(secondaryTableColumn));
+              TableRowSpecifications.getNotNullSpecification(primaryTableColumn),
+              TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
     }
 
     return collectDataForTablePageAndReturnMaxPage(
@@ -707,7 +706,7 @@ public class AnalysisService {
         Specification.allOf(
             Stream.concat(
                     Stream.of(
-                        AggregationResultSpecifications.tableRowOfAggregationOrderByTableRowId(
+                        TableRowSpecifications.tableRowOfAggregationOrderByTableRowId(
                             aggregationResult)),
                     attributePlusFilters)
                 .toList());
@@ -732,10 +731,7 @@ public class AnalysisService {
       return Stream.empty();
     }
     return filters.stream()
-        .map(
-            filter ->
-                AggregationResultSpecifications.createFilterSpecification(
-                    filter, aggregationResult));
+        .map(filter -> TableRowSpecifications.createFilterSpecification(filter, aggregationResult));
   }
 
   private void addTableRowToCollectedBarChartData(
@@ -891,7 +887,7 @@ public class AnalysisService {
         getNotNullSpecificationsForChoroplethMap(primaryTableColumn, secondaryTableColumn);
 
     specifications.add(
-        AggregationResultSpecifications.getValueOptionFilterSpecification(
+        TableRowSpecifications.getValueOptionFilterSpecification(
             primaryTableColumn, geoKeys, false));
 
     return collectDataForTablePageAndReturnMaxPage(
@@ -912,17 +908,16 @@ public class AnalysisService {
   private List<Specification<TableRow>> getNotNullSpecificationsForChoroplethMap(
       TableColumn primaryTableColumn, TableColumn secondaryTableColumn) {
     List<Specification<TableRow>> notNullSpecifications = new ArrayList<>();
-    notNullSpecifications.add(
-        AggregationResultSpecifications.getNotNullSpecification(primaryTableColumn));
+    notNullSpecifications.add(TableRowSpecifications.getNotNullSpecification(primaryTableColumn));
     if (secondaryTableColumn != null) {
       switch (secondaryTableColumn.getValueType()) {
         case ValueType.BOOLEAN ->
             notNullSpecifications.add(
-                AggregationResultSpecifications.getNotNullSpecification(secondaryTableColumn));
+                TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
         case ValueType.DECIMAL, ValueType.INTEGER ->
             notNullSpecifications.add(
-                AggregationResultSpecifications
-                    .getNotNullAndNotUnknownSpecificationDecimalAndInteger(secondaryTableColumn));
+                TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
+                    secondaryTableColumn));
         default ->
             throw new IllegalStateException(
                 "Unexpected value type: " + secondaryTableColumn.getValueType());
@@ -1042,7 +1037,7 @@ public class AnalysisService {
     }
 
     Specification<TableRow> notNullNotUnknownSpecification =
-        AggregationResultSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
+        TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
             primaryTableColumn);
 
     Stream<Specification<TableRow>> specificationStream;
@@ -1052,7 +1047,7 @@ public class AnalysisService {
       specificationStream =
           Stream.of(
               notNullNotUnknownSpecification,
-              AggregationResultSpecifications.getNotNullSpecification(secondaryTableColumn));
+              TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
     }
 
     return collectDataForTablePageAndReturnMaxPage(
@@ -1222,7 +1217,7 @@ public class AnalysisService {
     }
 
     Stream<Specification<TableRow>> notNullSpecifications =
-        Stream.of(AggregationResultSpecifications.getNotNullSpecification(tableColumn));
+        Stream.of(TableRowSpecifications.getNotNullSpecification(tableColumn));
 
     return collectDataForTablePageAndReturnMaxPage(
         page,
@@ -1320,15 +1315,13 @@ public class AnalysisService {
       TableColumn xTableColumn, TableColumn yTableColumn, TableColumn secondaryTableColumn) {
     List<Specification<TableRow>> notNullSpecifications = new ArrayList<>();
     notNullSpecifications.add(
-        AggregationResultSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
-            xTableColumn));
+        TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(xTableColumn));
     notNullSpecifications.add(
-        AggregationResultSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(
-            yTableColumn));
+        TableRowSpecifications.getNotNullAndNotUnknownSpecificationDecimalAndInteger(yTableColumn));
 
     if (secondaryTableColumn != null) {
       notNullSpecifications.add(
-          AggregationResultSpecifications.getNotNullSpecification(secondaryTableColumn));
+          TableRowSpecifications.getNotNullSpecification(secondaryTableColumn));
     }
 
     return notNullSpecifications;

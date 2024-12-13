@@ -23,6 +23,10 @@ interface ConfirmDraftParams {
   target?: ApiProcedureReference;
 }
 
+interface ConfirmDraftDialogOptions {
+  isUpdate: boolean;
+}
+
 export function useConfirmDraftDialog(
   options?: Pick<ConfirmationDialogOptions, "onConfirm">,
 ) {
@@ -44,11 +48,15 @@ export function useConfirmDraftDialog(
   }
 
   return {
-    open: (params: ConfirmDraftParams) => {
+    open: (
+      { isUpdate }: ConfirmDraftDialogOptions,
+      params: ConfirmDraftParams,
+    ) => {
       openConfirmationDialog({
-        title: "Eintrag anlegen?",
-        description:
-          "Möchten Sie den Eintrag mit den Formular-Daten anlegen? Die Aktion kann nicht rückgängig gemacht werden.",
+        title: isUpdate ? "Eintrag aktualisieren?" : "Eintrag anlegen?",
+        description: isUpdate
+          ? "Möchten Sie den Eintrag mit den Formular-Daten aktualisieren? Die Aktion kann nicht rückgängig gemacht werden."
+          : "Möchten Sie den Eintrag mit den Formular-Daten anlegen? Die Aktion kann nicht rückgängig gemacht werden.",
         color: "primary",
         confirmLabel: "Bestätigen",
         onConfirm: () => handleConfirm(params),

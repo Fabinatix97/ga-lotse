@@ -7,18 +7,17 @@ import {
   ApiGetProcedure200Response,
   ApiPractice,
 } from "@eshg/employee-portal-api/medicalRegistry";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import { isDefined } from "remeda";
 
+import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
 import { ResponsiveDivider } from "@/lib/shared/components/ResponsiveDivider";
 import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
 
@@ -48,16 +47,12 @@ const PRACTICE_FIELD_NAME = {
   postalCode: "Postleitzahl",
   streetAndHouseNumber: "Straße und Haus Nr.",
   city: "Ort",
-  emailAddress: "E-Mail-Adresse",
-  phoneNumber: "Telefonnummer",
   website: "Website",
   openingHours: "Öffnungszeiten",
   institutionIdentifier: "Institutionskennzeichen (IK)",
   establishmentNumber: "Betriebsstättennummer (BSNR)",
   healthInsuranceAuthorization: "Kassenzulassung",
 };
-
-const fieldName = createFieldNameMapper<typeof PRACTICE_FIELD_NAME>();
 
 const COLUMN_STYLE: SxProps = {
   flexGrow: 1,
@@ -91,26 +86,19 @@ function PracticeDetails({
           divider={<ResponsiveDivider breakpoint="md" />}
         >
           <DetailsColumn sx={COLUMN_STYLE}>
-            <DetailsCell
-              name={fieldName("name")}
-              label={"Name"}
-              value={practice.name}
-            />
+            <DetailsCell label={"Name"} value={practice.name} />
             {isDefined(address) && (
               <>
                 <DetailsCell
-                  name={fieldName("streetAndHouseNumber")}
                   label={PRACTICE_FIELD_NAME.streetAndHouseNumber}
                   value={streetAndHouseNumber(address)}
                 />
                 <DetailsRow>
                   <DetailsCell
-                    name={fieldName("postalCode")}
                     label={PRACTICE_FIELD_NAME.postalCode}
                     value={address.postalCode}
                   />
                   <DetailsCell
-                    name={fieldName("city")}
                     label={PRACTICE_FIELD_NAME.city}
                     value={address.city}
                     avoidWrap
@@ -122,29 +110,11 @@ function PracticeDetails({
           {hasContactData && (
             <DetailsColumn sx={COLUMN_STYLE}>
               <DetailsCell
-                name={fieldName("openingHours")}
                 label={PRACTICE_FIELD_NAME.openingHours}
                 value={practice.openingHours}
               />
-              {emailAddresses.map((emailAddress) => (
-                <ExternalLinkDetailsCell
-                  key={emailAddress}
-                  name={fieldName("emailAddress")}
-                  label={PRACTICE_FIELD_NAME.emailAddress}
-                  value={emailAddress}
-                  href={(value) => `mailto:${value}`}
-                />
-              ))}
-              {phoneNumbers.map((phoneNumber) => (
-                <DetailsCell
-                  key={phoneNumber}
-                  name={fieldName("phoneNumber")}
-                  label={PRACTICE_FIELD_NAME.phoneNumber}
-                  value={phoneNumber}
-                />
-              ))}
+              <ContactData subject={practice} />
               <DetailsCell
-                name={fieldName("website")}
                 label={PRACTICE_FIELD_NAME.website}
                 value={practice.website}
               />
@@ -152,17 +122,14 @@ function PracticeDetails({
           )}
           <DetailsColumn sx={COLUMN_STYLE}>
             <DetailsCell
-              name={fieldName("institutionIdentifier")}
               label={PRACTICE_FIELD_NAME.institutionIdentifier}
               value={practice.institutionIdentifier}
             />
             <DetailsCell
-              name={fieldName("establishmentNumber")}
               label={PRACTICE_FIELD_NAME.establishmentNumber}
               value={practice.establishmentNumber}
             />
             <DetailsCell
-              name={fieldName("healthInsuranceAuthorization")}
               label={PRACTICE_FIELD_NAME.healthInsuranceAuthorization}
               value={practice.healthInsuranceAuthorization ? "Ja" : "Nein"}
             />

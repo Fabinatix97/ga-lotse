@@ -8,6 +8,7 @@
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
 import { TextSnippetOutlined, TimelineOutlined } from "@mui/icons-material";
 
+import { useGetProcedureHeader } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import { ProcedureDetailsTabHeader } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProcedureDetailsTabHeader";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
 import { TabNavigationItem } from "@/lib/shared/components/tabNavigation/types";
@@ -22,6 +23,7 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
   const hasOfficialMedicalServiceAdminRole = useHasUserRoleCheck(
     ApiUserRole.OfficialMedicalServiceAdmin,
   );
+  const { data: procedureHeader } = useGetProcedureHeader(props.id);
   const tabItems = buildTabItems(props.id);
 
   return (
@@ -30,7 +32,7 @@ export function ProcedureDetailsToolbar(props: ProcedureDetailsToolbarProps) {
       routeBack={
         hasOfficialMedicalServiceAdminRole ? routes.procedures.index : undefined
       }
-      header={<ProcedureDetailsTabHeader />}
+      header={<ProcedureDetailsTabHeader procedureHeader={procedureHeader} />}
     />
   );
 }

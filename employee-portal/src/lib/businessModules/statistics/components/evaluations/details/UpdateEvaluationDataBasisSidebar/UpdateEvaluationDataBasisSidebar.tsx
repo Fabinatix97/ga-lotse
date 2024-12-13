@@ -10,19 +10,33 @@ import { validateUpdateEvaluationDataBasisStep } from "@/lib/businessModules/sta
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { UpdateEvaluationDataBasisStep } from "./UpdateEvaluationDataBasisStep";
 import { UpdateEvaluationDataBasisFormModel } from "./updateEvaluationDataBasisFormModel";
 
-export function UpdateEvaluationDataBasisSidebar({
+export function useUpdateEvaluationDataBasisSidebar(): UseSidebarWithFormRefResult<UpdateEvaluationDataBasisSidebarProps> {
+  return useSidebarWithFormRef({
+    component: UpdateEvaluationDataBasisSidebar,
+  });
+}
+
+interface UpdateEvaluationDataBasisSidebarProps
+  extends SidebarWithFormRefProps {
+  initialValues: UpdateEvaluationDataBasisFormModel;
+  evaluationId: string;
+}
+
+function UpdateEvaluationDataBasisSidebar({
   onClose,
   initialValues,
   evaluationId,
-}: {
-  onClose: () => void;
-  initialValues: UpdateEvaluationDataBasisFormModel;
-  evaluationId: string;
-}) {
+  formRef,
+}: UpdateEvaluationDataBasisSidebarProps) {
   const { openConfirmationDialog } = useConfirmationDialog();
   const updateDataBasis = useUpdateDataBasis({
     redirectRoute: routes.evaluations.index,
@@ -33,7 +47,7 @@ export function UpdateEvaluationDataBasisSidebar({
       openConfirmationDialog({
         onConfirm: async () => {
           await updateDataBasis(evaluationId, model.timeSpan);
-          onClose();
+          onClose(true);
         },
         onClose: resolve,
         title: "Datenbasis aktualisieren?",
@@ -53,9 +67,9 @@ export function UpdateEvaluationDataBasisSidebar({
   return (
     <SidebarStepper
       onClose={onClose}
-      open={true}
       onSubmit={handleSubmit}
       initialValues={initialValues}
+      formRef={formRef}
       saveLabel="Aktualisieren"
       steps={[
         {

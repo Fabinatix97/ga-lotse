@@ -5,5 +5,12 @@ plugins {
 dependencies {
     api 'de.cronn:commons-lang:latest.release'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation project(':rest-client-commons')
+
+    testImplementation project(':test-commons')
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Pinned to ensure compatibility to com.nimbusds:oauth2-oidc-sdk (which is pinned by spring-security-oauth2-client)
+    testImplementation 'no.nav.security:mock-oauth2-server:0.5.6'
+    testImplementation 'org.springframework.security:spring-security-oauth2-jose'
 }

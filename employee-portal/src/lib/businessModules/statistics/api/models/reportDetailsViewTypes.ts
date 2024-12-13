@@ -15,7 +15,7 @@ export interface ReportDetailsView {
   start: Date;
   end: Date;
   createdAt: Date;
-  createdBy?: string;
+  createdBy: string;
   dataSource: {
     name: string;
     datasetAmount: number;
@@ -23,6 +23,6 @@ export interface ReportDetailsView {
   };
   analyses: Analysis[];
   attributes: FlatAttribute[];
-  userId: string;
+  userId: string | undefined;
   tooMuchDataForExport: boolean;
 }

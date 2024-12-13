@@ -5,6 +5,7 @@
 
 package de.eshg.base;
 
+import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.rest.service.security.config.BasePublicSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@Import(BasePublicSecurityConfig.class)
+@Import({BasePublicSecurityConfig.class, SerializationService.class})
 public class BaseApplication {
 
   public static void main(String[] args) {

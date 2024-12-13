@@ -4,7 +4,6 @@
  */
 
 import {
-  addMilliseconds,
   format,
   isSameDay,
   isSameWeek,
@@ -33,7 +32,6 @@ import {
   isStrictEqual,
   isString,
   keys,
-  last,
   pickBy,
   pipe,
 } from "remeda";
@@ -43,10 +41,8 @@ import {
   ChatSystemMessage,
   Message,
   Presence,
-  RoomLastMessage,
   RoomWithCommunicationType,
   UserDirectoryResponse,
-  isMessageTypeWithBody,
 } from "@/lib/businessModules/chat/shared/types";
 
 export function findDirectChat({
@@ -118,6 +114,15 @@ export function getRoomCommunicationType(
           communicationType = CommunicationType.DirectMessage;
         }
       }
+    }
+  }
+  if (matrixClient && roomId) {
+    const directMessageRooms = getDMRooms(
+      matrixClient,
+      matrixClient.getUserId(),
+    );
+    if (directMessageRooms?.includes(roomId)) {
+      communicationType = CommunicationType.DirectMessage;
     }
   }
 
@@ -278,39 +283,6 @@ export function getPresenseLabel(status: Presence | undefined) {
   }
 }
 
-export async function getRoomLastMessage(
-  matrixClient: MatrixClient,
-  roomId: string,
-): Promise<RoomLastMessage | undefined> {
-  const timeline = matrixClient.getRoom(roomId)?.getLiveTimeline();
-  if (timeline) {
-    const events = timeline.getEvents();
-    const lastEvent = last(events);
-    if (lastEvent) {
-      if (lastEvent.isEncrypted()) {
-        await matrixClient.decryptEventIfNeeded(lastEvent);
-      }
-      const messageContent = lastEvent.getContent();
-
-      if (!isMessageTypeWithBody(messageContent)) return;
-
-      const sender = matrixClient.getUser(lastEvent.getSender() ?? "");
-      const id =
-        lastEvent.getId() ??
-        format(addMilliseconds(new Date(), Math.random() * 1000), "T");
-
-      return {
-        sender,
-        content: messageContent.body,
-        timestamp: lastEvent.getDate(),
-        id,
-        roomId,
-        mentions: messageContent["m.mentions"]?.user_ids,
-      };
-    }
-  }
-}
-
 export function formatChatDate(timestamp?: Date | null) {
   if (!timestamp) return "";
 
@@ -455,13 +427,6 @@ export function sortMessages<T extends ChatSystemMessage | Message>(
   );
 }
 
-export function findLatestEvent(room: Room) {
-  const timelineSet = room.getLiveTimeline();
-  const events = timelineSet.getEvents();
-  if (events.length <= 0) return;
-  return events[events.length - 1];
-}
-
 export function findLatestMessage(room: Room) {
   const timelineSet = room.getLiveTimeline();
   const events = timelineSet.getEvents();
@@ -535,6 +500,27 @@ export function getRoomAdmins(room: Room | null) {
     : [];
 }
 
+export function checkIfRoomIsInactive(
+  loggedInUserId: string | null,
+  room?: RoomWithCommunicationType,
+) {
+  if (!room) return false;
+  if (room.communicationType === CommunicationType.PublicRoom) return false;
+  const allMembers = room.room.getMembers();
+  const roomMembers = allMembers.filter(
+    (member) => member.userId !== loggedInUserId,
+  );
+
+  if (roomMembers.length > 2) {
+    return false;
+  } else {
+    const oneLeft = roomMembers.find((member) => member.membership === "leave");
+    if (oneLeft) return true;
+  }
+
+  return false;
+}
+
 export function getRoomCreator(room: Room | null) {
   const eventContent = room
     ?.getLiveTimeline()
@@ -545,4 +531,55 @@ export function getRoomCreator(room: Room | null) {
     }>();
 
   return eventContent?.creator;
+}
+
+export function getDMRooms(client: MatrixClient, userId: string | null) {
+  if (!userId) return;
+  const mDirectEvent = client.getAccountData(EventType.Direct);
+  const currentContent = mDirectEvent?.getContent() ?? {};
+  const dmRoomMap = new Map(Object.entries(currentContent)) as Map<
+    string,
+    string[]
+  >;
+  return dmRoomMap.get(userId) ?? [];
+}
+
+export async function setDMRoom(
+  client: MatrixClient,
+  roomId: string,
+  userId: string | null,
+): Promise<void> {
+  const mDirectEvent = client.getAccountData(EventType.Direct);
+  const currentContent = mDirectEvent?.getContent() ?? {};
+
+  const dmRoomMap = new Map(Object.entries(currentContent)) as Map<
+    string,
+    string[]
+  >;
+  let modified = false;
+
+  for (const thisUserId of dmRoomMap.keys()) {
+    const roomList = dmRoomMap.get(thisUserId) ?? [];
+
+    if (thisUserId != userId) {
+      const indexOfRoom = roomList.indexOf(roomId);
+      if (indexOfRoom > -1) {
+        roomList.splice(indexOfRoom, 1);
+        modified = true;
+      }
+    }
+  }
+
+  if (userId) {
+    const roomList = dmRoomMap.get(userId) ?? [];
+    if (!roomList.includes(roomId)) {
+      roomList.push(roomId);
+      modified = true;
+    }
+    dmRoomMap.set(userId, roomList);
+  }
+
+  if (!modified) return;
+
+  await client.setAccountData(EventType.Direct, Object.fromEntries(dmRoomMap));
 }

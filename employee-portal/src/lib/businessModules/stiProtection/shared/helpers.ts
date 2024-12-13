@@ -4,6 +4,7 @@
  */
 
 import {
+  ApiAppointmentHistoryEntry,
   ApiAppointmentType,
   ApiConcern,
   ApiStiProtectionProcedure,
@@ -11,13 +12,15 @@ import {
 } from "@eshg/employee-portal-api/stiProtection";
 
 export function concernToAppointmentType(
-  concern: ApiConcern,
+  concern: ApiConcern | "RESULTS_REVIEW",
 ): ApiAppointmentType {
   switch (concern) {
     case ApiConcern.HivStiConsultation:
       return ApiAppointmentType.HivStiConsultation;
     case ApiConcern.SexWork:
       return ApiAppointmentType.SexWork;
+    case "RESULTS_REVIEW":
+      return ApiAppointmentType.ResultsReview;
   }
 }
 
@@ -73,4 +76,18 @@ export function guardValue<T>(
   value: T,
 ): T | undefined {
   return guard ? value : undefined;
+}
+
+export function getOpenAppointmentsFromProcedure(
+  procedure: ApiStiProtectionProcedure,
+): ApiAppointmentHistoryEntry[] {
+  let openAppointments: ApiAppointmentHistoryEntry[] = [];
+
+  if (procedure) {
+    openAppointments = procedure.appointmentHistory.filter(
+      ({ appointmentStatus }) => appointmentStatus === "OPEN",
+    );
+  }
+
+  return openAppointments;
 }

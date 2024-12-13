@@ -14,7 +14,6 @@ import de.eshg.stiprotection.api.CreateProcedureRequest;
 import de.eshg.stiprotection.api.UpdateAppointmentRequest;
 import de.eshg.stiprotection.persistence.data.AppointmentBookingType;
 import de.eshg.stiprotection.persistence.data.AppointmentData;
-import de.eshg.stiprotection.persistence.db.Concern;
 import de.eshg.stiprotection.persistence.db.UserDefinedAppointment;
 
 public class AppointmentMapper {
@@ -60,10 +59,11 @@ public class AppointmentMapper {
         request.durationInMinutes());
   }
 
-  public static AppointmentData toDataType(UpdateAppointmentRequest request, Concern concern) {
+  public static AppointmentData toDataType(
+      UpdateAppointmentRequest request, AppointmentType appointmentType) {
     return new AppointmentData(
         AppointmentBookingType.valueOf(request.appointmentBookingType().name()),
-        AppointmentType.valueOf(concern.name()),
+        appointmentType,
         request.appointmentStart(),
         request.durationInMinutes());
   }

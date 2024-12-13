@@ -6,7 +6,7 @@
 package de.eshg.medicalregistry;
 
 import de.eshg.medicalregistry.config.MedicalRegistryProperties;
-import de.eshg.medicalregistry.domain.registry.MedicalRegistryEntryRepository;
+import de.eshg.medicalregistry.domain.repository.MedicalRegistryProcedureRepository;
 import de.eshg.rest.service.error.RateLimitReachedException;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
@@ -17,13 +17,13 @@ public class MedicalRegistryGuard {
 
   private final Bucket bucket;
   private final MedicalRegistryProperties medicalRegistryProperties;
-  private final MedicalRegistryEntryRepository medicalRegistryEntryRepository;
+  private final MedicalRegistryProcedureRepository medicalRegistryProcedureRepository;
 
   public MedicalRegistryGuard(
       MedicalRegistryProperties medicalRegistryProperties,
-      MedicalRegistryEntryRepository medicalRegistryEntryRepository) {
+      MedicalRegistryProcedureRepository medicalRegistryProcedureRepository) {
     this.medicalRegistryProperties = medicalRegistryProperties;
-    this.medicalRegistryEntryRepository = medicalRegistryEntryRepository;
+    this.medicalRegistryProcedureRepository = medicalRegistryProcedureRepository;
 
     Bandwidth bandwidth =
         Bandwidth.builder()
@@ -51,7 +51,7 @@ public class MedicalRegistryGuard {
   }
 
   private boolean isCitizenDraftEntryLimitReached() {
-    return medicalRegistryEntryRepository.numberOfCitizenDraftEntries()
+    return medicalRegistryProcedureRepository.numberOfCitizenDraftEntries()
         >= medicalRegistryProperties.getDraftEntryLimit();
   }
 

@@ -1,0 +1,26 @@
+{
+  "pageTitle": "Amtsärztlicher Dienst",
+  "information": {
+    "title": "Informationen",
+    "text": "Infotext zum Amtsärztlichen Dienst"
+  },
+  "contact": {
+    "title": "Kontakt und Erreichbarkeit",
+    "addressSection": {
+      "title": "Adresse"
+    },
+    "contactSection": {
+      "title": "Kontakt",
+      "phoneNumber": "Telefon: {{ phoneNumber }}",
+      "eMail": "E-Mail:"
+    },
+    "openingHoursSection": {
+      "title": "Öffnungszeiten"
+    }
+  },
+  "personalArea": {
+    "title": "Vorgang",
+    "information": "Infotext zum Vorgang",
+    "goToPersonalArea": "Vorgang einsehen"
+  }
+}

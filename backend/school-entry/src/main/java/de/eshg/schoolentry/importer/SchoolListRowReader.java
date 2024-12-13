@@ -14,24 +14,20 @@ import de.eshg.schoolentry.business.model.ImportChildData;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class SchoolListRowReader extends RowReader<SchoolListRowValues, SchoolListColumn> {
+public class SchoolListRowReader extends RowReader<SchoolListRow, SchoolListColumn> {
 
   public SchoolListRowReader(Sheet sheet, List<SchoolListColumn> actualColumns) {
-    super(sheet, actualColumns);
+    super(sheet, actualColumns, SchoolListRow::new);
   }
 
   @Override
-  protected SchoolListRowValues read(ColumnAccessor<SchoolListColumn> col) {
-    SchoolListRowValues result = new SchoolListRowValues();
-    ErrorHandler errorHandler = createErrorHandler(result);
-
+  protected void read(
+      SchoolListRow result, ColumnAccessor<SchoolListColumn> col, ErrorHandler errorHandler) {
     result.setChild(readChildData(col, errorHandler));
     result.setStatus(readStatus(col, STATUS, errorHandler));
-    result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
+    result.setEntityId(readUuid(col, PROCEDURE_ID, errorHandler));
     result.setEntryLevel(readEntryLevelFlag(col, errorHandler));
     result.setEarlyExamination(readEarlyExaminationFlag(col, errorHandler));
-
-    return result;
   }
 
   private ImportChildData readChildData(

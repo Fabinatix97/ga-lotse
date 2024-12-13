@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -23,4 +24,5 @@ public record MedicalRegistryEntryDto(
     @NotNull @Valid ApplicantAddressDto address,
     @NotNull boolean certificateRequested,
     @NotNull ProcedureStatusDto status,
-    @NotNull ProcedureTypeDto type) {}
+    @NotNull ProcedureTypeDto type,
+    @NotNull Instant createdAt) {}

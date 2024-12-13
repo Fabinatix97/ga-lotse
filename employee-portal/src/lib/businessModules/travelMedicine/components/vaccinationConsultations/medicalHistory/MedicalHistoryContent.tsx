@@ -120,6 +120,7 @@ export function MedicalHistoriesContent({
             >
               <MedicalHistory
                 medicalHistory={medicalHistory}
+                procedureId={procedureId}
                 readOnly={!editMode}
                 onCancel={() => {
                   setEditMode(false);

@@ -14,6 +14,7 @@ import de.eshg.lib.procedure.domain.model.Pdf;
 import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.file.FileFactory;
 import de.eshg.rest.service.error.BadRequestException;
+import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.travelmedicine.citizenpublic.DepartmentInfoService;
 import de.eshg.travelmedicine.document.api.DocumentContentDto;
 import de.eshg.travelmedicine.document.medicalhistory.api.MedicalHistoryDto;
@@ -21,6 +22,7 @@ import de.eshg.travelmedicine.document.medicalhistory.api.PatchMedicalHistoryReq
 import de.eshg.travelmedicine.document.medicalhistory.persistence.entity.MedicalHistory;
 import de.eshg.travelmedicine.vaccinationconsultation.PersonClient;
 import de.eshg.travelmedicine.vaccinationconsultation.ProcedureAccessor;
+import de.eshg.travelmedicine.vaccinationconsultation.ProgressEntryService;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetMedicalHistoriesResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
 import de.eshg.travelmedicine.vaccinationconsultation.persistence.entity.ProcedureStep;
@@ -53,6 +55,7 @@ public class MedicalHistoryService {
   private final Clock clock;
   private final DepartmentInfoService departmentInfoService;
   private final DocumentGenerator documentGenerator;
+  private final ProgressEntryService progressEntryService;
 
   public MedicalHistoryService(
       ProcedureAccessor procedureAccessor,
@@ -60,11 +63,13 @@ public class MedicalHistoryService {
       PersonClient personClient,
       Clock clock,
       DepartmentInfoService departmentInfoService,
-      DocumentGenerator documentGenerator) {
+      DocumentGenerator documentGenerator,
+      ProgressEntryService progressEntryService) {
     this.personClient = personClient;
     this.clock = clock;
     this.departmentInfoService = departmentInfoService;
     this.documentGenerator = documentGenerator;
+    this.progressEntryService = progressEntryService;
     Assert.isTrue(medicalHistoryResource.exists(), medicalHistoryResource + " does not exist");
     this.procedureAccessor = procedureAccessor;
     this.medicalHistoryResource = medicalHistoryResource;
@@ -103,20 +108,30 @@ public class MedicalHistoryService {
 
   public void patchMedicalHistoryForEmployeePortal(
       UUID medicalHistoryId, PatchMedicalHistoryRequest patchMedicalHistoryRequest) {
-    MedicalHistory medicalHistory =
-        procedureAccessor.accessMedicalHistory(
-            medicalHistoryId, null, ProcedureAccessor.checkNotClosed);
+    VaccinationConsultation vaccinationConsultation =
+        procedureAccessor.accessProcedure(
+            patchMedicalHistoryRequest.procedureId(), ProcedureAccessor.checkNotClosed);
+    ProcedureStep procedureStep =
+        vaccinationConsultation.getProcedureSteps().stream()
+            .filter(ps -> ps.getMedicalHistory().getId().equals(medicalHistoryId))
+            .findFirst()
+            .orElseThrow(
+                () -> new NotFoundException("Medical history not found: " + medicalHistoryId));
+    MedicalHistory medicalHistory = procedureStep.getMedicalHistory();
+
+    medicalHistory.setNote(patchMedicalHistoryRequest.note());
+    boolean completelyAnswered =
+        isDocumentContentCompletelyAnswered(patchMedicalHistoryRequest.medicalHistoryContent());
+    medicalHistory.setCompletelyAnswered(completelyAnswered);
 
     String oldContent = medicalHistory.getContent();
     String newContent = toJsonString(patchMedicalHistoryRequest.medicalHistoryContent());
     if (!oldContent.equals(newContent)) {
       medicalHistory.setContent(newContent);
       medicalHistory.setCitizenHasAnswered(true);
+      progressEntryService.createProgressEntryForAnswerMedicalHistoryByEmployee(
+          vaccinationConsultation, procedureStep, completelyAnswered);
     }
-
-    medicalHistory.setNote(patchMedicalHistoryRequest.note());
-    medicalHistory.setCompletelyAnswered(
-        isDocumentContentCompletelyAnswered(patchMedicalHistoryRequest.medicalHistoryContent()));
   }
 
   public void patchMedicalHistoryForCitizenPortal(
@@ -137,9 +152,12 @@ public class MedicalHistoryService {
     }
 
     medicalHistory.setContent(toJsonString(patchMedicalHistoryContent));
-    medicalHistory.setCompletelyAnswered(
-        isDocumentContentCompletelyAnswered(patchMedicalHistoryContent));
+    boolean completelyAnswered = isDocumentContentCompletelyAnswered(patchMedicalHistoryContent);
+    medicalHistory.setCompletelyAnswered(completelyAnswered);
     medicalHistory.setCitizenHasAnswered(true);
+
+    progressEntryService.createProgressEntryForAnswerMedicalHistoryByCitizen(
+        procedureStep.getVaccinationConsultation(), procedureStep, completelyAnswered);
   }
 
   private String toJsonString(Object content) {

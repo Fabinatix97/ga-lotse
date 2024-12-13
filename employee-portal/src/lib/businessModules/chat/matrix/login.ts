@@ -12,7 +12,7 @@ import {
 } from "@/lib/businessModules/chat/matrix/pickling";
 import {
   clearCachedCredentials,
-  deleteCachedCredentials,
+  clearMatrixStores,
   getCachedCredentials,
   persistCredentials,
 } from "@/lib/businessModules/chat/matrix/tokens";
@@ -105,7 +105,7 @@ async function createLoggedInClient(payload: ILoginParams) {
 
   // Clear stores
   await clearCachedCredentials();
-  await matrixClient.clearStores();
+  await clearMatrixStores();
 
   // Start SSO, redirect the page to receive the login token.
   // Once the token is received in the search parameters, we can initiate the login process.
@@ -222,8 +222,4 @@ export async function chatLogin(baseUrl: string, selfUser: ApiUser) {
 
   await persistCredentials(credentials);
   return credentials;
-}
-
-export async function chatLogout() {
-  await deleteCachedCredentials();
 }

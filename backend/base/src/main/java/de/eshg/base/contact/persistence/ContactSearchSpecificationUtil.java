@@ -17,6 +17,7 @@ import de.eshg.base.util.PaginationUtil;
 import de.eshg.base.util.SearchSpecificationUtil;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.SingularAttribute;
+import java.util.Set;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -91,14 +92,14 @@ public class ContactSearchSpecificationUtil {
     return (root, query, cb) -> cb.equal(root.type(), type);
   }
 
-  static Specification<Contact> hasCategory(InstitutionContactCategory category) {
-    if (category == null) {
+  static Specification<Contact> hasCategories(Set<InstitutionContactCategory> categories) {
+    if (categories == null || categories.isEmpty()) {
       return (root, query, cb) -> cb.and();
     }
     return (root, query, cb) -> {
       Path<InstitutionContactCategory> path =
           cb.treat(root, InstitutionContact.class).get(InstitutionContact_.category);
-      return cb.equal(path, category);
+      return path.in(categories);
     };
   }
 

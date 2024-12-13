@@ -155,7 +155,7 @@ export function InputComponent({
       inputNode.focus();
     }
   }
-  const isDisabled = disabled ?? !!_meta.error;
+  const buttonDisabled = disabled ?? !!_meta.error;
 
   return (
     <Box sx={{ p: 2, pt: 0 }}>
@@ -221,12 +221,13 @@ export function InputComponent({
           },
         }}
         color="neutral"
+        disabled={disabled}
         endDecorator={
           <IconButton
             size="sm"
-            color={isDisabled ? "neutral" : "primary"}
+            color={buttonDisabled ? "neutral" : "primary"}
             type="submit"
-            disabled={isDisabled}
+            disabled={buttonDisabled}
           >
             <SendOutlinedIcon />
           </IconButton>

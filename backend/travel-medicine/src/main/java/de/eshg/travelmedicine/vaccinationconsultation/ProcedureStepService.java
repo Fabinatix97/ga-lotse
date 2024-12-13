@@ -38,10 +38,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProcedureStepService {
+
+  private static final Logger log = LoggerFactory.getLogger(ProcedureStepService.class);
   private final ProcedureStepRepository procedureStepRepository;
   private final MedicalHistoryTemplateRepository medicalHistoryTemplateRepository;
   private final ServiceRepository serviceRepository;
@@ -51,6 +55,7 @@ public class ProcedureStepService {
   private final AppointmentBookingTypeMapper appointmentBookingTypeMapper;
   private final MedicalHistoryFactory medicalHistoryFactory;
   private final NotificationService notificationService;
+  private final ProgressEntryService progressEntryService;
   private final PersonClient personClient;
 
   public ProcedureStepService(
@@ -62,6 +67,7 @@ public class ProcedureStepService {
       AppointmentBookingTypeMapper appointmentBookingTypeMapper,
       MedicalHistoryFactory medicalHistoryFactory,
       NotificationService notificationService,
+      ProgressEntryService progressEntryService,
       PersonClient personClient) {
     this.procedureStepRepository = procedureStepRepository;
     this.medicalHistoryTemplateRepository = medicalHistoryTemplateRepository;
@@ -71,6 +77,7 @@ public class ProcedureStepService {
     this.appointmentBookingTypeMapper = appointmentBookingTypeMapper;
     this.medicalHistoryFactory = medicalHistoryFactory;
     this.notificationService = notificationService;
+    this.progressEntryService = progressEntryService;
     this.personClient = personClient;
   }
 
@@ -161,9 +168,17 @@ public class ProcedureStepService {
 
     vaccinationConsultation.getProcedureSteps().add(procedureStep);
 
+    boolean sendMailSuccessfully = false;
     if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
-      notificationService.notifyNewFollowUpAppointment(patientOf(vaccinationConsultation));
+      try {
+        notificationService.notifyNewFollowUpAppointment(patientOf(vaccinationConsultation));
+        sendMailSuccessfully = true;
+      } catch (Exception e) {
+        log.warn("Cannot send eMail", e);
+      }
     }
+    progressEntryService.createProgressEntryForFollowUpAppointment(
+        vaccinationConsultation, procedureStep, sendMailSuccessfully);
 
     return procedureStep.getExternalId();
   }
@@ -262,13 +277,27 @@ public class ProcedureStepService {
     Instant newAppointment = getStartDateFromAppointment(procedureStep);
 
     VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    boolean sendMailSuccessfully = false;
     if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
-      if (previousAppointment != null)
-        notificationService.notifyRebookedByEmployee(
-            patientOf(vaccinationConsultation), previousAppointment, newAppointment);
-      else
-        notificationService.notifyBookedByEmployee(
-            patientOf(vaccinationConsultation), newAppointment);
+      try {
+        if (previousAppointment != null)
+          notificationService.notifyRebookedByEmployee(
+              patientOf(vaccinationConsultation), previousAppointment, newAppointment);
+        else
+          notificationService.notifyBookedByEmployee(
+              patientOf(vaccinationConsultation), newAppointment);
+        sendMailSuccessfully = true;
+      } catch (Exception e) {
+        log.warn("Cannot send eMail", e);
+      }
+    }
+    if (previousAppointment != null) {
+      progressEntryService.createProgressEntryForAppointmentRebookingByEmployee(
+          vaccinationConsultation,
+          procedureStep.getAppointmentType(),
+          previousAppointment,
+          newAppointment,
+          sendMailSuccessfully);
     }
   }
 
@@ -349,9 +378,21 @@ public class ProcedureStepService {
     appointmentService.cancelAppointment(procedureStep);
 
     VaccinationConsultation vaccinationConsultation = procedureStep.getVaccinationConsultation();
+    boolean sendMailSuccessfully = false;
     if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
-      notificationService.notifyCancelledByEmployee(
-          patientOf(vaccinationConsultation), cancelledAppointment);
+      try {
+        notificationService.notifyCancelledByEmployee(
+            patientOf(vaccinationConsultation), cancelledAppointment);
+        sendMailSuccessfully = true;
+      } catch (Exception e) {
+        log.warn("Cannot send eMail", e);
+      }
     }
+
+    progressEntryService.createProgressEntryForCancelAppointmentByEmployee(
+        vaccinationConsultation,
+        procedureStep.getAppointmentType(),
+        cancelledAppointment,
+        sendMailSuccessfully);
   }
 }

@@ -26,23 +26,23 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.metadata.ConstraintDescriptor;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class MedicalRegistryRowReader
-    extends RowReader<MedicalRegistryRowValues, MedicalRegistryColumn> {
+public class MedicalRegistryRowReader extends RowReader<MedicalRegistryRow, MedicalRegistryColumn> {
 
   private static final ValidatorFactory validatorFactory =
       Validation.buildDefaultValidatorFactory();
 
   protected MedicalRegistryRowReader(Sheet sheet) {
-    super(sheet, Arrays.asList(MedicalRegistryColumn.values()));
+    super(sheet, Arrays.asList(MedicalRegistryColumn.values()), MedicalRegistryRow::new);
   }
 
   @Override
-  protected MedicalRegistryRowValues read(ColumnAccessor<MedicalRegistryColumn> col) {
-    MedicalRegistryRowValues result = new MedicalRegistryRowValues();
+  protected void read(
+      MedicalRegistryRow result,
+      ColumnAccessor<MedicalRegistryColumn> col,
+      ErrorHandler errorHandler) {
     result.setApplicant(createApplicantDto());
     result.setProfessionInformation(new CreateProfessionInformationDto());
     if (Arrays.stream(MedicalRegistryColumn.values())
@@ -51,18 +51,15 @@ public class MedicalRegistryRowReader
         .anyMatch(not(RowReader::isBlank))) {
       result.setPractice(createPracticeDto());
     }
-    MedicalRegistryErrorHandler errorHandler =
-        new MedicalRegistryErrorHandler(result, this::addCellError);
 
     for (MedicalRegistryColumn column : MedicalRegistryColumn.values()) {
       switch (column) {
-        case PROCEDURE_ID ->
-            result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
+        case PROCEDURE_ID -> result.setEntityId(readUuid(col, PROCEDURE_ID, errorHandler));
         case STATUS -> result.setStatus(readStatus(col, STATUS, errorHandler));
         default -> column.apply(result, col, errorHandler);
       }
     }
-    return validate(result, col, errorHandler);
+    validate(result, col, errorHandler);
   }
 
   private CreateApplicantDto createApplicantDto() {
@@ -77,22 +74,21 @@ public class MedicalRegistryRowReader
     return result;
   }
 
-  private <R> R validate(
-      R object,
+  private void validate(
+      MedicalRegistryRow row,
       ColumnAccessor<MedicalRegistryColumn> col,
-      MedicalRegistryErrorHandler errorHandler) {
-    Set<ConstraintViolation<R>> constraintViolations =
-        validatorFactory.getValidator().validate(object);
-    for (ConstraintViolation<R> constraintViolation : constraintViolations) {
+      ErrorHandler errorHandler) {
+    Set<ConstraintViolation<MedicalRegistryRow>> constraintViolations =
+        validatorFactory.getValidator().validate(row);
+    for (ConstraintViolation<MedicalRegistryRow> constraintViolation : constraintViolations) {
       MedicalRegistryColumn column =
           MedicalRegistryColumn.getColumn(constraintViolation.getPropertyPath());
       if (column != null) {
         errorHandler.handleError(col.get(column), describe(constraintViolation));
       } else {
-        errorHandler.handleUnspecificError();
+        row.markAsInvalid();
       }
     }
-    return object;
   }
 
   private String describe(ConstraintViolation<?> constraintViolation) {
@@ -114,28 +110,5 @@ public class MedicalRegistryRowReader
 
   public static String convertCellAndGetString(Cell cell, ErrorHandler errorHandler) {
     return cellAsString(convertToTextCell(cell, errorHandler), true, false, errorHandler);
-  }
-
-  private class MedicalRegistryErrorHandler implements ErrorHandler {
-
-    private final MedicalRegistryRowValues result;
-    private final BiConsumer<Cell, String> cellSpecificErrorMessageConsumer;
-
-    private MedicalRegistryErrorHandler(
-        MedicalRegistryRowValues result,
-        BiConsumer<Cell, String> cellSpecificErrorMessageConsumer) {
-      this.result = result;
-      this.cellSpecificErrorMessageConsumer = cellSpecificErrorMessageConsumer;
-    }
-
-    @Override
-    public void handleError(Cell cell, String errorMessage) {
-      result.foundInvalidData();
-      cellSpecificErrorMessageConsumer.accept(cell, errorMessage);
-    }
-
-    public void handleUnspecificError() {
-      result.foundInvalidData();
-    }
   }
 }

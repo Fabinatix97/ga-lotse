@@ -4,12 +4,10 @@
  */
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import { Leaderboard } from "@mui/icons-material";
 import { isPlainObject } from "remeda";
 
 import { UseSideNavigationItemsResult } from "@/lib/baseModule/components/layout/sideNavigation/types";
-import { useIsNewFeatureEnabledUnsuspended } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import {
   hasAnyUserRoles,
   hasUserRole,
@@ -18,21 +16,12 @@ import {
 import { routes } from "./routes";
 
 export function useSideNavigationItems(): UseSideNavigationItemsResult {
-  const {
-    data: statisticsReportsEnabled,
-    isError,
-    isLoading,
-  } = useIsNewFeatureEnabledUnsuspended(ApiStatisticsFeature.Reports);
-
   return {
-    isLoading,
+    isLoading: false,
     items: [
       {
         name: "Statistik",
         decorator: <Leaderboard />,
-        error: isError
-          ? "Bei der Verbindung zum Statistikmodul ist ein Fehler aufgetreten."
-          : undefined,
         subItems: [
           {
             name: "Auswertungen",
@@ -43,7 +32,7 @@ export function useSideNavigationItems(): UseSideNavigationItemsResult {
               ApiUserRole.StatisticsStatisticsAdmin,
             ]),
           },
-          statisticsReportsEnabled && {
+          {
             name: "Reports",
             href: routes.reports.index,
             accessCheck: hasAnyUserRoles([

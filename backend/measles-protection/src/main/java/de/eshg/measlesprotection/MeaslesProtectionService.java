@@ -19,6 +19,7 @@ import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
+import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
 import de.eshg.measlesprotection.api.CaseStatusDto;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresFilterOptions;
 import de.eshg.measlesprotection.api.GetMeaslesProtectionProceduresPaginationOptions;
@@ -81,6 +82,7 @@ public class MeaslesProtectionService {
   private final MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository;
   private final PersonRepository personRepository;
   private final ProcedureFinder procedureFinder;
+  private final ProcedureDeletionService<MeaslesProtectionProcedure> procedureDeletionService;
   private final Clock clock;
 
   public MeaslesProtectionService(
@@ -89,12 +91,14 @@ public class MeaslesProtectionService {
       MeaslesProtectionProcedureRepository measlesProtectionProcedureRepository,
       PersonRepository personRepository,
       ProcedureFinder procedureFinder,
+      ProcedureDeletionService<MeaslesProtectionProcedure> procedureDeletionService,
       Clock clock) {
     this.personClient = personClient;
     this.facilityClient = facilityClient;
     this.measlesProtectionProcedureRepository = measlesProtectionProcedureRepository;
     this.personRepository = personRepository;
     this.procedureFinder = procedureFinder;
+    this.procedureDeletionService = procedureDeletionService;
     this.clock = clock;
   }
 
@@ -359,5 +363,11 @@ public class MeaslesProtectionService {
       query.orderBy(criteriaBuilder.asc(root.get(Person_.id)));
       return root.get(RelatedPerson_.centralFileStateId).in(values);
     };
+  }
+
+  @Transactional
+  public void deleteProcedure(UUID id) {
+    procedureDeletionService.deleteAndWriteToCemetery(
+        procedureFinder.findProcedureByExternalId(id));
   }
 }

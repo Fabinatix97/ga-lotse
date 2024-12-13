@@ -9,8 +9,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.api.report.GetReportDetailPageResponse;
-import de.eshg.statistics.config.StatisticsFeature;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,17 +23,14 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange(BaseUrls.Statistics.REPORT_URL)
 @Tag(name = "Report")
 public class ReportController {
-  private final StatisticsFeatureToggle statisticsFeatureToggle;
   private final ReportService reportService;
   private final ReportExecution reportExecution;
   private final StatisticsExecutorService statisticsExecutorService;
 
   public ReportController(
-      StatisticsFeatureToggle statisticsFeatureToggle,
       ReportService reportService,
       ReportExecution reportExecution,
       StatisticsExecutorService statisticsExecutorService) {
-    this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.reportService = reportService;
     this.reportExecution = reportExecution;
     this.statisticsExecutorService = statisticsExecutorService;
@@ -46,8 +41,6 @@ public class ReportController {
   @Operation(summary = "Get the information for the detail page")
   public GetReportDetailPageResponse getReportDetailPage(
       @PathVariable(name = "reportId") UUID reportId) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
-
     return reportService.getReportDetailPage(reportId);
   }
 
@@ -55,7 +48,6 @@ public class ReportController {
   @ApiResponse(responseCode = "200", description = "Returned when the report is deleted")
   @Operation(summary = "Delete a report")
   public void deleteReport(@PathVariable(name = "reportId") UUID reportId) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     reportService.flagReportForDeletion(reportId);
     statisticsExecutorService.submit(() -> reportExecution.deleteReport(reportId));
   }

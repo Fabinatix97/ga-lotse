@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ApiStatisticsFeature } from "@eshg/employee-portal-api/statistics";
 import {
   BookOutlined,
   DiamondOutlined,
@@ -12,7 +11,6 @@ import {
 } from "@mui/icons-material";
 import { PropsWithChildren } from "react";
 
-import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
 import {
   EvaluationDetailsTabHeader,
   EvaluationDetailsTabHeaderProps,
@@ -30,10 +28,6 @@ export function EvaluationDetailsLayout({
   evaluationId: string;
   evaluationDetailsTabHeaderProps: EvaluationDetailsTabHeaderProps;
 }>) {
-  const statisticReportsEnabled = useIsNewFeatureEnabled(
-    ApiStatisticsFeature.Reports,
-  );
-
   const tabNavigationItems: TabNavigationItem[] = [
     {
       href: routes.evaluations.details(evaluationId).index,
@@ -41,15 +35,13 @@ export function EvaluationDetailsLayout({
       decorator: <PieChartOutlined />,
       exactMatch: true,
     },
-    ...(statisticReportsEnabled
-      ? [
-          {
-            href: routes.evaluations.details(evaluationId).reports,
-            tabButtonName: "Reports",
-            decorator: <BookOutlined />,
-          },
-        ]
-      : []),
+
+    {
+      href: routes.evaluations.details(evaluationId).reports,
+      tabButtonName: "Reports",
+      decorator: <BookOutlined />,
+    },
+
     {
       href: routes.evaluations.details(evaluationId).table,
       tabButtonName: "Tabelle",

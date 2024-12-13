@@ -14,6 +14,7 @@ import {
   Analyses,
   Attributes,
   DataSource,
+  Sensitivity,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -101,6 +102,11 @@ function EvaluationTemplateDetailsSidebar({
           </Typography>
           <DataSource
             dataSourceName={evaluationTemplateDetails.dataSourceName}
+          />
+          <Sensitivity
+            dataSourceSensitivity={
+              evaluationTemplateDetails.dataSourceSensitivity
+            }
           />
           <Attributes
             attributeLabels={evaluationTemplateDetails.attributeLabels}

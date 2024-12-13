@@ -21,7 +21,7 @@ import { PROPHYLAXIS_TYPE_OPTIONS } from "@/lib/businessModules/dental/features/
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { DateTimeField } from "@/lib/shared/components/formFields/DateTimeField";
-import { SearchContactField } from "@/lib/shared/components/formFields/SearchContactField";
+import { SearchMultipleContactsField } from "@/lib/shared/components/formFields/SearchMultipleContactsField";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import {
@@ -86,10 +86,12 @@ function CreateProphylaxisSessionSidebar(props: SidebarWithFormRefProps) {
               label="Datum und Uhrzeit"
               required="Bitte ein Datum mit Uhrzeit angeben."
             />
-            <SearchContactField
+            <SearchMultipleContactsField
               name="institutionId"
               label="Einrichtung"
-              category={ApiContactCategory.School} // Todo: Allow multiple categories, School and Daycare
+              categories={new Set<ApiContactCategory>()
+                .add(ApiContactCategory.School)
+                .add(ApiContactCategory.Daycare)}
             />
             <SearchGroupField
               name="groupName"

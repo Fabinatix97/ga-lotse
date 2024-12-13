@@ -12,4 +12,9 @@ import java.util.Set;
 
 @Schema(name = "SexWorkRiskContact")
 public record SexWorkRiskContactDto(
-    @PastOrPresent LocalDate startInSexWorkDate, Set<SexWorkLocationDto> sexWorkLocations) {}
+    @PastOrPresent @Schema(description = "The date when the patient began working in sex work.")
+        LocalDate startInSexWorkDate,
+    @Schema(
+            description = "The locations where the patient engages in sex work.",
+            example = "['BORDELLO','APARTMENT']")
+        Set<SexWorkLocationDto> sexWorkLocations) {}

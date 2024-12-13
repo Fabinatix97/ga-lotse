@@ -12,8 +12,6 @@ import de.eshg.rest.service.security.config.BaseUrls;
 import de.eshg.statistics.aggregation.AbstractAggregationResultService;
 import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.aggregation.ReportService;
-import de.eshg.statistics.config.StatisticsFeature;
-import de.eshg.statistics.config.StatisticsFeatureToggle;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,19 +40,16 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange(BaseUrls.Statistics.DATA_EXPORT_CONTROLLER)
 @Tag(name = "DataExport")
 public class DataExportController {
-  private final StatisticsFeatureToggle statisticsFeatureToggle;
   private final DiagramExportService diagramExportService;
   private final AggregationResultExportService aggregationResultExportService;
   private final EvaluationService evaluationService;
   private final ReportService reportService;
 
   public DataExportController(
-      StatisticsFeatureToggle statisticsFeatureToggle,
       DiagramExportService diagramExportService,
       AggregationResultExportService aggregationResultExportService,
       EvaluationService evaluationService,
       ReportService reportService) {
-    this.statisticsFeatureToggle = statisticsFeatureToggle;
     this.diagramExportService = diagramExportService;
     this.aggregationResultExportService = aggregationResultExportService;
     this.evaluationService = evaluationService;
@@ -95,7 +90,6 @@ public class DataExportController {
   @ApiResponse(responseCode = "200", description = "Exported report raw data")
   @Operation(summary = "Export report data")
   public ResponseEntity<Resource> exportReportData(@PathVariable(name = "reportId") UUID reportId) {
-    statisticsFeatureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     aggregationResultExportService.checkExportAllowedReport(reportId, reportService);
     return getResponseEntity(
         "report-daten-export.xlsx",

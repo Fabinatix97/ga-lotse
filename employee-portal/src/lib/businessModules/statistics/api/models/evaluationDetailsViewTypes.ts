@@ -47,7 +47,7 @@ export interface EvaluationDetailsView {
   };
   analyses: Analysis[];
   attributes: FlatAttribute[];
-  userId: string;
+  userId: string | undefined;
   anonymized: boolean;
   tooMuchDataForExport: boolean;
 }

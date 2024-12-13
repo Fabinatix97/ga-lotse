@@ -38,8 +38,8 @@ public interface ServiceDirectoryApi {
    *     value in the response headers. If the data has not been modified, returns {@link
    *     org.springframework.http.HttpStatus#NOT_MODIFIED}.
    *     <p>Note: It is HIGHLY recommended to use the {@link
-   *     ServiceDirectoryApiConfiguration#cachingGetActiveActors(ServiceDirectoryApi)} bean for
-   *     accessing active actors, rather than invoking this method directly.
+   *     ServiceDirectoryApiConfiguration#cachingGetActiveActors} bean for accessing active actors,
+   *     rather than invoking this method directly.
    */
   @Operation(
       summary =
@@ -54,6 +54,32 @@ public interface ServiceDirectoryApi {
       @RequestParam(name = "type", required = false) ActorTypeDto type,
       @RequestParam(name = "orgUnitType", required = false) OrgUnitTypeDto orgUnitType,
       @RequestParam(name = "orgUnitId", required = false) UUID orgUnitId);
+
+  /**
+   * Retrieves the active actors of the calling actor's org-unit from the service directory.
+   *
+   * @param ifNoneMatch The value of the "If-None-Match" request header, which represents the
+   *     previously received ETag value. (optional) This value is used to check if the data has been
+   *     modified since the last request.
+   * @param type Filter for the given actor type. (optional)
+   * @return ResponseEntity object containing the list of active actors in the body and the ETag
+   *     value in the response headers. If the data has not been modified, returns {@link
+   *     org.springframework.http.HttpStatus#NOT_MODIFIED}.
+   *     <p>Note: It is HIGHLY recommended to use the {@link
+   *     ServiceDirectoryApiConfiguration#cachingGetActiveOrgUnitActors} bean for accessing active
+   *     actors, rather than invoking this method directly.
+   */
+  @Operation(
+      summary =
+          "Get the active actors of the calling actor's org-unit from the service directory. result can be filtered by type, if needed")
+  @GetExchange(ACTORS_PREFIX + "/activeOrgUnitActors")
+  @ApiResponse(
+      responseCode = "200",
+      description =
+          "Returns an ResponseEntity object containing the list of active actors in the body and the ETag value in the response headers")
+  ResponseEntity<GetActiveActorsResponse> getActiveOrgUnitActors(
+      @RequestHeader(name = HttpHeaders.IF_NONE_MATCH, required = false) String ifNoneMatch,
+      @RequestParam(name = "type", required = false) ActorTypeDto type);
 
   @Operation(summary = "Get the actor making this request itself")
   @GetExchange(ACTORS_PREFIX + "/self")
@@ -74,8 +100,8 @@ public interface ServiceDirectoryApi {
    *     server-role in the body and the ETag value in the response headers. If the data has not
    *     been modified, returns {@link org.springframework.http.HttpStatus#NOT_MODIFIED}.
    *     <p>Note: It is HIGHLY recommended to use the {@link
-   *     ServiceDirectoryApiConfiguration#cachingGetTrustedActors(ServiceDirectoryApi)} bean for
-   *     accessing trusted, active actors, rather than invoking this method directly.
+   *     ServiceDirectoryApiConfiguration#cachingGetTrustedActors} bean for accessing trusted,
+   *     active actors, rather than invoking this method directly.
    */
   @Operation(summary = "Get the active actors from the service directory, the caller can trust")
   @GetExchange(ACTORS_PREFIX + "/trustedActors/self")

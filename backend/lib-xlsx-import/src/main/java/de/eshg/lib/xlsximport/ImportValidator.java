@@ -9,6 +9,7 @@ import de.eshg.lib.xlsximport.util.XlsxUtil;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.ErrorCode;
 import java.util.*;
+import java.util.stream.StreamSupport;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -96,6 +97,14 @@ public class ImportValidator {
       }
     }
     if (foundColumns.size() < headerRow.getLastCellNum() - 1) {
+      log.error(
+          "Found {} columns: {}. Header row has {} columns: {}",
+          foundColumns.size(),
+          foundColumns.stream().map(XlsxColumn::getHeader).toList(),
+          headerRow.getLastCellNum(),
+          StreamSupport.stream(headerRow.spliterator(), false)
+              .map(Cell::getStringCellValue)
+              .toList());
       throw new BadRequestException(ErrorCode.INVALID_FILE, INVALID_FILE_STRUCTURE);
     }
     validateConsistencyBetweenHeaderAndRows(sheet, initialNumberOfColumns);

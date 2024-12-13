@@ -5,16 +5,19 @@
 
 "use client";
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import {
   ApiInspectionFeature,
   ApiObjectType,
 } from "@eshg/employee-portal-api/inspection";
 import { optionsFromRecord } from "@eshg/lib-portal/components/formFields/SelectOptions";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { addDays, formatISO } from "date-fns";
 import { useMemo, useState } from "react";
 
 import { procedureStatusNames } from "@/lib/baseModule/api/procedures/enums";
-import { useGetPendingFacilities } from "@/lib/businessModules/inspection/api/queries/facility";
+import { useFacilityApi } from "@/lib/businessModules/inspection/api/clients";
+import { getPendingFacilitiesQuery } from "@/lib/businessModules/inspection/api/queries/facility";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/inspection/api/queries/feature";
 import { useGetObjectTypes } from "@/lib/businessModules/inspection/api/queries/objectTypes";
 import { ExportBannedFacilitiesButton } from "@/lib/businessModules/inspection/components/facility/pending/ExportBannedFacilitiesButton";
@@ -33,6 +36,7 @@ import {
 } from "@/lib/businessModules/inspection/shared/enums";
 import { useIsOfflineFeatureEnabled } from "@/lib/businessModules/inspection/shared/offline/useIsOfflineFeatureEnabled";
 import { PendingFacilitiesFilters } from "@/lib/businessModules/inspection/shared/types";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { FilterSettings } from "@/lib/shared/components/filterSettings/FilterSettings";
@@ -44,6 +48,7 @@ import {
   useFilterSettings,
 } from "@/lib/shared/components/filterSettings/useFilterSettings";
 import { useSearchParamStateProvider } from "@/lib/shared/components/filterSettings/useSearchParamStateProvider";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -185,7 +190,22 @@ export function PendingFacilitiesTable(
     ]);
   }
 
-  const { data: procedures, isFetching } = useGetPendingFacilities(filter);
+  const facilityApi = useFacilityApi();
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.Inspection,
+  );
+  const [{ data: procedures, isFetching }, { data: gdprBanner }] =
+    useSuspenseQueries({
+      queries: [
+        getPendingFacilitiesQuery(facilityApi, filter),
+        gdprBannerQuery,
+      ],
+    });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner,
+    businessModule: ApiBusinessModule.Inspection,
+  });
 
   const tableControl = useTableControl({ serverSideSorting: true });
   const columns = createPendingFacilitiesColumns(

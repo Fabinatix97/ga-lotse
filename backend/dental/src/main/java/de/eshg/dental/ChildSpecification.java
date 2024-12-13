@@ -12,6 +12,7 @@ import de.eshg.dental.api.ChildSortKey;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Child_;
 import de.eshg.dental.util.ChildPageSpec;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Order;
@@ -71,16 +72,18 @@ class ChildSpecification implements Specification<Child> {
 
     List<Predicate> conjunctions = new ArrayList<>();
 
-    if (yearFilter != null) {
-      conjunctions.add(cb.equal(root.get(Child_.year), yearFilter));
-    }
-
     if (institutionIdFilter != null) {
       conjunctions.add(cb.equal(root.get(Child_.institutionId), institutionIdFilter));
     }
 
     if (groupNameFilter != null) {
       conjunctions.add(cb.equal(root.get(Child_.groupName), groupNameFilter));
+    }
+
+    if (yearFilter != null) {
+      conjunctions.add(cb.equal(root.get(Child_.year), yearFilter));
+    } else {
+      conjunctions.add(cb.equal(root.get(Child_.procedureStatus), ProcedureStatus.OPEN));
     }
 
     return cb.and(conjunctions.toArray(Predicate[]::new));

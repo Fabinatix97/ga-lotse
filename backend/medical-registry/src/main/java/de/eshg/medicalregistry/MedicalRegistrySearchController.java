@@ -10,7 +10,7 @@ import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.lib.procedure.procedures.AbstractProcedureSearchController;
 import de.eshg.medicalregistry.api.MedicalRegistryEntrySearchResultDto;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
-import de.eshg.medicalregistry.domain.registry.MedicalRegistryEntryRepository;
+import de.eshg.medicalregistry.domain.repository.MedicalRegistryProcedureRepository;
 import de.eshg.medicalregistry.mapper.SearchProcedureByPersonMapper;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,13 +23,13 @@ public class MedicalRegistrySearchController
 
   protected MedicalRegistrySearchController(
       SearchProcedureByPersonMapper searchProcedureByPersonMapper,
-      MedicalRegistryEntryRepository medicalRegistryEntryRepository,
+      MedicalRegistryProcedureRepository medicalRegistryProcedureRepository,
       PersonApi personApi,
       BaseFeatureTogglesApi baseFeatureTogglesApi) {
     super(
         searchProcedureByPersonMapper,
         SearchMedicalRegistryByPersonResponse::new,
-        medicalRegistryEntryRepository,
+        medicalRegistryProcedureRepository,
         personApi,
         baseFeatureTogglesApi);
   }

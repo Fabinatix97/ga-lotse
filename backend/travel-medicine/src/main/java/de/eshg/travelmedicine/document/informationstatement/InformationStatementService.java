@@ -29,6 +29,7 @@ import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.
 import de.eshg.travelmedicine.template.informationstatementtemplate.persistence.entity.InformationStatementTemplateState;
 import de.eshg.travelmedicine.vaccinationconsultation.PersonClient;
 import de.eshg.travelmedicine.vaccinationconsultation.ProcedureAccessor;
+import de.eshg.travelmedicine.vaccinationconsultation.ProgressEntryService;
 import de.eshg.travelmedicine.vaccinationconsultation.VaccinationConsultationService;
 import de.eshg.travelmedicine.vaccinationconsultation.api.GetInformationStatementsResponse;
 import de.eshg.travelmedicine.vaccinationconsultation.api.PatientDto;
@@ -76,6 +77,7 @@ public class InformationStatementService {
   private final DepartmentInfoService departmentInfoService;
   private final DocumentGenerator documentGenerator;
   private final SignatureRepository signatureRepository;
+  private final ProgressEntryService progressEntryService;
 
   public InformationStatementService(
       ProcedureAccessor procedureAccessor,
@@ -89,7 +91,9 @@ public class InformationStatementService {
       Clock clock,
       DepartmentInfoService departmentInfoService,
       DocumentGenerator documentGenerator,
-      SignatureRepository signatureRepository) {
+      SignatureRepository signatureRepository,
+      ProgressEntryService progressEntryService) {
+    this.progressEntryService = progressEntryService;
     Assert.isTrue(
         informationStatementResource.exists(), informationStatementResource + " does not exist");
     this.procedureAccessor = procedureAccessor;
@@ -172,6 +176,9 @@ public class InformationStatementService {
         throw new UncheckedIOException(e);
       }
     }
+
+    progressEntryService.createProgressEntryForAnswerInformationStatementByCitizen(
+        statementToPatch.getVaccinationConsultation(), statementToPatch.getTitle());
   }
 
   public List<UUID> addInformationStatements(
@@ -197,7 +204,12 @@ public class InformationStatementService {
             .toList();
 
     vaccinationConsultation.getInformationStatements().addAll(newStatements);
-    newStatements.forEach(s -> s.setVaccinationConsultation(vaccinationConsultation));
+    newStatements.forEach(
+        s -> {
+          s.setVaccinationConsultation(vaccinationConsultation);
+          progressEntryService.createProgressEntryForAddInformationStatement(
+              vaccinationConsultation, s.getTitle());
+        });
     if (vaccinationConsultation.getCreatedBy() == CreatedByUserType.CITIZEN_PORTAL) {
       notificationService.notifyNewInformationStatement(
           vaccinationConsultationService.patientOf(vaccinationConsultation));
@@ -215,6 +227,9 @@ public class InformationStatementService {
         informationStatement.getVaccinationConsultation();
 
     vaccinationConsultation.getInformationStatements().remove(informationStatement);
+
+    progressEntryService.createProgressEntryForRemoveInformationStatement(
+        vaccinationConsultation, informationStatement.getTitle());
   }
 
   public void resetInformationStatement(UUID procedureId, UUID informationStatementId) {
@@ -227,6 +242,9 @@ public class InformationStatementService {
     informationStatement.setContent(wiped);
     informationStatement.setCitizenHasAnswered(false);
     informationStatement.setSignature(null);
+
+    progressEntryService.createProgressEntryForResetInformationStatement(
+        informationStatement.getVaccinationConsultation(), informationStatement.getTitle());
   }
 
   private String toJsonString(Object content) {

@@ -66,6 +66,14 @@ public class GdprProcedure extends BaseEntityWithExternalId {
   @DataSensitivity(SensitivityLevel.PSEUDONYMIZED)
   private final List<GdprDownload> downloads = new ArrayList<>();
 
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  private DownloadPackage centralFileDownload;
+
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
+  }
+
   public UUID getCentralFileId() {
     return centralFileId;
   }
@@ -153,5 +161,13 @@ public class GdprProcedure extends BaseEntityWithExternalId {
         break;
       }
     }
+  }
+
+  public DownloadPackage getCentralFileDownload() {
+    return centralFileDownload;
+  }
+
+  public void setCentralFileDownload(DownloadPackage centralFileDownload) {
+    this.centralFileDownload = centralFileDownload;
   }
 }

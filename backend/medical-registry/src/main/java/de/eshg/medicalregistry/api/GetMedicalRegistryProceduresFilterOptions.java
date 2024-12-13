@@ -6,6 +6,7 @@
 package de.eshg.medicalregistry.api;
 
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
+import de.eshg.lib.procedure.model.ProcedureTypeDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.Set;
 import org.springdoc.core.annotations.ParameterObject;
@@ -29,9 +30,20 @@ public record GetMedicalRegistryProceduresFilterOptions(
                 """
         Filter logic:
         - If `procedureStatus` is submitted, only procedures are returned which have one of the submitted statuses.
+        - `procedureStatus` and `procedureType` are always submitted together
         - If not submitted, no filtering takes place
         """)
         Set<ProcedureStatusDto> procedureStatus,
+    @BindParam(PROCEDURE_TYPE)
+        @Parameter(
+            description =
+                """
+          Filter logic:
+          - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
+          - `procedureStatus` and `procedureType` are always submitted together
+          - If not submitted, no filtering takes place
+          """)
+        Set<ProcedureTypeDto> procedureType,
     @BindParam(PROFESSIONAL_TITLE)
         @Parameter(
             description =
@@ -43,5 +55,6 @@ public record GetMedicalRegistryProceduresFilterOptions(
         Set<ProfessionalTitleDto> professionalTitle) {
   public static final String CERTIFICATE_REQUESTED = "certificateRequested";
   public static final String PROCEDURE_STATUS = "procedureStatus";
+  public static final String PROCEDURE_TYPE = "procedureType";
   public static final String PROFESSIONAL_TITLE = "professionalTitle";
 }

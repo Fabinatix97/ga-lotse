@@ -7,6 +7,7 @@
 
 import {
   ApiChecklist,
+  ApiInspection,
   ApiInspectionPhase,
   ApiUpdateInspectionRequest,
 } from "@eshg/employee-portal-api/inspection";
@@ -29,7 +30,6 @@ import { getChecklistsQuery } from "@/lib/businessModules/inspection/api/queries
 import { getIncidentsQuery } from "@/lib/businessModules/inspection/api/queries/incidents";
 import {
   getAvailableCLDVsQuery,
-  getInspectionQuery,
   inspectionGettersQueryKey,
 } from "@/lib/businessModules/inspection/api/queries/inspection";
 import { getSelfUserQuery } from "@/lib/businessModules/inspection/api/queries/users";
@@ -78,8 +78,10 @@ type Tabs = Record<string, Tab>;
 type TabsList = Tab[];
 
 export function InspectionTabExecution({
-  inspectionId,
-}: Readonly<{ inspectionId: string }>) {
+  inspection,
+}: Readonly<{
+  inspection: ApiInspection;
+}>) {
   const queryClient = useQueryClient();
 
   const checklistApi = useChecklistApi();
@@ -87,20 +89,17 @@ export function InspectionTabExecution({
   const incidentApi = useIncidentApi();
   const userApi = useUserApi();
 
-  const [
-    { data: checklists },
-    { data: inspection },
-    { data: incidents },
-    { data: selfUser },
-  ] = useSuspenseQueries({
-    queries: [
-      getChecklistsQuery(checklistApi, inspectionId),
-      getInspectionQuery(inspectionApi, inspectionId),
-      getIncidentsQuery(incidentApi, inspectionId),
-      getSelfUserQuery(userApi),
-      getAvailableCLDVsQuery(inspectionApi, inspectionId),
-    ],
-  });
+  const inspectionId = inspection.externalId;
+
+  const [{ data: checklists }, { data: incidents }, { data: selfUser }] =
+    useSuspenseQueries({
+      queries: [
+        getChecklistsQuery(checklistApi, inspectionId),
+        getIncidentsQuery(incidentApi, inspectionId),
+        getSelfUserQuery(userApi),
+        getAvailableCLDVsQuery(inspectionApi, inspectionId),
+      ],
+    });
   const { mutateAsync: updateInspection } = useUpdateInspection();
   const { openCancelDialog } = useConfirmationDialog();
   const currentSelectedNonCoreVersions =

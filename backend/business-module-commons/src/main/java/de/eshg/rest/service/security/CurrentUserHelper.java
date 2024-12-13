@@ -6,6 +6,8 @@
 package de.eshg.rest.service.security;
 
 import de.eshg.lib.keycloak.PermissionRole;
+import de.eshg.rest.client.ModuleClientAuthentication;
+import de.eshg.rest.client.ModuleClientAuthenticationHolder;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +20,8 @@ public final class CurrentUserHelper {
   private CurrentUserHelper() {}
 
   public static Optional<UUID> getCurrentUserIdGracefully() {
-    return getAuthentication().map(Principal::getName).map(UUID::fromString);
+    return getModuleClientAuthenticationGracefully()
+        .or(CurrentUserHelper::getCurrentUserIdFromSecurityContextGracefully);
   }
 
   public static UUID getCurrentUserId() {
@@ -51,6 +54,15 @@ public final class CurrentUserHelper {
           .anyMatch(granted -> granted.getAuthority().equals("ROLE_" + role.name()));
     }
     return false;
+  }
+
+  private static Optional<UUID> getCurrentUserIdFromSecurityContextGracefully() {
+    return getAuthentication().map(Principal::getName).map(UUID::fromString);
+  }
+
+  private static Optional<UUID> getModuleClientAuthenticationGracefully() {
+    return Optional.ofNullable(ModuleClientAuthenticationHolder.getModuleClientAuthentication())
+        .map(ModuleClientAuthentication::userId);
   }
 
   private static Optional<Authentication> getAuthentication() {

@@ -13,6 +13,7 @@ import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.statistics.AbstractStatisticsService;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.util.AttributeInfo;
 import de.eshg.lib.statistics.util.DataSourceInfo;
@@ -56,7 +57,9 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
 
   @Override
   public List<DataSourceInfo> getDataSourceMetaInfos() {
-    return List.of(new DataSourceInfo(SCHOOL_ENTRY_DATA_SOURCE_ID, "ESU"));
+    return List.of(
+        new DataSourceInfo(
+            SCHOOL_ENTRY_DATA_SOURCE_ID, "ESU", DataSourceSensitivity.SENSITIVE, false));
   }
 
   @Override
@@ -141,7 +144,10 @@ public class SchoolEntryStatisticsService extends AbstractStatisticsService<Scho
 
   @Override
   protected Object getSpecificValue(
-      SchoolEntryProcedure procedure, AttributeInfo attributeInfo, UUID dataSourceId) {
+      SchoolEntryProcedure procedure,
+      AttributeInfo attributeInfo,
+      UUID dataSourceId,
+      boolean anonymized) {
     EsuAttributes attribute = (EsuAttributes) attributeInfo;
     return switch (attribute) {
       case CHILD_CENTRAL_FILE_ID -> procedure.getChildIdFromCentralFile();

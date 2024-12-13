@@ -14,7 +14,6 @@ import de.eshg.testhelper.TestHelperApi;
 import de.eshg.testhelper.TestHelperController;
 import de.eshg.testhelper.TestHelperWithDatabaseService;
 import de.eshg.testhelper.environment.EnvironmentConfig;
-import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -30,18 +29,15 @@ public class OmsTestHelperController extends TestHelperController
   public static final String TEST_POPULATION_URL = TestHelperApi.BASE_URL + TEST_POPULATION_PATH;
 
   private final TestPopulateProcedureService testPopulateProcedureService;
-  private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
   private final AuditLogTestHelperService auditLogTestHelperService;
 
   public OmsTestHelperController(
       TestHelperWithDatabaseService omsTestHelperService,
       TestPopulateProcedureService testPopulateProcedureService,
-      PopulateWithAccessTokenHelper populateWithAccessTokenHelper,
       AuditLogTestHelperService auditLogTestHelperService,
       EnvironmentConfig environmentConfig) {
     super(omsTestHelperService, environmentConfig);
     this.testPopulateProcedureService = testPopulateProcedureService;
-    this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
     this.auditLogTestHelperService = auditLogTestHelperService;
   }
 
@@ -49,8 +45,7 @@ public class OmsTestHelperController extends TestHelperController
   @Operation(summary = "Create a procedure and dependent entities")
   public PostPopulateProcedureResponse populateProcedure(
       @Valid @RequestBody PostPopulateProcedureRequest request) {
-    return populateWithAccessTokenHelper.doWithAccessToken(
-        () -> testPopulateProcedureService.populateProcedure(request));
+    return testPopulateProcedureService.populateProcedure(request);
   }
 
   @Override

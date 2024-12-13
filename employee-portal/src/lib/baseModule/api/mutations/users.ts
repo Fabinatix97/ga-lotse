@@ -101,10 +101,14 @@ export function useUpdateSelfUserChatUsername() {
     mutationFn: async ({
       externalChatUsername,
       phoneNumber,
+      salutation,
+      title,
     }: ApiUpdateSelfUserRequest) => {
       await userApi.updateSelfUser({
         phoneNumber,
         externalChatUsername,
+        salutation,
+        title,
       });
     },
     onSuccess: () => {

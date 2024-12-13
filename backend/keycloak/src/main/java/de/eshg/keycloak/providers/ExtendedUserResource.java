@@ -6,6 +6,8 @@
 package de.eshg.keycloak.providers;
 
 import de.eshg.keycloak.api.user.model.BulkGetUsersRequest;
+import de.eshg.keycloak.api.user.model.CredentialRequest;
+import de.eshg.keycloak.api.user.model.CredentialType;
 import de.eshg.keycloak.api.user.model.GetActiveSessionResponse;
 import de.eshg.keycloak.api.user.model.GetGroupMembersRequest;
 import de.eshg.keycloak.api.user.model.GetGroupMembersResponse;
@@ -15,7 +17,6 @@ import de.eshg.keycloak.api.user.model.GetUsersResponse;
 import de.eshg.keycloak.api.user.model.KeycloakApiActiveUserSession;
 import de.eshg.keycloak.api.user.model.KeycloakApiGroupMemberDto;
 import de.eshg.keycloak.api.user.model.KeycloakApiUserDto;
-import de.eshg.keycloak.api.user.model.VerifyPinRequest;
 import de.eshg.keycloak.mappers.KeycloakMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.jboss.resteasy.reactive.NoCache;
+import org.keycloak.credential.CredentialInput;
 import org.keycloak.device.DeviceActivityManager;
 import org.keycloak.models.*;
 import org.keycloak.models.utils.ModelToRepresentation;
@@ -155,15 +157,40 @@ public class ExtendedUserResource {
 
   @POST
   @NoCache
-  @Path("/users/{id}/verify-pin")
+  @Path("/users/{id}/verify-credential")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void verifyPin(@PathParam("id") String id, @Valid @RequestBody VerifyPinRequest request) {
+  public void verifyCredential(
+      @PathParam("id") String id, @Valid @RequestBody CredentialRequest request) {
     auth.users().requireQuery();
+    validateCredentialType(request);
 
     UserModel user = getUserByIdOrThrow(session.users(), id, false);
+    CredentialInput credentialInput =
+        new UserCredentialModel(null, request.type().getName(), request.rawSecret(), true);
+    if (!user.credentialManager().isValid(credentialInput)) {
+      throw new NotAuthorizedException("Invalid credential");
+    }
+  }
 
-    if (!user.credentialManager().isValid(UserCredentialModel.password(request.pin(), true))) {
-      throw new NotAuthorizedException("Invalid PIN");
+  @PUT
+  @NoCache
+  @Path("/users/{id}/reset-credential")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void resetCredential(
+      @PathParam("id") String id, @Valid @RequestBody CredentialRequest request) {
+    auth.users().requireManage();
+    validateCredentialType(request);
+
+    UserModel user = getUserByIdOrThrow(session.users(), id, false);
+    CredentialInput credentialInput =
+        new UserCredentialModel(null, request.type().getName(), request.rawSecret(), true);
+    user.credentialManager().updateCredential(credentialInput);
+  }
+
+  private void validateCredentialType(CredentialRequest request) {
+    List<CredentialType> manageableCredentials = List.of(CredentialType.PIN, CredentialType.DOB);
+    if (!manageableCredentials.contains(request.type())) {
+      throw new NotAuthorizedException("Credential type cannot be managed by this endpoint");
     }
   }
 

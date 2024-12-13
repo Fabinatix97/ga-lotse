@@ -15,21 +15,30 @@ import {
   EventFormValues,
 } from "@/lib/baseModule/components/calendar/EventForm";
 import { mapFormToRequestValues } from "@/lib/baseModule/components/calendar/calendarMapper";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-export function AddAbsenceSidebar({
-  open,
-  closeSidebar,
-  userCalendarId,
-  refetchEvents,
-}: {
-  open: boolean;
-  closeSidebar: () => void;
+export function useAddAbsenceSidebar(): UseSidebarResult<AddAbsenceSidebarProps> {
+  return useSidebar({
+    component: AddAbsenceSidebar,
+  });
+}
+
+interface AddAbsenceSidebarProps extends DrawerProps {
   userCalendarId: string;
   refetchEvents: () => void;
-}) {
+}
+
+function AddAbsenceSidebar({
+  onClose,
+  userCalendarId,
+  refetchEvents,
+}: AddAbsenceSidebarProps) {
   const submitCalendarEvent = useSubmitCalendarEvent();
   const snackbar = useSnackbar();
 
@@ -41,7 +50,7 @@ export function AddAbsenceSidebar({
       {
         onSuccess: () => {
           snackbar.confirmation("Abwesenheit wurde erfolgreich gespeichert");
-          closeSidebar();
+          onClose();
           refetchEvents();
         },
       },
@@ -49,17 +58,13 @@ export function AddAbsenceSidebar({
   }
 
   return (
-    <Sidebar open={open} onClose={closeSidebar}>
-      {open && (
-        <EventForm onSubmit={(values) => saveEvent(values)}>
-          <SidebarContent title={"Neue Abwesenheit"}>
-            <EventFormInputs />
-          </SidebarContent>
-          <SidebarActions>
-            <EventFormActions onCancel={closeSidebar} />
-          </SidebarActions>
-        </EventForm>
-      )}
-    </Sidebar>
+    <EventForm onSubmit={(values) => saveEvent(values)}>
+      <SidebarContent title={"Neue Abwesenheit"}>
+        <EventFormInputs />
+      </SidebarContent>
+      <SidebarActions>
+        <EventFormActions onCancel={onClose} />
+      </SidebarActions>
+    </EventForm>
   );
 }

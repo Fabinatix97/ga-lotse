@@ -31,7 +31,7 @@ export default function CitizenTravelMedicineEntryPage() {
   return (
     <PageLayout banner="private">
       <PageContent>
-        <PageTitle>{t("title")}</PageTitle>
+        <PageTitle>{t("pageTitle")}</PageTitle>
         {isMobile ? (
           <OneColumnGrid
             contentTop={citizenPortalProcedureEnabled && <AppointmentSection />}

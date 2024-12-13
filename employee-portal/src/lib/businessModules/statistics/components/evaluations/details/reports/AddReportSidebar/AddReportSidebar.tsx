@@ -8,28 +8,41 @@ import { SaveReportStep } from "@/lib/businessModules/statistics/components/eval
 import { AddReportFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/addReportFormModel";
 import { getLastXMonthsTimeRange } from "@/lib/businessModules/statistics/components/evaluations/timeRangeHelper";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function AddReportSidebar({
+export function useAddReportSidebar(): UseSidebarWithFormRefResult<AddReportSidebarProps> {
+  return useSidebarWithFormRef({
+    component: AddReportSidebar,
+  });
+}
+
+interface AddReportSidebarProps extends SidebarWithFormRefProps {
+  evaluationId: string;
+}
+
+function AddReportSidebar({
   onClose,
   evaluationId,
-}: {
-  onClose: () => void;
-  evaluationId: string;
-}) {
+  formRef,
+}: AddReportSidebarProps) {
   const initialValues: AddReportFormModel = {
     name: "",
     description: "",
     timeSpan: getLastXMonthsTimeRange(3),
   };
 
-  const addReport = useAddReport(onClose);
+  const addReport = useAddReport(() => onClose(true));
 
   return (
     <SidebarStepper
       onClose={onClose}
-      open={true}
       onSubmit={(model) => addReport(evaluationId, model)}
       initialValues={initialValues}
+      formRef={formRef}
       saveLabel="Erstellen"
       steps={[
         {

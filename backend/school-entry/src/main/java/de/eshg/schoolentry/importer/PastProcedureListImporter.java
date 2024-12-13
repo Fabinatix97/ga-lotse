@@ -27,14 +27,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class PastProcedureListImporter
     extends SchoolEntryImporter<
-        PastProcedureListRowValues, PastProcedureListColumn, SchoolEntryProcedure> {
+        PastProcedureListRow, PastProcedureListColumn, SchoolEntryProcedure> {
 
   private final PastProcedureListRowValueMapper rowValueMapper;
   private final List<UUID> mergeCandidatesToBeDeleted;
 
   public PastProcedureListImporter(
       XSSFSheet sheet,
-      RowReader<PastProcedureListRowValues, PastProcedureListColumn> rowReader,
+      RowReader<PastProcedureListRow, PastProcedureListColumn> rowReader,
       FeedbackColumnAccessor feedbackColumnAccessor,
       UUID schoolId,
       Year schoolYear,
@@ -71,15 +71,13 @@ public class PastProcedureListImporter
 
   @Override
   protected void evaluateActionForValidRow(
-      Row row,
-      PastProcedureListRowValues value,
+      PastProcedureListRow row,
       Map<PersonKeyAttributes, List<SchoolEntryProcedure>> mergeCandidates) {
-
     List<SchoolEntryProcedure> candidates =
-        mergeCandidates.getOrDefault(value.getChildKeyAttributes(), List.of());
+        mergeCandidates.getOrDefault(row.getChildKeyAttributes(), List.of());
 
     if (candidates.isEmpty()) {
-      validRows.importableRows().add(value);
+      addToImportableRows(row);
       stats.countCreated();
     } else {
       Optional<SchoolEntryProcedure> firstNonDeletableCandidate =
@@ -89,7 +87,7 @@ public class PastProcedureListImporter
         List<UUID> mergeCandidateIds =
             candidates.stream().map(SchoolEntryProcedure::getExternalId).toList();
         mergeCandidatesToBeDeleted.addAll(mergeCandidateIds);
-        validRows.mergeableRows().add(value);
+        addToMergeableRows(row);
         writeStatusAndReferenceId(row, MERGED_SUCCESSFULLY, mergeCandidateIds.getFirst());
         stats.countMerged();
       } else {
@@ -101,8 +99,7 @@ public class PastProcedureListImporter
   }
 
   @Override
-  protected List<SchoolEntryProcedure> createProcedures(
-      List<PastProcedureListRowValues> importableRows) {
+  protected List<SchoolEntryProcedure> createProcedures(List<PastProcedureListRow> importableRows) {
 
     List<ImportPastProcedureData> importData =
         importableRows.stream().map(rowValueMapper::mapValuesToImportData).toList();
@@ -111,7 +108,7 @@ public class PastProcedureListImporter
 
   @Override
   protected List<UUID> mergeProceduresAndGetFailedProcedureIds(
-      List<PastProcedureListRowValues> mergeableRows) {
+      List<PastProcedureListRow> mergeableRows) {
     if (!mergeCandidatesToBeDeleted.isEmpty()) {
       importService.deleteProcedures(mergeCandidatesToBeDeleted);
     }

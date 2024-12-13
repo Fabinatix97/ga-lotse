@@ -20,12 +20,13 @@ import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.statistics.AbstractStatisticsService;
 import de.eshg.lib.statistics.api.DataRow;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
-import de.eshg.lib.statistics.api.GetSpecificDataResponse;
 import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.util.AttributeInfo;
 import de.eshg.lib.statistics.util.DataSourceInfo;
+import de.eshg.lib.statistics.util.SpecificData;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
@@ -83,8 +84,16 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
     }
 
     return List.of(
-        new DataSourceInfo(INSPECTION_DATA_SOURCE_ID, INSPECTION_DATA_SOURCE_NAME),
-        new DataSourceInfo(FACILITY_DATA_SOURCE_ID, FACILITY_DATA_SOURCE_NAME));
+        new DataSourceInfo(
+            INSPECTION_DATA_SOURCE_ID,
+            INSPECTION_DATA_SOURCE_NAME,
+            DataSourceSensitivity.INTERNAL_USAGE,
+            false),
+        new DataSourceInfo(
+            FACILITY_DATA_SOURCE_ID,
+            FACILITY_DATA_SOURCE_NAME,
+            DataSourceSensitivity.INTERNAL_USAGE,
+            false));
   }
 
   @Override
@@ -108,7 +117,7 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
 
   @Override
   protected Object getSpecificValue(
-      Inspection procedure, AttributeInfo attributeInfo, UUID dataSourceId) {
+      Inspection procedure, AttributeInfo attributeInfo, UUID dataSourceId, boolean anonymized) {
     inspectionFeatureToggle.assertNewFeatureIsEnabled(InspectionFeature.STATISTICS);
     if (!dataSourceId.equals(INSPECTION_DATA_SOURCE_ID)) {
       throw new IllegalArgumentException("Only inspection allowed here");
@@ -126,7 +135,7 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
   }
 
   @Override
-  protected GetSpecificDataResponse getSpecificDataResponseNotProcedureBased(
+  protected SpecificData getSpecificDataNotProcedureBased(
       String dataSourceName,
       GetSpecificDataRequest getSpecificDataRequest,
       List<AttributeInfo> requestedAttributeInfos,
@@ -155,7 +164,7 @@ public class InspectionStatisticsService extends AbstractStatisticsService<Inspe
                         getSpecificDataRequest.timeRangeEnd()))
             .toList();
 
-    return new GetSpecificDataResponse(
+    return new SpecificData(
         dataSourceName,
         getSpecificDataRequest.timeRangeStart(),
         getSpecificDataRequest.timeRangeEnd(),

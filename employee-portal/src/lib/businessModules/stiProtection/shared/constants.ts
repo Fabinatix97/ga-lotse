@@ -34,8 +34,9 @@ export const PROCEDURE_TYPES = [ApiProcedureType.StiProtection];
 export const TASK_TYPES = [ApiTaskType.StiProtection];
 
 export const systemProgressEntryTypeTitles: Record<string, string> = {
-  PERSON_DETAILS_UPDATED: "Person aktualisiert.",
-  RAPID_TEST_EXAMINATION_UPDATED: "Schnelltests aktualisiert.",
+  PERSON_DETAILS_UPDATED: "Person aktualisiert",
+  RAPID_TEST_EXAMINATION_UPDATED: "Schnelltests aktualisiert",
+  LABORATORY_TEST_EXAMINATION_UPDATED: "Labortests aktualisiert",
 };
 
 export const CONCERN_VALUES: EnumMap<ApiConcern> = {
@@ -64,8 +65,8 @@ export const APPOINTMENT_TYPES: EnumMap<ApiAppointmentType> = {
 };
 
 export const APPOINTMENT_STATUS: EnumMap<ApiAppointmentStatus> = {
-  [ApiAppointmentStatus.Cancelled]: "Abgeschlossen",
-  [ApiAppointmentStatus.Closed]: "Storniert",
+  [ApiAppointmentStatus.Cancelled]: "Storniert",
+  [ApiAppointmentStatus.Closed]: "Abgeschlossen",
   [ApiAppointmentStatus.Open]: "Offen",
 };
 

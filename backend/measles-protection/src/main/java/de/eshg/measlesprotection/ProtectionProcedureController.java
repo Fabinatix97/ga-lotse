@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -120,5 +121,11 @@ public class ProtectionProcedureController {
         measlesProtectionService.getProceduresForPerson(
             person.firstName(), person.lastName(), person.dateOfBirth());
     return getProceduresForPersonMapper.map(procedures);
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete measles protection procedure by id.")
+  public void deleteProcedure(@PathVariable("id") UUID id) {
+    measlesProtectionService.deleteProcedure(id);
   }
 }

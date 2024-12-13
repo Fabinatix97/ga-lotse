@@ -5,10 +5,13 @@
 
 "use client";
 
-import { ApiProcedureStatus } from "@eshg/employee-portal-api/businessProcedures";
+import {
+  ApiProcedureStatus,
+  ApiProcedureType,
+} from "@eshg/employee-portal-api/businessProcedures";
 import { ApiProfessionalTitle } from "@eshg/employee-portal-api/medicalRegistry";
 import { unwrapRawResponse } from "@eshg/lib-portal/api/unwrapRawResponse";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 import { useMedicalRegistryApi } from "@/lib/businessModules/medicalRegistry/api/clients";
 
@@ -19,19 +22,20 @@ interface PageRequest {
   pageSize?: number;
   filterByCertificateRequested?: boolean;
   filterByStatus?: Set<ApiProcedureStatus>;
+  filterByType?: Set<ApiProcedureType>;
   filterByProfessionalTitle?: Set<ApiProfessionalTitle>;
 }
 
 export function useGetMedicalRegistryProcedureOverviewQuery(page: PageRequest) {
   const medicalRegistryApi = useMedicalRegistryApi();
-
-  return useSuspenseQuery({
+  return queryOptions({
     queryFn: ({ signal }) =>
       medicalRegistryApi.getProcedureOverview(
         page.pageSize,
         page.pageNumber,
         page.filterByCertificateRequested,
         page.filterByStatus,
+        page.filterByType,
         page.filterByProfessionalTitle,
         { signal },
       ),

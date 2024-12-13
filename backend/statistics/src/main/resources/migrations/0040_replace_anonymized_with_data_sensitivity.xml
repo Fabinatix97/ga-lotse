@@ -1,0 +1,43 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<!--
+ Copyright 2024 cronn GmbH
+ SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet author="GA-Lotse" id="1733401961231-1">
+    <ext:createPostgresEnumType name="statisticsdatasensitivity" values="ANONYMOUS, INTERNAL_USAGE, SENSITIVE"/>
+    <addColumn tableName="abstract_aggregation_result">
+      <column name="data_sensitivity" type="STATISTICSDATASENSITIVITY" />
+    </addColumn>
+
+    <sql>
+      UPDATE abstract_aggregation_result
+      SET data_sensitivity = CASE
+         WHEN EXISTS (
+           SELECT 1
+           FROM evaluation e
+           JOIN table_column tc ON e.id = tc.aggregation_result_id
+           WHERE abstract_aggregation_result.id = e.id AND e.anonymized = FALSE AND tc.business_module_name = 'INSPECTION'
+         ) THEN 'INTERNAL_USAGE'::statisticsdatasensitivity
+         WHEN EXISTS (
+           SELECT 1
+           FROM evaluation e
+           JOIN table_column tc ON e.id = tc.aggregation_result_id
+           WHERE abstract_aggregation_result.id = e.id AND e.anonymized = FALSE AND tc.business_module_name = 'SCHOOL_ENTRY'
+         ) THEN 'SENSITIVE'::statisticsdatasensitivity
+         WHEN EXISTS (
+           SELECT 1
+           FROM report r
+           WHERE abstract_aggregation_result.id = r.id
+         ) THEN 'ANONYMOUS'::statisticsdatasensitivity
+         ELSE 'ANONYMOUS'::statisticsdatasensitivity
+        END;
+    </sql>
+
+    <addNotNullConstraint tableName="abstract_aggregation_result" columnName="data_sensitivity" columnDataType="STATISTICSDATASENSITIVITY"/>
+
+    <dropColumn columnName="anonymized" tableName="evaluation"/>
+  </changeSet>
+</databaseChangeLog>

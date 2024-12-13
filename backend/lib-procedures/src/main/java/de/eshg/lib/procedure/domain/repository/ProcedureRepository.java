@@ -172,8 +172,17 @@ public interface ProcedureRepository<ProcedureT extends Procedure<ProcedureT, ?,
         """)
   Optional<ProcedureT> findByFile(@Param("file") File file);
 
-  List<ProcedureT> findByRelatedPersonsCentralFileStateIdInOrderByCreatedAtDescIdAsc(
-      Collection<UUID> centralFileStateIds);
+  @Query(
+      """
+      SELECT procedure from #{#entityName} procedure
+      WHERE EXISTS (
+          SELECT 1 FROM procedure.relatedPersons person
+          WHERE person.centralFileStateId IN :centralFileStateIds
+      )
+      ORDER BY procedure.createdAt DESC, procedure.id ASC
+    """)
+  List<ProcedureT> findByRelatedPersonsCentralFileStateId(
+      @Param("centralFileStateIds") Collection<UUID> centralFileStateIds);
 
   @Query(
       """

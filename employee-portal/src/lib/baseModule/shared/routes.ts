@@ -11,7 +11,6 @@ import { isDefined } from "remeda";
 
 const accountPath = "/account";
 const auditLogPath = "/auditlog";
-const auditLogAuthorizePath = `${auditLogPath}/authorize`;
 const proceduresPath = "/procedures";
 const tasksPath = "/tasks";
 const contactsPath = "/contacts";
@@ -74,11 +73,7 @@ export const routes = {
     index: auditLogPath,
     access: (source: string, date: string) =>
       `${auditLogPath}/${source}/${date}/decrypt`,
-    authorize: {
-      index: auditLogAuthorizePath,
-      grantAccess: (source: string, date: string) =>
-        `${auditLogAuthorizePath}/${source}/${date}/grant-access`,
-    },
+    authorize: `${auditLogPath}/authorize`,
   },
   opendata: {
     index: opendataPath,

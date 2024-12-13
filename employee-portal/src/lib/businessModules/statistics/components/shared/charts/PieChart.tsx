@@ -35,6 +35,10 @@ export function PieChart({ diagramData, eChartApi }: PieChartProps) {
         label: {
           color: "#171A1C", // text.primary
         },
+        itemStyle: {
+          borderColor: "#ffffff",
+          borderWidth: 2,
+        },
         center: ["50%", "50%"],
       },
     ],

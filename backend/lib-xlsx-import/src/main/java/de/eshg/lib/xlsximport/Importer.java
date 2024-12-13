@@ -5,9 +5,14 @@
 
 package de.eshg.lib.xlsximport;
 
+import static de.eshg.lib.xlsximport.ImportStatus.DUPLICATE_WITHIN_LIST;
+import static de.eshg.lib.xlsximport.ImportStatus.ERROR_INPUT_DATA;
 import static de.eshg.lib.xlsximport.ImportStatus.EXCEPTION;
+import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_PREVIOUSLY;
+import static de.eshg.lib.xlsximport.ImportStatus.INVALID_ENTITY_ID;
 import static de.eshg.lib.xlsximport.ImportStatus.MERGE_FAILED;
 import static de.eshg.lib.xlsximport.util.XlsxUtil.writeValue;
+import static java.util.function.Predicate.not;
 
 import de.eshg.lib.xlsximport.model.ImportResult;
 import de.eshg.lib.xlsximport.model.ImportStatistics;
@@ -15,9 +20,7 @@ import de.eshg.lib.xlsximport.util.XlsxUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -30,14 +33,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.util.Assert;
 
-public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
+public abstract class Importer<R extends RowData<R>, C extends XlsxColumn> {
 
   private static final Logger log = LoggerFactory.getLogger(Importer.class);
 
   protected final XSSFSheet sheet;
-  protected final RowReader<T, C> rowReader;
-  protected final ValidRows<T> validRows = new ValidRows<>(new ArrayList<>(), new ArrayList<>());
+  protected final RowReader<R, C> rowReader;
+  private final List<R> validRows = new ArrayList<>();
   protected final ImportStatistics stats = new ImportStatistics();
   private final FeedbackColumnAccessor col;
   private final XSSFCellStyle defaultCellStyle;
@@ -46,7 +50,7 @@ public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
   private final XSSFCellStyle importWarningCellStyle;
 
   protected Importer(
-      XSSFSheet sheet, RowReader<T, C> rowReader, FeedbackColumnAccessor feedbackColumnAccessor) {
+      XSSFSheet sheet, RowReader<R, C> rowReader, FeedbackColumnAccessor feedbackColumnAccessor) {
     this.sheet = sheet;
     this.rowReader = rowReader;
     this.col = feedbackColumnAccessor;
@@ -88,22 +92,71 @@ public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
     return cellStyle;
   }
 
-  protected record ValidRows<T>(List<T> importableRows, List<T> mergeableRows) {}
+  protected void addToImportableRows(R row) {
+    Assert.isTrue(!row.isMergeable(), "Row must not be marked as mergeable");
+    addValidRow(row);
+  }
+
+  protected void addToMergeableRows(R row) {
+    Assert.isTrue(!row.isMergeable(), "Row is already marked as mergeable");
+    row.markAsMergeable();
+    addValidRow(row);
+  }
+
+  private void addValidRow(R row) {
+    Assert.isTrue(row.isValid(), "Row must be valid");
+    validRows.add(row);
+  }
+
+  protected Stream<R> streamMergeableRows() {
+    return validRows.stream().filter(RowData::isMergeable);
+  }
+
+  protected Stream<R> streamImportableRows() {
+    return validRows.stream().filter(not(RowData::isMergeable));
+  }
 
   public ImportResult process() throws IOException {
-    readRowsAndEvaluateActions();
+    List<R> rows = readRows();
+    evaluateActionsForRows(rows);
 
-    createProceduresAndWriteResults();
-    mergeProceduresAndWriteResults();
+    createEntitiesAndWriteResults(streamImportableRows().toList());
+    mergeEntitiesAndWriteResults(streamMergeableRows().toList());
 
     return mapImportResult();
   }
 
-  protected abstract void readRowsAndEvaluateActions();
+  protected abstract void evaluateActionsForRows(List<R> rows);
 
-  protected abstract void createProceduresAndWriteResults();
+  protected void markAsDuplicateWithinList(R row) {
+    writeStatus(row, DUPLICATE_WITHIN_LIST);
+    row.setStatus(DUPLICATE_WITHIN_LIST);
+    stats.countDuplicated();
+  }
 
-  protected abstract void mergeProceduresAndWriteResults();
+  protected void markAsInvalidEntityId(R row) {
+    writeStatus(row, INVALID_ENTITY_ID);
+    stats.countFailed();
+  }
+
+  protected void markAsImportedPreviously(R row) {
+    writeStatus(row, IMPORTED_PREVIOUSLY);
+    stats.countPreviouslyImported();
+  }
+
+  protected void markAsInputDataError(R row) {
+    writeStatus(row, ERROR_INPUT_DATA);
+    stats.countFailed();
+  }
+
+  protected abstract void createEntitiesAndWriteResults(List<R> importableRows);
+
+  protected void mergeEntitiesAndWriteResults(List<R> mergeableRows) {
+    if (!mergeableRows.isEmpty()) {
+      throw new UnsupportedOperationException(
+          "Merge is not supported. Got %d rows to merge.".formatted(mergeableRows.size()));
+    }
+  }
 
   protected boolean shouldSkipReadingRow(Row row) {
     return row.getRowNum() == 0;
@@ -118,32 +171,33 @@ public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
     }
   }
 
-  protected Map<Row, T> readRows() {
-    Map<Row, T> rowValues = new LinkedHashMap<>();
-    for (Row row : sheet) {
-      if (shouldSkipReadingRow(row)) {
+  private List<R> readRows() {
+    List<R> rows = new ArrayList<>();
+    for (Row xlsxRow : sheet) {
+      if (shouldSkipReadingRow(xlsxRow)) {
         // skip non data rows
         continue;
       }
-      if (RowReader.isEmpty(row)) {
+      if (RowReader.isEmpty(xlsxRow)) {
         // sometimes a row has no cells but still shows up
         continue;
       }
-      deleteReferenceId(row);
+      deleteReferenceId(xlsxRow);
       try {
-        rowValues.put(row, rowReader.readRow(row));
+        R row = rowReader.readRow(xlsxRow);
+        rows.add(row);
       } catch (Exception e) {
-        log.error("Error in reading row %d".formatted(row.getRowNum()), e);
-        writeStatus(row, EXCEPTION);
+        log.error("Error in reading row {}", xlsxRow.getRowNum(), e);
+        writeStatus(xlsxRow, EXCEPTION);
         stats.countFailed();
       }
     }
-    return rowValues;
+    return rows;
   }
 
-  protected boolean isDuplicateRow(T values) {
-    return Stream.concat(validRows.importableRows().stream(), validRows.mergeableRows().stream())
-        .anyMatch(row -> row.isDuplicateRow(values));
+  protected boolean isDuplicateRow(R rowToCheck) {
+    return rowToCheck.getStatus() == DUPLICATE_WITHIN_LIST
+        || validRows.stream().anyMatch(row -> row.isDuplicateRow(rowToCheck));
   }
 
   private void deleteReferenceId(Row row) {
@@ -152,39 +206,42 @@ public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
     }
   }
 
-  protected void writeStatusAndEntityId(Row row, ImportStatus status, UUID procedureId) {
+  protected void writeStatusAndEntityId(RowData<?> row, ImportStatus status, UUID entityId) {
     writeStatus(row, status);
-    writeValue(col.getEntityId(row), procedureId.toString(), defaultCellStyle);
+    writeValue(col.getEntityId(row.getXlsxRow()), entityId.toString(), defaultCellStyle);
   }
 
-  private void deleteEntityId(Row row) {
-    writeValue(col.getEntityId(row), "", defaultCellStyle);
+  private void deleteEntityId(RowData<?> row) {
+    writeValue(col.getEntityId(row.getXlsxRow()), "", defaultCellStyle);
   }
 
-  protected void writeStatusAndReferenceId(Row row, ImportStatus status, UUID referenceId) {
+  protected void writeStatusAndReferenceId(RowData<?> row, ImportStatus status, UUID referenceId) {
     writeStatus(row, status);
-    writeValue(col.getReferenceId(row), referenceId.toString(), defaultCellStyle);
+    writeValue(col.getReferenceId(row.getXlsxRow()), referenceId.toString(), defaultCellStyle);
   }
 
-  protected void writeStatus(Row row, ImportStatus importStatus) {
+  protected void writeStatus(RowData<?> row, ImportStatus importStatus) {
+    writeStatus(row.getXlsxRow(), importStatus);
+  }
+
+  private void writeStatus(Row row, ImportStatus importStatus) {
     writeValue(col.getStatus(row), importStatus.getDescription(), getCellStyle(importStatus));
   }
 
   private XSSFCellStyle getCellStyle(ImportStatus importStatus) {
     return switch (importStatus) {
       case IMPORTED_SUCCESSFULLY, MERGED_SUCCESSFULLY -> importedSuccessfullyCellStyle;
-      case ERROR_INPUT_DATA, INVALID_PROCEDURE_ID, EXCEPTION, MERGE_FAILED, BATCH_ERROR ->
+      case ERROR_INPUT_DATA, INVALID_ENTITY_ID, EXCEPTION, MERGE_FAILED, BATCH_ERROR ->
           importFailedCellStyle;
       case IMPORTED_PREVIOUSLY, DUPLICATE_WITHIN_LIST, DUPLICATE_IN_ASSET -> importWarningCellStyle;
     };
   }
 
   protected void writeMergedFailedStatusInSheet(
-      List<T> mergeableRows, List<UUID> failedProcedureIds) {
+      List<R> mergeableRows, List<UUID> failedProcedureIds) {
     for (UUID failedProcedureId : failedProcedureIds) {
       mergeableRows.stream()
-          .filter(rowValues -> Objects.equals(failedProcedureId, rowValues.getProcedureId()))
-          .map(RowValues::getRow)
+          .filter(row -> Objects.equals(failedProcedureId, row.getEntityId()))
           .forEach(
               row -> {
                 deleteEntityId(row);
@@ -193,9 +250,9 @@ public abstract class Importer<T extends RowValues<T>, C extends XlsxColumn> {
     }
   }
 
-  protected void writeFailedStatusInSheet(List<T> importableRows) {
-    for (T rowValues : importableRows) {
-      writeStatus(rowValues.getRow(), EXCEPTION);
+  protected void writeFailedStatusInSheet(List<R> importableRows) {
+    for (R row : importableRows) {
+      writeStatus(row, EXCEPTION);
     }
   }
 }

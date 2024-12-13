@@ -34,36 +34,36 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   TITLE(
       "Titel",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getTitle)),
   LAST_NAME(
       "Nachname",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getLastName)),
   FIRST_NAME(
       "Vorname",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getFirstName)),
   NAME_AT_BIRTH(
       "Geburtsname",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getNameAtBirth)),
   STREET(
       "Straße",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getAddress,
           ApplicantAddressDto.class,
@@ -71,8 +71,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   NUMBER(
       "Hausnummer",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getAddress,
           ApplicantAddressDto.class,
@@ -80,8 +80,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   POSTAL_CODE(
       "PLZ",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getAddress,
           ApplicantAddressDto.class,
@@ -89,8 +89,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   CITY(
       "Ort",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getAddress,
           ApplicantAddressDto.class,
@@ -98,8 +98,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   COUNTRY(
       "Land",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getAddress,
           ApplicantAddressDto.class,
@@ -107,127 +107,127 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   DATE_OF_BIRTH(
       "Geburtsdatum",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getDateOfBirth)),
   PLACE_OF_BIRTH(
       "Geburtsort",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getPlaceOfBirth)),
   NATIONALITY(
       "Staatsangehörigkeit",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getNationality)),
   PHONE(
       "Telefon",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getPhoneNumber)),
   EMAIL(
       "E-Mail",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getEmailAddress)),
   GENDER(
       "Geschlecht",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getApplicant,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getApplicant,
           CreateApplicantDto.class,
           CreateApplicantDto::getGender)),
   PROFESSIONAL_TITLE(
       "Berufsbezeichnung",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getProfessionalTitle)),
   FIELD_OF_EXPERTISE(
       "Fachgebiet",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getFieldOfExpertise)),
   SPECIALIST_TITLE(
       "Facharztbezeichnung",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getSpecialistTitle)),
   FURTHER_TRAINING(
       "Weiterbildung",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getFurtherTraining)),
   QUALIFICATIONS(
       "Qualifizierung",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getQualifications)),
   LIFETIME_DOCTOR_NUMBER(
       "Lebenslange Arztnummer (LAN)",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getLifetimeDoctorNumber)),
   APPROBATION_GRANTED_ON(
       "Erlaubnis / Approbation: Datum",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getApprobationGrantedOn)),
   APPROBATION_ISSUING_AUTHORITY(
       "Erlaubnis / Approbation: Ausstellungsbehörde",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getApprobationIssuingAuthority)),
   EMPLOYMENT_TYPE(
       "Beschäftigungsart",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getEmploymentType)),
   EMPLOYMENT_STATUS(
       "Beschäftigungsstatus",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getProfessionInformation,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getProfessionInformation,
           CreateProfessionInformationDto.class,
           CreateProfessionInformationDto::getEmploymentStatus)),
   PRACTICE_NAME(
       "Praxis: Name",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getName)),
   PRACTICE_STREET(
       "Praxis: Straße",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getAddress,
           PracticeAddressDto.class,
@@ -235,8 +235,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   PRACTICE_HOUSE_NUMBER(
       "Praxis: Hausnummer",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getAddress,
           PracticeAddressDto.class,
@@ -244,8 +244,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   PRACTICE_POSTAL_CODE(
       "Praxis: PLZ",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getAddress,
           PracticeAddressDto.class,
@@ -253,8 +253,8 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   PRACTICE_CITY(
       "Praxis: Ort",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getAddress,
           PracticeAddressDto.class,
@@ -262,66 +262,66 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   PRACTICE_PHONE(
       "Praxis: Telefon",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getPhoneNumber)),
   PRACTICE_EMAIL(
       "Praxis: E-Mail",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getEmailAddress)),
   PRACTICE_WEBSITE(
       "Webseite",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getWebsite)),
   PRACTICE_OPENING_HOURS(
       "Öffnungszeiten",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getOpeningHours)),
   INSTITUTION_IDENTIFIER(
       "Institutionskennzeichen (IK)",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getInstitutionIdentifier)),
   ESTABLISHMENT_NUMBER(
       "Betriebsstättennummer (BSNR)",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getEstablishmentNumber)),
   HEALTH_INSURANCE_AUTHORIZATION(
       "Kassenzulassung",
       Mapping.of(
-          MedicalRegistryRowValues.class,
-          MedicalRegistryRowValues::getPractice,
+          MedicalRegistryRow.class,
+          MedicalRegistryRow::getPractice,
           CreatePracticeDto.class,
           CreatePracticeDto::getHealthInsuranceAuthorization)),
   EMPLOYEES_EMPLOYED(
       "Beschäftigung von Mitarbeitern",
-      Mapping.of(MedicalRegistryRowValues.class, MedicalRegistryRowValues::getEmployeesEmployed)),
+      Mapping.of(MedicalRegistryRow.class, MedicalRegistryRow::getEmployeesEmployed)),
   STATUS(STATUS_COLUMN_HEADER, Necessity.ADD_IF_MISSING, STATUS_COLUMN_HEADER_WIDTH),
   PROCEDURE_ID(PROCEDURE_COLUMN_HEADER, Necessity.ADD_IF_MISSING, UUID_COLUMN_WIDTH);
 
   private final String header;
   private final Necessity necessity;
   private final int columnWidth;
-  private final Mapping<MedicalRegistryRowValues> mapping;
+  private final Mapping<MedicalRegistryRow> mapping;
 
   private static final int DEFAULT_COLUMN_WIDTH = 0;
 
-  MedicalRegistryColumn(String header, Mapping<MedicalRegistryRowValues> mapping) {
+  MedicalRegistryColumn(String header, Mapping<MedicalRegistryRow> mapping) {
     this(header, Necessity.REQUIRED, DEFAULT_COLUMN_WIDTH, mapping);
   }
 
@@ -330,10 +330,7 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   }
 
   MedicalRegistryColumn(
-      String header,
-      Necessity necessity,
-      int columnWidth,
-      Mapping<MedicalRegistryRowValues> mapping) {
+      String header, Necessity necessity, int columnWidth, Mapping<MedicalRegistryRow> mapping) {
     this.header = header;
     this.necessity = necessity;
     this.columnWidth = columnWidth;
@@ -373,7 +370,7 @@ public enum MedicalRegistryColumn implements XlsxColumn {
     }
   }
 
-  public Mapping<MedicalRegistryRowValues> getMapping() {
+  public Mapping<MedicalRegistryRow> getMapping() {
     return mapping;
   }
 
@@ -389,7 +386,7 @@ public enum MedicalRegistryColumn implements XlsxColumn {
   }
 
   public void apply(
-      MedicalRegistryRowValues rootDto,
+      MedicalRegistryRow rootDto,
       ColumnAccessor<MedicalRegistryColumn> columnAccessor,
       ErrorHandler errorHandler) {
     Object columnContent = readColumnContent(columnAccessor, errorHandler);

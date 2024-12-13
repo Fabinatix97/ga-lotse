@@ -5,4 +5,9 @@
 
 package de.eshg.officialmedicalservice.testhelper.api;
 
-public record PostPopulateProcedureRequest() {}
+import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+public record PostPopulateProcedureRequest(
+    @NotNull @Valid PostEmployeeOmsProcedureRequest procedureData) {}

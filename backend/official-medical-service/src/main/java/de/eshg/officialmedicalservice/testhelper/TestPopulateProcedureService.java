@@ -6,10 +6,10 @@
 package de.eshg.officialmedicalservice.testhelper;
 
 import de.eshg.officialmedicalservice.procedure.EmployeeOmsProcedureService;
-import de.eshg.officialmedicalservice.procedure.api.PostEmployeeOmsProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureRequest;
 import de.eshg.officialmedicalservice.testhelper.api.PostPopulateProcedureResponse;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
+import de.eshg.testhelper.population.PopulateWithAccessTokenHelper;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -19,20 +19,27 @@ import org.springframework.stereotype.Service;
 public class TestPopulateProcedureService {
 
   private final EmployeeOmsProcedureService employeeOmsProcedureService;
+  private final PopulateWithAccessTokenHelper populateWithAccessTokenHelper;
 
-  public TestPopulateProcedureService(EmployeeOmsProcedureService employeeOmsProcedureService) {
+  public TestPopulateProcedureService(
+      EmployeeOmsProcedureService employeeOmsProcedureService,
+      PopulateWithAccessTokenHelper populateWithAccessTokenHelper) {
     this.employeeOmsProcedureService = employeeOmsProcedureService;
+    this.populateWithAccessTokenHelper = populateWithAccessTokenHelper;
   }
 
   @Transactional
   public PostPopulateProcedureResponse populateProcedure(PostPopulateProcedureRequest request) {
-    // 0. create blank response data
-    UUID procedureId;
+    return populateWithAccessTokenHelper.doWithAccessToken(
+        () -> {
+          // 0. create blank response data
+          UUID procedureId;
 
-    // 1. create procedure
-    procedureId =
-        employeeOmsProcedureService.createEmployeeProcedure(new PostEmployeeOmsProcedureRequest());
+          // 1. create procedure
+          procedureId =
+              employeeOmsProcedureService.createEmployeeProcedure((request.procedureData()));
 
-    return new PostPopulateProcedureResponse(procedureId);
+          return new PostPopulateProcedureResponse(procedureId);
+        });
   }
 }

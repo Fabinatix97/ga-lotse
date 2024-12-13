@@ -1,15 +1,22 @@
 {
-  "pageTitle": {
-    "contact": "Kontakt",
-    "contact_information": "Kontakt und Erreichbarkeit"
-  },
-  "sectionTitle": {
-    "address": "Adresse",
-    "contact": "Kontakt",
-    "opening_hours": "Öffnungszeiten",
-    "internet": "Internet"
-  },
-  "opening_hours_information": "Für einzelne Bereiche und Beratungsstellen gelten unterschiedliche Sprechzeiten.",
-  "health_department": "Gesundheitsamt",
-  "phone_number": "Telefon"
+  "pageTitle": "Kontakt",
+  "contact": {
+    "title": "Kontakt und Erreichbarkeit",
+    "addressSection": {
+      "title": "Adresse"
+    },
+    "contactSection": {
+      "title": "Kontakt",
+      "phoneNumber": "Telefon: {{ phoneNumber }}",
+      "eMail": "E-Mail:"
+    },
+    "openingHoursSection": {
+      "title": "Öffnungszeiten",
+      "information": "Für einzelne Bereiche und Beratungsstellen gelten unterschiedliche Sprechzeiten."
+    },
+    "internetSection": {
+      "title": "Internet",
+      "healthDepartment": "Gesundheitsamt"
+    }
+  }
 }

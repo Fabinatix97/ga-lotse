@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +36,6 @@ public class CitizenPublicController {
 
   @Operation(summary = "Get opening hours.")
   @GetMapping("/opening-hours")
-  @Transactional(readOnly = true)
   public GetOpeningHoursResponse getOpeningHours() {
 
     return new GetOpeningHoursResponse(
@@ -49,7 +47,6 @@ public class CitizenPublicController {
 
   @Operation(summary = "Get department info.")
   @GetMapping("/department-info")
-  @Transactional(readOnly = true)
   public GetDepartmentInfoResponse getDepartmentInfo() {
     return departmentInfoService.getDepartmentInfo();
   }

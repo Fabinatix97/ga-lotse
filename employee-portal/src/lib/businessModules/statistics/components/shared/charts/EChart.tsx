@@ -110,7 +110,7 @@ export function EChart(props: {
         instance.setOption({
           grid: {
             top: 32,
-            bottom: legendHeight + 32,
+            bottom: legendHeight + 48,
           },
         });
         instance.resize({
@@ -132,7 +132,7 @@ export function EChart(props: {
         },
         grid: {
           top: 64,
-          bottom: 32,
+          bottom: 48,
         },
         series: seriesOld,
       });
@@ -174,9 +174,34 @@ export function EChart(props: {
       },
       grid: {
         top: 64,
-        bottom: 32,
+        bottom: 48,
       },
-      color: ["#626c91", "#3fb1e3", "#6be6c1", "#96dee8", "#a0a7e6", "#c4ebad"],
+      color: [
+        "#226FB0",
+        "#DC69AA",
+        "#626C91",
+        "#07A2A4",
+        "#95706D",
+        "#588DD5",
+        "#C14089",
+        "#9A7FD1",
+        "#00815E",
+        "#C05050",
+        "#0073E6",
+        "#897400",
+        "#924AB8",
+        "#D43F49",
+        "#1876A6",
+        "#59678C",
+        "#054FB9",
+        "#5A53D8",
+        "#A33282",
+        "#6F5553",
+        "#0F7F39",
+        "#B03620",
+        "#015E1A",
+        "#8906A0",
+      ],
     } as EChartsOption,
     props.option,
   );

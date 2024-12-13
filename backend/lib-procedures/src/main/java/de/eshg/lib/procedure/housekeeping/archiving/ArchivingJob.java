@@ -14,6 +14,8 @@ import de.eshg.lib.procedure.domain.model.ArchivingRelevance;
 import de.eshg.lib.procedure.domain.model.Procedure;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.domain.specification.ArchivableProceduresSpecification;
+import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
+import de.eshg.lib.rest.oauth.client.commons.ModuleClientAuthenticator;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -36,17 +38,22 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
   private final ArchivingProperties archivingProperties;
   private final ProcedureRepository<ProcedureT> procedureRepository;
   private final ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification;
+  private final ProcedureDeletionService<ProcedureT> procedureDeletionService;
+  private final ModuleClientAuthenticator moduleClientAuthenticator;
   private final Clock clock;
 
   public ArchivingJob(
       ArchivingProperties archivingProperties,
       ProcedureRepository<ProcedureT> procedureRepository,
       ArchivableProceduresSpecification<ProcedureT> archivableProceduresSpecification,
+      ProcedureDeletionService<ProcedureT> procedureDeletionService,
+      ModuleClientAuthenticator moduleClientAuthenticator,
       Clock clock) {
     this.archivingProperties = archivingProperties;
     this.procedureRepository = procedureRepository;
     this.archivableProceduresSpecification = archivableProceduresSpecification;
-
+    this.procedureDeletionService = procedureDeletionService;
+    this.moduleClientAuthenticator = moduleClientAuthenticator;
     this.clock = clock;
   }
 
@@ -76,17 +83,20 @@ public class ArchivingJob<ProcedureT extends Procedure<ProcedureT, ?, ?, ?>> {
 
     logger.info("Procedures to be deleted: {}", getProcedureIds(proceduresRelevantForDeletion));
 
-    deleteProcedures(proceduresRelevantForDeletion);
+    moduleClientAuthenticator.doWithModuleClientAuthentication(
+        () -> deleteProcedures(proceduresRelevantForDeletion));
 
     logger.info("Succeeded");
   }
 
   private void deleteProcedures(Collection<ProcedureT> procedures) {
-    // not implemented
-    // TODO: when implementing the feature, assert that the procedures are actually deleted in the
-    // corresponding tests:
-    // de.eshg.lib.procedure.housekeeping.archiving.ArchivingIntegrationTest.HappyCase.testArchivingJob_afterGracePeriod
-    // de.eshg.lib.procedure.housekeeping.archiving.ArchivingIntegrationTest.HappyCase.testArchivingJob_withinGracePeriod
+    for (ProcedureT procedure : procedures) {
+      try {
+        procedureDeletionService.deleteDuringArchiving(procedure);
+      } catch (Exception e) {
+        logger.error("Deleting procedure {} failed", procedure.getExternalId(), e);
+      }
+    }
   }
 
   private void updateProcedures() {

@@ -12,4 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 public record DataSource(
-    @NotNull UUID id, @NotBlank String name, @NotNull @Valid List<Attribute> attributes) {}
+    @NotNull UUID id,
+    @NotBlank String name,
+    @NotNull DataSourceSensitivity sensitivity,
+    @NotNull boolean canBeAnonymized,
+    @NotNull @Valid List<Attribute> attributes) {}

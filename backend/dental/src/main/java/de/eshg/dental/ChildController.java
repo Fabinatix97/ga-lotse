@@ -16,6 +16,8 @@ import de.eshg.dental.api.CreateChildResponse;
 import de.eshg.dental.api.ExaminationDto;
 import de.eshg.dental.api.GetChildrenResponse;
 import de.eshg.dental.api.GetInstitutionGroupsResponse;
+import de.eshg.dental.api.SearchChildrenResponse;
+import de.eshg.dental.api.UpdateChildRequest;
 import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.domain.model.Child;
@@ -33,8 +35,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Year;
+import java.util.List;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -72,6 +77,8 @@ public class ChildController {
   @Transactional
   public CreateChildResponse createChild(@Valid @RequestBody CreateChildRequest request) {
     validator.validateInstitution(request.institutionId());
+
+    childService.validateNoDuplicateExistsAndClosePreviousChildren(request);
     Child child = childService.createChild(request);
 
     return new CreateChildResponse(child.getExternalId());
@@ -94,7 +101,21 @@ public class ChildController {
   @Transactional(readOnly = true)
   public ChildDetailsDto getChild(@PathVariable("childId") UUID childId) {
     ChildWithAugmentedData augmentedChildData = childService.findAndAugmentByExternalId(childId);
-    return ChildMapper.mapToChildDetailsDto(augmentedChildData);
+    return getChildDetails(augmentedChildData);
+  }
+
+  @PutMapping("/{childId}")
+  @Transactional
+  public ChildDetailsDto updateChild(
+      @PathVariable("childId") UUID childId, @Valid @RequestBody UpdateChildRequest request) {
+    validator.validateInstitution(request.institutionId());
+    ChildWithAugmentedData augmentedChildData = childService.update(childId, request);
+    return getChildDetails(augmentedChildData);
+  }
+
+  private ChildDetailsDto getChildDetails(ChildWithAugmentedData augmentedChildData) {
+    List<Examination> examinations = childService.getAllExaminations(augmentedChildData.child());
+    return ChildMapper.mapToChildDetailsDto(augmentedChildData, examinations);
   }
 
   @PutMapping("/examination/{examinationId}")
@@ -120,7 +141,8 @@ public class ChildController {
       throws IOException {
     validator.validateSchoolYear(schoolYear);
     validator.validateInstitution(institutionId);
-    ImportResult result = childService.importChildrenFromFile(file, institutionId, schoolYear);
+    ImportResult result =
+        childService.importChildrenFromFile(file, institutionId, Year.of(schoolYear));
 
     return FileResponseUtil.mapImportResultToMultipartResponse(result, filename(clock));
   }
@@ -130,5 +152,15 @@ public class ChildController {
   public GetInstitutionGroupsResponse getInstitutionGroups(
       @PathVariable("institutionId") UUID institutionId) {
     return new GetInstitutionGroupsResponse(childService.getInstitutionGroups(institutionId));
+  }
+
+  @GetMapping("/institutions/{institutionId}/children")
+  @Transactional(readOnly = true)
+  public SearchChildrenResponse searchChildren(
+      @PathVariable("institutionId") UUID institutionId,
+      @RequestParam(name = "searchString") @NotBlank String searchString) {
+
+    validator.validateInstitution(institutionId);
+    return new SearchChildrenResponse(childService.searchChildren(institutionId, searchString));
   }
 }

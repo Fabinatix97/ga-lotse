@@ -33,7 +33,6 @@ import {
   useIsReadOnly,
   useOpenApprovalRequests,
   useProgressEntriesConfig,
-  useUndeletedFilesWithoutOldVersions,
 } from "./ProgressEntriesContext";
 import { SortSelect } from "./SortSelect";
 import { useTimelineEntryProps } from "./buildTimelineEntryProps";
@@ -290,29 +289,26 @@ interface FilesSheetProps {
 }
 
 function FilesSheet({ openFilesSidebar }: FilesSheetProps) {
-  const undeletedFiles = useUndeletedFilesWithoutOldVersions();
+  const { files } = useProgressEntriesConfig();
 
   return (
     <Sheet data-testid="files">
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
         <Typography level="title-md" marginTop={0.5}>
-          {`Dateien (${undeletedFiles.length})`}
+          {`Dateien (${files.length})`}
         </Typography>
         <Button variant="plain" size="sm" onClick={openFilesSidebar}>
           Alle anzeigen
         </Button>
       </Stack>
       <Stack spacing={1}>
-        {undeletedFiles
-          .reverse()
-          .slice(0, 5)
-          .map(({ file, progressEntryId }) => (
-            <FileCardWithActions
-              key={`file-overview-${file.fileId}`}
-              detailsProgressEntryId={progressEntryId}
-              file={file}
-            />
-          ))}
+        {files.slice(0, 5).map(({ file, progressEntryId }) => (
+          <FileCardWithActions
+            key={`file-overview-${file.fileId}`}
+            detailsProgressEntryId={progressEntryId}
+            file={file}
+          />
+        ))}
       </Stack>
     </Sheet>
   );

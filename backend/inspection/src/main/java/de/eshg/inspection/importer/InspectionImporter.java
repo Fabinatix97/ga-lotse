@@ -12,7 +12,7 @@ import static de.eshg.lib.xlsximport.ImportStatus.ERROR_INPUT_DATA;
 import static de.eshg.lib.xlsximport.ImportStatus.EXCEPTION;
 import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_PREVIOUSLY;
 import static de.eshg.lib.xlsximport.ImportStatus.IMPORTED_SUCCESSFULLY;
-import static de.eshg.lib.xlsximport.ImportStatus.INVALID_PROCEDURE_ID;
+import static de.eshg.lib.xlsximport.ImportStatus.INVALID_ENTITY_ID;
 
 import de.eshg.base.centralfile.api.facility.FacilityDetailsDto;
 import de.eshg.base.centralfile.api.facility.GetReferenceFacilityResponse;
@@ -24,9 +24,7 @@ import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.ImportStatus;
 import de.eshg.lib.xlsximport.Importer;
 import de.eshg.lib.xlsximport.RowReader;
-import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,21 +35,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class InspectionImporter extends Importer<InspectionImporterRowValues, InspectionListColumn> {
+class InspectionImporter extends Importer<InspectionImporterRow, InspectionListColumn> {
 
   private static final Logger log = LoggerFactory.getLogger(InspectionImporter.class);
 
   private final ImportPersister importPersister;
 
   /** This map groups all rows having the same importId. */
-  private final Map<String, List<InspectionImporterRowValues>> rowsWithImportIds =
-      new LinkedHashMap<>();
+  private final Map<String, List<InspectionImporterRow>> rowsWithImportIds = new LinkedHashMap<>();
 
   /**
    * This map groups all rows not having an importId, but having <i>exactly</i> the same facility
@@ -59,8 +54,8 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
    * but not <i>exactly</i> the same, then this will be treated as totally different facilities!
    * Currently, there is no similarity search!
    */
-  private final Map<ImportInspectionFacility, List<InspectionImporterRowValues>>
-      rowsWithoutImportIds = new LinkedHashMap<>();
+  private final Map<ImportInspectionFacility, List<InspectionImporterRow>> rowsWithoutImportIds =
+      new LinkedHashMap<>();
 
   /**
    * This is a cache for base facility searches ({@code FacilityApi.searchReferenceFacilities()}).
@@ -75,7 +70,7 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
 
   InspectionImporter(
       XSSFSheet sheet,
-      RowReader<InspectionImporterRowValues, InspectionListColumn> rowReader,
+      RowReader<InspectionImporterRow, InspectionListColumn> rowReader,
       FeedbackColumnAccessor feedbackColumnAccessor,
       ImportPersister importPersister) {
     super(sheet, rowReader, feedbackColumnAccessor);
@@ -83,29 +78,25 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
   }
 
   @Override
-  protected void readRowsAndEvaluateActions() {
-    Collection<InspectionImporterRowValues> values = readRows().values();
-    Set<UUID> existingProcedureIds = fetchExistingProcedureIds(values);
+  protected void evaluateActionsForRows(List<InspectionImporterRow> rows) {
+    Set<UUID> existingProcedureIds = fetchExistingProcedureIds(rows);
 
-    for (InspectionImporterRowValues rowValues : values) {
-      Row row = rowValues.getRow();
-      if (rowValues.getStatus() == DUPLICATE_WITHIN_LIST || isDuplicateRow(rowValues)) {
-        writeStatus(row, DUPLICATE_WITHIN_LIST);
-        rowValues.setStatus(DUPLICATE_WITHIN_LIST);
-        stats.countDuplicated();
+    for (InspectionImporterRow row : rows) {
+      if (isDuplicateRow(row)) {
+        markAsDuplicateWithinList(row);
       } else {
-        if (rowValues.getProcedureId() != null) {
-          if (existingProcedureIds.contains(rowValues.getProcedureId())) {
+        if (row.getEntityId() != null) {
+          if (existingProcedureIds.contains(row.getEntityId())) {
             writeStatus(row, IMPORTED_PREVIOUSLY);
-            rowValues.setStatus(IMPORTED_PREVIOUSLY);
+            row.setStatus(IMPORTED_PREVIOUSLY);
             stats.countPreviouslyImported();
           } else {
-            markWithError(rowValues, INVALID_PROCEDURE_ID);
+            markWithError(row, INVALID_ENTITY_ID);
           }
-        } else if (!rowValues.isValid()) {
-          markWithError(rowValues, ERROR_INPUT_DATA);
+        } else if (!row.isValid()) {
+          markWithError(row, ERROR_INPUT_DATA);
         }
-        if (rowValues.getInspection().hasInvalidLastInspectedDate()) {
+        if (row.getInspection().hasInvalidLastInspectedDate()) {
           // if the lastInspected date is invalid (e.g. it's defined by a formular
           // or something else) then omit this row entirely, because we don't know
           // how to fit it into any import batch.
@@ -116,42 +107,40 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
         // This is intentional; in the next step createProceduresAndWriteResults() we'll
         // check if any batch of rows having the same (facility) importId has any error;
         // then we'll mark the _all_ rows of the same batch as error.
-        if (rowValues.hasImportId()) {
+        if (row.hasImportId()) {
           rowsWithImportIds
-              .computeIfAbsent(rowValues.getFacility().importId(), _id -> new ArrayList<>())
-              .add(rowValues);
+              .computeIfAbsent(row.getFacility().importId(), _id -> new ArrayList<>())
+              .add(row);
         } else {
-          rowsWithoutImportIds
-              .computeIfAbsent(rowValues.getFacility(), _f -> new ArrayList<>())
-              .add(rowValues);
+          rowsWithoutImportIds.computeIfAbsent(row.getFacility(), _f -> new ArrayList<>()).add(row);
         }
         // Add to importableRows() for duplicate check in containsMatchingRow()
-        validRows.importableRows().add(rowValues);
+        if (row.isValid()) {
+          addToImportableRows(row);
+        }
       }
     }
   }
 
   @Override
-  protected void createProceduresAndWriteResults() {
-    searchFacilityDuplicateCandidates();
+  protected void createEntitiesAndWriteResults(List<InspectionImporterRow> importableRows) {
+    searchFacilityDuplicateCandidates(importableRows);
     handleRowsWithImportIds();
     handleRowsWithoutImportIds();
   }
 
-  @Override
-  protected void mergeProceduresAndWriteResults() {}
-
-  private void searchFacilityDuplicateCandidates() {
+  private void searchFacilityDuplicateCandidates(List<InspectionImporterRow> importableRows) {
     facilityDuplicateCandidates.clear();
-    Set<FacilitySearchParams> set = collectUniqueFacilitySearchParams();
+    Set<FacilitySearchParams> set = collectUniqueFacilitySearchParams(importableRows);
     importPersister.batchSearchForFacilityDuplicates(set, facilityDuplicateCandidates);
   }
 
-  private Set<FacilitySearchParams> collectUniqueFacilitySearchParams() {
+  private Set<FacilitySearchParams> collectUniqueFacilitySearchParams(
+      List<InspectionImporterRow> importableRows) {
     Set<FacilitySearchParams> set = new HashSet<>();
-    for (InspectionImporterRowValues rowValues : validRows.importableRows()) {
-      if (!hasError(rowValues)) {
-        String facilityName = rowValues.getFacility().facilityDetailsDto().name();
+    for (InspectionImporterRow row : importableRows) {
+      if (!hasError(row)) {
+        String facilityName = row.getFacility().facilityDetailsDto().name();
         set.add(new FacilitySearchParams(facilityName));
       }
     }
@@ -169,7 +158,7 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
   }
 
   /** Import a batch of rows. The rows of the batch all belong to the same facility. */
-  private void importBatch(List<InspectionImporterRowValues> batch) {
+  private void importBatch(List<InspectionImporterRow> batch) {
     // First of all sort the batch by ascending inspection date.
     batch.sort(Comparator.comparing(row -> row.getInspection().lastInspected()));
 
@@ -180,24 +169,24 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     // reference facility. (PS: Note that if we're importing a batch from
     // 'handleRowsWithoutImportIds', then all rows will have exactly the same facility data, so it
     // doesn't matter if we take the first or last facility in this case.)
-    Optional<InspectionImporterRowValues> rowForFacilityCandidate =
+    Optional<InspectionImporterRow> rowForFacilityCandidate =
         batch.reversed().stream().filter(r -> !hasError(r)).findFirst();
     if (rowForFacilityCandidate.isEmpty()) {
       // If there's no a candidate then all rows in this batch are erroneous. No import then.
       return;
     }
-    InspectionImporterRowValues rowForFacility = rowForFacilityCandidate.get();
+    InspectionImporterRow rowForFacility = rowForFacilityCandidate.get();
     FacilityRef facilityRef;
     try {
       facilityRef = searchForDuplicatesAndAddFacility(rowForFacility.getFacility());
     } catch (Exception ex) {
-      log.error("error importing row #{}", rowForFacility.getRow().getRowNum(), ex);
+      log.error("error importing row #{}", rowForFacility.getRowNum(), ex);
       markWithError(rowForFacility, EXCEPTION);
       // Since we could not add the facility, mark the other inspection rows of
       // the same batch as BATCH_ERROR, and proceed with next batch.
       batch.stream()
-          .filter(rowValues -> rowValues != rowForFacility)
-          .forEach(rowValues -> markWithError(rowValues, BATCH_ERROR));
+          .filter(row -> row != rowForFacility)
+          .forEach(row -> markWithError(row, BATCH_ERROR));
       return;
     }
 
@@ -213,45 +202,44 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     boolean batchHasError = false;
     for (int i = 0; i < batch.size(); i++) {
       checkOtherInspectionsAtTheSameDay(batch, i);
-      InspectionImporterRowValues rowValues = batch.get(i);
-      if (hasError(rowValues)) {
+      InspectionImporterRow row = batch.get(i);
+      if (hasError(row)) {
         // mark remaining rows of the same batch as BATCH_ERROR
         batchHasError = true;
         continue;
       }
       if (batchHasError) {
-        markWithError(rowValues, BATCH_ERROR);
+        markWithError(row, BATCH_ERROR);
         continue;
       }
       try {
-        importInspection(rowValues, facilityRef);
+        importInspection(row, facilityRef);
       } catch (Exception ex) {
-        log.error("error importing row #{}", rowValues.getRow().getRowNum(), ex);
-        markWithError(rowValues, EXCEPTION);
+        log.error("error importing row #{}", row.getRowNum(), ex);
+        markWithError(row, EXCEPTION);
         batchHasError = true;
       }
     }
   }
 
-  private void checkOtherInspectionsAtTheSameDay(
-      List<InspectionImporterRowValues> batch, int current) {
-    InspectionImporterRowValues rowValues = batch.get(current);
-    ImportInspection importInspection = rowValues.getInspection();
+  private void checkOtherInspectionsAtTheSameDay(List<InspectionImporterRow> batch, int current) {
+    InspectionImporterRow row = batch.get(current);
+    ImportInspection importInspection = row.getInspection();
     for (int i = 0; i < current; i++) {
       ImportInspection otherInspection = batch.get(i).getInspection();
       if (importInspection.isSameDayAndResultAs(otherInspection)) {
         addErrorForCell(
             InspectionListColumn.INSPECTED_AT,
             "Es gibt eine andere Zeile mit derselben Begehung zur selben Zeit",
-            rowValues);
-        markWithError(rowValues, DUPLICATE_WITHIN_LIST);
+            row);
+        markWithError(row, DUPLICATE_WITHIN_LIST);
         return;
       } else if (importInspection.isSameDayDifferentResultAs(otherInspection)) {
         addErrorForCell(
             InspectionListColumn.INSPECTION_RESULT,
             "Anderes Ergebnis als andere Begehung zur selben Zeit",
-            rowValues);
-        markWithError(rowValues, ERROR_INPUT_DATA);
+            row);
+        markWithError(row, ERROR_INPUT_DATA);
         return;
       }
     }
@@ -267,8 +255,7 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
    * @param importFacility the facility to import
    * @return facility and base reference id.
    */
-  private @NotNull FacilityRef searchForDuplicatesAndAddFacility(
-      ImportInspectionFacility importFacility) {
+  private FacilityRef searchForDuplicatesAndAddFacility(ImportInspectionFacility importFacility) {
     FacilityDetailsDto facilityDetails = importFacility.facilityDetailsDto();
     FacilitySearchParams search = new FacilitySearchParams(facilityDetails.name());
     SearchReferenceFacilitiesResponse response = facilityDuplicateCandidates.get(search);
@@ -296,18 +283,15 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     }
   }
 
-  private void importInspection(InspectionImporterRowValues rowValues, FacilityRef facilityRef) {
+  private void importInspection(InspectionImporterRow row, FacilityRef facilityRef) {
     Inspection inspection =
         importPersister.addInspection(
-            rowValues.getInspection(),
-            rowValues.getFacility(),
-            facilityRef,
-            firstImportedInspectionId);
+            row.getInspection(), row.getFacility(), facilityRef, firstImportedInspectionId);
 
     UUID procedureId = inspection.getExternalId();
-    writeStatusAndEntityId(rowValues.getRow(), IMPORTED_SUCCESSFULLY, procedureId);
-    rowValues.setStatus(IMPORTED_SUCCESSFULLY);
-    rowValues.setProcedureId(procedureId);
+    writeStatusAndEntityId(row, IMPORTED_SUCCESSFULLY, procedureId);
+    row.setStatus(IMPORTED_SUCCESSFULLY);
+    row.setEntityId(procedureId);
     stats.countCreated();
 
     if (firstImportedInspectionId == null) {
@@ -315,12 +299,9 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     }
   }
 
-  private Set<UUID> fetchExistingProcedureIds(Collection<InspectionImporterRowValues> values) {
+  private Set<UUID> fetchExistingProcedureIds(List<InspectionImporterRow> rows) {
     List<UUID> procedureIds =
-        values.stream()
-            .map(InspectionImporterRowValues::getProcedureId)
-            .filter(Objects::nonNull)
-            .toList();
+        rows.stream().map(InspectionImporterRow::getEntityId).filter(Objects::nonNull).toList();
     return importPersister.fetchExistingProcedureIds(procedureIds);
   }
 
@@ -340,9 +321,9 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
     return importedNewFacilities;
   }
 
-  private void markWithError(InspectionImporterRowValues rowValues, ImportStatus error) {
-    writeStatus(rowValues.getRow(), error);
-    rowValues.setStatus(error);
+  private void markWithError(InspectionImporterRow row, ImportStatus error) {
+    writeStatus(row, error);
+    row.setStatus(error);
     if (error == DUPLICATE_WITHIN_LIST) {
       stats.countDuplicated();
     } else {
@@ -351,18 +332,16 @@ class InspectionImporter extends Importer<InspectionImporterRowValues, Inspectio
   }
 
   private void addErrorForCell(
-      InspectionListColumn col, String errorMessage, InspectionImporterRowValues rowValues) {
-    Row row = rowValues.getRow();
-    Cell cell = row.getCell(col.ordinal());
-    rowReader.createErrorHandler(rowValues).handleError(cell, errorMessage);
+      InspectionListColumn col, String errorMessage, InspectionImporterRow row) {
+    rowReader.addError(row, col, errorMessage);
   }
 
-  private static boolean hasError(InspectionImporterRowValues rowValues) {
-    if (!rowValues.isValid()) return true;
-    return switch (rowValues.getStatus()) {
+  private static boolean hasError(InspectionImporterRow row) {
+    if (!row.isValid()) return true;
+    return switch (row.getStatus()) {
       case null -> false;
       case ERROR_INPUT_DATA,
-              INVALID_PROCEDURE_ID,
+              INVALID_ENTITY_ID,
               IMPORTED_PREVIOUSLY,
               DUPLICATE_WITHIN_LIST,
               DUPLICATE_IN_ASSET,

@@ -5,14 +5,12 @@
 
 import {
   ApiAuditLogSource,
-  ApiAuditLogSourceFromJSON,
   ApiGetAuditLogGrantedAccessesResponse,
 } from "@eshg/employee-portal-api/auditlog";
 import { ApiUser } from "@eshg/employee-portal-api/base";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { List, ListItem, Sheet, Stack, Typography } from "@mui/joy";
 import { Formik } from "formik";
-import { useParams, useRouter } from "next/navigation";
 import { useRef } from "react";
 import { isEmpty } from "remeda";
 
@@ -26,43 +24,42 @@ import {
   useGetAuditLogGrantedAccesses,
   useGetAuditLogGranteesCandidates,
 } from "@/lib/auditlog/queries/auditlog";
-import { routes } from "@/lib/baseModule/shared/routes";
 import { auditLogSourceNames } from "@/lib/shared/components/auditlog/constants";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { FormButtonBar } from "@/lib/shared/components/form/FormButtonBar";
-import {
-  SidebarForm,
-  SidebarFormHandle,
-} from "@/lib/shared/components/form/SidebarForm";
-import { useBuildRoutePreservingSearchParams } from "@/lib/shared/components/procedures/hooks/useBuildRoutePreservingSearchParams";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 import { fullName } from "@/lib/shared/components/users/userFormatter";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-interface AuditlogAuthorizeSidebarProps {
-  open: boolean;
-  onClose: () => void;
+export function useAuditLogAuthorizeSidebar(): UseSidebarWithFormRefResult<AuditlogAuthorizeSidebarProps> {
+  return useSidebarWithFormRef({
+    component: AuditLogAuthorizeSidebar,
+  });
 }
 
-export function AuditLogAuthorizeSidebar({
-  open,
-  onClose,
-}: Readonly<AuditlogAuthorizeSidebarProps>) {
-  const { source: sourceParam, date: dateParam } = useParams();
-  const source = ApiAuditLogSourceFromJSON(sourceParam);
-  const date = new Date(dateParam as string);
+interface AuditlogAuthorizeSidebarProps extends SidebarWithFormRefProps {
+  source: ApiAuditLogSource;
+  date: Date;
+}
 
+function AuditLogAuthorizeSidebar({
+  source,
+  date,
+  formRef,
+  onClose,
+}: AuditlogAuthorizeSidebarProps) {
   const { users } = useGetAuditLogGranteesCandidates(source, date).data;
   const { data: grantedAccessesResponse } = useGetAuditLogGrantedAccesses(
     source,
     date,
   );
-
-  const router = useRouter();
-  const buildRoutePreservingSearchParams =
-    useBuildRoutePreservingSearchParams();
 
   const { openConfirmationDialog } = useConfirmationDialog();
 
@@ -80,83 +77,71 @@ export function AuditLogAuthorizeSidebar({
         ),
       },
       {
-        onSuccess: () =>
-          router.push(
-            buildRoutePreservingSearchParams(routes.auditlog.authorize.index),
-          ),
+        onSuccess: () => onClose(true),
       },
     );
   }
 
-  const formRef = useRef<SidebarFormHandle>(null);
-
-  function handleCloseSidebar() {
-    onClose();
-    formRef.current?.resetForm();
-  }
-
   return (
-    <Sidebar open={open} onClose={handleCloseSidebar}>
-      <Formik
-        validate={(values) => {
-          if (values.users.length < 1) {
-            return { validForm: "false" };
-          }
-        }}
-        initialValues={{ validForm: "", users: [] as ApiUser[] }}
-        onSubmit={({ users }) => {
-          userSelection.current = users;
+    <Formik
+      validate={(values) => {
+        if (values.users.length < 1) {
+          return { validForm: "false" };
+        }
+      }}
+      initialValues={{ validForm: "", users: [] as ApiUser[] }}
+      onSubmit={({ users }) => {
+        userSelection.current = users;
 
-          openConfirmationDialog({
-            title: "Log File wirklich freigeben?",
-            hideDescription: true,
-            children: (
-              <AuditLogAuthorizeConfirmationDescription
-                source={source}
-                date={formatDate(date)}
-                users={users}
+        openConfirmationDialog({
+          title: "Log File wirklich freigeben?",
+          hideDescription: true,
+          children: (
+            <AuditLogAuthorizeConfirmationDescription
+              source={source}
+              date={formatDate(date)}
+              users={users}
+            />
+          ),
+          confirmLabel: "Freigeben",
+          onConfirm: handleAuthorizeConfirmationDialog,
+        });
+      }}
+    >
+      {({ errors, setFieldValue, values }) => (
+        <SidebarForm ref={formRef}>
+          <SidebarContent title={"Freigabeoptionen"}>
+            <DetailsColumn sx={{ gap: 2 }}>
+              <AuditLogSheet date={date} source={source} />
+              <AuditLogGranteesSheet
+                grantedAccesses={grantedAccessesResponse.grantedAccesses}
+                resolvedUsers={grantedAccessesResponse.resolvedUsers}
               />
-            ),
-            confirmLabel: "Freigeben",
-            onConfirm: handleAuthorizeConfirmationDialog,
-          });
-        }}
-      >
-        {({ errors, setFieldValue, values }) => (
-          <SidebarForm ref={formRef}>
-            <SidebarContent title={"Freigabeoptionen"}>
-              <DetailsColumn sx={{ gap: 2 }}>
-                <AuditLogSheet date={date} source={sourceParam} />
-                <AuditLogGranteesSheet
-                  grantedAccesses={grantedAccessesResponse.grantedAccesses}
-                  resolvedUsers={grantedAccessesResponse.resolvedUsers}
+              <Stack gap={2} sx={{ mt: 2 }}>
+                <Typography level="title-md">Log File freigeben</Typography>
+                <Typography level="body-md">
+                  Sie können die File nur für User mit der Rolle
+                  &quot;Betriebsrat&quot; freigeben.
+                </Typography>
+                <UserAutoCompleteField
+                  setFieldValue={setFieldValue}
+                  options={users}
+                  values={values.users}
                 />
-                <Stack gap={2} sx={{ mt: 2 }}>
-                  <Typography level="title-md">Log File freigeben</Typography>
-                  <Typography level="body-md">
-                    Sie können die File nur für User mit der Rolle
-                    &quot;Betriebsrat&quot; freigeben.
-                  </Typography>
-                  <UserAutoCompleteField
-                    setFieldValue={setFieldValue}
-                    options={users}
-                    values={values.users}
-                  />
-                </Stack>
-              </DetailsColumn>
-              <ErrorHints erroneous={errors.validForm === "false"} />
-            </SidebarContent>
-            <SidebarActions>
-              <FormButtonBar
-                submitLabel={"Freigeben"}
-                submitting={false}
-                onCancel={handleCloseSidebar}
-              />
-            </SidebarActions>
-          </SidebarForm>
-        )}
-      </Formik>
-    </Sidebar>
+              </Stack>
+            </DetailsColumn>
+            <ErrorHints erroneous={errors.validForm === "false"} />
+          </SidebarContent>
+          <SidebarActions>
+            <FormButtonBar
+              submitLabel={"Freigeben"}
+              submitting={false}
+              onCancel={() => onClose(false)}
+            />
+          </SidebarActions>
+        </SidebarForm>
+      )}
+    </Formik>
   );
 }
 

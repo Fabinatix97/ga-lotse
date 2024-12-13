@@ -152,8 +152,7 @@ export function mapToEvaluationDetailsView(
     },
     attributes: attributes,
     analyses: mapAnalyses(result.analyses, attributes),
-    // TODO: Users can be deleted. Handle undefined correctly.
-    userId: result.user!.userId,
+    userId: result.user?.userId,
     anonymized: result.evaluationInfo.anonymized,
     tooMuchDataForExport: result.evaluationInfo.tooMuchDataForExport,
   } satisfies EvaluationDetailsView;

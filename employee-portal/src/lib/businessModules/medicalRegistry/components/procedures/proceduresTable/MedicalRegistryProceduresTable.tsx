@@ -5,23 +5,26 @@
 
 "use client";
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import {
   ApiApplicantAddress,
   ApiMedicalRegistryEntry,
 } from "@eshg/employee-portal-api/medicalRegistry";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { useGetMedicalRegistryProcedureOverviewQuery } from "@/lib/businessModules/medicalRegistry/api/queries/medicalRegistryEntries";
 import { MedicalRegistryProcedureChip } from "@/lib/businessModules/medicalRegistry/components/procedures/MedicalRegistryProcedureChip";
 import { routes } from "@/lib/businessModules/medicalRegistry/shared/routes";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { translateCountry } from "@/lib/shared/helpers/i18n";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
-import { useTablePageParams } from "@/lib/shared/hooks/useTablePageParams";
 
 import { MedicalRegistryProceduresSearchBar } from "./MedicalRegistryProceduresSearchBar";
 
@@ -109,13 +112,27 @@ function getProceduresColumns() {
 }
 
 export function MedicalRegistryProceduresTable() {
-  const tablePage = useTablePageParams();
-  const {
-    data: { medicalRegistryEntries, totalElements },
-    isLoading,
-  } = useGetMedicalRegistryProcedureOverviewQuery(tablePage);
-
   const tableControl = useTableControl();
+
+  const proceduresQuery = useGetMedicalRegistryProcedureOverviewQuery(
+    tableControl.paginationProps,
+  );
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.MedicalRegistry,
+  );
+
+  const [
+    {
+      data: { medicalRegistryEntries, totalElements },
+      isLoading,
+    },
+    gdprBanner,
+  ] = useSuspenseQueries({ queries: [proceduresQuery, gdprBannerQuery] });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    businessModule: ApiBusinessModule.MedicalRegistry,
+  });
 
   return (
     <TablePage

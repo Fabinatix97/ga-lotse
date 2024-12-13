@@ -17,6 +17,7 @@ import de.eshg.lib.procedure.domain.model.PdfMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.model.AbstractFileDto;
 import de.eshg.lib.procedure.model.ConcreteFileDto;
+import de.eshg.lib.procedure.model.ConcreteFileOrFileReference;
 import de.eshg.lib.procedure.model.FileTypeDto;
 import de.eshg.lib.procedure.model.GenericFileDto;
 import de.eshg.lib.procedure.model.GenericFileReferenceDto;
@@ -49,6 +50,17 @@ public final class FileMapper {
       case PdfMetaDataDto pdfMetaData -> toDomainType(pdfMetaData);
       case MailMetaDataDto mailMetaData -> toDomainType(mailMetaData);
     };
+  }
+
+  public static ConcreteFileOrFileReference toConcreteInterfaceTypeOrReferenceInterfaceType(
+      File file) {
+    if (file == null) {
+      return null;
+    }
+    if (file.isDeleted()) {
+      return toInterfaceTypeAsReference(file);
+    }
+    return toInterfaceType(file);
   }
 
   private static ImageMetaData toDomainType(ImageMetaDataDto imageMetaData) {

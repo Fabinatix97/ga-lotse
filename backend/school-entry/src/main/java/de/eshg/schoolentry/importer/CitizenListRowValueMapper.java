@@ -10,10 +10,10 @@ import de.eshg.schoolentry.business.model.ImportProcedureData;
 import de.eshg.schoolentry.business.model.MergeProcedureData;
 import de.eshg.schoolentry.mapper.PersonMapper;
 
-public class CitizenListRowValueMapper implements RowValueMapper<CitizenListRowValues> {
+public class CitizenListRowValueMapper implements RowValueMapper<CitizenListRow> {
 
   @Override
-  public ImportProcedureData mapValuesToImportData(CitizenListRowValues values) {
+  public ImportProcedureData mapValuesToImportData(CitizenListRow values) {
     return new ImportProcedureData(
         PersonMapper.mapImportChildDataToCreatePersonDto(values.getChild()),
         values.getCustodians(),
@@ -25,9 +25,9 @@ public class CitizenListRowValueMapper implements RowValueMapper<CitizenListRowV
   }
 
   @Override
-  public MergeProcedureData mapValuesToMergeData(CitizenListRowValues values) {
+  public MergeProcedureData mapValuesToMergeData(CitizenListRow values) {
     return new MergeProcedureData(
-        values.getProcedureId(),
+        values.getEntityId(),
         values.getChild().placeOfBirth(),
         values.getChild().countryOfBirth(),
         values.getCustodians(),

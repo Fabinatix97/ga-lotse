@@ -371,7 +371,7 @@ public class ContactService {
       String name,
       String street,
       Class<T> type,
-      InstitutionContactCategory category,
+      Set<InstitutionContactCategory> categories,
       PageSpec pageSpec) {
     fuzzySearchHelper.setSimilarityThreshold(0.2);
     Specification<Contact> specification =
@@ -379,7 +379,7 @@ public class ContactService {
             isNotMergedInto(),
             containsNameOrHasFuzzy(name),
             containsStreetOrHasFuzzy(street),
-            hasCategory(category));
+            hasCategories(categories));
     if (!type.equals(Contact.class)) {
       specification = Specification.allOf(specification, hasType(type));
     }

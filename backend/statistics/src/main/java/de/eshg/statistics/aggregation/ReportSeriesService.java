@@ -5,14 +5,13 @@
 
 package de.eshg.statistics.aggregation;
 
-import static de.eshg.statistics.aggregation.AggregationResultSpecifications.addDateSpecification;
-
 import de.eshg.base.user.api.UserDto;
 import de.eshg.domain.model.BaseEntity_;
 import de.eshg.lib.keycloak.EmployeePermissionRole;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
+import de.eshg.statistics.OverviewSpecifications;
 import de.eshg.statistics.StatisticsUserService;
 import de.eshg.statistics.api.report.AbstractAddReportSeriesRequest;
 import de.eshg.statistics.api.report.AddAutoReportSeriesRequest;
@@ -28,6 +27,7 @@ import de.eshg.statistics.mapper.ReportMapper;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult_;
 import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.Evaluation;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableColumn_;
 import de.eshg.statistics.persistence.entity.report.Report;
@@ -88,8 +88,8 @@ public class ReportSeriesService {
   public ReportSeriesDto addReportSeries(AbstractAddReportSeriesRequest addReportSeriesRequest) {
     Evaluation evaluation =
         evaluationService.getEvaluationInternal(addReportSeriesRequest.evaluationId());
-    if (!evaluation.isAnonymized()) {
-      throw new BadRequestException("Reports are only allowed for anonymized evaluations");
+    if (evaluation.getDataSensitivity().equals(StatisticsDataSensitivity.SENSITIVE)) {
+      throw new BadRequestException("Reports are only allowed for non-sensitive evaluations");
     }
     validateIsNotDeleting(evaluation);
 
@@ -304,11 +304,12 @@ public class ReportSeriesService {
     if (filterOptions != null) {
       addReportTypeSpecification(specifications, filterOptions.reportType());
       addDataSourcesSpecification(specifications, filterOptions.dataSourceIds());
-      addDateSpecification(
+      OverviewSpecifications.addDateSpecification(
           specifications, filterOptions.start(), AbstractAggregationResult_.TIME_RANGE_START);
-      addDateSpecification(
+      OverviewSpecifications.addDateSpecification(
           specifications, filterOptions.end(), AbstractAggregationResult_.TIME_RANGE_END);
-      AggregationResultSpecifications.<ReportSeries>nameSpecification(filterOptions.name())
+      OverviewSpecifications.<ReportSeries>nameSpecification(
+              filterOptions.name(), AbstractAggregationResult_.NAME)
           .ifPresent(specifications::add);
     }
 

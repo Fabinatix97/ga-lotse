@@ -30,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.context.properties.bind.validation.BindValidationException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
@@ -161,6 +162,16 @@ public abstract class BaseTest implements CapturedLoggingTraits {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    return tempFile;
+  }
+
+  protected Path writeToTempFile(Resource resource) throws IOException {
+    return writeToTempFile(resource, "_");
+  }
+
+  protected Path writeToTempFile(Resource resource, String prefix) throws IOException {
+    Path tempFile = getTempFile(prefix + resource.getFilename());
+    Files.write(tempFile, resource.getContentAsByteArray());
     return tempFile;
   }
 }

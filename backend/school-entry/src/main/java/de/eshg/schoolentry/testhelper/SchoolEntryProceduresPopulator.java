@@ -701,7 +701,7 @@ public class SchoolEntryProceduresPopulator extends BasePopulator<CreateProcedur
     return contactApi
         .getContacts(
             new ContactFilterParameters(
-                null, null, ContactTypeDto.INSTITUTION, category, null, null, null, null))
+                null, null, ContactTypeDto.INSTITUTION, Set.of(category), null, null, null, null))
         .elements()
         .stream()
         .findFirst()

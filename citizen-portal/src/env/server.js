@@ -24,6 +24,7 @@ const schema = object({
   PUBLIC_MEASLES_PROTECTION_BACKEND_URL: pipe(string(), url()),
   PUBLIC_SCHOOL_ENTRY_BACKEND_URL: pipe(string(), url()),
   PUBLIC_TRAVEL_MEDICINE_BACKEND_URL: pipe(string(), url()),
+  PUBLIC_OFFICIAL_MEDICAL_SERVICE_BACKEND_URL: pipe(string(), url()),
 
   MARKDOWN_PAGE_DIRECTORY: string(),
 });

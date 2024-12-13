@@ -3,13 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CalendarTodayOutlined, EditOutlined } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/joy";
+import {
+  ApiConcern,
+  ApiStiProtectionProcedure,
+} from "@eshg/employee-portal-api/stiProtection";
+import { EditOutlined } from "@mui/icons-material";
+import { Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { useFormikContext } from "formik";
-import { useId } from "react";
+import { ReactNode, useId, useMemo } from "react";
 
-import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
+import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
+import {
+  APPOINTMENT_TYPES,
+  CONCERN_VALUES,
+} from "@/lib/businessModules/stiProtection/shared/constants";
 import { COUNTRY_CODE_LABELS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
+import { getOpenAppointmentsFromProcedure } from "@/lib/businessModules/stiProtection/shared/helpers";
 import { GENDER_VALUES } from "@/lib/shared/components/personSidebar/constants";
 
 import {
@@ -27,10 +36,21 @@ const germanTimeFormatter = Intl.DateTimeFormat("de-DE", {
 });
 export interface SummaryFormProps {
   jumpToAppointmentSelection: () => void;
-  jumpToPersonalData: () => void;
+  jumpToPersonalData?: () => void;
+  appointmentSummary?: {
+    title: string;
+  };
+  mode?: "addNewProcedure" | "createAppointment" | "editAppointment";
+  procedure?: ApiStiProtectionProcedure;
+  show?: {
+    appointment?: boolean;
+    personalData?: boolean;
+  };
 }
 
-function formatAppointmentDate(form: AddNewProcedureForm) {
+function formatAppointmentDate(
+  form: AddNewProcedureForm | CreateAppointmentForm,
+) {
   const date = getAppointmentDate(form);
   if (!date) {
     return;
@@ -41,54 +61,83 @@ function formatAppointmentDate(form: AddNewProcedureForm) {
 export function SummaryForm({
   jumpToPersonalData,
   jumpToAppointmentSelection,
+  appointmentSummary = {
+    title: "Termin",
+  },
+  mode = "addNewProcedure",
+  procedure,
+  show = {
+    personalData: true,
+  },
 }: SummaryFormProps) {
-  const { values } = useFormikContext<AddNewProcedureForm>();
+  const { values } = useFormikContext<
+    AddNewProcedureForm | CreateAppointmentForm
+  >();
   const dateAndTime = formatAppointmentDate(values);
+  const appointmentTypeValue = useMemo(() => {
+    let appointmentType = "";
+
+    if (procedure && mode !== "addNewProcedure") {
+      if (values.appointmentType && mode === "createAppointment") {
+        appointmentType = APPOINTMENT_TYPES[values.appointmentType];
+      } else {
+        const [openAppointment] = getOpenAppointmentsFromProcedure(procedure);
+
+        if (openAppointment) {
+          appointmentType = APPOINTMENT_TYPES[openAppointment?.appointmentType];
+        }
+      }
+    } else if (values.concern) {
+      appointmentType = CONCERN_VALUES[values.concern as ApiConcern];
+    }
+    return appointmentType;
+  }, [mode, procedure, values.appointmentType, values.concern]);
 
   return (
     <Stack gap={2}>
-      <LabelValuePair
-        label="Art des Termins"
-        value={values.concern && CONCERN_VALUES[values.concern]}
+      <ActionTitle
+        action={{
+          onClick: jumpToAppointmentSelection,
+          icon: <EditOutlined />,
+          label: "Termin ändern",
+        }}
+        title={appointmentSummary.title}
       />
+      <LabelValuePair label="Terminart" value={appointmentTypeValue} />
       <LabelValuePair label="Datum und Zeit" value={dateAndTime} />
-      <div>
-        <Button
-          startDecorator={<CalendarTodayOutlined />}
-          variant="plain"
-          onClick={jumpToAppointmentSelection}
-        >
-          Termin ändern
-        </Button>
-      </div>
 
-      <Typography component="h3" level="title-md" mt={4}>
-        Persönliche Daten
-      </Typography>
-      <LabelValuePair
-        label="Geschlecht"
-        value={values.gender && GENDER_VALUES[values.gender]}
-      />
-      <LabelValuePair
-        label="Geburtsland"
-        value={
-          values.countryOfBirth && COUNTRY_CODE_LABELS[values.countryOfBirth]
-        }
-      />
-      <LabelValuePair
-        label="In Deutschland seit"
-        value={values.inGermanySince}
-      />
-      <LabelValuePair label="Geburtsjahr" value={values.yearOfBirth} />
-      <div>
-        <Button
-          startDecorator={<EditOutlined />}
-          variant="plain"
-          onClick={jumpToPersonalData}
-        >
-          Bearbeiten
-        </Button>
-      </div>
+      {show.personalData && "gender" in values && (
+        <>
+          <Divider orientation="horizontal" />
+
+          <ActionTitle
+            action={{
+              onClick: () => {
+                if (jumpToPersonalData) jumpToPersonalData();
+              },
+              icon: <EditOutlined />,
+              label: "Bearbeiten",
+            }}
+            title="Persönliche Daten"
+          />
+          <LabelValuePair
+            label="Geschlecht"
+            value={values.gender && GENDER_VALUES[values.gender]}
+          />
+          <LabelValuePair
+            label="Geburtsland"
+            value={
+              values.countryOfBirth &&
+              COUNTRY_CODE_LABELS[values.countryOfBirth]
+            }
+          />
+          <LabelValuePair
+            label="In Deutschland seit"
+            value={values.inGermanySince}
+          />
+          <LabelValuePair label="Geburtsjahr" value={values.yearOfBirth} />
+        </>
+      )}
     </Stack>
   );
 }
@@ -102,13 +151,41 @@ function LabelValuePair({
 }) {
   const labelId = useId();
   return (
-    <div>
-      <Typography component="h4" level="title-sm" id={labelId}>
+    <Stack direction="row" justifyContent="space-between">
+      <Typography component="h4" level="body-md" id={labelId}>
         {label}
       </Typography>
-      <Typography level="body-lg" aria-describedby={labelId}>
+      <Typography level="title-md" aria-describedby={labelId}>
         {value}
       </Typography>
-    </div>
+    </Stack>
+  );
+}
+
+function ActionTitle({
+  action,
+  title,
+}: {
+  action: {
+    onClick: () => void;
+    icon: ReactNode;
+    label: string;
+  };
+  title: string;
+}) {
+  return (
+    <Stack direction="row" justifyContent="space-between" mt={2}>
+      <Typography component="h3" level="title-lg" alignSelf="center">
+        {title}
+      </Typography>
+      <IconButton
+        aria-label={action.label}
+        variant="outlined"
+        color="primary"
+        onClick={action.onClick}
+      >
+        {action.icon}
+      </IconButton>
+    </Stack>
   );
 }

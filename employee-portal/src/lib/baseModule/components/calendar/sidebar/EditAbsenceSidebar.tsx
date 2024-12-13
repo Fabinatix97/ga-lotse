@@ -25,21 +25,30 @@ import {
   mapFormToRequestValues,
 } from "@/lib/baseModule/components/calendar/calendarMapper";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
-import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
+import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
+import {
+  UseSidebarResult,
+  useSidebar,
+} from "@/lib/shared/components/drawer/useSidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
-export function EditAbsenceSidebar({
-  open,
-  closeSidebar,
+export function useEditAbsenceSidebar(): UseSidebarResult<EditAbsenceSidebarProps> {
+  return useSidebar({
+    component: EditAbsenceSidebar,
+  });
+}
+
+interface EditAbsenceSidebarProps extends DrawerProps {
+  refetchEvents: () => void;
+  event: EventWithCalendarId;
+}
+
+function EditAbsenceSidebar({
+  onClose,
   refetchEvents,
   event,
-}: {
-  open: boolean;
-  closeSidebar: () => void;
-  refetchEvents: () => void;
-  event?: EventWithCalendarId;
-}) {
+}: EditAbsenceSidebarProps) {
   const submitCalendarEvent = useSubmitCalendarEvent();
   const deleteCalendarEvent = useDeleteCalendarEvent();
   const snackbar = useSnackbar();
@@ -54,7 +63,7 @@ export function EditAbsenceSidebar({
       {
         onSuccess: () => {
           snackbar.confirmation("Abwesenheit wurde erfolgreich gespeichert");
-          closeSidebar();
+          onClose();
           refetchEvents();
         },
       },
@@ -79,7 +88,7 @@ export function EditAbsenceSidebar({
       {
         onSuccess: () => {
           snackbar.confirmation("Abwesenheit wurde erfolgreich gelöscht");
-          closeSidebar();
+          onClose();
           refetchEvents();
         },
       },
@@ -97,30 +106,26 @@ export function EditAbsenceSidebar({
   }
 
   return (
-    <Sidebar open={open} onClose={closeSidebar}>
-      {open && event && (
-        <EventForm
-          initialValues={mapEventToFormValues(event)}
-          onSubmit={(values) => saveEventWithConfirmation(values, event)}
-        >
-          <SidebarContent title={"Abwesenheit Ändern"}>
-            <EventFormInputs />
-          </SidebarContent>
-          <SidebarActions>
-            <Stack justifyContent={"space-between"} direction={"row"}>
-              <Button
-                variant="plain"
-                color="danger"
-                startDecorator={<DeleteForever />}
-                onClick={() => deleteEventWithConfirmation(event)}
-              >
-                Löschen
-              </Button>
-              <EventFormActions onCancel={closeSidebar} />
-            </Stack>
-          </SidebarActions>
-        </EventForm>
-      )}
-    </Sidebar>
+    <EventForm
+      initialValues={mapEventToFormValues(event)}
+      onSubmit={(values) => saveEventWithConfirmation(values, event)}
+    >
+      <SidebarContent title={"Abwesenheit Ändern"}>
+        <EventFormInputs />
+      </SidebarContent>
+      <SidebarActions>
+        <Stack justifyContent={"space-between"} direction={"row"}>
+          <Button
+            variant="plain"
+            color="danger"
+            startDecorator={<DeleteForever />}
+            onClick={() => deleteEventWithConfirmation(event)}
+          >
+            Löschen
+          </Button>
+          <EventFormActions onCancel={onClose} />
+        </Stack>
+      </SidebarActions>
+    </EventForm>
   );
 }

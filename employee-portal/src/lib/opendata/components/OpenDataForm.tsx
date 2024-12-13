@@ -63,20 +63,18 @@ export function OpenDataForm({ children, mode }: OpenDataFormContentProps) {
         required="Bitte einen Namen angeben."
       />
       <TextareaField name={fieldNames.description} label="Beschreibung" />
-      {isCreateForm && (
-        <Stack direction="row" justifyContent="space-between" gap={3}>
-          <DateField
-            name={fieldNames.statisticStartDate}
-            label="Startdatum"
-            sx={{ flex: "1 1 0" }}
-          />
-          <DateField
-            name={fieldNames.statisticEndDate}
-            label="Enddatum"
-            sx={{ flex: "1 1 0" }}
-          />
-        </Stack>
-      )}
+      <Stack direction="row" justifyContent="space-between" gap={3}>
+        <DateField
+          name={fieldNames.statisticStartDate}
+          label="Startdatum"
+          sx={{ flex: "1 1 0" }}
+        />
+        <DateField
+          name={fieldNames.statisticEndDate}
+          label="Enddatum"
+          sx={{ flex: "1 1 0" }}
+        />
+      </Stack>
       <InputField
         name={fieldNames.licence}
         label="Lizenz URL"

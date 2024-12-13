@@ -5,6 +5,8 @@
 
 "use client";
 
+import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
+import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { mapRequiredValue } from "@eshg/lib-portal/helpers/form";
 import { Formik } from "formik";
 import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
@@ -12,7 +14,7 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 import { useImportData } from "@/lib/businessModules/medicalRegistry/api/mutations/import";
 import { ImportDataErrorSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataErrorSidebar";
 import { ImportDataFormSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataFormSidebar";
-import { ImportDataPendingSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataPendingSidebart";
+import { ImportDataPendingSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataPendingSidebar";
 import { ImportDataSummarySidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/import/ImportDataSummarySidebar";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DrawerProps } from "@/lib/shared/components/drawer/drawerContext";
@@ -47,6 +49,7 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
   function ImportDataSidebar({ onClose }, ref) {
     const { openConfirmationDialog } = useConfirmationDialog();
     const importData = useImportData();
+    const downloadContainerRef = useRef<HTMLDivElement>(null);
 
     const { status, isPending, abort: abortImport } = importData;
     const tryAbort = useCallback<TryAbortCallback>(
@@ -60,9 +63,9 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
           color: "danger",
           title: "Import wirklich abbrechen?",
           description:
-            "Möglicherweise wurden bereits Daten übermittelt. Bereits hochgeladene Daten können nicht entfernt werden.",
+            "Der Import Ihres Datensatzes läuft noch. Ein Abbruch führt zu unvollständigen Daten und nicht löschbaren Duplikaten.",
           confirmLabel: "Import abbrechen",
-          cancelLabel: "Mit Import fortfahren",
+          cancelLabel: "Weiter importieren",
           onConfirm: () => {
             abortImport();
             onAbort(true);
@@ -76,42 +79,50 @@ const ImportDataSidebar = forwardRef<TryAbortCallback, DrawerProps>(
 
     function handleSubmit(values: ImportDataFormValues) {
       importData.abort();
-      importData.mutate({ file: mapRequiredValue(values.importFile) });
+      importData.mutate(
+        { file: mapRequiredValue(values.importFile) },
+        {
+          onSuccess: ({ file }) => {
+            // Automatic download
+            if (downloadContainerRef.current) {
+              downloadFileAndOpen(file, downloadContainerRef.current);
+            }
+          },
+        },
+      );
     }
     function handleReset() {
       importData.reset();
-    }
-    function handleAbort() {
-      tryAbort(handleReset);
     }
     function handleClose() {
       onClose();
     }
 
-    if (status === "error") {
-      return (
-        <ImportDataErrorSidebar
-          error={importData.error}
-          onReset={handleReset}
-          onClose={handleClose}
-        />
-      );
-    } else if (status === "success") {
-      return (
-        <ImportDataSummarySidebar
-          file={importData.data.file}
-          statistics={importData.data.statistics}
-          onClose={handleClose}
-        />
-      );
-    } else if (status === "pending") {
-      return <ImportDataPendingSidebar onAbort={handleAbort} />;
-    }
-
     return (
-      <Formik onSubmit={handleSubmit} initialValues={{ importFile: null }}>
-        <ImportDataFormSidebar onClose={handleClose} />
-      </Formik>
+      <>
+        {status === "pending" && <ImportDataPendingSidebar />}
+        {status === "error" && (
+          <ImportDataErrorSidebar
+            error={importData.error}
+            onReset={handleReset}
+            onClose={handleClose}
+          />
+        )}
+        {status === "success" && (
+          <ImportDataSummarySidebar
+            file={importData.data.file}
+            statistics={importData.data.statistics}
+            onReset={handleReset}
+            onClose={handleClose}
+          />
+        )}
+        {status === "idle" && (
+          <Formik onSubmit={handleSubmit} initialValues={{ importFile: null }}>
+            <ImportDataFormSidebar onClose={handleClose} />
+          </Formik>
+        )}
+        <HiddenContainer ref={downloadContainerRef} />
+      </>
     );
   },
 );

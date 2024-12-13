@@ -6,9 +6,10 @@
 "use client";
 
 import { OfficialMedicalServiceDetailsPageProps } from "@/app/(businessModules)/official-medical-service/procedures/[id]/layout";
+import { ProcedureDetailsTab } from "@/lib/businessModules/officialMedicalService/components/procedures/details/ProcedureDetailsTab";
 
 export default function OfficialMedicalServiceProcedureDetailsPage(
   props: OfficialMedicalServiceDetailsPageProps,
 ) {
-  return <div>ID: {props.params.id}</div>;
+  return <ProcedureDetailsTab procedureId={props.params.id} />;
 }

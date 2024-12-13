@@ -14,9 +14,6 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.MERGED
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.PersonKeyAttributes;
-import de.eshg.lib.procedure.domain.model.PersonType;
-import de.eshg.lib.procedure.domain.model.ProcedureStatus;
-import de.eshg.lib.procedure.domain.model.Procedure_;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.xlsximport.FeedbackColumnAccessor;
 import de.eshg.lib.xlsximport.ImportValidator;
@@ -127,7 +124,7 @@ public class ImportService {
       try (XlsxNormalizer xlsxNormalizer = new XlsxNormalizer()) {
         XSSFSheet normalizedSheet = xlsxNormalizer.normalize(sheet);
 
-        SchoolEntryImporter<? extends SchoolEntryRowValues<?>, ? extends XlsxColumn, ?>
+        SchoolEntryImporter<? extends SchoolEntryRow<?>, ? extends XlsxColumn, ?>
             schoolEntryImporter =
                 createImporter(importType, schoolId, locationId, schoolYear, normalizedSheet);
 
@@ -136,13 +133,12 @@ public class ImportService {
     }
   }
 
-  private SchoolEntryImporter<? extends SchoolEntryRowValues<?>, ? extends XlsxColumn, ?>
-      createImporter(
-          ImportType importType,
-          UUID schoolId,
-          UUID locationId,
-          Year schoolYear,
-          XSSFSheet normalizedSheet) {
+  private SchoolEntryImporter<? extends SchoolEntryRow<?>, ? extends XlsxColumn, ?> createImporter(
+      ImportType importType,
+      UUID schoolId,
+      UUID locationId,
+      Year schoolYear,
+      XSSFSheet normalizedSheet) {
 
     return switch (importType) {
       case CITIZEN_LIST -> {
@@ -199,12 +195,12 @@ public class ImportService {
 
   Map<PersonKeyAttributes, List<ProcedureWithChildData>> searchForMergeCandidates(
       Set<PersonKeyAttributes> searchAttributes) {
-    Specification<SchoolEntryProcedure> openProcedures =
-        (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN);
     Map<PersonKeyAttributes, List<SchoolEntryProcedure>> proceduresByPersons =
         procedureSearchService.searchProceduresByPersons(
-            searchAttributes, PersonType.PATIENT, openProcedures, Person.class);
+            searchAttributes,
+            Person.PERSON_TYPE_USED_FOR_CHILDREN,
+            ProcedureSearchService.isInStatusOpen(),
+            Person.class);
     return personClient.augmentWithChildData(proceduresByPersons);
   }
 
@@ -217,7 +213,10 @@ public class ImportService {
               schoolYearPath.isNull(), criteriaBuilder.equal(schoolYearPath, schoolYear));
         };
     return procedureSearchService.searchProceduresByPersons(
-        searchAttributes, PersonType.PATIENT, proceduresWithNoOrEqualSchoolYear, Person.class);
+        searchAttributes,
+        Person.PERSON_TYPE_USED_FOR_CHILDREN,
+        proceduresWithNoOrEqualSchoolYear,
+        Person.class);
   }
 
   List<SchoolEntryProcedure> createProceduresWithBookAppointmentTask(
@@ -326,7 +325,7 @@ public class ImportService {
                 .formatted(custodiansWithProcedure.size(), custodianIds.size()));
     for (int i = 0; i < custodianIds.size(); i++) {
       ImportCustodianDataWithProcedure custodian = custodiansWithProcedure.get(i);
-      SchoolEntryService.buildParent(custodianIds.get(i), custodian.procedure());
+      SchoolEntryService.buildCustodian(custodianIds.get(i), custodian.procedure());
     }
   }
 

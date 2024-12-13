@@ -5,25 +5,12 @@
 
 "use client";
 
-import { useState } from "react";
-
-import { ImportGeoShapeSidebar } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeSidebar";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { useImportGeoShapeSidebar } from "@/lib/businessModules/statistics/components/geoshapes/ImportGeoShapeSidebar/ImportGeoShapeSidebar";
 
 import { GeoShapesTable } from "./GeoShapesTable";
 
 export function GeoShapesOverview() {
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const importGeoShapeSidebar = useImportGeoShapeSidebar();
 
-  return (
-    <>
-      <GeoShapesTable onImportGeoShapesClick={() => setSidebarOpen(true)} />
-      <OverlayBoundary>
-        <ImportGeoShapeSidebar
-          open={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
-      </OverlayBoundary>
-    </>
-  );
+  return <GeoShapesTable onImportGeoShapesClick={importGeoShapeSidebar.open} />;
 }

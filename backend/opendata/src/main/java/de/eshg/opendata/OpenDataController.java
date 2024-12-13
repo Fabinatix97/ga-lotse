@@ -8,12 +8,14 @@ package de.eshg.opendata;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.opendata.api.GetOpenDocumentsPaginationOptions;
 import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.GetOpenDocumentsResponse;
 import de.eshg.opendata.api.PostOpenDocumentRequest;
 import de.eshg.opendata.api.ResourceDto;
 import de.eshg.opendata.api.UpdateVersionMetaDataRequest;
 import de.eshg.opendata.api.VersionDto;
+import de.eshg.opendata.config.OpenDataProperties;
 import de.eshg.rest.service.security.config.BaseUrls;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,11 +46,18 @@ public class OpenDataController {
 
   private final OpenDataService openDataService;
   private final OpenDataValidations openDataValidations;
+  private final OpenDataFiltering openDataFiltering;
+  private final OpenDataProperties openDataProperties;
 
   public OpenDataController(
-      OpenDataService openDataService, OpenDataValidations openDataValidations) {
+      OpenDataService openDataService,
+      OpenDataValidations openDataValidations,
+      OpenDataFiltering openDataFiltering,
+      OpenDataProperties openDataProperties) {
     this.openDataService = openDataService;
     this.openDataValidations = openDataValidations;
+    this.openDataFiltering = openDataFiltering;
+    this.openDataProperties = openDataProperties;
   }
 
   @GetMapping
@@ -62,9 +71,11 @@ public class OpenDataController {
           `statisticsStartDate` and `statisticsEndDate`
           """)
   public GetOpenDocumentsResponse getOpenDocuments(
-      @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request) {
+      @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request,
+      @InlineParameterObject @ParameterObject @Valid
+          GetOpenDocumentsPaginationOptions paginationOptions) {
     openDataValidations.validateOpenDataEnabled();
-    return new GetOpenDocumentsResponse(openDataService.getOpenDocuments(request, false));
+    return openDataFiltering.getOpenDocumentsFromEmployeePortal(request, paginationOptions);
   }
 
   @GetMapping("/{versionId}")
@@ -129,5 +140,12 @@ public class OpenDataController {
       @RequestPart(name = "file") MultipartFile file) {
     openDataValidations.validateOpenDataEnabled();
     return openDataService.createOpenDocument(postRequest, file);
+  }
+
+  @GetMapping("fallback-license-url")
+  @Operation(summary = "get the configured fallback license url")
+  public ResponseEntity<GetFallbackLicenseUrlResponse> getFallbackLicenseUrl() {
+    return ResponseEntity.ok(
+        new GetFallbackLicenseUrlResponse(openDataProperties.getFallbackLicenseUrl()));
   }
 }

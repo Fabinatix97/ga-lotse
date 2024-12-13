@@ -41,7 +41,7 @@ public enum ModuleLeaderGroup implements KeycloakGroup {
       ModuleMemberGroup.STI_PROTECTION,
       EmployeePermissionRole.STI_PROTECTION_LEADER),
   MEDICAL_REGISTRY(
-      "Medizinalkartei",
+      "Medizinalaufsicht",
       ModuleMemberGroup.MEDICAL_REGISTRY,
       EmployeePermissionRole.MEDICAL_REGISTRY_LEADER),
   DENTAL("Zahnärztlicher Dienst", ModuleMemberGroup.DENTAL, EmployeePermissionRole.DENTAL_LEADER),

@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort } from "@tanstack/react-table";
 import { ReactNode } from "react";
@@ -12,7 +13,9 @@ import { ReactNode } from "react";
 import { useGetAllProceduresQuery } from "@/lib/businessModules/officialMedicalService/api/queries/employeeOmsProcedureApi";
 import { procedureOverviewTableColumns } from "@/lib/businessModules/officialMedicalService/components/procedures/overview/procedureOverviewColumns";
 import { routes } from "@/lib/businessModules/officialMedicalService/shared/routes";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -49,8 +52,17 @@ export function ProceduresOverviewTable(
     sortDirection: getSortDirection(tableControl.tableSorting),
   });
 
-  const [procedures] = useSuspenseQueries({
-    queries: [proceduresQuery],
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.OfficialMedicalService,
+  );
+
+  const [procedures, gdprBanner] = useSuspenseQueries({
+    queries: [proceduresQuery, gdprBannerQuery],
+  });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    businessModule: ApiBusinessModule.OfficialMedicalService,
   });
 
   return (
@@ -75,7 +87,7 @@ export function ProceduresOverviewTable(
           enableSortingRemoval={false}
           rowNavigation={{
             route: (row) => routes.procedures.byId(row.original.id).details,
-            focusColumnAccessorKey: "id", // TODO use other column when model is extended
+            focusColumnAccessorKey: "lastName",
           }}
           minWidth={450}
         />

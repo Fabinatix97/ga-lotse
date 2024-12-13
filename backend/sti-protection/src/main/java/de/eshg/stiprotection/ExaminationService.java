@@ -6,6 +6,7 @@
 package de.eshg.stiprotection;
 
 import de.eshg.stiprotection.persistence.db.StiProtectionProcedure;
+import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
 import java.util.Objects;
 import java.util.UUID;
@@ -35,6 +36,24 @@ public class ExaminationService {
           RapidTestExamination rapidTestExamination = new RapidTestExamination();
           procedure.setRapidTestExamination(rapidTestExamination);
           return rapidTestExamination;
+        });
+  }
+
+  public LaboratoryTestExamination getLaboratoryTestExamination(UUID procedureId) {
+    StiProtectionProcedure procedure =
+        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    return procedure.getLaboratoryTestExamination();
+  }
+
+  public LaboratoryTestExamination getOrCreateLaboratoryTestExamination(UUID procedureId) {
+    StiProtectionProcedure procedure =
+        stiProtectionProcedureService.findProcedureByExternalId(procedureId);
+    return Objects.requireNonNullElseGet(
+        procedure.getLaboratoryTestExamination(),
+        () -> {
+          LaboratoryTestExamination laboratoryTestExamination = new LaboratoryTestExamination();
+          procedure.setLaboratoryTestExamination(laboratoryTestExamination);
+          return laboratoryTestExamination;
         });
   }
 }

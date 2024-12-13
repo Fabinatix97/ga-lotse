@@ -12,4 +12,8 @@ import java.util.UUID;
 
 @Schema(name = "Examination")
 public record ExaminationDto(
-    @NotNull UUID id, @NotNull long version, @NotNull Instant dateAndTime, String note) {}
+    @NotNull UUID id,
+    @NotNull long version,
+    @NotNull Instant dateAndTime,
+    @NotNull ProphylaxisTypeDto prophylaxisType,
+    String note) {}

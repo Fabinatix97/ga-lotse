@@ -31,6 +31,7 @@ import de.eshg.statistics.persistence.entity.AggregationResultState;
 import de.eshg.statistics.persistence.entity.CellEntry;
 import de.eshg.statistics.persistence.entity.Evaluation;
 import de.eshg.statistics.persistence.entity.MinMaxNullUnknownValues;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
@@ -234,7 +235,7 @@ public class EvaluationMapper {
         evaluation.getTimeRangeStart(),
         evaluation.getTimeRangeEnd(),
         evaluation.getCreatedAt(),
-        evaluation.isAnonymized(),
+        mapToAnonymized(evaluation.getDataSensitivity()),
         isTooMuchDataForExport);
   }
 
@@ -249,6 +250,16 @@ public class EvaluationMapper {
   private static EvaluationStateDto mapToEvaluationState(
       AggregationResultState aggregationResultState) {
     return EvaluationStateDto.valueOf(aggregationResultState.name());
+  }
+
+  // TODO do a proper mapping after api changes ISSUE-6899 are done
+  private static boolean mapToAnonymized(StatisticsDataSensitivity dataSensitivity) {
+    return StatisticsDataSensitivity.ANONYMOUS.equals(dataSensitivity);
+  }
+
+  // TODO do a proper mapping after api changes ISSUE-6899 are done
+  public static StatisticsDataSensitivity mapToPersistence(boolean anonymized) {
+    return anonymized ? StatisticsDataSensitivity.ANONYMOUS : StatisticsDataSensitivity.SENSITIVE;
   }
 
   public static List<AggregationResultState> mapToAggregationResultStates(

@@ -7,7 +7,6 @@
 
 import {
   ApiGetProgressEntryResponseRelatedKeyDocumentProgressEntriesInner,
-  ApiManualProgressEntry,
   ApiProcedureStatus,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { RequiresChildren } from "@eshg/lib-portal/types/react";
@@ -85,68 +84,6 @@ export function ProgressEntriesProvider(
     >
       {props.children}
     </ProgressEntriesContext.Provider>
-  );
-}
-
-export function useUndeletedFilesWithoutOldVersions() {
-  const { progressEntries, files } = useContext(ProgressEntriesContext).config;
-  const undeletedFiles = files.filter((file) => !file.file.deleted);
-
-  interface KeyDocumentFile {
-    keyDocumentType: string;
-    keyDocumentVersion: number;
-    progressEntryId: string;
-  }
-
-  const allKeyDocumentFiles = progressEntries
-    .filter(
-      (entry) =>
-        entry.fileReference &&
-        !entry.fileReference.deleted &&
-        entry.type === "ManualProgressEntry" &&
-        isDefined(entry.keyDocumentType) &&
-        isDefined(entry.keyDocumentVersion),
-    )
-    .map((entry) => entry as ApiManualProgressEntry)
-    .map((entry) => {
-      return {
-        keyDocumentType: entry.keyDocumentType,
-        keyDocumentVersion: entry.keyDocumentVersion,
-        progressEntryId: entry.progressEntryId,
-      } as KeyDocumentFile;
-    });
-
-  const latestKeyDocumentFilesGroupedByType = allKeyDocumentFiles.reduce(
-    (accumulated, entry) => {
-      const { keyDocumentType, keyDocumentVersion, progressEntryId } = entry;
-      const current = accumulated[keyDocumentType];
-
-      if (!current || keyDocumentVersion > current.keyDocumentVersion) {
-        accumulated[keyDocumentType] = {
-          keyDocumentType,
-          keyDocumentVersion,
-          progressEntryId,
-        };
-      }
-
-      return accumulated;
-    },
-    {} as Record<string, KeyDocumentFile>,
-  );
-
-  const latestKeyDocumentProgressEntryIds = Object.values(
-    latestKeyDocumentFilesGroupedByType,
-  ).map((file) => file.progressEntryId);
-
-  const ignoredProgressEntryIds = allKeyDocumentFiles
-    .map((file) => file.progressEntryId)
-    .filter(
-      (progressEntryId) =>
-        !latestKeyDocumentProgressEntryIds.includes(progressEntryId),
-    );
-
-  return undeletedFiles.filter(
-    ({ progressEntryId }) => !ignoredProgressEntryIds.includes(progressEntryId),
   );
 }
 

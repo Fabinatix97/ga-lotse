@@ -6,7 +6,6 @@
 import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Divider, Sheet, Stack, Typography } from "@mui/joy";
-import { useState } from "react";
 import { isNonNullish } from "remeda";
 
 import {
@@ -15,14 +14,11 @@ import {
 } from "@/lib/baseModule/components/layout/sizes";
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import { ReportDataType } from "@/lib/businessModules/statistics/api/models/evaluationReports";
-import {
-  UpdateReportSidebar,
-  UpdateReportSidebarReportInfo,
-} from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
+import { useUpdateReportSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
+import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { LabelValuePair } from "@/lib/shared/components/infoTile/LabelValuePair";
 import { formatDateRangeNumeric } from "@/lib/shared/helpers/dateTime";
@@ -43,17 +39,16 @@ export interface ReportDetailsTileProps {
   start: Date;
   end: Date;
   createdAt: Date;
-  createdBy?: string;
+  createdBy: string;
   dataSource: string;
   datasetAmount: number;
   attributeLabels: string[];
-  userId: string;
+  userId: string | undefined;
   tooMuchDataForExport: boolean;
 }
 
 export function ReportDetailsTile(props: ReportDetailsTileProps) {
-  const [openUpdateReportSidebar, setOpenUpdateReportSidebar] =
-    useState<UpdateReportSidebarReportInfo | null>(null);
+  const updateReportSidebar = useUpdateReportSidebar();
   const canWrite = useStatisticsRoleChecks().canWrite();
   const canDelete = useStatisticsRoleChecks().canDelete(props.userId);
   const { deleteReportWithConfirmation } = useDeleteWithConfirmation({
@@ -61,13 +56,16 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
   });
 
   const { download: exportData, downloadContainerRef } = useExportReportData();
+  const dataExportGuard = useDataExportGuard(false);
 
-  function updateReport() {
-    setOpenUpdateReportSidebar({
-      seriesId: props.seriesId,
-      name: props.title,
-      description: props.description,
-      type: ReportDataType.Single,
+  function openUpdateReportSidebar() {
+    updateReportSidebar.open({
+      report: {
+        seriesId: props.seriesId,
+        name: props.title,
+        description: props.description,
+        type: ReportDataType.Single,
+      },
     });
   }
 
@@ -76,15 +74,6 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
   return (
     <>
       <HiddenContainer ref={downloadContainerRef} />
-
-      {openUpdateReportSidebar && (
-        <OverlayBoundary>
-          <UpdateReportSidebar
-            onClose={() => setOpenUpdateReportSidebar(null)}
-            report={openUpdateReportSidebar}
-          />
-        </OverlayBoundary>
-      )}
 
       <Stack
         gap={3}
@@ -109,7 +98,7 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                   [
                     {
                       type: "update",
-                      action: updateReport,
+                      action: openUpdateReportSidebar,
                     },
                     {
                       type: "share",
@@ -117,10 +106,14 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
                     },
                     {
                       type: "export",
-                      action: () =>
-                        exportData(
-                          { reportId: props.id },
-                          { tooMuchDataForExport: props.tooMuchDataForExport },
+                      action: async () =>
+                        dataExportGuard(() =>
+                          exportData(
+                            { reportId: props.id },
+                            {
+                              tooMuchDataForExport: props.tooMuchDataForExport,
+                            },
+                          ),
                         ),
                     },
                   ],
@@ -154,12 +147,10 @@ export function ReportDetailsTile(props: ReportDetailsTileProps) {
               {isNonNullish(props.numberInSeries) && (
                 <LabelValuePair label="Ausgabe" value={props.numberInSeries} />
               )}
-              {isNonNullish(props.createdBy) && (
-                <LabelValuePair
-                  label="Erstellt von"
-                  value={`${props.createdBy}${isNonNullish(props.numberInSeries) ? " (automatisiert)" : ""}`}
-                />
-              )}
+              <LabelValuePair
+                label="Erstellt von"
+                value={`${props.createdBy}${isNonNullish(props.numberInSeries) ? " (automatisiert)" : ""}`}
+              />
             </Stack>
             <Divider />
             <Stack gap={1}>

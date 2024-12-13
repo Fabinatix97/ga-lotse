@@ -14,6 +14,7 @@ import de.eshg.lib.aggregation.BusinessModuleAggregationHelper;
 import de.eshg.lib.aggregation.BusinessModuleClient;
 import de.eshg.lib.aggregation.ClientResponse;
 import de.eshg.lib.statistics.api.Attribute;
+import de.eshg.lib.statistics.api.DataSource;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.statistics.api.datasource.AvailableDataSource;
 import de.eshg.statistics.api.datasource.BaseDataSourceAttribute;
@@ -82,13 +83,22 @@ public class DataSourceAggregationService {
     return response.dataSources().stream()
         .map(
             dataSource ->
-                new AvailableDataSource(
-                    businessModule,
-                    originalDataAccessConfig.originalDataAllowedForCurrentUser(businessModule),
-                    dataSource.id(),
-                    dataSource.name(),
-                    mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources)))
+                mapToAvailableDataSource(businessModule, dataSource, baseAvailableDataSources))
         .toList();
+  }
+
+  private AvailableDataSource mapToAvailableDataSource(
+      String businessModule,
+      DataSource dataSource,
+      List<BaseAvailableDataSource> baseAvailableDataSources) {
+    return new AvailableDataSource(
+        businessModule,
+        originalDataAccessConfig.originalDataAllowedForCurrentUser(businessModule),
+        dataSource.id(),
+        dataSource.name(),
+        dataSource.sensitivity(),
+        dataSource.canBeAnonymized(),
+        mapAndExtendAttributes(dataSource.attributes(), baseAvailableDataSources));
   }
 
   private static List<BusinessDataSourceAttribute> mapAndExtendAttributes(

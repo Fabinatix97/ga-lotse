@@ -10,6 +10,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useEvaluationTemplateApi } from "@/lib/businessModules/statistics/api/clients";
+import { mapDataSourceSensitivityApiToFrontend } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import {
   EvaluationTemplateTableView,
   EvaluationTemplateWithUserInfo,
@@ -28,6 +29,9 @@ export function mapEvaluationTemplatesToTableView(
     return {
       analysisCount: template.analysisCount,
       dataSourceName: template.dataSourceNames[0]!,
+      dataSourceSensitivity: mapDataSourceSensitivityApiToFrontend(
+        template.templateSensitivityInfo.sensitivity,
+      ),
       createdAt: template.createdAt,
       id: template.id,
       name: template.name,

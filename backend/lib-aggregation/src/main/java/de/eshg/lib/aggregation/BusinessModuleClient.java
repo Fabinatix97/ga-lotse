@@ -35,7 +35,7 @@ import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
 import de.eshg.lib.statistics.api.GetSpecificDataResponse;
-import de.eshg.rest.client.AccessTokenForwardingInterceptor;
+import de.eshg.rest.client.BearerAuthInterceptor;
 import de.eshg.rest.client.CorrelationIdForwardingInterceptor;
 import de.eshg.rest.client.SimpleModelAttributeArgumentResolver;
 import java.net.URI;
@@ -129,7 +129,7 @@ public class BusinessModuleClient
     RestClient restClient =
         restClientBuilder
             .baseUrl(url)
-            .requestInterceptor(new AccessTokenForwardingInterceptor())
+            .requestInterceptor(new BearerAuthInterceptor())
             .requestInterceptor(new CorrelationIdForwardingInterceptor())
             .build();
 

@@ -31,6 +31,7 @@ interface MessageInput {
   sendMessage: (text: string, mentionedUser?: string[]) => Promise<void> | null;
   roomMembers: RoomMember[];
   disabled?: boolean;
+  isRoomDeactivated?: boolean;
 }
 
 export function MessageInput({
@@ -39,6 +40,7 @@ export function MessageInput({
   handleUserTyping,
   selectedRoomId,
   disabled,
+  isRoomDeactivated,
 }: Readonly<MessageInput>) {
   return (
     <Box>
@@ -61,7 +63,7 @@ export function MessageInput({
             handleUserTyping={handleUserTyping}
             selectedRoomId={selectedRoomId}
             roomMembers={roomMembers}
-            disabled={disabled}
+            disabled={disabled ?? isRoomDeactivated}
           />
         </FormPlus>
       </Formik>

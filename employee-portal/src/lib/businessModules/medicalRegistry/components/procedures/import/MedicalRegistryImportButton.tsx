@@ -21,7 +21,11 @@ export function MedicalRegistryImportButton() {
   }
 
   return (
-    <Button startDecorator={<FileUploadOutlined />} onClick={open}>
+    <Button
+      variant="outlined"
+      startDecorator={<FileUploadOutlined />}
+      onClick={open}
+    >
       Daten importieren
     </Button>
   );

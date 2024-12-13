@@ -5,6 +5,7 @@
 
 "use client";
 
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { ApiProcedureStatus } from "@eshg/employee-portal-api/travelMedicine";
 import { SelectOptions } from "@eshg/lib-portal/components/formFields/SelectOptions";
 import {
@@ -17,6 +18,7 @@ import {
   KeyboardArrowRightOutlined,
 } from "@mui/icons-material";
 import { FormControl, IconButton, Input, Select, Stack } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 import { useGetAllProcedureAppointmentSummaries } from "@/lib/businessModules/travelMedicine/api/queries/vaccinationConsultation";
@@ -26,6 +28,8 @@ import {
   initialSorting,
 } from "@/lib/businessModules/travelMedicine/components/vaccinationConsultations/overviewColumns";
 import { routes } from "@/lib/businessModules/travelMedicine/shared/routes";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
@@ -55,6 +59,19 @@ export function VaccinationConsultationsOverviewTable(
   const [appointmentOverviewEntries, setAppointmentOverviewEntries] = useState(
     allAppointmentOverviewEntries.appointmentOverviewEntries,
   );
+
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.TravelMedicine,
+  );
+
+  const [gdprBanner] = useSuspenseQueries({
+    queries: [gdprBannerQuery],
+  });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    businessModule: ApiBusinessModule.TravelMedicine,
+  });
 
   function setNextDay() {
     const newDate = new Date(dayOfAppointmentFilter);

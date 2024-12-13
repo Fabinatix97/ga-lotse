@@ -13,7 +13,7 @@ import de.eshg.schoolentry.util.ProcedureTypeAssignmentHelper;
 import java.time.Year;
 import java.util.List;
 
-public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRowValues> {
+public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRow> {
 
   private final Year schoolYear;
   private final ProcedureTypeAssignmentHelper procedureTypeAssignmentHelper;
@@ -25,7 +25,7 @@ public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRowVal
   }
 
   @Override
-  public ImportProcedureData mapValuesToImportData(SchoolListRowValues values) {
+  public ImportProcedureData mapValuesToImportData(SchoolListRow values) {
     ProcedureType procedureType =
         procedureTypeAssignmentHelper.getProcedureTypeForSchoolListImport(
             values.isEntryLevel(), values.getChild().dateOfBirth(), schoolYear);
@@ -39,9 +39,9 @@ public class SchoolListRowValueMapper implements RowValueMapper<SchoolListRowVal
   }
 
   @Override
-  public MergeProcedureData mapValuesToMergeData(SchoolListRowValues values) {
+  public MergeProcedureData mapValuesToMergeData(SchoolListRow values) {
     return new MergeProcedureData(
-        values.getProcedureId(),
+        values.getEntityId(),
         null,
         null,
         List.of(),

@@ -133,14 +133,14 @@ export function ChatPanelHeader({ roomId }: Readonly<ChatPanelHeaderProps>) {
                     Einstellungen
                   </MenuItem>
                 )}
-                <MenuItem onClick={() => setIsOpen(true)}>
-                  <ListItemDecorator>
-                    <LogoutOutlinedIcon />
-                  </ListItemDecorator>
-                  {isDMRoom(communicationType)
-                    ? "Verlassen"
-                    : "Gruppe verlassen"}
-                </MenuItem>
+                {isGroupRoom(communicationType) && (
+                  <MenuItem onClick={() => setIsOpen(true)}>
+                    <ListItemDecorator>
+                      <LogoutOutlinedIcon />
+                    </ListItemDecorator>
+                    Gruppe verlassen
+                  </MenuItem>
+                )}
               </Menu>
             </Dropdown>
           </Stack>

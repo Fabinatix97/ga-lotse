@@ -10,14 +10,13 @@ import { startTransition, useState } from "react";
 
 import { EvaluationOverviewTableItem } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
 import { useGetEvaluationsOverview } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationsOverview";
-import { CreateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/CreateEvaluationSidebar";
+import { useCreateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/CreateEvaluationSidebar";
 import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 
 import { EvaluationsTable } from "./EvaluationsTable";
 
 export function EvaluationsOverview() {
-  const [openSidebar, setOpenSidebar] = useState<boolean>(false);
   const [anonymizationValue, setAnonymizationValue] = useState<boolean>();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
@@ -29,6 +28,7 @@ export function EvaluationsOverview() {
       desc: true,
     },
   });
+  const createEvaluationSidebar = useCreateEvaluationSidebar();
 
   const evaluationSortKey: Partial<
     Record<keyof EvaluationOverviewTableItem, ApiEvaluationSortKey>
@@ -56,29 +56,28 @@ export function EvaluationsOverview() {
     },
   });
 
+  function openCreateEvaluationSidebar() {
+    createEvaluationSidebar.open({
+      apiDataSources: availableDataSources,
+      apiTemplates: evaluationTemplates,
+    });
+  }
+
   return (
-    <>
-      <CreateEvaluationSidebar
-        apiDataSources={availableDataSources}
-        apiTemplates={evaluationTemplates}
-        openSidebar={openSidebar}
-        setOpenSidebar={setOpenSidebar}
-      />
-      <EvaluationsTable
-        evaluationOverview={evaluationsOverview}
-        loading={evaluationsOverviewIsFetching}
-        onCreateEvaluationClick={() => setOpenSidebar(true)}
-        onAnonymizedFilterChanged={(filter) => {
-          startTransition(() => {
-            setAnonymizationValue(filter);
-            resetPageNumber();
-          });
-        }}
-        paginationProps={getPaginationProps({
-          totalCount: evaluationsOverview.totalNumberOfElements,
-        })}
-        manualSortingProps={manualSortingProps}
-      />
-    </>
+    <EvaluationsTable
+      evaluationOverview={evaluationsOverview}
+      loading={evaluationsOverviewIsFetching}
+      onCreateEvaluationClick={openCreateEvaluationSidebar}
+      onAnonymizedFilterChanged={(filter) => {
+        startTransition(() => {
+          setAnonymizationValue(filter);
+          resetPageNumber();
+        });
+      }}
+      paginationProps={getPaginationProps({
+        totalCount: evaluationsOverview.totalNumberOfElements,
+      })}
+      manualSortingProps={manualSortingProps}
+    />
   );
 }

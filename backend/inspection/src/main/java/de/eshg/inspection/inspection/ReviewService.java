@@ -161,7 +161,7 @@ public class ReviewService {
       inspection.getPossibleDuplicates().clear();
     } else {
       inspectionRepository.deleteInspectionFromDuplicatesLists(inspection.getId());
-      inspectionDeletionService.delete(inspectionId);
+      inspectionDeletionService.deleteAndWriteToCemetery(inspection);
     }
   }
 

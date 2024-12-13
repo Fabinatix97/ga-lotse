@@ -5,6 +5,8 @@
 
 package de.eshg.inspection;
 
+import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.PersonApi;
 import de.eshg.inspection.inspection.persistence.Inspection;
 import de.eshg.inspection.inspection.persistence.InspectionRepository;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
@@ -15,8 +17,11 @@ import org.springframework.stereotype.Component;
 public class InspectionDeletionService extends ProcedureDeletionService<Inspection> {
 
   public InspectionDeletionService(
-      InspectionRepository procedureRepository, CemeteryService cemeteryService) {
-    super(procedureRepository, cemeteryService);
+      InspectionRepository procedureRepository,
+      CemeteryService cemeteryService,
+      PersonApi personApi,
+      FacilityApi facilityApi) {
+    super(procedureRepository, cemeteryService, personApi, facilityApi);
   }
 
   @Override

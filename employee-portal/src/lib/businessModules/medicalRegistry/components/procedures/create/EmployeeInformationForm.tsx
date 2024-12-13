@@ -50,7 +50,9 @@ export function EmployeeInformationForm(props: NestedFormProps) {
             <Typography level="body-md">
               Laden Sie eine formlose Liste im JPG-Format hoch, die für jede:n
               Mitarbeiter:in folgende Information enthält: Name, Vorname,
-              Geburtsdatum, Berufsbezeichnung, Beginn und Ende der Tätigkeit
+              Geburtsdatum, Berufsbezeichnung, Beginn und Ende der Tätigkeit.
+              Die Liste sollte alle Mitarbeiter:innen enthalten, auch die aus
+              möglichen weiteren Praxen.
             </Typography>
           </Grid>
           <Grid xxl={6} />

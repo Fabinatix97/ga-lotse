@@ -5,10 +5,14 @@
 
 package de.eshg.dental;
 
+import de.cronn.commons.lang.StreamUtil;
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
 import de.eshg.dental.api.CreateProphylaxisSessionRequest;
 import de.eshg.dental.api.ProphylaxisSessionPaginationAndSortParameters;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
+import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
+import de.eshg.dental.client.PersonClient;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ProphylaxisSession;
@@ -33,14 +37,17 @@ public class ProphylaxisSessionService {
   private final ProphylaxisSessionRepository prophylaxisSessionRepository;
   private final ContactClient contactClient;
   private final ChildRepository childRepository;
+  private final PersonClient personClient;
 
   public ProphylaxisSessionService(
       ProphylaxisSessionRepository prophylaxisSessionRepository,
       ContactClient contactClient,
-      ChildRepository childRepository) {
+      ChildRepository childRepository,
+      PersonClient personClient) {
     this.prophylaxisSessionRepository = prophylaxisSessionRepository;
     this.contactClient = contactClient;
     this.childRepository = childRepository;
+    this.personClient = personClient;
   }
 
   public ProphylaxisSession createProphylaxisSession(CreateProphylaxisSessionRequest request) {
@@ -69,7 +76,7 @@ public class ProphylaxisSessionService {
     }
   }
 
-  public Page<ProphylaxisSessionWithAugmentedData> getProphylaxisSessions(
+  public Page<ProphylaxisSessionWithAugmentedInstitution> getProphylaxisSessions(
       ProphylaxisSessionPaginationAndSortParameters paginationAndSortParameters,
       ProphylaxisSessionFilterParameters filterParameters) {
 
@@ -87,22 +94,45 @@ public class ProphylaxisSessionService {
         session -> {
           ContactDto contact = contacts.get(session.getInstitutionId());
           Assert.notNull(contact, () -> "Failed to resolve contact " + session.getInstitutionId());
-          return new ProphylaxisSessionWithAugmentedData(session, contact);
+          return new ProphylaxisSessionWithAugmentedInstitution(session, contact);
         });
   }
 
-  public ProphylaxisSessionWithAugmentedData getProphylaxisSession(UUID prophylaxisSessionId) {
-    ProphylaxisSession prophylaxisSession =
-        prophylaxisSessionRepository
-            .findByExternalId(prophylaxisSessionId)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Prophylaxis session with UUID %s not found"
-                            .formatted(prophylaxisSessionId)));
+  public ProphylaxisSessionWithAugmentedInstitution getProphylaxisSession(
+      UUID prophylaxisSessionId) {
+    ProphylaxisSession prophylaxisSession = findProphylaxisSession(prophylaxisSessionId);
+
+    return new ProphylaxisSessionWithAugmentedInstitution(
+        prophylaxisSession, contactClient.getContact(prophylaxisSession.getInstitutionId()));
+  }
+
+  private ProphylaxisSession findProphylaxisSession(UUID prophylaxisSessionId) {
+    return prophylaxisSessionRepository
+        .findByExternalId(prophylaxisSessionId)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "Prophylaxis session with UUID %s not found".formatted(prophylaxisSessionId)));
+  }
+
+  public ProphylaxisSessionWithAugmentedData getProphylaxisSessionWithDetails(
+      UUID prophylaxisSessionId) {
+    ProphylaxisSession prophylaxisSession = findProphylaxisSession(prophylaxisSessionId);
+
+    Map<UUID, GetPersonFileStateResponse> fileStatesById =
+        personClient.fetchPersonDataInBulk(prophylaxisSession.getParticipants()).stream()
+            .collect(StreamUtil.toLinkedHashMap(GetPersonFileStateResponse::id));
+    Map<Child, GetPersonFileStateResponse> participantMap =
+        prophylaxisSession.getParticipants().stream()
+            .collect(
+                StreamUtil.toLinkedHashMap(
+                    Function.identity(),
+                    child -> fileStatesById.get(child.getChildIdFromCentralFile())));
 
     return new ProphylaxisSessionWithAugmentedData(
-        prophylaxisSession, contactClient.getContact(prophylaxisSession.getInstitutionId()));
+        prophylaxisSession,
+        contactClient.getContact(prophylaxisSession.getInstitutionId()),
+        participantMap);
   }
 
   private Map<UUID, ContactDto> fetchContactsInBulk(Streamable<ProphylaxisSession> sessions) {

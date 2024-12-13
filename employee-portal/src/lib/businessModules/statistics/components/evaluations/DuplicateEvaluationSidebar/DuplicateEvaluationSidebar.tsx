@@ -8,8 +8,19 @@ import { DuplicateEvaluationFormModel } from "@/lib/businessModules/statistics/c
 import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/updateDiagramFormModel";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { DuplicateEvaluationStep } from "./DuplicateEvaluationStep";
+
+export function useDuplicateEvaluationSidebar(): UseSidebarWithFormRefResult<DuplicateEvaluationSidebarProps> {
+  return useSidebarWithFormRef({
+    component: DuplicateEvaluationSidebar,
+  });
+}
 
 export interface OriginalEvaluation {
   id: string;
@@ -18,12 +29,13 @@ export interface OriginalEvaluation {
   timeRangeEnd: Date;
 }
 
-export function DuplicateEvaluationSidebar(props: {
-  onClose: () => void;
+interface DuplicateEvaluationSidebarProps extends SidebarWithFormRefProps {
   originalEvaluation: OriginalEvaluation;
-}) {
+}
+
+function DuplicateEvaluationSidebar(props: DuplicateEvaluationSidebarProps) {
   const duplicateEvaluation = useDuplicateEvaluation({
-    onSuccess: props.onClose,
+    onSuccess: () => props.onClose(true),
   });
   const defaultNewEvaluationName = `${props.originalEvaluation.name} - Kopie`;
 
@@ -38,12 +50,12 @@ export function DuplicateEvaluationSidebar(props: {
 
   return (
     <SidebarStepper
-      open={true}
       onClose={props.onClose}
       onSubmit={handleSubmit}
       initialValues={{
         name: "",
       }}
+      formRef={props.formRef}
       steps={
         [
           {

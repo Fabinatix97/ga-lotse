@@ -23,12 +23,14 @@ import {
   LinkPersonSidebar,
 } from "@/lib/baseModule/components/gdpr/procedure/linkCentralFileSidebar/LinkCentralFileSidebar";
 import { CentralFileLinkTile } from "@/lib/baseModule/components/gdpr/procedure/tiles/CentralFileLinkTile";
+import { GdprDownloadPackagesTile } from "@/lib/baseModule/components/gdpr/procedure/tiles/GdprDownloadPackagesTile";
 import { GdprPersonDataTile } from "@/lib/baseModule/components/gdpr/procedure/tiles/GdprPersonDataTile";
 import { ProcedureDetailsTile } from "@/lib/baseModule/components/gdpr/procedure/tiles/ProcedureDetailsTile";
 import {
   SectionTile,
   SectionTitle,
 } from "@/lib/baseModule/components/gdpr/procedure/tiles/SectionTile";
+import { SheetQueryBoundary } from "@/lib/shared/components/boundaries/SheetQueryBoundary";
 import { CentralFileFacilityDetails } from "@/lib/shared/components/centralFile/display/CentralFileFacilityDetails";
 import { CentralFilePersonDetails } from "@/lib/shared/components/centralFile/display/CentralFilePersonDetails";
 import { useSidebar } from "@/lib/shared/components/drawer/useSidebar";
@@ -158,6 +160,15 @@ export function GDPRProcedureDetails({
         <QueryBoundary>
           <ProcedureDetailsTile procedure={procedure} />
         </QueryBoundary>
+        <SheetQueryBoundary
+          title="Datenpakete"
+          loadingText="Datenpakete werden geladen..."
+        >
+          {procedure.status === ApiGdprProcedureStatus.Closed &&
+            procedure.type === ApiGdprProcedureType.OfAccess && (
+              <GdprDownloadPackagesTile gdprProcedure={procedure} />
+            )}
+        </SheetQueryBoundary>
         {procedure.status === ApiGdprProcedureStatus.Draft && (
           <CentralFileLinkTile
             centralFileId={procedure.centralFileId}

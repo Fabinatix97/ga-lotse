@@ -5,7 +5,7 @@
 
 package de.eshg.base;
 
-import de.cronn.assertions.validationfile.replacements.Replacer;
+import de.cronn.assertions.validationfile.normalization.ValidationNormalizer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -45,14 +45,18 @@ public class ZipUtil {
     return listZipContent(content, Collections.emptyList());
   }
 
-  public static String listZipContent(byte[] content, List<Replacer> replacers) {
+  public static String listZipContent(byte[] content, ValidationNormalizer normalizer) {
+    return listZipContent(content, Collections.singletonList(normalizer));
+  }
+
+  public static String listZipContent(byte[] content, List<ValidationNormalizer> normalizers) {
     List<String> results = new ArrayList<>();
     try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content);
         ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream)) {
       for (ZipEntry zipEntry = zipInputStream.getNextEntry();
           zipEntry != null;
           zipEntry = zipInputStream.getNextEntry()) {
-        results.add(stringifyZipEntry(zipEntry, zipInputStream.readAllBytes(), replacers));
+        results.add(stringifyZipEntry(zipEntry, zipInputStream.readAllBytes(), normalizers));
       }
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -63,19 +67,19 @@ public class ZipUtil {
   }
 
   private static String stringifyZipEntry(
-      ZipEntry zipEntry, byte[] zipEntryContent, List<Replacer> replacers) {
-    String fileName = applyReplacers(zipEntry.getName(), replacers);
+      ZipEntry zipEntry, byte[] zipEntryContent, List<ValidationNormalizer> normalizers) {
+    String fileName = applyReplacers(zipEntry.getName(), normalizers);
     if (!zipEntry.isDirectory()) {
       if (zipEntry.getName().endsWith(".zip")) {
         return fileName
             + ":"
             + System.lineSeparator()
-            + listZipContent(zipEntryContent, replacers).indent(4);
+            + listZipContent(zipEntryContent, normalizers).indent(4);
       } else if (isTextFile(zipEntry.getName())) {
         return fileName
             + ":"
             + System.lineSeparator()
-            + applyReplacers(new String(zipEntryContent), replacers).indent(4);
+            + applyReplacers(new String(zipEntryContent), normalizers).indent(4);
       } else {
         return fileName + " [" + hashOf(zipEntryContent) + "]";
       }
@@ -95,9 +99,9 @@ public class ZipUtil {
     }
   }
 
-  private static String applyReplacers(String source, List<Replacer> replacers) {
-    for (Replacer replacer : replacers) {
-      source = replacer.normalize(source);
+  private static String applyReplacers(String source, List<ValidationNormalizer> normalizers) {
+    for (ValidationNormalizer normalizer : normalizers) {
+      source = normalizer.normalize(source);
     }
     return source;
   }

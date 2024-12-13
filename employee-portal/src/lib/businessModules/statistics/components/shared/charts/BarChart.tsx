@@ -16,7 +16,10 @@ import {
   ChartApi,
   EChart,
 } from "@/lib/businessModules/statistics/components/shared/charts/EChart";
-import { calculateRelativeFormatting } from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
+import {
+  calculateRelativeFormatting,
+  formatBreakLongStringOnce,
+} from "@/lib/businessModules/statistics/components/shared/charts/dataHelper";
 
 export interface BarChartProps {
   diagramData: AnalysisDiagramBarChart["data"];
@@ -137,6 +140,22 @@ export function BarChart(props: BarChartProps) {
   const categoryAxisOption: EChartsOption["xAxis"] & EChartsOption["yAxis"] = {
     type: "category",
     data: series.labels,
+    axisLabel: {
+      ...(props.orientation === "VERTICAL" &&
+      props.type !== DiagramType.HISTOGRAM_CHART
+        ? {
+            hideOverlap: false,
+            interval: 0,
+            width: 100,
+            overflow: "break",
+          }
+        : {}),
+      ...(props.orientation === "HORIZONTAL"
+        ? {
+            formatter: formatBreakLongStringOnce,
+          }
+        : {}),
+    },
     axisLine: {
       show: props.type === DiagramType.HISTOGRAM_CHART,
     },
@@ -173,6 +192,9 @@ export function BarChart(props: BarChartProps) {
     tooltip: {
       show: true,
       valueFormatter: (params) => formatter(params as number),
+    },
+    grid: {
+      containLabel: true,
     },
     series: isStackedSeries
       ? Object.keys(series.data).map((serie) => {

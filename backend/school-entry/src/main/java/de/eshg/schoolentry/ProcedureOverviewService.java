@@ -13,8 +13,8 @@ import de.eshg.base.SortDirection;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.centralfile.api.person.GetPersonsSortKey;
 import de.eshg.lib.contact.ContactClient;
-import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.model.RelatedPerson_;
 import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.rest.service.error.BadRequestException;
@@ -30,6 +30,7 @@ import de.eshg.schoolentry.business.model.ProcedureData;
 import de.eshg.schoolentry.business.model.ProcedureWithChildData;
 import de.eshg.schoolentry.business.model.WaitingRoomProcedureData;
 import de.eshg.schoolentry.client.PersonClient;
+import de.eshg.schoolentry.domain.model.Person;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure;
 import de.eshg.schoolentry.domain.model.SchoolEntryProcedure_;
 import de.eshg.schoolentry.domain.repository.SchoolEntryProcedureRepository;
@@ -163,7 +164,7 @@ public class ProcedureOverviewService {
               searchParameters.searchFirstName(),
               searchParameters.searchLastName(),
               searchParameters.searchDateOfBirth(),
-              PersonType.PATIENT);
+              Person.PERSON_TYPE_USED_FOR_CHILDREN);
 
       int offset = pageSpec.pageNumber() * pageSpec.pageSize();
 
@@ -264,12 +265,15 @@ public class ProcedureOverviewService {
     CriteriaQuery<UUID> query = criteriaBuilder.createQuery(UUID.class);
     Root<SchoolEntryProcedure> root = query.from(SchoolEntryProcedure.class);
 
-    Join<?, ?> relatedPersonsJoin = root.join(SchoolEntryProcedure_.RELATED_PERSONS);
-    Join<?, ?> childJoin =
+    Join<SchoolEntryProcedure, ? extends RelatedPerson<?>> relatedPersonsJoin =
+        root.join(SchoolEntryProcedure_.relatedPersons);
+    Join<SchoolEntryProcedure, ? extends RelatedPerson<?>> childJoin =
         relatedPersonsJoin.on(
             criteriaBuilder.equal(
-                relatedPersonsJoin.get(RelatedPerson_.PERSON_TYPE), PersonType.PATIENT));
-    query.select(childJoin.get(RelatedPerson_.CENTRAL_FILE_STATE_ID));
+                relatedPersonsJoin.get(RelatedPerson_.personType),
+                Person.PERSON_TYPE_USED_FOR_CHILDREN));
+
+    query.select(childJoin.get(RelatedPerson_.centralFileStateId));
 
     query.where(procedureSpecification.toPredicate(root, query, criteriaBuilder));
 

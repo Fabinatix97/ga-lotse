@@ -9,24 +9,20 @@
   "place": {
     "title": "Wer ist für die Einschulungsuntersuchung zuständig?"
   },
-  "address": {
-    "title": "Adresse"
-  },
-  "openingHours": {
-    "title": "Öffnungs- und Sprechzeiten",
-    "days": "Mo - Do",
-    "daysShort": "Fr",
-    "hours": "07:30 - 16:00 Uhr",
-    "remark": "Nur nach Terminabsprache.",
-    "hoursShort": "07:30 - 14:00 Uhr",
-    "remarkShort": "Nur nach Terminabsprache."
-  },
-  "telefon": {
-    "title": "Telefon",
-    "number": "Telefon: {{phoneNumber}}"
-  },
-  "email": {
-    "title": "E-Mail-Adresse"
+  "contact": {
+    "addressSection": {
+      "title": "Adresse"
+    },
+    "openingHoursSection": {
+      "title": "Öffnungs- und Sprechzeiten"
+    },
+    "telefonSection": {
+      "title": "Telefon",
+      "number": "Telefon: {{phoneNumber}}"
+    },
+    "emailSection": {
+      "title": "E-Mail-Adresse"
+    }
   },
   "personalArea": {
     "title": "Sie haben eine Einladung erhalten?",

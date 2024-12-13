@@ -30,10 +30,8 @@ export function AppointmentSection() {
 
   return (
     <ContentSheet>
-      <ContentSheetTitle>
-        {t("appointment.bookAppointmentTitle")}
-      </ContentSheetTitle>
-      <Typography>{t("appointment.bookAppointmentText")}</Typography>
+      <ContentSheetTitle>{t("personalArea.title")}</ContentSheetTitle>
+      <Typography>{t("personalArea.information")}</Typography>
       <Stack direction="column" gap={2}>
         <Button
           type="submit"
@@ -41,7 +39,7 @@ export function AppointmentSection() {
             handleBookAppointment();
           }}
         >
-          {t("appointment.bookAppointment")}
+          {t("personalArea.bookAppointment")}
         </Button>
         <Button
           type="submit"
@@ -50,7 +48,7 @@ export function AppointmentSection() {
             handleAppointmentLogin();
           }}
         >
-          {t("appointment.myAppointment")}
+          {t("personalArea.goToPersonalArea")}
         </Button>
       </Stack>
     </ContentSheet>

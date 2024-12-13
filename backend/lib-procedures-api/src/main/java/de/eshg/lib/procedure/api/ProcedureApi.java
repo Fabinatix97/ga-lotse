@@ -66,7 +66,15 @@ public interface ProcedureApi extends RecentProcedureApi, ProcedureMetricsApi {
 
   @GetExchange(ProcedureLibrary.PROCEDURES_API + "/{id}/files")
   @ApiResponse(responseCode = "200")
-  @Operation(summary = "Get all file details for a procedure")
+  @Operation(
+      summary = "Get relevant procedure files",
+      description =
+          """
+          This returns all relevant (highest version per keydocument type and non-deleted) files sorted by descending creation date.
+          That is:
+           * if an progress entry has a keydocument type set, then its files are only returned if it also has the highest keydocument version of the respective key document type.
+           * if an progress entry does not have a keydocument type, then its files are always returned.
+          """)
   GetProcedureFileDetailsResponse getProcedureFileDetails(@PathVariable("id") UUID id);
 
   @ApiResponse(responseCode = "200")

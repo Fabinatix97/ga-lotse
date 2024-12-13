@@ -20,6 +20,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 public class Child extends Procedure<Child, ChildTask, Person, Facility> {
@@ -41,6 +42,7 @@ public class Child extends Procedure<Child, ChildTask, Person, Facility> {
       orphanRemoval = true,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
       mappedBy = Examination_.CHILD)
+  @BatchSize(size = 100)
   @OrderBy
   private final List<Examination> examinations = new ArrayList<>();
 

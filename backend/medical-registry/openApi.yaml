@@ -815,6 +815,7 @@ paths:
       - description: |
           Filter logic:
           - If `procedureStatus` is submitted, only procedures are returned which have one of the submitted statuses.
+          - `procedureStatus` and `procedureType` are always submitted together
           - If not submitted, no filtering takes place
         in: query
         name: procedureStatus
@@ -823,6 +824,19 @@ paths:
           type: array
           items:
             $ref: "#/components/schemas/ProcedureStatus"
+          uniqueItems: true
+      - description: |
+          Filter logic:
+          - If `procedureType` is submitted, only procedures are returned which have one of the submitted types.
+          - `procedureStatus` and `procedureType` are always submitted together
+          - If not submitted, no filtering takes place
+        in: query
+        name: procedureType
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProcedureType"
           uniqueItems: true
       - description: |
           Filter logic:
@@ -841,7 +855,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/GetMedicalRegistryEntryOverview"
+                $ref: "#/components/schemas/GetMedicalRegistryEntries"
           description: OK
       summary: Get paginated and optionally filtered medical registry procedures.
         Filtering is optional
@@ -932,6 +946,28 @@ paths:
                 type: string
                 format: uuid
           description: OK
+      tags:
+      - MedicalRegistry
+  /medical-registry-entries/search:
+    get:
+      description: |
+        Searches for matches in person and facility.
+        As well as lifetime doctor number, establishment number and institution identifier.
+      operationId: searchProcedures_1
+      parameters:
+      - in: query
+        name: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetMedicalRegistryEntries"
+          description: OK
+      summary: Search medical registry entries for request parameter
       tags:
       - MedicalRegistry
   /medical-registry-entries/{procedureId}:
@@ -1323,6 +1359,11 @@ paths:
       - Procedure
   /procedures/{id}/files:
     get:
+      description: |
+        This returns all relevant (highest version per keydocument type and non-deleted) files sorted by descending creation date.
+        That is:
+         * if an progress entry has a keydocument type set, then its files are only returned if it also has the highest keydocument version of the respective key document type.
+         * if an progress entry does not have a keydocument type, then its files are always returned.
       operationId: getProcedureFileDetails
       parameters:
       - in: path
@@ -1338,7 +1379,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetProcedureFileDetailsResponse"
           description: OK
-      summary: Get all file details for a procedure
+      summary: Get relevant procedure files
       tags:
       - Procedure
   /procedures/{procedureId}/progress-entries:
@@ -1612,6 +1653,34 @@ paths:
       summary: Get the history of a manual progress entry
       tags:
       - ProgressEntry
+  /public/privacy-notice:
+    get:
+      operationId: getPrivacyNotice
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the privacy-notice document.
+      tags:
+      - MedicalRegistryPublicCitizen
+  /public/privacy-policy:
+    get:
+      operationId: getPrivacyPolicy
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get the privacy-policy document.
+      tags:
+      - MedicalRegistryPublicCitizen
   /task-metrics:
     get:
       operationId: getTaskMetrics
@@ -3526,7 +3595,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ManualProgressEntryHistory"
-    GetMedicalRegistryEntryOverview:
+    GetMedicalRegistryEntries:
       type: object
       properties:
         medicalRegistryEntries:
@@ -4371,6 +4440,9 @@ components:
           $ref: "#/components/schemas/ApplicantAddress"
         certificateRequested:
           type: boolean
+        createdAt:
+          type: string
+          format: date-time
         dateOfBirth:
           type: string
           format: date
@@ -4388,6 +4460,7 @@ components:
       required:
       - address
       - certificateRequested
+      - createdAt
       - dateOfBirth
       - firstName
       - id

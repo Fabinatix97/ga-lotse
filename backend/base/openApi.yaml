@@ -568,10 +568,13 @@ paths:
           $ref: "#/components/schemas/ContactType"
       - description: A filter for the possible categories of Institutions.
         in: query
-        name: category
+        name: categories
         required: false
         schema:
-          $ref: "#/components/schemas/ContactCategory"
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactCategory"
+          uniqueItems: true
       - description: The parameter by which to sort.
         in: query
         name: sortKey
@@ -1435,6 +1438,28 @@ paths:
         "200":
           description: OK
       summary: Cancel the GDPR procedure
+      tags:
+      - GdprProcedure
+  /gdpr-procedures/{id}/central-file-download-package:
+    get:
+      operationId: getCentralFileDownloadPackage
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Get Gdpr Download Package of central files linked to given Gdpr Procedure
+        Id
       tags:
       - GdprProcedure
   /gdpr-procedures/{id}/close-procedure:

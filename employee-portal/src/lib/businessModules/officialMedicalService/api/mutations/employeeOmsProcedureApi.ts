@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PostEmployeeProcedureRequest } from "@eshg/employee-portal-api/officialMedicalService";
+import { ApiPostEmployeeOmsProcedureRequest } from "@eshg/employee-portal-api/officialMedicalService";
 import { useHandledMutation } from "@eshg/lib-portal/api/useHandledMutation";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
 
@@ -14,7 +14,7 @@ export function usePostEmployeeProcedure() {
   const employeeOmsProcedureApi = useEmployeeOmsProcedureApi();
 
   return useHandledMutation({
-    mutationFn: (request: PostEmployeeProcedureRequest) =>
+    mutationFn: (request: ApiPostEmployeeOmsProcedureRequest) =>
       employeeOmsProcedureApi.postEmployeeProcedure(request),
     onSuccess: () => {
       snackbar.confirmation("Der Vorgang wurde angelegt.");

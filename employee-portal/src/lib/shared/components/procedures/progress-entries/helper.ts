@@ -6,7 +6,6 @@
 import {
   ApiManualProgressEntryType,
   ApiProgressEntry,
-  ApiProgressEntryReferenceFilePair,
   ApiSystemProgressEntry,
   ApiTriggerType,
 } from "@eshg/employee-portal-api/businessProcedures";
@@ -14,17 +13,6 @@ import { OptionalFieldValue } from "@eshg/lib-portal/types/form";
 import { isDefined, isEmpty } from "remeda";
 
 import { manualProgressEntryFileTypes } from "@/lib/shared/components/procedures/progress-entries/constants";
-
-export function resolveFileId(
-  id: string,
-  progressEntryReferenceFilePairs: ApiProgressEntryReferenceFilePair[],
-): ApiProgressEntryReferenceFilePair | undefined {
-  return progressEntryReferenceFilePairs.find(
-    (progressEntryReferenceFilePair) => {
-      return id === progressEntryReferenceFilePair.file.fileId;
-    },
-  );
-}
 
 export function extractFileDescriptionValue(entry: ApiProgressEntry) {
   if (!isDefined(entry.fileReference)) return undefined;

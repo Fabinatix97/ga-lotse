@@ -9,6 +9,7 @@ import de.eshg.base.GenderDto;
 import de.eshg.base.SalutationDto;
 import de.eshg.base.address.AddressDto;
 import de.eshg.lib.common.CountryCode;
+import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public record ChildDetailsDto(
     @NotNull UUID id,
     @NotNull long version,
+    @NotNull ProcedureStatusDto status,
     @NotNull UUID fileStateId,
     @NotNull boolean fileStateOutdated,
     @Size(min = 1, max = 119) String title,

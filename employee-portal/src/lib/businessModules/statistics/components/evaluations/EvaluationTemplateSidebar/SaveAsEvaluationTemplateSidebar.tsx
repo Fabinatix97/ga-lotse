@@ -7,23 +7,33 @@ import { useAddEvaluationTemplate } from "@/lib/businessModules/statistics/api/m
 import { useGetEvaluationDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationDetails";
 import { SaveEvaluationTemplateStep } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveEvaluationTemplateStep/SaveEvaluationTemplateStep";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function SaveAsEvaluationTemplateSidebar({
-  open,
+export function useSaveAsEvaluationTemplateSidebar(): UseSidebarWithFormRefResult<SaveAsEvaluationTemplateSidebarProps> {
+  return useSidebarWithFormRef({
+    component: SaveAsEvaluationTemplateSidebar,
+  });
+}
+
+interface SaveAsEvaluationTemplateSidebarProps extends SidebarWithFormRefProps {
+  evaluationId: string;
+}
+
+function SaveAsEvaluationTemplateSidebar({
   onClose,
   evaluationId,
-}: {
-  open: boolean;
-  onClose: () => void;
-  evaluationId: string;
-}) {
+  formRef,
+}: SaveAsEvaluationTemplateSidebarProps) {
   const evaluationDetails = useGetEvaluationDetails(evaluationId);
-  const addEvaluationTemplate = useAddEvaluationTemplate(onClose);
+  const addEvaluationTemplate = useAddEvaluationTemplate(() => onClose(true));
 
   return (
     <SidebarStepper
       onClose={onClose}
-      open={open}
       onSubmit={(model) =>
         addEvaluationTemplate(evaluationId, model).then(() => void 0)
       }
@@ -31,6 +41,7 @@ export function SaveAsEvaluationTemplateSidebar({
         name: "",
         description: "",
       }}
+      formRef={formRef}
       steps={[
         {
           type: "StandardStep",

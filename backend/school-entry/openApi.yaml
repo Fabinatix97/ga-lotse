@@ -1508,6 +1508,11 @@ paths:
       - Procedure
   /procedures/{id}/files:
     get:
+      description: |
+        This returns all relevant (highest version per keydocument type and non-deleted) files sorted by descending creation date.
+        That is:
+         * if an progress entry has a keydocument type set, then its files are only returned if it also has the highest keydocument version of the respective key document type.
+         * if an progress entry does not have a keydocument type, then its files are always returned.
       operationId: getProcedureFileDetails
       parameters:
       - in: path
@@ -1523,7 +1528,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetProcedureFileDetailsResponse"
           description: OK
-      summary: Get all file details for a procedure
+      summary: Get relevant procedure files
       tags:
       - Procedure
   /procedures/{procedureId}/progress-entries:

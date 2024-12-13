@@ -4,12 +4,7 @@
  */
 
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import {
-  AccessTimeOutlined,
-  CallOutlined,
-  FmdGoodOutlined,
-  MailOutlineOutlined,
-} from "@mui/icons-material";
+import { CallOutlined, MailOutlineOutlined } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -17,6 +12,8 @@ import { useSchoolEntryPublicCitizenApi } from "@/lib/businessModules/schoolEntr
 import { getOpeningHoursQuery } from "@/lib/businessModules/schoolEntry/api/queries/publicCitizenApi";
 import { useTranslation } from "@/lib/i18n/client";
 import { DepartmentInfo } from "@/lib/shared/api/models/DepartmentInfo";
+import { AddressSection } from "@/lib/shared/components/AddressSection";
+import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
 import {
   InfoSection,
   InfoSectionGrid,
@@ -27,10 +24,7 @@ import {
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
 import { GridColumnStack } from "@/lib/shared/components/layout/grid";
-import {
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
+import { formatStreetAndHouseNumber } from "@/lib/shared/formatters/address";
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
 interface LandingpageContentProps {
@@ -39,6 +33,10 @@ interface LandingpageContentProps {
 
 export function LandingpageContent(props: LandingpageContentProps) {
   const { t } = useTranslation(["schoolEntry/overview"]);
+  const publicCitizenApi = useSchoolEntryPublicCitizenApi();
+  const { data: openingHours } = useSuspenseQuery(
+    getOpeningHoursQuery(publicCitizenApi),
+  );
 
   return (
     <GridColumnStack>
@@ -55,8 +53,14 @@ export function LandingpageContent(props: LandingpageContentProps) {
       <ContentSheet>
         <ContentSheetTitle>{t("place.title")}</ContentSheetTitle>
         <InfoSectionGrid>
-          <AddressSection department={props.departmentInfo} />
-          <OpeningHoursSection />
+          <AddressSection
+            department={props.departmentInfo}
+            localePath="schoolEntry/overview"
+          />
+          <OpeningHoursSection
+            openingHours={openingHours}
+            localePath="schoolEntry/overview"
+          />
           <PhoneNumbersSection department={props.departmentInfo} />
           <EmailSection department={props.departmentInfo} />
         </InfoSectionGrid>
@@ -65,50 +69,15 @@ export function LandingpageContent(props: LandingpageContentProps) {
   );
 }
 
-function AddressSection(props: DepartmentInfoProps) {
-  const { t } = useTranslation(["schoolEntry/overview"]);
-  return (
-    <InfoSection icon={<FmdGoodOutlined />}>
-      <InfoSectionTitle>{t("address.title")}</InfoSectionTitle>
-      <Typography>
-        {props.department.name}
-        <br />
-        {formatStreetAndHouseNumber(props.department)}
-        <br />
-        {formatPostalCodeAndCity(props.department)}
-      </Typography>
-    </InfoSection>
-  );
-}
-
-function OpeningHoursSection() {
-  const { t, i18n } = useTranslation(["schoolEntry/overview"]);
-  const publicCitizenApi = useSchoolEntryPublicCitizenApi();
-  const { data: openingHours } = useSuspenseQuery(
-    getOpeningHoursQuery(publicCitizenApi),
-  );
-
-  const openingHoursInSelectedLanguage =
-    i18n.language === "de" ? openingHours.de : openingHours.en;
-  return (
-    <InfoSection icon={<AccessTimeOutlined />}>
-      <InfoSectionTitle>{t("openingHours.title")}</InfoSectionTitle>
-      {openingHoursInSelectedLanguage.map((openingHour) => (
-        <p style={{ margin: 0 }} key={openingHour}>
-          {openingHour}
-        </p>
-      ))}
-    </InfoSection>
-  );
-}
-
 function PhoneNumbersSection(props: DepartmentInfoProps) {
   const { t } = useTranslation(["schoolEntry/overview"]);
   return (
     <InfoSection icon={<CallOutlined />}>
-      <InfoSectionTitle>{t("telefon.title")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("contact.telefonSection.title")}</InfoSectionTitle>
       <Typography>
-        {t("telefon.number", { phoneNumber: props.department.phoneNumber })}
+        {t("contact.telefonSection.number", {
+          phoneNumber: props.department.phoneNumber,
+        })}
       </Typography>
     </InfoSection>
   );
@@ -119,7 +88,7 @@ function EmailSection(props: DepartmentInfoProps) {
   const email = props.department.email;
   return (
     <InfoSection icon={<MailOutlineOutlined />}>
-      <InfoSectionTitle>{t("email.title")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("contact.emailSection.title")}</InfoSectionTitle>
       <ExternalLink href={`mailto:${email}`}>{email}</ExternalLink>
     </InfoSection>
   );

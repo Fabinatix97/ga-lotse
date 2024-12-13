@@ -22,7 +22,7 @@ import {
 import { Box, Button } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useState } from "react";
-import { isDefined, isNonNull, isPlainObject } from "remeda";
+import { isDefined, isPlainObject } from "remeda";
 
 import { useExportEvaluationData } from "@/lib/businessModules/statistics/api/downloads/useExportEvaluationData";
 import {
@@ -31,8 +31,8 @@ import {
 } from "@/lib/businessModules/statistics/api/models/evaluationOverview";
 import { getEvaluationsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
 import { useIsNewFeatureEnabled } from "@/lib/businessModules/statistics/api/queries/useStatisticsFeatureToggle";
-import { DuplicateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/DuplicateEvaluationSidebar";
-import { SaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveAsEvaluationTemplateSidebar";
+import { useDuplicateEvaluationSidebar } from "@/lib/businessModules/statistics/components/evaluations/DuplicateEvaluationSidebar/DuplicateEvaluationSidebar";
+import { useSaveAsEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveAsEvaluationTemplateSidebar";
 import { EvaluationNameChangeModal } from "@/lib/businessModules/statistics/components/evaluations/details/EvaluationNameChangeModal";
 import {
   ENUM_FALSE_VALUE,
@@ -42,6 +42,7 @@ import {
 } from "@/lib/businessModules/statistics/components/evaluations/details/filter/enumFilterMappings";
 import { useDeleteEvaluationWithConfirmation } from "@/lib/businessModules/statistics/components/evaluations/useDeleteEvaluationWithConfirmation";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
+import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
@@ -232,14 +233,10 @@ export function EvaluationsTable({
     ApiStatisticsFeature.FakeAnonymization,
   );
 
-  const [duplicateEvaluationAction, setDuplicateEvaluationAction] =
-    useState<EvaluationOverviewTableItem>();
+  const duplicateEvaluationSidebar = useDuplicateEvaluationSidebar();
   const [nameChangeAction, setNameChangeAction] =
     useState<Pick<ApiEvaluationInfo, "id" | "name">>();
-  const [
-    saveAsEvaluationTemplateSidebarEvaluationId,
-    setSaveAsEvaluationTemplateSidebarEvaluationId,
-  ] = useState<string | null>(null);
+  const saveAsEvaluationTemplateSidebar = useSaveAsEvaluationTemplateSidebar();
 
   const userPermissions = useStatisticsRoleChecks();
 
@@ -248,6 +245,7 @@ export function EvaluationsTable({
 
   const { download: exportData, downloadContainerRef } =
     useExportEvaluationData();
+  const dataExportGuard = useDataExportGuard(false);
 
   const filterSettings = useFilterSettings({
     definitions: evaluationsOverviewFilterDefinitions,
@@ -258,6 +256,14 @@ export function EvaluationsTable({
     },
     showSearch: false,
   });
+
+  function openDuplicateEvaluationSidebar(item: EvaluationOverviewTableItem) {
+    duplicateEvaluationSidebar.open({ originalEvaluation: item });
+  }
+
+  function openSaveAsEvaluationTemplateSidebar(evaluationId: string) {
+    saveAsEvaluationTemplateSidebar.open({ evaluationId });
+  }
 
   return (
     <>
@@ -311,11 +317,13 @@ export function EvaluationsTable({
               userPermissions.canDelete,
               userPermissions.canWrite,
               userPermissions.canUpdateEvaluation,
-              setDuplicateEvaluationAction,
+              openDuplicateEvaluationSidebar,
               (id, name) => setNameChangeAction({ id, name }),
-              (item) => setSaveAsEvaluationTemplateSidebarEvaluationId(item.id),
-              ({ id, tooMuchDataForExport }) =>
-                exportData({ evaluationId: id }, { tooMuchDataForExport }),
+              (item) => openSaveAsEvaluationTemplateSidebar(item.id),
+              async ({ id, tooMuchDataForExport }) =>
+                dataExportGuard(() =>
+                  exportData({ evaluationId: id }, { tooMuchDataForExport }),
+                ),
             )}
             sorting={manualSortingProps}
             rowNavigation={{
@@ -339,24 +347,6 @@ export function EvaluationsTable({
           />
         </TableSheet>
       </TablePage>
-
-      {isDefined(duplicateEvaluationAction) && (
-        <OverlayBoundary>
-          <DuplicateEvaluationSidebar
-            onClose={() => setDuplicateEvaluationAction(undefined)}
-            originalEvaluation={duplicateEvaluationAction}
-          />
-        </OverlayBoundary>
-      )}
-      {isNonNull(saveAsEvaluationTemplateSidebarEvaluationId) && (
-        <OverlayBoundary>
-          <SaveAsEvaluationTemplateSidebar
-            open={true}
-            onClose={() => setSaveAsEvaluationTemplateSidebarEvaluationId(null)}
-            evaluationId={saveAsEvaluationTemplateSidebarEvaluationId}
-          />
-        </OverlayBoundary>
-      )}
 
       {isDefined(nameChangeAction) && (
         <OverlayBoundary>

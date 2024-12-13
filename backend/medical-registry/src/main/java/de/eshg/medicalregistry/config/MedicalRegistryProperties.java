@@ -5,7 +5,9 @@
 
 package de.eshg.medicalregistry.config;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.net.URI;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,6 +25,9 @@ public class MedicalRegistryProperties {
   @Positive private int draftEntryLimit = 1000;
 
   @Positive private int maxNumberOfImportRows = 4_005;
+
+  @NotNull private URI privacyNoticeLocation;
+  @NotNull private URI privacyPolicyLocation;
 
   public Duration getRateLimitIntervalMinutes() {
     return rateLimitIntervalMinutes;
@@ -54,5 +59,21 @@ public class MedicalRegistryProperties {
 
   public void setMaxNumberOfImportRows(int maxNumberOfImportRows) {
     this.maxNumberOfImportRows = maxNumberOfImportRows;
+  }
+
+  public URI getPrivacyNoticeLocation() {
+    return privacyNoticeLocation;
+  }
+
+  public void setPrivacyNoticeLocation(URI privacyNoticeLocation) {
+    this.privacyNoticeLocation = privacyNoticeLocation;
+  }
+
+  public URI getPrivacyPolicyLocation() {
+    return privacyPolicyLocation;
+  }
+
+  public void setPrivacyPolicyLocation(URI privacyPolicyLocation) {
+    this.privacyPolicyLocation = privacyPolicyLocation;
   }
 }

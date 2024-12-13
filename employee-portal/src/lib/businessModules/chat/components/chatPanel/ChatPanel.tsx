@@ -17,13 +17,18 @@ import { NewDirectChat } from "@/lib/businessModules/chat/components/chatPanel/N
 import { NewGroupChat } from "@/lib/businessModules/chat/components/chatPanel/NewGroupChat";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
-import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
+import {
+  ChatPanelView,
+  CommunicationType,
+} from "@/lib/businessModules/chat/shared/enums";
 import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { useTyping } from "@/lib/businessModules/chat/shared/hooks/useTyping";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import {
+  checkIfRoomIsInactive,
   getChatUserDirectory,
+  getDMRooms,
   getRoomNameAndCommunicationType,
   markAllMessagesAsRead,
   setReadMarker,
@@ -58,6 +63,19 @@ export function ChatPanel({
   const roomWithCommunicationType = selectedRoom
     ? getRoomNameAndCommunicationType(selectedRoom)
     : undefined;
+  const directMessageRooms = getDMRooms(matrixClient, matrixClient.getUserId());
+  const wasDMRoom = roomId && directMessageRooms?.includes(roomId);
+  const isRoomDeactivated = checkIfRoomIsInactive(
+    loggedInUserId,
+    roomWithCommunicationType
+      ? {
+          ...roomWithCommunicationType,
+          communicationType: wasDMRoom
+            ? CommunicationType.DirectMessage
+            : roomWithCommunicationType.communicationType,
+        }
+      : undefined,
+  );
 
   useEffect(() => {
     if (!isFocused) return;
@@ -158,6 +176,7 @@ export function ChatPanel({
               sendMessage({ text, mentionedUsers, roomId })
             }
             roomMembers={roomWithCommunicationType.room.getMembers()}
+            isRoomDeactivated={isRoomDeactivated}
           />
         </Box>
       </>

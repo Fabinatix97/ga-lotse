@@ -9,7 +9,7 @@ import { Stack } from "@mui/joy";
 import { Formik } from "formik";
 
 import { useImportChildren } from "@/lib/businessModules/dental/api/mutations/importApi";
-import { SearchContactField } from "@/lib/shared/components/formFields/SearchContactField";
+import { SearchMultipleContactsField } from "@/lib/shared/components/formFields/SearchMultipleContactsField";
 import { FileField } from "@/lib/shared/components/formFields/file/FileField";
 import { FileType } from "@/lib/shared/components/formFields/file/FileType";
 import { SchoolYearField } from "@/lib/shared/components/formFields/schoolYear";
@@ -54,10 +54,12 @@ function ImportChildrenSidebar(props: SidebarWithFormRefProps) {
           importResult={importResult}
         >
           <Stack spacing={2}>
-            <SearchContactField
+            <SearchMultipleContactsField
               name="institutionId"
               label="Einrichtung"
-              category={ApiContactCategory.School}
+              categories={new Set<ApiContactCategory>()
+                .add(ApiContactCategory.School)
+                .add(ApiContactCategory.Daycare)}
             />
             <SchoolYearField
               name="schoolYear"

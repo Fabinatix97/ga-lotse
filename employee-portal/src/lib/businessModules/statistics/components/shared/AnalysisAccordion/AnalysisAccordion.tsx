@@ -10,10 +10,9 @@ import { Suspense, useState } from "react";
 import { Analysis } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { FlatAttribute } from "@/lib/businessModules/statistics/api/models/flatAttribute";
 import { useDeleteAnalysis } from "@/lib/businessModules/statistics/api/mutations/useDeleteAnalysis";
-import { UpdateAnalysisSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateAnalysisSidebar/UpdateAnalysisSidebar";
+import { useUpdateAnalysisSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateAnalysisSidebar/UpdateAnalysisSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
@@ -113,11 +112,17 @@ interface AnalysisAccordionItemProps {
 }
 
 function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
-  const [isUpdateAnalysisSidebarOpen, setIsUpdateAnalysisSidebarOpen] =
-    useState(false);
+  const updateAnalysisSidebar = useUpdateAnalysisSidebar();
   const canWrite = useStatisticsRoleChecks().canWrite();
   const { openConfirmationDialog } = useConfirmationDialog();
   const deleteAnalysis = useDeleteAnalysis();
+
+  function openUpdateAnalysisSidebar() {
+    updateAnalysisSidebar.open({
+      analysisId: props.analysis.id,
+      name: props.analysis.name,
+    });
+  }
 
   function handleAnalysisDelete(analysisId: string, name: string) {
     openConfirmationDialog({
@@ -131,75 +136,58 @@ function AnalysisAccordionItem(props: AnalysisAccordionItemProps) {
   }
 
   return (
-    <>
-      {isUpdateAnalysisSidebarOpen && (
-        <OverlayBoundary>
-          <UpdateAnalysisSidebar
-            open={isUpdateAnalysisSidebarOpen}
-            onClose={() => setIsUpdateAnalysisSidebarOpen(false)}
-            analysisId={props.analysis.id}
-            name={props.analysis.name}
+    <AccordionSheet
+      key={props.analysis.id}
+      expanded={props.expanded}
+      onExpand={props.onExpand}
+      summary={<AnalysisAccordionSummary analysis={props.analysis} />}
+      controls={
+        canWrite &&
+        !props.isReport && (
+          <ActionsMenu
+            actionItems={[
+              {
+                label: "Anpassen",
+                onClick: openUpdateAnalysisSidebar,
+                startDecorator: <Edit />,
+              },
+              {
+                label: "Löschen",
+                onClick: () => {
+                  handleAnalysisDelete(props.analysis.id, props.analysis.name);
+                },
+                startDecorator: <Delete />,
+              },
+            ]}
           />
-        </OverlayBoundary>
-      )}
-      <AccordionSheet
-        key={props.analysis.id}
-        expanded={props.expanded}
-        onExpand={props.onExpand}
-        summary={<AnalysisAccordionSummary analysis={props.analysis} />}
-        controls={
-          canWrite &&
-          !props.isReport && (
-            <ActionsMenu
-              actionItems={[
-                {
-                  label: "Anpassen",
-                  onClick: () => {
-                    setIsUpdateAnalysisSidebarOpen(true);
-                  },
-                  startDecorator: <Edit />,
-                },
-                {
-                  label: "Löschen",
-                  onClick: () => {
-                    handleAnalysisDelete(
-                      props.analysis.id,
-                      props.analysis.name,
-                    );
-                  },
-                  startDecorator: <Delete />,
-                },
-              ]}
+        )
+      }
+      details={
+        <Suspense
+          fallback={
+            <Stack
+              sx={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: "10rem",
+              }}
+            >
+              <CircularProgress />
+            </Stack>
+          }
+        >
+          {props.expanded && (
+            <AnalysisAccordionDetails
+              analysis={props.analysis}
+              attributes={props.attributes}
+              evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
+              onDiagramCreateClicked={props.onDiagramCreateClicked}
+              isReport={props.isReport}
+              anonymized={props.anonymized}
             />
-          )
-        }
-        details={
-          <Suspense
-            fallback={
-              <Stack
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "10rem",
-                }}
-              >
-                <CircularProgress />
-              </Stack>
-            }
-          >
-            {props.expanded && (
-              <AnalysisAccordionDetails
-                analysis={props.analysis}
-                attributes={props.attributes}
-                evaluatedDataAmountTotal={props.evaluatedDataAmountTotal}
-                onDiagramCreateClicked={props.onDiagramCreateClicked}
-                isReport={props.isReport}
-                anonymized={props.anonymized}
-              />
-            )}
-          </Suspense>
-        }
-      />
-    </>
+          )}
+        </Suspense>
+      }
+    />
   );
 }

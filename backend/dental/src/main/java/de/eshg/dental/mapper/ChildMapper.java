@@ -14,6 +14,7 @@ import de.eshg.dental.business.model.ChildWithAugmentedData;
 import de.eshg.dental.business.model.ImportChildData;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
+import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
@@ -27,11 +28,13 @@ public final class ChildMapper {
     child.setInstitutionId(request.institutionId());
   }
 
-  public static ChildDetailsDto mapToChildDetailsDto(ChildWithAugmentedData child) {
+  public static ChildDetailsDto mapToChildDetailsDto(
+      ChildWithAugmentedData child, List<Examination> examinations) {
     if (child == null) return null;
     return new ChildDetailsDto(
         child.child().getExternalId(),
-        child.personData().referenceVersion(),
+        child.child().getVersion(),
+        ProcedureMapper.toInterfaceType(child.child().getProcedureStatus()),
         child.personData().id(),
         child.personData().outdated(),
         child.personData().title(),
@@ -50,7 +53,7 @@ public final class ChildMapper {
         child.child().getYear().getValue(),
         child.child().getGroupName(),
         new InstitutionDto(child.contact().id(), child.contact().name()),
-        mapToDto(child.child().getExaminations()));
+        mapToDto(examinations));
   }
 
   public static ChildDto mapChildToDto(ChildWithAugmentedData child) {
@@ -66,24 +69,20 @@ public final class ChildMapper {
   }
 
   private static List<ExaminationDto> mapToDto(List<Examination> examinations) {
-    if (examinations == null) return List.of();
-    return examinations.stream()
-        .map(
-            examination ->
-                new ExaminationDto(
-                    examination.getExternalId(), examination.getVersion(),
-                    examination.getProphylaxisSession().getDateAndTime(), examination.getNote()))
-        .toList();
+    if (examinations == null) {
+      return List.of();
+    }
+    return examinations.stream().map(ExaminationMapper::mapToDto).toList();
   }
 
   public static CreateChildRequest mapImportDataToCreateChildRequest(
-      ImportChildData importChildData, UUID institutionId, int schoolYear) {
+      ImportChildData importChildData, UUID institutionId, Year year) {
     return new CreateChildRequest(
         importChildData.firstName(),
         importChildData.lastName(),
         importChildData.gender(),
         importChildData.dateOfBirth(),
-        schoolYear,
+        year,
         importChildData.groupName(),
         institutionId);
   }

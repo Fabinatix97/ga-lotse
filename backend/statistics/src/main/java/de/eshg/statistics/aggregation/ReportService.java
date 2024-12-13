@@ -121,6 +121,8 @@ public class ReportService extends AbstractAggregationResultService {
             ? AggregationResultPendingState.DATA_AGGREGATION
             : null);
     report.setExecutionDate(executionDate);
+    // TODO reevaluate data sensitivity from available data sources
+    report.setDataSensitivity(evaluation.getDataSensitivity());
 
     report.addTableColumns(
         evaluation.getTableColumns().stream()
@@ -170,7 +172,7 @@ public class ReportService extends AbstractAggregationResultService {
   public UUID getPlannedReportToExecuteSetToPending() {
     LocalDate now = LocalDate.now(clock);
     Optional<Report> reportOptional =
-        reportRepository.findByExecutionDateLessThanEqualAndState(
+        reportRepository.findFirstByExecutionDateLessThanEqualAndStateOrderByIdAsc(
             now, AggregationResultState.PLANNED);
     if (reportOptional.isPresent()) {
       Report report = reportOptional.get();

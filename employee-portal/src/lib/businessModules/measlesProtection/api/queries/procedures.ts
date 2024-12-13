@@ -6,48 +6,61 @@
 "use client";
 
 import {
+  ApiGetMeaslesProtectionProceduresSortBy,
   ApiGetMeaslesProtectionProceduresSortOrder,
+  ApiGetProcedure200Response,
   ProtectionProcedureApi,
 } from "@eshg/employee-portal-api/measlesProtection";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { DeepKeys } from "@tanstack/react-table";
 
 import { useProtectionProcedureApi } from "@/lib/businessModules/measlesProtection/api/clients";
 import { ProcedureFilters } from "@/lib/businessModules/measlesProtection/components/procedures/proceduresTable/ProceduresTableFilters";
+import { PaginationProps } from "@/lib/shared/components/pagination/Pagination";
+import {
+  AutomaticSortingProps,
+  ManualSortingProps,
+} from "@/lib/shared/components/table/DataTable";
 
 import { measlesProtectionApiQueryKey } from "./apiQueryKeys";
 
-function mapTableFieldToSortField(sortBy?: string) {
+type PageRequest = Pick<
+  PaginationProps,
+  "pageSize" | "pageNumber" | "pageSizeOptions"
+>;
+type SortingRequest = ManualSortingProps | AutomaticSortingProps;
+
+type DotToUnderscore<T> = T extends `${infer A}.${infer B}`
+  ? DotToUnderscore<`${A}_${B}`>
+  : T;
+
+type ProcedureTableColumnNames = DotToUnderscore<
+  DeepKeys<ApiGetProcedure200Response>
+>;
+
+const SortByMap: Record<string, ApiGetMeaslesProtectionProceduresSortBy> = {
+  affectedPerson_firstName: ApiGetMeaslesProtectionProceduresSortBy.FirstName,
+  affectedPerson_lastName: ApiGetMeaslesProtectionProceduresSortBy.LastName,
+  affectedPerson_dateOfBirth:
+    ApiGetMeaslesProtectionProceduresSortBy.DateOfBirth,
+  createdAt: ApiGetMeaslesProtectionProceduresSortBy.CreatedAt,
+  facility_name: ApiGetMeaslesProtectionProceduresSortBy.FacilityName,
+  facility_type: ApiGetMeaslesProtectionProceduresSortBy.FacilityType,
+  procedureStatus: ApiGetMeaslesProtectionProceduresSortBy.ProcedureStatus,
+  caseStatus: ApiGetMeaslesProtectionProceduresSortBy.CaseStatus,
+} as const satisfies Partial<
+  Record<ProcedureTableColumnNames, ApiGetMeaslesProtectionProceduresSortBy>
+>;
+
+function mapSortBy(sortBy?: string) {
   if (!sortBy) return;
 
-  switch (sortBy) {
-    case "id":
-      throw Error("Not implemented");
-    case "affectedPerson_firstName":
-      return "FIRST_NAME";
-    case "affectedPerson_lastName":
-      return "LAST_NAME";
-    case "affectedPerson_dateOfBirth":
-      return "DATE_OF_BIRTH";
-    case "createdAt":
-      return "CREATED_AT";
-    case "facility_name":
-      return "FACILITY_NAME";
-    case "facility_type":
-      return "FACILITY_TYPE";
-    case "procedureStatus":
-      return "PROCEDURE_STATUS";
-    case "caseStatus":
-      return "CASE_STATUS";
-    default:
-      throw Error(`Unexpected sort field: ${sortBy}`);
+  const mappedValue = SortByMap[sortBy];
+  if (mappedValue) {
+    return mappedValue;
   }
-}
 
-interface PageRequest {
-  pageNumber?: number;
-  pageSize?: number;
-  sortBy?: string;
-  sortOrder?: string;
+  throw Error(`Unexpected sort field: ${sortBy}`);
 }
 
 export function getProcedureQuery(
@@ -69,32 +82,33 @@ export function useProcedureQuery(procedureId: string) {
   );
 }
 
-// TODO ISSUE-6724: Align mapping of sortBy and sortOrder to the implementation of other business modules
 function mapSortOrder(
-  sortOrder: string | undefined,
+  sortOrder: boolean | undefined,
 ): ApiGetMeaslesProtectionProceduresSortOrder | undefined {
-  if (sortOrder?.toUpperCase() === "ASC") {
-    return ApiGetMeaslesProtectionProceduresSortOrder.Asc;
-  } else if (sortOrder?.toUpperCase() === "DESC") {
-    return ApiGetMeaslesProtectionProceduresSortOrder.Desc;
-  } else if (sortOrder === undefined) {
-    return undefined;
+  if (sortOrder == null) {
+    return;
   }
+  return sortOrder
+    ? ApiGetMeaslesProtectionProceduresSortOrder.Desc
+    : ApiGetMeaslesProtectionProceduresSortOrder.Asc;
 }
 
-export function useProceduresQuery(
+export function useGetProceduresQuery(
   page: PageRequest,
+  sorting: SortingRequest,
   filters: ProcedureFilters,
 ) {
+  const sortState = sorting.manualSorting
+    ? sorting.sortingState[0]
+    : sorting.initialSorting?.[0];
   const protectionProcedureApi = useProtectionProcedureApi();
-
-  return useSuspenseQuery({
+  return queryOptions({
     queryFn: ({ signal }) =>
       protectionProcedureApi.getProcedures(
         page.pageNumber,
         page.pageSize,
-        mapTableFieldToSortField(page.sortBy),
-        mapSortOrder(page.sortOrder),
+        mapSortBy(sortState?.id),
+        mapSortOrder(sortState?.desc),
         filters.creationDate,
         filters.birthday,
         filters.facilityType,
@@ -112,6 +126,7 @@ export function useProceduresQuery(
       "procedures",
       "list",
       page,
+      sortState,
       makeFiltersQueryKeyPart(filters),
     ]),
   });

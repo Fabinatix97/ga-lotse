@@ -6,21 +6,25 @@
 "use client";
 
 import { ApiUserRole } from "@eshg/employee-portal-api/base";
+import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/measlesProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { EditOutlined, Preview, ToggleOffOutlined } from "@mui/icons-material";
 import { Chip } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
-import { useProceduresQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
+import { useGetProceduresQuery } from "@/lib/businessModules/measlesProtection/api/queries/procedures";
 import {
   caseStatusNames,
   facilityTypeNames,
 } from "@/lib/businessModules/measlesProtection/components/procedures/constants";
 import { useProceduresContext } from "@/lib/businessModules/measlesProtection/shared/ProceduresContext";
 import { routes } from "@/lib/businessModules/measlesProtection/shared/routes";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
+import { useGdprValidationTasksAlert } from "@/lib/shared/components/gdpr/useGdprValidationTasksAlert";
 import { Pagination } from "@/lib/shared/components/pagination/Pagination";
 import {
   procedureStatusNames,
@@ -31,7 +35,6 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
-import { useTablePageParams } from "@/lib/shared/hooks/useTablePageParams";
 
 import {
   ProceduresTableFilters,
@@ -183,13 +186,7 @@ function getProceduresColumns({
 
 export function ProceduresTable() {
   const filters = useProceduresFilters();
-  const tablePage = useTablePageParams({
-    fieldNames: {
-      sortFieldName: "sortKey",
-      sortDirectionName: "sortDirection",
-    },
-  });
-  const procedures = useProceduresQuery(tablePage, filters);
+
   const proceduresContext = useProceduresContext();
   const { openProcedureReopenModal } = proceduresContext.action;
 
@@ -200,8 +197,29 @@ export function ProceduresTable() {
   const tableControl = useTableControl({
     serverSideSorting: true,
     sortFieldName: "sortKey",
+    sortDirectionName: "sortDirection",
     initialSorting,
   });
+
+  const proceduresQuery = useGetProceduresQuery(
+    tableControl.paginationProps,
+    tableControl.tableSorting,
+    filters,
+  );
+
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
+    ApiBusinessModule.MeaslesProtection,
+  );
+
+  const [procedures, gdprBanner] = useSuspenseQueries({
+    queries: [proceduresQuery, gdprBannerQuery],
+  });
+
+  useGdprValidationTasksAlert({
+    banner: gdprBanner.data,
+    businessModule: ApiBusinessModule.MeaslesProtection,
+  });
+
   return (
     <>
       <TablePage

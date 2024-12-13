@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.util.StringUtils;
 
-public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
+public abstract class RowReader<R extends RowData<R>, C extends XlsxColumn> {
 
   private static final DataFormatter DATA_FORMATTER = new DataFormatter();
 
@@ -29,25 +30,32 @@ public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
   private final CellStyle errorCellStyle;
   private final Drawing<?> drawing;
   private final CreationHelper factory;
+  private final Supplier<R> resultRowSupplier;
 
-  protected RowReader(Sheet sheet, List<C> actualColumns) {
+  protected RowReader(Sheet sheet, List<C> actualColumns, Supplier<R> resultRowSupplier) {
     Workbook workbook = sheet.getWorkbook();
 
     this.actualColumns = actualColumns;
-    errorCellStyle = createErrorStyle(workbook);
-    drawing = sheet.createDrawingPatriarch();
-    factory = workbook.getCreationHelper();
+    this.errorCellStyle = createErrorStyle(workbook);
+    this.drawing = sheet.createDrawingPatriarch();
+    this.factory = workbook.getCreationHelper();
+    this.resultRowSupplier = resultRowSupplier;
   }
 
-  public T readRow(Row row) {
-    ColumnAccessor<C> col = new ColumnAccessor<>(row, actualColumns);
-    T result = read(col);
-    result.setRow(row);
-
-    return result;
+  public R readRow(Row xlsxRow) {
+    ColumnAccessor<C> col = createColumnAccessor(xlsxRow);
+    R resultRow = resultRowSupplier.get();
+    ErrorHandler errorHandler = createErrorHandler(resultRow);
+    read(resultRow, col, errorHandler);
+    resultRow.setXlsxRow(xlsxRow);
+    return resultRow;
   }
 
-  protected abstract T read(ColumnAccessor<C> col);
+  private ColumnAccessor<C> createColumnAccessor(Row xlsxRow) {
+    return new ColumnAccessor<>(xlsxRow, actualColumns);
+  }
+
+  protected abstract void read(R result, ColumnAccessor<C> col, ErrorHandler errorHandler);
 
   protected ImportStatus readStatus(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
@@ -64,7 +72,7 @@ public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
     }
   }
 
-  protected UUID readProcedureId(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
+  protected UUID readUuid(ColumnAccessor<C> col, C column, ErrorHandler errorHandler) {
     Cell cell = col.get(column);
     String uuid = cellAsString(cell, true, false, errorHandler);
     if (!StringUtils.hasLength(uuid)) {
@@ -79,9 +87,9 @@ public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
     }
   }
 
-  public ErrorHandler createErrorHandler(T result) {
+  private ErrorHandler createErrorHandler(R row) {
     return (cell, errorMessage) -> {
-      result.foundInvalidData();
+      row.markAsInvalid();
       addCellError(cell, errorMessage);
     };
   }
@@ -250,8 +258,8 @@ public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
     return cell.getCellType();
   }
 
-  public static boolean isEmpty(Row row) {
-    for (Cell cell : row) {
+  public static boolean isEmpty(Row xlsxRow) {
+    for (Cell cell : xlsxRow) {
       if (!isBlank(cell)) {
         return false;
       }
@@ -413,6 +421,12 @@ public abstract class RowReader<T extends RowValues<T>, C extends XlsxColumn> {
           CountryCode.DE, city, postalCode, street, houseNumber, addressAddition);
     }
     return null;
+  }
+
+  public void addError(R row, C col, String errorMessage) {
+    ColumnAccessor<C> columnAccessor = createColumnAccessor(row.getXlsxRow());
+    Cell cell = columnAccessor.get(col);
+    createErrorHandler(row).handleError(cell, errorMessage);
   }
 
   public record AddressColumns<C extends XlsxColumn>(

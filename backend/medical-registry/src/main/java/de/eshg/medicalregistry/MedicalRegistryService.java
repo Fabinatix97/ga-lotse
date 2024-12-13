@@ -5,18 +5,9 @@
 
 package de.eshg.medicalregistry;
 
-import static de.eshg.domain.model.SequencedBaseEntity_.ID;
-import static de.eshg.lib.procedure.MapperHelper.mapEnumSet;
-import static de.eshg.lib.procedure.domain.model.Procedure_.CREATED_AT;
-import static de.eshg.lib.procedure.domain.model.Procedure_.PROCEDURE_STATUS;
-import static de.eshg.lib.procedure.domain.model.Procedure_.procedureStatus;
 import static de.eshg.medicalregistry.Validator.asMapper;
-import static de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure_.requestForWrittenConfirmation;
 import static de.eshg.medicalregistry.mapper.ProcedureMapper.mapToSystemProgressEntryType;
 import static org.springframework.data.domain.PageRequest.ofSize;
-import static org.springframework.data.domain.Sort.by;
-import static org.springframework.data.jpa.domain.Specification.allOf;
-import static org.springframework.data.jpa.domain.Specification.where;
 
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
@@ -27,50 +18,41 @@ import de.eshg.lib.procedure.domain.model.ImageMetaData;
 import de.eshg.lib.procedure.domain.model.ProcedureFileType;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
-import de.eshg.lib.procedure.domain.model.ProgressEntry;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.TriggerType;
 import de.eshg.lib.procedure.file.FileFactory;
-import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.lib.procedure.procedures.ProcedureDeletionService;
-import de.eshg.lib.xlsximport.RowValues;
+import de.eshg.lib.procedure.progressentry.ProgressEntryService;
 import de.eshg.medicalregistry.api.CreateFullChangeRequest;
 import de.eshg.medicalregistry.api.CreatePracticeChangeRequest;
 import de.eshg.medicalregistry.api.CreatePracticeDto;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
-import de.eshg.medicalregistry.api.GetMedicalRegistryEntryOverview;
+import de.eshg.medicalregistry.api.GetMedicalRegistryEntries;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresFilterOptions;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresPaginationOptions;
-import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
 import de.eshg.medicalregistry.api.PracticeReferenceFacilityDto;
 import de.eshg.medicalregistry.api.ProfessionalReferencePersonDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
 import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange;
-import de.eshg.medicalregistry.domain.model.FullMedicalRegistryEntryChange_;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
-import de.eshg.medicalregistry.domain.model.MedicalRegistryEntry_;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.MedicalRegistrySystemProgressEntryType;
 import de.eshg.medicalregistry.domain.model.PartialMedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.Practice;
 import de.eshg.medicalregistry.domain.model.ProfessionInformation;
-import de.eshg.medicalregistry.domain.model.ProfessionInformation_;
 import de.eshg.medicalregistry.domain.model.Professional;
-import de.eshg.medicalregistry.domain.model.ProfessionalTitle;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
-import de.eshg.medicalregistry.domain.registry.MedicalRegistryEntryRepository;
-import de.eshg.medicalregistry.importer.MedicalRegistryRowValues;
+import de.eshg.medicalregistry.domain.repository.MedicalRegistryProcedureRepository;
+import de.eshg.medicalregistry.domain.specification.MedicalRegistryProcedureOverviewSpecification;
+import de.eshg.medicalregistry.importer.MedicalRegistryRow;
 import de.eshg.medicalregistry.mapper.CreationMapper;
 import de.eshg.medicalregistry.mapper.EntryMapper;
-import de.eshg.medicalregistry.mapper.ProfessionalMapper;
 import de.eshg.validation.ValidationUtil;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -78,14 +60,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -94,35 +74,38 @@ public class MedicalRegistryService {
   private static final Set<TypeOfChange> DEREGISTRATION_TYPE_OF_CHANGES =
       EnumSet.of(TypeOfChange.DEREGISTRATION, TypeOfChange.RELOCATION);
 
-  private final MedicalRegistryEntryRepository medicalRegistryEntryRepository;
+  private final MedicalRegistryProcedureRepository medicalRegistryProcedureRepository;
   private final ProcedureDeletionService<MedicalRegistryProcedure> procedureDeletionService;
   private final PersonService personService;
   private final FacilityService facilityService;
   private final AuditLogger auditLogger;
   private final Clock clock;
+  private final ProgressEntryService<MedicalRegistryProcedure> progressEntryService;
 
   public MedicalRegistryService(
-      MedicalRegistryEntryRepository medicalRegistryEntryRepository,
+      MedicalRegistryProcedureRepository medicalRegistryProcedureRepository,
       ProcedureDeletionService<MedicalRegistryProcedure> procedureDeletionService,
       PersonService personService,
       FacilityService facilityService,
       AuditLogger auditLogger,
-      Clock clock) {
-    this.medicalRegistryEntryRepository = medicalRegistryEntryRepository;
+      Clock clock,
+      ProgressEntryService<MedicalRegistryProcedure> progressEntryService) {
+    this.medicalRegistryProcedureRepository = medicalRegistryProcedureRepository;
     this.procedureDeletionService = procedureDeletionService;
     this.personService = personService;
     this.facilityService = facilityService;
     this.auditLogger = auditLogger;
     this.clock = clock;
+    this.progressEntryService = progressEntryService;
   }
 
   public Optional<MedicalRegistryProcedure> findProcedureByExternalId(UUID procedureId) {
-    return medicalRegistryEntryRepository.findByExternalId(procedureId);
+    return medicalRegistryProcedureRepository.findByExternalId(procedureId);
   }
 
   public Optional<MedicalRegistryProcedure> findProcedureByExternalIdForUpdate(
       UUID procedureId, long version) {
-    return medicalRegistryEntryRepository
+    return medicalRegistryProcedureRepository
         .findByExternalIdForUpdate(procedureId)
         .map(asMapper(entry -> ValidationUtil.validateVersion(version, entry)));
   }
@@ -140,6 +123,9 @@ public class MedicalRegistryService {
     MedicalRegistryEntryChange medicalRegistryEntry =
         CreationMapper.mapToDomain(createProcedureRequest, triggerType, personId, facilityId);
 
+    medicalRegistryEntry.setProcedureType(procedureType);
+    medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.DRAFT, clock, auditLogger);
+
     addSystemProgressEntry(medicalRegistryEntry, triggerType);
     addSystemProgressEntryAboutRequestForWrittenConfirmationIfNecessary(
         medicalRegistryEntry, triggerType);
@@ -148,10 +134,7 @@ public class MedicalRegistryService {
       addSystemProgressEntryFile(medicalRegistryEntry, document, triggerType);
     }
 
-    medicalRegistryEntry.setProcedureType(procedureType);
-    medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.DRAFT, clock, auditLogger);
-
-    return medicalRegistryEntryRepository.save(medicalRegistryEntry);
+    return medicalRegistryProcedureRepository.save(medicalRegistryEntry);
   }
 
   private CreatePracticeDto getPractice(CreateProcedureRequest createProcedureRequest) {
@@ -163,37 +146,34 @@ public class MedicalRegistryService {
     };
   }
 
-  public Map<Row, Optional<UUID>> createProceduresFromImport(
-      List<MedicalRegistryRowValues> rowValues) {
-    Map<Row, UUID> professionalIds = personService.createPersonsInCentralFile(rowValues);
-    Map<Row, UUID> practiceIds = facilityService.createFacilitiesInCentralFile(rowValues);
-    return rowValues.stream()
+  public Map<MedicalRegistryRow, Optional<UUID>> createProceduresFromImport(
+      List<MedicalRegistryRow> rows) {
+    Map<MedicalRegistryRow, UUID> professionalIds = personService.createPersonsInCentralFile(rows);
+    Map<MedicalRegistryRow, UUID> practiceIds = facilityService.createFacilitiesInCentralFile(rows);
+    return rows.stream()
         .collect(
             Collectors.toMap(
-                RowValues::getRow,
-                rowValue ->
+                Function.identity(),
+                row ->
                     Optional.ofNullable(
                         createProcedureFromImport(
-                            rowValue,
-                            professionalIds.get(rowValue.getRow()),
-                            practiceIds.get(rowValue.getRow())))));
+                            row, professionalIds.get(row), practiceIds.get(row)))));
   }
 
   private UUID createProcedureFromImport(
-      MedicalRegistryRowValues rowValue, UUID professionalId, UUID practiceId) {
+      MedicalRegistryRow row, UUID professionalId, UUID practiceId) {
     try {
       MedicalRegistryEntry medicalRegistryEntry =
-          CreationMapper.mapToDomain(rowValue, professionalId, practiceId);
+          CreationMapper.mapToDomain(row, professionalId, practiceId);
 
       medicalRegistryEntry.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
 
       addSystemProgressEntry(
           medicalRegistryEntry, TypeOfChange.NEW_REGISTRATION, TriggerType.SYSTEM_AUTOMATIC);
 
-      return medicalRegistryEntryRepository.save(medicalRegistryEntry).getExternalId();
+      return medicalRegistryProcedureRepository.save(medicalRegistryEntry).getExternalId();
     } catch (Exception e) {
-      log.error(
-          "Error during importing procedure (row number " + rowValue.getRow().getRowNum() + ")", e);
+      log.error("Error during importing procedure (row number " + row.getRowNum() + ")", e);
       return null;
     }
   }
@@ -228,10 +208,12 @@ public class MedicalRegistryService {
     }
 
     if (mergeTarget == null) {
-      medicalRegistryEntryRepository.save(medicalRegistryProcedure);
+      medicalRegistryProcedureRepository.save(medicalRegistryProcedure);
     }
 
-    log.info("Deleting draft medical registry entry {}", draftMedicalRegistryEntry.getExternalId());
+    log.info(
+        "Confirmation finished. Initiating writing to cemetery and deletion of now obsolete draft {}",
+        draftMedicalRegistryEntry.getExternalId());
     procedureDeletionService.deleteAndWriteToCemetery(draftMedicalRegistryEntry);
 
     return medicalRegistryProcedure;
@@ -241,9 +223,8 @@ public class MedicalRegistryService {
       MedicalRegistryEntryChange source, MedicalRegistryEntry target) {
     getProfessionalInformation(source)
         .ifPresent(
-            sourceProfessionInformation -> {
-              updateProfessionalInformation(sourceProfessionInformation, target);
-            });
+            sourceProfessionInformation ->
+                updateProfessionalInformation(sourceProfessionInformation, target));
   }
 
   private void updateProfessionalInformation(
@@ -372,74 +353,54 @@ public class MedicalRegistryService {
           .flatMap(Set::stream)
           .collect(Collectors.toSet());
     } else {
-      return medicalRegistryEntryRepository.findExistingExternalIds(candidates);
+      return medicalRegistryProcedureRepository.findExistingExternalIds(candidates);
     }
   }
 
   public void deleteProcedure(MedicalRegistryProcedure medicalRegistryProcedure) {
-    UUID professionalId =
-        medicalRegistryProcedure.getRelatedPersons().stream()
-            .collect(StreamUtil.toSingleElement())
-            .getExternalId();
-    log.info("Marking central file state {} for deletion", professionalId);
-    personService.deleteInCentralFile(professionalId);
-    log.info("Marked central file state {} for deletion", professionalId);
-
-    if (medicalRegistryProcedure.getRelatedFacilities() != null
-        && !medicalRegistryProcedure.getRelatedFacilities().isEmpty()) {
-      UUID practiceId =
-          medicalRegistryProcedure.getRelatedFacilities().stream()
-              .collect(StreamUtil.toSingleElement())
-              .getExternalId();
-      log.info("Marking central file state {} for deletion", practiceId);
-      facilityService.deleteInCentralFile(practiceId);
-      log.info("Marked central file state {} for deletion", practiceId);
-    }
-
     medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
-    procedureDeletionService.deleteAndWriteToCemetery(medicalRegistryProcedure.getExternalId());
+    procedureDeletionService.deleteAndWriteToCemetery(medicalRegistryProcedure);
   }
 
-  private static void addSystemProgressEntry(
+  private void addSystemProgressEntry(
       MedicalRegistryEntryChange medicalRegistryEntry, TriggerType triggerType) {
     addSystemProgressEntry(
         medicalRegistryEntry, medicalRegistryEntry.getTypeOfChange(), triggerType);
   }
 
-  private static void addSystemProgressEntry(
+  private void addSystemProgressEntry(
       MedicalRegistryProcedure medicalRegistryEntry,
       TypeOfChange typeOfChange,
       TriggerType triggerType) {
-    ProgressEntry progressEntry =
+    SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             mapToSystemProgressEntryType(typeOfChange).name(), triggerType);
 
-    medicalRegistryEntry.addProgressEntry(progressEntry);
+    progressEntryService.addSystemProgressEntry(medicalRegistryEntry, progressEntry);
   }
 
   private void addSystemProgressEntryFile(
       MedicalRegistryEntryChange procedure, DocumentData document, TriggerType triggerType) {
     String description = document.description();
     File file = buildJpeg(document);
-    ProgressEntry progressEntry =
+    SystemProgressEntry progressEntry =
         SystemProgressEntryFactory.createSystemProgressEntry(
             MedicalRegistrySystemProgressEntryType.DOCUMENT_UPLOAD.name(),
             description,
             triggerType,
             Optional.ofNullable(document.keyDocumentType()).map(Enum::name).orElse(null));
-    progressEntry.setFile(file);
-
-    procedure.addProgressEntry(progressEntry);
+    progressEntryService.addSystemProgressEntry(procedure, progressEntry, file);
   }
 
   private void addSystemProgressEntryAboutRequestForWrittenConfirmationIfNecessary(
       MedicalRegistryEntryChange medicalRegistryEntry, TriggerType triggerType) {
     if (medicalRegistryEntry.isRequestForWrittenConfirmation()) {
-      medicalRegistryEntry.addProgressEntry(
+      SystemProgressEntry systemProgressEntry =
           SystemProgressEntryFactory.createSystemProgressEntry(
               MedicalRegistrySystemProgressEntryType.REQUEST_FOR_WRITTEN_CONFIRMATION.name(),
               "Meldebestätigung angefordert",
-              triggerType));
+              triggerType);
+      progressEntryService.addSystemProgressEntry(medicalRegistryEntry, systemProgressEntry);
     }
   }
 
@@ -476,92 +437,20 @@ public class MedicalRegistryService {
     source.getProgressEntries().forEach(target::addProgressEntry);
   }
 
-  public GetMedicalRegistryEntryOverview getProceduresOverview(
+  public GetMedicalRegistryEntries getProceduresOverview(
       GetMedicalRegistryProceduresPaginationOptions paginationOptions,
       GetMedicalRegistryProceduresFilterOptions filterOptions) {
-    List<Specification<MedicalRegistryProcedure>> specifications = new ArrayList<>();
-
-    if (filterOptions.procedureStatus() != null) {
-      Set<ProcedureStatus> domainProcedureStatus =
-          mapEnumSet(filterOptions.procedureStatus(), ProcedureMapper::toDomainType);
-
-      specifications.add(statusIsIn(domainProcedureStatus));
-    }
-
-    if (filterOptions.certificateRequested() != null) {
-      specifications.add(filterByCertificateRequested(filterOptions.certificateRequested()));
-    }
-
-    if (filterOptions.professionalTitle() != null) {
-      Set<ProfessionalTitle> filteringProfessionalTitles =
-          mapEnumSet(filterOptions.professionalTitle(), ProfessionalMapper::mapToDomain);
-      specifications.add(filterByProfessionalTitles(filteringProfessionalTitles));
-    }
-
     Page<MedicalRegistryProcedure> page =
-        medicalRegistryEntryRepository.findAll(
-            where(allOf(specifications)),
-            ofSize(paginationOptions.pageSize())
-                .withPage(paginationOptions.pageNumber())
-                .withSort(by(Order.asc(PROCEDURE_STATUS), Order.desc(CREATED_AT), Order.asc(ID))));
+        medicalRegistryProcedureRepository.findAll(
+            MedicalRegistryProcedureOverviewSpecification.fromFilterOptions(filterOptions),
+            ofSize(paginationOptions.pageSize()).withPage(paginationOptions.pageNumber()));
 
-    if (page.isEmpty()) {
-      return new GetMedicalRegistryEntryOverview(
-          page.getTotalPages(), page.getTotalElements(), List.of());
-    }
-    List<UUID> relatedPersonIds = collectRelatedPersonIds(page);
     Map<UUID, GetPersonFileStateResponse> resolvedRelatedPerson =
-        personService.resolvePersonIds(relatedPersonIds);
+        personService.resolvePersonDetailsById(page);
 
-    List<MedicalRegistryEntryDto> entryDtos =
-        page.stream().map(entry -> EntryMapper.mapToDto(entry, resolvedRelatedPerson)).toList();
-    return new GetMedicalRegistryEntryOverview(
-        page.getTotalPages(), page.getTotalElements(), entryDtos);
-  }
-
-  private Specification<MedicalRegistryProcedure> filterByProfessionalTitles(
-      Set<ProfessionalTitle> filteringProfessionalTitles) {
-    return (root, query, criteriaBuilder) -> {
-      Predicate confirmedEntryWithProfessionalTitle =
-          criteriaBuilder
-              .treat(root, MedicalRegistryEntry.class)
-              .join(MedicalRegistryEntry_.professionInformation, JoinType.LEFT)
-              .get(ProfessionInformation_.professionalTitle)
-              .in(filteringProfessionalTitles);
-
-      Predicate pendingRegistrationWithProfessionalTitle =
-          criteriaBuilder
-              .treat(root, FullMedicalRegistryEntryChange.class)
-              .join(FullMedicalRegistryEntryChange_.professionInformation, JoinType.LEFT)
-              .get(ProfessionInformation_.professionalTitle)
-              .in(filteringProfessionalTitles);
-
-      return criteriaBuilder.or(
-          confirmedEntryWithProfessionalTitle, pendingRegistrationWithProfessionalTitle);
-    };
-  }
-
-  private static List<UUID> collectRelatedPersonIds(
-      Page<MedicalRegistryProcedure> medicalRegistryEntries) {
-    return medicalRegistryEntries.stream()
-        .map(
-            entry ->
-                entry.getRelatedPersons().stream()
-                    .collect(StreamUtil.toSingleElement())
-                    .getCentralFileStateId())
-        .toList();
-  }
-
-  private Specification<MedicalRegistryProcedure> filterByCertificateRequested(
-      Boolean certificateRequested) {
-    return (root, query, criteriaBuilder) ->
-        criteriaBuilder.equal(root.get(requestForWrittenConfirmation), certificateRequested);
-  }
-
-  private Specification<MedicalRegistryProcedure> statusIsIn(Set<ProcedureStatus> statuses) {
-    if (statuses == null) {
-      return null;
-    }
-    return (root, query, criteriaBuilder) -> root.get(procedureStatus).in(statuses);
+    return new GetMedicalRegistryEntries(
+        page.getTotalPages(),
+        page.getTotalElements(),
+        EntryMapper.mapToDto(page, resolvedRelatedPerson));
   }
 }

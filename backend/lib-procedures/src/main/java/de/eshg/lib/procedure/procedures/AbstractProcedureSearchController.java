@@ -77,11 +77,10 @@ public abstract class AbstractProcedureSearchController<
             StreamUtil.toLinkedHashMap(
                 Function.identity(),
                 person ->
-                    procedureRepository
-                        .findByRelatedPersonsCentralFileStateIdInOrderByCreatedAtDescIdAsc(
-                            personApi
-                                .getPersonFileStateIdsAssociatedWithReferencePerson(person)
-                                .fileStateIds())));
+                    procedureRepository.findByRelatedPersonsCentralFileStateId(
+                        personApi
+                            .getPersonFileStateIdsAssociatedWithReferencePerson(person)
+                            .fileStateIds())));
   }
 
   private Map<UUID, GetReferencePersonResponse> toPersonByIdMap(

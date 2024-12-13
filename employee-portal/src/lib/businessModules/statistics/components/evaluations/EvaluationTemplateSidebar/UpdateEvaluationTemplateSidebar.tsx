@@ -7,20 +7,35 @@ import { useUpdateEvaluationTemplate } from "@/lib/businessModules/statistics/ap
 import { useGetEvaluationTemplateDetails } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplateDetails";
 import { SaveEvaluationTemplateStep } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/SaveEvaluationTemplateStep/SaveEvaluationTemplateStep";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function UpdateEvaluationTemplateSidebar(props: {
+export function useUpdateEvaluationTemplateSidebar(): UseSidebarWithFormRefResult<UpdateEvaluationTemplateSidebarProps> {
+  return useSidebarWithFormRef({
+    component: UpdateEvaluationTemplateSidebar,
+  });
+}
+
+interface UpdateEvaluationTemplateSidebarProps extends SidebarWithFormRefProps {
   evaluationTemplateId: string;
-  onClose: () => void;
-}) {
+}
+
+function UpdateEvaluationTemplateSidebar(
+  props: UpdateEvaluationTemplateSidebarProps,
+) {
   const evaluationTemplateDetails = useGetEvaluationTemplateDetails(
     props.evaluationTemplateId,
   );
-  const updateEvaluationTemplate = useUpdateEvaluationTemplate(props.onClose);
+  const updateEvaluationTemplate = useUpdateEvaluationTemplate(() =>
+    props.onClose(true),
+  );
 
   return (
     <SidebarStepper
       onClose={props.onClose}
-      open={true}
       onSubmit={(model) =>
         updateEvaluationTemplate(props.evaluationTemplateId, model).then(
           () => void 0,
@@ -30,6 +45,7 @@ export function UpdateEvaluationTemplateSidebar(props: {
         name: evaluationTemplateDetails.name,
         description: evaluationTemplateDetails.description ?? "",
       }}
+      formRef={props.formRef}
       steps={[
         {
           type: "StandardStep",

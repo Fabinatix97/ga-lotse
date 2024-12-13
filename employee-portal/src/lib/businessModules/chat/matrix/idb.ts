@@ -179,35 +179,3 @@ export async function idbDeleteDb(): Promise<void> {
   });
   await prom;
 }
-
-export async function deleteRustSdkStore(): Promise<void> {
-  let indexedDB: IDBFactory | undefined;
-  try {
-    indexedDB = getIDBFactory();
-    if (!indexedDB) return;
-  } catch {
-    return;
-  }
-
-  for (const dbName of [
-    `matrix-js-sdk::matrix-sdk-crypto`,
-    `matrix-js-sdk::matrix-sdk-crypto-meta`,
-  ]) {
-    const prom = new Promise((resolve) => {
-      const req = indexedDB.deleteDatabase(dbName);
-      req.onsuccess = (): void => {
-        resolve(0);
-        logger.info("Crypto DB deleted");
-      };
-      req.onerror = (): void => {
-        resolve(0);
-        logger.info("Crypto DB deletion failed");
-      };
-      req.onblocked = (): void => {
-        req.result.close();
-        logger.info("Crypto DB is blocked");
-      };
-    });
-    await prom;
-  }
-}

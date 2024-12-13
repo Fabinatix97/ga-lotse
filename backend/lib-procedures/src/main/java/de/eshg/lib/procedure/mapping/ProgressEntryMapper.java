@@ -48,11 +48,20 @@ public class ProgressEntryMapper {
   }
 
   public static ProgressEntryDto toInterfaceType(ProgressEntry progressEntry) {
+    ProgressEntryDto progressEntryDto = toInterfaceTypeWithFileReference(progressEntry);
+    progressEntryDto.setFileReference(
+        FileMapper.toConcreteInterfaceTypeOrReferenceInterfaceType(progressEntry.getFile()));
+    return progressEntryDto;
+  }
+
+  public static ProgressEntryDto toInterfaceTypeWithFileReference(ProgressEntry progressEntry) {
     return switch (progressEntry) {
-      case SystemProgressEntry systemProgressEntry -> toInterfaceType(systemProgressEntry);
-      case ManualProgressEntry manualProgressEntry -> toInterfaceType(manualProgressEntry);
+      case SystemProgressEntry systemProgressEntry ->
+          toInterfaceTypeWithFileReference(systemProgressEntry);
+      case ManualProgressEntry manualProgressEntry ->
+          toInterfaceTypeWithFileReference(manualProgressEntry);
       case ProcessedInboxProgressEntry processedInboxProgressEntry ->
-          toInterfaceType(processedInboxProgressEntry);
+          toInterfaceTypeWithFileReference(processedInboxProgressEntry);
       default ->
           throw new IllegalArgumentException(
               "Unsupported progress entry subclass: %s"
@@ -60,7 +69,8 @@ public class ProgressEntryMapper {
     };
   }
 
-  private static SystemProgressEntryDto toInterfaceType(SystemProgressEntry progressEntry) {
+  private static SystemProgressEntryDto toInterfaceTypeWithFileReference(
+      SystemProgressEntry progressEntry) {
     SystemProgressEntryDto systemProgressEntryDto = new SystemProgressEntryDto();
     systemProgressEntryDto.setSystemProgressEntryType(progressEntry.getSystemProgressEntryType());
     systemProgressEntryDto.setTriggeredBy(progressEntry.getTriggeredBy());
@@ -72,7 +82,8 @@ public class ProgressEntryMapper {
     return systemProgressEntryDto;
   }
 
-  public static ManualProgressEntryDto toInterfaceType(ManualProgressEntry progressEntry) {
+  public static ManualProgressEntryDto toInterfaceTypeWithFileReference(
+      ManualProgressEntry progressEntry) {
     ManualProgressEntryDto manualProgressEntryDto = new ManualProgressEntryDto();
     manualProgressEntryDto.setManualProgressEntryType(
         toInterfaceType(progressEntry.getManualProgressEntryType()));
@@ -85,7 +96,7 @@ public class ProgressEntryMapper {
     return manualProgressEntryDto;
   }
 
-  private static ProcessedInboxProgressEntryDto toInterfaceType(
+  private static ProcessedInboxProgressEntryDto toInterfaceTypeWithFileReference(
       ProcessedInboxProgressEntry progressEntry) {
     ProcessedInboxProgressEntryDto processedInboxProgressEntryDto =
         new ProcessedInboxProgressEntryDto();
@@ -152,7 +163,7 @@ public class ProgressEntryMapper {
     ManualProgressEntryHistoryDto manualProgressEntryHistoryDto =
         new ManualProgressEntryHistoryDto();
     manualProgressEntryHistoryDto.setManualProgressEntry(
-        toInterfaceType(manualProgressEntryRevisionEntry.getEntity()));
+        toInterfaceTypeWithFileReference(manualProgressEntryRevisionEntry.getEntity()));
     RevisionHistoryMapper.mapCommonFields(
         manualProgressEntryHistoryDto, manualProgressEntryRevisionEntry.getRevision());
     return manualProgressEntryHistoryDto;

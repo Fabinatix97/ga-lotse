@@ -74,7 +74,7 @@ public class Version extends BaseEntityWithExternalId {
 
   @NotNull private String licence;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "resource_id")
   private Resource resource;
 

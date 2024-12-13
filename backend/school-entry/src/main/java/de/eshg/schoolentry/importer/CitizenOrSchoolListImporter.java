@@ -34,27 +34,26 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C extends XlsxColumn>
-    extends SchoolEntryImporter<T, C, ProcedureWithChildData> {
+public class CitizenOrSchoolListImporter<R extends SchoolEntryRow<R>, C extends XlsxColumn>
+    extends SchoolEntryImporter<R, C, ProcedureWithChildData> {
 
   private static final Logger log = LoggerFactory.getLogger(CitizenOrSchoolListImporter.class);
-  private final RowValueMapper<T> rowValueMapper;
+  private final RowValueMapper<R> rowValueMapper;
   private final ImportType importType;
   private final UUID locationId;
   private final SchoolEntryProperties schoolEntryProperties;
 
   public CitizenOrSchoolListImporter(
       XSSFSheet sheet,
-      RowReader<T, C> rowReader,
+      RowReader<R, C> rowReader,
       FeedbackColumnAccessor feedbackColumnAccessor,
       ImportType importType,
-      RowValueMapper<T> rowValueMapper,
+      RowValueMapper<R> rowValueMapper,
       UUID schoolId,
       UUID locationId,
       Year schoolYear,
@@ -71,11 +70,11 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C ex
 
   @Override
   protected void evaluateActionForValidRow(
-      Row row, T value, Map<PersonKeyAttributes, List<ProcedureWithChildData>> mergeCandidates) {
+      R row, Map<PersonKeyAttributes, List<ProcedureWithChildData>> mergeCandidates) {
     List<ProcedureWithChildData> procedures =
-        mergeCandidates.getOrDefault(value.getChildKeyAttributes(), List.of());
+        mergeCandidates.getOrDefault(row.getChildKeyAttributes(), List.of());
     if (procedures.isEmpty()) {
-      validRows.importableRows().add(value);
+      addToImportableRows(row);
       stats.countCreated();
     } else if (procedures.size() > 1
         || procedures.getFirst().procedure().getProcedureType() != procedureTypeToMergeWith()) {
@@ -88,15 +87,15 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C ex
           "Procedures of a draft type should not exist when direct procedure type assignment is enabled.");
       ProcedureWithChildData procedure = procedures.getFirst();
       UUID procedureId = procedure.procedure().getExternalId();
-      if (mergeCandidateMatchesImportValues(procedure, value)) {
-        if (validRows.mergeableRows().stream()
-            .anyMatch(mergeableRow -> mergeableRow.getProcedureId().equals(procedureId))) {
+      if (mergeCandidateMatchesImportValues(procedure, row)) {
+        if (streamMergeableRows()
+            .anyMatch(mergeableRow -> mergeableRow.getEntityId().equals(procedureId))) {
           log.error("Procedure ID {} already found in a previous mergeable row", procedureId);
           writeStatusAndReferenceId(row, MERGE_FAILED, procedureId);
           stats.countMergeFailed();
         } else {
-          value.setProcedureId(procedureId);
-          validRows.mergeableRows().add(value);
+          row.setEntityId(procedureId);
+          addToMergeableRows(row);
           writeStatusAndEntityId(row, MERGED_SUCCESSFULLY, procedureId);
           stats.countMerged();
         }
@@ -116,7 +115,7 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C ex
   }
 
   private boolean mergeCandidateMatchesImportValues(
-      ProcedureWithChildData mergeCandidate, T values) {
+      ProcedureWithChildData mergeCandidate, R values) {
     AddressDto address = mergeCandidate.child().address();
     if (address instanceof PostboxAddressDto) {
       return false;
@@ -155,7 +154,7 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C ex
   }
 
   @Override
-  protected List<SchoolEntryProcedure> createProcedures(List<T> importableRows) {
+  protected List<SchoolEntryProcedure> createProcedures(List<R> importableRows) {
     List<ImportProcedureData> importData =
         importableRows.stream().map(rowValueMapper::mapValuesToImportData).toList();
     return importService.createProceduresWithBookAppointmentTask(
@@ -163,7 +162,7 @@ public class CitizenOrSchoolListImporter<T extends SchoolEntryRowValues<T>, C ex
   }
 
   @Override
-  protected List<UUID> mergeProceduresAndGetFailedProcedureIds(List<T> mergeableRows) {
+  protected List<UUID> mergeProceduresAndGetFailedProcedureIds(List<R> mergeableRows) {
     List<MergeProcedureData> mergeData =
         mergeableRows.stream().map(rowValueMapper::mapValuesToMergeData).toList();
     return importService.mergeProcedures(mergeData, importType, schoolId, locationId, schoolYear);

@@ -10,6 +10,8 @@ import de.eshg.lib.appointmentblock.persistence.entity.Appointment;
 import de.eshg.lib.common.DataSensitivity;
 import de.eshg.lib.common.SensitivityLevel;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
+import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination_;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination_;
 import de.eshg.stiprotection.persistence.db.medicalhistory.MedicalHistory;
@@ -58,6 +60,14 @@ public class StiProtectionProcedure
       orphanRemoval = true,
       fetch = FetchType.LAZY)
   private RapidTestExamination rapidTestExamination;
+
+  @DataSensitivity(SensitivityLevel.SENSITIVE)
+  @OneToOne(
+      mappedBy = LaboratoryTestExamination_.PROCEDURE,
+      cascade = CascadeType.PERSIST,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  private LaboratoryTestExamination laboratoryTestExamination;
 
   @DataSensitivity(SensitivityLevel.PUBLIC)
   @OneToOne(orphanRemoval = true, cascade = CascadeType.PERSIST)
@@ -133,6 +143,21 @@ public class StiProtectionProcedure
       rapidTestExamination.setProcedure(this);
     }
     this.rapidTestExamination = rapidTestExamination;
+  }
+
+  public LaboratoryTestExamination getLaboratoryTestExamination() {
+    return laboratoryTestExamination;
+  }
+
+  public void setLaboratoryTestExamination(LaboratoryTestExamination laboratoryTestExamination) {
+    if (laboratoryTestExamination == null) {
+      if (this.laboratoryTestExamination != null) {
+        this.laboratoryTestExamination.setProcedure(null);
+      }
+    } else {
+      laboratoryTestExamination.setProcedure(this);
+    }
+    this.laboratoryTestExamination = laboratoryTestExamination;
   }
 
   public Appointment getAppointment() {

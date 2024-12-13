@@ -15,7 +15,7 @@ public enum ImportStatus {
   MERGE_FAILED("Fehler beim Zusammenführen"),
   ERROR_INPUT_DATA("Fehler"),
   IMPORTED_PREVIOUSLY("Ignoriert"),
-  INVALID_PROCEDURE_ID("Ungültige Vorgangs-ID"),
+  INVALID_ENTITY_ID("Ungültige ID"),
   DUPLICATE_WITHIN_LIST("Duplikat in der Liste"),
   DUPLICATE_IN_ASSET("Duplikat im Bestand"),
   BATCH_ERROR("Ignoriert (Fehler in Gruppe)"),

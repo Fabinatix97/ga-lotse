@@ -19,17 +19,20 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.user.UserApi;
 import de.eshg.file.common.FileType;
 import de.eshg.lib.auditlog.AuditLogger;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.lib.procedure.domain.model.TriggerType;
+import de.eshg.lib.procedure.procedures.ProcedureSearchService;
 import de.eshg.lib.procedure.util.FileValidator;
 import de.eshg.medicalregistry.api.ConfirmProcedureRequest;
 import de.eshg.medicalregistry.api.CreateFullChangeRequest;
 import de.eshg.medicalregistry.api.CreateProcedureRequest;
 import de.eshg.medicalregistry.api.DeleteProcedureRequest;
-import de.eshg.medicalregistry.api.GetMedicalRegistryEntryOverview;
+import de.eshg.medicalregistry.api.GetMedicalRegistryEntries;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresFilterOptions;
 import de.eshg.medicalregistry.api.GetMedicalRegistryProceduresPaginationOptions;
 import de.eshg.medicalregistry.api.GetProcedureResponse;
+import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
 import de.eshg.medicalregistry.api.ProcedureReferenceDto;
 import de.eshg.medicalregistry.business.model.DocumentData;
 import de.eshg.medicalregistry.business.model.MedicalRegistryKeyDocumentType;
@@ -38,6 +41,7 @@ import de.eshg.medicalregistry.domain.model.MedicalRegistryEntryChange;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
 import de.eshg.medicalregistry.domain.model.Professional;
 import de.eshg.medicalregistry.domain.model.TypeOfChange;
+import de.eshg.medicalregistry.mapper.EntryMapper;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.config.BaseUrls;
@@ -46,6 +50,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,6 +66,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,6 +88,8 @@ public class MedicalRegistryController {
   private static final String REQUEST_PARAM_NAME_EMPLOYEE_LIST = "employeeList";
   private static final String REQUEST_PARAM_NAME_OTHER_RELEVANT_DOCUMENTS =
       "otherRelevantDocuments";
+  protected static final EnumSet<ProcedureStatus> RELEVANT_STATUS =
+      EnumSet.of(ProcedureStatus.DRAFT, ProcedureStatus.OPEN);
 
   private final MedicalRegistryService medicalRegistryService;
   private final PersonService personService;
@@ -90,6 +98,7 @@ public class MedicalRegistryController {
   private final Validator validator;
   private final AuditLogger auditLogger;
   private final UserApi userApi;
+  private final ProcedureSearchService<MedicalRegistryProcedure> searchService;
 
   public MedicalRegistryController(
       MedicalRegistryService medicalRegistryService,
@@ -98,7 +107,8 @@ public class MedicalRegistryController {
       MedicalRegistryGuard medicalRegistryGuard,
       Validator validator,
       AuditLogger auditLogger,
-      UserApi userApi) {
+      UserApi userApi,
+      ProcedureSearchService<MedicalRegistryProcedure> searchService) {
     this.medicalRegistryService = medicalRegistryService;
     this.personService = personService;
     this.facilityService = facilityService;
@@ -106,6 +116,7 @@ public class MedicalRegistryController {
     this.validator = validator;
     this.auditLogger = auditLogger;
     this.userApi = userApi;
+    this.searchService = searchService;
   }
 
   @PostMapping("/{procedureId}/confirm")
@@ -337,7 +348,7 @@ public class MedicalRegistryController {
 
     Professional professional = medicalRegistryProcedure.getProfessional();
     GetPersonFileStateResponse professionalDetails =
-        personService.findProfessionalDetails(professional.getCentralFileStateId());
+        personService.findProfessionalDetails(professional);
 
     Map<UUID, FacilityDetails> practiceDetails =
         facilityService
@@ -381,13 +392,33 @@ public class MedicalRegistryController {
   @Operation(
       summary =
           "Get paginated and optionally filtered medical registry procedures. Filtering is optional")
-  public GetMedicalRegistryEntryOverview getProcedureOverview(
+  public GetMedicalRegistryEntries getProcedureOverview(
       @Valid @ParameterObject @InlineParameterObject
           GetMedicalRegistryProceduresPaginationOptions paginationOptions,
       @Valid @ParameterObject @InlineParameterObject
           GetMedicalRegistryProceduresFilterOptions filterOptions) {
 
     return medicalRegistryService.getProceduresOverview(paginationOptions, filterOptions);
+  }
+
+  @GetMapping("/search")
+  @Transactional(readOnly = true)
+  @Operation(
+      summary = "Search medical registry entries for request parameter",
+      description =
+          """
+        Searches for matches in person and facility.
+        As well as lifetime doctor number, establishment number and institution identifier.
+        """)
+  public GetMedicalRegistryEntries searchProcedures(@RequestParam("query") String query) {
+    ProcedureSearchService.Result<MedicalRegistryProcedure> searchResult =
+        searchService.searchProcedures(query, RELEVANT_STATUS);
+
+    List<MedicalRegistryEntryDto> entryDtos =
+        searchResult.procedures().stream()
+            .map(procedure -> EntryMapper.mapToDto(procedure, searchResult.personFileStatesById()))
+            .toList();
+    return new GetMedicalRegistryEntries(1, searchResult.procedures().size(), entryDtos);
   }
 
   private static void addIfProvided(

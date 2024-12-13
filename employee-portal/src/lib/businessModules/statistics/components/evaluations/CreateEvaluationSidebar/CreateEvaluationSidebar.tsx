@@ -13,21 +13,31 @@ import { mapToApiBusinessModule } from "@/lib/businessModules/statistics/api/map
 import { CategorizedFlatAttribute } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseAttributesStep/ChooseAttributesStep";
 import { DataSource } from "@/lib/businessModules/statistics/components/evaluations/CreateEvaluationSidebar/ChooseDataSourceStep/ChooseDataSourceStep";
 import { getAttributeLabel } from "@/lib/businessModules/statistics/components/evaluations/getAttributeLabel";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
 import { CreateEvaluationFromScratchSidebar } from "./CreateEvaluationFromScratchSidebar";
 
-export function CreateEvaluationSidebar({
-  apiDataSources,
-  apiTemplates,
-  openSidebar,
-  setOpenSidebar,
-}: {
+export function useCreateEvaluationSidebar(): UseSidebarWithFormRefResult<CreateEvaluationSidebarProps> {
+  return useSidebarWithFormRef({
+    component: CreateEvaluationSidebar,
+  });
+}
+
+interface CreateEvaluationSidebarProps extends SidebarWithFormRefProps {
   apiDataSources: ApiAvailableDataSource[];
   apiTemplates: ApiMinimalEvaluationTemplateInfo[];
-  openSidebar: boolean;
-  setOpenSidebar: (open: boolean) => void;
-}) {
+}
+
+function CreateEvaluationSidebar({
+  apiDataSources,
+  apiTemplates,
+  onClose,
+  formRef,
+}: CreateEvaluationSidebarProps) {
   const attributesByDataSourceId: Record<string, CategorizedFlatAttribute[]> =
     Object.fromEntries(
       apiDataSources.map((ds) => [ds.id, mapToCategorizedFlatAttributes(ds)]),
@@ -35,17 +45,13 @@ export function CreateEvaluationSidebar({
   const dataSources: DataSource[] = apiDataSources.map(mapToDataSource);
 
   return (
-    <>
-      <OverlayBoundary>
-        <CreateEvaluationFromScratchSidebar
-          open={openSidebar}
-          onClose={() => setOpenSidebar(false)}
-          dataSources={dataSources}
-          attributesByDataSourceId={attributesByDataSourceId}
-          evaluationTemplates={apiTemplates}
-        />
-      </OverlayBoundary>
-    </>
+    <CreateEvaluationFromScratchSidebar
+      onClose={onClose}
+      dataSources={dataSources}
+      attributesByDataSourceId={attributesByDataSourceId}
+      evaluationTemplates={apiTemplates}
+      formRef={formRef}
+    />
   );
 }
 

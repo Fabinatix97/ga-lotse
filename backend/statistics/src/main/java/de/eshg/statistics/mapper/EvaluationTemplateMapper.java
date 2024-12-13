@@ -6,6 +6,7 @@
 package de.eshg.statistics.mapper;
 
 import de.eshg.base.user.api.UserDto;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.statistics.api.chart.BarChartConfigurationDto;
 import de.eshg.statistics.api.chart.ChoroplethMapConfigurationDto;
@@ -26,6 +27,7 @@ import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateDto;
 import de.eshg.statistics.api.evaluationtemplate.EvaluationTemplateInfoDto;
 import de.eshg.statistics.api.evaluationtemplate.ExpectedEvaluationTemplateDto;
 import de.eshg.statistics.api.evaluationtemplate.MinimalEvaluationTemplateInfo;
+import de.eshg.statistics.api.evaluationtemplate.TemplateSensitivityInfo;
 import de.eshg.statistics.datatransfer.AnalysisTemplateData;
 import de.eshg.statistics.datatransfer.DiagramTemplateData;
 import de.eshg.statistics.datatransfer.EvaluationTemplateData;
@@ -45,6 +47,8 @@ import de.eshg.statistics.persistence.entity.evaluationtemplate.DiagramTemplate;
 import de.eshg.statistics.persistence.entity.evaluationtemplate.EvaluationTemplate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 
@@ -236,7 +240,11 @@ public class EvaluationTemplateMapper {
         .toList();
   }
 
-  public static EvaluationTemplateInfoDto mapToInfo(EvaluationTemplate evaluationTemplate) {
+  public static EvaluationTemplateInfoDto mapToInfo(
+      EvaluationTemplate evaluationTemplate,
+      Predicate<EvaluationTemplate> withoutAnonymizationAllowedPredicate,
+      Function<EvaluationTemplate, DataSourceSensitivity> dataSourceSensitivityFunction,
+      Predicate<EvaluationTemplate> canBeAnonymizedPredicate) {
     List<String> dataSourceNames =
         evaluationTemplate.getDataSources().stream()
             .map(DataSource::getDataSourceName)
@@ -248,6 +256,10 @@ public class EvaluationTemplateMapper {
     return new EvaluationTemplateInfoDto(
         evaluationTemplate.getExternalId(),
         evaluationTemplate.getName(),
+        new TemplateSensitivityInfo(
+            withoutAnonymizationAllowedPredicate.test(evaluationTemplate),
+            dataSourceSensitivityFunction.apply(evaluationTemplate),
+            canBeAnonymizedPredicate.test(evaluationTemplate)),
         dataSourceNames,
         evaluationTemplate.getAnalysisCount(),
         evaluationTemplate.getCreatedByUserId(),
@@ -262,7 +274,11 @@ public class EvaluationTemplateMapper {
   }
 
   public static EvaluationTemplateDto mapToApi(
-      EvaluationTemplate evaluationTemplate, boolean withoutAnonymizationAllowed, UserDto user) {
+      EvaluationTemplate evaluationTemplate,
+      Predicate<EvaluationTemplate> withoutAnonymizationAllowedPredicate,
+      Function<EvaluationTemplate, DataSourceSensitivity> dataSourceSensitivityFunction,
+      Predicate<EvaluationTemplate> canBeAnonymizedPredicate,
+      UserDto user) {
     List<DataSourceWithAttributeNames> dataSources =
         mapToAttributesWithNames(evaluationTemplate.getDataSources());
 
@@ -270,7 +286,10 @@ public class EvaluationTemplateMapper {
         evaluationTemplate.getExternalId(),
         evaluationTemplate.getName(),
         evaluationTemplate.getDescription(),
-        withoutAnonymizationAllowed,
+        new TemplateSensitivityInfo(
+            withoutAnonymizationAllowedPredicate.test(evaluationTemplate),
+            dataSourceSensitivityFunction.apply(evaluationTemplate),
+            canBeAnonymizedPredicate.test(evaluationTemplate)),
         dataSources,
         mapToAnalysisInfos(evaluationTemplate.getAnalysisTemplates()),
         user,

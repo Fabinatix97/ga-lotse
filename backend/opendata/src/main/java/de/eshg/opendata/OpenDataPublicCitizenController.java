@@ -6,9 +6,11 @@
 package de.eshg.opendata;
 
 import de.eshg.api.commons.InlineParameterObject;
+import de.eshg.opendata.api.GetOpenDocumentsPaginationOptions;
 import de.eshg.opendata.api.GetOpenDocumentsRequest;
 import de.eshg.opendata.api.GetOpenDocumentsResponse;
 import de.eshg.opendata.api.VersionDto;
+import de.eshg.opendata.config.OpenDataProperties;
 import de.eshg.rest.service.security.config.BaseUrls.OpenData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,8 +18,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +43,26 @@ public class OpenDataPublicCitizenController {
 
   private final OpenDataService openDataService;
   private final OpenDataValidations openDataValidations;
+  private final OpenDataFiltering openDataFiltering;
+  private final Resource termsOfUse;
 
   public OpenDataPublicCitizenController(
-      OpenDataService openDataService, OpenDataValidations openDataValidations) {
+      OpenDataService openDataService,
+      OpenDataValidations openDataValidations,
+      OpenDataFiltering openDataFiltering,
+      OpenDataProperties openDataProperties) {
     this.openDataService = openDataService;
     this.openDataValidations = openDataValidations;
+    this.openDataFiltering = openDataFiltering;
+    termsOfUse = toResource(openDataProperties.getTermsOfUse());
+  }
+
+  private static Resource toResource(URI documentLocation) {
+    try {
+      return new UrlResource(documentLocation);
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Unable to load resource from " + documentLocation, e);
+    }
   }
 
   @GetMapping
@@ -51,9 +76,11 @@ public class OpenDataPublicCitizenController {
       `statisticsStartDate` and `statisticsEndDate`
       """)
   public GetOpenDocumentsResponse getOpenDocuments(
-      @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request) {
+      @InlineParameterObject @ParameterObject @Valid GetOpenDocumentsRequest request,
+      @InlineParameterObject @ParameterObject @Valid
+          GetOpenDocumentsPaginationOptions paginationOptions) {
     openDataValidations.validateOpenDataEnabled();
-    return new GetOpenDocumentsResponse(openDataService.getOpenDocuments(request, true));
+    return openDataFiltering.getOpenDocumentsFromCitizenPortal(request, paginationOptions);
   }
 
   @GetMapping("/{versionId}")
@@ -80,5 +107,23 @@ public class OpenDataPublicCitizenController {
   public ResponseEntity<byte[]> downloadDocument(@PathVariable("versionId") UUID versionId) {
     openDataValidations.validateOpenDataEnabled();
     return openDataService.downloadDocument(versionId);
+  }
+
+  @GetMapping("terms-of-use")
+  @Operation(summary = "Returns the terms of use")
+  public ResponseEntity<Resource> getTermsOfUse() {
+    return createTermsOfUseResponse();
+  }
+
+  private ResponseEntity<Resource> createTermsOfUseResponse() {
+    return ResponseEntity.ok()
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            ContentDisposition.attachment()
+                .filename("Terms-of-use.pdf", StandardCharsets.UTF_8)
+                .build()
+                .toString())
+        .contentType(MediaType.APPLICATION_PDF)
+        .body(termsOfUse);
   }
 }

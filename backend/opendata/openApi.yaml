@@ -48,6 +48,26 @@ paths:
         required: false
         schema:
           type: string
+      - description: Limit of returned results
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+      - description: Offset used for pagination
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2000
+          minimum: 0
       responses:
         "200":
           content:
@@ -56,6 +76,20 @@ paths:
                 $ref: "#/components/schemas/GetOpenDocumentsResponse"
           description: OK
       summary: Gets open documents
+      tags:
+      - OpenDataPublicCitizen
+  /citizen/public/terms-of-use:
+    get:
+      operationId: getTermsOfUse
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          description: OK
+      summary: Returns the terms of use
       tags:
       - OpenDataPublicCitizen
   /citizen/public/{versionId}:
@@ -140,6 +174,26 @@ paths:
         required: false
         schema:
           type: string
+      - description: Limit of returned results
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+          maximum: 200
+          minimum: 1
+      - description: Offset used for pagination
+        in: query
+        name: pageNumber
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          maximum: 2000
+          minimum: 0
       responses:
         "200":
           content:
@@ -177,6 +231,19 @@ paths:
                 $ref: "#/components/schemas/Resource"
           description: OK
       summary: Creates a new version
+      tags:
+      - OpenData
+  /open-documents/fallback-license-url:
+    get:
+      operationId: getFallbackLicenseUrl
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetFallbackLicenseUrlResponse"
+          description: OK
+      summary: get the configured fallback license url
       tags:
       - OpenData
   /open-documents/{versionId}:
@@ -413,6 +480,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Population"
+    GetFallbackLicenseUrlResponse:
+      type: object
+      properties:
+        fallbackLicenseUrl:
+          type: string
+      required:
+      - fallbackLicenseUrl
     GetOpenDocumentsResponse:
       type: object
       properties:
@@ -420,8 +494,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Resource"
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of result elements for the given filter criteria
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of result pages for the given filter criteria
       required:
       - elements
+      - totalElements
+      - totalPages
     HttpMethod:
       type: string
       enum:
@@ -590,6 +674,12 @@ components:
           items:
             $ref: "#/components/schemas/BusinessModule"
           uniqueItems: true
+        statisticEndDate:
+          type: string
+          format: date
+        statisticStartDate:
+          type: string
+          format: date
         version:
           type: integer
           format: int64

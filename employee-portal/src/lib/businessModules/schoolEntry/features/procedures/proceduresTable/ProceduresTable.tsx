@@ -5,7 +5,6 @@
 
 "use client";
 
-import { ApiBaseFeature } from "@eshg/employee-portal-api/base";
 import { ApiBusinessModule } from "@eshg/employee-portal-api/businessProcedures";
 import { ApiSchoolEntryProcedureSortKey } from "@eshg/employee-portal-api/schoolEntry";
 import {
@@ -22,7 +21,6 @@ import {
 import { ReactNode, useReducer } from "react";
 import { isNullish } from "remeda";
 
-import { useIsNewFeatureEnabled as useIsNewBaseFeatureEnabled } from "@/lib/baseModule/api/queries/feature";
 import { useSchoolEntryApi } from "@/lib/businessModules/schoolEntry/api/clients";
 import { Procedure } from "@/lib/businessModules/schoolEntry/api/models/Procedure";
 import { getProceduresQuery } from "@/lib/businessModules/schoolEntry/api/queries/schoolEntryApi";
@@ -33,8 +31,7 @@ import {
   PROCEDURE_TYPES,
 } from "@/lib/businessModules/schoolEntry/features/procedures/translations";
 import { routes } from "@/lib/businessModules/schoolEntry/shared/routes";
-import { useGdprValidationTaskApi } from "@/lib/shared/api/clients";
-import { getGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
+import { useGetGdprValidationBannerQuery } from "@/lib/shared/api/queries/gdpr";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FilterButton } from "@/lib/shared/components/buttons/FilterButton";
 import { useFilterDictionary } from "@/lib/shared/components/filterSettings/useFilterDictionary";
@@ -105,14 +102,8 @@ export function ProceduresTable(props: ProceduresTableProps) {
   });
 
   const schoolEntryApi = useSchoolEntryApi();
-  const gdprValidationTaskApi = useGdprValidationTaskApi(
+  const gdprBannerQuery = useGetGdprValidationBannerQuery(
     ApiBusinessModule.SchoolEntry,
-  );
-  const isGdprFeatureEnabled = useIsNewBaseFeatureEnabled(ApiBaseFeature.Gdpr);
-  const gdprBannerQuery = getGdprValidationBannerQuery(
-    gdprValidationTaskApi,
-    ApiBusinessModule.SchoolEntry,
-    isGdprFeatureEnabled,
   );
   const proceduresQuery = getProceduresQuery(schoolEntryApi, {
     pageNumber: tableControl.paginationProps.pageNumber,

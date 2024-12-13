@@ -11,6 +11,7 @@ dependencies {
     implementation project(':lib-xlsx-import')
 
     implementation 'org.springdoc:springdoc-openapi-starter-common:latest.release'
+    implementation 'com.google.guava:guava:latest.release'
     annotationProcessor 'org.hibernate.orm:hibernate-jpamodelgen'
 
     runtimeOnly 'org.postgresql:postgresql'

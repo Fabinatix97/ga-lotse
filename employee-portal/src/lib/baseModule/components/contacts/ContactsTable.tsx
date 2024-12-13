@@ -170,13 +170,13 @@ export function ContactsTable({
               />
               <ContactTypeFilter tableControl={tableControl} />
               <SingleSelectFilter
-                searchParamName={contactSearchParamNames.category}
+                searchParamName={contactSearchParamNames.categories}
                 placeholder={"Objekttyp"}
                 options={buildEnumOptions(contactCategoryNames)}
                 tableControl={tableControl}
                 sx={{
-                  // width of longest option "Gesundheitsamt"
-                  width: "19ch",
+                  // width of longest option "Kindertagesstätte"
+                  width: "20ch",
                 }}
               />
             </Stack>

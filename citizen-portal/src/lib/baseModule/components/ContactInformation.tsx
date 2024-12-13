@@ -4,17 +4,13 @@
  */
 
 import { ExternalLink } from "@eshg/lib-portal/components/navigation/ExternalLink";
-import {
-  AccessTimeOutlined,
-  ArrowRightAltOutlined,
-  ChatBubbleOutlineOutlined,
-  FmdGoodOutlined,
-  LaptopMacOutlined,
-} from "@mui/icons-material";
-import { Typography } from "@mui/joy";
+import { ArrowRightAltOutlined, LaptopMacOutlined } from "@mui/icons-material";
 
 import { useTranslation } from "@/lib/i18n/client";
 import { useGetDepartmentInfo } from "@/lib/shared/api/queries/department";
+import { AddressSection } from "@/lib/shared/components/AddressSection";
+import { ContactSection } from "@/lib/shared/components/ContactSection";
+import { OpeningHoursSection } from "@/lib/shared/components/OpeningHoursSection";
 import {
   InfoSection,
   InfoSectionGrid,
@@ -24,10 +20,6 @@ import {
   ContentSheet,
   ContentSheetTitle,
 } from "@/lib/shared/components/layout/contentSheet";
-import {
-  formatPostalCodeAndCity,
-  formatStreetAndHouseNumber,
-} from "@/lib/shared/formatters/address";
 import { DepartmentInfoProps } from "@/lib/shared/types";
 
 export function ContactInformation() {
@@ -36,64 +28,14 @@ export function ContactInformation() {
 
   return (
     <ContentSheet>
-      <ContentSheetTitle>
-        {t("pageTitle.contact_information")}
-      </ContentSheetTitle>
+      <ContentSheetTitle>{t("contact.title")}</ContentSheetTitle>
       <InfoSectionGrid>
-        <AddressSection department={department} />
-        <ContactSection department={department} />
-        <OpeningHoursSection />
+        <AddressSection department={department} localePath="contact" />
+        <ContactSection department={department} localePath="contact" />
+        <OpeningHoursSection localePath="contact" />
         <InternetSection department={department} />
       </InfoSectionGrid>
     </ContentSheet>
-  );
-}
-
-function AddressSection(props: DepartmentInfoProps) {
-  const { t } = useTranslation(["contact"]);
-
-  return (
-    <InfoSection icon={<FmdGoodOutlined />}>
-      <InfoSectionTitle>{t("sectionTitle.address")}</InfoSectionTitle>
-      <Typography>
-        {props.department.name}
-        <br />
-        {formatStreetAndHouseNumber(props.department)}
-        <br />
-        {formatPostalCodeAndCity(props.department)}
-      </Typography>
-    </InfoSection>
-  );
-}
-
-function OpeningHoursSection() {
-  const { t } = useTranslation(["contact"]);
-
-  return (
-    <InfoSection icon={<AccessTimeOutlined />}>
-      <InfoSectionTitle>{t("sectionTitle.opening_hours")}</InfoSectionTitle>
-      <Typography>{t("opening_hours_information")}</Typography>
-    </InfoSection>
-  );
-}
-
-function ContactSection(props: DepartmentInfoProps) {
-  const { t } = useTranslation(["contact"]);
-  const email = props.department.email;
-
-  return (
-    <InfoSection icon={<ChatBubbleOutlineOutlined />}>
-      <InfoSectionTitle>{t("sectionTitle.contact")}</InfoSectionTitle>
-      <Typography>
-        {t("phone_number")}: {props.department.phoneNumber}
-      </Typography>
-      <Typography>
-        E-Mail:{" "}
-        <ExternalLink sx={{ wordBreak: "break-all" }} href={`mailto:${email}`}>
-          {email}
-        </ExternalLink>
-      </Typography>
-    </InfoSection>
   );
 }
 
@@ -103,7 +45,7 @@ function InternetSection(props: DepartmentInfoProps) {
 
   return (
     <InfoSection icon={<LaptopMacOutlined />}>
-      <InfoSectionTitle>{t("sectionTitle.internet")}</InfoSectionTitle>
+      <InfoSectionTitle>{t("contact.internetSection.title")}</InfoSectionTitle>
       <ExternalLink
         sx={{
           justifyContent: "space-between",
@@ -112,7 +54,7 @@ function InternetSection(props: DepartmentInfoProps) {
         href={`https://${homepage}`}
         endDecorator={<ArrowRightAltOutlined />}
       >
-        {t("health_department")}
+        {t("contact.internetSection.healthDepartment")}
       </ExternalLink>
     </InfoSection>
   );

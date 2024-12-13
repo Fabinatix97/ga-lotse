@@ -8,6 +8,7 @@
 import { ApiImportStatistics } from "@eshg/employee-portal-api/medicalRegistry";
 import { downloadFileAndOpen } from "@eshg/lib-portal/api/files/download";
 import { HiddenContainer } from "@eshg/lib-portal/components/HiddenContainer";
+import { RequiresChildren } from "@eshg/lib-portal/types/react";
 import {
   ErrorOutlineOutlined,
   FileDownloadOutlined,
@@ -31,6 +32,7 @@ import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
 
 interface ImportDataSummarySidebarProps {
   onClose: () => void;
+  onReset: () => void;
   file: File;
   statistics: ApiImportStatistics;
 }
@@ -39,7 +41,10 @@ export function ImportDataSummarySidebar({
   file,
   statistics,
   onClose,
+  onReset,
 }: ImportDataSummarySidebarProps) {
+  const requiresTroubleshooting =
+    statistics.duplicated > 0 || statistics.failed > 0;
   return (
     <>
       <SidebarContent title="Daten importieren">
@@ -47,70 +52,112 @@ export function ImportDataSummarySidebar({
           <Typography level="title-md" color="success">
             Import erfolgreich
           </Typography>
-          <StatisticsList statistics={statistics} />
-          <Stack gap={1}>
-            <Typography>Bitte laden Sie die Datei herunter.</Typography>
-            <DownloadFileButton file={file} />
-          </Stack>
+          <StatisticsDisplay statistics={statistics} file={file} />
         </Stack>
       </SidebarContent>
       <SidebarActions>
-        <ButtonBar right={<Button onClick={onClose}>Fertig</Button>} />
+        <ButtonBar
+          right={
+            requiresTroubleshooting ? (
+              <Button onClick={onReset}>
+                Liste zur Fehlerbehebung hochladen
+              </Button>
+            ) : (
+              <Button onClick={onClose}>Fertig</Button>
+            )
+          }
+        />
       </SidebarActions>
     </>
   );
 }
 
-function StatisticsList({ statistics }: { statistics: ApiImportStatistics }) {
+function StatisticsDisplay({
+  statistics,
+  file,
+}: {
+  statistics: ApiImportStatistics;
+  file: File;
+}) {
   const { created, total, duplicated, failed } = statistics;
+  const requiresTroubleshooting = duplicated > 0 || failed > 0;
 
   return (
-    <Sheet color="neutral" variant="soft">
-      <List
-        aria-label="Statistiken"
-        sx={(theme) => ({
-          "--List-padding": 0,
-          "--List-gap": theme.spacing(3),
-          "--ListItem-paddingX": theme.spacing(2),
-          "--ListItem-paddingY": theme.spacing(2),
-        })}
-      >
-        <ListItem>
-          <ListItemDecorator>
-            <InfoOutlined color="primary" size="sm" />
-          </ListItemDecorator>
-          <Typography fontWeight="lg">
-            {total === 1
-              ? `${created} von ${total} Datensatz neu angelegt`
-              : `${created} von ${total} Datensätzen neu angelegt`}
+    <>
+      <Sheet color="neutral" variant="soft">
+        <List
+          aria-label="Statistiken"
+          sx={(theme) => ({
+            "--List-padding": 0,
+            "--List-gap": theme.spacing(3),
+            "--ListItem-paddingX": theme.spacing(2),
+            "--ListItem-paddingY": theme.spacing(2),
+          })}
+        >
+          <ListItem>
+            <ListItemDecorator>
+              <InfoOutlined color="primary" size="sm" />
+            </ListItemDecorator>
+            <Typography fontWeight="lg">
+              {total === 1
+                ? `${created} von ${total} Datensatz angelegt`
+                : `${created} von ${total} Datensätzen angelegt`}
+            </Typography>
+          </ListItem>
+          {requiresTroubleshooting && (
+            <>
+              <ListItem>
+                <ListItemDecorator>
+                  <WarningAmberOutlined color="warning" size="sm" />
+                </ListItemDecorator>
+                <Typography fontWeight="lg">
+                  {duplicated === 1
+                    ? `${duplicated} doppelter Datensatz`
+                    : `${duplicated} doppelte Datensätze`}
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <ListItemDecorator>
+                  <ErrorOutlineOutlined color="danger" size="sm" />
+                </ListItemDecorator>
+                <Typography fontWeight="lg">
+                  {failed === 1
+                    ? `${failed} fehlerhafter Datensatz`
+                    : `${failed} fehlerhafte Datensätze`}
+                </Typography>
+              </ListItem>
+            </>
+          )}
+        </List>
+      </Sheet>
+      <Stack gap={1}>
+        {requiresTroubleshooting ? (
+          <Typography>
+            Eine Liste zur Fehlerbehebung wurde automatisch heruntergeladen.
+            Korrigieren Sie die in der Datei markierten Fehler und laden Sie die
+            Liste erneut hoch. Bereits übertragene Daten sind markiert und
+            werden nicht als Duplikat angelegt.
           </Typography>
-        </ListItem>
-        <ListItem>
-          <ListItemDecorator>
-            <WarningAmberOutlined color="warning" size="sm" />
-          </ListItemDecorator>
-          <Typography fontWeight="lg">
-            {duplicated === 1
-              ? `${duplicated} doppelter Datensatz`
-              : `${duplicated} doppelte Datensätze`}
+        ) : (
+          <Typography>
+            Eine Liste zur Übersicht der übermittelten Daten wurde automatisch
+            heruntergeladen.
           </Typography>
-        </ListItem>
-        <ListItem>
-          <ListItemDecorator>
-            <ErrorOutlineOutlined color="danger" size="sm" />
-          </ListItemDecorator>
-          <Typography fontWeight="lg">
-            {failed === 1
-              ? `${failed} fehlerhafter Datensatz`
-              : `${failed} fehlerhafte Datensätze`}
-          </Typography>
-        </ListItem>
-      </List>
-    </Sheet>
+        )}
+        <DownloadFileButton file={file}>
+          {requiresTroubleshooting
+            ? "Liste zur Fehlerbehebung erneut herunterladen"
+            : "Liste erneut herunterladen"}
+        </DownloadFileButton>
+      </Stack>
+    </>
   );
 }
 
-function DownloadFileButton({ file }: { file: File }) {
+function DownloadFileButton({
+  file,
+  children,
+}: RequiresChildren & { file: File }) {
   const downloadContainerRef = useRef<HTMLDivElement>(null);
 
   function download() {
@@ -130,7 +177,7 @@ function DownloadFileButton({ file }: { file: File }) {
         onClick={() => download()}
         sx={{ justifyContent: "flex-start" }}
       >
-        {file.name}
+        {children}
       </Button>
       <HiddenContainer ref={downloadContainerRef} />
     </>

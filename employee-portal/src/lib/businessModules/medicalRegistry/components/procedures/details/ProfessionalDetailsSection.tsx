@@ -5,10 +5,10 @@
 
 import { ApiGetProcedure200Response } from "@eshg/employee-portal-api/medicalRegistry";
 import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
-import { createFieldNameMapper } from "@eshg/lib-portal/helpers/form";
 import { Stack } from "@mui/joy";
 import { isDefined } from "remeda";
 
+import { ContactData } from "@/lib/businessModules/medicalRegistry/components/procedures/details/ContactData";
 import {
   employmentStatusNames,
   employmentTypeNames,
@@ -20,7 +20,6 @@ import { DetailsCell } from "@/lib/shared/components/detailsSection/DetailsCell"
 import { DetailsColumn } from "@/lib/shared/components/detailsSection/DetailsColumn";
 import { DetailsRow } from "@/lib/shared/components/detailsSection/DetailsRow";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
-import { ExternalLinkDetailsCell } from "@/lib/shared/components/detailsSection/ExternalLinkDetailsCell";
 import { InformationSheet } from "@/lib/shared/components/infoTile/InformationSheet";
 import { PERSON_FIELD_NAME } from "@/lib/shared/components/personSidebar/constants";
 import { streetAndHouseNumber } from "@/lib/shared/helpers/facilityUtils";
@@ -45,8 +44,6 @@ const PROFESSIONAL_FIELD_NAME = {
   country: "Land",
 };
 
-const fieldName = createFieldNameMapper<typeof PROFESSIONAL_FIELD_NAME>();
-
 export function ProfessionalDetailsSection({
   procedure,
 }: Readonly<{
@@ -70,38 +67,32 @@ export function ProfessionalDetailsSection({
             <DetailsRow>
               {isDefined(applicant.title) && (
                 <DetailsCell
-                  name={fieldName("title")}
                   label={PROFESSIONAL_FIELD_NAME.title}
                   value={applicant.title}
                 />
               )}
               <DetailsCell
-                name={fieldName("firstName")}
                 label={PROFESSIONAL_FIELD_NAME.firstName}
                 value={applicant.firstName}
               />
               <DetailsCell
-                name={fieldName("lastName")}
                 label={PROFESSIONAL_FIELD_NAME.lastName}
                 value={applicant.lastName}
               />
             </DetailsRow>
             {isDefined(applicant.nameAtBirth) && (
               <DetailsCell
-                name={fieldName("nameAtBirth")}
                 label={PROFESSIONAL_FIELD_NAME.nameAtBirth}
                 value={applicant.nameAtBirth}
               />
             )}
             <DetailsRow>
               <DetailsCell
-                name={fieldName("dateOfBirth")}
                 label={PROFESSIONAL_FIELD_NAME.dateOfBirth}
                 value={formatDate(applicant.dateOfBirth)}
               />
               {isDefined(applicant.placeOfBirth) && (
                 <DetailsCell
-                  name={fieldName("placeOfBirth")}
                   label={PROFESSIONAL_FIELD_NAME.placeOfBirth}
                   value={applicant.placeOfBirth}
                 />
@@ -109,13 +100,11 @@ export function ProfessionalDetailsSection({
             </DetailsRow>
             {isDefined(applicant.gender) && (
               <DetailsCell
-                name={fieldName("gender")}
                 label={PROFESSIONAL_FIELD_NAME.gender}
                 value={GENDER_VALUES[applicant.gender]}
               />
             )}
             <DetailsCell
-              name={fieldName("nationality")}
               label={PROFESSIONAL_FIELD_NAME.nationality}
               value={translateCountry(applicant.nationality)}
             />
@@ -125,47 +114,27 @@ export function ProfessionalDetailsSection({
               {isDefined(address) && (
                 <>
                   <DetailsCell
-                    name={fieldName("streetAndHouseNumber")}
                     label={PROFESSIONAL_FIELD_NAME.streetAndHouseNumber}
                     value={streetAndHouseNumber(address)}
                   />
                   <DetailsRow>
                     <DetailsCell
-                      name={fieldName("postalCode")}
                       label={PROFESSIONAL_FIELD_NAME.postalCode}
                       value={address.postalCode}
                     />
                     <DetailsCell
-                      name={fieldName("city")}
                       label={PROFESSIONAL_FIELD_NAME.city}
                       value={address.city}
                       avoidWrap
                     />
                   </DetailsRow>
                   <DetailsCell
-                    name={fieldName("country")}
                     label={PROFESSIONAL_FIELD_NAME.country}
                     value={translateCountry(address.country)}
                   />
                 </>
               )}
-              {emailAddresses.map((emailAddress) => (
-                <ExternalLinkDetailsCell
-                  key={emailAddress}
-                  name={fieldName("emailAddresses")}
-                  label={PROFESSIONAL_FIELD_NAME.emailAddresses}
-                  value={emailAddress}
-                  href={(value) => `mailto:${value}`}
-                />
-              ))}
-              {phoneNumbers.map((phoneNumber) => (
-                <DetailsCell
-                  key={phoneNumber}
-                  name={fieldName("phoneNumbers")}
-                  label={PROFESSIONAL_FIELD_NAME.phoneNumbers}
-                  value={phoneNumber}
-                />
-              ))}
+              <ContactData subject={applicant} />
             </DetailsColumn>
           )}
           {isDefined(professionInformation) && (
@@ -174,7 +143,6 @@ export function ProfessionalDetailsSection({
                 isDefined(professionInformation.fieldOfExpertise)) && (
                 <DetailsRow>
                   <DetailsCell
-                    name={fieldName("professionalTitle")}
                     label={PROFESSIONAL_FIELD_NAME.professionalTitle}
                     value={
                       professionInformation.professionalTitle &&
@@ -184,7 +152,6 @@ export function ProfessionalDetailsSection({
                     }
                   />
                   <DetailsCell
-                    name={fieldName("fieldOfExpertise")}
                     label={PROFESSIONAL_FIELD_NAME.fieldOfExpertise}
                     value={professionInformation.fieldOfExpertise}
                   />
@@ -194,24 +161,20 @@ export function ProfessionalDetailsSection({
                 isDefined(professionInformation.furtherTraining)) && (
                 <DetailsRow>
                   <DetailsCell
-                    name={fieldName("specialistTitle")}
                     label={PROFESSIONAL_FIELD_NAME.specialistTitle}
                     value={professionInformation.specialistTitle}
                   />
                   <DetailsCell
-                    name={fieldName("furtherTraining")}
                     label={PROFESSIONAL_FIELD_NAME.furtherTraining}
                     value={professionInformation.furtherTraining}
                   />
                 </DetailsRow>
               )}
               <DetailsCell
-                name={fieldName("qualifications")}
                 label={PROFESSIONAL_FIELD_NAME.qualifications}
                 value={professionInformation.qualifications}
               />
               <DetailsCell
-                name={fieldName("lifetimeDoctorNumber")}
                 label={PROFESSIONAL_FIELD_NAME.lifetimeDoctorNumber}
                 value={professionInformation.lifetimeDoctorNumber}
               />
@@ -219,7 +182,6 @@ export function ProfessionalDetailsSection({
                 isDefined(professionInformation.employmentStatus)) && (
                 <DetailsRow>
                   <DetailsCell
-                    name={fieldName("employmentType")}
                     label={PROFESSIONAL_FIELD_NAME.employmentType}
                     value={
                       professionInformation.employmentType &&
@@ -227,7 +189,6 @@ export function ProfessionalDetailsSection({
                     }
                   />
                   <DetailsCell
-                    name={fieldName("employmentStatus")}
                     label={PROFESSIONAL_FIELD_NAME.employmentStatus}
                     value={
                       professionInformation.employmentStatus &&
@@ -239,12 +200,10 @@ export function ProfessionalDetailsSection({
                 </DetailsRow>
               )}
               <DetailsCell
-                name={fieldName("approbationGrantedOn")}
                 label={PROFESSIONAL_FIELD_NAME.approbationGrantedOn}
                 value={formatDate(professionInformation.approbationGrantedOn)}
               />
               <DetailsCell
-                name={fieldName("approbationIssuingAuthority")}
                 label={PROFESSIONAL_FIELD_NAME.approbationIssuingAuthority}
                 value={professionInformation.approbationIssuingAuthority}
               />

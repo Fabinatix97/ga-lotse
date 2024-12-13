@@ -86,7 +86,7 @@ public class EvaluationCopyService {
     copy.setPendingState(AggregationResultPendingState.COPY_ONGOING);
     copy.setTimeRangeStart(original.getTimeRangeStart());
     copy.setTimeRangeEnd(original.getTimeRangeEnd());
-    copy.setAnonymized(original.isAnonymized());
+    copy.setDataSensitivity(original.getDataSensitivity());
     copy.setName(cloneEvaluationRequest.clonedEvaluationName());
     copy.setNumberOfTableRows(original.getNumberOfTableRows());
     copy.addTableColumns(copyTableColumns(original.getTableColumns()));

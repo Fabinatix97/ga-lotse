@@ -9,6 +9,7 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
 import { Examination } from "@/lib/businessModules/dental/api/models/Examination";
+import { PROPHYLAXIS_TYPES } from "@/lib/businessModules/dental/features/prophylaxisSessions/translations";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
 import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
@@ -22,6 +23,14 @@ const COLUMNS = [
     enableSorting: false,
     meta: {
       width: 150,
+    },
+  }),
+  columnHelper.accessor("prophylaxisType", {
+    header: "Typ",
+    cell: (props) => PROPHYLAXIS_TYPES[props.getValue()],
+    enableSorting: false,
+    meta: {
+      width: 250,
     },
   }),
   columnHelper.accessor("note", {

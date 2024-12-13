@@ -387,6 +387,30 @@ paths:
       summary: Upload an XLSX file to create multiple children.
       tags:
       - Child
+  /children/institutions/{institutionId}/children:
+    get:
+      operationId: searchChildren
+      parameters:
+      - in: path
+        name: institutionId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: searchString
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SearchChildrenResponse"
+          description: OK
+      tags:
+      - Child
   /children/institutions/{institutionId}/groups:
     get:
       operationId: getInstitutionGroups
@@ -416,6 +440,30 @@ paths:
         schema:
           type: string
           format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChildDetails"
+          description: OK
+      tags:
+      - Child
+    put:
+      operationId: updateChild
+      parameters:
+      - in: path
+        name: childId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChildRequest"
+        required: true
       responses:
         "200":
           content:
@@ -1205,6 +1253,11 @@ paths:
       - Procedure
   /procedures/{id}/files:
     get:
+      description: |
+        This returns all relevant (highest version per keydocument type and non-deleted) files sorted by descending creation date.
+        That is:
+         * if an progress entry has a keydocument type set, then its files are only returned if it also has the highest keydocument version of the respective key document type.
+         * if an progress entry does not have a keydocument type, then its files are always returned.
       operationId: getProcedureFileDetails
       parameters:
       - in: path
@@ -1220,7 +1273,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetProcedureFileDetailsResponse"
           description: OK
-      summary: Get all file details for a procedure
+      summary: Get relevant procedure files
       tags:
       - Procedure
   /procedures/{procedureId}/progress-entries:
@@ -2287,6 +2340,8 @@ components:
           minLength: 1
         salutation:
           $ref: "#/components/schemas/Salutation"
+        status:
+          $ref: "#/components/schemas/ProcedureStatus"
         title:
           type: string
           maxLength: 119
@@ -2311,8 +2366,30 @@ components:
       - lastName
       - phoneNumbers
       - salutation
+      - status
       - version
       - year
+    ChildResult:
+      type: object
+      properties:
+        dateOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+        groupName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        lastName:
+          type: string
+      required:
+      - dateOfBirth
+      - firstName
+      - groupName
+      - id
+      - lastName
     ChildSortKey:
       type: string
       enum:
@@ -2954,12 +3031,15 @@ components:
           format: uuid
         note:
           type: string
+        prophylaxisType:
+          $ref: "#/components/schemas/ProphylaxisType"
         version:
           type: integer
           format: int64
       required:
       - dateAndTime
       - id
+      - prophylaxisType
       - version
     ExportArchivingRelevantProceduresRequest:
       type: object
@@ -4516,6 +4596,10 @@ components:
           format: uuid
         institution:
           $ref: "#/components/schemas/Institution"
+        participants:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChildResult"
         type:
           $ref: "#/components/schemas/ProphylaxisType"
       required:
@@ -4523,6 +4607,7 @@ components:
       - groupName
       - id
       - institution
+      - participants
       - type
     ProphylaxisSessionPopulationResult:
       type: object
@@ -4565,6 +4650,15 @@ components:
       - NEUTRAL
       - FEMALE
       - MALE
+    SearchChildrenResponse:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChildResult"
+      required:
+      - children
     SelfAssignTaskRequest:
       type: object
       properties:
@@ -4791,6 +4885,21 @@ components:
       - SYSTEM_AUTOMATIC
       - EMPLOYEE
       - CITIZEN
+    UpdateChildRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+        institutionId:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          format: int64
+      required:
+      - groupName
+      - institutionId
+      - version
     UpdateExaminationRequest:
       type: object
       properties:

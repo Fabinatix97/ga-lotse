@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.Instant;
 
 @Entity
 @DataSensitivity(SensitivityLevel.SENSITIVE)
@@ -54,5 +55,9 @@ public class Examination extends BaseEntityWithExternalId {
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  public Instant getDateAndTime() {
+    return getProphylaxisSession().getDateAndTime();
   }
 }

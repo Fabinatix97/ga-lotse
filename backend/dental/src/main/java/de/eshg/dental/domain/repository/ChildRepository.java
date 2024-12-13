@@ -6,6 +6,7 @@
 package de.eshg.dental.domain.repository;
 
 import de.eshg.dental.domain.model.Child;
+import de.eshg.lib.procedure.domain.model.ProcedureStatus;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import java.util.List;
 import java.util.UUID;
@@ -27,4 +28,7 @@ public interface ChildRepository extends ProcedureRepository<Child> {
   List<String> findDistinctInstitutionGroups(@Param("institutionId") UUID institutionId);
 
   List<Child> findByInstitutionIdAndGroupNameOrderById(UUID institutionId, String groupName);
+
+  List<Child> findByInstitutionIdAndProcedureStatusOrderById(
+      UUID institutionId, ProcedureStatus status);
 }

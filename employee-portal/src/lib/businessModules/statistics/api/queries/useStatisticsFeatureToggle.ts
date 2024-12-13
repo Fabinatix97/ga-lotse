@@ -11,9 +11,7 @@ import {
   FeatureToggleQueryOptions,
   selectEnabledNewFeature,
   useGetFeatureToggle,
-  useGetFeatureToggleUnsuspended,
 } from "@eshg/lib-portal/api/featureToggles";
-import { UseQueryResult } from "@tanstack/react-query";
 
 import { useFeatureTogglesApi } from "@/lib/businessModules/statistics/api/clients";
 
@@ -22,13 +20,6 @@ import { statisticsFeatureTogglesApiQueryKey } from "./apiQueryKeys";
 export function useIsNewFeatureEnabled(name: ApiStatisticsFeature): boolean {
   const enabledNewFeatureQuery = useEnabledNewFeatureToggleQuery(name);
   return useGetFeatureToggle(enabledNewFeatureQuery);
-}
-
-export function useIsNewFeatureEnabledUnsuspended(
-  name: ApiStatisticsFeature,
-): UseQueryResult<boolean> {
-  const enabledNewFeatureQuery = useEnabledNewFeatureToggleQuery(name);
-  return useGetFeatureToggleUnsuspended(enabledNewFeatureQuery);
 }
 
 function useEnabledNewFeatureToggleQuery(

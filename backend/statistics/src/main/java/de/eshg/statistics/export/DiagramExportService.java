@@ -16,7 +16,7 @@ import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.AttributeSelection;
 import de.eshg.statistics.persistence.entity.ChartConfiguration;
 import de.eshg.statistics.persistence.entity.Diagram;
-import de.eshg.statistics.persistence.entity.Evaluation;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.ValueToMeaning;
 import de.eshg.statistics.persistence.entity.chart.BarChartConfiguration;
@@ -74,11 +74,9 @@ public class DiagramExportService {
   @Transactional(readOnly = true)
   public Resource exportData(UUID diagramId) {
     Diagram diagram = analysisService.getDiagramInternal(diagramId);
-    AbstractAggregationResult aggregationResult =
-        Hibernate.unproxy(
-            diagram.getAnalysis().getAggregationResult(), AbstractAggregationResult.class);
-    if (aggregationResult instanceof Evaluation evaluation && !evaluation.isAnonymized()) {
-      throw new BadRequestException(DataExportUtil.NOT_ANONYMIZED_ERROR);
+    AbstractAggregationResult aggregationResult = diagram.getAnalysis().getAggregationResult();
+    if (aggregationResult.getDataSensitivity().equals(StatisticsDataSensitivity.SENSITIVE)) {
+      throw new BadRequestException(DataExportUtil.SENSITIVE_DATA_ERROR);
     }
 
     try (XSSFWorkbook workbook = new XSSFWorkbook();

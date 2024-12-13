@@ -6,6 +6,7 @@
 import {
   ApiAppointment,
   ApiAppointmentBookingType,
+  ApiAppointmentType,
   ApiConcern,
   ApiCountryCode,
   ApiCreateProcedureRequest,
@@ -19,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useReducer, useState } from "react";
 
 import { useCreateStiProcedureMutation } from "@/lib/businessModules/stiProtection/api/mutations/procedures";
+import { CreateAppointmentForm } from "@/lib/businessModules/stiProtection/features/procedures/details/CreateAppointmentSidebar";
 import { CONCERN_VALUES } from "@/lib/businessModules/stiProtection/shared/constants";
 import { COUNTRY_CODE_OPTIONS } from "@/lib/businessModules/stiProtection/shared/countryCodes";
 import {
@@ -97,6 +99,7 @@ const initialValues: AddNewProcedureForm = {
 
 export interface AddNewProcedureForm {
   concern?: ApiConcern | "";
+  appointmentType?: ApiAppointmentType | "" | null;
 
   appointmentBookingType?: ApiAppointmentBookingType | "";
   blockAppointment?: null | ApiAppointment;
@@ -241,7 +244,9 @@ function mapFormToApi(form: AddNewProcedureForm): ApiCreateProcedureRequest {
   });
 }
 
-export function getAppointmentDate(form: AddNewProcedureForm) {
+export function getAppointmentDate(
+  form: AddNewProcedureForm | CreateAppointmentForm,
+) {
   const customAppointmentDate =
     form.customAppointmentDate !== ""
       ? new Date(form.customAppointmentDate)

@@ -9,8 +9,8 @@ import de.eshg.dental.api.UpdateExaminationRequest;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.repository.ExaminationRepository;
 import de.eshg.dental.util.ChildSystemProgressEntryType;
+import de.eshg.dental.util.ExceptionUtil;
 import de.eshg.dental.util.ProgressEntryUtil;
-import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -30,10 +30,7 @@ public class ExaminationService {
   Examination findExaminationForUpdate(UUID examinationId) {
     return examinationRepository
         .findOneByExternalIdForUpdate(examinationId)
-        .orElseThrow(
-            () ->
-                new NotFoundException(
-                    "Examination with UUID %s not found.".formatted(examinationId)));
+        .orElseThrow(ExceptionUtil.notFoundException(Examination.class, examinationId));
   }
 
   void updateExamination(Examination examination, UpdateExaminationRequest request) {

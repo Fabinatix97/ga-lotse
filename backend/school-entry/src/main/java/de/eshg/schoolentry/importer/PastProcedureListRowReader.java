@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.data.domain.Range;
 
 public class PastProcedureListRowReader
-    extends RowReader<PastProcedureListRowValues, PastProcedureListColumn> {
+    extends RowReader<PastProcedureListRow, PastProcedureListColumn> {
 
   private final Icd10CodeRepository icd10CodeRepository;
   private final Icd10GroupRepository icd10GroupRepository;
@@ -40,29 +40,28 @@ public class PastProcedureListRowReader
       List<PastProcedureListColumn> actualColumns,
       Icd10CodeRepository icd10CodeRepository,
       Icd10GroupRepository icd10GroupRepository) {
-    super(sheet, actualColumns);
+    super(sheet, actualColumns, PastProcedureListRow::new);
     this.icd10CodeRepository = icd10CodeRepository;
     this.icd10GroupRepository = icd10GroupRepository;
   }
 
   @Override
-  protected PastProcedureListRowValues read(ColumnAccessor<PastProcedureListColumn> col) {
-    PastProcedureListRowValues result = new PastProcedureListRowValues();
-    ErrorHandler errorHandler = createErrorHandler(result);
-
+  protected void read(
+      PastProcedureListRow result,
+      ColumnAccessor<PastProcedureListColumn> col,
+      ErrorHandler errorHandler) {
     result.setChild(readChildData(col, errorHandler));
     result.setProcedureType(readProcedureType(col, errorHandler));
     LocalDate examinationDate = cellAsDate(col, EXAMINATION_DATE, errorHandler);
     result.setExaminationDate(examinationDate);
     result.setStatus(readStatus(col, STATUS, errorHandler));
-    result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
+    result.setEntityId(readUuid(col, PROCEDURE_ID, errorHandler));
     result.setAnamnesis(readAnamnesis(col, errorHandler, examinationDate));
     result.setVaccinationStatus(readVaccinationStatus(col, errorHandler));
     result.setEyeExaminationResult(readEyeExamination(col, errorHandler));
     result.setHearingTest(readHearingTest(col, errorHandler));
     result.setSopessExamination(readSopessExamination(col, errorHandler));
     result.setDevelopmentScreening(readDevelopmentScreening(col, errorHandler));
-    return result;
   }
 
   private Anamnesis readAnamnesis(

@@ -30,6 +30,7 @@ public class SchoolInfoLetterValidator {
     result.put(
         RequiredProcedureData.DETAILS,
         procedure.getSchoolId() != null
+            && procedure.getSchoolYear() != null
             && (procedure.getAppointment() != null || procedure.getExaminationDate() != null));
     result.put(RequiredProcedureData.HEARING_TEST, validate(procedure.getHearingTestResult()));
     result.put(
@@ -74,8 +75,12 @@ public class SchoolInfoLetterValidator {
         RequiredProcedureData.DEVELOPMENT_SCREENING,
         validateSpecialCases(
             procedure.getDevelopmentScreeningResult(),
-            (HandicapWithDiagnosis handicap) ->
-                !handicap.getResult() || !handicap.getIcd10Codes().isEmpty(),
+            (HandicapWithDiagnosis handicap) -> {
+              if (handicap.getResult() == null) {
+                return false;
+              }
+              return !handicap.getResult() || !handicap.getIcd10Codes().isEmpty();
+            },
             Stream.of(
                 DevelopmentScreening::getChronicDisease, DevelopmentScreening::getDisability)));
 

@@ -15,9 +15,11 @@ import static de.eshg.lib.procedure.domain.model.Procedure_.createdAt;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureStatus;
 import static de.eshg.lib.procedure.domain.model.Procedure_.procedureType;
 import static de.eshg.lib.procedure.domain.model.Procedure_.tasks;
+import static de.eshg.lib.procedure.domain.model.ProgressEntry_.procedureId;
 import static de.eshg.lib.procedure.domain.model.Task_.assignmentHistory;
 import static de.eshg.lib.procedure.domain.model.Task_.currentAssignment;
 import static de.eshg.lib.procedure.domain.model.Task_.procedure;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.PageRequest.ofSize;
 import static org.springframework.data.jpa.domain.Specification.allOf;
@@ -35,6 +37,7 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStatesResponse;
 import de.eshg.base.feature.BaseFeature;
 import de.eshg.base.feature.BaseFeatureTogglesApi;
 import de.eshg.base.user.api.UserDto;
+import de.eshg.domain.model.BaseEntity;
 import de.eshg.lib.common.BusinessModule;
 import de.eshg.lib.foureyes.domain.model.ApprovalRequest;
 import de.eshg.lib.foureyes.domain.repository.GenericApprovalRequestRepository;
@@ -45,6 +48,7 @@ import de.eshg.lib.procedure.domain.model.FacilityType;
 import de.eshg.lib.procedure.domain.model.File;
 import de.eshg.lib.procedure.domain.model.FileDeletionApprovalRequest;
 import de.eshg.lib.procedure.domain.model.File_;
+import de.eshg.lib.procedure.domain.model.KeyDocumentAware;
 import de.eshg.lib.procedure.domain.model.Mail;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntry;
 import de.eshg.lib.procedure.domain.model.ManualProgressEntryDeletionApprovalRequest;
@@ -57,6 +61,7 @@ import de.eshg.lib.procedure.domain.model.ProgressEntry;
 import de.eshg.lib.procedure.domain.model.ProgressEntry_;
 import de.eshg.lib.procedure.domain.model.RelatedFacility;
 import de.eshg.lib.procedure.domain.model.RelatedPerson;
+import de.eshg.lib.procedure.domain.model.SystemProgressEntry;
 import de.eshg.lib.procedure.domain.model.Task;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository.StatusAndCount;
@@ -88,7 +93,6 @@ import de.eshg.lib.procedure.model.ProcedureDto;
 import de.eshg.lib.procedure.model.ProcedureMetric;
 import de.eshg.lib.procedure.model.ProcedureStatusDto;
 import de.eshg.lib.procedure.model.ProcedureTypeDto;
-import de.eshg.lib.procedure.model.ProgressEntryReferenceFilePairDto;
 import de.eshg.lib.procedure.util.MetricTimeRangeValidator;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.rest.service.security.CurrentUserHelper;
@@ -111,9 +115,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.domain.Page;
@@ -280,7 +286,8 @@ public class ProcedureController<
     }
 
     List<ProcedureDto> enrichedProcedures =
-        enrichingMapper.enrichAndMapProcedures(procedureSearchService.searchProcedures(query));
+        enrichingMapper.enrichAndMapProcedures(
+            procedureSearchService.searchProcedures(query).procedures());
     return new GetProceduresResponse(1, enrichedProcedures.size(), enrichedProcedures);
   }
 
@@ -324,7 +331,7 @@ public class ProcedureController<
 
     return cb.and(
         cb.equal(fileApprovalRequest, fileDeletionApprovalRequestRoot),
-        cb.equal(progressEntryRoot.get(ProgressEntry_.procedureId), procedure.getId()));
+        cb.equal(progressEntryRoot.get(procedureId), procedure.getId()));
   }
 
   private Predicate isManualProgressEntryAttachedToProcedure(
@@ -346,7 +353,7 @@ public class ProcedureController<
     return cb.and(
         cb.equal(
             manualProgressEntryDeletionRequest, manualProgressEntryDeletionApprovalRequestRoot),
-        cb.equal(manualProgressEntryRoot.get(ManualProgressEntry_.procedureId), procedure.getId()));
+        cb.equal(manualProgressEntryRoot.get(procedureId), procedure.getId()));
   }
 
   private Sort mapToSort(GetProceduresSortOptionsDto sortOptions) {
@@ -681,17 +688,62 @@ public class ProcedureController<
   public GetProcedureFileDetailsResponse getProcedureFileDetails(UUID id) {
     ProcedureT procedureT = resolveProcedureByExternalIdOrThrow(id);
 
-    List<ProgressEntry> fileDetailsWithEntryIdList =
-        progressEntryRepository.findAllByProcedureIdAndFetchFileAndAttachments(procedureT.getId());
-
-    List<ProgressEntryReferenceFilePairDto> progressEntryReferenceFilePairDtos =
-        fileDetailsWithEntryIdList.stream()
-            .mapMulti(this::collectFilesAndAttachments)
-            .map(FileMapper::toInterfaceType)
-            .sorted(Comparator.comparing(result -> result.file().getCreatedAt()))
+    List<ProgressEntry> procedureProgressEntries =
+        progressEntryRepository
+            .findAllByProcedureIdAndFetchFileAndAttachments(procedureT.getId())
+            .stream()
+            .filter(progressEntry -> progressEntry.getFile() != null)
+            .filter(p -> !p.getFile().isDeleted())
             .toList();
 
-    return new GetProcedureFileDetailsResponse(id, progressEntryReferenceFilePairDtos);
+    return new GetProcedureFileDetailsResponse(
+        id,
+        Stream.concat(
+                collectMaximumKeyDocumentVersionProgressEntries(procedureProgressEntries),
+                collectProgressEntriesWithoutKeyDocumentType(procedureProgressEntries))
+            .mapMulti(this::collectFilesAndAttachments)
+            .sorted(
+                Comparator.comparing(
+                        ProgressEntryReferenceFilePair::file,
+                        Comparator.comparing(File::getCreatedAt).thenComparing(BaseEntity::getId))
+                    .reversed())
+            .map(FileMapper::toInterfaceType)
+            .toList());
+  }
+
+  private static Stream<ProgressEntry> collectProgressEntriesWithoutKeyDocumentType(
+      List<ProgressEntry> progressEntries) {
+    return progressEntries.stream().filter(not(ProcedureController::hasKeyDocumentType));
+  }
+
+  private static Stream<ProgressEntry> collectMaximumKeyDocumentVersionProgressEntries(
+      List<ProgressEntry> progressEntries) {
+    Map<String, Optional<KeyDocumentAware>>
+        maximumKeyDocumentVersionProgressEntriesPerKeyDocumentType =
+            progressEntries.stream()
+                .filter(ProcedureController::hasKeyDocumentType)
+                .map(KeyDocumentAware.class::cast)
+                .collect(
+                    Collectors.groupingBy(
+                        KeyDocumentAware::getKeyDocumentType,
+                        Collectors.maxBy(
+                            Comparator.comparing(KeyDocumentAware::getKeyDocumentVersion))));
+
+    return maximumKeyDocumentVersionProgressEntriesPerKeyDocumentType.values().stream()
+        .flatMap(Optional::stream)
+        .map(ProcedureController::toProgressEntry);
+  }
+
+  private static boolean hasKeyDocumentType(ProgressEntry progressentry) {
+    return progressentry instanceof KeyDocumentAware keyDocumentAware
+        && keyDocumentAware.getKeyDocumentType() != null;
+  }
+
+  private static ProgressEntry toProgressEntry(KeyDocumentAware keyDocumentAware) {
+    return switch (keyDocumentAware) {
+      case ManualProgressEntry manualProgressEntry -> manualProgressEntry;
+      case SystemProgressEntry systemProgressEntry -> systemProgressEntry;
+    };
   }
 
   private void collectFilesAndAttachments(

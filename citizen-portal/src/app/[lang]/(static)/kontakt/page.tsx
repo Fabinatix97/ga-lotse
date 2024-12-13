@@ -12,7 +12,7 @@ import { TitleAndSheetContentLayout } from "@/lib/shared/components/layout/Title
 export default function ContactPage() {
   const { t } = useTranslation(["contact"]);
   return (
-    <TitleAndSheetContentLayout pageTitle={t("pageTitle.contact")}>
+    <TitleAndSheetContentLayout pageTitle={t("pageTitle")}>
       <ContactInformation />
     </TitleAndSheetContentLayout>
   );

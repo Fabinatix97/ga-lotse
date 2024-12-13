@@ -5,6 +5,7 @@
 
 package de.eshg.lib.procedure.procedures;
 
+import static de.eshg.domain.model.SequencedBaseEntity_.ID;
 import static java.util.stream.Collectors.toMap;
 
 import de.eshg.base.centralfile.FacilityApi;
@@ -86,14 +87,24 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     this.facilityApi = facilityApi;
   }
 
-  List<ProcedureT> searchProcedures(String query) {
+  public record Result<T>(
+      List<T> procedures,
+      Map<UUID, GetPersonFileStateResponse> personFileStatesById,
+      Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById) {}
+
+  public Result<ProcedureT> searchProcedures(String query) {
+    return searchProcedures(query, RELEVANT_STATUS);
+  }
+
+  public Result<ProcedureT> searchProcedures(String query, Set<ProcedureStatus> relevantStatus) {
     StopWatch stopWatch = new StopWatch("search procedures");
 
-    Map<UUID, GetPersonFileStateResponse> personFileStatesById = collectPersonFileStates(stopWatch);
+    Map<UUID, GetPersonFileStateResponse> personFileStatesById =
+        collectPersonFileStates(stopWatch, relevantStatus);
     Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById =
-        collectFacilityFileStates(stopWatch);
+        collectFacilityFileStates(stopWatch, relevantStatus);
 
-    List<ProcedureT> procedures = getProcedures();
+    List<ProcedureT> procedures = getProcedures(relevantStatus);
 
     stopWatch.start("read from db and fuzzy search");
 
@@ -107,13 +118,21 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
             .limit(RESULT_LIMIT)
             .toList();
 
+    Result<ProcedureT> results =
+        new Result<>(foundProcedures, personFileStatesById, facilityFileStatesById);
+
     stopWatch.stop();
 
     if (log.isDebugEnabled()) {
       log.debug(stopWatch.prettyPrint());
     }
 
-    return foundProcedures;
+    return results;
+  }
+
+  public static <T extends Procedure<T, ?, ?, ?>> Specification<T> isInStatusOpen() {
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.equal(root.get(Procedure_.procedureStatus), ProcedureStatus.OPEN);
   }
 
   public <PersonT extends RelatedPerson<ProcedureT>>
@@ -154,8 +173,7 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     List<ProcedureT> allProcedures =
         procedureRepository.findAll(
             proceduresByRelatedPersons.and(additionalProcedureSpecification),
-            Sort.by(Direction.DESC, Procedure_.CREATED_AT)
-                .and(Sort.by(Direction.ASC, Procedure_.ID)));
+            Sort.by(Direction.DESC, Procedure_.CREATED_AT).and(Sort.by(Direction.ASC, ID)));
 
     Map<UUID, List<ProcedureT>> proceduresPerPersonFileStateId = new LinkedHashMap<>();
     for (ProcedureT procedure : allProcedures) {
@@ -213,15 +231,21 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
 
   private record SearchableProcedure<P>(P procedure, String searchableString) {}
 
-  private List<ProcedureT> getProcedures() {
-    return procedureRepository.findByProcedureStatusIn(EnumSet.of(ProcedureStatus.IN_PROGRESS));
+  private List<ProcedureT> getProcedures(Set<ProcedureStatus> relevantStatus) {
+    return procedureRepository.findByProcedureStatusIn(relevantStatus);
   }
 
-  private Map<UUID, AddFacilityFileStateResponse> collectFacilityFileStates(StopWatch stopWatch) {
+  private Map<UUID, AddFacilityFileStateResponse> collectFacilityFileStates(
+      StopWatch stopWatch, Set<ProcedureStatus> relevantStatus) {
     stopWatch.start("resolve facility file states");
 
     List<UUID> relatedFacilitiesFileStateIds =
-        procedureRepository.findAllRelatedFacilitiesFileStateIdsByProcedureStatus(RELEVANT_STATUS);
+        procedureRepository.findAllRelatedFacilitiesFileStateIdsByProcedureStatus(relevantStatus);
+
+    if (relatedFacilitiesFileStateIds.isEmpty()) {
+      stopWatch.stop();
+      return Map.of();
+    }
 
     Map<UUID, AddFacilityFileStateResponse> facilityFileStatesById =
         facilityApi
@@ -235,11 +259,17 @@ public class ProcedureSearchService<ProcedureT extends Procedure<ProcedureT, ?, 
     return facilityFileStatesById;
   }
 
-  private Map<UUID, GetPersonFileStateResponse> collectPersonFileStates(StopWatch stopWatch) {
+  private Map<UUID, GetPersonFileStateResponse> collectPersonFileStates(
+      StopWatch stopWatch, Set<ProcedureStatus> relevantStatus) {
     stopWatch.start("resolve person file states");
 
     List<UUID> relatedPersonFileStateIds =
-        procedureRepository.findAllRelatedPersonFileStateIdsByProcedureStatus(RELEVANT_STATUS);
+        procedureRepository.findAllRelatedPersonFileStateIdsByProcedureStatus(relevantStatus);
+
+    if (relatedPersonFileStateIds.isEmpty()) {
+      stopWatch.stop();
+      return Map.of();
+    }
 
     Map<UUID, GetPersonFileStateResponse> personFileStatesById =
         personApi

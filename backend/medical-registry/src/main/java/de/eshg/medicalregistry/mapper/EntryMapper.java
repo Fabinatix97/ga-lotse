@@ -9,13 +9,21 @@ import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.lib.procedure.mapping.ProcedureMapper;
 import de.eshg.medicalregistry.api.MedicalRegistryEntryDto;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
 
 public class EntryMapper {
   private EntryMapper() {}
+
+  public static List<MedicalRegistryEntryDto> mapToDto(
+      Page<MedicalRegistryProcedure> page,
+      Map<UUID, GetPersonFileStateResponse> resolvedRelatedPerson) {
+    return page.stream().map(entry -> mapToDto(entry, resolvedRelatedPerson)).toList();
+  }
 
   public static MedicalRegistryEntryDto mapToDto(
       MedicalRegistryProcedure entry, Map<UUID, GetPersonFileStateResponse> relatedPersons) {
@@ -28,7 +36,8 @@ public class EntryMapper {
         AddressMapper.mapToApplicantAddressDto(relatedPerson.contactAddress()),
         entry.isRequestForWrittenConfirmation(),
         ProcedureMapper.toInterfaceType(entry.getProcedureStatus()),
-        ProcedureMapper.toInterfaceType(entry.getProcedureType()));
+        ProcedureMapper.toInterfaceType(entry.getProcedureType()),
+        entry.getCreatedAt());
   }
 
   private static GetPersonFileStateResponse getRelatedPersonOrThrow(

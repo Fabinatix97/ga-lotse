@@ -8,7 +8,7 @@ import { ApiBusinessModule, ApiUserRole } from "@eshg/employee-portal-api/base";
 import { ModuleUserGroupConfig } from "@/lib/baseModule/moduleRegister/moduleUserGroupResolver";
 
 export const moduleUserGroup: ModuleUserGroupConfig = {
-  group: "[System] Medizinalkartei",
+  group: "[System] Medizinalaufsicht",
   businessModule: ApiBusinessModule.MedicalRegistry,
   leaderRole: ApiUserRole.MedicalRegistryLeader,
 };

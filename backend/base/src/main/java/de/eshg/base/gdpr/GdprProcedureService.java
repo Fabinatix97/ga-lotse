@@ -5,6 +5,11 @@
 
 package de.eshg.base.gdpr;
 
+import de.eshg.base.centralfile.persistence.entity.Facility;
+import de.eshg.base.centralfile.persistence.entity.Person;
+import de.eshg.base.centralfile.persistence.repository.FacilityRepository;
+import de.eshg.base.centralfile.persistence.repository.PersonRepository;
+import de.eshg.base.gdpr.persistence.DownloadPackage;
 import de.eshg.base.gdpr.persistence.GdprDownload;
 import de.eshg.base.gdpr.persistence.GdprProcedure;
 import de.eshg.base.gdpr.persistence.GdprProcedureStatus;
@@ -12,10 +17,13 @@ import de.eshg.base.gdpr.persistence.GdprProcedureType;
 import de.eshg.base.gdpr.persistence.GdprProcedure_;
 import de.eshg.base.gdpr.persistence.repository.GdprProcedureRepository;
 import de.eshg.base.util.PaginationUtil;
+import de.eshg.domain.model.EntityWithExternalId;
+import de.eshg.domain.model.serialization.SerializationService;
 import de.eshg.rest.service.error.AlreadyExistsException;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.validation.ValidationUtil;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,7 +41,10 @@ import org.springframework.stereotype.Service;
 public class GdprProcedureService {
   private static final Logger log = LoggerFactory.getLogger(GdprProcedureService.class);
   private final GdprProcedureRepository repository;
+  private final PersonRepository personRepository;
+  private final FacilityRepository facilityRepository;
   private final GdprDownloadRepository downloadRepository;
+  private final SerializationService serializationService;
 
   private static Specification<GdprProcedure> hasType(GdprProcedureType type) {
     if (type == null) {
@@ -43,9 +54,16 @@ public class GdprProcedureService {
   }
 
   public GdprProcedureService(
-      GdprProcedureRepository procedureRepository, GdprDownloadRepository downloadRepository) {
+      GdprProcedureRepository procedureRepository,
+      PersonRepository personRepository,
+      FacilityRepository facilityRepository,
+      GdprDownloadRepository downloadRepository,
+      SerializationService serializationService) {
     this.repository = procedureRepository;
+    this.personRepository = personRepository;
+    this.facilityRepository = facilityRepository;
     this.downloadRepository = downloadRepository;
+    this.serializationService = serializationService;
   }
 
   public GdprProcedure add(GdprProcedure procedure) {
@@ -125,5 +143,38 @@ public class GdprProcedureService {
     gdprProcedure.setStatus(newStatus);
     repository.flush();
     return gdprProcedure;
+  }
+
+  public void createDownloadPackageForCentralFiles(GdprProcedure procedure) {
+    log.info("Creating DownloadPackage for GdprProcedure(id={})", procedure.getId());
+
+    byte[] zipped = serializeCentralFiles(procedure);
+    DownloadPackage downloadPackage = new DownloadPackage();
+    downloadPackage.setContent(zipped);
+    procedure.setCentralFileDownload(downloadPackage);
+  }
+
+  private byte[] serializeCentralFiles(GdprProcedure procedure) {
+    List<UUID> personFileStateIds =
+        personRepository.findAllFileStateIdsByReferencePersonCreatedBefore(
+            procedure.getCentralFileId(), procedure.getCreatedAt());
+
+    List<Person> personFileStates =
+        personRepository.findAllByExternalIdInAndReferencePersonIsNotNullOrderById(
+            personFileStateIds);
+
+    List<UUID> facilityFileStateIds =
+        facilityRepository.findAllFileStateIdsByReferenceFacilityCreatedBefore(
+            procedure.getCentralFileId(), procedure.getCreatedAt());
+
+    List<Facility> facilityFileStates =
+        facilityRepository.findAllByExternalIdInAndReferenceFacilityIsNotNullOrderById(
+            facilityFileStateIds);
+
+    List<EntityWithExternalId> fileStates = new ArrayList<>();
+    fileStates.addAll(personFileStates);
+    fileStates.addAll(facilityFileStates);
+
+    return serializationService.toNestedZip("Sachstand-", fileStates);
   }
 }

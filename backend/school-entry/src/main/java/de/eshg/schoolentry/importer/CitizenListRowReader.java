@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 
-public class CitizenListRowReader extends RowReader<CitizenListRowValues, CitizenListColumn> {
+public class CitizenListRowReader extends RowReader<CitizenListRow, CitizenListColumn> {
 
   private static final AddressColumns<CitizenListColumn> CHILD_ADDRESS_COLUMNS =
       new AddressColumns<>(STREET, HOUSE_NUMBER, POSTAL_CODE, CITY, ADDRESS_ADDITION);
@@ -56,23 +56,19 @@ public class CitizenListRowReader extends RowReader<CitizenListRowValues, Citize
               GENDER_CUSTODIAN_2));
 
   public CitizenListRowReader(Sheet sheet, List<CitizenListColumn> actualColumns) {
-    super(sheet, actualColumns);
+    super(sheet, actualColumns, CitizenListRow::new);
   }
 
   @Override
-  protected CitizenListRowValues read(ColumnAccessor<CitizenListColumn> col) {
-    CitizenListRowValues result = new CitizenListRowValues();
-    ErrorHandler errorHandler = createErrorHandler(result);
-
+  protected void read(
+      CitizenListRow result, ColumnAccessor<CitizenListColumn> col, ErrorHandler errorHandler) {
     result.setChild(readChildData(col, errorHandler));
     if (col.hasColumn(INFORMATION_BLOCK)) {
       result.setInformationBlock(cellAsFlag(col, INFORMATION_BLOCK, errorHandler));
     }
     result.setCustodians(readCustodiansData(col, errorHandler));
     result.setStatus(readStatus(col, STATUS, errorHandler));
-    result.setProcedureId(readProcedureId(col, PROCEDURE_ID, errorHandler));
-
-    return result;
+    result.setEntityId(readUuid(col, PROCEDURE_ID, errorHandler));
   }
 
   private ImportChildData readChildData(

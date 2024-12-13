@@ -38,7 +38,7 @@ function parseSearchParams(
     name: parseOptionalString(searchParams.get(contactSearchParamNames.name)),
     category: parseOptionalEnum(
       ApiContactCategory,
-      searchParams.get(contactSearchParamNames.category),
+      searchParams.get(contactSearchParamNames.categories),
     ),
     ...parseReadonlyPageParams(searchParams),
     sortKey: parseOptionalEnum(ApiContactSortKey, searchParams.get("sortKey")),

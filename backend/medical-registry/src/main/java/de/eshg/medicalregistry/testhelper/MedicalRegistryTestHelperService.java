@@ -7,8 +7,9 @@ package de.eshg.medicalregistry.testhelper;
 
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.procedure.domain.model.ProcedureStatus;
+import de.eshg.lib.procedure.domain.model.ProcedureType;
 import de.eshg.medicalregistry.domain.model.MedicalRegistryProcedure;
-import de.eshg.medicalregistry.domain.registry.MedicalRegistryEntryRepository;
+import de.eshg.medicalregistry.domain.repository.MedicalRegistryProcedureRepository;
 import de.eshg.testhelper.ConditionalOnTestHelperEnabled;
 import de.eshg.testhelper.DatabaseResetHelper;
 import de.eshg.testhelper.DefaultTestHelperService;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 public class MedicalRegistryTestHelperService extends DefaultTestHelperService {
 
   private final AuditLogger auditLogger;
-  private final MedicalRegistryEntryRepository medicalRegistryEntryRepository;
+  private final MedicalRegistryProcedureRepository medicalRegistryProcedureRepository;
 
   protected MedicalRegistryTestHelperService(
       DatabaseResetHelper databaseResetHelper,
@@ -36,7 +37,7 @@ public class MedicalRegistryTestHelperService extends DefaultTestHelperService {
       List<ResettableProperties> resettableProperties,
       EnvironmentConfig environmentConfig,
       AuditLogger auditLogger,
-      MedicalRegistryEntryRepository medicalRegistryEntryRepository) {
+      MedicalRegistryProcedureRepository medicalRegistryProcedureRepository) {
     super(
         databaseResetHelper,
         testRequestInterceptor,
@@ -45,18 +46,20 @@ public class MedicalRegistryTestHelperService extends DefaultTestHelperService {
         resettableProperties,
         environmentConfig);
     this.auditLogger = auditLogger;
-    this.medicalRegistryEntryRepository = medicalRegistryEntryRepository;
+    this.medicalRegistryProcedureRepository = medicalRegistryProcedureRepository;
   }
 
   public void closeProcedure(UUID procedureId) {
     MedicalRegistryProcedure medicalRegistryProcedure =
-        medicalRegistryEntryRepository.findByExternalId(procedureId).orElseThrow();
+        medicalRegistryProcedureRepository.findByExternalId(procedureId).orElseThrow();
     medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.CLOSED, clock, auditLogger);
+    medicalRegistryProcedure.setProcedureType(ProcedureType.MEDICAL_REGISTRY_ENTRY);
   }
 
   public void openProcedure(UUID procedureId) {
     MedicalRegistryProcedure medicalRegistryProcedure =
-        medicalRegistryEntryRepository.findByExternalId(procedureId).orElseThrow();
+        medicalRegistryProcedureRepository.findByExternalId(procedureId).orElseThrow();
     medicalRegistryProcedure.updateProcedureStatus(ProcedureStatus.OPEN, clock, auditLogger);
+    medicalRegistryProcedure.setProcedureType(ProcedureType.MEDICAL_REGISTRY_ENTRY);
   }
 }

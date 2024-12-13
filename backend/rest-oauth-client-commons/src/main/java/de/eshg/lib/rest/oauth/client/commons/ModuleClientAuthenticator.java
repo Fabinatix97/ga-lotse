@@ -5,10 +5,14 @@
 
 package de.eshg.lib.rest.oauth.client.commons;
 
+import com.nimbusds.jwt.JWTParser;
 import de.cronn.commons.lang.Action;
+import de.eshg.rest.client.ModuleClientAuthentication;
+import de.eshg.rest.client.ModuleClientAuthenticationHolder;
+import java.text.ParseException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -17,41 +21,36 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
  * {@link ModuleClientAuthenticator} allows running code as the authenticated module client. It
  * obtains a token for the oauth client of the module ({@code module-client}) using the client
- * credentials flow. This token is passed to the module's own JwtAuthenticationProvider, s.t. roles
- * and user id are parsed from the token
+ * credentials flow. This token is passed to the {@link ModuleClientAuthenticationHolder} and taken
+ * from there during user id or access token resolving.
  *
- * <p>In {@link ModuleClientAuthenticator#doWithModuleClientAuthentication(Action)}} the security
- * context is set during the execution of the given action. See {@link
- * ModuleClientAuthenticator#doWithModuleClientAuthentication(Supplier)} for a function with return
- * value.
+ * <p>In {@link ModuleClientAuthenticator#doWithModuleClientAuthentication(Action)}} module client
+ * is saved to {@link ModuleClientAuthenticationHolder} during the execution of the given action.
+ * See {@link ModuleClientAuthenticator#doWithModuleClientAuthentication(Supplier)} for a function
+ * with return value.
  *
  * <p>Note: Inside a transaction, e.g. using {@link
  * org.springframework.transaction.annotation.Transactional}, the security context will be cleared
  * before the transaction is committed.
  */
 @Component
-public final class ModuleClientAuthenticator {
+public class ModuleClientAuthenticator {
 
   private static final String CLIENT_REGISTRATION_ID = "module-client";
 
   private final AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientManager;
   private final SecurityContextHolderStrategy securityContextHolderStrategy =
       SecurityContextHolder.getContextHolderStrategy();
-  private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
   public ModuleClientAuthenticator(
       ClientRegistrationRepository clientRegistrationRepository,
-      OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
-      JwtAuthenticationProvider employeePortalAuthenticationProvider) {
-    this.jwtAuthenticationProvider = employeePortalAuthenticationProvider;
+      OAuth2AuthorizedClientService oAuth2AuthorizedClientService) {
 
     authorizedClientManager =
         new AuthorizedClientServiceOAuth2AuthorizedClientManager(
@@ -64,15 +63,7 @@ public final class ModuleClientAuthenticator {
 
   public <T> T doWithModuleClientAuthentication(Supplier<T> supplier) {
     validateCurrentContextIsUnauthenticated();
-
-    Authentication authentication = authenticateModuleClient();
-    SecurityContext moduleClientSecurityContext = createSecurityContext(authentication);
-    try {
-      securityContextHolderStrategy.setContext(moduleClientSecurityContext);
-      return supplier.get();
-    } finally {
-      securityContextHolderStrategy.clearContext();
-    }
+    return executeWithModuleClientAuthentication(supplier);
   }
 
   public void doWithReplacedModuleClientAuthentication(Action action) {
@@ -81,35 +72,37 @@ public final class ModuleClientAuthenticator {
 
   public <T> T doWithReplacedModuleClientAuthentication(Supplier<T> supplier) {
     validateCurrentContextIsAuthenticated();
+    return executeWithModuleClientAuthentication(supplier);
+  }
 
-    Authentication authentication = authenticateModuleClient();
-    SecurityContext moduleClientSecurityContext = createSecurityContext(authentication);
-
-    SecurityContext oldContext = securityContextHolderStrategy.getContext();
+  private <T> T executeWithModuleClientAuthentication(Supplier<T> supplier) {
+    ModuleClientAuthentication moduleClientAuthentication = authenticate();
     try {
-      securityContextHolderStrategy.setContext(moduleClientSecurityContext);
+      ModuleClientAuthenticationHolder.setModuleClientAuthentication(moduleClientAuthentication);
       return supplier.get();
     } finally {
-      securityContextHolderStrategy.setContext(oldContext);
+      ModuleClientAuthenticationHolder.clearModuleClientAuthentication();
     }
   }
 
-  private SecurityContext createSecurityContext(Authentication authentication) {
-    SecurityContext moduleClientAuthenticatedContext =
-        securityContextHolderStrategy.createEmptyContext();
-    moduleClientAuthenticatedContext.setAuthentication(authentication);
-    return moduleClientAuthenticatedContext;
-  }
-
-  private Authentication authenticateModuleClient() {
+  private ModuleClientAuthentication authenticate() {
     OAuth2AuthorizedClient authorizedClient = obtainAuthorizedModuleClient();
-    return authenticate(authorizedClient);
+    return toModuleClientAuthentication(authorizedClient);
   }
 
-  private Authentication authenticate(OAuth2AuthorizedClient authorizedClient) {
-    BearerTokenAuthenticationToken bearerTokenAuthenticationToken =
-        new BearerTokenAuthenticationToken(authorizedClient.getAccessToken().getTokenValue());
-    return jwtAuthenticationProvider.authenticate(bearerTokenAuthenticationToken);
+  private ModuleClientAuthentication toModuleClientAuthentication(
+      OAuth2AuthorizedClient authorizedClient) {
+    String accessToken = authorizedClient.getAccessToken().getTokenValue();
+    return new ModuleClientAuthentication(parseUserId(accessToken), accessToken);
+  }
+
+  private UUID parseUserId(String tokenValue) {
+    try {
+      String subject = JWTParser.parse(tokenValue).getJWTClaimsSet().getSubject();
+      return UUID.fromString(subject);
+    } catch (ParseException e) {
+      throw new IllegalStateException("Failed to parse JWT token", e);
+    }
   }
 
   private OAuth2AuthorizedClient obtainAuthorizedModuleClient() {

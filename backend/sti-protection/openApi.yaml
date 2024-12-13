@@ -1191,6 +1191,11 @@ paths:
       - Procedure
   /procedures/{id}/files:
     get:
+      description: |
+        This returns all relevant (highest version per keydocument type and non-deleted) files sorted by descending creation date.
+        That is:
+         * if an progress entry has a keydocument type set, then its files are only returned if it also has the highest keydocument version of the respective key document type.
+         * if an progress entry does not have a keydocument type, then its files are always returned.
       operationId: getProcedureFileDetails
       parameters:
       - in: path
@@ -1206,7 +1211,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetProcedureFileDetailsResponse"
           description: OK
-      summary: Get all file details for a procedure
+      summary: Get relevant procedure files
       tags:
       - Procedure
   /procedures/{procedureId}/progress-entries:
@@ -1635,6 +1640,20 @@ paths:
       tags:
       - WaitingRoom
   /sti-procedures/{id}:
+    delete:
+      operationId: deleteProcedure
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      tags:
+      - StiProtectionProcedure
     get:
       operationId: getStiProcedure
       parameters:
@@ -1822,6 +1841,47 @@ paths:
       summary: Verify anonymous user PIN for a given STI procedure.
       tags:
       - StiProtectionProcedure
+  /sti-procedures/{procedureId}/examination/laboratory-test:
+    get:
+      operationId: getLaboratoryTestExamination
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LaboratoryTestExamination"
+          description: OK
+      summary: Get all external laboratory tests within an examination.
+      tags:
+      - Examination
+    put:
+      operationId: updateLaboratoryTestExamination
+      parameters:
+      - in: path
+        name: procedureId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LaboratoryTestExamination"
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Updated all external laboratory tests.
+      tags:
+      - Examination
   /sti-procedures/{procedureId}/examination/rapid-test:
     get:
       operationId: getRapidTestExamination
@@ -3294,42 +3354,61 @@ components:
       - street
     Examination:
       type: object
+      description: Contains information about any examinations the patient previously
+        undergone.
       properties:
         chlamydia:
           type: boolean
+          description: Indicating if the patient has been examined for Chlamydia.
         chlamydiaDate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for Chlamydia.
         gonorrhea:
           type: boolean
+          description: Indicating if the patient has been examined for Gonorrhea.
         gonorrheaDate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for Gonorrhea.
         hepA:
           type: boolean
+          description: Indicating if the patient has been examined for Hepatitis A.
         hepADate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for Hepatitis
+            A.
         hepB:
           type: boolean
+          description: Indicating if the patient has been examined for Hepatitis B.
         hepBDate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for Hepatitis
+            B.
         hepC:
           type: boolean
+          description: Indicating if the patient has been examined for Hepatitis C.
         hepCDate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for Hepatitis
+            C.
         hiv:
           type: boolean
+          description: Indicating if the patient has been examined for HIV.
         hivDate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for HIV.
         syphilis:
           type: boolean
+          description: Indicating if the patient has been examined for Syphilis.
         syphilisDate:
           type: string
           format: date
+          description: Date indicating when the patient was last examined for Syphilis.
     ExportArchivingRelevantProceduresRequest:
       type: object
       properties:
@@ -3614,6 +3693,7 @@ components:
       - DIVERSE
       - FEMALE
       - MALE
+      example: "['FEMALE','DIVERSE']"
     GenericFile:
       type: object
       allOf:
@@ -4282,6 +4362,17 @@ components:
       required:
       - elements
       - totalNumberOfElements
+    HepatitisLaboratoryTest:
+      type: object
+      properties:
+        infection:
+          type: boolean
+        remark:
+          type: string
+        vaccineTitre:
+          type: boolean
+        value:
+          type: string
     HttpMethod:
       type: string
       enum:
@@ -4446,6 +4537,93 @@ components:
           format: int32
       required:
       - '@type'
+    LaboratoryTest:
+      type: object
+      properties:
+        remark:
+          type: string
+        result:
+          type: boolean
+        value:
+          type: string
+    LaboratoryTestExamination:
+      type: object
+      properties:
+        cancerScreeningTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        cancerScreeningTestRequested:
+          type: boolean
+        chlamydiaTestRequested:
+          type: boolean
+        chlamydiaTestSamples:
+          $ref: "#/components/schemas/LaboratoryTestSamples"
+        generalRemarks:
+          type: string
+        gonorrheaTestRequested:
+          type: boolean
+        gonorrhoeaTestSamples:
+          $ref: "#/components/schemas/LaboratoryTestSamples"
+        hadSyphilis:
+          type: boolean
+        hepATestData:
+          $ref: "#/components/schemas/HepatitisLaboratoryTest"
+        hepATestRequested:
+          type: boolean
+        hepBTestData:
+          $ref: "#/components/schemas/HepatitisLaboratoryTest"
+        hepBTestRequested:
+          type: boolean
+        hepCTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        hepCTestRequested:
+          type: boolean
+        hivTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        hivTestRequested:
+          type: boolean
+        hpvTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        hpvTestRequested:
+          type: boolean
+        mpoxTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        mpoxTestRequested:
+          type: boolean
+        mycoplasmaTestRequested:
+          type: boolean
+        mycoplasmaTestSamples:
+          $ref: "#/components/schemas/LaboratoryTestSamples"
+        otherTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        otherTestName:
+          type: string
+        otherTestRequested:
+          type: boolean
+        sampleBarcode:
+          type: string
+        syphilisTestData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        syphilisTestRequested:
+          type: boolean
+        testsConducted:
+          type: boolean
+        testsPayed:
+          type: boolean
+    LaboratoryTestSamples:
+      type: object
+      properties:
+        analSampleData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        analSampleRequested:
+          type: boolean
+        oralSampleData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        oralSampleRequested:
+          type: boolean
+        urethralSampleData:
+          $ref: "#/components/schemas/LaboratoryTest"
+        urethralSampleRequested:
+          type: boolean
     Mail:
       type: object
       allOf:
@@ -4604,6 +4782,7 @@ components:
       - DELETE
     PartnerRiskFactors:
       type: string
+      description: Details any know risk factors associated the patient's sexual partners.
       enum:
       - HOMOSEXUAL
       - BISEXUAL_MALE
@@ -4611,6 +4790,7 @@ components:
       - STI_POSITIVE
       - INJECTED_DRUGS
       - SEX_WORKER
+      example: "['SEX_WORKER','STI_POSITIVE','INJECTED_DRUGS']"
     PatchManualProgressEntryRequest:
       type: object
       properties:
@@ -4666,6 +4846,9 @@ components:
       properties:
         accessCode:
           type: string
+          description: "Unique code for patient identification and login to the online\
+            \ portal, valid until the procedure is closed."
+          example: 937ZiFaqjkfQgTBmo
         countryOfBirth:
           $ref: "#/components/schemas/CountryCode"
         gender:
@@ -4673,12 +4856,18 @@ components:
         id:
           type: string
           format: uuid
+          description: An unique identifier for the person.
+          example: 25db7719-4924-4208-bb13-d0274e27279d
         inGermanySince:
           type: integer
           format: int32
+          description: The year since the person has been residing in Germany.
+          example: 2010
         yearOfBirth:
           type: integer
           format: int32
+          description: The year of birth of the person.
+          example: 2000
       required:
       - gender
       - id
@@ -4745,11 +4934,18 @@ components:
       - postbox
     Prevention:
       type: object
+      description: Details information regarding the patient's prevention strategies
+        and measures.
       properties:
         infoAboutPrepDesired:
           type: boolean
+          description: Indicates whether the patient wishes to receive information
+            about PrEP.
         protectionMethodsUsed:
           type: array
+          description: Lists the methods of protection the patient has used during
+            sexual activity.
+          example: "['CONDOM','PREP']"
           items:
             $ref: "#/components/schemas/ProtectionMethod"
           uniqueItems: true
@@ -4757,30 +4953,50 @@ components:
           $ref: "#/components/schemas/SafeSexPractice"
         vaccinations:
           type: array
+          description: Provides information on vaccinations the patient has received.
+          example: "['HEPATITIS_A', 'HPV']"
           items:
             $ref: "#/components/schemas/Vaccination"
           uniqueItems: true
     PreviousIllness:
       type: object
+      description: Lists any past illnesses the patient had.
       properties:
         chlamydia:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            Chlamydia.
         gonorrhea:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            Gonorrhea.
         hepA:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            Hepatitis A.
         hepB:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            Hepatitis B.
         hepC:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            Hepatitis C.
         hiv:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            HIV.
         other:
           type: boolean
+          description: Indicates if the patient was diagnosed with another not listed
+            illness.
         otherData:
           type: string
+          description: Holds additional info regarding the other illness.
         syphilis:
           type: boolean
+          description: Indicates if the patient was diagnosed with or experienced
+            Syphilis.
     Procedure:
       type: object
       properties:
@@ -4982,6 +5198,8 @@ components:
       - DESC
     ProtectionMethod:
       type: string
+      description: Lists the methods of protection the patient has used during sexual
+        activity.
       enum:
       - CONDOM
       - DENTAL_DAM
@@ -4989,6 +5207,7 @@ components:
       - PREP
       - TASP
       - OTHER
+      example: "['CONDOM','PREP']"
     RapidTestData:
       type: object
       properties:
@@ -5044,23 +5263,36 @@ components:
       - urinalysisRequested
     RelationshipModel:
       type: string
+      description: Provides details on the patient's relationship model.
       enum:
       - NO_COMMITMENT
       - MONOGAMOUS
       - OPEN
+      example: OPEN
     RiskContact:
       type: object
+      description: Details information regarding the patient's contact with potentially
+        risky partners.
       properties:
         numberOfSexualPartnersLast12Months:
           type: integer
           format: int32
+          description: Indicates the total number of sexual partners the patient has
+            had within the last 12 months.
+          example: 2
         partnerRiskFactors:
           type: array
+          description: Details any know risk factors associated the patient's sexual
+            partners.
+          example: "['SEX_WORKER','STI_POSITIVE','INJECTED_DRUGS']"
           items:
             $ref: "#/components/schemas/PartnerRiskFactors"
           uniqueItems: true
         sexualContacts:
           type: array
+          description: Represents the gender of the patient's sexual contacts over
+            the specified period.
+          example: "['FEMALE','DIVERSE']"
           items:
             $ref: "#/components/schemas/Gender"
           uniqueItems: true
@@ -5068,28 +5300,45 @@ components:
           $ref: "#/components/schemas/SexualOrientation"
     RiskFactors:
       type: object
+      description: Details information about the patient's behaviors or actions that
+        may pose risk factors.
       properties:
         otherRiskActivities:
           type: boolean
+          description: Records if the patient engaged in other risk-related activities.
         otherRiskActivitiesData:
           type: string
+          description: Provides details on any other risk-related activities the patient
+            has participated.
         riskActivityDateAnalIntercourse:
           type: boolean
+          description: Records if the patient engaged in anal intercourse that may
+            pose a risk.
         riskActivityDateAnalIntercourseDate:
           type: string
           format: date
+          description: Records the most recent date the patient engaged in anal intercourse.
         riskActivityDateOralIntercourse:
           type: boolean
+          description: Records if the patient engaged in oral intercourse that may
+            pose a risk.
         riskActivityDateOralIntercourseDate:
           type: string
           format: date
+          description: Records the most recent date the patient engaged in oral intercourse.
         riskActivityDateVaginalIntercourse:
           type: boolean
+          description: Records if the patient engaged in vaginal intercourse that
+            may pose a risk.
         riskActivityDateVaginalIntercourseDate:
           type: string
           format: date
+          description: Records the most recent date the patient engaged in vaginal
+            intercourse.
     SafeSexPractice:
       type: string
+      description: Indicates whether the patient engages in practices considered safe
+        sex.
       enum:
       - ALWAYS
       - FREQUENTLY
@@ -5118,6 +5367,7 @@ components:
       - taskVersion
     SexWorkLocation:
       type: string
+      description: The locations where the patient engages in sex work.
       enum:
       - BORDELLO
       - CLUB
@@ -5128,6 +5378,7 @@ components:
       - TANTRA_PRACTICE
       - STREET_PROSTITUTION
       - OTHER
+      example: "['BORDELLO','APARTMENT']"
     SexWorkMedicalHistory:
       type: object
       allOf:
@@ -5136,37 +5387,57 @@ components:
         properties:
           additionalComments:
             type: string
+            description: An optional field for recording any additional remarks or
+              comments.
           amountAbortions:
             type: integer
             format: int32
+            description: Specifies the total number of abortions the patient has undergone.
+            example: 1
           amountPregnancies:
             type: integer
             format: int32
+            description: Specifies the total number of pregnancies the patient had.
+            example: 3
           contactToClarifyDate:
             type: string
             format: date
+            description: Records the date of the contact the patients wished to discuss
+              or clarify.
           currentSymptoms:
             type: string
+            description: Details the symptoms the patient is currently experiencing.
+            example: Dysuria
           examinationReason:
             type: string
+            description: Specifies the reason for the patient's appointment.
+            example: Lower Abdominal Pain
           examinations:
             $ref: "#/components/schemas/Examination"
           knownOperations:
             type: string
+            description: A description of known past surgeries or operations.
+            example: Appendectomy in 2015.
           lastCancerScreeningDate:
             type: string
             format: date
+            description: The date of the patient's most recent cancer screening.
           lastMenstruationDate:
             type: string
             format: date
+            description: The date when the patient last experienced menstruation.
           medications:
             type: string
+            description: A list of current or relevant medications the patient is
+              taking.
+            example: Lisinopril 10mg daily.
           prevention:
             $ref: "#/components/schemas/Prevention"
           previousIllnesses:
             $ref: "#/components/schemas/PreviousIllness"
           previouslyPregnant:
             type: boolean
+            description: Indicates if the patient was previously pregnant.
           relationshipModel:
             $ref: "#/components/schemas/RelationshipModel"
           riskContacts:
@@ -5180,19 +5451,25 @@ components:
       properties:
         sexWorkLocations:
           type: array
+          description: The locations where the patient engages in sex work.
+          example: "['BORDELLO','APARTMENT']"
           items:
             $ref: "#/components/schemas/SexWorkLocation"
           uniqueItems: true
         startInSexWorkDate:
           type: string
           format: date
+          description: The date when the patient began working in sex work.
     SexualOrientation:
       type: string
+      description: Represents the gender of the patient's sexual contacts over the
+        specified period.
       enum:
       - HETEROSEXUAL
       - HOMOSEXUAL
       - BISEXUAL
       - NOT_SPECIFIED
+      example: BISEXUAL
     SortDirection:
       type: string
       enum:
@@ -5206,13 +5483,21 @@ components:
         properties:
           additionalComments:
             type: string
+            description: An optional field for recording any additional remarks or
+              comments.
           contactToClarifyDate:
             type: string
             format: date
+            description: Records the date of the contact the patients wished to discuss
+              or clarify.
           currentSymptoms:
             type: string
+            description: Details the symptoms the patient is currently experiencing.
+            example: Dysuria
           examinationReason:
             type: string
+            description: Specifies the reason for the patient's appointment.
+            example: Lower Abdominal Pain
           examinations:
             $ref: "#/components/schemas/Examination"
           prevention:
@@ -5601,10 +5886,12 @@ components:
       - username
     Vaccination:
       type: string
+      description: Provides information on vaccinations the patient has received.
       enum:
       - HEPATITIS_A
       - HEPATITIS_B
       - HPV
+      example: "['HEPATITIS_A', 'HPV']"
     ValidateAppointmentBlockGroupResponse:
       type: object
       properties:
@@ -5636,6 +5923,9 @@ components:
       properties:
         info:
           type: string
+          description: "Optional field for additional information, such as room numbers\
+            \ or internal ticket system identifiers."
+          example: Waits in Room 3
           maxLength: 60
           minLength: 0
         status:
@@ -5680,6 +5970,7 @@ components:
       - MODIFIED_AT
     WaitingStatus:
       type: string
+      description: Indicates the current status of the procedure waiting in the room.
       enum:
       - WAITING_FOR_CONSULTATION
       - WAITING_FOR_RESULTS_REVIEW
@@ -5688,3 +5979,4 @@ components:
       - IN_TESTING
       - CANCELLED
       - DONE
+      example: IN_CONSULTATION

@@ -53,8 +53,13 @@ export function LineChart(props: LineChartDiagramProps) {
 
   const [xMin, xMax, yMin, yMax] = calculateXYMinMax(props.diagramData);
   const option: EChartsOption = {
+    grid: {
+      containLabel: true,
+    },
     xAxis: {
       name: mapAxisTitleWithOptionalUnit(props.configuration.xAttribute),
+      nameLocation: "middle",
+      nameGap: 40,
       nameTextStyle: {
         fontWeight: 600,
       },
@@ -64,6 +69,8 @@ export function LineChart(props: LineChartDiagramProps) {
     },
     yAxis: {
       name: mapAxisTitleWithOptionalUnit(props.configuration.yAttribute),
+      nameLocation: "middle",
+      nameGap: 40,
       nameTextStyle: {
         fontWeight: 600,
       },

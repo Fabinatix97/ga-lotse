@@ -39,6 +39,7 @@ export interface InputFieldProps
   "data-testid"?: string;
   maxLength?: number;
   "aria-label"?: string;
+  "aria-details"?: string;
   untrimmedInput?: boolean;
   autoComplete?: InputProps["autoComplete"];
 }
@@ -98,6 +99,7 @@ export function InputField(props: Readonly<InputFieldProps>) {
           input: {
             readOnly: props.readOnly === true || props.unstyledReadOnly,
             maxLength: props.maxLength,
+            "aria-details": props["aria-details"],
           },
         }}
       />

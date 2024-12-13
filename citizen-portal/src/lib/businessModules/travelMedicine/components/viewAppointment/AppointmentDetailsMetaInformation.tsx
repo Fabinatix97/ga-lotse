@@ -18,8 +18,9 @@ import {
   WatchLaterOutlined,
 } from "@mui/icons-material";
 import { Typography } from "@mui/joy";
+import { useSuspenseQueries } from "@tanstack/react-query";
 
-import { useGetDepartmentInfo } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
+import { useGetDepartmentInfoQuery } from "@/lib/businessModules/travelMedicine/api/queries/citizenPublicApi";
 import { useTranslation } from "@/lib/i18n/client";
 import {
   InfoSection,
@@ -39,23 +40,25 @@ export function AppointmentDetailsMetaInformation(
   props: Readonly<AppointmentDetailsMetaInformationProps>,
 ) {
   const { t } = useTranslation(["travelMedicine/appointmentDetails"]);
-  const { data: department } = useGetDepartmentInfo();
+  const [{ data: department }] = useSuspenseQueries({
+    queries: [useGetDepartmentInfoQuery()],
+  });
 
   return (
     <InfoSectionGrid>
       <InfoSection icon={<PersonOutlined />}>
-        <InfoSectionTitle data-testid={"patient-name"}>
+        <InfoSectionTitle data-testid="patient-name">
           {props.appointmentDetails.firstName}{" "}
           {props.appointmentDetails.lastName}
         </InfoSectionTitle>
       </InfoSection>
       <InfoSection icon={<CakeOutlined />}>
-        <InfoSectionTitle data-testid={"patient-date-of-birth"}>
+        <InfoSectionTitle data-testid="patient-date-of-birth">
           {formatDate(props.appointmentDetails.dateOfBirth)}
         </InfoSectionTitle>
       </InfoSection>
       <InfoSection icon={<DateRangeOutlined />}>
-        <InfoSectionTitle data-testid={"appointment-date"}>
+        <InfoSectionTitle data-testid="appointment-date">
           {formatDate(
             props.appointmentDetails.summaryDto.start ??
               props.appointmentDetails.summaryDto.earliestDate,
@@ -63,7 +66,7 @@ export function AppointmentDetailsMetaInformation(
         </InfoSectionTitle>
       </InfoSection>
       <InfoSection icon={<WatchLaterOutlined />}>
-        <InfoSectionTitle data-testid={"appointment-time"}>
+        <InfoSectionTitle data-testid="appointment-time">
           {props.appointmentDetails.summaryDto.start !== undefined
             ? t("start", {
                 time: formatTime(props.appointmentDetails.summaryDto.start),
@@ -72,14 +75,14 @@ export function AppointmentDetailsMetaInformation(
         </InfoSectionTitle>
       </InfoSection>
       <InfoSection icon={<VaccinesOutlined />}>
-        <InfoSectionTitle data-testid={"appointment-type"}>
+        <InfoSectionTitle data-testid="appointment-type">
           {props.appointmentDetails.summaryDto.appointmentType ===
           ApiAppointmentType.Consultation
             ? t("appointmentType.consultation")
             : t("appointmentType.vaccination")}
         </InfoSectionTitle>
         {props.appointmentDetails.summaryDto.start && (
-          <Typography data-testid={"appointment-duration"}>
+          <Typography data-testid="appointment-duration">
             {t("duration", {
               appointmentDuration: durationBetweenDatesInMinutes(
                 props.appointmentDetails.summaryDto.start,
@@ -90,10 +93,10 @@ export function AppointmentDetailsMetaInformation(
         )}
       </InfoSection>
       <InfoSection icon={<FmdGoodOutlined />}>
-        <InfoSectionTitle data-testid={"department-name"}>
+        <InfoSectionTitle data-testid="department-name">
           {department.name}
         </InfoSectionTitle>
-        <Typography data-testid={"department-address"}>
+        <Typography data-testid="department-address">
           {formatStreetAndHouseNumber(department)}
           <br />
           {formatPostalCodeAndCity(department)}

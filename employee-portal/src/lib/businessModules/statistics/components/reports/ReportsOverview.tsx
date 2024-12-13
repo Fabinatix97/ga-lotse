@@ -17,6 +17,7 @@ import { ReportOverviewTableRow } from "@/lib/businessModules/statistics/api/mod
 import { useGetReportsOverview } from "@/lib/businessModules/statistics/api/queries/useGetReportsOverview";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
+import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
@@ -71,6 +72,7 @@ export function ReportsOverview() {
   const { deleteReportWithConfirmation, deleteReportSeriesWithConfirmation } =
     useDeleteWithConfirmation();
   const { download: exportData, downloadContainerRef } = useExportReportData();
+  const dataExportGuard = useDataExportGuard(false);
   const userPermissions = useStatisticsRoleChecks();
 
   const { resetPageNumber, page, pageSize, getPaginationProps } =
@@ -138,10 +140,12 @@ export function ReportsOverview() {
             copy,
             deleteReportWithConfirmation,
             deleteReportSeriesWithConfirmation,
-            (item) =>
-              exportData(
-                { reportId: item.reportId },
-                { tooMuchDataForExport: item.tooMuchDataForExport },
+            async (item) =>
+              dataExportGuard(() =>
+                exportData(
+                  { reportId: item.reportId },
+                  { tooMuchDataForExport: item.tooMuchDataForExport },
+                ),
               ),
             userPermissions.canWrite(),
             userPermissions.canDelete,

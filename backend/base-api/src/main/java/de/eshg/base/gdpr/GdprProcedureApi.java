@@ -137,4 +137,10 @@ public interface GdprProcedureApi {
           "Delete one or multiple downloads of GDPR-related document or data of this GDPR procedure.")
   void deleteDownloads(
       @PathVariable("id") UUID id, @RequestBody @Valid DeleteGdprDownloadsRequest request);
+
+  @GetExchange("/{id}/central-file-download-package")
+  @ApiResponse(responseCode = "200")
+  @Operation(
+      summary = "Get Gdpr Download Package of central files linked to given Gdpr Procedure Id")
+  ResponseEntity<Resource> getCentralFileDownloadPackage(@PathVariable(name = "id") UUID id);
 }

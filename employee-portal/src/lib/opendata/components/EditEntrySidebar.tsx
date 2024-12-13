@@ -51,6 +51,12 @@ export function EditEntrySidebar({
           description: values.description,
           sources: new Set(values.sources),
           fileName: values.fileName,
+          statisticStartDate: values.statisticStartDate
+            ? new Date(values.statisticStartDate)
+            : undefined,
+          statisticEndDate: values.statisticEndDate
+            ? new Date(values.statisticEndDate)
+            : undefined,
         },
       },
       { onSuccess: () => onAbort() },

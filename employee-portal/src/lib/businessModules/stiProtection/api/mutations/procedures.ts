@@ -8,6 +8,7 @@ import {
   ApiCreateProcedureRequest,
   ApiCreateProcedureResponse,
   ApiStiProtectionProcedure,
+  ApiUpdateAppointmentRequest,
   ApiUpdatePersonDetailsRequest,
   CancelAppointmentRequest,
 } from "@eshg/employee-portal-api/stiProtection";
@@ -140,7 +141,7 @@ export function useCreateAppointmentMutation({
   return useHandledMutation({
     mutationFn: ({ id, data }: CreateAppointmentParams) =>
       api.createAppointment(id, data),
-    mutationKey: stiProtectionApiQueryKey(["procedures"]),
+    mutationKey: stiProtectionApiQueryKey(["appointment", "create"]),
     onSuccess,
     onError,
   });
@@ -155,6 +156,26 @@ export function useCancelAppointmentMutation({
   return useHandledMutation({
     mutationFn: ({ id }: CancelAppointmentRequest) => api.cancelAppointment(id),
     mutationKey: stiProtectionApiQueryKey(["appointment", "cancel"]),
+    onSuccess,
+    onError,
+  });
+}
+
+interface UpdateAppointmentParams {
+  id: string;
+  data: ApiUpdateAppointmentRequest;
+}
+
+export function useEditAppointmentMutation({
+  onSuccess,
+  onError,
+}: MutationPassThrough<UpdateAppointmentParams, void> = {}) {
+  const api = useStiProtectionProcedureApi();
+
+  return useHandledMutation({
+    mutationFn: ({ id, data }: UpdateAppointmentParams) =>
+      api.updateAppointment(id, data),
+    mutationKey: stiProtectionApiQueryKey(["appointment", "update"]),
     onSuccess,
     onError,
   });

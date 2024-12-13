@@ -8,25 +8,38 @@ import { SaveDiagramStep } from "@/lib/businessModules/statistics/components/eva
 import { UpdateDiagramFormModel } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/updateDiagramFormModel";
 import { SidebarStepper } from "@/lib/shared/components/SidebarStepper/SidebarStepper";
 import { SidebarStep } from "@/lib/shared/components/SidebarStepper/sidebarStep";
+import {
+  SidebarWithFormRefProps,
+  UseSidebarWithFormRefResult,
+  useSidebarWithFormRef,
+} from "@/lib/shared/hooks/useSidebarWithFormRef";
 
-export function UpdateDiagramSidebar(props: {
-  open: boolean;
-  onClose: () => void;
+export function useUpdateDiagramSidebar(): UseSidebarWithFormRefResult<UpdateDiagramSidebarProps> {
+  return useSidebarWithFormRef({
+    component: UpdateDiagramSidebar,
+  });
+}
+
+interface UpdateDiagramSidebarProps extends SidebarWithFormRefProps {
   diagramId: string;
   title: string;
   description: string | undefined;
-}) {
-  const updateDiagram = useUpdateDiagram(props.diagramId, props.onClose);
+}
+
+function UpdateDiagramSidebar(props: UpdateDiagramSidebarProps) {
+  const updateDiagram = useUpdateDiagram(props.diagramId, () =>
+    props.onClose(true),
+  );
 
   return (
     <SidebarStepper
-      open={props.open}
       onClose={props.onClose}
       onSubmit={updateDiagram}
       initialValues={{
         title: props.title,
         description: props.description ?? "",
       }}
+      formRef={props.formRef}
       steps={
         [
           {

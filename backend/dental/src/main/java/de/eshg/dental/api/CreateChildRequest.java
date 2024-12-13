@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public record CreateChildRequest(
       String firstName,
       String lastName,
       LocalDate dateOfBirth,
-      int year,
+      Year year,
       String groupName,
       UUID institutionId) {
     this(firstName, lastName, null, dateOfBirth, year, groupName, institutionId);
@@ -51,7 +52,7 @@ public record CreateChildRequest(
       String lastName,
       GenderDto gender,
       LocalDate dateOfBirth,
-      int year,
+      Year year,
       String groupName,
       UUID institutionId) {
     this(
@@ -69,7 +70,7 @@ public record CreateChildRequest(
         null,
         null,
         null,
-        year,
+        year.getValue(),
         groupName,
         institutionId);
   }

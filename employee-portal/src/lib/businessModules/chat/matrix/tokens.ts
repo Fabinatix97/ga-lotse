@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { createClient } from "matrix-js-sdk";
 import {
   IEncryptedPayload,
   decryptAES,
@@ -10,13 +11,13 @@ import {
 } from "matrix-js-sdk/lib/crypto/aes";
 
 import {
-  deleteRustSdkStore,
   idbClearTable,
   idbDeleteDb,
   idbLoad,
   idbSave,
 } from "@/lib/businessModules/chat/matrix/idb";
 import { getPickleKey } from "@/lib/businessModules/chat/matrix/pickling";
+import { logger } from "@/lib/businessModules/chat/shared/helpers";
 import { IStoredCredentials } from "@/lib/businessModules/chat/shared/types";
 
 const ACCESS_TOKEN_STORAGE_KEY = "mx_access_token";
@@ -24,6 +25,10 @@ const USER_ID_STORAGE_KEY = "mx_user_id";
 const DEVICE_ID_STORAGE_KEY = "mx_device_id";
 
 export const ACCESS_TOKEN_IV = "access_token";
+
+export function getIDBFactory(): IDBFactory | undefined {
+  return self?.indexedDB ? self.indexedDB : window.indexedDB;
+}
 
 export async function getCachedCredentials() {
   let accessToken = await getCachedAccessToken(ACCESS_TOKEN_STORAGE_KEY);
@@ -74,7 +79,7 @@ export async function clearCachedCredentials() {
 export async function deleteCachedCredentials() {
   try {
     clearLocalStorage();
-    await Promise.all([idbDeleteDb, deleteRustSdkStore]);
+    await idbDeleteDb();
   } catch {
     // eslint-disable-next-line no-console
     console.warn("Cached credentials were not cleared");
@@ -223,4 +228,49 @@ export function updateLocalStorageDeviceId(deviceId: string) {
   if (localStorage) {
     localStorage.setItem(DEVICE_ID_STORAGE_KEY, deviceId);
   }
+}
+
+export async function clearMatrixStores(): Promise<void> {
+  const temporaryMatrixClient = createClient({
+    baseUrl: "",
+  });
+
+  const promises: Promise<void>[] = [];
+
+  promises.push(temporaryMatrixClient.store.deleteAllData());
+
+  async function deleteRustSdkStore(): Promise<void> {
+    let indexedDB: IDBFactory | undefined;
+    try {
+      indexedDB = getIDBFactory();
+      if (!indexedDB) return;
+    } catch {
+      return;
+    }
+
+    for (const dbName of [
+      `matrix-js-sdk::matrix-sdk-crypto`,
+      `matrix-js-sdk::matrix-sdk-crypto-meta`,
+    ]) {
+      const prom = new Promise((resolve) => {
+        const req = indexedDB.deleteDatabase(dbName);
+        req.onsuccess = (): void => {
+          resolve(0);
+          logger.info("Crypto DB deleted");
+        };
+        req.onerror = (): void => {
+          resolve(0);
+          logger.info("Crypto DB deletion failed");
+        };
+        req.onblocked = (): void => {
+          req.result?.close();
+          logger.info("Crypto DB is blocked");
+        };
+      });
+      await prom;
+    }
+  }
+
+  promises.push(deleteRustSdkStore());
+  await Promise.all(promises);
 }

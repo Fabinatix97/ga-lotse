@@ -10,18 +10,17 @@ import { formatDate } from "@eshg/lib-portal/formatters/dateTime";
 import { Add, CloudUpload, Delete, Edit } from "@mui/icons-material";
 import { Box } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 import { isPlainObject } from "remeda";
 
+import { translateDataSourceSensitivity } from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { EvaluationTemplateWithUserInfo } from "@/lib/businessModules/statistics/api/models/evaluationTemplatesOverview";
 import { useDeleteEvaluationTemplate } from "@/lib/businessModules/statistics/api/mutations/useDeleteEvaluationTemplate";
 import { useGetEvaluationTemplatesOverview } from "@/lib/businessModules/statistics/api/queries/useGetEvaluationTemplatesOverview";
-import { UpdateEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/UpdateEvaluationTemplateSidebar";
-import { CreateEvaluationFromTemplateSidebarStepper } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationFromTemplateSidebarStepper";
+import { useUpdateEvaluationTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/EvaluationTemplateSidebar/UpdateEvaluationTemplateSidebar";
+import { useCreateEvaluationFromTemplateSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationFromTemplateSidebar";
 import { useEvaluationTemplateDetailsSidebar } from "@/lib/businessModules/statistics/components/evaluations/templates/EvaluationTemplateDetailsSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import {
   ActionsItem,
   ActionsMenu,
@@ -36,7 +35,7 @@ import { usePagination } from "@/lib/shared/hooks/table/usePagination";
 import { useTableSorting } from "@/lib/shared/hooks/table/useTableSorting";
 import { useHasUserRoleCheck } from "@/lib/shared/hooks/useAccessControl";
 
-import { UploadTemplateSidebarStepper } from "./UploadTemplateSidebar/UploadTemplateSidebarStepper";
+import { useUploadTemplateSidebar } from "./UploadTemplateSidebar/UploadTemplateSidebar";
 
 export function EvaluationTemplatesOverview() {
   const userPermissions = useStatisticsRoleChecks();
@@ -49,17 +48,6 @@ export function EvaluationTemplatesOverview() {
       desc: true,
     },
   });
-  const [
-    onCreateSelectedEvaluationTemplateId,
-    setOnCreateSelectedEvaluationTemplateId,
-  ] = useState<string | null>(null);
-  const [
-    onEditSelectedEvaluationTemplateId,
-    setOnEditSelectedEvaluationTemplateId,
-  ] = useState<string | null>(null);
-  const [onUploadSelectedTemplateId, setOnUploadSelectedTemplateId] = useState<
-    string | null
-  >(null);
 
   const evaluationTemplatesOverview = useGetEvaluationTemplatesOverview({
     page,
@@ -74,6 +62,10 @@ export function EvaluationTemplatesOverview() {
   const deleteEvaluationTemplate = useDeleteEvaluationTemplate();
   const evaluationTemplateDetailsSidebar =
     useEvaluationTemplateDetailsSidebar();
+  const updateEvaluationTemplateSidebar = useUpdateEvaluationTemplateSidebar();
+  const uploadTemplateSidebar = useUploadTemplateSidebar();
+  const createEvaluationFromTemplateSidebar =
+    useCreateEvaluationFromTemplateSidebar();
 
   function deleteTemplateWithConfirmation(
     templateId: string,
@@ -88,17 +80,37 @@ export function EvaluationTemplatesOverview() {
     });
   }
 
+  function openUpdateEvaluationTemplateSidebar(evaluationTemplateId: string) {
+    updateEvaluationTemplateSidebar.open({
+      evaluationTemplateId,
+    });
+  }
+
+  function openUploadTemplateSidebar(templateId: string) {
+    uploadTemplateSidebar.open({
+      templateId,
+    });
+  }
+
+  function openCreateEvaluationFromTemplateSidebar(
+    evaluationTemplateId: string,
+  ) {
+    createEvaluationFromTemplateSidebar.open({
+      evaluationTemplateId,
+    });
+  }
+
   function openTemplateDetails(templateId: string) {
     evaluationTemplateDetailsSidebar.open({
       evaluationTemplateId: templateId,
       onEditEvaluationTemplate: () => {
-        setOnEditSelectedEvaluationTemplateId(templateId);
+        openUpdateEvaluationTemplateSidebar(templateId);
       },
       onCreateEvaluation: () => {
-        setOnCreateSelectedEvaluationTemplateId(templateId);
+        openCreateEvaluationFromTemplateSidebar(templateId);
       },
       onUploadEvaluation: () => {
-        setOnUploadSelectedTemplateId(templateId);
+        openUploadTemplateSidebar(templateId);
       },
     });
   }
@@ -114,58 +126,31 @@ export function EvaluationTemplatesOverview() {
           />
         }
       >
-        <>
-          {onEditSelectedEvaluationTemplateId && (
-            <OverlayBoundary>
-              <UpdateEvaluationTemplateSidebar
-                evaluationTemplateId={onEditSelectedEvaluationTemplateId}
-                onClose={() => setOnEditSelectedEvaluationTemplateId(null)}
-              />
-            </OverlayBoundary>
+        <DataTable
+          data={evaluationTemplatesOverview.evaluationTemplates}
+          columns={evaluationTemplatesColumns(
+            writePermission,
+            userPermissions.canWrite,
+            userPermissions.canUpdateEvaluationTemplate,
+            userPermissions.canDeleteEvaluationTemplate,
+            deleteTemplateWithConfirmation,
+            openUpdateEvaluationTemplateSidebar,
+            openCreateEvaluationFromTemplateSidebar,
+            openUploadTemplateSidebar,
           )}
-          {onCreateSelectedEvaluationTemplateId && (
-            <OverlayBoundary>
-              <CreateEvaluationFromTemplateSidebarStepper
-                evaluationTemplateId={onCreateSelectedEvaluationTemplateId}
-                onClose={() => setOnCreateSelectedEvaluationTemplateId(null)}
-              />
-            </OverlayBoundary>
+          wrapHeader
+          wrapContent
+          noDataComponent={() => (
+            <Box flex={1} alignContent="center">
+              <NoSearchResults info="Keine Vorlagen vorhanden" />
+            </Box>
           )}
-          {onUploadSelectedTemplateId && (
-            <OverlayBoundary>
-              <UploadTemplateSidebarStepper
-                templateId={onUploadSelectedTemplateId}
-                onClose={() => setOnUploadSelectedTemplateId(null)}
-              />
-            </OverlayBoundary>
-          )}
-
-          <DataTable
-            data={evaluationTemplatesOverview.evaluationTemplates}
-            columns={evaluationTemplatesColumns(
-              writePermission,
-              userPermissions.canWrite,
-              userPermissions.canUpdateEvaluationTemplate,
-              userPermissions.canDeleteEvaluationTemplate,
-              deleteTemplateWithConfirmation,
-              setOnEditSelectedEvaluationTemplateId,
-              setOnCreateSelectedEvaluationTemplateId,
-              setOnUploadSelectedTemplateId,
-            )}
-            wrapHeader
-            wrapContent
-            noDataComponent={() => (
-              <Box flex={1} alignContent="center">
-                <NoSearchResults info="Keine Vorlagen vorhanden" />
-              </Box>
-            )}
-            sorting={manualSortingProps}
-            rowNavigation={{
-              focusColumnAccessorKey: "name",
-              onClick: (row) => openTemplateDetails(row.original.id),
-            }}
-          />
-        </>
+          sorting={manualSortingProps}
+          rowNavigation={{
+            focusColumnAccessorKey: "name",
+            onClick: (row) => openTemplateDetails(row.original.id),
+          }}
+        />
       </TableSheet>
     </TablePage>
   );
@@ -191,6 +176,11 @@ function evaluationTemplatesColumns(
     columnHelper.accessor("dataSourceName", {
       header: "Datenquelle",
       enableSorting: false,
+      meta: { canNavigate: { parentRow: true } },
+    }),
+    columnHelper.accessor("dataSourceSensitivity", {
+      header: "Sensibilität",
+      cell: (props) => translateDataSourceSensitivity(props.getValue()),
       meta: { canNavigate: { parentRow: true } },
     }),
     columnHelper.accessor("analysisCount", {

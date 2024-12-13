@@ -16,6 +16,8 @@ public record GetSpecificDataResponse(
     @NotBlank String dataSourceName,
     @NotNull Instant timeRangeStart,
     @NotNull Instant timeRangeEnd,
+    @NotNull DataSourceSensitivity sensitivity,
+    @NotNull boolean anonymized,
     @NotNull @Valid DataTableHeader dataTableHeader,
     @NotNull @Valid List<DataRow> dataRows,
     @NotNull @Min(0) long totalNumberOfElements) {}

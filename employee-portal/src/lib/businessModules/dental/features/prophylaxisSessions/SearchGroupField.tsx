@@ -13,6 +13,7 @@ interface SearchGroupFieldProps {
   name: string;
   label: string;
   institutionId: string;
+  freeSolo?: boolean;
 }
 
 function mapGroupToSelectOption(group: string): SelectOption {
@@ -36,6 +37,7 @@ export function SearchGroupField(props: SearchGroupFieldProps) {
       placeholder="Gruppe suchen"
       endDecorator={<SearchOutlined />}
       loading={searchGroups.isLoading}
+      freeSolo={props.freeSolo}
     />
   );
 }

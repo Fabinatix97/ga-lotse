@@ -280,7 +280,7 @@ public class SchoolEntryService {
     buildChild(childIdFromCentralFile, schoolEntryProcedure);
 
     for (UUID custodianId : custodianIdsFromCentralFile) {
-      buildParent(custodianId, schoolEntryProcedure);
+      buildCustodian(custodianId, schoolEntryProcedure);
     }
 
     schoolEntryProcedure.setHearingTestResult(hearingTestResult);
@@ -296,13 +296,15 @@ public class SchoolEntryService {
   }
 
   private static void buildChild(UUID childIdFromCentralFile, SchoolEntryProcedure procedure) {
-    Person child = buildPerson(childIdFromCentralFile, PersonType.PATIENT);
+    Person child = buildPerson(childIdFromCentralFile, Person.PERSON_TYPE_USED_FOR_CHILDREN);
     procedure.addRelatedPerson(child);
   }
 
-  public static void buildParent(UUID custodianIdFromCentralFile, SchoolEntryProcedure procedure) {
-    Person parent = buildPerson(custodianIdFromCentralFile, PersonType.PARENT);
-    procedure.addRelatedPerson(parent);
+  public static void buildCustodian(
+      UUID custodianIdFromCentralFile, SchoolEntryProcedure procedure) {
+    Person custodian =
+        buildPerson(custodianIdFromCentralFile, Person.PERSON_TYPE_USED_FOR_CUSTODIANS);
+    procedure.addRelatedPerson(custodian);
   }
 
   private static Person buildPerson(UUID centralFileStateId, PersonType personType) {

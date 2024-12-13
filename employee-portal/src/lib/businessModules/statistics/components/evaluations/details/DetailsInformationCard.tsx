@@ -15,6 +15,7 @@ import {
 import { Button, Stack } from "@mui/joy";
 import { isPlainObject } from "remeda";
 
+import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { InfoTile } from "@/lib/shared/components/infoTile/InfoTile";
 import {
@@ -45,6 +46,8 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
   const canExportData = props.anonymized;
 
   const { canDelete, canUpdateEvaluation, canWrite } = props;
+
+  const dataExportGuard = useDataExportGuard(false);
 
   return (
     <InfoTile
@@ -97,7 +100,7 @@ export function DetailsInformationCard(props: DetailsInformationCardProps) {
               },
               canExportData && {
                 label: "Daten exportieren",
-                onClick: () => props.onDataExport(),
+                onClick: () => dataExportGuard(props.onDataExport),
                 startDecorator: <Download />,
               },
               canDelete &&

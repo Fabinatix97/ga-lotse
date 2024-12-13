@@ -11,6 +11,7 @@ import de.eshg.base.citizenuser.api.AddCitizenAccessCodeUserRequest;
 import de.eshg.base.citizenuser.api.CitizenAccessCodeUserDto;
 import de.eshg.base.citizenuser.api.VerifyPinRequest;
 import de.eshg.base.citizenuser.mapper.CitizenAccessCodeUserMapper;
+import de.eshg.keycloak.api.user.model.CredentialType;
 import de.eshg.rest.service.error.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
@@ -67,7 +68,7 @@ public class CitizenAccessCodeUserController implements CitizenAccessCodeUserApi
   @Override
   public void verifyAnonymousUserPin(UUID userId, VerifyPinRequest request) {
     try {
-      citizenUserService.verifyAnonymousUserPin(userId, request.pin());
+      citizenUserService.verifyCredential(userId, CredentialType.PIN, request.pin());
     } catch (jakarta.ws.rs.NotAuthorizedException e) {
       throw HttpClientErrorException.create(
           HttpStatus.UNAUTHORIZED, e.getMessage(), null, null, null);

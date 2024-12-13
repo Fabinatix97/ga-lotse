@@ -6,9 +6,12 @@
 package de.eshg.stiprotection;
 
 import de.eshg.rest.service.security.config.BaseUrls;
+import de.eshg.stiprotection.api.examination.LaboratoryTestExaminationDto;
 import de.eshg.stiprotection.api.examination.RapidTestExaminationDto;
+import de.eshg.stiprotection.mapper.examination.LaboratoryExaminationMapper;
 import de.eshg.stiprotection.mapper.examination.RapidTestExaminationMapper;
 import de.eshg.stiprotection.persistence.db.StiProtectionSystemProgressEntryType;
+import de.eshg.stiprotection.persistence.db.examination.LaboratoryTestExamination;
 import de.eshg.stiprotection.persistence.db.examination.RapidTestExamination;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,5 +62,27 @@ public class ExaminationController {
     RapidTestExaminationMapper.update(rapidTestExaminationDto, rapidTestExamination);
     stiProtectionProcedureService.addProgressEntry(
         procedureId, StiProtectionSystemProgressEntryType.RAPID_TEST_EXAMINATION_UPDATED);
+  }
+
+  @GetMapping("/laboratory-test")
+  @Operation(summary = "Get all external laboratory tests within an examination.")
+  @Transactional(readOnly = true)
+  public LaboratoryTestExaminationDto getLaboratoryTestExamination(
+      @PathVariable("procedureId") UUID procedureId) {
+    return LaboratoryExaminationMapper.toInterfaceType(
+        examinationService.getLaboratoryTestExamination(procedureId));
+  }
+
+  @PutMapping("/laboratory-test")
+  @Operation(summary = "Updated all external laboratory tests.")
+  @Transactional
+  public void updateLaboratoryTestExamination(
+      @PathVariable("procedureId") UUID procedureId,
+      @Valid @RequestBody LaboratoryTestExaminationDto laboratoryExaminationDto) {
+    LaboratoryTestExamination laboratoryTestExamination =
+        examinationService.getOrCreateLaboratoryTestExamination(procedureId);
+    LaboratoryExaminationMapper.update(laboratoryExaminationDto, laboratoryTestExamination);
+    stiProtectionProcedureService.addProgressEntry(
+        procedureId, StiProtectionSystemProgressEntryType.LABORATORY_TEST_EXAMINATION_UPDATED);
   }
 }

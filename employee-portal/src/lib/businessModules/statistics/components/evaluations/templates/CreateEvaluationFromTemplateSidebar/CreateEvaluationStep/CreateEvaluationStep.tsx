@@ -16,6 +16,7 @@ import {
   Analyses,
   Attributes,
   DataSource,
+  Sensitivity,
 } from "@/lib/businessModules/statistics/components/evaluations/SidebarSummary";
 import { CreateEvaluationStepFormModel } from "@/lib/businessModules/statistics/components/evaluations/templates/CreateEvaluationFromTemplateSidebar/CreateEvaluationStep/createEvaluationStepFormModel";
 import { TimeSpanField } from "@/lib/shared/components/formFields/TimeSpanField";
@@ -68,6 +69,9 @@ export function CreateEvaluationStep({
         </Typography>
       </Stack>
       <DataSource dataSourceName={evaluationTemplateDetails.dataSourceName} />
+      <Sensitivity
+        dataSourceSensitivity={evaluationTemplateDetails.dataSourceSensitivity}
+      />
       <Attributes attributeLabels={evaluationTemplateDetails.attributeLabels} />
       <Analyses analyses={evaluationTemplateDetails.analyses} />
       <Alert

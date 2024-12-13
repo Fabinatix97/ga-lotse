@@ -51,7 +51,7 @@ public enum ModuleMemberGroup implements KeycloakGroup {
   STI_PROTECTION(
       "HIV-STI-Schutz", getStandardRoles(), List.of(EmployeePermissionRole.STI_PROTECTION_USER)),
   MEDICAL_REGISTRY(
-      "Medizinalkartei",
+      "Medizinalaufsicht",
       getStandardRoles(),
       List.of(EmployeePermissionRole.MEDICAL_REGISTRY_ADMIN)),
   DENTAL("Zahnärztlicher Dienst", getStandardRoles(), List.of(EmployeePermissionRole.DENTAL_ADMIN)),

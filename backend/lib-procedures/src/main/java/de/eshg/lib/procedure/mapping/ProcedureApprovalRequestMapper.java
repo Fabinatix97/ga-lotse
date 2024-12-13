@@ -27,7 +27,7 @@ public final class ProcedureApprovalRequestMapper implements EntityToApprovalReq
   public ApprovalRequestEntityDto toInterfaceType(EntityWithExternalId entity) {
     if (entity instanceof ManualProgressEntry manualProgressEntry) {
       ManualProgressEntryDto progressEntry =
-          ProgressEntryMapper.toInterfaceType(manualProgressEntry);
+          ProgressEntryMapper.toInterfaceTypeWithFileReference(manualProgressEntry);
       userHelper.enrichUsersFirstNamesAndLastNames(progressEntry);
       return progressEntry;
     }

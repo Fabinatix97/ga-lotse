@@ -5,11 +5,19 @@
 
 package de.eshg.lib.procedure.procedures;
 
+import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.PersonApi;
+import de.eshg.base.centralfile.api.DeleteFileStatesRequest;
 import de.eshg.lib.procedure.domain.model.Procedure;
+import de.eshg.lib.procedure.domain.model.RelatedFacility;
+import de.eshg.lib.procedure.domain.model.RelatedPerson;
 import de.eshg.lib.procedure.domain.repository.ProcedureRepository;
 import de.eshg.lib.procedure.util.CemeteryService;
 import de.eshg.rest.service.error.NotFoundException;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,11 +33,18 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
 
   protected final ProcedureRepository<ProcedureT> procedureRepository;
   protected final CemeteryService cemeteryService;
+  protected final PersonApi personApi;
+  protected final FacilityApi facilityApi;
 
   public ProcedureDeletionService(
-      ProcedureRepository<ProcedureT> procedureRepository, CemeteryService cemeteryService) {
+      ProcedureRepository<ProcedureT> procedureRepository,
+      CemeteryService cemeteryService,
+      PersonApi personApi,
+      FacilityApi facilityApi) {
     this.procedureRepository = procedureRepository;
     this.cemeteryService = cemeteryService;
+    this.personApi = personApi;
+    this.facilityApi = facilityApi;
   }
 
   /**
@@ -51,22 +66,18 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
    *       actually be deleted
    * </ul>
    *
-   * @param procedureId The procedureId of the {@link Procedure} which should be written to the
-   *     cemetery and then deleted.
+   * @param procedure The {@link Procedure} which should be written to the cemetery and then
+   *     deleted.
    * @throws NotFoundException if the {@link Procedure} is not found
    */
-  @Transactional
-  public void deleteAndWriteToCemetery(UUID procedureId) {
-    deleteAndWriteToCemetery(find(procedureId));
-  }
-
-  /** See {@link #deleteAndWriteToCemetery(UUID procedureId)} */
   @Transactional(propagation = Propagation.MANDATORY)
   public void deleteAndWriteToCemetery(ProcedureT procedure) {
     log.info(
         "Attempting to write to cemetery and then delete procedure {}", procedure.getExternalId());
-    writeToCemetery(procedure);
-    delete(procedure);
+    cemeteryService.writeToCemetery(procedure);
+    markRelatedFileStatesForDeletion(procedure);
+    procedureRepository.delete(procedure);
+    log.info("Procedure {} written to cemetery and deleted", procedure.getExternalId());
   }
 
   /**
@@ -87,28 +98,53 @@ public class ProcedureDeletionService<ProcedureT extends Procedure<ProcedureT, ?
    *       actually be deleted
    * </ul>
    *
-   * @param procedureId The procedureId of the {@link Procedure} which should be deleted.
+   * @param procedure The {@link Procedure} which should be deleted.
    * @throws NotFoundException if the {@link Procedure} is not found
    */
-  @Transactional
-  public void delete(UUID procedureId) {
-    log.info("Attempting to delete procedure {}", procedureId);
-    delete(find(procedureId));
-  }
-
-  private ProcedureT find(UUID externalId) {
-    return procedureRepository
-        .findByExternalId(externalId)
-        .orElseThrow(() -> new NotFoundException("Procedure " + externalId + " not found."));
-  }
-
-  private void writeToCemetery(ProcedureT procedure) {
-    cemeteryService.writeToCemetery(procedure);
-    log.info("Procedure {} written to cemetery", procedure.getExternalId());
-  }
-
-  private void delete(ProcedureT procedure) {
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void deleteDuringArchiving(ProcedureT procedure) {
+    log.info("Attempting to delete procedure {}", procedure.getExternalId());
+    deleteRelatedFileStatesDuringArchiving(procedure);
     procedureRepository.delete(procedure);
     log.info("Procedure {} deleted", procedure.getExternalId());
+  }
+
+  protected void markRelatedFileStatesForDeletion(ProcedureT procedure) {
+    if (!procedure.getRelatedPersons().isEmpty()) {
+      log.debug(
+          "Attempting to mark {} related persons for deletion. ",
+          procedure.getRelatedPersons().size());
+      personApi.markPersonFileStateForDeletion(
+          deletionRequest(procedure.getRelatedPersons(), RelatedPerson::getCentralFileStateId));
+    }
+    if (!procedure.getRelatedFacilities().isEmpty()) {
+      log.debug(
+          "Attempting to mark {} related facilities for deletion",
+          procedure.getRelatedFacilities().size());
+      facilityApi.markFacilityFileStateForDeletion(
+          deletionRequest(
+              procedure.getRelatedFacilities(), RelatedFacility::getCentralFileStateId));
+    }
+  }
+
+  protected void deleteRelatedFileStatesDuringArchiving(ProcedureT procedure) {
+    if (!procedure.getRelatedPersons().isEmpty()) {
+      log.debug("Attempting to delete {} related persons", procedure.getRelatedPersons().size());
+      personApi.deletePersonFileStateDuringArchive(
+          deletionRequest(procedure.getRelatedPersons(), RelatedPerson::getCentralFileStateId));
+    }
+    if (!procedure.getRelatedFacilities().isEmpty()) {
+      log.debug(
+          "Attempting to delete {} related facilities", procedure.getRelatedFacilities().size());
+      facilityApi.deleteFacilityFileStateDuringArchive(
+          deletionRequest(
+              procedure.getRelatedFacilities(), RelatedFacility::getCentralFileStateId));
+    }
+  }
+
+  private <T> DeleteFileStatesRequest deletionRequest(
+      List<T> entities, Function<T, UUID> uuidExtractor) {
+    return new DeleteFileStatesRequest(
+        entities.stream().map(uuidExtractor).collect(Collectors.toSet()));
   }
 }

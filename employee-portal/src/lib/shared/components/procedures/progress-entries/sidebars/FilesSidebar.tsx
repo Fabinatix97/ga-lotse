@@ -9,7 +9,7 @@ import { Button, Stack } from "@mui/joy";
 
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { FileCardWithActions } from "@/lib/shared/components/procedures/progress-entries/FileCardWithActions";
-import { useUndeletedFilesWithoutOldVersions } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
+import { useProgressEntriesConfig } from "@/lib/shared/components/procedures/progress-entries/ProgressEntriesContext";
 import { Sidebar } from "@/lib/shared/components/sidebar/Sidebar";
 import { SidebarActions } from "@/lib/shared/components/sidebar/SidebarActions";
 import { SidebarContent } from "@/lib/shared/components/sidebar/SidebarContent";
@@ -20,13 +20,13 @@ interface FilesSidebarProps {
 }
 
 export function FilesSidebar({ open, onClose }: FilesSidebarProps) {
-  const files = useUndeletedFilesWithoutOldVersions();
+  const { files } = useProgressEntriesConfig();
   return (
     <>
       <Sidebar open={open} onClose={onClose}>
         <SidebarContent title={`Alle Dateien(${files.length})`}>
           <Stack spacing={1}>
-            {files.reverse().map(({ file, progressEntryId }) => (
+            {files.map(({ file, progressEntryId }) => (
               <FileCardWithActions
                 key={`files-sidebar-${file.fileId}`}
                 detailsProgressEntryId={progressEntryId}

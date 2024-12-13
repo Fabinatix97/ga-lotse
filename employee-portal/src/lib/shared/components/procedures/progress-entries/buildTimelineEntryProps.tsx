@@ -7,7 +7,6 @@ import {
   ApiGetProgressEntriesResponseProgressEntriesInner,
   ApiManualProgressEntry,
   ApiProcessedInboxProgressEntry,
-  ApiProgressEntryReferenceFilePair,
   ApiSystemProgressEntry,
 } from "@eshg/employee-portal-api/businessProcedures";
 import { InternalLink } from "@eshg/lib-portal/components/navigation/InternalLink";
@@ -31,21 +30,19 @@ import {
   systemProgressEntryIndicators,
   systemProgressEntryTypeTitles,
 } from "./constants";
-import { buildName, displayTriggerer, resolveFileId } from "./helper";
+import { buildName, displayTriggerer } from "./helper";
 
 interface ProgressEntryTimelineEntryProps extends TimelineEntryProps {
   key: string;
 }
 
 export function useTimelineEntryProps(): ProgressEntryTimelineEntryProps[] {
-  const { procedureId, progressEntries, files, routes } =
-    useProgressEntriesConfig();
+  const { procedureId, progressEntries, routes } = useProgressEntriesConfig();
   const rawSearchParams = useSearchParams();
 
   return progressEntries.map((progressEntry) =>
     timelineEntryPropsOfProgressEntry(
       progressEntry,
-      files,
       buildRouteWithParams(
         routes.entryDetails(procedureId, progressEntry.progressEntryId),
         rawSearchParams,
@@ -56,34 +53,15 @@ export function useTimelineEntryProps(): ProgressEntryTimelineEntryProps[] {
 
 function timelineEntryPropsOfProgressEntry(
   progressEntry: ApiGetProgressEntriesResponseProgressEntriesInner,
-  files: ApiProgressEntryReferenceFilePair[],
   detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
-  const progressEntryFilePair =
-    isDefined(progressEntry.fileReference) &&
-    isDefined(progressEntry.fileReference.fileId)
-      ? resolveFileId(progressEntry.fileReference.fileId, files)
-      : undefined;
-
   switch (progressEntry.type) {
     case "SystemProgressEntry":
-      return timelineEntryPropsOfSystemProgressEntry(
-        progressEntry,
-        progressEntryFilePair,
-        detailsUrl,
-      );
+      return timelineEntryPropsOfSystemProgressEntry(progressEntry, detailsUrl);
     case "ManualProgressEntry":
-      return timelineEntryPropsOfManualProgressEntry(
-        progressEntry,
-        progressEntryFilePair,
-        detailsUrl,
-      );
+      return timelineEntryPropsOfManualProgressEntry(progressEntry, detailsUrl);
     case "ProcessedInboxProgressEntry":
-      return timelineEntryPropsOfInboxProgressEntry(
-        progressEntry,
-        progressEntryFilePair,
-        detailsUrl,
-      );
+      return timelineEntryPropsOfInboxProgressEntry(progressEntry, detailsUrl);
   }
 }
 
@@ -101,7 +79,6 @@ function TextSheet(props: { text: string; dataTestId: string }) {
 
 function timelineEntryPropsOfSystemProgressEntry(
   systemProgressEntry: ApiSystemProgressEntry,
-  progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined,
   detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   return {
@@ -130,7 +107,8 @@ function timelineEntryPropsOfSystemProgressEntry(
     children: (
       <>
         <EntryFile
-          progressEntryReferenceFilePair={progressEntryReferenceFilePair}
+          progressEntryId={systemProgressEntry.progressEntryId}
+          fileReference={systemProgressEntry.fileReference}
         />
         {!isEmpty(systemProgressEntry.changeDescription) && (
           <TextSheet
@@ -145,7 +123,6 @@ function timelineEntryPropsOfSystemProgressEntry(
 
 function timelineEntryPropsOfManualProgressEntry(
   manualProgressEntry: ApiManualProgressEntry,
-  progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined,
   detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   const note = manualProgressEntry.note;
@@ -178,7 +155,8 @@ function timelineEntryPropsOfManualProgressEntry(
     children: (
       <>
         <EntryFile
-          progressEntryReferenceFilePair={progressEntryReferenceFilePair}
+          progressEntryId={manualProgressEntry.progressEntryId}
+          fileReference={manualProgressEntry.fileReference}
         />
         {isDefined(note) && <TextSheet text={note} dataTestId="noteDisplay" />}
       </>
@@ -188,7 +166,6 @@ function timelineEntryPropsOfManualProgressEntry(
 
 function timelineEntryPropsOfInboxProgressEntry(
   inboxProgressEntry: ApiProcessedInboxProgressEntry,
-  progressEntryReferenceFilePair: ApiProgressEntryReferenceFilePair | undefined,
   detailsUrl: string,
 ): ProgressEntryTimelineEntryProps {
   return {
@@ -215,7 +192,8 @@ function timelineEntryPropsOfInboxProgressEntry(
     ),
     children: (
       <EntryFile
-        progressEntryReferenceFilePair={progressEntryReferenceFilePair}
+        progressEntryId={inboxProgressEntry.progressEntryId}
+        fileReference={inboxProgressEntry.fileReference}
       />
     ),
   };

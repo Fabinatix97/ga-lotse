@@ -5,4 +5,10 @@
 
 package de.eshg.officialmedicalservice.procedure.api;
 
-public record PostEmployeeOmsProcedureRequest() {}
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+@Schema(name = "PostEmployeeOmsProcedureRequest")
+@Valid
+public record PostEmployeeOmsProcedureRequest(@NotNull @Valid AffectedPersonDto affectedPerson) {}

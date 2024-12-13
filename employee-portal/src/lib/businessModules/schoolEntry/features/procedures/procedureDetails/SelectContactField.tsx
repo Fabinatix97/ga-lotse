@@ -26,7 +26,9 @@ interface SelectContactFieldProps {
 
 export function SelectContactField(props: SelectContactFieldProps) {
   const [searchString, setSearchString] = useState("");
-  const query = useSearchContacts(searchString, props.category);
+  const categories = new Set<ApiContactCategory>();
+  categories.add(props.category);
+  const query = useSearchContacts(searchString, categories);
   const contacts = query.isSuccess ? query.data.elements : [];
   return (
     <SelectObjectField

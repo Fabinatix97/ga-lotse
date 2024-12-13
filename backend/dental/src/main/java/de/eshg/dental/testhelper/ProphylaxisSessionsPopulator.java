@@ -96,7 +96,7 @@ public class ProphylaxisSessionsPopulator
         Duration.ofDays(faker.random().nextInt(10)).plusHours(faker.random().nextInt(24));
     Instant date = isPastSession ? clock.instant().minus(duration) : clock.instant().plus(duration);
 
-    UUID institutionId = randomSchool(faker);
+    UUID institutionId = randomSchoolOrDaycare(faker);
     String groupName = randomGroupAtInstitution(faker, institutionId);
 
     CreateProphylaxisSessionRequest createProphylaxisSessionRequest =

@@ -152,7 +152,6 @@ public class EvaluationController {
   @Operation(summary = "Get report series entries for the evaluation")
   public GetReportSeriesEntriesOfEvaluationResponse getReportSeriesEntriesOfEvaluation(
       @PathVariable(name = "evaluationId") UUID evaluationId) {
-    featureToggle.assertNewFeatureIsEnabled(StatisticsFeature.REPORTS);
     evaluationService.checkPermissionForEvaluation(evaluationId);
     return evaluationService.getReportSeriesEntriesOfEvaluation(evaluationId);
   }

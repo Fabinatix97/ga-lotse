@@ -1045,6 +1045,45 @@ paths:
           description: OK
       tags:
       - TestHelper
+  /test-helper/populate-based-on-evaluation/{evaluationId}:
+    post:
+      operationId: createOtherEntities
+      parameters:
+      - in: path
+        name: evaluationId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      tags:
+      - TestHelper
+  /test-helper/populate-create-evaluation/{businessModuleName}/{anonymized}:
+    post:
+      operationId: createEvaluation
+      parameters:
+      - in: path
+        name: businessModuleName
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: anonymized
+        required: true
+        schema:
+          type: boolean
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+          description: OK
+      tags:
+      - TestHelper
   /test-helper/population:
     post:
       operationId: populateDefaults
@@ -1586,18 +1625,24 @@ components:
             $ref: "#/components/schemas/BusinessDataSourceAttribute"
         businessModuleName:
           type: string
+        canBeAnonymized:
+          type: boolean
         id:
           type: string
           format: uuid
         name:
           type: string
+        sensitivity:
+          $ref: "#/components/schemas/DataSourceSensitivity"
         withoutAnonymizationAllowed:
           type: boolean
       required:
       - attributes
       - businessModuleName
+      - canBeAnonymized
       - id
       - name
+      - sensitivity
       - withoutAnonymizationAllowed
     BarChartConfiguration:
       type: object
@@ -1949,6 +1994,12 @@ components:
       - attributeCodes
       - businessModuleName
       - id
+    DataSourceSensitivity:
+      type: string
+      enum:
+      - SENSITIVE
+      - INTERNAL_USAGE
+      - ANONYMOUS
     DataSourceWithAttributeNames:
       type: object
       properties:
@@ -2230,17 +2281,17 @@ components:
           format: date-time
         name:
           type: string
+        templateSensitivityInfo:
+          $ref: "#/components/schemas/TemplateSensitivityInfo"
         user:
           $ref: "#/components/schemas/User"
-        withoutAnonymizationAllowed:
-          type: boolean
       required:
       - analysisInfos
       - createdAt
       - dataSources
       - id
       - name
-      - withoutAnonymizationAllowed
+      - templateSensitivityInfo
     EvaluationTemplateDetailsFromRepository:
       type: object
       properties:
@@ -2290,6 +2341,8 @@ components:
           format: date-time
         name:
           type: string
+        templateSensitivityInfo:
+          $ref: "#/components/schemas/TemplateSensitivityInfo"
         userId:
           type: string
           format: uuid
@@ -2299,6 +2352,7 @@ components:
       - dataSourceNames
       - id
       - name
+      - templateSensitivityInfo
       - userId
     EvaluationTemplateSortKey:
       type: string
@@ -2546,6 +2600,18 @@ components:
       - evaluationInfo
       - tableColumnHeaders
       - totalNumberOfElements
+    GetEvaluationTemplatesFilterOptions:
+      type: object
+      properties:
+        createdAt:
+          $ref: "#/components/schemas/DateSpan"
+        dataSourceIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        name:
+          type: string
     GetEvaluationTemplatesFromRepositoryResponse:
       type: object
       properties:
@@ -2558,6 +2624,8 @@ components:
     GetEvaluationTemplatesRequest:
       type: object
       properties:
+        filterOptions:
+          $ref: "#/components/schemas/GetEvaluationTemplatesFilterOptions"
         page:
           type: integer
           format: int32
@@ -3355,7 +3423,6 @@ components:
     StatisticsFeature:
       type: string
       enum:
-      - REPORTS
       - FAKE_ANONYMIZATION
     TableColumnFilterParameter:
       type: object
@@ -3394,6 +3461,18 @@ components:
       - dataSourceId
       - dataSourceName
       - displayName
+    TemplateSensitivityInfo:
+      type: object
+      properties:
+        canBeAnonymized:
+          type: boolean
+        sensitivity:
+          $ref: "#/components/schemas/DataSourceSensitivity"
+        withoutAnonymizationAllowed:
+          type: boolean
+      required:
+      - canBeAnonymized
+      - withoutAnonymizationAllowed
     TestHelperClockSetRequest:
       type: object
       properties:

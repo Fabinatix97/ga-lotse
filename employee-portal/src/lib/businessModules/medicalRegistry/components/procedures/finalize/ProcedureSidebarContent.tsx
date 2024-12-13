@@ -14,7 +14,10 @@ import { formatPersonName } from "@eshg/lib-portal/formatters/person";
 import { isNonEmptyString } from "@eshg/lib-portal/helpers/guards";
 import { Stack, Typography } from "@mui/joy";
 
-import { FORM_OPTION_NEW } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
+import {
+  FORM_OPTION_NEW,
+  FORM_OPTION_NO_MATCH,
+} from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FinalizeDraftSidebar";
 import { SelectCard } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/SelectCard";
 import { RadioGroupField } from "@/lib/shared/components/formFields/RadioGroupField";
 import { procedureStatusNames } from "@/lib/shared/components/procedures/constants";
@@ -25,12 +28,14 @@ interface ProcedureSidebarContentProps {
   fieldName: string;
   person: ApiGetReferencePersonResponse;
   procedures: ApiMedicalRegistryEntrySearchResult[];
+  showNoMatchOption: boolean;
 }
 
 export function ProcedureSidebarContent({
   fieldName,
   person,
   procedures,
+  showNoMatchOption,
 }: ProcedureSidebarContentProps) {
   const address = fullAddress(person?.contactAddress);
 
@@ -75,10 +80,17 @@ export function ProcedureSidebarContent({
               ]}
             />
           ))}
-          <SelectCard
-            value={FORM_OPTION_NEW}
-            title="Als neuen Eintrag anlegen"
-          />
+          {showNoMatchOption ? (
+            <SelectCard
+              value={FORM_OPTION_NO_MATCH}
+              title="Keinen Eintrag aktualisieren"
+            />
+          ) : (
+            <SelectCard
+              value={FORM_OPTION_NEW}
+              title="Als neuen Eintrag anlegen"
+            />
+          )}
         </RadioGroupField>
       </Stack>
     </SidebarContent>

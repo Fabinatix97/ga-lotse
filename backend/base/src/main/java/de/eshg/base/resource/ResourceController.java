@@ -11,6 +11,7 @@ import de.eshg.base.resource.persistence.ResourceService;
 import de.eshg.base.resource.persistence.entity.Resource;
 import de.eshg.base.resource.persistence.entity.ResourceType;
 import de.eshg.base.util.PaginationUtil.PageSpec;
+import de.eshg.mutex.MutexService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.*;
 import org.springframework.data.domain.Page;
@@ -20,16 +21,22 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "Resource")
 public class ResourceController implements ResourceApi {
+  public static final String MUTEX_RESOURCE_WRITE = "RESOURCE_WRITE";
 
   private final ResourceService resourceService;
+  private final MutexService mutexService;
 
-  public ResourceController(ResourceService resourceService) {
+  public ResourceController(ResourceService resourceService, MutexService mutexService) {
     this.resourceService = resourceService;
+    this.mutexService = mutexService;
   }
 
   @Override
-  @Transactional
   public ResourceDto addResource(AddResourceRequest request) {
+    return mutexService.doWithLockedMutex(MUTEX_RESOURCE_WRITE, () -> addResourceLocked(request));
+  }
+
+  private ResourceDto addResourceLocked(AddResourceRequest request) {
     Resource resource = ResourceMapper.mapResourceToDm(request);
     Resource saved = resourceService.addResource(resource, request.labelNames());
     return ResourceMapper.mapResourceToApi(saved);
@@ -59,8 +66,12 @@ public class ResourceController implements ResourceApi {
   }
 
   @Override
-  @Transactional
   public ResourceDto updateResource(UUID id, UpdateResourceRequest request) {
+    return mutexService.doWithLockedMutex(
+        MUTEX_RESOURCE_WRITE, () -> updateResourceLocked(id, request));
+  }
+
+  private ResourceDto updateResourceLocked(UUID id, UpdateResourceRequest request) {
     Resource resource = resourceService.updateResource(id, request);
     return ResourceMapper.mapResourceToApi(resource);
   }

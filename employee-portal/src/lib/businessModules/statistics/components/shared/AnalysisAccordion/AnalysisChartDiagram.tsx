@@ -27,7 +27,7 @@ import {
 } from "@/lib/businessModules/statistics/api/models/evaluationDetailsViewTypes";
 import { useDeleteDiagram } from "@/lib/businessModules/statistics/api/mutations/useDeleteDiagram";
 import { useExportDiagramData } from "@/lib/businessModules/statistics/api/mutations/useExportDiagramData";
-import { UpdateDiagramSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/UpdateDiagramSidebar";
+import { useUpdateDiagramSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/UpdateDiagramSidebar/UpdateDiagramSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import { AnalysisDiagramBox } from "@/lib/businessModules/statistics/components/shared/AnalysisAccordion/AnalysisDiagramBox";
 import { BarChart } from "@/lib/businessModules/statistics/components/shared/charts/BarChart";
@@ -38,7 +38,7 @@ import { LineChart } from "@/lib/businessModules/statistics/components/shared/ch
 import { PieChart } from "@/lib/businessModules/statistics/components/shared/charts/PieChart";
 import { ScatterChart } from "@/lib/businessModules/statistics/components/shared/charts/ScatterChart";
 import { ImageType } from "@/lib/businessModules/statistics/components/shared/charts/types";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
+import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 
@@ -50,9 +50,9 @@ export function AnalysisChartDiagram(props: {
   anonymized: boolean;
 }) {
   const [eChartApi, setEChartApi] = useState<ChartApi | null>(null);
-  const [isUpdateDiagramSidebarOpen, setIsUpdateDiagramSidebarOpen] =
-    useState(false);
+  const updateDiagramSidebar = useUpdateDiagramSidebar();
   const exportData = useExportDiagramData(props.analysisDiagram.diagramId);
+  const dataExportGuard = useDataExportGuard(false);
   const deleteDiagram = useDeleteDiagram(props.analysisDiagram.diagramId);
   const { openConfirmationDialog } = useConfirmationDialog();
   const canWrite = useStatisticsRoleChecks().canWrite();
@@ -63,6 +63,14 @@ export function AnalysisChartDiagram(props: {
     }
 
     eChartApi.exportAsImage(wantedImageType);
+  }
+
+  function openUpdateDiagramSidebar() {
+    updateDiagramSidebar.open({
+      diagramId: props.analysisDiagram.diagramId,
+      title: props.analysisDiagram.title,
+      description: props.analysisDiagram.description,
+    });
   }
 
   function getChart() {
@@ -144,17 +152,6 @@ export function AnalysisChartDiagram(props: {
 
   return (
     <>
-      {isUpdateDiagramSidebarOpen && (
-        <OverlayBoundary>
-          <UpdateDiagramSidebar
-            open={isUpdateDiagramSidebarOpen}
-            onClose={() => setIsUpdateDiagramSidebarOpen(false)}
-            diagramId={props.analysisDiagram.diagramId}
-            title={props.analysisDiagram.title}
-            description={props.analysisDiagram.description}
-          />
-        </OverlayBoundary>
-      )}
       <BaseModal
         open={openFullScreenChart}
         onClose={() => setOpenFullScreenChart(false)}
@@ -208,7 +205,7 @@ export function AnalysisChartDiagram(props: {
                     !props.isReport && {
                       label: "Anpassen",
                       startDecorator: <Edit />,
-                      onClick: () => setIsUpdateDiagramSidebarOpen(true),
+                      onClick: openUpdateDiagramSidebar,
                     },
                   canExportData && {
                     label: "Als PNG exportieren",
@@ -223,7 +220,7 @@ export function AnalysisChartDiagram(props: {
                   canExportData && {
                     label: "Als XLSX exportieren",
                     startDecorator: <Download />,
-                    onClick: exportData,
+                    onClick: () => dataExportGuard(exportData),
                   },
                   canWrite &&
                     !props.isReport && {

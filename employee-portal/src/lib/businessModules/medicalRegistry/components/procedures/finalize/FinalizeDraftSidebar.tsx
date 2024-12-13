@@ -17,8 +17,10 @@ import {
   useSearchDraftReferences,
 } from "@/lib/businessModules/medicalRegistry/api/queries/draft";
 import { FacilitySidebarContent } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/FacilitySidebarContent";
+import { usePartialEntryErrorSidebar } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/PartialEntryErrorSidebar";
 import { PersonSidebarContent } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/PersonSidebarContent";
 import { ProcedureSidebarContent } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/ProcedureSidebarContent";
+import { isPartialDraft } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/helper";
 import { useConfirmDraftDialog } from "@/lib/businessModules/medicalRegistry/components/procedures/finalize/useConfirmDraftDialog";
 import { ButtonBar } from "@/lib/shared/components/buttons/ButtonBar";
 import { SidebarForm } from "@/lib/shared/components/form/SidebarForm";
@@ -33,10 +35,16 @@ export function useFinalizeDraft(procedure: ApiGetProcedureDraftResponse) {
   const finalizeDraftSidebar = useSidebarWithFormRef({
     component: FinalizeDraftSidebar,
   });
+  const partialEntryErrorSidebar = usePartialEntryErrorSidebar();
 
+  const isPartial = isPartialDraft(procedure);
   const { refetch, isLoading } = useSearchDraftReferences(procedure, {
-    includePersonsWithoutProcedures: true,
+    includePersonsWithoutProcedures: !isPartial,
   });
+
+  function openPartialEntryErrorSidebar() {
+    partialEntryErrorSidebar.open({ procedure });
+  }
 
   async function finalizeDraft() {
     const { isSuccess, data: references } = await refetch();
@@ -45,10 +53,16 @@ export function useFinalizeDraft(procedure: ApiGetProcedureDraftResponse) {
     }
 
     const { persons, facilities } = references;
-    if (persons.length === 0 && facilities.length === 0) {
-      confirmDraftDialog.open({ procedure });
+    if (isPartial && persons.length === 0) {
+      openPartialEntryErrorSidebar();
+    } else if (persons.length > 0 || facilities.length > 0) {
+      finalizeDraftSidebar.open({
+        procedure,
+        references,
+        onSelectNoMatch: openPartialEntryErrorSidebar,
+      });
     } else {
-      finalizeDraftSidebar.open({ procedure, references });
+      confirmDraftDialog.open({ isUpdate: false }, { procedure });
     }
   }
 
@@ -56,6 +70,8 @@ export function useFinalizeDraft(procedure: ApiGetProcedureDraftResponse) {
 }
 
 export const FORM_OPTION_NEW = "new";
+export const FORM_OPTION_NO_MATCH = "no-match";
+
 interface FinalizeDraftSidebarFormValues {
   personId: string;
   facilityId: string;
@@ -66,15 +82,18 @@ const fieldName = createFieldNameMapper<FinalizeDraftSidebarFormValues>();
 interface FinalizeDraftSidebarProps extends SidebarWithFormRefProps {
   procedure: ApiGetProcedureDraftResponse;
   references: SearchDraftReferencesResponse;
+  onSelectNoMatch: () => void;
 }
 type FinalizeStep = "persons" | "facilities" | "procedures";
 
 function FinalizeDraftSidebar({
   procedure,
+  onSelectNoMatch,
   references,
   formRef,
   onClose,
 }: FinalizeDraftSidebarProps) {
+  const isPartial = isPartialDraft(procedure);
   const { persons, facilities } = references;
   const [selectedPerson, setSelectedPerson] =
     useState<ReferencePersonWithProcedures>();
@@ -119,12 +138,16 @@ function FinalizeDraftSidebar({
       values.procedureId,
     );
 
-    confirmDraftDialog.open({
-      procedure,
-      professionalReferencePerson: person,
-      practiceReferenceFacility: facility,
-      target: targetProcedure,
-    });
+    const isUpdate = isDefined(targetProcedure);
+    confirmDraftDialog.open(
+      { isUpdate },
+      {
+        procedure,
+        professionalReferencePerson: person,
+        practiceReferenceFacility: facility,
+        target: targetProcedure,
+      },
+    );
   }
 
   function handleSubmit(
@@ -132,6 +155,14 @@ function FinalizeDraftSidebar({
     { setSubmitting }: FormikHelpers<FinalizeDraftSidebarFormValues>,
   ) {
     setSubmitting(false);
+    if (
+      values.personId === FORM_OPTION_NO_MATCH ||
+      values.procedureId === FORM_OPTION_NO_MATCH
+    ) {
+      onClose(true);
+      onSelectNoMatch();
+      return;
+    }
 
     const referencePerson = findSelectedReferenceById(persons, values.personId);
     setSelectedPerson(referencePerson);
@@ -158,6 +189,7 @@ function FinalizeDraftSidebar({
               fieldName={fieldName("personId")}
               procedure={procedure}
               persons={persons}
+              showNoMatchOption={isPartial}
             />
           )}
           {currentStepName === "facilities" && (
@@ -172,6 +204,7 @@ function FinalizeDraftSidebar({
               fieldName={fieldName("procedureId")}
               person={selectedPerson!}
               procedures={procedures}
+              showNoMatchOption={isPartial}
             />
           )}
           <SidebarActions>

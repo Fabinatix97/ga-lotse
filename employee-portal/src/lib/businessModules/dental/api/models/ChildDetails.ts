@@ -9,12 +9,14 @@ import { Child, mapChild } from "./Child";
 import { Examination, mapExamination } from "./Examination";
 
 export interface ChildDetails extends Child {
+  readonly version: number;
   readonly examinations: Examination[];
 }
 
 export function mapChildDetails(response: ApiChildDetails): ChildDetails {
   return {
     ...mapChild(response),
+    version: response.version,
     examinations: response.examinations.map(mapExamination),
   };
 }

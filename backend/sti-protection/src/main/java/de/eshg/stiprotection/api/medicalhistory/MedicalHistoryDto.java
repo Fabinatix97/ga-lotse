@@ -27,36 +27,51 @@ public sealed interface MedicalHistoryDto extends HasTypeDiscriminator
     permits StiConsultationMedicalHistoryDto, SexWorkMedicalHistoryDto {
 
   // General
-
+  @Schema(
+      description = "Specifies the reason for the patient's appointment.",
+      example = "Lower Abdominal Pain")
   String examinationReason();
 
+  @Schema(
+      description = "Details the symptoms the patient is currently experiencing.",
+      example = "Dysuria")
   String currentSymptoms();
 
+  @Schema(
+      description = "Records the date of the contact the patients wished to discuss or clarify.")
   LocalDate contactToClarifyDate();
 
+  @Schema(description = "Provides details on the patient's relationship model.", example = "OPEN")
   RelationshipModelDto relationshipModel();
 
   // Examinations
-
+  @Schema(
+      description = "Contains information about any examinations the patient previously undergone.")
   ExaminationDto examinations();
 
   // Previous Illness
-
+  @Schema(description = "Lists any past illnesses the patient had.")
   PreviousIllnessDto previousIllnesses();
 
   // Orientation and Contact
-
+  @Schema(
+      description =
+          "Details information regarding the patient's contact with potentially risky partners.")
   RiskContactDto riskContacts();
 
   // Prevention
-
+  @Schema(
+      description =
+          "Details information regarding the patient's prevention strategies and measures.")
   PreventionDto prevention();
 
   // Risk Factors
-
+  @Schema(
+      description =
+          "Details information about the patient's behaviors or actions that may pose risk factors.")
   RiskFactorDto riskFactors();
 
   // Comments
-
+  @Schema(description = "An optional field for recording any additional remarks or comments.")
   String additionalComments();
 }

@@ -9,7 +9,7 @@ import {
 } from "@eshg/employee-portal-api/stiProtection";
 import { Row } from "@eshg/lib-portal/components/Row";
 import { useSnackbar } from "@eshg/lib-portal/components/snackbar/SnackbarProvider";
-import { EventBusy } from "@mui/icons-material";
+import { EditCalendar, EventBusy } from "@mui/icons-material";
 import { Button, Chip, Sheet, Stack } from "@mui/joy";
 import { ColumnSort, createColumnHelper } from "@tanstack/react-table";
 
@@ -23,6 +23,7 @@ import {
   ActionsItem,
   ActionsMenu,
 } from "@/lib/shared/components/buttons/ActionsMenu";
+import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
 import { DetailsSection } from "@/lib/shared/components/detailsSection/DetailsSection";
 import { CalendarAddDay } from "@/lib/shared/components/icons/CalendarAddDay";
 import { DataTable } from "@/lib/shared/components/table/DataTable";
@@ -31,7 +32,10 @@ import { useSearchParam } from "@/lib/shared/hooks/searchParams/useSearchParam";
 import { useTableControl } from "@/lib/shared/hooks/searchParams/useTableControl";
 
 import { formatAppointmentTime } from "./AdditionalDataSection";
-import { CREATE_APPOINTMENT_SEARCH_PARAM } from "./CreateAppointmentSidebar";
+import {
+  CREATE_APPOINTMENT_SEARCH_PARAM,
+  EDIT_APPOINTMENT_SEARCH_PARAM,
+} from "./CreateAppointmentSidebar";
 
 const initialSorting: ColumnSort = {
   id: "appointmentStart",
@@ -43,10 +47,16 @@ export function AppointmentDetails({
 }: Readonly<{
   procedure: ApiStiProtectionProcedure;
 }>) {
+  const snackbar = useSnackbar();
   const [_isOpenCreateAppointment, setIsOpenCreateAppointment] = useSearchParam(
     CREATE_APPOINTMENT_SEARCH_PARAM,
     "boolean",
   );
+  const [_isOpenEditAppointment, setIsOpenEditAppointment] = useSearchParam(
+    EDIT_APPOINTMENT_SEARCH_PARAM,
+    "boolean",
+  );
+  const { openCancelDialog } = useConfirmationDialog();
   const tableControl = useTableControl({
     serverSideSorting: false,
     sortFieldName: "sortKey",
@@ -54,20 +64,25 @@ export function AppointmentDetails({
     initialSorting: initialSorting,
   });
 
-  function useCancelAppointment() {
-    const snackbar = useSnackbar();
-    const mutation = useCancelAppointmentMutation({
-      onSuccess: () => {
-        snackbar.confirmation("Termin storniert");
-      },
-    });
-    return mutation;
-  }
-
-  const cancelAppointment = useCancelAppointment();
+  const cancelAppointment = useCancelAppointmentMutation({
+    onSuccess: () => {
+      snackbar.confirmation("Der Termin wurde storniert.");
+    },
+  });
 
   function handleCancelAppointment() {
-    void cancelAppointment.mutateAsync(procedure);
+    openCancelDialog({
+      onConfirm: async () => {
+        await cancelAppointment.mutateAsync(procedure);
+      },
+      title: "Termin stornieren",
+      description: "Möchten Sie diesen Termin wirklich stornieren?",
+      confirmLabel: "Stornieren",
+    });
+  }
+
+  function handleEditAppointment() {
+    setIsOpenEditAppointment(true);
   }
 
   return (
@@ -83,6 +98,7 @@ export function AppointmentDetails({
             columns={appointmentDetailsColumns(
               procedure,
               handleCancelAppointment,
+              handleEditAppointment,
             )}
             sorting={tableControl.tableSorting}
             enableSortingRemoval={false}
@@ -107,14 +123,20 @@ export function AppointmentDetails({
 const columnHelper = createColumnHelper<ApiAppointmentHistoryEntry>();
 
 function appointmentDetailsColumns(
-  procedure: ApiStiProtectionProcedure,
+  _procedure: ApiStiProtectionProcedure,
   onCancelAppointment: () => void,
+  onEditAppointment: () => void,
 ) {
   function createActionButtons(
     appointmentHistoryEntry: ApiAppointmentHistoryEntry,
   ): ActionsItem[] {
     return appointmentHistoryEntry.appointmentStatus === "OPEN"
       ? [
+          {
+            label: "Termin ändern",
+            onClick: onEditAppointment,
+            startDecorator: <EditCalendar />,
+          },
           {
             label: "Termin stornieren",
             onClick: onCancelAppointment,
@@ -156,13 +178,12 @@ function appointmentDetailsColumns(
     columnHelper.display({
       id: "actions",
       header: "Aktionen",
-      cell: ({ row: { original: entry } }) => (
-        <Row justifyContent="flex-end">
-          {entry.appointmentStatus === "OPEN" ? (
-            <ActionsMenu actionItems={createActionButtons(entry)} />
-          ) : undefined}
-        </Row>
-      ),
+      cell: ({ row: { original: historyEntry } }) =>
+        historyEntry.appointmentStatus === "OPEN" && (
+          <Row justifyContent="flex-end">
+            <ActionsMenu actionItems={createActionButtons(historyEntry)} />
+          </Row>
+        ),
       meta: {
         width: 96,
       },

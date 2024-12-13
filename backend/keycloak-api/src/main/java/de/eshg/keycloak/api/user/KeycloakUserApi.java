@@ -6,17 +6,18 @@
 package de.eshg.keycloak.api.user;
 
 import de.eshg.keycloak.api.user.model.BulkGetUsersRequest;
+import de.eshg.keycloak.api.user.model.CredentialRequest;
 import de.eshg.keycloak.api.user.model.GetActiveSessionResponse;
 import de.eshg.keycloak.api.user.model.GetGroupMembersRequest;
 import de.eshg.keycloak.api.user.model.GetGroupMembersResponse;
 import de.eshg.keycloak.api.user.model.GetRoleMembersRequest;
 import de.eshg.keycloak.api.user.model.GetRoleMembersResponse;
 import de.eshg.keycloak.api.user.model.GetUsersResponse;
-import de.eshg.keycloak.api.user.model.VerifyPinRequest;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -54,10 +55,18 @@ public interface KeycloakUserApi {
       @PathParam("realm") String realmName, @PathParam("id") String id);
 
   @POST
-  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/users/{id}/verify-pin")
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/users/{id}/verify-credential")
   @Consumes(MediaType.APPLICATION_JSON)
-  void verifyPin(
+  void verifyCredential(
       @PathParam("realm") String realmName,
       @PathParam("id") String id,
-      @Valid @RequestBody VerifyPinRequest request);
+      @Valid @RequestBody CredentialRequest request);
+
+  @PUT
+  @Path("/admin/realms/{realm}/" + PROVIDER_ID + "/users/{id}/reset-credential")
+  @Consumes(MediaType.APPLICATION_JSON)
+  void resetCredential(
+      @PathParam("realm") String realmName,
+      @PathParam("id") String id,
+      @Valid @RequestBody CredentialRequest request);
 }

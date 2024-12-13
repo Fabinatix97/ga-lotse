@@ -6,6 +6,10 @@
 import { Stack, Typography } from "@mui/joy";
 
 import { Analysis } from "@/lib/businessModules/statistics/api/models/analysis";
+import {
+  DataSourceSensitivity,
+  translateDataSourceSensitivity,
+} from "@/lib/businessModules/statistics/api/models/dataSourceSensitivity";
 import { CollapsableList } from "@/lib/businessModules/statistics/components/shared/CollapsableList";
 import { SearchableGroups } from "@/lib/shared/components/SearchableGroups";
 
@@ -14,6 +18,21 @@ export function DataSource({ dataSourceName }: { dataSourceName: string }) {
     <Stack gap={1}>
       <Typography level="title-md">Datenquelle</Typography>
       <Typography level="body-md">{dataSourceName}</Typography>
+    </Stack>
+  );
+}
+
+export function Sensitivity({
+  dataSourceSensitivity,
+}: {
+  dataSourceSensitivity?: DataSourceSensitivity;
+}) {
+  return (
+    <Stack gap={1}>
+      <Typography level="title-md">Sensibilität</Typography>
+      <Typography level="body-md">
+        {translateDataSourceSensitivity(dataSourceSensitivity)}
+      </Typography>
     </Stack>
   );
 }

@@ -11,11 +11,13 @@ import { Formik, FormikErrors } from "formik";
 import { UsersAutocomplete } from "@/lib/businessModules/chat/components/UsersAutocomplete";
 import { DirectChatContent } from "@/lib/businessModules/chat/components/chatPanel/DirectChatContent";
 import { InputComponent } from "@/lib/businessModules/chat/components/chatPanel/InputComponent";
+import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import { ChatPanelView } from "@/lib/businessModules/chat/shared/enums";
 import { useCreateNewChat } from "@/lib/businessModules/chat/shared/hooks/useCreateNewChat";
 import { useSendMessage } from "@/lib/businessModules/chat/shared/hooks/useSendMessage";
 import { ApiUser } from "@/lib/businessModules/chat/shared/types";
 import { delayed } from "@/lib/businessModules/chat/shared/utils";
+import { setDMRoom } from "@/lib/businessModules/chat/shared/utils";
 
 export interface DirectChatFormValues {
   invite: string | null;
@@ -36,6 +38,7 @@ export function NewDirectChat({
   const { createNewChat } = useCreateNewChat();
   const { sendMessage } = useSendMessage();
   const theme = useTheme();
+  const { matrixClient } = useChatClientContext();
 
   const snackbar = useSnackbar();
 
@@ -53,6 +56,8 @@ export function NewDirectChat({
           100,
         );
         setChatPanelView(ChatPanelView.ChatMessages);
+        // set room as direct
+        await setDMRoom(matrixClient, newRoomId, matrixClient.getUserId());
       }
     } catch {
       snackbar.error("Chat konnte nicht erstellt werden");

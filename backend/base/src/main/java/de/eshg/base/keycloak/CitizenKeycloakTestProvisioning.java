@@ -11,6 +11,7 @@ import static de.eshg.base.keycloak.KeycloakProvisioning.TRUE;
 
 import de.eshg.base.keycloak.differ.ComponentRepresentationDiffer;
 import de.eshg.lib.keycloak.*;
+import de.eshg.lib.keycloak.IdpTestUser;
 import de.eshg.testhelper.environment.EnvironmentConfig;
 import jakarta.ws.rs.core.Response;
 import java.util.*;
@@ -347,65 +348,6 @@ public class CitizenKeycloakTestProvisioning extends KeycloakTestProvisioning
 
     @Override
     public List<ValidationRule> validationRules() {
-      return List.of();
-    }
-  }
-
-  private enum IdpTestUser implements KeycloakUser {
-    MUK_DUMMY("muk-dummy", "password"),
-    BUND_ID_DUMMY("bund-id-dummy", "password"),
-    ;
-
-    private final String username;
-    private final String password;
-
-    IdpTestUser(String username, String password) {
-      this.username = username;
-      this.password = password;
-    }
-
-    @Override
-    public String username() {
-      return username;
-    }
-
-    @Override
-    public String email() {
-      return username + KeycloakUser.TEST_USER_EMAIL_POSTFIX;
-    }
-
-    @Override
-    public String phoneNumber() {
-      return null;
-    }
-
-    @Override
-    public String externalChatUsername() {
-      return null;
-    }
-
-    @Override
-    public String firstName() {
-      return null;
-    }
-
-    @Override
-    public String lastName() {
-      return null;
-    }
-
-    @Override
-    public String password() {
-      return password;
-    }
-
-    @Override
-    public List<KeycloakRole> roles() {
-      return List.of();
-    }
-
-    @Override
-    public List<KeycloakGroup> groups() {
       return List.of();
     }
   }

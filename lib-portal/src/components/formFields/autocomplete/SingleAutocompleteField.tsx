@@ -37,7 +37,7 @@ export function SingleAutocompleteField(props: SingleAutocompleteFieldProps) {
     reason: string,
   ) {
     props.onInputChange?.(event, newValue, reason);
-    if (props.freeSolo) {
+    if (props.freeSolo || newValue === "") {
       handleChange(newValue);
     }
   }

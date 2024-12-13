@@ -17,4 +17,13 @@ export const systemProgressEntryTypeTitles: Record<string, string> = {
   VACCINATION_APPLIED: "Impfung durchgeführt",
   VACCINATION_EDIT: "Impfung korrigiert",
   PERSON_SYNCHRONIZED: "Geänderte Personendaten übernommen",
+  NEW_APPOINTMENT: "Termin erstellt",
+  FOLLOWUP_APPOINTMENT: "Folgetermin erstellt",
+  CANCEL_APPOINTMENT: "Termin abgesagt",
+  REBOOK_APPOINTMENT: "Termin umgebucht",
+  ANSWER_MEDICAL_HISTORY: "Anamnese ausgefüllt",
+  ANSWER_INFORMATION_STATEMENT: "Aufklärungsbogen ausgefüllt",
+  ADD_INFORMATION_STATEMENT: "Aufklärungsbogen hinzugefügt",
+  REMOVE_INFORMATION_STATEMENT: "Aufklärungsbogen entfernt",
+  RESET_INFORMATION_STATEMENT: "Aufklärungsbogen zurückgesetzt",
 };

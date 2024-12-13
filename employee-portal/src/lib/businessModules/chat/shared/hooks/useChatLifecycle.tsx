@@ -20,7 +20,10 @@ import {
 } from "react";
 
 import { useUpdateSelfUserChatUsername } from "@/lib/baseModule/api/mutations/users";
-import { useGetSelfUser } from "@/lib/baseModule/api/queries/users";
+import {
+  useGetSelfUser,
+  useGetUserProfile,
+} from "@/lib/baseModule/api/queries/users";
 import {
   fetchBackupInfo,
   getRustCryptoStoreArgs,
@@ -32,7 +35,10 @@ import {
 } from "@/lib/businessModules/chat/matrix/cryptoCallbacks";
 import { chatLogin } from "@/lib/businessModules/chat/matrix/login";
 import { restoreKeyBackupWithCache } from "@/lib/businessModules/chat/matrix/secretStorage";
-import { deleteCachedCredentials } from "@/lib/businessModules/chat/matrix/tokens";
+import {
+  clearMatrixStores,
+  deleteCachedCredentials,
+} from "@/lib/businessModules/chat/matrix/tokens";
 import { useChat } from "@/lib/businessModules/chat/shared/ChatProvider";
 import { chatSearchParamNames } from "@/lib/businessModules/chat/shared/constants";
 import { ClientState } from "@/lib/businessModules/chat/shared/enums";
@@ -50,6 +56,7 @@ export function useChatLifecycle(
   setClientState: Dispatch<SetStateAction<ClientState>>,
 ) {
   const { data: selfUser } = useGetSelfUser();
+  const { data: userData } = useGetUserProfile(selfUser.userId);
   const updateSelfUser = useUpdateSelfUserChatUsername();
 
   const { configuration } = useChat();
@@ -63,11 +70,11 @@ export function useChatLifecycle(
     logger.warn("RESTARTING CHAT");
 
     await deleteCachedCredentials();
-    await matrixClient.current.clearStores();
+    await clearMatrixStores();
 
     wasAuthenticated.current = false;
     setClientState(ClientState.Idle);
-  }, [matrixClient, setClientState]);
+  }, [setClientState]);
 
   /**
    * Prepare the matrix client
@@ -207,19 +214,20 @@ export function useChatLifecycle(
 
   const updateSelfUserChatUsername = useCallback(async () => {
     if (!matrixClient.current.isLoggedIn() || !credentials?.userId) return;
+    if (validateChatUsername(userData.user.externalChatUsername)) return;
 
-    if (!validateChatUsername(selfUser.externalChatUsername)) {
-      await updateSelfUser
-        .mutateAsync({
-          externalChatUsername: credentials.userId,
-          phoneNumber: selfUser.phoneNumber,
-        })
-        .catch((error) => {
-          logger.softError("Error updating self user: ", error);
-        });
-    }
+    await updateSelfUser
+      .mutateAsync({
+        externalChatUsername: credentials.userId,
+        phoneNumber: userData.user.phoneNumber,
+        salutation: userData.salutation,
+        title: userData.title,
+      })
+      .catch((error) => {
+        logger.softError("Error updating self user: ", error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [credentials?.userId, selfUser]);
+  }, [credentials?.userId, userData]);
 
   useEffect(() => {
     switch (clientState) {

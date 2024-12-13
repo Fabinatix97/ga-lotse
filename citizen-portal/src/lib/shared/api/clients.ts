@@ -4,7 +4,10 @@
  */
 
 import { Configuration } from "@eshg/citizen-portal-api/base";
-import { DepartmentApi } from "@eshg/citizen-portal-api/base/apis";
+import {
+  DepartmentApi,
+  PublicConfigApi,
+} from "@eshg/citizen-portal-api/base/apis";
 import { useApiConfiguration } from "@eshg/lib-portal/api/ApiProvider";
 
 function useConfiguration() {
@@ -17,4 +20,9 @@ function useConfiguration() {
 export function useDepartmentApi() {
   const configuration = useConfiguration();
   return new DepartmentApi(configuration);
+}
+
+export function usePublicConfigApi() {
+  const configuration = useConfiguration();
+  return new PublicConfigApi(configuration);
 }

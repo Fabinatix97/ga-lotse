@@ -20,7 +20,6 @@ import {
   Typography,
 } from "@mui/joy";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useState } from "react";
 
 import { useExportReportData } from "@/lib/businessModules/statistics/api/downloads/useExportReportData";
 import { translateReportType } from "@/lib/businessModules/statistics/api/mapper/translateReportType";
@@ -35,11 +34,11 @@ import {
 import { ReportSeriesState } from "@/lib/businessModules/statistics/api/models/reportSeriesTypes";
 import { useDeactivateReportSeries } from "@/lib/businessModules/statistics/api/mutations/useDeactivateReportSeries";
 import { getEvaluationReportsQueryKey } from "@/lib/businessModules/statistics/api/queries/apiQueryKeys";
-import { AddReportSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/AddReportSidebar";
+import { useAddReportSidebar } from "@/lib/businessModules/statistics/components/evaluations/details/reports/AddReportSidebar/AddReportSidebar";
 import { ReportStateChip } from "@/lib/businessModules/statistics/components/evaluations/details/reports/ReportStateChip";
 import {
-  UpdateReportSidebar,
   UpdateReportSidebarReportInfo,
+  useUpdateReportSidebar,
 } from "@/lib/businessModules/statistics/components/evaluations/details/reports/UpdateReportSidebar/UpdateReportSidebar";
 import { useStatisticsRoleChecks } from "@/lib/businessModules/statistics/components/evaluations/useStatisticsRoleChecks";
 import {
@@ -47,9 +46,9 @@ import {
   getSharedURL,
 } from "@/lib/businessModules/statistics/components/reports/getReportActionItems";
 import { useDeleteWithConfirmation } from "@/lib/businessModules/statistics/components/reports/useDeleteWithConfirmation";
+import { useDataExportGuard } from "@/lib/businessModules/statistics/components/shared/hooks/useDataExportGuard";
 import { routes } from "@/lib/businessModules/statistics/shared/routes";
 import { NoSearchResults } from "@/lib/shared/components/NoSearchResult";
-import { OverlayBoundary } from "@/lib/shared/components/boundaries/OverlayBoundary";
 import { ActionsMenu } from "@/lib/shared/components/buttons/ActionsMenu";
 import { RefreshButton } from "@/lib/shared/components/buttons/RefreshButton";
 import { useConfirmationDialog } from "@/lib/shared/components/confirmationDialog/ConfirmationDialogProvider";
@@ -58,7 +57,7 @@ import { TablePage } from "@/lib/shared/components/table/TablePage";
 import { TableSheet } from "@/lib/shared/components/table/TableSheet";
 import { useCopy } from "@/lib/shared/hooks/useCopy";
 
-import { AutomateReportSidebar } from "./AutomateReportSidebar/AutomateReportSidebar";
+import { useAutomateReportSidebar } from "./AutomateReportSidebar/AutomateReportSidebar";
 import { ReportAutomationTile } from "./ReportAutomationTile";
 import { ReportSeriesStateChip } from "./ReportSeriesStateChip";
 
@@ -197,20 +196,27 @@ export function EvaluationReports({
 
   const copy = useCopy();
 
-  const [openCreateReportSidebar, setOpenCreateReportSidebar] = useState(false);
-  const [openUpdateReportSidebar, setOpenUpdateReportSidebar] =
-    useState<UpdateReportSidebarReportInfo | null>(null);
-  const [openAutomateReportSidebar, setOpenAutomateReportSidebar] =
-    useState(false);
+  const addReportSidebar = useAddReportSidebar();
+  const updateReportSidebar = useUpdateReportSidebar();
+  const automateReportSidebar = useAutomateReportSidebar();
   const { openConfirmationDialog } = useConfirmationDialog();
   const { deleteReportSeriesWithConfirmation, deleteReportWithConfirmation } =
     useDeleteWithConfirmation();
   const { download: exportData, downloadContainerRef } = useExportReportData();
+  const dataExportGuard = useDataExportGuard(false);
   const deactivateReportSeries = useDeactivateReportSeries();
   const userPermissions = useStatisticsRoleChecks();
 
-  function updateReport(report: UpdateReportSidebarReportInfo) {
-    setOpenUpdateReportSidebar({ ...report });
+  function openAddReportSidebar() {
+    addReportSidebar.open({ evaluationId: data.evaluationId });
+  }
+
+  function openUpdateReportSidebar(report: UpdateReportSidebarReportInfo) {
+    updateReportSidebar.open({ report });
+  }
+
+  function openAutomateReportSidebar() {
+    automateReportSidebar.open({ evaluationId: data.evaluationId });
   }
 
   function getSubRows(item: ReportTableRow) {
@@ -232,30 +238,6 @@ export function EvaluationReports({
     <>
       <HiddenContainer ref={downloadContainerRef} />
 
-      {openCreateReportSidebar && (
-        <OverlayBoundary>
-          <AddReportSidebar
-            evaluationId={data.evaluationId}
-            onClose={() => setOpenCreateReportSidebar(false)}
-          />
-        </OverlayBoundary>
-      )}
-      {openUpdateReportSidebar && (
-        <OverlayBoundary>
-          <UpdateReportSidebar
-            onClose={() => setOpenUpdateReportSidebar(null)}
-            report={openUpdateReportSidebar}
-          />
-        </OverlayBoundary>
-      )}
-      {openAutomateReportSidebar && (
-        <OverlayBoundary>
-          <AutomateReportSidebar
-            onClose={() => setOpenAutomateReportSidebar(false)}
-            evaluationId={data.evaluationId}
-          />
-        </OverlayBoundary>
-      )}
       <Stack gap={3} flex={1} sx={{ overflowY: "auto" }}>
         {userPermissions.canWrite() && (
           <Stack alignSelf="flex-end" direction="row" gap={3}>
@@ -263,10 +245,7 @@ export function EvaluationReports({
               loading={isFetchingReports}
               queryKey={getEvaluationReportsQueryKey([data.evaluationId])}
             />
-            <Button
-              startDecorator={<Add />}
-              onClick={() => setOpenCreateReportSidebar(true)}
-            >
+            <Button startDecorator={<Add />} onClick={openAddReportSidebar}>
               Einzel-Report erstellen
             </Button>
           </Stack>
@@ -292,12 +271,14 @@ export function EvaluationReports({
                 columns={columns(
                   deleteReportWithConfirmation,
                   deleteReportSeriesWithConfirmation,
-                  updateReport,
+                  openUpdateReportSidebar,
                   copy,
-                  (item) =>
-                    exportData(
-                      { reportId: item.reportId },
-                      { tooMuchDataForExport: item.tooMuchDataForExport },
+                  async (item) =>
+                    dataExportGuard(() =>
+                      exportData(
+                        { reportId: item.reportId },
+                        { tooMuchDataForExport: item.tooMuchDataForExport },
+                      ),
                     ),
                   userPermissions.canDelete,
                   userPermissions.canWrite,
@@ -333,9 +314,9 @@ export function EvaluationReports({
           <Stack sx={{ width: { lg: RIGHT_STACK_WIDTH, xxs: "100%" } }}>
             <ReportAutomationTile
               activeSeriesInfo={data.activeSeries}
-              onClickAutomate={() => setOpenAutomateReportSidebar(true)}
+              onClickAutomate={openAutomateReportSidebar}
               onClickDeactivate={deactivateReportSeriesWithConfirmation}
-              updateReportSeries={updateReport}
+              updateReportSeries={openUpdateReportSidebar}
               canWrite={userPermissions.canWrite}
             />
           </Stack>

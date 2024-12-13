@@ -14,9 +14,23 @@ import java.util.UUID;
 
 @Schema(name = "Person")
 public record PersonDto(
-    @NotNull UUID id,
+    @Schema(
+            description = "An unique identifier for the person.",
+            example = "25db7719-4924-4208-bb13-d0274e27279d")
+        @NotNull
+        UUID id,
     @NotNull GenderDto gender,
-    @Schema(type = "integer") @NotNull Year yearOfBirth,
+    @Schema(description = "The year of birth of the person.", example = "2000", type = "integer")
+        @NotNull
+        Year yearOfBirth,
     CountryCode countryOfBirth,
-    @Schema(type = "integer") Year inGermanySince,
-    String accessCode) {}
+    @Schema(
+            description = "The year since the person has been residing in Germany.",
+            example = "2010",
+            type = "integer")
+        Year inGermanySince,
+    @Schema(
+            description =
+                "Unique code for patient identification and login to the online portal, valid until the procedure is closed.",
+            example = "937ZiFaqjkfQgTBmo")
+        String accessCode) {}

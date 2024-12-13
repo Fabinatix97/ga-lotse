@@ -17,6 +17,7 @@ import de.eshg.testhelper.population.BasePopulator;
 import de.eshg.testhelper.population.PopulationProperties;
 import java.time.Clock;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import net.datafaker.Faker;
 
@@ -37,7 +38,7 @@ public abstract class DentalPopulator<R> extends BasePopulator<R> {
     this.baseTestHelperApi = baseTestHelperApi;
   }
 
-  UUID randomSchool(Faker faker) {
+  UUID randomSchoolOrDaycare(Faker faker) {
     List<ContactDto> contacts =
         contactApi
             .getContacts(
@@ -45,7 +46,9 @@ public abstract class DentalPopulator<R> extends BasePopulator<R> {
                     null,
                     null,
                     ContactTypeDto.INSTITUTION,
-                    InstitutionContactCategoryDto.SCHOOL,
+                    Set.of(
+                        InstitutionContactCategoryDto.SCHOOL,
+                        InstitutionContactCategoryDto.DAYCARE),
                     null,
                     null,
                     null,

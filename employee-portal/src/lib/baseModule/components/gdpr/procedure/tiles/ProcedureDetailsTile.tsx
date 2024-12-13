@@ -238,13 +238,15 @@ function RefreshStatusButton({
         startDecorator={<RefreshIcon />}
         onClick={() =>
           startTransition(async () => {
-            await refreshStatus.mutateAsync(undefined, {
-              onSuccess: (response) => {
-                if (response.status === ApiGdprProcedureStatus.Closed) {
-                  snackbar.confirmation("Vorgang ist abgeschlossen.");
-                }
-              },
-            });
+            try {
+              await refreshStatus.mutateAsync(undefined, {
+                onSuccess: (response) => {
+                  if (response.status === ApiGdprProcedureStatus.Closed) {
+                    snackbar.confirmation("Vorgang ist abgeschlossen.");
+                  }
+                },
+              });
+            } catch {}
           })
         }
       >

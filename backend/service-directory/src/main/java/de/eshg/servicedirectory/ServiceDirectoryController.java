@@ -79,6 +79,33 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
   }
 
   @Override
+  public ResponseEntity<GetActiveActorsResponse> getActiveOrgUnitActors(
+      String ifNoneMatch, ActorTypeDto type) {
+    String userName = CallingClientHelper.getClientCommonName();
+    Objects.requireNonNull(userName, "principal must not be null");
+
+    ActorResponseDto actorResponseDto = serviceDirectoryService.getActorByCommonName(userName);
+    UUID orgUnitId =
+        Objects.requireNonNull(actorResponseDto, "no valid actor with commonName %s found")
+            .orgUnitId();
+
+    String eTag = formatETag(type, null, orgUnitId, serviceDirectoryService.getCurrentRevisionId());
+
+    if (checkNotModified(ifNoneMatch, eTag))
+      return ResponseEntity.status(HttpStatus.NOT_MODIFIED).header(HttpHeaders.ETAG, eTag).build();
+
+    ActiveActorsWithRevision response =
+        serviceDirectoryService.getActiveActors(type, null, orgUnitId);
+    return ResponseEntity.ok()
+        .header(HttpHeaders.ETAG, formatETag(type, null, orgUnitId, response.revision()))
+        .body(
+            new GetActiveActorsResponse(
+                response.actors().stream()
+                    .sorted(Comparator.comparing(ActorResponseDto::naturalId))
+                    .toList()));
+  }
+
+  @Override
   public ActorResponseDto getSelf() {
     String userName = CallingClientHelper.getClientCommonName();
     Objects.requireNonNull(userName, "principal must not be null");
@@ -161,7 +188,7 @@ public class ServiceDirectoryController implements ServiceDirectoryApi {
     return webRequest.checkNotModified(eTag);
   }
 
-  private String formatETag(
+  private static String formatETag(
       ActorTypeDto type, OrgUnitTypeDto orgUnitType, UUID orgUnitId, long revisionId) {
     return Optional.ofNullable(type).map(Enum::name).orElse("")
         + "."

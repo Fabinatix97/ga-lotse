@@ -5,8 +5,9 @@
 
 "use client";
 
+import { Alert } from "@eshg/lib-portal/components/Alert";
 import { SubmitButton } from "@eshg/lib-portal/components/buttons/SubmitButton";
-import { Button, Stack } from "@mui/joy";
+import { Button, List, ListItem, Stack } from "@mui/joy";
 import { useFormikContext } from "formik";
 
 import { DownloadTemplateLink } from "@/lib/businessModules/medicalRegistry/components/procedures/import/DownloadTemplateLink";
@@ -23,25 +24,49 @@ interface ImportDataFormSidebarProps {
 
 export function ImportDataFormSidebar({ onClose }: ImportDataFormSidebarProps) {
   const { isSubmitting } = useFormikContext();
+
   return (
     <SidebarForm>
-      <SidebarContent
-        title="Daten importieren"
-        alert={{
-          color: "primary",
-          title: "Hinweis",
-          message:
-            "Der Import kann nicht rückgängig gemacht werden. Bitte achten sie darauf, dass alle Pflichtfelder gesetzt sind und dass keine Duplikate enthalten sind.",
-        }}
-      >
-        <Stack gap={2}>
-          <FileField
-            name="importFile"
-            label="Wählen Sie eine XLSX-Datei aus"
-            required="Bitte eine XLSX-Datei auswählen."
-            accept={FileType.Xlsx}
+      <SidebarContent title="Daten importieren">
+        <Stack gap={3}>
+          <Alert
+            color="primary"
+            title="Hinweis"
+            message={
+              <List
+                marker="disc"
+                sx={{
+                  "&, && > *": { color: "inherit" },
+                  paddingInlineStart: "2ch",
+                  "--List-padding": 0,
+                  "--ListItem-minHeight": "2rem",
+                }}
+              >
+                <ListItem>
+                  Der Import kann nicht rückgängig gemacht werden.
+                </ListItem>
+                <ListItem>Alle Pflichtfelder müssen ausgefüllt sein.</ListItem>
+                <ListItem>Daten-Duplikate sind zu vermeiden.</ListItem>
+                <ListItem>
+                  Die Datei darf maximal 4000 Einträge enthalten.
+                </ListItem>
+              </List>
+            }
           />
-          <DownloadTemplateLink />
+          <Alert
+            color="danger"
+            title="Mehrfachupload vermeiden"
+            message="Datensätze dürfen nicht mehrfach hochgeladen werden."
+          />
+          <Stack gap={2}>
+            <FileField
+              name="importFile"
+              label="Wählen Sie eine XLSX-Datei aus"
+              required="Bitte eine XLSX-Datei auswählen."
+              accept={FileType.Xlsx}
+            />
+            <DownloadTemplateLink />
+          </Stack>
         </Stack>
       </SidebarContent>
       <SidebarActions>

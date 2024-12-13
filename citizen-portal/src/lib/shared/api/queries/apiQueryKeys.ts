@@ -10,3 +10,7 @@ const apiQueryKey = queryKeyFactory(["base"]);
 export const departmentApiQueryKey = queryKeyFactory(
   apiQueryKey(["departmentApi"]),
 );
+
+export const publicConfigApiQueryKey = queryKeyFactory(
+  apiQueryKey(["publicConfigApi"]),
+);

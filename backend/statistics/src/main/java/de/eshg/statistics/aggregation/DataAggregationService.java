@@ -107,6 +107,7 @@ public class DataAggregationService {
             timeRangeStart,
             timeRangeEnd,
             dataSource.id(),
+            false,
             dataSource.attributeCodes().stream().map(BusinessDataAttribute::code).toList(),
             0,
             1);
@@ -140,7 +141,7 @@ public class DataAggregationService {
     }
 
     Evaluation evaluation = new Evaluation();
-    evaluation.setAnonymized(anonymized);
+    evaluation.setDataSensitivity(EvaluationMapper.mapToPersistence(anonymized));
     evaluation.setName(name);
     evaluation.setTimeRangeStart(timeRangeStart);
     evaluation.setTimeRangeEnd(timeRangeEnd);
@@ -363,6 +364,7 @@ public class DataAggregationService {
             aggregationResult.getTimeRangeStart(),
             aggregationResult.getTimeRangeEnd(),
             firstTableColumn.getDataSourceId(),
+            false,
             attributeCodes,
             page,
             businessModuleDataRequestPageSize);
@@ -706,8 +708,7 @@ public class DataAggregationService {
   private MinMaxNullUnknownValues determineNullValuesBoolean(TableColumn tableColumn) {
     MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setNumberOfNullEntries(
-        tableRowRepository.count(
-            AggregationResultSpecifications.getNullSpecification(tableColumn)));
+        tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     return minMaxNullUnknownValues;
   }
 
@@ -725,14 +726,12 @@ public class DataAggregationService {
 
     MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setNumberOfNullEntries(
-        tableRowRepository.count(
-            AggregationResultSpecifications.getNullSpecification(tableColumn)));
+        tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     minMaxNullUnknownValues.setNumberOfUnknownEntries(
         unknownValue == null
             ? null
             : tableRowRepository.count(
-                AggregationResultSpecifications.getEqualDateSpecification(
-                    tableColumn, unknownValue)));
+                TableRowSpecifications.getEqualDateSpecification(tableColumn, unknownValue)));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
 
     return minMaxNullUnknownValues;
@@ -756,13 +755,12 @@ public class DataAggregationService {
     minMaxNullUnknownValues.setMinDecimal(minValue);
     minMaxNullUnknownValues.setMaxDecimal(maxValue);
     minMaxNullUnknownValues.setNumberOfNullEntries(
-        tableRowRepository.count(
-            AggregationResultSpecifications.getNullSpecification(tableColumn)));
+        tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     minMaxNullUnknownValues.setNumberOfUnknownEntries(
         unknownValue == null
             ? null
             : tableRowRepository.count(
-                AggregationResultSpecifications.getDecimalValueFilterSpecification(
+                TableRowSpecifications.getDecimalValueFilterSpecification(
                     tableColumn, unknownValue, NumericComparisonDto.EQUAL, false)));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
 
@@ -779,13 +777,12 @@ public class DataAggregationService {
     minMaxNullUnknownValues.setMinInteger(minValue);
     minMaxNullUnknownValues.setMaxInteger(maxValue);
     minMaxNullUnknownValues.setNumberOfNullEntries(
-        tableRowRepository.count(
-            AggregationResultSpecifications.getNullSpecification(tableColumn)));
+        tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     minMaxNullUnknownValues.setNumberOfUnknownEntries(
         unknownValue == null
             ? null
             : tableRowRepository.count(
-                AggregationResultSpecifications.getIntegerValueFilterSpecification(
+                TableRowSpecifications.getIntegerValueFilterSpecification(
                     tableColumn, unknownValue, NumericComparisonDto.EQUAL, false)));
     minMaxNullUnknownValues.setUnknownValue(unknownValue == null ? null : unknownValue.toString());
 
@@ -798,14 +795,12 @@ public class DataAggregationService {
 
     MinMaxNullUnknownValues minMaxNullUnknownValues = getOrCreateMinMax(tableColumn);
     minMaxNullUnknownValues.setNumberOfNullEntries(
-        tableRowRepository.count(
-            AggregationResultSpecifications.getNullSpecification(tableColumn)));
+        tableRowRepository.count(TableRowSpecifications.getNullSpecification(tableColumn)));
     minMaxNullUnknownValues.setNumberOfUnknownEntries(
         unknownValue == null
             ? null
             : tableRowRepository.count(
-                AggregationResultSpecifications.getTextFilterSpecification(
-                    tableColumn, unknownValue)));
+                TableRowSpecifications.getTextFilterSpecification(tableColumn, unknownValue)));
     minMaxNullUnknownValues.setUnknownValue(unknownValue);
 
     return minMaxNullUnknownValues;

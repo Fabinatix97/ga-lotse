@@ -14,7 +14,6 @@ import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.CUSTOD
 import static de.eshg.schoolentry.util.SchoolEntrySystemProgressEntryType.CUSTODIAN_SYNCED_WITH_CENTRAL_FILE;
 
 import de.cronn.commons.lang.StreamUtil;
-import de.eshg.lib.procedure.domain.model.PersonType;
 import de.eshg.rest.service.error.NotFoundException;
 import de.eshg.schoolentry.api.CreatePersonDto;
 import de.eshg.schoolentry.api.SyncPersonRequest;
@@ -97,7 +96,7 @@ public class PersonService {
     } else {
       centralFileId = personClient.createPersonInCentralFile(custodianDto);
     }
-    SchoolEntryService.buildParent(centralFileId, procedure);
+    SchoolEntryService.buildCustodian(centralFileId, procedure);
 
     progressEntryUtil.addProgressEntry(procedure, CUSTODIAN_ADDED);
     personRepository.flush();
@@ -132,7 +131,8 @@ public class PersonService {
 
   Person findChildForUpdate(UUID procedureId, long version) {
     Person child =
-        personRepository.findByProcedureExternalIdAndTypeForUpdate(procedureId, PersonType.PATIENT);
+        personRepository.findByProcedureExternalIdAndTypeForUpdate(
+            procedureId, Person.PERSON_TYPE_USED_FOR_CHILDREN);
     ValidationUtil.validateVersion(version, child);
     return child;
   }

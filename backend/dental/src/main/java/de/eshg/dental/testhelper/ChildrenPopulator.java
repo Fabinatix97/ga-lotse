@@ -100,7 +100,7 @@ public class ChildrenPopulator extends DentalPopulator<CreateChildResponse> {
         optional(faker, BasePopulator::randomAddress, 0.9),
         randomYear,
         groupName,
-        randomSchool(faker));
+        randomSchoolOrDaycare(faker));
   }
 
   @Override

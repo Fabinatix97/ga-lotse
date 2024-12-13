@@ -5,6 +5,8 @@
 
 import { ApiUser } from "@eshg/employee-portal-api/base";
 
+import { DataSourceSensitivity } from "./dataSourceSensitivity";
+
 export interface EvaluationTemplateTableView {
   totalNumberOfElements: number;
   evaluationTemplates: EvaluationTemplateWithUserInfo[];
@@ -15,6 +17,7 @@ export interface EvaluationTemplate {
   name: string;
   createdAt: Date;
   dataSourceName: string;
+  dataSourceSensitivity?: DataSourceSensitivity;
 }
 
 export interface EvaluationTemplateWithUserInfo extends EvaluationTemplate {

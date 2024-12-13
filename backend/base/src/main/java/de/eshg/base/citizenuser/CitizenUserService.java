@@ -9,6 +9,7 @@ import com.google.common.collect.Iterables;
 import de.cronn.commons.lang.StreamUtil;
 import de.eshg.base.keycloak.CitizenKeycloakClient;
 import de.eshg.keycloak.api.user.KeycloakAttributes;
+import de.eshg.keycloak.api.user.model.CredentialType;
 import de.eshg.lib.auditlog.AuditLogger;
 import de.eshg.lib.keycloak.CitizenPermissionRole;
 import de.eshg.mutex.MutexService;
@@ -228,6 +229,8 @@ public class CitizenUserService {
     user.roles().realmLevel().add(List.of(getAccessCodeUserRole()));
 
     UserRepresentation representation = user.toRepresentation(true);
+    addCredential(UUID.fromString(representation.getId()), CredentialType.PIN, pin);
+
     auditLogger.log(
         "Benutzerverwaltung Zugangscode",
         "Hinzufügen anonymer Benutzer",
@@ -268,7 +271,11 @@ public class CitizenUserService {
     }
   }
 
-  public void verifyAnonymousUserPin(UUID userId, String pin) {
-    citizenKeycloakClient.verifyAnonymousUserPin(userId, pin);
+  public void addCredential(UUID userId, CredentialType type, String secret) {
+    citizenKeycloakClient.addCredential(userId, type, secret);
+  }
+
+  public void verifyCredential(UUID userId, CredentialType type, String secret) {
+    citizenKeycloakClient.verifyCredential(userId, type, secret);
   }
 }

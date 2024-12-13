@@ -10,9 +10,9 @@ import {
   IconButton,
   List,
   ListItem,
-  Radio,
-  RadioGroup,
   Stack,
+  Typography,
+  styled,
 } from "@mui/joy";
 
 import { notEmptyFieldValidation } from "@/lib/businessModules/travelMedicine/shared/templateEditor/templateFieldValidation";
@@ -43,22 +43,20 @@ export function MainQuestion(
 
       <Stack direction="row" spacing={1} alignItems="center" paddingTop={"6px"}>
         <Box>{"Antwortmöglichkeiten: "}</Box>
-        <RadioGroup>
-          <List
-            sx={{
-              "--ListItem-radius": "8px",
-              "--List-gap": "1rem",
-            }}
-            orientation="horizontal"
-          >
-            <ListItem sx={{ backgroundColor: "white", padding: 0.6 }}>
-              <Radio disabled={true} value="Ja" label="Ja" />
-            </ListItem>
-            <ListItem sx={{ backgroundColor: "white", padding: 0.6 }}>
-              <Radio disabled={true} value="Nein" label="Nein" />
-            </ListItem>
-          </List>
-        </RadioGroup>
+        <List
+          sx={{
+            "--ListItem-radius": "8px",
+            "--List-gap": "1rem",
+          }}
+          orientation="horizontal"
+        >
+          <ListItem sx={{ backgroundColor: "white", padding: 0.6 }}>
+            <ReadOnlyRadio>Ja</ReadOnlyRadio>
+          </ListItem>
+          <ListItem sx={{ backgroundColor: "white", padding: 0.6 }}>
+            <ReadOnlyRadio>Nein</ReadOnlyRadio>
+          </ListItem>
+        </List>
       </Stack>
 
       <Stack alignItems="center" paddingTop={"6px"}>
@@ -76,3 +74,19 @@ export function MainQuestion(
     </Stack>
   );
 }
+
+const ReadOnlyRadio = styled(Typography)(({ theme }) => ({
+  color: theme.palette.neutral.solidDisabledColor,
+  display: "flex",
+  // use a before pseudo-element that looks like a radiobutton
+  "::before": {
+    content: '""',
+    border: `1px solid ${theme.palette.neutral.outlinedDisabledBorder}`,
+    width: "1.25rem",
+    height: "1.25rem",
+    marginRight: "0.5rem",
+    // align with first line of text
+    marginTop: "0.1rem",
+    borderRadius: "1.25rem",
+  },
+}));

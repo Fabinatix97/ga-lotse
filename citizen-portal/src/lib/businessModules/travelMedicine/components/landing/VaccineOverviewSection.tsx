@@ -18,9 +18,7 @@ export function VaccineOverviewSection() {
 
   return (
     <ContentSheet>
-      <ContentSheetTitle>
-        {t("vaccinations.availableVaccinations")}
-      </ContentSheetTitle>
+      <ContentSheetTitle>{t("vaccionation.title")}</ContentSheetTitle>
       {diseases && (
         <List
           marker="disc"

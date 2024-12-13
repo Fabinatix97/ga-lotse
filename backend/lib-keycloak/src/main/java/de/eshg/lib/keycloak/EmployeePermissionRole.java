@@ -34,7 +34,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("HIV-STI"), Module.STI_PROTECTION),
   MEDICAL_REGISTRY_LEADER(
       LEADER_KEYCLOAK_NAME,
-      LEADER_DESCRIPTION.formatted("Medizinalkartei"),
+      LEADER_DESCRIPTION.formatted("Medizinalaufsicht"),
       Module.MEDICAL_REGISTRY),
   DENTAL_LEADER(LEADER_KEYCLOAK_NAME, LEADER_DESCRIPTION.formatted("ZAD"), Module.DENTAL),
   OPEN_DATA_LEADER(
@@ -203,7 +203,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       Module.BASE),
 
   MEDICAL_REGISTRY_IMPORT(
-      "Berechtigung zum Importieren von Medizinalkartei-Daten", Module.MEDICAL_REGISTRY),
+      "Berechtigung zum Importieren von Berufskartei-Daten", Module.MEDICAL_REGISTRY),
 
   // TODO ISSUE-3317: Add keycloak descriptions for the inspection module
   INSPECTION_NOTIFICATIONS_READ("Benachrichtigungen erhalten", Module.INSPECTION),
@@ -296,7 +296,7 @@ public enum EmployeePermissionRole implements PermissionRole {
       STI_PROTECTION_PHYSICIAN),
 
   MEDICAL_REGISTRY_ADMIN(
-      ADMIN_KEYCLOAK_NAME.formatted("Medizinalkartei"),
+      ADMIN_KEYCLOAK_NAME.formatted("Medizinalaufsicht"),
       Module.MEDICAL_REGISTRY,
       BASE_PERSONS_READ,
       BASE_PERSONS_WRITE,
@@ -316,8 +316,16 @@ public enum EmployeePermissionRole implements PermissionRole {
   CHAT_MANAGEMENT_WRITE(
       READ_AND_WRITE_PERMISSION_TEMPLATE.formatted("Chat - Management"), Module.CHAT_MANAGEMENT),
 
-  OFFICIAL_MEDICAL_SERVICE_ADMIN("Amtsärztlicher Dienst Admin", Module.OFFICIAL_MEDICAL_SERVICE),
-  OFFICIAL_MEDICAL_SERVICE_PHYSICIAN("Amtsärztlicher Dienst Arzt", Module.OFFICIAL_MEDICAL_SERVICE);
+  OFFICIAL_MEDICAL_SERVICE_ADMIN(
+      "Amtsärztlicher Dienst Admin",
+      Module.OFFICIAL_MEDICAL_SERVICE,
+      BASE_PERSONS_READ,
+      BASE_PERSONS_WRITE),
+  OFFICIAL_MEDICAL_SERVICE_PHYSICIAN(
+      "Amtsärztlicher Dienst Arzt",
+      Module.OFFICIAL_MEDICAL_SERVICE,
+      BASE_PERSONS_READ,
+      BASE_PERSONS_WRITE);
 
   private final String keycloakNameWithoutPrefix;
   private final String description;
@@ -368,7 +376,7 @@ public enum EmployeePermissionRole implements PermissionRole {
     ARCHIVE("Archiv"),
     AUDIT_LOG_SERVICE("Audit-Log-Service"),
     STI_PROTECTION("HIV-STI-Service"),
-    MEDICAL_REGISTRY("Medizinalkartei"),
+    MEDICAL_REGISTRY("Medizinalaufsicht"),
     DENTAL("Zahnärztlicher Dienst"),
     OPEN_DATA("Open Data"),
     OFFICIAL_MEDICAL_SERVICE("Amtsärztlicher Dienst");

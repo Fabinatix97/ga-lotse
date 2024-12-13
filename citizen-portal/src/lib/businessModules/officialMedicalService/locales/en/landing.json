@@ -1,0 +1,26 @@
+{
+  "pageTitle": "Official Medical Service",
+  "information": {
+    "title": "Information",
+    "text": "Much Information Very Official Medical Service"
+  },
+  "contact": {
+    "title": "Contact and Availability",
+    "addressSection": {
+      "title": "Address"
+    },
+    "contactSection": {
+      "title": "Contact",
+      "phoneNumber": "Phone: {{ phoneNumber }}",
+      "eMail": "Email:"
+    },
+    "openingHoursSection": {
+      "title": "Opening Hours"
+    }
+  },
+  "personalArea": {
+    "title": "Process",
+    "information": "All the Information about the Process",
+    "goToPersonalArea": "View Process"
+  }
+}

@@ -9,6 +9,7 @@ import de.eshg.lib.statistics.StatisticsApi;
 import de.eshg.lib.statistics.api.Attribute;
 import de.eshg.lib.statistics.api.DataRow;
 import de.eshg.lib.statistics.api.DataSource;
+import de.eshg.lib.statistics.api.DataSourceSensitivity;
 import de.eshg.lib.statistics.api.DataTableHeader;
 import de.eshg.lib.statistics.api.GetDataSourcesResponse;
 import de.eshg.lib.statistics.api.GetSpecificDataRequest;
@@ -79,9 +80,15 @@ public class InspectionSimulator implements StatisticsApi {
             new DataSource(
                 DATA_SOURCE_UUID,
                 "INSPECTION",
+                DataSourceSensitivity.INTERNAL_USAGE,
+                false,
                 List.of(PROCEDURE_ID_ATTRIBUTE, FACILITY_ATTRIBUTE, LOCATION_ATTRIBUTE)),
             new DataSource(
-                DATA_SOURCE_UUID_2, "INSPECTION2", List.of(LOCATION_ATTRIBUTE, RESULT_ATTRIBUTE))));
+                DATA_SOURCE_UUID_2,
+                "INSPECTION2",
+                DataSourceSensitivity.INTERNAL_USAGE,
+                false,
+                List.of(LOCATION_ATTRIBUTE, RESULT_ATTRIBUTE))));
   }
 
   @Override
@@ -91,6 +98,8 @@ public class InspectionSimulator implements StatisticsApi {
           "INSPECTION",
           getSpecificDataRequest.timeRangeStart(),
           getSpecificDataRequest.timeRangeEnd(),
+          DataSourceSensitivity.INTERNAL_USAGE,
+          false,
           new DataTableHeader(
               List.of(PROCEDURE_ID_ATTRIBUTE, FACILITY_ATTRIBUTE, LOCATION_ATTRIBUTE)),
           List.of(new DataRow(Arrays.asList(FIRST_UUID, FACILITY_UUID, "Frankfurt"))),
@@ -100,6 +109,8 @@ public class InspectionSimulator implements StatisticsApi {
           "INSPECTION2",
           getSpecificDataRequest.timeRangeStart(),
           getSpecificDataRequest.timeRangeEnd(),
+          DataSourceSensitivity.INTERNAL_USAGE,
+          false,
           new DataTableHeader(
               List.of(PROCEDURE_ID_ATTRIBUTE, RESULT_ATTRIBUTE, LOCATION_ATTRIBUTE)),
           List.of(

@@ -18,6 +18,7 @@ import de.eshg.lib.statistics.api.SubjectType;
 import de.eshg.lib.statistics.api.ValueType;
 import de.eshg.lib.statistics.util.AttributeInfo;
 import de.eshg.lib.statistics.util.DataSourceInfo;
+import de.eshg.lib.statistics.util.SpecificData;
 import de.eshg.rest.service.error.BadRequestException;
 import de.eshg.rest.service.error.NotFoundException;
 import java.time.Instant;
@@ -85,24 +86,28 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
     if (!getSpecificDataRequest.timeRangeStart().isBefore(getSpecificDataRequest.timeRangeEnd())) {
       throw new BadRequestException("Time range is invalid: start not before end");
     }
-    String dataSourceName =
+    DataSourceInfo dataSource =
         getDataSourceMetaInfos().stream()
             .filter(
                 dataSourceInfo -> dataSourceInfo.id().equals(getSpecificDataRequest.dataSourceId()))
             .findFirst()
             .orElseThrow(
-                () -> getDataSourceNotFoundException(getSpecificDataRequest.dataSourceId()))
-            .name();
+                () -> getDataSourceNotFoundException(getSpecificDataRequest.dataSourceId()));
+    if (getSpecificDataRequest.anonymizationRequired() && !dataSource.canBeAnonymized()) {
+      throw new BadRequestException("Data cannot be anonymized");
+    }
 
     List<AttributeInfo> requestedAttributeInfos =
         getRequestedAttributeInfos(
             getSpecificDataRequest.dataSourceId(), getSpecificDataRequest.attributeCodes());
 
+    SpecificData specificData;
     if (requestedAttributeInfos.isEmpty()) {
-      return getEmptyResponse(
-          dataSourceName,
-          getSpecificDataRequest.timeRangeStart(),
-          getSpecificDataRequest.timeRangeEnd());
+      specificData =
+          getEmptySpecificData(
+              dataSource.name(),
+              getSpecificDataRequest.timeRangeStart(),
+              getSpecificDataRequest.timeRangeEnd());
     } else {
       DataTableHeader dataTableHeader =
           new DataTableHeader(requestedAttributeInfos.stream().map(this::mapToAttribute).toList());
@@ -117,27 +122,47 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
                         createDataRow(
                             procedure,
                             requestedAttributeInfos,
-                            getSpecificDataRequest.dataSourceId()))
+                            getSpecificDataRequest.dataSourceId(),
+                            getSpecificDataRequest.anonymizationRequired()))
                 .toList();
         long totalNumberOfRows = procedurePage.getTotalElements();
 
-        return new GetSpecificDataResponse(
-            dataSourceName,
-            getSpecificDataRequest.timeRangeStart(),
-            getSpecificDataRequest.timeRangeEnd(),
-            dataTableHeader,
-            dataRows,
-            totalNumberOfRows);
+        specificData =
+            new SpecificData(
+                dataSource.name(),
+                getSpecificDataRequest.timeRangeStart(),
+                getSpecificDataRequest.timeRangeEnd(),
+                dataTableHeader,
+                dataRows,
+                totalNumberOfRows);
       } else {
-        return getSpecificDataResponseNotProcedureBased(
-            dataSourceName, getSpecificDataRequest, requestedAttributeInfos, dataTableHeader);
+        specificData =
+            getSpecificDataNotProcedureBased(
+                dataSource.name(),
+                getSpecificDataRequest,
+                requestedAttributeInfos,
+                dataTableHeader);
       }
     }
+    return new GetSpecificDataResponse(
+        specificData.dataSourceName(),
+        specificData.timeRangeStart(),
+        specificData.timeRangeEnd(),
+        dataSource.sensitivity(),
+        getSpecificDataRequest.anonymizationRequired(),
+        specificData.dataTableHeader(),
+        getSpecificDataRequest.anonymizationRequired()
+            ? bulkAnonymizeDataRows(
+                getSpecificDataRequest.dataSourceId(),
+                specificData.dataTableHeader(),
+                specificData.dataRows())
+            : specificData.dataRows(),
+        specificData.totalNumberOfElements());
   }
 
-  private static GetSpecificDataResponse getEmptyResponse(
+  private static SpecificData getEmptySpecificData(
       String dataSourceName, Instant timeRangeStart, Instant timeRangeEnd) {
-    return new GetSpecificDataResponse(
+    return new SpecificData(
         dataSourceName,
         timeRangeStart,
         timeRangeEnd,
@@ -184,25 +209,34 @@ public abstract class AbstractStatisticsService<P extends Procedure<P, ?, ?, ?>>
   }
 
   private DataRow createDataRow(
-      P procedure, List<AttributeInfo> requestedAttributeInfos, UUID dataSourceId) {
+      P procedure,
+      List<AttributeInfo> requestedAttributeInfos,
+      UUID dataSourceId,
+      boolean anonymized) {
     List<Object> values = new ArrayList<>();
     requestedAttributeInfos.forEach(
-        attribute -> values.add(getSpecificValue(procedure, attribute, dataSourceId)));
+        attribute -> values.add(getSpecificValue(procedure, attribute, dataSourceId, anonymized)));
     return new DataRow(values);
   }
 
   protected abstract Object getSpecificValue(
-      P procedure, AttributeInfo attributeInfo, UUID dataSourceId);
+      P procedure, AttributeInfo attributeInfo, UUID dataSourceId, boolean anonymized);
 
   @SuppressWarnings("java:S1172")
-  protected GetSpecificDataResponse getSpecificDataResponseNotProcedureBased(
+  protected SpecificData getSpecificDataNotProcedureBased(
       String dataSourceName,
       GetSpecificDataRequest getSpecificDataRequest,
       List<AttributeInfo> requestedAttributeInfos,
       DataTableHeader dataTableHeader) {
-    return getEmptyResponse(
+    return getEmptySpecificData(
         dataSourceName,
         getSpecificDataRequest.timeRangeStart(),
         getSpecificDataRequest.timeRangeEnd());
+  }
+
+  @SuppressWarnings("unused")
+  protected List<DataRow> bulkAnonymizeDataRows(
+      UUID dataSourceId, DataTableHeader dataTableHeader, List<DataRow> dataRows) {
+    throw new BadRequestException("Anonymization not implemented");
   }
 }

@@ -18,6 +18,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useChatClientContext } from "@/lib/businessModules/chat/shared/ChatClientProvider";
 import {
   ClientState,
+  CommunicationType,
   MessageTypeEnum,
 } from "@/lib/businessModules/chat/shared/enums";
 import {
@@ -29,6 +30,7 @@ import {
   findLatestMessage,
   getReadReceipts,
   getRoomNameAndCommunicationType,
+  setDMRoom,
 } from "@/lib/businessModules/chat/shared/utils";
 
 export function useChatRoomList() {
@@ -100,9 +102,22 @@ export function useChatRoomList() {
       const invitations = rooms.filter(
         (room) => room.getMyMembership() === "invite",
       );
-      invitations.forEach((invitation) => {
-        void matrixClient.joinRoom(invitation.roomId);
-      });
+      await Promise.all(
+        invitations.map(async (invitation) => {
+          await matrixClient.joinRoom(invitation.roomId);
+          const roomWithType = getRoomNameAndCommunicationType(invitation);
+          if (
+            roomWithType.communicationType === CommunicationType.DirectMessage
+          ) {
+            // set room as direct
+            await setDMRoom(
+              matrixClient,
+              invitation.roomId,
+              matrixClient.getUserId(),
+            );
+          }
+        }),
+      );
       setRoomList(roomWithTypeFiltered);
     })();
   }, [clientState, getLatestMessage, matrixClient]);
@@ -112,6 +127,10 @@ export function useChatRoomList() {
     async function onMyMembership(room: Room, membership: string) {
       const latestMessage = await getLatestMessage(room);
       const roomWithType = getRoomNameAndCommunicationType(room);
+      if (roomWithType.communicationType === CommunicationType.DirectMessage) {
+        // set room as direct
+        await setDMRoom(matrixClient, room.roomId, matrixClient.getUserId());
+      }
       setRoomList((prevState) => {
         if (membership === "join") {
           return [...prevState, { ...roomWithType, latestMessage }];

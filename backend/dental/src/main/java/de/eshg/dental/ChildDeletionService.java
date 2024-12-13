@@ -5,6 +5,8 @@
 
 package de.eshg.dental;
 
+import de.eshg.base.centralfile.FacilityApi;
+import de.eshg.base.centralfile.PersonApi;
 import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.Examination;
 import de.eshg.dental.domain.model.ProphylaxisSession;
@@ -15,8 +17,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChildDeletionService extends ProcedureDeletionService<Child> {
-  public ChildDeletionService(ChildRepository childRepository, CemeteryService cemeteryService) {
-    super(childRepository, cemeteryService);
+  public ChildDeletionService(
+      ChildRepository childRepository,
+      CemeteryService cemeteryService,
+      PersonApi personApi,
+      FacilityApi facilityApi) {
+    super(childRepository, cemeteryService, personApi, facilityApi);
   }
 
   @Override

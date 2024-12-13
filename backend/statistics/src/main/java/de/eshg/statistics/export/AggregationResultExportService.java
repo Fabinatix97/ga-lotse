@@ -16,6 +16,7 @@ import de.eshg.statistics.aggregation.EvaluationService;
 import de.eshg.statistics.aggregation.ReportService;
 import de.eshg.statistics.persistence.entity.AbstractAggregationResult;
 import de.eshg.statistics.persistence.entity.Evaluation;
+import de.eshg.statistics.persistence.entity.StatisticsDataSensitivity;
 import de.eshg.statistics.persistence.entity.TableColumn;
 import de.eshg.statistics.persistence.entity.TableRow;
 import de.eshg.statistics.persistence.entity.report.Report;
@@ -48,8 +49,8 @@ public class AggregationResultExportService {
   public void checkExportAllowedEvaluation(UUID evaluationId, EvaluationService evaluationService) {
     evaluationService.checkPermissionForEvaluation(evaluationId);
     Evaluation evaluation = evaluationService.getEvaluationInternal(evaluationId);
-    if (!evaluation.isAnonymized()) {
-      throw new BadRequestException(DataExportUtil.NOT_ANONYMIZED_ERROR);
+    if (evaluation.getDataSensitivity().equals(StatisticsDataSensitivity.SENSITIVE)) {
+      throw new BadRequestException(DataExportUtil.SENSITIVE_DATA_ERROR);
     }
     EvaluationService.validateEvaluationCompleted(evaluation);
     if (Boolean.TRUE.equals(

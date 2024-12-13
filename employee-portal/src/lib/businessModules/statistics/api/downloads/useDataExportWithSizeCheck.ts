@@ -15,7 +15,7 @@ export function useDataExportWithSizeCheck<TParams>({
 }) {
   const { error } = useAlert();
 
-  async function downlaodWithSideCheck(
+  async function downloadWithSideCheck(
     downloadParams: TParams,
     checkParams: { tooMuchDataForExport: boolean },
   ): Promise<void> {
@@ -30,5 +30,5 @@ export function useDataExportWithSizeCheck<TParams>({
     }
   }
 
-  return { download: downlaodWithSideCheck, downloadContainerRef };
+  return { download: downloadWithSideCheck, downloadContainerRef };
 }

@@ -5,32 +5,38 @@
 
 package de.eshg.dental.mapper;
 
+import de.eshg.base.centralfile.api.person.GetPersonFileStateResponse;
 import de.eshg.base.contact.api.ContactDto;
+import de.eshg.dental.api.ChildResult;
 import de.eshg.dental.api.InstitutionDto;
 import de.eshg.dental.api.ProphylaxisSessionDetailsDto;
 import de.eshg.dental.api.ProphylaxisSessionDto;
 import de.eshg.dental.api.ProphylaxisTypeDto;
 import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedData;
+import de.eshg.dental.business.model.ProphylaxisSessionWithAugmentedInstitution;
+import de.eshg.dental.domain.model.Child;
 import de.eshg.dental.domain.model.ProphylaxisSession;
 import de.eshg.dental.domain.model.ProphylaxisType;
+import java.util.List;
+import java.util.Map;
 
 public final class ProphylaxisSessionMapper {
 
   private ProphylaxisSessionMapper() {}
 
   public static ProphylaxisSessionDto mapProphylaxisSessionToDto(
-      ProphylaxisSessionWithAugmentedData sessionWithAugmentedData) {
+      ProphylaxisSessionWithAugmentedInstitution sessionWithAugmentedData) {
     ProphylaxisSession session = sessionWithAugmentedData.prophylaxisSession();
-    ContactDto contact = sessionWithAugmentedData.contact();
+    ContactDto institution = sessionWithAugmentedData.institution();
     return new ProphylaxisSessionDto(
         session.getExternalId(),
         session.getDateAndTime(),
-        new InstitutionDto(contact.id(), contact.name()),
+        new InstitutionDto(institution.id(), institution.name()),
         session.getGroupName(),
         mapToDto(session.getType()));
   }
 
-  private static ProphylaxisTypeDto mapToDto(ProphylaxisType type) {
+  public static ProphylaxisTypeDto mapToDto(ProphylaxisType type) {
     return switch (type) {
       case null -> null;
       case P1 -> ProphylaxisTypeDto.P1;
@@ -59,12 +65,33 @@ public final class ProphylaxisSessionMapper {
   public static ProphylaxisSessionDetailsDto mapProphylaxisSessionToDetailsDto(
       ProphylaxisSessionWithAugmentedData prophylaxisSession) {
     ProphylaxisSession session = prophylaxisSession.prophylaxisSession();
-    ContactDto contact = prophylaxisSession.contact();
+    ContactDto institution = prophylaxisSession.institution();
     return new ProphylaxisSessionDetailsDto(
         session.getExternalId(),
         session.getDateAndTime(),
-        new InstitutionDto(contact.id(), contact.name()),
+        new InstitutionDto(institution.id(), institution.name()),
         session.getGroupName(),
-        mapToDto(session.getType()));
+        mapToDto(session.getType()),
+        mapToChildResults(prophylaxisSession.participants()));
+  }
+
+  private static List<ChildResult> mapToChildResults(
+      Map<Child, GetPersonFileStateResponse> fileStateResponses) {
+    if (fileStateResponses == null) {
+      return List.of();
+    }
+    return fileStateResponses.entrySet().stream()
+        .map(ProphylaxisSessionMapper::mapToChildResult)
+        .toList();
+  }
+
+  private static ChildResult mapToChildResult(
+      Map.Entry<Child, GetPersonFileStateResponse> fileStateResponse) {
+    return new ChildResult(
+        fileStateResponse.getKey().getExternalId(),
+        fileStateResponse.getValue().firstName(),
+        fileStateResponse.getValue().lastName(),
+        fileStateResponse.getValue().dateOfBirth(),
+        fileStateResponse.getKey().getGroupName());
   }
 }
